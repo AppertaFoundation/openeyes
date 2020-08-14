@@ -14,6 +14,9 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+
 ?>
 
 <?php
@@ -33,7 +36,7 @@ $stopped_entries = [];
 foreach ($element->entries as $entry) {
     // if the request is POST, it means we are on the validation error screen
     // therefore we show entries just like the user set up originally
-    if ($entry->originallyStopped && !\Yii::app()->request->isPostRequest) {
+    if ($entry->originallyStopped && !Yii::app()->request->isPostRequest) {
         $stopped_entries[] = $entry;
     } else {
         $current_entries[] = $entry;
@@ -49,21 +52,21 @@ foreach ($element->entries as $entry) {
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
       <div class="cols-5 <?= $model_name ?>_no_systemic_medications_wrapper">
-          <label class="inline highlight" for="<?= $model_name ?>_no_systemic_medications">
-              <?= \CHtml::checkBox(
+          <label class="inline highlight" id="<?= $model_name ?>_no_systemic_medications" for="no_systemic_medications">
+              <?= CHtml::checkBox(
                   $model_name . '[no_systemic_medications]',
-                  $element->no_systemic_medications_date ? true : false,
-                  array('class' => $model_name.'_no_systemic_medications')
+                  $element->no_systemic_medications_date,
+                  array('id' => 'no_systemic_medications', 'value' =>  $element->no_systemic_medications_date ? '1' : '0')
               ); ?>
               No systemic medications
           </label>
       </div>
       <div class="cols-5 <?= $model_name ?>_no_ophthalmic_medications_wrapper">
-          <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_medications">
-              <?= \CHtml::checkBox(
+          <label class="inline highlight" id="<?= $model_name ?>_no_ophthalmic_medications" for="no_ophthalmic_medications">
+              <?= CHtml::checkBox(
                   $model_name . '[no_ophthalmic_medications]',
-                  $element->no_ophthalmic_medications_date ? true : false,
-                  array('class' => $model_name.'_no_ophthalmic_medications')
+                  $element->no_ophthalmic_medications_date,
+                  array('id' => 'no_ophthalmic_medications', 'value' =>  $element->no_ophthalmic_medications_date ? '1' : '0')
               ); ?>
               No eye medications
           </label>
@@ -283,7 +286,8 @@ foreach ($element->entries as $entry) {
         medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
             element: $('#<?=$model_name?>_element'),
             patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
-            allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
+            ophthalmicMedicationIds: <?= CJSON::encode(Medication::model()->listOphthalmicMedicationIds()) ?>,
+            allAllergies: <?= CJSON::encode(CHtml::listData(OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
             onInit: function (controller) {
                 registerElementController(controller, "HMController", "MMController");
                 /* Don't add automatically

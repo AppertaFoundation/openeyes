@@ -1,3 +1,4 @@
+START TRANSACTION;
 /*--------------------------------------- Map legacy routes to new -------------------------------------------------*/
 
 DROP TEMPORARY TABLE IF EXISTS temp_route_names;
@@ -57,3 +58,5 @@ SET m.default_route_id = r.new_id;
 DELETE FROM medication_route WHERE source_type = 'LEGACY';
 
 DROP TEMPORARY TABLE IF EXISTS temp_route_map;
+
+COMMIT;

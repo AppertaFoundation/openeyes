@@ -46,6 +46,7 @@
         returnOnSelect: false,
         deselectOnReturn: true,
         id: null,
+        parentContainer: null,
         popupClass: 'oe-add-select-search auto-width',
         liClass: 'auto-width',
         searchOptions: null,
@@ -91,7 +92,12 @@
         this.setCloseButton($(content).find('.close-icon-btn'));
         this.setAddButton($addButton);
 
-        content.insertAfter(this.options.openButton);
+        if (this.options.parentContainer) {
+            content.appendTo($(this.options.parentContainer));
+        } else {
+            content.insertAfter($(this.options.openButton));
+        }
+
         this.popup = content;
         this.generateContent();
 
@@ -420,6 +426,10 @@
         let h = document.documentElement.clientHeight;
         let right = (w - btnPos.right);
         let bottom = (h - btnPos.bottom);
+
+        if (w - right < 620) {
+            right = w - 645;
+        }
 
         if (h - bottom < 310) {
             bottom = h - 335;

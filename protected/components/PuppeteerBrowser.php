@@ -1,4 +1,5 @@
 <?php
+
 use \Nesk\Puphpeteer\Puppeteer;
 use Nesk\Puphpeteer\Resources\Browser;
 use Nesk\Puphpeteer\Resources\Page;
@@ -41,6 +42,7 @@ class PuppeteerBrowser extends CApplicationComponent
     public $orientation = 'Portrait';
     public $page_width;
     public $page_height;
+    protected $_scale;
 
     public function __destruct()
     {
@@ -281,6 +283,16 @@ class PuppeteerBrowser extends CApplicationComponent
         $this->_right_margin = $right_margin;
     }
 
+    public function setScale($scale)
+    {
+        $this->_scale = $scale;
+    }
+
+    public function getScale()
+    {
+        return $this->_scale;
+    }
+
     /**
      * @param $imageDirectory
      * @param $prefix
@@ -328,11 +340,15 @@ class PuppeteerBrowser extends CApplicationComponent
             'headerTemplate' => '<div></div>',
         );
 
-        if ($this->page_width) {
+        if (isset($this->scale)) {
+            $options['scale'] = $this->scale;
+        }
+
+        if (isset($this->page_width)) {
             $options['page_width'] = $this->page_width;
         }
 
-        if ($this->page_width) {
+        if (isset($this->page_height)) {
             $options['page_height'] = $this->page_height;
         }
 
@@ -340,7 +356,7 @@ class PuppeteerBrowser extends CApplicationComponent
 
         foreach (array('top', 'left', 'bottom', 'right') as $side) {
             if ($this->{"_{$side}_margin"}) {
-                $margins[$side] = $this->{"_{$side}_margin"};
+                $margins[$side] = $this->{"_{$side}_margin"} === '0mm' ? 0 : $this->{"_{$side}_margin"};
             }
         }
 
@@ -351,7 +367,7 @@ class PuppeteerBrowser extends CApplicationComponent
         // Note that we have to evaluate the subst function so that the footer template is
         // correctly populated using Javascript on the page.
         $footerPage = $this->newPage();
-        $footerPage->goto('file://'.$footer_file);
+        $footerPage->goto('file://' . $footer_file);
         $footerPage->evaluate(JsFunction::createWithBody('subst();'));
         $options['footerTemplate'] = $footerPage->content();
         $footerPage->close();
@@ -391,7 +407,6 @@ class PuppeteerBrowser extends CApplicationComponent
         $page = $this->newPage();
         if ($use_cookies) {
             $page->setCookie(
-                array('name' => 'YII_CSRF_TOKEN', 'value' => $_COOKIE['YII_CSRF_TOKEN'], 'url' => $url),
                 array('name' => ini_get('session.name'), 'value' => $_COOKIE[ini_get('session.name')], 'url' => $url)
             );
         }
@@ -468,7 +483,6 @@ class PuppeteerBrowser extends CApplicationComponent
         $page = $this->newPage();
         if ($use_cookies) {
             $page->setCookie(
-                array('name' => 'YII_CSRF_TOKEN', 'value' => $_COOKIE['YII_CSRF_TOKEN'], 'url' => $url),
                 array('name' => ini_get('session.name'), 'value' => $_COOKIE[ini_get('session.name')], 'url' => $url)
             );
         }
@@ -490,7 +504,7 @@ class PuppeteerBrowser extends CApplicationComponent
     public function findOrCreateDirectory($path)
     {
         if (!file_exists($path)) {
-            if (!@mkdir($path, 0755, true) || !is_dir($path)) {
+            if (!@mkdir($path, 0775, true) || !is_dir($path)) {
                 throw new Exception("Unable to create directory: $path: check permissions.");
             }
         }
@@ -561,7 +575,7 @@ class PuppeteerBrowser extends CApplicationComponent
     {
         return @filesize($path);
     }
-    
+
     public function setCustomTag($tag_name, $value)
     {
         $this->custom_tags[$tag_name] = $value;

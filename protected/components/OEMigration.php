@@ -906,6 +906,30 @@ class OEMigration extends CDbMigration
     }
 
     /**
+     * Returns search index id
+     *
+     * @param string $term
+     * @param null $parent_id
+     * @return int|null
+     * @throws CException
+     */
+    public function getSearchIndexByTerm(string $term, $parent_id = null) :? int
+    {
+        $params[] = $term;
+        if ($parent_id) {
+            $params[] = $parent_id;
+        }
+
+        $id = $this->getDbConnection()->createCommand()
+            ->select('id')
+            ->from('index_search')
+            ->where('primary_term = ?' . ($parent_id ? ' AND parent = ?' : ''))
+            ->queryScalar($params);
+
+        return is_numeric($id) ? $id : null;
+    }
+
+    /**
      * @param $table_name
      * @param bool $warn
      * @return bool
@@ -922,4 +946,15 @@ class OEMigration extends CDbMigration
         }
         return false;
     }
+
+    protected function renameOETable($current_name, $new_name, $versioned=false){
+        $this->renameTable($current_name, $new_name);
+
+        if($versioned && $this->verifyTableVersioned($current_name)){
+            $this->renameTable($current_name.'_version', $new_name.'_version');
+        }
+
+    }
+
+
 }

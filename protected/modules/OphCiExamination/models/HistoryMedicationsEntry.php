@@ -245,16 +245,6 @@ class HistoryMedicationsEntry extends \BaseElement
             }
         }
     }
-
-    public function getPrescriptionLink()
-    {
-        return '/OphDrPrescription/Default/view/' . $this->prescription_item->prescription->event_id;
-    }
-
-    public function getExaminationLink()
-    {
-        return '/OphCiExamination/Default/view/' . $this->element->event_id;
-    }
     
     public function beforeValidate()
     {

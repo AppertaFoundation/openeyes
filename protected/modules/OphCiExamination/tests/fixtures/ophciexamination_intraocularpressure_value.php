@@ -17,19 +17,22 @@
  */
 
 return array(
-    'iop_val1' => array('id' => 1, 'element_id' => 1, 'event_id' => 1, 'eye_id' => 1, 'reading_time' => '16:25:00',
+    'iop_val1' => array('id' => 1, 'element_id' => 1, 'eye_id' => 1, 'reading_time' => '16:25:00',
         'reading_id' => 8, 'instrument_id' => 1,
     ),
-    'iop_val2' => array('id' => 2, 'element_id' => 1, 'event_id' => 1, 'eye_id' => 1, 'reading_time' => '16:26:00',
+    'iop_val2' => array('id' => 2, 'element_id' => 1, 'eye_id' => 1, 'reading_time' => '16:26:00',
         'reading_id' => 3,        'instrument_id' => 7,
     ),
-    'iop_val3' => array('id' => 3, 'element_id' => 1, 'event_id' => 1, 'eye_id' => 1, 'reading_time' => '16:26:00',
+    'iop_val3' => array('id' => 3, 'element_id' => 1, 'eye_id' => 1, 'reading_time' => '16:26:00',
         'reading_id' => 5, 'instrument_id' => 3,
     ),
-    'iop_val4' => array('id' => 4, 'element_id' => 1, 'event_id' => 1, 'eye_id' => 2, 'reading_time' => '16:25:00',
+    'iop_val4' => array('id' => 4, 'element_id' => 1, 'eye_id' => 2, 'reading_time' => '16:25:00',
         'reading_id' => 7, 'instrument_id' => 1,
     ),
-    'iop_val5' => array('id' => 5, 'element_id' => 1, 'event_id' => 1, 'eye_id' => 2, 'reading_time' => '16:26:00',
+    'iop_val5' => array('id' => 5, 'element_id' => 1, 'eye_id' => 2, 'reading_time' => '16:26:00',
+        'reading_id' => 28, 'instrument_id' => 6,
+    ),
+    'iop_val6' => array('id' => 6, 'element_id' => 3, 'eye_id' => 2, 'reading_time' => '16:26:00',
         'reading_id' => 28, 'instrument_id' => 6,
     ),
 );

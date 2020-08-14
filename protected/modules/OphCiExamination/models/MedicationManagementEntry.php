@@ -173,9 +173,18 @@ class MedicationManagementEntry extends \EventMedicationUse
 
     protected function beforeSave()
     {
-        if ($this->prescribe && $this->end_date) {
-            $this->setStopReasonToCourseComplete();
+        if ($this->prescription_item_id) {
+            $end_date = $this->prescriptionItem->stopDateFromDuration();
+            $this->end_date = $end_date ? $end_date->format('Y-m-d') : null;
         }
+        if ($this->end_date) {
+            if ($this->prescribe) {
+                $this->setStopReasonToCourseComplete();
+            }
+        } else {
+            $this->stop_reason_id = null;
+        }
+
         return parent::beforeSave();
     }
 
@@ -186,10 +195,5 @@ class MedicationManagementEntry extends \EventMedicationUse
         bindValues(array(":item_id" => $this->id))->execute();
 
         return parent::beforeDelete();
-    }
-
-    public function getPrescriptionLink()
-    {
-        return ($this->prescriptionItem ? "/OphDrPrescription/default/view/" . $this->prescriptionItem->event_id : "");
     }
 }

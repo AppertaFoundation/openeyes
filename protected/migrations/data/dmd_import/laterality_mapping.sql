@@ -1,3 +1,4 @@
+START TRANSACTION;
 UPDATE medication_route SET has_laterality = 0;
 UPDATE medication_route SET has_laterality = 1 WHERE `term` IN (
   'Eye',
@@ -14,3 +15,4 @@ UPDATE medication_route SET has_laterality = 1 WHERE `term` IN (
   'Intracameral',
   'Subretinal'
 );
+COMMIT;

@@ -1,3 +1,5 @@
+START TRANSACTION;
+
 /*------------------------------------------ FORMS ------------------------------------------------------*/
 INSERT INTO medication_form (`term`,`code`,`unit_term`,`default_dose_unit_term`,`source_type`)
   SELECT DISTINCT
@@ -17,3 +19,5 @@ INSERT INTO medication_route (term,`code`, source_type)
   FROM
     {prefix}lookup_route lr
 ;
+
+COMMIT;

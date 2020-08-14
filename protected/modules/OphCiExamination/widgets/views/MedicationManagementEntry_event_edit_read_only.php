@@ -15,11 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use OEModule\OphCiExamination\models\HistoryMedicationsStopReason; ?>
+use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
+use OEModule\OphCiExamination\models\MedicationManagementEntry; ?>
 
 <?php
 
-/** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $entry */
+/** @var MedicationManagementEntry $entry */
 
 if (isset($entry->start_date)) {
     $start_date = $entry->start_date;
@@ -90,7 +91,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[hidden]" class="js-hidden" value="<?=$entry->hidden ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]"
-                   value="<?= $entry->prescription_item_id ?>"/>
+                   value="<?= $entry->prescription_item_id ?>" class="js-prescription-item-id"/>
             <input type="hidden" name="<?= $field_prefix ?>[locked]" value="<?= $locked ?>" class="js-locked" />
         </td>
         <td class="dose-frequency-route">

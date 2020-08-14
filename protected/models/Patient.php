@@ -16,6 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\components\OphCiExamination_API;
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+
 /**
  * This is the model class for table "patient".
  *
@@ -820,7 +823,7 @@ class Patient extends BaseActiveRecordVersioned
     public function getOphthalmicDiagnosesSummary()
     {
         $principals = array();
-        $api = new \OEModule\OphCiExamination\components\OphCiExamination_API();
+        $api = new OphCiExamination_API();
 
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
@@ -844,10 +847,7 @@ class Patient extends BaseActiveRecordVersioned
             }
         }
 
-        // filter down to unique description to avoid duplicate diagnoses
-        // Note this will not combine L/R into bilateral, or filter a L||R
-        // clashing with bilateral
-        return array_unique(
+        $diagnoses = array_unique(
             array_merge(
                 $principals,
                 array_map(function ($diagnosis) {
@@ -855,6 +855,17 @@ class Patient extends BaseActiveRecordVersioned
                 }, $unique_ophthalmic_diagnoses)
             )
         );
+
+        uasort($diagnoses, function ($a, $b) {
+            $a_date = strtotime(explode('~', $a, 4)[2]);
+            $b_date = strtotime(explode('~', $b, 4)[2]);
+            return $a_date >= $b_date ? -1 : 1;
+        });
+
+        // filter down to unique description to avoid duplicate diagnoses
+        // Note this will not combine L/R into bilateral, or filter a L||R
+        // clashing with bilateral
+        return $diagnoses;
     }
 
     /**
@@ -873,7 +884,7 @@ class Patient extends BaseActiveRecordVersioned
 
     /**
      * @param $medication_id
-     * @return \OEModule\OphCiExamination\models\OphCiExaminationAllergy[]
+     * @return OphCiExaminationAllergy[]
      */
 
     public function getPatientDrugAllergy($medication_id)
@@ -1279,7 +1290,7 @@ class Patient extends BaseActiveRecordVersioned
                 $this->no_allergies_date = null;
                 if (!$this->save()) {
                     throw new Exception('Could not remove no allergy flag: ' . print_r($this->getErrors(), true));
-                };
+                }
             }
             $this->audit('patient', 'remove-noallergydate');
             if ($startTransaction) {
@@ -1386,7 +1397,7 @@ class Patient extends BaseActiveRecordVersioned
                 $this->no_risks_date = null;
                 if (!$this->save()) {
                     throw new Exception('Could not remove no risk flag: ' . print_r($this->getErrors(), true));
-                };
+                }
             }
             $this->audit('patient', 'remove-noriskdate');
             $transaction->commit();
@@ -1883,7 +1894,7 @@ class Patient extends BaseActiveRecordVersioned
             $this->no_family_history_date = null;
             if (!$this->save()) {
                 throw new Exception('Could not remove no family history flag: ' . print_r($this->getErrors(), true));
-            };
+            }
         }
     }
 

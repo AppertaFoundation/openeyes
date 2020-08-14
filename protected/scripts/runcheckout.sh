@@ -43,6 +43,8 @@ changesshid=0
 cloneparams=""
 fetchparams=""
 depth="2000" # by default always shallow clone to this depth (use git fetch --unshallow to revert to full depth after)
+mergebranch=""
+
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()
@@ -106,6 +108,10 @@ do
         ;;
         --master|--m|-m) defaultbranch=master
             ## will use master baranches when the named branch does not exist for a module
+        ;;
+        --merge) #merge an upstream branch after checkout
+            mergebranch=$2
+            shift
         ;;
         --nomigrate|--no-migrate|--n|-n|-nm) fixparams="$fixparams --no-migrate"
             ## nomigrate will prevent database migrations from running automatically at the end of checkout
@@ -196,6 +202,7 @@ if [ $showhelp = 1 ]; then
     echo "  --no-summary   : Do not display a summary of the checked-out modules after "
     echo "                   completion"
     echo "  --depth <int>  : Only clone/fetch to the given depth"
+    echo "  --merge <branch> : Perform a merge of the given upstream branch into the checked-out code"
     echo ""
     exit 1
 fi
@@ -236,8 +243,8 @@ echo "usessh=$usessh" | sudo tee $SCRIPTDIR/git.conf > /dev/null
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400'
 
+# Set fileMode to false, to prevent windows machines removing the execute bit on checkin
 git config --global core.fileMode false 2>/dev/null
-git config core.fileMode false 2>/dev/null
 
 MODULEROOT=$WROOT/protected/modules
 
@@ -349,11 +356,15 @@ for module in ${modules[@]}; do
     if [ $processgit = 1 ]; then
         printf "\e[32m$module: \e[0m"
         git -C $MODGITROOT reset --hard
-        
+        git -C $MODGITROOT config core.fileMode false 2>/dev/null
         # Add depth if specified
         if [[ ! -z $depth ]]; then
 			fetchparams+=" --depth=$depth"
 		fi
+
+        # Make sure the fetch root is correct - for some reason it sometimes get set to a specific
+        # branch (e.g, develop), and then matching to upstream branches will break
+        git -C $MODGITROOT config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
 
         # Attempt to only fetch the necessary branch (for speedup). If that fails then try fetching all
         if ! git -C $MODGITROOT fetch origin $branch:$branch $fetchparams 2>/dev/null; then
@@ -374,11 +385,20 @@ for module in ${modules[@]}; do
         ## fast forward to latest head
         if [ ! "$nopull" = "1" ]; then
             echo "Pulling latest changes: "
-            if ! [ -z $trackbranch ] && ! git config --get branch.$branch.merge >/dev/null 2>&1 ; then 
-                git branch --set-upstream-to=origin/$trackbranch
+            if ! [ -z $trackbranch ] && ! git -C $MODGITROOT config --get branch.$branch.merge >/dev/null 2>&1 ; then 
+                git -C $MODGITROOT branch --set-upstream-to=origin/$trackbranch
             fi
             git -C $MODGITROOT pull
             git -C $MODGITROOT submodule update --init --force
+        fi
+
+        ## Attempt to merge in an upstream branch
+        if [ ! -z $mergebranch ]; then
+            echo "Attempting to merge $mergebranch...."
+            if ! git -C $MODGITROOT merge origin $mergebranch 2>/dev/null; then
+                echo "unable to merge. Will rollback any changes...."
+                git -C $MODGITROOT merge --abort 2>/dev/null
+            fi
         fi
     fi
     

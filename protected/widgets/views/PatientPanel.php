@@ -49,7 +49,7 @@ if ($summary) {
         ?>
     </td>
     <td id="oe-patient-details" class="js-oe-patient <?= $this->list_mode ? '' : 'oe-patient' ?> <?= $deceased ? 'deceased' : '' ?>"
-        data-patient-id="<?= $this->patient->id ?>">
+        data-patient-id="<?= $this->patient->id ?>" style="text-align: left">
         <?php if (!$deceased) { ?>
             <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
             <i class="<?= in_array($controllerID, ['caseSearch','trial','worklist'])?'oe-i warning':'patient-allergies-risks' ?> medium pad js-allergies-risks-btn">

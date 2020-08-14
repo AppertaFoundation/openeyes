@@ -17,8 +17,12 @@
 
 namespace OEModule\OphCiExamination\widgets;
 
+use CClientScript;
+use CHttpException;
+use EventMedicationUse;
 use OEModule\OphCiExamination\models\HistoryMedications as HistoryMedicationsElement;
 use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagementElement;
+use Yii;
 
 /**
  * Class HistoryMedications
@@ -49,18 +53,18 @@ class HistoryMedications extends BaseMedicationWidget
     }
 
     /**
-     * @throws \CHttpException
+     * @throws CHttpException
      */
     public function init()
     {
         parent::init();
 
         // add OpenEyes.UI.RestrictedData js
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager = Yii::app()->getAssetManager();
+        $baseAssetsPath = Yii::getPathOfAlias('application.assets.js');
         $assetManager->publish($baseAssetsPath, true);
 
-        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true) . '/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true) . '/OpenEyes.UI.RestrictData.js', CClientScript::POS_END);
     }
 
     /**
@@ -97,7 +101,7 @@ class HistoryMedications extends BaseMedicationWidget
             /** @var MedicationManagementElement $element*/
             foreach ($element->entries as $entry) {
                 if (!$entry->prescribe) {
-                                /** @var \EventMedicationUse $new_entry */
+                                /** @var EventMedicationUse $new_entry */
                                 $new_entry = clone $entry;
                                 $new_entry->id = null;
                                 $new_entry->setIsNewRecord(true);
@@ -233,20 +237,6 @@ class HistoryMedications extends BaseMedicationWidget
     }
 
     /**
-     * @param $entry
-     * @return string
-     */
-    public function getPrescriptionLink($entry)
-    {
-        return '/OphDrPrescription/Default/view/' . $entry->prescriptionItem->event_id;
-    }
-
-    public function getExaminationLink()
-    {
-        return '/OphCiExamination/Default/view/' . $this->element->event_id;
-    }
-
-    /**
      * @return string
      */
     public function popupList()
@@ -287,13 +277,13 @@ class HistoryMedications extends BaseMedicationWidget
     }
 
     /**
-     * @throws \CHttpException
+     * @throws CHttpException
      */
     protected function initialiseElement()
     {
         if (!$this->element) {
             if (!$this->patient) {
-                throw new \CHttpException('Patient required to initialise ' . static::class . ' with no element.');
+                throw new CHttpException('Patient required to initialise ' . static::class . ' with no element.');
             }
 
             if ($this->mode != self::$EVENT_EDIT_MODE) {

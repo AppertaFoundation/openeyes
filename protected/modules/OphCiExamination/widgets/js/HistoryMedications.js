@@ -44,13 +44,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$table = this.$element.find('.js-entry-table');
     this.$currentMedicationsTable = this.$element.find('.js-entry-table.js-current-medications');
     this.$popup = this.$element.find('#medication-history-popup');
-    this.$noSystemicMedicationsFld = this.$element.find('.' + this.options.modelName + '_no_systemic_medications');
-    this.$noOphthalmicMedicationsFld = this.$element.find('.' + this.options.modelName + '_no_ophthalmic_medications');
+    this.$noSystemicMedicationsFld = $('#no_systemic_medications');
+    this.$noOphthalmicMedicationsFld = $('#no_ophthalmic_medications');
     this.$noSystemicMedicationsWrapper = this.$element.find('.' + this.options.modelName + '_no_systemic_medications_wrapper');
     this.$noOphthalmicMedicationsWrapper = this.$element.find('.' + this.options.modelName + '_no_ophthalmic_medications_wrapper');
 
-    this.$systemicMedicationsItems = $('#systemic_medications_items');
-    this.$ophthalmicMedicationsItems = this.$element.find('#ophthalmic_medications_items');
     this.templateText = this.$element.find('.entry-template').text();
     this.taperTemplateText = this.$element.find('.taper-template').text();
     this.drugsByRisk = {};
@@ -114,6 +112,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 		routeOptionWrapperSelector: '.admin-route-options',
         routeOptionInputSelector: '.laterality-input',
         patientAllergies: [],
+        ophthalmicMedicationIds: [],
         medicationsOptionsTable: '.select-options',
           allAllergies: {},
           classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
@@ -200,7 +199,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     });
 
     controller.$noSystemicMedicationsFld.on('click', function () {
-        if (controller.$noSystemicMedicationsFld.prop('checked')) {
+        let is_checked = controller.$noSystemicMedicationsFld.prop('checked');
+        controller.$noSystemicMedicationsFld.prop('value', is_checked ? 1 : 0);
+        if (is_checked) {
             if (controller.$noOphthalmicMedicationsFld.prop('checked')) {
                 controller.$table.slice(2).hide();
                 controller.$popup.hide();
@@ -208,14 +209,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $(controller.options.medicationsOptionsTable).find('thead th:first-child,tbody tr td:first-child').hide();
         } else {
             controller.$popup.show();
-            controller.$systemicMedicationsItems.show();
             controller.$table.slice(2).show();
             $(controller.options.medicationsOptionsTable).find('thead th:first-child,tbody tr td:first-child').show();
         }
     });
 
       controller.$noOphthalmicMedicationsFld.on('click', function () {
-          if (controller.$noOphthalmicMedicationsFld.prop('checked')) {
+          let is_checked = controller.$noOphthalmicMedicationsFld.prop('checked');
+          controller.$noOphthalmicMedicationsFld.prop('value', is_checked ? 1 : 0);
+          if (is_checked) {
               if (controller.$noSystemicMedicationsFld.prop('checked')) {
                   controller.$table.slice(2).hide();
                   controller.$popup.hide();
@@ -285,16 +287,24 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   HistoryMedicationsController.prototype.hideNoMedications = function() {
-      if (this.$table.find('tbody tr').length > 0) {
-          let no_sys_meds_checked = this.$noSystemicMedicationsFld.prop('checked');
-          let no_oph_meds_checked = this.$noOphthalmicMedicationsFld.prop('checked');
-          if (!no_sys_meds_checked) {
-              this.$noSystemicMedicationsWrapper.hide();
+      let controller = this;
+      if (controller.$table.find('tbody tr').length > 0) {
+          let $rows = controller.$table.find('tbody tr.js-first-row');
+
+          let no_sys_meds_checked = controller.$noSystemicMedicationsFld.prop('checked');
+          let no_oph_meds_checked = controller.$noOphthalmicMedicationsFld.prop('checked');
+
+          let hideSysMed = controller.medicationTypePresentInTable($rows, 'systemic') && !no_sys_meds_checked;
+          let hideOphMed = controller.medicationTypePresentInTable($rows, 'ophthalmic') && !no_oph_meds_checked;
+
+          if (hideSysMed) {
+              controller.$noSystemicMedicationsWrapper.hide();
           }
-          if (!no_oph_meds_checked) {
-              this.$noOphthalmicMedicationsWrapper.hide();
+          if (hideOphMed) {
+              controller.$noOphthalmicMedicationsWrapper.hide();
           }
-          if (no_sys_meds_checked ? !no_oph_meds_checked : no_oph_meds_checked) {
+
+          if (hideSysMed ? !hideOphMed : hideOphMed) {
               $('#no-oph-sys-meds').show();
           } else {
               $('#no-oph-sys-meds').hide();
@@ -309,8 +319,40 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           this.$noSystemicMedicationsWrapper.show();
           $('#no-oph-sys-meds').hide();
       } else {
-          this.hideNoMedications();
+          let $rows = this.$table.find('tbody tr.js-first-row');
+          let showNoOphMed = !this.medicationTypePresentInTable($rows, 'ophthalmic');
+          let showNoSysMed = !this.medicationTypePresentInTable($rows, 'systemic');
+          if (showNoOphMed || showNoSysMed) {
+              if (showNoOphMed) {
+                this.$noOphthalmicMedicationsWrapper.show();
+              }
+              if (showNoSysMed) {
+                  this.$noSystemicMedicationsWrapper.show();
+              }
+
+              if (showNoSysMed ? !showNoOphMed: showNoOphMed) {
+                  $('#no-oph-sys-meds').show();
+              }
+          } else {
+              this.hideNoMedications();
+          }
       }
+  };
+
+  HistoryMedicationsController.prototype.medicationTypePresentInTable = function($rows, type)
+  {
+      let controller = this;
+      let is_present = false;
+      $.each($rows, function () {
+          let medication_id = $(this).find('.medication_id').val();
+          if (controller.options.ophthalmicMedicationIds.includes(medication_id) && type === 'ophthalmic') {
+              is_present =  true;
+          } else if (!controller.options.ophthalmicMedicationIds.includes(medication_id) && type === 'systemic'){
+              is_present =  true;
+          }
+      });
+
+      return is_present;
   };
 
   HistoryMedicationsController.prototype.initialiseRowEventTriggers = function($row, data)

@@ -94,7 +94,7 @@ class TrialType extends BaseActiveRecordVersioned
      */
     public static function getOptions()
     {
-        return CHtml::listData(self::model()->findALl(), 'id', 'name');
+        return CHtml::listData(self::model()->findAll(), 'id', 'name');
     }
 
     /**

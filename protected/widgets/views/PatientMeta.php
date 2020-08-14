@@ -41,7 +41,7 @@ if ($this->controller->id != "patient" && $this->controller->id != 'default') { 
                     <?php endif; ?>
                 </div>
                 <div class="patient-gender">
-                    <em>Gen</em>
+                    <em>Gender</em>
                     <?php echo $this->patient->getGenderString() ?>
                 </div>
                 <div class="patient-<?= $deceased ? 'died' : 'age' ?>">

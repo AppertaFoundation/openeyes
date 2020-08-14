@@ -44,7 +44,7 @@
 
         //Create the element selector content
         const $navPopup = $('<nav />', {class: 'oe-element-selector'});
-        var closeButton = $('<div class="close-icon-btn"><button class="blue hint cols-full"><i class="oe-i remove-circle pro-theme medium-icon"></i></button></div>');
+        var closeButton = $('<div class="close-icon-btn"><button class="blue hint cols-full">Select elements to add or remove from examination - Close when done &nbsp;<i class="oe-i remove-circle pro-theme medium-icon"></i></button></div>');
 
         $navPopup.append($elementPopup);
         $navPopup.append(closeButton);
@@ -72,6 +72,7 @@
 
         closeButton.click(toggleView);
         self.$element.click(toggleView);
+        self.$elementContainer.click(setOffView);
 
         function toggleView(){
             var $manageElement = self.$element;
@@ -84,6 +85,13 @@
                 $manageElement.isOpened = false;
                 $manageElement.removeClass('selected');
             }
+        }
+
+        function setOffView(){
+            var $manageElement = self.$element;
+            $navPopup.hide();
+            $manageElement.isOpened = false;
+            $manageElement.removeClass('selected');
         }
 
         $navPopup.on('click', '.element-list li', function(e) {

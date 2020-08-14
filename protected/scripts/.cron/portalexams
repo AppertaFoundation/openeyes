@@ -1,3 +1,2 @@
-# Run horly to retrieve latest optometrist portal examaination events
-# pulls in environment variables from /etc/profile or /env.sh
-0 * * * *	root	. /env.sh >/dev/null 2>&1 ; . /etc/profile >/dev/null 2>&1 ; [ "${OE_PORTAL_ENABLED^^}" = "TRUE" ] && { bash $WROOT/protected/scripts/portalexams.sh > $WROOT/protected/runtime/portalexams_`date +\%Y\%m\%d\%H\%M\%S`.log 2>&1; } || exit 0
+# Retrieve latest optometrist portal examaination events
+${CRON_PORTALEXAMS_SCH:-0 * * * *}  bash $WROOT/protected/scripts/cronrunner.sh '[ "${OE_PORTAL_ENABLED^^}" = "TRUE" ] && bash $WROOT/protected/scripts/portalexams.sh || echo disabled'
