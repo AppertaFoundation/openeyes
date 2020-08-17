@@ -629,6 +629,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 obj[field] =  elementval;
             }
         });
+        obj['allergy_ids'] = $row.attr("data-allergy-ids");
+
         return obj;
     };
 
@@ -673,6 +675,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         $row.find(".rgroup").val($row.closest("tbody").attr("data-group"));
         $row.find(".js-medication-display").text(data.medication_name);
+        $row.attr('data-allergy-ids', data.allergy_ids);
         $row.find(".js-dose-unit-term").text(data.dose_unit_term);
 
         $row.data("medication", data);
@@ -691,12 +694,33 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
        if($element.length > 0) {
            let allergiesController = $element.data("controller");
+           if (!allergiesController) {
+               allergiesController = new OpenEyes.OphCiExamination.AllergiesController({
+                   element: $element,
+                   allAllergies: controller.options.allAllergies
+               });
+           }
            $.each(allergiesController.getAllergyIds(), function (i, e) {
                merged_allergies[e] = controller.options.allAllergies[e];
            });
        }
 
        return merged_allergies;
+    };
+
+    HistoryMedicationsController.prototype.getDataAllergyIds = function()
+    {
+        let data_allergy_ids = [];
+        $.each(this.$table.find('tbody tr.js-first-row'), function (i, row) {
+            let row_allergy_ids = $(row).data('allergy-ids').toString().split(',');
+            row_allergy_ids.forEach(function (row_allergy_id) {
+                if (!data_allergy_ids.includes(row_allergy_id)) {
+                    data_allergy_ids.push(row_allergy_id);
+                }
+            });
+        });
+
+        return data_allergy_ids;
     };
 
     HistoryMedicationsController.prototype.createAllergiesDialog = function(allergic_drugs)
@@ -903,19 +927,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 match_allergies($(row), allergies);
             }
         });
-
-        /* If there are new allergy matches, trigger an alert */
-
-        if(typeof new_allergy_ids !== "undefined") {
-            let intersection = matched_allergy_ids.filter(x => new_allergy_ids.includes(x));
-
-            if(intersection.length > 0) {
-                let dlg = new OpenEyes.UI.Dialog.Alert({
-                    content: "Allergy warning! Please check entries in Medication Management."
-                });
-                dlg.open();
-            }
-        }
     };
 
     HistoryMedicationsController.prototype.bindController = function(controller, name) {
@@ -947,7 +958,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
         this.updateRowRouteOptions($row, false);
 
-        $row.find(".js-prepended_markup:visible").load("/medicationManagement/getInfoBox?medication_id="+data.medication_id);
+        $.get("/medicationManagement/getInfoBox?medication_id="+data.medication_id, {
+            medication_id: data.medication_id
+        }, function (info_box) {
+            $row.find(".js-prepended_markup:visible").append($(info_box));
+        });
+
         this.disableRemoveButton($row);
 
         return $row;
@@ -1121,7 +1137,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           data.has_dose_unit_term = has_dose_unit_term;
 
           return Mustache.render(
-              this.templateText,
+              template,
               data
           );
       }
@@ -1254,7 +1270,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     prepended_markup: selectedItems[i].prepended_markup,
                     set_ids: selectedItems[i].set_ids,
                     allergy_ids: selectedItems[i].allergy_ids,
-										source_subtype: selectedItems[i].source_subtype
+                    source_subtype: selectedItems[i].source_subtype
                 };
             }
             else {

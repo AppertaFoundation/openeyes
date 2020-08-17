@@ -42,18 +42,17 @@ $stop = isset($entry->stop) ? $entry->stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
 
 $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none";
+
+$entry_allergy_ids = isset($entry->medication_id) ?
+    implode(",", array_map(function ($e) {
+        return $e->id;
+    }, $entry->medication->allergies)) : $allergy_ids;
 ?>
 
     <tr
             data-key="<?=$row_count?>"
             data-event-medication-use-id="<?php echo $entry->id; ?>"
-            data-allergy-ids="<?php if (isset($entry->medication)) {
-                echo implode(',', array_map(function ($e) {
-                    return $e->id;
-                }, $entry->medication->allergies));
-                              } else {
-                                  echo "{{& allergy_ids}}";
-                              }?>"
+            data-allergy-ids="<?php echo $entry_allergy_ids ?>"
             class="divider col-gap js-first-row <?=$field_prefix ?>_row <?= $is_new ? ' new' : ''?><?= $entry->hidden === '1' ? ' hidden' : '' ?>"
     >
 

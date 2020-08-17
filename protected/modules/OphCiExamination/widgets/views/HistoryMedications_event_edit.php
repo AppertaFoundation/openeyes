@@ -317,6 +317,9 @@ foreach ($element->entries as $entry) {
             }
         });
 
+        let allergy_ids = medicationsController.getDataAllergyIds();
+        medicationsController.updateAllergyStatuses(allergy_ids);
+
         $(document).on("click", ".alt-display-trigger", function (e) {
             e.preventDefault();
             $(e.target).prev(".alternative-display").find(".textual-display").trigger("click");
