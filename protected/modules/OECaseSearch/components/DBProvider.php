@@ -74,8 +74,9 @@ class DBProvider extends SearchProvider
      * @param CaseSearchVariable $variable Variable to retrieve data for.
      * @param null|DateTime $start_date Start date
      * @param null|DateTime $end_date End date
-     * @param string $mode CSV display mode. Pass null if the data should not be in CSV format.
+     * @param string|null $mode CSV display mode. Pass null if the data should not be in CSV format.
      * @return array|null The raw variable data for display in plots or CSV files.
+     * @throws CException
      */
     private function getVariableDataInternal($variable, $start_date, $end_date, $mode = null)
     {
