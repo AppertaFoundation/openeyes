@@ -22,21 +22,24 @@ class MedicationMigrateCommand extends PatientLevelMigration
 {
     protected $event_type_cls = 'OphCiExamination';
     // Original table is renamed to this during the module database migration
-    protected static $archived_entry_table = 'archive_medication';
+    protected static $archived_entry_table = 'event_medication_use';
 
     protected static $element_class = 'OEModule\OphCiExamination\models\HistoryMedications';
     protected static $entry_class = 'OEModule\OphCiExamination\models\HistoryMedicationsEntry';
     protected static $entry_attributes = array(
-        'drug_id',
-        'medication_drug_id',
+        'medication_id',
         'dose',
+        'dose_unit_term',
         'route_id',
-        'option_id',
         'frequency_id',
+        'laterality',
         'start_date',
         'end_date',
         'stop_reason_id',
-        'prescription_item_id'
+        'prescription_item_id',
+        'duration_id',
+        'dispense_condition_id',
+        'dispense_location_id',
     );
 
     /**
@@ -58,11 +61,11 @@ class MedicationMigrateCommand extends PatientLevelMigration
     {
         // strip out any entries that don't actually have a medication or drug recorded
         $rows = array_filter($rows, function($row) {
-            return $row['drug_id'] || $row['medication_drug_id'];
+            return $row['medication_id'];
         });
         $cleaned_rows = array();
         foreach ($rows as $row) {
-            if (!$row['drug_id'] && !$row['medication_drug_id']) {
+            if (!$row['medication_id']) {
                 continue;
             }
             if (substr($row['start_date'], 0, 4) === '0000') {
