@@ -87,9 +87,7 @@ EOH;
 
     private function deleteMedication($medication_drug)
     {
-        MedicationAllergyAssignment::model()->find('medication_id = :medication_id', [':medication_id' => $medication_drug->id]);
         MedicationAttributeAssignment::model()->find('medication_id = :medication_id', [':medication_id' => $medication_drug->id]);
-        CommonMedications::model()->find('medication_id = :medication_id', [':medication_id' => $medication_drug->id]);
         MedicationSearchIndex::model()->find('medication_id = :medication_id', [':medication_id' => $medication_drug->id]);
         MedicationSetAutoRuleMedication::model()->find('medication_id = :medication_id', [':medication_id' => $medication_drug->id]);
         MedicationSetItem::model()->find('medication_id = :medication_id', [':medication_id' => $medication_drug->id]);

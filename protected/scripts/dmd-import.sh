@@ -95,6 +95,11 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
+set -e
+set -o pipefail
+
+php $WROOT/protected/yiic prescriptionverification prescriptionbeforemigration
+
 echo -e "\nRunning DM+D import. Using sets spec from $setsimportfile ....\n"
 php $WROOT/protected/yiic importdrugs import
 php $WROOT/protected/yiic importdrugs copytooe
@@ -102,3 +107,5 @@ php $WROOT/protected/yiic importdrugs bindimportedmedications
 php $WROOT/protected/yiic medicationsetimport --filename=$setsimportfile
 php $WROOT/protected/yiic populateautomedicationsets
 php $WROOT/protected/yiic oldmedicationanddrugdeletion
+
+php $WROOT/protected/yiic prescriptionverification prescriptionaftermigration

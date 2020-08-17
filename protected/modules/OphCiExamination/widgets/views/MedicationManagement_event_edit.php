@@ -198,6 +198,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                 'row_type' => 'new',
                 'is_last' => false,
                 'is_new' => true,
+                'allergy_ids' => '{{allergy_ids}}',
                 'patient' => $this->patient,
                 'locked' => '{{locked}}{{^locked}}0{{/locked}}',
                 'source_subtype' => '{{source_subtype}}',
@@ -423,7 +424,8 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                         }
                     }
                 });
-
+                let allergy_ids = window.MMController.getDataAllergyIds();
+                window.MMController.updateAllergyStatuses(allergy_ids);
                 window.HMController.setDoNotSaveEntries(true);
                 //this.onAddedEntry();
             }

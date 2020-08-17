@@ -26,6 +26,7 @@
  *
  * The followings are the available model relations:
  * @property ArchiveMedication $medication
+ * @deprecated Since v4.0 - See MedicationSet
  */
 class CommonMedications extends BaseActiveRecordVersioned
 {

@@ -440,6 +440,14 @@ if [ ! $nobanner = "1" ]; then
     sudo rm /tmp/openeyes-mysql-setbanner.sql
 fi
 
+
+if [ ! -z "$dmdimport" ]; then
+    if ! $SCRIPTDIR/dmd-import.sh; then
+        echo  "DMD IMPORT FAILD. Aborting..."
+        exit 1
+    fi
+fi
+
 # Run local post-migaration demo scripts
 if [ $nopost = "0" ]; then
     
@@ -529,8 +537,6 @@ if [ $dwservrunning = 1 ]; then
     echo "Restarting dicom-file-watcher..."
     sudo service dicom-file-watcher start
 fi
-
-[ ! -z "$dmdimport" ] && $SCRIPTDIR/dmd-import.sh || :
 
 printf "\e[42m\e[97m  RESET COMPLETE  \e[0m \n"
 echo ""

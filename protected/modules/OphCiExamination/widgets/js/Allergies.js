@@ -110,9 +110,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     AllergiesController.prototype.notifyMedicationManagementController = function(new_allergy_ids) {
-        var $element = $("section[data-element-type-class=\"OEModule_OphCiExamination_models_MedicationManagement\"]");
+        var $element = $("#OEModule_OphCiExamination_models_MedicationManagement_element");
         if($element.length > 0) {
-            var medicationManagementController = $element.data("controller");
+            let medicationManagementController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
+                element: $element,
+                allAllergies: this.options.allAllergies
+            });
             medicationManagementController.updateAllergyStatuses(new_allergy_ids);
         }
     };
@@ -206,7 +209,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.getAllergyIds = function ()
     {
         var allergy_ids = [];
-        $.each(this.$element.find(".js-allergy-entry-allergy-id"), function (i, e) {
+        $.each(this.$element.find('input[name*="[allergy_id]"]'), function (i, e) {
             allergy_ids.push($(e).val());
         });
 
