@@ -14,6 +14,10 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphCiExamination\widgets\HistoryMedications;
+use OEModule\OphCiExamination\widgets\PastSurgery;
+
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
@@ -145,7 +149,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                         <td> CVI Status: <?= $patient->getCviSummary()[0]; ?> </td>
                         <td>
                             <small class="fade"><span
-                                        class="oe-date"><?= $patient->getCviSummary()[1] && $patient->getCviSummary()[1] !== '0000-00-00' ? \Helper::convertDate2HTML($patient->getCviSummary()[1]) : 'N/A' ?></span>
+                                        class="oe-date"><?= $patient->getCviSummary()[1] && $patient->getCviSummary()[1] !== '0000-00-00' ? Helper::convertDate2HTML($patient->getCviSummary()[1]) : 'N/A' ?></span>
                             </small>
                         </td>
                     <?php } else { ?>
@@ -173,10 +177,10 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                             <a href="<?php echo $event_path . $event->id ?>"
                                data-id="<?php echo $event->id ?>"><?php echo $event->getEventName() ?></a>
                         </td>
-                        <td><?= $event->user->title . " " . $event->user->first_name . " " . $event->user->last_name ?></td>
+                        <td><?= $event->usermodified->title . " " . $event->usermodified->first_name . " " . $event->usermodified->last_name ?></td>
                         <td>
                             <small class="fade oe-date">
-                                <?php if ($event->created_date !== $event->last_modified_date || $event->created_date !== $event->event_date) {
+                                <?php if ($event->created_date !== $event->last_modified_date) {
                                     echo 'Updated: '; ?>
                                     <span class="oe-date">
                                         <?= $event->NHSDateAsHTML('last_modified_date'); ?>
@@ -242,7 +246,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                 <header class="element-header"><h3 class="element-title">Eye Procedures</h3></header>
                 <div class="element-data full-width">
                     <div class="data-value">
-                        <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
+                        <?php $this->widget(PastSurgery::class, array(
                             'patient' => $this->patient,
                             'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
                         )); ?>
@@ -253,7 +257,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                 <header class="element-header"><h3 class="element-title">Eye Medications</h3></header>
                 <div class="element-data full-width">
                     <div class="data-value">
-                        <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class, array(
+                        <?php $this->widget(HistoryMedications::class, array(
                             'patient' => $this->patient,
                             'mode' => BaseEventElementWidget::$PATIENT_LANDING_PAGE_MODE,
                         )); ?>
