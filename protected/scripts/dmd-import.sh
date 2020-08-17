@@ -95,6 +95,9 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
+set -e
+set -o pipefail
+
 php $WROOT/protected/yiic prescriptionverification prescriptionbeforemigration
 
 echo -e "\nRunning DM+D import. Using sets spec from $setsimportfile ....\n"

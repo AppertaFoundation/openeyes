@@ -76,11 +76,6 @@ JOIN tmp_medication_match tmm
   ON msarm.medication_id = tmm.legacy_id
 SET msarm.medication_id = tmm.dmd_id;
 
--- replace any allergy assignments of the old to the new
-UPDATE medication_allergy_assignment maa
-JOIN tmp_medication_match tmp ON maa.medication_id = tmp.legacy_id
-SET maa.medication_id = tmp.dmd_id;
-
 -- Combine any medication atrributes from old with the new
 -- duplicates should be dropped automatically becasue of a unique index + the IGNORE INTO
 INSERT IGNORE INTO medication_attribute_assignment (medication_id,medication_attribute_option_id)

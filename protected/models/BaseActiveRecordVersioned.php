@@ -60,7 +60,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
     public function getTableSchema()
     {
         if ($this->fetch_from_version) {
-            return $this->getDbConnection()->getSchema()->getTable($this->tableName().'_version');
+            return $this->getDbConnection()->getSchema()->getTable($this->tableName().'_version', true);
         }
 
         return parent::getTableSchema();
@@ -104,7 +104,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
     public function getVersionTableSchema()
     {
-        return Yii::app()->db->getSchema()->getTable($this->tableName().'_version');
+        return $this->getDbConnection()->getSchema()->getTable($this->tableName().'_version', true);
     }
 
     public function getCommandBuilder()
