@@ -395,7 +395,7 @@ for module in ${modules[@]}; do
         ## Attempt to merge in an upstream branch
         if [ ! -z $mergebranch ]; then
             echo "Attempting to merge $mergebranch...."
-            if ! git -C $MODGITROOT merge origin $mergebranch 2>/dev/null; then
+            if ! git -C $MODGITROOT pull origin $mergebranch 2>/dev/null; then
                 echo "unable to merge. Will rollback any changes...."
                 git -C $MODGITROOT merge --abort 2>/dev/null
             fi
