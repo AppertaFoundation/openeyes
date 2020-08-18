@@ -8,7 +8,11 @@ class m200813_050735_group_IOP_exam_elements extends OEMigration
         //if the columns already exist, do nothing
         if (!isset($this->dbConnection->schema->getTable('element_type')->columns['group_title'])) {
             // Add the group type column for labelling element groups without using the parent's name
-            $this->addOEColumn('element_type', 'group_title', 'VARCHAR(255) AFTER `tile_size`', true);
+            $this->addColumn('element_type', 'group_title', 'VARCHAR(255) AFTER `tile_size`');
+        }
+        // Check the version table separately - as in one DB, the column existed in version, but not the main table!
+        if (!isset($this->dbConnection->schema->getTable('element_type')->columns['group_title'])) {
+            $this->addColumn('element_type_version', 'group_title', 'VARCHAR(255) AFTER `tile_size`');
         }
 
         $IOPGroup = $this->dbConnection->createCommand('SELECT id FROM element_group WHERE name = "Intraocular Pressure"')->queryScalar();
