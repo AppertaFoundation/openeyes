@@ -112,7 +112,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202007081253',
+            'time' => '2020081811459',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -692,7 +692,7 @@ return array(
         'exclude_admin_structure_param_list' => array(
             //            'Worklist',
         ),
-        'oe_version' => '4.0rc2',
+        'oe_version' => '4.0rc3',
         // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
         'gp_label' => 'GP',
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
