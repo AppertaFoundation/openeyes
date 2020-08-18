@@ -136,4 +136,10 @@ class Element_OphCiExamination_History extends \BaseEventTypeElement
     {
         return true;
     }
+
+    public function afterFind()
+    {
+        $this->description = \CHtml::decode($this->description);
+        parent::afterFind();
+    }
 }
