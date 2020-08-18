@@ -54,7 +54,7 @@ return [
     'params' => [
 
         'pasapi' => [
-            'enabled' => (getenv("OE_PASAPI_ENABLE") && trim(strtolower(getenv("OE_PASAPI_ENABLE")))) == "false" ? false : true,
+            'enabled' => trim(strtolower(getenv("OE_PASAPI_ENABLE"))) == "false" ? false : true,
             'url' => getenv("OE_PASAPI_URL") ?: 'http://localhost:4200',
             'curl_timeout' => 10, //sec
 
