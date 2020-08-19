@@ -1893,7 +1893,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->event->lock();
 
         $this->getPDFPrintSuffix();
-        if(!$module_name){
+        if (!$module_name) {
             $module_name = $this->module->name;
         }
         if (!$this->event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
@@ -2583,7 +2583,7 @@ class BaseEventTypeController extends BaseModuleController
         $path = $this->event->getImagePath($filename, $extension);
 
         if (!file_exists(dirname($path))) {
-            if(!is_dir(dirname($path)) && !file_exists(dirname($path))){
+            if (!is_dir(dirname($path)) && !file_exists(dirname($path))) {
                 mkdir(dirname($path), 0775, true);
             }
         }

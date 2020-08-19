@@ -575,7 +575,7 @@ class DefaultController extends BaseEventTypeController
 
     public function getPdfPath($event, $file_name = null)
     {
-        if(!$file_name){
+        if (!$file_name) {
             $file_name = 'event_'.$this->pdf_print_suffix. '.pdf';
         }
         return $event->imageDirectory.'/'.$file_name;
@@ -745,7 +745,8 @@ class DefaultController extends BaseEventTypeController
      * @param $firm_id
      * @throws Exception
      */
-    public function actionGetInternalReferralOutputType($subspecialty_id, $firm_id) {
+    public function actionGetInternalReferralOutputType($subspecialty_id, $firm_id)
+    {
         $output_type = null;
         // Both the subspecialty and firm is selected
         if ($subspecialty_id !== '' && $firm_id !== '') {
@@ -798,7 +799,8 @@ class DefaultController extends BaseEventTypeController
      *
      * @param $id Event Id
      */
-    public function actionGetDraftPrintRecipients($id) {
+    public function actionGetDraftPrintRecipients($id)
+    {
         $return = false;
         $documentOutput = DocumentOutput::model()->with(
             array(
@@ -899,26 +901,26 @@ class DefaultController extends BaseEventTypeController
         if (!$event = Event::model()->findByPk($id)) {
             throw new Exception("Event not found: $id");
         }
-            try {
-                $this->initActionView();
-                $this->removeEventImages();
-                $pdf_path = $this->getPdfPath($event, "event_{$event->id}.pdf");
-                if(!file_exists($pdf_path)){
-                    if(!is_dir($event->imageDirectory)){
-                        mkdir($event->imageDirectory, 0775, true);
-                    }
-                    $pdf_path = $this->generatePDF($event, true);
+        try {
+            $this->initActionView();
+            $this->removeEventImages();
+            $pdf_path = $this->getPdfPath($event, "event_{$event->id}.pdf");
+            if (!file_exists($pdf_path)) {
+                if (!is_dir($event->imageDirectory)) {
+                    mkdir($event->imageDirectory, 0775, true);
                 }
-                $this->createPdfPreviewImages($pdf_path);
-
-                if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
-                    @unlink($pdf_path);
-                    @rmdir($event->imageDirectory);
-                }
-            } catch (Exception $ex) {
-                $this->saveEventImage('FAILED', ['message' => (string)$ex]);
-                throw $ex;
+                $pdf_path = $this->generatePDF($event, true);
             }
+            $this->createPdfPreviewImages($pdf_path);
+
+            if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
+                @unlink($pdf_path);
+                @rmdir($event->imageDirectory);
+            }
+        } catch (Exception $ex) {
+            $this->saveEventImage('FAILED', ['message' => (string)$ex]);
+            throw $ex;
+        }
     }
 
     /**
@@ -1219,7 +1221,8 @@ class DefaultController extends BaseEventTypeController
         return $errors;
     }
 
-    private function generatePDF($event, $savefile = false){
+    private function generatePDF($event, $savefile = false)
+    {
         $cookies = Yii::app()->request->cookies;
         $cookies['savePrint'] = new CHttpCookie('savePrint', $event->id, [
             'expire' => strtotime('+20 seconds')
@@ -1292,11 +1295,10 @@ class DefaultController extends BaseEventTypeController
             if (count($attachments)>0) {
                 foreach ($attachments as $attachment) {
                     $this->pdf_print_suffix = '';
-                    if($attached_event = Event::model()->findByPk($attachment['associated_event_id'])){
+                    if ($attached_event = Event::model()->findByPk($attachment['associated_event_id'])) {
                         $attachment_route = $this->setPDFprintData($attached_event->id, false, true, $attached_event->eventType->class_name);
 
                         $attachment_path = $attached_event->imageDirectory . '/event_' . $attachment_route . '.pdf';
-                        
                     }
                     $this->addPDFToOutput($attachment_path);
                     @unlink($attachment_path);
@@ -1317,7 +1319,7 @@ class DefaultController extends BaseEventTypeController
 
         $pdf_path = $event->imageDirectory . '/event_' . $event->id . '.pdf';
 
-        if($savefile){
+        if ($savefile) {
             $this->pdf_output->Output('F', $pdf_path);
         } else {
             $this->pdf_output->Output('I');
