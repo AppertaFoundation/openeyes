@@ -358,14 +358,9 @@ $(document).ready(function () {
         var event_button = $(this);
         var event_form = event_button.attr('form');
         $('#ElementLetter_draft').val(0);
-
-        // ajax call to create php cookie
-        $.get(baseUrl + '/OphCoCorrespondence/Default/savePrint?event_id=' + OE_event_id, function () {
-            // we need to know which button was clicked in ElementLetter.php, and the button doesn't get posted outside of the form
-            $('#' + event_form).append($('<input>', {type: 'hidden', name: 'saveprint', value: '1'}));
-            disableButtons();
-            $('#' + event_form).submit();
-        });
+        $('#' + event_form).append($('<input>', {type: 'hidden', name: 'saveprint', value: '1'}));
+        disableButtons();
+        $('#' + event_form).submit();
     });
 
     $('#et_savedraft, #et_savedraft_footer').click(function (e) {
@@ -795,46 +790,57 @@ function OphCoCorrespondence_do_print(all) {
 
 function OphCoCorrespondence_addAttachments(selectedItems) {
     if (selectedItems.length) {
-        disableButtons();
+        var table = $('#correspondence_attachments_table').find('tbody');
         for (let key in selectedItems) {
-            $.ajax({
-                'type': 'POST',
-                'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
-                'data': {'YII_CSRF_TOKEN': YII_CSRF_TOKEN, id: selectedItems[key].id, 'patient_id': OE_patient_id},
-                'success': function (response) {
-                    if (response.success == 1) {
-                        let $table = $('#correspondence_attachments_table').find('tbody');
+            // selectedItems[key]['label'] format: Event_type - Event_date
+            // attachment_info format: [Event_type, Event_date]
+            var attachment_info = selectedItems[key]['label'].split(' - ');
+            
+            var tr = document.createElement('tr');
+            
+            // create td elements for the tr
+            var attachment_type_td = document.createElement('td');
+            var attachment_title_td = document.createElement('td');
+            var attachment_date_td = document.createElement('td');
+            var trash_icon_td = document.createElement('td');
 
-                        let $data_id = parseInt($table.children().length);
-                        let $content = $(response.content);
-                        const title = $content.find('.attachments_display_title').val();
+            // create child element for the td
+            var trash_icon = document.createElement('i');
+            var attachment_type_hidden_input = document.createElement('input');
+            var attachment_title_input = document.createElement('input');
 
-                        $table.append($content);
-                        $content.attr('data-id', $data_id);
-                        $content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id + ']');
-                        $content.find('.attachments_display_title').attr('name', 'attachments_display_title[' + $data_id + ']');
+            tr.dataset.id = key;
 
-                        $.ajax({
-                            'type': 'GET',
-                            'url': baseUrl + '/' + response.module + '/Default/savePDFprint/' + $content.find('.attachments_event_id').val() + '?ajax=1&auto_print=0&pdf_documents=1&attachment_print_title=' + title,
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader('X-Requested-With', 'pdfprint');
-                            },
-                            'success': function (response) {
-                                if (response.success == 1) {
-                                    $hidden = '<input type="hidden" name="file_id[' + $data_id + ']" value="' + response.file_id + '" />';
-                                    $content.append($hidden);
-                                }
-                            },
-                            'complete': function () {
-                                enableButtons();
-                            }
-                        });
+            // setup attachments_event_id
+            attachment_type_td.innerText = attachment_info[0];
+            attachment_type_hidden_input.setAttribute('type', 'hidden');
+            attachment_type_hidden_input.setAttribute('name', 'attachments_event_id[]');
+            attachment_type_hidden_input.className = 'attachments_event_id'
+            attachment_type_hidden_input.setAttribute('value', selectedItems[key]['id']);
+            attachment_type_td.appendChild(attachment_type_hidden_input);
 
-                        enableButtons();
-                    }
-                }
-            });
+            // setup attachments_display_title
+            attachment_title_input.setAttribute('type', 'text');
+            attachment_title_input.className = 'attachments_display_title';
+            attachment_title_input.setAttribute('name', 'attachments_display_title[]');
+            attachment_title_input.setAttribute('value', attachment_info[0]);
+            attachment_title_td.appendChild(attachment_title_input);
+
+            // setup event
+            attachment_date_td.innerText = attachment_info[1];
+
+            // setup trash icon
+            trash_icon.className = 'oe-i trash';
+            trash_icon_td.appendChild(trash_icon);
+            
+            // append the tds to the tr
+            tr.appendChild(attachment_type_td);
+            tr.appendChild(attachment_title_td);
+            tr.appendChild(attachment_date_td);
+            tr.appendChild(trash_icon_td);
+            
+            // append the tr to table
+            table.append(tr);
         }
     }
 }
