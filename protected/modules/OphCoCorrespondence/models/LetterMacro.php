@@ -143,7 +143,7 @@ class LetterMacro extends BaseActiveRecordVersioned
         switch ($this->type) {
             case 'site':
                 $this->firm_id = null;
-                $this->subspecialty = null;
+                $this->subspecialty_id = null;
                 break;
             case 'subspecialty':
                 $this->firm_id = null;
