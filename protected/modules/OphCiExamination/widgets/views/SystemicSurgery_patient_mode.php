@@ -21,7 +21,7 @@
     </colgroup>
     <tbody>
     <?php if ((!$operations || sizeof($operations) == 0) && !$element->no_systemicsurgery_date ) { ?>
-        <div class="nil-recorded">Nil recorded.</div>
+        <div class="nil-recorded">Nil recorded</div>
     <?php } elseif ($element->no_systemicsurgery_date) { ?>
         <div class="nil-recorded">Patient has had no previous systemic surgery</div>
     <?php } else {

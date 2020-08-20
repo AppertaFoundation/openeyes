@@ -22,7 +22,7 @@
     </colgroup>
     <tbody>
     <?php if ((!$operations || sizeof($operations)==0) && !$element->no_pastsurgery_date ) { ?>
-      <div class="nil-recorded">Nil recorded.</div>
+      <div class="nil-recorded">Nil recorded</div>
     <?php } elseif ($element->no_pastsurgery_date) { ?>
         <div class="nil-recorded">Patient has had no previous eye surgery or laser treatment</div>
     <?php } else {
