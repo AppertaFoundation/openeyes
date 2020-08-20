@@ -1,6 +1,6 @@
 <?php
 
-class m200820_040231_update_search_index_for_observations_temperature extends OEMigration
+class m200820_062342_update_search_index_for_observations_temperature extends OEMigration
 {
     public function safeUp()
     {
