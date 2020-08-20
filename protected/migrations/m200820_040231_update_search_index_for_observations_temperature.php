@@ -2,8 +2,8 @@
 
 class m200820_040231_update_search_index_for_observations_temperature extends OEMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $examination_id = $this->getIdOfEventTypeByClassName('OphCiExamination');
         $examination_observations = $this->getSearchIndexByTerm('Observations');
         $this->insert('index_search', array(
@@ -13,11 +13,10 @@ class m200820_040231_update_search_index_for_observations_temperature extends OE
             'open_element_class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Observations',
             'goto_id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_temperature',
         ));
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->delete('index_search', 'primary_term = ?', ['Temperature']);
-	}
-
+    }
 }
