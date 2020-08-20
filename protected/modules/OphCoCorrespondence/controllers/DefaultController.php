@@ -1204,7 +1204,7 @@ class DefaultController extends BaseEventTypeController
                     }
                 }
 
-                if ($target['attributes']['contact_type'] === 'OTHER') {
+                if ($target['attributes']['contact_type'] === 'OTHER' && isset($target['DocumentOutput'])) {
                     // If the recipient is OTHER and the email is selected as delivery method, then check if the
                     // email address is entered.
                     foreach ($target['DocumentOutput'] as $document_output) {
