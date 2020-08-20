@@ -1878,7 +1878,7 @@ class BaseEventTypeController extends BaseModuleController
      * @throws CHttpException
      * @throws Exception
      */
-    public function setPDFprintData($id, $inject_autoprint_js, $print_footer = true)
+    public function setPDFprintData($id, $inject_autoprint_js, $print_footer = true, $module_name = null)
     {
         if (!isset($id)) {
             throw new CHttpException(400, 'No ID provided');
@@ -1893,10 +1893,12 @@ class BaseEventTypeController extends BaseModuleController
         $this->event->lock();
 
         $this->getPDFPrintSuffix();
-
+        if (!$module_name) {
+            $module_name = $this->module->name;
+        }
         if (!$this->event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
             // We use localhost without any port info because Puppeteer is running locally.
-            $url = "http://localhost/{$this->module->name}/{$this->id}/print/{$this->event->id}{$this->print_args}";
+            $url = "http://localhost/$module_name/{$this->id}/print/{$this->event->id}{$this->print_args}";
             $this->renderAndSavePDFFromHtml($url, $inject_autoprint_js, $print_footer);
         }
 
@@ -2581,7 +2583,9 @@ class BaseEventTypeController extends BaseModuleController
         $path = $this->event->getImagePath($filename, $extension);
 
         if (!file_exists(dirname($path))) {
-            mkdir(dirname($path), 0775, true);
+            if (!is_dir(dirname($path)) && !file_exists(dirname($path))) {
+                mkdir(dirname($path), 0775, true);
+            }
         }
 
         return $path;
@@ -2661,13 +2665,13 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function createPdfPreviewImages($pdf_path, $eye = null, $attachment_data = null, $document_number = null)
     {
-            $attachment_data_id = null;
+        $attachment_data_id = null;
         if ($attachment_data !== null) {
             $attachment_data_id = $attachment_data->id;
         }
         $pdf_imagick = new Imagick();
         if ($attachment_data == null) {
-                    $pdf_imagick->readImage($pdf_path);
+            $pdf_imagick->readImage($pdf_path);
         } else {
             $pdf_imagick->readImageBlob($attachment_data->blob_data);
         }
@@ -2727,6 +2731,8 @@ class BaseEventTypeController extends BaseModuleController
         // Sometimes the PDf has a transparent background, which should be replaced with white
         $this->whiteOutImageImagickBackground($imagickPage);
 
+        // in case some other process removed the file or directory
+        $pagePreviewPath = $this->getPreviewImagePath(['page' => $page, 'eye' => $eye, 'document_number' => $document_number]);
         $imagickPage->writeImage($pagePreviewPath);
         $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye_id' => $eye, 'document_number' => $document_number, 'attachment_data_id' => $attachment_data_id]);
 

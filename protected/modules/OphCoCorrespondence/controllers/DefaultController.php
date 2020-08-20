@@ -34,7 +34,6 @@ class DefaultController extends BaseEventTypeController
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
         'printCopy' => self::ACTION_TYPE_PRINT,
         'getInitMethodDataById' => self::ACTION_TYPE_FORM,
-        'savePrint'    => self::ACTION_TYPE_PRINT,
         'sendEmail' => self::ACTION_TYPE_FORM,
         'getContactEmailAddress' => self::ACTION_TYPE_FORM,
         'printForRecipient' => self::ACTION_TYPE_PRINT,
@@ -567,112 +566,19 @@ class DefaultController extends BaseEventTypeController
      * @return bool
      * @throws Exception
      */
-    public function actionPDFPrint($id, $returnContent = true)
+    public function actionPDFPrint($id)
     {
-        $letter = ElementLetter::model()->find('event_id=?', array($id));
-
         $this->printInit($id);
         $this->layout = '//layouts/print';
-
-        if (!$event = Event::model()->findByPk($id)) {
-            throw new Exception("Event not found: $id");
-        }
-
-        $recipient = Yii::app()->request->getParam('recipient');
-        $auto_print = Yii::app()->request->getParam('auto_print', true);
-        $is_view = Yii::app()->request->getParam('is_view', false);
-        $inject_autoprint_js = $auto_print === '0' ? false : $auto_print;
-
-        $document_target_id = Yii::app()->request->getParam('document_target_id', false);
-
-        $print_outputs = $letter->getOutputByType('Print');
-
-        if (Yii::app()->request->getQuery('all', false)) {
-            $this->pdf_print_suffix = 'all';
-        }
-        if (Yii::app()->user->getState('correspondece_element_letter_saved', false)) {
-            $this->pdf_print_suffix = 'all';
-        }
-
-        /**
-         * In other modules pdf_print_documents used to let WKHtmlToPDF to know how many documents we have
-         * like, if we print a document that has 3 pages, 2 times (means 6 pages)
-         * we set the pdf_print_documents to 2 so the page number can be calculated correctly
-         * But here in Correspondence WKHtmlToPDF called separately for each recipients(then PDF_JavaScript merged them to one)
-         * therefore pdf_print_documents will be always 1
-         */
-        $this->pdf_print_documents = 1;
-
-        // This action gets called internally in the PDF generation process, we do not want
-        // to change the status in this case nor the case where the PDF is loaded in the view
-        // as neither are riven by the user printing the document.
-        if ($print_outputs && Yii::app()->request->getUrlReferrer() !== null && !$is_view) {
-            $withPrint = isset(\Yii::app()->params['docman_with_print']) && \Yii::app()->params['docman_with_print'];
-            foreach ($print_outputs as $output) {
-                $output->output_status = $withPrint && $output->printIsUnique() ? 'PENDING' : 'COMPLETE';
-                $output->save();
-            }
-        }
-
-        // render 1 recipient's letter + attachments at once...
-        // we need the letter as PDF
-        $attachments = $letter->getAllAttachments();
-
-        if ($document_target_id) {
-            $recipients = $this->getRecipients($id, true, $document_target_id);
-        } else {
-            $recipients = $this->getRecipients($id, $is_view);
-        }
-
-        // check if printing is necessary
-        if (count($recipients) === 0) {
-            return true;
-        }
-
-        $this->pdf_output = new PDF_JavaScript();
-
-        foreach ($recipients as $target_id => $recipient) {
-            $recipient_query = rawurlencode($recipient);
-            // We use localhost without any port info because Puppeteer is running locally.
-            $html_letter = "http://localhost/{$this->getModule()->name}/{$this->id}/printForRecipient/{$id}?recipient_address={$recipient_query}&target_id={$target_id}";
-            $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
-            if (!isset($_GET['html']) || !$_GET['html']) {
-                $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . '.pdf');
-            }
-
-            // add attachments for each
-            if (count($attachments)>0) {
-                foreach ($attachments as $attachment) {
-                    $this->addPDFToOutput($attachment['path']);
-                }
-            }
-        }
-
-        if ($inject_autoprint_js) {
-            $script = 'print(true);';
-            $this->pdf_output->IncludeJS($script);
-        }
-
-
-        $pdf_path = $this->getPdfPath($event);
-
-        $this->pdf_output->Output('F', $pdf_path);
-
-        $event->unlock();
-        if (!isset($_GET['html']) || !$_GET['html']) {
-            if ($returnContent) {
-                header('Content-Type: application/pdf');
-                header('Content-Length: ' . filesize($pdf_path));
-                readfile($pdf_path);
-            }
-        }
-
-        //@unlink($pdf_path);
+        $this->generatePDF($this->event);
     }
 
-    public function getPdfPath($event)
+    public function getPdfPath($event, $file_name = null)
     {
-        return $event->imageDirectory.'/event_'.$this->pdf_print_suffix. '.pdf';
+        if (!$file_name) {
+            $file_name = 'event_'.$this->pdf_print_suffix. '.pdf';
+        }
+        return $event->imageDirectory.'/'.$file_name;
     }
 
     /**
@@ -839,7 +745,8 @@ class DefaultController extends BaseEventTypeController
      * @param $firm_id
      * @throws Exception
      */
-    public function actionGetInternalReferralOutputType($subspecialty_id, $firm_id) {
+    public function actionGetInternalReferralOutputType($subspecialty_id, $firm_id)
+    {
         $output_type = null;
         // Both the subspecialty and firm is selected
         if ($subspecialty_id !== '' && $firm_id !== '') {
@@ -892,7 +799,8 @@ class DefaultController extends BaseEventTypeController
      *
      * @param $id Event Id
      */
-    public function actionGetDraftPrintRecipients($id) {
+    public function actionGetDraftPrintRecipients($id)
+    {
         $return = false;
         $documentOutput = DocumentOutput::model()->with(
             array(
@@ -990,16 +898,24 @@ class DefaultController extends BaseEventTypeController
         // mimic print request so that the print style sheet is applied
         $assetManager = Yii::app()->assetManager;
         $assetManager->isPrintRequest = true;
+        if (!$event = Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
         try {
             $this->initActionView();
             $this->removeEventImages();
-
-            $this->actionPDFPrint($id, false);
-            $pdf_path = $this->getPdfPath($this->event);
+            $pdf_path = $this->getPdfPath($event, "event_{$event->id}.pdf");
+            if (!file_exists($pdf_path)) {
+                if (!is_dir($event->imageDirectory)) {
+                    mkdir($event->imageDirectory, 0775, true);
+                }
+                $pdf_path = $this->generatePDF($event, true);
+            }
             $this->createPdfPreviewImages($pdf_path);
 
             if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
                 @unlink($pdf_path);
+                @rmdir($event->imageDirectory);
             }
         } catch (Exception $ex) {
             $this->saveEventImage('FAILED', ['message' => (string)$ex]);
@@ -1135,22 +1051,6 @@ class DefaultController extends BaseEventTypeController
     {
         $emailManager = new CorrespondenceEmailManager();
         $emailManager->actionSendEmail($event_id);
-    }
-
-    public function actionSavePrint($event_id)
-    {
-        $cookies = Yii::app()->request->cookies;
-        $cookies['savePrint'] = new CHttpCookie('savePrint', $event_id, [
-            'expire' => strtotime('+20 seconds')
-        ]);
-        $cookies['email'] = new CHttpCookie('email', $event_id, [
-            'expire' => strtotime('+20 seconds')
-        ]);
-        if ($cookies->contains('savePrint')) {
-            echo 'ok';
-        } else {
-            echo 'failed to created print cookie';
-        }
     }
 
     /**
@@ -1319,5 +1219,112 @@ class DefaultController extends BaseEventTypeController
         }
 
         return $errors;
+    }
+
+    private function generatePDF($event, $savefile = false)
+    {
+        $cookies = Yii::app()->request->cookies;
+        $cookies['savePrint'] = new CHttpCookie('savePrint', $event->id, [
+            'expire' => strtotime('+20 seconds')
+        ]);
+        $cookies['email'] = new CHttpCookie('email', $event->id, [
+            'expire' => strtotime('+20 seconds')
+        ]);
+        $letter = ElementLetter::model()->find('event_id=?', array($event->id));
+
+        $recipient = Yii::app()->request->getParam('recipient');
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $is_view = Yii::app()->request->getParam('is_view', false);
+        $inject_autoprint_js = $auto_print === '0' ? false : $auto_print;
+
+        $document_target_id = Yii::app()->request->getParam('document_target_id', false);
+
+        $print_outputs = $letter->getOutputByType('Print');
+
+        /**
+         * In other modules pdf_print_documents used to let WKHtmlToPDF to know how many documents we have
+         * like, if we print a document that has 3 pages, 2 times (means 6 pages)
+         * we set the pdf_print_documents to 2 so the page number can be calculated correctly
+         * But here in Correspondence WKHtmlToPDF called separately for each recipients(then PDF_JavaScript merged them to one)
+         * therefore pdf_print_documents will be always 1
+         */
+        $this->pdf_print_documents = 1;
+
+        // This action gets called internally in the PDF generation process, we do not want
+        // to change the status in this case nor the case where the PDF is loaded in the view
+        // as neither are riven by the user printing the document.
+        if ($print_outputs && Yii::app()->request->getUrlReferrer() !== null && !$is_view) {
+            $withPrint = isset(\Yii::app()->params['docman_with_print']) && \Yii::app()->params['docman_with_print'];
+            foreach ($print_outputs as $output) {
+                $output->output_status = $withPrint && $output->printIsUnique() ? 'PENDING' : 'COMPLETE';
+                $output->save();
+            }
+        }
+        // render 1 recipient's letter + attachments at once...
+        // we need the letter as PDF
+        $attachments = $letter->getAllAttachments();
+        if ($document_target_id) {
+            $recipients = $this->getRecipients($event->id, true, $document_target_id);
+        } else {
+            $recipients = $this->getRecipients($event->id, $is_view);
+        }
+
+        // check if printing is necessary
+        if (count($recipients) === 0) {
+            return true;
+        }
+
+        $this->pdf_output = new PDF_JavaScript();
+        foreach ($recipients as $target_id => $recipient) {
+            if (Yii::app()->request->getQuery('all', false)) {
+                $this->pdf_print_suffix = 'all';
+            }
+            if (Yii::app()->user->getState('correspondece_element_letter_saved', false)) {
+                $this->pdf_print_suffix = 'all';
+            }
+            $recipient_query = rawurlencode($recipient);
+            
+            // We use localhost without any port info because Puppeteer is running locally.
+            $html_letter = "http://localhost/{$this->getModule()->name}/{$this->id}/printForRecipient/{$event->id}?recipient_address={$recipient_query}&target_id={$target_id}";
+            $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
+
+            $recipient_pdf_path = $event->imageDirectory . '/event_' . $pdf_letter . '.pdf';
+            $this->addPDFToOutput($recipient_pdf_path);
+
+            // add attachments for each
+            if (count($attachments)>0) {
+                foreach ($attachments as $attachment) {
+                    $this->pdf_print_suffix = '';
+                    if ($attached_event = Event::model()->findByPk($attachment['associated_event_id'])) {
+                        $attachment_route = $this->setPDFprintData($attached_event->id, false, true, $attached_event->eventType->class_name);
+
+                        $attachment_path = $attached_event->imageDirectory . '/event_' . $attachment_route . '.pdf';
+                    }
+                    $this->addPDFToOutput($attachment_path);
+                    @unlink($attachment_path);
+                    @rmdir($attached_event->imageDirectory);
+                }
+            }
+
+            // because the setPDFprintData() in attachment part will modify $this->event
+            // if there are multiple recipients, the second recipient will not be printed
+            $this->event = $event;
+            @unlink($recipient_pdf_path);
+        }
+
+        if ($inject_autoprint_js) {
+            $script = 'print(true);';
+            $this->pdf_output->IncludeJS($script);
+        }
+
+        $pdf_path = $event->imageDirectory . '/event_' . $event->id . '.pdf';
+
+        if ($savefile) {
+            $this->pdf_output->Output('F', $pdf_path);
+        } else {
+            $this->pdf_output->Output('I');
+        }
+
+        return $pdf_path;
     }
 }
