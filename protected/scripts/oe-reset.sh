@@ -346,18 +346,23 @@ fi
 # First checks OE_INSTITUTION_CODE environment variable. Otherwise uses value from common.php
 [ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=institution_code. => \!empty\(trim\(getenv\(\'OE_INSTITUTION_CODE\'\)\)\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
 if [ ! -z $icode ]; then
-    
-    echo "
+	checkicodecmd="SELECT id FROM institution WHERE remote_id = '$icode';"
 
-  setting institution to $icode
+	icodeexists=$(eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$checkicodecmd\"")
+	if [ ! -n "$icodeexists" ]; then
 
-    "
-    
-    echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" >/tmp/openeyes-mysql-institute.sql
-    
-    eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql"
-    
-    rm /tmp/openeyes-mysql-institute.sql
+		echo "
+
+		setting institution to $icode
+
+		"
+
+		echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" > /tmp/openeyes-mysql-institute.sql
+
+		eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql"
+
+		rm /tmp/openeyes-mysql-institute.sql
+	fi
 fi
 
 # Run pre-migration demo scripts
