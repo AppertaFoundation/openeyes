@@ -1171,7 +1171,7 @@ class DefaultController extends BaseEventTypeController
     public function actionGetContactEmailAddress($contact_id)
     {
         $contact = Contact::model()->findByPk($contact_id);
-        echo isset($contact->address) ? $contact->address->email : '';
+        echo isset($contact) ? $contact->email : '';
     }
 
     /**

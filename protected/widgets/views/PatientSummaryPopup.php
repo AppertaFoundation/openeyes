@@ -93,7 +93,7 @@
                     <?php endif; ?>
                     <tr>
                         <td>Email</td>
-                        <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
+                        <td><?= $this->patient->contact->email ?? 'Unknown' ?></td>
                     </tr>
                     <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
                         <tr>
@@ -279,8 +279,8 @@
                             <td>
                                 <?php
                                     // Show Email address
-                                if ($this->patient->gp && $this->patient->gp->contact->address) {
-                                    echo $this->patient->gp->contact->address->email;
+                                if ($this->patient->gp && $this->patient->gp->contact) {
+                                    echo $this->patient->gp->contact->email;
                                 } else {
                                     echo 'Unknown';
                                 } ?>

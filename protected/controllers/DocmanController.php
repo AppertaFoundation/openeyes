@@ -170,7 +170,7 @@ class DocmanController extends BaseController
             }
             $contact_name = $contact->getFullName();
             $contact_nickname = $contact->nick_name;
-            $email = isset(Contact::model()->findByPk($contact_id)->address) ? Contact::model()->findByPk($contact_id)->address->email : null;
+            $email = isset($contact) ? $contact->email : null;
         }
 
         if ($address) {

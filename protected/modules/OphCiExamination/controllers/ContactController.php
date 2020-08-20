@@ -72,7 +72,7 @@ class ContactController extends \BaseController
                 " " . ($contact->address ? $contact->address->getLetterLine() : ""),
             'id' => $contact['id'],
             'name' => $contact->getFullName(),
-            'email' => $contact->address ? $contact->address->email : "",
+            'email' => $contact->email,
             'phone' => $contact->primary_phone,
             'address' => $contact->address ? $contact->address->getLetterLine() : "",
             'contact_label' => $contact->label ? $contact->label->name : "",
@@ -108,12 +108,12 @@ class ContactController extends \BaseController
                 $contact->primary_phone = $data->primary_phone;
                 $contact->contact_label_id = $data->contact_label_id;
                 $contact->active = 1;
+                $contact->email = $data->email;
 
                 $address = new \Address();
                 $address->address1 = $data->address1;
                 $address->address2 = $data->address2;
                 $address->city = $data->city;
-                $address->email = $data->email;
                 $address->postcode = $data->postcode;
                 $address->country_id = $data->country;
                 $address->address_type_id = 3;
