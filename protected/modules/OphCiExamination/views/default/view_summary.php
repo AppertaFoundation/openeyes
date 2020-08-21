@@ -16,6 +16,17 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
 $managementElement = $this->event->getElementByClass(models\Element_OphCiExamination_Management::class) ?: new models\Element_OphCiExamination_Management();
 $followupElement = $this->event->getElementByClass(models\Element_OphCiExamination_ClinicOutcome::class) ?: new models\Element_OphCiExamination_ClinicOutcome();
 
+
+$medicationsWidget = $this->createWidget(
+    $medicationsElement->widgetClass,
+    array(
+        'patient' => $this->patient,
+        'element' => $medicationsElement,
+        'mode' => $this->getElementWidgetMode($action),
+    )
+);
+$medicationsWidget->setElementFromDefaults();
+$medicationsElement->assortEntries();
 if ($historyElement) {
     $this->renderElement($historyElement, $action, $form, $data);
 }
