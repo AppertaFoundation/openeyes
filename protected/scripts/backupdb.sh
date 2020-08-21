@@ -100,6 +100,9 @@ do :
   fi
 done
 
+# make sure the directory exists
+mkdir -p dirname $outfile 2>/dev/null
+
 SIZE_BYTES=$(mysql -h ${host} -u ${username} ${dbpassword} --port=${port} --skip-column-names <<< "SELECT ROUND(SUM(data_length) * 0.92) AS "size_bytes" FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${DATABASE}';")
 echo "Data size = approx $(expr $SIZE_BYTES / 1024 / 1024) mb"
 echo "Dumping structure..."
