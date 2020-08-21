@@ -396,17 +396,6 @@
                   'patient' => $this->patient,
                   'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
                 )); ?>
-                <table class="risks alert-box patient">
-                    <tbody>
-                    <?php $diabetes_disorders = $this->patient->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET);
-                    foreach ($diabetes_disorders as $disorder) { ?>
-                            <tr>
-                                <td><?= $disorder->term ?></td>
-                                <td></td>
-                            </tr>
-                    <?php } ?>
-                    </tbody>
-                </table>
             </div><!-- .data-group -->
         </div><!-- .quick-overview-content -->
     </div>
