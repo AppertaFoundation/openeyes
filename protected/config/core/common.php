@@ -334,7 +334,7 @@ return array(
         'ldap_admin_dn' => getenv('OE_LDAP_ADMIN_DN') ?: 'CN=openeyes,CN=Users,dc=example,dc=com',
         'ldap_password' => getenv('OE_LDAP_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_LDAP_PASSWORD")) ? rtrim(file_get_contents("/run/secrets/OE_LDAP_PASSWORD")) : ''),
         'ldap_dn' => getenv('OE_LDAP_DN') ?: 'CN=Users,dc=example,dc=com',
-        'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
+        'ldap_method' => trim(getenv("OE_LDAP_METHOD")) ?: 'native', // use 'zend' for the Zend_Ldap vendor module
         // set to integer value of 2 or 3 to force specific ldap protocol
         'ldap_protocol_version' => 3,
         // alters the prefix used when binding to a user in native ldap connections
@@ -342,8 +342,8 @@ return array(
         'ldap_native_timeout' => 3,
         'ldap_info_retries' => 3,
         'ldap_info_retry_delay' => 1,
-        'ldap_update_name' => false,
-        'ldap_update_email' => true,
+        'ldap_update_name' => strtolower(getenv("OE_LDAP_UPDATE_NAME")) == "true" ? true : false,
+        'ldap_update_email' => strtolower(getenv("OE_LDAP_UPDATE_EMAIL")) == "false" ? false : true,
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
         //'watermark' => '',
         'google_analytics_account' => '',
