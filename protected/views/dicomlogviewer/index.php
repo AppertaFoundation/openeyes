@@ -73,7 +73,7 @@
                 $('.spinner').show();
             },
             'success': function (data) {
-                let files = JSON.parse(data);
+                let files = data;
 
                 $('#previous_site_id').val($('#site_id').val());
                 $('#previous_firm_id').val($('#firm_id').val());
