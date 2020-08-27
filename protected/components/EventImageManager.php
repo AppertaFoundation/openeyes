@@ -20,7 +20,7 @@
 
 class EventImageManager
 {
-    public function actionGenerateImage($event_id){
+    public static function actionGenerateImage($event_id){
         $commandPath = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
         $runner = new CConsoleCommandRunner();
         $runner->addCommands($commandPath);

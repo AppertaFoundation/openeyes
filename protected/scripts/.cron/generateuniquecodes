@@ -1,3 +1,2 @@
-# Run weekly at 05:55 to pull latest ODS / HSCIC GP and practice data
-# pulls in environment variables from /etc/profile or /env.sh
-55 5 * * 7	root	. /env.sh >/dev/null 2>&1 ; . /etc/profile >/dev/null 2>&1 ; bash $WROOT/protected/scripts/generateuniquecodes.sh > $WROOT/protected/runtime/generateuniquecode_`date +\%Y\%m\%d\%H\%M\%S`.log 2>&1
+# Run weekly to pull latest ODS / HSCIC GP and practice data
+${CRON_GENERTAEUNIQUECODES_SCH:-55 5 * * 7}  bash $WROOT/protected/scripts/cronrunner.sh 'bash $WROOT/protected/scripts/generateuniquecodes.sh'

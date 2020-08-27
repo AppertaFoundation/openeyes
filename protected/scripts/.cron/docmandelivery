@@ -1,3 +1,2 @@
-# Run every day at 09:00 to send the day's correspondence to docman
-# pulls in environment variables from /etc/profile or /env.sh
-00 21 * * *	root	. /env.sh >/dev/null 2>&1 ; . /etc/profile >/dev/null 2>&1 ; [ ! -z ${OE_DOCMAN_EXPORT_DIRECTORY} ] && { bash $WROOT/protected/scripts/docmandelivery.sh > $WROOT/protected/runtime/docmandelivery_`date +\%Y\%m\%d\%H\%M\%S`.log 2>&1;} || exit 0
+# Run to send the day's correspondence to docman
+${CRON_DOCMANDELIVERY_SCH:-00 21 * * *}   bash $WROOT/protected/scripts/cronrunner.sh '[ ! -z "${OE_DOCMAN_EXPORT_DIRECTORY}" ] && $WROOT/protected/scripts/docmandelivery.sh || echo disabled'

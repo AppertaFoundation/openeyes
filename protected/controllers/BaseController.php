@@ -418,7 +418,9 @@ class BaseController extends Controller
                     continue;
                 }
                 $pattern = '/<(?:(?!\b' . implode('\b|\b', $allowable_tags) . '\b).)*?>/';
-                $value = preg_replace($pattern, '', $value);
+                $value = preg_replace_callback($pattern,  function ($matches) {
+                    return CHtml::encode($matches[0]);
+                }, $value);
                 $input[$key] = $value;
             }
         }
