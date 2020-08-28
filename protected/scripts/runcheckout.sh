@@ -403,10 +403,10 @@ for module in ${modules[@]}; do
                     git -C $MODGITROOT merge --abort 2>/dev/null
                     mergefailed=1
                 else
-                    printf "\n\e[42m\e[97m  SUCESSFULLY MERGED WITH origin/$mergebranch  \e[0m \n"
+                    printf "\n\e[42m\e[97m  SUCESSFULLY MERGED $module WITH origin/$mergebranch  \e[0m \n"
                 fi
             else
-                printf "\n\e[43;30m No branch origin/$mergebranch exists on remote - Skipping merge \e[0m\n\n"
+                printf "\n\e[43;30m No branch origin/$mergebranch exists on remote for $module - Skipping merge \e[0m\n\n"
             fi
         fi
     fi
