@@ -54,7 +54,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'CornealLaceration', 'MarginalKeratitis', 'MetallicForeignBody', 'Pingueculum', 'Pterygium' , 'CapsularTensionRing'),
 
         array('BandKeratopathy', 'SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'ConjunctivalHaem', 'PosteriorSynechia',
-            'KeraticPrecipitates', 'CircumcornealInjection', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
+            'KeraticPrecipitates', 'CellsAndFlare', 'CircumcornealInjection', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
             'Patch', 'SidePort', 'RK', 'CornealGraft', 'EndothelialKeratoplasty', 'CornealSuture', 'ContinuousCornealSuture', 'CornealThinning', 'PeripheralVascularisation',
             'Freehand', 'FreehandCopyForOE'
         ),

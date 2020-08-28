@@ -35,7 +35,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       Hyphaema: 'HyphaemaCrossSection',
       EndothelialKeratoplasty: 'EndothelialKeratoplastyCrossSection',
       CornealThinning: 'CornealThinningCrossSection',
-      KeraticPrecipitates: 'KeraticPrecipitatesCrossSection'
+      CellsAndFlare: 'CellsAndFlareCrossSection'
     }
   };
 
@@ -67,7 +67,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
    */
   AnteriorSegmentController.prototype.setSecondary = function (drawing) {
     this.secondaryDrawing = drawing;
-    this.secondaryDrawing.registerForNotifications(this, 'secondaryDrawingNotification', ['ready', 'parameterChanged', 'doodlesLoaded', 'doodleSelected']);
+    this.secondaryDrawing.registerForNotifications(this, 'secondaryDrawingNotification', ['ready', 'parameterChanged', 'doodlesLoaded', 'doodleSelected', 'doodleAdded']);
   };
 
   /**
@@ -530,6 +530,12 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       case 'doodleSelected':
         if (this.primaryDrawingReady())
           this.primaryDrawing.deselectDoodles();
+
+        if (msgArray.selectedDoodle.className === 'CellsAndFlareCrossSection') {
+          let cellsAndFlareDoodle = this.primaryDrawing.firstDoodleOfClass('CellsAndFlare');
+          // ugly, but the mousedown event on the side canvas needs to finish, before deselecting it
+          setTimeout(() => this.primaryDrawing.setDoodleAsSelected(cellsAndFlareDoodle.id), 100);
+        }
         break;
       case 'parameterChanged':
         if (this.secondaryDoodlesLoaded) {
@@ -561,6 +567,17 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
               }
             }
           }
+        }
+        break;
+      case 'doodleAdded':
+        let newDoodle = msgArray['object'];
+        // Adjust position in relation to other doodles (array defined in the doodle subclass)
+        for (let i = 0; i < newDoodle.inFrontOfClassArray.length; i++) {
+          newDoodle.drawing.moveNextTo(newDoodle, newDoodle.inFrontOfClassArray[i], true);
+        }
+
+        for (let i = 0; i < newDoodle.behindClassArray.length; i++) {
+          newDoodle.drawing.moveNextTo(newDoodle, newDoodle.behindClassArray[i], false);
         }
         break;
     }
