@@ -590,7 +590,7 @@ class ElementLetter extends BaseEventTypeElement
         if (!$this->clinic_date) {
             $this->clinic_date = null;
         }
-
+        $this->attachAssociatedEvent();
         return parent::beforeSave();
     }
 
@@ -626,57 +626,6 @@ class ElementLetter extends BaseEventTypeElement
 
         if (isset($_POST['saveprint'])) {
             Yii::app()->user->setState('correspondece_element_letter_saved', true);
-        }
-
-        if (Yii::app()->getController()->getAction()->id === 'create' || Yii::app()->getController()->getAction()->id === 'update') {
-            EventAssociatedContent::model()->deleteAll(
-                '`parent_event_id` = :parent_event_id',
-                array(':parent_event_id' => $this->event->id)
-            );
-        }
-
-        if (isset($_POST['attachments_event_id'])) {
-            $attachments_last_event_id = Yii::app()->request->getPost('attachments_event_id');
-            $attachments_system_hidden = Yii::app()->request->getPost('attachments_system_hidden');
-            $attachments_id = Yii::app()->request->getPost('attachments_id');
-            $attachments_print_appended = Yii::app()->request->getPost('attachments_print_appended');
-            $attachments_short_code = Yii::app()->request->getPost('attachments_short_code');
-            $attachments_protected_file_id = Yii::app()->request->getPost('file_id');
-            $attachments_display_title = Yii::app()->request->getPost('attachments_display_title');
-
-            if (isset($attachments_last_event_id)) {
-                $order = 1;
-                foreach ($attachments_last_event_id as $key => $last_event) {
-                    $eventAssociatedContent = new EventAssociatedContent();
-                    $eventAssociatedContent->parent_event_id = $this->event->id;
-
-                    if (isset($attachments_id[$key])) {
-                        $eventAssociatedContent->init_associated_content_id = $attachments_id[$key];
-                    }
-
-                    $eventAssociatedContent->is_system_hidden = $attachments_system_hidden[$key] ?? 0;
-
-                    $eventAssociatedContent->is_print_appended = $attachments_print_appended[$key] ?? 0;
-
-                    if (isset($attachments_short_code[$key])) {
-                        $eventAssociatedContent->short_code  = $attachments_short_code[$key];
-                    } else {
-                        $eventAssociatedContent->short_code = $this->generateShortcodeByEventId($attachments_last_event_id[$key]);
-                    }
-
-                    $eventAssociatedContent->associated_protected_file_id = $attachments_protected_file_id[$key] ?? null;
-
-                    $eventAssociatedContent->display_title = $attachments_display_title[$key] ?? null;
-
-                    $eventAssociatedContent->association_storage  = 'EVENT';
-                    $eventAssociatedContent->associated_event_id  = $last_event;
-                    $eventAssociatedContent->display_order   = $order;
-
-                    $eventAssociatedContent->save();
-
-                    $order++;
-                }
-            }
         }
 
         return parent::afterSave();
@@ -973,12 +922,8 @@ class ElementLetter extends BaseEventTypeElement
 
         if ($associated_content) {
             foreach ($associated_content as $key => $ac) {
-                if ($ac->associated_protected_file_id) {
-                    $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
-                    file_put_contents($file->getPath(), $file->file_content);
-                    $pdf_files[$key]['path'] = $file->getPath();
-                    $pdf_files[$key]['name'] = $file->name;
-                    $pdf_files[$key]['mime'] = $file->mimetype;
+                if ($ac->associated_event_id) {
+                    $pdf_files[$key]['associated_event_id'] = $ac->associated_event_id;
                 }
             }
         }
@@ -1138,5 +1083,54 @@ class ElementLetter extends BaseEventTypeElement
             $email = $contextEmail;
         }
         return $email;
+    }
+
+    public function attachAssociatedEvent(){
+        if (Yii::app()->getController()->getAction()->id === 'create' || Yii::app()->getController()->getAction()->id === 'update') {
+            EventAssociatedContent::model()->deleteAll(
+                '`parent_event_id` = :parent_event_id',
+                array(':parent_event_id' => $this->event->id)
+            );
+        }
+        if (isset($_POST['attachments_event_id'])) {
+            $attachments_last_event_id = Yii::app()->request->getPost('attachments_event_id');
+            $attachments_system_hidden = Yii::app()->request->getPost('attachments_system_hidden');
+            $attachments_id = Yii::app()->request->getPost('attachments_id');
+            $attachments_print_appended = Yii::app()->request->getPost('attachments_print_appended');
+            $attachments_short_code = Yii::app()->request->getPost('attachments_short_code');
+            $attachments_protected_file_id = Yii::app()->request->getPost('file_id');
+            $attachments_display_title = Yii::app()->request->getPost('attachments_display_title');
+
+            if (isset($attachments_last_event_id)) {
+                $order = 1;
+                foreach ($attachments_last_event_id as $key => $last_event) {
+                    $eventAssociatedContent = new EventAssociatedContent();
+                    $eventAssociatedContent->parent_event_id = $this->event->id;
+
+                    if (isset($attachments_id[$key])) {
+                        $eventAssociatedContent->init_associated_content_id = $attachments_id[$key];
+                    }
+
+                    $eventAssociatedContent->is_system_hidden = $attachments_system_hidden[$key] ?? 0;
+
+                    $eventAssociatedContent->is_print_appended = $attachments_print_appended[$key] ?? 0;
+
+                    if (isset($attachments_short_code[$key])) {
+                        $eventAssociatedContent->short_code  = $attachments_short_code[$key];
+                    } else {
+                        $eventAssociatedContent->short_code = $this->generateShortcodeByEventId($attachments_last_event_id[$key]);
+                    }
+
+                    $eventAssociatedContent->display_title = $attachments_display_title[$key] ?? null;
+                    $eventAssociatedContent->association_storage  = 'EVENT';
+                    $eventAssociatedContent->associated_event_id  = $last_event;
+                    $eventAssociatedContent->display_order   = $order;
+
+                    $eventAssociatedContent->save();
+
+                    $order++;
+                }
+            }
+        }
     }
 }

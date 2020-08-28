@@ -493,7 +493,11 @@ class Patient extends BaseActiveRecordVersioned
         } elseif (strlen($this->nhs_num) == $nhs_num_length) {
             $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
-            $criteria->compare('hos_num', $this->hos_num, false);
+            if (strlen($this->nhs_num) === (int)$nhs_num_length) {
+                $criteria->compare('nhs_num', $this->nhs_num, false);
+            } else {
+                $criteria->compare('hos_num', $this->hos_num, false);
+            }
         }
 
         $criteria->compare('t.deleted', 0);
@@ -1213,7 +1217,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function getEmail()
     {
-        return $this->contact->address ? $this->contact->address->email : '';
+        return $this->contact ? $this->contact->email : '';
     }
 
     /**

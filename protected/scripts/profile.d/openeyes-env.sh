@@ -64,6 +64,13 @@
 
 ## Set the endpoint for an LDAP server. Also automatically changes authentication from 'BASIC' to 'LDAP'
 # export OE_LDAP_SERVER='ldap.example.com'
+# export OE_LDAP_PORT='389'
+# export OE_LDAP_ADMIN_DN=""
+# export OE_LDAP_PASSWORD=""
+# export OE_LDAP_DN=""
+# export OE_LDAP_METHOD
+# export OE_LDAP_UPDATE_NAME
+# export OE_LDAP_UPDATE_EMAIL
 
 ## Set password format restrictions
 # export PW_RES_MIN_LEN=8

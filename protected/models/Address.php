@@ -31,7 +31,6 @@
  * @property string $postcode
  * @property string $county
  * @property int $country_id
- * @property string $email
  *
  * The following are the available model relations:
  * @property Country $country
@@ -65,12 +64,9 @@ class Address extends BaseActiveRecordVersioned
             array('address1, address2, city, county', 'length', 'max' => 255),
             array('address1, city, postcode', 'required','on' => array('manage_practice')),
             array('postcode', 'length', 'max' => 10),
-            array('email', 'length', 'max' => 255),
-            array('email','email'),
             array('country_id, address_type_id, date_start, date_end', 'safe'),
             array('contact_id, country_id', 'required'),
-            array('email', 'required', 'on'=>array('self_register')),
-            array('id, address1, address2, city, postcode, county, email, country_id, address_type_id, date_start, date_end', 'safe', 'on' => 'search'),
+            array('id, address1, address2, city, postcode, county, country_id, address_type_id, date_start, date_end', 'safe', 'on' => 'search'),
             array('city', 'cityValidator'),
         );
     }
@@ -100,7 +96,6 @@ class Address extends BaseActiveRecordVersioned
             'postcode' => 'Postcode',
             'county' => Yii::app()->params['county_label'],
             'country_id' => 'Country',
-            'email' => 'Email',
             'address_type_id' => 'Address Type',
         );
     }
@@ -204,7 +199,6 @@ class Address extends BaseActiveRecordVersioned
         $criteria->compare('postcode', $this->postcode, true);
         $criteria->compare('county', $this->county, true);
         $criteria->compare('country_id', $this->country_id, true);
-        $criteria->compare('email', $this->email, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
@@ -213,10 +207,6 @@ class Address extends BaseActiveRecordVersioned
 
     public function beforeSave()
     {
-        if (!$this->email) {
-            $this->email = null;
-        }
-
         if (parent::beforeSave()) {
             if ($this->isNewRecord && !$this->address_type_id) {
                 // make correspondence the default address type

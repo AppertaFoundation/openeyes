@@ -1626,7 +1626,7 @@ class OphCiExamination_API extends \BaseAPI
                     if ($index > 0) {
                         $follow_up_text .= ' AND ';
                     }
-                    $follow_up_text .= $entry->followup_quantity . ' ' . $entry->followup_period;
+                    $follow_up_text .= $entry->followup_quantity . ' ' . $entry->getPeriodLabel();
                     $index++;
                 }
             }
@@ -2679,7 +2679,7 @@ class OphCiExamination_API extends \BaseAPI
                 }
                 $str .= '<td style="text-align:left">' . $entry->status->name;
                 if ($entry->status->followup) {
-                    $str .= " in {$entry->followup_quantity} {$entry->followup_period} ";
+                    $str .= " in {$entry->followup_quantity} {$entry->getPeriodLabel()} ";
 
                     if (!empty($entry->followup_comments)) {
                         $str .= "({$entry->followup_comments})";

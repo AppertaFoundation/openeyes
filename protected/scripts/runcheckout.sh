@@ -393,11 +393,20 @@ for module in ${modules[@]}; do
         fi
 
         ## Attempt to merge in an upstream branch
+        mergefailed=0
         if [ ! -z $mergebranch ]; then
-            echo "Attempting to merge $mergebranch...."
-            if ! git -C $MODGITROOT merge origin $mergebranch 2>/dev/null; then
-                echo "unable to merge. Will rollback any changes...."
-                git -C $MODGITROOT merge --abort 2>/dev/null
+            exists_in_remote=$(git -C $MODGITROOT ls-remote --heads origin ${mergebranch})
+                if [[ -n ${exists_in_remote} ]]; then
+                echo "Attempting to merge $mergebranch...."
+                if ! git -C $MODGITROOT pull origin $mergebranch --no-edit 2>/dev/null; then
+                    printf "\n\n\e[5;41;1mUNABLE TO MERGE WITH origin/$mergebranch - ROLLING BACK... \e[0m\n\n"
+                    git -C $MODGITROOT merge --abort 2>/dev/null
+                    mergefailed=1
+                else
+                    printf "\n\e[42m\e[97m  SUCESSFULLY MERGED $module WITH origin/$mergebranch  \e[0m \n"
+                fi
+            else
+                printf "\n\e[43;30m No branch origin/$mergebranch exists on remote for $module - Skipping merge \e[0m\n\n"
             fi
         fi
     fi
@@ -418,6 +427,11 @@ fi
 if [ ! "$nosummary" = "1" ]; then
     bash $SCRIPTDIR/oe-which.sh
     printf "\e[42m\e[97m  CHECKOUT COMPLETE  \e[0m \n"
+fi
+
+# Show final warning if a merge failed (only applicable when the --merge flag is set)
+if [ $mergefailed -eq 1 ]; then
+    printf "\n\e[5;41;1m  ONE OR MORE MODULES FAILED TO MERGE WITH orgin/$mergebranch - Check the logs above  \e[0m\n"
 fi
 
 echo ""

@@ -2151,8 +2151,8 @@ class DefaultController extends \BaseEventTypeController
         $agrees_to_insecure_email_correspondence = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']['agrees_to_insecure_email_correspondence'];
         if ($agrees_to_insecure_email_correspondence === '1') {
             // check if the email is empty
-            $address = Yii::app()->request->getPost('Address', null);
-            if ($address['email'] === '') {
+            $contactEmail = Yii::app()->request->getPost('Contact', null);
+            if ($contactEmail['email'] === '') {
                 $errors[$et_name][] = 'Please enter an email address.';
             }
         }
@@ -2165,14 +2165,15 @@ class DefaultController extends \BaseEventTypeController
      * @param $data
      * @throws \CException
      */
-    protected function saveContactEmailAddressForCommunicationPreferences($data) {
+    protected function saveContactEmailAddressForCommunicationPreferences($data)
+    {
         if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']) &&
             $data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']['agrees_to_insecure_email_correspondence'] === '1') {
-            $postAddress = Yii::app()->request->getPost('Address');
-            $address = \Address::model()->findByPk($postAddress['id']);
-            $address->email = $postAddress['email'];
-            if (!$address->save()) {
-                throw new \CException('Cannot save address');
+            $contactEmail = Yii::app()->request->getPost('Contact');
+            $Contact = \Contact::model()->findByPk($contactEmail['id']);
+            $Contact->email = $contactEmail['email'];
+            if (!$Contact->update(["email"])) {
+                throw new \CException('Cannot save contact');
             }
         }
     }

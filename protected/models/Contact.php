@@ -31,6 +31,7 @@
  * @property string $comment
  * @property string $national_code
  * @property int $active
+ * @property string $email
  *
  *
  * The following are the available model relations:
@@ -80,10 +81,13 @@ class Contact extends BaseActiveRecordVersioned
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message'=>'Please select a Role.'),
             array('primary_phone', 'requiredValidator'),
-            array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
+            array('id, nick_name, primary_phone, title, first_name, last_name, qualifications, email', 'safe', 'on' => 'search'),
             array('first_name', 'required', 'on' => array('manage_practice')),
             array('first_name', 'length', 'max' => 300, 'on' => 'manage_practice'),
             array('primary_phone','OEPhoneNumberValidator'),
+            array('email', 'length', 'max' => 255),
+            array('email','email'),
+            array('email', 'required', 'on'=>array('self_register')),
         );
     }
 
@@ -146,6 +150,7 @@ class Contact extends BaseActiveRecordVersioned
             'last_name' => 'Last name',
             'qualifications' => 'Qualifications',
             'contact_label_id' => 'Label',
+            'email' => 'Email',
         );
     }
 
@@ -163,6 +168,7 @@ class Contact extends BaseActiveRecordVersioned
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('nick_name', $this->nick_name, true);
+        $criteria->compare('email', $this->email, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

@@ -38,8 +38,6 @@ class AddressTest extends ActiveRecordTestCase
             array(array('city' => 'flitchley'), 3, array('address1', 'address2', 'address3')),
             array(array('postcode' => 'ec1v'), 3, array('address1', 'address2', 'address3')),
             array(array('county' => 'london'), 3, array('address1', 'address2', 'address3')),
-            array(array('email' => 'bleakley1'), 1, array('address1')),
-            array(array('email' => 'foobar'), 0, array()),
         );
     }
 

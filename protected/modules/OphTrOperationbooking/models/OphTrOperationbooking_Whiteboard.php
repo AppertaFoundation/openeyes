@@ -111,7 +111,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->formula = 'Unknown';
         $this->axis = 0.0;
 
-        if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
+        if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, EYE::BOTH])) {
                 $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
                 $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
                 $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
@@ -342,6 +342,51 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         return 'Not checked';
     }
 
+    public function getPatientLabResultsDisplay()
+    {
+        $patient = $this->event->patient;
+
+        $criteria = new CDbCriteria();
+        $criteria->join = 'JOIN event e ON t.event_id = e.id ';
+        $criteria->join .= 'JOIN episode ep ON e.episode_id = ep.id';
+        $criteria->compare('ep.patient_id', $patient->id);
+
+        $lab_results = Element_OphInLabResults_ResultTimedNumeric::model()->findAll($criteria);
+
+        $lines = array_map(
+            static function ($lab_result) {
+                $unit = $lab_result->unit ? $lab_result->unit : '';
+                return [
+                    'type' => $lab_result->resultType->type,
+                    'result' => $lab_result->result . " {$unit}",
+                    'time' => $lab_result->time,
+                    'date' =>  '(' . Helper::convertMySQL2NHS($lab_result->event->event_date) . ')',
+                    'comment' => $lab_result->comment
+                ];
+            },
+            array_filter(
+                $lab_results,
+                static function ($lab_result) {
+                    return $lab_result->resultType->show_on_whiteboard;
+                }
+            )
+        );
+
+        $display = '';
+
+        foreach ($lines as $line) {
+            $display .= "<div class='alert-box warning'>".
+            $line['type'] .
+            "<div>{$line['date']}</div>" .
+            $line['result'] . '<br>' .
+            $line['time'] . '<br>' .
+            $line['comment'] .
+            "</div>";
+        }
+
+        return $display;
+    }
+
     /**
      * @param $total_risks int Total risks for the patient. The variable passed to this function is populated with the value.
      * @return string
@@ -385,7 +430,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                     $risk_present = $whiteboard->getDisplayHasRisk($exam_risk);
 
                     if ($risk->name === 'Alpha blockers') {
-                        return array($risk_present, 'Alphablocker - ' . $whiteboard->alphaBlockerStatusAndDate($patient));
+                        return array($risk_present, 'Alphablocker', $whiteboard->alphaBlockerStatusAndDate($patient));
                     }
 
                     if ($risk->comments !== '') {
@@ -407,7 +452,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         foreach ($lines as $line) {
             if ($line[0] === 'Present') {
                 $total_risks++;
-                $display .= '<div class="alert-box warning">' . $line[1] . '</div>';
+                $line_display = '';
+                for ($i = 1; $i < count($line); ++$i) {
+                    $line_display .= $line[$i] . '<br>';
+                }
+                $display .= '<div class="alert-box warning">' . $line_display . '</div>';
             }
         }
 

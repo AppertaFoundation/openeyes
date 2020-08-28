@@ -42,6 +42,7 @@ class ContactTest extends ActiveRecordTestCase
           array(array('nick_name' => 'Collin'), 1, array('contact2')),
           array(array('nick_name' => 'Allan'), 1, array('contact3')),
           array(array('nick_name' => 'Blah'), 0, array()),
+          array(array('email' => 'Shore@Shore.com'), 1, array('contact4')),
         );
     }
 
@@ -82,6 +83,7 @@ class ContactTest extends ActiveRecordTestCase
              'last_name' => 'Last name',
              'qualifications' => 'Qualifications',
              'contact_label_id' => 'Label',
+             'email' => 'Email'
         );
 
         $this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');

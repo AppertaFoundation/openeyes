@@ -1,15 +1,30 @@
 <?php
 
-class m180506_111023_medication_drugs_import extends CDbMigration
+class m180506_111023_medication_drugs_import extends OEMigration
 {
-    public function up()
+    public function safeUp()
     {
         /*
          * table fixes
          */
         $this->execute("ALTER TABLE medication MODIFY source_subtype VARCHAR(45) NULL");
-        $this->execute("ALTER TABLE medication_frequency ADD COLUMN original_id INT NULL AFTER `code`");
-        $this->execute("ALTER TABLE medication_frequency_version ADD COLUMN original_id INT NULL AFTER `code`");
+
+        // First check if column exists (for some reason it does in the Bolton database and possibly others)
+        // if the columns already exist, Modify, if not, add
+        if (isset($this->dbConnection->schema->getTable('medication_frequency')->columns['original_id'])) {
+            $this->alterColumn('medication_frequency', 'original_id', 'INT NULL AFTER `code`');
+        } else {
+            // Add the column
+            $this->addColumn('medication_frequency', 'original_id', 'INT NULL AFTER `code`');
+        }
+
+        // Then do the same for the version table (thse are done separetely to avoid issues where a column was previously added to the master, but not the version)
+        if (isset($this->dbConnection->schema->getTable('medication_frequency_version')->columns['original_id'])) {
+            $this->alterColumn('medication_frequency_version', 'original_id', 'INT NULL AFTER `code`');
+        } else {
+            // Add the column
+            $this->addColumn('medication_frequency_version', 'original_id', 'INT NULL AFTER `code`');
+        }
         
         $this->createIndex('fk_ref_medication_frequency_oidx', 'medication_frequency', 'original_id');
         
@@ -25,7 +40,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
 
 
         $drug_sets = $this->dbConnection
-                ->createCommand('SELECT id, name, subspecialty_id FROM drug_set ORDER BY id ASC')
+                ->createCommand('SELECT id, name, subspecialty_id FROM drug_set WHERE active=1 ORDER BY id ASC')
                 ->queryAll();
         if ($drug_sets) {
             foreach ($drug_sets as $set) {
@@ -141,7 +156,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                         d.aliases,
                         d.form_id,
                         d.dose_unit,
-                        d.default_dose,
+                        REGEXP_REPLACE(d.default_dose, '[a-z -\]', '' ) AS 'default_dose', -- strip non numerics
                         df.name AS drug_form_name,
                         rmf.id  AS ref_form_id,
                         rmf.default_dose_unit_term AS ref_dose_term,
@@ -207,7 +222,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 $drug_sets = $this->dbConnection->createCommand("SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id, duration_id, dose, frequency_id
                                                             FROM drug_set
                                                             JOIN drug_set_item ON drug_set.id = drug_set_item.drug_set_id
-                                                            WHERE drug_set_item.drug_id = :drug_id")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
+                                                            WHERE drug_set.active=1 AND drug_set_item.drug_id = :drug_id")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
 
                 if ($drug_sets) {
                     foreach ($drug_sets as $drug_set) {
@@ -246,7 +261,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         }
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropIndex('fk_ref_medication_frequency_oidx', 'medication_frequency');
         

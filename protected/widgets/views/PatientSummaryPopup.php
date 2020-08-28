@@ -93,7 +93,7 @@
                     <?php endif; ?>
                     <tr>
                         <td>Email</td>
-                        <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
+                        <td><?= $this->patient->contact->email ?? 'Unknown' ?></td>
                     </tr>
                     <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
                         <tr>
@@ -279,8 +279,8 @@
                             <td>
                                 <?php
                                     // Show Email address
-                                if ($this->patient->gp && $this->patient->gp->contact->address) {
-                                    echo $this->patient->gp->contact->address->email;
+                                if ($this->patient->gp && $this->patient->gp->contact) {
+                                    echo $this->patient->gp->contact->email;
                                 } else {
                                     echo 'Unknown';
                                 } ?>
@@ -349,6 +349,7 @@
             $rDate = $exam_api->getLetterVisualAcuityDate($patient, 'right');
             ?>
                 <div class="group">
+                <span class="label">VA:</span>
                 <?php if ($lDate == $rDate) { ?>
                         <span class="data">R <?= $visualAcuityRight ?: 'NA'; ?></span>
                         <span class="data" style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
@@ -385,6 +386,7 @@
         <?php } ?>
 
         <div class="group">
+            <span class="label">Ref:</span>
             <?php
                 $leftRefraction = $correspondence_api->getLastRefraction($patient, 'left');
                 $rightRefraction = $correspondence_api->getLastRefraction($patient, 'right');
@@ -395,11 +397,12 @@
                     <span class="oe-date"
                           style="text-align: left"><?= Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient)) ?></span>
             <?php } else { ?>
-                    <span class="data">Refraction: NA</span>
+                    <span class="data">NA</span>
             <?php } ?>
         </div>
 
         <div class="group">
+            <span class="label">CCT:</span>
             <?php
                 $leftCCT = $exam_api->getCCTLeft($patient);
                 $rightCCT = $exam_api->getCCTRight($patient);
@@ -410,16 +413,17 @@
                     <span class="oe-date"
                           style="text-align: left"><?= Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
             <?php } else { ?>
-                    <span class="data">CCT: NA</span>
+                    <span class="data">NA</span>
             <?php } ?>
         </div>
 
         <div class="group">
+            <span class="label">CVI Status:</span>
             <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
-                <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
+                <span class="data"><?= $this->cviStatus[0]; ?></span>
                 <span class="oe-date"> <?= $this->cviStatus[1] && $this->cviStatus[1] !== '0000-00-00' ? \Helper::convertDate2HTML($this->cviStatus[1]) : 'N/A' ?></span>
             <?php } else { ?>
-                <span class="data">CVI Status: NA</span>
+                <span class="data">NA</span>
             <?php } ?>
         </div>
     </div>
@@ -638,17 +642,6 @@
                   'patient' => $this->patient,
                   'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
                 )); ?>
-                <table class="risks alert-box patient">
-                    <tbody>
-                    <?php $diabetes_disorders = $this->patient->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET);
-                    foreach ($diabetes_disorders as $disorder) { ?>
-                            <tr>
-                                <td><?= $disorder->term ?></td>
-                                <td></td>
-                            </tr>
-                    <?php } ?>
-                    </tbody>
-                </table>
             </div><!-- .popup-overflow -->
         </div><!-- .col-right -->
     </div><!-- .flex -->

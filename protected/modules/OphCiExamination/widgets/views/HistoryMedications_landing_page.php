@@ -40,7 +40,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 ?>
 
 <?php if (!$current_eye_meds && !$stopped_eye_meds) { ?>
-    <div class="nil-recorded">Nil recorded.</div>
+    <div class="nil-recorded">Nil recorded</div>
 <?php } else { ?>
     <?php if ($current_eye_meds) { ?>
         <table id="<?= $model_name ?>_current_entry_table">

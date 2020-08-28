@@ -68,7 +68,7 @@
                                             $contact_type = strtoupper($target->contact_type);
                                             $contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
                                             $contact_nick_name = $contact_type === 'GP' ? (isset($element['event']['episode']['patient']['gp']) ? $element['event']['episode']['patient']['gp']['contact']->nick_name : '') : $element['event']['episode']['patient']['contact']->nick_name;
-                                            $email = (isset($contact_id) ? ( isset(Contact::model()->findByPk($target->contact_id)->address) ? Contact::model()->findByPk($target->contact_id)->address->email : null ) : ( isset($target->email) ? $target->email : null) );
+                                            $email = (isset($contact_id) ? ( isset(Contact::model()->findByPk($target->contact_id)->id) ? Contact::model()->findByPk($target->contact_id)->email : null ) : ( isset($target->email) ? $target->email : null) );
 
                                             $this->renderPartial('//docman/table/contact_name_type', array(
                                                 'address_targets' => $element->address_targets,
