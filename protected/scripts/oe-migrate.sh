@@ -61,12 +61,16 @@ touch $WROOT/protected/runtime/migrate.log
 
 if [ $quiet = 0 ]; then
 	# Show output on screen AND write to log
-	php $WROOT/protected/yiic migrate --interactive=0 $connectionstring 2>&1 | tee $WROOT/protected/runtime/migrate.log
-    php $WROOT/protected/yiic migratemodules --interactive=0 $connectionstring 2>&1 | tee -a $WROOT/protected/runtime/migrate.log
+	if php $WROOT/protected/yiic migrate --interactive=0 2>&1 | tee $WROOT/protected/runtime/migrate.log; then
+		# don't bother trying to migrate modules if the core failed
+	    php $WROOT/protected/yiic migratemodules --interactive=0 2>&1 | tee -a $WROOT/protected/runtime/migrate.log
+	fi
 else
 	# Write output to log only (do not show on screen)
-	php $WROOT/protected/yiic migrate --interactive=0 $connectionstring > $WROOT/protected/runtime/migrate.log
-	php $WROOT/protected/yiic migratemodules --interactive=0 $connectionstring >> $WROOT/protected/runtime/migrate.log
+	if php $WROOT/protected/yiic migrate --interactive=0 > $WROOT/protected/runtime/migrate.log; then
+		# don't bother trying to migrate modules if the core failed
+		php $WROOT/protected/yiic migratemodules --interactive=0 >> $WROOT/protected/runtime/migrate.log
+	fi
 fi
 
 founderrors=0
