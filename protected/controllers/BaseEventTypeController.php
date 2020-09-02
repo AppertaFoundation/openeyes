@@ -1262,6 +1262,20 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * Unset the timestamp if the created event is an historic event
+     *
+     * @param $event_date
+     */
+    protected function setEventDate($event_date) {
+        $event_date = Helper::convertNHS2MySQL($event_date);
+        $current_event_date = substr($this->event->event_date, 0, 10);
+
+        if ($event_date < $current_event_date) {
+            $this->event->event_date = $event_date;
+        }
+    }
+
+    /**
      * Set the attributes of the given $elements from the given structured array.
      * Returns any validation errors that arise.
      *
@@ -1316,14 +1330,8 @@ class BaseEventTypeController extends BaseModuleController
 
         //event date and parent validation
         if (isset($data['Event']['event_date'])) {
+            $this->setEventDate($data['Event']['event_date']);
             $event = $this->event;
-            $event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
-            $current_event_date = substr($event->event_date, 0, 10);
-
-            if ($event_date !== $current_event_date) {
-                $event->event_date = $event_date;
-            }
-
             if (isset($data['Event']['parent_id'])) {
                 $event->parent_id = $data['Event']['parent_id'];
             }
