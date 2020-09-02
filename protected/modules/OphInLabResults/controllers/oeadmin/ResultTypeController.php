@@ -33,7 +33,7 @@ class ResultTypeController extends BaseAdminController
         $savedModelWithErrors = $this->save('edit');
         $this->render('/admin/edit', array(
             'model' => $savedModelWithErrors['model'],
-            'title' => 'Edit Results_Type',
+            'title' => 'Edit Results Type',
             'errors' => isset($savedModelWithErrors['errors']) ? $savedModelWithErrors['errors'] : null,
             'cancel_uri' => '/OphInLabResults/oeadmin/resultType/list',
         ));
@@ -44,7 +44,7 @@ class ResultTypeController extends BaseAdminController
         $savedModelWithErrors = $this->save('add');
         $this->render('/admin/edit', array(
             'model' => $savedModelWithErrors['model'],
-            'title' => 'Add Results_Type',
+            'title' => 'Add Results Type',
             'errors' => isset($savedModelWithErrors['errors']) ? $savedModelWithErrors['errors'] : null,
             'cancel_uri' => '/OphInLabResults/oeadmin/resultType/list',
         ));
@@ -108,7 +108,7 @@ class ResultTypeController extends BaseAdminController
                     }
 
                     if (!$foundExistingOption) {
-                        $resultOption = new \OphInLabResults_Type_Options();
+                        $resultOption = new OphInLabResults_Type_Options();
                         $resultOption->type = $model->id;
                         $resultOption->value = $values[$key];
                         if (!$resultOption->save()) {
@@ -130,7 +130,7 @@ class ResultTypeController extends BaseAdminController
 
             if (empty($errors)) {
                 $transaction->commit();
-                Yii::app()->user->setFlash('success', 'OphInLabResults_Type saved');
+                Yii::app()->user->setFlash('success', 'Lab Results Type saved');
                 $this->redirect(array('List'));
             } else {
                 $transaction->rollback();
@@ -149,7 +149,7 @@ class ResultTypeController extends BaseAdminController
         $result = [];
         $result['status'] = 1;
         $result['errors'] = "";
-        $typeIds = \Yii::app()->request->getPost('resultTypes', []);
+        $typeIds = Yii::app()->request->getPost('resultTypes', []);
 
         foreach ($typeIds as $id) {
             try {

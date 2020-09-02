@@ -472,7 +472,7 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->params[':nhs_num'] = $this->nhs_num;
             $criteria->params[':hos_num'] = $this->hos_num;
         } else {
-            if (strlen($this->nhs_num) == $nhs_num_length) {
+            if (strlen($this->nhs_num) === (int)$nhs_num_length) {
                 $criteria->compare('nhs_num', $this->nhs_num, false);
             } else {
                 $criteria->compare('hos_num', $this->hos_num, false);
