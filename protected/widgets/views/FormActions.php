@@ -18,7 +18,7 @@
 ?>
 <div class="data-group">
     <div class="cols-<?php echo 12 - $layoutColumns['label']; ?> large-offset-<?php echo $layoutColumns['label']; ?> column">
-        <?= \CHtml::htmlButton($buttonOptions['submit'], ['name' => 'save', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_save']); ?>
+        <?= CHtml::htmlButton($buttonOptions['submit'], ['name' => 'save', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_save']); ?>
         <?php if ($buttonOptions['cancel']) {
             $cancelHtmlOptions = array('class' => 'button large');
             if (@$buttonOptions['cancel-uri']) {
@@ -35,7 +35,13 @@
             );
         } ?>
         <?php if ($buttonOptions['delete']) {
-            echo CHtml::htmlButton($buttonOptions['delete'], ['name' => 'delete', 'class' => 'button large', 'id' => 'et_delete']);
+            echo CHtml::htmlButton($buttonOptions['delete'],
+                [
+                    'name' => 'delete',
+                    'class' => 'button large',
+                    'id' => 'et_delete',
+                    'data-uri' => $buttonOptions['delete-uri'] ? $buttonOptions['delete-uri'] : ''
+                ]);
         } ?>
         <?php
         if (isset($buttonOptions['add-snippet'])) {
