@@ -99,16 +99,16 @@
                 <?php
                 if ($this->is_auto) {
                     if (!$element->{"k_modified_$side"}) {
-                        echo '<span class="readonly-box">' . $element->{"axis_k1_$side"} . '</span>&nbsp;&deg;';
+                        echo '<span class="readonly-box">' . $element->{"k1_axis_$side"} . '</span>&nbsp;&deg;';
                     } else {
                         echo '&nbsp;';
                     }
                 } else {
                     ?>
-                    <input type="text" id="Element_OphInBiometry_Measurement_axis_k1_<?php echo $side; ?>"
-                           name="Element_OphInBiometry_Measurement[axis_k1_<?php echo $side; ?>]"
+                    <input type="text" id="Element_OphInBiometry_Measurement_k1_axis_<?php echo $side; ?>"
+                           name="Element_OphInBiometry_Measurement[k1_axis_<?php echo $side; ?>]"
                            placeholder='0.00' class="cols-6"
-                           value="<?php echo $element->{"axis_k1_$side"} ?>">&deg;
+                           value="<?php echo $element->{"k1_axis_$side"} ?>">&deg;
                     <?php
                 }
                 ?>

@@ -21,7 +21,7 @@
 $biometry_data = [
     'k1' => $element->{"k1_{$side}"},
     'k2' => $element->{"k2_{$side}"},
-    'axis_k1' => $element->{"axis_k1_{$side}"},
+    'axis_k1' => $element->{"k1_axis_{$side}"},
     'axis_k2' => $element->{"k2_axis_{$side}"},
 ];
 ?>
@@ -122,7 +122,7 @@ $biometry_data = [
                     <?=\CHtml::encode($element->{'k1_' . $side}) ?>D
                 </td>
                 <td>@</td>
-                <td><?=\CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;</td>
+                <td><?=\CHtml::encode($element->{'k1_axis_' . $side}) ?>&deg;</td>
                 <td><?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?></td>
             </tr>
             <tr>

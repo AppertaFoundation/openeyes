@@ -50,8 +50,8 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
         $this->k2_left = null;
         $this->k2_right = null;
         
-        $this->axis_k1_left = null;
-        $this->axis_k1_right = null;
+        $this->k1_axis_left = null;
+        $this->k1_axis_right = null;
         
         $this->delta_k_left = null;
         $this->delta_k_right = null;
@@ -101,7 +101,7 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
         if (count(OphInBiometry_Imported_Events::model()->findAllByAttributes(array('event_id' => $this->event_id))) == 0) {
             return array(
                 array(
-                    'event_id, eye_id , k1_left, k1_right, k2_left, k2_right, axis_k1_left, axis_k1_right, axial_length_left, axial_length_right, snr_left, snr_right, k2_axis_left, k2_axis_right, delta_k_left, delta_k_right, delta_k_axis_left, delta_k_axis_right, acd_left, acd_right, refraction_sphere_left, refraction_sphere_right, refraction_delta_left, refraction_delta_right, refraction_axis_left, refraction_axis_right, eye_status_left, eye_status_right, comments',
+                    'event_id, eye_id , k1_left, k1_right, k2_left, k2_right, k1_axis_left, k1_axis_right, axial_length_left, axial_length_right, snr_left, snr_right, k2_axis_left, k2_axis_right, delta_k_left, delta_k_right, delta_k_axis_left, delta_k_axis_right, acd_left, acd_right, refraction_sphere_left, refraction_sphere_right, refraction_delta_left, refraction_delta_right, refraction_axis_left, refraction_axis_right, eye_status_left, eye_status_right, comments',
                     'safe',
                 ),
                 array(
@@ -110,17 +110,17 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
                     'pattern' => '/([0-9]*?)(\.[0-9]{0,2})?/',
                 ),
                 array(
-                    'axis_k1_left, axis_k1_right, snr_left, snr_right',
+                    'k1_axis_left, k1_axis_right, snr_left, snr_right',
                     'match',
                     'pattern' => '/([0-9]*?)(\.[0-9]{0,1})?/',
                 ),
                 array(
-                    'k1_left, k2_left, axis_k1_left, axial_length_left',
+                    'k1_left, k2_left, k1_axis_left, axial_length_left',
                     'requiredIfSide',
                     'side' => 'left',
                 ),
                 array(
-                    'k1_right, k2_right, axis_k1_right, axial_length_right',
+                    'k1_right, k2_right, k1_axis_right, axial_length_right',
                     'requiredIfSide',
                     'side' => 'right',
                 ),
@@ -128,8 +128,8 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
                 array('snr_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 2000, 'min' => 10),
                 array('k1_left, k2_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 60, 'min' => 30),
                 array('k1_right, k2_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 60, 'min' => 30),
-                array('axis_k1_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 180, 'min' => 0),
-                array('axis_k1_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 180, 'min' => 0),
+                array('k1_axis_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 180, 'min' => 0),
+                array('k1_axis_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 180, 'min' => 0),
                 array('axial_length_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 40, 'min' => 15),
                 array('axial_length_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 40, 'min' => 15),
                 // The following rule is used by search().
@@ -139,7 +139,7 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
         } else {
             return array(
                 array(
-                    'event_id, eye_id , k1_left, k1_right, k2_left, k2_right, axis_k1_left, axis_k1_right, axial_length_left, axial_length_right, snr_left, snr_right, k2_axis_left, k2_axis_right, delta_k_left, delta_k_right, delta_k_axis_left, delta_k_axis_right, acd_left, acd_right, refraction_sphere_left, refraction_sphere_right, refraction_delta_left, refraction_delta_right, refraction_axis_left, refraction_axis_right, eye_status_left, eye_status_right, comments',
+                    'event_id, eye_id , k1_left, k1_right, k2_left, k2_right, k1_axis_left, k1_axis_right, axial_length_left, axial_length_right, snr_left, snr_right, k2_axis_left, k2_axis_right, delta_k_left, delta_k_right, delta_k_axis_left, delta_k_axis_right, acd_left, acd_right, refraction_sphere_left, refraction_sphere_right, refraction_delta_left, refraction_delta_right, refraction_axis_left, refraction_axis_right, eye_status_left, eye_status_right, comments',
                     'safe',
                 ),
             );
@@ -182,8 +182,8 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
             'k1_right' => 'K1 (D)',
             'k2_left' => 'K2 (D)',
             'k2_right' => 'K2 (D)',
-            'axis_k1_left' => 'Axis K1 (D)',
-            'axis_k1_right' => 'Axis K1 (D)',
+            'k1_axis_left' => 'Axis K1 (D)',
+            'k1_axis_right' => 'Axis K1 (D)',
             'axial_length_left' => 'Axial length (mm)',
             'axial_length_right' => 'Axial length (mm)',
             'snr_left' => 'SNR',
