@@ -36,6 +36,7 @@ function addElement(element, animate, previous_id, params, callback) {
   $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
     var new_element = $(data);
     var elClass = $(new_element).data('element-type-class');
+    $(new_element).attr('data-element-display-order', $(element).data('element-display-order'));    
     var element_display_order = Number($(new_element).data('element-display-order'));
 
         var container = $('.js-active-elements');
@@ -49,7 +50,7 @@ function addElement(element, animate, previous_id, params, callback) {
       var $toInsertBefore = null;
       container.find('section[data-element-type-name]').each(function () {
         var target_display_order = Number($(this).data('element-display-order'));
-        if (target_display_order > element_display_order) {
+        if (Math.abs(target_display_order) > Math.abs(element_display_order)) {
           $toInsertBefore = $(this);
           return false;
         }
@@ -57,7 +58,7 @@ function addElement(element, animate, previous_id, params, callback) {
 
       // ... and insert before it
       if ($toInsertBefore) {
-        new_element.insertBefore($toInsertBefore);
+        new_element.insertBefore($toInsertBefore); 
       } else {
         // If there are no elements with greater display order, then the new element should go last
         container.append(new_element);
