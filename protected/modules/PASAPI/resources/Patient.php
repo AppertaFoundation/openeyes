@@ -135,6 +135,7 @@ class Patient extends BaseResource
         // Set the contact details
         // ContactBehavior.php creates a contact automatically before save
         $contact = $patient->contact;
+        $contact->source = "PASAPI";
 
         $this->assignProperty($contact, 'title', 'Title');
         $this->assignProperty($contact, 'first_name', 'FirstName');
