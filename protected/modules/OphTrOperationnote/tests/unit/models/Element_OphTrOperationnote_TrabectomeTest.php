@@ -1,7 +1,11 @@
 <?php
 
-class Element_OphTrOperationnote_TrabectomeTest extends PHPUnit_Framework_TestCase
+class Element_OphTrOperationnote_TrabectomeTest extends ActiveRecordTestCase
 {
+    public function getModel()
+    {
+        return Element_OphTrOperationnote_Trabectome::model();
+    }
     public function testGetComplicationIDs()
     {
         $this->markTestIncomplete('TODO');

@@ -20,28 +20,34 @@ class m150515_094332_connectToCataractElement extends CDbMigration
         /* this migration is responsible for connecting both the cataract and biometry element together to operation note procedures
         */
 
-        $findTable = Yii::app()->db->schema->getTable('ophtroperationnote_procedure_element');
+        $findTable = $this->dbConnection->schema->getTable('ophtroperationnote_procedure_element');
 
         if (!$findTable) {
             echo '**WARNING** Cannot run migration, because OphTrOperationnote modules tables are not presented! Please install OphTrOperationnote module, and run this migration manually!';
         } else {
             // we connect the element with the operation note module
-            $eventType = $this->dbConnection->createCommand()->select('*')->from('event_type')->where('class_name = :class_name',
-                array(':class_name' => 'OphTrOperationnote'))->queryRow();
+            $eventType = $this->dbConnection->createCommand()->select('*')->from('event_type')->where(
+                'class_name = :class_name',
+                array(':class_name' => 'OphTrOperationnote')
+            )->queryRow();
 
             // the biometry element data
-            $biometryElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('event_type_id = :event_type_id and class_name = :class_name',
+            $biometryElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                'event_type_id = :event_type_id and class_name = :class_name',
                 array(
                     ':event_type_id' => $eventType['id'],
                     ':class_name' => 'Element_OphTrOperationnote_Biometry',
-                ))->queryRow();
+                )
+            )->queryRow();
 
             // the cataract element data
-            $cataractElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('event_type_id = :event_type_id and class_name = :class_name',
+            $cataractElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                'event_type_id = :event_type_id and class_name = :class_name',
                 array(
                     ':event_type_id' => $eventType['id'],
                     ':class_name' => 'Element_OphTrOperationnote_Cataract',
-                ))->queryRow();
+                )
+            )->queryRow();
 
             // these are the procedures we currently know as cataract procedures
             $procedures = array('Aspiration of lens',
@@ -67,11 +73,12 @@ class m150515_094332_connectToCataractElement extends CDbMigration
             if ($cataractElementType) {
                 $cataractElementProcedures = $this->dbConnection->createCommand()->select('procedure_id AS id')
                     ->from('ophtroperationnote_procedure_element')
-                    ->where('element_type_id = :cataract_element_type_id',
+                    ->where(
+                        'element_type_id = :cataract_element_type_id',
                         array(':cataract_element_type_id' => $cataractElementType['id'])
                     )->queryAll();
                 // we check if there are any new procedures
-                //if( is_array($cataractElementProcedures) && is_array($proceduresData) ) {
+                //if ( is_array($cataractElementProcedures) && is_array($proceduresData) ) {
                 //  $difference = array_diff_assoc($cataractElementProcedures, $proceduresData);
                 //}
 
@@ -83,7 +90,8 @@ class m150515_094332_connectToCataractElement extends CDbMigration
             // we search for current biometry element procedure relations
             $biometryElementProcedures = $this->dbConnection->createCommand()->select('procedure_id AS id')
                 ->from('ophtroperationnote_procedure_element')
-                ->where('element_type_id = :biometry_element_type_id',
+                ->where(
+                    'element_type_id = :biometry_element_type_id',
                     array(':biometry_element_type_id' => $biometryElementType['id'])
                 )->queryAll();
 
@@ -108,22 +116,28 @@ class m150515_094332_connectToCataractElement extends CDbMigration
             echo '**WARNING** Cannot run migration, because OphTrOperationnote modules tables are not presented! Please install OphTrOperationnote module, and run this migration manually!';
         } else {
             // we connect the element with the operation note module
-            $eventType = $this->dbConnection->createCommand()->select('*')->from('event_type')->where('class_name = :class_name',
-                array(':class_name' => 'OphTrOperationnote'))->queryRow();
+            $eventType = $this->dbConnection->createCommand()->select('*')->from('event_type')->where(
+                'class_name = :class_name',
+                array(':class_name' => 'OphTrOperationnote')
+            )->queryRow();
 
             // the biometry element data
-            $biometryElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('event_type_id = :event_type_id and class_name = :class_name',
+            $biometryElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                'event_type_id = :event_type_id and class_name = :class_name',
                 array(
                     ':event_type_id' => $eventType['id'],
                     ':class_name' => 'Element_OphTrOperationnote_Biometry',
-                ))->queryRow();
+                )
+            )->queryRow();
 
             // the cataract element data
-            $cataractElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('event_type_id = :event_type_id and class_name = :class_name',
+            $cataractElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                'event_type_id = :event_type_id and class_name = :class_name',
                 array(
                     ':event_type_id' => $eventType['id'],
                     ':class_name' => 'Element_OphTrOperationnote_Cataract',
-                ))->queryRow();
+                )
+            )->queryRow();
 
             $this->delete('ophtroperationnote_procedure_element', "element_type_id = {$biometryElementType['id']}");
             if ($cataractElementType) {

@@ -46,19 +46,27 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
     public function testInstanceCreated()
     {
-        $this->assertTrue($this->globalInstance instanceof AssetManager,
-            'Yii::app()->assetManager should be an instance of AssetManager');
+        $this->assertTrue(
+            $this->globalInstance instanceof AssetManager,
+            'Yii::app()->assetManager should be an instance of AssetManager'
+        );
 
-        $this->assertTrue($this->globalInstance instanceof CAssetManager,
-            'AssetManager should extend CAssetManager');
+        $this->assertTrue(
+            $this->globalInstance instanceof CAssetManager,
+            'AssetManager should extend CAssetManager'
+        );
 
         $cacheBuster = PHPUnit_Framework_Assert::readAttribute($this->globalInstance, 'cacheBuster');
-        $this->assertTrue($cacheBuster instanceof CacheBuster,
-            'cacheBuster property on AssetManager instance should be an instance of CacheBuster');
+        $this->assertTrue(
+            $cacheBuster instanceof CacheBuster,
+            'cacheBuster property on AssetManager instance should be an instance of CacheBuster'
+        );
 
         $clientScript = PHPUnit_Framework_Assert::readAttribute($this->globalInstance, 'clientScript');
-        $this->assertTrue($clientScript instanceof ClientScript,
-            'clientScript property on AssetManager instance should be an instance of ClientScript');
+        $this->assertTrue(
+            $clientScript instanceof ClientScript,
+            'clientScript property on AssetManager instance should be an instance of ClientScript'
+        );
     }
 
     public function testGetPublishedPathOfAlias()
@@ -68,15 +76,21 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         // Test the published path matches the expected published path.
         $alias = CustomBasePathAliasAssetManager::BASE_PATH_ALIAS;
         $publishedPath = $instance->getPublishedPathOfAlias($alias);
-        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias));
-        $this->assertEquals($publishedPath, $expectedPublishedPath,
-            'The published path of specified alias should match the expected path');
+        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias), true);
+        $this->assertEquals(
+            $publishedPath,
+            $expectedPublishedPath,
+            'The published path of specified alias should match the expected path'
+        );
 
         // Test the published path matches the expected published path *when no alias is specified*.
         $publishedPath = $instance->getPublishedPathOfAlias();
-        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias));
-        $this->assertEquals($publishedPath, $expectedPublishedPath,
-            'The published path should match the expected path when no alias is specified');
+        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias), true);
+        $this->assertEquals(
+            $publishedPath,
+            $expectedPublishedPath,
+            'The published path should match the expected path when no alias is specified'
+        );
     }
 
     public function testCreateUrl()
@@ -88,19 +102,28 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         // Test the url matches when specifying a path alias.
         $url = $instance->createUrl($path, $alias, false);
         $expectedUrl = $instance->getPublishedPathOfAlias($alias).'/'.$path;
-        $this->assertEquals($expectedUrl, $url,
-            'The URL should match when specifying a path alias');
+        $this->assertEquals(
+            $expectedUrl,
+            $url,
+            'The URL should match when specifying a path alias'
+        );
 
         // Test the url matches when *when no alias is specified*.
         $url = $instance->createUrl($path, null, false);
-        $this->assertEquals($expectedUrl, $url,
-            'The URL should match when no alias is specified');
+        $this->assertEquals(
+            $expectedUrl,
+            $url,
+            'The URL should match when no alias is specified'
+        );
 
         // Test the url matches when an alias path is prevented from being preprended to the path.
         $url = $instance->createUrl($path, false, false);
         $expectedUrl = Yii::app()->createUrl($path);
-        $this->assertEquals($expectedUrl, $url,
-            'The URL should match when an alias is prevented from being prepended to the path');
+        $this->assertEquals(
+            $expectedUrl,
+            $url,
+            'The URL should match when an alias is prevented from being prepended to the path'
+        );
 
         // Test a cache buster string is appended to url.
         $path1 = $path;
@@ -112,17 +135,26 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $expectedUrl1 = Yii::app()->cacheBuster->createUrl(Yii::app()->createUrl($path));
         $expectedUrl2 = Yii::app()->cacheBuster->createUrl(Yii::app()->createUrl($path2));
 
-        $this->assertEquals($expectedUrl1, $url1,
-            'The URL, without query string params, should be cache busted');
+        $this->assertEquals(
+            $expectedUrl1,
+            $url1,
+            'The URL, without query string params, should be cache busted'
+        );
 
-        $this->assertEquals($expectedUrl2, $url2,
-            'The URL, with query string params, should be cache busted');
+        $this->assertEquals(
+            $expectedUrl2,
+            $url2,
+            'The URL, with query string params, should be cache busted'
+        );
 
         // Test default params.
         $url = $instance->createUrl($path);
         $expectedUrl = Yii::app()->cacheBuster->createUrl($instance->getPublishedPathOfAlias($alias).'/'.$path);
-        $this->assertEquals($expectedUrl, $url,
-            'The URL should match the expected format when no additional params are specified');
+        $this->assertEquals(
+            $expectedUrl,
+            $url,
+            'The URL should match the expected format when no additional params are specified'
+        );
     }
 
     public function testGetPublishedPath()
@@ -135,23 +167,29 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $publishedPath = $instance->getPublishedPath($path, $alias);
         $expectedParts = array(
             Yii::getPathOfAlias('webroot'),
-            $instance->publish(Yii::getPathOfAlias($alias), false, -1),
+            $instance->publish(Yii::getPathOfAlias($alias), true, -1),
             $path,
         );
         $expectedPath = implode(DIRECTORY_SEPARATOR, $expectedParts);
-        $this->assertEquals($publishedPath, $expectedPath,
-            'The published path should match the expected path when an alias is specified');
+        $this->assertEquals(
+            $publishedPath,
+            $expectedPath,
+            'The published path should match the expected path when an alias is specified'
+        );
 
         // Test with default params.
         $publishedPath = $instance->getPublishedPath($path);
         $expectedParts = array(
             Yii::getPathOfAlias('webroot'),
-            $instance->publish(Yii::getPathOfAlias($alias), false, -1),
+            $instance->publish(Yii::getPathOfAlias($alias), true, -1),
             $path,
         );
         $expectedPath = implode(DIRECTORY_SEPARATOR, $expectedParts);
-        $this->assertEquals($publishedPath, $expectedPath,
-            'The published path should match the expected path when no alias is specified');
+        $this->assertEquals(
+            $publishedPath,
+            $expectedPath,
+            'The published path should match the expected path when no alias is specified'
+        );
     }
 
     public function testRegisterCoreCssFile()
@@ -254,27 +292,41 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         /* Test the files were added to the relevant array. */
         $keys = array_keys($files);
 
-        $this->assertTrue(strpos($keys[0], "{$publishedPath}/{$type}/file.{$type}") !== false,
-            "file.{$type} should be added to the list of pre-registered assets");
+        $this->assertTrue(
+            strpos($keys[0], "{$publishedPath}/{$type}/file.{$type}") !== false,
+            "file.{$type} should be added to the list of pre-registered assets"
+        );
 
-        $this->assertTrue(strpos($keys[1], "{$publishedPath}/{$type}/file1.{$type}") !== false,
-            "file1.{$type} should be added to the list of pre-registered assets");
+        $this->assertTrue(
+            strpos($keys[1], "{$publishedPath}/{$type}/file1.{$type}") !== false,
+            "file1.{$type} should be added to the list of pre-registered assets"
+        );
 
         /* Test the files array contains the correct values.*/
         $first = array_shift($files);
         $second = array_shift($files);
 
-        $this->assertTrue(isset($first['priority']),
-            'The files should be added with a priority');
+        $this->assertTrue(
+            isset($first['priority']),
+            'The files should be added with a priority'
+        );
 
-        $this->assertTrue(isset($first['output']),
-            'The files should be added with an output');
+        $this->assertTrue(
+            isset($first['output']),
+            'The files should be added with an output'
+        );
 
-        $this->assertEquals($first['priority'], $priority,
-            'The first asset priority should match the expected priority');
+        $this->assertEquals(
+            $first['priority'],
+            $priority,
+            'The first asset priority should match the expected priority'
+        );
 
-        $this->assertEquals($second['priority'], $priority - 1,
-            'The second asset priority should match the expected priority and be one less than the first');
+        $this->assertEquals(
+            $second['priority'],
+            $priority - 1,
+            'The second asset priority should match the expected priority and be one less than the first'
+        );
 
         /* Test with custom alias path.*/
         $alias = CustomBasePathAliasAssetManager::BASE_PATH_ALIAS.'.'.$type;
@@ -283,23 +335,31 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
         $keys = array_keys($files);
 
-        $this->assertTrue(strpos($keys[2], $publishedPath.'/file.'.$type) !== false,
-            'The assets should be added with the correct published path');
+        $this->assertTrue(
+            strpos($keys[2], $publishedPath.'/file.'.$type) !== false,
+            'The assets should be added with the correct published path'
+        );
 
         // /* Test with custom priority.*/
         $instance->{$registerMethod}("{$type}/file2.{$type}", null, 10);
         $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
         $last = array_pop($files);
 
-        $this->assertEquals($last['priority'], 10,
-            'The asset should be added with a custom priority if specified');
+        $this->assertEquals(
+            $last['priority'],
+            10,
+            'The asset should be added with a custom priority if specified'
+        );
 
         // /* Test with custom output.*/
         $instance->{$registerMethod}("{$type}/file3.{$type}", null, null, AssetManager::OUTPUT_PRINT);
         $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
         $last = array_pop($files);
-        $this->assertEquals($last['output'], AssetManager::OUTPUT_PRINT,
-            'The asset should be added with a custom output if specified');
+        $this->assertEquals(
+            $last['output'],
+            AssetManager::OUTPUT_PRINT,
+            'The asset should be added with a custom output if specified'
+        );
 
         /* Test that assets are registered immediately.*/
 
@@ -322,8 +382,10 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $keys = array_keys($files);
         $lastKey = array_pop($keys);
 
-        $this->assertFalse(strpos($lastKey, $publishedPath.'/file4.'.$type),
-            'The asset should not be added to the list of pre-registered assets if the preRegister param is set to false');
+        $this->assertFalse(
+            strpos($lastKey, $publishedPath.'/file4.'.$type),
+            'The asset should not be added to the list of pre-registered assets if the preRegister param is set to false'
+        );
     }
 
     public function testRegisterCssFile()
@@ -345,8 +407,11 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->isAjaxRequest = false;
         $instance->adjustScriptMapping();
 
-        $this->assertEquals(Yii::app()->clientScript->scriptMap, array(),
-            'The clientScript script mapping should be empty if the request is not AJAX');
+        $this->assertEquals(
+            Yii::app()->clientScript->scriptMap,
+            array(),
+            'The clientScript script mapping should be empty if the request is not AJAX'
+        );
 
         // Now we test that assets are adjusted if the request is an AJAX request.
         $instance->isAjaxRequest = true;
@@ -354,8 +419,11 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         $expectedMapping = AssetManager::$scriptMapping;
 
-        $this->assertEquals(Yii::app()->clientScript->scriptMap, $expectedMapping,
-            'The clientScript script mapping should match the expected mapping if the request is AJAX');
+        $this->assertEquals(
+            Yii::app()->clientScript->scriptMap,
+            $expectedMapping,
+            'The clientScript script mapping should match the expected mapping if the request is AJAX'
+        );
     }
 
     public function testRegisterFiles()
@@ -562,10 +630,16 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $css = PHPUnit_Framework_Assert::readAttribute($instance, 'css');
         $js = PHPUnit_Framework_Assert::readAttribute($instance, 'js');
 
-        $this->assertEquals($css, array(),
-            'The list of css assets should be empty after resetting');
+        $this->assertEquals(
+            $css,
+            array(),
+            'The list of css assets should be empty after resetting'
+        );
 
-        $this->assertEquals($js, array(),
-            'The list of js assets should be empty after resetting');
+        $this->assertEquals(
+            $js,
+            array(),
+            'The list of js assets should be empty after resetting'
+        );
     }
 }

@@ -176,4 +176,3 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
         }
     }
 }
-

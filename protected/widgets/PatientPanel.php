@@ -23,6 +23,7 @@ class PatientPanel extends BaseCWidget
     public $allow_clinical;
     public $layout = 'PatientPanel';
     public $trial;
+    public $summary;
     public $list_mode = false;
 
     public function init()

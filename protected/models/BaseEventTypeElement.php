@@ -319,8 +319,11 @@ class BaseEventTypeElement extends BaseElement
     public function addError($attribute, $message)
     {
         $this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)) . '_' . $attribute, $message);
-        $message = '<a class="errorlink" onClick="scrollToElement($(\'.' . str_replace('\\', '_',
-                get_class($this)) . '\'))">' . $message . '</a>';
+        $message = '<a class="errorlink" onClick="scrollToElement($(\'.' . str_replace(
+            '\\',
+            '_',
+            get_class($this)
+        ) . '\'))">' . $message . '</a>';
         parent::addError($attribute, $message);
     }
 

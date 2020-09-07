@@ -11,16 +11,18 @@ class PatientMedicationParameterTest extends CDbTestCase
     protected $object;
     protected $searchProvider;
 
-    protected function setUp()
+    public function setUp()
     {
+        parent::setUp();
         $this->object = new PatientMedicationParameter();
         $this->searchProvider = new DBProvider('mysql');
         $this->object->id = 0;
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         unset($this->object, $this->searchProvider);
+        parent::tearDown();
     }
 
     /**
@@ -48,12 +50,9 @@ SELECT p.id
 FROM patient p
 LEFT JOIN patient_medication_assignment m
   ON m.patient_id = p.id
-LEFT JOIN drug d
-  ON d.id = m.drug_id
-LEFT JOIN medication_drug md
+LEFT JOIN medication md
   ON md.id = m.medication_drug_id
-WHERE d.name $operator '$wildcard' :p_m_value_0 '$wildcard'
-  OR md.name $operator '$wildcard' :p_m_value_0 '$wildcard'
+WHERE md.preferred_term $operator '$wildcard'  :p_m_value_0 '$wildcard'
   OR m.id IS NULL";
 
             if ($operator === 'LIKE') {
@@ -62,12 +61,9 @@ SELECT p.id
 FROM patient p
 JOIN patient_medication_assignment m
   ON m.patient_id = p.id
-LEFT JOIN drug d
-  ON d.id = m.drug_id
-LEFT JOIN medication_drug md
-  ON md.id = m.medication_drug_id
-WHERE d.name $operator '$wildcard' :p_m_value_0 '$wildcard'
-  OR md.name $operator '$wildcard' :p_m_value_0 '$wildcard'";
+LEFT JOIN medication d
+  ON d.id = m.medication_drug_id
+WHERE d.preferred_term $operator '$wildcard'  :p_m_value_0 '$wildcard'";
             }
 
             $this->assertEquals(
@@ -77,7 +73,7 @@ WHERE d.name $operator '$wildcard' :p_m_value_0 '$wildcard'
         }
 
         // Ensure that a HTTP exception is raised if an invalid operation is specified.
-        $this->setExpectedException(CHttpException::class);
+        $this->expectException(CHttpException::class);
         foreach ($invalidOps as $operator) {
             $this->object->operation = $operator;
             $this->object->query($this->searchProvider);

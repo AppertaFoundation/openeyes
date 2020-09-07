@@ -15,11 +15,17 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-echo CHtml::tag('option',
+echo CHtml::tag(
+    'option',
     array('value' => ''),
-    CHtml::encode('Select a commonly used procedure'), true);
+    CHtml::encode('Select a commonly used procedure'),
+    true
+);
 foreach ($procedures as $procedure) {
-    echo CHtml::tag('option',
+    echo CHtml::tag(
+        'option',
         array('value' => $procedure->id),
-        CHtml::encode($procedure->term), true);
+        CHtml::encode($procedure->term),
+        true
+    );
 }

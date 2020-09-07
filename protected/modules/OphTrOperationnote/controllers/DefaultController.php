@@ -1,9 +1,9 @@
 <?php
+
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +12,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class DefaultController extends BaseEventTypeController
@@ -26,230 +26,12 @@ class DefaultController extends BaseEventTypeController
         'whiteboard' => self::ACTION_TYPE_VIEW,
     );
 
-    protected $show_element_sidebar = false;
-
     /* @var Element_OphTrOperationbooking_Operation operation that this note is for when creating */
     protected $booking_operation;
     /* @var boolean - indicates if this note is for an unbooked procedure or not when creating */
     protected $unbooked = false;
     /* @var Proc[] - cache of bookings for the booking operation */
     protected $booking_procedures;
-
-    /**
-     * returns list of procudures for the booking operation set on the controller.
-     *
-     * @return Proc[]
-     */
-    protected function getBookingProcedures()
-    {
-        if ($this->booking_operation) {
-            if (!$this->booking_procedures) {
-                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-                $this->booking_procedures = $api->getProceduresForOperation($this->booking_operation->event_id);
-            }
-
-            return $this->booking_procedures;
-        }
-    }
-
-    protected function beforeAction($action)
-    {
-        Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/eyedraw.js');
-        Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
-
-        return parent::beforeAction($action);
-    }
-
-    /**
-     * Creates the procedure elements for the procedures selected in the procedure list element.
-     *
-     * @return BaseEventTypeElement[]
-     */
-    protected function getEventElements()
-    {
-        if ($this->event && !$this->event->isNewRecord) {
-            return $this->event->getElements();
-            //TODO: check for missing elements for procedures
-        } else {
-            $elements = $this->event_type->getDefaultElements();
-            if ($procedures = $this->getBookingProcedures()) {
-                // Splice the elements array to place the extra elements in the correct order
-                // As it is when operation note has no booked procedures
-                $elements_before_procedures = [];
-                $elements_after_procedures = [];
-                $procedure_list_element_found = false;
-
-                foreach ($elements as $element) {
-                    if ($procedure_list_element_found) {
-                        $elements_after_procedures[] = $element;
-                    } else {
-                        $elements_before_procedures[] = $element;
-                        if ($element instanceof Element_OphTrOperationnote_ProcedureList) {
-                            $procedure_list_element_found = true;
-                        }
-                    }
-                }
-                // need to add procedure elements for the booking operation
-                $extra_elements = array();
-
-                foreach ($procedures as $proc) {
-                    $procedure_elements = $this->getProcedureSpecificElements($proc->id);
-                    foreach ($procedure_elements as $element) {
-                        $kls = $element->element_type->class_name;
-                        // only have one of any given procedure element
-                        if (!in_array($kls, $extra_elements)) {
-                            $extra_elements[] = $kls;
-                            $elements_before_procedures[] = new $kls();
-                        }
-                    }
-
-                    if (count($procedure_elements) == 0) {
-                        // no specific element for procedure, use generic
-                        $element = new Element_OphTrOperationnote_GenericProcedure();
-                        $element->proc_id = $proc->id;
-                        $elements_before_procedures[] = $element;
-                    }
-                }
-
-                return array_merge($elements_before_procedures, $elements_after_procedures);
-            }
-
-            return $elements;
-        }
-    }
-
-    /**
-     * @param BaseEventTypeElement $element
-     * @param string $action
-     * @inheritdoc
-     */
-    protected function setElementDefaultOptions($element, $action)
-    {
-        if ($action == 'create' && $this->getBookingProcedures()) {
-            // we are loading procedure elements directly, so if they need the
-            // eye setting, we must take care of this first.
-            if (is_a($element, 'Element_OnDemandEye')) {
-                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-                $element->setEye($api->getEyeForOperation($this->booking_operation->event_id));
-            }
-        }
-        parent::setElementDefaultOptions($element, $action);
-    }
-
-    /**
-     * For new notes for a specific operation, initialise procedure list with relevant procedures.
-     *
-     * @param Element_OphTrOperationnote_ProcedureList $element
-     * @param string $action
-     */
-    protected function setElementDefaultOptions_Element_OphTrOperationnote_ProcedureList($element, $action)
-    {
-        if ($action == 'create' && $procedures = $this->getBookingProcedures()) {
-            $element->procedures = $procedures;
-
-            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-            $element->eye = $api->getEyeForOperation($this->booking_operation->event_id);
-            $element->booking_event_id = $this->booking_operation->event_id;
-        }
-    }
-
-    /**
-     * Determine if the witness field is required, and set various defaults from the patient and related booking.
-     *
-     * @param Element_OphTrOperationnote_Anaesthetic $element
-     * @param string $action
-     */
-    protected function setElementDefaultOptions_Element_OphTrOperationnote_Anaesthetic($element, $action)
-    {
-        if ($action == 'create') {
-            if ($this->booking_operation) {
-                $element->anaesthetic_type = $this->booking_operation->anaesthetic_type;
-            } else {
-                $key = $this->patient->isChild() ? 'ophtroperationnote_default_anaesthetic_child' : 'ophtroperationnote_default_anaesthetic';
-
-                if (isset(Yii::app()->params[$key])) {
-                    if ($at = AnaestheticType::model()->find('code=?', array(Yii::app()->params[$key]))) {
-                        $element->anaesthetic_type = array($at);
-                    }
-                }
-            }
-            $element->anaesthetic_agents = $this->getAnaestheticAgentsBySiteAndSubspecialty('siteSubspecialtyAssignmentDefaults');
-        }
-    }
-
-    /**
-     * Set the default drugs from site and subspecialty.
-     *
-     * @param Element_OphTrOperationnote_PostOpDrugs $element
-     * @param string $action
-     */
-    protected function setElementDefaultOptions_Element_OphTrOperationnote_PostOpDrugs($element, $action)
-    {
-        if ($action == 'create') {
-            $element->drugs = $this->getPostOpDrugsBySiteAndSubspecialty(true);
-        }
-    }
-
-    /**
-     * Set the default operative devices from the site and subspecialty.
-     *
-     * @param Element_OphTrOperationnote_Cataract $element
-     * @param $action
-     */
-    protected function setElementDefaultOptions_Element_OphTrOperationnote_Cataract($element, $action)
-    {
-        if ($action == 'create') {
-            $element->operative_devices = $this->getOperativeDevicesBySiteAndSubspecialty(true);
-        }
-    }
-
-    /**
-     * Edit actions common initialisation.
-     */
-    protected function initEdit()
-    {
-        $this->jsVars['eyedraw_iol_classes'] = Yii::app()->params['eyedraw_iol_classes'];
-        $this->moduleStateCssClass = 'edit';
-    }
-
-    /**
-     * Set up the controller properties for booking relationship.
-     *
-     * @throws Exception
-     */
-    protected function initActionCreate()
-    {
-        parent::initActionCreate();
-
-        /** @var OphTrOperationbooking_API $api */
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        if (isset($_GET['booking_event_id'])) {
-            if (!$api) {
-                throw new Exception('invalid request for booking event');
-            }
-            if (!$this->booking_operation = $api->getOperationForEvent($_GET['booking_event_id'])) {
-                throw new Exception('booking event not found');
-            }
-        } elseif (isset($_GET['unbooked'])) {
-            $this->unbooked = true;
-        }
-
-        $this->initEdit();
-    }
-
-    /**
-     * Call the core edit action initialisation.
-     *
-     * (non-phpdoc)
-     *
-     * @see parent::initActionUpdate()
-     */
-    protected function initActionUpdate()
-    {
-        parent::initActionUpdate();
-        $this->initEdit();
-    }
 
     /**
      * Handle the selection of a booking for creating an op note.
@@ -297,9 +79,11 @@ class DefaultController extends BaseEventTypeController
             );
             $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             $this->event_actions = array(
-                EventAction::link('Cancel',
+                EventAction::link(
+                    'Cancel',
                     Yii::app()->createUrl($cancel_url),
-                    null, array('class' => 'button small warning')
+                    null,
+                    array('class' => 'button small warning')
                 ),
             );
 
@@ -428,7 +212,8 @@ class DefaultController extends BaseEventTypeController
 
         $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
         $this->event_actions = array(
-            EventAction::link('Cancel',
+            EventAction::link(
+                'Cancel',
                 Yii::app()->createUrl($cancel_url),
                 array('level' => 'cancel')
             ),
@@ -437,6 +222,52 @@ class DefaultController extends BaseEventTypeController
         $this->render('create', array(
             'errors' => @$errors,
         ));
+    }
+
+
+    protected function afterCreateElements($event)
+    {
+        parent::afterCreateElements($event);
+        $this->persistPcrRisk();
+    }
+
+    private function createPrescriptionEvent()
+    {
+        $drug_set_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_drug_set");
+        $subspecialty_id = $this->firm->getSubspecialtyID();
+        $params = [':subspecialty_id' => $subspecialty_id, ':name' => $drug_set_name];
+
+        $set = MedicationSet::model()->find([
+            'condition' => 'subspecialty_id = :subspecialty_id AND name = :name',
+            'params' => $params,
+            'with' => 'medicationSetRules',
+            'together' => true
+        ]);
+
+        $success = false;
+
+        if ($set) {
+            $procedure_list = Element_OphTrOperationnote_ProcedureList::model()->findByAttributes(['event_id' => $this->event->id]);
+
+            $prescription_creator = new PrescriptionCreator($this->event->episode);
+            $prescription_creator->patient = $this->patient;
+            $prescription_creator->addMedicationSet($set->id, $procedure_list->eye_id);
+            $prescription_creator->save();
+
+            $success = !$prescription_creator->hasErrors();
+            $errors = $prescription_creator->getErrors();
+        } else {
+            $msg = "Unable to create default Prescription because: No drug set named '{$drug_set_name}' was found";
+            $errors[] = [$msg];
+            $errors[] = $params; // these are only going to the logs and audit, not displayed to the user
+
+            \Yii::app()->user->setFlash('issue.prescription', $msg);
+        }
+
+        return [
+            'success' => $success,
+            'errors' => $errors
+        ];
     }
 
     /**
@@ -534,6 +365,20 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * @param $procedure_id
+     *
+     * @return OphTrOperationnote_ProcedureListOperationElement[]
+     */
+    public function getProcedureSpecificElements($procedure_id)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('procedure_id', $procedure_id);
+        $criteria->order = 'display_order asc';
+
+        return OphTrOperationnote_ProcedureListOperationElement::model()->findAll($criteria);
+    }
+
+    /**
      * Ajax function that works out what elements are no longer needed when a procedure has been removed.
      *
      * @throws SystemException
@@ -555,20 +400,6 @@ class DefaultController extends BaseEventTypeController
         }
 
         die(json_encode($elements));
-    }
-
-    /**
-     * @param $procedure_id
-     *
-     * @return OphTrOperationnote_ProcedureListOperationElement[]
-     */
-    public function getProcedureSpecificElements($procedure_id)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->compare('procedure_id', $procedure_id);
-        $criteria->order = 'display_order asc';
-
-        return OphTrOperationnote_ProcedureListOperationElement::model()->findAll($criteria);
     }
 
     /**
@@ -594,6 +425,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function renderOpenElements($action, $form = null, $data = null)
     {
+        if ($action === 'renderEventImage') {
+            $action = 'view';
+        }
         $this->renderTiledElements($this->getElements($action), $action, $form, $data);
     }
 
@@ -711,6 +545,488 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * Return the anaesthetic agent list.
+     *
+     * @param Element_OphTrOperationnote_Anaesthetic $element
+     *
+     * @return array
+     */
+    public function getAnaesthetic_agent_list($element)
+    {
+        $agents = $this->getAnaestheticAgentsBySiteAndSubspecialty();
+        $list = CHtml::listData($agents, 'id', 'name');
+        $curr_list = CHtml::listData($element->anaesthetic_agents, 'id', 'name');
+        if ($missing = array_diff($curr_list, $list)) {
+            foreach ($missing as $id => $name) {
+                $list[$id] = $name;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * Retrieve AnaestheticAgent instances relevant to the current site and subspecialty. The relation flag indicates
+     * whether we are retrieve the full list of defaults.
+     *
+     * @param string $relation
+     *
+     * @return array
+     */
+    protected function getAnaestheticAgentsBySiteAndSubspecialty($relation = 'siteSubspecialtyAssignments')
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('site_id = :siteId and subspecialty_id = :subspecialtyId');
+        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
+        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
+        $criteria->order = 'name';
+
+        return AnaestheticAgent::model()
+            ->active()
+            ->with(array(
+                $relation => array(
+                    'joinType' => 'JOIN',
+                ),
+            ))
+            ->findAll($criteria);
+    }
+
+    /**
+     * Return the list of possible operative devices for the given element.
+     *
+     * @param Element_OphTrOperationnote_Cataract $element
+     *
+     * @return array
+     */
+    public function getOperativeDeviceList($element)
+    {
+        $curr_list = CHtml::listData($element->operative_devices, 'id', 'name');
+        $devices = $this->getOperativeDevicesBySiteAndSubspecialty(false, array_keys($curr_list));
+
+        return CHtml::listData($devices, 'id', 'name');
+    }
+
+    /**
+     * Retrieve OperativeDevice instances relevant to the current site and subspecialty. The default flag indicates
+     * whether we are retrieve the full list of defaults.
+     *
+     * @param bool $default
+     *
+     * @return OperativeDevice[]
+     */
+    protected function getOperativeDevicesBySiteAndSubspecialty($default = false, $include_ids = null)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('subspecialty_id = :subspecialtyId and site_id = :siteId');
+        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
+        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
+
+        if ($default) {
+            $criteria->addCondition('siteSubspecialtyAssignments.default = :one');
+            $criteria->params[':one'] = 1;
+        }
+
+        $criteria->order = 'name asc';
+
+        return OperativeDevice::model()
+            ->activeOrPk($include_ids)
+            ->with(array(
+                'siteSubspecialtyAssignments' => array(
+                    'joinType' => 'JOIN',
+                ),
+            ))
+            ->findAll($criteria);
+    }
+
+    /**
+     * Get the ids of the default anaesthetic agents for the current site and subspecialty.
+     *
+     * @return array
+     */
+    public function getOperativeDeviceDefaults()
+    {
+        $ids = array();
+        foreach ($this->getOperativeDevicesBySiteAndSubspecialty(true) as $operative_device) {
+            $ids[] = $operative_device->id;
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Get the drug options for the element for the controller state.
+     *
+     * @param Element_OphTrOperationnote_PostOpDrugs $element
+     *
+     * @return array
+     */
+    public function getPostOpDrugList($element)
+    {
+        $drug_ids = array();
+        foreach ($element->drugs as $drug) {
+            $drug_ids[] = $drug->id;
+        }
+
+        $drugs = $this->getPostOpDrugsBySiteAndSubspecialty(false, $drug_ids);
+
+        return CHtml::listData($drugs, 'id', 'name');
+    }
+
+    /**
+     * Return the post op drugs for the current site and subspecialty.
+     *
+     * @param bool $default
+     *
+     * @return OphTrOperationnote_PostopDrug[]
+     */
+    protected function getPostOpDrugsBySiteAndSubspecialty($default = false, $include_ids = null)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('subspecialty_id = :subspecialtyId and site_id = :siteId');
+        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
+        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
+
+        if ($default) {
+            $criteria->addCondition('siteSubspecialtyAssignments.default = :one');
+            $criteria->params[':one'] = 1;
+        }
+
+        $criteria->order = 'name asc';
+
+        return OphTrOperationnote_PostopDrug::model()
+            ->with(array(
+                'siteSubspecialtyAssignments' => array(
+                    'joinType' => 'JOIN',
+                ),
+            ))
+            ->activeOrPk($include_ids)
+            ->findAll($criteria);
+    }
+
+    /**
+     * Helper method to get the site for the operation booking on this event.
+     *
+     * (currently only supports events that have been saved)
+     */
+    public function findBookingSite()
+    {
+        if ($pl = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event->id))) {
+            if ($pl->bookingEvent) {
+                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+                    return $api->findSiteForBookingEvent($pl->bookingEvent);
+                }
+            }
+        }
+
+        return;
+    }
+
+    public function actionGetImage()
+    {
+        preg_match('/data\:image\/png;base64,(.*)$/', $_POST['image'], $m);
+
+        file_put_contents('/tmp/image.png', base64_decode($m[1]));
+    }
+
+    public function getBookingOperation()
+    {
+        if ($this->booking_operation) {
+            return $this->booking_operation;
+        } else {
+            return false;
+        }
+    }
+
+    public function actionGetTheatreOptions()
+    {
+        $siteId = $this->request->getParam('siteId');
+        if ($siteId > 0) {
+            $optionValues = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
+                'condition' => 'active=1 and site_id=' . $siteId,
+                'order' => 'name',
+            ));
+
+            if (count($optionValues) == 1) {
+                echo CHtml::dropDownList(
+                    'theatre_id',
+                    false,
+                    CHtml::listData($optionValues, 'id', 'name')
+                );
+            } else {
+                echo CHtml::dropDownList(
+                    'theatre_id',
+                    false,
+                    CHtml::listData($optionValues, 'id', 'name'),
+                    array('empty' => 'Select',)
+                );
+            }
+        }
+    }
+
+    public function formatAconst($aconst)
+    {
+        /* based on the requirements:
+        Valid results*
+        * 118.0
+        * 118.1*
+        * 118.12*
+        * 118.123*
+        * 118.102
+        * 118.001*
+
+        *Invalid results*
+        * 118
+        * 118.000
+        * 118.100
+        * 118.120
+
+        */
+        $formatted = (float)$aconst;
+        if ($formatted == (int)$formatted) {
+            $formatted .= '.0';
+        }
+
+        return $formatted;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExtraTitleInfo()
+    {
+        if ($this->getAction()->id === 'view') {
+            /* @var Element_OphTrOperationnote_SiteTheatre */
+            $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
+
+            if (!$element) {
+                return null;
+            }
+
+            return '<span class="extra-info">' .
+                '<span class="fade">Site: </span>' .
+                $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
+                '</span>';
+        }
+        return null;
+    }
+
+    protected function beforeAction($action)
+    {
+        Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/eyedraw.js');
+        Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
+
+        return parent::beforeAction($action);
+    }
+
+    /**
+     * Creates the procedure elements for the procedures selected in the procedure list element.
+     *
+     * @return BaseEventTypeElement[]
+     */
+    protected function getEventElements()
+    {
+        if ($this->event && !$this->event->isNewRecord) {
+            return $this->event->getElements();
+            //TODO: check for missing elements for procedures
+        } else {
+            $elements = $this->event_type->getDefaultElements();
+            if ($procedures = $this->getBookingProcedures()) {
+                // Splice the elements array to place the extra elements in the correct order
+                // As it is when operation note has no booked procedures
+                $elements_before_procedures = [];
+                $elements_after_procedures = [];
+                $procedure_list_element_found = false;
+
+                foreach ($elements as $element) {
+                    if ($procedure_list_element_found) {
+                        $elements_after_procedures[] = $element;
+                    } else {
+                        $elements_before_procedures[] = $element;
+                        if ($element instanceof Element_OphTrOperationnote_ProcedureList) {
+                            $procedure_list_element_found = true;
+                        }
+                    }
+                }
+                // need to add procedure elements for the booking operation
+                $extra_elements = array();
+
+                foreach ($procedures as $proc) {
+                    $procedure_elements = $this->getProcedureSpecificElements($proc->id);
+                    foreach ($procedure_elements as $element) {
+                        $kls = $element->element_type->class_name;
+                        // only have one of any given procedure element
+                        if (!in_array($kls, $extra_elements)) {
+                            $extra_elements[] = $kls;
+                            $elements_before_procedures[] = new $kls();
+                        }
+                    }
+
+                    if (count($procedure_elements) == 0) {
+                        // no specific element for procedure, use generic
+                        $element = new Element_OphTrOperationnote_GenericProcedure();
+                        $element->proc_id = $proc->id;
+                        $elements_before_procedures[] = $element;
+                    }
+                }
+
+                return array_merge($elements_before_procedures, $elements_after_procedures);
+            }
+
+            return $elements;
+        }
+    }
+
+    /**
+     * returns list of procudures for the booking operation set on the controller.
+     *
+     * @return Proc[]
+     */
+    protected function getBookingProcedures()
+    {
+        if ($this->booking_operation) {
+            if (!$this->booking_procedures) {
+                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+                $this->booking_procedures = $api->getProceduresForOperation($this->booking_operation->event_id);
+            }
+
+            return $this->booking_procedures;
+        }
+    }
+
+    /**
+     * @param BaseEventTypeElement $element
+     * @param string $action
+     * @inheritdoc
+     */
+    protected function setElementDefaultOptions($element, $action)
+    {
+        if ($action == 'create' && $this->getBookingProcedures()) {
+            // we are loading procedure elements directly, so if they need the
+            // eye setting, we must take care of this first.
+            if (is_a($element, 'Element_OnDemandEye')) {
+                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+                $element->setEye($api->getEyeForOperation($this->booking_operation->event_id));
+            }
+        }
+        parent::setElementDefaultOptions($element, $action);
+    }
+
+    /**
+     * For new notes for a specific operation, initialise procedure list with relevant procedures.
+     *
+     * @param Element_OphTrOperationnote_ProcedureList $element
+     * @param string $action
+     */
+    protected function setElementDefaultOptions_Element_OphTrOperationnote_ProcedureList($element, $action)
+    {
+        if ($action == 'create' && $procedures = $this->getBookingProcedures()) {
+            $element->procedures = $procedures;
+
+            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+            $element->eye = $api->getEyeForOperation($this->booking_operation->event_id);
+            $element->booking_event_id = $this->booking_operation->event_id;
+        }
+    }
+
+    /**
+     * Determine if the witness field is required, and set various defaults from the patient and related booking.
+     *
+     * @param Element_OphTrOperationnote_Anaesthetic $element
+     * @param string $action
+     */
+    protected function setElementDefaultOptions_Element_OphTrOperationnote_Anaesthetic($element, $action)
+    {
+        if ($action == 'create') {
+            if ($this->booking_operation) {
+                $element->anaesthetic_type = $this->booking_operation->anaesthetic_type;
+            } else {
+                $key = $this->patient->isChild() ? 'ophtroperationnote_default_anaesthetic_child' : 'ophtroperationnote_default_anaesthetic';
+
+                if (isset(Yii::app()->params[$key])) {
+                    if ($at = AnaestheticType::model()->find('code=?', array(Yii::app()->params[$key]))) {
+                        $element->anaesthetic_type = array($at);
+                    }
+                }
+            }
+            $element->anaesthetic_agents = $this->getAnaestheticAgentsBySiteAndSubspecialty('siteSubspecialtyAssignmentDefaults');
+        }
+    }
+
+    /**
+     * Set the default drugs from site and subspecialty.
+     *
+     * @param Element_OphTrOperationnote_PostOpDrugs $element
+     * @param string $action
+     */
+    protected function setElementDefaultOptions_Element_OphTrOperationnote_PostOpDrugs($element, $action)
+    {
+        if ($action == 'create') {
+            $element->drugs = $this->getPostOpDrugsBySiteAndSubspecialty(true);
+        }
+    }
+
+    /**
+     * Set the default operative devices from the site and subspecialty.
+     *
+     * @param Element_OphTrOperationnote_Cataract $element
+     * @param $action
+     */
+    protected function setElementDefaultOptions_Element_OphTrOperationnote_Cataract($element, $action)
+    {
+        if ($action == 'create') {
+            $element->operative_devices = $this->getOperativeDevicesBySiteAndSubspecialty(true);
+        }
+    }
+
+    /**
+     * Set up the controller properties for booking relationship.
+     *
+     * @throws Exception
+     */
+    protected function initActionCreate()
+    {
+        parent::initActionCreate();
+
+        /** @var OphTrOperationbooking_API $api */
+        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+
+        if (isset($_GET['booking_event_id'])) {
+            if (!$api) {
+                throw new Exception('invalid request for booking event');
+            }
+            if (!$this->booking_operation = $api->getOperationForEvent($_GET['booking_event_id'])) {
+                throw new Exception('booking event not found');
+            }
+        } elseif (isset($_GET['unbooked'])) {
+            $this->unbooked = true;
+        }
+
+        $this->initEdit();
+    }
+
+    /**
+     * Edit actions common initialisation.
+     */
+    protected function initEdit()
+    {
+        $this->jsVars['eyedraw_iol_classes'] = Yii::app()->params['eyedraw_iol_classes'];
+        $this->moduleStateCssClass = 'edit';
+    }
+
+    /**
+     * Call the core edit action initialisation.
+     *
+     * (non-phpdoc)
+     *
+     * @see parent::initActionUpdate()
+     */
+    protected function initActionUpdate()
+    {
+        parent::initActionUpdate();
+        $this->initEdit();
+    }
+
+    /**
      * @param Element_OphTrOperationnote_ProcedureList $element
      * @param $data
      * @param $index
@@ -794,9 +1110,9 @@ class DefaultController extends BaseEventTypeController
     {
         $element->updateComplications(isset($data['OphTrOperationnote_CataractComplications']) ? $data['OphTrOperationnote_CataractComplications'] : array());
         $element->updateOperativeDevices(isset($data['OphTrOperationnote_CataractOperativeDevices']) ? $data['OphTrOperationnote_CataractOperativeDevices'] : array());
-        $procedure_list  = Element_OphTrOperationnote_ProcedureList::model()->find('event_id = ?', [$element->event_id]);
-        $eye = $procedure_list->eye;
-        $this->patient->removeBiologicalLensDiagnoses($eye);
+                $procedure_list  = Element_OphTrOperationnote_ProcedureList::model()->find('event_id = ?', [$element->event_id]);
+                $eye = $procedure_list->eye;
+                $this->patient->removeBiologicalLensDiagnoses($eye);
     }
 
     /**
@@ -852,183 +1168,6 @@ class DefaultController extends BaseEventTypeController
     {
         $model_name = CHtml::modelName($element);
         $element->updateComplications(isset($data[$model_name]['complications']) ? $data[$model_name]['complications'] : array());
-    }
-
-    /**
-     * Return the anaesthetic agent list.
-     *
-     * @param Element_OphTrOperationnote_Anaesthetic $element
-     *
-     * @return array
-     */
-    public function getAnaesthetic_agent_list($element)
-    {
-        $agents = $this->getAnaestheticAgentsBySiteAndSubspecialty();
-        $list = CHtml::listData($agents, 'id', 'name');
-        $curr_list = CHtml::listData($element->anaesthetic_agents, 'id', 'name');
-        if ($missing = array_diff($curr_list, $list)) {
-            foreach ($missing as $id => $name) {
-                $list[$id] = $name;
-            }
-        }
-
-        return $list;
-    }
-
-    /**
-     * Retrieve AnaestheticAgent instances relevant to the current site and subspecialty. The relation flag indicates
-     * whether we are retrieve the full list of defaults.
-     *
-     * @param string $relation
-     *
-     * @return array
-     */
-    protected function getAnaestheticAgentsBySiteAndSubspecialty($relation = 'siteSubspecialtyAssignments')
-    {
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('site_id = :siteId and subspecialty_id = :subspecialtyId');
-        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
-        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
-        $criteria->order = 'name';
-
-        return AnaestheticAgent::model()
-            ->active()
-            ->with(array(
-                $relation => array(
-                    'joinType' => 'JOIN',
-                ),
-            ))
-            ->findAll($criteria);
-    }
-
-    /**
-     * Return the list of possible operative devices for the given element.
-     *
-     * @param Element_OphTrOperationnote_Cataract $element
-     *
-     * @return array
-     */
-    public function getOperativeDeviceList($element)
-    {
-        $curr_list = CHtml::listData($element->operative_devices, 'id', 'name');
-        $devices = $this->getOperativeDevicesBySiteAndSubspecialty(false, array_keys($curr_list));
-
-        return CHtml::listData($devices, 'id', 'name');
-    }
-
-    /**
-     * Get the ids of the default anaesthetic agents for the current site and subspecialty.
-     *
-     * @return array
-     */
-    public function getOperativeDeviceDefaults()
-    {
-        $ids = array();
-        foreach ($this->getOperativeDevicesBySiteAndSubspecialty(true) as $operative_device) {
-            $ids[] = $operative_device->id;
-        }
-
-        return $ids;
-    }
-
-    /**
-     * Retrieve OperativeDevice instances relevant to the current site and subspecialty. The default flag indicates
-     * whether we are retrieve the full list of defaults.
-     *
-     * @param bool $default
-     *
-     * @return OperativeDevice[]
-     */
-    protected function getOperativeDevicesBySiteAndSubspecialty($default = false, $include_ids = null)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('subspecialty_id = :subspecialtyId and site_id = :siteId');
-        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
-        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
-
-        if ($default) {
-            $criteria->addCondition('siteSubspecialtyAssignments.default = :one');
-            $criteria->params[':one'] = 1;
-        }
-
-        $criteria->order = 'name asc';
-
-        return OperativeDevice::model()
-            ->activeOrPk($include_ids)
-            ->with(array(
-                'siteSubspecialtyAssignments' => array(
-                    'joinType' => 'JOIN',
-                ),
-            ))
-            ->findAll($criteria);
-    }
-
-    /**
-     * Get the drug options for the element for the controller state.
-     *
-     * @param Element_OphTrOperationnote_PostOpDrugs $element
-     *
-     * @return array
-     */
-    public function getPostOpDrugList($element)
-    {
-        $drug_ids = array();
-        foreach ($element->drugs as $drug) {
-            $drug_ids[] = $drug->id;
-        }
-
-        $drugs = $this->getPostOpDrugsBySiteAndSubspecialty(false, $drug_ids);
-
-        return CHtml::listData($drugs, 'id', 'name');
-    }
-
-    /**
-     * Return the post op drugs for the current site and subspecialty.
-     *
-     * @param bool $default
-     *
-     * @return OphTrOperationnote_PostopDrug[]
-     */
-    protected function getPostOpDrugsBySiteAndSubspecialty($default = false, $include_ids = null)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('subspecialty_id = :subspecialtyId and site_id = :siteId');
-        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
-        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
-
-        if ($default) {
-            $criteria->addCondition('siteSubspecialtyAssignments.default = :one');
-            $criteria->params[':one'] = 1;
-        }
-
-        $criteria->order = 'name asc';
-
-        return OphTrOperationnote_PostopDrug::model()
-            ->with(array(
-                'siteSubspecialtyAssignments' => array(
-                    'joinType' => 'JOIN',
-                ),
-            ))
-            ->activeOrPk($include_ids)
-            ->findAll($criteria);
-    }
-
-    /**
-     * Helper method to get the site for the operation booking on this event.
-     *
-     * (currently only supports events that have been saved)
-     */
-    public function findBookingSite()
-    {
-        if ($pl = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event->id))) {
-            if ($pl->bookingEvent) {
-                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                    return $api->findSiteForBookingEvent($pl->bookingEvent);
-                }
-            }
-        }
-
-        return;
     }
 
     protected function setComplexAttributes_Element_OphTrOperationnote_Trabeculectomy($element, $data, $index)
@@ -1132,57 +1271,9 @@ class DefaultController extends BaseEventTypeController
         $element->updateMultiSelectData('OphTrOperationnote_Trabeculectomy_Complications', empty($data['MultiSelect_Complications']) ? array() : $data['MultiSelect_Complications'], 'complication_id');
     }
 
-    public function actionGetImage()
-    {
-        preg_match('/data\:image\/png;base64,(.*)$/', $_POST['image'], $m);
-
-        file_put_contents('/tmp/image.png', base64_decode($m[1]));
-    }
-
-    public function getBookingOperation()
-    {
-        if ($this->booking_operation) {
-            return $this->booking_operation;
-        } else {
-            return false;
-        }
-    }
-
-    public function actionGetTheatreOptions()
-    {
-        $siteId = $this->request->getParam('siteId');
-        if ($siteId > 0) {
-            $optionValues = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
-                'condition' => 'active=1 and site_id=' . $siteId,
-                'order' => 'name',
-            ));
-
-            if (count($optionValues) == 1) {
-                echo CHtml::dropDownList(
-                    'theatre_id',
-                    false,
-                    CHtml::listData($optionValues, 'id', 'name')
-                );
-            } else {
-                echo CHtml::dropDownList(
-                    'theatre_id',
-                    false,
-                    CHtml::listData($optionValues, 'id', 'name'),
-                    array('empty' => 'Select',)
-                );
-            }
-        }
-    }
-
     protected function afterUpdateElements($event)
     {
         parent::afterUpdateElements($event);
-        $this->persistPcrRisk();
-    }
-
-    protected function afterCreateElements($event)
-    {
-        parent::afterCreateElements($event);
         $this->persistPcrRisk();
     }
 
@@ -1199,10 +1290,10 @@ class DefaultController extends BaseEventTypeController
 
         if ($macro) {
             $name = addcslashes($this->event->episode->status->name, '%_'); // escape LIKE's special characters
-            $criteria = new CDbCriteria( array(
+            $criteria = new CDbCriteria(array(
                 'condition' => "name LIKE :name",
                 'params'    => array(':name' => "$name%")
-            ) );
+            ));
 
             $letter_type = \LetterType::model()->find($criteria);
             $letter_type_id = $letter_type ? $letter_type->id : null;
@@ -1223,67 +1314,6 @@ class DefaultController extends BaseEventTypeController
             'success' => $success,
             'errors' => $errors
         ];
-    }
-
-    private function createPrescriptionEvent()
-    {
-        $drug_set_name = \SettingMetadata::model()->getSetting("default_post_op_drug_set");
-        $subspecialty_id = $this->firm->getSubspecialtyID();
-        $params = [':subspecialty_id' => $subspecialty_id, ':name' => $drug_set_name];
-
-        $set = DrugSet::model()->find([
-            'condition' => 'subspecialty_id = :subspecialty_id AND name = :name',
-            'params' => $params,
-        ]);
-
-        $success = false;
-
-        if ($set) {
-            $prescription_creator = new PrescriptionCreator($this->event->episode);
-            $prescription_creator->patient = $this->patient;
-            $prescription_creator->addDrugSet($set->id);
-            $prescription_creator->save();
-
-            $success = !$prescription_creator->hasErrors();
-            $errors = $prescription_creator->getErrors();
-        } else {
-            $msg = "Unable to create default Prescription because: No drug set named '{$drug_set_name}' was found";
-            $errors[] = [$msg];
-            $errors[] = $params; // these are only going to the logs and audit, not displayed to the user
-
-            \Yii::app()->user->setFlash('issue.prescription', $msg);
-        }
-
-        return [
-            'success' => $success,
-            'errors' => $errors
-        ];
-    }
-
-    public function formatAconst($aconst)
-    {
-        /* based on the requirements:
-        Valid results*
-        * 118.0
-        * 118.1*
-        * 118.12*
-        * 118.123*
-        * 118.102
-        * 118.001*
-
-        *Invalid results*
-        * 118
-        * 118.000
-        * 118.100
-        * 118.120
-
-        */
-        $formatted = (float)$aconst;
-        if ($formatted == (int)$formatted) {
-            $formatted .= '.0';
-        }
-
-        return $formatted;
     }
 
     /**
@@ -1349,34 +1379,12 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getExtraTitleInfo()
-    {
-        if ($this->getAction()->id === 'view') {
-            /* @var Element_OphTrOperationnote_SiteTheatre */
-            $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
-
-            if (!$element) {
-                return null;
-            }
-
-            return '<span class="extra-info">' .
-                '<span class="fade">Site: </span>' .
-                $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
-                '</span>';
-        }
-        return null;
-    }
-
-    /**
-     * @param $proc_id
-     * @return OphTrOperationnote_Attribute[]
-     *
      * Returns attributes that belong
      * to the given procedure
+     *
+     * @param $proc_id
+     * @return mixed
      */
-
     protected function getAttributesForProcedure($proc_id)
     {
         $crit = new CDbCriteria();

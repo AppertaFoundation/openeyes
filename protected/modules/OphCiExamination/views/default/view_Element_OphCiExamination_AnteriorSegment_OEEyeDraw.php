@@ -16,8 +16,20 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="eyedraw-canvas flex-layout">
-    <?php
+<?php
+    $cross_section_ed = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id . '_side',
+        'side' => ($side === 'right') ? 'R' : 'L',
+        'mode' => 'view',
+        'width' => $this->action->id === 'view' ? 132 : 80.4,
+        'height' => $this->action->id === 'view' ? 200 : 120,
+        'model' => $element,
+        'attribute' => $side . '_eyedraw2',
+        'toggleScale' => 0.72,
+        'showDrawingControls' => false,
+    ), true);
+    ?>
+<?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
         'side' => ($side === 'right') ? 'R' : 'L',
@@ -27,21 +39,9 @@
         'model' => $element,
         'attribute' => $side . '_eyedraw',
         'toggleScale' => 0.72,
-    )); ?>
-    <?php
-    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id . '_side',
-        'side' => ($side === 'right') ? 'R' : 'L',
-        'mode' => 'view',
-        'width' => $this->action->id === 'view' ? 132 : 80.4,
-        'height' => $this->action->id === 'view' ? 200 : 120,
-        'model' => $element,
-        'attribute' => $side . '_eyedraw2',
-        'toggleScale' => 0.72,
+        'fields' => $cross_section_ed,
     ));
     ?>
-
-</div>
 
 <div class="eyedraw-data stack">
     <?php if ($report = $element->{$side . '_ed_report'}) : ?>

@@ -96,7 +96,9 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                     'finding_id' => isset($data->finding) ? $data->finding->id : null,
                 );
 
-                $remove_a = CHtml::tag('a', array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
+                $remove_a = CHtml::tag(
+                    'a',
+                    array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
                     Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
                 );
 
@@ -130,7 +132,9 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                     'alternate_disorder_id' => isset($data->alternate_disorder) ? $data->alternate_disorder->id : null,
                 );
 
-                $remove_a = CHtml::tag('a', array('href' => 'javascript:void(0)', 'class' => 'alternate-disorder-rename'),
+                $remove_a = CHtml::tag(
+                    'a',
+                    array('href' => 'javascript:void(0)', 'class' => 'alternate-disorder-rename'),
                     Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change disorder"), null)
                 );
 

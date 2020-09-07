@@ -21,8 +21,7 @@
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <?php $el_id =  CHtml::modelName($element) . '_popup'; ?>
 
-<?php if ($element && ($current || $stopped)) { ?>
-    <div id="<?= $el_id ?>">
+    <div id="<?php echo $el_id; ?>">
         <div class="data-group">
             <div class="cols-2 column label">
                 Medications
@@ -40,12 +39,16 @@
                 <?php if ($current) { ?>
                     <?php foreach ($current as $entry) { ?>
                         <tr>
-                            <td><strong><?= $entry->getMedicationDisplay() ?></strong>
-                                <?php if ($entry->prescription_item) { ?>
-                                    <a href="<?= $entry->getPrescriptionLink() ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
+                            <td><strong>
+                                    <? $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                                    <?= $entry->getMedicationDisplay() ?>
+                                </strong>
+                                <?php if ($entry->prescription_item_id) { ?>
+                                    <a href="<?= $this->getPrescriptionLink($entry->prescriptionItem) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
-                            <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
+                            <td>
+                                <span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
                           <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                         </tr>
                     <?php } ?>
@@ -56,9 +59,11 @@
                     </tr>
                     <?php foreach ($stopped as $entry) { ?>
                         <tr class="stopped-kind" style="display: none;">
-                            <td><strong><?= $entry->getMedicationDisplay() ?></strong>
-                                <?php if ($entry->prescription_item) { ?>
-                                    <a href="<?= $entry->getPrescriptionLink() ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
+                            <td><strong>
+                                    <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                                    <?= $entry->getMedicationDisplay() ?></strong>
+                                <?php if ($entry->prescription_item_id) { ?>
+                                    <a href="<?= $this->getPrescriptionLink($entry->prescriptionItem) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
                             <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
@@ -72,8 +77,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             new OpenEyes.OphCiExamination.HistoryMedicationsViewController({
-                element: $('#<?= $el_id ?>')
+                element: $('#<?php echo $el_id; ?>')
             });
         });
     </script>
-<?php } ?>

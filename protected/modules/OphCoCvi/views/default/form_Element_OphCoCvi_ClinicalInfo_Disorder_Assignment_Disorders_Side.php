@@ -40,7 +40,8 @@
               <?=\CHtml::checkBox(
                   $field_base_name . "[main_cause]",
                   $element->isCviDisorderMainCauseForSide($disorder, $side),
-                  array('class' => 'disorder-main-cause')); ?>
+                  array('class' => 'disorder-main-cause')
+              ); ?>
             Main cause
           </label>
         </td>

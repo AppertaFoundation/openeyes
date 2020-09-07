@@ -20,9 +20,14 @@ class DisorderController extends BaseAdminController
 
     public function actionList()
     {
-        Audit::add('admin', 'list', null, false,
+        Audit::add(
+            'admin',
+            'list',
+            null,
+            false,
             array('module' => 'OphTrOperationnote',
-                'model' => 'Disorder'));
+            'model' => 'Disorder')
+        );
         $query = \Yii::app()->request->getQuery('searchQuery');
         $specialty = \Yii::app()->request->getQuery('specialty');
         $criteria = new \CDbCriteria();

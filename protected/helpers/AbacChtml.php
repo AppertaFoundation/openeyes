@@ -64,5 +64,4 @@ class AbacChtml extends CHtml
             return $attribute;
         }
     }
-
 }

@@ -18,6 +18,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        parent::setUp();
         Yii::app()->params['event_lock_days'] = 1;
         $this->rules = new AuthRules();
     }
@@ -31,12 +32,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
     public function testCanEditEpisode_SupportServicesFirm_SupportServicesEpisode()
     {
-        $this->assertTrue($this->rules->canEditEpisode( $this->getSupportServicesEpisode()));
+        $this->assertTrue($this->rules->canEditEpisode($this->getSupportServicesEpisode()));
     }
 
     public function testCanEditEpisode_SupportServicesFirm_LegacyEpisode()
     {
-        $this->assertFalse($this->rules->canEditEpisode( $this->getLegacyEpisode()));
+        $this->assertFalse($this->rules->canEditEpisode($this->getLegacyEpisode()));
     }
 
     public function testCanEditEpisode_NormalFirm_LegacyEpisode()
@@ -46,7 +47,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
     public function testCanEditEpisode_NormalFirm_NormalEpisode_MatchingSubspecialty()
     {
-        $this->assertTrue($this->rules->canEditEpisode( $this->getNormalEpisode(42)));
+        $this->assertTrue($this->rules->canEditEpisode($this->getNormalEpisode(42)));
     }
 
     public function testCanCreateEvent_Disabled()
@@ -208,14 +209,14 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanRequestEventDeletion_DeletePending()
     {
         $event = $this->getEvent(array('delete_pending' => true));
-        $this->assertFalse($this->rules->canRequestEventDeletion( $event));
+        $this->assertFalse($this->rules->canRequestEventDeletion($event));
     }
 
     public function testCanRequestEventDeletion_ModuleDisallows()
     {
         $event = $this->getEvent();
         $event->expects($this->any())->method('showDeleteIcon')->will($this->returnValue(false));
-        $this->assertFalse($this->rules->canRequestEventDeletion( $event));
+        $this->assertFalse($this->rules->canRequestEventDeletion($event));
     }
 
     public function testCanRequestEventDeletion_CorrectSubspecialty()

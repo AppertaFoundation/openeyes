@@ -1,18 +1,17 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -32,7 +31,6 @@
  * @property string $postcode
  * @property string $county
  * @property int $country_id
- * @property string $email
  *
  * The following are the available model relations:
  * @property Country $country
@@ -66,12 +64,9 @@ class Address extends BaseActiveRecordVersioned
             array('address1, address2, city, county', 'length', 'max' => 255),
             array('address1, city, postcode', 'required','on' => array('manage_practice')),
             array('postcode', 'length', 'max' => 10),
-            array('email', 'length', 'max' => 255),
-            array('email','email'),
             array('country_id, address_type_id, date_start, date_end', 'safe'),
             array('contact_id, country_id', 'required'),
-            array('email', 'required', 'on'=>array('self_register')),
-            array('id, address1, address2, city, postcode, county, email, country_id, address_type_id, date_start, date_end', 'safe', 'on' => 'search'),
+            array('id, address1, address2, city, postcode, county, country_id, address_type_id, date_start, date_end', 'safe', 'on' => 'search'),
             array('city', 'cityValidator'),
         );
     }
@@ -101,7 +96,6 @@ class Address extends BaseActiveRecordVersioned
             'postcode' => 'Postcode',
             'county' => Yii::app()->params['county_label'],
             'country_id' => 'Country',
-            'email' => 'Email',
             'address_type_id' => 'Address Type',
         );
     }
@@ -205,7 +199,6 @@ class Address extends BaseActiveRecordVersioned
         $criteria->compare('postcode', $this->postcode, true);
         $criteria->compare('county', $this->county, true);
         $criteria->compare('country_id', $this->country_id, true);
-        $criteria->compare('email', $this->email, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
@@ -229,7 +222,8 @@ class Address extends BaseActiveRecordVersioned
         return false;
     }
 
-    public function cityValidator($attribute, $param){
+    public function cityValidator($attribute, $param)
+    {
         if (isset($this->city)) {
             if (1 === preg_match('~[0-9]~', $this->city)) {
                 $this->addError($attribute, "City has Numeric values");
@@ -237,7 +231,8 @@ class Address extends BaseActiveRecordVersioned
         }
     }
 
-    public function getDefaultCountryId(){
+    public function getDefaultCountryId()
+    {
         $default_country_setting = SettingMetadata::model()->getSetting('default_country');
         return Country::model()->find('name = ?', [$default_country_setting])->id;
     }
@@ -255,5 +250,4 @@ class Address extends BaseActiveRecordVersioned
         $this->date_end = Helper::convertNHS2MySQL($this->date_end);
         return parent::beforeValidate();
     }
-
 }

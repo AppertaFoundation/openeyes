@@ -19,7 +19,7 @@
 <?php
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
-$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
 /***
  * @var $trialContext TrialContext
  */
@@ -30,151 +30,67 @@ if ($this->trial) {
         array('patient' => $this->patient, 'trial' => $this->trial)
     );
 }
+$controllerID = (isset($this->controller->id) ? $this->controller->id : $this->id);
 
 $deceased = $this->patient->isDeceased();
 ?>
 
-<div id="oe-patient-details"
-     class="js-oe-patient <?= $this->list_mode ? 'oe-list-patient' : 'oe-patient' ?> <?= $deceased ? 'deceased' : '' ?>"
-     data-patient-id="<?= $this->patient->id ?>"
->
-    <div class="patient-name">
-        <?php if (!$this->patient->isDeleted()) : ?>
-            <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
-        <?php else : ?>
-            <a>
-        <?php endif; ?>
-            <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
-            <span class="patient-firstname">
-                <?php echo $this->patient->getFirst_name(); ?>
-                <?php echo $this->patient->getTitle() ? "({$this->patient->getTitle()})" : ''; ?>
-                <?php echo $this->patient->isDeleted() ? "(Deleted)" : ''; ?>
-            </span>
-        </a>
-    </div>
-
-    <?php if ($this->list_mode) {
-        ?><div class="flex-layout"> <?php
-    } ?>
-    <div class="patient-details">
-        <div class="hospital-number">
-<!--                Displaying only ID label (instead of CERA ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-            <span><?php echo ( Yii::app()->params['hos_num_label_short'] ) ?> </span>
-                          <div class="js-copy-to-clipboard inline" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
-        </div>
-        <div class="nhs-number">
-<!--                Displaying only Medicare label (instead of Medicare ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-            <span><?php echo ( Yii::app()->params['nhs_num_label_short'] ) ?></span>
-            <?php echo $this->patient->nhsnum ?>
-            <?php if ($this->patient->nhsNumberStatus) : ?>
-                <i class="oe-i <?= isset($this->patient->nhsNumberStatus->icon->class_name) ? $this->patient->nhsNumberStatus->icon->class_name : 'exclamation' ?> small"></i>
-            <?php endif; ?>
-        </div>
-
-        <div class="patient-gender">
-<!--                Displaying Gen. (instead of Gender) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-            <em><?php echo (Yii::app()->params['gender_short']) ?></em>
-            <?php echo $this->patient->getGenderString() ?>
-        </div>
-        <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
-            <?php if ($deceased) : ?>
-                <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
-            <?php endif; ?>
-            <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge(); ?>
-        </div>
-        <?php if ($trialContext) {
-            echo $trialContext->renderPatientTrialStatus();
-            echo $trialContext->renderAddToTrial();
-        } ?>
-    </div>
-    <?php if ($this->list_mode) {
-        ?><div class="flex-layout flex-right"> <?php
-    }
-    if (!$deceased) { ?>
-        <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
-            <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
-                <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
-                <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
-                <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
-            </div>
-        <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
-            <div class="patient-allergies-risks unknown js-allergies-risks-btn">
-                Allergies, Alerts
-            </div>
-        <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
-            <div class="patient-allergies-risks no-risk js-allergies-risks-btn">
-                Allergies, Alerts
-            </div>
-        <?php } else { /*either risk or allergy status in unknown*/ ?>
-            <div class="patient-allergies-risks unknown js-allergies-risks-btn">
-                Allergies, Alerts
-            </div>
-        <?php }
-    } ?>
-    <div class="patient-demographics js-demographics-btn" id="js-demographics-btn">
-        <svg viewBox="0 0 60 60" class="icon">
-            <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
-        </svg>
-    </div>
-
-    <?php
-    if (Yii::app()->user->checkAccess('OprnViewClinical')) {?>
-    <div class="patient-management js-management-btn">
-        <svg viewBox="0 0 30 30" class="icon">
-            <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
-        </svg>
-    </div>
-    <div class="patient-quicklook js-quicklook-btn" id="js-quicklook-btn">
-        <svg viewBox="0 0 30 30" class="icon">
-            <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
-        </svg>
-    </div>
-    <?php }?>
-
-    <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
-        <div class="patient-local-edit js-patient-local-edit-btn"
-        <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials)) {
-            echo 'style ="top: 35px; right: 0px"';
-        }?>
-        >
-            <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id'=>$this->patient->id, 'prevUrl'=>Yii::app()->request->url)); ?>" >
-                <svg viewBox="0 0 30 30" class="icon">
-                    <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
-                </svg>
-            </a>
-        </div>
-    <?php endif; ?>
-    <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
-        <div class="patient-trials js-trials-btn">
-            <svg viewBox="0 0 30 30" class="icon">
-                <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
-            </svg>
-        </div>
-    <?php } ?>
-<?php if ($this->list_mode) {?>
-        </div></div>
-<?php } ?>
-    <!-- Widgets (extra icons, links etc) -->
-    <ul class="patient-widgets">
-        <?php foreach ($this->widgets as $widget) {
-            echo "<li>{$widget}</li>";
-        } ?>
-    </ul>
-</div>
 <?php
-$assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
-Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
-?>
-<script type="text/javascript">
-    $(function () {
-        //console.log($('[id=oe-patient-details][data-patient-id=<?php //= $this->patient->id?>//]'));
-        PatientPanel.patientPopups.init($('[id=oe-patient-details][data-patient-id=<?= $this->patient->id?>]'));
-        // PatientPanel.patientPopups.init();
+if ($summary) {
+    $this->render('application.widgets.views.PatientPanelSummary', array('deceased'=>$deceased,'trialContext'=>$trialContext,'navIconsUrl'=>$navIconsUrl));
 
-        $('body').on('click', '.js-patient-expand-btn', function () {
-            $(this).toggleClass('collapse expand');
-            $(this).parents('table').find('tbody').toggle();
-        });
-    });
-</script>
+    $assetManager = Yii::app()->getAssetManager();
+    $widgetPath = $assetManager->publish('protected/widgets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
+} else { ?>
+    <td>
+        <?php
+            $this->render('application.widgets.views.PatientMeta');
+        ?>
+    </td>
+    <td id="oe-patient-details" class="js-oe-patient <?= $this->list_mode ? '' : 'oe-patient' ?> <?= $deceased ? 'deceased' : '' ?>"
+        data-patient-id="<?= $this->patient->id ?>" style="text-align: left">
+        <?php if (!$deceased) { ?>
+            <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
+            <i class="<?= in_array($controllerID, ['caseSearch','trial','worklist'])?'oe-i warning':'patient-allergies-risks' ?> medium pad js-allergies-risks-btn">
+            </i>
+            <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
+            <i class="unknown <?= in_array($controllerID, ['caseSearch','trial','worklist'])? 'oe-i triangle': 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn"></i>
+            <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
+            <i class="no-risk <?= in_array($controllerID, ['caseSearch','trial','worklist'])? 'oe-i triangle': 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn"></i>
+            <?php } else { /*either risk or allergy status in unknown*/ ?>
+            <i class="unknown <?= in_array($controllerID, ['caseSearch','trial','worklist'])? 'oe-i triangle': 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn"></i>
+            <?php }
+        } ?>
+            <i class=" js-patient-quick-overview oe-i info medium pad patient-demographics js-demographics-btn" id="js-demographics-btn"></i>
+        <?php
+        if (Yii::app()->user->checkAccess('OprnViewClinical')) {?>
+                <i class="oe-i patient medium pad patient-management js-management-btn" id="js-management-btn"></i>
+                <i class="oe-i eye medium pad patient-quicklook js-quicklook-btn" id="js-quicklook-btn"></i>
+        <?php }?>
+
+            <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
+              <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id'=>$this->patient->id, 'prevUrl'=>Yii::app()->request->url)); ?>" >
+                  <i class="patient-local-edit js-patient-local-edit-btn oe-i medium pad pencil cc_pointer"
+                    <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials)) {
+                        echo 'style ="top: 35px; right: 0px"';
+                    }?>
+                  ></i>
+              </a>
+            <?php endif; ?>
+            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
+                <i class="oe-i trials medium pad patient-trials js-trials-btn" id="js-trials-btn"></i>
+            <?php } ?>
+        <div class="patient-details">
+            <?php if ($trialContext) {
+                echo $trialContext->renderPatientTrialStatus();
+                echo $trialContext->renderAddToTrial();
+            } ?>
+        </div>
+    </td>
+    <?php
+      $assetManager = Yii::app()->getAssetManager();
+      $widgetPath = $assetManager->publish('protected/widgets/js');
+      Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
+    ?>
+<?php } ?>

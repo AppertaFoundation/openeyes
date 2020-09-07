@@ -73,10 +73,14 @@
                 'value' => function ($data, $row) {
                     return
                         '<div>' .
-                        CHtml::dropDownList(null, '',
+                        CHtml::dropDownList(
+                            null,
+                            '',
                             CHtml::listData(CommonPreviousOperation::model()->findAll(
-                                ['order' => 'display_order asc']), 'id', 'name'),
-                            ['empty' => '- Select -', 'class' => 'common_prev_op_select']) . '<br />' .
+                                ['order' => 'display_order asc']
+                            ), 'id', 'name'),
+                            ['empty' => '- Select -', 'class' => 'common_prev_op_select']
+                        ) . '<br />' .
                         CHtml::textField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][operation]", $data->operation, [
                             'placeholder' => 'Select from above or type',
                             'autocomplete' => Yii::app()->params['html_autocomplete'],

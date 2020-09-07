@@ -112,10 +112,10 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
         </div>
         <div class="parameter-option">
             <?php echo CHtml::activeDropDownList(
-                    $this,
-                    "[$id]operation",
-                    $ops,
-                    array('onchange' => 'refreshValues(this)', 'prompt' => 'Select One...', 'class' => 'js-age-operation')
+                $this,
+                "[$id]operation",
+                $ops,
+                array('onchange' => 'refreshValues(this)', 'prompt' => 'Select One...', 'class' => 'js-age-operation')
             ); ?>
             <?php echo CHtml::error($this, "[$id]operation"); ?>
         </div>

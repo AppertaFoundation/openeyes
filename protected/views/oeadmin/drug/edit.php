@@ -39,7 +39,7 @@
                 $model,
                 $field,
                 ['class' => 'cols-full']
-                ); ?> </td>
+            ); ?> </td>
             </tr>
         <?php } ?>
         <tr>
@@ -84,7 +84,7 @@
                 <?= \CHtml::activeDropDownList(
                     $model,
                     'default_duration_id',
-                    CHtml::listData(DrugDuration::model()->findAll(), 'id', 'name'),
+                    CHtml::listData(MedicationDuration::model()->findAll(), 'id', 'name'),
                     [
                         'empty' => 'Select',
                         'class' => 'cols-full'

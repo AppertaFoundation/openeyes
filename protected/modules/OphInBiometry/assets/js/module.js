@@ -3,6 +3,8 @@ $(document).ready(function() {
 	var show_disable_manual_warning = false;
 	var sdmw = $('#show_disable_manual_warning').val();
 
+	autosize($('.autosize'));
+
 	$("#Element_OphInBiometry_Measurement_k1_right, #Element_OphInBiometry_Measurement_k2_right, #Element_OphInBiometry_Measurement_k2_axis_right").on("keyup", function() {
 		calculateDeltaValues('right');
 	});

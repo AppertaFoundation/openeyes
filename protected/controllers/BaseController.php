@@ -122,7 +122,7 @@ class BaseController extends Controller
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
         if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])) {
             $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-            $print_css_path = $assetManager->getPublishedUrl($newblue_path).'/css/style_oe3_print.min.css';
+            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true).'/css/style_oe3_print.min.css';
             $newparams =
                 array_merge_recursive(
                     Yii::app()->getParams()->toArray(),
@@ -177,6 +177,27 @@ class BaseController extends Controller
                 $this->selectedFirmId = 1;
                 $app->session['patient_id'] = 1;
                 $app->session['patient_name'] = 'John Smith';
+            }
+        } else {
+            $user = User::model()->findByPk(Yii::app()->user->id);
+            if ($user) {
+                // if not a active user, force log out
+                if (!$user->getUserActiveStatus($user)||$user->testUserPWStatus()) {
+                    $user->audit('BaseControler', 'force-logout', null, "User $user->username logged out because their account is not active");
+                    Yii::app()->user->logout();
+                    $this->redirect(Yii::app()->homeUrl);
+                }
+                $user->testUserPwDate();
+                
+                $user->userLogOnAttemptsCheck();
+
+                $whitelistedRequest = ($_SERVER['REQUEST_URI']=='/profile/password')||($_SERVER['REQUEST_URI']=='/site/logout'); // get stale pw whitelisted actions
+
+                // if user is expired, force them to change their password
+                if ((!( $user->password_status=="current" || $user->password_status=="stale")) && !$whitelistedRequest) {
+                    Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
+                    $this->redirect(array('/profile/password'));
+                }
             }
         }
 
@@ -257,6 +278,7 @@ class BaseController extends Controller
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
         $this->jsVars['OE_GP_Setting'] = Yii::app()->params['gp_label'];
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
+        $this->jsVars['popupMode'] = SettingMetadata::model()->getSetting('patient_overview_popup_mode');
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);
@@ -405,7 +427,11 @@ class BaseController extends Controller
 
     public function setPageTitle($pageTitle)
     {
-        parent::setPageTitle($pageTitle . ' - OE');
+        if ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on") {
+            parent::setPageTitle($pageTitle . ' - OE');
+        } else {
+            parent::setPageTitle($pageTitle);
+        }
     }
 
     public function sanitizeInput($input)
@@ -418,7 +444,9 @@ class BaseController extends Controller
                     continue;
                 }
                 $pattern = '/<(?:(?!\b' . implode('\b|\b', $allowable_tags) . '\b).)*?>/';
-                $value = preg_replace($pattern, '', $value);
+                $value = preg_replace_callback($pattern,  function ($matches) {
+                    return CHtml::encode($matches[0]);
+                }, $value);
                 $input[$key] = $value;
             }
         }

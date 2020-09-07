@@ -1,5 +1,5 @@
 <?php
-$this->pageTitle = Yii::app()->name . ' - Login';
+$this->pageTitle = ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ? Yii::app()->name . ' - ' : '') . 'Login';
 $settings = new SettingMetadata();
 $tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']): htmlspecialchars($settings->getSetting('tech_support_provider'));
 $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'))
@@ -21,8 +21,13 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
             'placeholder' => 'Username',
         )); ?>
 
-        <?php echo $form->passwordField($model, 'password',
-            array('autocomplete' => 'off', 'placeholder' => 'Password')); ?>
+        <?php echo $form->passwordField(
+            $model,
+            'password',
+            array('autocomplete' => 'off',
+            'placeholder' => 'Password'
+            )
+        ); ?>
 
       <i class="spinner" style="display:none"></i>
 

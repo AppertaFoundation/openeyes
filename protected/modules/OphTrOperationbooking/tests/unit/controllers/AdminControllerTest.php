@@ -39,10 +39,7 @@ class AdminControllerTest extends CTestCase
         $this->audit = $this->getMock('Audit');
         */
         //Yii::app()->setComponent('audit',$this->audit);
-    }
-
-    public function tearDown()
-    {
+        parent::setUp();
     }
 
     public function testActionViewERODRules()

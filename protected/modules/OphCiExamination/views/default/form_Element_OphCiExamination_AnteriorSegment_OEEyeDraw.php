@@ -50,10 +50,11 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
         array('Lens', 'PCIOL', 'ToricPCIOL', 'Bleb', 'PI', 'Fuchs', 'CornealOedema', 'PosteriorCapsule', 'CornealPigmentation',
             'TransilluminationDefect', 'Hypopyon', 'Hyphaema', 'CornealScar', 'Rubeosis', 'SectorIridectomy', 'ACIOL',
-            'LasikFlap', 'CornealSuture', 'ConjunctivalSuture', 'TrabySuture', 'DendriticUlcer','AdenoviralKeratitis',
+            'LasikFlap', 'ConjunctivalSuture', 'TrabySuture', 'DendriticUlcer','AdenoviralKeratitis',
             'CornealLaceration', 'MarginalKeratitis', 'MetallicForeignBody', 'Pingueculum', 'Pterygium' , 'CapsularTensionRing'),
-        array('BandKeratopathy', 'SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'Conjunctivitis', 'PosteriorSynechia',
-            'KeraticPrecipitates', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
+
+        array('BandKeratopathy', 'SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'ConjunctivalHaem', 'PosteriorSynechia',
+            'KeraticPrecipitates', 'CellsAndFlare', 'CircumcornealInjection', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
             'Patch', 'SidePort', 'RK', 'CornealGraft', 'EndothelialKeratoplasty', 'CornealSuture', 'ContinuousCornealSuture', 'CornealThinning', 'PeripheralVascularisation',
             'Freehand', 'FreehandCopyForOE'
         ),
@@ -66,7 +67,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'height' => 300,
     'model' => $element,
     'attribute' => $side.'_eyedraw',
-    'maxToolbarButtons' => 7,
+    'maxToolbarButtons' => 12,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
     'popupDisplaySide' => 'right',
@@ -74,5 +75,3 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'autoReportEditable' => false,
     'fields' => $cross_section_ed
 ));
-
-?>

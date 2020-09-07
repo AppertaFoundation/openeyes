@@ -118,6 +118,16 @@ class PcrRiskReport extends Report implements ReportInterface
         return $this->command->queryAll();
     }
 
+    protected function isCurrentUserServiceManager()
+    {
+                return $this->app->authManager->isAssigned('Service Manager', $this->app->user->id);
+    }
+
+    protected function isCurrentUserById($id)
+    {
+            return $this->app->user->id == $id;
+    }
+
     /**
      * @return array
      */
@@ -167,13 +177,13 @@ class PcrRiskReport extends Report implements ReportInterface
             if ($total > 1000) {
                 $this->totalOperations = $total;
             }
-            if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
+            if ($this->isCurrentUserServiceManager()) {
                 $surgeon_name = User::model()->findByPk($surgeon_id)->getFullName();
                 $surgeon_name = '<br><i>Surgeon: </i>'.$surgeon_name;
             } else {
                 $surgeon_name = '<br><i>Surgeon: </i>Surgeon '.$surgeon_count;
             }
-            if ($surgeon_id['id'] == Yii::app()->user->id) {
+            if ($this->isCurrentUserById($surgeon_id['id'])) {
                 $color = "#1f77b4";
             } else {
                 $color = 'red';

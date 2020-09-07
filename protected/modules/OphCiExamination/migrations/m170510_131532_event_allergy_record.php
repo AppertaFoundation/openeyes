@@ -21,11 +21,14 @@ class m170510_131532_event_allergy_record extends OEMigration
     public function up()
     {
         $original_allergies_element_id = $this->getIdOfElementTypeByClassName(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy');
-        $this->update('element_type',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy'
+        );
+        $this->update(
+            'element_type',
             array('default' => false),
             'id = :eid',
-            array(':eid' => $original_allergies_element_id));
+            array(':eid' => $original_allergies_element_id)
+        );
 
         $display_order = $this->dbConnection->createCommand()
             ->select(array('display_order'))
@@ -44,8 +47,13 @@ class m170510_131532_event_allergy_record extends OEMigration
             'no_allergies_date' => 'datetime'
         ), true);
 
-        $this->addForeignKey('et_ophciexamination_allergies_ev_fk',
-            'et_ophciexamination_allergies', 'event_id', 'event', 'id');
+        $this->addForeignKey(
+            'et_ophciexamination_allergies_ev_fk',
+            'et_ophciexamination_allergies',
+            'event_id',
+            'event',
+            'id'
+        );
 
         $this->duplicateTable(
             'allergy',
@@ -53,7 +61,8 @@ class m170510_131532_event_allergy_record extends OEMigration
             array(
                 'name' => 'varchar(40)',
                 'display_order' => 'tinyint(3)'
-            ));
+            )
+        );
 
         $this->createOETable('ophciexamination_allergy_entry', array(
             'id' => 'pk',
@@ -63,10 +72,20 @@ class m170510_131532_event_allergy_record extends OEMigration
             'comments' => 'varchar(255)'
         ), true);
 
-        $this->addForeignKey('ophciexamination_allergy_entry_el_fk',
-            'ophciexamination_allergy_entry', 'element_id', 'et_ophciexamination_allergies', 'id');
-        $this->addForeignKey('ophciexamination_allergy_entry_al_fk',
-            'ophciexamination_allergy_entry', 'allergy_id', 'ophciexamination_allergy', 'id');
+        $this->addForeignKey(
+            'ophciexamination_allergy_entry_el_fk',
+            'ophciexamination_allergy_entry',
+            'element_id',
+            'et_ophciexamination_allergies',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophciexamination_allergy_entry_al_fk',
+            'ophciexamination_allergy_entry',
+            'allergy_id',
+            'ophciexamination_allergy',
+            'id'
+        );
 
         foreach (static::$archive_tables as $table) {
             $this->renameTable($table, static::$archive_prefix . $table);
@@ -81,7 +100,7 @@ select event_date, event.created_date, event_id, patient_id from et_ophciexamina
 join event on et.event_id = event.id
 join episode on event.episode_id = episode.id
 EOSQL
-);
+        );
         $this->createView('latest_allergy_examination_events', <<<EOSQL
 select t1.event_id, t1.patient_id from allergy_examination_events t1
 left outer join allergy_examination_events t2
@@ -90,7 +109,7 @@ on t1.patient_id = t2.patient_id
    		or (t1.event_date = t2.event_date and t1.created_date < t2.created_date))
 where t2.patient_id is null
 EOSQL
-);
+        );
         $this->createView('patient_allergy_assignment', <<<EOSQL
 select aa.id, latest.patient_id as patient_id, aa.allergy_id, aa.other, aa.comments, aa.last_modified_user_id,
 aa.last_modified_date,
@@ -99,7 +118,7 @@ aa.created_date from ophciexamination_allergy_entry as aa
 	join et_ophciexamination_allergies element on aa.element_id = element.id
 	join latest_allergy_examination_events latest on element.event_id = latest.event_id
 EOSQL
-);
+        );
         $this->createView('allergy', 'select * from ophciexamination_allergy');
     }
 
@@ -121,18 +140,28 @@ EOSQL
         $this->dropOETable('ophciexamination_allergy', true);
         $this->dropOETable('et_ophciexamination_allergies', true);
 
-        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name',
-            array(':class_name' => 'OphCiExamination'))->queryScalar();
+        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+            'class_name = :class_name',
+            array(':class_name' => 'OphCiExamination')
+        )->queryScalar();
         $element_type_id = $this->dbConnection->createCommand()
             ->select('id')
             ->from('element_type')
-            ->where('class_name = :class_name AND event_type_id = :eid',
-                array(':class_name' => 'OEModule\OphCiExamination\models\Allergies', ':eid' => $event_type_id))
+            ->where(
+                'class_name = :class_name AND event_type_id = :eid',
+                array(':class_name' => 'OEModule\OphCiExamination\models\Allergies', ':eid' => $event_type_id)
+            )
             ->queryScalar();
-        $this->delete('ophciexamination_element_set_item', 'element_type_id = :element_type_id',
-            array(':element_type_id' => $element_type_id));
-        $this->delete('element_type', 'id = :id',
-            array(':id' => $element_type_id));
+        $this->delete(
+            'ophciexamination_element_set_item',
+            'element_type_id = :element_type_id',
+            array(':element_type_id' => $element_type_id)
+        );
+        $this->delete(
+            'element_type',
+            'id = :id',
+            array(':id' => $element_type_id)
+        );
     }
 
     /*

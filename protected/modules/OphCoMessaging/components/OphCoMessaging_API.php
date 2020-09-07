@@ -72,8 +72,7 @@ class OphCoMessaging_API extends \BaseAPI
                 'number_query_unread' => $query_messages['number_unread'],
                 'default_folder' => $this::DEFAULT_MESSAGES_FOLDER,
                 'module_class' => $this->getModuleClass(),
-            )
-        );
+            ));
 
         return array(
             'content' => $dashboard_view,
@@ -143,9 +142,9 @@ class OphCoMessaging_API extends \BaseAPI
         $criteria = new \CDbCriteria();
         $criteria->select = array(
             '*',
-            new \CDbExpression('IF(last_comment.created_user_id = :uid, t.message_text, IF(last_comment.marked_as_read = 0, last_comment.comment_text, t.message_text))  as message_text'),
-            new \CDbExpression('IF(last_comment.created_user_id = :uid, t.created_date, IF(last_comment.marked_as_read = 0, last_comment.created_date, t.created_date))  as created_date'),
-            new \CDbExpression('IF(last_comment.created_user_id = :uid, t.created_user_id, IF(last_comment.marked_as_read = 0, last_comment.created_user_id, t.created_user_id)) as created_user_id'),
+            new \CDbExpression('if (last_comment.created_user_id = :uid, t.message_text, if (last_comment.marked_as_read = 0, last_comment.comment_text, t.message_text))  as message_text'),
+            new \CDbExpression('if (last_comment.created_user_id = :uid, t.created_date, if (last_comment.marked_as_read = 0, last_comment.created_date, t.created_date))  as created_date'),
+            new \CDbExpression('if (last_comment.created_user_id = :uid, t.created_user_id, if (last_comment.marked_as_read = 0, last_comment.created_user_id, t.created_user_id)) as created_user_id'),
         );
 
         $criteria->addCondition('t.for_the_attention_of_user_id = :uid OR t.created_user_id = :uid');
@@ -182,7 +181,8 @@ class OphCoMessaging_API extends \BaseAPI
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
 
-        $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
+        $dp = new \CActiveDataProvider(
+            'OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
                 'sort' => $sort,
                 'criteria' => $criteria,
@@ -190,7 +190,8 @@ class OphCoMessaging_API extends \BaseAPI
                     'pageSize' => 30,
                     'itemCount' => $total_messages
                 ),
-            ));
+            )
+        );
 
         $unread_criteria = new \CDbCriteria();
         $unread_criteria->addCondition('(t.marked_as_read != 1  AND t.for_the_attention_of_user_id = :uid)
@@ -265,7 +266,8 @@ class OphCoMessaging_API extends \BaseAPI
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
 
-        $dataProvider = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
+        $dataProvider = new \CActiveDataProvider(
+            'OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
                 'sort' => $sort,
                 'criteria' => $criteria,
@@ -273,7 +275,8 @@ class OphCoMessaging_API extends \BaseAPI
                     'pageSize' => 10,
                     'itemCount' => $total_messages
                 ),
-            ));
+            )
+        );
 
 
         $unread_criteria = new \CDbCriteria();

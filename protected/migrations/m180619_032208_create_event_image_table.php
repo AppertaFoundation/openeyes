@@ -5,7 +5,8 @@ class m180619_032208_create_event_image_table extends OEMigration
 
     public function safeUp()
     {
-        $this->createOETable('event_image',
+        $this->createOETable(
+            'event_image',
             array(
                 'id' => 'pk',
                 'event_id' => 'int(10) unsigned NOT NULL',
@@ -14,13 +15,16 @@ class m180619_032208_create_event_image_table extends OEMigration
                 'image_data' => 'mediumblob',
                 'status_id' => 'int(11) NOT NULL',
                 'message' => 'text',
-            ));
+            )
+        );
 
-        $this->createOETable('event_image_status',
+        $this->createOETable(
+            'event_image_status',
             array(
                 'id' => 'pk',
                 'name' => 'varchar(50)',
-            ));
+            )
+        );
 
         $this->addForeignKey('event_image_event_id_fk', 'event_image', 'event_id', 'event', 'id');
         $this->addForeignKey('event_image_eye_id_fk', 'event_image', 'eye_id', 'eye', 'id');

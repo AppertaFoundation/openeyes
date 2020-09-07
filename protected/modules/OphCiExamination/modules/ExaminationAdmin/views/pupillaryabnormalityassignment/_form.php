@@ -177,8 +177,12 @@
     <tr data-row="{{row}}">
         <td>
             <?php
-            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationPupillaryAbnormalitySetEntry[{{row}}][ophciexamination_abnormality_id]",
-                null, $examination_abnormality_listdata, ["empty" => '-- select --']);
+            echo CHtml::dropDownList(
+                "OEModule_OphCiExamination_models_OphCiExaminationPupillaryAbnormalitySetEntry[{{row}}][ophciexamination_abnormality_id]",
+                null,
+                $examination_abnormality_listdata,
+                ["empty" => '-- select --']
+            );
             ?>
         </td>
         <td>

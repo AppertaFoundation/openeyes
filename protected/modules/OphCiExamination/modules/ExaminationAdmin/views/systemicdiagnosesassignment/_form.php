@@ -72,7 +72,9 @@
                 'name' => 'Diagnosis',
                 'type' => 'raw',
                 'value' => function ($data, $row) use ($disorder) {
-                    return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]", null,
+                    return CHtml::textField(
+                        "OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]",
+                        null,
                         [
                             'class' => 'diagnoses-search-autocomplete',
                             'data-saved-diagnoses' => $data->disorder ? json_encode([
@@ -81,7 +83,8 @@
                                 'disorder_id' => $data->disorder->id,
 
                             ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
-                        ]);
+                        ]
+                    );
                 }
             ],
             [
@@ -165,7 +168,7 @@
     </div>
 </div>
 
-<?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1); ?>
+<?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', true, -1); ?>
 <script src="<?=$js_path; ?>"></script>
 
 <script type="text/template" id="new_risk_entry" class="hidden">

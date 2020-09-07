@@ -1,11 +1,16 @@
 <?php
 
-class InstitutionTest extends CDbTestCase
+class InstitutionTest extends ActiveRecordTestCase
 {
     protected $fixtures = array(
         'import_sources' => 'ImportSource',
         'institutions' => 'Institution',
     );
+
+    public function getModel()
+    {
+        return Institution::model();
+    }
 
     public function testGetCurrent_Success()
     {

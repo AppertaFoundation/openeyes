@@ -17,6 +17,7 @@
 class DefaultController extends OphTrOperationbookingEventController
 {
     protected static $action_types = array(
+        'checkProcedureEUR' => self::ACTION_TYPE_FORM,
         'cancel' => self::ACTION_TYPE_EDIT,
         'admissionLetter' => self::ACTION_TYPE_PRINT,
         'admissionForm' => self::ACTION_TYPE_PRINT,
@@ -30,6 +31,11 @@ class DefaultController extends OphTrOperationbookingEventController
     /** @var Element_OphTrOperation_Operation $operation */
     protected $operation = null;
     protected $contact_details = null;
+
+    protected $eur_res;
+    protected $eur_answer_res;
+    protected $operations;
+    protected $procedure_readonly = false;
 
     protected $show_element_sidebar = false;
 
@@ -48,15 +54,18 @@ class DefaultController extends OphTrOperationbookingEventController
             Yii::app()->assetManager->registerScriptFile('js/additional-validators.js');
 
             //adding Anaestethic JS
-            $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
+            $url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js'), true);
             Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
             Yii::app()->clientScript->registerScript(
                 'AnaestheticController',
-                'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});', CClientScript::POS_END);
+                'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});',
+                CClientScript::POS_END
+            );
 
             $this->jsVars['nhs_date_format'] = Helper::NHS_DATE_FORMAT_JS;
             $this->jsVars['op_booking_inc_time_high_complexity'] = SettingMetadata::model()->getSetting('op_booking_inc_time_high_complexity');
             $this->jsVars['op_booking_decrease_time_low_complexity'] = SettingMetadata::model()->getSetting('op_booking_decrease_time_low_complexity');
+            $this->jsVars['procedure_readonly'] = $this->procedure_readonly;
         }
 
         $return = parent::beforeAction($action);
@@ -105,6 +114,11 @@ class DefaultController extends OphTrOperationbookingEventController
     protected function setElementDefaultOptions_Element_OphTrOperationbooking_Operation($element, $action)
     {
         if ($action == 'create') {
+            if ($this->operations) {
+                // set the default selected operations if there is any
+                $element->procedures = $this->operations['selected_proc'];
+                $element->total_duration = $this->operations['Element_OphTrOperationbooking_Operation']['total_duration_procs'];
+            }
             // set the default eye
             if ($this->episode && $this->episode->diagnosis) {
                 $element->eye_id = $this->episode->eye_id;
@@ -142,9 +156,15 @@ class DefaultController extends OphTrOperationbookingEventController
         parent::initWithEventId($id);
 
         $this->operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id));
+
+        $this->eur_res = EUREventResults::model()->find('event_id=?', array($this->event->id));
+        $this->eur_answer_res = $this->eur_res ? $this->eur_res->eurAnswerResults : null;
+
         $this->contact_details = Element_OphTrOperationbooking_ContactDetails::model()->find('event_id=?', array($this->event->id));
         if ($this->operation_required && !$this->operation) {
-            throw new CHttpException(500, 'Operation not found');
+            if (!$this->eur_res->id) {
+                throw new CHttpException(500, 'Operation not found');
+            }
         }
     }
 
@@ -177,9 +197,10 @@ class DefaultController extends OphTrOperationbookingEventController
      * add the number of existing examination events to JS
      *
      */
-    public function actionCreate(){
+    public function actionCreate()
+    {
         $cancel_url = \Yii::app()->createURL("/patient/summary/", array("id" => $this->patient->id));
-        $create_examination_url = Yii::app()->getBaseUrl(true).'/OphCiExamination/Default/create?patient_id=' . $this->patient->id;
+        $create_examination_url = Yii::app()->createAbsoluteUrl('site/index').'OphCiExamination/Default/create?patient_id=' . $this->patient->id;
 
         $this->jsVars['examination_events_count'] = $this->getExaminationEventCount();
         $this->jsVars['cancel_url'] = $cancel_url;
@@ -187,10 +208,146 @@ class DefaultController extends OphTrOperationbookingEventController
 
         $require_exam_before_booking = SettingMetadata::model()->findByAttributes(array('key' => 'require_exam_before_booking'))->getSettingName();
         $this->jsVars['require_exam_before_booking'] = strtolower($require_exam_before_booking) == 'on';
-
-        parent::actionCreate();
+        // find if there is any procedure needs EUR form
+        $proc_need_eur = ProcedureSubspecialtyAssignment::model()->count('need_eur = 1') > 0;
+        // get the System setting for EUR
+        $enable_eur = SettingMetadata::model()->getSetting('cataract_eur_switch');
+        // the EUR form will be displayed only if the operation booking is under cataract, at least one procedure needs EUR and the EUR System setting is turned on
+        if (strtolower($this->firm->getSubspecialtyText()) === 'cataract' && $proc_need_eur && $enable_eur === 'on') {
+            $this->procedure_readonly = true;
+            $this->jsVars['procedure_readonly'] = $this->procedure_readonly;
+            $this->getEURForm();
+        } else {
+            parent::actionCreate();
+        }
     }
 
+    /**
+     * check if the procedure needs EUR form or not
+     */
+    public function actionCheckProcedureEUR()
+    {
+        $subspecialty_id = $this->firm->getSubspecialtyID();
+        $selected_proc = $_GET['procedure_id'];
+        $procedure_list = ProcedureSubspecialtyAssignment::model()->getEURProcedureListFromSubspecialty($subspecialty_id);
+        if ($procedure_list[$selected_proc] == 1) {
+            $this->renderJSON(true);
+        }
+        $this->renderJSON(false);
+    }
+
+    /**
+     * render eur form
+     * after submitting the form, if the patient is suitable for cataract surgery, proceed to booking form with eur form result
+     * save the form if the patient is NOT suitable for cataract surgery
+     */
+    protected function getEURForm()
+    {
+        // new op-booking event
+        if (empty($_POST)) {
+            $this->render('form_eur');
+            return;
+        }
+        if (isset($_POST['eur_result'])) {
+            $this->eur_res = new EUREventResults();
+            $this->eur_res->eye_num = $_POST['eye'];
+            $this->eur_res->result = $_POST['eur_result'];
+            $answerResults = array();
+            foreach ($_POST['EUREventResult']['eurAnswerResults'] as $p) {
+                if (isset($p['answer_id'])) {
+                    $answerResult = new EURAnswerResults();
+                    $answerResult->question_id = $p['question_id'];
+                    $answerResult->answer_id = $p['answer_id'];
+                    $answerResult->eye_num = $_POST['eye'];
+                    $answerResults[] = $answerResult;
+                }
+            }
+            $this->eur_answer_res = $answerResults;
+            $this->eur_res->eurAnswerResults = $this->eur_answer_res;
+        }
+        // 'Next' button is clicked in form_eur
+        if (isset($_POST['next'])) {
+            foreach ($_POST['Procedures_procs'] as $proc) {
+                $this->operations['selected_proc'][] = Procedure::model()->findByPK($proc);
+            }
+            $this->operations['Element_OphTrOperationbooking_Operation'] = $_POST['Element_OphTrOperationbooking_Operation'];
+            // from EUR form
+            if (isset($_POST['eur_result'])) {
+                // has phaco procedure
+                if ($_POST['eur_result'] == 1) {
+                    // pass eur, redirect to booking form
+                    $_POST = array();
+                    parent::actionCreate();
+                } else {
+                    // failed eur, save eur
+                    $transaction = Yii::app()->db->beginTransaction();
+                    try {
+                        $success = $this->saveEURForm();
+                        if ($success) {
+                            $this->event->addIssue('EUR Failed');
+                            $transaction->commit();
+                            $this->redirect(array($this->successUri . $this->event->id));
+                        } else {
+                            throw new Exception('could not save event');
+                        }
+                    } catch (Exception $e) {
+                        $transaction->rollback();
+                        throw $e;
+                    }
+                }
+            } else {
+                // no phaco procedure
+                $_POST = array();
+                parent::actionCreate();
+            }
+        } elseif (isset($_POST['#']) || (isset($_POST['schedule_now']) && $_POST['schedule_now'])) {
+            // from create.php
+            parent::actionCreate();
+        }
+    }
+
+    /**
+     * save the EUR form
+     */
+    protected function saveEURForm()
+    {
+        if ($this->event->isNewRecord) {
+            if (!$this->event->save()) {
+                OELog::log("Failed to create new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
+                throw new Exception('Unable to save event.');
+            }
+            $this->logActivity('created event.');
+            $this->event->audit('event', 'create', 'Created Event from EUR form');
+        }
+
+        $this->eur_res = new EUREventResults();
+        $this->eur_res->event_id = $this->event->id;
+        $this->eur_res->eye_num = $_POST['eye'];
+        $this->eur_res->eye_side = @$_POST['Element_OphTrOperationbooking_Operation']['eye_id'];
+        $this->eur_res->result = $_POST['eur_result'];
+        $eur_result = $this->eur_res->result == 1 ? 'Passed' : 'Failed';
+        if (!$this->eur_res->save()) {
+            OELog::log("Failed to create new EUR Event result for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
+            throw new Exception('Unable to save EUR Event result.');
+        }
+        foreach ($_POST['EUREventResult']['eurAnswerResults'] as $p) {
+            if (isset($p['answer_id'])) {
+                $answerResult = new EURAnswerResults();
+                $answerResult->question_id = $p['question_id'];
+                $answerResult->answer_id = $p['answer_id'];
+                $answerResult->eye_num = $_POST['eye'];
+                $answerResult->eye_side = $this->eur_res->eye_side;
+                $answerResult->res_id = $this->eur_res->id;
+                if (!$answerResult->save()) {
+                    OELog::log("Failed to create new EUR Answer result for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
+                    throw new Exception('Unable to save EUR Answer result.');
+                }
+            }
+        }
+        $this->logActivity("created eur $eur_result form.");
+        $this->event->audit("eur $eur_result form", "create", "Saved $eur_result EUR Form");
+        return true;
+    }
     /**
      * Checks whether schedule now has been requested.
      *
@@ -219,6 +376,11 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         parent::initActionUpdate();
         $this->initActionEdit();
+        $current_subspecialty = $this->event->firm ? $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name : '';
+        if (strtolower($current_subspecialty) === 'cataract') {
+            $this->procedure_readonly = true;
+        }
+        $this->jsVars['procedure_readonly'] = $this->procedure_readonly;
     }
     /**
      * Make the operation element directly available for templates.
@@ -229,11 +391,27 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         $this->operation_required = true;
         parent::initActionView();
+        if (!$this->operation) {
+            $this->editable = false;
+        }
         $this->extraViewProperties = array(
             'operation' => $this->operation,
+            'eur' => $this->eur_res,
         );
     }
 
+    /**
+     * Make sure the EUR is displayed properly in lightning viewer
+     * @param $id: event id
+     */
+    public function actionRenderEventImage($id)
+    {
+        $eur = EUREventResults::model()->findByAttributes(array('event_id' => $id));
+        if ($eur) {
+            $this->extraViewProperties = array('eur' => $eur);
+        }
+        parent::actionRenderEventImage($id);
+    }
     /**
      * Handle procedures.
      *
@@ -447,6 +625,10 @@ class DefaultController extends OphTrOperationbookingEventController
                         // if we're editing, then don't want to check against that event
                         continue;
                     }
+                    $eur = EUREventResults::model()->findByAttributes(array('event_id' => $ev->id));
+                    if (isset($eur) && $eur->result == 0) {
+                        continue;
+                    }
                     $op = Element_OphTrOperationbooking_Operation::model()->findByAttributes(array('event_id' => $ev->id));
 
                     // check operation still valid, and that it is for a matching eye.
@@ -603,7 +785,8 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->layout = '//layouts/print';
 
         $this->pdf_print_suffix = 'admission_form';
-        $this->pdf_print_html = $this->render('../letters/admission_form',
+        $this->pdf_print_html = $this->render(
+            '../letters/admission_form',
             array(
                 'operation' => $this->operation,
                 'site' => $this->operation->site,
@@ -618,13 +801,18 @@ class DefaultController extends OphTrOperationbookingEventController
         return $this->actionPDFPrint($this->operation->event->id);
     }
 
-    public function actionDelete($id){
-        $operation = $this->operation;
-        if ($operation->status->name == 'Cancelled') {
+    public function actionDelete($id)
+    {
+        if ($this->operation) {
+            $operation = $this->operation;
+            if ($operation->status->name === 'Cancelled') {
+                parent::actionDelete($id);
+            } else {
+                Yii::app()->user->setFlash('error.error', "Please cancel this operation before deleting it.");
+                return $this->redirect(array('default/view/'.$this->event->id));
+            }
+        } elseif ($this->eur_res) {
             parent::actionDelete($id);
-        } else {
-            Yii::app()->user->setFlash('error.error', "Please cancel this operation before deleting it.");
-            return $this->redirect(array('default/view/'.$this->event->id));
         }
     }
 

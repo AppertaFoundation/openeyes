@@ -13,7 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-$this->widget('application.modules.OphGeneric.widgets.Attachment',
+$this->widget(
+    'application.modules.OphGeneric.widgets.Attachment',
     [
         'event_ids' => isset($this->element->event_id) ? [$this->element->event_id] : [],
         'allow_attach' => true,
@@ -21,4 +22,3 @@ $this->widget('application.modules.OphGeneric.widgets.Attachment',
         'element' => $element,
     ]
 );
-

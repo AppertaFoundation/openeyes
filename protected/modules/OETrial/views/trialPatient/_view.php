@@ -25,37 +25,35 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 
 ?>
 <tr class="js-trial-patient" data-trial-patient-id="<?= $data->id ?>">
-
-  <td colspan="4">
         <?php
       /** @var $patientPanel PatientPanel */
-        $patientPanel = $this->createWidget('application.widgets.PatientPanel',
-          array(
+        $patientPanel = $this->createWidget(
+            'application.widgets.PatientPanel',
+            array(
               'patient' => $data->patient,
               'layout' => 'list',
               'list_mode' => true,
-          )
+            )
         );
         $patientPanel->render('PatientPanel');
         ?>
-  </td>
   <td> <!-- External Reference -->
         <?php
         if ($permission->can_edit) {
             echo CHtml::textField(
-              "ext-trial-id-form-$data->id",
-              $data->external_trial_identifier,
-              array(
+                "ext-trial-id-form-$data->id",
+                $data->external_trial_identifier,
+                array(
                   'class' => 'js-external-trial-identifier',
-              )
+                )
             ); ?>
 
             <?= CHtml::hiddenField(
-              "external-trial-id-hidden-$data->id",
-              $data->external_trial_identifier,
-              array(
+                "external-trial-id-hidden-$data->id",
+                $data->external_trial_identifier,
+                array(
                   'class' => 'js-hidden-external-trial-identifier',
-              )
+                )
             ) ?>
         <div class="js-external-trial-identifier-actions" style="display: none;">
           <a class="js-save-external-trial-identifier button">Save</a>
@@ -72,19 +70,22 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
       <td> <!-- Treatment Type -->
           <?php if ($permission->can_edit) :
                 echo CHtml::dropDownList(
-                  'treatment-type',
-                  $data->treatment_type_id,
-                  TreatmentType::getOptions(),
-                  array(
+                    'treatment-type',
+                    $data->treatment_type_id,
+                    TreatmentType::getOptions(),
+                    array(
                       'id' => "treatment-type-$data->id",
                       'data-trial-patient-id' => $data->id,
                       'class' => 'js-treatment-type',
-                  )
+                    )
                 );
-                echo CHtml::hiddenField("treatment-type-hidden-$data->id", $data->treatment_type_id,
-                  array(
+                echo CHtml::hiddenField(
+                    "treatment-type-hidden-$data->id",
+                    $data->treatment_type_id,
+                    array(
                       'class' => 'js-hidden-treatment-type',
-                  ));
+                    )
+                );
                 ?>
             <div class="js-treatment-type-actions" style="display: none;">
               <a class="js-save-treatment-type">Save</a>
@@ -118,8 +119,11 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
             </button>
             <?php endif; ?>
 
-            <?php if (in_array($data->status->code,
-              [TrialPatientStatus::SHORTLISTED_CODE, TrialPatientStatus::ACCEPTED_CODE], true)) : ?>
+            <?php if (in_array(
+                $data->status->code,
+                [TrialPatientStatus::SHORTLISTED_CODE, TrialPatientStatus::ACCEPTED_CODE],
+                true
+            )) : ?>
             <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::REJECTED_CODE ?>')"
                class="accept-patient-button button hint red">Reject
@@ -131,7 +135,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
                 <span>
                     <button href="javascript:void(0)"
                        onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::SHORTLISTED_CODE ?>')"
-                       class="accept-patient-button button hint blue">Re-Shortlist
+                       class="accept-patient-button button hint blue">Shortlist
                     </button>
                 </span>
                 <?php endif; ?>

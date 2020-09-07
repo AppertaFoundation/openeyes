@@ -28,14 +28,14 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         $this->render(get_class($this).'_Right');
     }
 
-    public function run_oescape(){
+    public function run_oescape($widgets_no = 1){
         $va_unit_id = @$_GET[$this->va_unit_input] ?:
         SettingMetadata::model()->getSetting(
-          'unit_id',
-          ElementType::model()->find(
-            'class_name=?',
-            array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
-          )
+            'unit_id',
+            ElementType::model()->find(
+                'class_name=?',
+                array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
+            )
         );
         $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
 
@@ -232,8 +232,10 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
                     if (empty($injection_list[$eye_side])||!array_key_exists($injection[$eye_side.'_drug'], $injection_list[$eye_side])) {
                         $injection_list[$eye_side][$injection[$eye_side.'_drug']] = array();
                     }
-                    array_push($injection_list[$eye_side][$injection[$eye_side.'_drug']],
-                        array('title'=>$eye_side=='right'?'R':'L', 'info'=>'', 'x'=>Helper::mysqlDate2JsTimestamp($injection['date'])));
+                    array_push(
+                        $injection_list[$eye_side][$injection[$eye_side.'_drug']],
+                        array('title'=>$eye_side=='right'?'R':'L', 'info'=>'', 'x'=>Helper::mysqlDate2JsTimestamp($injection['date']))
+                    );
                 }
             }
         }
@@ -265,18 +267,26 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
                 $right_doc = $doc->right_document;
                 $date = Helper::mysqlDate2JsTimestamp($event->event_date);
                 if ($single_doc) {
-                    array_push($MR_documents['right'],
-                        array('doc_id'=>$single_doc->id, 'doc_name'=>$single_doc->name, 'date'=>$date));
-                    array_push($MR_documents['left'],
-                        array('doc_id'=>$single_doc->id, 'doc_name'=>$single_doc->name, 'date'=>$date));
+                    array_push(
+                        $MR_documents['right'],
+                        array('doc_id'=>$single_doc->id, 'doc_name'=>$single_doc->name, 'date'=>$date)
+                    );
+                    array_push(
+                        $MR_documents['left'],
+                        array('doc_id'=>$single_doc->id, 'doc_name'=>$single_doc->name, 'date'=>$date)
+                    );
                 }
                 if ($right_doc) {
-                    array_push($MR_documents['right'],
-                        array('doc_id'=>$right_doc->id, 'doc_name'=>$right_doc->name, 'date'=>$date));
+                    array_push(
+                        $MR_documents['right'],
+                        array('doc_id'=>$right_doc->id, 'doc_name'=>$right_doc->name, 'date'=>$date)
+                    );
                 }
                 if ($left_doc) {
-                    array_push($MR_documents['left'],
-                        array('doc_id'=>$left_doc->id, 'doc_name'=>$left_doc->name, 'date'=>$date));
+                    array_push(
+                        $MR_documents['left'],
+                        array('doc_id'=>$left_doc->id, 'doc_name'=>$left_doc->name, 'date'=>$date)
+                    );
                 }
             }
         }

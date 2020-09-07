@@ -37,7 +37,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
           <td class="cols-7 column end"
               id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop">
               <?= ($iop == null) ? 'N/A' : $iop[$eye.'IOP'].' mmHg';?>
-              <?php if (isset($targetIOP[$eye]) && !is_null($targetIOP[$eye]) && $iop[$eye.'IOP'] > $targetIOP[$eye]) :?>
+              <?php if (isset($targetIOP[$eye]) && !is_null($targetIOP[$eye]) && isset($iop[$eye.'IOP']) && $iop[$eye.'IOP'] > $targetIOP[$eye]) :?>
                 <span class="iop_notification error">*** IOP above target ***</span>
                 <?php endif?>
           </td>

@@ -61,7 +61,6 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
             }).success(function (response) {
                 controller.$imageContainer.html('');
                 if (response) {
-                    response = JSON.parse(response);
                     if (response.error) {
                         controller.showErrorView();
                     } else {

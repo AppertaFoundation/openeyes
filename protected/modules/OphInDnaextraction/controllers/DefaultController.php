@@ -2,7 +2,6 @@
 
 class DefaultController extends BaseEventTypeController
 {
-    protected $show_element_sidebar = false;
 
     var $box_id;
     var $letter;
@@ -181,7 +180,7 @@ class DefaultController extends BaseEventTypeController
             $boxRanges = $boxModel->boxMaxValues($_POST['box_id']);
 
             $letterArray = $storage->generateLetterArrays($_POST['box_id'], $boxRanges['maxletter'], $boxRanges['maxnumber']);
-            $usedBoxRows = $storage->getAllLetterNumberToBox( $_POST['box_id'] );
+            $usedBoxRows = $storage->getAllLetterNumberToBox($_POST['box_id']);
 
 
             $arrayDiff = array_filter($letterArray, function ($element) use ($usedBoxRows) {
@@ -240,7 +239,7 @@ class DefaultController extends BaseEventTypeController
 
     public function actionView($id)
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_view.js');
 
         parent::actionView($id);
@@ -248,7 +247,7 @@ class DefaultController extends BaseEventTypeController
 
     public function actionUpdate($id)
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_update.js');
 
         parent::actionUpdate($id);
@@ -256,7 +255,7 @@ class DefaultController extends BaseEventTypeController
 
     public function actionCreate()
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_update.js');
 
         parent::actionCreate();
@@ -291,5 +290,4 @@ class DefaultController extends BaseEventTypeController
 
         Yii::app()->end();
     }
-
 }

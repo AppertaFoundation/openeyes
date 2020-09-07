@@ -74,7 +74,8 @@ class m130913_000003_consolidation_for_ophtroperationnote extends OEMigration
                 'm130604_103443_patient_shortcodes',
                 'm130624_110551_predicted_refraction',
                 'm130809_073841_procedure_assignment_primary_key',
-            ))
+            )
+        )
         ) {
             $this->createTables();
         } else {

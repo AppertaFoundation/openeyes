@@ -75,7 +75,7 @@ class Institution extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name', 'required'),
+            array('name, remote_id, short_name', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
@@ -95,6 +95,7 @@ class Institution extends BaseActiveRecordVersioned
                 'condition' => 'sites.active = 1',
                 'order' => 'name asc',
             ),
+            'logo' => array(self::BELONGS_TO, 'SiteLogo', 'logo_id'),
         );
     }
 

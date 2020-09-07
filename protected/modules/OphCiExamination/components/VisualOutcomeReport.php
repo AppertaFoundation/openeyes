@@ -120,11 +120,14 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
             ->join('episode', 'note_event.episode_id = episode.id')
-            ->join('event  pre_examination',
+            ->join(
+                'event  pre_examination',
                 'pre_examination.episode_id = note_event.episode_id AND pre_examination.event_type_id = :examination
                 AND pre_examination.event_date <= note_event.event_date',
                 array('examination' => $this->examinationEvent['id'])
-            )->join('event post_examination', 'post_examination.episode_id = note_event.episode_id
+            )->join(
+                'event post_examination',
+                'post_examination.episode_id = note_event.episode_id
                AND post_examination.event_type_id = :examination
                AND post_examination.event_date >= note_event.event_date
                AND post_examination.created_date > note_event.created_date
@@ -134,17 +137,20 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                     'monthsBefore' => ($months - 1),
                     'monthsAfter' => ($months + 1),
                 )
-            )->join('et_ophciexamination_visualacuity pre_acuity',
+            )->join(
+                'et_ophciexamination_visualacuity pre_acuity',
                 'pre_examination.id = pre_acuity.event_id
                 AND (pre_acuity.eye_id = op_procedure.eye_id
                 OR pre_acuity.eye_id = 3)'
-            )->join('et_ophciexamination_visualacuity post_acuity',
+            )->join(
+                'et_ophciexamination_visualacuity post_acuity',
                 'post_examination.id = post_acuity.event_id
                 AND (post_acuity.eye_id = op_procedure.eye_id
                 OR post_acuity.eye_id = 3)'
-            )->join($table.' pre_reading',
+            )->join(
+                $table.' pre_reading',
                 'pre_acuity.id = pre_reading.element_id
-                AND IF(op_procedure.eye_id = 1, pre_reading.side = 1, IF(op_procedure.eye_id = 2,
+                AND if (op_procedure.eye_id = 1, pre_reading.side = 1, if (op_procedure.eye_id = 2,
                                                                            pre_reading.side = 0,
                                                                            pre_reading.side IS NOT NULL))'
             )->join($table.' post_reading', 'post_acuity.id = post_reading.element_id

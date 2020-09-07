@@ -18,8 +18,10 @@
 ?>
 <?php
 $operationNoteList = $element->getOperationNoteList();
-$operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id',
-    (is_array($operationNoteList) ? key($operationNoteList) : null));
+$operation_note_id = \Yii::app()->request->getParam(
+    'OphCiExamination_postop_complication_operation_note_id',
+    (is_array($operationNoteList) ? key($operationNoteList) : null)
+);
 ?>
 
 
@@ -40,9 +42,11 @@ $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_com
                                     } ?>
                                 </td>
                             </tr>
-                            <?php foreach ($element->getFullComplicationList($eye_macro) as $value) : ?>
+                            <?php foreach ($element->getFullComplicationList($eye_macro) as $value) :
+                                $postop_complication_name = $value['name'] == 'other' ? 'Other: ' . $value['other'] : $value['name'];
+                                ?>
                                 <tr>
-                                    <td class=postop-complication-name><?php echo $value['name']; ?></td>
+                                    <td class=postop-complication-name><?= $postop_complication_name; ?></td>
                                     <td></td>
                                 </tr>
                             <?php endforeach; ?>

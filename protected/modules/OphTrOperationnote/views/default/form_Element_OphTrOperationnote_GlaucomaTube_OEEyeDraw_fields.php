@@ -39,9 +39,14 @@ foreach ($plate_positions as $pp) {
             <?php echo $element->getAttributeLabel('plate_position_id'); ?>
       </td>
       <td>
-            <?php echo $form->dropDownList($element, 'plate_position_id', CHtml::listData($plate_positions, 'id', 'name'),
-              $html_options,
-              false, array('field' => 3)); ?>
+            <?php echo $form->dropDownList(
+                $element,
+                'plate_position_id',
+                CHtml::listData($plate_positions, 'id', 'name'),
+                $html_options,
+                false,
+                array('field' => 3)
+            ); ?>
       </td>
     </tr>
     <tr>
@@ -49,8 +54,11 @@ foreach ($plate_positions as $pp) {
             <?= $element->getAttributeLabel('plate_limbus'); ?>
       </td>
       <td class="flex-layout flex-right">
-            <?=\CHtml::activeTextField($element, 'plate_limbus',
-              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')); ?>
+            <?=\CHtml::activeTextField(
+                $element,
+                'plate_limbus',
+                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')
+            ); ?>
         <span class="field-info postfix align">
           mm
         </span>
@@ -61,10 +69,18 @@ foreach ($plate_positions as $pp) {
             <?= $element->getAttributeLabel('tube_position_id'); ?>
       </td>
       <td>
-            <?php echo $form->dropDownList($element, 'tube_position_id',
-              CHtml::listData(OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(),
-                  'id', 'name'), array('empty' => 'Select', 'nowrapper' => true), false,
-              array('field' => 3)) ?>
+            <?php echo $form->dropDownList(
+                $element,
+                'tube_position_id',
+                CHtml::listData(
+                    OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(),
+                    'id',
+                    'name'
+                ),
+                array('empty' => 'Select', 'nowrapper' => true),
+                false,
+                array('field' => 3)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -88,8 +104,11 @@ foreach ($plate_positions as $pp) {
             <?= $element->getAttributeLabel('visco_in_ac'); ?>
       </td>
       <td>
-            <?php echo $form->checkbox($element, 'visco_in_ac',
-              array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+            <?php echo $form->checkbox(
+                $element,
+                'visco_in_ac',
+                array('class' => 'clearWithEyedraw', 'nowrapper' => true)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -97,15 +116,22 @@ foreach ($plate_positions as $pp) {
             <?= $element->getAttributeLabel('flow_tested'); ?>
       </td>
       <td>
-            <?php echo $form->checkbox($element, 'flow_tested',
-              array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+            <?php echo $form->checkbox(
+                $element,
+                'flow_tested',
+                array('class' => 'clearWithEyedraw', 'nowrapper' => true)
+            ) ?>
       </td>
     </tr>
     </tbody>
   </table>
-  <br/><?php echo $form->textArea($element, 'description',
-          array('rows' => 4, 'cols' => 40, 'class' => 'autosize clearWithEyedraw', 'nowrapper' => true), false,
-          array('placeholder' => 'Description')) ?>
+  <br/><?php echo $form->textArea(
+      $element,
+      'description',
+      array('rows' => 4, 'cols' => 40, 'class' => 'autosize clearWithEyedraw', 'nowrapper' => true),
+      false,
+      array('placeholder' => 'Description')
+  ) ?>
   <div class="data-group">
     <div class="cols-3 column">&nbsp;</div>
     <div class="cols-4 column end">

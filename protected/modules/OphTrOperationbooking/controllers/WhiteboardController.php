@@ -84,7 +84,7 @@ class WhiteboardController extends BaseDashboardController
     {
         $before = parent::beforeAction($action);
         //core scripts
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), false, -1);
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), true, -1);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/dialog-polyfill/dialog-polyfill.js');
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/mustache/mustache.js');
         Yii::app()->clientScript->registerCssFile($assetPath.'/newblue/css/style_oe3_light.min.css');

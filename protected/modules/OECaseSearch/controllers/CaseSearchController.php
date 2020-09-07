@@ -23,7 +23,7 @@ class CaseSearchController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'addParameter', 'clear'),
+                'actions' => array('index', 'addParameter', 'clear', 'renderPopups'),
                 'users' => array('@'),
             ),
         );
@@ -191,7 +191,7 @@ class CaseSearchController extends BaseModuleController
 
     public function beforeAction($action)
     {
-        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OECaseSearch.assets'));
+        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OECaseSearch.assets'), true);
         Yii::app()->clientScript->registerCssFile($assetPath . '/css/module.css');
 
         // Loading the following files from the package before calling each action as they are required by the zii AutoCompleteSearch widget (used for diagnosis)
@@ -201,9 +201,20 @@ class CaseSearchController extends BaseModuleController
         Yii::app()->clientScript->registerCoreScript('cookie');
 
         // This is required when the search results return any records.
-        $path = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'));
+        $path = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
         Yii::app()->clientScript->registerScriptFile($path . '/jquery.autosize.js');
 
         return parent::beforeAction($action);
+    }
+
+    public function actionRenderPopups()
+    {
+        if (isset($_POST["patientsID"])) {
+            $patientsID = explode(",", $_POST["patientsID"]);
+            foreach ($patientsID as $i => $patientID) {
+                $patient = Patient::model()->findByPk($patientID);
+                $this->renderPartial('application.widgets.views.PatientIcons', array('data' => $patient, 'page' => 'caseSearch'));
+            }
+        }
     }
 }

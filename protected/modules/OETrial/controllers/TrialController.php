@@ -31,7 +31,7 @@ class TrialController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('getTrialList', 'permissions'),
+                'actions' => array('getTrialList', 'permissions', 'renderPopups'),
                 'users' => array('@'),
             ),
             array(
@@ -283,8 +283,10 @@ class TrialController extends BaseModuleController
         $trial = $this->loadModel($_GET['id']);
         /* @var Patient $patient */
         $patient = Patient::model()->findByPk($_GET['patient_id']);
-        $trial->addPatient($patient,
-            TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE)));
+        $trial->addPatient(
+            $patient,
+            TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE))
+        );
     }
 
     /**
@@ -437,14 +439,15 @@ class TrialController extends BaseModuleController
      * @throws CHttpException Thrown if the change cannot be saved
      */
 
-    public function actionChangeTrialUserPosition(){
+    public function actionChangeTrialUserPosition()
+    {
 
         $user_id = $_POST['user_id'];
         $trial_id = $_POST['id'];
         $isTrue = $_POST['isTrue'];
         $column_name = $_POST['column_name'];
 
-        $existing = UserTrialAssignment::model()->findAll('trial_id=? and '.$column_name.'=1', array($trial_id));;
+        $existing = UserTrialAssignment::model()->findAll('trial_id=? and '.$column_name.'=1', array($trial_id));
         if ($column_name==='is_principal_investigator'&&sizeof($existing)===1&&$existing[0]->user_id===$user_id) {
             $res = array(
             'Error' => 'At least one principal investigator should be selected.'
@@ -458,6 +461,21 @@ class TrialController extends BaseModuleController
 
         if (!$userPermission->save()) {
             throw new Exception('Unable to save principal investigator: '.print_r($userPermission->getErrors(), true));
+        }
+    }
+
+    public function actionRenderPopups()
+    {
+        if (isset($_POST["trialId"])) {
+            $trial = $this->loadModel($_POST["trialId"]);
+            $sortDir = Yii::app()->request->getParam('sort_dir', '0') === '0' ? 'asc' : 'desc';
+            $sortBy = Yii::app()->request->getParam('sort_by', 'Name');
+            $dataProviders = $trial->getPatientDataProviders($sortBy, $sortDir);
+            foreach ($dataProviders as $i => $dataProvider) {
+                foreach ($dataProvider->getData() as $dataProvider) {
+                    $this->renderPartial('application.widgets.views.PatientIcons', array('data' => ($dataProvider->patient), 'page' => 'trial'));
+                }
+            }
         }
     }
 }

@@ -64,6 +64,16 @@ class WorklistDefinition extends BaseActiveRecordVersioned
 
     public function beforeValidate()
     {
+        $purifier = new CHtmlPurifier();
+
+        $unclean_name = $this->name;
+        $clean_name = $purifier->purify($this->name);
+        if ($unclean_name != $clean_name) {
+            $this->addErrors(array("Worklist name contains forbidden characters"));
+        } else {
+            $this->name = $clean_name;
+        }
+
         if ( preg_match('/^(\d{2}):(\d{2})$/', $this->start_time)) {
             // the format is 00:00, we need to append :00
             $this->start_time .= ':00';
@@ -87,7 +97,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         return array(
             array('name, rrule, worklist_name, start_time, end_time, description', 'safe'),
             array('rrule', 'validateRrule'),
-            array('name, rrule', 'required'),
+            array('name, rrule, start_time, end_time', 'required'),
             array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss', 'except' => 'sortDisplayOrder'),

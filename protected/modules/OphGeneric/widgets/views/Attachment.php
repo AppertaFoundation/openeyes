@@ -67,7 +67,8 @@
                                     'image_size' => $this->image_size,
                                     'size' => 'small',
                                     'eye_side' => $eye_side
-                                ]);
+                                ]
+                            );
                         } ?>
                     </div>
                     <?php if ($attachment_exists && $this->show_titles) { ?>

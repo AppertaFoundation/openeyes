@@ -34,6 +34,7 @@ if ($closing_flash) {
 
 <?php
 $patient_ticket_in_review = null;
+$api = Yii::app()->moduleAPI->get('PatientTicketing');
 
 if (isset(Yii::app()->session['patientticket_ticket_in_review'])) {
     $patient_ticket_in_review = Yii::app()->session['patientticket_ticket_in_review'];
@@ -84,19 +85,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
 
               <div class="row divider">
                 <ul class="vc-steps">
-                    <?php foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) {
-                        $is_completed = $queue->id <= $ticket->current_queue->id;
-                        $is_current = $queue->id === $ticket->current_queue->id; ?>
-                        <?php if ($is_completed) {
-                            $queue_assignment = \OEModule\PatientTicketing\models\TicketQueueAssignment::model()->findByAttributes(['ticket_id' => $ticket->id, 'queue_id' => $queue->id]) ?>
-                            <li class="completed">
-                                <em><?= $queue_assignment->assignment_user->getFullName() ?></em>
-                            </li>
-                        <?php } ?>
-                        <li class="<?= $is_current ? 'selected' : ($is_completed ? 'completed' : '') ?>">
-                            <?= $step . '. ' . $queue->name; ?>
-                        </li>
-                    <?php } ?>
+                    <?= $api->renderVirtualClinicSteps($ticket) ?>
                 </ul>
               </div>
 
@@ -117,8 +106,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
                     if ($qs_svc->isQueueSetPermissionedForUser($qs_r, Yii::app()->user->id)) {
                         $this->widget('OEModule\PatientTicketing\widgets\TicketMove', array(
                               'ticket' => $ticket,
-                          )
-                        );
+                          ));
                     }
                     ?>
               </div>

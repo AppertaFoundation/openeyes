@@ -15,10 +15,10 @@
 ?>
 
 <?=\CHtml::errorSummary(
-  $model,
-  null,
-  null,
-  ["class" => "alert-box alert with-icon"]
+    $model,
+    null,
+    null,
+    ["class" => "alert-box alert with-icon"]
 ); ?>
 
 <div class="cols-5">
@@ -32,9 +32,9 @@
             <td>Name</td>
             <td class="cols-full">
                 <?=\CHtml::activeTelField(
-                  $model,
-                  'name',
-                  ['class' => 'cols-full']
+                    $model,
+                    'name',
+                    ['class' => 'cols-full']
                 ); ?>
             </td>
         </tr>
@@ -42,10 +42,10 @@
             <td>Active</td>
             <td class="cols-full">
                 <?=\CHtml::activeCheckBox(
-                $model,
-                'active',
-                []
-              ); ?>
+                    $model,
+                    'active',
+                    []
+                ); ?>
             </td>
         </tr>
     </tbody>

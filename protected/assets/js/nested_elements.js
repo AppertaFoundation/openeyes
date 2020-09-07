@@ -16,72 +16,82 @@
  */
 
 function addElement(element, animate, previous_id, params, callback) {
-  if (typeof (animate) === 'undefined')
-    animate = true;
-  if (typeof (previous_id) === 'undefined')
-    previous_id = 0;
-  if (typeof (params) === 'undefined')
-    params = {};
+    if (typeof (animate) === 'undefined')
+        animate = true;
+    if (typeof (previous_id) === 'undefined')
+        previous_id = 0;
+    if (typeof (params) === 'undefined')
+        params = {};
 
-  var element_type_id = $(element).data('element-type-id');
 
-    var core_params = {
+  const element_type_id = $(element).data('element-type-id');
+  var element_type_class = $(element).data('element-type-class');
+
+  var $menuLi = findMenuItemForElementClass(element_type_class);
+
+  if($menuLi) {
+    if(!$menuLi.find('a').hasClass('selected')) {
+      $menuLi.find('a').addClass('selected');
+    }
+  }
+
+    const core_params = {
         id: element_type_id,
         patient_id: OE_patient_id,
         event_id: OE_event_id,
         previous_id: previous_id
     };
 
-  $.extend(params, core_params);
-  $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
-    var new_element = $(data);
-    var elClass = $(new_element).data('element-type-class');
-    var element_display_order = Number($(new_element).data('element-display-order'));
+    $.extend(params, core_params);
+    $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
+        const new_element = $(data);
+        const elClass = $(new_element).data('element-type-class');
+        const element_display_order = Number($(new_element).data('element-display-order'));
 
-        var container = $('.js-active-elements');
+        const container = $('.js-active-elements');
         $(element).remove();
 
-    // If there aren't any elements, then insert the new element at the end (after the event date)
-    if (container.find('section[data-element-type-name]').length === 0) {
-      container.append(new_element);
-    } else {
-      // Otherwise find the first element that has a greater display order...
-      var $toInsertBefore = null;
-      container.find('section[data-element-type-name]').each(function () {
-        var target_display_order = Number($(this).data('element-display-order'));
-        if (target_display_order > element_display_order) {
-          $toInsertBefore = $(this);
-          return false;
+        // If there aren't any elements, then insert the new element at the end (after the event date)
+        if (container.find('section[data-element-type-name]').length === 0) {
+            container.append(new_element);
+        } else {
+            // Otherwise find the first element that has a greater display order...
+            let $toInsertBefore = null;
+            container.find('section[data-element-type-name]').each(function () {
+                const target_display_order = Number($(this).data('element-display-order'));
+                if (target_display_order > element_display_order) {
+                    $toInsertBefore = $(this);
+                    return false;
+                }
+            });
+
+            // ... and insert before it
+            if ($toInsertBefore) {
+                new_element.insertBefore($toInsertBefore);
+            } else {
+                // If there are no elements with greater display order, then the new element should go last
+                container.append(new_element);
+            }
         }
-      });
 
-      // ... and insert before it
-      if ($toInsertBefore) {
-        new_element.insertBefore($toInsertBefore);
-      } else {
-        // If there are no elements with greater display order, then the new element should go last
-        container.append(new_element);
-      }
-    }
-
-    autosize($('#event-content textarea.autosize:visible'));
+        autosize($('#event-content textarea.autosize:visible'));
 
         // now init any children
         $(".element." + elClass).find('.active_child_elements').find('.element').each(function () {
-            var initFunctionName;
-            if (typeof OE_MODEL_PREFIX != 'undefined') {
+            let initFunctionName;
+            if (typeof OE_MODEL_PREFIX !== 'undefined') {
                 initFunctionName = $(this).data('element-type-class').replace(OE_MODEL_PREFIX + 'Element_', '') + '_init';
-            }
-            else {
+            } else {
                 initFunctionName = $(this).data('element-type-class').replace('Element_', '') + '_init';
             }
-            if (typeof(window[initFunctionName]) == 'function') {
+            if (typeof (window[initFunctionName]) === 'function') {
                 window[initFunctionName]();
             }
         });
 
-        var $inserted = container.children('section[data-element-type-id="' + element_type_id + '"]').first();
+        const $inserted = container.children('section[data-element-type-id="' + element_type_id + '"]').first();
         autosize($inserted.find('textarea'));
+
         if (animate) {
             // note this flag is a bit of a misnomer now, as we've removed the animation in favour of moving straight to the
             // relevant element. This is an intentional change intended to reduce eyestrain for heavy OE users.
@@ -90,15 +100,15 @@ function addElement(element, animate, previous_id, params, callback) {
             }, 100);
         }
         // Update text macros (if defined)
-        if (typeof updateTextMacros == 'function') {
+        if (typeof updateTextMacros === 'function') {
             updateTextMacros();
         }
 
-    if (callback) {
-      callback();
-    }
+        if (callback) {
+            callback();
+        }
 
-  });
+    });
 }
 
 /**
@@ -115,30 +125,31 @@ function findMenuItemForElementClass(elementTypeClass) {
     ).first();
 }
 
-function removeElement(element) {
+function removeElement(e) {
 
-    var element_type_class = $(element).data('element-type-class');
-    var element_type_id = $(element).data('element-type-id');
-    var element_type_name = $(element).data('element-type-name');
-    var display_order = $(element).data('element-display-order');
+    const element_type_class = $(e).data('element-type-class');
+    const element_type_id = $(e).data('element-type-id');
+    const element_type_name = $(e).data('element-type-name');
+    const display_order = $(e).data('element-display-order');
 
-    var $menuLi = findMenuItemForElementClass(element_type_class);
+    const $menuLi = findMenuItemForElementClass(element_type_class);
 
     if ($menuLi) {
         $menuLi.find('a').removeClass('selected').removeClass('error');
     }
-        var container = $('.optional-elements-list');
+    const container = $('.optional-elements-list');
 
-    $(element).remove();
+    $(e).remove();
+    $('div.' + element_type_class).remove();
 
-    var element = $('<li></li>')
-      .data('element-type-class', element_type_class)
-      .data('element-type-id', element_type_id)
-      .data('element-type-name', element_type_name)
-      .data('element-display-order', display_order)
-      .append($('<a href="#">' + element_type_name + '</a>'));
+    const element = $('<li></li>')
+        .data('element-type-class', element_type_class)
+        .data('element-type-id', element_type_id)
+        .data('element-type-name', element_type_name)
+        .data('element-display-order', display_order)
+        .append($('<a href="#">' + element_type_name + '</a>'));
 
-    var insert_before = $(container).find('li').first();
+    let insert_before = $(container).find('li').first();
 
     while (parseInt(insert_before.data('element-display-order')) < parseInt(display_order)) {
         insert_before = insert_before.next();
@@ -154,24 +165,24 @@ function removeElement(element) {
     OpenEyes.UI.StickyElements.refresh();
 
     // Update text macros (if defined)
-    if (typeof updateTextMacros == 'function') {
+    if (typeof updateTextMacros === 'function') {
         updateTextMacros();
     }
 
     $('.js-active-elements').trigger('ElementRemoved', [element_type_class]);
-    if (typeof(getOEEyeDrawChecker) === 'function') {
-        var checker = getOEEyeDrawChecker();
+    if (typeof (getOEEyeDrawChecker) === 'function') {
+        const checker = getOEEyeDrawChecker();
         checker.resync();
     }
 }
 
 function moveToElement($element) {
-    var $container = $('main.main-event');
+    const $container = $('main.main-event');
     $container.scrollTop(
         $element.offset().top - $container.offset().top + $container.scrollTop() - 130
     );
 
-    var $title = $('.element-title', $element);
+    const $title = $('.element-title', $element);
     $title.effect('pulsate', {
         times: 2
     }, 600);
@@ -188,13 +199,13 @@ $(document).ready(function () {
      * Add all optional elements
      */
     $('.optional-elements').delegate('.add-all', 'click', function (e) {
-      if ($(this).closest('.element').length == 0) {
-        $('.optional-elements-list li').each(function () {
-          $(this).addClass('clicked');
-          addElement(this, false);
-        });
-      }
-      e.preventDefault();
+        if ($(this).closest('.element').length === 0) {
+            $('.optional-elements-list li').each(function () {
+                $(this).addClass('clicked');
+                addElement(this, false);
+            });
+        }
+        e.preventDefault();
     });
 
     /**
@@ -212,8 +223,8 @@ $(document).ready(function () {
      * View previous elements
      */
     $('.js-active-elements').delegate('.js-duplicate-element', 'click', function (e) {
-        var element = $(this).closest('.element');
-        var dialog = new OpenEyes.UI.Dialog({
+        const element = $(this).closest('.element');
+        const dialog = new OpenEyes.UI.Dialog({
             url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
             data: {element_type_id: element.data('element-type-id'), patient_id: OE_patient_id},
             width: 1070,
@@ -223,15 +234,15 @@ $(document).ready(function () {
         });
         dialog.open();
 
-      $(dialog.content).on('click', '.copy_element', function (dialog, element, event) {
-        var element_id = $(event.target).data('element-id');
-        $(element).addClass('clicked');
-        $(element).find('> .element-fields').css('opacity', '0.5');
-        $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
-        $('.oe-popup-wrap').remove();
-        addElement(element, false, element_id);
-      }.bind(undefined, dialog, element));
-      e.preventDefault();
+        $(dialog.content).on('click', '.copy_element', function (dialog, element, event) {
+            const element_id = $(event.target).data('element-id');
+            $(element).addClass('clicked');
+            $(element).find('> .element-fields').css('opacity', '0.5');
+            $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
+            $('.oe-popup-wrap').remove();
+            addElement(element, false, element_id);
+        }.bind(undefined, dialog, element));
+        e.preventDefault();
 
     });
 

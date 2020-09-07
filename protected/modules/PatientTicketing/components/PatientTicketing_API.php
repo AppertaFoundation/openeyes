@@ -338,4 +338,33 @@ class PatientTicketing_API extends \BaseAPI
 
         return $qs_svc->canAddPatientToQueueSet($patient, $qs_r->getId());
     }
+
+
+    public function renderVirtualClinicSteps(Ticket $ticket)
+    {
+        $vc_steps = '';
+
+        foreach ($ticket->queue_assignments as $step => $queue_assignment) {
+            $is_completed = $queue_assignment->queue->id <= $ticket->current_queue->id;
+            $is_current = $queue_assignment->queue->id === $ticket->current_queue->id;
+
+            if ($is_completed) {
+                $vc_steps .= "<li class='completed'<em> {$queue_assignment->assignment_user->getFullName()} </em></li>";
+            }
+            $li_class = $is_current ? 'selected' : ($is_completed ? 'completed' : '');
+            $display_step = $step + 1;
+            $vc_steps .= "<li class='{$li_class}'>{$display_step}. {$queue_assignment->queue->name}</li>";
+        }
+
+        $index = count($ticket->queue_assignments) + 1;
+
+        foreach ($ticket->getFutureSteps() as $case => $futureSteps) {
+            foreach ($futureSteps as $futureStep) {
+                $step = $case === '?' ? $case : $index;
+                $vc_steps .= "<li>{$step}. {$futureStep->name}<li>";
+            }
+        }
+
+        return $vc_steps;
+    }
 }

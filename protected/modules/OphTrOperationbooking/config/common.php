@@ -84,5 +84,8 @@ return array(
             // overrides admin > Opbooking > whiteboard settings
             //'refresh_after_opbooking_completed' => 24, //hours or false
         ),
+        'reports' => array(
+            'Effective use of resources (EUR)' => '/OphTrOperationbooking/report/eur'
+        ),
     ),
 );

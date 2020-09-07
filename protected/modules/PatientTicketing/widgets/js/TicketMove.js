@@ -29,12 +29,13 @@
    * @param {callback} success
    */
   TicketMoveController.prototype.getQueueAssForm = function (id, success) {
+    let ticket_id = $(this.options.formClass).find('input[name="ticket_id"]').val();
     if (!this.queueAssForms[id]) {
       disableButtons();
-      var self = this;
-      var form = $.ajax({
+      let self = this;
+      $.ajax({
         url: this.options.queueAssignmentFormURI,
-        data: {id: id, ticket_id: this.ticketId},
+        data: {id: id, ticket_id: ticket_id},
         success: function (response) {
           self.queueAssForms[id] = response;
           enableButtons();
@@ -314,6 +315,7 @@
     document.addEventListener("DOMContentLoaded", setOnBeforeUnload);
   $(document).ready(function () {
     var ticketMoveController = new TicketMoveController();
+    window.ticketMoveController = ticketMoveController;
     ticketMoveController.loadScratchpadData();
 
     initialContentHash = getContentHash();
@@ -353,6 +355,12 @@
     $('select[name="to_queue_id"]').on('change', function () {
       ticketMoveController.getQueueAssForm($(this).val(), function (response) {
         $('#PatientTicketing-queue-assignment').html(response);
+
+        $(document).on('change', '.outcome-select', function() {
+          let fup = $(this).find('option:selected').data('followup');
+          let form_name = $(this).parents('tbody').data('formname');
+          $('#' + form_name + '-followup').toggle(fup);
+        });
       });
     });
   });

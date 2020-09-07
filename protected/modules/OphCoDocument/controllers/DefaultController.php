@@ -14,13 +14,12 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-require_once './vendor/setasign/fpdi/pdf_parser.php';
+require_once './vendor/setasign/fpdi/src/PdfParser/PdfParser.php';
 
 use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
 
 class DefaultController extends BaseEventTypeController
 {
-    protected $show_element_sidebar = false;
     protected $max_document_size = 10485760;
     protected $max_document_name_length = 255;
     protected $max_content_length = 8388608;
@@ -95,7 +94,7 @@ class DefaultController extends BaseEventTypeController
 
         switch ($files['Document']['error'][$index]) {
             case UPLOAD_ERR_OK:
-            break;
+                break;
             case UPLOAD_ERR_NO_FILE:
                 $message = 'No file was uploaded!';
                 return $message;
@@ -141,14 +140,15 @@ class DefaultController extends BaseEventTypeController
 
         $p_file = ProtectedFile::createFromFile($tmp_name);
         $p_file->name = $original_name;
+        $p_file->title = $original_name;
 
         if ($p_file->save()) {
             unlink($tmp_name);
             return $p_file->id;
-        } else {
-            unlink($tmp_name);
-            return false;
         }
+
+        unlink($tmp_name);
+        return false;
     }
 
     public function actionRemoveDocuments()
@@ -158,7 +158,7 @@ class DefaultController extends BaseEventTypeController
             try {
                 $doc = ProtectedFile::model()->findByPk($doc_id);
                 if ($doc && file_exists($doc->getFilePath() . '/' . $doc->uid)) {
-                    $doc->delete();
+                    unlink($doc->getFilePath() . '/' . $doc->uid);
                 } else {
                     OELog::log(($doc ? "Failed to delete the document from " . $doc->getFilePath() : "Failed to find document"));
                 }
@@ -175,7 +175,7 @@ class DefaultController extends BaseEventTypeController
     {
         if ($this->sub_type) {
             if (in_array($this->sub_type->name, array('OCT', 'Photograph'))) {
-                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets')) . '/';
+                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets'), true) . '/';
                 return $asset_path . 'img/medium' . $this->sub_type->name . '.png';
             }
         }
@@ -192,7 +192,7 @@ class DefaultController extends BaseEventTypeController
                 if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key])>0) {
                     $handler = $this->documentErrorHandler($_FILES, $file_key);
                     if ( $handler == null) {
-                        $return_data[$file_key] = $this->uploadFile( $file["tmp_name"][$file_key], $file["name"][$file_key]);
+                        $return_data[$file_key] = $this->uploadFile($file["tmp_name"][$file_key], $file["name"][$file_key]);
                     } else {
                         $return_data = array(
                             's'     => 0,
@@ -261,7 +261,7 @@ class DefaultController extends BaseEventTypeController
                 'file_id'   => $pf->id,
             );
 
-            if ( !isset( $_GET['ajax'])) {
+            if ( !isset($_GET['ajax'])) {
                 $result['name'] = $pf->name;
                 $result['mime'] = $pf->mimetype;
                 $result['path'] = $pf->getPath();
@@ -346,7 +346,7 @@ class DefaultController extends BaseEventTypeController
                             $auto_print = Yii::app()->request->getParam('auto_print', true);
                             $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-                            $pdf_route = $this->setPDFprintData( $id, $inject_autoprint_js );
+                            $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js);
 
                             $pdf = $this->event->getPDF($pdf_route);
                             $this->addPDFToOutput($pdf);
@@ -451,6 +451,9 @@ class DefaultController extends BaseEventTypeController
                 if (!$document) {
                     continue;
                 }
+
+                // Always write the file contents to the file, even if it already exists. This will ensure the contents are always up-to-date.
+                file_put_contents($document->getPath(), $document->file_content);
 
                 switch ($document->mimetype) {
                     case 'application/pdf':

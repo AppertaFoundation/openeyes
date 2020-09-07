@@ -43,7 +43,8 @@ if (@$_POST[CHtml::modelName($element)]) {
     <td>
         <?php echo $form->dropDownList(
             $element,
-            $side . '_method_id', '\OEModule\OphCiExamination\models\OphCiExamination_OCT_Method',
+            $side . '_method_id',
+            '\OEModule\OphCiExamination\models\OphCiExamination_OCT_Method',
             array('nowrapper' => true),
             false,
             array('label' => 9, 'field' => 3)
@@ -83,7 +84,8 @@ if (@$_POST[CHtml::modelName($element)]) {
             $side . '_sft',
             array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true),
             null,
-            array()) ?>
+            array()
+        ) ?>
       <span class="field-info">&micro;m</span>
       <i class="oe-i info small-icon js-has-tooltip"
          style="<?php if (!$tooltip_content) :
@@ -98,8 +100,12 @@ if (@$_POST[CHtml::modelName($element)]) {
       <label><?php echo $element->getAttributeLabel($side . '_thickness_increase'); ?>:</label>
     </td>
     <td>
-        <?php echo $form->radioBoolean($element, $side . '_thickness_increase', array('nowrapper' => true),
-            array('label' => 9, 'field' => 3)) ?>
+        <?php echo $form->radioBoolean(
+            $element,
+            $side . '_thickness_increase',
+            array('nowrapper' => true),
+            array('label' => 9, 'field' => 3)
+        ) ?>
     </td>
   </tr>
   <tr>
@@ -107,8 +113,12 @@ if (@$_POST[CHtml::modelName($element)]) {
       <label><?php echo $element->getAttributeLabel($side . '_dry'); ?>:</label>
     </td>
     <td>
-        <?php echo $form->radioBoolean($element, $side . '_dry', array('nowrapper' => true),
-            array('label' => 9, 'field' => 3)) ?>
+        <?php echo $form->radioBoolean(
+            $element,
+            $side . '_dry',
+            array('nowrapper' => true),
+            array('label' => 9, 'field' => 3)
+        ) ?>
     </td>
   </tr>
 
@@ -136,10 +146,17 @@ if (@$_POST[CHtml::modelName($element)]) {
         }
         echo $form->multiSelectList(
             $element,
-            CHtml::modelName($element) . '[' . $side . '_fluidtypes]', $side . '_fluidtypes', 'id',
+            CHtml::modelName($element) . '[' . $side . '_fluidtypes]',
+            $side . '_fluidtypes',
+            'id',
             CHtml::listData($fts, 'id', 'name'),
             array(),
-            $html_options, false, false, null, false, false,
+            $html_options,
+            false,
+            false,
+            null,
+            false,
+            false,
             array('label' => 9, 'field' => 3)
         );
         ?>
@@ -176,7 +193,8 @@ if (@$_POST[CHtml::modelName($element)]) {
                    endif; ?>"
             data-comment-button="#<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>">
             <?php echo $form->textArea(
-                $element, $side . '_comments',
+                $element,
+                $side . '_comments',
                 array('nowrapper' => true),
                 false,
                 array(

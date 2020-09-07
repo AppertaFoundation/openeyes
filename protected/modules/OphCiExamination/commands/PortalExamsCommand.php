@@ -42,7 +42,7 @@ class PortalExamsCommand extends CConsoleCommand
         }
         $portalUserId = $portalUser->id;
 
-        $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Ophthalmologist"');
+        $refractionType = \OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->find('name = "Optometrist"');
 
         $eyes = Eye::model()->findAll();
         $eyeIds = array();

@@ -19,7 +19,8 @@
 
 <?php $this->renderPartial('//base/_search_bar', array(
     'callback' => Yii::app()->createUrl('site/search'),
-        'search_term' => $search_term
+        'search_term' => $search_term,
+        'context' => 'homepage',
 )); ?>
 
 <?php $this->renderPartial('//base/_messages'); ?>

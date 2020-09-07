@@ -3,8 +3,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,38 +12,12 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2020 Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-// If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
-// Note, docker secrets are the recommended approach for docker environments
-
-if (file_exists('/etc/openeyes/db.conf')) {
-    $db = parse_ini_file('/etc/openeyes/db.conf');
-} else {
-    $db = array(
-        'host' => getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : 'localhost',
-        'port' => getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306',
-        'dbname' => getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes',
-        'username' => getenv('DATABASE_USER') ? getenv('DATABASE_USER') : (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : 'openeyes'),
-        'password' => getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : 'openeyes'),
-    );
-}
-
 $config = array(
     'components' => array(
-        'db' => array(
-            'connectionString' => "mysql:host={$db['host']};port={$db['port']};dbname={$db['dbname']}",
-            'username' => $db['username'],
-            'password' => $db['password'],
-        ),
-        'mailer' => array(
-            // Setting the mailer mode to null will suppress email
-            //'mode' => null
-            // Mail can be diverted by setting the divert array
-            //'divert' => array('foo@example.org', 'bar@example.org')
-        ),
         /*
         'log' => array(
             'routes' => array(
@@ -119,18 +92,14 @@ $config = array(
         'OphGeneric',
         'OECaseSearch',
         'OETrial',
-        'OphOuCatprom5'
+        'OphOuCatprom5',
+        'OphCiTheatreadmission'
     ),
 
     'params' => array(
         //'pseudonymise_patient_details' => false,
         //'ab_testing' => false,
-        'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
-        // This is used in contact page
-        'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
-        'ldap_password' => '',
-        'ldap_dn' => 'CN=Users,dc=example,dc=com',
-        'local_users' => array('admin', 'username'),
+        'local_users' => array('admin','api','docman_user','payload_processor'),
         //'log_events' => true,
         //'default_site_code' => '',
         'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
@@ -156,19 +125,6 @@ $config = array(
         // 'worklist_allow_duplicate_patients' => bool
         //// any appointments sent in before this date will not trigger errors when sent in
         // 'worklist_ignore_date => 'Y-m-d',
-        
-        /**
-        * Filename format for the PDF and XML files output by the docman export
-        * possible values:
-        *
-        * format1 => OPENEYES_<eventId>_<randomInteger>.pdf [current format, default if parameter not specified]
-        * format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
-        * format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
-        * format4 => <hosnum>_<yyyyMMddhhmmss>_<eventId>__<doctype>_.pdf
-        */
-        'docman_filename_format' => 'format1',
-        // set this to false if you want to suppress XML output
-        'docman_generate_xml' => true,
     ),
 );
 

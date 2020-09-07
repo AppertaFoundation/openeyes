@@ -1,9 +1,7 @@
 <?php
+
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,12 +10,11 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 <?php
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/allergicDrugs.js", \CClientScript::POS_HEAD);
 // we need to separate the public and admin view
 if (is_a(Yii::app()->getController(), 'DefaultController')) {
     echo $form->hiddenInput($element, 'draft', 1);
@@ -39,46 +36,50 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
           <col class="cols-1">
         </colgroup>
         <thead>
-        <tr>
-          <th colspan="2">Drug</th>
-          <th>Dose</th>
-          <th>Route</th>
-            <?php if (strpos($this->uniqueid, 'default')) { // we need to display this column on the front-end only?>
+          <tr>
+            <th colspan="2">Drug</th>
+            <th>Dose</th>
+            <th>Route</th>
+            <?php if (strpos($this->uniqueid, 'default')) { // we need to display this column on the front-end only
+                ?>
               <th>Options</th>
             <?php } ?>
-          <th>Frequency</th>
-          <th>Duration</th>
-          <th>Dispense Condition</th>
-          <th>Location</th>
-          <th></th>
-        </tr>
+            <th>Frequency</th>
+            <th>Duration</th>
+            <th>Dispense Condition</th>
+            <th>Location</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-        <?php
-        foreach ($element->items as $key => $item) {
-            $this->renderPartial('form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'patient' => $this->patient));
-        } ?>
+          <?php
+            $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
+            foreach ($element->items as $key => $item) {
+                $this->renderPartial(
+                    'form_Element_OphDrPrescription_Details_Item',
+                    array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options)
+                );
+            } ?>
         </tbody>
       </table>
     </div>
 
     <div class="flex-layout">
       <div>
-        <button type="button" class="button hint blue"
-                id="clear_prescription" name="clear_prescription">
+        <button type="button" class="button hint blue" id="clear_prescription" name="clear_prescription">
           Clear all
         </button>
 
-            <?php
-          // we need to separate the public and admin view
-            if (is_a(Yii::app()->getController(), 'DefaultController') &&
-              $this->getPreviousPrescription($element->id)) : ?>
-            <button type="button" class="button hint blue"
-                    id="repeat_prescription" name="repeat_prescription">
-              Add repeat prescription
-            </button>
-            <?php endif; ?>
+        <?php
+        // we need to separate the public and admin view
+        if (
+          is_a(Yii::app()->getController(), 'DefaultController') &&
+          $this->getPreviousPrescription($element->id)
+        ) : ?>
+          <button type="button" class="button hint blue" id="repeat_prescription" name="repeat_prescription">
+            Add repeat prescription
+          </button>
+        <?php endif; ?>
       </div>
 
       <div>
@@ -99,64 +100,93 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
       <h3 class="element-title">Comments</h3>
     </header>
     <div class="element-fields flex-layout full-width">
-        <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'nowrapper' => true), false) ?>
+      <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'nowrapper' => true), false) ?>
     </div>
   </section>
 <?php } ?>
+<?php if ($element->elementType->custom_hint_text) { ?>
+  <div class="alert-box info <?= CHtml::modelName($element->elementType->class_name) ?>">
+    <div class="user-tinymce-content">
+      <?= $element->elementType->custom_hint_text ?>
+    </div>
+  </div>
+<?php } ?>
 
 <script type="text/javascript">
-    <?php
-    // we need to separate the public and admin view
-    if (is_a(Yii::app()->getController(), 'DefaultController')) : ?>
-    var searchListUrl = '<?= $this->createUrl('DrugList') ?>';
-    <?php else : ?>
-    var searchListUrl = '<?='/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController . '/DrugList'; ?>';
-    <?php endif; ?>
+  <?php
+    $common_systemic = Medication::model()->listCommonSystemicMedications(true);
+    foreach ($common_systemic as &$medication) {
+        $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+    }
 
-    var prescriptionDrugSets = <?= CJSON::encode(
-        array_map(function ($drugSet) {
-            return [
-                'label' => $drugSet->name,
-                'id' => $drugSet->id,
-            ];
-        }, $element->drugSets())
-    ) ?>;
+    $firm_id = $this->getApp()->session->get('selected_firm_id');
+    $site_id = $this->getApp()->session->get('selected_site_id');
+    if ($firm_id) {
+      /** @var Firm $firm */
+        $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
+        $subspecialty_id = $firm->getSubspecialtyID();
+        $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id);
+        foreach ($common_ophthalmic as &$medication) {
+            $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+        }
+    } else {
+        $common_ophthalmic = array();
+    }
+    ?>
+  new OpenEyes.UI.AdderDialog({
+    openButton: $('#add-prescription-btn'),
+    itemSets: [
+      new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          $common_systemic
+      ) ?>, {
+        'multiSelect': true,
+        header: "Common Systemic"
+      }),
+      new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          $common_ophthalmic
+      ) ?>, {
+        'multiSelect': true,
+        header: "Common Ophthalmic"
+      })
+    ],
+    onReturn: function(adderDialog, selectedItems) {
+      addItems(selectedItems);
+      return true;
+    },
+    searchOptions: {
+      searchSource: '/medicationManagement/findRefMedications?source=prescription',
+    },
+    enableCustomSearchEntries: true,
+    searchAsTypedItemProperties: {
+      id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"
+    },
+    booleanSearchFilterEnabled: true,
+    booleanSearchFilterLabel: 'Include brand names',
+    booleanSearchFilterURLparam: 'include_branded'
+  });
 
-    var prescriptionElementCommonDrugs = <?= CJSON::encode(
-        array_map(function ($drug) {
-            return [
-                'label' => $drug['name'],
-                'id' => $drug['id'],
-                'allergies' => CJSON::encode(array_map(function ($allergy) {
-                        return $allergy->id;
-                }, $drug->allergies)),
-            ];
-        }, $element->commonDrugs())
-    ) ?>;
+  let prescription_drug_sets = <?= CJSON::encode(
+      array_map(function ($drugSet) {
+                                    return [
+                                      'label' => $drugSet->name,
+                                      'id' => $drugSet->id
+                                    ];
+      }, $element->drugSets())
+  ) ?>;
 
-    var prescriptionElementDrugTypes = <?= CJSON::encode(
-        array_map(function ($drugType) {
-            return [
-                'label' => $drugType['name'],
-                'id' => $drugType['id'],
-            ];
-        }, $element->drugTypes())
-    ) ?>;
+  <?php if (isset($this->patient)) : ?>
+    let patient_allergies = <?= CJSON::encode($this->patient->getAllergiesId()) ?>;
+  <?php endif; ?>
 
-    <?php if (isset($this->patient)) { ?>
-    var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
-    <?php } ?>
+  // This case handles displaying the button correctly whenever changing the dispense condition.
+  $('#prescription_items tbody').on('change', '.dispenseCondition', function() {
+    fpTenPrintOption();
+  });
 
-    // This case handles displaying the button correctly whenever changing the dispense condition.
-    $('#prescription_items tbody').on('change', '.dispenseCondition', function() {
-        fpTenPrintOption();
-    });
-
-    // This case handles displaying the button correctly when first accessing the edit screen.
-    $(document).ready(function() {
-        fpTenPrintOption();
-    })
-
+  // This case handles displaying the button correctly when first accessing the edit screen.
+  $(document).ready(function() {
+    fpTenPrintOption();
+  })
 </script>
 
 <?php
@@ -164,11 +194,15 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
  * We need to decide which JS file need to be loaded regarding to the controller
  * Unfortunately jsVars[] won't work from here because processJsVars function already called
  */
-$modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'));
+$modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'), true);
 
-Yii::app()->getClientScript()->registerScript('scr_controllerName',
-    "controllerName = '" . get_class(Yii::app()->getController()) . "';", CClientScript::POS_HEAD);
+Yii::app()->getClientScript()->registerScript(
+    'scr_controllerName',
+    "controllerName = '" . get_class(Yii::app()->getController()) . "';",
+    CClientScript::POS_HEAD
+);
 
+Yii::app()->clientScript->registerScriptFile($modulePath . '/js/allergicDrugs.js', CClientScript::POS_END);
 Yii::app()->clientScript->registerScriptFile($modulePath . '/js/defaultprescription.js', CClientScript::POS_END);
 
 ?>

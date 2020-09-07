@@ -295,10 +295,12 @@ class WorklistController extends BaseAdminController
 
         if (isset($_POST['WorklistDefinitionMapping'])) {
             $mapping->attributes = $_POST['WorklistDefinitionMapping'];
-            if ($this->manager->updateWorklistDefinitionMapping($mapping,
+            if ($this->manager->updateWorklistDefinitionMapping(
+                $mapping,
                 $_POST['WorklistDefinitionMapping']['key'],
                 $_POST['WorklistDefinitionMapping']['valuelist'],
-                $_POST['WorklistDefinitionMapping']['willdisplay'])) {
+                $_POST['WorklistDefinitionMapping']['willdisplay']
+            )) {
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
                 $this->redirect(array('/Admin/worklist/definitionMappings/'.$id));
             } else {
@@ -332,10 +334,12 @@ class WorklistController extends BaseAdminController
 
         if (isset($_POST['WorklistDefinitionMapping'])) {
             $mapping->attributes = $_POST['WorklistDefinitionMapping'];
-            if ($this->manager->updateWorklistDefinitionMapping($mapping,
+            if ($this->manager->updateWorklistDefinitionMapping(
+                $mapping,
                 $_POST['WorklistDefinitionMapping']['key'],
                 $_POST['WorklistDefinitionMapping']['valuelist'],
-                $_POST['WorklistDefinitionMapping']['willdisplay'])) {
+                $_POST['WorklistDefinitionMapping']['willdisplay']
+            )) {
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
                 $this->redirect(array('/Admin/worklist/definitionMappings/'.$mapping->worklist_definition_id));
             } else {
@@ -454,5 +458,16 @@ class WorklistController extends BaseAdminController
         }
 
         $this->redirect(array('/Admin/worklist/definitionDisplayContexts/'.$display_context->worklist_definition_id));
+    }
+
+    public function actionRenderPopups()
+    {
+        if (isset($_POST['worklistId'])) {
+            $worklist = $this->manager->getWorklist($_POST["worklistId"]);
+            $dataProvider = $this->manager->getPatientsForWorklist($worklist);
+            foreach ($dataProvider->getData() as $dataProvider) {
+                $this->renderPartial('application.widgets.views.PatientIcons', array('data' => ($dataProvider->patient), 'page' => 'worklist'));
+            }
+        }
     }
 }

@@ -21,7 +21,7 @@ class DefaultController extends BaseEventTypeController
 
     public function beforeAction($action)
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.Genetics.assets.js'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.Genetics.assets.js'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath . '/gene_validation.js');
 
         return parent::beforeAction($action);

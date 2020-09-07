@@ -21,15 +21,15 @@ class ContactController extends \BaseController
             $criteria = new \CDbCriteria();
             $criteria->join = "left join contact_label cl on cl.id = t.contact_label_id ";
             $criteria->join .= "left join address ad on ad.contact_id = t.id";
-            if (isset($_GET['term']) && $term = $_GET['term']) {
-                $criteria->addSearchCondition('last_name', $term, true, 'OR');
-                $criteria->addSearchCondition('first_name', $term, true, 'OR');
-                $criteria->addSearchCondition('cl.name', $term, true, 'OR');
-                $criteria->addSearchCondition('t.national_code', $term, true, 'OR');
-                $criteria->addSearchCondition('ad.address1', $term, true, 'OR');
-                $criteria->addSearchCondition('ad.address2', $term, true, 'OR');
-                $criteria->addSearchCondition('ad.postcode', $term, true, 'OR');
-                $criteria->addSearchCondition('last_name', $term, true, 'OR');
+            if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
+                $criteria->addSearchCondition('LOWER(last_name)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(first_name)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(cl.name)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(t.national_code)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(ad.address1)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(ad.address2)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(ad.postcode)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(last_name)', $term, true, 'OR');
             }
             if (isset($_GET['filter'])) {
                 $contact_label_id = $_GET['filter'];
@@ -37,8 +37,7 @@ class ContactController extends \BaseController
                     $contact_label = \ContactLabel::model()->findByPk($contact_label_id);
                     $criteria->addCondition(array(
                             'cl.name = ' . '"' . $contact_label->name . '"'
-                        )
-                    );
+                        ));
                 }
             }
             $criteria->addCondition(array('cl.is_private = 0'));
@@ -73,7 +72,7 @@ class ContactController extends \BaseController
                 " " . ($contact->address ? $contact->address->getLetterLine() : ""),
             'id' => $contact['id'],
             'name' => $contact->getFullName(),
-            'email' => $contact->address ? $contact->address->email : "",
+            'email' => $contact->email,
             'phone' => $contact->primary_phone,
             'address' => $contact->address ? $contact->address->getLetterLine() : "",
             'contact_label' => $contact->label ? $contact->label->name : "",
@@ -86,7 +85,8 @@ class ContactController extends \BaseController
         if (isset($_GET['selected_contact_type'])) {
             $selected_contact_type = $_GET['selected_contact_type'];
         }
-        $this->renderPartial('//contacts/add_new_contact_assignment',
+        $this->renderPartial(
+            '//contacts/add_new_contact_assignment',
             array('selected_contact_type' => $selected_contact_type),
             false,
             true
@@ -108,12 +108,12 @@ class ContactController extends \BaseController
                 $contact->primary_phone = $data->primary_phone;
                 $contact->contact_label_id = $data->contact_label_id;
                 $contact->active = 1;
+                $contact->email = $data->email;
 
                 $address = new \Address();
                 $address->address1 = $data->address1;
                 $address->address2 = $data->address2;
                 $address->city = $data->city;
-                $address->email = $data->email;
                 $address->postcode = $data->postcode;
                 $address->country_id = $data->country;
                 $address->address_type_id = 3;

@@ -114,11 +114,11 @@ class OptomPortalConnection
     protected function initClient()
     {
         $clientConfig = array();
-        if($this->yii->params['curl_proxy']){
+        if ($this->yii->params['curl_proxy']){
             $proxy = parse_url($this->yii->params['curl_proxy']);
             $clientConfig['adapter'] = 'Zend_Http_Client_Adapter_Proxy';
             $clientConfig['proxy_host'] = $proxy['host'];
-            if(array_key_exists('port', $proxy)){
+            if (array_key_exists('port', $proxy)){
                 $clientConfig['proxy_port'] = $proxy['port'];
             }
         }
@@ -201,6 +201,8 @@ class OptomPortalConnection
         $protected_file = $protected_file->createForWriting('cvi_signature_' . $fileId);
 
         if (file_put_contents($protected_file->getPath(), $imageData)) {
+            $protected_file->size = filesize($protected_file->getPath());
+            $protected_file->file_content = file_get_contents($protected_file->getPath());
             $protected_file->save();
             return $protected_file;
         }

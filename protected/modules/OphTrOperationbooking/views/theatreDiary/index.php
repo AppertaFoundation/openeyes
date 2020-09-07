@@ -54,7 +54,8 @@
             <?=\CHtml::dropDownList('site-id', Yii::app()->request->getPost('site-id', 'All'),
                 ['All' => 'All sites'] + Site::model()->getListForCurrentInstitution(), array(
                     'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
-                )) ?>
+                )
+            ) ?>
         </td>
       </tr>
       <tr>
@@ -88,7 +89,7 @@
                                 ['All'=>'All '.Firm::model()->contextLabel().'s'] +Firm::model()->getList($subspecialty_id), array(
                                 'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
                   )) ?>
-            <?php } ?>
+F            <?php } ?>
         </td>
       </tr>
       <tr>

@@ -44,8 +44,13 @@
         </div>
     </div>
     <div class="row">
-        <?php echo $form->textField($mapping, 'valuelist', array('autocomplete' => Yii::app()->params['html_autocomplete']),
-            null, array('field' => 2))?>
+        <?php echo $form->textField(
+            $mapping,
+            'valuelist',
+            array('autocomplete' => Yii::app()->params['html_autocomplete']),
+            null,
+            array('field' => 2)
+        )?>
     </div>
 
     <?php echo $form->formActions(array('cancel-uri' => '/Admin/worklist/definitionMappings/'.$mapping->worklist_definition_id))?>

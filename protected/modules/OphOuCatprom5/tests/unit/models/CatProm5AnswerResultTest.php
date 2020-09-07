@@ -1,9 +1,14 @@
 <?php
-class CatProm5AnswerResultTest extends CDbTestCase {
+class CatProm5AnswerResultTest extends ActiveRecordTestCase {
     public $model;
     public $fixtures = array(
-    'answerRecords' => 'CatProm5AnswerResult',
+        'answerRecords' => 'CatProm5AnswerResult',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     public function dataProvider_Search()
     {
@@ -31,7 +36,6 @@ class CatProm5AnswerResultTest extends CDbTestCase {
         array(array('answer_id'=>23), 1, array('cat_prom5_answer_item11')),
         array(array('answer_id'=>28), 1, array('cat_prom5_answer_item12')),
         );
-
     }
 
     public static function setupBeforeClass()
@@ -43,15 +47,6 @@ class CatProm5AnswerResultTest extends CDbTestCase {
     {
         parent::setUp();
         $this->model = new CatProm5AnswerResult();
-    }
-
-  /**
-   * Tears down the fixture, for example, closes a network connection.
-   * This method is called after a test is executed.
-   */
-    public function tearDown()
-    {
-        parent::tearDown();
     }
 
   /**
@@ -70,11 +65,13 @@ class CatProm5AnswerResultTest extends CDbTestCase {
         $this->assertEquals('cat_prom5_answer_results', $this->model->tableName());
     }
 
-  /**
-   * @covers CatProm5AnswerResult::rules
-   */
+    /**
+     * @covers CatProm5AnswerResult::rules
+     * @throws CException
+     */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->answerRecords('cat_prom5_answer_item1')->validate());
         $this->assertEmpty($this->answerRecords('cat_prom5_answer_item1')->errors);
     }

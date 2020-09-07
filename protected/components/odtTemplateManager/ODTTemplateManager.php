@@ -18,7 +18,7 @@
 
 // FPDI module is not working properly with the Yii Autoload so we have to include the parser class manually!
 
-require_once str_replace('index.php', 'vendor/setasign/fpdi/pdf_parser.php', Yii::app()->getRequest()->getScriptFile());
+require_once str_replace('index.php', 'vendor/setasign/fpdi/src/PdfParser/PdfParser.php', Yii::app()->getRequest()->getScriptFile());
 
 /**
  * A class for odt document modify and generate pdf
@@ -179,7 +179,7 @@ class ODTTemplateManager
        
         foreach ($nodes as $node) {
             foreach ($data as $key => $value){
-                if(strpos($node->nodeValue, '${'.$key.'}') !== false){
+                if (strpos($node->nodeValue, '${'.$key.'}') !== false){
                 	$this->createSingleOrMultilineTextNode($value);
                 }    
             }

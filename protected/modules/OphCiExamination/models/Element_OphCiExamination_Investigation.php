@@ -80,7 +80,7 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
             $elements
         );
 
-        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN))) {
+        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN)) && !$this->description) {
             $this->addError('description', 'Description cannot be blank when there are no child elements');
         }
     }

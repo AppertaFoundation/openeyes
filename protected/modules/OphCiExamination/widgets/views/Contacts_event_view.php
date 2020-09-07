@@ -51,7 +51,7 @@ $element_errors = $element->getErrors();
                         <?php $gp_contact = $this->patient->gp->contact; ?>
                         <td><?= $gp_contact->label ? $gp_contact->label->name : "" ?></td>
                         <td><?= $gp_contact->getFullName() ?></td>
-                        <td><?= $gp_contact->address ? $gp_contact->address->email : "" ?></td>
+                        <td><?= $gp_contact->address ? $gp_contact->email : "" ?></td>
                         <td><?= $gp_contact->primary_phone ?></td>
                         <td><?= $gp_contact->address ? $gp_contact->address->getLetterLine() : "" ?></td>
                         <td></td>
@@ -63,7 +63,7 @@ $element_errors = $element->getErrors();
                     <tr>
                         <td><?= $contact->label ? $contact->label->name : "" ?></td>
                         <td><?= $contact->getFullName() ?></td>
-                        <td><?= $contact->address ? $contact->address->email : "" ?></td>
+                        <td><?= $contact->address ? $contact->email : "" ?></td>
                         <td><?= $contact->primary_phone ?></td>
                         <td><?= $contact->address ? $contact->address->getLetterLine() : "" ?></td>
                         <td style="overflow-wrap:break-word;"><?= $contact_assignment->comment ? Yii::app()->format->Ntext($contact_assignment->comment) : "" ?></td>

@@ -50,11 +50,14 @@
                                                              class="flex-layout flex-left js-comment-container"
                                                              style="<?php if ($comments == null) echo 'display:none' ?>">
                                                             <?php
-                                                            echo CHtml::textArea(CHtml::modelName($element) . "[cvi_disorder_section][" . $disorder_section->id . "][comments]",
-                                                                $comments, array('rows' => '1',
+                                                            echo CHtml::textArea(
+                                                                CHtml::modelName($element) . "[cvi_disorder_section][" . $disorder_section->id . "][comments]",
+                                                                $comments,
+                                                                array('rows' => '1',
                                                                     'class' => 'js-input-comments cols-full autosize',
                                                                     'nowrapper' => true ,
-                                                                    'placeholder' => 'Comments')); ?>
+                                                                'placeholder' => 'Comments')
+                                                            ); ?>
                                                             <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
                                                         </div>
                                                     </div>

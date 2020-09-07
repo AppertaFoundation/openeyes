@@ -34,7 +34,13 @@ class AdminController extends BaseAdminController
     public function actionEditPreviousOperation()
     {
         $this->group = 'Examination';
-        $this->genericAdmin('Edit Surgical History Choices', 'CommonPreviousOperation');
+        $this->genericAdmin('Edit Ophthalmic Surgical History Choices', 'CommonPreviousOperation');
+    }
+
+    public function actionEditPreviousSystemicOperation()
+    {
+        $this->group = 'Examination';
+        $this->genericAdmin('Edit Systemic Surgical History Choices', 'CommonPreviousSystemicOperation');
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()
@@ -44,6 +50,67 @@ class AdminController extends BaseAdminController
             'Common Ophthalmic Disorder Groups',
             'CommonOphthalmicDisorderGroup',
             ['div_wrapper_class' => 'cols-5']
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionEditEventTypeCustomText()
+    {
+        $errors = array();
+        foreach (($_POST['EventType'] ?? []) as $event_type_form) {
+            $event_type = EventType::model()->findByPk($event_type_form['id']);
+            $event_type->attributes = $event_type_form;
+            $event_type->save();
+            $errors = array_merge($errors, $event_type->getErrors());
+        }
+        $events = EventType::model()->getEventTypeModules();
+        usort($events, static function ($item_a, $item_b) {
+            return strcmp($item_a->name, $item_b->name);
+        });
+
+        $this->render(
+            '/admin/custom_text',
+            array(
+                'model_list' => $events,
+                'errors' => $errors,
+            )
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionEditElementTypeCustomText()
+    {
+        $errors = array();
+        foreach (($_POST['ElementType'] ?? []) as $element_type_form) {
+            $element_type = ElementType::model()->findByPk($element_type_form['id']);
+            if ($element_type_form['custom_hint_text'] !== $element_type->custom_hint_text) {
+                $element_type->custom_hint_text = $element_type_form['custom_hint_text'];
+                $element_type->save();
+                $errors = array_merge($errors, $element_type->getErrors());
+            }
+        }
+        $exclude_list = \OEModule\OphCiExamination\components\ExaminationHelper::elementFilterList();
+        $criteria = new CDbCriteria();
+        $criteria->addNotInCondition('class_name', $exclude_list);
+        $elements = ElementType::model()->findAll($criteria);
+        usort($elements, static function ($item_a, $item_b) {
+            $name = strcmp($item_a->eventType->name, $item_b->eventType->name);
+            if ($name === 0) {
+                return strcmp($item_a->name, $item_b->name);
+            }
+            return $name;
+        });
+
+        $this->render(
+            '/admin/custom_text',
+            array(
+                'model_list' => $elements,
+                'errors' => $errors,
+            )
         );
     }
 
@@ -152,7 +219,7 @@ class AdminController extends BaseAdminController
         // end of handling the POST
 
 
-        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js');
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
@@ -242,7 +309,7 @@ class AdminController extends BaseAdminController
             $this->redirect(Yii::app()->request->url);
         }
 
-        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js');
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
@@ -289,7 +356,7 @@ class AdminController extends BaseAdminController
                 $finding_object->subspecialties = $subspecialities;
 
                 if (!$finding_object->save()) {
-                    throw new Exception('Unable to save Finding: ' . print_r($finding_object->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save Finding: ' . print_r($finding_object->getErrors(), true));
                 }
             }
         }
@@ -300,18 +367,6 @@ class AdminController extends BaseAdminController
         ]);
     }
 
-    public function actionDrugs()
-    {
-        $criteria = new CDbCriteria();
-        if (isset($_REQUEST['search'])) {
-            $criteria->compare('name', $_REQUEST['search'], true);
-        }
-        $pagination = $this->initPagination(Drug::model(), $criteria);
-        $this->render('/admin/drugs', array(
-            'drugs' => Drug::model()->findAll($criteria),
-            'pagination' => $pagination,
-        ));
-    }
 
     public function actionAddDrug()
     {
@@ -326,7 +381,7 @@ class AdminController extends BaseAdminController
                         $errors = $drug->getErrors();
                 } else {
                         if (!$drug->save()) {
-                                throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                                throw new CHttpException(500, 'Unable to save drug: ' . print_r($drug->getErrors(), true));
                         }
 
                         if (isset($_POST['allergies'])) {
@@ -368,7 +423,7 @@ class AdminController extends BaseAdminController
                         $errors = $drug->getErrors();
                 } else {
                         if (!$drug->save()) {
-                                throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                                throw new CHttpException(500, 'Unable to save drug: ' . print_r($drug->getErrors(), true));
                         }
 
                         $posted_allergy_ids = array();
@@ -414,7 +469,7 @@ class AdminController extends BaseAdminController
         ));*/
     }
 
-    public function actionUserFind($term)
+    public function actionUserFind()
     {
         $res = array();
         if (Yii::app()->request->isAjaxRequest && $term) {
@@ -478,8 +533,9 @@ class AdminController extends BaseAdminController
 
         if ($id && !$user) {
             throw new Exception("User not found: $id");
-        } else if (!$id) {
+        } elseif (!$id) {
             $user = new User();
+            $user->has_selected_firms = 0;
         }
 
         $request = Yii::app()->getRequest();
@@ -492,6 +548,14 @@ class AdminController extends BaseAdminController
                 $user->password_hashed = true;
             } else {
                 $user->password_hashed = false;
+                if (Yii::app()->params['auth_source'] === 'BASIC') {
+                    $user->setPWStatusHarsher(Yii::app()->params['pw_status_checks']['pw_admin_pw_change']?: 'stale', null, false);
+                    $user->password_last_changed_date = date('Y-m-d H:i:s');
+                    $user->password_failed_tries = 0;
+                }
+            }
+            if (Yii::app()->params['auth_source'] === 'BASIC' && $id && empty($userAtt['password_status'])) {
+                unset($userAtt['password_status']);
             }
             $user->attributes = $userAtt;
 
@@ -499,7 +563,7 @@ class AdminController extends BaseAdminController
                 $errors = $user->getErrors();
             } else {
                 if (!$user->save(false)) {
-                    throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
                 }
 
                 $contact = $user->contact;
@@ -507,20 +571,20 @@ class AdminController extends BaseAdminController
                     $contact = new Contact();
                 }
 
-                $contact->title = $user->title;
-                $contact->first_name = $user->first_name;
-                $contact->last_name = $user->last_name;
-                $contact->qualifications = $user->qualifications;
+                $contact->title = $userAtt['title'];
+                $contact->first_name = $userAtt['first_name'];
+                $contact->last_name = $userAtt['last_name'];
+                $contact->qualifications = $userAtt['qualifications'];
 
                 if (!$contact->save()) {
-                    throw new Exception('Unable to save user contact: ' . print_r($contact->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
                 }
 
                 if (!$user->contact) {
                     $user->contact_id = $contact->id;
 
                     if (!$user->save()) {
-                        throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
+                        throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
                     }
                 }
 
@@ -556,7 +620,7 @@ class AdminController extends BaseAdminController
         $this->render('/admin/edituser', array(
             'user' => $user,
             'errors' => @$errors,
-            'is_ldap' => \Yii::app()->params['auth_source'] == 'LDAP',
+            'is_ldap' => \Yii::app()->params['auth_source'] === 'LDAP',
         ));
     }
 
@@ -680,7 +744,7 @@ class AdminController extends BaseAdminController
 
         $contact = Contact::model()->findByPk($id);
         if (!$contact) {
-            throw new Exception('Contact not found: ' . $id);
+            throw new CHttpException(404, 'Contact not found: ' . $id);
         }
 
         if (!empty($_POST)) {
@@ -690,7 +754,7 @@ class AdminController extends BaseAdminController
                 $errors = $contact->getErrors();
             } else {
                 if (!$contact->save()) {
-                    throw new Exception('Unable to save contact: ' . print_r($contact->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save contact: ' . print_r($contact->getErrors(), true));
                 }
                 Audit::add('admin-Contact', 'edit', $contact->id);
                 $this->redirect('/admin/contacts');
@@ -709,7 +773,7 @@ class AdminController extends BaseAdminController
     {
         $cl = ContactLocation::model()->findByPk(@$_GET['location_id']);
         if (!$cl) {
-            throw new Exception('ContactLocation not found: ' . @$_GET['location_id']);
+            throw new CHttpException(404, 'ContactLocation not found: ' . @$_GET['location_id']);
         }
 
         Audit::add('admin-ContactLocation', 'view', @$_GET['location_id']);
@@ -723,7 +787,7 @@ class AdminController extends BaseAdminController
     {
         $cl = ContactLocation::model()->findByPk(@$_POST['location_id']);
         if (!$cl) {
-            throw new Exception('ContactLocation not found: ' . @$_POST['location_id']);
+            throw new CHttpException(404, 'ContactLocation not found: ' . @$_POST['location_id']);
         }
 
         if (count($cl->patients) > 0) {
@@ -747,7 +811,7 @@ class AdminController extends BaseAdminController
     {
         $contact = Contact::model()->findByPk(@$_GET['contact_id']);
         if (!$contact) {
-            throw new Exception('Contact not found: ' . @$_GET['contact_id']);
+            throw new CHttpException(404, 'Contact not found: ' . @$_GET['contact_id']);
         }
 
         $errors = array();
@@ -792,7 +856,7 @@ class AdminController extends BaseAdminController
     {
         $institution = Institution::model()->findByPk(@$_GET['institution_id']);
         if (!$institution) {
-            throw new Exception('Institution not found: ' . @$_GET['institution_id']);
+            throw new CHttpException(404, 'Institution not found: ' . @$_GET['institution_id']);
         }
 
         Audit::add('admin-Institution>Site', 'view', @$_GET['institution_id']);
@@ -823,101 +887,124 @@ class AdminController extends BaseAdminController
 
     public function actionAddInstitution()
     {
-        $institution = new Institution();
-        $address = new Address();
-
-        $errors = array();
-
-        if (!empty($_POST)) {
-            $institution->attributes = $_POST['Institution'];
-
-            if (!$institution->validate()) {
-                $errors = $institution->getErrors();
-            }
-
-            $address->attributes = $_POST['Address'];
-
-            if ($address->validate()) {
-                $errors = array_merge($errors, $address->getErrors());
-            }
-
-            if (empty($errors)) {
-                if (!$institution->save()) {
-                    throw new Exception('Unable to save institution: ' . print_r($institution->getErrors(), true));
-                }
-
-                $address->contact_id = $institution->contact_id;
-
-                if (!$address->save()) {
-                    throw new Exception('Unable to save institution address: ' . print_r($address->getErrors(), true));
-                }
-                $institution->addAddress($address);
-
-                if (!$institution->contact->save()) {
-                    throw new Exception('Institution contact could not be saved: ' . print_r($institution->contact->getErrors(),
-                            true));
-                }
-
-                Audit::add('admin-Institution', 'add', $institution->id);
-
-                $this->redirect(array('/admin/editInstitution?institution_id=' . $institution->id));
-            }
-        }
-
-        $this->render('/admin/institutions/add', array(
-            'institution' => $institution,
-            'address' => $address,
-            'errors' => @$errors,
-        ));
+        $this->actionEditInstitution(true);
     }
 
-    public function actionEditInstitution()
+    public function actionEditInstitution($new = false)
     {
-        $institution = Institution::model()->findByPk(@$_GET['institution_id']);
-        if (!$institution) {
-            throw new Exception('Institution not found: ' . @$_GET['institution_id']);
-        }
-
-        $errors = array();
-        $address = $institution->contact->address;
-        if (!$address) {
+        if ($new) {
+            $institution = new Institution();
             $address = new Address();
+            $logo = new SiteLogo();
+            $contact = new Contact();
+            
+            /*
+            * Set default blank contact to fulfill the current relationship with a site
+            */
+            $contact->nick_name = 'NULL';
+            $contact->title = null;
+            $contact->first_name = '';
+            $contact->last_name = '';
+            $contact->qualifications = null;
+        } else {
+            $institution = Institution::model()->findByPk(@$_GET['institution_id']);
+            if (!$institution) {
+                throw new CHttpException(404, 'Institution not found: ' . @$_GET['institution_id']);
+            }
+            
+            $contact = $institution->contact;
+            $address = $institution->contact->address;
+            if (!$address) {
+                $address = new Address();
+            }
+            // get logos for institution if they exist and create a new logo reference if they don't. To avoid errors I am choosing to not get logo via active record by relation to avoid errors.
+            $logo = $institution->logo;
+            if (!($logo)) {
+                $logo = new SiteLogo();
+            }
         }
+        $errors = array();
         if (!empty($_POST)) {
             $institution->attributes = $_POST['Institution'];
 
             if (!$institution->validate()) {
                 $errors = $institution->getErrors();
             }
-
-            $address = $institution->contact->address;
+            if ($new) {
+                $contact->save();
+                
+                $institution->contact_id = $contact->id;
+                $address->contact_id = $contact->id;
+            }
 
             $address->attributes = $_POST['Address'];
 
             if (!$address->validate()) {
                 $errors = array_merge(@$errors, $address->getErrors());
             }
-
+            if (isset($_FILES['SiteLogo'])) {
+                if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
+                    $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
+                    $pl_file = file_get_contents($primary_logo->getTempName());
+                    // if no error uploading use uploaded image
+                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                        $logo->primary_logo = $pl_file;
+                    }
+                }
+                if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
+                    $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
+                    $sl_file=file_get_contents($secondary_logo->getTempName());
+                    // if no error uploading use uploaded image
+                    if (($_FILES['SiteLogo']['error']['secondary_logo'])==0) {
+                        $logo->secondary_logo = $sl_file;
+                    }
+                }
+            }
+            
+            if (empty($errors)) {
+                // Save the logo, and if sucsessful, add the logo ID to the institution, so that the relation is established.
+                if (!$logo->save()) {
+                    throw new CHttpException(500, 'Unable to save Logo: ' . print_r($logo->getErrors(), true));
+                }
+                $institution->logo_id = $logo->id;
+                // revalidate institution
+                if (!$institution->validate()) {
+                    $errors = $institution->getErrors();
+                }
+            }
             if (empty($errors)) {
                 if (!$institution->save()) {
-                    throw new Exception('Unable to save institution: ' . print_r($institution->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save institution: ' . print_r($institution->getErrors(), true));
                 }
                 if (!$address->save()) {
-                    throw new Exception('Unable to save institution address: ' . print_r($address->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save institution address: ' . print_r($address->getErrors(), true));
                 }
-
-                Audit::add('admin-Institution', 'edit', $institution->id);
-
-                $this->redirect('/admin/institutions/index');
+                if ($new) {
+                    if (!$institution->contact->save()) {
+                        throw new CHttpException(500, 'Institution contact could not be saved: ' . print_r(
+                            $institution->contact->getErrors(),
+                            true
+                        ));
+                    }
+                    
+                    Audit::add('admin-Institution', 'add', $institution->id);
+                    
+                    $this->redirect(array('/admin/editInstitution?institution_id=' . $institution->id));
+                } else {
+                    Audit::add('admin-Institution', 'edit', $institution->id);
+                    
+                    $this->redirect('/admin/institutions/index');
+                }
             }
         } else {
             Audit::add('admin-Institution', 'view', @$_GET['institution_id']);
         }
-
         $this->render('/admin/institutions/edit', array(
             'institution' => $institution,
             'address' => $address,
             'errors' => $errors,
+            'logo' => $logo,
+            'new' => $new,
         ));
     }
 
@@ -950,107 +1037,218 @@ class AdminController extends BaseAdminController
 
     public function actionAddSite()
     {
-        $errors = array();
-        $site = new Site();
-        $contact = new Contact();
-        $address = new Address();
-
-        /*
-         * Set default blank contact to fulfill the current relationship with a site
-         */
-
-        $contact->nick_name = 'NULL';
-        $contact->title = null;
-        $contact->first_name = '';
-        $contact->last_name = '';
-        $contact->qualifications = null;
-
-        $contact->save();
-
-        $site->contact_id = $contact->id;
-        $address->contact_id = $contact->id;
-
-        if (!empty($_POST)) {
-            $site->attributes = $_POST['Site'];
-
-            if (!$site->validate()) {
-                $errors = $site->getErrors();
-            }
-
-            $address->attributes = $_POST['Address'];
-
-            if (!$address->validate()) {
-                $errors = array_merge($errors, $address->getErrors());
-            }
-
-            if (!$errors) {
-                if (!$site->save()) {
-                    throw new Exception('Unable to save contact: ' . print_r($site->getErrors(), true));
-                }
-
-                if (!$address->save()) {
-                    throw new Exception('Unable to save address: ' . print_r($address->getErrors(), true));
-                }
-
-                Audit::add('admin-Site', 'add', $site->id);
-
-                $this->redirect(array('/admin/editSite?site_id=' . $site->id));
-            }
-        }
-
-        $this->render('/admin/sites/add', array(
-            'site' => $site,
-            'errors' => $errors,
-            'address' => $address,
-            'contact' => $contact,
-        ));
+        $this->actionEditSite(true);
     }
 
-    public function actionEditsite()
+    public function actionEditSite($new = false)
     {
-        $site = Site::model()->findByPk(@$_GET['site_id']);
-        if (!$site) {
-            throw new Exception('Site not found: ' . @$_GET['site_id']);
+        if ($new) {
+            $site = new Site();
+            $contact = new Contact();
+            $address = new Address();
+            $logo = new SiteLogo();
+            $errors = array();
+        } else {
+            $id = @$_GET['site_id'];
+            $site = Site::model()->findByPk($id);
+            if (!$site) {
+                throw new CHttpException(404, 'Site not found: ' . $id);
+            }
+            $contact = $site->contact;
+            $address = $site->contact->address;
+            // get logos for site if they exist and create a new logo reference if they don't. To avoid errors I am choosing to not get logo via active record by relation to avoid errors.
+            $logo = $site->logo;
+            if (!($logo)) {
+                $logo = new SiteLogo();
+            }
+            $errors = array();
         }
-
-        $errors = array();
-
         if (!empty($_POST)) {
             $site->attributes = $_POST['Site'];
 
             if (!$site->validate()) {
                 $errors = $site->getErrors();
             }
-
-            $address = $site->contact->address;
-
+            if ($new) {
+                $contact->save();
+                
+                $site->contact_id = $contact->id;
+                $address->contact_id = $contact->id;
+            }
             $address->attributes = $_POST['Address'];
 
             if (!$address->validate()) {
                 $errors = array_merge($errors, $address->getErrors());
+            }
+            if (isset($_FILES['SiteLogo'])) {
+                if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
+                    $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
+                    $pl_file = file_get_contents($primary_logo->getTempName());
+                    // if no error uploading use uploaded image
+                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                        $logo->primary_logo = $pl_file;
+                    }
+                }
+                if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
+                    $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
+                    $sl_file=file_get_contents($secondary_logo->getTempName());
+                    // if no error uploading use uploaded image
+                    if (($_FILES['SiteLogo']['error']['secondary_logo'])==0) {
+                        $logo->secondary_logo = $sl_file;
+                    }
+                }
+
+                 // get or generate institution logo ID
+
+                if ($site->institution->logo_id) {
+                    $institution_logo = $site->institution->logo;
+                } else {
+                    $institution_logo = new SiteLogo();
+                    $institution_logo->save();
+                    $site->institution->logo_id = $institution_logo->id;
+                    $site->institution->saveAttributes(array('logo_id'));
+                }
+                $logo->parent_logo = $site->institution->logo_id;
+            }
+            if (!$logo->validate()) {
+                $errors = array_merge($errors, $logo->getErrors());
+                if (isset($site->logo_id)) {
+                    $logo = SiteLogo::model()->findByPk($site->logo_id);
+                }
             }
 
             if (empty($errors)) {
+                // Save the logo, and if sucsessful, add the logo ID to the site, so that the relation is established.
+                if (!$logo->save()) {
+                    throw new CHttpException(500, 'Unable to save Logo: ' . print_r($logo->getErrors(), true));
+                }
+                $site->logo_id = $logo->id;
+                // revalidate site
+                if (!$site->validate()) {
+                    $errors = $site->getErrors();
+                }
+            }
+            if (empty($errors)) {
                 if (!$site->save()) {
-                    throw new Exception('Unable to save site: ' . print_r($site->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save site: ' . print_r($site->getErrors(), true));
                 }
                 if (!$address->save()) {
-                    throw new Exception('Unable to save site address: ' . print_r($address->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save site address: ' . print_r($address->getErrors(), true));
                 }
 
                 Audit::add('admin-Site', 'edit', $site->id);
+                Yii::app()->user->setFlash('success', "{$site->name} updated.");
 
-                $this->redirect('/admin/sites/index');
+                $new = false;
+                $this->redirect(array('/admin/editSite?site_id=' . $site->id));
             }
         } else {
             Audit::add('admin-Site', 'view', @$_GET['site_id']);
         }
-
         $this->render('/admin/sites/edit', array(
             'site' => $site,
-            'address' => $site->contact->address,
+            'errors' => $errors,
+            'address' => $address,
+            'logo' => $logo,
+            'parentlogo' => $logo->parent_logo ? SiteLogo::model()->findByPk($logo->parent_logo) : null,
+            'new' => $new,
+        ));
+    }
+
+    public function actionLogo()
+    {
+        // go find our default logo
+        $logo = SiteLogo::model()->findByPk(1);
+        $errors = array();
+
+        if (isset($_FILES['SiteLogo'])) {
+            if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
+                $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
+                $pl_file = file_get_contents($primary_logo->getTempName());
+                // if no error uploading use uploaded image
+                if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                    $logo->primary_logo = $pl_file;
+                }
+            }
+            if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
+                $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
+                $sl_file=file_get_contents($secondary_logo->getTempName());
+                // if no error uploading use uploaded image
+                if (($_FILES['SiteLogo']['error']['secondary_logo'])==0) {
+                    $logo->secondary_logo = $sl_file;
+                }
+            }
+            if (!$logo->validate()) {
+                $errors = $logo->getErrors();
+            }
+            if (empty($errors)) {
+                if (!$logo->save()) {
+                    throw new CHttpException(500, 'Unable to save Logo: ' . print_r($logo->getErrors(), true));
+                }
+                Audit::add('admin-logo', 'edit', 1);
+                Yii::app()->user->setFlash('success', "Default Logo updated.");
+            }
+        } else {
+            Audit::add('admin-logo', 'view', 1);
+        }
+        $this->render('/admin/sites/logos', array(
+            'logo' => $logo,
             'errors' => $errors,
         ));
+    }
+    
+    public function actionDeleteLogo()
+    {
+        $site_id = @$_POST['site_id'];
+        $institution_id = @$_POST['institution_id'];
+        
+        $deletePrimaryLogo = @$_POST['deletePrimaryLogo'];
+        $deleteSecondaryLogo = @$_POST['deleteSecondaryLogo'];
+
+         // go find our logos
+        $site = Site::model()->findByPk($site_id);
+        $institution = Institution::model()->findByPk($institution_id);
+        if (isset($site)) {
+            // get logos for site
+            $logo = SiteLogo::model()->findByPk($site->logo_id);
+        } elseif (isset($institution)) {
+            $logo = SiteLogo::model()->findByPk($institution->logo_id);
+        } else {
+            $logo = SiteLogo::model()->findByPk(1);
+        }
+         //  We should now have our logos to delete from
+ 
+        $msg = 'Successfully deleted ';
+      
+        if ($deletePrimaryLogo) {
+            $logo->primary_logo = null;
+            $msg .= "primary logo ";
+        }
+
+        if ($deleteSecondaryLogo) {
+            $logo->secondary_logo = null;
+            $msg .= "secondary logo ";
+        }
+
+        if (isset($site)) {
+            $msg .= "for " . $site->name . ".";
+        } elseif (isset($institution)) {
+            $msg .= "for " . $institution->name . ".";
+        } else {
+            $msg .= "for System Default Logo.";
+        }
+
+        if (!$logo->save()) {
+            throw new CHttpException(500, 'Unable to save Logo: ' . print_r($logo->getErrors(), true));
+        }
+        Yii::app()->user->setFlash('success', $msg);
+        if (isset($site)) {
+            $this->redirect(array('/admin/editsite?site_id=' . $site_id));
+        } elseif (isset($institution)) {
+            $this->redirect(array('/admin/editinstitution?institution_id=' . $institution_id));
+        } else {
+            $this->redirect(array('/admin/logo'));
+        }
     }
 
     public function actionAddContact()
@@ -1064,7 +1262,7 @@ class AdminController extends BaseAdminController
                 $errors = $contact->getErrors();
             } else {
                 if (!$contact->save()) {
-                    throw new Exception('Unable to save contact: ' . print_r($contact->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save contact: ' . print_r($contact->getErrors(), true));
                 }
                 Audit::add('admin-Contact', 'add', $contact->id);
 
@@ -1089,7 +1287,7 @@ class AdminController extends BaseAdminController
                 $errors = $contactlabel->getErrors();
             } else {
                 if (!$contactlabel->save()) {
-                    throw new Exception('Unable to save contactlabel: ' . print_r($contactlabel->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save contactlabel: ' . print_r($contactlabel->getErrors(), true));
                 }
                 Audit::add('admin-ContactLabel', 'add', $contactlabel->id);
                 $this->redirect('/admin/contactlabels/' . ceil($contactlabel->id / $this->items_per_page));
@@ -1116,7 +1314,7 @@ class AdminController extends BaseAdminController
                 $errors = $contactlabel->getErrors();
             } else {
                 if (!$contactlabel->save()) {
-                    throw new Exception('Unable to save contactlabel: ' . print_r($contactlabel->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save contactlabel: ' . print_r($contactlabel->getErrors(), true));
                 }
                 Audit::add('admin-ContactLabel', 'edit', $contactlabel->id);
 
@@ -1136,14 +1334,14 @@ class AdminController extends BaseAdminController
     {
         $contactlabel = ContactLabel::model()->findByPk(@$_POST['contact_label_id']);
         if (!$contactlabel) {
-            throw new Exception('ContactLabel not found: ' . @$_POST['contact_label_id']);
+            throw new CHttpException(404, 'ContactLabel not found: ' . @$_POST['contact_label_id']);
         }
 
         $count = Contact::model()->count('contact_label_id=?', array($contactlabel->id));
 
         if ($count == 0) {
             if (!$contactlabel->delete()) {
-                throw new Exception('Unable to delete ContactLabel: ' . print_r($contactlabel->getErrors(), true));
+                throw new CHttpException(500, 'Unable to delete ContactLabel: ' . print_r($contactlabel->getErrors(), true));
             }
 
             Audit::add('admin-ContactLabel', 'delete', @$_POST['contact_label_id']);
@@ -1172,7 +1370,7 @@ class AdminController extends BaseAdminController
                 $errors = $source->getErrors();
             } else {
                 if (!$source->save()) {
-                    throw new Exception('Unable to save source: ' . print_r($source->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save source: ' . print_r($source->getErrors(), true));
                 }
                 Audit::add('admin-DataSource', 'edit', $id);
                 $this->redirect('/admin/datasources/' . ceil($source->id / $this->items_per_page));
@@ -1198,7 +1396,7 @@ class AdminController extends BaseAdminController
                 $errors = $source->getErrors();
             } else {
                 if (!$source->save()) {
-                    throw new Exception('Unable to save data source: ' . print_r($source->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save data source: ' . print_r($source->getErrors(), true));
                 }
                 Audit::add('admin-DataSource', 'add', $source->id);
                 $this->redirect('/admin/datasources');
@@ -1233,7 +1431,7 @@ class AdminController extends BaseAdminController
                 $source = ImportSource::model()->findByPk($source_id);
                 if ($source) {
                     if (!$source->delete()) {
-                        throw new Exception('Unable to delete import source: ' . print_r($source->getErrors(), true));
+                        throw new CHttpException(500, 'Unable to delete import source: ' . print_r($source->getErrors(), true));
                     }
                 }
             }
@@ -1277,7 +1475,7 @@ class AdminController extends BaseAdminController
         if (isset($_GET['commissioning_body_id'])) {
             $cb = CommissioningBody::model()->findByPk(@$_GET['commissioning_body_id']);
             if (!$cb) {
-                throw new Exception('CommissioningBody not found: ' . @$_GET['commissioning_body_id']);
+                throw new CHttpException(404, 'CommissioningBody not found: ' . @$_GET['commissioning_body_id']);
             }
             $address = $cb->contact->address;
             if (!$address) {
@@ -1381,7 +1579,7 @@ class AdminController extends BaseAdminController
         foreach (CommissioningBodyService::model()->findAll($criteria) as $cbs) {
             $cbs->commissioning_body_id = null;
             if (!$cbs->save()) {
-                throw new Exception('Unable to save commissioning body service: ' . print_r($cbs->getErrors(), true));
+                throw new CHttpException(500, 'Unable to save commissioning body service: ' . print_r($cbs->getErrors(), true));
             }
         }
 
@@ -1407,7 +1605,7 @@ class AdminController extends BaseAdminController
         if (isset($_GET['commissioning_body_type_id'])) {
             $cbt = CommissioningBodyType::model()->findByPk(@$_GET['commissioning_body_type_id']);
             if (!$cbt) {
-                throw new Exception('CommissioningBody not found: ' . @$_GET['commissioning_body_type_id']);
+                throw new CHttpException(404, 'CommissioningBody not found: ' . @$_GET['commissioning_body_type_id']);
             }
         } else {
             $cbt = new CommissioningBodyType();
@@ -1432,7 +1630,7 @@ class AdminController extends BaseAdminController
                 }
 
                 if (!$cbt->save()) {
-                    throw new Exception('Unable to save CommissioningBodyType : ' . print_r($cbt->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save CommissioningBodyType : ' . print_r($cbt->getErrors(), true));
                 }
                 Audit::add('admin-CommissioningBodyType', $method, $cbt->id);
                 $this->redirect('/admin/commissioning_body_types');
@@ -1504,7 +1702,7 @@ class AdminController extends BaseAdminController
         if ($cbs_id) {
             $cbs = CommissioningBodyService::model()->findByPk($cbs_id);
             if (!$cbs) {
-                throw new Exception('CommissioningBody not found: ' . $cbs_id);
+                throw new CHttpException(404, 'CommissioningBody not found: ' . $cbs_id);
             }
 
             if ($cbs->contact) {
@@ -1567,7 +1765,7 @@ class AdminController extends BaseAdminController
                 $transaction = Yii::app()->db->beginInternalTransaction();
                 try {
                     if (!$contact->save()) {
-                        throw new Exception('Unable to save contact: ' . print_r($contact->getErrors(), true));
+                        throw new CHttpException(500, 'Unable to save contact: ' . print_r($contact->getErrors(), true));
                     }
 
                     if (!$address->id) {
@@ -1578,13 +1776,17 @@ class AdminController extends BaseAdminController
                     $method = $cbs->id ? 'edit' : 'add';
 
                     if (!$cbs->save()) {
-                        throw new Exception('Unable to save CommissioningBodyService: ' . print_r($cbs->getErrors(),
-                                true));
+                        throw new CHttpException(500, 'Unable to save CommissioningBodyService: ' . print_r(
+                            $cbs->getErrors(),
+                            true
+                        ));
                     }
 
                     if (!$address->save()) {
-                        throw new Exception('Unable to save CommissioningBodyService address: ' . print_r($address->getErrors(),
-                                true));
+                        throw new CHttpException(500, 'Unable to save CommissioningBodyService address: ' . print_r(
+                            $address->getErrors(),
+                            true
+                        ));
                     }
 
                     Audit::add('admin-CommissioningBodyService', $method, $cbs->id);
@@ -1639,7 +1841,7 @@ class AdminController extends BaseAdminController
         if (isset($_GET['commissioning_body_service_type_id'])) {
             $cbs = CommissioningBodyServiceType::model()->findByPk(@$_GET['commissioning_body_service_type_id']);
             if (!$cbs) {
-                throw new Exception('CommissioningBodyServiceType not found: ' . @$_GET['commissioning_body_service_type_id']);
+                throw new CHttpException(404, 'CommissioningBodyServiceType not found: ' . @$_GET['commissioning_body_service_type_id']);
             }
         } else {
             $cbs = new CommissioningBodyServiceType();
@@ -1664,8 +1866,10 @@ class AdminController extends BaseAdminController
 
             if (empty($errors)) {
                 if (!$cbs->save()) {
-                    throw new Exception('Unable to save CommissioningBodyServiceType: ' . print_r($cbs->getErrors(),
-                            true));
+                    throw new CHttpException(500, 'Unable to save CommissioningBodyServiceType: ' . print_r(
+                        $cbs->getErrors(),
+                        true
+                    ));
                 }
 
                 Audit::add('admin-CommissioningBodyServiceType', $method, $cbs->id);
@@ -1704,7 +1908,7 @@ class AdminController extends BaseAdminController
 
         $er = CommissioningBodyServiceType::model()->deleteAll($criteria);
         if (!$er) {
-            throw new Exception('Unable to delete CommissioningBodyServiceTypes: ' . print_r($er->getErrors(), true));
+            throw new CHttpException(500, 'Unable to delete CommissioningBodyServiceTypes: ' . print_r($er->getErrors(), true));
         }
 
         Audit::add('admin-CommissioningBodyServiceType', 'delete');
@@ -1756,7 +1960,7 @@ class AdminController extends BaseAdminController
         $event->delete_reason = null;
 
         if (!$event->save()) {
-            throw new Exception('Unable to reject deletion request for event: ' . print_r($event->getErrors(), true));
+            throw new CHttpException(500, 'Unable to reject deletion request for event: ' . print_r($event->getErrors(), true));
         }
 
         $event->audit('event', 'delete-rejected', serialize(array(
@@ -1790,74 +1994,6 @@ class AdminController extends BaseAdminController
 
         $this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
     }
-
-    /**
-     * Allows the upload of images for correspondence.
-     *
-     * @throws CException
-     */
-    public function actionLogo()
-    {
-        $this->group = "System";
-        if (!isset(Yii::app()->params['letter_logo_upload']) || !Yii::app()->params['letter_logo_upload']) {
-            throw new CHttpException(404);
-        }
-
-        $logo = new Logo();
-        if (isset($_FILES['Logo'])) {
-            $savePath = Yii::app()->basePath . '/runtime/';
-            $fileFormats = array('jpg', 'jpeg', 'png', 'gif');
-            $filter = array_filter($_FILES['Logo']['name']);
-
-            foreach ($filter as $logoKey => $logoName) {
-                $uploadLogo = CUploadedFile::getInstance($logo, $logoKey);
-                $fileInfo = pathinfo($logoName);
-
-                foreach (glob($savePath . $logoKey . '.*') as $existingLogo) {
-                    unlink($existingLogo);
-                }
-
-                if (in_array($fileInfo['extension'], $fileFormats, true)) {
-                    if ($logoKey === 'header_logo') {
-                        if ($uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension'])) {
-                            Yii::app()->user->setFlash('success', 'Header Logo Saved Successfully');
-                        } else {
-                            Yii::app()->user->setFlash('error', 'Header Logo logo was not saved. Please try again.');
-                        }
-                    }
-                    if ($logoKey === 'secondary_logo') {
-                        if ($uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension'])) {
-                            Yii::app()->user->setFlash('success', 'Header Logo Saved Successfully');
-                        } else {
-                            Yii::app()->user->setFlash('error', 'Header Logo logo was not saved. Please try again.');
-                        }
-                    }
-                } else {
-                    Yii::app()->user->setFlash('error', 'Upload valid image formats (jpg,jpeg,png,gif)');
-                }
-            }
-
-            $this->redirect(array('/admin/logo'));
-        }
-        $this->render('/admin/logo', array('model' => $logo));
-    }
-
-    public function actionDeleteLogo()
-    {
-        $deleteHeaderLogo = @$_GET['header_logo'];
-        $deleteSecondaryLogo = @$_GET['secondary_logo'];
-
-        if (!empty($deleteHeaderLogo)) {
-            @unlink($deleteHeaderLogo);
-            Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
-            $this->redirect(array('/admin/logo'));
-        } elseif (!empty($deleteSecondaryLogo)) {
-            @unlink($deleteSecondaryLogo);
-            Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
-            $this->redirect(array('/admin/logo'));
-        }
-    }
-
     public function actionSettings()
     {
         $this->group = "System";

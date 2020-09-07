@@ -4,6 +4,7 @@
  */
 $total_risks = 0;
 $risks = $this->data->getPatientRisksDisplay($total_risks);
+$lab_results = $this->data->getPatientLabResultsDisplay();
 if ($this->data->alpha_blocker_name !== 'No Alpha Blockers' && $this->data->alpha_blocker_name !== 'Not checked') {
     $total_risks++;
 }
@@ -34,10 +35,11 @@ $all_risk_ids = $this->data->booking->getAllBookingRiskIds();
     <h3>Risks (<?= $total_risks ?>)</h3>
     <?php if ($this->data->anticoagulant_name !== 'No Anticoagulants') { ?>
         <div class="alert-box <?= $this->data->anticoagulant_name === 'Not checked' ? 'info' : 'warning' ?>">
-            <?= $this->data->anticoagulant_name === 'Not checked' ? 'Unchecked: Anticoagulants' : "Anticoagulants - {$this->data->anticoagulant_name}"?>
+            <?= $this->data->anticoagulant_name === 'Not checked' ? 'Unchecked: Anticoagulants' : "Anticoagulants <br> {$this->data->anticoagulant_name}"?>
         </div>
     <?php }
     echo $risks;
+    echo $lab_results;
     if ($this->data->anticoagulant_name === 'No Anticoagulants'
         && in_array($this->getAnticoagulantRisk()->id, $all_risk_ids, true)) { ?>
         <div class="alert-box success">

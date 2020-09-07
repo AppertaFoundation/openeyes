@@ -16,6 +16,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 class CommonMedicationsController extends BaseAdminController
 {
 
@@ -92,8 +93,10 @@ class CommonMedicationsController extends BaseAdminController
             $criteria = new CDbCriteria();
 
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
-                $criteria->addCondition(array('LOWER(name) LIKE :term'),
-                    'OR');
+                $criteria->addCondition(
+                    array('LOWER(name) LIKE :term'),
+                    'OR'
+                );
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
 
@@ -114,4 +117,6 @@ class CommonMedicationsController extends BaseAdminController
             $this->renderJSON($return);
         }
     }
+
+
 }

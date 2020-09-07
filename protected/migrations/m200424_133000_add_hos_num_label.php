@@ -4,7 +4,8 @@ class m200424_133000_add_hos_num_label extends CDbMigration
 {
     public function safeUp()
     {
-        $this->insert('setting_metadata', array('element_type_id' => null,
+        $this->insert('setting_metadata', array(
+            'element_type_id' => null,
             'field_type_id' => 4,
             'key' => 'hos_num_label',
             'name' => 'Hospital Number label',

@@ -15,13 +15,22 @@
 $medical_retina_open = true;
 $medical_retina_entry_values = $this->entry->getAssessmentEntryRadioButtonValues();
 ?>
-<?= \CHtml::hiddenField("OEModule_OphGeneric_models_Assessment" . ($this->key !== null ? "[entries][$this->key][$this->side][row]" : '[entries][row]'),
-    $this->row !== null ? $this->row : "", ["class" => 'js-hidden-oct-row']) ?>
-<?= \CHtml::hiddenField("OEModule_OphGeneric_models_Assessment" . ($this->key !== null ? "[entries][$this->key][$this->side][side]" : '[entries][side]'),
-    $this->side !== null ? $this->side : "", ["class" => 'js-hidden-oct-side']) ?>
+<?= \CHtml::hiddenField(
+    "OEModule_OphGeneric_models_Assessment" . ($this->key !== null ? "[entries][$this->key][$this->side][row]" : '[entries][row]'),
+    $this->row !== null ? $this->row : "",
+    ["class" => 'js-hidden-oct-row']
+) ?>
+<?= \CHtml::hiddenField(
+    "OEModule_OphGeneric_models_Assessment" . ($this->key !== null ? "[entries][$this->key][$this->side][side]" : '[entries][side]'),
+    $this->side !== null ? $this->side : "",
+    ["class" => 'js-hidden-oct-side']
+) ?>
 
-<?= \CHtml::hiddenField("OEModule_OphGeneric_models_Assessment" . ($this->key !== null ? "[entries][$this->key][$this->side][entry_id]" : '[entries][entry_id]'),
-    $this->entry !== null ? $this->entry->id : "", ["class" => 'js-hidden-oct-entry-id']) ?>
+<?= \CHtml::hiddenField(
+    "OEModule_OphGeneric_models_Assessment" . ($this->key !== null ? "[entries][$this->key][$this->side][entry_id]" : '[entries][entry_id]'),
+    $this->entry !== null ? $this->entry->id : "",
+    ["class" => 'js-hidden-oct-entry-id']
+) ?>
 
 <div class="js-assessment-medical-retina data-group OEModule_OphGeneric_models_Assessment">
     <div class="data-value listview-expand-collapse">
@@ -38,11 +47,13 @@ $medical_retina_entry_values = $this->entry->getAssessmentEntryRadioButtonValues
                             <tr>
                                 <td><?= $this->entry->getAttributeLabel($item) ?></td>
                                 <td>
-                                    <?= \AbacChtml::activeTextField($this->entry,
+                                    <?= \AbacChtml::activeTextField(
+                                        $this->entry,
                                         ($this->key !== null ? "[$this->key][$this->side]$item" : $item),
                                         ['class' => 'fixed-width-small', 'disabled' => null,
                                             'name' => "OEModule_OphGeneric_models_Assessment" . ($this->key !== null ? "[entries][$this->key][$this->side][$item]" : "[{$item}}]"),
-                                            'id' => "OEModule_OphGeneric_models_Assessment_entries_" . ($this->key !== null ? "{$this->key}_{$this->side}_{$item}" : "[{$item}}]")]) ?>
+                                        'id' => "OEModule_OphGeneric_models_Assessment_entries_" . ($this->key !== null ? "{$this->key}_{$this->side}_{$item}" : "[{$item}}]")]
+                                    ) ?>
                                     <?php echo $this->entry->getMeasurementUnit($item); ?>
                                 </td>
                             </tr>
@@ -68,13 +79,15 @@ $medical_retina_entry_values = $this->entry->getAssessmentEntryRadioButtonValues
                                             $tooltip_text = $this->entry->getTooltipText();
                                             ?>
                                             <label class="inline highlight">
-                                                <?=\CHtml::radioButton($name,
+                                                <?=\CHtml::radioButton(
+                                                    $name,
                                                     ( (string)  $this->entry->$item === (string)$entry_value),
                                                     ['disabled' => null,
                                                         'id' => "OEModule_OphGeneric_models_Assessment_entries_" . ($this->key !== null ? "{$this->key}_{$this->side}_{$item}_{$icon}" : "{$item}_{$id}"),
                                                         'class' => "js-assessment-" . $item,
                                                         'value' => $entry_value
-                                                    ])  ?>
+                                                    ]
+                                                )  ?>
                                                 <?php if (strpos($icon, 'remove') !== false) { ?>
                                                     <i class="oe-i medium remove js-has-tooltip" data-tooltip-content="<?= $tooltip_text[$entry_value] ?>"></i>
                                                 <?php } else { ?>
@@ -112,11 +125,13 @@ $medical_retina_entry_values = $this->entry->getAssessmentEntryRadioButtonValues
                     <?php foreach (['avg_rnfl', 'cct', 'cd_ratio'] as $item) { ?>
                         <tr>
                             <td><?= $this->entry->getAttributeLabel($item) ?></td>
-                            <td><?= CHtml::activeTextField($this->entry,
+                            <td><?= CHtml::activeTextField(
+                                $this->entry,
                                 ($this->key !== null ? "[$this->key][$this->side]$item" : $item),
                                 ['class' => 'fixed-width-small', 'disabled' => null,
                                 'name' => "OEModule_OphGeneric_models_Assessment" . ($this->key !== null ? "[entries][$this->key][$this->side][$item]" : "[$item]"),
-                                'id' => "OEModule_OphGeneric_models_Assessment_entries_" . ($this->key !== null ? "{$this->key}_{$this->side}_$item" : "$item")]); ?>
+                                'id' => "OEModule_OphGeneric_models_Assessment_entries_" . ($this->key !== null ? "{$this->key}_{$this->side}_$item" : "$item")]
+                            ); ?>
                                 <?php echo strpos($item, 'cd_ratio') === false ? 'μm' : '&nbsp; &nbsp; &nbsp;&nbsp;' ?>
                             </td>
                         </tr>
@@ -136,7 +151,8 @@ $medical_retina_entry_values = $this->entry->getAssessmentEntryRadioButtonValues
     <div class="cols-full">
         <div id="assessment-<?= $this->side ?>-comments-<?=$this->key?>" class="flex-layout flex-left comment-group js-comment-container"
              style="<?= !$this->entry->comments ? 'display: none;' : '' ?>" data-comment-button="#assessment-<?= $this->side ?>-comment-button-<?=$this->key?>">
-            <?=\CHtml::activeTextArea($this->entry,
+            <?=\CHtml::activeTextArea(
+                $this->entry,
                 'comments',
                 array(
                     'rows' => 1,
@@ -144,7 +160,8 @@ $medical_retina_entry_values = $this->entry->getAssessmentEntryRadioButtonValues
                     'class' => 'autosize cols-full js-comment-field',
                     'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;',
                     'name' => 'OEModule_OphGeneric_models_Assessment' . ($this->key !== null ? "[entries][$this->key][$this->side][comments]" : '[comments]')
-                )) ?>
+                )
+            ) ?>
             <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
         </div>
     </div>

@@ -23,29 +23,37 @@ $centralAreas = CHtml::listData(
         array(
             $element->right_central_area_id,
             $element->left_central_area_id,
-        ))->findAll(array('order' => 'display_order')
-    ), 'id', 'area'
+        )
+    )->findAll(array('order' => 'display_order')),
+    'id',
+    'area'
 );
 $centralAreaFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_CentralArea::model()->getFieldImages();
 
 $maxAreas = CHtml::listData(
     \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_MaxArea::model()->activeOrPk(
-        array($element->right_max_area_id, $element->left_max_area_id))->findAll(array('order' => 'display_order')
-    ), 'id', 'area'
+        array($element->right_max_area_id, $element->left_max_area_id)
+    )->findAll(array('order' => 'display_order')),
+    'id',
+    'area'
 );
 $maxAreaFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_MaxArea::model()->getFieldImages();
 
 $heights = CHtml::listData(
     \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_Height::model()->activeOrPk(
-        array($element->right_height_id, $element->left_height_id))->findAll(array('order' => 'display_order')
-    ), 'id', 'height'
+        array($element->right_height_id, $element->left_height_id)
+    )->findAll(array('order' => 'display_order')),
+    'id',
+    'height'
 );
 $heightFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_Height::model()->getFieldImages();
 
 $vascularities = CHtml::listData(
     \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_Vascularity::model()->activeOrPk(
-        array($element->right_vasc_id, $element->left_vasc_id))->findAll(array('order' => 'display_order')
-    ), 'id', 'vascularity'
+        array($element->right_vasc_id, $element->left_vasc_id)
+    )->findAll(array('order' => 'display_order')),
+    'id',
+    'vascularity'
 );
 $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_Vascularity::model()->getFieldImages();
 
@@ -91,7 +99,7 @@ $model_prefix = 'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebA
       <div class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-          <div class="cols-9">
+          <div class="cols-full">
             <table class="bleb-assessment last-left cols-full">
               <thead>
               <tr>
@@ -106,61 +114,101 @@ $model_prefix = 'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebA
                 <!-- Area (Central) -->
                 <td>
                     <?php
-                    echo $form->dropDownList($element, $eye_side . '_central_area_id', $centralAreas,
+                    echo $form->dropDownList(
+                        $element,
+                        $eye_side . '_central_area_id',
+                        $centralAreas,
                         array(
                             'empty' => '-',
                             'nowrapper' => true,
                             'class' => 'ui-field-images-dropdown',
                             'data-popup-title' => 'Area (Central)',
                             'data-next-popup-id' => $model_prefix .  $eye_side . '_max_area_id',
-                        ), false,
+                        ),
+                        false,
                         array()
                     ); ?>
                 </td>
                 <!-- Area (Maximal) -->
                 <td>
                     <?php
-                    echo $form->dropDownList($element, $eye_side . '_max_area_id', $maxAreas,
+                    echo $form->dropDownList(
+                        $element,
+                        $eye_side . '_max_area_id',
+                        $maxAreas,
                         array(
                             'empty' => '-',
                             'nowrapper' => true,
                             'class' => 'ui-field-images-dropdown',
                             'data-popup-title' => 'Area (Maximal)',
                             'data-next-popup-id' => $model_prefix . $eye_side . '_height_id',
-                        ), false,
+                        ),
+                        false,
                         array()
                     ); ?>
                 </td>
                 <!-- Height -->
                 <td>
                     <?php
-                    echo $form->dropDownList($element, $eye_side . '_height_id', $heights,
+                    echo $form->dropDownList(
+                        $element,
+                        $eye_side . '_height_id',
+                        $heights,
                         array(
                             'empty' => '-',
                             'nowrapper' => true,
                             'class' => 'ui-field-images-dropdown',
                             'data-popup-title' => 'Height',
                             'data-next-popup-id' => $model_prefix . $eye_side . '_vasc_id',
-                        ), false,
+                        ),
+                        false,
                         array()
                     ); ?>
                 </td>
                 <!-- Vascularity -->
                 <td>
                     <?php
-                    echo $form->dropDownList($element, $eye_side . '_vasc_id', $vascularities,
+                    echo $form->dropDownList(
+                        $element,
+                        $eye_side . '_vasc_id',
+                        $vascularities,
                         array(
                             'empty' => '-',
                             'nowrapper' => true,
                             'class' => 'ui-field-images-dropdown',
                             'data-popup-title' => 'Vascularity',
-                        ), false,
+                        ),
+                        false,
                         array()
                     ); ?>
                 </td>
+                  <td>
+                      <div class="add-data-actions flex-item-bottom">
+                          <button id="bleb-assessment-<?= $eye_side ?>-comment-button"
+                                  class="button js-add-comments" data-comment-container="#bleb-assessment-<?= $eye_side ?>-comments"
+                                  type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
+                              <i class="oe-i comments small-icon"></i>
+                          </button>
+                      </div>
+                  </td>
               </tr>
               </tbody>
             </table>
+
+              <div id="bleb-assessment-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+                   style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#bleb-assessment-<?= $eye_side ?>-comment-button">
+                  <?= \CHtml::activeTextArea(
+                      $element,
+                      $eye_side . '_notes',
+                      array(
+                          'rows' => 1,
+                          'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                          'class' => 'cols-full js-comment-field',
+                          'style' => 'overflow-wrap: break-word; height: 24px;',
+                      )
+                  ) ?>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+              </div>
           </div>
         </div>
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">

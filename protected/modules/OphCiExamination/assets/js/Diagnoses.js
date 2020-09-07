@@ -211,17 +211,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(controller.options.searchResult).append($item);
     };
 
-    DiagnosesController.prototype.dateFromFuzzyFieldSet = function (fieldset) {
-        var res = fieldset.find('select.fuzzy_year').val();
-        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
-        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
-        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
-        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
-
-        return res;
-    };
-
-
     DiagnosesController.prototype.initialiseDatepicker = function () {
         var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key');
         for (var i = 0; i < row_count; i++) {
@@ -340,8 +329,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      *
      * @param diagnosesBySource
      */
-    DiagnosesController.prototype.setExternalDiagnoses = function(diagnosesBySource)
-    {
+    DiagnosesController.prototype.setExternalDiagnoses = function (diagnosesBySource) {
         var controller = this;
 
         // reformat to controller usable structure
@@ -387,8 +375,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * Runs through the current external diagnoses and ensures they are displayed correctly
      */
-    DiagnosesController.prototype.renderExternalDiagnoses = function()
-    {
+    DiagnosesController.prototype.renderExternalDiagnoses = function () {
         var controller = this;
 
         for (let diagnosisCode in controller.externalDiagnoses) {
@@ -404,10 +391,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param code
      * @param sides
      */
-    DiagnosesController.prototype.updateExternalDiagnosis = function(code, sides)
-    {
+    DiagnosesController.prototype.updateExternalDiagnosis = function (code, sides) {
         var controller = this;
-        controller.retrieveDiagnosisDetail(code, controller.resolveEyeCode(sides), controller.setExternalDiagnosisDisplay.bind(controller) );
+        controller.retrieveDiagnosisDetail(code, controller.resolveEyeCode(sides), controller.setExternalDiagnosisDisplay.bind(controller));
     };
 
     var diagnosisDetail = {};
@@ -420,8 +406,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param sides
      * @param callback
      */
-    DiagnosesController.prototype.retrieveDiagnosisDetail = function(code, side, callback)
-    {
+    DiagnosesController.prototype.retrieveDiagnosisDetail = function (code, side, callback) {
         var controller = this;
         if (diagnosisDetail.hasOwnProperty(code)) {
             callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
@@ -429,15 +414,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $.ajax({
                 'type': 'GET',
                 // TODO: this should be a property of the element
-                'url': '/OphCiExamination/default/getDisorder?disorder_id='+code,
-                'beforeSend':function(){
+                'url': '/OphCiExamination/default/getDisorder?disorder_id=' + code,
+                'beforeSend': function () {
                     controller.$loader.show();
                 },
-                'success': function(json) {
+                'success': function (json) {
                     diagnosisDetail[code] = json;
                     callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
                 },
-                'complete': function(){
+                'complete': function () {
                     controller.$loader.hide();
                 }
             });
@@ -452,8 +437,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      *
      * @param sides
      */
-    DiagnosesController.prototype.resolveEyeCode = function(sides)
-    {
+    DiagnosesController.prototype.resolveEyeCode = function (sides) {
         var left = false;
         var right = false;
         for (var i = 0; i < sides.length; i++) {
@@ -474,8 +458,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param name
      * @param side
      */
-    DiagnosesController.prototype.setExternalDiagnosisDisplay = function(id, name, side)
-    {
+    DiagnosesController.prototype.setExternalDiagnosisDisplay = function (id, name, side) {
 
         var controller = this;
 

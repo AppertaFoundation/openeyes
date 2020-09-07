@@ -51,9 +51,12 @@ $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
                 } else {
                     $listIndex = 2;
                 } ?>
-                <?=\CHtml::dropDownList('cancellation_reason', '', OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
-                array('empty' => 'Select a reason')
-        ); ?>
+                <?=\CHtml::dropDownList(
+                    'cancellation_reason',
+                    '',
+                    OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
+                    array('empty' => 'Select a reason')
+                ); ?>
             </div>
         </div>
         <div class="flex-layout">

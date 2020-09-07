@@ -16,11 +16,11 @@
     <?php if ($this->title != 'Please select booking') { ?>
             <?php if (isset($this->event->firm)) : ?>
                 <div class="extra-info">
-                    <span class="fade">Subspecialty: </span>
+                    <small class="fade">Subspecialty: </small>
                     <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?>
                 </div>
                 <div class="extra-info">
-                    <span class="fade">&nbsp;Context: </span>
+                    <small class="fade">&nbsp;Context: </small>
                     <?= $this->event->firm->name; ?>
                 </div>
             <?php endif; ?>
@@ -54,10 +54,12 @@
                 $(document).ready(function () {
                     var $date_input = $('.js-event-date-input');
                     $('.js-change-event-date').on('click', function () {
-                      $date_input.show();
-                      $date_input.select();
-                      $('.js-event-date').hide();
-                      $('.js-change-event-date').hide();
+                      if (!$(this).hasClass('disabled')) {
+                          $date_input.show();
+                          $date_input.select();
+                          $('.js-event-date').hide();
+                          $('.js-change-event-date').hide();
+                      }
                     });
 
                     $('.pickmeup.pmu-view-days').on('click', function () {
@@ -75,18 +77,34 @@
           <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
              data-tooltip-content="Change Event date"
              style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
-<?php } ?>
+    <?php } ?>
         </div>
 
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
-
-    <?php echo $content; ?>
-
-    <?php if ($this->action->id === 'view') {
+    <?php if ($this->event->eventType->custom_hint_text
+        && $this->event->eventType->hint_position === 'TOP'
+        && in_array($this->action->id, array('create', 'update'))) { ?>
+    <div class="alert-box info">
+        <div class="user-tinymce-content">
+            <?= $this->event->eventType->custom_hint_text ?>
+        </div>
+    </div>
+    <?php }
+    echo $content; ?>
+    <?php if ($this->event->eventType->custom_hint_text
+        && $this->event->eventType->hint_position === 'BOTTOM'
+        && in_array($this->action->id, array('create', 'update'))) { ?>
+    <div class="alert-box info">
+        <div class="user-tinymce-content">
+        <?= $this->event->eventType->custom_hint_text ?>
+        </div>
+    </div>
+    <?php }
+    if ($this->action->id === 'view') {
         $this->renderEventMetadata();
-    } ?>
-    <?php
+    }
+
     $this->renderPartial('//patient/event_footer', array('form_id' => $form_id));
     ?>
 </main>

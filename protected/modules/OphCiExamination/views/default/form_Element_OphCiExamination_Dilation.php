@@ -38,13 +38,13 @@ foreach ($dilation_drugs as $d_drug) {
              style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table class="cols-full dilation_table"
-                   style="<?= (!$element->{$eye_side . '_treatments'}) ? 'display: none;' : '' ?>">
+            <table id="<?= CHtml::modelName($element) ?>_<?= $eye_side ?>_treatments" class="cols-full dilation_table"
+                   style="<?= (!$element->{$eye_side . '_treatments'} && !$element->hasErrors($eye_side . '_treatments')) ? 'display: none;' : '' ?>">
               <tbody class="plain" id="dilation_<?= $eye_side ?>">
               <?php foreach ($element->{$eye_side . '_treatments'} as $treatment) {
                     $this->renderPartial(
-                      'form_Element_OphCiExamination_Dilation_Treatment',
-                      array(
+                        'form_Element_OphCiExamination_Dilation_Treatment',
+                        array(
                           'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_treatments]',
                           'treatment' => $treatment,
                           'key' => $key,
@@ -52,7 +52,7 @@ foreach ($dilation_drugs as $d_drug) {
                           'drug_name' => $treatment->drug->name,
                           'drug_id' => $treatment->drug_id,
                           'data_order' => $treatment->drug->display_order,
-                      )
+                        )
                     );
                     ++$key;
               } ?>
@@ -60,13 +60,16 @@ foreach ($dilation_drugs as $d_drug) {
             </table>
               <div id="dilation-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
                    style="<?= !$element->{$eye_side . '_comments'} ? 'display: none;' : '' ?>" data-comment-button="#dilation-<?= $eye_side ?>-comment-button">
-                  <?=\CHtml::activeTextArea($element, $eye_side . '_comments',
+                  <?=\CHtml::activeTextArea(
+                      $element,
+                      $eye_side . '_comments',
                       array(
                           'rows' => 1,
                           'placeholder' => $element->getAttributeLabel($eye_side . '_comments'),
                           'class' => 'autosize cols-full js-comment-field',
                           'style' => 'overflow-wrap: break-word; height: 24px;',
-                      )) ?>
+                      )
+                  ) ?>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
               </div>
           </div>

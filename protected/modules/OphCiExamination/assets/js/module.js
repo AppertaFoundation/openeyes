@@ -1,8 +1,7 @@
 /**
  * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +10,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2020, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -989,17 +988,19 @@ $(document).ready(function() {
             var select_value = $(this).val();
 
             if(select_value >= 0){
-                addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order')  );
+                addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order'));
                 $(this).find('option:selected').remove();
                 setPostOpComplicationTableText();
             }
+
+            $(this).val('');
 
         });
 
         $('#event-content').on('click','a.postop-complication-remove-btn', function(){
 
             var value = $(this).parent().find('input[type=hidden]').val();
-            var text = $(this).closest('tr').find('.postop-complication-name').text();
+            var text = $(this).parent().closest('tr').find('.postop-complication-name').data('complication-name');
 
             var select_id = $(this).closest('table').attr('id').replace('list', 'select');
 
@@ -1017,6 +1018,26 @@ $(document).ready(function() {
         }).on('click','.jsNoTreatment', function(){
             OphCiExamination_InjectionManagementComplex_init();
         });
+
+        let date = new Date();
+        let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+        let todayDateWithLeadingZero = "0" + todayDate;
+
+        let medicationManagementValidationFunction = function() {
+					if($('.js-event-date-input').val() === todayDate || $('.js-event-date-input').val() === todayDateWithLeadingZero) {
+						return true;
+					} else {
+						new OpenEyes.UI.Dialog.Alert({
+							content: "Medication Management cannot be added due to event date not being the current date"
+						}).open();
+						return false;
+					}
+				}
+
+				$('#episodes-and-events').on('sidebar_loaded', function() {
+					$('li#side-element-Medication-Management').find('a').data('validation-function', medicationManagementValidationFunction);
+				});
+
 
 });
     /** Post Operative Complication function **/
@@ -1051,23 +1072,34 @@ $(document).ready(function() {
     {
 
         var $table = $('#' + table_id);
+        var eye_abbreviation = $table.data('sideletter');
         var $tr = $('<tr>');
-        var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text);
+        var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text).data('complication-name',selected_text);
+        var $other_text = '';
+        let existing_value = $table.find('input[value="' + select_value + '"]');
 
-        var $hidden_input = $("<input>", {
-            type:"hidden",
-            id:'complication_items_' + $table.data('sideletter') + '_' + $('#' + table_id + ' tr').length,
-            name: 'complication_items[' + $table.data('sideletter') + '][' + $('#' + table_id + ' tr').length +']',
-            value: select_value,
-        });
-        $hidden_input.data('display_order', display_order);
+        if(!existing_value.length) {
+            if (selected_text == "other") {
+                $td_name = $td_name.text($td_name.text() + ' ');
+                $other_text = $('<input type="text" value="" name="complication_other[' + eye_abbreviation + ']" id="complication_other_' + eye_abbreviation + '">')
+            }
 
-        var $td_action = $('<td>',{class:'right'}).html( "<a class='postop-complication-remove-btn' href='javascript:void(0)'><i class='oe-i trash'></i></a>" );
-        $td_action.append($hidden_input);
+            var $hidden_input = $("<input>", {
+                type: "hidden",
+                id: 'complication_items_' + $table.data('sideletter') + '_' + $('#' + table_id + ' tr').length,
+                name: 'complication_items[' + $table.data('sideletter') + '][' + $('#' + table_id + ' tr').length + ']',
+                value: select_value,
+            });
+            $hidden_input.data('display_order', display_order);
 
-        $tr.append($td_name);
-        $tr.append($td_action);
-        $table.append( $tr );
+            var $td_action = $('<td>', {class: 'right'}).html("<a class='postop-complication-remove-btn' href='javascript:void(0)'><i class='oe-i trash'></i></a>");
+            $td_action.append($hidden_input);
+            $td_name.append($other_text);
+
+            $tr.append($td_name);
+            $tr.append($td_action);
+            $table.append($tr);
+        }
     }
     /** End of Post Operative Complication function **/
 function updateTextMacros() {
@@ -1910,6 +1942,22 @@ $(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-
     }
 });
 
+function registerElementController(controller, name, bindTo) {
+    window[name] = controller;
+    if(typeof window[bindTo] !== 'undefined') {
+        window[bindTo].bindController(controller, name);
+        controller.bindController(window[bindTo], bindTo);
+        window[bindTo].options.onControllerBound(controller, name);
+				controller.options.onControllerBound(window[bindTo], bindTo);
+    }
+}
+
+function unregisterElementController(controller, name, binded_controller) {
+    controller.unbindController(window[binded_controller], binded_controller);
+    window[binded_controller].unbindController(controller, name);
+    delete window[name];
+}
+
 /*
  * @params weight kg
  * @params height meters
@@ -1918,5 +1966,15 @@ function bmi_calculator( weight, height){
     height_meter = height / 100;
     result = weight / (height_meter * height_meter);
     return result;
-    
+
+}
+
+function decimal2heximal (decimal) {
+	return ('0' + decimal.toString(16)).substr(-2);
+}
+
+function generateId (length) {
+	let array = new Uint8Array((length || 10) / 2);
+	window.crypto.getRandomValues(array);
+	return Array.from(array, decimal2heximal).join('')
 }

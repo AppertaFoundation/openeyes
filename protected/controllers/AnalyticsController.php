@@ -91,7 +91,7 @@ class AnalyticsController extends BaseController
     public function actionAnalyticsReports()
     {
         $this->render('/analytics/analytics_report', null);
-        
+
     }
 
     private function reportDataDOM()
@@ -248,19 +248,23 @@ class AnalyticsController extends BaseController
                     'y' => array_map(
                         function ($item) {
                             return $item['average'];
-                        }, array_values(${$side . '_va_list'})),
+                        },
+                        array_values(${$side . '_va_list'})
+                    ),
                     'customdata' => array_map(
                         function ($item) {
                             return $item['patients'];
                         },
-                        array_values(${$side . '_va_list'})),
+                        array_values(${$side . '_va_list'})
+                    ),
                     'error_y' => array(
                         'type' => 'data',
                         'array' => array_map(
                             function ($item) {
                                 return $item['SD'];
                             },
-                            array_values(${$side . '_va_list'})),
+                            array_values(${$side . '_va_list'})
+                        ),
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
@@ -280,19 +284,23 @@ class AnalyticsController extends BaseController
                     'y' => array_map(
                         function ($item) {
                             return $item['average'];
-                        }, array_values(${$side . $second_list_name})),
+                        },
+                        array_values(${$side . $second_list_name})
+                    ),
                     'customdata' => array_map(
                         function ($item) {
                             return $item['patients'];
                         },
-                        array_values(${$side . $second_list_name})),
+                        array_values(${$side . $second_list_name})
+                    ),
                     'error_y' => array(
                         'type' => 'data',
                         'array' => array_map(
                             function ($item) {
                                 return $item['SD'];
                             },
-                            array_values(${$side . $second_list_name})),
+                            array_values(${$side . $second_list_name})
+                        ),
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
@@ -434,8 +442,7 @@ class AnalyticsController extends BaseController
                         MIN(e2.event_date) as date_from
                     FROM cat_prom5_event_result cat
                     JOIN event e2 on e2.id = cat.event_id
-                ) t'
-            );
+                ) t');
         } else {
             $event_date_command = Yii::app()->db->createCommand()
             ->select('
@@ -497,7 +504,7 @@ class AnalyticsController extends BaseController
         } elseif ($subspecialty_name == 'Glaucoma') {
             $basic_criteria = isset($this->filters['procedure'])? $this->filters['procedure']:null;
             $op_proc_command = Yii::app()->db->createCommand()
-              ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, IF(eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
+              ->select('p.id as patient_id, MIN(e.event_date) as event_date, if (eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, if (eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
               ->from('et_ophtroperationnote_procedurelist eop')
               ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment opa', 'eop.id = opa.procedurelist_id')
               ->leftJoin('event e', 'eop.event_id = e.id')
@@ -506,7 +513,7 @@ class AnalyticsController extends BaseController
               ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
               ->group('patient_id, left_value, right_value');
             $laser_proc_command = Yii::app()->db->createCommand()
-              ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, IF(eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
+              ->select('p.id as patient_id, MIN(e.event_date) as event_date, if (eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, if (eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
               ->from('et_ophtrlaser_treatment eot')
               ->leftJoin('ophtrlaser_laserprocedure_assignment ola', 'eot.id = ola.treatment_id')
               ->leftJoin('event e', 'eot.event_id = e.id')
@@ -542,7 +549,7 @@ class AnalyticsController extends BaseController
     {
         $basic_criteria = isset($this->filters['procedure'])? $this->filters['procedure']:null;
         $op_proc_command = Yii::app()->db->createCommand()
-          ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, IF(eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
+          ->select('p.id as patient_id, MIN(e.event_date) as event_date, if (eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, if (eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
           ->from('et_ophtroperationnote_procedurelist eop')
           ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment opa', 'eop.id = opa.procedurelist_id')
           ->leftJoin('event e', 'eop.event_id = e.id')
@@ -551,7 +558,7 @@ class AnalyticsController extends BaseController
           ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
           ->group('patient_id, left_value, right_value');
         $laser_proc_command = Yii::app()->db->createCommand()
-          ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, IF(eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
+          ->select('p.id as patient_id, MIN(e.event_date) as event_date, if (eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, if (eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
           ->from('et_ophtrlaser_treatment eot')
           ->leftJoin('ophtrlaser_laserprocedure_assignment ola', 'eot.id = ola.treatment_id')
           ->leftJoin('event e', 'eot.event_id = e.id')
@@ -582,10 +589,10 @@ class AnalyticsController extends BaseController
         if (isset($this->filters['age_max']) && $return_value) {
             $return_value = ((int)$age <= (int)$this->filters['age_max']);
         }
-        if ($this->filters['date_to'] && $return_value) {
+        if (isset($this->filters['date_to']) && $return_value) {
             $return_value = ($date < $this->filters['date_to']);
         }
-        if ($this->filters['date_from'] && $return_value) {
+        if (isset($this->filters['date_from']) && $return_value) {
             $return_value = ($date > $this->filters['date_from']);
         }
         return $return_value;
@@ -603,7 +610,7 @@ class AnalyticsController extends BaseController
         $extra_commands = clone $extra_command;
         $vaEyeId = $eye_side === 'right' ? 0 : 1;
         $command_va_values = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
+            ->select('ep.patient_id as patient_id, e.event_date as event_date,  if (eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, if (eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
             ->from('et_ophciexamination_visualacuity eov')
             ->leftJoin('event e', 'e.id = eov.event_id')
             ->leftJoin('episode ep', 'ep.id = e.episode_id')
@@ -613,11 +620,11 @@ class AnalyticsController extends BaseController
 
         if (isset($basic_criteria)) {
             if ($subspecialty === 'Medical Retina') {
-                $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
+                $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , if (eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, if (eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('eot.'.$eye_side.'_drug_id '.$basic_criteria)
                     ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
             } elseif ($subspecialty === 'Glaucoma') {
-                $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
+                $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , if (et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, if (et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('et.'.$eye_side.'_value '.$basic_criteria)
                     ->group('patient_id, left_value,right_value');
             }
@@ -659,8 +666,10 @@ class AnalyticsController extends BaseController
             ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name, r.reading as reading', 'DISTINCT')
             ->from('('.$command_va_values->union($extra_commands->getText())->getText().') as t')
             // to get best reading value, instead of getting it from model
-            ->leftJoin('(' . $bestReadingSQL->getText() . ') as r',
-            't.'.$eye_side.'_value = r.eoi_id')
+            ->leftJoin(
+                '(' . $bestReadingSQL->getText() . ') as r',
+                't.'.$eye_side.'_value = r.eoi_id'
+            )
             ->where('t.patient_id in ('.$command_filtered_patients->getText().')')
             ->andWhere('t.'.$eye_side.'_value IS NOT NULL')
             ->order('t.patient_id, t.event_date', 'ASC');
@@ -686,7 +695,7 @@ class AnalyticsController extends BaseController
     {
         $extra_commands = clone $extra_command;
         $command_iop_values = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
+            ->select('ep.patient_id as patient_id, e.event_date as event_date,  if (eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, if (eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
             ->from('et_ophciexamination_intraocularpressure eov')
             ->leftJoin('event e', 'e.id = eov.event_id')
             ->leftJoin('episode ep', 'ep.id = e.episode_id')
@@ -694,7 +703,7 @@ class AnalyticsController extends BaseController
             ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
             ->group('eov.id');
         if (isset($basic_criteria)) {
-            $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
+            $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , if (et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, if (et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                 ->andwhere('et.'.$eye_side.'_value '.$basic_criteria)
                 ->group('patient_id, left_value,right_value');
         } else {
@@ -758,7 +767,7 @@ class AnalyticsController extends BaseController
     {
         $extra_commands = clone $extra_command;
         $command_crt_values = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
+            ->select('ep.patient_id as patient_id, e.event_date as event_date,  if (eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, if (eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
             ->from('et_ophciexamination_oct eov')
             ->leftJoin('event e', 'e.id = eov.event_id')
             ->leftJoin('episode ep', 'ep.id = e.episode_id')
@@ -767,7 +776,7 @@ class AnalyticsController extends BaseController
             ->group('eov.id');
 
         if (isset($basic_criteria)) {
-            $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
+            $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , if (eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, if (eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                 ->andwhere('eot.'.$eye_side.'_drug_id '.$basic_criteria)
                 ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
         } else {
@@ -915,10 +924,10 @@ class AnalyticsController extends BaseController
                     $initial_reading[$element['patient_id']]['event_date'] = $current_time;
                     continue;
                 }
-                
+
                 /* Add patient in this->patient_list if not exist, prepare for drill down list,
                 Get each patient's left and right eye readings as well as event time */
-                if ($this->validateAgeAndDateFilters( $element['age'], $current_time) && isset($reading) && isset($current_time)) {
+                if ($this->validateAgeAndDateFilters($element['age'], $current_time) && isset($reading) && isset($current_time)) {
                     if (!isset($initial_reading[$element['patient_id']]['value']) || !isset($initial_reading[$element['patient_id']]['event_date'])) {
                         $initial_reading[$element['patient_id']]['value'] = $reading;
                         $initial_reading[$element['patient_id']]['event_date'] = $current_time;
@@ -953,7 +962,7 @@ class AnalyticsController extends BaseController
                         ${$side.'_list'}[$current_week]['count']+=1;
                         ${$side.'_list'}[$current_week]['sum']+=$reading;
                         ${$side.'_list'}[$current_week]['square_sum']+= $reading ** 2;
-                        ${$side.'_list'}[$current_week]['average'] = round( ${$side.'_list'}[$current_week]['sum']/ ${$side.'_list'}[$current_week]['count']);
+                        ${$side.'_list'}[$current_week]['average'] = round(${$side.'_list'}[$current_week]['sum']/ ${$side.'_list'}[$current_week]['count']);
                         ${$side.'_list'}[$current_week]['SD'] = $this->calculateStandardDeviationByDataSet(${$side.'_list'}[$current_week]);
                         ${$side.'_list'}[$current_week]['patients'][] =  $element['patient_id'];
                     } else {
@@ -1035,8 +1044,7 @@ class AnalyticsController extends BaseController
                     WHERE d.term IS NOT NULL
                     GROUP BY sd.patient_id
                  ) t2
-                GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id'
-            )
+                GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id')
             ->group('p.id, e.id, eye.name')
             ->order('name, e.event_date DESC');
         if (isset($params['ids'])&&count($params['ids'] > 0)) {
@@ -1473,24 +1481,28 @@ class AnalyticsController extends BaseController
                   array(
                       'x' => array_keys(${$side.'_va_list'}),
                       'y' => array_map(
-                            function ($item) {
-                                if (isset($this->filters['plot_va_change_initial_va_value'])) {
-                                    $item['average'] -= $this->filters['plot_va_change_initial_va_value'];
-                                }
-                                return $item['average'];
-                            }, array_values(${$side.'_va_list'})),
+                          function ($item) {
+                              if (isset($this->filters['plot_va_change_initial_va_value'])) {
+                                  $item['average'] -= $this->filters['plot_va_change_initial_va_value'];
+                              }
+                              return $item['average'];
+                          },
+                          array_values(${$side.'_va_list'})
+                      ),
                       'customdata'=>array_map(
-                            function ($item) {
-                                return $item['patients'];
-                            },
-                          array_values(${$side.'_va_list'})),
+                          function ($item) {
+                              return $item['patients'];
+                          },
+                          array_values(${$side.'_va_list'})
+                      ),
                       'error_y'=> array(
                           'type'=> 'data',
                           'array' => array_map(
-                                function ($item) {
-                                    return $item['SD'];
-                                },
-                              array_values(${$side.'_va_list'})),
+                              function ($item) {
+                                  return $item['SD'];
+                              },
+                              array_values(${$side.'_va_list'})
+                          ),
                           'visible' => true,
                           'color' => '#aaa',
                           'thickness' => 1
@@ -1511,21 +1523,25 @@ class AnalyticsController extends BaseController
                       'yaxis' => 'y2',
                       'x' => array_keys(${$side.'_second_list'}),
                       'y' => array_map(
-                            function ($item) {
-                                return $item['average'];
-                            }, array_values(${$side.'_second_list'})),
+                          function ($item) {
+                              return $item['average'];
+                          },
+                          array_values(${$side.'_second_list'})
+                      ),
                       'customdata'=>array_map(
-                            function ($item) {
-                                return $item['patients'];
-                            },
-                          array_values(${$side.'_second_list'})),
+                          function ($item) {
+                              return $item['patients'];
+                          },
+                          array_values(${$side.'_second_list'})
+                      ),
                       'error_y' => array(
                           'type' => 'data',
                           'array' => array_map(
-                                function ($item) {
-                                    return $item['SD'];
-                                },
-                              array_values(${$side.'_second_list'})),
+                              function ($item) {
+                                  return $item['SD'];
+                              },
+                              array_values(${$side.'_second_list'})
+                          ),
                           'visible' => true,
                           'color' => '#aaa',
                           'thickness' => 1
@@ -1690,11 +1706,11 @@ class AnalyticsController extends BaseController
             ($end_date && $event_time > $end_date)) {
                 continue;
             }
-            
+
             $latest_worklist_time = isset($followup_item['start']) ? $followup_item['start'] : null;
 
             $latest_time = isset($latest_worklist_time)? max($event_time, $latest_worklist_time):$event_time;
-            
+
             $due_time = $followup_item['due_date'];
 
             if ( $followup_item['weeks'] <= 0) {
@@ -1956,7 +1972,7 @@ class AnalyticsController extends BaseController
         }, 0);
         $report_type = null;
         $report_type = $report_type === null ? 'overdue' : $report_type;
-        
+
         if (Yii::app()->request->isAjaxRequest) {
             $report_type = Yii::app()->request->getParam('report');
         }
@@ -2086,19 +2102,23 @@ class AnalyticsController extends BaseController
                     'y' => array_map(
                         function ($item) {
                             return $item['average'];
-                        }, array_values(${$side . '_va_list'})),
+                        },
+                        array_values(${$side . '_va_list'})
+                    ),
                     'customdata' => array_map(
                         function ($item) {
                             return $item['patients'];
                         },
-                        array_values(${$side . '_va_list'})),
+                        array_values(${$side . '_va_list'})
+                    ),
                     'error_y' => array(
                         'type' => 'data',
                         'array' => array_map(
                             function ($item) {
                                 return $item['SD'];
                             },
-                            array_values(${$side . '_va_list'})),
+                            array_values(${$side . '_va_list'})
+                        ),
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
@@ -2118,19 +2138,23 @@ class AnalyticsController extends BaseController
                     'y' => array_map(
                         function ($item) {
                             return $item['average'];
-                        }, array_values(${$side . $second_list_name})),
+                        },
+                        array_values(${$side . $second_list_name})
+                    ),
                     'customdata' => array_map(
                         function ($item) {
                             return $item['patients'];
                         },
-                        array_values(${$side . $second_list_name})),
+                        array_values(${$side . $second_list_name})
+                    ),
                     'error_y' => array(
                         'type' => 'data',
                         'array' => array_map(
                             function ($item) {
                                 return $item['SD'];
                             },
-                            array_values(${$side . $second_list_name})),
+                            array_values(${$side . $second_list_name})
+                        ),
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1

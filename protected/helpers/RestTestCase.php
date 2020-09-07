@@ -36,6 +36,8 @@ class RestTestCase extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        parent::setUp();
+
         $this->client = new Client(
             Yii::app()->params['rest_test_base_url'],
             array(
@@ -47,14 +49,12 @@ class RestTestCase extends PHPUnit_Framework_TestCase
                 ),
             )
         );
-
-        parent::setUp();
     }
 
     protected function setExpectedHttpError($code)
     {
         if (!$this->capture_error_responses) {
-            $this->setExpectedException('Guzzle\Http\Exception\BadResponseException', "[status code] {$code}");
+            $this->expectException('Guzzle\Http\Exception\BadResponseException', "[status code] {$code}");
         }
         $this->expected_error_code = $code;
     }

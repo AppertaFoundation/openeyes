@@ -23,6 +23,7 @@
  */
 
 $toAddressContactType = $element->getToAddressContactType();
+$isToAddressDocumentOutputEmail = $element->isToAddressDocumentOutputEmail();
 if (is_null($contact_type)) {
     $contact_type = $toAddressContactType;
 }
@@ -64,7 +65,7 @@ if (!@$no_header) { ?>
         <strong>
             <?php if ($toAddressContactType !== "PATIENT" && $element->re) {
                 echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->re));
-            } else if ($contact_type === "PATIENT") {
+            } elseif ($contact_type === "PATIENT") {
                 if (Yii::app()->params['nhs_num_private'] == true) {
                     echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num;
                 } else {
@@ -86,7 +87,7 @@ if (!@$no_header) { ?>
     <div class="spacer"></div>
     <h5>
         <?php
-        echo($toAddress ? ('To: ' . (isset($toAddressContactType) ? $toAddressContactType . ' : ' : '') . $element->renderSourceAddress($toAddress) . '<br/>') : '');
+        echo($toAddress ? ('To: ' . (isset($toAddressContactType) ? $toAddressContactType . ' : ' : '') . $element->renderSourceAddress($toAddress) . ($isToAddressDocumentOutputEmail ? ' (Sent by Email)' : '') . '<br/>') : '');
         echo($ccString ? $ccString : ''); ?>
     </h5>
     <p nobr="true">

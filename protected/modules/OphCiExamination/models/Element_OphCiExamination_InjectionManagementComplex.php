@@ -102,29 +102,30 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id, left_no_treatment, right_no_treatment, left_no_treatment_reason_id, right_no_treatment_reason_id,
+            array('eye_id, left_no_treatment, right_no_treatment, left_no_treatment_reason_id, right_no_treatment_reason_id,
 						left_no_treatment_reason_other, right_no_treatment_reason_other, left_diagnosis1_id,
 						right_diagnosis1_id, left_diagnosis2_id, right_diagnosis2_id, left_comments, right_comments,
 						left_treatment_id, right_treatment_id', 'safe'),
-                array('left_no_treatment', 'requiredIfSide', 'side' => 'left'),
-                array('right_no_treatment', 'requiredIfSide', 'side' => 'right'),
-                array('left_no_treatment_reason_id', 'requiredIfNoTreatment', 'side' => 'left'),
-                array('right_no_treatment_reason_id', 'requiredIfNoTreatment', 'side' => 'right'),
-                array('left_no_treatment_reason_other', 'requiredIfNoTreatmentOther', 'side' => 'left'),
-                array('right_no_treatment_reason_other', 'requiredIfNoTreatmentOther', 'side' => 'right'),
-                array('left_diagnosis1_id', 'requiredIfTreatment', 'side' => 'left'),
-                array('right_diagnosis1_id', 'requiredIfTreatment', 'side' => 'right'),
-                array('left_diagnosis2_id', 'requiredIfSecondary', 'side' => 'left', 'dependent' => 'left_diagnosis1_id'),
-                array('right_diagnosis2_id', 'requiredIfSecondary', 'side' => 'right', 'dependent' => 'right_diagnosis1_id'),
-                array('left_answers', 'answerValidation', 'side' => 'left'),
-                array('right_answers', 'answerValidation', 'side' => 'right'),
-                array('left_treatment_id', 'ifInjectionInstalled', 'side' => 'left', 'check' => 'requiredIfTreatment'),
-                array('right_treatment_id', 'ifInjectionInstalled', 'side' => 'right', 'check' => 'requiredIfTreatment'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, event_id, eye_id, left_no_treatment, right_no_treatment, left_no_treatment_reason_id, right_no_treatment_reason_id,
-						left_no_treatment_reason_other, right_no_treatment_reason_other, left_diagnosis_id, right_diagnosis_id,'.
-                        'left_diagnosis2_id, right_diagnosis2_id, left_comments, right_comments', 'safe', 'on' => 'search', ),
+            array('right_treatment_id, left_treatment_id, right_no_treatment_reason_id, left_no_treatment_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('left_no_treatment', 'requiredIfSide', 'side' => 'left'),
+            array('right_no_treatment', 'requiredIfSide', 'side' => 'right'),
+            array('left_no_treatment_reason_id', 'requiredIfNoTreatment', 'side' => 'left'),
+            array('right_no_treatment_reason_id', 'requiredIfNoTreatment', 'side' => 'right'),
+            array('left_no_treatment_reason_other', 'requiredIfNoTreatmentOther', 'side' => 'left'),
+            array('right_no_treatment_reason_other', 'requiredIfNoTreatmentOther', 'side' => 'right'),
+            array('left_diagnosis1_id', 'requiredIfTreatment', 'side' => 'left'),
+            array('right_diagnosis1_id', 'requiredIfTreatment', 'side' => 'right'),
+            array('left_diagnosis2_id', 'requiredIfSecondary', 'side' => 'left', 'dependent' => 'left_diagnosis1_id'),
+            array('right_diagnosis2_id', 'requiredIfSecondary', 'side' => 'right', 'dependent' => 'right_diagnosis1_id'),
+            array('left_answers', 'answerValidation', 'side' => 'left'),
+            array('right_answers', 'answerValidation', 'side' => 'right'),
+            array('left_treatment_id', 'ifInjectionInstalled', 'side' => 'left', 'check' => 'requiredIfTreatment'),
+            array('right_treatment_id', 'ifInjectionInstalled', 'side' => 'right', 'check' => 'requiredIfTreatment'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, event_id, eye_id, left_no_treatment, right_no_treatment, left_no_treatment_reason_id, right_no_treatment_reason_id,
+						left_no_treatment_reason_other, right_no_treatment_reason_other, left_diagnosis_id, right_diagnosis_id,' .
+                'left_diagnosis2_id, right_diagnosis2_id, left_comments, right_comments', 'safe', 'on' => 'search',),
         );
     }
 
@@ -658,10 +659,10 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
     public function requiredIfSecondary($attribute, $params)
     {
         if (($params['side'] == 'left' && $this->eye_id != \Eye::RIGHT) || ($params['side'] == 'right' && $this->eye_id != \Eye::LEFT)) {
-            if ($this->$params['dependent'] && (!$this->$attribute || empty($this->$attribute))) {
+            if ($this->{$params['dependent']} && (!$this->$attribute || empty($this->$attribute))) {
                 if ($api = Yii::app()->moduleAPI->get('OphCoTherapyapplication')) {
-                    if (count($api->getLevel2Disorders($this->$params['dependent']))) {
-                        $disorder = \Disorder::model()->findByPk($this->$params['dependent']);
+                    if (count($api->getLevel2Disorders($this->{$params['dependent']}))) {
+                        $disorder = \Disorder::model()->findByPk($this->{$params['dependent']});
                         $this->addError($attribute, $disorder->term.' must be associated with another diagnosis');
                     }
                 }

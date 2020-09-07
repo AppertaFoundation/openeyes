@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphCiExamination_BlebAssessment_Vascularity_Test extends CDbTestCase
+class OphCiExamination_BlebAssessment_Vascularity_Test extends ActiveRecordTestCase
 {
     /**
      * @var OphCiExamination_BlebAssessment_Vascularity
@@ -24,22 +24,19 @@ class OphCiExamination_BlebAssessment_Vascularity_Test extends CDbTestCase
     public $fixtures = array(
     );
 
+    public function getModel()
+    {
+        return $this->model;
+    }
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_Vascularity();
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
     }
 
     /**

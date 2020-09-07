@@ -107,24 +107,19 @@ class DefaultController extends \BaseModuleController
         if (@$filter_options['queue-ids']) {
             $queue_ids = $filter_options['queue-ids'];
             if (@$filter_options['closed-tickets']) {
-                // get all closed tickets regardless of whether queue is active or not
-                $rows = Yii::app()->db->createCommand()
-                    ->select('patientticketing_queue.id, COUNT(oc.id) oc_ct')
-                    ->from('patientticketing_queue')
-                    ->leftJoin('patientticketing_queueoutcome oc', 'patientticketing_queue.id = oc.queue_id')
-                    ->group('patientticketing_queue.id')
-                    ->having('oc_ct = 0')
-                    ->queryAll();
+                // get all closed tickets from the queueset regardless of whether queue is active or not
+                $rows = $qs_svc->getQueueSetClosingQueues($queueset);
 
                 foreach ($rows as $row) {
-                    $queue_ids[] = $row['id'];
+                    $queue_ids[] = $row->id;
                 }
             }
         } else {
             if ($qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id)) {
                 foreach ($qs_svc->getQueueSetQueues(
-                            $queueset,
-                            @$filter_options['closed-tickets'] ? true : false) as $queue) {
+                    $queueset,
+                    @$filter_options['closed-tickets'] ? true : false
+                ) as $queue) {
                             $queue_ids[] = $queue->id;
                 }
             }
@@ -778,8 +773,12 @@ class DefaultController extends \BaseModuleController
             throw new Exception('Subspecialty not found: ' . @$_GET['subspecialty_id']);
         }
 
-        echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id),
-            ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
+        echo \CHtml::dropDownList(
+            'firm-id',
+            '',
+            \Firm::model()->getList($subspecialty->id),
+            ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']
+        );
     }
 
     public function actionUndoLastStep($id)

@@ -56,7 +56,7 @@ showhelp=0
 ignorelocal=0
 
 # Read in stored github config (username, root, usessh, etc)
-source $SCRIPTDIR/git.conf
+source $SCRIPTDIR/git.conf 2>/dev/null
 
 for i in "$@"
 do
@@ -117,7 +117,10 @@ if [ "$SCRIPTDIR" = "" ] || [ "$SCRIPTDIR" = "setme" ] || [ "$WROOT" = "" ] || [
     echo "Directories not set correctly. Please use oe-checkout.sh"
 fi
 
-source $SCRIPTDIR/modules.conf
+# if a custom config has been supplied (e.g, by a docker config) then use it, else use the default
+[ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
+source $MODULES_CONF
+
 MODULEROOT=$WROOT/protected/modules
 if [ -d "$MODULEROOT/sample" ]; then modules=(${modules[@]} sample); fi # Add sample DB to list if it exists
 
@@ -187,9 +190,9 @@ for module in ${modules[@]}; do
   # Determine if module already exists (ignoring openeyes). If not, clone it
 	if [ ! -d "$MODULEROOT/$module" ] && [ "$module" != "openeyes" ]; then
 
-        printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m"
-
-        git -C $MODULEROOT clone ${basestring}/${module}.git $module
+        printf "\e[31m$module: Doesn't currently exist - Please clone it first - or use oe-checkout.sh\e[0m\n"
+        echo "Quitting..."
+        exit 1
 	fi
 
 	processgit=1

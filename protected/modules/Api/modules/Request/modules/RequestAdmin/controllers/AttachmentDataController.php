@@ -63,7 +63,5 @@ class AttachmentDataController extends \AdminController
             'cancel_uri' => '/Api/Request/admin/request/index',
             'text_data' => $json_pretty_text_data
         ));
-
     }
-
 }

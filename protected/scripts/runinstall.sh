@@ -65,6 +65,8 @@ usessh=0
 sshuserstring="git"
 showhelp=0
 checkoutparams="-f --no-migrate --no-summary --no-fix --no-oe"
+# In test mode, we only need to do a shallow clone of the head
+[ ${OE_MODE^^} = "TEST" ] && checkoutparams="$checkoutparams --depth 1" || :
 accept=0
 genetics=0
 preservedb=0
@@ -183,13 +185,15 @@ if [ $force = 1 ]; then
     # END of cleanconfig
 fi
 
-# Fix permissions
-echo "Setting file permissions..."
-sudo gpasswd -a "$curuser" www-data
-sudo chown "$curuser":www-data -R $WROOT
+# Fix permissions (except in docker containers, where we always run as root)
+if [ "${DOCKER_CONTAINER^^}" != "TRUE" ]; then
+    echo "Setting file permissions..."
+    sudo gpasswd -a "$curuser" www-data
+    sudo chown "$curuser":www-data -R $WROOT
 
-sudo chmod 777 -R $WROOT
-sudo chmod g+s -R $WROOT
+    sudo chmod 777 -R $WROOT
+    sudo chmod g+s -R $WROOT
+fi
 
 # if this isn't a live install, then add the sample DB
 if [ "$nosample" == "0" ]; then checkoutparams="$checkoutparams --sample"; echo "Sample database will be installed."; fi
@@ -265,9 +269,6 @@ if [ "${OE_MODE^^}" != "BUILD" ]; then
 
 		# If apache was running, restart it. Otherwise we assume it will be started by another process
 	  [[ $(ps -ef | grep -v grep | grep apache2 | wc -l) > 0 ]] && sudo service apache2 restart || :
-
-    # copy cron tasks
-    bash $SCRIPTDIR/set-cron.sh
 
 fi
 

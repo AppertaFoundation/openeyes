@@ -68,7 +68,17 @@ EOD;
 
                     $runner = new CConsoleCommandRunner();
                     $runner->addCommands($commandPath);
-                    $runner->run($args);
+                    $result = $runner->run($args);
+
+                    // If a module fails to migrate, stop and do not continue migrating others
+                    if (!empty($result) && $result > 1){
+                        echo "\n*****".str_repeat('*', strlen($module))."****************************************\n";
+                        echo "**      ". $module . " FAILED TO MIGRATE. EXITING        **\n";
+                        echo "*******".str_repeat('*', strlen($module))."**************************************\n";
+                        return(1);
+                    }
+
+                    
                 }
             }
         }

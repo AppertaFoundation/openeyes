@@ -4,7 +4,7 @@ class m190603_084711_add_ophtr_operationnote_attribute extends OEMigration
 {
     public function up()
     {
-        $trans = Yii::app()->db->beginTransaction();
+        $trans = $this->dbConnection->beginTransaction();
         try {
             $this->createOETable('ophtroperationnote_attribute', array(
                 'id' => 'pk',
@@ -30,6 +30,7 @@ class m190603_084711_add_ophtr_operationnote_attribute extends OEMigration
         }
 
         $trans->commit();
+        return true;
     }
 
     public function down()
@@ -39,15 +40,4 @@ class m190603_084711_add_ophtr_operationnote_attribute extends OEMigration
         $this->dropForeignKey('fk_ophtroperationnote_att_proc', 'ophtroperationnote_attribute');
         $this->dropOETable('ophtroperationnote_attribute', true);
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

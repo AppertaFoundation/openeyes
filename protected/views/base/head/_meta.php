@@ -1,7 +1,7 @@
 <meta charset="utf-8" />
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'));
+$newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true);
 $favicon_path = $newblue_path . '/img/favicon_package_OE';
 
 //Because the wonderful way the namespace is created means if you don't include your file in the assets template
@@ -12,7 +12,7 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
 <?php if (isset($whiteboard) && $whiteboard) : ?>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 <?php else : ?>
-    <meta name="viewport" content="width=1230, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.5">
 <?php endif; ?>
 <meta name="format-detection" content="telephone=no">
 
@@ -30,5 +30,5 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
 <meta name="theme-color" content="#ffffff">
 
 <script type="text/javascript">
-    var baseUrl = '<?php echo Yii::app()->baseUrl?>';
+    var baseUrl = '<?php echo rtrim(Yii::app()->createURL('site/index'), '\\/')?>';
 </script>

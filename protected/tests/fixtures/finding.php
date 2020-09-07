@@ -21,12 +21,14 @@ return array(
         'name' => 'Finding 1',
         'display_order' => 1,
         'active' => 1,
+        'requires_description' => 0,
     ),
     'ex_finding2' => array(
         'id' => 2,
         'name' => 'Finding 2',
         'display_order' => 2,
         'active' => 1,
+        'requires_description' => 0,
     ),
     'ex_finding3' => array(
         'id' => 3,
@@ -40,5 +42,6 @@ return array(
         'name' => 'Finding 4',
         'display_order' => 4,
         'active' => 1,
+        'requires_description' => 0,
     ),
 );

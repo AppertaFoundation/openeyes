@@ -15,8 +15,8 @@ class EDCardTest extends CDbTestCase
 
     public function setUp()
     {
-        $this->imageCard = new EDCard();
         parent::setUp();
+        $this->imageCard = new EDCard();
     }
 
     public function tearDown()

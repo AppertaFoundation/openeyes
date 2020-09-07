@@ -63,12 +63,12 @@ if (!$nowrapper) {?>
         <div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
             <?php
             $this->widget(
-            'zii.widgets.jui.CJuiAutoComplete',
-            array(
-              'name' => "{$class}[$field]",
-              'id' => "{$class_field}_0",
-              'value' => '',
-              'source' => "js:function(request, response) {
+                'zii.widgets.jui.CJuiAutoComplete',
+                array(
+                'name' => "{$class}[$field]",
+                'id' => "{$class_field}_0",
+                'value' => '',
+                'source' => "js:function(request, response) {
                 $.ajax({
                   'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
                   'type':'GET',
@@ -92,7 +92,7 @@ if (!$nowrapper) {?>
                   }
                 });
               }",
-              'options' => array(
+                'options' => array(
                   'minLength' => '3',
                   'select' => 'js:function(event, ui) {
                     currFirst = getSelectedObj(firstSelection);
@@ -106,11 +106,11 @@ if (!$nowrapper) {?>
                     });
                     return false;
                   }",
-              ),
-              'htmlOptions' => array(
+                ),
+                'htmlOptions' => array(
                   'placeholder' => $placeholder,
-              ),
-            )
+                ),
+                )
             );
             ?>
         </div>
@@ -229,7 +229,7 @@ if (!$nowrapper) {?>
                 if (obj.alternate && checkFilter(filterList, obj.alternate)) {
                     continue;
                 }
-                if(currentGroup !== group) {
+                if (currentGroup !== group) {
                     html += '<option disabled="disabled">----------</option>';
                 }
                 html += '<option value="' + obj.type + '-' + obj.id + '">' + obj.label + '</option>';

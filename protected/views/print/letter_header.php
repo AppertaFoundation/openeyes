@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- $logoHelper = new LogoHelper();
+ $logo_helper = new LogoHelper();
 
 ?>
 <?php
@@ -23,17 +23,17 @@ $event = $this->event;
 $event_type = $event->eventType->name;
 ?>
 <header class="header">
-    <?= $logoHelper->render() ?>
+    <?= $logo_helper->render() ?>
         <div class="cols-4 column patient">
             <strong><?php echo $this->patient->contact->fullName?></strong>
             <br />
             <?php echo $this->patient->getLetterAddress(array(
                 'delimiter' => '<br/>',
             ))?>
-			<br />
-			<br />
+            <br />
+            <br />
             <?php echo Yii::app()->params['hos_num_label'].': '?><strong><?php echo $this->patient->hos_num ?></strong>
-			<br />
+            <br />
             <?php echo Yii::app()->params['nhs_num_label']?> No: <strong><?php echo $this->patient->nhsnum ?></strong>
             <br />
             DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>

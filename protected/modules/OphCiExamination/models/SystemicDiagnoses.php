@@ -16,6 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 
 /**
@@ -40,11 +41,10 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
-
-    protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\SystemicDiagnoses';
+    public $cached_tip_status = null;
+    protected $auto_update_relations = true;
     protected $default_from_previous = true;
-
     /**
      * @var bool flag to indicate whether we should update the patient level data
      */
@@ -89,7 +89,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             array('event_id, diagnoses, checked_required_diagnoses', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id',  'safe', 'on' => 'search')
+            array('id, event_id', 'safe', 'on' => 'search')
         );
     }
 
@@ -190,7 +190,25 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         return implode(' <br /> ', $this->orderedDiagnoses);
     }
 
-    public $cached_tip_status = null;
+    /**
+     * Call this method before updating any attributes on the instance.
+     */
+    public function storePatientUpdateStatus()
+    {
+        $this->update_patient_level = $this->isAtTip();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAtTip()
+    {
+        // TODO: consolidate the cached status and the patient update flag
+        if ($this->cached_tip_status === null) {
+            $this->cached_tip_status = $this->calculateTipStatus();
+        }
+        return $this->cached_tip_status;
+    }
 
     protected function calculateTipStatus()
     {
@@ -218,40 +236,6 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
     /**
      * @return bool
-     */
-    public function isAtTip()
-    {
-        // TODO: consolidate the cached status and the patient update flag
-        if ($this->cached_tip_status === null) {
-            $this->cached_tip_status = $this->calculateTipStatus();
-        }
-        return $this->cached_tip_status;
-    }
-
-    /**
-     * Call this method before updating any attributes on the instance.
-     */
-    public function storePatientUpdateStatus()
-    {
-        $this->update_patient_level = $this->isAtTip();
-    }
-
-    /**
-     * Validate the diagnoses
-     */
-    protected function afterValidate()
-    {
-        foreach ($this->diagnoses as $i => $diagnosis) {
-            if (!$diagnosis->validate()) {
-                foreach ($diagnosis->getErrors() as $fld => $err) {
-                    $this->addError('diagnoses', 'Diagnosis ('.($i + 1).'): '.implode(', ', $err));
-                }
-            }
-        }
-    }
-
-    /**
-     * @return bool
      *
      * If a diagnose is "not checked", do not store in db
      * If a diagnose is "not present", save separately
@@ -265,7 +249,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         foreach ($diags as $key => $entry) {
             if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_CHECKED) {
                 unset($diags[$key]);
-            } else if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
+            } elseif ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
                 $checked_req_diag = new SystemicDiagnoses_RequiredDiagnosisCheck();
                 $checked_req_diag->setAttributes(array_diff_key($entry->getAttributes(), array('id' => null)), false);
                 $checked_req_diags[] = $checked_req_diag;
@@ -350,7 +334,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     public function getEntriesDisplay($category = 'entries')
     {
         if (!in_array($category, array('present', 'not_checked', 'not_present'))) {
-            $category  = 'entries';
+            $category = 'entries';
         }
         return implode(', ', array_map(function ($e) {
             return $e->getDisplay();
@@ -359,7 +343,24 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' || $action === 'createImage' ? 1 : null;
+        return $action === 'view' || $action === 'createImage' || $action === 'renderEventImage' ? 1 : null;
     }
 
+    /**
+     * Validate the diagnoses
+     */
+    protected function afterValidate()
+    {
+        if (!$this->no_systemic_diagnoses_date && !$this->diagnoses) {
+            $this->addError('no_systemic_diagnoses_date', 'Please confirm patient has no systemic diagnoses.');
+        }
+
+        foreach ($this->diagnoses as $i => $diagnosis) {
+            if (!$diagnosis->validate()) {
+                foreach ($diagnosis->getErrors() as $fld => $err) {
+                    $this->addError('diagnoses', 'Diagnosis (' . ($i + 1) . '): ' . implode(', ', $err));
+                }
+            }
+        }
+    }
 }

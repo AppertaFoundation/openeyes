@@ -36,7 +36,7 @@
     <div class="popup-overflow">
         <table class="risks">
             <colgroup>
-                <col class="cols-5">
+                <col class="cols-6">
             </colgroup>
             <tbody>
             <?php foreach ($element->entries as $i => $entry) : ?>
@@ -51,7 +51,19 @@
                     </tr>
                 <?php endif; ?>
             <?php endforeach; ?>
+            <?php $diabetes_disorders = $this->patient->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET);
+            foreach ($diabetes_disorders as $disorder) { ?>
+                            <tr>
+                                <td>
+                                    <i class="oe-i warning small pad-right"></i>
+                                    <?= $disorder->term ?>
+                                </td>
+                                <td>(Active Diagnosis) </td>
+                                <td></td>
+                            </tr>
+            <?php } ?>
             </tbody>
+            
         </table>
     </div>
 <?php endif; ?>

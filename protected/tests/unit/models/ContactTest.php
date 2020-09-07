@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ContactTest extends CDbTestCase
+class ContactTest extends ActiveRecordTestCase
 {
     public $model;
     public $fixtures = array(
@@ -30,6 +30,11 @@ class ContactTest extends CDbTestCase
 
       );
 
+    public function getModel()
+    {
+        return Contact::model();
+    }
+
     public function dataProvider_Search()
     {
         return array(
@@ -37,6 +42,7 @@ class ContactTest extends CDbTestCase
           array(array('nick_name' => 'Collin'), 1, array('contact2')),
           array(array('nick_name' => 'Allan'), 1, array('contact3')),
           array(array('nick_name' => 'Blah'), 0, array()),
+          array(array('email' => 'Shore@Shore.com'), 1, array('contact4')),
         );
     }
 
@@ -44,7 +50,7 @@ class ContactTest extends CDbTestCase
        * Sets up the fixture, for example, opens a network connection.
        * This method is called before a test is executed.
        */
-    protected function setUp()
+    public function setUp()
       {
         parent::setUp();
         $this->model = new Contact();
@@ -53,18 +59,12 @@ class ContactTest extends CDbTestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
+     * @covers Contact::rules
+     * @throws CException
      */
-    protected function tearDown()
-    {
-    }
-
-      /**
-       * @covers Contact::rules
-       */
     public function testRules()
-      {
+    {
+        parent::testRules();
         $this->assertTrue($this->contacts('contact1')->validate());
         $this->assertEmpty($this->contacts('contact1')->errors);
     }
@@ -83,6 +83,7 @@ class ContactTest extends CDbTestCase
              'last_name' => 'Last name',
              'qualifications' => 'Qualifications',
              'contact_label_id' => 'Label',
+             'email' => 'Email'
         );
 
         $this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');

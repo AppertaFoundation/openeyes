@@ -71,22 +71,22 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
                         $field_prefix . '[has_disorder]',
                         $posted_not_checked,
                         array('value' => SystemicDiagnoses_Diagnosis::$NOT_CHECKED)
-                        ); ?>
+                    ); ?>
                         Not checked
                     </label>
                     <label class="inline highlight">
                         <?php echo \CHtml::radioButton(
-                        $field_prefix . '[has_disorder]',
-                        $values['has_disorder'] === SystemicDiagnoses_Diagnosis::$PRESENT,
-                        array('value' => SystemicDiagnoses_Diagnosis::$PRESENT)
+                            $field_prefix . '[has_disorder]',
+                            $values['has_disorder'] === SystemicDiagnoses_Diagnosis::$PRESENT,
+                            array('value' => SystemicDiagnoses_Diagnosis::$PRESENT)
                         ); ?>
                         yes
                     </label>
                     <label class="inline highlight">
                         <?php echo \CHtml::radioButton(
-                        $field_prefix . '[has_disorder]',
-                        $values['has_disorder'] === SystemicDiagnoses_Diagnosis::$NOT_PRESENT,
-                        array('value' => SystemicDiagnoses_Diagnosis::$NOT_PRESENT)
+                            $field_prefix . '[has_disorder]',
+                            $values['has_disorder'] === SystemicDiagnoses_Diagnosis::$NOT_PRESENT,
+                            array('value' => SystemicDiagnoses_Diagnosis::$NOT_PRESENT)
                         ); ?>
                         no
                     </label>
@@ -122,6 +122,6 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
 
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->publish('protected/widgets/js', true);
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
 ?>

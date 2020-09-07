@@ -129,7 +129,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             'value' => $event->episode->patient->hos_num
         );
 
-        if( isset(\Yii::app()->user->id) ){
+        if ( isset(\Yii::app()->user->id) ){
             $user = \User::model()->findByPk(\Yii::app()->user->id);
         }
 
@@ -309,8 +309,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
                 'external_link' => $this->generateUrlForEvent($event),
                 'event' => $event,
                 'is_new_referral' => \Yii::app()->user->getState("new_referral", false),
-            )
-        );
+            ));
     }
 
     /**

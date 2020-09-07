@@ -188,8 +188,7 @@
             'vi' => ($css_class == 'impaired'),
             'consultant' => $elements['Element_OphTrConsent_Other']->consultant,
             'mask_consultant' => true
-        )
-    ) ?>
+        )) ?>
     <div class="break"></div>
     <p>
         <strong>Guidance to health professionals</strong> (to be read in conjunction with consent policy)

@@ -14,6 +14,7 @@
 			this.latchable = this.options.latchable;
 			this.isLatched = false;
 			this.css = this.options.css;
+			this.closeBtn = $(".oe-i.remove-circle.medium");
 			this.init();
     }
 
@@ -41,15 +42,34 @@
             popup.changeContent(popup.button.hasClass(popup.css.open));
             if (popup.groupController) {
                 popup.groupController.adjustTop(popup.button, popup.content);
+                // check if it is safe to use the function
+                if (typeof popup.groupController.adjustLeft === "function") {
+                  popup.groupController.adjustLeft(popup.button, popup.content);
+                }
             }
+            popup.button.addClass(popup.css.active);
+            // show the close icon only when the user “clicks“ the button to open a panel
+            $($(popup.content).find(popup.closeBtn)).show();
+
+            $(".oe-i.remove-circle.medium").on('click',function () {
+              popup.unlatch();
+              popup.hide();
+            });
         }).mouseenter(function () {
             if (popup.isLatched) {
-            	return;
-						}
-            if (popup.groupController) {
-            	popup.groupController.closeAll();
-            	popup.groupController.unlockAll();
+                $($(popup.content).find(popup.closeBtn)).show();
+                return;
+            }else{
+                $($(popup.content).find(popup.closeBtn)).hide();
+            }
+            if (popup.groupController){
+            	  popup.groupController.closeAll();
+            	  popup.groupController.unlockAll();
                 popup.groupController.adjustTop(popup.button, popup.content);
+                // check if it is safe to use the function
+                if (typeof popup.groupController.adjustLeft === "function") {
+                    popup.groupController.adjustLeft(popup.button, popup.content);
+                }
             }
             popup.button.addClass(popup.css.active);
             if (popup.useMouseEvents) {
@@ -75,9 +95,10 @@
                         // Close if mouse leaves btn
                         popup.hide();
                     }                   
-                },10)
+                },10);
             }
         });
+
         popup.hide();
         if(popup.isFixable && popup.options.autoHideWidthPixels){
 					popup.toggleFixed($(window).width() > popup.options.autoHideWidthPixels);
@@ -107,7 +128,7 @@
                 if (popup.isGrouped) {
                     popup.groupController.closeAll();
                 }
-                popup.latch()
+                popup.latch();
             }
         } else if (isOpen) {
             popup.hide();

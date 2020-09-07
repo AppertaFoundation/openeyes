@@ -17,6 +17,7 @@
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <?php $el_id = CHtml::modelName($element) . '_element'; ?>
+<?php $visible_sections = ['current_entries' => 'Current', "closed_entries" => "Previously Stopped"]; ?>
 
 <section class="element view-Eye-Medications tile "
          data-element-type-id="<?php echo $element->elementType->id ?>"
@@ -26,66 +27,32 @@
     <header class=" element-header">
         <h3 class="element-title">Eye Medications</h3>
     </header>
-    <div class="element-data">
-        <div class="data-value">
-            <?php if (!$element->currentOrderedEntries) { ?>
-                No current medications.
-                <br/>
-                Stopped Medications : 
-                <table>
-                    <colgroup>
-                        <col>
-                        <col width="55px">
-                        <col width="85px">
-                    </colgroup>
-                    <tbody>
-                    <?php foreach ($element->stoppedOrderedEntries as $entry) {
-                        if ($entry['route_id'] == 1) { ?>
-                            <tr>
-                                <td><?= $entry->getMedicationDisplay() ?></td>
-                                <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                                  <?php $this->widget('EyeLateralityWidget', array('laterality' => $laterality)); ?>
-                                </td>
-                                <td>
-                                    <i class="oe-i info small js-has-tooltip"
-                                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
-                                    </i>
-                                </td>
-                                <td><?= $entry->getStartDateDisplay() ?></td>
-                            </tr>
-                        <?php }
-                    } ?>
-                    </tbody>
-                </table>
-            <?php } else { ?>
-                <div class="tile-data-overflow">
-                    <table>
-                        <colgroup>
-                            <col>
-                            <col width="55px">
-                            <col width="85px">
-                        </colgroup>
-                        <tbody>
-                        <?php foreach ($element->currentOrderedEntries as $entry) {
-                            if ($entry['route_id'] == 1) { ?>
-                                <tr>
-                                    <td><?= $entry->getMedicationDisplay() ?></td>
-                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?></td>
-                                    <td>
-                                        <i class="oe-i info small  js-has-tooltip"
-                                           data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
-                                        </i>
-                                    </td>
-                                    <td><?= $entry->getStartDateDisplay() ?></td>
-                                </tr>
-                            <?php }
-                        } ?>
-                        </tbody>
-                    </table>
+    <?php foreach ($visible_sections as $key => $section_name) : ?>
+        <?php $entries = array_filter($element->$key, function ($e) {
+            return in_array($e->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL));
+        }); ?>
+        <?php if (!empty($entries)) : ?>
+            <div class="label"><?php echo $section_name; ?>:</div>
+            <div class="element-data">
+                <div class="data-value">
+                    <div class="tile-data-overflow">
+                        <table>
+                            <colgroup>
+                                <col>
+                                <col width="55px">
+                                <col width="85px">
+                            </colgroup>
+                            <tbody>
+                            <?php foreach ($entries as $entry) : ?>
+                                <?php echo $this->render('HistoryMedicationsEntry_event_view', ['entry' => $entry]); ?>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            <?php } ?>
-        </div>
-    </div>
+            </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
 </section>
 
 <section class=" element view-Systemic-Medications tile"
@@ -96,39 +63,31 @@
     <header class=" element-header">
         <h3 class="element-title">Systemic Medications</h3>
     </header>
-    <div class="element-data">
-        <div class="data-value">
-            <?php if (!$element->orderedEntries) { ?>
-                No current medications.
-            <?php } else { ?>
-                <div class="tile-data-overflow">
-                    <table>
-                        <colgroup>
-                            <col>
-                            <col width="55px">
-                            <col width="85px">
-                        </colgroup>
-                        <tbody>
-                        <?php foreach ($element->orderedEntries as $entry) {
-                            if ($entry['route_id'] != 1) { ?>
-                                <tr>
-                                    <td><?= $entry->getMedicationDisplay() ?></td>
-                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?></td>
-                                    <td>
-                                        <i class="oe-i info small  js-has-tooltip"
-                                           data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
-                                        </i>
-                                    </td>
-                                    <td><?= $entry->getStartDateDisplay() ?></td>
-                                </tr>
-                            <?php }
-                        } ?>
-                        </tbody>
-                    </table>
+    <?php foreach ($visible_sections as $key => $section_name) : ?>
+        <?php $entries = array_filter($element->$key, function ($e) {
+            return !in_array($e->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL));
+        }); ?>
+        <?php if (!empty($entries)) : ?>
+            <div class="label"><?php echo $section_name; ?>:</div>
+            <div class="element-data">
+                <div class="data-value">
+                    <div class="tile-data-overflow">
+                        <table>
+                            <colgroup>
+                                <col>
+                                <col width="55px">
+                                <col width="85px">
+                            </colgroup>
+                            <tbody>
+                            <?php foreach ($entries as $entry) : ?>
+                                <?php echo $this->render('HistoryMedicationsEntry_event_view', ['entry' => $entry]); ?>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            <?php } ?>
-        </div>
-    </div>
+            </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
 </section>
-
 

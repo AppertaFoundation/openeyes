@@ -23,9 +23,9 @@
     <div class="row"
          style="display: <?= count($element->entries) ? ' none' : ''?>"
          id="<?=$model_name?>_no_family_history_wrapper">
-      <label class="inline highlight" for="<?=$model_name?>_no_family_history">
+      <label class="inline highlight" for="<?=$model_name?>_no_family_history" id="<?=$model_name?>_no_family_history">
         <?=\CHtml::checkBox($model_name .'[no_family_history]', $element->no_family_history_date ? true : false); ?>
-          Confirm patient has no family history
+          No family history
       </label>
     </div>
 
@@ -55,8 +55,8 @@
             $row_count = 0;
             foreach ($element->entries as $entry) {
                 $this->render(
-                  'FamilyHistory_Entry_event_edit',
-                  array(
+                    'FamilyHistory_Entry_event_edit',
+                    array(
                       'entry' => $entry,
                       'form' => $form,
                       'model_name' => $model_name,
@@ -66,7 +66,7 @@
                       'condition_options' => $element->getConditionOptions(),
                       'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
                       'row_count' => $row_count,
-                  )
+                    )
                 );
                 $row_count++;
             }
@@ -128,10 +128,10 @@
          openButton: $('#add-family-history-button'),
          itemSets: [
            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-             array_map(function ($relative_item) {
+               array_map(function ($relative_item) {
                  return ['label' => $relative_item->name, 'id' => $relative_item->id];
-             }, $relative_options)
-         ) ?>, {'header':'Relative'}),
+               }, $relative_options)
+           ) ?>, {'header':'Relative'}),
            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                array_map(function ($side_item) {
                    return ['label' => $side_item->name, 'id' => $side_item->id];

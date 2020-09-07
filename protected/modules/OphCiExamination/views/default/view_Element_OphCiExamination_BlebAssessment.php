@@ -51,6 +51,11 @@
                     <?php echo $element->{$eye_side . '_vasc'}->vascularity; ?>
                 </td>
               </tr>
+              <?php if ($element->{$eye_side . '_notes'}) : ?>
+              <tr>
+                  <td colspan="12"><?php echo $element->textWithLineBreaks($eye_side . '_notes') ?></td>
+              </tr>
+              <?php endif; ?>
               </tbody>
             </table>
         <?php else : ?>

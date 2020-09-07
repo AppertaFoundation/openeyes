@@ -120,19 +120,18 @@ class MultiSelectListFreeText extends BaseFieldWidget
                 }
             } elseif (!isset($_POST[$this->field]) && !isset($_POST[CHtml::modelName($this->element)][$this->relation])) {
                 $this->selected_ids = array();
-                unset($this->filtered_options[$id]);
             }
         }
 
         // if the widget has javascript, load it in
         if (file_exists('protected/widgets/js/'.get_class($this).'.js')) {
-            $this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js');
+            $this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js', true);
         }
 
         // if the widget has javascript, load it in
         if (file_exists('protected/widgets/js/'.get_class($this).'.js')) {
             $assetManager = Yii::app()->getAssetManager();
-            $asset_folder = $assetManager->publish('protected/widgets/js');
+            $asset_folder = $assetManager->publish('protected/widgets/js', true);
 
             // Workaround for ensuring js included with ajax requests that are using renderPartial
             if (Yii::app()->request->isAjaxRequest) {

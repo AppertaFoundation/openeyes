@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class AddressTest extends CDbTestCase
+class AddressTest extends ActiveRecordTestCase
 {
     public $model;
 
@@ -23,6 +23,11 @@ class AddressTest extends CDbTestCase
         'patients' => 'Patient',
         'addresses' => 'Address',
     );
+
+    public function getModel()
+    {
+        return Address::model();
+    }
 
     public function dataProvider_Search()
     {
@@ -33,8 +38,6 @@ class AddressTest extends CDbTestCase
             array(array('city' => 'flitchley'), 3, array('address1', 'address2', 'address3')),
             array(array('postcode' => 'ec1v'), 3, array('address1', 'address2', 'address3')),
             array(array('county' => 'london'), 3, array('address1', 'address2', 'address3')),
-            array(array('email' => 'bleakley1'), 1, array('address1')),
-            array(array('email' => 'foobar'), 0, array()),
         );
     }
 
@@ -53,10 +56,12 @@ class AddressTest extends CDbTestCase
     /**
      * @covers AuditTrail::rules
      *
+     * @throws CException
      * @todo   Implement testRules().
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->addresses('address3')->validate());
         $this->assertEmpty($this->addresses('address3')->errors);
     }

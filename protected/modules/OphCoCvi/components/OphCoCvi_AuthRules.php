@@ -97,8 +97,11 @@ class OphCoCvi_AuthRules
     {
         if ($this->canEdit($user_id, true)) {
             if (isset($view_context['firm'])) {
-                return $this->yii->getAuthManager()->executeBizRule('canCreateEvent',
-                    array($view_context['firm'], $view_context['episode'], $this->getEventType()), null);
+                return $this->yii->getAuthManager()->executeBizRule(
+                    'canCreateEvent',
+                    array($view_context['firm'], $view_context['episode'], $this->getEventType()),
+                    null
+                );
             } else {
                 return true;
             }
@@ -120,8 +123,11 @@ class OphCoCvi_AuthRules
     {
         if ($this->canCreateOphCoCvi($user_id)) {
             if (isset($view_context['firm'])) {
-                return $this->yii->getAuthManager()->executeBizRule('canEditEvent',
-                    array($view_context['event']), null);
+                return $this->yii->getAuthManager()->executeBizRule(
+                    'canEditEvent',
+                    array($view_context['event']),
+                    null
+                );
             } else {
                 return true;
             }

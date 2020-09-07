@@ -10,7 +10,7 @@ if (!isset($values)) {
         'id' => $contact->id,
         'label' => $contact->label ? $contact->label->name : "",
         'full_name' => $contact->getFullName(),
-        'email' => $contact->address ? $contact->address->email : "",
+        'email' => $contact ? $contact->email : "",
         'phone' => $contact->primary_phone,
         'address' => $contact->address ? $contact->address->getLetterLine() : "",
         'comments' => isset($entry) && isset($entry->comments) ? $entry->comments : null

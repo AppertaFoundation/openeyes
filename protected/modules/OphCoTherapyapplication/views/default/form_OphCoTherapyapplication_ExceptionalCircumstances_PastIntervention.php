@@ -170,9 +170,12 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
             }
         }
 
-        echo CHtml::activeDropDownList($pastintervention, $treatmentattribute,
+        echo CHtml::activeDropDownList(
+            $pastintervention,
+            $treatmentattribute,
             CHtml::listData($all_treatments, 'id', 'name'),
-            $html_options); ?>
+            $html_options
+        ); ?>
     </td>
   </tr>
 
@@ -199,8 +202,12 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
       </label>
     </td>
     <td>
-        <?=\CHtml::activeDropDownList($pastintervention, 'start_va', $pastintervention->getVaOptions(),
-            array('empty' => 'Select', 'name' => $name_stub . "[$key][start_va]", 'nowrapper' => true));
+        <?=\CHtml::activeDropDownList(
+            $pastintervention,
+            'start_va',
+            $pastintervention->getVaOptions(),
+            array('empty' => 'Select', 'name' => $name_stub . "[$key][start_va]", 'nowrapper' => true)
+        );
             ?>
     </td>
   </tr>
@@ -212,8 +219,12 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
       </label>
     </td>
     <td>
-        <?=\CHtml::activeDropDownList($pastintervention, 'end_va', $pastintervention->getVaOptions(),
-            array('empty' => 'Select', 'name' => $name_stub . "[$key][end_va]", 'nowrapper' => true)); ?>
+        <?=\CHtml::activeDropDownList(
+            $pastintervention,
+            'end_va',
+            $pastintervention->getVaOptions(),
+            array('empty' => 'Select', 'name' => $name_stub . "[$key][end_va]", 'nowrapper' => true)
+        ); ?>
     </td>
   </tr>
 
@@ -238,8 +249,12 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
                 'data-other' => $reason->other,
             );
         }
-        echo CHtml::activeDropDownList($pastintervention, 'stopreason_id', CHtml::listData($reasons, 'id', 'name'),
-            $html_options);
+        echo CHtml::activeDropDownList(
+            $pastintervention,
+            'stopreason_id',
+            CHtml::listData($reasons, 'id', 'name'),
+            $html_options
+        );
         ?>
     </td>
   </tr>
@@ -253,8 +268,11 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
       </label>
     </td>
     <td>
-        <?=\CHtml::activeTextArea($pastintervention, 'stopreason_other',
-            array('name' => $name_stub . "[$key][stopreason_other]", 'rows' => 2, 'cols' => 25, 'nowrapper' => true)) ?>
+        <?=\CHtml::activeTextArea(
+            $pastintervention,
+            'stopreason_other',
+            array('name' => $name_stub . "[$key][stopreason_other]", 'rows' => 2, 'cols' => 25, 'nowrapper' => true)
+        ) ?>
     </td>
   </tr>
 

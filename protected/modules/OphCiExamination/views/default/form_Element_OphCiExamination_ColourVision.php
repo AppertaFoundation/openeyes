@@ -37,9 +37,9 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
 
                     <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
                     <div class="cols-9">
-                        <table class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->{$eye_side . '_readings'}) {
+                        <table id="<?= CHtml::modelName($element) ?>_<?= $eye_side ?>_readings" class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->{$eye_side . '_readings'} && !$element->hasErrors($eye_side . '_readings')) {
                             ?> style="display: none;" <?php
-                                                                            } ?>>
+                                   } ?>>
                             <thead>
                             <tr>
                                 <th>Method</th>
@@ -47,7 +47,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                                 <th>Actions</th>
                             </tr>
                             </thead>
-                            <tbody class="plain" id="colourvision_right">
+                            <tbody class="plain">
                             <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                                 $this->renderPartial('form_OphCiExamination_ColourVision_Reading', array(
                                     'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_readings]',
@@ -63,11 +63,30 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                         </table>
                     </div>
                     <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-colour_vision_reading">
+                        <button id="colour-vision-<?= $eye_side ?>-comment-button"
+                                class="button js-add-comments" data-comment-container="#colour-vision-<?= $eye_side ?>-comments"
+                                type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
+                            <i class="oe-i comments small-icon"></i>
+                        </button>
                         <button class="button hint green" id="add-procedure-btn-<?= $eye_side ?>" type="button">
                             <i class="oe-i plus pro-theme"></i>
                         </button>
                         <!-- oe-add-select-search -->
                     </div>
+                </div>
+                <div id="colour-vision-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+                     style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#colour-vision-<?= $eye_side ?>-comment-button">
+                    <?=\CHtml::activeTextArea(
+                        $element,
+                        $eye_side . '_notes',
+                        array(
+                            'rows' => 1,
+                            'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                            'class' => 'cols-full js-comment-field',
+                            'style' => 'overflow-wrap: break-word; height: 24px;',
+                        )
+                    ) ?>
+                    <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </div>
                 <div class="inactive-form" style="display: <?php if ($element->hasEye($eye_side)) {
                     ?> none <?php
@@ -84,7 +103,9 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                             array_map(function ($reading) {
                                 return ['label' => $reading->name, 'id' => $reading->id];
-                            }, $element->getAllReadingMethods($eye_side))) ?> , {'multiSelect': true}),
+                            },
+                            $element->getAllReadingMethods($eye_side))
+                        ) ?> , {'multiSelect': true}),
                         ],
                         onReturn: function (adderDialog, selectedItems) {
                             if (selectedItems.length) {

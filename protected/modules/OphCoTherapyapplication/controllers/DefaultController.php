@@ -24,8 +24,6 @@ class DefaultController extends BaseEventTypeController
         'getDecisionTree' => self::ACTION_TYPE_FORM,
     );
 
-    protected $show_element_sidebar = false;
-
     // TODO: check this is in line with Jamie's change circa 3rd April 2013
     protected function beforeAction($action)
     {
@@ -73,7 +71,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionPreviewApplication()
     {
-        $this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
+        $this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true, -1);
 
         $service = new OphCoTherapyapplication_Processor($this->event);
         $service->generatePreviewPdf($this);
@@ -145,10 +143,11 @@ class DefaultController extends BaseEventTypeController
         ));
 
         $this->renderPartial(
-                'form_OphCoTherapyapplication_DecisionTree',
-                array('element' => $element, 'form' => $form, 'side' => $side),
-                false, false
-                );
+            'form_OphCoTherapyapplication_DecisionTree',
+            array('element' => $element, 'form' => $form, 'side' => $side),
+            false,
+            false
+        );
     }
 
     /**
@@ -210,14 +209,18 @@ class DefaultController extends BaseEventTypeController
             if (get_class($el) == 'Element_OphCoTherapyapplication_PatientSuitability') {
                 // note we don't do this in POST Validation as we don't need to validate the values of the decision tree selection
                 // this is really just for record keeping - we are mainly interested in whether or not it's got compliance value
-                $el->updateDecisionTreeResponses(Element_OphCoTherapyapplication_PatientSuitability::LEFT,
-                        isset($data['Element_OphCoTherapyapplication_PatientSuitability']['left_DecisionTreeResponse']) ?
+                $el->updateDecisionTreeResponses(
+                    Element_OphCoTherapyapplication_PatientSuitability::LEFT,
+                    isset($data['Element_OphCoTherapyapplication_PatientSuitability']['left_DecisionTreeResponse']) ?
                         $data['Element_OphCoTherapyapplication_PatientSuitability']['left_DecisionTreeResponse'] :
-                        array());
-                $el->updateDecisionTreeResponses(Element_OphCoTherapyapplication_PatientSuitability::RIGHT,
-                        isset($data['Element_OphCoTherapyapplication_PatientSuitability']['right_DecisionTreeResponse']) ?
+                    array()
+                );
+                $el->updateDecisionTreeResponses(
+                    Element_OphCoTherapyapplication_PatientSuitability::RIGHT,
+                    isset($data['Element_OphCoTherapyapplication_PatientSuitability']['right_DecisionTreeResponse']) ?
                         $data['Element_OphCoTherapyapplication_PatientSuitability']['right_DecisionTreeResponse'] :
-                        array());
+                    array()
+                );
             }
         }
     }
@@ -267,7 +270,7 @@ class DefaultController extends BaseEventTypeController
                 // otherwise get ordered list of diagnoses for the eye in this episode, and check
                 else {
                     if ($exam_api) {
-                        $disorders = $exam_api->getOrderedDisorders( $this->patient );
+                        $disorders = $exam_api->getOrderedDisorders($this->patient);
                         foreach ($disorders as $disorder) {
                             if (($disorder['eye_id'] == $eye_id || $disorder['eye_id'] == Eye::BOTH) && in_array($disorder['disorder_id'], $vd_ids)) {
                                 $element->{$prefix.'_diagnosis1_id'} = $disorder['disorder_id'];

@@ -49,20 +49,22 @@ $guarded_prognosis = (string)$element->{$side . '_guarded_prognosis'} === '0' ? 
           </td>
           <td>
             <fieldset id="csm-side-order-<?= $side ?>">
-                <?= \CHtml::activeRadioButtonList($element, $side . '_eye_id',
-                [
-                  \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE => '1st Eye',
-                  \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::SECOND_EYE => '2nd Eye',
-                ],
-                [
-                  'separator' => ' ',
-                  'labelOptions' => [
+                <?= \CHtml::activeRadioButtonList(
+                    $element,
+                    $side . '_eye_id',
+                    [
+                    \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE => '1st Eye',
+                    \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::SECOND_EYE => '2nd Eye',
+                    ],
+                    [
+                    'separator' => ' ',
+                    'labelOptions' => [
                     'class' => 'inline highlight',
-                  ],
-                  'class' => 'js-csm-eye-radio',
-                  'data-side' => $side,
-                ]
-              ) ?>
+                    ],
+                    'class' => 'js-csm-eye-radio',
+                    'data-side' => $side,
+                    ]
+                ) ?>
             </fieldset>
           </td>
         </tr>
@@ -85,19 +87,23 @@ $guarded_prognosis = (string)$element->{$side . '_guarded_prognosis'} === '0' ? 
           ])?>
           <td id="<?= $side . '_guarded_prognosis_entry' ?>"><?= $guarded_prognosis ?></td>
           <!-- REFRACTIVE CATEGORY -->
-            <?=\CHtml::activeHiddenField($element, $refractive_category_attribute,
-            [
-              'id' => $side . '_refraction_category_hidden',
-              'class' => 'fixed-width-small'
-            ]
-          )?>
+            <?=\CHtml::activeHiddenField(
+                $element,
+                $refractive_category_attribute,
+                [
+                'id' => $side . '_refraction_category_hidden',
+                'class' => 'fixed-width-small'
+                ]
+            )?>
           <!-- REFRACTIVE TARGET -->
-            <?=\CHtml::activeHiddenField($element, $refractive_attribute,
-            [
-              'id' => $side . '_refraction_hidden',
-              'class' => 'fixed-width-small'
-            ]
-          )?>
+            <?=\CHtml::activeHiddenField(
+                $element,
+                $refractive_attribute,
+                [
+                'id' => $side . '_refraction_hidden',
+                'class' => 'fixed-width-small'
+                ]
+            )?>
           <td style="<?= $element->{$side . '_correction_discussed'} == '1' ? '' : 'display:none'?>">
               <span style="float:right;">Refractive target: <span id="<?= $side . '_refraction_entry' ?>" ><?= $refractive_target ?></span></span>
           </td>
@@ -115,7 +121,9 @@ $guarded_prognosis = (string)$element->{$side . '_guarded_prognosis'} === '0' ? 
                  style="<?= !$element->{$side . '_notes'} ? 'display: none;' : '' ?>"
                  data-comment-button="#csm-<?= $side ?>-comment-button"
             >
-                <?=\CHtml::activeTextArea($element, $side . '_notes',
+                <?=\CHtml::activeTextArea(
+                    $element,
+                    $side . '_notes',
                     [
                         'rows' => 1,
                         'placeholder' => 'Comments',

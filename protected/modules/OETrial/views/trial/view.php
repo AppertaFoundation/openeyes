@@ -20,119 +20,147 @@
         'permission' => $permission,
     )); ?>
 
-  <main class="oe-full-main">
-    <section class="element edit cols-11">
-      <div class="element-fields">
-
-            <?php if ($trial->trialType->code === TrialType::INTERVENTION_CODE) : ?>
-            <div class="alert-box alert with-icon">
-              This is an Intervention Trial. Participants of this Trial cannot be accepted into other Intervention
-              Trials
-            </div>
-            <?php endif; ?>
-
-            <?php if (!$trial->is_open) : ?>
-            <div class="alert-box alert with-icon">This Trial has been closed. You will need to reopen it before you
-              can make any changes.
-            </div>
-            <?php endif; ?>
-      </div>
-    </section>
-
-    <div class="row divider cols-11">
-
-      <table class="standard cols-full">
-        <colgroup>
-          <col class="cols-2">
-          <col class="cols-4">
-          <col class="cols-2">
-          <col class="cols-4">
-        </colgroup>
-        <tbody>
-        <tr class="col-gap">
-          <td>Principal Investigator</td>
-          <td>
-                <?php $principal_investigators = $trial->getTrialPrincipalInvestigators();
-                foreach ($principal_investigators as $item) {
-                    echo $item->user->getFullName().'<br>';
-                }
-                ?>
-          </td>
-          <td>Date</td>
-          <td>
-                <?= $trial->getStartedDateForDisplay(); ?>
-                <?php if ($trial->started_date !== null) : ?>
-                &mdash; <?= $trial->getClosedDateForDisplay() ?>
+    <main class="oe-full-main">
+        <section class="element edit cols-11">
+            <div class="element-fields">
+                <?php if ($trial->trialType->code === TrialType::INTERVENTION_CODE) : ?>
+                <div class="alert-box alert with-icon">
+                  This is an Intervention Trial. Participants of this Trial cannot be accepted into other Intervention
+                  Trials
+                </div>
                 <?php endif; ?>
-          </td>
-        </tr>
-        <tr>
-            <td>Ethics Number</td>
-            <td>
-                <?= $trial->getEthicsNumberForDisplay(); ?>
-            </td>
-        </tr>
-        <?php if ($trial->external_data_link !== '') : ?>
-          <tr class="col-gap">
-            <td><?= $trial->getAttributeLabel('external_data_link') ?></td>
-            <td>
-                <?= CHtml::link(CHtml::encode($trial->external_data_link),
-                    CHtml::encode($trial->external_data_link), array('target' => '_blank')) ?>
-            </td>
-          </tr>
-        <?php endif; ?>
-        <?php if (strlen($trial->description)) : ?>
-          <tr class="col-gap">
-            <td>Description</td>
-            <td colspan="3">
-                <?= nl2br(CHtml::encode($trial->description)) ?>
-            </td>
-          </tr>
-        <?php endif; ?>
-        </tbody>
-      </table>
-    </div>
 
+                <?php if (!$trial->is_open) : ?>
+                <div class="alert-box alert with-icon">This Trial has been closed. You will need to reopen it before you
+                  can make any changes.
+                </div>
+                <?php endif; ?>
+            </div>
+        </section>
 
-        <?php $this->renderPartial('_patientList', array(
-          'trial' => $trial,
-          'permission' => $permission,
-          'renderTreatmentType' => true,
-          'title' => 'Accepted Participants',
-          'dataProvider' => $dataProviders['ACCEPTED'],
-          'sort_by' => $sort_by,
-          'sort_dir' => $sort_dir,
-      )); ?>
-        <?php $this->renderPartial('_patientList', array(
-          'trial' => $trial,
-          'permission' => $permission,
-          'renderTreatmentType' => false,
-          'title' => 'Shortlisted Participants',
-          'dataProvider' => $dataProviders['SHORTLISTED'],
-          'sort_by' => $sort_by,
-          'sort_dir' => $sort_dir,
-      )); ?>
-        <?php $this->renderPartial('_patientList', array(
-          'trial' => $trial,
-          'permission' => $permission,
-          'renderTreatmentType' => false,
-          'title' => 'Rejected Participants',
-          'dataProvider' => $dataProviders['REJECTED'],
-          'sort_by' => $sort_by,
-          'sort_dir' => $sort_dir,
-      )); ?>
-  </main>
+        <div class="flex-trial-group js-filter-group">
+
+            <table class="standard">
+                <colgroup>
+                  <col class="cols-2">
+                  <col class="cols-4">
+                  <col class="cols-2">
+                  <col class="cols-4">
+                </colgroup>
+            <tbody>
+            <tr class="col-gap">
+                <td>Principal Investigator</td>
+                <td>
+                    <?php $principal_investigators = $trial->getTrialPrincipalInvestigators();
+                    foreach ($principal_investigators as $item) {
+                        echo $item->user->getFullName().'<br>';
+                    }
+                    ?>
+                </td>
+            <tr class="col-gap">
+            <td>Date</td>
+                <td>
+                    <?= $trial->getStartedDateForDisplay(); ?>
+                    <?php if ($trial->started_date !== null) : ?>
+                    &mdash; <?= $trial->getClosedDateForDisplay() ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Ethics Number</td>
+                <td>
+                    <?= $trial->getEthicsNumberForDisplay(); ?>
+                </td>
+            </tr>
+            <?php if ($trial->external_data_link !== '') : ?>
+                <tr class="col-gap">
+                    <td><?= $trial->getAttributeLabel('external_data_link') ?></td>
+                    <td>
+                    <?= CHtml::link(
+                        CHtml::encode($trial->external_data_link),
+                        CHtml::encode($trial->external_data_link),
+                        array('target' => '_blank')
+                    ) ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+            <?php if (strlen($trial->description)) : ?>
+                <tr class="col-gap">
+                    <td>Description</td>
+                    <td colspan="3">
+                        <?= CHtml::encode($trial->description) ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex-trial-group js-filter-group" id="accepted-participants">
+            <?php $this->renderPartial('_patientList', array(
+                'trial' => $trial,
+                'permission' => $permission,
+                'renderTreatmentType' => true,
+                'title' => 'Accepted Participants',
+                'dataProvider' => $dataProviders['ACCEPTED'],
+                'sort_by' => $sort_by,
+                'sort_dir' => $sort_dir,
+            )); ?>
+        </div>
+        <div class="flex-trial-group js-filter-group" id="shortlisted-participants">
+            <?php $this->renderPartial('_patientList', array(
+                'trial' => $trial,
+                'permission' => $permission,
+                'renderTreatmentType' => false,
+                'title' => 'Shortlisted Participants',
+                'dataProvider' => $dataProviders['SHORTLISTED'],
+                'sort_by' => $sort_by,
+                'sort_dir' => $sort_dir,
+            )); ?>
+        </div>
+        <div class="flex-trial-group js-filter-group" id="rejected-participants">
+            <?php $this->renderPartial('_patientList', array(
+                'trial' => $trial,
+                'permission' => $permission,
+                'renderTreatmentType' => false,
+                'title' => 'Rejected Participants',
+                'dataProvider' => $dataProviders['REJECTED'],
+                'sort_by' => $sort_by,
+                'sort_dir' => $sort_dir,
+            )); ?>
+        </div>
+    </main>
 
     <?php
-    $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), false, -1);
+    $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), true, -1);
     Yii::app()->getClientScript()->registerScriptFile($assetPath . '/js/toggle-section.js');
     ?>
 </div>
-<script type="application/javascript">
 
-    $('.js-trails-sort-selector').change(function(e){
-        window.location = e.target.value;
+<script type="application/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "/OETrial/trial/renderPopups",
+            data: {
+                "trialId" : (<?= $trial->id?>),
+                YII_CSRF_TOKEN: YII_CSRF_TOKEN
+            },
+            success: function (resp) {
+                $("body.open-eyes.oe-grid").append(resp);
+            }
+        })
+    })
+    $('body').on('click', '.collapse-data-header-icon', function () {
+        $(this).toggleClass('collapse expand');
+        $(this).next('div').toggle();
     });
+</script>
+
+<script type="application/javascript">
+  $('.js-trails-sort-selector').change(function(e){
+        window.location = e.target.value;
+  });
 
   function changePatientStatus(object, trial_patient_id, new_status) {
 

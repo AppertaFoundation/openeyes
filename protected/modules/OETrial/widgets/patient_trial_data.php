@@ -2,8 +2,10 @@
 /**
  * @var TrialPatient $trialPatient
  */
-$isInAnotherInterventionTrial = TrialPatient::isPatientInInterventionTrial($data,
-    $this->trialContext !== null ? $this->trialContext->id : null);
+$isInAnotherInterventionTrial = TrialPatient::isPatientInInterventionTrial(
+    $data,
+    $this->trialContext !== null ? $this->trialContext->id : null
+);
 $shortlistedTrials = TrialPatient::getTrialCount($data, TrialPatientStatus::model()->find('code = "SHORTLISTED"'));
 $acceptedTrials = TrialPatient::getTrialCount($data, TrialPatientStatus::model()->find('code = "ACCEPTED"'));
 $rejectedTrials = TrialPatient::getTrialCount($data, TrialPatientStatus::model()->find('code = "REJECTED"'));
@@ -88,11 +90,11 @@ $inTrial = $this->trialContext !== null ? TrialPatient::model()->exists(
 Trial::checkTrialAccess(Yii::app()->user, $this->trialContext->id, UserTrialPermission::PERMISSION_EDIT)
 ) {
     $inOtherTrials = TrialPatient::model()->exists(
-    'patient_id = :patientId AND trial_id != :trialId',
-    array(
+        'patient_id = :patientId AND trial_id != :trialId',
+        array(
         ':patientId' => $data->id,
         ':trialId' => $this->trialContext->id,
-    )
+        )
     );
 
     ?>

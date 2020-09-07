@@ -37,12 +37,15 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         // Event actions
 if (isset($_GET["waiting-list"]) && $_GET["waiting-list"]) {
     $this->event_actions = array(
-        EventAction::link('Cancel',
+        EventAction::link(
+            'Cancel',
             Yii::app()->createUrl('/OphTrOperationbooking/waitingList/index'),
             array('level' => 'cancel')
         ),
     );
-    $this->event_actions[] = EventAction::button('Confirm', 'confirm',
+    $this->event_actions[] = EventAction::button(
+        'Confirm',
+        'confirm',
         array(
             'id' => 'et_confirm',
             'level' => 'confirm',
@@ -52,7 +55,9 @@ if (isset($_GET["waiting-list"]) && $_GET["waiting-list"]) {
         )
     );
 } else {
-    $this->event_actions[] = EventAction::button('Save', 'save',
+    $this->event_actions[] = EventAction::button(
+        'Save',
+        'save',
         array(
             'id' => 'et_save',
             'level' => 'save',
@@ -82,6 +87,20 @@ if (isset($_GET["waiting-list"]) && $_GET["waiting-list"]) {
 <?php }?>
 
         <?php  $this->displayErrors($errors)?>
+        <?php
+        $this->displayErrors($errors); ?>
+
+        <?php if (@$eur_res && @$eur_answer_res) {?>
+            <input type="hidden" name="eye" value="<?=$eur_res->eye_num;?>">
+            <input type="hidden" name="eur_result" value="<?=$eur_res->result;?>">
+            <?php foreach ($eur_answer_res as $answer_res) {
+                    $index = $answer_res->question_id - 1;
+                ?>
+                <?=\CHtml::hiddenField('EUREventResult[eurAnswerResults]['. $index .'][answer_id]', $answer_res->answer_id)?>
+                <?=\CHtml::hiddenField('EUREventResult[eurAnswerResults]['. $index .'][question_id]', $answer_res->question_id)?>
+            <?php }?>
+            <?php $this->renderPartial('view_eur', array('eur' => $eur_res, 'answerResults' => $eur_answer_res));?>
+        <?php } ?>
         <?php  $this->renderOpenElements($this->action->id, $form); ?>
         <?php  $this->renderOptionalElements($this->action->id, $form); ?>
         <?php  $this->displayErrors($errors, true)?>

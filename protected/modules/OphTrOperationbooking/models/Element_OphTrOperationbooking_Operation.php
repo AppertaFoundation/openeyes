@@ -912,11 +912,14 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      */
     public function hasAnaestheticTypeByCode($code)
     {
-        return count(array_filter($this->anaesthetic_type,
-                function ($a_type) use ($code) {
-                    return $a_type == $code;
-                })
-            ) > 0;
+        return count(
+            array_filter(
+                $this->anaesthetic_type,
+                static function ($a_type) use ($code) {
+                    return $a_type->code === $code;
+                }
+            )
+        ) > 0;
     }
 
     /**
@@ -1126,7 +1129,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                     foreach ($targets as $email) {
                         mail(
                             $email,
-                            '[OpenEyes] Urgent cancellation made', "A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: "
+                            '[OpenEyes] Urgent cancellation made',
+                            "A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: "
                                 .$this->getDisorderText()."\n\nPlease see: http://".@$_SERVER['SERVER_NAME']
                                 .Yii::app()->createUrl('/OphTrOperationbooking/transport')."\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.",
                             'From: '.Yii::app()->params['urgent_booking_notify_email_from']."\r\n"

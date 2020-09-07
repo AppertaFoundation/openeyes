@@ -22,6 +22,7 @@ extract($this->getEpisodes());
 $current_episode = @$this->current_episode;
 ?>
 
+<?php if ((Yii::app()->controller->action->id != 'update' && Yii::app()->controller->action->id != 'create') || Yii::app()->controller->show_element_sidebar == false) { ?>
 <nav class="sidebar-header">
     <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) { ?>
         <button id="add-event" class="button green add-event" type="button">Add Event</button>
@@ -29,6 +30,8 @@ $current_episode = @$this->current_episode;
         <button class="button add-event disabled">You have View Only rights</button>
     <?php } ?>
 </nav>
+
+<?php } ?>
 
 <nav class="sidebar subgrid">
     <?php
@@ -57,7 +60,6 @@ $current_episode = @$this->current_episode;
     </div>
     <div class="quickview-screenshots">
       <span class="quickview-no-data-found" style="display: none;">No preview image could be found at this time</span>
-      <i class="spinner" style="display: none;"></i>
     </div>
   </div>
 </div>

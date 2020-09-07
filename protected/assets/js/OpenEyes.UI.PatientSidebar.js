@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -71,18 +71,21 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         self.errorElements();
 
+        self.requiredElements();
+
         self.parseJSON();
 
         self.buildTree();
         $scrollElement.append($newContent);
 
+        $(self.options.scroll_selector).trigger('sidebar_loaded');
 
       // find and set up all collapse-groups
         this.$element.find('.collapse-group').each(function() {
         var group = new CollapseGroup(
         	$(this),
-					$(this).find('.collapse-group-icon .oe-i'),
-          $(this).find('.collapse-group-header'),
+					$(this).find('.header-icon'),
+          $(this).find('.header-icon'),
           $(this).find('.collapse-group-content'));
       });
 
@@ -95,8 +98,8 @@ OpenEyes.UI = OpenEyes.UI || {};
         // if the clicked element is a child, ensures parent loaded first. if the element is already
         // loaded, then just move the view port appropriately.
         self.$element.on('click', '.element', function(e) {
-            e.preventDefault();
-            self.loadClickedItem($(e.target));
+					e.preventDefault();
+					self.loadClickedItem($(e.target));
         }.bind(self));
     };
 
@@ -118,7 +121,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         $content.show();
         $wrapper.removeAttr('data-collapse');
       }
-      $icon.toggleClass('minus plus');
+      $icon.toggleClass('collapse expand');
       expanded = !expanded;
     }
   }
@@ -160,7 +163,7 @@ OpenEyes.UI = OpenEyes.UI || {};
        });
     };
 
-    PatientSidebar.prototype.loadClickedItem = function ($item, data, callback) {
+    PatientSidebar.prototype.loadClickedItem = function ($item, data, callback) {      
       if($item.hasClass('loading')) {
           if (typeof callback === "function")
               callback();
@@ -168,7 +171,7 @@ OpenEyes.UI = OpenEyes.UI || {};
       }
 
       let self = this;
-      if (!$item.hasClass('selected')) {
+      if (!$item.hasClass('selected') && !$item.children().hasClass('mandatory')) {
           self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
           // The <li> that contains $item (can be selected or not)
           let $container = $item.parent();
@@ -186,6 +189,7 @@ OpenEyes.UI = OpenEyes.UI || {};
           if (typeof callback === "function")
               callback();
       }
+
     };
 
     /**
@@ -202,7 +206,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         // "Click" the sidebar-group-header to open the group if it is closed
         let $collapse_group = item.closest('.collapse-group');
         if($collapse_group.attr('data-collapse') === 'collapsed'){
-        	$collapse_group.find('.collapse-group-header').click();
+        	$collapse_group.find('.header-icon').click();
 				}
         addElement($parentLi.clone(true), true, undefined, data, callback);
     };
@@ -243,16 +247,25 @@ OpenEyes.UI = OpenEyes.UI || {};
      */
     PatientSidebar.prototype.addElementByTypeClass = function(elementTypeClass, data, callback)
     {
-        var self = this;
-        var $menuLi = self.findMenuItemForElementClass(elementTypeClass);
+			var self = this;
+			var $menuLi = self.findMenuItemForElementClass(elementTypeClass);
 
-        if ($menuLi) {
-            $href = $menuLi.find('a');
-            $href.removeClass('selected').removeClass('error');
-            self.loadClickedItem($href, data, callback);
-        } else {
-            self.error('Cannot find menu entry for given elementTypeClass '+elementTypeClass);
-        }
+			if ($menuLi) {
+				$href = $menuLi.find('a');
+
+				if ($href.hasClass('loading')) {
+					$href.on('loaded', function () {
+						if (typeof callback === "function") {
+							callback();
+						}
+					});
+				} else {
+					$href.removeClass('selected').removeClass('error');
+					self.loadClickedItem($href, data, callback);
+				}
+			} else {
+				self.error('Cannot find menu entry for given elementTypeClass ' + elementTypeClass);
+			}
 
     };
 
@@ -301,7 +314,30 @@ OpenEyes.UI = OpenEyes.UI || {};
                 self.patient_error_elements.push(element);
             }
         });
+
+        // Show the sidebar when it is hidden but has errors in it
+        if(self.patient_error_elements.length > 0)
+          $(self.options.scroll_selector).show();
     };
+
+    /**
+     * Build the array of elements that are mandatory on the page and cannot be removed
+     * 
+     */
+    PatientSidebar.prototype.requiredElements = function() {
+      var self = this;
+
+      self.patient_required_elements = [];
+
+      containerElements = $('.element-actions');
+
+      containerElements.each(function(element) {
+        if ($(containerElements[element]).find("span").hasClass("disabled")) {
+          self.patient_required_elements.push($(containerElements[element]).parents("section").data('elementTypeClass'));
+        }
+      });
+    }
+
 
     /**
      *  Build the tree by looping through the JSON
@@ -352,10 +388,7 @@ OpenEyes.UI = OpenEyes.UI || {};
       }
 
       item.append(
-          '<div class="collapse-group-icon">' +
-            '<i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '">' +'</i>' +
-          '</div> ' +
-          '<h3 class="collapse-group-header">' + itemData.name + '</h3>'
+          '<div class="header-icon ' + (open ? 'collapse' : 'expand') + '">' + itemData.name + '</div>'
       );
 
         var subList = self.buildTreeChildList(itemData.children);
@@ -379,7 +412,7 @@ OpenEyes.UI = OpenEyes.UI || {};
    */
     PatientSidebar.prototype.buildTreeChildList = function (childItems) {
       var self = this;
-        var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
+        var subList = $('<ul>').addClass('collapse-group-content oe-element-list');
 
       $.each(childItems, function () {
 
@@ -392,7 +425,13 @@ OpenEyes.UI = OpenEyes.UI || {};
             .attr('id','side-element-'+id_name ).addClass('element');
 
           var childClass = 'child';
-          if ($.inArray(this.class_name, self.patient_open_elements)!== -1){
+
+          if($.inArray(this.class_name, self.patient_required_elements)!== -1){
+            childClass+= ' mandatory'
+          }
+
+          if ($.inArray(this.class_name, self.patient_open_elements)!== -1
+            && $.inArray(this.class_name, self.patient_required_elements) === -1){
             childClass+=' selected';
           }
 

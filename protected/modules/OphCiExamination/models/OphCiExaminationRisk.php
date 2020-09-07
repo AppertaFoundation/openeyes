@@ -27,6 +27,8 @@ namespace OEModule\OphCiExamination\models;
  * @property string $name
  * @property int $display_order
  * @property boolean $is_other
+ * @property \MedicationSet[] $medicationSets
+ * @property \Tag[] $tags
  */
 class OphCiExaminationRisk extends \BaseActiveRecordVersioned
 {
@@ -70,7 +72,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, tags, gender, age_min, age_max, display_on_whiteboard', 'safe'),
+            array('name, medicationSets, gender, age_min, age_max, display_on_whiteboard', 'safe'),
             array('id, name', 'safe', 'on' => 'search'),
         );
     }
@@ -78,7 +80,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'tags' => array(self::MANY_MANY, 'Tag', 'ophciexamination_risk_tag(risk_id, tag_id)'),
+            'medicationSets' => array(self::MANY_MANY, \MedicationSet::class, 'ophciexamination_risk_tag(risk_id, medication_set_id)'),
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
             'episodeStatus' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
@@ -93,7 +95,8 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
-            'display_on_whiteboard' => 'Display on Whiteboard',
+            'medicationSets' => 'Drug sets',
+                      'display_on_whiteboard' => 'Display on Whiteboard',
         );
     }
 
@@ -117,6 +120,13 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         ));
     }
 
+    /**
+     * @param $tag_ids
+     * @return array|\CActiveRecord[]|mixed|null
+     *
+     * @deprecated use findForRefSetIds
+     */
+
     public static function findForTagIds($tag_ids)
     {
         $criteria = new \CDbCriteria();
@@ -125,8 +135,24 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
             'tags' => array(
                 'select' => false,
                 'joinType' => 'INNER JOIN',
-            ))
-        )->findAll($criteria);
+            )))->findAll($criteria);
+    }
+
+    /**
+     * @param array $medication_set_ids
+     * @return static[]
+     */
+
+    public static function findForMedicationSetIds($medication_set_ids)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addInCondition('medicationSets.id', $medication_set_ids);
+        $criteria->addCondition("active = 1");
+        return static::model()->with(array(
+                'medicationSets' => array(
+                    'select' => false,
+                    'joinType' => 'INNER JOIN',
+                )))->findAll($criteria);
     }
 
     /**

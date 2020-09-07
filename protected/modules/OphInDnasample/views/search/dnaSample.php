@@ -88,7 +88,8 @@
             </div>
             <div style="font-size:12px;">
                 Sample Type:
-                <?=\CHtml::dropDownList('sample-type',
+                <?=\CHtml::dropDownList(
+                    'sample-type',
                     @$_GET['sample-type'],
                     CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
                     array('empty' => '- All -','style' => 'width:64%')

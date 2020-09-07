@@ -15,8 +15,12 @@ class m140620_122600_visualacuity_change extends OEMigration
 
     public function up()
     {
-        $this->update('element_type', array('name' => 'Visual Acuity'), 'id= :id',
-            array(':id' => $this->visualAcuityId()));
+        $this->update(
+            'element_type',
+            array('name' => 'Visual Acuity'),
+            'id= :id',
+            array(':id' => $this->visualAcuityId())
+        );
         $event_type_id = $this->insertOEEventType('Examination', 'OphCiExamination', 'Ci');
         $this->insertOEElementType(array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction' => array(
                 'name' => 'Visual Function',
@@ -53,10 +57,18 @@ class m140620_122600_visualacuity_change extends OEMigration
         $visualFunctionId =
             $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction');
 
-        $this->update('element_type', array('parent_element_type_id' => $visualFunctionId), 'id= :id',
-            array(':id' => $this->visualAcuityId()));
-        $this->update('element_type', array('parent_element_type_id' => $visualFunctionId), 'id= :id',
-            array(':id' => $this->colourVisionId()));
+        $this->update(
+            'element_type',
+            array('parent_element_type_id' => $visualFunctionId),
+            'id= :id',
+            array(':id' => $this->visualAcuityId())
+        );
+        $this->update(
+            'element_type',
+            array('parent_element_type_id' => $visualFunctionId),
+            'id= :id',
+            array(':id' => $this->colourVisionId())
+        );
     }
 
     public function down()
@@ -64,13 +76,25 @@ class m140620_122600_visualacuity_change extends OEMigration
         $visualFunctionId =
             $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction');
 
-        $this->update('element_type', array('name' => 'Visual Function'), 'id= :id',
-            array(':id' => $this->visualAcuityId()));
+        $this->update(
+            'element_type',
+            array('name' => 'Visual Function'),
+            'id= :id',
+            array(':id' => $this->visualAcuityId())
+        );
 
-        $this->update('element_type', array('parent_element_type_id' => null), 'id= :id',
-            array(':id' => $this->visualAcuityId()));
-        $this->update('element_type', array('parent_element_type_id' => $this->visualAcuityId()), 'id= :id',
-            array(':id' => $this->colourVisionId()));
+        $this->update(
+            'element_type',
+            array('parent_element_type_id' => null),
+            'id= :id',
+            array(':id' => $this->visualAcuityId())
+        );
+        $this->update(
+            'element_type',
+            array('parent_element_type_id' => $this->visualAcuityId()),
+            'id= :id',
+            array(':id' => $this->colourVisionId())
+        );
 
         $this->dropTable('et_ophciexamination_visualfunction');
         $this->dropTable('et_ophciexamination_visualfunction_version');

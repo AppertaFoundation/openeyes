@@ -95,7 +95,7 @@ class GeneticsPatient extends BaseActiveRecord
                         continue;
                     }
                     //New study has been added, make sure that it's possible for the user to propose this.
-              /*      if(!$study->canBeProposedByUser(Yii::app()->user)){
+              /*      if (!$study->canBeProposedByUser(Yii::app()->user)){
                         $this->addError($attribute, 'You do not have permission to propose subjects for ' . $study->name);
                     }*/
 
@@ -327,27 +327,27 @@ class GeneticsPatient extends BaseActiveRecord
         $criteria->compare('gender_id', $this->gender_id, true);
         $criteria->compare('is_deceased', $this->is_deceased);
 
-        $criteria->compare( 'patient.dob', $this->patient_dob, true );
-        $criteria->compare( 'patient.dob', $this->patient_yob, true );
+        $criteria->compare('patient.dob', $this->patient_dob, true);
+        $criteria->compare('patient.dob', $this->patient_yob, true);
 
         $patient_search = new PatientSearch();
         $patient_hos_num = $patient_search->getHospitalNumber($this->patient_hos_num);
 
-        $criteria->compare( 'patient.hos_num', $patient_hos_num, false );
+        $criteria->compare('patient.hos_num', $patient_hos_num, false);
 
         if ( $this->patient_pedigree_id ) {
             $criteria->with['genetics_patient_pedigree'] = array('select' => 'genetics_patient_pedigree.pedigree_id', 'together' => true);
-            $criteria->compare( 'genetics_patient_pedigree.pedigree_id', $this->patient_pedigree_id, false );
+            $criteria->compare('genetics_patient_pedigree.pedigree_id', $this->patient_pedigree_id, false);
         }
 
-        $criteria->compare( 'contact.first_name', $this->patient_firstname, true );
-        $criteria->compare( 'contact.last_name', $this->patient_lastname, true );
-        $criteria->compare( 'contact.maiden_name', $this->patient_maidenname, true );
+        $criteria->compare('contact.first_name', $this->patient_firstname, true);
+        $criteria->compare('contact.last_name', $this->patient_lastname, true);
+        $criteria->compare('contact.maiden_name', $this->patient_maidenname, true);
 
         //because of the 'together' => true , yii returns wrong row counts when 'patient_disorder_id' is not present
         if ($this->patient_disorder_id > 0) {
             $criteria->with['genetics_diagnosis'] = array('select' => 'genetics_diagnosis.disorder_id', 'together' => true);
-            $criteria->compare( 'genetics_diagnosis.disorder_id', $this->patient_disorder_id, false );
+            $criteria->compare('genetics_diagnosis.disorder_id', $this->patient_disorder_id, false);
         }
 
         $dataProvider = new CActiveDataProvider($this, array(

@@ -1602,14 +1602,16 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
         $this->event_type->class_name = $target_class;
 
         Yii::app()->db->createCommand()
-            ->update('event_type', array(
+            ->update(
+                'event_type',
+                array(
                 'name' => $this->event_type->name,
                 'class_name' => $target_class,
                 'event_group_id' => $this->event_group->id,
-            ),
-            'id = :id',
-            array(':id' => $this->event_type->id)
-        );
+                ),
+                'id = :id',
+                array(':id' => $this->event_type->id)
+            );
 
         foreach (ElementType::model()->findAll('event_type_id=:eventTypeId', array(':eventTypeId' => $this->event_type->id)) as $element_type) {
             $element_class_name = 'Element_'.$target_class.'_'.preg_replace('/ /', '', ucwords(strtolower($element_type->name)));

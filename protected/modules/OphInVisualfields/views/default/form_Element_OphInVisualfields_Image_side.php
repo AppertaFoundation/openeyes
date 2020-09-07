@@ -13,7 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $fields = OphInVisualfields_Field_Measurement::model()->getUnattachedForPatient(
-    $this->patient, $side == 'left' ? Eye::LEFT : Eye::RIGHT, $this->event
+    $this->patient,
+    $side == 'left' ? Eye::LEFT : Eye::RIGHT,
+    $this->event
 );
 if (!$element->{"{$side}_field_id"} && $fields) {
     $element->{"{$side}_field_id"} = end($fields)->id;
@@ -23,7 +25,7 @@ $field_data = array();
 foreach ($fields as $field) {
     $field_data[$field->id] = array(
         'id' => $field->id,
-        'url' => Yii::app()->baseUrl . "/file/view/{$field->cropped_image_id}/400/img.gif",
+        'url' => Yii::app()->createURL('site/index') . "file/view/{$field->cropped_image_id}/400/img.gif",
         'date' => date(Helper::NHS_DATE_FORMAT . ' H:i:s', strtotime($field->study_datetime)),
         'strategy' => $field->strategy->name,
         'pattern' => $field->pattern->name,
@@ -43,8 +45,12 @@ Yii::app()->clientScript->registerScript(
     <?php if ($current_field) : ?>
       <div class="data-group">
         <div class="cols-5 column">
-            <?= $form->dropDownList($element, "{$side}_field_id", CHtml::listData($field_data, 'id', 'date'),
-                array('nowrapper' => true)) ?>
+            <?= $form->dropDownList(
+                $element,
+                "{$side}_field_id",
+                CHtml::listData($field_data, 'id', 'date'),
+                array('nowrapper' => true)
+            ) ?>
         </div>
         <div class="cols-7 column OphInVisualfields_field_image_wrapper">
           <a id="Element_OphInVisualfields_Image_image_<?= $side ?>" class="OphInVisualfields_field_image"

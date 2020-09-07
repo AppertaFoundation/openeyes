@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -81,7 +82,7 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
             $elements
         );
 
-        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN))) {
+        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN)) && !$this->comments) {
             $this->addError('comments', 'Comments cannot be blank when there are no child elements');
         }
     }
@@ -161,10 +162,14 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
      */
     public function getSiblingString($delimiter = ' // ')
     {
-        return implode($delimiter, array_map(
-            function ($el) {
-                return $el->elementType->name . ': ' . $el;
-            }, $this->getSiblings())
+        return implode(
+            $delimiter,
+            array_map(
+                function ($el) {
+                    return $el->elementType->name . ': ' . $el;
+                },
+                $this->getSiblings()
+            )
         );
     }
 

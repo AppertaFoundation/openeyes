@@ -22,13 +22,13 @@ if (!isset($id) && isset($this->event_type)) {
 }
 $event = $this->event;
 $event_type = $event->eventType->name;
-$logoHelper = new LogoHelper();
+$logo_helper = new LogoHelper();
 ?>
 
 <header class="header">
     <header class="print-header">
         <div class="logo">
-            <?php echo $logoHelper->render('//base/_logo_seal'); ?>
+            <?php echo $logo_helper->render('//base/_logo_seal'); ?>
         </div>
     </header>
 

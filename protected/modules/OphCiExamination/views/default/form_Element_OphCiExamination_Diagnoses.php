@@ -19,8 +19,11 @@
 
 
 <?php
-$js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js',
-    false, -1);
+$js_path = Yii::app()->getAssetManager()->publish(
+    Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js',
+    true,
+    -1
+);
 
 $assetManager = Yii::app()->getAssetManager();
 $widgetPath = $assetManager->publish('protected/widgets/js/EyeSelector.js');
@@ -180,7 +183,9 @@ foreach ($this->patient->episodes as $ep) {
                             'filter-value' => $disorderGroup->id,
                             'is_filter' => true,
                         ];
-                    }, $filteredOphthalmicDisorderGroups)) ?>, {
+                    },
+                    $filteredOphthalmicDisorderGroups)
+                ) ?>, {
                     'header': 'Disorder Group',
                     'id': 'disorder-group-filter',
                     'deselectOnReturn': false,

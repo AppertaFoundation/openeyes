@@ -45,6 +45,7 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                     $procedureSubspecialtyAssignment->proc_id = $assignment['procedure_id'];
                     $procedureSubspecialtyAssignment->display_order = $display_orders[$key];
                     $procedureSubspecialtyAssignment->subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
+                    $procedureSubspecialtyAssignment->need_eur = isset($assignment['need_eur']) ? $assignment['need_eur'] : 0;
 
                     if (!$procedureSubspecialtyAssignment->save()) {
                         $errors[] = $procedureSubspecialtyAssignment->getErrors();
@@ -97,7 +98,7 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
             $this->redirect(Yii::app()->request->url);
         }
 
-        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js');
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         $criteria = new CDbCriteria();
