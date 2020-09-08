@@ -83,7 +83,7 @@ if (!Yii::app()->user->isGuest) {
                 <?php $this->renderPartial('//base/_hotlist'); ?>
             </li>
             <li class="oe-nav-btn">
-                <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
+                <a id='logout_button' class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
                     <svg viewBox="0 0 80 40" class="icon logout">
                         <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
                     </svg>
@@ -92,5 +92,12 @@ if (!Yii::app()->user->isGuest) {
             </li>
         </ul>
     </div>
+
+    <script type="text/javascript">
+        $("#logout_button").click(function() {
+            window.stop();
+            return true;
+        });
+    </script>
 
 <?php } ?>
