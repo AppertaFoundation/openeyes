@@ -315,6 +315,7 @@
     document.addEventListener("DOMContentLoaded", setOnBeforeUnload);
   $(document).ready(function () {
     var ticketMoveController = new TicketMoveController();
+    window.ticketMoveController = ticketMoveController;
     ticketMoveController.loadScratchpadData();
 
     initialContentHash = getContentHash();

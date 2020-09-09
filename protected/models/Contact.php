@@ -48,6 +48,7 @@
  */
 class Contact extends BaseActiveRecordVersioned
 {
+    public $source;
     /**
      * Returns the static model of the specified AR class.
      *

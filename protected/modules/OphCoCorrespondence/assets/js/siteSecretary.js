@@ -21,7 +21,7 @@ OpenEyes.CO.SiteSecretary = (function () {
         postData = {},
         errorTmpl = '<div class="alert-box alert with-icon">' +
             '<p>Please fix the following input errors:</p>' +
-            '<ul>{{#errors}}<li>{{.}}</li>{{/errors}}</ul>' +
+            '<ul>{{#errors}}<li>{{{.}}}</li>{{/errors}}</ul>' +
             '</div>',
         $blankRow,
         $blankRowBtn;
