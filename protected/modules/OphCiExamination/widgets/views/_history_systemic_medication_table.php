@@ -18,6 +18,13 @@
             <tr data-key="<?= $index ?>">
                 <td>
                     <?= $entry->getMedicationDisplay() ?>
+                    <?php
+                    $comments = $entry->getComments();
+                    if (!empty($comments)) { ?>
+                        <i class="oe-i comments-who small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="<em><?= $comments ?></em>">
+                        </i> <?php
+                            }
+                                ?>
                 </td>
                 <td>
                     <?php
@@ -30,7 +37,7 @@
                         <i class="oe-i <?= $info_box->getIcon(); ?> small <?= $pro_theme ?> js-has-tooltip pad-right" data-tooltip-content="<?= $tooltip_content ?>">
                         </i>
                     <?php } ?>
-                    
+
                 </td>
                 <td>
                     <?php $earliest_entry = $entry->getEarliestEntry($entry); ?>
