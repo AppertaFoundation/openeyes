@@ -175,7 +175,7 @@ $user_searches = array_map(
 <script type="text/html" id="search-contents-template">
     <tr>{{{searchContents}}}</tr>
 </script>
-
+<script>
     function addPatientToTrial(patient_id, trial_id) {
         const addSelector = '#add-to-trial-link-' + patient_id;
         const removeSelector = '#remove-from-trial-link-' + patient_id;
@@ -473,8 +473,11 @@ $user_searches = array_map(
     </script>
 <?php } ?>
 
-
 <?php
+    $patientsID = [];
+foreach ($patients->getData() as $i => $SearchPatient) {
+    array_push($patientsID, $SearchPatient->id);
+}
     $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
     Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
     $assetManager = Yii::app()->getAssetManager();
@@ -499,4 +502,3 @@ $user_searches = array_map(
         });
     })
 </script>
-
