@@ -28,7 +28,7 @@ $systemic_filter = function ($med) {
     return $med->laterality === null;
 };
 
-$eye_filter = function($e) {
+$eye_filter = function ($e) {
     /** @var EventMedicationUse $e */
     return !is_null($e->route_id) && $e->route->has_laterality;
 };
@@ -194,6 +194,15 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <tr data-key="<?= $index ?>">
                                 <td>
                                     <?= $entry->getMedicationDisplay() ?>
+                                    <?php
+                                        $comments = $entry->getComments();
+                                    if (!empty($comments)) { ?>
+                                            <i class="oe-i comments-who small pad js-has-tooltip"
+                                               data-tt-type="basic"
+                                               data-tooltip-content="<em><?= $comments ?></em>">
+                                            </i> <?php
+                                    }
+                                    ?>
                                 </td>
                                 <td>
 
@@ -259,6 +268,15 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <tr data-key="<?= $index ?>">
                                         <td>
                                             <?= $entry->getMedicationDisplay() ?>
+                                            <?php
+                                                $comments = $entry->getComments();
+                                            if (!empty($comments)) { ?>
+                                                    <i class="oe-i comments-who small pad js-has-tooltip"
+                                                       data-tt-type="basic"
+                                                       data-tooltip-content="<em><?= $comments ?></em>">
+                                                    </i> <?php
+                                            }
+                                            ?>
                                         </td>
                                         <td></td>
                                         <td>

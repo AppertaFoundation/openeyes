@@ -534,6 +534,13 @@ class EventMedicationUse extends BaseElement
         return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
     }
 
+    public function getComments()
+    {
+        if ($this->comments && !empty(trim($this->comments))) {
+            return $this->comments;
+        }
+    }
+
     public function getTooltipContent()
     {
         $data = [];

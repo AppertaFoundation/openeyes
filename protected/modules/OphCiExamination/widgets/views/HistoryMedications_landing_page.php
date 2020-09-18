@@ -25,12 +25,12 @@ use OEModule\OphCiExamination\models\HistoryMedications;
 
 $model_name = CHtml::modelName($element);
 
-$eye_filter = function($e) {
+$eye_filter = function ($e) {
     /** @var EventMedicationUse $e */
     return !is_null($e->route_id) && $e->route->has_laterality;
 };
 
-$systemic_filter = function ($entry) use ($eye_filter){
+$systemic_filter = function ($entry) use ($eye_filter) {
     return !$eye_filter($entry);
 };
 $current = $element->mergePrescriptionEntries($current);
@@ -60,6 +60,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <tr>
                     <td>
                         <?= $entry->getMedicationDisplay() ?>
+                        <?php $comments = $entry->getComments();
+                        if (!empty($comments)) {
+                            ?>
+                            <i class="oe-i comments-who small pad js-has-tooltip" data-tt-type="basic"
+                               data-tooltip-content="<em><?= $comments ?></em>">
+                            </i> <?php
+                        }?>
                     </td>
                     <td>
                         <?php
@@ -128,6 +135,15 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 <tr>
                                     <td>
                                         <?= $entry->getMedicationDisplay() ?>
+                                        <?php
+                                            $comments = $entry->getComments();
+                                        if (!empty($comments)) {
+                                            ?>
+                                                <i class="oe-i comments-who small pad js-has-tooltip" data-tt-type="basic"
+                                                   data-tooltip-content="<em><?= $comments ?></em>">
+                                                </i> <?php
+                                        }
+                                        ?>
                                     </td>
                                     <td>
                                         <?php
