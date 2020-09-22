@@ -361,7 +361,7 @@ return array(
         'pad_hos_num' => !empty(trim(getenv('OE_HOS_NUM_PAD'))) ? getenv('OE_HOS_NUM_PAD') : '%07s',
         'profile_user_can_edit' => true,
         'profile_user_show_menu' => true,
-        'profile_user_can_change_password' => true,
+        'profile_user_can_change_password' => strtolower(getenv("PW_ALLOW_CHANGE")) == "false" ? false : true,
         'tinymce_default_options' => array(
             'plugins' => 'lists table paste code pagebreak',
             'branding' => false,
