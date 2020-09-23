@@ -81,10 +81,12 @@
                         </span>
                         <span class="fade">(calculated)</span>
                     </td>
-                    <td class="align-left">
-                        <input type="text" value="<?= $adjusted_total_duration ?>" id="<?= $class ?>_total_duration_<?= $identifier ?>" name="<?= $class ?>[total_duration_<?= $identifier ?>]" style="width:60px" data-total-duration="<?= $total_duration ?>" />
-                        <span class="fade">mins (estimated)</span>
-                    </td>
+                    <?php if ($showEstimatedDuration) { ?>
+                        <td class="align-left">
+                            <input type="text" value="<?= $adjusted_total_duration ?>" id="<?= $class ?>_total_duration_<?= $identifier ?>" name="<?= $class ?>[total_duration_<?= $identifier ?>]" style="width:60px" data-total-duration="<?= $total_duration ?>" />
+                            <span class="fade">mins (estimated)</span>
+                        </td>
+                    <?php } ?>
                 </tr>
             </tfoot>
 

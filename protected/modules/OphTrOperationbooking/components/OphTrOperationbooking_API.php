@@ -232,6 +232,15 @@ class OphTrOperationbooking_API extends BaseAPI
         return $operation->procedures;
     }
 
+    public function getAnaestheticTypesForOperation($event_id)
+    {
+        if (!$operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($event_id))) {
+            throw new Exception("Operation event not found: $event_id");
+        }
+
+        return $operation->anaesthetic_type;
+    }
+
     public function getEyeForOperation($event_id)
     {
         $eur = EUREventResults::model()->find('event_id=?', array($event_id));

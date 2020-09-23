@@ -25,4 +25,48 @@ class OphInLabResults_API extends BaseAPI
         return isset($element->type) ? "Lab Result:<br/>" . $element->type->type : null;
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function getLabResultTypeResult($patientId, $eventId, $type)
+    {
+        // check if type exists for the Lab Results event.
+        $labResultsType = OphInLabResults_Type::model()->find('type=?', array($type));
+
+        if (isset($labResultsType)) {
+            $criteria = new CDbCriteria();
+            $criteria->join = ' LEFT JOIN event on t.event_id = event.id ';
+            $criteria->join .= 'LEFT JOIN episode on event.episode_id = episode.id ';
+            $criteria->addCondition('t.type = :type');
+            $criteria->addCondition('episode.patient_id = :patientId');
+            $criteria->addCondition('event.deleted = 0');
+            $criteria->order = 'event.event_date DESC, t.time DESC, event.created_date DESC';
+            $criteria->limit = 1;
+            $criteria->params = array(
+                'type' => $labResultsType->id,
+                'patientId' => $patientId,
+            );
+            if (isset($eventId)) {
+                $eventDraft = OphTrOperationchecklists_Event::model()->find('event_id = :event_id', array(':event_id' => $eventId))->draft;
+                if (!$eventDraft) {
+                    $eventLastModifiedDate = Element_OphTrOperationchecklists_Admission::model()->find('event_id = :event_id', array(':event_id' => $eventId))->last_modified_date;
+                    $criteria->addCondition('t.created_date <= :eventLastModifiedDate');
+                    $criteria->params['eventLastModifiedDate'] = $eventLastModifiedDate;
+                }
+            }
+
+            $labResult = Element_OphInLabResults_Entry::model()->find($criteria);
+            if ($labResult) {
+                return array(
+                    'result' => $labResult->result,
+                    'comment' => $labResult->comment,
+                );
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
 }

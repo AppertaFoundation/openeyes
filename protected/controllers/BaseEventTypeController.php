@@ -911,7 +911,7 @@ class BaseEventTypeController extends BaseModuleController
             $params['eur_res'] = $this->eur_res;
             $params['eur_answer_res'] = $this->eur_answer_res;
         }
-
+        $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
         $this->render($this->action->id, $params);
     }
 
@@ -1080,6 +1080,8 @@ class BaseEventTypeController extends BaseModuleController
             $params['eur_res'] = $this->eur_res;
             $params['eur_answer_res'] = $this->eur_answer_res;
         }
+
+        $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
         $this->render($this->action->id, $params);
     }
 
