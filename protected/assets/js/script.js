@@ -513,6 +513,11 @@ function showToolTip(element) {
 	if ($('body > .oe-popup-wrap > .oe-popup').length > 0) {
 		z_index = parseInt($('body > .oe-popup-wrap').css('z-index')) + 5;
 	}
+	// assign the z_index greater than the hotlist panel
+    let hotlistPanelId = '#js-hotlist-panel';
+    if ($(hotlistPanelId).length > 0) {
+        z_index = (z_index != null ? z_index : 0) + parseInt($(hotlistPanelId).css('z-index')) + 5;
+    }
 
 	// add, calculate height then show (remove 'hidden')
 	var tip = $( "<div></div>", {

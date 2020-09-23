@@ -52,7 +52,53 @@ class ContactController extends \BaseController
             foreach ($contacts as $contact) {
                 $return[] = $this->contactStructure($contact);
             }
-            echo \CJSON::encode($return);
+            $this->renderJSON($return);
+        }
+    }
+
+    /**
+     * Lists all disorders for a given search term.
+     */
+    public function actionPatientcontacts()
+    {
+        if (\Yii::app()->request->isAjaxRequest) {
+            if (isset($_GET['filter'])) {
+                $contactLabelName = \ContactLabel::model()->findByPk($_GET['filter'])->name;
+                $criteria = new \CDbCriteria();
+
+                if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
+                    $criteria->addSearchCondition('LOWER(last_name)', $term, true, 'OR');
+                    $criteria->addSearchCondition('LOWER(first_name)', $term, true, 'OR');
+                }
+
+                if ($contactLabelName === 'General Practitioner') {
+                    $criteria->select = 'c.title, c.first_name, c.last_name';
+                    $criteria->join = "join patient p ON p.contact_id = t.id AND p.id = " . $_GET['code'];
+                    $criteria->join .= " join gp g ON g.id = p.gp_id";
+                    $criteria->join .= " join contact c ON c.id = g.contact_id";
+                    $contact = \Contact::model()->find($criteria);
+                    if (isset($contact)) {
+                        $fullName = trim(implode(' ', array($contact['title'], $contact['first_name'], $contact['last_name'])));
+                        $return = [
+                            'label' => $fullName,
+                            'name' => $fullName,
+                            'phone' => $contact['primary_phone'],
+                        ];
+                        echo \CJSON::encode($return);
+                        \Yii::app()->end();
+                    }
+                }
+                $criteria->select = 't.title, t.first_name, t.last_name, t.primary_phone';
+                $criteria->join = "join patient_contact_assignment pca ON pca.contact_id = t.id AND pca.patient_id = " . $_GET['code'];
+                $criteria->join .= " join contact_label cl ON cl.id = t.contact_label_id AND cl.id = " . $_GET['filter'];
+
+                $contacts = \Contact::model()->findAll($criteria);
+                $return = array();
+                foreach ($contacts as $contact) {
+                    $return[] = $this->contactStructure($contact);
+                }
+                $this->renderJSON($return);
+            }
         }
     }
 

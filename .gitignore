@@ -63,7 +63,7 @@ protected/modules/*
 !/protected/modules/OphCiDidNotAttend/
 !/protected/modules/OphCiExamination/
 !/protected/modules/OphCiPhasing/
-!/protected/modules/OphCiTheatreadmission/
+!/protected/modules/OphTrOperationchecklists/
 !/protected/modules/OphCoCorrespondence/
 !/protected/modules/OphCoCvi/
 !/protected/modules/OphCoDocument/
