@@ -4,9 +4,10 @@
  * This is the model class for table "medication_frequency".
  *
  * The followings are the available columns in table 'medication_frequency':
- * @property integer $id
+ * @property int $id
  * @property string $term
  * @property string $code
+ * @property int $display_order
  * @property string $deleted_date
  * @property string $last_modified_user_id
  * @property string $last_modified_date
@@ -39,7 +40,7 @@ class MedicationFrequency extends BaseActiveRecordVersioned
         return array(
             array('term, code', 'length', 'max'=>45),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
-            array('deleted_date, last_modified_date, created_date', 'safe'),
+            array('deleted_date, last_modified_date, created_date, display_order', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, term, code, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
@@ -70,6 +71,7 @@ class MedicationFrequency extends BaseActiveRecordVersioned
             'id' => 'ID',
             'term' => 'Term',
             'code' => 'Code',
+            'display_order' => 'Display Order',
             'deleted_date' => 'Deleted Date',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',

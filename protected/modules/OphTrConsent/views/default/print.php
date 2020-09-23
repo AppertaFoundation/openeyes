@@ -15,4 +15,4 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $this->renderPartial('print_ElementLetter', array('element' => $element))?>
+<?php echo $this->renderPartial('print_ElementLetter', array('element' => $element));

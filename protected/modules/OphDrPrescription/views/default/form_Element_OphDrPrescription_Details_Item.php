@@ -138,7 +138,7 @@ $dispense_condition_options = array(
         <?= \CHtml::dropDownList(
             'Element_OphDrPrescription_Details[items][' . $key . '][frequency_id]',
             $item->frequency_id,
-            CHtml::listData(MedicationFrequency::model()->activeOrPk([$item->frequency_id])->findAll(array()), 'id', 'term'),
+            CHtml::listData(MedicationFrequency::model()->activeOrPk([$item->frequency_id])->findAll(array('order' => 'display_order')), 'id', 'term'),
             array('empty' => '-- Select --', 'class' => 'cols-11')
         ); ?>
     </td>

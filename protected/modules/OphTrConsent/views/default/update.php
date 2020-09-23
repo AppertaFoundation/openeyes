@@ -34,4 +34,4 @@
 
     <?php  $this->endWidget(); ?>
 
-<?php $this->endContent();?>
+<?php $this->endContent();
