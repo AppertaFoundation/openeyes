@@ -27,6 +27,9 @@ class m200902_004830_add_display_order_to_medication_frequency_table extends OEM
         'immediately' => 21
     ];
 
+    /**
+     * @return bool|void
+     */
     public function up()
     {
         $this->addOEColumn('medication_frequency', 'display_order', 'int(10) unsigned', true);
@@ -41,6 +44,9 @@ class m200902_004830_add_display_order_to_medication_frequency_table extends OEM
         }
     }
 
+    /**
+     * @return bool|void
+     */
     public function down()
     {
         $this->dropOEColumn('medication_frequency', 'display_order');
