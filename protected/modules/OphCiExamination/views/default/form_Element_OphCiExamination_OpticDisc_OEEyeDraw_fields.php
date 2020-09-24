@@ -66,12 +66,12 @@
       </div>
       <div class="cols-9 column">
         <div class="field-info postfix align">
-          mm (lens <?= $form->dropDownList(
+          mm (lens) <?= $form->dropDownList(
               $element,
               $side . '_lens_id',
               '\OEModule\OphCiExamination\models\OphCiExamination_OpticDisc_Lens',
               array('empty' => '--', 'class' => 'inline', 'nowrapper' => true)
-          ) ?>)
+          ) ?>
         </div>
       </div>
     </div>
