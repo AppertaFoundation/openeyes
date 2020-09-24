@@ -13,7 +13,8 @@ class m200223_184900_fix_missing_version_columns_before_set_default extends OEMi
 
          // table name, field name, type
          $columns=array(
-             array('ophcocataractreferral_intraocularpressure_reading_version', 'deleted', 'tinyint(1) unsigned'),
+            array('ophcocataractreferral_intraocularpressure_reading_version', 'deleted', 'tinyint(1) unsigned'),
+            array('event_type_version', 'display_order', 'int(8) NOT NULL'),
          );
 
          foreach( $columns as $column ){

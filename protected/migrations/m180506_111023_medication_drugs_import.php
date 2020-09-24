@@ -85,28 +85,51 @@ class m180506_111023_medication_drugs_import extends OEMigration
                 $command = null;
             }
         }
-        
-        
+
+
         /*
          * set medication_form table by drug_form table
          */
-        
-        $drugFormTable = 'drug_form';
-        $drugForms = $this->dbConnection
-                ->createCommand("SELECT CONCAT(id,'_drug_form') AS code, name FROM ".$drugFormTable." ORDER BY id ASC")
-                ->queryAll();
-        
-        if ($drugForms) {
-            foreach ($drugForms as $form) {
-                $command = $this->dbConnection
-                ->createCommand("
-                    INSERT INTO medication_form( term, code, unit_term, default_dose_unit_term, source_type, source_subtype) 
-                    values('".$form['name']."' ,'".$form['code']."', '".$form['name']."', '".$form['name']."', 'LEGACY', '".$drugFormTable."')
-                ");
-                $command->execute();
-                $command = null;
-            }
-        }
+
+        // Add active drug_forms
+        $this->dbConnection->createCommand(
+            "
+            INSERT INTO medication_form( term, code, unit_term, default_dose_unit_term, source_type, source_subtype, deleted_date)
+            SELECT  
+                `name` as term, 
+                CONCAT(id,'_drug_form') AS code, 
+                `name` as unit_term, 
+                `name` as default_dose_unit_term, 
+                'LEGACY' as source_type, 
+                'drug_form' as source_subtype, 
+                CASE active WHEN 1 then NULL ELSE last_modified_date END as deleted_date
+            FROM drug_form 
+            WHERE active=1
+            GROUP BY `name`
+            ORDER BY id;
+        "
+        )->execute();
+
+        // Add in active drug_forms - but only if there is not already an active form with the same name
+        $this->dbConnection->createCommand(
+            "
+            INSERT INTO medication_form( term, code, unit_term, default_dose_unit_term, source_type, source_subtype, deleted_date)
+            SELECT  
+                `name` as term, 
+                CONCAT(id,'_drug_form') AS code, 
+                `name` as unit_term, 
+                `name` as default_dose_unit_term, 
+                'LEGACY' as source_type, 
+                'drug_form' as source_subtype, 
+                CASE active WHEN 1 then NULL ELSE last_modified_date END as deleted_date
+            FROM drug_form 
+            WHERE active=0
+                AND `name` NOT IN (SELECT term FROM medication_form)
+            GROUP BY `name`
+            ORDER BY id;
+        "
+        )->execute();
+
         
         /*
          * set medication_frequency table by drug_frequency table
