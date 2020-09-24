@@ -1648,7 +1648,7 @@ EOL;
                     ) AS BiometryFormulaId,
                     k1_left AS K1PreOperative,
                     k2_left AS K2PreOperative,
-                    axis_k1_left AS AxisK1,
+                    k1_axis_left AS AxisK1,
                     ms.k2_axis_left AS AxisK2,
                     ms.acd_left AS ACDepth,
                     ms.snr_left AS SNR
@@ -1696,7 +1696,7 @@ EOL;
                     ( SELECT code FROM tmp_biometry_formula WHERE tmp_biometry_formula.desc = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci) AS BiometryFormulaId,
                     k1_left AS K1PreOperative,
                     k2_left AS K2PreOperative,
-                    axis_k1_left AS AxisK1,
+                    k1_axis_left AS AxisK1,
                     ms.k2_axis_left AS AxisK2,
                     ms.acd_left AS ACDepth,
                     ms.snr_left AS SNR
