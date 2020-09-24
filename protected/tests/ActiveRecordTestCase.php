@@ -15,6 +15,7 @@ abstract class ActiveRecordTestCase extends OEDbTestCase
     protected $columns_to_skip = [];
 
     /**
+     * @doesNotPerformAssertions
      * @covers BaseActiveRecord::rules
      * @throws CException
      */
