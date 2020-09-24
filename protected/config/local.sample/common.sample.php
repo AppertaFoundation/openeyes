@@ -93,7 +93,7 @@ $config = array(
         'OECaseSearch',
         'OETrial',
         'OphOuCatprom5',
-        'OphCiTheatreadmission'
+        'OphTrOperationchecklists'
     ),
 
     'params' => array(

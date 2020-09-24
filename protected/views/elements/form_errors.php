@@ -22,7 +22,11 @@
         echo ' bottom';
                                          }
                                             ?>">
-        <p>Please fix the following input errors:</p>
+        <?php if (isset($errorHeaderMessage) && !empty($errorHeaderMessage)) { ?>
+            <p><?= $errorHeaderMessage ?></p>
+        <?php } else { ?>
+            <p>Please fix the following input errors:</p>
+        <?php } ?>
         <?php foreach ($errors as $field => $errs) { ?>
             <?php foreach ($errs as $err) { ?>
                 <ul>

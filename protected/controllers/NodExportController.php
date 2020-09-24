@@ -32,7 +32,7 @@ class NodExportController extends BaseController
 
     private $startDate = '';
     private $endDate = '';
-    
+
     // Refactoring :
     /**
      * This number will be appended after the tmp tables so the
@@ -40,7 +40,7 @@ class NodExportController extends BaseController
      * @var int
      */
     private $extractIdentifier;
-    
+
 
     public function accessRules()
     {
@@ -61,17 +61,17 @@ class NodExportController extends BaseController
         if (!file_exists($this->exportPath)) {
             mkdir($this->exportPath, 0777, true);
         }
-        
+
         $startDate = Yii::app()->request->getParam("date_from", '');
         $endDate =  Yii::app()->request->getParam("date_to", '');
-        
+
         $startDateTime = null;
         $endDateTime = null;
-        
+
         if ($startDate) {
             $startDateTime = new DateTime($startDate);
         }
-        
+
         if ($endDate) {
             $endDateTime = new DateTime($endDate);
         }
@@ -83,32 +83,32 @@ class NodExportController extends BaseController
             $startDateTime = $tempDate;
             $tempDate = null;
         }
-        
+
         if ($startDate) {
             $this->startDate = $startDateTime->format('Y-m-d');
         }
-        
+
         if ($endDate) {
             $this->endDate = $endDateTime->format('Y-m-d');
         }
-        
+
         // Refactoring : generate number from hour-minute-sec
         // this number will be appended to the name of tmp tables
         // tmp tables will be normal DB tables instead of real TEMPORARY tables because in some queries
         // we need to refer the tmp table (like sub-select) two or more times - and in MySQL a tmp table can be referred only once in a query
         // (this prevents error if someone starts 2 extract)
-        $this->extractIdentifier = date('His');
+        $this->extractIdentifier = 0;
 
         parent::init();
     }
-    
+
     public function actionIndex()
     {
         $this->pageTitle = 'NOD Export';
         $this->render('//nodexport/index');
     }
-    
-    
+
+
      /**
      * Generates CSV and zip files then sends to the browser
      */
@@ -123,7 +123,7 @@ class NodExportController extends BaseController
             Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
         }
     }
-    
+
     /**
      * Generates the CSV files
      */
@@ -132,10 +132,10 @@ class NodExportController extends BaseController
 
         // Concatinate sequence of statements to create and load working tables
         $query = $this->createAllTempTables();
-        $query .= $this->populateAllTempTables();
 
-        // Execute all statements to create and populate working tables
-        Yii::app()->db->createCommand($query)->execute();
+        $this->populateAllTempTables();
+
+
 
         // Extract results from tables into csv files
         $this->getEpisodeDiabeticDiagnosis();
@@ -156,14 +156,14 @@ class NodExportController extends BaseController
 
         $this->getEpisodeDiagnosis();
         $this->getEpisode();
-        
+
         $this->getSurgeons();
-        
+
         $this->getPatientCviStatus();
         $this->getPatients();
-        
-        
-        $this->clearAllTempTables();
+
+
+        //$this->clearAllTempTables();
 
     }
 
@@ -213,31 +213,51 @@ class NodExportController extends BaseController
     {
         // DROP all tables if exist before creating them
         $this->clearAllTempTables();
-        
+
         $query = '';
 
-        $query .= $this->createTmpRcoNodMainEventEpisodes();
-        $query .= $this->createTmpRcoNodPatients();
-        $query .= $this->createTmpRcoNodPatientCVIStatus();
-        $query .= $this->createTmpRcoNodEpisodePreOpAssessment();
-        $query .= $this->createTmpRcoNodEpisodeRefraction();
-        $query .= $this->createTmpRcoNodEpisodeDrug();
-        $query .= $this->createTmpRcoNodEpisodeIOP();
-        $query .= $this->createTmpRcoNodEpisodeBiometry();
-        $query .= $this->createTmpRcoNodSurgeon();
-        $query .= $this->createTmpRcoNodEpisodeDiabeticDiagnosis();
-        $query .= $this->createTmpRcoNodPostOpComplication();
-        $query .= $this->createTmpRcoNodEpisodeOperationCoPathology();
-        $query .= $this->createTmpRcoNodEpisodeOperation();
-        $query .= $this->createTmpRcoNodEpisodeTreatment();
-        $query .= $this->createTmpRcoNodEpisodeTreatmentCataract();
-        $query .= $this->createTmpRcoNodEpisodeOperationAnaesthesia();
-        $query .= $this->createTmpRcoNodEpisodeOperationIndication();
-        $query .= $this->createTmpRcoNodEpisodeOperationComplication();
-        $query .= $this->createTmpRcoNodEpisodeVisualAcuity();
-        $query .= $this->createTmpRcoNodEpisodeDiagnosis();
-        
-        $createTempQuery = <<<EOL
+        $query = $this->createTmpRcoNodMainEventEpisodes();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodPatients();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodPatientCVIStatus();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodePreOpAssessment();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeRefraction();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeDrug();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeIOP();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeBiometry();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodSurgeon();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeDiabeticDiagnosis();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodPostOpComplication();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeOperationCoPathology();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeOperation();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeTreatment();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeTreatmentCataract();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeOperationAnaesthesia();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeOperationIndication();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeOperationComplication();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeVisualAcuity();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->createTmpRcoNodEpisodeDiagnosis();
+        Yii::app()->db->createCommand($query)->execute();
+
+        $query = <<<EOL
 
 			DROP TABLE IF EXISTS tmp_episode_ids;
 			CREATE TABLE tmp_episode_ids(
@@ -258,6 +278,9 @@ class NodExportController extends BaseController
 				id  int(10) UNSIGNED NOT NULL UNIQUE,
 				KEY `tmp_treatment_ids_id` (`id`)
 			);
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
 			       
 DROP TABLE IF EXISTS tmp_rco_nod_pathology_type;
 CREATE TABLE tmp_rco_nod_pathology_type
@@ -299,12 +322,24 @@ SELECT
   ELSE 26 /* Other */
   END nod_id
 FROM disorder d;      
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
 
 			DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
 			CREATE TEMPORARY TABLE tmp_iol_positions (
 				`nodcode` INT(10) UNSIGNED NOT NULL,
 				`term` VARCHAR(100)
 			);
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
 
 			INSERT INTO tmp_iol_positions (`nodcode`, `term`)
 			VALUES
@@ -316,13 +351,25 @@ FROM disorder d;
 				(12, 'Sutured posterior chamber'),
 				(5, 'Iris fixated'),
 				(13, 'Other');
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
 
 		DROP TABLE IF EXISTS tmp_complication_type;
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
 
 		CREATE TABLE tmp_complication_type (
 			`code` INT(10) UNSIGNED NOT NULL,
 			`name` VARCHAR(100)
 		);
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
 
 		INSERT INTO tmp_complication_type (`code`, `name`)
 		VALUES
@@ -351,8 +398,16 @@ FROM disorder d;
 			(21, 'zonule rupture - vitreous loss'),
 			(25, 'Not recorded'),
 			(999, 'other');
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
                 
                         DROP TEMPORARY TABLE IF EXISTS tmp_complication;
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
 
                         CREATE TEMPORARY TABLE tmp_complication (
                                 `oe_id` INT(10) UNSIGNED NOT NULL,
@@ -360,6 +415,10 @@ FROM disorder d;
                                 `nod_id` INT(10) UNSIGNED NOT NULL,
                                 `nod_desc` VARCHAR(100)
                         );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
                 
                         INSERT INTO tmp_complication (`oe_id`, `oe_desc`, `nod_id`, `nod_desc` )
                         VALUES
@@ -377,23 +436,34 @@ FROM disorder d;
                         (12, 'Sub-conjunctival haemorrhage', 9, 'Sub-conjunctival haemorrhage'),
                         (13, 'Other', 12, 'Other');
                         -- (0, '', 99, 'Not recorded');
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
 
                         DROP TABLE IF EXISTS tmp_biometry_formula;
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
                         CREATE TABLE tmp_biometry_formula (
                                 `code` INT(10) UNSIGNED NOT NULL,
                                 `desc` VARCHAR(100)
                         );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
                         
                         INSERT INTO tmp_biometry_formula (`code`, `desc`)
                         VALUES
-                        (1, 'Haigis'),
-                        (2, 'Holladay'),
-                        (3, 'Holladay II'),
-                        (4, 'SRK/T'),
-                        (5, 'SRK II'),
-                        (6, 'Hoffer Q'),
-                        (7, 'Average of SRK/T + Holladay + Hoffer Q'),
-                        (9, 'Not recorded');
+                        (1, 'SRK/T'),
+                        (2, 'Holladay 1'),
+                        (3, 'SRK II'),
+                        (4, 'HofferQ'),
+                        (5, 'Haigis-L (myopic)'),
+                        (6, 'Holladay 2'),
+                        (7, 'Haigis');
                         
                         DROP TABLE IF EXISTS tmp_episode_diagnosis;
                         CREATE TABLE tmp_episode_diagnosis (
@@ -402,6 +472,10 @@ FROM disorder d;
                            `oe_subspecialty_id` INT(10) UNSIGNED NOT NULL,
                            `rco_condition_id` INT(10) UNSIGNED NOT NULL
                         );
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
                 
                         INSERT INTO tmp_episode_diagnosis (`oe_subspecialty_name`, `rco_condition_name`, `oe_subspecialty_id`, `rco_condition_id`)
                         VALUES
@@ -420,82 +494,162 @@ FROM disorder d;
                         ('Strabismus', 'Strabismus & Paediatric', 14, 18),
                         ('Paediatrics', 'Strabismus & Paediatric', 11, 18),
                         ('Vitreoretinal', 'Vitreoretinal', 16, 19);
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
                 
 
-                    DROP TABLE IF EXISTS tmp_episode_drug_route;
+                    DROP TABLE IF EXISTS tmp_episode_medication_route;
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
                 
-                    CREATE TABLE tmp_episode_drug_route (
+                    CREATE TABLE tmp_episode_medication_route (
                         `oe_route_id` INT(10) UNSIGNED,
                         `oe_route_name` VARCHAR(50), 
                         `oe_option_id` INT(10) UNSIGNED DEFAULT NULL, 
                         `oe_option_name` VARCHAR(50), 
                         `nod_id` INT(10) UNSIGNED DEFAULT NULL, 
                         `nod_name` VARCHAR(50),
-                        KEY `tmp_episode_drug_route_oe_route_id` (`oe_route_id`)
+                        KEY `tmp_episode_mediation_route_oe_route_id` (`oe_route_id`)
                     ); 
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
+			       
                 
-                    INSERT INTO `tmp_episode_drug_route` ( `oe_route_id`, `oe_route_name`, `oe_option_id`, `oe_option_name`, `nod_id`, `nod_name` )
+                    INSERT INTO `tmp_episode_medication_route` ( `oe_route_id`, `oe_route_name`, `oe_option_id`, `oe_option_name`, `nod_id`, `nod_name` )
                         VALUES
-                         (1, 'Eye', 1, 'Left', 1, 'Left eye'), 
-                         (1, 'Eye', 2, 'Right', 2, 'Right eye'), 
-                         (1, 'Eye', 3, 'Both', 4, 'Both eyes'), 
-                         (2, 'IM', NULL, "", 7, 'Intramuscular injection'), 
-                         (3, 'Inhalation', NULL, "", 6, 'Inhaled'), 
-                         (4, 'Intracameral', NULL, "", 5,'Intracameral'), 
-                         (5, 'Intradermal', NULL, "", 99, 'Other'), 
-                         (6, 'Intravitreal', NULL, "", 99, 'Other'), 
-                         (7, 'IV', NULL, "", 9, 'Intravenously'), 
-                         (8, 'Nose', NULL, "", 8, 'Intranasally'), 
-                         (9, 'Ocular muscle', NULL, "", 7, 'Intramuscular injection'), 
-                         (10, 'PO', NULL, "", 12, 'Orally'), 
-                         (11, 'PR', NULL, "", 15, 'Per rectum'), 
-                         (12, 'PV', NULL, "", 99, 'Other'), 
-                         (13, 'Sub-Conj', NULL, "", 18, 'Subconjunctival'), 
-                         (14, 'Sub-lingual', NULL, "", 19, 'Sub-lingual'), 
-                         (15, 'Subcutaneous', NULL, "", 17, 'Subcutaneously'), 
-                         (16, 'To Nose', NULL, "", 8, 'Intranasally'), 
-                         (17, 'To skin', NULL, "", 24, 'Trans-cutaneous'), 
-                         (18, 'Topical', NULL, "", 23, 'Topically'), 
-                         (19, 'n/a', NULL, "", 99, 'Other'), 
-                         (20, 'Other', NULL, "", 99, 'Other');
+                        (54, 'Ocular', 1, 'Left', 1, 'Left eye'),
+                        (54, 'Ocular', 2, 'Right', 2 , 'Right eye'),
+                        (54, 'Ocular', 3, 'Both', 4 , 'Both eyes'),
+                        (44, 'Intramuscular', NULL, "", 7, 'Intramuscular injection'),
+                        (62, 'Inhalation', NULL, "", 6, 'Inhaled'), 
+                        (81, 'Intracameral', NULL, "", 5, 'Intracameral'),
+                        (40, 'Intradermal', NULL, "", 99, 'Other'), 
+                        (77, 'Intravitreal', NULL, "", 99, 'Other'),
+                        (18, 'Topical', NULL, "", 99, 'Other'),
+                        (19, 'n/a', NULL, "", 99, 'Other'),
+                        (20, 'Other', NULL, "", 99, 'Other'),
+                        (21, 'Auricular', NULL, "", 99, 'Other'),
+                        (22, 'Cutaneous', NULL, "", 99, 'Other'),
+                        (23, 'Dental', NULL, "", 99, 'Other'),
+                        (24, 'Endocervical', NULL, "", 99, 'Other'),
+                        (25, 'Endosinusial', NULL, "", 99, 'Other'),
+                        (26, 'Endotracheopulmonary', NULL, "", 99, 'Other'),
+                        (27, 'Epidural', NULL, "", 99, 'Other'),
+                        (28, 'Extraamniotic', NULL, "", 99, 'Other'),
+                        (29, 'Gastroenteral', NULL, "", 99, 'Other'),
+                        (30, 'Gingival', NULL, "", 99, 'Other'),
+                        (31, 'Haemodialysis', NULL, "", 99, 'Other'),
+                        (32, 'Intraamniotic', NULL, "", 99, 'Other'),
+                        (33, 'Intraarterial', NULL, "", 99, 'Other'),
+                        (34, 'Intraarticular', NULL, "", 99, 'Other'),
+                        (35, 'Intrabursal', NULL, "", 99, 'Other'),
+                        (36, 'Intracardiac', NULL, "", 99, 'Other'),
+                        (37, 'Intracavernous', NULL, "", 99, 'Other'),
+                        (38, 'Intracervical', NULL, "", 99, 'Other'),
+                        (39, 'Intracoronary', NULL, "", 99, 'Other'),
+                        (41, 'Intradiscal', NULL, "", 99, 'Other'),
+                        (42, 'Intralesional', NULL, "", 99, 'Other'),
+                        (43, 'Intralymphatic', NULL, "", 99, 'Other'),
+                        (45, 'Intraocular', NULL, "", 99, 'Other'),
+                        (46, 'Intraperitoneal', NULL, "", 99, 'Other'),
+                        (47, 'Intrapleural', NULL, "", 99, 'Other'),
+                        (48, 'Intrasternal', NULL, "", 99, 'Other'),
+                        (49, 'Intrathecal', NULL, "", 99, 'Other'),
+                        (50, 'Intrauterine', NULL, "", 99, 'Other'),
+                        (52, 'Intravesical', NULL, "", 99, 'Other'),
+                        (56, 'Buccal', NULL, "", 99, 'Other'),
+                        (58, 'Obsolete-Oromucosal other', NULL, "", 99, 'Other'),
+                        (59, 'Periarticular', NULL, "", 99, 'Other'),
+                        (60, 'Perineural', NULL, "", 99, 'Other'),
+                        (67, 'Urethral', NULL, "", 99, 'Other'),
+                        (63, 'Route of administration not applicable', NULL, "", 99, 'Other'),
+                        (69, 'Obsolete-Intraventricular', NULL, "", 99, 'Other'),
+                        (70, 'Body cavity use', NULL, "", 99, 'Other'),
+                        (71, 'Haemofiltration', NULL, "", 99, 'Other'),
+                        (72, 'Intraosseous', NULL, "", 99, 'Other'),
+                        (73, 'Intraventricular cardiac', NULL, "", 99, 'Other'),
+                        (74, 'Intracerebroventricular', NULL, "", 99, 'Other'),
+                        (75, 'Submucosal rectal', NULL, "", 99, 'Other'),
+                        (76, 'Regional perfusion', NULL, "", 99, 'Other'),
+                        (78, 'Oromucosal', NULL, "", 99, 'Other'),
+                        (79, 'Intraepidermal', NULL, "", 99, 'Other'),
+                        (80, 'Epilesional', NULL, "", 99, 'Other'),
+                        (82, 'Iontophoresis', NULL, "", 99, 'Other'),
+                        (83, 'Intratumoral', NULL, "", 99, 'Other'),
+                        (84, 'Subretinal', NULL, "", 99, 'Other'),
+                        (85, 'Intestinal use', NULL, "", 99, 'Other'),
+                        (51, 'Intravenous', NULL, "", 9, 'Intravenously'),
+                        (53, 'Nasal', NULL, "", 8, 'Intranasally'),
+                        (44, 'Intramuscular', NULL, "", 7, 'Intramuscular injection'), 
+                        (55, 'Oral', NULL, "", 12, 'Orally'), 
+                        (61, 'Rectal', NULL, "", 15, 'Per rectum'),
+                        (68, 'Vaginal', NULL, "", 99, 'Other'), 
+                        (64, 'Subconjunctival', NULL, "", 18, 'Subconjunctival'), 
+                        (57, 'Sublingual', NULL, "", 19, 'Sub-lingual'), 
+                        (65, 'Subcutaneous', NULL, "", 17, 'Subcutaneously'),
+                        (66, 'Transdermal', NULL, "", 24, 'Trans-cutaneous'); 
      
 EOL;
+        Yii::app()->db->createCommand($query)->execute();
 
-        return $query . $createTempQuery;
+        return '';
     }
-    
+
     // Refactoring :
     /**
      * This function will call the functions one by one to populate each tmp tables belongs to a csv file
      */
     private function populateAllTempTables()
     {
-        $query = '';
-        
-        $query .= $this->populateTmpRcoNodMainEventEpisodes();
-        $query .= $this->populateTmpRcoNodEpisodeOperation();
-        $query .= $this->populateTmpRcoNodPatients();
-        $query .= $this->populateTmpRcoNodEpisodePreOpAssessment();
-        $query .= $this->populateTmpRcoNodPatientCVIStatus();
-        $query .= $this->populateTmpRcoNodEpisodeRefraction();
-        $query .= $this->populateTmpRcoNodEpisodeDrug();
-        $query .= $this->populateTmpRcoNodEpisodeIOP();
-        $query .= $this->populateTmpRcoNodEpisodeBiometry();
-        $query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
-        $query .= $this->populateTmpRcoNodPostOpComplication();
-        $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
-        $query .= $this->populateTmpRcoNodEpisodeTreatment();
-        $query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
-        $query .= $this->populateTmpRcoNodEpisodeOperationAnaesthesia();
-        $query .= $this->populateTmpRcoNodEpisodeOperationIndication();
-        $query .= $this->populateTmpRcoNodEpisodeOperationComplication();
-        $query .= $this->populateTmpRcoNodEpisodeDiagnosis();
-        $query .= $this->populateTmpRcoNodEpisodeVisualAcuity();
-        $query .= $this->populateTmpRcoNodSurgeon();  // Depends on earlier tables being populated.
+        $query = $this->populateTmpRcoNodMainEventEpisodes();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeOperation();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodPatients();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodePreOpAssessment();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodPatientCVIStatus();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeRefraction();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeDrug();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeIOP();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeBiometry();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodPostOpComplication();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeOperationCoPathology();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeTreatment();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeTreatmentCataract();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeOperationAnaesthesia();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeOperationIndication();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeOperationComplication();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeDiagnosis();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodEpisodeVisualAcuity();
+        Yii::app()->db->createCommand($query)->execute();
+        $query = $this->populateTmpRcoNodSurgeon();  // Depends on earlier tables being populated.
+        Yii::app()->db->createCommand($query)->execute();
 
         return $query;
     }
-    
+
     private function clearAllTempTables()
     {
         $cleanQuery = <<<EOL
@@ -505,7 +659,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_PatientCVIStatus_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeRefraction_{$this->extractIdentifier};
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeMedication_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_Surgeon_{$this->extractIdentifier};
@@ -529,7 +683,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_complication_type;
                 DROP TABLE IF EXISTS tmp_biometry_formula;
                 DROP TABLE IF EXISTS tmp_episode_diagnosis;
-                DROP TABLE IF EXISTS tmp_episode_drug_route;
+                DROP TABLE IF EXISTS tmp_episode_medication_route;
                 DROP TABLE IF EXISTS tmp_episode_ids;
                 DROP TABLE IF EXISTS tmp_treatment_ids;
 
@@ -537,11 +691,11 @@ EOL;
 
         Yii::app()->db->createCommand($cleanQuery)->execute();
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     /********** Surgeon **********/
 
     private function createTmpRcoNodSurgeon()
@@ -567,7 +721,7 @@ EOL;
      * record if they move between centres. This was not done with the ‘legacy’ data already in
      *  NOD and therefore at present we do not have the ability to identify individual surgeons.
      */
-    
+
     private function populateTmpRcoNodSurgeon()
     {
         $query = <<<EOL
@@ -615,15 +769,15 @@ EOL;
         $this->saveCSVfile($dataQuery, 'Surgeon');
 
     }
-    
+
     /********** end of Surgeon **********/
 
-    
-    
-    
-    
+
+
+
+
     /********** EpisodeDiabeticDiagnosis **********/
-    
+
     private function createTmpRcoNodEpisodeDiabeticDiagnosis()
     {
         $query = <<<EOL
@@ -692,11 +846,11 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function getEpisodeDiabeticDiagnosis()
     {
         $query = <<<EOL
-                SELECT c.nod_episode_id as EpisodeId, d.IsDiabetic, d.DiabetesTypeId, d.DiabetesRegimeId, d.AgeAtDiagnosis
+                SELECT c.oe_event_id as EpisodeId, d.IsDiabetic, d.DiabetesTypeId, d.DiabetesRegimeId, d.AgeAtDiagnosis
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extractIdentifier} d ON c.oe_event_id = d.oe_event_id
 EOL;
@@ -708,18 +862,18 @@ EOL;
         );
 
         $output = $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis');
-        
+
         return $output;
     }
-    
+
     /********** end of EpisodeDiabeticDiagnosis **********/
 
 
 
-    
-    
+
+
     /********** Patient **********/
-    
+
     /**
      * Create tmp_rco_nod_patients_{$this->extractIdentifier} table
      */
@@ -740,7 +894,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     /**
      *  Load nod_patients data (using previously identified patients in control table)
      */
@@ -773,7 +927,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     /**
      * The extraction of patient data is psuedoanonymised. All tables prefixed with “Patient” link back to the
      * “Patient” table via the ‘PatientId’ variable. Each patient on the RCOphth NOD will have one row in the “Patient” table.
@@ -784,7 +938,7 @@ EOL;
                 SELECT * 
                 FROM tmp_rco_nod_patients_{$this->extractIdentifier}
 EOL;
-        
+
         $dataQuery = array(
             'query' => $query,
             'header' => array('PatientId', 'GenderId', 'EthnicityId', 'DateOfBirth', 'DateOfDeath', 'IMDScore', 'IsPrivate'),
@@ -792,15 +946,15 @@ EOL;
 
         $this->saveCSVfile($dataQuery, 'Patient');
     }
-    
+
     /********** end of Patient **********/
-    
-    
-    
-    
-    
+
+
+
+
+
     /********** PatientCVIStatus **********/
-    
+
     private function createTmpRcoNodPatientCVIStatus()
     {
         $query = <<<EOL
@@ -816,7 +970,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     /**
      * Populate Patient CVI Status
      */
@@ -863,14 +1017,14 @@ EOL;
 
         return $query;
     }
-    
+
     private function getPatientCviStatus()
     {
         $query = <<<EOL
                 SELECT *
                 FROM tmp_rco_nod_PatientCVIStatus_{$this->extractIdentifier}
 EOL;
-                
+
         $dataQuery = array(
             'query' => $query,
             'header' => array('PatientId', 'Date', 'IsDateApprox', 'IsCVIBlind', 'IsCVIPartial'),
@@ -878,15 +1032,15 @@ EOL;
 
         $this->saveCSVfile($dataQuery, 'PatientCVIStatus');
     }
-    
+
     /********** end of PatientCVIStatus **********/
-    
-    
-    
-    
-    
+
+
+
+
+
     /********** Episode **********/
-    
+
     private function createTmpRcoNodMainEventEpisodes()
     {
         $query = <<<EOL
@@ -905,7 +1059,7 @@ CREATE TABLE tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
 EOL;
         return $query;
     }
-    
+
     /**
      * Load main control table with ALL events
      */
@@ -925,7 +1079,7 @@ INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
 SELECT
   ev.id AS oe_event_id
 , ep.patient_id AS patient_id
-, ev.id AS nod_episode_id
+, ep.id AS nod_episode_id
 , DATE(ev.event_date) AS nod_date
 , et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
@@ -946,7 +1100,10 @@ EOL;
 
         $query .= <<<EOL
 
-AND ev.deleted = 0;
+AND ev.deleted = 0
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
 
 #Load main control table with ALL OTHER operation note events (using previously identified patients in control table)
 INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
@@ -960,7 +1117,7 @@ INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
 SELECT
   ev.id AS oe_event_id
 , ep.patient_id AS patient_id
-, ev.id AS nod_episode_id
+, ep.id AS nod_episode_id
 , DATE(ev.event_date) AS nod_date
 , et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
@@ -970,7 +1127,10 @@ JOIN event_type et ON ev.event_type_id = et.id
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND ev.id NOT IN (SELECT c.oe_event_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND et.class_name = 'OphTrOperationnote'
-AND ev.deleted = 0;
+AND ev.deleted = 0
+EOL;
+        Yii::app()->db->createCommand($query)->execute();
+        $query = <<<EOL
 
 #Load main control table with ALL examination events (using previously identified patients in control table)
 INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
@@ -984,7 +1144,7 @@ INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
 SELECT
   ev.id AS oe_event_id
 , ep.patient_id AS patient_id
-, ev.id AS nod_episode_id
+, ep.id AS nod_episode_id
 , DATE(ev.event_date) AS nod_date
 , et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
@@ -993,17 +1153,17 @@ JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id 
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND et.class_name IN ('OphCiExamination', 'OphInBiometry', 'OphDrPrescription')
-AND ev.deleted = 0;
-
+AND ev.deleted = 0
 EOL;
+        Yii::app()->db->createCommand($query)->execute();
 
-        return $query;
+        return "describe event";
     }
-    
+
     private function getEpisode()
     {
         $query = <<<EOL
-                SELECT c.patient_id as PatientId, c.nod_episode_id as EpisodeId, c.nod_date as Date, c.nod_episode_seq as Seq
+                SELECT c.patient_id as PatientId, c.oe_event_id as EpisodeId, c.nod_date as Date, c.nod_episode_seq as Seq
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 EOL;
         $dataQuery = array(
@@ -1013,15 +1173,15 @@ EOL;
 
         $this->saveCSVfile($dataQuery, 'Episode');
     }
-    
+
     /********** end of Episode **********/
-    
-    
-    
-    
-    
+
+
+
+
+
     /********** EpisodePreOpAssessment **********/
-    
+
     private function createTmpRcoNodEpisodePreOpAssessment()
     {
         $query = <<<EOL
@@ -1036,7 +1196,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function populateTmpRcoNodEpisodePreOpAssessment()
     {
         $query = <<<EOL
@@ -1083,12 +1243,12 @@ GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
 EOL;
         return $query;
     }
-    
+
     private function getEpisodePreOpAssessment()
     {
 
         $query = <<<EOL
-                SELECT c.nod_episode_id as EpisodeId, p.Eye, p.isAbleToLieFlat, p.IsInabilityToCooperate
+                SELECT c.oe_event_id as EpisodeId, p.Eye, p.isAbleToLieFlat, p.IsInabilityToCooperate
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} p ON c.oe_event_id = p.oe_event_id
 EOL;
@@ -1100,15 +1260,15 @@ EOL;
 
         return $this->saveCSVfile($dataQuery, 'EpisodePreOpAssessment');
     }
-    
+
     /********** end of EpisodePreOpAssessment **********/
-    
-    
-    
-    
-    
+
+
+
+
+
     /********** EpisodeRefraction **********/
-    
+
     private function createTmpRcoNodEpisodeRefraction()
     {
         $query = <<<EOL
@@ -1123,7 +1283,7 @@ EOL;
                     ReadingAdd CHAR(1) DEFAULT NULL
                 );
 EOL;
-                
+
         return $query;
     }
     /**
@@ -1183,15 +1343,15 @@ EOL;
                 /* Restrict: RIGHT/BOTH eyes */
                 WHERE r.eye_id IN (2,3);
 EOL;
-                
+
         return $query;
-        
+
     }
-    
+
     private function getEpisodeRefraction()
     {
         $query = <<<EOL
-                SELECT c.nod_episode_id as EpisodeId, r.Eye, r.RefractionTypeId, r.Sphere, r.Cylinder, r.Axis, r.ReadingAdd
+                SELECT c.oe_event_id as EpisodeId, r.Eye, r.RefractionTypeId, r.Sphere, r.Cylinder, r.Axis, r.ReadingAdd
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN tmp_rco_nod_EpisodeRefraction_{$this->extractIdentifier} r ON c.oe_event_id = r.oe_event_id
 EOL;
@@ -1202,14 +1362,14 @@ EOL;
 
         return $this->saveCSVfile($dataQuery, 'EpisodeRefraction');
     }
-    
+
     /********** end of EpisodeRefraction **********/
-    
-    
-    
+
+
+
 
     /********** EpisodeDiagnosis **********/
-    
+
     private function createTmpRcoNodEpisodeDiagnosis()
     {
         $query = <<<EOL
@@ -1224,11 +1384,11 @@ EOL;
                 DiagnosisTermDescription VARCHAR(255)
             );
 EOL;
-            
+
         return $query;
     }
-    
-    
+
+
     private function populateTmpRcoNodEpisodeDiagnosis()
     {
         $query = <<<EOL
@@ -1279,7 +1439,7 @@ EOL;
                     WHERE f.id = ep.firm_id
                   )
                 ) AS ConditionId
-              , IFNULL(disorder_id, '') AS DiagnosisTermId
+              , IFNULL(disorder_id,0) AS DiagnosisTermId
               , IFNULL(d.term, '') AS DiagnosisTermDescription
               FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
               JOIN event e
@@ -1293,12 +1453,12 @@ EOL;
 
         return $query;
     }
-    
-    
+
+
     private function getEpisodeDiagnosis()
     {
         $query = <<<EOL
-                SELECT c.nod_episode_id as EpisodeId, d.Eye, d.Date, d.SurgeonId, d.ConditionId, d.DiagnosisTermId, d.DiagnosisTermDescription
+                SELECT c.oe_event_id as EpisodeId, d.Eye, d.Date, d.SurgeonId, d.ConditionId, d.DiagnosisTermId, d.DiagnosisTermDescription
                 FROM tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier} d
                 JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON d.oe_event_id = c.oe_event_id
                 
@@ -1309,10 +1469,10 @@ EOL;
         );
 
         $output =  $this->saveCSVfile($dataQuery, 'EpisodeDiagnosis');
-        
+
         return $output;
     }
-    
+
     /********** end of EpisodeDiagnosis **********/
 
 
@@ -1320,135 +1480,94 @@ EOL;
 
 
     /********** EpisodeDrug **********/
-    
+
     private function createTmpRcoNodEpisodeDrug()
     {
-        
+
         $query = <<<EOL
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier};
-                CREATE TABLE tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier} (
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeMedication_{$this->extractIdentifier};
+                CREATE TABLE tmp_rco_nod_EpisodeMedication_{$this->extractIdentifier} (
                         oe_event_id INT(10) NOT NULL,
                         Eye CHAR(1) NOT NULL,
-                        DrugId VARCHAR(150) DEFAULT NULL, 
-                        DrugRouteId INT(10) UNSIGNED DEFAULT NULL,
-                        StartDate VARCHAR(10) DEFAULT NULL,
-                        StopDate  VARCHAR(10) DEFAULT NULL,
+                        MedicationId VARCHAR(150) DEFAULT NULL, 
+                        MedicationRouteId INT(10) UNSIGNED DEFAULT NULL,
+                        StartDate VARCHAR(20) DEFAULT NULL,
+                        StopDate  VARCHAR(20) DEFAULT NULL,
                         IsAddedByPrescription  TINYINT(1) DEFAULT NULL,
                         IsContinueIndefinitely  TINYINT(1) DEFAULT NULL,
-                        IsStartDateApprox TINYINT(1) DEFAULT NULL
+                        IsStartDateApprox TINYINT(1) DEFAULT NULL,
+                        inner_event_id INT(10) NOT NULL
                 );
 EOL;
         return $query;
-        
+
     }
-    
+
     private function populateTmpRcoNodEpisodeDrug()
     {
         $query = <<<EOL
-                INSERT INTO tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier} (
+                INSERT INTO tmp_rco_nod_EpisodeMedication_{$this->extractIdentifier} (
                     oe_event_id,
                     Eye,
-                    DrugId,
-                    DrugRouteId,
+                    MedicationId,
+                    MedicationRouteId,
                     StartDate,
                     StopDate,
                     IsAddedByPrescription,
                     IsContinueIndefinitely,
-                    IsStartDateApprox
-                  ) 
-                  SELECT c.nod_episode_id AS EpisodeId,
-                        (SELECT CASE WHEN option_id = 1 THEN 'L' WHEN option_id = 2 THEN 'R' WHEN option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
-                        (SELECT CASE WHEN m.drug_id IS NOT NULL THEN (SELECT name  FROM drug WHERE id = m.drug_id)
-                                    WHEN m.medication_drug_id IS NOT NULL THEN (SELECT name FROM medication_drug WHERE id = m.medication_drug_id)
-                                    WHEN m.medication_drug_id IS NULL THEN '' END) AS DrugId,
+                    IsStartDateApprox,
+                    inner_event_id
+                  ) SELECT t.oe_event_id AS EpisodeId,
+                        (SELECT CASE WHEN m.route_id = 1 THEN 'L' WHEN m.route_id = 2 THEN 'R' WHEN m.route_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
+                        (SELECT CASE WHEN m.medication_id IS NOT NULL THEN (SELECT preferred_term from medication where id = m.medication_id) END) AS MedicationId,
 
                       ( SELECT CASE
-                                 WHEN opi.id IS NOT NULL
-                                 THEN ( SELECT nod_id FROM tmp_episode_drug_route
-                                        WHERE 
-                                        (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id = opi.route_option_id) OR
-                                        (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL)
-                                      )
-                                 ELSE ( SELECT nod_id FROM tmp_episode_drug_route
+                                 WHEN m.id IS NOT NULL
+                                 THEN ( SELECT nod_id FROM tmp_episode_medication_route
                                         WHERE
-                                        (m.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id = m.option_id) OR
-                                        (m.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL)
+                                        (m.route_id = tmp_episode_medication_route.oe_route_id AND tmp_episode_medication_route.oe_option_id = m.laterality) OR
+                                        (m.route_id = tmp_episode_medication_route.oe_route_id AND tmp_episode_medication_route.oe_option_id IS NULL)
                                       )
                                END
-                      ) AS DrugRouteId,
+                      ) AS MedicationRouteId,
 
-                        (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
-                        (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
-                        (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
+                        (SELECT CASE WHEN ev2.event_date IS NULL THEN '' ELSE DATE_FORMAT(ev2.event_date,'%Y-%m-%d') END) AS StartDate,
+                        (SELECT CASE
+                            WHEN LOCATE('day', dd.name) > 0 THEN	
+                                DATE_FORMAT(DATE_ADD(DATE_FORMAT(ev2.event_date, '%Y-%m-%d'), INTERVAL SUBSTR(dd.name, 1, LOCATE('day', dd.name)-1) DAY), '%Y-%m-%d')	
+                            WHEN LOCATE('month', dd.name) > 0 THEN	
+                                DATE_FORMAT(DATE_ADD(DATE_FORMAT(ev2.event_date, '%Y-%m-%d'), INTERVAL SUBSTR(dd.name, 1, LOCATE('month', dd.name)-1) MONTH), '%Y-%m-%d')	
+                            WHEN LOCATE('week', dd.name) > 0 THEN	
+                                DATE_FORMAT(DATE_ADD(DATE_FORMAT(ev2.event_date, '%Y-%m-%d'), INTERVAL SUBSTR(dd.name, 1, LOCATE('week', dd.name)-1) WEEK), '%Y-%m-%d')	
+                           ELSE ''	
+                        END) AS StopDate,
+
+                        (SELECT CASE WHEN m.usage_type = "OphDrPrescription" THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
                         (SELECT CASE WHEN lower(dd.name) = 'ongoing' THEN 1 ELSE 0 END) AS IsContinueIndefinitely,
-                        (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
+                        (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox,
+                        ev2.id
 
-                    FROM  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
-                    JOIN medication m ON c.patient_id = m.patient_id
-                    LEFT JOIN ophdrprescription_item opi ON m.prescription_item_id = opi.id
-                    LEFT JOIN drug_duration dd ON dd.id = opi.duration_id;
-                
-                
-  
-                INSERT INTO tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier} (
-                    oe_event_id,
-                    Eye,
-                    DrugId,
-                    DrugRouteId,
-                    StartDate,
-                    StopDate,
-                    IsAddedByPrescription,
-                    IsContinueIndefinitely,
-                    IsStartDateApprox
-                )
-                SELECT
-                    c.oe_event_id AS EpisodeId,
-                    (SELECT CASE WHEN route_option_id = 1 THEN 'L' WHEN route_option_id = 2 THEN 'R' WHEN route_option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
-                    drug.name AS DrugId,
+                    FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} t
+                    JOIN event ev ON t.oe_event_id = ev.id
+                    JOIN episode ep ON t.patient_id = ep.patient_id
+                    JOIN event ev2 ON ev2.episode_id = ep.id
+                    JOIN event_medication_use m ON m.event_id = ev2.id
+                    LEFT JOIN medication_duration dd ON dd.id = m.duration_id
+                    WHERE ( m.usage_type = "OphDrPrescription" AND ev2.deleted = 0 AND (ev.event_type_id != 27 OR ev2.info != 'Draft'));
 
-                    ( SELECT nod_id FROM tmp_episode_drug_route
-                      WHERE
-                      (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id = opi.route_option_id) OR
-                      (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL)
-                    ) AS DrugRouteId,
+                DELETE tmp_rco_nod_EpisodeMedication_{$this->extractIdentifier} FROM tmp_rco_nod_EpisodeMedication_{$this->extractIdentifier} t JOIN event e ON t.inner_event_id = e.id WHERE e.info = 'Draft' AND t.inner_event_id != t.oe_event_id;
 
-                    DATE(event.event_date) AS StartDate,
-
-                    CASE WHEN LOCATE('day', drug_duration.name) > 0 THEN
-                        DATE_FORMAT(DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE('day', drug_duration.name)-1) DAY), '%Y-%m-%d')
-                     WHEN LOCATE('month', drug_duration.name) > 0 THEN
-                        DATE_FORMAT(DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE('month', drug_duration.name)-1) MONTH), '%Y-%m-%d')
-                     WHEN LOCATE('week', drug_duration.name) > 0 THEN
-                        DATE_FORMAT(DATE_ADD(event.event_date, INTERVAL SUBSTR(drug_duration.name, 1, LOCATE('week', drug_duration.name)-1) WEEK), '%Y-%m-%d')
-                     ELSE ''
-                    END
-                    AS StopDate,
-
-                    1 AS IsAddedByPrescription,
-                    CASE WHEN lower(drug_duration.name) = 'ongoing' THEN 1 ELSE 0 END AS IsContinueIndefinitely,
-                    0 AS IsStartDateApprox
-
-                    FROM ophdrprescription_item AS opi
-                    JOIN et_ophdrprescription_details ON opi.prescription_id = et_ophdrprescription_details.id
-
-                    JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON et_ophdrprescription_details.event_id = c.oe_event_id
-                    JOIN event ON c.oe_event_id = event.id
-
-                    JOIN drug ON opi.drug_id = drug.id
-                    JOIN drug_duration ON opi.duration_id = drug_duration.id
-                    LEFT JOIN medication ON medication.prescription_item_id = opi.id
-                    WHERE medication.id is NULL;
+                    
 EOL;
-                      
+
         return $query;
     }
-            
+
     private function getEpisodeDrug()
     {
         $query = <<<EOL
-                SELECT c.nod_episode_id as EpisodeId, d.Eye, d.DrugId, d.DrugRouteId, d.StartDate, d.StopDate, d.IsAddedByPrescription, d.IsContinueIndefinitely, d.IsStartDateApprox
-                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-                JOIN tmp_rco_nod_EpisodeDrug_{$this->extractIdentifier} d ON c.oe_event_id = d.oe_event_id
+                SELECT d.oe_event_id as EpisodeId, (SELECT CASE WHEN d.MedicationRouteId = 1 THEN 'L' WHEN d.MedicationRouteId = 2 THEN 'R' WHEN d.MedicationRouteId = 4 THEN 'B'  ELSE 'N' END), d.MedicationId, d.MedicationRouteId, d.StartDate, d.StopDate, d.IsAddedByPrescription, d.IsContinueIndefinitely, d.IsStartDateApprox
+                FROM tmp_rco_nod_EpisodeMedication_{$this->extractIdentifier} d
 EOL;
         $dataQuery = array(
             'query' => $query,
@@ -1456,23 +1575,23 @@ EOL;
         );
 
         $output = $this->saveCSVfile($dataQuery, 'EpisodeDrug');
-        
+
         return $output;
     }
     /********** end of EpisodeDrug **********/
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
     /********** EpisodeBiometry **********/
-    
-    
+
+
     private function createTmpRcoNodEpisodeBiometry()
     {
-        
+
         $query = <<<EOL
             DROP TABLE IF EXISTS tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier};
             CREATE TABLE tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier} (
@@ -1490,10 +1609,10 @@ EOL;
                     SNR DECIMAL(6,1)
             );
 EOL;
-        
+
         return $query;
     }
-    
+
     private function populateTmpRcoNodEpisodeBiometry()
     {
         $query = <<<EOL
@@ -1517,7 +1636,7 @@ EOL;
                     axial_length_left AS AxialLength,
                     '' AS BiometryAScanId,
                     (   SELECT CASE
-                                WHEN ophinbiometry_imported_events.device_model = 'IOLmaster 500'  THEN 1
+                                WHEN ophinbiometry_imported_events.device_model = 'IOLMaster 500'  THEN 1
                                 WHEN ophinbiometry_imported_events.device_model = 'Haag-Streit LensStar' THEN 2
                                 WHEN ophinbiometry_imported_events.device_model = 'Other' THEN 9
                         END
@@ -1525,11 +1644,11 @@ EOL;
                     ( 
                         SELECT code 
                         FROM tmp_biometry_formula 
-                        WHERE tmp_biometry_formula.desc = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci
+                        WHERE BINARY tmp_biometry_formula.desc = ophinbiometry_calculation_formula.name
                     ) AS BiometryFormulaId,
                     k1_left AS K1PreOperative,
                     k2_left AS K2PreOperative,
-                    axis_k1_left AS AxisK1,
+                    k1_axis_left AS AxisK1,
                     ms.k2_axis_left AS AxisK2,
                     ms.acd_left AS ACDepth,
                     ms.snr_left AS SNR
@@ -1577,7 +1696,7 @@ EOL;
                     ( SELECT code FROM tmp_biometry_formula WHERE tmp_biometry_formula.desc = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci) AS BiometryFormulaId,
                     k1_left AS K1PreOperative,
                     k2_left AS K2PreOperative,
-                    axis_k1_left AS AxisK1,
+                    k1_axis_left AS AxisK1,
                     ms.k2_axis_left AS AxisK2,
                     ms.acd_left AS ACDepth,
                     ms.snr_left AS SNR
@@ -1602,9 +1721,9 @@ EOL;
 
     private function getEpisodeBiometry()
     {
-        
+
         $query = <<<EOL
-            SELECT  c.nod_episode_id,
+            SELECT  c.oe_event_id,
                     b.Eye,
                     b.AxialLength,
                     b.BiometryAScanId,
@@ -1619,7 +1738,7 @@ EOL;
             FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
             JOIN tmp_rco_nod_EpisodeBiometry_{$this->extractIdentifier} b ON c.oe_event_id = b.oe_event_id
 EOL;
-        
+
         $dataQuery = array(
             'query' => $query,
             'header' => array(
@@ -1643,23 +1762,23 @@ EOL;
 
         return $output;
     }
-    
-    /********** EpisodeBiometry **********/
-    
-    
-    
-    
-    
 
-    
+    /********** EpisodeBiometry **********/
+
+
+
+
+
+
+
     /********** EpisodeIOP **********/
-    
+
     /**
      * Create tmp_rco_nod_EpisodeIOP_ table
      */
     private function createTmpRcoNodEpisodeIOP()
     {
-        
+
         $query = <<<EOL
             DROP TABLE IF EXISTS tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier};
             CREATE TABLE tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier} (
@@ -1670,10 +1789,10 @@ EOL;
                 value INT(10) DEFAULT NULL
             );
 EOL;
-        
+
         return $query;
     }
-    
+
     /**
      * Load Episode IOP data
      */
@@ -1688,7 +1807,7 @@ EOL;
                 Value
             )
             SELECT
-                c.nod_episode_id AS EpisodeId,
+                c.oe_event_id AS EpisodeId,
                 'L' AS Eye,
                 '' AS Type,
                 9 AS GlaucomaMedicationStatusId,
@@ -1711,7 +1830,7 @@ EOL;
                 GlaucomaMedicationStatusId,
                 Value
             )
-            SELECT  c.nod_episode_id AS EpisodeId,
+            SELECT  c.oe_event_id AS EpisodeId,
                     'R' AS Eye,
                     '' AS Type,
                     9 AS GlaucomaMedicationStatusId,
@@ -1728,11 +1847,11 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function getEpisodeIOP()
     {
         $query = <<<EOL
-                SELECT  c.nod_episode_id as EpisodeId, iop.Eye, iop.Type, iop.GlaucomaMedicationStatusId, iop.Value
+                SELECT  c.oe_event_id as EpisodeId, iop.Eye, iop.Type, iop.GlaucomaMedicationStatusId, iop.Value
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN tmp_rco_nod_EpisodeIOP_{$this->extractIdentifier} iop ON c.oe_event_id = iop.oe_event_id
 EOL;
@@ -1746,7 +1865,7 @@ EOL;
 
         return $output;
     }
-    
+
     /********** end of EpisodeIOP **********/
 
     protected function array2Csv(array $data, $header = null, $dataFormatter = null)
@@ -1769,13 +1888,13 @@ EOL;
         fclose($df);
         return ob_get_clean();
     }
-    
 
-    
-    
-    
+
+
+
+
     /********** EpisodePostOpComplication **********/
-    
+
     private function createTmpRcoNodPostOpComplication()
     {
         $query = <<<EOL
@@ -1790,7 +1909,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function populateTmpRcoNodPostOpComplication()
     {
         $query = <<<EOL
@@ -1870,14 +1989,14 @@ EOL;
                 WHERE epoce.eye_id IN (2, 3) /* 2 = RIGHT EYE, 3 = BOTH EYES */ ;
 EOL;
         return $query;
-        
+
     }
-    
+
     private function getEpisodePostOpComplication()
     {
 
         $query = <<<EOL
-                SELECT c.nod_episode_id as EpisodeId, c.oe_event_id as OperationId, p.Eye, p.ComplicationTypeId
+                SELECT c.oe_event_id as EpisodeId, c.oe_event_id as OperationId, p.Eye, p.ComplicationTypeId
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN tmp_rco_nod_EpisodePostOpComplication_{$this->extractIdentifier} p ON c.oe_event_id = p.oe_event_id
 
@@ -1888,16 +2007,16 @@ EOL;
         );
 
         $output = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication');
-        
+
         return $output;
     }
-    
+
     /********** end of EpisodePostOpComplication **********/
-    
-    
-    
-    
-    
+
+
+
+
+
     /********** EpisodeOperationCoPathology **********/
 
     private function createTmpRcoNodEpisodeOperationCoPathology()
@@ -1914,7 +2033,7 @@ EOL;
 EOL;
             return $query;
     }
-    
+
     private function populateTmpRcoNodEpisodeOperationCoPathology()
     {
         $query = <<<EOL
@@ -2317,8 +2436,8 @@ AND c.nod_date <= op.ListedDate
 EOL;
         return $query;
     }
-    
-    
+
+
     private function getEpisodeOperationCoPathology()
     {
 
@@ -2336,15 +2455,15 @@ EOL;
 
         return $output;
     }
-    
+
     /********** end of EpisodeOperationCoPathology **********/
-    
-    
-    
-    
-    
+
+
+
+
+
     /********** EpisodeTreatmentCataract **********/
-    
+
     private function createTmpRcoNodEpisodeTreatmentCataract()
     {
         $query = <<<EOL
@@ -2368,7 +2487,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function populateTmpRcoNodEpisodeTreatmentCataract()
     {
         $query = <<<EOL
@@ -2476,8 +2595,8 @@ EOL;
 EOL;
         return $query;
     }
-    
-    
+
+
     private function getEpisodeTreatmentCataract()
     {
         $query = <<<EOL
@@ -2487,7 +2606,7 @@ SELECT  tc.TreatmentId, tc.IsFirstEye, tc.PreparationDrugId, tc.IncisionSiteId, 
 FROM tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier} tc
 
 EOL;
-        
+
         $dataQuery = array(
             'query' => $query,
             'header' => array(
@@ -2506,19 +2625,19 @@ EOL;
                 'WoundClosureId',
             ),
         );
-        
+
         return $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract');
 
     }
-    
+
     /********** end of EpisodeTreatmentCataract **********/
-    
-    
-    
-    
-    
+
+
+
+
+
     /*********** EpisodeOperationAnaesthesia ****************/
-    
+
     private function createTmpRcoNodEpisodeOperationAnaesthesia()
     {
         $query = <<<EOL
@@ -2534,7 +2653,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function populateTmpRcoNodEpisodeOperationAnaesthesia()
     {
         $query = "INSERT INTO tmp_rco_nod_EpisodeOperationAnaesthesia_{$this->extractIdentifier}(
@@ -2619,7 +2738,7 @@ FROM   ( SELECT    a.event_id oe_event_id
 
         return $query;
     }
-    
+
     private function getEpisodeOperationAnaesthesia()
     {
         $query = "SELECT oe_event_id AS OperationId, AnaesthesiaTypeId, AnaesthesiaNeedle, Sedation, SurgeonId, ComplicationId
@@ -2634,11 +2753,11 @@ FROM   ( SELECT    a.event_id oe_event_id
     }
 
     /********* end of EpisodeOperationAnaesthesia***********/
-    
-    
-    
-    
-    
+
+
+
+
+
     /********** EpisodeTreatment **********/
 
     private function createTmpRcoNodEpisodeTreatment()
@@ -2658,8 +2777,8 @@ FROM   ( SELECT    a.event_id oe_event_id
 EOL;
         return $query;
     }
-    
-    
+
+
     private function populateTmpRcoNodEpisodeTreatment()
     {
         $query = <<<EOL
@@ -2744,9 +2863,9 @@ EOL;
 EOL;
         return $query;
     }
-    
-    
-    
+
+
+
     private function getEpisodeTreatment()
     {
         $query = <<<EOL
@@ -2759,9 +2878,9 @@ EOL;
             'query' => $query,
             'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId', 'TreatmentTypeDescription'),
         );
-        
+
         $this->saveCSVfile($dataQuery, 'EpisodeTreatment');
-        
+
         $query = <<<EOL
         
 SELECT DISTINCT t.TreatmentTypeId, t.TreatmentTypeDescription
@@ -2772,12 +2891,12 @@ EOL;
             'query' => $query,
             'header' => array('TreatmentTypeId', 'TreatmentTypeDescription'),
         );
-        
+
         return $this->saveCSVfile($dataQuery, 'TreatmentCodeLookup');
     }
-    
+
     /********** EpisodeOperationIndication **********/
-    
+
     private function createTmpRcoNodEpisodeOperationIndication()
     {
         $query = <<<EOL
@@ -2787,13 +2906,13 @@ EOL;
                 OperationId INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
                 IndicationId INT(10) NOT NULL,
-                IndicationDescription VARCHAR(255) NOT NULL,
+                IndicationDescription VARCHAR(255),
             UNIQUE KEY OperationId (OperationId,Eye,IndicationId) 
             );
 EOL;
         return $query;
     }
-    
+
     private function populateTmpRcoNodEpisodeOperationIndication()
     {
         $query = <<<EOL
@@ -2808,7 +2927,7 @@ EOL;
                 o.oe_event_id
               , o.OperationId
               , 'L' AS Eye
-              , d.id AS IndicationId
+              , IFNULL(d.id,0) AS IndicationId
               , d.term AS IndicationDescription
               /* Restriction: Start with operations (processed previously) */
             FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} o
@@ -2832,7 +2951,7 @@ EOL;
                 o.oe_event_id
               , o.OperationId
               , 'R' AS Eye
-              , d.id AS IndicationId
+              , IFNULL(d.id,0) AS IndicationId
               , d.term AS IndicationDescription
               /* Restriction: Start with operations (processed previously) */
             FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} o
@@ -2855,7 +2974,7 @@ EOL;
 EOL;
         return $query;
     }
-        
+
     private function getEpisodeOperationIndication()
     {
         $query = <<<EOL
@@ -2881,18 +3000,18 @@ EOL;
             'query' => $query,
             'header' => array('IndicationId', 'IndicationDescription'),
         );
-        
+
         return $this->saveCSVfile($dataQuery, 'OperationIndicationCodeLookup');
 
     }
-    
+
     /********** end of EpisodeOperationIndication **********/
 
-    
-    
-    
+
+
+
     /********** EpisodeOperationComplication **********/
-    
+
     private function createTmpRcoNodEpisodeOperationComplication()
     {
         $query = <<<EOL
@@ -2908,8 +3027,8 @@ EOL;
 EOL;
         return $query;
     }
-    
-    
+
+
     private function populateTmpRcoNodEpisodeOperationComplication()
     {
         $query = <<<EOL
@@ -2997,9 +3116,9 @@ EOL;
 EOL;
         return $query;
     }
-    
-    
-    
+
+
+
     private function getEpisodeOperationComplication()
     {
         $query = <<<EOL
@@ -3008,37 +3127,37 @@ SELECT oc.OperationId, oc.Eye, oc.ComplicationTypeId, oc.ComplicationTypeDescrip
 FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
 
 EOL;
-                
+
         $dataQuery = array(
             'query' => $query,
             'header' => array('OperationId', 'Eye', 'ComplicationTypeId', 'ComplicationTypeDescription'),
         );
-        
+
         $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication');
-        
+
         $query = <<<EOL
         
 SELECT DISTINCT oc.ComplicationTypeId, oc.ComplicationTypeDescription
 FROM tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier} oc
 
 EOL;
-  
+
         $dataQuery = array(
             'query' => $query,
             'header' => array('ComplicationTypeId', 'ComplicationTypeDescription'),
         );
-        
+
         return $this->saveCSVfile($dataQuery, 'OperationComplicationCodeLookup');
     }
-    
+
     /********** end of EpisodeOperationComplication **********/
 
-    
-    
-    
-    
+
+
+
+
     /********** EpisodeOperation **********/
-    
+
     private function createTmpRcoNodEpisodeOperation()
     {
         $query = <<<EOL
@@ -3065,7 +3184,7 @@ CREATE TABLE tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} (
 EOL;
         return $query;
     }
-    
+
     private function populateTmpRcoNodEpisodeOperation()
     {
         $query = <<<EOL
@@ -3116,12 +3235,12 @@ WHERE c.oe_event_type_name = 'OphTrOperationnote';
 EOL;
         return $query;
     }
-    
-    
+
+
     private function getEpisodeOperation()
     {
         $query = <<<EOL
-            SELECT  op.OperationId, c.nod_episode_id as EpisodeId, op.Description, op.IsHypertensive, op.ListedDate, op.SurgeonId, IFNULL(op.SurgeonGradeId, "") as SurgeonGradeId, 
+            SELECT  op.OperationId, c.oe_event_id as EpisodeId, op.Description, op.IsHypertensive, op.ListedDate, op.SurgeonId, IFNULL(op.SurgeonGradeId, "") as SurgeonGradeId, 
                     IFNULL(op.AssistantId, "") as AssistantId,
                     IFNULL(op.AssistantGradeId, "") as AssistantGradeId, IFNULL(op.ConsultantId, "") as ConsultantId,
                     IFNULL(op.SiteName, "") as SiteName, IFNULL(op.SiteODS, "") as SiteODS
@@ -3136,15 +3255,15 @@ EOL;
         return $this->saveCSVfile($dataQuery, 'EpisodeOperation');
 
     }
-    
+
     /********** end of EpisodeOperation **********/
-    
-    
-    
-    
-    
+
+
+
+
+
     /********** EpisodeVisualAcuity **********/
-    
+
     private function createTmpRcoNodEpisodeVisualAcuity()
     {
         $query = <<<EOL
@@ -3161,7 +3280,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function populateTmpRcoNodEpisodeVisualAcuity()
     {
         $query = <<<EOL
@@ -3253,11 +3372,11 @@ AND u_max_pinhole.unit_id = bv.logmar_single_letter_unit_id;
 EOL;
         return $query;
     }
-    
+
     private function getEpisodeVisualAcuity()
     {
         $query = <<<EOL
-                SELECT c.nod_episode_id as EpisodeId, va.Eye, va.NotationRecordedId, va.BestMeasure, va.Unaided, va.Pinhole, va.BestCorrected
+                SELECT c.oe_event_id as EpisodeId, va.Eye, va.NotationRecordedId, va.BestMeasure, va.Unaided, va.Pinhole, va.BestCorrected
                 FROM tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier} va
                 JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON va.oe_event_id = c.oe_event_id
 EOL;
@@ -3268,12 +3387,12 @@ EOL;
 
         return $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity');
     }
-    
+
     /********** end of EpisodeVisualAcuity **********/
-        
-  
-    
-    
+
+
+
+
     /**
      * Creates zip files from the CSV files
      */

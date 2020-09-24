@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -26,7 +27,7 @@ if (!Yii::app()->user->isGuest) {
             Yii::app()->session['shown_reminder'] = true;
             $this->widget('SiteAndFirmWidgetReminder');
         }
-        
+
         if ((Yii::app()->params['auth_source'] === 'BASIC') && $user->testUserPWStatus('stale') && empty(Yii::app()->session['shown_pw_reminder'])) {
             Yii::app()->session['shown_pw_reminder'] = true;
             $this->widget('PasswordStaleWidgetReminder');
@@ -38,7 +39,7 @@ if (!Yii::app()->user->isGuest) {
     $user = Yii::app()->session['user'];
     $menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
     $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
-    ?>
+?>
 
     <div class="oe-user-banner">
         <?php $this->renderPartial('//base/_banner_watermark'); ?>
@@ -68,19 +69,18 @@ if (!Yii::app()->user->isGuest) {
                 </a>
             </li>
             <?= $menuHelper->render($navIconUrl) ?>
-<!--            The exclude admin structure parameter list has elements that can be excluded from the admin sidebar, if Worklist is excluded from that, then it can be removed from the home screen too-->
-            <?php if (!in_array("Worklist", Yii::app()->params['exclude_admin_structure_param_list'])) :?>
-            <li class="oe-nav-btn">
-                <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
-                    <svg viewBox="0 0 80 40" class="icon clinic ">
-                        <use xlink:href="<?= $navIconUrl . '#clinic-icon' ?>"></use>
-                    </svg>
-                </a>
-            </li>
+            <!--            The exclude admin structure parameter list has elements that can be excluded from the admin sidebar, if Worklist is excluded from that, then it can be removed from the home screen too-->
+            <?php if (!in_array("Worklist", Yii::app()->params['exclude_admin_structure_param_list'])) : ?>
+                <li class="oe-nav-btn">
+                    <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
+                        <svg viewBox="0 0 80 40" class="icon clinic ">
+                            <use xlink:href="<?= $navIconUrl . '#clinic-icon' ?>"></use>
+                        </svg>
+                    </a>
+                </li>
             <?php endif; ?>
             <li class="oe-nav-btn js-hotlist-panel-wrapper">
-                <a class="nav-js-btn icon-btn" id="js-nav-hotlist-btn" onclick="return false;"
-                     data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">
+                <a class="nav-js-btn icon-btn" id="js-nav-hotlist-btn" onclick="return false;" data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">
                     <svg viewBox="0 0 80 40" class="icon hotlist">
                         <use xlink:href="<?= $navIconUrl . '#hotlist-icon' ?>"></use>
                     </svg>
@@ -88,14 +88,21 @@ if (!Yii::app()->user->isGuest) {
                 <?php $this->renderPartial('//base/_hotlist'); ?>
             </li>
             <li class="oe-nav-btn">
-                <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>" id="js-logout-btn">
+                <a id="js-logout-btn" class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
                     <svg viewBox="0 0 80 40" class="icon logout">
                         <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
                     </svg>
-                    <img src="" class="icon-logout"/>
+                    <img src="" class="icon-logout" />
                 </a>
             </li>
         </ul>
     </div>
+
+    <script type="text/javascript">
+        $("#js-logout-btn").click(function() {
+            window.stop();
+            return true;
+        });
+    </script>
 
 <?php } ?>

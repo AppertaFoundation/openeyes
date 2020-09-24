@@ -24,16 +24,16 @@ function addElement(element, animate, previous_id, params, callback) {
         params = {};
 
 
-  const element_type_id = $(element).data('element-type-id');
-  var element_type_class = $(element).data('element-type-class');
+    const element_type_id = $(element).data('element-type-id');
+    var element_type_class = $(element).data('element-type-class');
 
-  var $menuLi = findMenuItemForElementClass(element_type_class);
+    var $menuLi = findMenuItemForElementClass(element_type_class);
 
-  if($menuLi) {
-    if(!$menuLi.find('a').hasClass('selected')) {
-      $menuLi.find('a').addClass('selected');
+    if ($menuLi) {
+        if (!$menuLi.find('a').hasClass('selected')) {
+            $menuLi.find('a').addClass('selected');
+        }
     }
-  }
 
     const core_params = {
         id: element_type_id,
@@ -46,6 +46,7 @@ function addElement(element, animate, previous_id, params, callback) {
     $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
         const new_element = $(data);
         const elClass = $(new_element).data('element-type-class');
+        $(new_element).attr('data-element-display-order', $(element).data('element-display-order'));
         const element_display_order = Number($(new_element).data('element-display-order'));
 
         const container = $('.js-active-elements');
@@ -59,7 +60,7 @@ function addElement(element, animate, previous_id, params, callback) {
             let $toInsertBefore = null;
             container.find('section[data-element-type-name]').each(function () {
                 const target_display_order = Number($(this).data('element-display-order'));
-                if (target_display_order > element_display_order) {
+                if (Math.abs(target_display_order) > Math.abs(element_display_order)) {
                     $toInsertBefore = $(this);
                     return false;
                 }
@@ -226,7 +227,7 @@ $(document).ready(function () {
         const element = $(this).closest('.element');
         const dialog = new OpenEyes.UI.Dialog({
             url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
-            data: {element_type_id: element.data('element-type-id'), patient_id: OE_patient_id},
+            data: { element_type_id: element.data('element-type-id'), patient_id: OE_patient_id },
             width: 1070,
             title: 'Previous ' + element.data('element-type-name') + ' Elements',
             autoOpen: true,

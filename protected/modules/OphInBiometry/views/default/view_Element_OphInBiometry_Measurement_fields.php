@@ -61,7 +61,7 @@
                 <?php
                 if (!$element->{"k_modified_$side"}) {
                     ?>
-                    <?=\CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;
+                    <?=\CHtml::encode($element->{'k1_axis_' . $side}) ?>&deg;
                 <?php } else {
                     echo '&nbsp;';
                 } ?>

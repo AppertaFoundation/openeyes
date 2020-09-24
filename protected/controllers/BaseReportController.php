@@ -29,7 +29,7 @@ class BaseReportController extends BaseController
         return array(array('allow', 'roles' => array('Report')));
     }
 
-    public function checkSurgonOrRole()
+    public static function checkSurgonOrRole()
     {
         if ( Yii::app()->user->isSurgeon() || Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
             return true;
