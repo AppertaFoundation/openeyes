@@ -129,7 +129,7 @@ class m200903_035926_rename_axis_k1_eyeside_field extends CDbMigration
                 (
                     (
                         (
-                            .et_ophinbiometry_measurement eol 
+                            et_ophinbiometry_measurement eol 
                             JOIN et_ophinbiometry_calculation eoc ON ((eoc.event_id = eol.event_id))
                         ) 
                         LEFT JOIN et_ophinbiometry_selection eos ON ((eos.event_id = eol.event_id))
@@ -269,7 +269,7 @@ class m200903_035926_rename_axis_k1_eyeside_field extends CDbMigration
                 (
                     (
                         (
-                            .et_ophinbiometry_measurement eol 
+                            et_ophinbiometry_measurement eol 
                             JOIN et_ophinbiometry_calculation eoc ON ((eoc.event_id = eol.event_id))
                         ) 
                         LEFT JOIN et_ophinbiometry_selection eos ON ((eos.event_id = eol.event_id))
