@@ -20,7 +20,7 @@ class Appointment extends BaseCWidget
 {
 
     public $patient;
-    public $past_worklist_patients;
+    public $past_worklist_patients_count;
     public $worklist_patients;
     public $pro_theme = '';
 
@@ -51,7 +51,7 @@ class Appointment extends BaseCWidget
             ['patient_id' => $this->patient->id],
             $criteria
         );
-        $this->past_worklist_patients = WorklistPatient::model()->findAllByAttributes(
+        $this->past_worklist_patients_count = WorklistPatient::model()->countByAttributes(
             ['patient_id' => $this->patient->id],
             $criteria_past
         );
