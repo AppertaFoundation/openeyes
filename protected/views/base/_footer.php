@@ -19,4 +19,4 @@
 
 <?php
 $this->renderPartial('//base/_script_templates', array());
-?>
+

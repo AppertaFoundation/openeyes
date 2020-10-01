@@ -25,4 +25,4 @@
 foreach ($assignments as $ass) {
     $this->renderPartial('_ticketlist_history_row', array('ass' => $ass));
 }
-?>
+
