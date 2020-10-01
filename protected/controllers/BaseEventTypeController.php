@@ -425,7 +425,7 @@ class BaseEventTypeController extends BaseModuleController
                 Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
                 // disable buttons when clicking on save/save_draft/save_print
                 Yii::app()->assetManager->getClientScript()->registerScript('disableSaveAfterClick', '
-                      $(document).on("click", "#et_save, #et_save_draft, #et_save_print, #et_save_print_form", function () {
+                      $(document).on("click", "#et_save, #et_save_footer, #et_save_draft, #et_save_draft_footer, #et_save_print, #et_save_print_footer, #et_save_print_form, #et_save_print_form_footer", function () {
                           disableButtons();
                       });
                 ', CClientScript::POS_HEAD);
@@ -2431,7 +2431,7 @@ class BaseEventTypeController extends BaseModuleController
     {
         $user = Yii::app()->user;
         $hotlistItem = UserHotlistItem::model()->find(
-            'created_user_id = :user_id AND patient_id = :patient_id 
+            'created_user_id = :user_id AND patient_id = :patient_id
                        AND (DATE(last_modified_date) = :current_date OR is_open = 1)',
             array(':user_id' => $user->id, ':patient_id' => $patient->id, ':current_date' => date('Y-m-d')));
 
