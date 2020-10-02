@@ -154,6 +154,7 @@ class PatientController extends BaseController
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($id, false);
         $this->pageTitle = "Summary";
+        $this->patient->audit('patient', 'view-summary');
 
         $episodes = $this->patient->episodes;
         $legacy_episodes = $this->patient->legacyepisodes;
