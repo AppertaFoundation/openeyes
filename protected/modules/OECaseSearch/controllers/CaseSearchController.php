@@ -179,6 +179,7 @@ class CaseSearchController extends BaseModuleController
             'paramList' => $paramList,
             'params' => (empty($this->parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $this->parameters,
             'patients' => $patientData,
+            'patientsID' => $ids,
             'variables' => $variables,
             'variableList' => $variableList,
             'variableData' => $variable_data,
@@ -532,12 +533,15 @@ class CaseSearchController extends BaseModuleController
         return parent::beforeAction($action);
     }
 
+    /**
+     * @throws CException
+     */
     public function actionRenderPopups()
     {
         if (isset($_POST["patientsID"])) {
             $patientsID = explode(",", $_POST["patientsID"]);
-            foreach ($patientsID as $i => $patientID) {
-                $patient = Patient::model()->findByPk($patientID);
+            $patients = Patient::model()->findAllByPk($patientsID);
+            foreach ($patients as $patient) {
                 $this->renderPartial('application.widgets.views.PatientIcons', array('data' => $patient, 'page' => 'caseSearch'));
             }
         }

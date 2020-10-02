@@ -15,7 +15,7 @@ class CaseSearchPlot extends BaseCWidget
     public function init()
     {
         $this->newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-        $this->oePlotlyPath = Yii::app()->assetManager->getPublishedUrl($this->newblue_path, true) . '/plotlyJS/oePlotly.js';
+        $this->oePlotlyPath = Yii::app()->assetManager->getPublishedUrl($this->newblue_path, true) . '/plotlyJS/oePlotly_v1.js';
 
         if (isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_generation']) {
             $this->display_theme = 'dark';
@@ -37,7 +37,7 @@ class CaseSearchPlot extends BaseCWidget
         if (!$assetManager->getClientScript()->isScriptFileRegistered($assetManager->getPublishedUrl('js/CaseSearchPlot.js', true))) {
             $assetManager->registerScriptFile('js/CaseSearchPlot.js', 'application.modules.OECaseSearch.widgets', 10);
         }
-        if (!$assetManager->getClientScript()->isScriptFileRegistered($assetManager->getPublishedUrl($this->newblue_path, true)  . '/plotlyJS/oePlotly.js')) {
+        if (!$assetManager->getClientScript()->isScriptFileRegistered($assetManager->getPublishedUrl($this->newblue_path, true)  . '/plotlyJS/oePlotly_v1.js')) {
             Yii::app()->clientScript->registerScriptFile($this->oePlotlyPath);
         }
         $this->render('CaseSearchPlot', array(

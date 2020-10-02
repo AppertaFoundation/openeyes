@@ -175,7 +175,7 @@ $user_searches = array_map(
 <script type="text/html" id="search-contents-template">
     <tr>{{{searchContents}}}</tr>
 </script>
-<script>
+<script type="text/javascript">
     function addPatientToTrial(patient_id, trial_id) {
         const addSelector = '#add-to-trial-link-' + patient_id;
         const removeSelector = '#remove-from-trial-link-' + patient_id;
@@ -487,18 +487,20 @@ foreach ($patients->getData() as $i => $SearchPatient) {
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $.ajax({
-            'type': "POST",
-            'data': "patientsID=" + (<?= json_encode($patientsID)?>)
-            + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-            'url': "/OECaseSearch/caseSearch/renderPopups",
-            success: function (resp) {
-                $("body.open-eyes.oe-grid").append(resp);
-            }
-        })
-        $('body').on('click', '.collapse-data-header-icon', function () {
-            $(this).toggleClass('collapse expand');
-            $(this).next('div').toggle();
-        });
-    })
+        let ids = <?= json_encode($patientsID)?>;
+        if (ids[0]) {
+            $.ajax({
+                'type': "POST",
+                'data': "patientsID=" + ids + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                'url': "/OECaseSearch/caseSearch/renderPopups",
+                success: function (resp) {
+                    $("body.open-eyes.oe-grid").append(resp);
+                }
+            });
+            $('body').on('click', '.collapse-data-header-icon', function () {
+                $(this).toggleClass('collapse expand');
+                $(this).next('div').toggle();
+            });
+        }
+    });
 </script>

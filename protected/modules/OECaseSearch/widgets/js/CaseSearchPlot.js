@@ -35,7 +35,7 @@ $(document).ready(function() {
         let theme = ($('link[data-theme="light"]').prop('media') === 'none') ? 'dark' : 'light';
 
         // layout
-        let layout = oePlotly.getLayout({
+        let layout = oePlotly_v1.getLayout({
             theme: theme,
             plotTitle: $(item).data('var-label') + ' distribution N = ' + $(item).data('total'),
             legend: false,
