@@ -351,6 +351,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
 
         $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {
             $('.js-change-event-date').removeClass('disabled');
+            $('.js-change-event-date').parent().data('tooltip-content', 'Change Event Date');
             if (typeof window.HMController !== "undefined") {
                 window.HMController.$table.find('tr').each(function () {
                     if (typeof $(this).data('bound_entry') !== 'undefined') {
@@ -498,6 +499,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
 
         let $changeEventDate = $('.js-change-event-date');
         $changeEventDate.addClass('disabled');
+        $changeEventDate.parent().data('tooltip-content', 'The event date cannot be changed when the Medication Management element is open');
         if ($changeEventDate.is(":hidden")) {
             $('.js-event-date-input').hide();
             $changeEventDate.show();
