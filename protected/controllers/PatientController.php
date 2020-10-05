@@ -14,8 +14,6 @@
  */
 Yii::import('application.controllers.*');
 
-use OEModule\OphCiExamination\models;
-
 /**
  * Class PatientController
  *
@@ -335,35 +333,36 @@ class PatientController extends BaseController
                 Yii::app()->user->setFlash('warning.no-results', $message);
 
 
-            Yii::app()->session['search_term'] = $term;
-            Yii::app()->session->close();
+                Yii::app()->session['search_term'] = $term;
+                Yii::app()->session->close();
 
-            $this->redirect(Yii::app()->homeUrl);
-        } elseif ($itemCount == 1) {
-            $patient = $dataProvider->getData()[0];
-            Audit::add('search', 'search-results', implode(',', $search_terms)." : 1 result [id: $patient->id]");
-            $api = new CoreAPI();
+                $this->redirect(Yii::app()->homeUrl);
+            } elseif ($itemCount == 1) {
+                $patient = $dataProvider->getData()[0];
+                Audit::add('search', 'search-results', implode(',', $search_terms) . " : 1 result [id: $patient->id]");
+                $api = new CoreAPI();
 
-            //in case the PASAPI returns 1 new patient we perform a new search
-            if ($patient->isNewRecord && $patient->hos_num) {
-                $this->redirect(['/patient/search', 'term' => $patient->hos_num]);
+                //in case the PASAPI returns 1 new patient we perform a new search
+                if ($patient->isNewRecord && $patient->hos_num) {
+                    $this->redirect(['/patient/search', 'term' => $patient->hos_num]);
+                }
+
+                $this->redirect(array($api->generatePatientLandingPageLink($patient)));
+            } else {
+                Audit::add('search', 'search-results', implode(',', $search_terms) . " : $itemCount results");
+                $this->renderPatientPanel = false;
+                $this->pageTitle = $term . ' - Search';
+                $this->fixedHotlist = false;
+                $this->render('results', array(
+                    'data_provider' => $dataProvider,
+                    'page_num' => \Yii::app()->request->getParam('Patient_page', 0),
+                    'total_items' => $itemCount,
+                    'term' => $term,
+                    'search_terms' => $patientSearch->getSearchTerms(),
+                    'sort_by' => (integer)\Yii::app()->request->getParam('sort_by', null),
+                    'sort_dir' => (integer)\Yii::app()->request->getParam('sort_dir', null),
+                ));
             }
-
-            $this->redirect(array($api->generatePatientLandingPageLink($patient)));
-        } else {
-            Audit::add('search', 'search-results', implode(',', $search_terms)." : $itemCount results");
-            $this->renderPatientPanel = false;
-            $this->pageTitle = $term . ' - Search';
-            $this->fixedHotlist = false;
-            $this->render('results', array(
-                'data_provider' => $dataProvider,
-                'page_num' => \Yii::app()->request->getParam('Patient_page', 0),
-                'total_items' => $itemCount,
-                'term' => $term,
-                'search_terms' => $patientSearch->getSearchTerms(),
-                'sort_by' => (integer)\Yii::app()->request->getParam('sort_by', null),
-                'sort_dir' => (integer)\Yii::app()->request->getParam('sort_dir', null),
-            ));
         }
     }
 
