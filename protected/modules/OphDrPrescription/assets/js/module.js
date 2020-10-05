@@ -44,28 +44,28 @@ $(document).ready(function () {
     }
   });
 
-  $(document).on('click', '#et_save_print_form,#et_save_print_form_footer', function (e) {
+  $(document).on('click', '#et_save_print_form, #et_save_print_form_footer', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);
     if (!checkPrescriptionLength()) {
       e.preventDefault();
     }
   });
 
-    $(document).on('click', '#et_save', function (e) {
+    $(document).on('click', '#et_save, #et_save_footer', function (e) {
         $('#Element_OphDrPrescription_Details_draft').val(0);
         if (!checkPrescriptionLength()) {
           e.preventDefault();
         }
     });
 
-    $(document).on('click', '#et_save_draft', function (e) {
+    $(document).on('click', '#et_save_draft, #et_save_draft_footer', function (e) {
         $('#Element_OphDrPrescription_Details_draft').val(1);
         if (!checkPrescriptionLength()) {
             e.preventDefault();
         }
     });
 
-    $(document).on('click', '#et_save_final', function (e) {
+    $(document).on('click', '#et_save_final, #et_save_final_footer', function (e) {
         var data = {
             YII_CSRF_TOKEN: YII_CSRF_TOKEN,
             element: $(this).data('element'),

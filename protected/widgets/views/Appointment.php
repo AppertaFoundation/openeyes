@@ -51,42 +51,31 @@
         </tbody>
     </table>
 
-    <?php if ($past_worklist_patients) { ?>
-        <div>
-            <h3>Past Appointments</h3>
+    <?php if ($past_worklist_patients_count != 0) { ?>
+        <div class="collapse-data">
+            <div class="collapse-data-header-icon expand js-get-past-appointments" data-patient-id="<?=$this->patient->id?>">
+                <h3>Past Appointments <small>(<?= $past_worklist_patients_count?>)</small></h3>
+            </div>
+            <div class="collapse-data-content">
+                <div class="restrict-data-shown">
+                    <div class="restrict-data-content rows-10">
+                        <!-- restrict data height, overflow will scroll -->
+                        <table class="patient-appointments">
+                            <colgroup>
+                                <col class="cols-1">
+                                <col class="cols-6">
+                                <col class="cols-2">
+                                <col class="cols-3">
+                            </colgroup>
+                            <tbody class="js-past-appointments-body" data-patient-id="<?=$this->patient->id?>">
+
+                            </tbody>
+                        </table>
+                        <i class="js-past-appointments-spinner spinner" title="Loading..." style="display: none"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- restrict data height, overflow will scroll -->
-        <table class="patient-appointments">
-            <colgroup>
-                <col class="cols-1">
-                <col class="cols-6">
-                <col class="cols-2">
-                <col class="cols-3">
-            </colgroup>
-            <tbody>
-            <?php
-            foreach ($past_worklist_patients as $worklist_patient) {
-                $time = date('H:i', strtotime($worklist_patient->when));
-                $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
-                $worklist_name = $worklist_patient->worklist->name;
-                $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
-                $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
-                ?>
-                    <tr>
-                        <td><span class="time"><?= $time ?></span></td>
-                        <td><?= $worklist_name ?></td>
-                        <td><span class="oe-date"><?= $date ?></span></td>
-                        <td>
-                        <?php if (isset($worklist_status)) { ?>
-                                <?= $worklist_status->attribute_value ?>
-                        <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
-                                Did not attend.
-                        <?php } ?>
-                        </td>
-                    </tr>
-            <?php } ?>
-            </tbody>
-        </table>
     <?php } ?>
     <!--End of the side view-->
 
@@ -100,34 +89,14 @@
         </colgroup>
         <tbody>
         <?php
-        foreach ($worklist_patients as $worklist_patient) {
-            $time = date('H:i', strtotime($worklist_patient->when));
-            $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
-            $worklist_name = $worklist_patient->worklist->name;
-            $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
-            $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
-            ?>
-                <tr>
-                    <td><span class="time"><?= $time ?></span></td>
-                    <td><?= $worklist_name ?></td>
-                    <td><span class="oe-date"><?= $date ?></span></td>
-                    <td>
-                    <?php if (isset($worklist_status)) { ?>
-                            <?= $worklist_status->attribute_value ?>
-                    <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
-                            Did not attend.
-                    <?php } ?>
-                    </td>
-                </tr>
-        <?php } ?>
+        $this->controller->renderPartial('//default/appointment_entry_tbody', array('worklist_patients' => $worklist_patients))?>
         </tbody>
     </table>
-
-    <?php if ($past_worklist_patients) { ?>
+    <?php if ($past_worklist_patients_count != 0) { ?>
         <div class="collapse-data">
-            <div class="collapse-data-header-icon expand">
+        <div class="collapse-data-header-icon expand js-get-past-appointments" data-patient-id="<?=$this->patient->id?>">
                 Past Appointments
-                <small>(<?= sizeof($past_worklist_patients) ?>)</small>
+            <small>(<?= $past_worklist_patients_count?>)</small>
             </div>
             <div class="collapse-data-content">
                 <div class="restrict-data-shown">
@@ -140,33 +109,40 @@
                                 <col class="cols-2">
                                 <col class="cols-3">
                             </colgroup>
-                            <tbody>
-                            <?php
-                            foreach ($past_worklist_patients as $worklist_patient) {
-                                $time = date('H:i', strtotime($worklist_patient->when));
-                                $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
-                                $worklist_name = $worklist_patient->worklist->name;
-                                $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
-                                $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
-                                ?>
-                                    <tr>
-                                        <td><span class="time"><?= $time ?></span></td>
-                                        <td><?= $worklist_name ?></td>
-                                        <td><span class="oe-date"><?= $date ?></span></td>
-                                        <td>
-                                        <?php if (isset($worklist_status)) { ?>
-                                                <?= $worklist_status->attribute_value ?>
-                                        <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
-                                                Did not attend.
-                                        <?php } ?>
-                                        </td>
-                                    </tr>
-                            <?php } ?>
+                        <tbody class="js-past-appointments-body" data-patient-id="<?=$this->patient->id?>">
+
                             </tbody>
                         </table>
+                    <i class="js-past-appointments-spinner spinner" title="Loading..." style="display: none"></i>
                     </div>
                 </div>
             </div>
         </div>
     <?php } ?>
 <?php } ?>
+
+<script type="text/javascript">
+        $('.js-get-past-appointments[data-patient-id="<?=$this->patient->id?>"]').on('click', function () {
+            let patientId = $(this).parent().find('.js-past-appointments-body').data('patientId');
+            if (!$('.js-past-appointments-body[data-patient-id="' + patientId + '"]').find('tr').length) {
+
+                $.ajax({
+                    url: '/patient/getPastWorklistPatients/',
+                    data: {patient_id: patientId},
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.past_worklist_tbody) {
+                            $('.js-past-appointments-body[data-patient-id="' + patientId + '"]').html(data.past_worklist_tbody);
+                        }
+                    },
+                    beforeSend: function () {
+                        $('.js-past-appointments-spinner').show();
+                    },
+                    complete: function () {
+                        $('.js-past-appointments-spinner').hide();
+                    }
+                });
+            }
+        })
+</script>

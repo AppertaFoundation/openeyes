@@ -69,7 +69,7 @@ class m180510_093824_prescription_events_import extends OEMigration
             medication_form.id AS form_id,
             medication_laterality.id AS laterality,
             REPLACE(REGEXP_REPLACE(REPLACE(presc_item.dose, '1/2', '0.5'), 'half', '0.5'), ',', '.') + 0 AS dose, -- +0 implicitly casts to a numberic and strips trailing alpha characters
-            REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(presc_item.dose, '\\d|\\s|\\.|/|half(\\s*a)?|-|=|s/r|,', ''), 'tabletmg', 'tablet'), 'mgbd', 'mg') AS dose_unit_term, -- Lots of cleanup for mistyped dosages
+            REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(presc_item.dose, '\\\\d|\\\\s|\\\\.|/|half(\\\\s*a)?|-|=|s/r|,', ''), 'tabletmg', 'tablet'), 'mgbd', 'mg') AS dose_unit_term, -- Lots of cleanup for mistyped dosages
             medication_route.id AS route_id,
             medication_frequency.id AS frequency_id,
             dd.id AS duration_id,
