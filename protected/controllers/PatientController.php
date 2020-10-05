@@ -14,8 +14,6 @@
  */
 Yii::import('application.controllers.*');
 
-use OEModule\OphCiExamination\models;
-
 /**
  * Class PatientController
  *
@@ -48,7 +46,7 @@ class PatientController extends BaseController
                 'roles' => array('Edit'),
             ),
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl' ),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients'),
                 'users' => array('@'),
             ),
             array('allow',
@@ -97,8 +95,8 @@ class PatientController extends BaseController
                 'roles' => array('TaskAddPatient'),
             ),
             array('allow',
-                'actions'=>array('summary'),
-                'roles'=>array('User'),
+                'actions' => array('summary'),
+                'roles' => array('User'),
             )
         );
     }
@@ -154,6 +152,7 @@ class PatientController extends BaseController
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($id, false);
         $this->pageTitle = "Patient Summary";
+        $this->patient->audit('patient', 'view-summary');
 
         $episodes = $this->patient->episodes;
         $legacy_episodes = $this->patient->legacyepisodes;
@@ -332,20 +331,38 @@ class PatientController extends BaseController
                     $message .= 'found for your search.';
                 }
                 Yii::app()->user->setFlash('warning.no-results', $message);
-            }
 
-            $this->renderPatientPanel = false;
-            $this->pageTitle = $term . ' - Search';
-            $this->fixedHotlist = false;
-            $this->render('results', array(
-                'data_provider' => $dataProvider,
-                'page_num' => \Yii::app()->request->getParam('Patient_page', 0),
-                'total_items' => $itemCount,
-                'term' => $term,
-                'search_terms' => $patientSearch->getSearchTerms(),
-                'sort_by' => (integer)\Yii::app()->request->getParam('sort_by', null),
-                'sort_dir' => (integer)\Yii::app()->request->getParam('sort_dir', null),
-            ));
+
+                Yii::app()->session['search_term'] = $term;
+                Yii::app()->session->close();
+
+                $this->redirect(Yii::app()->homeUrl);
+            } elseif ($itemCount == 1) {
+                $patient = $dataProvider->getData()[0];
+                Audit::add('search', 'search-results', implode(',', $search_terms) . " : 1 result [id: $patient->id]");
+                $api = new CoreAPI();
+
+                //in case the PASAPI returns 1 new patient we perform a new search
+                if ($patient->isNewRecord && $patient->hos_num) {
+                    $this->redirect(['/patient/search', 'term' => $patient->hos_num]);
+                }
+
+                $this->redirect(array($api->generatePatientLandingPageLink($patient)));
+            } else {
+                Audit::add('search', 'search-results', implode(',', $search_terms) . " : $itemCount results");
+                $this->renderPatientPanel = false;
+                $this->pageTitle = $term . ' - Search';
+                $this->fixedHotlist = false;
+                $this->render('results', array(
+                    'data_provider' => $dataProvider,
+                    'page_num' => \Yii::app()->request->getParam('Patient_page', 0),
+                    'total_items' => $itemCount,
+                    'term' => $term,
+                    'search_terms' => $patientSearch->getSearchTerms(),
+                    'sort_by' => (integer)\Yii::app()->request->getParam('sort_by', null),
+                    'sort_dir' => (integer)\Yii::app()->request->getParam('sort_dir', null),
+                ));
+            }
         }
     }
 
@@ -1830,7 +1847,7 @@ class PatientController extends BaseController
 
             if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
                 if (isset($_POST['ExtraContact'])) {
-                        $gp_ids = $_POST['ExtraContact']['gp_id'];
+                    $gp_ids = $_POST['ExtraContact']['gp_id'];
                     if (isset($_POST['ExtraContact']['practice_id'])) {
                                     $practice_ids = $_POST['ExtraContact']['practice_id'];
                                     $pca_models = array();
@@ -1841,7 +1858,7 @@ class PatientController extends BaseController
                             $pca_models[] = $pca_model;
                         }
                     } else {
-                                        $pca_models = array();
+                        $pca_models = array();
                         foreach ($gp_ids as $gp_id) {
                             $pca_model = new PatientContactAssociate();
                             $pca_model->gp_id = $gp_id;
@@ -1849,7 +1866,7 @@ class PatientController extends BaseController
                         }
                     }
                     if (!empty($pca_models)) {
-                            $patient->patientContactAssociates = $pca_models;
+                        $patient->patientContactAssociates = $pca_models;
                     }
                 }
             }
@@ -2100,7 +2117,7 @@ class PatientController extends BaseController
         // Check if any contact selected for this patient.
         if (isset($_POST['ExtraContact'])) {
             // If a single contact exists for a patient,  delete all the records from the patient_contact_associate table before populating.
-            $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+            $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id));
             if (isset($existing_pca_models)) {
                 foreach ($existing_pca_models as $existing_pca_model) {
                     $existing_pca_model->delete();
@@ -2109,8 +2126,8 @@ class PatientController extends BaseController
 
             $gp_ids = $_POST['ExtraContact']['gp_id'];
             $practice_ids = $_POST['ExtraContact']['practice_id'];
-            for ($i =0; $i<sizeof($gp_ids); $i++) {
-                $existing_pca_model = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id, 'gp_id'=>$gp_ids[$i], 'practice_id'=>$practice_ids[$i]));
+            for ($i = 0; $i < sizeof($gp_ids); $i++) {
+                $existing_pca_model = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id, 'gp_id' => $gp_ids[$i], 'practice_id' => $practice_ids[$i]));
                 if (empty($existing_pca_model)) {
                     $pca_model = new PatientContactAssociate();
                     $pca_model->patient_id = $patient->id;
@@ -2121,7 +2138,7 @@ class PatientController extends BaseController
             }
         } else {
             // If not delete all the data related to this patient from the patient_contact_associate table.
-            $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+            $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id));
             if (isset($existing_pca_models)) {
                 foreach ($existing_pca_models as $existing_pca_model) {
                     $existing_pca_model->delete();
@@ -2292,7 +2309,7 @@ class PatientController extends BaseController
 
         // Executing the js function to find duplicate patients on entering update patient screen each time to
         // retain the warning message on screen after refreshing.
-        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates('.$id.');', CClientScript::POS_READY);
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates(' . $id . ');', CClientScript::POS_READY);
 
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
@@ -2401,7 +2418,7 @@ class PatientController extends BaseController
             'referral' => $referral,
             'patientuserreferral' => $patient_user_referral,
             'patient_identifiers' => $patient_identifiers,
-            'prevUrl'=>$prevUrl,
+            'prevUrl' => $prevUrl,
         ));
     }
 
@@ -2478,10 +2495,10 @@ class PatientController extends BaseController
             }
         } else {
             foreach ($gps as $gp) {
-                    $output[] = array(
-                        'label' => $gp->correspondenceName,
-                        'value' => $gp->id
-                    );
+                $output[] = array(
+                    'label' => $gp->correspondenceName,
+                    'value' => $gp->id
+                );
             }
         }
 
@@ -2699,16 +2716,13 @@ class PatientController extends BaseController
                     $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $max_document_size / 1048576 . " MB ";
                     $referral->addError('uploadedFile', $message);
                     return false;
-                }
-
-                // Check for compatible file types
+                } // Check for compatible file types
                 elseif (!in_array($type, $allowed_file_types)) {
                     $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
                     $referral->addError('uploadedFile', $message);
                     return false;
                 }
-            }
-            // The file field is empty. It should throw error for referral scenario
+            } // The file field is empty. It should throw error for referral scenario
             elseif ($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
                 $referral->addError('uploadedFile', 'Referral requires a letter file');
                 return false;
@@ -2755,5 +2769,26 @@ class PatientController extends BaseController
                       and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
                     where e2.deleted = 0 and p.id = $patient->id;");
         return ($command->queryScalar() === 0);
+    }
+
+
+    public function actionGetPastWorklistPatients($patient_id)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->join = " JOIN worklist w ON w.id = t.worklist_id";
+
+        $start_of_today = date("Y-m-d");
+
+        $criteria->addCondition('t.when < "' . $start_of_today . '"');
+        $criteria->order = 't.when desc';
+
+        $past_worklist_patients = WorklistPatient::model()->findAllByAttributes(
+            ['patient_id' => $patient_id],
+            $criteria
+        );
+
+        $this->renderJSON(array(
+            'past_worklist_tbody' => $this->renderPartial('/default/appointment_entry_tbody', array('worklist_patients' => $past_worklist_patients), true),
+        ));
     }
 }

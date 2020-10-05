@@ -48,7 +48,7 @@ if (empty($diary)) {?>
         theatreDiaryIconHovers();
         // Add handler for Display Whiteboard icon when the display mode is 'Always open in new window/tab'.
         // The other display mode handler is already handled within module.js.
-        $(document).on('click', '#js-display-whiteboard-window', function() {
+        $(document).on('click', '#js-display-whiteboard-window, #js-display-whiteboard-window_footer', function() {
             window.open('/OphTrOperationbooking/whiteboard/view/' + $(this).data('id'), '_blank');
         });
     });
