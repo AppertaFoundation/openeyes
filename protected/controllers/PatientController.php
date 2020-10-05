@@ -2791,5 +2791,4 @@ class PatientController extends BaseController
             'past_worklist_tbody' => $this->renderPartial('/default/appointment_entry_tbody', array('worklist_patients' => $past_worklist_patients), true),
         ));
     }
-
 }

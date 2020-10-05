@@ -89,10 +89,10 @@
         </colgroup>
         <tbody>
         <?php
-    $this->controller->renderPartial('//default/appointment_entry_tbody', array('worklist_patients' => $worklist_patients))?>
+        $this->controller->renderPartial('//default/appointment_entry_tbody', array('worklist_patients' => $worklist_patients))?>
         </tbody>
     </table>
-<?php if ($past_worklist_patients_count != 0) { ?>
+    <?php if ($past_worklist_patients_count != 0) { ?>
         <div class="collapse-data">
         <div class="collapse-data-header-icon expand js-get-past-appointments" data-patient-id="<?=$this->patient->id?>">
                 Past Appointments
