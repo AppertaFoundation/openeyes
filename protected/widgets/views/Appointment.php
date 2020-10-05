@@ -54,8 +54,7 @@
     <?php if ($past_worklist_patients_count != 0) { ?>
         <div class="collapse-data">
             <div class="collapse-data-header-icon expand js-get-past-appointments" data-patient-id="<?=$this->patient->id?>">
-                <h3>Past Appointments</h3>
-                <small>(<?= $past_worklist_patients_count?>)</small>
+                <h3>Past Appointments <small>(<?= $past_worklist_patients_count?>)</small></h3>
             </div>
             <div class="collapse-data-content">
                 <div class="restrict-data-shown">
