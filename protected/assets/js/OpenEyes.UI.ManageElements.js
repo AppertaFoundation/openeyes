@@ -34,6 +34,7 @@
         manage_elements_json: {},
         element_container_selector: '.js-active-elements',
         tree_id: '',
+        manage_element_selector: 'manage-elements-nav'
     };
 
     /**
@@ -43,7 +44,7 @@
         var self = this;
 
         //Create the element selector content
-        const $navPopup = $('<nav />', {class: 'oe-element-selector'});
+        const $navPopup = $('<nav />', {class: 'oe-element-selector', id: self.options.manage_element_selector});
         var closeButton = $('<div class="close-icon-btn"><button class="blue hint cols-full">Select elements to add or remove from examination - Close when done &nbsp;<i class="oe-i remove-circle pro-theme medium-icon"></i></button></div>');
 
         $navPopup.append($elementPopup);
@@ -98,6 +99,7 @@
             self.addSelectedElement($(e.target));
         }.bind(self));
 
+        $('li#manage-elements-Medication-Management').data('validation-function', medicationManagementValidationFunction);
     };
 
     /**
@@ -137,11 +139,16 @@
      * Add or remove the selected element to the form
      */
     ManageElements.prototype.addSelectedElement = function($item) {
-        let self = this;
-        if(!$item.hasClass('added')) {
-            self.addElementItem($item);
-        } else {
-            self.removeElementItem($item);
+        let elementValidationFunction = $item.data('validation-function');
+        let loadItem = typeof elementValidationFunction !== "function" || elementValidationFunction();
+
+        if (loadItem) {
+            let self = this;
+            if(!$item.hasClass('added')) {
+                self.addElementItem($item);
+            } else {
+                self.removeElementItem($item);
+            }
         }
     };
 
@@ -301,8 +308,8 @@
         var sublist = $("<ul>").addClass('element-list');
 
         $.each(childItems, function() {
-
-            var subListItem = $("<li>"+this.name+"</li>")
+            let id = this.name.replace(/\s/g, '-');
+            var subListItem = $("<li id=manage-elements-"+ id +">"+this.name+"</li>")
                 .data('element-type-class', this.class_name)
                 .data('element-display-order', this.display_order)
                 .data('element-type-name', this.name)
