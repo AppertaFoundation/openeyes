@@ -24,12 +24,12 @@ $(document).ready(function () {
     $(document).on('eyedrawAfterReset', loadBiometryElementData);
     autosize($('textarea'));
 
-    $('#js-display-whiteboard').click(function (e) {
+    $('#js-display-whiteboard, #js-display-whiteboard_footer').click(function(e) {
         e.preventDefault();
         oeWindow = window.open('/OphTrOperationbooking/whiteboard/view/' + $(this).data('id'), 'whiteboard', 'fullscreen=yes');
     });
 
-    $('#js-close-whiteboard').click(function (e) {
+    $('#js-close-whiteboard, #js-close-whiteboard_footer').click(function(e) {
         e.preventDefault();
         let oeWindow = window.open('', 'whiteboard', 'fullscreen=yes');
         oeWindow.close();

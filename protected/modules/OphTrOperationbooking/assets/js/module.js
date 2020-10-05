@@ -145,12 +145,12 @@
             $(this).parent().html('None');
         });
 
-        $(document).on('click', '#js-display-whiteboard', function(e) {
+        $(document).on('click', '#js-display-whiteboard, #js-display-whiteboard_footer', function(e) {
             e.preventDefault();
             oeWindow = window.open('/OphTrOperationbooking/whiteboard/view/' + $(this).data('id'), 'whiteboard', 'fullscreen=yes');
         });
 
-        $('#js-close-whiteboard').click(function(e) {
+        $('#js-close-whiteboard, #js-close-whiteboard_footer').click(function(e) {
             e.preventDefault();
             oeWindow = window.open('', 'whiteboard', 'fullscreen=yes');
             oeWindow.close();
