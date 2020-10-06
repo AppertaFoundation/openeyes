@@ -46,7 +46,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     REPLACE(REGEXP_REPLACE(REPLACE(ohme.dose, '1/2', '0.5'), 'half', '0.5'), ',', '.') + 0 AS dose, -- +0 implicitly casts to a numberic and strips trailing alpha characters
                     CASE 
                         WHEN (ohme.units IS NULL OR ohme.units = '') THEN  
-                            REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(ohme.dose, '\\d|\\s|\\.|/|half(\\s*a)?|-|=|s/r|,', ''), 'tabletmg', 'tablet'), 'mgbd', 'mg') -- Lots of cleanup for mistyped dosages
+                            REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(presc_item.dose, '\\\\d|\\\\s|\\\\.|/|half(\\\\s*a)?|-|=|s/r|,', ''), 'tabletmg', 'tablet'), 'mgbd', 'mg') AS dose_unit_term, -- Lots of cleanup for mistyped dosages
                         ELSE
                             ohme.units
                     END  AS dose_unit_term,
@@ -112,7 +112,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
             REPLACE(REGEXP_REPLACE(REPLACE(ohme.dose, '1/2', '0.5'), 'half', '0.5'), ',', '.') + 0 AS dose, -- +0 implicitly casts to a numberic and strips trailing alpha characters
                 CASE 
                     WHEN (ohme.units IS NULL OR ohme.units = '') THEN 
-                        REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(ohme.dose, '\\d|\\s|\\.|/|half(\\s*a)?|-|=|s/r|,', ''), 'tabletmg', 'tablet'), 'mgbd', 'mg') -- Lots of cleanup for mistyped dosages
+                        REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(presc_item.dose, '\\\\d|\\\\s|\\\\.|/|half(\\\\s*a)?|-|=|s/r|,', ''), 'tabletmg', 'tablet'), 'mgbd', 'mg') AS dose_unit_term, -- Lots of cleanup for mistyped dosages
                     ELSE
                         ohme.units
                 END  AS dose_unit_term,
