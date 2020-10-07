@@ -70,16 +70,22 @@ EOH;
     private function deleteOldDrugAndMedicationTables()
     {
         ## Find & archive old tables (+ version tables)
-        $drugTableSuffix = 'drug_';
+        $drugTablePrefix = 'drug_';
         $tables_to_rename = ['drug', 'ophciexamination_history_medications_entry',
-                     'ophdrprescription_item',
-                     'site_subspecialty_drug',
-                     'medication_drug',
-                     'medication_drug_version',
-                 ];
+            'ophdrprescription_item',
+            'site_subspecialty_drug',
+            'medication_drug',
+        ];
+        $tables_versions = array();
+
+        foreach ($tables_to_rename as $table) {
+            array_push($tables_versions, $table . '_version');
+        }
+
+        $tables_to_rename = array_merge($tables_to_rename, $tables_versions);
 
         foreach (Yii::app()->db->getSchema()->getTableNames() as $table_to_rename) {
-            if (((substr($table_to_rename, 0, strlen($drugTableSuffix)) === $drugTableSuffix) || in_array($table_to_rename, $tables_to_rename))) {
+            if (((substr($table_to_rename, 0, strlen($drugTablePrefix)) === $drugTablePrefix) || in_array($table_to_rename, $tables_to_rename))) {
                 Yii::app()->db->createCommand("RENAME TABLE " . $table_to_rename . " TO archive_" . $table_to_rename)->execute();
             }
         }
