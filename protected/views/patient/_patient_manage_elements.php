@@ -2,12 +2,18 @@
 
 // Add the manage element button to the sidebar
 $(document).ready(function() {
-    var node = document.createElement("div");
+    let sidebar_header = $(document.getElementById("manage-elements-sidebar"));
+    let old_sidebar_header = document.getElementById("add-event-sidebar");
+    if (old_sidebar_header){
+        old_sidebar_header.remove();
+    }
+
+    let node = document.createElement("div");
     node.classList.add("button", "green", "manage-elements");
     node.setAttribute("id", "js-manage-elements-btn");
-    var ele = document.createTextNode("Manage Elements");
+    let ele = document.createTextNode("Manage Elements");
     node.appendChild(ele);
-    $(document.getElementsByClassName("sidebar-header")).append(node);
+    sidebar_header.append(node);
 
     new OpenEyes.UI.ManageElements(
         $('#js-manage-elements-btn'),
