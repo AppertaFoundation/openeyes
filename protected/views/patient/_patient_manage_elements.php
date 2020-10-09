@@ -4,7 +4,7 @@
 $(document).ready(function() {
     let sidebar_header = $(document.getElementById("manage-elements-sidebar"));
     let old_sidebar_header = document.getElementById("add-event-sidebar");
-    if (old_sidebar_header){
+    if (old_sidebar_header) {
         old_sidebar_header.remove();
     }
 

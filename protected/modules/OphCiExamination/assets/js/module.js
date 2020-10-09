@@ -1059,8 +1059,9 @@ $(document).ready(function() {
         let date = new Date();
         let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
         let todayDateWithLeadingZero = "0" + todayDate;
+        let event_date = document.getElementsByClassName('js-event-date-input')[0].value;
 
-        if($('.js-event-date-input').val() === todayDate || $('.js-event-date-input').val() === todayDateWithLeadingZero) {
+        if(event_date === todayDate || event_date === todayDateWithLeadingZero) {
             return true;
         } else {
             new OpenEyes.UI.Dialog.Alert({
