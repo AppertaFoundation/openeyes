@@ -169,7 +169,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         if (loadItem) {
             if($item.hasClass('loading')) {
-                if (typeof callback === "function"){
+                if (typeof callback === "function") {
                     callback();
                 }
                 return;
@@ -184,16 +184,18 @@ OpenEyes.UI = OpenEyes.UI || {};
                 let newCallback = function() {
                     $item.addClass('selected');
                     $item.removeClass('loading');
-                    if (typeof callback === "function")
+                    if (typeof callback === "function") {
                         callback();
+                    }
                 };
                 self.loadElement($container, data, newCallback);
                 $item.addClass('loading');
             } else {
                 // either has no parent or parent is already loaded.
                 self.moveTo($item);
-                if (typeof callback === "function")
+                if (typeof callback === "function") {
                     callback();
+                }
             }
         }
     };

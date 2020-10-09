@@ -41,11 +41,11 @@
      * Creates manage elements popup for the event
      */
     ManageElements.prototype.create = function() {
-        var self = this;
+        let self = this;
 
         //Create the element selector content
         const $navPopup = $('<nav />', {class: 'oe-element-selector', id: self.options.manage_element_selector});
-        var closeButton = $('<div class="close-icon-btn"><button class="blue hint cols-full">Select elements to add or remove from examination - Close when done &nbsp;<i class="oe-i remove-circle pro-theme medium-icon"></i></button></div>');
+        let closeButton = $('<div class="close-icon-btn"><button class="blue hint cols-full">Select elements to add or remove from examination - Close when done &nbsp;<i class="oe-i remove-circle pro-theme medium-icon"></i></button></div>');
 
         $navPopup.append($elementPopup);
         $navPopup.append(closeButton);
@@ -76,7 +76,7 @@
         self.$elementContainer.click(setOffView);
 
         function toggleView(){
-            var $manageElement = self.$element;
+            let $manageElement = self.$element;
             if(!$manageElement.isOpened) {
                 $navPopup.show();
                 $manageElement.isOpened = true;
@@ -89,7 +89,7 @@
         }
 
         function setOffView(){
-            var $manageElement = self.$element;
+            let $manageElement = self.$element;
             $navPopup.hide();
             $manageElement.isOpened = false;
             $manageElement.removeClass('selected');
@@ -106,7 +106,7 @@
      * Builds the array of elements that are mandatory and cannot be removed
      */
     ManageElements.prototype.getRequiredElements = function() {
-        var self = this;
+        let self = this;
 
         self.requiredElements = [];
 
@@ -123,11 +123,11 @@
      * Builds the array of elements that are open on the page
      */
     ManageElements.prototype.getOpenElements = function() {
-        var self = this;
+        let self = this;
 
         self.openElements = [];
 
-        var elementChildren = $(self.$elementContainer.children());
+        let elementChildren = $(self.$elementContainer.children());
 
         elementChildren.each(function(item) {
             self.openElements.push($(elementChildren[item]).data('elementTypeClass'));
@@ -143,11 +143,10 @@
         let loadItem = typeof elementValidationFunction !== "function" || elementValidationFunction();
 
         if (loadItem) {
-            let self = this;
             if(!$item.hasClass('added')) {
-                self.addElementItem($item);
+                this.addElementItem($item);
             } else {
-                self.removeElementItem($item);
+                this.removeElementItem($item);
             }
         }
     };
@@ -156,11 +155,10 @@
      * Add the element to the form after selecting the element
      */
     ManageElements.prototype.addElementItem = function($item, data, callback) {
-        var self = this;
         if(data === undefined)
             data = {};
         if(!$item.hasClass('added')) {
-            self.showSelectedElements(self.getPopupForExistingElements($item));
+            this.showSelectedElements(this.getPopupForExistingElements($item));
             if(typeof callback === "function") {
                 callback();
             }
@@ -193,9 +191,7 @@
      * Update the menu item when element is added from the sidebar
      */
     ManageElements.prototype.updatePopupItem = function ($item) {
-        var self = this;
-
-        var menuElement = self.getSidebarItemName($item);
+        let menuElement = this.getSidebarItemName($item);
         if(!menuElement.hasClass('mandatory')) {
             menuElement.addClass('added');
         }
@@ -214,7 +210,7 @@
      * Remove the element from the form it has been added from the popup
      */
     ManageElements.prototype.removeElementItem = function($item) {
-        var $element = $('section[data-element-type-name="' + $item.text() + '"]');
+        let $element = $('section[data-element-type-name="' + $item.text() + '"]');
         if($element.children("input").val() == '1') {
             let dialog = new OpenEyes.UI.Dialog.Confirm({
                 content: "Are you sure that you wish to close the " +
@@ -241,10 +237,8 @@
      * Remove the selected element from the popup when the element is removed from the form
      */
     ManageElements.prototype.removeElement = function($item) {
-        var self = this;
-
-        var $elementTypeClass = $($item).parents("section").data('elementTypeClass');
-        var element = self.getElementTypeClass($elementTypeClass);
+        let $elementTypeClass = $($item).parents("section").data('elementTypeClass');
+        let element = this.getElementTypeClass($elementTypeClass);
         element.removeClass('added');
     }
 
@@ -262,7 +256,7 @@
      *
      */
     ManageElements.prototype.buildTree = function() {
-        var self = this;
+        let self = this;
 
         $.each(self.manage_elements_array, function() {
             $elementPopup.append(self.buildTreeItem(this));
@@ -273,10 +267,9 @@
      * Build an item to add to the tree
      */
     ManageElements.prototype.buildTreeItem = function(itemData) {
-        var self = this;
-        var item;
+        let item;
 
-        var itemClass = 'selector-group';
+        let itemClass = 'selector-group';
 
         item = $("<div>")
             .data('element-type-class', itemData.class_name)
@@ -286,12 +279,12 @@
             .addClass(itemClass);
 
         if(!itemData.children || itemData.children.length === 0) {
-            item.append(self.buildTreeChildList([itemData]));
+            item.append(this.buildTreeChildList([itemData]));
         } else {
 
             item.append('<h3>' + itemData.name + '</h3>');
 
-            var subList = self.buildTreeChildList(itemData.children);
+            let subList = this.buildTreeChildList(itemData.children);
 
             item.append(subList);
         }
@@ -304,12 +297,12 @@
      *
      */
     ManageElements.prototype.buildTreeChildList = function (childItems) {
-        var self = this;
-        var sublist = $("<ul>").addClass('element-list');
+        let self = this;
+        let sublist = $("<ul>").addClass('element-list');
 
         $.each(childItems, function() {
             let id = this.name.replace(/\s/g, '-');
-            var subListItem = $("<li id=manage-elements-"+ id +">"+this.name+"</li>")
+            let subListItem = $("<li id=manage-elements-"+ id +">"+this.name+"</li>")
                 .data('element-type-class', this.class_name)
                 .data('element-display-order', this.display_order)
                 .data('element-type-name', this.name)
@@ -335,8 +328,7 @@
      * 
      */
     ManageElements.prototype.parseJSON = function() {
-        var self = this;
-        self.manage_elements_array = $.parseJSON(self.options.manage_elements_json);
+        this.manage_elements_array = $.parseJSON(this.options.manage_elements_json);
     };
 
     exports.ManageElements = ManageElements;
