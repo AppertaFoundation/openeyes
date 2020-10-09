@@ -234,15 +234,10 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
 <script type="text/javascript">
     let ElementFormJSONConverterMM = new OpenEyes.OphCiExamination.ElementFormJSONConverter();
     $(document).ready(function () {
-        if (medicationManagementValidationFunction) {
-            new OpenEyes.UI.Dialog.Alert({
-                content: "Medication Management cannot be used here due to event date not being the current date",
-                closeCallback: function () {
-                    let element = document.getElementsByClassName('element ' + <?= CJavaScript::encode(CHtml::modelName($element)) ?>)[0];
-                    element.dispatchEvent(new Event('element_removed'));
-                    removeElement(element);
-                }
-            }).open();
+        if (!medicationManagementValidationFunction()) {
+            let element = document.getElementsByClassName('element ' + <?= CJavaScript::encode(CHtml::modelName($element)) ?>)[0];
+            element.dispatchEvent(new Event('element_removed'));
+            removeElement(element);
         }
 
         let prescribed_medications = [];
