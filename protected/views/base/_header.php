@@ -17,6 +17,3 @@
 
     <?php $this->renderPartial('//base/_form'); ?>
 </header>
-<?php if ($this->renderPatientPanel === true) {
-    $this->renderPartial('//patient/_patient_panel_popup');
-} ?>
