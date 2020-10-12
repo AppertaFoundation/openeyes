@@ -17,7 +17,7 @@ class m180815_071733_add_set_common_subspecialty_medications extends CDbMigratio
         foreach ($q->queryAll() as $ssd) {
             // use a variable, so that apostrophes get properly escaped during execute
             $setname = "Common " . $ssd['site_name'] . " " . $ssd['subs_name'] . " medications";
-            $this->execute("INSERT INTO medication_set (`name`) VALUES (':setname')", array(':setname' => $setname));
+            $this->execute("INSERT INTO medication_set (`name`) VALUES (:setname)", array(":setname" => $setname));
             $ref_set_id = $this->getDbConnection()->getLastInsertID();
             $drug_ids = $ssd['drug_ids'];
             $this->execute("INSERT INTO medication_set_item (`medication_set_id`, `medication_id`, default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id)
