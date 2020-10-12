@@ -17,7 +17,7 @@
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <?php $el_id = CHtml::modelName($element) . '_element'; ?>
-<?php $visible_sections = ['current_entries' => 'Current', "closed_entries" => "Previously Stopped"]; ?>
+<?php $visible_sections = ['current_entries' => 'Current', "closed_entries" => "Stopped"]; ?>
 
 <section class="element view-Eye-Medications tile "
          data-element-type-id="<?php echo $element->elementType->id ?>"

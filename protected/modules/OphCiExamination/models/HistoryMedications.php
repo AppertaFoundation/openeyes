@@ -91,11 +91,10 @@ class HistoryMedications extends BaseMedicationElement
 
     public function afterValidate()
     {
-        $ophthalmic_medication_ids = Medication::model()->listOphthalmicMedicationIds();
         $no_systemic_medications = true;
         $no_ophthalmic_medications = true;
         foreach ($this->entries as $entry) {
-            if (in_array($entry->medication_id, $ophthalmic_medication_ids)) {
+            if ($entry->route_id && $entry->route->isEyeRoute()) {
                 $no_ophthalmic_medications = false;
             } else {
                 $no_systemic_medications = false;
@@ -132,22 +131,8 @@ class HistoryMedications extends BaseMedicationElement
     {
         $entries = array();
         foreach ($element->entries as $entry) {
-            $new = new EventMedicationUse();
-            $new->loadFromExisting($entry);
-            $new->usage_type = EventMedicationUse::getUsageType();
-            $new->usage_subtype = EventMedicationUse::getUsageSubtype();
-            if (!$entry->prescription_item_id) {
-                $existing_event_date = $entry->copied_from_med_use_id ? Event::model()->findByPk($entry->copied_from_med_use_id)->event_date : $entry->event->event_date;
-                $new->previous_event_date = date('Y-m-d', strtotime($existing_event_date));
-            }
-            $prescription_end_date = isset($entry->prescription_item_id) ? $entry->prescriptionItem->stopDateFromDuration() : null;
-            if (!isset($new->end_date) && $prescription_end_date) {
-                $new->end_date = $prescription_end_date->format('Y-m-d');
-                $course_complete_model = HistoryMedicationsStopReason::model()->findByAttributes([
-                    'name' => 'Course complete'
-                ]);
-                $new->stop_reason_id = $course_complete_model ? $course_complete_model->id : null;
-            }
+            $new = $this->createConvertedHistoryEntry($entry);
+            $new->is_copied_from_previous_event = true;
             $entries[] = $new;
         }
         $this->entries = $entries;

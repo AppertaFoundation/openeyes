@@ -173,4 +173,22 @@ class MedicationRoute extends BaseActiveRecordVersioned
     {
         return $this->has_laterality == 1 ? "<i class=\"oe-i tick small\"></i>" : "<i class=\"oe-i remove small\"></i>";
     }
+
+    /**
+     * Gets a list of all the routes that has laterality
+     * @return array
+     **/
+    public function listEyeRouteIds() : array
+    {
+        $ids = [];
+        $eye_routes = array_filter($this::model()->findAll(), function ($route) {
+            return $route->isEyeRoute();
+        });
+
+        foreach ($eye_routes as $route) {
+            $ids[] = $route->id;
+        }
+
+        return $ids;
+    }
 }
