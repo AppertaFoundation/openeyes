@@ -177,9 +177,14 @@ class MedicationManagementEntry extends \EventMedicationUse
             $end_date = $this->prescriptionItem->stopDateFromDuration();
             $this->end_date = $end_date ? $end_date->format('Y-m-d') : null;
         }
+
+        if ($this->isUndated()) {
+            $this->start_date = date('Y-m-d');
+        }
+
         if ($this->end_date) {
             if ($this->prescribe) {
-                $this->setStopReasonToCourseComplete();
+                $this->setStopReasonTo('Course complete');
             }
         } else {
             $this->stop_reason_id = null;
@@ -187,7 +192,6 @@ class MedicationManagementEntry extends \EventMedicationUse
 
         return parent::beforeSave();
     }
-
 
     public function beforeDelete()
     {

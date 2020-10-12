@@ -3414,6 +3414,25 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @param Patient $patient
+     * @param array $exclude_ids
+     * @param bool $exclude_medication_management_entries
+     * @return \CActiveRecord[]
+     */
+    public function getEventMedicationUseItemsForPatient(Patient $patient, $exclude_ids = array(), $exclude_medication_management_entries = false) : array
+    {
+        $criteria = new \CDbCriteria(array('order' => 'event_date DESC'));
+        $criteria->addCondition('episode.patient_id = :id');
+        $criteria->addNotInCondition('t.id', $exclude_ids);
+        if ($exclude_medication_management_entries) {
+            $criteria->addNotInCondition('t.usage_subtype', ['Management']);
+        }
+        $criteria->params = array_merge($criteria->params, array(':id' => $patient->id));
+
+        return \EventMedicationUse::model()->with('event', 'event.episode')->findAll($criteria);
+    }
+
+    /**
      * Handler routine for DST shortcode
      * @param $patient
      * @param bool $use_context

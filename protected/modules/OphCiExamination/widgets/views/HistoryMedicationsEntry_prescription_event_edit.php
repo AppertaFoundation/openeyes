@@ -33,7 +33,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     $end_sel_year = date('Y');
 }
 
-$to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedIntoMedicationManagement();
+$to_be_copied = !($entry->originallyStopped || $stopped) && $entry->medication->getToBeCopiedIntoMedicationManagement();
 ?>
 
 <tr data-key="<?=$row_count?>"
@@ -45,7 +45,9 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
     endif; ?>
     class="divider col-gap <?= $stopped ? 'fade' : ''?> js-first-row <?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>" >
     <td id="<?= $model_name . "_entries_" . $row_count . '_duplicate_error' ?>" class="drug-details" rowspan="2">
+        <?php if ($entry->id && $entry->id !== '') { ?>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
+        <?php } ?>
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" class="js-prescription-item-id" value="<?=$entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?= (int)$entry->originallyStopped ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int) $entry->is_copied_from_previous_event; ?>"/>
@@ -74,7 +76,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>"  />
             <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" />
 
-            <?= $entry->getAdministrationDisplay() ?>
+            <?= $entry->getAdministrationDisplay(true) ?>
         </div>
     </td>
         <td>

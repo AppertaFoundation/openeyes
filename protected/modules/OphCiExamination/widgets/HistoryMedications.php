@@ -113,7 +113,7 @@ class HistoryMedications extends BaseMedicationWidget
         return $entries;
     }
 
-    private function getEntriesFromPreviousHistory()
+    public function getEntriesFromPreviousHistory()
     {
         $entries = [];
         $element = $this->element->getModuleApi()->getLatestElement(HistoryMedicationsElement::class, $this->patient);

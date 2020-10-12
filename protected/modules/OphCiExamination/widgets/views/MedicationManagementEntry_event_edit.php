@@ -81,7 +81,9 @@ $entry_allergy_ids = isset($entry->medication_id) ?
         <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]" value="<?= $is_new ? "{{medication_id}}" : $entry->medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" class="js-usage-type" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
+        <?php if ($entry->id && $entry->id !== '') { ?>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $entry->id ?>" />
+        <?php } ?>
         <input type="hidden" name="<?= $field_prefix ?>[hidden]" class="js-hidden" value="<?= $entry->hidden ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" class="js-prescription-item-id" value="<?= $entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int) $entry->is_copied_from_previous_event; ?>" />

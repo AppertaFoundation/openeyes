@@ -357,22 +357,25 @@ class EventMedicationUse extends BaseElement
     /**
      * @param EventMedicationUse $medication
      * @param bool $check_laterality
+     * @param bool $check_start_date
      * @return bool
      */
-    public function isEqualsAttributes($medication, $check_laterality)
+    public function isEqualsAttributes($medication, $check_laterality, $check_start_date = true)
     {
         $result = true;
 
         foreach ($this->equals_attributes as $attribute) {
             //this is required for edit mode: the "undated" posted entries will have date="00-00-00" while the new ones date=""
             if ($attribute === "start_date") {
-                $date1 = ($this->start_date === "" || $this->start_date === null) ? "0000-00-00" : $this->start_date;
-                $date2 = ($medication->start_date === "" || $medication->start_date === null) ? "0000-00-00" : $medication->start_date;
+                if ($check_start_date) {
+                    $date1 = $this->isUndated() ? "0000-00-00" : $this->start_date;
+                    $date2 = $medication->isUndated() ? "0000-00-00" : $medication->start_date;
 
-                $result = $date1 === $date2;
+                    $result = $date1 === $date2;
+                }
             } elseif ($attribute === "laterality") {
-                if ($check_laterality) {
-                    $result = $this->$attribute === $medication->$attribute || $this->$attribute === "3" || $medication->$attribute === "3";
+                if ($check_laterality && $this->route->isEyeRoute()) {
+                    $result = $this->$attribute === $medication->$attribute;
                 }
             } else {
                 $result = $this->$attribute === $medication->$attribute;
@@ -531,8 +534,31 @@ class EventMedicationUse extends BaseElement
 
     public function isStopped()
     {
-        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
+        return isset($this->end_date) ? (strtotime($this->end_date) <= strtotime(date("Y-m-d"))) : false;
     }
+
+    /**
+     * checks if model is a prescription item based on usage type
+     * @return bool
+     */
+    public function isPrescription() : bool
+    {
+        return $this->usage_type === 'OphDrPrescription';
+    }
+
+    /**
+     * @param $entry
+     * @return EventMedicationUse
+     */
+    public function getEarliestEntry($entry) : EventMedicationUse
+    {
+        if (!$entry->id) {
+            return $entry;
+        }
+        $previous_medication = EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $entry->id]);
+        return $previous_medication ? $this->getEarliestEntry($previous_medication) : $entry;
+    }
+
 
     public function getTooltipContent()
     {
@@ -549,7 +575,9 @@ class EventMedicationUse extends BaseElement
             $data['Route'] = $this->route->term;
         }
 
-        $data['Start date'] = Helper::formatFuzzyDate($this->start_date);
+        $earliest_entry = $this->getEarliestEntry($this);
+
+        $data['Start date'] = Helper::formatFuzzyDate($earliest_entry->start_date);
         if ($this->end_date) {
             $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
         }
@@ -668,6 +696,11 @@ class EventMedicationUse extends BaseElement
     {
         parent::loadFromExisting($element);
         $this->updateStateProperties();
+        if (in_array(\Yii::app()->controller->action->id, ['summary', 'view'])) { //temporary, needs to be replaced in future
+            $this->id = $element->id;
+        }
+        $this->event_id = $element->event_id;
+        $this->latest_med_use_id = $element->latest_med_use_id;
         if (!$this->prescription_item_id) {
             $this->is_copied_from_previous_event = true;
             $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id : $element->event->id;
@@ -771,12 +804,34 @@ class EventMedicationUse extends BaseElement
         }
     }
 
-    protected function setStopReasonToCourseComplete()
+    protected function setStopReasonTo($stop_reason)
     {
-        $course_complete_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Course complete']);
-        if ($course_complete_model) {
-            $this->stop_reason_id = $course_complete_model->id;
+        $stop_reason_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => $stop_reason]);
+        if ($stop_reason_model) {
+            $this->stop_reason_id = $stop_reason_model->id;
         }
+    }
+
+    /**
+     * Checks if medication has been changed and stopped
+     * @return bool
+     * */
+    public function isChangedMedication() : bool
+    {
+        $stop_reason_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Medication parameters changed']);
+        if ($stop_reason_model) {
+            return $this->stop_reason_id === $stop_reason_model->id;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if start date has been set
+     * @return bool
+     * */
+    public function isUndated() : bool
+    {
+        return $this->start_date === "" || $this->start_date === null || $this->start_date === '0000-00-00';
     }
 
     public function beforeValidate()
@@ -814,6 +869,7 @@ class EventMedicationUse extends BaseElement
         return parent::beforeValidate();
     }
 
+
     /**
      * @inheritdoc
      */
@@ -824,5 +880,81 @@ class EventMedicationUse extends BaseElement
         if ($this->copied_from_med_use_id) {
             $this->is_copied_from_previous_event = true;
         }
+    }
+
+    /**
+     *@inheritdoc
+     */
+    protected function afterSave()
+    {
+        if ($this->usage_subtype !== 'Management') {
+            $prescription_api = Yii::app()->moduleAPI->get('OphDrPrescription');
+            $examination_api = Yii::app()->moduleAPI->get('OphCiExamination');
+            if ($prescription_api && $examination_api) {
+                $existing_prescription_items = $this->getExistingItems($prescription_api, OphDrPrescription_Item::model());
+                $existing_history_med_items = $this->getExistingItems($examination_api, EventMedicationUse::model());
+
+                foreach ([ 'OphDrPrescription' => $existing_prescription_items, 'OphCiExamination' => $existing_history_med_items] as $usage_type => $items) {
+                    if ($items) {
+                        $latest_item = end($items);
+                        if ($usage_type === 'OphDrPrescription') {
+                            $latest_item_end_date = $latest_item->stopDateFromDuration();
+                            if (!is_null($latest_item_end_date)) {
+                                $formatted_end_date = $latest_item_end_date->format('Y-m-d');
+                            } else {
+                                $formatted_end_date = $latest_item->end_date;
+                            }
+                        } else {
+                            $latest_item_end_date = $latest_item->end_date;
+                            $formatted_end_date = $latest_item->end_date;
+                        }
+                        if (is_null($latest_item_end_date) || $formatted_end_date >= date('Y-m-d')) {
+                            $attributes = ['latest_med_use_id' => $this->id];
+                            if (!$this->isEqualsAttributes($latest_item, true, false)) {
+                                $latest_item->setStopReasonTo('Medication parameters changed');
+                                $attributes = array_merge($attributes, ['end_date' => date('Y-m-d'), 'stop_reason_id']);
+                            }
+                            $latest_item->saveAttributes($attributes);
+                        }
+                    }
+                }
+            }
+        }
+
+        parent::afterSave();
+    }
+
+    /**
+     * @param $api
+     * @param $model
+     * @return array
+     */
+    private function getExistingItems($api, $model) : array
+    {
+        $patient = $this->event->getPatient();
+        $is_prescription = is_a($model, 'OphDrPrescription_Item');
+
+        if ($is_prescription) {
+            $exclude_models = $model->with('prescription', 'prescription.event', 'prescription.event.episode')
+                ->findAll('medication_id !=? and episode.patient_id=?', [$this->medication_id, $patient->id]);
+        } else {
+            $exclude_models = $model->with('event', 'event.episode')
+                ->findAll('medication_id !=? and episode.patient_id=? and usage_subtype !=?', [$this->medication_id, $patient->id, 'Management']);
+        }
+
+        $exclude_ids = array_map(function ($item) {
+            return $item->id;
+        }, $exclude_models);
+        $exclude_ids[] = $this->id;
+
+        if ($is_prescription) {
+            $items = $api->getPrescriptionItemsForPatient($patient, $exclude_ids);
+        } else {
+            $items = $api->getEventMedicationUseItemsForPatient($patient, $exclude_ids, true);
+        }
+
+        return array_filter($items, function ($item) {
+            return is_null($item->latest_med_use_id);
+        });
     }
 }
