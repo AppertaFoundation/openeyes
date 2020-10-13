@@ -39,20 +39,10 @@
                 <?php if ($current) { ?>
                     <?php foreach ($current as $entry) { ?>
                         <tr>
-                            <td>
-                                <strong>
-                                    <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                            <td><strong>
+                                    <? $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
                                     <?= $entry->getMedicationDisplay() ?>
                                 </strong>
-                                <?php
-                                    $comments = $entry->getComments();
-                                if (!empty($comments)) { ?>
-                                        <i class="oe-i comments-who small pad js-has-tooltip"
-                                           data-tt-type="basic"
-                                           data-tooltip-content="<em><?= $comments ?></em>">
-                                        </i> <?php
-                                }
-                                ?>
                                 <?php if ($entry->prescription_item_id) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry->prescriptionItem) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
@@ -69,20 +59,9 @@
                     </tr>
                     <?php foreach ($stopped as $entry) { ?>
                         <tr class="stopped-kind" style="display: none;">
-                            <td>
-                                <strong>
+                            <td><strong>
                                     <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
-                                    <?= $entry->getMedicationDisplay() ?>
-                                </strong>
-                                <?php
-                                    $comments = $entry->getComments();
-                                if (!empty($comments)) { ?>
-                                        <i class="oe-i comments-who small pad js-has-tooltip"
-                                           data-tt-type="basic"
-                                           data-tooltip-content="<em><?= $comments ?></em>">
-                                        </i> <?php
-                                }
-                                ?>
+                                    <?= $entry->getMedicationDisplay() ?></strong>
                                 <?php if ($entry->prescription_item_id) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry->prescriptionItem) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
