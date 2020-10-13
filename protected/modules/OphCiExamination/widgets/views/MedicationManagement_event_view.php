@@ -15,8 +15,11 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphCiExamination\models\MedicationManagement;
+
 ?>
-<?php /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */ ?>
+<?php /** @var MedicationManagement $element */ ?>
 <?php $el_id = CHtml::modelName($element) . '_element';
 $form_format = SettingMetadata::model()->getSetting('prescription_form_format');
 ?>
@@ -24,7 +27,8 @@ $form_format = SettingMetadata::model()->getSetting('prescription_form_format');
     <?php $sections = array(
         'New' => ["getEntriesStartedToday", "getEntriesStartingInFuture"],
         'Continued' => ["getContinuedEntries"],
-        'Discontinued' => ["getStoppedEntries"]
+        'Discontinued' => ["getStoppedEntries"],
+        'Changed' => ["getChangedEntries"]
     );
 
    $header_rendered = false; // we only render the header in the first section

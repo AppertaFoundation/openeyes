@@ -19,6 +19,7 @@ use BaseEventTypeElement;
 use CActiveRecord;
 use CDbCriteria;
 use Element_OphDrPrescription_Details;
+use Event;
 use EventMedicationUse;
 use MedicationFrequency;
 use MedicationLaterality;
@@ -292,23 +293,38 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
     }
 
 
-    public function mergePrescriptionEntries($entries)
+    /**
+     * merges entries and removes those that have a latest_med_use_id (not the most recent medication)
+     * @param $entries
+     * @return array
+     */
+
+    public function mergeMedicationEntries($entries) : array
     {
         $merged_entries = [];
         $medication_ids = [];
-        $prescription_entries = [];
-        $old_prescription_entries = [];
+        $medication_entries = [];
+        $already_converted_ids = [];
+
         foreach ($entries as $entry) {
             $entry_to_add = $entry->prescriptionItem ?? $entry;
-            if (!$entry_to_add->latest_med_use_id) {
-                $prescription_entries[] = $entry_to_add;
-            } else {
-                $old_prescription_entries[] = $entry_to_add;
+            if (!in_array($entry_to_add->id, $already_converted_ids)) {
+                $converted_entry = $this->createConvertedHistoryEntry($entry_to_add);
+                $converted_entry->event_id = $entry_to_add->event_id ?? $entry_to_add->copied_from_med_use_id;
+                if (!$entry_to_add->latest_med_use_id) {
+                    if ($entry_to_add->isPrescription()) {
+                        $converted_entry->usage_type = 'OphDrPrescription';
+                        $converted_entry->usage_subtype = '';
+                    }
+                    $medication_entries[] = $converted_entry;
+                    if ($entry_to_add->id) {
+                        $already_converted_ids[] = $entry_to_add->id;
+                    }
+                }
             }
         }
 
-        $prescription_entries = array_merge($prescription_entries, $old_prescription_entries);
-        foreach ($prescription_entries as $entry) {
+        foreach ($medication_entries as $entry) {
             $medication_is_present = in_array($entry->medication_id, $medication_ids);
             if (!$medication_is_present || ($medication_is_present && is_null($entry->latest_med_use_id))) {
                 $merged_entries[] = $entry;
@@ -321,9 +337,42 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
         return $merged_entries;
     }
 
+    /**
+     * creates a new converted History entry from the  entry in the parameter
+     * @param $entry
+     * @return EventMedicationUse
+     */
+    public function createConvertedHistoryEntry($entry) : EventMedicationUse
+    {
+        $new = new EventMedicationUse();
+        $prescription_item = null;
+        $new->loadFromExisting($entry);
+        $new->usage_type = EventMedicationUse::getUsageType();
+        $new->usage_subtype = EventMedicationUse::getUsageSubtype();
+        if (!$entry->prescription_item_id) {
+            $existing_event_date = $entry->copied_from_med_use_id ? Event::model()->findByPk($entry->copied_from_med_use_id)->event_date : $entry->event->event_date;
+            $new->previous_event_date = date('Y-m-d', strtotime($existing_event_date));
+        }
+        if ($entry->prescription_item_id) {
+            $prescription_item =  $entry->prescriptionItem;
+        } elseif ($entry->isPrescription()) {
+            $prescription_item = $entry;
+        }
+        $prescription_end_date = $prescription_item ? $prescription_item->stopDateFromDuration() : null;
+        if (!isset($new->end_date) && $prescription_end_date) {
+            $new->end_date = $prescription_end_date->format('Y-m-d');
+            $course_complete_model = HistoryMedicationsStopReason::model()->findByAttributes([
+                'name' => 'Course complete'
+            ]);
+            $new->stop_reason_id = $course_complete_model ? $course_complete_model->id : null;
+        }
+
+        return $new;
+    }
+
     public function isPreviousEntry($entry)
     {
-        return $entry->copied_from_med_use_id || $entry->prescription_item_id !== '';
+        return $entry->copied_from_med_use_id || $entry->prescription_item_id !== '' || $entry->isPrescription();
     }
 
     public function afterValidate()

@@ -18,7 +18,16 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use CDbCriteria;
+use Element_OphDrPrescription_Details;
+use Event;
+use EventMedicationUse;
+use Exception;
+use OphDrPrescription_Item;
+use OphDrPrescription_ItemTaper;
 use PrescriptionCreator;
+use User;
+use Yii;
 
 /**
  * This is the model class for table "et_ophciexamination_medicationmanagement".
@@ -33,10 +42,10 @@ use PrescriptionCreator;
  * @property int $prescription_id
  *
  * The followings are the available model relations:
- * @property \Event $event
- * @property \User $createdUser
- * @property \User $lastModifiedUser
- * @property \Element_OphDrPrescription_Details $prescription
+ * @property Event $event
+ * @property User $createdUser
+ * @property User $lastModifiedUser
+ * @property Element_OphDrPrescription_Details $prescription
  *
  * @method auditAllergicDrugEntries($target, $action = "allergy_override")
  */
@@ -104,7 +113,7 @@ class MedicationManagement extends BaseMedicationElement
                 'on' => "hidden = 0 AND usage_type = '" . MedicationManagementEntry::getUsageType() . "' AND usage_subtype = '" . MedicationManagementEntry::getUsageSubtype() . "' ",
                 'order' => 'visible_entries.start_date DESC, visible_entries.end_date DESC, visible_entries.last_modified_date'
             ),
-            'prescription' => array(self::BELONGS_TO, \Element_OphDrPrescription_Details::class, 'prescription_id'),
+            'prescription' => array(self::BELONGS_TO, Element_OphDrPrescription_Details::class, 'prescription_id'),
         );
     }
 
@@ -115,10 +124,11 @@ class MedicationManagement extends BaseMedicationElement
     public function getContinuedEntries()
     {
         $event_date = substr($this->event->event_date, 0, 10);
+        $changed_entries_ids = $this->getChangedEntriesIds();
 
-        return array_filter($this->visible_entries, function ($e) use ($event_date) {
+        return array_filter($this->visible_entries, function ($e) use ($event_date, $changed_entries_ids) {
             return ($e->start_date < $event_date &&
-                (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+                (is_null($e->end_date) || $e->end_date > date('Y-m-d')) && !in_array($e->id, $changed_entries_ids)
             );
         });
     }
@@ -130,9 +140,10 @@ class MedicationManagement extends BaseMedicationElement
     public function getEntriesStartedToday()
     {
         $event_date = substr($this->event->event_date, 0, 10);
+        $changed_entries_ids = $this->getChangedEntriesIds();
 
-        return array_filter($this->visible_entries, function ($e) use ($event_date) {
-            return ($e->start_date == $event_date && (is_null($e->end_date) || $e->end_date > date('Y-m-d')));
+        return array_filter($this->visible_entries, function ($e) use ($event_date, $changed_entries_ids) {
+            return ($e->start_date == $event_date && (is_null($e->end_date) || $e->end_date > date('Y-m-d')) && !in_array($e->id, $changed_entries_ids));
         });
     }
 
@@ -148,14 +159,62 @@ class MedicationManagement extends BaseMedicationElement
     }
 
     /**
+     * gets stopped Medication Management entries
      * @return MedicationManagementEntry[]
      */
+    public function getStoppedEntries() : array
+    {
+        $changed_entries_ids = $this->getChangedEntriesIds();
+        return array_filter($this->visible_entries, function ($e) use ($changed_entries_ids) {
+            return !is_null($e->end_date) && $e->end_date <= date('Y-m-d') && !in_array($e->id, $changed_entries_ids);
+        });
+    }
 
-    public function getStoppedEntries()
+    /**
+     * gets changed Medication Management entries
+     * @return MedicationManagementEntry[]
+     */
+    public function getChangedEntries() : array
     {
         return array_filter($this->visible_entries, function ($e) {
-            return !is_null($e->end_date) && $e->end_date <= date('Y-m-d');
+            $past_entries = [];
+            $past_prescription_entries =  $e->prescription_item_id ? EventMedicationUse::model()->findAll('latest_med_use_id=?', [$e->prescription_item_id]) : [];
+
+            foreach ($past_prescription_entries as $entry) {
+                if (!$e->isDuplicate($entry)) {
+                    array_push($past_entries, $entry);
+                }
+            }
+            $criteria = new CDbCriteria();
+            $criteria->with = ['event.episode'];
+            $criteria->addCondition('episode.patient_id = :patient_id');
+            $criteria->addCondition('usage_subtype = "History"');
+            $criteria->addCondition('medication_id = :medication_id');
+            $criteria->addCondition('stop_reason_id = :stop_reason_id');
+            $criteria->addCondition('latest_med_use_id = :latest_med_use_id');
+            $criteria->params[':patient_id'] = $e->event->episode->patient->id;
+            $criteria->params['medication_id'] = $e->medication_id;
+            $criteria->params['stop_reason_id'] = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Medication parameters changed'])->id;
+            $criteria->params['latest_med_use_id'] = $e->prescription_item_id;
+            $past_medication_history_entries_count = EventMedicationUse::model()->count($criteria);
+
+            return !empty($past_entries) || $past_medication_history_entries_count !== "0";
         });
+    }
+
+    /**
+     * gets changed entry ids
+     * @return array
+     */
+    private function getChangedEntriesIds() : array
+    {
+        $changed_entries = $this->getChangedEntries();
+        $ids = [];
+        foreach ($changed_entries as $changed_entry) {
+            $ids[] = $changed_entry->id;
+        }
+
+        return $ids;
     }
 
     /**
@@ -233,7 +292,7 @@ class MedicationManagement extends BaseMedicationElement
 
     protected function saveEntries()
     {
-        $criteria = new \CDbCriteria();
+        $criteria = new CDbCriteria();
         $criteria->addCondition("event_id = :event_id AND usage_type = '" . MedicationManagementEntry::getUsageType() . "' AND usage_subtype = '" . MedicationManagementEntry::getUsageSubtype() . "'");
         $criteria->params['event_id'] = $this->event->id;
         $orig_entries = MedicationManagementEntry::model()->findAll($criteria);
@@ -263,7 +322,7 @@ class MedicationManagement extends BaseMedicationElement
             }
 
             if ($is_new) {
-                $id = \Yii::app()->db->getLastInsertID();
+                $id = Yii::app()->db->getLastInsertID();
                 $entry->id = $id;
             }
 
@@ -294,11 +353,11 @@ class MedicationManagement extends BaseMedicationElement
 
     private function createOrUpdatePrescriptionEvent()
     {
-        $prescribe_access = \Yii::app()->user->checkAccess('OprnCreatePrescription');
+        $prescribe_access = Yii::app()->user->checkAccess('OprnCreatePrescription');
         if (!is_null($this->prescription_id)) {
             // prescription exists
 
-            /** @var \Element_OphDrPrescription_Details $prescription */
+            /** @var Element_OphDrPrescription_Details $prescription */
             $prescription = $this->prescription;
             $changed = false;
 
@@ -311,7 +370,7 @@ class MedicationManagement extends BaseMedicationElement
 
                     if ($mgment_item->prescribe == 0) {
                         //management item was updated as not prescribed
-                        $pitem = \EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $prescription_Item->id]);
+                        $pitem = EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $prescription_Item->id]);
                         foreach ($pitem as $p) {
                             // we need to remove all links
                             $p->prescription_item_id = null;
@@ -337,13 +396,13 @@ class MedicationManagement extends BaseMedicationElement
             /* items to add */
             foreach ($this->entries_to_prescribe as $entry) {
                 if (!in_array($entry->id, $existing_mgment_items)) {
-                    $prescription_item = new \OphDrPrescription_Item();
+                    $prescription_item = new OphDrPrescription_Item();
                     $prescription_item->event_id = $prescription->event_id;
                     $prescription_item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
 
                     $prescription_item->setAttributes(array(
-                        'usage_type' => \OphDrPrescription_Item::getUsageType(),
-                        'usage_subtype' => \OphDrPrescription_Item::getUsageSubtype(),
+                        'usage_type' => OphDrPrescription_Item::getUsageType(),
+                        'usage_subtype' => OphDrPrescription_Item::getUsageSubtype(),
                         'medication_id' => $entry->medication_id,
                         'form_id' => $entry->form_id,
                         'laterality' => $entry->laterality,
@@ -359,7 +418,7 @@ class MedicationManagement extends BaseMedicationElement
                     ));
                     $p_tapers = array();
                     foreach ($entry->tapers as $taper) {
-                        $new_taper = new \OphDrPrescription_ItemTaper();
+                        $new_taper = new OphDrPrescription_ItemTaper();
                         $new_taper->item_id = null;
                         $new_taper->frequency_id = $taper->frequency_id;
                         $new_taper->duration_id = $taper->duration_id;
@@ -368,7 +427,7 @@ class MedicationManagement extends BaseMedicationElement
                     }
                     $prescription_item->tapers = $p_tapers;
                     if (!$prescription_item->save()) {
-                        throw new \Exception("Error while saving prescription item: " . print_r($prescription_item->errors, true));
+                        throw new Exception("Error while saving prescription item: " . print_r($prescription_item->errors, true));
                     }
                     $prescription_item->saveTapers();
                     $entry->refresh();
@@ -379,9 +438,9 @@ class MedicationManagement extends BaseMedicationElement
             }
 
             if ($changed) {
-                if (empty(\OphDrPrescription_Item::model()->findAllByAttributes(['event_id' => $prescription->event_id]))) {
+                if (empty(OphDrPrescription_Item::model()->findAllByAttributes(['event_id' => $prescription->event_id]))) {
                     // if no more items on the prescription, delete it
-                    \Yii::app()->db->createCommand("UPDATE " . $this->tableName() . " SET prescription_id=NULL WHERE id=" . $this->id)->execute();
+                    Yii::app()->db->createCommand("UPDATE " . $this->tableName() . " SET prescription_id=NULL WHERE id=" . $this->id)->execute();
                     $prescription->delete();
                     $prescription->event->softDelete("Deleted via examination clinical management");
                 } else {
@@ -419,7 +478,7 @@ class MedicationManagement extends BaseMedicationElement
         $prescription_creator->save();
 
         if (!$prescription_creator->hasErrors()) {
-            \Yii::trace(print_r($prescription_creator->getErrors(), true));
+            Yii::trace(print_r($prescription_creator->getErrors(), true));
         }
 
         foreach ($prescription_creator->elements['Element_OphDrPrescription_Details']->items as $item) {
@@ -444,9 +503,9 @@ class MedicationManagement extends BaseMedicationElement
         $prescription_creator->elements['Element_OphDrPrescription_Details']->event->audit('event', 'create');
     }
 
-    private function getPrescriptionItem(\EventMedicationUse $entry)
+    private function getPrescriptionItem(EventMedicationUse $entry)
     {
-        $item = new \OphDrPrescription_Item();
+        $item = new OphDrPrescription_Item();
 
         $item->dose = $entry->dose;
         $item->dose_unit_term = $entry->dose_unit_term;
@@ -460,13 +519,13 @@ class MedicationManagement extends BaseMedicationElement
         $item->start_date = $entry->start_date;
         $item->comments = $entry->comments;
 
-        $item->usage_type = \OphDrPrescription_Item::getUsageType();
-        $item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
+        $item->usage_type = OphDrPrescription_Item::getUsageType();
+        $item->usage_subtype = OphDrPrescription_Item::getUsageSubtype();
 
         $item_tapers = array();
         if (!empty($entry->tapers)) {
             foreach ($entry->tapers as $taper) {
-                $new_taper = new \OphDrPrescription_ItemTaper();
+                $new_taper = new OphDrPrescription_ItemTaper();
                 $new_taper->item_id = null;
                 $new_taper->frequency_id = $taper->frequency_id;
                 $new_taper->duration_id = $taper->duration_id;

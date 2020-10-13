@@ -112,7 +112,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 		routeOptionWrapperSelector: '.admin-route-options',
         routeOptionInputSelector: '.laterality-input',
         patientAllergies: [],
-        ophthalmicMedicationIds: [],
+        eyeRouteIds: [],
         medicationsOptionsTable: '.select-options',
           allAllergies: {},
           classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
@@ -304,11 +304,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               controller.$noOphthalmicMedicationsWrapper.hide();
           }
 
-          if (hideSysMed ? !hideOphMed : hideOphMed) {
-              $('#no-oph-sys-meds').show();
-          } else {
-              $('#no-oph-sys-meds').hide();
-          }
+          $('#no-oph-sys-meds').toggle(hideSysMed ? !hideOphMed : hideOphMed);
+
       }
   };
 
@@ -322,6 +319,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           let $rows = this.$table.find('tbody tr.js-first-row');
           let showNoOphMed = !this.medicationTypePresentInTable($rows, 'ophthalmic');
           let showNoSysMed = !this.medicationTypePresentInTable($rows, 'systemic');
+
           if (showNoOphMed || showNoSysMed) {
               if (showNoOphMed) {
                 this.$noOphthalmicMedicationsWrapper.show();
@@ -330,9 +328,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                   this.$noSystemicMedicationsWrapper.show();
               }
 
-              if (showNoSysMed ? !showNoOphMed: showNoOphMed) {
-                  $('#no-oph-sys-meds').show();
-              }
+              $('#no-oph-sys-meds').toggle(showNoSysMed ? !showNoOphMed: showNoOphMed);
           } else {
               this.hideNoMedications();
           }
@@ -343,11 +339,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
       let controller = this;
       let is_present = false;
+      let eyeRouteIds = controller.options.eyeRouteIds;
       $.each($rows, function () {
-          let medication_id = $(this).find('.medication_id').val();
-          if (controller.options.ophthalmicMedicationIds.includes(medication_id) && type === 'ophthalmic') {
+          let route_id = $(this).find(':input[name$="[route_id]"]').val();
+          if (eyeRouteIds.includes(route_id) && type === 'ophthalmic') {
               is_present =  true;
-          } else if (!controller.options.ophthalmicMedicationIds.includes(medication_id) && type === 'systemic'){
+          } else if (!eyeRouteIds.includes(route_id) && type === 'systemic') {
               is_present =  true;
           }
       });
@@ -371,6 +368,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
 		$full_row.on('change', controller.options.routeFieldSelector, function(e) {
           controller.updateRowRouteOptions($row);
+          controller.hideNoMedications();
+          controller.showNoMedications();
       });
 
 		$second_part_of_row.on("click", ".js-meds-stop-btn", function(){
@@ -1103,17 +1102,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.updateRowRouteOptions = function($row, reset_values = true)
   {
-      let $routeOptionWrapper = $row.find(this.options.routeOptionWrapperSelector);
+      let controller = this;
+      let $routeOptionWrapper = $row.find(controller.options.routeOptionWrapperSelector);
       $routeOptionWrapper.hide();
 
       if(reset_values) {
           $routeOptionWrapper.find('input').each(function () {
               $(this).prop("checked", false);
           });
-          $row.find(this.options.routeOptionInputSelector).val('');
+          $row.find(controller.options.routeOptionInputSelector).val('');
       }
 
-      let value = $row.find(this.options.routeFieldSelector + ' option:selected').val();
+      let value = $row.find(controller.options.routeFieldSelector + ' option:selected').val();
       if (value !== "" && typeof value !== "undefined") {
           $.getJSON(this.options.routeOptionSource, {route_id: value}, function(data) {
               if (data.length) {

@@ -180,7 +180,7 @@ $(document).ready(function () {
 
         if (!isCollapsedGroup) {
             $tileGroup.find('.element').each(function () {
-                let rowCount = $(this).find('tr').length;
+                let rowCount = $(this).find('tbody:first tr').length;
                 let $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
                 $(this).find('.element-title').append($countDisplay);
             });

@@ -217,28 +217,6 @@ class OphDrPrescription_Item extends EventMedicationUse
         return $item_lines_used;
     }
 
-    public function getAdministrationDisplay(bool $include_route = false)
-    {
-        $parts = array('dose', 'dose_unit_term');
-        
-        if ($include_route) {
-            $parts += array('medicationLaterality', 'route');
-        }
-
-        $parts += array('frequency');
-
-        $res = array();
-
-        foreach ($parts as $k) {
-            if ($this->$k) {
-                if ($k !== "dose_unit_term" || $this->dose) {
-                    $res[] = $this->$k;
-                }
-            }
-        }
-        return implode(' ', $res);
-    }
-
     /**
      * Update the item based on its
      * management item
@@ -320,35 +298,11 @@ class OphDrPrescription_Item extends EventMedicationUse
         $end_date = $this->stopDateFromDuration();
         $this->end_date = $end_date ? $end_date->format('Y-m-d') : null;
         if ($this->end_date) {
-            $this->setStopReasonToCourseComplete();
+            $this->setStopReasonTo('Course complete');
         } else {
             $this->stop_reason_id = null;
         }
 
         return parent::beforeSave();
-    }
-
-    protected function afterSave()
-    {
-        $api = Yii::app()->moduleAPI->get('OphDrPrescription');
-        if ($api) {
-            $patient = $this->event->getPatient();
-            $exclude_ids = array_map(function ($prescription) {
-                return $prescription->id;
-            }, OphDrPrescription_Item::model()
-                ->with('prescription', 'prescription.event', 'prescription.event.episode')
-                ->findAll('medication_id !=? and episode.patient_id=?', [$this->medication_id, $patient->id]));
-            $exclude_ids[] = $this->id;
-            $existing_prescription_items = $api->getPrescriptionItemsForPatient($patient, $exclude_ids);
-            if ($existing_prescription_items) {
-                $latest_prescription_item = end($existing_prescription_items);
-                $latest_prescription_end_date = $latest_prescription_item->stopDateFromDuration();
-                if (is_null($latest_prescription_end_date) || $latest_prescription_end_date->format('Y-m-d') >= date('Y-m-d')) {
-                    $latest_prescription_item->saveAttributes(['latest_med_use_id' => $this->id]);
-                }
-            }
-        }
-
-        parent::afterSave();
     }
 }

@@ -48,6 +48,9 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
 
 $element_errors = $element->getErrors();
 $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-d') : false;
+$element->entries = array_filter($element->entries, function ($e) {
+    return is_null($e->latest_med_use_id);
+});
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
@@ -58,6 +61,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+        <input type="hidden" name="medication_management_has_errors" value="<?= $element->hasErrors() ?>"/>
         <table class="medications entries js-entry-table js-current-medications"
                              id="<?= $model_name ?>_entry_table">
             <colgroup>
@@ -239,6 +243,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
         let select_fields_selectors = ['.js-frequency', '.js-route', '.js-duration', '.js-dispense-condition', '.js-dispense-location'];
         let prescription_event_exists = false;
         let prescription_is_final = <?= CJavaScript::encode($element->prescription && $element->prescription->draft === '0') ?>;
+        let is_edit_mode = <?= CJavaScript::encode($this->getController()->action->id === 'update') ?>;
 
         $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescribe]"]').each(function () {
             if ($(this).prop('checked')) {
@@ -382,21 +387,23 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             initRowsFromHistoryElement: function () {
 
                 let copyFields = <?=!$this->isPostedEntries() && $this->element->getIsNewRecord() ? 'true' : 'false'?>;
+                let has_errors = $('input[name="medication_management_has_errors"]').val() === "1" || $('input[name="history_medications_has_errors"]').val() === "1";
+
+
                 $.each(window.HMController.$table.children("tbody").children("tr.js-first-row"), function (i, historyMedicationRow) {
                     let medicationHistoryBoundKey = $(historyMedicationRow).find('.js-bound-key').val();
                     let rowNeedsCopying = true;
                     let $medicationManagementRow;
 
                     $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function (index, medicationManagementRow) {
-                        let mm_usage_type = $(medicationManagementRow).find('.js-usage-type').val();
 
                         if (medicationHistoryBoundKey && $(medicationManagementRow).find('.js-bound-key').val() === medicationHistoryBoundKey) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;
                             $medicationManagementRow = $(medicationManagementRow);
-                        } else if ($(historyMedicationRow).find('.js-prescription-item-id').val() !== '') {
-                            if ($(medicationManagementRow).find('.js-prescription-item-id').val() === $(historyMedicationRow).find('.js-prescription-item-id').val() || mm_usage_type === 'OphDrPrescription') {
+                        } else if (!(has_errors || is_edit_mode)) {
+                            if (($(historyMedicationRow).find('.medication_id').val() === $(medicationManagementRow).find('.medication_id').val()) && !$(medicationManagementRow).find(".js-remove").hasClass('disabled')) {
                                 $(medicationManagementRow).parent().find('tr.js-second-row[data-key='+ $(medicationManagementRow).data('key') +']').remove();
                                 $(medicationManagementRow).remove();
                             }
@@ -418,9 +425,8 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                                         );
                     if (hidden) {
                         if(typeof $medicationManagementRow !== "undefined") {
-                            $medicationManagementRow.addClass("hidden");
-                            $medicationManagementRow.parent().find('tr.js-second-row[data-key='+ $medicationManagementRow.data('key') +']').addClass('hidden');
-                            $medicationManagementRow.find(".js-hidden").val("1");
+                            $medicationManagementRow.parent().find('tr.js-second-row[data-key='+ $medicationManagementRow.data('key') +']').remove();
+                            $medicationManagementRow.remove();
                         }
                     }
                 });

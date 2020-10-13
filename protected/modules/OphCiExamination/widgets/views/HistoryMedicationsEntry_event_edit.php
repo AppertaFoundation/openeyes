@@ -34,7 +34,7 @@ $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_ty
 $chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
 
-$to_be_copied = !$entry->originallyStopped && isset($entry->medication) && $entry->medication->getToBeCopiedIntoMedicationManagement();
+$to_be_copied = !($entry->originallyStopped || $stopped) && isset($entry->medication) && $entry->medication->getToBeCopiedIntoMedicationManagement();
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
@@ -80,7 +80,9 @@ $stop_fields_validation_error = array_intersect(
         <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]" value="<?= !isset($entry->medication_id) ? "{{medication_id}}" : $entry->medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
+        <?php if ($entry->id && $entry->id !== '') { ?>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $entry->id ?>" />
+        <?php } ?>
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" class="js-prescription-item-id" value="<?= $entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= !isset($entry->bound_key) && isset($is_template) && $is_template ? "{{bound_key}}" : $entry->bound_key ?>">

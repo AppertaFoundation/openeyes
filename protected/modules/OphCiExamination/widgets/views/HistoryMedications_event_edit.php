@@ -27,16 +27,34 @@ foreach ($element->getFrequencyOptions() as $k => $v) {
     $frequency_options[$v->id] = $v->term." (".$v->code.")";
 }
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
-$element_errors = $element->getErrors();
 $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'name');
 $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
-
+$history_entries = $this->getEntriesFromPreviousHistory();
 $current_entries = [];
 $stopped_entries = [];
+$entries_from_previous_event = array_filter($element->entries, function ($entry) {
+    return is_null($entry->id);
+});
+
+if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) && !$element->id) {
+    $element->entries = $element->mergeMedicationEntries($element->entries); // only need to merge on initial load, not on validation
+}
 foreach ($element->entries as $entry) {
+    $is_stopped = false;
     // if the request is POST, it means we are on the validation error screen
     // therefore we show entries just like the user set up originally
-    if ($entry->originallyStopped && !Yii::app()->request->isPostRequest) {
+    if (($entry->originallyStopped || $entry->isStopped()) && !$entry->getIsNewRecord()) {
+        $is_stopped = true;
+    } else {
+        foreach ($history_entries as $history_entry) {
+            if (!$entry->isDuplicate($history_entry) && $entry->medication_id === $history_entry->medication_id && $entry->isStopped()) {
+                $is_stopped = true;
+                break;
+            }
+        }
+    }
+
+    if ($is_stopped) {
         $stopped_entries[] = $entry;
     } else {
         $current_entries[] = $entry;
@@ -50,6 +68,7 @@ foreach ($element->entries as $entry) {
   <div class="data-group full">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+      <input type="hidden" name="history_medications_has_errors" value="<?= $element->hasErrors() ?>"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
       <div class="cols-5 <?= $model_name ?>_no_systemic_medications_wrapper">
           <label class="inline highlight" id="<?= $model_name ?>_no_systemic_medications" for="no_systemic_medications">
@@ -94,7 +113,7 @@ foreach ($element->entries as $entry) {
                 $row_count = 0;
         $total_count = count($current_entries);
         foreach ($current_entries as $row_count => $entry) {
-            if ($entry->prescription_item_id) {
+            if ($entry->prescription_item_id || $entry->isPrescription()) {
                 $this->render(
                     'HistoryMedicationsEntry_prescription_event_edit',
                     array(
@@ -142,7 +161,7 @@ foreach ($element->entries as $entry) {
     </table>
         <div class="collapse-data js-stopped-medication-collapsed-data" style="<?php echo !sizeof($stopped_entries)?  'display:none': ''; ?>">
             <div class="collapse-data-header-icon expand ">
-                Previously Stopped Medications <small class="js-stopped-medications-count">(<?=count($stopped_entries);?>)</small>
+                Stopped Medications <small class="js-stopped-medications-count">(<?=count($stopped_entries);?>)</small>
             </div>
             <div class="collapse-data-content" style="display: none;">
 
@@ -171,7 +190,7 @@ foreach ($element->entries as $entry) {
                                 $stopped_entries_has_errors = true;
                             }
                         }
-                        if ($entry->prescription_item_id) {
+                        if ($entry->prescription_item_id || $entry->isPrescription()) {
                             $this->render(
                                 'HistoryMedicationsEntry_prescription_event_edit',
                                 array(
@@ -286,7 +305,7 @@ foreach ($element->entries as $entry) {
         medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
             element: $('#<?=$model_name?>_element'),
             patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
-            ophthalmicMedicationIds: <?= CJSON::encode(Medication::model()->listOphthalmicMedicationIds()) ?>,
+            eyeRouteIds: <?= CJSON::encode(MedicationRoute::model()->listEyeRouteIds()) ?>,
             allAllergies: <?= CJSON::encode(CHtml::listData(OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
             onInit: function (controller) {
                 registerElementController(controller, "HMController", "MMController");
