@@ -24,8 +24,8 @@
                     if (!empty($comments)) { ?>
                         <i class="oe-i comments-who small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="<em><?= $comments ?></em>">
                         </i> <?php
-                            }
-                                ?>
+                    }
+                    ?>
                 </td>
                 <td></td>
                 <td>
