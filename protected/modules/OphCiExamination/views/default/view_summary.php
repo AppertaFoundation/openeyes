@@ -280,9 +280,9 @@ if ($historyElement) {
             <div class="data-value none">
                 No current Systemic Medications
             </div>
-        <?php } ?>
+                    <?php } ?>
 
-        <?php if ($stopped_systemic_medications) { ?>
+                    <?php if ($stopped_systemic_medications) { ?>
             <div class="collapse-data">
                 <div class="collapse-data-header-icon expand" data-blujay="0">
                     Previously Stopped
@@ -336,8 +336,8 @@ if ($historyElement) {
                         <!-- </div> -->
                     </div>
                 </div>
-            <?php } ?>
-        <?php } ?>
+                    <?php } ?>
+                <?php } ?>
             </div>
         </div>
     </section>
@@ -439,7 +439,7 @@ if ($historyElement) {
                                                 <span class="oe-vc-mode in-element"><?= $queue_set_service->getQueueSetForQueue($ticket->current_queue->id)->name ?></span>
                                                 <?php if ($ticket->priority) { ?>
                                                     <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name[0] //gets first letter of word
-                                                                                                                ?></span>
+                                                    ?></span>
                                                 <?php } ?>
                                             </a>
                                         </td>
