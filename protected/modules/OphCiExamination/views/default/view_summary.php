@@ -26,7 +26,21 @@ $medicationsWidget = $this->createWidget(
     )
 );
 $medicationsWidget->setElementFromDefaults();
-$medicationsElement->assortEntries();
+
+$current_filter = function ($e) {
+    /** @var EventMedicationUse $e */
+    return !$e->isStopped();
+};
+
+$stopped_filter = function ($e) {
+    /** @var EventMedicationUse $e */
+    return $e->isStopped();
+};
+
+$medication_entries = EventMedicationUse::model()->findAll('event_id=?', [$this->event->id]);
+$current_medication_entries = array_filter($medication_entries, $current_filter);
+$current_medication_entries = $medicationsElement->mergeMedicationEntries($current_medication_entries, true);
+$stopped_medication_entries = array_filter($medication_entries, $stopped_filter);
 if ($historyElement) {
     $this->renderElement($historyElement, $action, $form, $data);
 }
@@ -49,8 +63,8 @@ if ($historyElement) {
             $filter_eye_medication = function ($med) {
                 return $med->laterality !== null;
             };
-            $current_eye_medications = array_filter($medicationsElement->current_entries, $filter_eye_medication);
-            $stopped_eye_medications = array_filter($medicationsElement->closed_entries, $filter_eye_medication);
+            $current_eye_medications = array_filter($current_medication_entries, $filter_eye_medication);
+            $stopped_eye_medications = array_filter($stopped_medication_entries, $filter_eye_medication);
             ?>
             <?php if (!$current_eye_medications && !$stopped_eye_medications && !$medicationsElement->no_ophthalmic_medications_date) { ?>
                 <div class="data-value not-recorded">
@@ -78,7 +92,7 @@ if ($historyElement) {
                                 <?php foreach ($current_eye_medications as $entry) { ?>
                                     <tr>
                                         <td>
-                                            <?= $entry->getMedicationDisplay() ?>
+                                            <?= $entry->getMedicationDisplay(true) ?>
                                         </td>
                                         <td>
                                             <?php
@@ -136,7 +150,7 @@ if ($historyElement) {
                                             <?php foreach ($stopped_eye_medications as $entry) { ?>
                                                 <tr>
                                                     <td>
-                                                        <?= $entry->getMedicationDisplay() ?>
+                                                        <?= $entry->getMedicationDisplay(true) ?>
                                                     </td>
                                                     <td>
                                                         <?php
@@ -200,9 +214,9 @@ if ($historyElement) {
                 };
 
                 $current_systemic_medications = $medicationsElement ?
-                    array_filter($medicationsElement->current_entries, $filterSystemicMedication) : [];
+                    array_filter($current_medication_entries, $filterSystemicMedication) : [];
                 $stopped_systemic_medications = $medicationsElement ?
-                    array_filter($medicationsElement->closed_entries, $filterSystemicMedication) : [];
+                    array_filter($stopped_medication_entries, $filterSystemicMedication) : [];
                 ?>
                 <?php if (!$current_systemic_medications && !$stopped_systemic_medications && !$medicationsElement->no_systemic_medications_date) { ?>
                     <div class="data-value not-recorded">
@@ -234,7 +248,7 @@ if ($historyElement) {
                                         <?php if (isset($patient) && $this->patient->hasDrugAllergy($entry->medication_id)) {
                                             echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
                                         } ?>
-                                        <?= $entry->getMedicationDisplay() ?>
+                                        <?= $entry->getMedicationDisplay(true) ?>
                                     </td>
                                     <td>
                                         <?php
@@ -293,7 +307,7 @@ if ($historyElement) {
                                     <tr>
                                         <td>
                                             
-                                            <?= $entry->getMedicationDisplay() ?>
+                                            <?= $entry->getMedicationDisplay(true) ?>
                                         </td>
                                         <td>
                                             <?php

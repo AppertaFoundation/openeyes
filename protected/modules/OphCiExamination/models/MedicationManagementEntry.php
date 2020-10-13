@@ -178,10 +178,6 @@ class MedicationManagementEntry extends \EventMedicationUse
             $this->end_date = $end_date ? $end_date->format('Y-m-d') : null;
         }
 
-        if ($this->isUndated()) {
-            $this->start_date = date('Y-m-d');
-        }
-
         if ($this->end_date) {
             if ($this->prescribe) {
                 $this->setStopReasonTo('Course complete');
