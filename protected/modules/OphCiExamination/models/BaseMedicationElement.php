@@ -322,7 +322,9 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
                         $converted_entry->usage_subtype = '';
                     }
                     $medication_entries[] = $converted_entry;
-                    $already_converted_ids[] = $entry_to_add->id;
+                    if ($entry_to_add->id) {
+                        $already_converted_ids[] = $entry_to_add->id;
+                    }
                 }
             }
         }
