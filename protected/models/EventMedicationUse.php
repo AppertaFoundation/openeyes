@@ -392,7 +392,7 @@ class EventMedicationUse extends BaseElement
      * @param $medication
      * @return bool
      */
-    public function isDuplicate($medication) : bool
+    public function isDuplicate($medication): bool
     {
         $result = false;
 
@@ -486,7 +486,7 @@ class EventMedicationUse extends BaseElement
     public function getAdministrationDisplay(bool $include_route = false)
     {
         $parts = array('dose', 'dose_unit_term');
-        
+
         if ($include_route) {
             array_push($parts, 'medicationLaterality', 'route');
         }
@@ -541,7 +541,7 @@ class EventMedicationUse extends BaseElement
      * checks if model is a prescription item based on usage type
      * @return bool
      */
-    public function isPrescription() : bool
+    public function isPrescription(): bool
     {
         return $this->usage_type === 'OphDrPrescription';
     }
@@ -550,7 +550,7 @@ class EventMedicationUse extends BaseElement
      * @param $entry
      * @return EventMedicationUse
      */
-    public function getEarliestEntry($entry) : EventMedicationUse
+    public function getEarliestEntry($entry): EventMedicationUse
     {
         if (!$entry->id) {
             return $entry;
@@ -559,6 +559,12 @@ class EventMedicationUse extends BaseElement
         return $previous_medication ? $this->getEarliestEntry($previous_medication) : $entry;
     }
 
+    public function getComments()
+    {
+        if ($this->comments && !empty(trim($this->comments))) {
+            return $this->comments;
+        }
+    }
 
     public function getTooltipContent()
     {
@@ -656,7 +662,7 @@ class EventMedicationUse extends BaseElement
             return Helper::formatFuzzyDate($this->end_date);
         } elseif ($this->prescription_item_id) {
             $stop_date = $this->prescriptionItem->stopDateFromDuration(false);
-            return $stop_date ? Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$this->medicationDuration->name;
+            return $stop_date ? Helper::convertDate2NHS($stop_date->format('Y-m-d')) : $this->medicationDuration->name;
         } else {
             return $default;
         }
@@ -816,7 +822,7 @@ class EventMedicationUse extends BaseElement
      * Checks if medication has been changed and stopped
      * @return bool
      * */
-    public function isChangedMedication() : bool
+    public function isChangedMedication(): bool
     {
         $stop_reason_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Medication parameters changed']);
         if ($stop_reason_model) {
@@ -829,7 +835,7 @@ class EventMedicationUse extends BaseElement
      * Checks if start date has been set
      * @return bool
      * */
-    public function isUndated() : bool
+    public function isUndated(): bool
     {
         return $this->start_date === "" || $this->start_date === null || $this->start_date === '0000-00-00';
     }
@@ -894,7 +900,7 @@ class EventMedicationUse extends BaseElement
                 $existing_prescription_items = $this->getExistingItems($prescription_api, OphDrPrescription_Item::model());
                 $existing_history_med_items = $this->getExistingItems($examination_api, EventMedicationUse::model());
 
-                foreach ([ 'OphDrPrescription' => $existing_prescription_items, 'OphCiExamination' => $existing_history_med_items] as $usage_type => $items) {
+                foreach (['OphDrPrescription' => $existing_prescription_items, 'OphCiExamination' => $existing_history_med_items] as $usage_type => $items) {
                     if ($items) {
                         $latest_item = end($items);
                         if ($usage_type === 'OphDrPrescription') {
@@ -929,7 +935,7 @@ class EventMedicationUse extends BaseElement
      * @param $model
      * @return array
      */
-    private function getExistingItems($api, $model) : array
+    private function getExistingItems($api, $model): array
     {
         $patient = $this->event->getPatient();
         $is_prescription = is_a($model, 'OphDrPrescription_Item');
