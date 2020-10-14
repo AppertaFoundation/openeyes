@@ -296,28 +296,35 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
     /**
      * merges entries and removes those that have a latest_med_use_id (not the most recent medication)
      * @param $entries
+     * @param bool $is_examination_view
      * @return array
      */
 
-    public function mergeMedicationEntries($entries) : array
+    public function mergeMedicationEntries($entries, $is_examination_view = false) : array
     {
         $merged_entries = [];
         $medication_ids = [];
         $medication_entries = [];
         $already_converted_ids = [];
 
+        if ($is_examination_view) {
+            $entries = $this->filterHistoryMedicationsForExaminationView($entries);
+        }
+
         foreach ($entries as $entry) {
             $entry_to_add = $entry->prescriptionItem ?? $entry;
             if (!in_array($entry_to_add->id, $already_converted_ids)) {
                 $converted_entry = $this->createConvertedHistoryEntry($entry_to_add);
                 $converted_entry->event_id = $entry_to_add->event_id ?? $entry_to_add->copied_from_med_use_id;
-                if (!$entry_to_add->latest_med_use_id) {
+                if (!$entry_to_add->latest_med_use_id || $is_examination_view) {
                     if ($entry_to_add->isPrescription()) {
                         $converted_entry->usage_type = 'OphDrPrescription';
                         $converted_entry->usage_subtype = '';
                     }
                     $medication_entries[] = $converted_entry;
-                    $already_converted_ids[] = $entry_to_add->id;
+                    if ($entry_to_add->id) {
+                        $already_converted_ids[] = $entry_to_add->id;
+                    }
                 }
             }
         }
@@ -333,6 +340,33 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
         }
 
         return $merged_entries;
+    }
+
+    /**
+     * filters out Medication History elements that are linked when showing in the view mode for Examination
+     *
+     * @param $entries
+     * @return array
+     */
+    private function filterHistoryMedicationsForExaminationView($entries) : array
+    {
+        $medication_management_entries = array_filter($entries, function ($entry) {
+            return $entry->usage_subtype === 'Management';
+        });
+
+        $history_medication_entries = array_filter($entries, function ($entry) {
+            return $entry->usage_subtype === 'History';
+        });
+
+        $medication_management_entry_medication_ids = array_map(function ($medication_management_entry) {
+            return $medication_management_entry->medication_id;
+        }, $medication_management_entries);
+
+        $history_medication_entries = array_filter($history_medication_entries, function ($entry) use ($medication_management_entry_medication_ids) {
+            return !in_array($entry->medication_id, $medication_management_entry_medication_ids);
+        });
+
+        return array_merge($history_medication_entries, $medication_management_entries);
     }
 
     /**

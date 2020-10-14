@@ -26,7 +26,21 @@ $medicationsWidget = $this->createWidget(
     )
 );
 $medicationsWidget->setElementFromDefaults();
-$medicationsElement->assortEntries();
+
+$current_filter = function ($e) {
+    /** @var EventMedicationUse $e */
+    return !$e->isStopped();
+};
+
+$stopped_filter = function ($e) {
+    /** @var EventMedicationUse $e */
+    return $e->isStopped();
+};
+
+$medication_entries = EventMedicationUse::model()->findAll('event_id=?', [$this->event->id]);
+$current_medication_entries = array_filter($medication_entries, $current_filter);
+$current_medication_entries = $medicationsElement->mergeMedicationEntries($current_medication_entries, true);
+$stopped_medication_entries = array_filter($medication_entries, $stopped_filter);
 if ($historyElement) {
     $this->renderElement($historyElement, $action, $form, $data);
 }
@@ -36,11 +50,7 @@ if ($historyElement) {
     <?php $this->renderElement($diagnosesElement, $action, $form, $data) ?>
     <?php $this->renderElement($pastSurgeryElement, $action, $form, $data) ?>
 
-    <section class="element view-Eye-Medications tile"
-             data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
-             data-element-type-class="<?php echo $medicationsElement->elementType->class_name ?>"
-             data-element-type-name="Eye Medications"
-             data-element-display-order="<?php echo $medicationsElement->elementType->display_order ?>">
+    <section class="element view-Eye-Medications tile" data-element-type-id="<?php echo $medicationsElement->elementType->id ?>" data-element-type-class="<?php echo $medicationsElement->elementType->class_name ?>" data-element-type-name="Eye Medications" data-element-display-order="<?php echo $medicationsElement->elementType->display_order ?>">
         <header class=" element-header">
             <h3 class="element-title">Eye Medications</h3>
         </header>
@@ -49,8 +59,8 @@ if ($historyElement) {
             $filter_eye_medication = function ($med) {
                 return $med->laterality !== null;
             };
-            $current_eye_medications = array_filter($medicationsElement->current_entries, $filter_eye_medication);
-            $stopped_eye_medications = array_filter($medicationsElement->closed_entries, $filter_eye_medication);
+            $current_eye_medications = array_filter($current_medication_entries, $filter_eye_medication);
+            $stopped_eye_medications = array_filter($stopped_medication_entries, $filter_eye_medication);
             ?>
             <?php if (!$current_eye_medications && !$stopped_eye_medications && !$medicationsElement->no_ophthalmic_medications_date) { ?>
                 <div class="data-value not-recorded">
@@ -64,21 +74,21 @@ if ($historyElement) {
                 <?php if ($current_eye_medications) { ?>
                     <div class="data-value">
                         <div class="tile-data-overflow">
-                          <table id="view-Eye-Medications-Current">
+                            <table id="view-Eye-Medications-Current">
                                 <colgroup>
                                     <col class="cols-7">
                                 </colgroup>
-                              <thead style="display:none;">
-                                <th>Drug</th>
-                                <th>Tooltip</th>
-                                <th>Laterality</th>
-                                <th>Date</th>
-                              </thead>
+                                <thead style="display:none;">
+                                    <th>Drug</th>
+                                    <th>Tooltip</th>
+                                    <th>Laterality</th>
+                                    <th>Date</th>
+                                </thead>
                                 <tbody>
                                 <?php foreach ($current_eye_medications as $entry) { ?>
                                     <tr>
                                         <td>
-                                            <?= $entry->getMedicationDisplay() ?>
+                                            <?= $entry->getMedicationDisplay(true) ?>
                                         </td>
                                         <td>
                                             <?php
@@ -100,7 +110,8 @@ if ($historyElement) {
                                             ?>
                                         </td>
                                         <td>
-                                            </i><?= $entry->getStartDateDisplay() ?>
+                                            <?php $earliest_entry = $entry->getEarliestEntry($entry); ?>
+                                            <?= $earliest_entry->getStartDateDisplay() ?>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -136,7 +147,7 @@ if ($historyElement) {
                                             <?php foreach ($stopped_eye_medications as $entry) { ?>
                                                 <tr>
                                                     <td>
-                                                        <?= $entry->getMedicationDisplay() ?>
+                                                        <?= $entry->getMedicationDisplay(true) ?>
                                                     </td>
                                                     <td>
                                                         <?php
@@ -146,7 +157,7 @@ if ($historyElement) {
 
                                                         $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                                         if ($tooltip_content) { ?>
-                                                    <i class="oe-i <?=$info_box->getIcon();?> small js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>">
+                                                            <i class="oe-i <?= $info_box->getIcon(); ?> small js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>">
                                                             </i>
                                                         <?php } ?>
                                                     </td>
@@ -200,9 +211,9 @@ if ($historyElement) {
                 };
 
                 $current_systemic_medications = $medicationsElement ?
-                    array_filter($medicationsElement->current_entries, $filterSystemicMedication) : [];
+                    array_filter($current_medication_entries, $filterSystemicMedication) : [];
                 $stopped_systemic_medications = $medicationsElement ?
-                    array_filter($medicationsElement->closed_entries, $filterSystemicMedication) : [];
+                    array_filter($stopped_medication_entries, $filterSystemicMedication) : [];
                 ?>
                 <?php if (!$current_systemic_medications && !$stopped_systemic_medications && !$medicationsElement->no_systemic_medications_date) { ?>
                     <div class="data-value not-recorded">
@@ -234,7 +245,7 @@ if ($historyElement) {
                                         <?php if (isset($patient) && $this->patient->hasDrugAllergy($entry->medication_id)) {
                                             echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
                                         } ?>
-                                        <?= $entry->getMedicationDisplay() ?>
+                                        <?= $entry->getMedicationDisplay(true) ?>
                                     </td>
                                     <td>
                                         <?php
@@ -255,7 +266,9 @@ if ($historyElement) {
                                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                         ?>
                                     </td>
-                                    <td><?= $entry->getStartDateDisplay() ?></td>
+                                    <td><?php $earliest_entry = $entry->getEarliestEntry($entry); ?>
+                                        <?= $earliest_entry->getStartDateDisplay() ?>
+                                    </td>
                                 </tr>
                             <?php } ?>
                             </tbody>
@@ -264,36 +277,36 @@ if ($historyElement) {
                 </div>
                     <?php } else { ?>
             </div>
-                <div class="data-value none">
-                    No current Systemic Medications
-                </div>
+            <div class="data-value none">
+                No current Systemic Medications
+            </div>
                     <?php } ?>
 
                     <?php if ($stopped_systemic_medications) { ?>
             <div class="collapse-data">
-                    <div class="collapse-data-header-icon expand" data-blujay="0">
+                <div class="collapse-data-header-icon expand" data-blujay="0">
                     Previously Stopped
                     <small>(<?= sizeof($stopped_systemic_medications) ?>)</small>
                 </div>
                 <div class="collapse-data-content">
-                        <!-- <div class="restrict-data-shown"> -->
-                        <div class="restrict-data-content rows-10">
-                                <table id="view-Systemic-Medications-Stopped">
-                                <colgroup>
-                                        <col class="cols-7">
-                                </colgroup>
-                                    <thead style="display:none;">
-                                        <th>Drug</th>
-                                        <th>Tooltip</th>
-                                        <th>Laterality</th>
-                                        <th>Date</th>
-                                    </thead>
-                                <tbody>
+                    <!-- <div class="restrict-data-shown"> -->
+                    <div class="restrict-data-content rows-10">
+                        <table id="view-Systemic-Medications-Stopped">
+                            <colgroup>
+                                <col class="cols-7">
+                            </colgroup>
+                            <thead style="display:none;">
+                                <th>Drug</th>
+                                <th>Tooltip</th>
+                                <th>Laterality</th>
+                                <th>Date</th>
+                            </thead>
+                            <tbody>
                                 <?php foreach ($stopped_systemic_medications as $entry) { ?>
                                     <tr>
                                         <td>
                                             
-                                            <?= $entry->getMedicationDisplay() ?>
+                                            <?= $entry->getMedicationDisplay(true) ?>
                                         </td>
                                         <td>
                                             <?php
@@ -303,8 +316,7 @@ if ($historyElement) {
 
                                             $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                             if (!empty($tooltip_content)) { ?>
-                                                <i class="oe-i <?=$info_box->getIcon();?> small js-has-tooltip"
-                                                   data-tooltip-content="<?= $tooltip_content ?>">
+                                                <i class="oe-i <?= $info_box->getIcon(); ?> small js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>">
                                                 </i>
                                             <?php } ?>
                                         </td>
@@ -319,9 +331,9 @@ if ($historyElement) {
                                         </td>
                                     </tr>
                                 <?php } ?>
-                                </tbody>
-                            </table>
-                            <!-- </div> -->
+                            </tbody>
+                        </table>
+                        <!-- </div> -->
                     </div>
                 </div>
                     <?php } ?>
@@ -351,11 +363,11 @@ if ($historyElement) {
                     <div class="tile-data-overflow">
                         <table class="last-left">
                             <tbody>
-                            <?php foreach ($entries as $entry) { ?>
-                                <tr>
-                                    <td><?= $entry ?></td>
-                                </tr>
-                            <?php } ?>
+                                <?php foreach ($entries as $entry) { ?>
+                                    <tr>
+                                        <td><?= $entry ?></td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -370,9 +382,9 @@ if ($historyElement) {
         </header>
         <div class="element-data full-width">
             <?php if (!$managementElement->comments) { ?>
-            <div class="data-value not-recorded">
-                Nil recorded this examination
-            </div>
+                <div class="data-value not-recorded">
+                    Nil recorded this examination
+                </div>
             <?php } else { ?>
                 <div class="data-value">
                     <?= $managementElement->comments ?>
@@ -398,40 +410,41 @@ if ($historyElement) {
                                 <col class="cols-2">
                             </colgroup>
                             <tbody>
-                            <?php $row_count = 0;
-                            $api = Yii::app()->moduleAPI->get('PatientTicketing');
-                            $ticket = $api->getTicketForEvent($this->event);
-                            $queue_set_service = Yii::app()->service->getService('PatientTicketing_QueueSet');
-                            $ticket_entries = [];
-                            $non_ticket_entries = [];
-                            foreach ($followupElement->entries as $entry) {
-                                if ($entry->isPatientTicket() && $ticket) {
-                                    $ticket_entries[] = $entry;
-                                } else {
-                                    $non_ticket_entries[] = $entry;
+                                <?php $row_count = 0;
+                                $api = Yii::app()->moduleAPI->get('PatientTicketing');
+                                $ticket = $api->getTicketForEvent($this->event);
+                                $queue_set_service = Yii::app()->service->getService('PatientTicketing_QueueSet');
+                                $ticket_entries = [];
+                                $non_ticket_entries = [];
+                                foreach ($followupElement->entries as $entry) {
+                                    if ($entry->isPatientTicket() && $ticket) {
+                                        $ticket_entries[] = $entry;
+                                    } else {
+                                        $non_ticket_entries[] = $entry;
+                                    }
                                 }
-                            }
-                            foreach ($non_ticket_entries as $entry) { ?>
-                                <tr>
-                                    <td><?= $row_count === 0 ? '' : 'AND' ?></td>
-                                    <td><?= $entry->getInfos(); ?></td>
-                                </tr>
-                                <?php $row_count++; ?>
-                            <?php }
-                            foreach ($ticket_entries as $entry) { ?>
-                                <tr>
-                                    <td>VC</td>
-                                    <td>
-                                        <a href="#vc-clinic-outcome">
-                                            <i class="oe-i direction-down-circle small pad-right"></i>
-                                            <span class="oe-vc-mode in-element"><?= $queue_set_service->getQueueSetForQueue($ticket->current_queue->id)->name ?></span>
-                                            <?php if ($ticket->priority) { ?>
-                                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name[0] //gets first letter of word ?></span>
-                                            <?php } ?>
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php } ?>
+                                foreach ($non_ticket_entries as $entry) { ?>
+                                    <tr>
+                                        <td><?= $row_count === 0 ? '' : 'AND' ?></td>
+                                        <td><?= $entry->getInfos(); ?></td>
+                                    </tr>
+                                    <?php $row_count++; ?>
+                                <?php }
+                                foreach ($ticket_entries as $entry) { ?>
+                                    <tr>
+                                        <td>VC</td>
+                                        <td>
+                                            <a href="#vc-clinic-outcome">
+                                                <i class="oe-i direction-down-circle small pad-right"></i>
+                                                <span class="oe-vc-mode in-element"><?= $queue_set_service->getQueueSetForQueue($ticket->current_queue->id)->name ?></span>
+                                                <?php if ($ticket->priority) { ?>
+                                                    <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name[0] //gets first letter of word
+                                                    ?></span>
+                                                <?php } ?>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -25,12 +26,12 @@ use OEModule\OphCiExamination\models\HistoryMedications;
 
 $model_name = CHtml::modelName($element);
 
-$eye_filter = function($e) {
+$eye_filter = function ($e) {
     /** @var EventMedicationUse $e */
     return !is_null($e->route_id) && $e->route->has_laterality;
 };
 
-$systemic_filter = function ($entry) use ($eye_filter){
+$systemic_filter = function ($entry) use ($eye_filter) {
     return !$eye_filter($entry);
 };
 

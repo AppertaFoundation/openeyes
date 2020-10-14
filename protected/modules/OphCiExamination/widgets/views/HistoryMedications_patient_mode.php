@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -28,7 +29,7 @@ $systemic_filter = function ($med) {
     return $med->laterality === null;
 };
 
-$eye_filter = function($e) {
+$eye_filter = function ($e) {
     /** @var EventMedicationUse $e */
     return !is_null($e->route_id) && $e->route->has_laterality;
 };
