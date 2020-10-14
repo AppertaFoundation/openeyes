@@ -242,34 +242,32 @@ class m180506_111023_medication_drugs_import extends OEMigration
                 ")->execute();
 
                 /* Add medication to their respective sets */
-                $drug_sets = $this->dbConnection->createCommand("SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id, duration_id, dose, frequency_id
-                                                            FROM drug_set
-                                                            JOIN drug_set_item ON drug_set.id = drug_set_item.drug_set_id
-                                                            WHERE drug_set.active=1 AND drug_set_item.drug_id = :drug_id")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
+                $drug_sets = $this->dbConnection->createCommand(
+                "SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id, duration_id, dose, frequency_id
+                FROM drug_set
+                JOIN drug_set_item ON drug_set.id = drug_set_item.drug_set_id
+                WHERE drug_set.active=1 AND drug_set_item.drug_id = :drug_id")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
 
                 if ($drug_sets) {
                     foreach ($drug_sets as $drug_set) {
                         $default_dose = isset($drug_set['dose']) ? $drug_set['dose'] : 'NULL';
                         $default_duration_id = isset($drug_set['duration_id']) ? $drug_set['duration_id'] : $default_duration_id;
-                        $default_freq_id = isset($drug_set['frequency_id']) ? $drug_set['frequency_id'] :(isset($drug_set['default_frequency_id']) ? $drug_set['default_frequency_id'] : $drug_freq_id);
-                        
+                        $default_freq_id = isset($drug_set['frequency_id']) ? $drug_set['frequency_id'] : (isset($drug_set['default_frequency_id']) ? $drug_set['default_frequency_id'] : $drug_freq_id);
                         $this->dbConnection->createCommand("
-                    INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id, default_dispense_condition_id, default_dispense_location_id)
-                        values (".$ref_medication_id." ,
-                         
-                         (SELECT id FROM medication_set WHERE `name` = :ref_set_name AND id IN 
+                        INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id, default_dispense_condition_id, default_dispense_location_id)
+                        values (" . $ref_medication_id . " ,
+                            (SELECT id FROM medication_set WHERE `name` = :ref_set_name AND id IN 
                             (SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code_id = {$usage_codes['PRESCRIPTION_SET']})
-                         ),
-                         
-                         NULL,
-                         " . $default_dose . ",
-                         " . $drug_route_id . ",
-                         " . $default_freq_id . ",
-                         '" . $default_dose_unit . "',
-                          " . $default_duration_id . ",
-                          " . ($drug_set['dispense_condition_id'] ? $drug_set['dispense_condition_id'] : "NULL") . ",
-                          " . ($drug_set['dispense_location_id'] ? $drug_set['dispense_location_id'] : "NULL") . "
-                          )
+                            ),
+                            NULL,
+                            if ('" . $default_dose . "' = '', NULL, REGEXP_REPLACE(" . $default_dose . ", '[a-z -\]', '')),
+                            " . $drug_route_id . ",
+                            " . $default_freq_id . ",
+                            '" . $default_dose_unit . "',
+                            " . $default_duration_id . ",
+                            " . ($drug_set['dispense_condition_id'] ? $drug_set['dispense_condition_id'] : "NULL") . ",
+                            " . ($drug_set['dispense_location_id'] ? $drug_set['dispense_location_id'] : "NULL") . "
+                            )
                 ")
                             ->bindValue(':ref_set_name', $drug_set['name'])
                             ->bindValue(':subspecialty_id', $drug_set['subspecialty_id'])
