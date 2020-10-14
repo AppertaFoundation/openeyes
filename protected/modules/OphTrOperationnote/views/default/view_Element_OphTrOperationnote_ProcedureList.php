@@ -63,9 +63,9 @@ if ($element->booking_event_id) {
               <?php echo $procedure->term ?>
               </span></td>
             <td><span class="priority-text">
-                    <?= implode(array_map(function ($x) {
+                    <?= implode(', ', array_map(function ($x) {
                         return $x->name;
-                    }, $procedure->opcsCodes), ', '); ?>
+                    }, $procedure->opcsCodes)); ?>
               </span></td>
           </tr>
         <?php endforeach; ?>
