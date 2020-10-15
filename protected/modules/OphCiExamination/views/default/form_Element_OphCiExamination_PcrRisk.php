@@ -3,7 +3,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
 Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
 ?>
 <script type="text/javascript">
-  $.getScript('<?=$jsPath?>', function(){
+  $(document).ready(function(){
     //Map the elements
     let $historyRisksElement = $('#OEModule_OphCiExamination_models_HistoryRisks_element');
     if ($historyRisksElement.length) {
