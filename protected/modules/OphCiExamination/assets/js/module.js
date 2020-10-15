@@ -1019,24 +1019,9 @@ $(document).ready(function() {
             OphCiExamination_InjectionManagementComplex_init();
         });
 
-        let date = new Date();
-        let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
-        let todayDateWithLeadingZero = "0" + todayDate;
-
-        let medicationManagementValidationFunction = function() {
-					if($('.js-event-date-input').val() === todayDate || $('.js-event-date-input').val() === todayDateWithLeadingZero) {
-						return true;
-					} else {
-						new OpenEyes.UI.Dialog.Alert({
-							content: "Medication Management cannot be added due to event date not being the current date"
-						}).open();
-						return false;
-					}
-				}
-
-				$('#episodes-and-events').on('sidebar_loaded', function() {
-					$('li#side-element-Medication-Management').find('a').data('validation-function', medicationManagementValidationFunction);
-				});
+        $('#episodes-and-events').on('sidebar_loaded', function() {
+            $('li#side-element-Medication-Management').find('a').data('validation-function', medicationManagementValidationFunction);
+        });
 
 
 });
@@ -1068,6 +1053,24 @@ $(document).ready(function() {
             $left_table.show();
         }
     }
+
+    function medicationManagementValidationFunction()
+    {
+        let date = new Date();
+        let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+        let todayDateWithLeadingZero = "0" + todayDate;
+        let event_date = document.getElementsByClassName('js-event-date-input')[0].value;
+
+        if(event_date === todayDate || event_date === todayDateWithLeadingZero) {
+            return true;
+        } else {
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Medication Management cannot be added due to event date not being the current date"
+            }).open();
+            return false;
+        }
+    };
+
     function addPostOpComplicationTr(selected_text, table_id, select_value, display_order)
     {
 

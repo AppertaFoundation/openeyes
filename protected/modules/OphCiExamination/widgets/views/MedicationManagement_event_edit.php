@@ -238,6 +238,12 @@ $element->entries = array_filter($element->entries, function ($e) {
 <script type="text/javascript">
     let ElementFormJSONConverterMM = new OpenEyes.OphCiExamination.ElementFormJSONConverter();
     $(document).ready(function () {
+        if (!medicationManagementValidationFunction()) {
+            let element = document.getElementsByClassName('element ' + <?= CJavaScript::encode(CHtml::modelName($element)) ?>)[0];
+            element.dispatchEvent(new Event('element_removed'));
+            removeElement(element);
+        }
+
         let prescribed_medications = [];
         let taper_fields_selectors = ['.js-frequency', '.js-duration'];
         let select_fields_selectors = ['.js-frequency', '.js-route', '.js-duration', '.js-dispense-condition', '.js-dispense-location'];
@@ -356,6 +362,7 @@ $element->entries = array_filter($element->entries, function ($e) {
 
         $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {
             $('.js-change-event-date').removeClass('disabled');
+            $('.js-change-event-date').parent().data('tooltip-content', 'Change Event Date');
             if (typeof window.HMController !== "undefined") {
                 window.HMController.$table.find('tr').each(function () {
                     if (typeof $(this).data('bound_entry') !== 'undefined') {
@@ -504,6 +511,7 @@ $element->entries = array_filter($element->entries, function ($e) {
 
         let $changeEventDate = $('.js-change-event-date');
         $changeEventDate.addClass('disabled');
+        $changeEventDate.parent().data('tooltip-content', 'The event date cannot be changed when the Medication Management element is open');
         if ($changeEventDate.is(":hidden")) {
             $('.js-event-date-input').hide();
             $changeEventDate.show();

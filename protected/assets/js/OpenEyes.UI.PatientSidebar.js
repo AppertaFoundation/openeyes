@@ -163,33 +163,41 @@ OpenEyes.UI = OpenEyes.UI || {};
        });
     };
 
-    PatientSidebar.prototype.loadClickedItem = function ($item, data, callback) {      
-      if($item.hasClass('loading')) {
-          if (typeof callback === "function")
-              callback();
-          return;
-      }
+    PatientSidebar.prototype.loadClickedItem = function ($item, data, callback) {
+        let elementValidationFunction = $item.data('validation-function');
+        let loadItem = typeof elementValidationFunction !== "function" || elementValidationFunction();
 
-      let self = this;
-      if (!$item.hasClass('selected') && !$item.children().hasClass('mandatory')) {
-          self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
-          // The <li> that contains $item (can be selected or not)
-          let $container = $item.parent();
-          let newCallback = function() {
-            $item.addClass('selected');
-            $item.removeClass('loading');
-            if (typeof callback === "function")
-                callback();
-          };
-          self.loadElement($container, data, newCallback);
-          $item.addClass('loading');
-      } else {
-          // either has no parent or parent is already loaded.
-          self.moveTo($item);
-          if (typeof callback === "function")
-              callback();
-      }
+        if (loadItem) {
+            if($item.hasClass('loading')) {
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return;
+            }
 
+
+            let self = this;
+            if (!$item.hasClass('selected') && !$item.children().hasClass('mandatory')) {
+                self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
+                // The <li> that contains $item (can be selected or not)
+                let $container = $item.parent();
+                let newCallback = function() {
+                    $item.addClass('selected');
+                    $item.removeClass('loading');
+                    if (typeof callback === "function") {
+                        callback();
+                    }
+                };
+                self.loadElement($container, data, newCallback);
+                $item.addClass('loading');
+            } else {
+                // either has no parent or parent is already loaded.
+                self.moveTo($item);
+                if (typeof callback === "function") {
+                    callback();
+                }
+            }
+        }
     };
 
     /**
