@@ -397,7 +397,7 @@ class EventMedicationUse extends BaseElement
         $result = false;
 
         if ($medication->medication_id === $this->medication_id) {
-            if ($this->route_id === $medication->route_id && $this->route->has_laterality) {
+            if ($this->route_id === $medication->route_id && $this->route && $this->route->has_laterality) {
                 if ($this->laterality === $medication->laterality || $this->laterality === (string) Eye::BOTH || $medication->laterality === (string) Eye::BOTH) {
                     $result = true;
                 }
