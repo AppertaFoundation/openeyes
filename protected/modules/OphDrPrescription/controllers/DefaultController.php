@@ -63,7 +63,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         if (!$model->isEditableByMedication()) {
-            Yii::app()->user->setFlash('alert.meds_management', 'This prescription was created from Medication Management in an Examination event. To make changes, please edit the original Examination');
+            Yii::app()->user->setFlash('alert.meds_management', 'This prescription was created from Medication Management in an Examination event. To make changes or remove, please edit the original Examination');
         }
         if ($model->draft) {
             Yii::app()->user->setFlash('alert.draft', 'This prescription is a draft and can still be edited');
