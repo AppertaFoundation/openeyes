@@ -2446,7 +2446,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getLatestOutcomeDetails(\Patient $patient, $use_context = false)
     {
         $str = '';
-        $element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_ClinicOutcome',
+        $element = $this->getLatestElement('models\Element_OphCiExamination_ClinicOutcome',
             $patient,
             $use_context
         );
