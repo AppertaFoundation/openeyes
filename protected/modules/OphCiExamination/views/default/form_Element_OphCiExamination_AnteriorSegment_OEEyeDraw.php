@@ -47,18 +47,27 @@ if ($element->isNewRecord || $element->{$side . '_eyedraw2'} || $element->has_si
 }
 
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-    'doodleToolBarArray' => array(
-        array('Lens', 'PCIOL', 'ToricPCIOL', 'Bleb', 'PI', 'Fuchs', 'CornealOedema', 'PosteriorCapsule', 'CornealPigmentation',
-            'TransilluminationDefect', 'Hypopyon', 'Hyphaema', 'CornealScar', 'Rubeosis', 'SectorIridectomy', 'ACIOL',
-            'LasikFlap', 'ConjunctivalSuture', 'TrabySuture', 'DendriticUlcer','AdenoviralKeratitis',
-            'CornealLaceration', 'MarginalKeratitis', 'MetallicForeignBody', 'Pingueculum', 'Pterygium' , 'CapsularTensionRing'),
+    'doodleToolBarArray' => [
+        // Top row - medical doodles
+        [
+            'Lens', 'ConjunctivalHaem', 'Episcleritis', 'MarginalKeratitis', 'SPEE', 'CornealEpithelialDefect', 'DendriticUlcer',
+            'AdenoviralKeratitis', 'CornealOedema', 'Fuchs', 'PosteriorSynechia', 'KeraticPrecipitates',
 
-        array('BandKeratopathy', 'SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'ConjunctivalHaem', 'PosteriorSynechia',
-            'KeraticPrecipitates', 'CellsAndFlare', 'CircumcornealInjection', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
-            'Patch', 'SidePort', 'RK', 'CornealGraft', 'EndothelialKeratoplasty', 'CornealSuture', 'ContinuousCornealSuture', 'CornealThinning', 'PeripheralVascularisation',
-            'Freehand', 'FreehandCopyForOE'
-        ),
-    ),
+            // overflow
+            'CornealOpacity', 'CornealScar', 'CornealThinning', 'CornealPigmentation', 'Pterygium', 'Pingueculum', 'PeripheralVascularisation',
+            'Hyphaema', 'Hypopyon', 'MetallicForeignBody', 'CornealLaceration', 'BandKeratopathy', 'Rubeosis', 'TransilluminationDefect'
+        ],
+
+        // Bottom Row - surgical doodles
+        [
+            'PCIOL', 'PosteriorCapsule', 'PI', 'Bleb', 'LasikFlap', 'EndothelialKeratoplasty', 'CornealGraft', 'CornealSuture', 'ConjunctivalSuture',
+            'Freehand', 'FreehandCopyForOE',
+
+            // overflow
+            'ToricPCIOL', 'ACIOL', 'CapsularTensionRing', 'RK', 'ContinuousCornealSuture', 'SidePort', 'TrabyFlap', 'TrabySuture', 'Tube',
+            'Patch', 'TubeExtender', 'Supramid', 'TubeLigation', 'SectorIridectomy',
+        ]
+    ],
     'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
