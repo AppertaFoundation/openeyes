@@ -153,6 +153,12 @@ class PatientController extends BaseController
     {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($id, false);
+        // if the ids are different, it means the $id belongs to a merged patient
+        if ($id !== $this->patient->id) {
+            $link = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
+            // using redirect to correct the url and to avoid issues from creating events
+            $this->redirect("$link");
+        }
         $this->pageTitle = "Summary";
         $this->patient->audit('patient', 'view-summary');
 
@@ -312,7 +318,7 @@ class PatientController extends BaseController
                 $patientMergeRequest = PatientMergeRequest::model()->find($criteria);
 
                 if ($patientMergeRequest) {
-                    $message = 'Hospital Number <strong>' . $search_terms['hos_num'] . '</strong> was merged into <strong>' . $patientMergeRequest->primary_hos_num . '</strong>';
+                    $message = $patientMergeRequest->getMergedMessage();
                 }
             } elseif ($search_terms['nhs_num']) {
                 $message .= 'for ' . Yii::app()->params['nhs_num_label'] . ' <strong>"' . $search_terms['nhs_num'] . '"</strong>';
@@ -785,9 +791,24 @@ class PatientController extends BaseController
      */
     public function loadModel($id, $allow_deleted = true)
     {
-        $model = Patient::model()->findByPk((int)$id);
-        if ($model === null || (!$allow_deleted && $model->deleted)) {
+        $model = Patient::model()->findByPk((int) $id);
+        // cannot find any patient by id, throw exception
+        if ($model === null) {
             throw new CHttpException(404, 'The requested page does not exist.');
+        }
+        // if the deleted patient is not allowed and the found patient is deleted
+        if (!$allow_deleted && $model->deleted) {
+            // try to find if the deleted patient is merged to some other patient
+            if ($merged = $model->isMergedInto()) {
+                // assign the primary patient for return
+                $model = $merged->primaryPatient;
+                // set a flash to inform user patient x was merged into this patient
+                Yii::app()->user->setFlash('warning.patient-merged', $merged->getMergedMessage());
+            } else {
+                // if the patient is deleted and not merged into any other patient
+                // throw exception
+                throw new CHttpException(404, 'The requested page does not exist.');
+            }
         }
 
         return $model;
@@ -2002,8 +2023,9 @@ class PatientController extends BaseController
         Address $address,
         PatientReferral $referral,
         PatientUserReferral $patient_user_referral,
-        $patient_identifiers, $prevUrl)
-    {
+        $patient_identifiers,
+        $prevUrl
+    ) {
         $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
         try {
@@ -2071,8 +2093,8 @@ class PatientController extends BaseController
         Address &$address,
         PatientReferral &$referral,
         PatientUserReferral &$patient_user_referral,
-        &$patient_identifiers)
-    {
+        &$patient_identifiers
+    ) {
 
         if (!$this->checkForReferralFiles($referral, $patient)) {
             return false;
@@ -2172,8 +2194,9 @@ class PatientController extends BaseController
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
 
-            if (empty($post_info->code))
+            if (empty($post_info->code)) {
                 continue;
+            }
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
                 ':patient_id' => $patient->id,
