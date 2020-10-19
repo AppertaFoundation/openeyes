@@ -257,21 +257,28 @@ class m180506_111023_medication_drugs_import extends OEMigration
                         INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id, default_dispense_condition_id, default_dispense_location_id)
                         values (" . $ref_medication_id . " ,
                             (SELECT id FROM medication_set WHERE `name` = :ref_set_name AND id IN 
-                            (SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code_id = {$usage_codes['PRESCRIPTION_SET']})
+                                (SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code_id = :prescription_usage_code)
                             ),
                             NULL,
-                            if ('" . $default_dose . "' = '', NULL, REGEXP_REPLACE(" . $default_dose . ", '[a-z -\]', '')),
-                            " . $drug_route_id . ",
-                            " . $default_freq_id . ",
-                            '" . $default_dose_unit . "',
-                            " . $default_duration_id . ",
+                            if (:default_dose = '', NULL, REGEXP_REPLACE(:default_dose, '[a-z -\]', '')),
+                            :drug_route_id,
+                            :defualt_freq_id,
+                            :default_dose_unit,
+                            :default_duration_id,
                             " . ($drug_set['dispense_condition_id'] ? $drug_set['dispense_condition_id'] : "NULL") . ",
                             " . ($drug_set['dispense_location_id'] ? $drug_set['dispense_location_id'] : "NULL") . "
                             )
                 ")
                             ->bindValue(':ref_set_name', $drug_set['name'])
                             ->bindValue(':subspecialty_id', $drug_set['subspecialty_id'])
-                            ->execute();
+                            ->execute(array(
+                                ':default_dose' => $default_dose,
+                                ':default_dose_unit' => $default_dose_unit,
+                                ':drug_route_id' => $drug_route_id,
+                                ':defualt_freq_id' => $default_freq_id,
+                                ':prescription_usage_code' => $usage_codes['PRESCRIPTION_SET'],
+                                ':default_duration_id' => $default_duration_id,
+                            ));
                     }
                 }
             }
