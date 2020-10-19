@@ -392,7 +392,10 @@ EOH;
                     $replacePairs[$templateString] = $rand;
                     break;
                 case '{gp.nat_id}':
-                    $replacePairs[$templateString] = $this->event->episode->patient->gp->nat_id;
+                    $gp = $this->event->episode->patient->gp;
+                    if ($gp) {
+                        $replacePairs[$templateString] = $gp->nat_id;
+                    }
                     break;
                 case '{document_output.id}':
                     $replacePairs[$templateString] = $document_output_id;
