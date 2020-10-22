@@ -5,11 +5,6 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
 <script type="text/javascript">
     function pcr_init() {
         //Map the elements
-        let $historyRisksElement = $('#OEModule_OphCiExamination_models_HistoryRisks_element');
-        if ($historyRisksElement.length) {
-            let controller = $('#OEModule_OphCiExamination_models_HistoryRisks_element').data('controller');
-            controller.setPcrRisk();
-        }
         mapExaminationToPcr();
         //Make the initial calculations
         var $pcrRiskEl = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk');
