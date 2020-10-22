@@ -23,7 +23,7 @@ class m180815_071733_add_set_common_subspecialty_medications extends CDbMigratio
             $this->execute("INSERT INTO medication_set_item (`medication_set_id`, `medication_id`, default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id)
                             SELECT $ref_set_id, medication.id,
                             drug.form_id,
-                            REGEXP_REPLACE(drug.default_dose, '[a-z -\]', '' ) AS 'default_dose', -- strip non numerics
+                            NULLIF(TRIM(REGEXP_REPLACE(drug.default_dose, '[a-z -\]', '' )), '') AS 'default_dose', -- strip non numerics
                             drug.default_route_id,
                             drug.default_frequency_id,
                             drug.dose_unit,
