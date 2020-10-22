@@ -17,7 +17,8 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
          * Import Examination events with Drugs
          */
         $this->execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER';");
-        $this->execute("
+        $this->execute(
+                "
             INSERT INTO event_medication_use (
                     event_id, 
                     usage_type, 
@@ -76,7 +77,8 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                 WHERE et.name = 'Examination'
                 AND medication.source_type = 'LEGACY'
                 AND medication.source_subtype = 'drug'
-                ORDER BY event.id ASC");
+                "
+        );
 
         echo "> Examinations with Drugs imported successfully\n";
 
@@ -84,7 +86,8 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
          * Import Examination events with Medication Drugs
          */
         $this->execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER';");
-        $this->execute("
+        $this->execute(
+        "
         INSERT INTO event_medication_use (
                 event_id, 
                 usage_type, 
@@ -137,8 +140,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
         LEFT JOIN medication_laterality                                     ON medication_laterality.name = dro.name
         WHERE et.name = 'Examination'
         AND medication.source_type = 'LEGACY'
-        AND medication.source_subtype = 'medication_drug'
-        ORDER BY event.id ASC");
+        AND medication.source_subtype = 'medication_drug'");
         echo "> Examinations with Medication Drugs imported successfully!\n";
     }
     public function down()

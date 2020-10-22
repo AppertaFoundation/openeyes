@@ -47,7 +47,8 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
             $this->execute("UPDATE medication_set SET `automatic` = 1 WHERE `automatic` = 0");
 
             // copy tapers to auto rules
-            $this->execute("INSERT INTO medication_set_auto_rule_medication_taper (
+            $this->execute(
+        "INSERT INTO medication_set_auto_rule_medication_taper (
                 medication_set_auto_rule_id,
                 dose,
                 frequency_id,
@@ -69,7 +70,7 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                     AND msu.usage_code_id = (SELECT id from medication_usage_code WHERE usage_code = 'PRESCRIPTION_SET')
                     AND m.source_old_id = i.drug_id
                     AND msu.subspecialty_id = s.subspecialty_id
-                ORDER BY t.id, ms.id, medication_set_auto_rule_id");
+                ");
 
             // Delete old manual entries (this will get regenerated later)
             $this->execute('SET foreign_key_checks = 0');
