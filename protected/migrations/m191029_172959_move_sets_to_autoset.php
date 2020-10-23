@@ -48,7 +48,7 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
 
             // copy tapers to auto rules
             $this->execute(
-        "INSERT INTO medication_set_auto_rule_medication_taper (
+            "INSERT INTO medication_set_auto_rule_medication_taper (
                 medication_set_auto_rule_id,
                 dose,
                 frequency_id,
@@ -56,7 +56,7 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                 )
                 SELECT 
                     msr.id AS medication_set_auto_rule_id,
-                    t.dose,
+                    NULLIF(TRIM(REGEXP_REPLACE(t.dose, '[a-z -\]', '' )), '') AS 'dose', -- strip non-numerics
                     t.frequency_id,
                     t.duration_id
                 FROM drug_set_item_taper AS t
