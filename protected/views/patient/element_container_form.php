@@ -24,7 +24,7 @@ if ($this->isRequired($element)) {
     $section_classes[] = 'required';
 }
 if ($this->isHiddenInUI($element)) {
-    $section_classes[] = 'hide';
+    $section_classes[] = 'hidden';
 }
 if (is_subclass_of($element, 'SplitEventTypeElement')) {
     $section_classes[] = 'eye-divider';

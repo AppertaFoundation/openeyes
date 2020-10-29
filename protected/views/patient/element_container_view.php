@@ -21,6 +21,8 @@
     echo 'full priority eye-divider';
 } elseif ($element->getTileSize($this->action->id) === 1) {
     echo 'tile';
+} elseif ($this->isHiddenInUI($element)) {
+    echo 'hidden';
 } else {
     echo 'full priority';
 } ?>
