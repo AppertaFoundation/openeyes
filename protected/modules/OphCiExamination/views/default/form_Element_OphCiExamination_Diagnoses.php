@@ -32,16 +32,14 @@ Yii::app()->clientScript->registerScriptFile($widgetPath);
 $assetManager->registerScriptFile('js/EyeSelector.js', 'application.widgets', 90);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
 
-$firm = Firm::model()->with(array(
+$user_firm = Firm::model()->with(array(
     'serviceSubspecialtyAssignment' => array('subspecialty'),
 ))->findByPk(Yii::app()->session['selected_firm_id']);
-
-$current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $firm);
 
 $read_only_diagnoses = [];
 foreach ($this->patient->episodes as $ep) {
     $diagnosis = $ep->diagnosis; // Disorder model
-    if ($diagnosis && $diagnosis->specialty && $diagnosis->specialty->code == 130 && $ep->id != $current_episode->id) {
+    if ($diagnosis && $diagnosis->specialty && $diagnosis->specialty->code == 130 && $this->event->firm_id != $user_firm->id) {
         $read_only_diagnoses[] = [
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),
@@ -148,14 +146,11 @@ foreach ($this->patient->episodes as $ep) {
     $(document).ready(function () {
         diagnosesController = new OpenEyes.OphCiExamination.DiagnosesController({
             element: $('#<?=$model_name?>_element'),
-            subspecialtyRefSpec: '<?=$firm->subspecialty->ref_spec;?>'
+            subspecialtyRefSpec: '<?=$user_firm->subspecialty->ref_spec;?>'
         });
         $('#OphCiExamination_diagnoses').data('controller', diagnosesController);
         <?php
-        $firm_id = Yii::app()->session['selected_firm_id'];
-        $firm = \Firm::model()->findByPk($firm_id);
-
-        $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
+        $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($user_firm);
         $commonNotEmptyOphthalmicDisorderGroups = [];
         foreach ($disorder_list as $disorder) {
             if (isset($disorder['group']) && $disorder['group'] != "") {
