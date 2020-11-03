@@ -445,7 +445,7 @@ $element->entries = array_filter($element->entries, function ($e) {
         });
 
         <?php
-        $common_systemic = Medication::model()->listCommonSystemicMedications(true);
+        $common_systemic = Medication::model()->listCommonSystemicMedications(true, true);
         foreach ($common_systemic as &$medication) {
             $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
         }
@@ -456,7 +456,7 @@ $element->entries = array_filter($element->entries, function ($e) {
             /** @var Firm $firm */
             $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
             $subspecialty_id = $firm->getSubspecialtyID();
-            $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id);
+            $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id, true);
             foreach ($common_ophthalmic as &$medication) {
                 $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
             }
