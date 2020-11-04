@@ -105,10 +105,10 @@ class Element_OphTrOperationchecklists_ProcedureListTest extends ActiveRecordTes
     public function tearDown()
     {
         foreach ($this->elementIds as $id) {
-            foreach (OphTrOperationchecklists_ProcedurelistProcedureAssignment::model()->findAll('procedurelist_id = ?', array($id)) as $t) {
+            foreach (OphTrOperationchecklists_ProcedurelistProcedureAssignment::model()->findAll('procedurelist_id = :procedurelist_id', array(':procedurelist_id' => $id)) as $t) {
                 $t->noVersion()->delete();
             }
-            foreach (OphTrOperationchecklists_AnaestheticAnaestheticType::model()->findAll('procedurelist_id = ?', array($id)) as $t2) {
+            foreach (OphTrOperationchecklists_AnaestheticAnaestheticType::model()->findAll('procedurelist_id = :procedurelist_id', array(':procedurelist_id' => $id)) as $t2) {
                 $t2->noVersion()->delete();
             }
             Element_OphTrOperationchecklists_ProcedureList::model()->noVersion()->deleteByPk($id);
