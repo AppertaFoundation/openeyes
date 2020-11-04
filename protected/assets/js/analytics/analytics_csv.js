@@ -1,7 +1,9 @@
 var analytics_csv_download = (function () {
     var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 1000;
     var g_custom_flag = false;
-    var request_url = '/analytics/downloadcsv';
+    var request_url = '/analytics/';
+    var custom_url = 'DownloadCustomCSV'
+    var non_custom_url = 'DownloadCSV'
 
     function current_none_custom_data_to_csv(anonymise_flag, selected_tab,  data, additional_file_name = null) {
         var current_specialty = analytics_toolbox.getCurrentSpecialty();
@@ -50,65 +52,51 @@ var analytics_csv_download = (function () {
     }
 
     function current_custom_data_to_csv(additional_type, anonymized = false, custom_data) {
-        var csv_file = "First Name, Last Name, Hos Num, DOB, Age, Diagnoses, VA-L, " + additional_type + "-L, VA-R," + additional_type + "-R\n";
-        if (anonymized) {
-            csv_file = "DOB, Age, Diagnoses, VA-L, " + additional_type + "-L, VA-R," + additional_type + "-R\n";
-        }
-        var file_name = analytics_toolbox.getCurrentSpecialty() + "_clinical_data_" + additional_type;
-        var data = Object.values(custom_data);
-        var patient_ids;
-        temp = data.slice().sort(function (a, b) {
-            return a['patient_id'] - b['patient_id']
-        });
-        patient_ids = temp.map(function (item) {
-            return item['patient_id']
-        })
+        var other = analytics_toolbox.getCurrentSpecialty() === 'Glaucoma' ? 'IOP' : 'CRT';
 
-        if(!patient_ids.length){
-            csv_export(file_name, csv_file);
-            return;
+        var statistical_file = "Time,Visual Acuity (Mean),Visual Acuity SD,Visual Acuity Patient (N)," + other + " (mean)," + other + " (SD)," + other + " Patient (N)\n";
+
+        var patient_file = "";
+
+        if (!anonymized) {
+            patient_file += "Name,";
         }
+        patient_file += "Patient ID,Age,Eye Side," + other + "," + "VA,Date\n";
+
+        var statistical_file_name = analytics_toolbox.getCurrentSpecialty() + "_Statistical_Report"
+        var patient_file_name = analytics_toolbox.getCurrentSpecialty() + "_Patient_Report"
+
+        var side_bar_user_list = analytics_dataCenter.user.getSidebarUser();
+        var current_user = analytics_dataCenter.user.getCurrentUser();
+
         $.ajax({
-            url: request_url,
+            url: request_url + custom_url,
             type: 'POST',
-            data: {
-                "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-                params: {
-                    "ids": JSON.stringify(patient_ids),
-                },
-                'specialty': analytics_toolbox.getCurrentSpecialty()
-            },
+            data: "YII_CSRF_TOKEN=" + YII_CSRF_TOKEN + '&' + $('#search-form').serialize() +
+            analytics_toolbox.getDataFilters(null, side_bar_user_list, {}, current_user),
             success: function (response) {
-                var patients = JSON.parse(response);
-                patients.map(function (curr, index) {
-                    curr['left'] = data[index]['left'];
-                    curr['right'] = data[index]['right'];
-                })
-                patients.forEach(function (item) {
-                    patient_name = item['name'].split(' ');
-                    item = {
-                        'left': item['left'],
-                        'right': item['right'],
-                        'diagnoses': item['diagnoses'] ? item['diagnoses'].replace(/,/g, '|') : 'N/A',
-                        'hos_num': item['hos_num'],
-                        'nhs_num': item['nhs_num'],
-                        'age': item['age'],
-                        'dob': item['dob'],
-                        'first_name': (patient_name[0] == undefined) ? '' : patient_name[0],
-                        'last_name': (patient_name[1] == undefined) ? '' : patient_name[1],
+                // actionDownloadCustomCSV will render out json straight away, so no need to do JSON.parse again.
+                var data = response;
+                var statistical_report = data['statistical_report'];
+                var patient_report = data['patient_report'];
+                for(var key in statistical_report){
+                    var va_mean = statistical_report[key]['va']['average'] !== null ? statistical_report[key]['va']['average'] : 'N/A';
+                    var va_sd = statistical_report[key]['va']['SD'] !== null ? statistical_report[key]['va']['SD'] : 'N/A';
+
+                    var other_mean = statistical_report[key]['other']['average'] !== null ? statistical_report[key]['other']['average'] : 'N/A';
+                    var other_sd = statistical_report[key]['other']['SD'] !== null ? statistical_report[key]['other']['SD'] : 'N/A';
+
+                    statistical_file += key + ',' + va_mean + ',' + va_sd + ',' + statistical_report[key]['va']['count'] + ',' + other_mean + ',' + other_sd + ',' + statistical_report[key]['other']['count'] + '\n';
+                    
+                }
+                patient_report.forEach(function(patient){
+                    if(!anonymized){
+                        patient_file += patient['full_name'].replace(',', ' ') + ',';
                     }
-                    if (!anonymized) {
-                        csv_file += item['first_name'] + "," + item['last_name'] + "," + item['hos_num'] + ",";
-                    }
-                    csv_file += item['dob'] + "," + item['age'] + ",";
-                    csv_file += item['diagnoses'] + ",";
-                    csv_file = convert_array_to_string_in_csv(csv_file, item['left']['VA']);
-                    csv_file = convert_array_to_string_in_csv(csv_file, item['left'][additional_type]);
-                    csv_file = convert_array_to_string_in_csv(csv_file, item['right']['VA']);
-                    csv_file = convert_array_to_string_in_csv(csv_file, item['right'][additional_type]);
-                    csv_file = csv_file.replace(/.$/, "\n");
+                    patient_file += patient['patient_id'] + ',' + patient['age'] + ',' + patient['va_side'] + ',' + patient['other_reading'] + ',' + patient['va_reading']  + ',' + patient['va_date'] + '\n';
                 })
-                csv_export(file_name, csv_file);
+                csv_export(statistical_file_name, statistical_file);
+                csv_export(patient_file_name, patient_file);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#js-analytics-spinner').hide();
@@ -194,7 +182,7 @@ var analytics_csv_download = (function () {
             // by using patient_ids above
             case 'service':
                 $.ajax({
-                    url: request_url,
+                    url: request_url + non_custom_url,
                     type: 'POST',
                     data: {
                         "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
@@ -231,7 +219,7 @@ var analytics_csv_download = (function () {
                     current_custom_data_to_csv(custom_type, anonymise_flag, analytics_dataCenter.custom.getCustomData()['custom_data']['csv_data']);
                 } else {
                     $.ajax({
-                        url: request_url,
+                        url: request_url + non_custom_url,
                         type: 'POST',
                         data: {
                             "YII_CSRF_TOKEN": YII_CSRF_TOKEN,

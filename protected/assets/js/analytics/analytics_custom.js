@@ -1,16 +1,25 @@
 var analytics_custom = (function () {
 	var init = function () {
-        // get plot layout settings
-        var custom_layout = JSON.parse(JSON.stringify(analytics_layout));
-        // get custome data
+		// get plot layout settings
+		var custom_layout = JSON.parse(JSON.stringify(analytics_layout));
+		// get custome data
 		var data = analytics_dataCenter.custom.getCustomData();
 		var custom_data = data['custom_data'];
-        var va = data['va_final_ticks'];
-        
+		var va = data['va_final_ticks'];
+
 		var specialty = analytics_toolbox.getCurrentSpecialty();
-		custom_layout['xaxis']['title'] = "Time post procedure (weeks)";
+		custom_layout['title'] = {
+			text: '',
+			font: {
+				color: '#fff'
+			},
+		};
+
+		custom_layout = analytics_toolbox.setXaxisTick(custom_layout);
+
 		custom_layout['xaxis']['rangeslider'] = {};
 		custom_layout['yaxis']['title'] = analytics_toolbox.getVATitle();
+		custom_layout['yaxis']['side'] = 'right';
 
 		//Set VA unit tick labels
 		var va_mode = $('#js-chart-filter-plot');
@@ -29,7 +38,7 @@ var analytics_custom = (function () {
 				size: 12,
 				color: '#fff',
 			},
-			side: 'right',
+			side: 'left',
 			overlaying: 'y',
 			linecolor: '#fff',
 			tickcolor: '#fff',
@@ -37,8 +46,12 @@ var analytics_custom = (function () {
 				color: '#fff',
 			},
 		};
+		custom_layout['legend'] = {
+			x:0,
+			y:1
+		};
 		plot(true, custom_layout, custom_data[1]);
-		plot(false, custom_layout, custom_data[0])
+		plot(false, custom_layout, custom_data[0]);
 		$('#js-btn-selected-eye').click(function (e) {
 			$('#js-chart-filter-eye-side').trigger("changeEyeSide");
 		});
@@ -65,13 +78,15 @@ var analytics_custom = (function () {
 
 		function plot(right, custom_layout, custom_data) {
 			var id;
+			var op_type = specialty === 'Glaucoma' ? 'procedure' : 'treatment';
 			if (right) {
 				id = 'js-hs-chart-analytics-clinical-others-right';
-				custom_layout['title'] = "Clinical Section (Right Eye)";
+				custom_layout['title']['text'] = $('#js-chart-filter-' + op_type).text() + ": Right";
 			} else {
 				id = 'js-hs-chart-analytics-clinical-others-left';
-				custom_layout['title'] = "Clinical Section (Left Eye)";
+				custom_layout['title']['text'] = $('#js-chart-filter-' + op_type).text() + ": Left";
 			}
+			custom_layout['yaxis2'] = analytics_toolbox.setYaxisRange(custom_data[1], custom_layout['yaxis2']);
 
 			var custom_plot = document.getElementById(id);
 			Plotly.newPlot(

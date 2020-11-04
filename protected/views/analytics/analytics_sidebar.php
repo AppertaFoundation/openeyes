@@ -1,4 +1,4 @@
-    <div class="view-mode flex-layout">
+<div class="view-mode flex-layout">
         <?php $clinical_button_disable = true;
         if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
             $clinical_button_disable = false;
@@ -126,9 +126,10 @@
                                     <div class="options-group" data-filter-ui-id="js-chart-filter-treatment">
                                         <h3>Treatment</h3>
                                         <ul class="btn-list">
-                                            <li class="selected">All</li>
                                             <?php foreach ($analytics_treatment as $treatment) { ?>
-                                                <li><?= $treatment; ?></li>
+                                                <li
+                                                    class="<?=$treatment === 'Lucentis'? 'selected' : '';?>"
+                                                ><?= $treatment; ?></li>
                                             <?php } ?>
                                         </ul>
                                     </div>
@@ -139,6 +140,26 @@
                                             <li class="selected">VA (change)</li>
                                         </ul>
                                     </div><!-- options-group -->
+
+                                    <!-- time interval filter START -->
+                                    <div class="options-group" data-filter-ui-id="js-chart-filter-time-interval-num">
+                                        <h3>Time Interval Amount</h3>
+                                        <ul class="btn-list">
+                                            <li class="selected">1</li>
+                                            <li>2</li>
+                                            <li>3</li>
+                                            <li>4</li>
+                                        </ul>
+                                    </div>
+                                    <div class="options-group" data-filter-ui-id="js-chart-filter-time-interval-unit">
+                                        <h3>Time Interval Unit</h3>
+                                        <ul class="btn-list">
+                                            <li class="selected">Week<span>(s)</span></li>
+                                            <li>Month<span>(s)</span></li>
+                                        </ul>
+                                    </div><!-- options-group --->
+                                    <!-- time interval filter END -->
+
                                     <div class="options-group" data-filter-ui-id="js-chart-filter-protocol">
                                         <h3>Protocol</h3>
                                         <ul class="btn-list">
@@ -152,9 +173,10 @@
                                     <div class="options-group" data-filter-ui-id="js-chart-filter-procedure">
                                         <h3>Procedures</h3>
                                         <ul class="btn-list">
-                                            <li class="selected">All</li>
                                             <?php foreach ($analytics_procedures as $procedure) { ?>
-                                                <li><?= $procedure; ?></li>
+                                                <li
+                                                    class="<?=$procedure === 'Trabeculectomy'? 'selected' : '';?>"
+                                                ><?= $procedure; ?></li>
                                             <?php } ?>
                                         </ul>
                                     </div><!-- options-group -->
@@ -165,6 +187,26 @@
                                             <li  class="selected">VA (change)</li>
                                         </ul>
                                     </div><!-- options-group -->
+
+                                    <!-- time interval filter START -->
+                                    <div class="options-group" data-filter-ui-id="js-chart-filter-time-interval-num">
+                                        <h3>Time Interval Amount</h3>
+                                        <ul class="btn-list">
+                                            <li class="selected">1</li>
+                                            <li>2</li>
+                                            <li>3</li>
+                                            <li>4</li>
+                                        </ul>
+                                    </div>
+                                    <div class="options-group" data-filter-ui-id="js-chart-filter-time-interval-unit">
+                                        <h3>Time Interval Unit</h3>
+                                        <ul class="btn-list">
+                                            <li class="selected">Week<span>(s)</span></li>
+                                            <li>Month<span>(s)</span></li>
+                                        </ul>
+                                    </div><!-- options-group --->
+                                    <!-- time interval filter END -->
+
                                 <?php } ?>
 
                                 <?php if (isset($user_list)) { ?>
@@ -243,14 +285,22 @@
                                 </select>
                             </li>
                     <?php if ($specialty == "Medical Retina") { ?>
-                        <li>Treatment: <span id="js-chart-filter-treatment" class="js-hs-filters js-hs-custom-mr-treatment" data-name="custom_treatment">All</span></li>
+                        <li>Treatment: <span id="js-chart-filter-treatment" class="js-hs-filters js-hs-custom-mr-treatment" data-name="custom_treatment">Lucentis</span></li>
                         <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-mr-diagnosis" data-name="custom_diagnosis">All</span></li>
                         <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (change)</span></li>
                         <li>Protocol: <span id="js-chart-filter-protocol" class="js-hs-filters" data-name="custom_protocol">ALL</span></li>
+                        <li>Time Interval: 
+                            <span id="js-chart-filter-time-interval-num" class="js-hs-filters js-hs-custom-gl-time" data-name="time_interval_num">1</span>
+                            <span id="js-chart-filter-time-interval-unit" class="js-hs-filters js-hs-custom-gl-time" data-name="time_interval_unit">Week(s)</span>
+                        </li>
                     <?php } else { ?>
                         <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-gl-diagnosis" data-name="custom_diagnosis">All</span></li>
                         <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (change)</span></li>
-                        <li>Procedure: <span id="js-chart-filter-procedure" class="js-hs-filters js-hs-custom-gl-procedure" data-name="custom_procedure">All</span></li>
+                        <li>Procedure: <span id="js-chart-filter-procedure" class="js-hs-filters js-hs-custom-gl-procedure" data-name="custom_procedure">Trabeculectomy</span></li>
+                        <li>Time Interval: 
+                            <span id="js-chart-filter-time-interval-num" class="js-hs-filters js-hs-custom-gl-time" data-name="time_interval_num">1</span>
+                            <span id="js-chart-filter-time-interval-unit" class="js-hs-filters js-hs-custom-gl-time" data-name="time_interval_unit">Week(s)</span>
+                        </li>
                     <?php } ?>
                 </ul>
             </div><!-- .chart-filters -->

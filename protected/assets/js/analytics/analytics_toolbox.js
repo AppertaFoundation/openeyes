@@ -223,6 +223,43 @@ var analytics_toolbox = (function () {
 		return filters;
 	}
 
+	function setYaxisRange(data, layout, target = 'iop', min = 0, max = null){
+		if(data['name'].toLowerCase() === target.toLowerCase() && Array.isArray(data['y']) && data['y'].length > 0){
+			if(!max){
+				max = Math.max(...data['y']) + 20;
+				max = max >= 50 ? 70 : max;
+			}
+			layout['range'] = [min, max];
+		} else {
+			layout['rangemode'] = 'tozero';
+		}
+		return layout;
+	}
+
+	function setXaxisTick(layout){
+		var time_interval_unit = $('#js-chart-filter-time-interval-unit').text();
+
+		var time_interval_num = $('#js-chart-filter-time-interval-num').text();
+
+		if(!layout['xaxis']){
+			layout['xaxis'] = {};
+		}
+		
+		layout['xaxis']['title'] = {
+			text: time_interval_unit.replace(/[{()}]/g, ''),
+			font: {
+				color: '#fff'
+			},
+		};
+
+		if(time_interval_unit === 'Week(s)' && time_interval_num < 4){
+			layout['xaxis']['dtick'] = null;
+		} else {
+			layout['xaxis']['dtick'] = time_interval_num;
+		}
+		return layout;
+	}
+
 	function plotUpdate(data, specialty, flag) {
 		if (flag === 'service') {
 			var service_type = $('#js-charts-service .charts li a.selected').data('report');
@@ -245,9 +282,16 @@ var analytics_toolbox = (function () {
 				if ($('#js-hs-clinical-custom').hasClass('selected')) {
 					var custom_charts = ['js-hs-chart-analytics-clinical-others-left', 'js-hs-chart-analytics-clinical-others-right'];
 					var custom_data = data[2];
+					var op_type = specialty === 'Glaucoma' ? 'procedure' : 'treatment';
 					for (var i = 0; i < custom_charts.length; i++) {
 						var chart = $('#' + custom_charts[i])[0];
-						chart.layout['title'] = (i) ? 'Clinical Section (Right Eye)' : 'Clinical Section (Left Eye)';
+						chart.layout['title'] = {
+							text: (i) ? $('#js-chart-filter-' + op_type).text() + ': Right' : $('#js-chart-filter-' + op_type).text() + ': Left',
+							font: {
+								color: '#fff',
+							}
+						};
+						chart.layout = setXaxisTick(chart.layout);
 						chart.layout['yaxis']['title'] = {
 							font: {
 								family: 'sans-serif',
@@ -266,9 +310,10 @@ var analytics_toolbox = (function () {
                             tick_position = tick_position ? tick_position : data['va_final_ticks']['tick_position'];
                             tick_labels = tick_labels ? tick_labels : data['va_final_ticks']['tick_labels'];
 							chart.layout['yaxis']['tickmode'] = 'array';
-							chart.layout['yaxis']['tickvals'] = tick_position;
-							chart.layout['yaxis']['ticktext'] = tick_labels;
+							chart.layout['yaxis']['tickvals'] = data['va_final_ticks']['tick_position'];
+							chart.layout['yaxis']['ticktext'] = data['va_final_ticks']['tick_labels'];
 						}
+						setYaxisRange(custom_data[i][1], chart.layout['yaxis2']);
 						chart.data[0]['x'] = custom_data[i][0]['x'];
 						chart.data[0]['y'] = custom_data[i][0]['y'];
 						chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
@@ -339,5 +384,7 @@ var analytics_toolbox = (function () {
 		getAjaxThrottleTime: getAjaxThrottleTime,
 		ajaxErrorHandling: ajaxErrorHandling,
 		hideDrillDownShowChart: hideDrillDownShowChart,
+		setYaxisRange: setYaxisRange,
+		setXaxisTick: setXaxisTick,
 	}
 })()

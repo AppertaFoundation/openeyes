@@ -9,6 +9,10 @@ var analytics_sidebar = (function () {
 		var common_disorders = common_disorders_dom.map(function (i, e) {
 			return $(e).html()
 		})
+		
+		// get user info
+		var side_bar_user_list = analytics_dataCenter.user.getSidebarUser();
+		var current_user = analytics_dataCenter.user.getCurrentUser();
 
 		// get current Specialty
 		var specialty = analytics_toolbox.getCurrentSpecialty();
@@ -79,10 +83,8 @@ var analytics_sidebar = (function () {
 				$('#js-analytics-spinner').show();
 				$.ajax({
 					url: '/analytics/getCustomPlot',
-					data: {
-						"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-						specialty: specialty,
-					},
+					data: "YII_CSRF_TOKEN=" + YII_CSRF_TOKEN + '&' + $('#search-form').serialize() +
+					analytics_toolbox.getDataFilters(specialty, side_bar_user_list, common_disorders, current_user),
 					dataType: 'json',
 					success: function (data) {
 						// update custom data
@@ -110,10 +112,6 @@ var analytics_sidebar = (function () {
 		function updateChart(e) {
 			e.preventDefault();
 			e.stopPropagation();
-
-			// get user info
-			var side_bar_user_list = analytics_dataCenter.user.getSidebarUser();
-			var current_user = analytics_dataCenter.user.getCurrentUser();
 
 			// Service data options: service
 			// Clinical data options: Clinical
@@ -177,10 +175,10 @@ var analytics_sidebar = (function () {
 		$('.oe-filter-options').each(function () {
 			var id = $(this).data('filter-id');
 			/*
-                @param $wrap
-                @param $btn
-                @param $popup
-            */
+				@param $wrap
+				@param $btn
+				@param $popup
+			*/
 			enhancedPopupFixed(
 				$('#oe-filter-options-' + id),
 				$('#oe-filter-btn-' + id),
