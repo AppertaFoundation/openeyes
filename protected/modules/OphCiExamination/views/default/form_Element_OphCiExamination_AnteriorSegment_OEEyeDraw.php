@@ -54,7 +54,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'AdenoviralKeratitis', 'CornealOedema', 'Fuchs', 'PosteriorSynechia', 'KeraticPrecipitates',
 
             // overflow
-            'CornealOpacity', 'CornealScar', 'CornealThinning', 'CornealPigmentation', 'Pterygium', 'Pingueculum', 'PeripheralVascularisation',
+            'CellsAndFlare', 'CornealOpacity', 'CornealScar', 'CornealThinning', 'CornealPigmentation', 'Pterygium', 'Pingueculum', 'PeripheralVascularisation',
             'Hyphaema', 'Hypopyon', 'MetallicForeignBody', 'CornealLaceration', 'BandKeratopathy', 'Rubeosis', 'TransilluminationDefect'
         ],
 
