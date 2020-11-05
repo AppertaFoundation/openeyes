@@ -26,11 +26,11 @@ class PrescriptionFormPrinter extends CWidget
     private $print_mode;
     private $department_name;
     private $institution_name;
-    private $page_count = 1;
+    private int $page_count = 1;
 
-    const MAX_FPTEN_LINES = 20;
-    const LHS_LINE_FILLER_TEXT = 'x';
-    const RHS_LINE_FILLER_TEXT = 'GP COPY';
+    public const MAX_FPTEN_LINES = 19;
+    public const LHS_LINE_FILLER_TEXT = 'x';
+    public const RHS_LINE_FILLER_TEXT = 'GP COPY';
 
     /**
      * Initialise the widget. This will set the total items based on the item array passed to the widget on creation,

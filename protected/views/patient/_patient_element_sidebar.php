@@ -4,7 +4,7 @@
 
 <?php $this->renderPartial('//patient/episodes_sidebar'); ?>
 
-<nav class="sidebar-header">
+<nav class="sidebar-header" id="manage-elements-sidebar">
     <div id="js-element-structure-btn" class="icon-button element-structure"></div>
 </nav>
 

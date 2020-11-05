@@ -329,7 +329,7 @@ class Medication extends BaseActiveRecordVersioned
         return implode(", ", $terms);
     }
 
-    private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false, $site_id = null)
+    private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false, $site_id = null, $prescribable_filter = false)
     {
 
         $criteria = new CDbCriteria();
@@ -359,6 +359,14 @@ class Medication extends BaseActiveRecordVersioned
             foreach ($set->items as $item) {
                 if (in_array($item->medication->id, $ids)) {
                     continue;
+                }
+                if ($prescribable_filter) {
+                    $prescribable_sets = \MedicationSet::model()->findByUsageCode('PRESCRIBABLE_DRUGS', $site_id, $subspecialty_id);
+                    $prescribable_set_ids = array_map(fn($set) => $set->id, $prescribable_sets);
+                    $item_medication_set_ids = array_map(fn($set) => $set->id, $item->medication->medicationSets);
+                    if (empty(array_intersect($item_medication_set_ids, $prescribable_set_ids))) {
+                        continue;
+                    }
                 }
                 $return[] = [
                     'label' => $item->medication->preferred_term,
@@ -390,14 +398,14 @@ class Medication extends BaseActiveRecordVersioned
         return $raw ? $return : CHtml::listData($return, 'id', 'label');
     }
 
-    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false, $site_id = null)
+    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false, $site_id = null, $prescribable_filter = false)
     {
-        return $this->listByUsageCode("COMMON_OPH", $subspecialty_id, $raw, $site_id);
+        return $this->listByUsageCode("COMMON_OPH", $subspecialty_id, $raw, $site_id, $prescribable_filter);
     }
 
-    public function listCommonSystemicMedications($raw = false)
+    public function listCommonSystemicMedications($raw = false, $prescribable_filter = false)
     {
-        return $this->listByUsageCode("COMMON_SYSTEMIC", null, $raw);
+        return $this->listByUsageCode("COMMON_SYSTEMIC", null, $raw, null, $prescribable_filter);
     }
 
     public function listOphthalmicMedicationIds()

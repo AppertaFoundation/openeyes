@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -41,60 +42,74 @@ class PatientController extends BaseController
     public function accessRules()
     {
         return array(
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('deactivatePlansProblems', 'updatePlansProblems'),
                 'roles' => array('Edit'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients'),
                 'users' => array('@'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer', 'summary'),
                 'roles' => array('OprnViewClinical'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('verifyAddNewEpisode', 'addNewEpisode'),
                 'roles' => array('OprnCreateEpisode'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('updateepisode'),  // checked in action
                 'users' => array('@'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('possiblecontacts', 'associatecontact', 'unassociatecontact', 'getContactLocation', 'institutionSites', 'validateSaveContact', 'addContact', 'validateEditContact', 'editContact', 'sendSiteMessage'),
                 'roles' => array('OprnEditContact'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('addAllergy', 'removeAllergy', 'generateAllergySelect', 'addRisk', 'removeRisk'),
                 // TODO: check how to add new roles!!!
                 'roles' => array('OprnEditAllergy'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('adddiagnosis', 'validateAddDiagnosis', 'removediagnosis'),
                 'roles' => array('OprnEditOtherOphDiagnosis'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('editOphInfo'),
                 'roles' => array('OprnEditOphInfo'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('addPreviousOperation', 'getPreviousOperation', 'removePreviousOperation'),
                 'roles' => array('OprnEditPreviousOperation'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('addFamilyHistory', 'removeFamilyHistory'),
                 'roles' => array('OprnEditFamilyHistory'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('editSocialHistory', 'editSocialHistory'),
                 'roles' => array('OprnEditSocialHistory'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('create', 'update', 'findDuplicates', 'findDuplicatesByIdentifier'),
                 'roles' => array('TaskAddPatient'),
             ),
-            array('allow',
+            array(
+                'allow',
                 'actions' => array('summary'),
                 'roles' => array('User'),
             )
@@ -151,7 +166,13 @@ class PatientController extends BaseController
     {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($id, false);
-        $this->pageTitle = "Patient Summary";
+        // if the ids are different, it means the $id belongs to a merged patient
+        if ($id !== $this->patient->id) {
+            $link = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
+            // using redirect to correct the url and to avoid issues from creating events
+            $this->redirect("$link");
+        }
+        $this->pageTitle = "Patient Overview";
         $this->patient->audit('patient', 'view-summary');
 
         $episodes = $this->patient->episodes;
@@ -359,8 +380,8 @@ class PatientController extends BaseController
                     'total_items' => $itemCount,
                     'term' => $term,
                     'search_terms' => $patientSearch->getSearchTerms(),
-                    'sort_by' => (integer)\Yii::app()->request->getParam('sort_by', null),
-                    'sort_dir' => (integer)\Yii::app()->request->getParam('sort_dir', null),
+                    'sort_by' => (int)\Yii::app()->request->getParam('sort_by', null),
+                    'sort_dir' => (int)\Yii::app()->request->getParam('sort_dir', null),
                 ));
             }
         }
@@ -479,9 +500,24 @@ class PatientController extends BaseController
      */
     public function loadModel($id, $allow_deleted = true)
     {
-        $model = Patient::model()->findByPk((int)$id);
-        if ($model === null || (!$allow_deleted && $model->deleted)) {
+        $model = Patient::model()->findByPk((int) $id);
+        // cannot find any patient by id, throw exception
+        if ($model === null) {
             throw new CHttpException(404, 'The requested page does not exist.');
+        }
+        // if the deleted patient is not allowed and the found patient is deleted
+        if (!$allow_deleted && $model->deleted) {
+            // try to find if the deleted patient is merged to some other patient
+            if ($merged = $model->isMergedInto()) {
+                // assign the primary patient for return
+                $model = $merged->primaryPatient;
+                // set a flash to inform user patient x was merged into this patient
+                Yii::app()->user->setFlash('warning.patient-merged', $merged->getMergedMessage());
+            } else {
+                // if the patient is deleted and not merged into any other patient
+                // throw exception
+                throw new CHttpException(404, 'The requested page does not exist.');
+            }
         }
 
         return $model;
@@ -745,14 +781,14 @@ class PatientController extends BaseController
 
         foreach ($eventTypeMap as $eventType => $events) {
             switch ($eventType) {
-                // Document events should be ignored, as they have already been broken down by document sub type
+                    // Document events should be ignored, as they have already been broken down by document sub type
                 case 'Document':
                     continue 2;
-                // Biometry events and report documents should be in the same bucket
+                    // Biometry events and report documents should be in the same bucket
                 case 'Biometry':
                     $groupType = 'BiometryReport';
                     break;
-                // Correspondence events should go in th 'Letters' bucket
+                    // Correspondence events should go in th 'Letters' bucket
                 case 'Correspondence':
                     $groupType = 'Letters';
                     break;
@@ -1849,9 +1885,9 @@ class PatientController extends BaseController
                 if (isset($_POST['ExtraContact'])) {
                     $gp_ids = $_POST['ExtraContact']['gp_id'];
                     if (isset($_POST['ExtraContact']['practice_id'])) {
-                                    $practice_ids = $_POST['ExtraContact']['practice_id'];
-                                    $pca_models = array();
-                        for ($i =0; $i<sizeof($gp_ids); $i++) {
+                        $practice_ids = $_POST['ExtraContact']['practice_id'];
+                        $pca_models = array();
+                        for ($i = 0; $i < sizeof($gp_ids); $i++) {
                             $pca_model = new PatientContactAssociate();
                             $pca_model->gp_id = $gp_ids[$i];
                             $pca_model->practice_id = $practice_ids[$i];
@@ -2009,7 +2045,8 @@ class PatientController extends BaseController
                     $patient_identifiers
                 );
             if ($success) {
-                if (isset(Yii::app()->modules["Genetics"])
+                if (
+                    isset(Yii::app()->modules["Genetics"])
                     && Yii::app()->user->checkAccess('Genetics Clinical')
                     && $patient->isNewRecord
                 ) {
@@ -2024,12 +2061,12 @@ class PatientController extends BaseController
             } else {
                 //Get all the validation errors
                 foreach ([
-                             'patient',
-                             'contact',
-                             'address',
-                             'patient_user_referral',
-                             'patient_identifiers'
-                         ] as $model) {
+                    'patient',
+                    'contact',
+                    'address',
+                    'patient_user_referral',
+                    'patient_identifiers'
+                ] as $model) {
                     if (isset(${$model})) {
                         if (is_array(${$model})) {
                             foreach (${$model} as $item) {
@@ -2076,7 +2113,8 @@ class PatientController extends BaseController
         $patient->contact_id = $contact->id;
         $address->contact_id = $contact->id;
 
-        if (!$patient->save()
+        if (
+            !$patient->save()
             || !$address->save()
             || !$this->performIdentifierSave($patient, $patient_identifiers)
         ) {
@@ -2232,8 +2270,8 @@ class PatientController extends BaseController
             $p_file = ProtectedFile::createFromFile($tmp_name);
             $p_file->name = $file["name"]["uploadedFile"];
 
-            if (!in_array($p_file->mimetype, $allowed_file_types) ) {
-                $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $allowed_file_types) ) . '.';
+            if (!in_array($p_file->mimetype, $allowed_file_types)) {
+                $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
                 $referral->addError('uploadedFile', $message);
             }
 
@@ -2318,7 +2356,7 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $referral = isset($patient->referral) ? $patient->referral : new PatientReferral();
         $this->pageTitle = 'Update Patient' . ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ?
-            ' - ' . $patient->last_name . ', ' . $patient->first_name : '' );
+            ' - ' . $patient->last_name . ', ' . $patient->first_name : '');
         $gpcontact = isset($patient->gp) ? $patient->gp->contact : new Contact();
         $practice = isset($patient->practice) ? $patient->practice : new Practice();
         $practicecontact = isset($patient->practice) ? $patient->practice->contact : new Contact();
@@ -2674,8 +2712,10 @@ class PatientController extends BaseController
             // would recommend pushing this into a base method that can then
             // be overridden as appropriate
             $result[] = array_merge(
-                array('subspecialty' => $element->event->episode->getSubspecialtyText(),
-                    'event_date' => $element->event->NHSDate('event_date')),
+                array(
+                    'subspecialty' => $element->event->episode->getSubspecialtyText(),
+                    'event_date' => $element->event->NHSDate('event_date')
+                ),
                 $element->getDisplayAttributes()
             );
         }

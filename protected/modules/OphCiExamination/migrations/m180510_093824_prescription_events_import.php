@@ -44,7 +44,8 @@ class m180510_093824_prescription_events_import extends OEMigration
     private function runPrescriptionImport()
     {
         $this->execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER';");
-        $this->execute("
+        $this->execute(
+        "
         INSERT INTO event_medication_use(
                                 event_id, 
                                 usage_type, 
@@ -95,8 +96,7 @@ class m180510_093824_prescription_events_import extends OEMigration
         LEFT JOIN medication_laterality                                 ON medication_laterality.name = dro.name
         WHERE et.name = 'Prescription'
         AND medication.source_type = 'LEGACY'
-        AND medication.source_subtype = 'drug'
-        ORDER BY event.id ASC");
+        AND medication.source_subtype = 'drug'");
 
         $last_id = $this->dbConnection->getLastInsertID();
 

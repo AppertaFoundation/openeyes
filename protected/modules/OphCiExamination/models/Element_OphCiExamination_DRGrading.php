@@ -272,6 +272,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
             }
 
             if ($sd !== null) {
+                $sd->date = $sd->isNewRecord ? date('Y-m-d') : $sd->date;
                 $sd->save();
                 \Audit::add('SecondaryDiagnosis', 'add', $sd->id, null, array('patient_id' => $patient->id));
                 $this->secondarydiagnosis_id = $sd->id;
@@ -330,7 +331,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
     public function flagRequired($attribute, $params)
     {
         $flag = $params['flag'];
-        if ($this->$flag && $this->$attribute == null) {
+        if ($flag && empty($this->$attribute)) {
             $this->addError($attribute, $this->getAttributeLabel($attribute).' is required');
         }
     }

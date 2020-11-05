@@ -74,12 +74,16 @@ body {
     padding-left: 3mm;
 }
 
+.fpten-site {
+    margin-left: 16mm;
+}
+
 .wpten-site-postcode {
     white-space: nowrap;
 }
 
 .right .fpten-site {
-    margin-left: 9mm !important;
+    margin-left: 11mm !important;
 }
 
 .fpten-site {
@@ -105,6 +109,7 @@ body {
     padding-top: 3mm;
     height: 7mm;
     line-height: 7mm;
+    margin-left: 33mm;
 }
 
 /*DOB box appears directly below the Age box.*/
@@ -120,6 +125,7 @@ body {
     height: 15mm;
     padding-top: 3mm;
     line-height: 15mm;
+    margin-left: 33mm;
 }
 
 .right .wpten-age, .right .wpten-dob, .right .fpten-age, .right .fpten-dob {
@@ -201,9 +207,9 @@ body {
 }
 
 .fpten-prescription-list {
-    height: 78mm;
+    height: 76mm;
     width: 63mm;
-    margin-left: 21mm;
+    margin-left: 23mm;
 }
 
 .right .fpten-prescription-list, .right .wpten-prescription-list {
@@ -233,7 +239,7 @@ body {
 
 .fpten-date {
     width: 28mm;
-    margin-left: 58mm;
+    margin-left: 60mm;
 }
 
 .right .wpten-date {
@@ -241,7 +247,7 @@ body {
 }
 
 .right .fpten-date {
-    margin-left: 53mm !important;
+    margin-left: 55mm !important;
 }
 
 .fpten-page-counter {

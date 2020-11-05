@@ -26,6 +26,12 @@ $form_option = OphDrPrescription_DispenseCondition::model()->findByAttributes(ar
 // Event actions
 $elementEditable = $Element->isEditableByMedication();
 $can_finalize = $this->checkAccess('OprnCreatePrescription');
+
+if (!$elementEditable) {
+    $this->event_actions = array_filter($this->event_actions, function ($action) {
+        return $action->label !== 'Delete';
+    });
+}
 if (($Element->draft) && (!$elementEditable) && $can_finalize) {
     $this->event_actions[] = EventAction::button(
         'Save as final',

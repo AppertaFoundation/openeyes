@@ -17,6 +17,15 @@
  */
 ?>
 <main class="main-event"  id="event-content">
+<!-- 
+    if a merged patient link is accessed, 
+    the user will be redirected to the primary patient, and prompt the user with following warning message
+-->
+    <?php if (Yii::app()->user->hasFlash('warning.patient-merged')) : ?>
+        <div class="alert-box with-icon warning">
+            <?php echo Yii::app()->user->getFlash('warning.patient-merged'); ?>
+        </div>
+    <?php endif; ?>
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php echo $content; ?>
 </main>

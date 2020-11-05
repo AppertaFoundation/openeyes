@@ -397,7 +397,7 @@ class EventMedicationUse extends BaseElement
         $result = false;
 
         if ($medication->medication_id === $this->medication_id) {
-            if ($this->route_id === $medication->route_id && $this->route->has_laterality) {
+            if ($this->route_id === $medication->route_id && $this->route && $this->route->has_laterality) {
                 if ($this->laterality === $medication->laterality || $this->laterality === (string) Eye::BOTH || $medication->laterality === (string) Eye::BOTH) {
                     $result = true;
                 }
@@ -709,7 +709,11 @@ class EventMedicationUse extends BaseElement
         $this->latest_med_use_id = $element->latest_med_use_id;
         if (!$this->prescription_item_id) {
             $this->is_copied_from_previous_event = true;
-            $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id : $element->event->id;
+            $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id : $element->event_id;
+        } else {
+            if (!$this->prescriptionItem->event) {
+                $this->prescription_event_deleted = true;
+            }
         }
     }
 

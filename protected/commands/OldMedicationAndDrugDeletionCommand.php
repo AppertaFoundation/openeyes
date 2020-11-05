@@ -46,6 +46,7 @@ EOH;
         echo "\n[". (date("Y-m-d H:i:s")) ."] Old medication and drug deletion (oldmedicationanddrugdeletion) ... ";
         $this->deleteUnusedMedicationDrugs();
         $this->deleteOldDrugAndMedicationTables();
+        $this->dropTempColumns();
         echo "OK - took: " . (microtime(true) -$t) . "s\n";
     }
 
@@ -98,5 +99,12 @@ EOH;
         MedicationSetAutoRuleMedication::model()->find('medication_id = :medication_id', [':medication_id' => $medication_drug->id]);
         MedicationSetItem::model()->find('medication_id = :medication_id', [':medication_id' => $medication_drug->id]);
         $medication_drug->delete();
+    }
+
+    private function dropTempColumns()
+    {
+        $db = Yii::app()->db;
+        $db->createCommand("ALTER TABLE event_medication_use DROP COLUMN IF EXISTS temp_prescription_item_id")->execute();
+        $db->createCommand("ALTER TABLE event_medication_use_version DROP COLUMN IF EXISTS temp_prescription_item_id")->execute();
     }
 }

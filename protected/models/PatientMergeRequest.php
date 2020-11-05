@@ -199,6 +199,6 @@ class PatientMergeRequest extends BaseActiveRecordVersioned
 
     public function getMergedMessage()
     {
-        return 'Hospital Number <strong>'. $this->secondary_hos_num .'</strong> was merged into <strong>' . $this->primary_hos_num . '</strong>';
+        return "Hospital Number <strong>({$this->secondary_hos_num}) {$this->secondaryPatient->getFullName()}</strong> was merged into <strong>({$this->primary_hos_num}) {$this->primaryPatient->getFullName()}</strong> on {$this->created_date}";
     }
 }

@@ -73,10 +73,13 @@
                 });
             </script>
 
-            <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
-            <i id="js-change-event-date" class="oe-i history large pad-left js-has-tooltip js-change-event-date" data-tooltip-content="Change Event date" style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
-        <?php } ?>
-    </div>
+          <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
+        <span class="js-has-tooltip" data-tooltip-content="Change Event date">
+            <i class="oe-i history large pad-left js-change-event-date"
+               style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
+        </span>
+    <?php } ?>
+        </div>
 
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>

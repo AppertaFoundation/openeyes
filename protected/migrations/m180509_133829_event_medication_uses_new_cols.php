@@ -12,6 +12,8 @@ class m180509_133829_event_medication_uses_new_cols extends OEMigration
         $this->addForeignKey('fk_emu_prescription_item', 'event_medication_use', 'prescription_item_id', 'event_medication_use', 'id');
         
         $this->addOEColumn('event_medication_use', 'temp_prescription_item_id', 'INT NULL', true);
+        // Add an index to speedup some later migrations - this column and index will de dropped at the end of the import
+        $this->createIndex('idx_temp_prescription_item_id', 'event_medication_use', 'temp_prescription_item_id', false);
     }
 
     public function down()

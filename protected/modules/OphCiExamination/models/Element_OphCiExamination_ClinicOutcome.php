@@ -139,6 +139,18 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         parent::afterDelete();
     }
 
+    /**
+     * Delete the patient ticket when the examination is deleted
+     */
+    public function softDelete()
+    {
+        $ticket = $this->getPatientTicket();
+        if ($ticket) {
+            $this->deleteRelatedTicket($ticket);
+        }
+        parent::softDelete();
+    }
+
     public function getFollowUpQuantityOptions()
     {
         $opts = array();

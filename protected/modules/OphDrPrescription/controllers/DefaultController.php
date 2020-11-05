@@ -46,14 +46,14 @@ class DefaultController extends BaseEventTypeController
         $model = Element_OphDrPrescription_Details::model()
             ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
-        $this->showAllergyWarning();        
+        $this->showAllergyWarning();
 
         $this->editable = $model->isEditableByMedication();
         if ( $this->editable == true ) {
             $this->editable = $this->userIsAdmin() || $model->draft
             || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
         }
-        
+
         if ($this->event->delete_pending) {
             Yii::app()->user->setFlash('patient.delete_pending', 'This event is pending deletion and has been locked.');
         }
@@ -63,7 +63,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         if (!$model->isEditableByMedication()) {
-            Yii::app()->user->setFlash('alert.meds_management', 'This prescription was created from Medication Management in an Examination event. To make changes, please edit the original Examination');
+            Yii::app()->user->setFlash('alert.meds_management', 'This prescription was created from Medication Management in an Examination event. To make changes or remove, please edit the original Examination');
         }
         if ($model->draft) {
             Yii::app()->user->setFlash('alert.draft', 'This prescription is a draft and can still be edited');

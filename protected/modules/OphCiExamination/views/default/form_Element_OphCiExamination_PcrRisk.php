@@ -3,7 +3,6 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
 Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
 ?>
 <script type="text/javascript">
-
     function pcr_init() {
         //Map the elements
         mapExaminationToPcr();
