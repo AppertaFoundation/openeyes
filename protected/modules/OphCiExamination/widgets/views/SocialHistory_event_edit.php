@@ -241,7 +241,6 @@ $nothing_selected_text = "Nothing selected.";
 
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-social-history-btn'),
-            width: 1000,
             deselectOnReturn: false,
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(
