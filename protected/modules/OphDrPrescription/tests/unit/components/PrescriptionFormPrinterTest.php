@@ -23,7 +23,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         'drug_frequency' => MedicationFrequency::class,
     );
 
-    private $instance;
+    private PrescriptionFormPrinter $instance;
 
     public function setUp()
     {
