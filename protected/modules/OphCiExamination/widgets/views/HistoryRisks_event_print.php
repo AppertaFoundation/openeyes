@@ -39,8 +39,8 @@
                     <thead>
                         <tr>
                             <th>Present</th>
-                            <th>Not Checked</th>
-                            <th>Not Present</th>
+                            <th>Not present</th>
+                            <th>Not checked</th>
                         </tr>
                     </thead>
                     <tbody>
