@@ -18,13 +18,12 @@
             <tr data-key="<?= $index ?>">
                 <td>
                     <?= $entry->getMedicationDisplay() ?>
-                    <?php
-                    $comments = $entry->getComments();
-                    if (!empty($comments)) { ?>
-                        <i class="oe-i comments-who small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="<em><?= $comments ?></em>">
-                        </i> <?php
-                    }
-                    ?>
+                    <?php $change_history = $entry->getChangeHistory();
+                    if (!empty($change_history)) {
+                        $tooltip_content = $entry->getChangeHistoryTooltipContent($change_history);
+                        ?>
+                        <i class="oe-i change small <?= $pro_theme ?> js-has-tooltip pad-right" data-tooltip-content="<?= $tooltip_content ?>"></i>
+                    <?php } ?>
                 </td>
                 <td>
                     <?php
@@ -40,7 +39,7 @@
 
                 </td>
                 <td>
-                    <?php $earliest_entry = $entry->getEarliestEntry($entry); ?>
+                    <?php $earliest_entry = $entry->getEarliestEntry(); ?>
                     <span class="oe-date"><?= $current ? $earliest_entry->getStartDateDisplay() : $entry->getEndDateDisplay() ?></span>
                 </td>
                 <td>

@@ -112,7 +112,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202008181459',
+            'time' => '202011101211',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -520,7 +520,7 @@ return array(
         *
         */
         'docman_filename_format' => getenv('DOCMAN_FILENAME_FORMAT') ?: 'OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}',
-        
+
         /**
          *  Set to false to suppress XML generation for electronic correspondence
          */
@@ -728,7 +728,7 @@ return array(
                 'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ?: ''),
             ),
         ),
-        'pw_status_checks' =>array(
+        'pw_status_checks' => array(
             /* pw_status key:
                     'current' = user can log in as normal,
                     'stale'  = user can log in, but they will be prompted to change their password on login. (they can also log out)

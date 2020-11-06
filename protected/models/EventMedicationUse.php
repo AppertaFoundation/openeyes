@@ -25,7 +25,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property integer $id
  * @property string $event_id
  * @property string $copied_from_med_use_id
- * @property integer $first_prescribed_med_use_id
+ * @property integer $latest_prescribed_med_use_id
  * @property string $usage_type
  * @property string $usage_subtype
  * @property integer $medication_id
@@ -133,7 +133,7 @@ class EventMedicationUse extends BaseElement
         // will receive user inputs.
         return array(
             array('usage_type, medication_id', 'required'),
-            array('first_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, stop_reason_id, 
+            array('latest_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, stop_reason_id, 
 			        prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly' => true),
             array('dose', 'numerical'),
             array('laterality', 'validateLaterality'),
@@ -151,7 +151,7 @@ class EventMedicationUse extends BaseElement
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('stop_reason_id', 'validateStopReason'),
             array(
-                'id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, 
+                'id, event_id, copied_from_med_use_id, latest_prescribed_med_use_id, usage_type, usage_subtype, 
                     medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, 
                     dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, 
                     last_modified_date, created_user_id, created_date, bound_key, latest_med_use_id', 'safe', 'on' => 'search'
@@ -230,7 +230,7 @@ class EventMedicationUse extends BaseElement
     public function copiedFields()
     {
         return [
-            'usage_type', 'usage_subtype', 'medication_id', 'start_date', 'end_date', 'first_prescribed_med_use_id',
+            'usage_type', 'usage_subtype', 'medication_id', 'start_date', 'end_date', 'latest_prescribed_med_use_id',
             'form_id', 'laterality', 'route_id', 'frequency_id', 'duration_id', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
             'dose', 'copied_from_med_use_id', 'dose_unit_term', 'bound_key', 'comments'
         ];
@@ -269,7 +269,7 @@ class EventMedicationUse extends BaseElement
             'id' => 'ID',
             'event_id' => 'Event',
             'copied_from_med_use_id' => 'Copied From Med Use',
-            'first_prescribed_med_use_id' => 'First Prescribed Med Use',
+            'latest_prescribed_med_use_id' => 'Latest Prescribed Med Use',
             'usage_type' => 'Usage Type',
             'usage_subtype' => 'Usage Subtype',
             'medication_id' => 'Medication',
@@ -311,7 +311,7 @@ class EventMedicationUse extends BaseElement
         $criteria->compare('id', $this->id);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('copied_from_med_use_id', $this->copied_from_med_use_id, true);
-        $criteria->compare('first_prescribed_med_use_id', $this->first_prescribed_med_use_id);
+        $criteria->compare('latest_prescribed_med_use_id', $this->latest_prescribed_med_use_id);
         $criteria->compare('usage_type', $this->usage_type, true);
         $criteria->compare('usage_subtype', $this->usage_subtype, true);
         $criteria->compare('medication_id', $this->medication_id);
@@ -435,10 +435,12 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
-     * @param long returns full Left/Right/Both when true, else L/R/B
+     * long returns full Left/Right/Both when true, else L/R/B
+     *
+     * @param $long
      * @return string
      */
-    public function getLateralityDisplay(bool $long = false)
+    public function getLateralityDisplay(bool $long = false): string
     {
         $lname = $this->medicationLaterality ? $this->medicationLaterality->name : '';
 
@@ -532,9 +534,14 @@ class EventMedicationUse extends BaseElement
         return true;
     }
 
-    public function isStopped()
+    /**
+     * Returns if medication is stopped
+     *
+     * @return bool
+     */
+    public function isStopped() : bool
     {
-        return isset($this->end_date) ? (strtotime($this->end_date) <= strtotime(date("Y-m-d"))) : false;
+        return isset($this->end_date) ? (strtotime($this->end_date) < strtotime(date("Y-m-d"))) : false;
     }
 
     /**
@@ -547,16 +554,31 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
-     * @param $entry
+     * gets earliest entry for this medication
+     *
      * @return EventMedicationUse
      */
-    public function getEarliestEntry($entry): EventMedicationUse
+    public function getEarliestEntry(): EventMedicationUse
     {
-        if (!$entry->id) {
-            return $entry;
+        if (!$this->id) {
+            return $this;
         }
-        $previous_medication = EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $entry->id]);
-        return $previous_medication ? $this->getEarliestEntry($previous_medication) : $entry;
+        $previous_medication = EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $this->id]);
+        return $previous_medication && isset($previous_medication->event) ? $previous_medication->getEarliestEntry() : $this;
+    }
+
+    /**
+     * returns if of latest medication item, if it exists, that has been prescribed
+     *
+     * @return int
+     */
+    public function findLatestPrescribedItemId(): ?int
+    {
+        if ($this->prescription_item_id) {
+            return $this->prescription_item_id;
+        }
+        $previous_medication = EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $this->id]);
+        return $previous_medication && isset($previous_medication->event) ? $previous_medication->findLatestPrescribedItemId() : null;
     }
 
     public function getComments()
@@ -565,6 +587,105 @@ class EventMedicationUse extends BaseElement
             return $this->comments;
         }
     }
+
+    /**
+     *
+     * gets history of changes for the medication
+     *
+     * @param $change_history array
+     * @param int $max_no_of_previous_history_changes
+     * @return array
+     */
+    public function getChangeHistory(array $change_history = [], int $max_no_of_previous_history_changes = 3) : array
+    {
+        $id = $this->hasLinkedPrescribedEntry() ? $this->prescription_item_id : $this->id;
+        if (!$id || count($change_history) === $max_no_of_previous_history_changes ) {
+            return $change_history;
+        }
+        $medication_changed_stop_reason_id = HistoryMedicationsStopReason::getMedicationParametersChangedId();
+        $previous_changed_medication = \EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $id]);
+        if ($previous_changed_medication) {
+            if (isset($previous_changed_medication->event) && $previous_changed_medication->stop_reason_id === $medication_changed_stop_reason_id) {
+                $change_history[] = [
+                    'change_date' => Helper::formatFuzzyDate($previous_changed_medication->event->event_date),
+                    'dosage' => $previous_changed_medication->getDoseAndFrequency(false),
+                    'frequency' => $previous_changed_medication->frequency ? $previous_changed_medication->frequency->code : '',
+                    'side' => $previous_changed_medication->getTooltipLateralityDisplay($previous_changed_medication->getLateralityDisplay()),
+                    'user' => $this->createdUser->getFullName()
+                ];
+            }
+            return $previous_changed_medication->getChangeHistory($change_history);
+        }
+
+        return $change_history;
+    }
+
+    /**
+     * gets tooltip display for laterality
+     * @param $laterality string
+     * @return string
+     */
+    private function getTooltipLateralityDisplay(string $laterality) : string
+    {
+
+        if ($laterality === '') {
+            return $laterality;
+        }
+        $left = false;
+        $right = false;
+
+        switch ($laterality) {
+            case 'L':
+                $left = true;
+                break;
+            case 'R':
+                $right = true;
+                break;
+            case 'B':
+                $left = true;
+                $right = true;
+                break;
+        }
+
+        $right_icon = $right ? 'R' : 'NA';
+        $left_icon = $left ? 'L' : 'NA';
+
+        ob_start(); ?>
+        <span class="oe-eye-lat-icons">
+             <i class="oe-i laterality small '. <?= $right_icon ?> . '"></i>
+             <i class="oe-i laterality small '. <?= $left_icon ?> . '"></i>
+         </span>
+        <?php return ob_get_clean();
+    }
+
+    /**
+     * Gets the tooltip information for the change history of the medication
+     *
+     * @param $change_history array
+     * @return string
+     */
+    public function getChangeHistoryTooltipContent(array $change_history) : string
+    {
+        $change_history = array_reverse($change_history);
+        ob_start(); ?>
+        <?= htmlspecialchars('<b class="fade">Previous changes</b><br><hr class="divider">', ENT_QUOTES, 'UTF-8') ?>
+        <?php foreach ($change_history as $key => $medication_change) {
+            if ($key !== 0) {
+                echo htmlspecialchars('<hr class="divider">', ENT_QUOTES, 'UTF-8');
+            } ?>
+            <b><?= $medication_change['change_date'] ?></b> - <?= $medication_change['user'] ?><br>
+            <b>Dosage: </b><?= $medication_change['dosage'] ?><br>
+            <?php if ($medication_change['frequency'] !== '') { ?>
+                <b>Frequency: </b><?= $medication_change['frequency'] ?><br>
+            <?php } ?>
+            <?php if ($medication_change['side'] !== '') { ?>
+                <b>Side: </b> <?=  htmlspecialchars($medication_change['side'], ENT_QUOTES, 'UTF-8') ?><br>
+            <?php } ?>
+        <?php } ?>
+
+        <?php return ob_get_clean();
+    }
+
 
     public function getTooltipContent()
     {
@@ -581,7 +702,7 @@ class EventMedicationUse extends BaseElement
             $data['Route'] = $this->route->term;
         }
 
-        $earliest_entry = $this->getEarliestEntry($this);
+        $earliest_entry = $this->getEarliestEntry();
 
         $data['Start date'] = Helper::formatFuzzyDate($earliest_entry->start_date);
         if ($this->end_date) {
@@ -668,7 +789,14 @@ class EventMedicationUse extends BaseElement
         }
     }
 
-    public function getDoseAndFrequency()
+
+    /**
+     * Gets dose and frequency for medication
+     *
+     * @param bool $include_frequency
+     * @return string
+     */
+    public function getDoseAndFrequency(bool $include_frequency = true): string
     {
         $result = [];
 
@@ -680,7 +808,7 @@ class EventMedicationUse extends BaseElement
             }
         }
 
-        if ($this->frequency) {
+        if ($this->frequency && $include_frequency) {
             $result[] = $this->frequency;
         }
 
@@ -698,13 +826,11 @@ class EventMedicationUse extends BaseElement
     }
 
 
+
     public function loadFromExisting($element)
     {
         parent::loadFromExisting($element);
         $this->updateStateProperties();
-        if (in_array(\Yii::app()->controller->action->id, ['summary', 'view'])) { //temporary, needs to be replaced in future
-            $this->id = $element->id;
-        }
         $this->event_id = $element->event_id;
         $this->latest_med_use_id = $element->latest_med_use_id;
         if (!$this->prescription_item_id) {
@@ -722,7 +848,7 @@ class EventMedicationUse extends BaseElement
      */
     protected function updateStateProperties()
     {
-        if ($this->end_date !== null && $this->end_date <= date('Y-m-d')) {
+        if ($this->isStopped()) {
             $this->originallyStopped = true;
         }
         /* TODO Check what was happening here previously
@@ -814,7 +940,7 @@ class EventMedicationUse extends BaseElement
         }
     }
 
-    protected function setStopReasonTo($stop_reason)
+    public function setStopReasonTo($stop_reason)
     {
         $stop_reason_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => $stop_reason]);
         if ($stop_reason_model) {
@@ -823,16 +949,73 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
+     * Gets previous stop reason if exists
+     *
+     * @param $latest_med_use_id int
+     * @return string | null
+     */
+    public function getPreviousStopReason(int $latest_med_use_id) : ?string
+    {
+        $previous_medication = EventMedicationUse::model()->findByPk($latest_med_use_id);
+        return $previous_medication && $previous_medication->stop_reason_id ? implode(',', [$previous_medication->stop_reason_id, $previous_medication->stopReason->name]) : null;
+    }
+
+    /**
      * Checks if medication has been changed and stopped
      * @return bool
      * */
     public function isChangedMedication(): bool
     {
-        $stop_reason_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Medication parameters changed']);
-        if ($stop_reason_model) {
-            return $this->stop_reason_id === $stop_reason_model->id;
+        $medication_changed_stop_reason_id = HistoryMedicationsStopReason::getMedicationParametersChangedId();
+        return $this->stop_reason_id === $medication_changed_stop_reason_id;
+    }
+
+    /**
+     * Checks if medication has been continued
+     * @return EventMedicationUse
+     */
+    public function getContinuedMedication(): ?EventMedicationUse
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('latest_med_use_id = :latest_med_use_id');
+        $criteria->params['latest_med_use_id'] = $this->hasLinkedPrescribedEntry() ? $this->prescription_item_id :  $this->id;
+        $previous_medication = EventMedicationUse::model()->find($criteria);
+
+        if ($previous_medication && isset($previous_medication->event)) {
+            if ($previous_medication->event_id !== $this->event_id) {
+                return $previous_medication;
+            } else {
+                return $previous_medication->getContinuedMedication();
+            }
         }
-        return false;
+
+        return null;
+    }
+
+    /**
+     * Checks if medication has a linked prescription that was prescribed from the element
+     * @return bool
+     * */
+    public function hasLinkedPrescribedEntry() : bool
+    {
+        return $this->prescription_item_id && $this->prescribe;
+    }
+
+    /**
+     * Gets latest medication recorded
+     *
+     * @return EventMedicationUse
+     */
+    public function getLatestMedication() : EventMedicationUse
+    {
+        if ($this->latest_med_use_id) {
+            $latest_medication = EventMedicationUse::model()->findByPk($this->latest_med_use_id);
+            if ($latest_medication && isset($latest_medication->event)) {
+                return $latest_medication->getLatestMedication();
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -897,7 +1080,7 @@ class EventMedicationUse extends BaseElement
      */
     protected function afterSave()
     {
-        if ($this->usage_subtype !== 'Management') {
+        if (!($this->usage_subtype === 'Management' && $this->prescribe)) {
             $prescription_api = Yii::app()->moduleAPI->get('OphDrPrescription');
             $examination_api = Yii::app()->moduleAPI->get('OphCiExamination');
             if ($prescription_api && $examination_api) {
@@ -929,6 +1112,14 @@ class EventMedicationUse extends BaseElement
                     }
                 }
             }
+            $this->latest_prescribed_med_use_id = $this->findLatestPrescribedItemId();
+            if ($this->getIsNewRecord()) { // needs replacing with something better, was used previously so will use here for now
+                $this->setIsNewRecord(false);
+                $this->saveAttributes(['latest_prescribed_med_use_id']);
+                $this->setIsNewRecord(true);
+            } else {
+                $this->saveAttributes(['latest_prescribed_med_use_id']);
+            }
         }
 
         parent::afterSave();
@@ -949,7 +1140,7 @@ class EventMedicationUse extends BaseElement
                 ->findAll('medication_id !=? and episode.patient_id=?', [$this->medication_id, $patient->id]);
         } else {
             $exclude_models = $model->with('event', 'event.episode')
-                ->findAll('medication_id !=? and episode.patient_id=? and usage_subtype !=?', [$this->medication_id, $patient->id, 'Management']);
+                ->findAll('(medication_id !=? and episode.patient_id=?) or prescribe=?', [$this->medication_id, $patient->id, 1]);
         }
 
         $exclude_ids = array_map(function ($item) {
@@ -960,7 +1151,7 @@ class EventMedicationUse extends BaseElement
         if ($is_prescription) {
             $items = $api->getPrescriptionItemsForPatient($patient, $exclude_ids);
         } else {
-            $items = $api->getEventMedicationUseItemsForPatient($patient, $exclude_ids, true);
+            $items = $api->getEventMedicationUseItemsForPatient($patient, $exclude_ids);
         }
 
         return array_filter($items, function ($item) {

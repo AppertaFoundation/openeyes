@@ -212,7 +212,7 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
         /** @var EventMedicationUse $entry */
         foreach ($this->entries as $entry) {
             if ($entry->usage_type == 'OphCiExamination') {
-                if (!is_null($entry->end_date) && $entry->end_date <= date("Y-m-d")) {
+                if ($entry->isStopped()) {
                     $closed[] = $entry;
                 } else {
                     $current[] = $entry;
@@ -296,35 +296,35 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
     /**
      * merges entries and removes those that have a latest_med_use_id (not the most recent medication)
      * @param $entries
-     * @param bool $is_examination_view
+     * @param $widget
      * @return array
+     * @throws \Exception
      */
-
-    public function mergeMedicationEntries($entries, $is_examination_view = false) : array
+    public function mergeMedicationEntries($entries, $widget = null) : array
     {
         $merged_entries = [];
         $medication_ids = [];
         $medication_entries = [];
         $already_converted_ids = [];
 
-        if ($is_examination_view) {
-            $entries = $this->filterHistoryMedicationsForExaminationView($entries);
-        }
-
         foreach ($entries as $entry) {
-            $entry_to_add = $entry->prescriptionItem ?? $entry;
-            if (!in_array($entry_to_add->id, $already_converted_ids)) {
-                $converted_entry = $this->createConvertedHistoryEntry($entry_to_add);
-                $converted_entry->event_id = $entry_to_add->event_id ?? $entry_to_add->copied_from_med_use_id;
-                if (!$entry_to_add->latest_med_use_id || $is_examination_view) {
-                    if ($entry_to_add->isPrescription()) {
+            if ($entry->hasLinkedPrescribedEntry()) {
+                $entry_to_add = $entry->prescriptionItem;
+            } else {
+                $entry_to_add = $entry;
+            }
+            $latest_medication = $entry_to_add->getLatestMedication();
+            if (!in_array($latest_medication->medication_id, $already_converted_ids)) {
+                $converted_entry = $this->createConvertedHistoryEntry($latest_medication, true, $widget);
+                $converted_entry->event_id = $latest_medication->event_id ?? $latest_medication->copied_from_med_use_id;
+                $converted_entry->is_copied_from_previous_event = true;
+                if (!$latest_medication->latest_med_use_id) {
+                    if ($latest_medication->isPrescription()) {
                         $converted_entry->usage_type = 'OphDrPrescription';
                         $converted_entry->usage_subtype = '';
                     }
                     $medication_entries[] = $converted_entry;
-                    if ($entry_to_add->id) {
-                        $already_converted_ids[] = $entry_to_add->id;
-                    }
+                    $already_converted_ids[] = $latest_medication->medication_id;
                 }
             }
         }
@@ -346,16 +346,24 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
      * filters out Medication History elements that are linked when showing in the view mode for Examination
      *
      * @param $entries
+     * @param bool $edit_mode
      * @return array
      */
-    private function filterHistoryMedicationsForExaminationView($entries) : array
+    public function filterHistoryAndManagementMedications($entries, bool $edit_mode = false) : array
     {
-        $medication_management_entries = array_filter($entries, function ($entry) {
+        $medication_management_entries = array_filter($entries, function ($entry)  use ($edit_mode) {
+            if ($edit_mode) {
+                return $entry->usage_subtype === 'Management' && !$entry->prescribe;
+            }
             return $entry->usage_subtype === 'Management';
         });
 
         $history_medication_entries = array_filter($entries, function ($entry) {
             return $entry->usage_subtype === 'History';
+        });
+
+        $prescription_entries = array_filter($entries, function ($entry) {
+            return $entry->usage_type === 'OphDrPrescription' && !$entry->prescribe && is_null($entry->latest_med_use_id);
         });
 
         $medication_management_entry_medication_ids = array_map(function ($medication_management_entry) {
@@ -366,21 +374,35 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
             return !in_array($entry->medication_id, $medication_management_entry_medication_ids);
         });
 
-        return array_merge($history_medication_entries, $medication_management_entries);
+        $new_entries =  array_merge($history_medication_entries, $medication_management_entries);
+        $new_entries = array_merge($new_entries, $prescription_entries);
+
+        return $new_entries;
     }
 
     /**
-     * creates a new converted History entry from the  entry in the parameter
+     * creates a new converted History entry from the entry in the parameter
      * @param $entry
+     * @param bool $merging_medications
+     * @param null $widget
      * @return EventMedicationUse
+     * @throws \Exception
      */
-    public function createConvertedHistoryEntry($entry) : EventMedicationUse
+    public function createConvertedHistoryEntry($entry, $merging_medications = false, $widget = null) : EventMedicationUse
     {
         $new = new EventMedicationUse();
         $prescription_item = null;
         $new->loadFromExisting($entry);
         $new->usage_type = EventMedicationUse::getUsageType();
         $new->usage_subtype = EventMedicationUse::getUsageSubtype();
+        if ($merging_medications) {
+            if (!$widget) {
+                $widget = $this->widget;
+            }
+            if ($widget->inSummaryOrViewMode()) {
+                $new->id = $entry->id;
+            }
+        }
         if (!$entry->prescription_item_id) {
             $existing_event_date = null;
             if ($entry->copied_from_med_use_id) {
@@ -399,7 +421,8 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
         if ($entry->prescription_item_id) {
             $prescription_item =  $entry->prescriptionItem;
         } elseif ($entry->isPrescription()) {
-            $prescription_item = $entry;
+            $prescription_item = new \OphDrPrescription_Item();
+            $prescription_item->loadFromExisting($entry);
         }
         $prescription_end_date = $prescription_item ? $prescription_item->stopDateFromDuration() : null;
         if (!isset($new->end_date) && $prescription_end_date) {
@@ -429,10 +452,10 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
         }, $previous_entries));
 
         foreach ($this->entries as $key => $entry) {
-            if ($this->check_for_duplicate_entries) {
+            if ($this->check_for_duplicate_entries && !$entry->isStopped()) {
                 if (in_array($entry->medication_id, $previous_medication_ids) && !$this->isPreviousEntry($entry)) {
                     $same_drug_entries = array_filter($this->entries, function ($current_entry) use ($entry) {
-                        return $entry->isDuplicate($current_entry) && $entry !== $current_entry;
+                        return $entry->isDuplicate($current_entry) && $entry !== $current_entry && !$current_entry->isStopped();
                     });
 
                     foreach ($same_drug_entries as $index => $same_drug_entry) {

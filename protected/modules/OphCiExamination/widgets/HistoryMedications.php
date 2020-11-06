@@ -98,14 +98,16 @@ class HistoryMedications extends BaseMedicationWidget
         $entries = [];
         $element = $this->element->getModuleApi()->getLatestElement(MedicationManagementElement::class, $this->patient);
         if (!is_null($element)) {
-            /** @var MedicationManagementElement $element*/
+            /** @var MedicationManagementElement $element */
             foreach ($element->entries as $entry) {
                 if (!$entry->prescribe) {
-                                /** @var EventMedicationUse $new_entry */
-                                $new_entry = clone $entry;
-                                $new_entry->id = null;
-                                $new_entry->setIsNewRecord(true);
-                                $entries[] = $new_entry;
+                    /** @var EventMedicationUse $new_entry */
+                    $new_entry = clone $entry;
+                    if (!$this->inSummaryOrViewMode()) {
+                        $new_entry->id = null;
+                    }
+                    $new_entry->setIsNewRecord(true);
+                    $entries[] = $new_entry;
                 }
             }
         }

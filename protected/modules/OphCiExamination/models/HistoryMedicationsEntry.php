@@ -109,8 +109,7 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     protected function updateStateProperties()
     {
-        if ($this->end_date !== null
-            && $this->end_date <= date('Y-m-d', strtotime($this->element->event->event_date))) {
+        if ($this->isStopped()) {
             $this->originallyStopped = true;
         }
         if ($this->prescription_item_id) {
@@ -245,7 +244,7 @@ class HistoryMedicationsEntry extends \BaseElement
             }
         }
     }
-    
+
     public function beforeValidate()
     {
         if (strpos($this->drug_id, '@@M') !== false) {
@@ -301,7 +300,7 @@ class HistoryMedicationsEntry extends \BaseElement
 
     public function isStopped()
     {
-        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
+        return isset($this->end_date) ? (strtotime($this->end_date) < strtotime(date("Y-m-d"))) : false;
     }
 
     /**
@@ -311,7 +310,7 @@ class HistoryMedicationsEntry extends \BaseElement
     public function getAdministrationDisplay(bool $include_route = true)
     {
         $parts = array('dose', 'units');
-        
+
         if ($include_route) {
             array_push($parts, 'route', 'option');
         }

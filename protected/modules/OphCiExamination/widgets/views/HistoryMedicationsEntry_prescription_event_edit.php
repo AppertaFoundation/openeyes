@@ -19,6 +19,13 @@
 
 <?php
 
+if (!$entry->end_date && $entry->prescriptionItem && $entry->prescriptionItem->duration_id) {
+    $end_date = $entry->prescriptionItem->stopDateFromDuration();
+    if ($end_date) {
+        $entry->end_date = $end_date->format('Y-m-d');
+    }
+}
+
 if (isset($entry->start_date) && strtotime($entry->start_date)) {
     list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $entry->start_date);
 } else {
@@ -32,8 +39,11 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     $end_sel_day = $end_sel_month = null;
     $end_sel_year = date('Y');
 }
-
-$to_be_copied = !($entry->originallyStopped || $stopped) && $entry->medication->getToBeCopiedIntoMedicationManagement();
+if ($entry->id && $entry->id !== '' && $entry->latest_med_use_id) {
+    $previous_stop_reason_details = $entry->getPreviousStopReason($entry->latest_med_use_id);
+}
+$entry_is_stopped = $entry->originallyStopped || $stopped;
+$to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedicationManagement();
 ?>
 
 <tr data-key="<?=$row_count?>"
@@ -53,7 +63,8 @@ $to_be_copied = !($entry->originallyStopped || $stopped) && $entry->medication->
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int) $entry->is_copied_from_previous_event; ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?=$entry->usage_type ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
-                <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= $entry->bound_key ?>">
+        <input type="hidden" name="previous_stop_reason_details" value="<?= $previous_stop_reason_details ?? '' ?>">
+        <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= $entry->bound_key ?>">
             <span class="js-prepended_markup">
                             <?= $entry->getMedicationDisplay() ?>
             <?php if (!is_null($entry->medication_id)) {
@@ -147,7 +158,9 @@ $to_be_copied = !($entry->originallyStopped || $stopped) && $entry->medication->
         </div>
                 </span>
 
-
+            <?php if ($entry->end_date) {
+                $entry->setStopReasonTo('Course complete');
+            } ?>
             <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5 "
                         style="<?=  is_null($entry->end_date) ? "display:none" : "" ?>">
             <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'js-stop-reason')) ?>

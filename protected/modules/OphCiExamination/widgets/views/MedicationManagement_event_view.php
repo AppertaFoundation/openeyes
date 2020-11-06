@@ -27,8 +27,8 @@ $form_format = SettingMetadata::model()->getSetting('prescription_form_format');
     <?php $sections = array(
         'New' => ["getEntriesStartedToday", "getEntriesStartingInFuture"],
         'Continued' => ["getContinuedEntries"],
-        'Discontinued' => ["getStoppedEntries"],
-        'Changed' => ["getChangedEntries"]
+        'Changed' => ["getChangedEntries"],
+        'Discontinued' => ["getStoppedEntries"]
     );
 
    $header_rendered = false; // we only render the header in the first section

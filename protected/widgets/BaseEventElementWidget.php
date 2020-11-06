@@ -108,6 +108,12 @@ class BaseEventElementWidget extends CWidget
         );
     }
 
+
+    public function inSummaryOrViewMode()
+    {
+        return  ($this->mode === static::$PATIENT_LANDING_PAGE_MODE) || $this->inViewMode();
+    }
+
     /**
      * @return bool
      */

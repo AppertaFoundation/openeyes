@@ -199,6 +199,30 @@ abstract class BaseMedicationWidget extends BaseEventElementWidget
     }
 
     /**
+     * Sorts entries by date
+     *
+     * @param array $entries
+     * @param bool $current
+     * @return array
+     */
+    protected function sortEntriesByDate($entries, bool $current = true) : array
+    {
+        if ($current) {
+            usort($entries, function ($a, $b) {
+                $a = $a->getEarliestEntry();
+                $b = $b->getEarliestEntry();
+                return strtotime($a->start_date) < strtotime($b->start_date)? 1 : -1;
+            });
+        } else {
+            usort($entries, function ($a, $b) {
+                return strtotime($a->end_date) < strtotime($b->end_date) ? 1 : -1;
+            });
+        }
+
+        return $entries;
+    }
+
+    /**
      * @param $entry
      * @return string
      */

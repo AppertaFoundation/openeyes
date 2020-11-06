@@ -34,7 +34,21 @@ $eye_filter = function ($e) {
     return !is_null($e->route_id) && $e->route->has_laterality;
 };
 
+$stopped_filter = function ($e) {
+    /** @var EventMedicationUse $e */
+    return !$e->isChangedMedication();
+};
+
+$current_filter = function ($e) {
+    /** @var EventMedicationUse $e */
+    return !$e->isStopped();
+};
+
 $current = $element->mergeMedicationEntries($current);
+$current = array_filter($current, $current_filter);
+$current = $this->sortEntriesByDate($current);
+$stopped = array_filter($stopped, $stopped_filter);
+$stopped = $this->sortEntriesByDate($stopped, false);
 $current_systemic_meds = array_filter($current, $systemic_filter);
 $stopped_systemic_meds = array_filter($stopped, $systemic_filter);
 $current_eye_meds = array_filter($current, $eye_filter);

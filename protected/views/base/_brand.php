@@ -28,7 +28,7 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
 </div>
 
 <div class="oe-product-info" id="js-openeyes-info" style="display: none;">
-  <h3>OpenEyes <?= Yii::App()->params['oe_version'] ?></h3>
+  <h3>OpenEyes</h3>
 
   <div class="group">
     <h4>Theme</h4>
@@ -66,6 +66,7 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
     </p>
   </div>
   <div class="group">
+    <h4>Version: <?= Yii::App()->params['oe_version'] ?></h4>
     <h4>&copy; OpenEyes <?= date('Y') ?></h4>
     <p>
       <a href="<?= Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">

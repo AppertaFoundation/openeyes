@@ -47,7 +47,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 $entry_allergy_ids = isset($entry->medication_id) ?
     implode(",", array_map(function ($e) {
         return $e->id;
-    }, $entry->medication->allergies)) : $allergy_ids;
+    }, $entry->medication->allergies)) : $allergy_ids ?? '';
 ?>
 
 <tr data-key="<?= $row_count ?>" data-event-medication-use-id="<?php echo $entry->id; ?>" data-allergy-ids="<?php echo $entry_allergy_ids ?>" class="divider col-gap js-first-row <?= $field_prefix ?>_row <?= $is_new ? ' new' : '' ?><?= $entry->hidden === '1' ? ' hidden' : '' ?>">
@@ -230,7 +230,11 @@ $entry_allergy_ids = isset($entry->medication_id) ?
             </label>
         </div>
     </td>
-    <td>
+    <td class="nowrap">
+        <button class="js-reset-mm" style="display: none">
+            <i class="oe-i reset small"></i> &nbsp;Reset
+        </button>
+        &nbsp;
         <!-- Actions -->
         <?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
             "If you wish to delete it, it must be deleted from the Medication History element. " .
@@ -258,7 +262,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 </div>
                 <fieldset class="js-datepicker-wrapper js-end-date-wrapper" <?= ($entry->hasErrors() && !$is_new) && ($entry->end_date || $entry->stop_reason_id) ? '' : ' style="display:none;"' ?>>
                     <i class="oe-i stop small pad"></i>
-                    <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?= date('Y-m-d') ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
+                    <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?= date('Y-m-d') ?>" data-reset-value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
                 </fieldset>
             </div>
         </span>

@@ -87,35 +87,14 @@ protected/modules/*
 !/protected/modules/PASAPI/
 !/protected/modules/PatientTicketing/
 
-
 # Tests
-/bin/.enabled-modules
 /jm_behat_report.html
 
 # Temporary, until we've sorted out vagrant for installing test dependencies
-bin/OLD selenium-server-standalone-2.33.0.jar
-bin/OLDER selenium-server-standalone-2.34.0.jar
-bin/behat
-bin/chromedriver
-bin/ciUnitTest.sh
-bin/dbunit.php
-bin/oe-git-checkout
-bin/oe-git-pull
-bin/oe-git-status
+/bin
 composer.phar
 features/bootstrap/Features/Templates/CODINGONLY.feature
 selenium-server-standalone-2.35.0.jar
-bin/jsonlint
-bin/pdepend
-bin/phpcbf
-bin/phpcpd
-bin/phpcs
-bin/phpdoc
-bin/phpdoc.php
-bin/phploc
-bin/phpmd
-bin/validate-json
-bin/yiic
 
 build/logs
 protected/widgets/views/IndexSearch_Examination.php

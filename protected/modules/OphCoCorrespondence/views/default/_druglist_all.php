@@ -18,6 +18,7 @@
 
 $lists = array(
     'started' => 'New drugs started today',
+    'changed' => 'Drugs changed today',
     'stopped' => 'Drugs stopped today',
     'continued' => 'Existing drugs to continue'
 );

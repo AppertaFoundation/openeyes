@@ -123,12 +123,13 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getContinuedEntries()
     {
-        $event_date = substr($this->event->event_date, 0, 10);
         $changed_entries_ids = $this->getChangedEntriesIds();
 
-        return array_filter($this->visible_entries, function ($e) use ($event_date, $changed_entries_ids) {
-            return ($e->start_date < $event_date &&
-                (is_null($e->end_date) || $e->end_date > date('Y-m-d')) && !in_array($e->id, $changed_entries_ids)
+        return array_filter($this->visible_entries, function ($e) use ($changed_entries_ids) {
+            $continued_medication = $e->getContinuedMedication();
+            return ($continued_medication
+                && (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+                && !in_array($e->id, $changed_entries_ids)
             );
         });
     }
@@ -143,17 +144,23 @@ class MedicationManagement extends BaseMedicationElement
         $changed_entries_ids = $this->getChangedEntriesIds();
 
         return array_filter($this->visible_entries, function ($e) use ($event_date, $changed_entries_ids) {
-            return ($e->start_date == $event_date && (is_null($e->end_date) || $e->end_date > date('Y-m-d')) && !in_array($e->id, $changed_entries_ids));
+            $continued_medication = $e->getContinuedMedication();
+            return (($e->start_date == $event_date || $e->isUndated()) && is_null($continued_medication)
+                && (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+                && !in_array($e->id, $changed_entries_ids));
         });
     }
 
     public function getEntriesStartingInFuture()
     {
         $event_date = substr($this->event->event_date, 0, 10);
+        $changed_entries_ids = $this->getChangedEntriesIds();
 
-        return array_filter($this->visible_entries, function ($e) use ($event_date) {
-            return ($e->start_date > $event_date &&
-                (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+        return array_filter($this->visible_entries, function ($e) use ($event_date, $changed_entries_ids) {
+            $continued_medication = $e->getContinuedMedication();
+            return ($e->start_date > $event_date && is_null($continued_medication)
+                && (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+                && !in_array($e->id, $changed_entries_ids)
             );
         });
     }
@@ -164,9 +171,11 @@ class MedicationManagement extends BaseMedicationElement
      */
     public function getStoppedEntries() : array
     {
-        $changed_entries_ids = $this->getChangedEntriesIds();
-        return array_filter($this->visible_entries, function ($e) use ($changed_entries_ids) {
-            return !is_null($e->end_date) && $e->end_date <= date('Y-m-d') && !in_array($e->id, $changed_entries_ids);
+        return array_filter($this->visible_entries, function ($e) {
+            $continued_medication = $e->getContinuedMedication();
+            return !is_null($e->end_date)
+                && ($e->end_date <= date('Y-m-d')
+                    || $continued_medication && !$e->prescribe && $continued_medication->end_date !== $e->end_date);
         });
     }
 
@@ -176,29 +185,30 @@ class MedicationManagement extends BaseMedicationElement
      */
     public function getChangedEntries() : array
     {
-        return array_filter($this->visible_entries, function ($e) {
+        $stopped_entry_ids = $this->getStoppedEntryIds();
+        return array_filter($this->visible_entries, function ($e) use ($stopped_entry_ids) {
             $past_entries = [];
-            $past_prescription_entries =  $e->prescription_item_id ? EventMedicationUse::model()->findAll('latest_med_use_id=?', [$e->prescription_item_id]) : [];
+            $id = $e->hasLinkedPrescribedEntry() ? $e->prescription_item_id : $e->id;
+            $past_prescription_entries =  EventMedicationUse::model()->findAll('latest_med_use_id=?', [$id]);
 
             foreach ($past_prescription_entries as $entry) {
-                if (!$e->isDuplicate($entry)) {
+                if ($entry->isChangedMedication()) {
                     array_push($past_entries, $entry);
                 }
             }
             $criteria = new CDbCriteria();
             $criteria->with = ['event.episode'];
             $criteria->addCondition('episode.patient_id = :patient_id');
-            $criteria->addCondition('usage_subtype = "History"');
             $criteria->addCondition('medication_id = :medication_id');
             $criteria->addCondition('stop_reason_id = :stop_reason_id');
             $criteria->addCondition('latest_med_use_id = :latest_med_use_id');
             $criteria->params[':patient_id'] = $e->event->episode->patient->id;
             $criteria->params['medication_id'] = $e->medication_id;
-            $criteria->params['stop_reason_id'] = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Medication parameters changed'])->id;
-            $criteria->params['latest_med_use_id'] = $e->prescription_item_id;
+            $criteria->params['stop_reason_id'] = HistoryMedicationsStopReason::getMedicationParametersChangedId();
+            $criteria->params['latest_med_use_id'] = $e->prescription_item_id ?? $e->id;
             $past_medication_history_entries_count = EventMedicationUse::model()->count($criteria);
 
-            return !empty($past_entries) || $past_medication_history_entries_count !== "0";
+            return !empty($past_entries) || $past_medication_history_entries_count !== "0" && !in_array($e->id, $stopped_entry_ids) ;
         });
     }
 
@@ -212,6 +222,21 @@ class MedicationManagement extends BaseMedicationElement
         $ids = [];
         foreach ($changed_entries as $changed_entry) {
             $ids[] = $changed_entry->id;
+        }
+
+        return $ids;
+    }
+
+    /**
+     * gets changed entry ids
+     * @return array
+     */
+    private function getStoppedEntryIds() : array
+    {
+        $stopped_entries = $this->getStoppedEntries();
+        $ids = [];
+        foreach ($stopped_entries as $stopped_entry) {
+            $ids[] = $stopped_entry->id;
         }
 
         return $ids;

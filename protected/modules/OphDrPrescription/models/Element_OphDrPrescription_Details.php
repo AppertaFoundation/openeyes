@@ -140,7 +140,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             $tapers = $item->tapers;
             $stop_date = $item->stopDateFromDuration(false);
             $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$item->medicationDuration->name;
-                    
+
 
             $return .= "<tr>
                     <td>" . $item->getDescription() . "</td>
@@ -270,7 +270,12 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         foreach ($this->items as $key => $item) {
             if ($item->parent) {
-                return false;
+                $parent = $item->parent[0];
+                if (!$parent->prescriptionNotCurrent() && $parent->usage_subtype === 'Management') {
+                    if ($parent->prescribe) {
+                        return false;
+                    }
+                }
             }
         }
         return true;
