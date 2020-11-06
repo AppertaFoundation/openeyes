@@ -24,6 +24,7 @@ use OEModule\OphCiExamination\models;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
 use services\DateTime;
+use OEModule\PatientTicketing\models\QueueOutcome;
 use Yii;
 
 /*
@@ -1595,7 +1596,7 @@ class DefaultController extends \BaseEventTypeController
             if (!$queue) {
                 $err['patientticket_queue'] = 'Virtual Clinic not found';
             } else {
-                if ($api->canAddPatientToQueue($this->patient, $queue)) {
+                if (QueueOutcome::model()->exists('queue_id=:queue_id', [':queue_id'=>$queue->id]) && $api->canAddPatientToQueue($this->patient, $queue)) {
                     list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
                     $err = array_merge($err, $fld_errs);
                 }
