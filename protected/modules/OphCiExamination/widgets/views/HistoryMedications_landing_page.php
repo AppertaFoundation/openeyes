@@ -35,10 +35,23 @@ $systemic_filter = function ($entry) use ($eye_filter) {
     return !$eye_filter($entry);
 };
 
+$stopped_filter = function ($e) {
+    /** @var EventMedicationUse $e */
+    return !$e->isChangedMedication();
+};
+
+$current_filter = function ($e) {
+    /** @var EventMedicationUse $e */
+    return !$e->isStopped();
+};
+
 $current = $element->mergeMedicationEntries($current);
+$current = array_filter($current, $current_filter);
+$current = $this->sortEntriesByDate($current);
+$stopped = array_filter($stopped, $stopped_filter);
+$stopped = $this->sortEntriesByDate($stopped, false);
 $current_eye_meds = array_filter($current, $eye_filter);
 $stopped_eye_meds = array_filter($stopped, $eye_filter);
-
 ?>
 
 <?php if (!$current_eye_meds && !$stopped_eye_meds) { ?>

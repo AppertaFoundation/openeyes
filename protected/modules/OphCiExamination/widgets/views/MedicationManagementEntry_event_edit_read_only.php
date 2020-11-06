@@ -93,6 +93,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]"
                    value="<?= $entry->prescription_item_id ?>" class="js-prescription-item-id"/>
             <input type="hidden" name="<?= $field_prefix ?>[locked]" value="<?= $locked ?>" class="js-locked" />
+            <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= $entry->bound_key ?>">
         </td>
         <td class="dose-frequency-route">
             <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">

@@ -243,6 +243,10 @@ class HistoryMedications extends BaseMedicationElement
                     $entry = new EventMedicationUse();
                     $entry->loadFromPrescriptionItem($item);
                     $entry->usage_type = 'OphDrPrescription';
+                    $entry->latest_med_use_id = $item->latest_med_use_id;
+                    if ($this->widget && $this->widget->inSummaryOrViewMode()) {
+                        $entry->id = $item->id;
+                    }
                     $untracked[] = $entry;
                 }
             }

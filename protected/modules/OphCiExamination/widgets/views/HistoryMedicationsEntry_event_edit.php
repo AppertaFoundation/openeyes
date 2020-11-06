@@ -21,6 +21,9 @@ if (isset($entry->start_date)) {
 } else {
     $start_date = date('Y-m-d');
 }
+if ($entry->id && $entry->id !== '' && $entry->latest_med_use_id) {
+    $previous_stop_reason_details = $entry->getPreviousStopReason($entry->latest_med_use_id);
+}
 
 if (isset($entry->end_date)) {
     list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
@@ -33,8 +36,9 @@ if (isset($entry->end_date)) {
 $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_type == "prescribed");
 $chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
-
-$to_be_copied = !($entry->originallyStopped || $stopped) && isset($entry->medication) && $entry->medication->getToBeCopiedIntoMedicationManagement();
+$entry_is_stopped = $entry->originallyStopped || $stopped;
+$to_be_copied = !$entry_is_stopped && isset($entry->medication) && $entry->medication->getToBeCopiedIntoMedicationManagement();
+$disabled = $removable && $entry->is_copied_from_previous_event && !$stopped;
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
@@ -85,6 +89,7 @@ $stop_fields_validation_error = array_intersect(
         <?php } ?>
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" class="js-prescription-item-id" value="<?= $entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
+        <input type="hidden" name="previous_stop_reason_details" value="<?= $previous_stop_reason_details ?? '' ?>">
         <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= !isset($entry->bound_key) && isset($is_template) && $is_template ? "{{bound_key}}" : $entry->bound_key ?>">
     </td>
     <?php if (!empty($entry->errors) || !isset($entry->dose)) {
@@ -104,7 +109,7 @@ $stop_fields_validation_error = array_intersect(
                             echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </div>
                         <span class="tabspace"></span>
-                        <button type='button' onclick="switch_alternative(this);">Change Dose/Freq ...</button>
+                        <button type='button' onclick="switch_alternative(this);" <?= $disabled ? 'disabled="disabled"' : ''?>>Change Dose/Freq ...</button>
                     </div>
                     <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
@@ -157,12 +162,13 @@ $stop_fields_validation_error = array_intersect(
     <td></td>
     <td class="edit-column">
         <?php
-        if ($removable) {
-            $previous_event_created_same_day = isset($entry->previous_event_date) && ($entry->previous_event_date === date('Y-m-d'));
-            if (!$entry->is_copied_from_previous_event || ($entry->is_copied_from_previous_event && $previous_event_created_same_day)) {
+        if ($entry->latest_prescribed_med_use_id) {
+            echo '<i class="oe-i info small pad js-has-tooltip" data-tooltip-content= "This item was previously prescribed through OpenEyes and cannot be changed. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i>"></i>';
+        } else if ($removable) {
+            if (!$entry->is_copied_from_previous_event) {
                 echo '<i class="oe-i trash js-remove"></i>';
             } elseif (!$stopped) {
-                echo '<i class="oe-i no-permissions js-has-tooltip" data-tooltip-content="This drug cannot be deleted as it was added in a previous event. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i>';
+                echo '<i class="oe-i no-permissions js-has-tooltip" data-tooltip-content="This item cannot be deleted as it was added in a previous event. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i>';
             }
         } ?>
 </tr>
@@ -187,7 +193,7 @@ $end_date_display = str_replace('0000', '', $end_date_display);
                     <?php } ?>
                     <fieldset style="display: <?= $is_new || !empty($entry->errors) ? 'block' : 'none' ?> " class="js-datepicker-wrapper js-start-date-wrapper">
                         <i class="oe-i start small pad-right"></i>
-                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date" name="<?= $field_prefix ?>[start_date]" value="<?= $start_date_display ?>" style="width:80px;" placeholder="yyyy-mm-dd" class="js-start-date" autocomplete="off">
+                        <input <?= $disabled && !$entry->isUndated() ? 'disabled="disabled"' : ''?> id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date" name="<?= $field_prefix ?>[start_date]" value="<?= $start_date_display ?>" style="width:80px;" placeholder="yyyy-mm-dd" class="js-start-date" autocomplete="off">
                     </fieldset>
                 </div>
             </span>

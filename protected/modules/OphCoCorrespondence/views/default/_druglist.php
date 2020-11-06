@@ -38,7 +38,7 @@
             $comments = $entry->comments ?: null;
             $stop_date = $entry->end_date;
             $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($stop_date): 'Ongoing';
-        if ($entry->prescription_item_id) {
+        if ($entry->hasLinkedPrescribedEntry()) {
             $tapers = $entry->prescriptionItem->tapers;
             $stop_date = $entry->prescriptionItem->stopDateFromDuration(false);
             $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) : $entry->medicationDuration->name;

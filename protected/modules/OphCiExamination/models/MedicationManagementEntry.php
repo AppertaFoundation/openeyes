@@ -173,7 +173,7 @@ class MedicationManagementEntry extends \EventMedicationUse
 
     protected function beforeSave()
     {
-        if ($this->prescription_item_id) {
+        if ($this->hasLinkedPrescribedEntry()) {
             $end_date = $this->prescriptionItem->stopDateFromDuration();
             $this->end_date = $end_date ? $end_date->format('Y-m-d') : null;
         }

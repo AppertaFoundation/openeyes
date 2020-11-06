@@ -2663,7 +2663,8 @@ class OphCiExamination_API extends \BaseAPI
     public function getLatestOutcomeDetails(\Patient $patient, $use_context = false)
     {
         $str = '';
-        $element = $this->getLatestElement('models\Element_OphCiExamination_ClinicOutcome',
+        $element = $this->getLatestElement(
+            'models\Element_OphCiExamination_ClinicOutcome',
             $patient,
             $use_context
         );
@@ -3512,6 +3513,32 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * Handler routine for DCC shortcode
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     * @throws \CException
+     */
+    public function getLetterDrugsChangedToday(Patient $patient, bool $use_context = false)
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
+        if (!is_null($element)) {
+            /** @var models\MedicationManagement $element */
+            $entries = $element->getChangedEntries();
+            if ($entries) {
+                $viewparams = array(
+                    'entries' => $entries,
+                    'table_class' => 'drugs-continued-today'
+                );
+
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+            }
+        }
+
+        return "(no drugs changed today)";
+    }
+
+    /**
      * Handler routine for MMS shortcode
      * @param $patient
      * @param bool $use_context
@@ -3525,6 +3552,7 @@ class OphCiExamination_API extends \BaseAPI
             /** @var models\MedicationManagement $element */
             $viewparams = array(
                 'started' => $element->getEntriesStartedToday(),
+                'changed' => $element->getChangedEntries(),
                 'stopped' => $element->getEntriesStoppedToday(),
                 'continued' => $element->getContinuedEntries(),
                 'table_class' => 'medication-management-summary'
@@ -3635,6 +3663,12 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getCurrentOphthalmicDrugs(\Patient $patient, $use_context = false)
     {
+        $element = $this->getElementFromLatestVisibleEvent(
+            'models\HistoryMedications',
+            $patient,
+            $use_context
+        );
+
         $widget = $this->getWidget(
             'OEModule\OphCiExamination\widgets\HistoryMedications',
             array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient)
@@ -3648,6 +3682,7 @@ class OphCiExamination_API extends \BaseAPI
         };
 
         $current_eye_meds = array_filter($entries['current'], $route_filter);
+        $current_eye_meds = $element->mergeMedicationEntries($current_eye_meds, $widget);
 
         if (!$current_eye_meds) {
             return "
@@ -3729,6 +3764,12 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getCurrentSystemicDrugs(\Patient $patient, $use_context = false)
     {
+        $element = $this->getElementFromLatestVisibleEvent(
+            'models\HistoryMedications',
+            $patient,
+            $use_context
+        );
+
         $widget = $this->getWidget(
             'OEModule\OphCiExamination\widgets\HistoryMedications',
             array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient)
@@ -3742,6 +3783,7 @@ class OphCiExamination_API extends \BaseAPI
             return  !$entry->route_id || !$entry->route->isEyeRoute();
         };
         $current_systemic_meds = array_filter($entries['current'], $route_filter);
+        $current_systemic_meds = $element->mergeMedicationEntries($current_systemic_meds, $widget);
 
         if (!$current_systemic_meds) {
             return "

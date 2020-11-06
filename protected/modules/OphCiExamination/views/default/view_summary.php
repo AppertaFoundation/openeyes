@@ -34,13 +34,16 @@ $current_filter = function ($e) {
 
 $stopped_filter = function ($e) {
     /** @var EventMedicationUse $e */
-    return $e->isStopped();
+    return $e->isStopped() && !$e->isChangedMedication() && is_null($e->latest_med_use_id);
 };
 
 $medication_entries = EventMedicationUse::model()->findAll('event_id=?', [$this->event->id]);
 $current_medication_entries = array_filter($medication_entries, $current_filter);
-$current_medication_entries = $medicationsElement->mergeMedicationEntries($current_medication_entries, true);
+$current_medication_entries = $medicationsElement->filterHistoryAndManagementMedications($current_medication_entries);
+$current_medication_entries = $medicationsElement->widget->sortEntriesByDate($current_medication_entries);
+
 $stopped_medication_entries = array_filter($medication_entries, $stopped_filter);
+$stopped_medication_entries = $medicationsElement->widget->sortEntriesByDate($stopped_medication_entries, false);
 if ($historyElement) {
     $this->renderElement($historyElement, $action, $form, $data);
 }
@@ -89,6 +92,12 @@ if ($historyElement) {
                                     <tr>
                                         <td>
                                             <?= $entry->getMedicationDisplay(true) ?>
+                                            <?php $change_history = $entry->getChangeHistory();
+                                            if (!empty($change_history)) {
+                                                $tooltip_content = $entry->getChangeHistoryTooltipContent($change_history);
+                                                ?>
+                                                <i class="oe-i change small js-has-tooltip pad-right" data-tooltip-content="<?= $tooltip_content ?>"></i>
+                                            <?php } ?>
                                         </td>
                                         <td>
                                             <?php
@@ -110,7 +119,7 @@ if ($historyElement) {
                                             ?>
                                         </td>
                                         <td>
-                                            <?php $earliest_entry = $entry->getEarliestEntry($entry); ?>
+                                            <?php $earliest_entry = $entry->getEarliestEntry(); ?>
                                             <?= $earliest_entry->getStartDateDisplay() ?>
                                         </td>
                                     </tr>
@@ -246,6 +255,12 @@ if ($historyElement) {
                                             echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
                                         } ?>
                                         <?= $entry->getMedicationDisplay(true) ?>
+                                        <?php $change_history = $entry->getChangeHistory();
+                                        if (!empty($change_history)) {
+                                            $tooltip_content = $entry->getChangeHistoryTooltipContent($change_history);
+                                            ?>
+                                            <i class="oe-i change small js-has-tooltip pad-right" data-tooltip-content="<?= $tooltip_content ?>"></i>
+                                        <?php } ?>
                                     </td>
                                     <td>
                                         <?php
@@ -266,7 +281,7 @@ if ($historyElement) {
                                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                         ?>
                                     </td>
-                                    <td><?php $earliest_entry = $entry->getEarliestEntry($entry); ?>
+                                    <td><?php $earliest_entry = $entry->getEarliestEntry(); ?>
                                         <?= $earliest_entry->getStartDateDisplay() ?>
                                     </td>
                                 </tr>
@@ -285,7 +300,7 @@ if ($historyElement) {
                     <?php if ($stopped_systemic_medications) { ?>
             <div class="collapse-data">
                 <div class="collapse-data-header-icon expand" data-blujay="0">
-                    Previously Stopped
+                    Stopped
                     <small>(<?= sizeof($stopped_systemic_medications) ?>)</small>
                 </div>
                 <div class="collapse-data-content">

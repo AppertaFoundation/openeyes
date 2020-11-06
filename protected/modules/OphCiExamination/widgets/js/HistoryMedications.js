@@ -113,6 +113,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         routeOptionInputSelector: '.laterality-input',
         patientAllergies: [],
         eyeRouteIds: [],
+        first_row_controls_ids: ['dose', 'dose_unit_term', 'frequency_id', 'route_id', 'laterality'],
+        second_row_control_ids: ['start_date', 'end_date', 'stop_reason_id'],
         medicationsOptionsTable: '.select-options',
           allAllergies: {},
           classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
@@ -172,12 +174,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     controller.$table.on('click', controller.options.removeButtonSelector, function(e) {
         e.preventDefault();
         let $row = $(e.target).closest("tr");
+        let $bound_entry = $row.data("bound_entry");
         let $closest_table = $(e.target).closest('table');
 
         let key = $row.attr("data-key");
         let $tapers = controller.$table.find("tr[data-parent-key="+key+"]");
         $tapers.remove();
-        controller.removeBoundEntry($row);
+        if (typeof $bound_entry !== 'undefined') {
+            controller.removeBoundEntry($bound_entry);
+        }
         controller.$table.find('tr[data-key=' + key + ']').remove();
         controller.displayTableHeader();
         controller.showNoMedications();
@@ -248,6 +253,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     controller.$element.on('click', '.show-stopped', function(e) {
         e.preventDefault();
         controller.showStopped();
+    });
+
+    controller.$element.on('click', '.js-reset-mm', function (e) {
+        e.preventDefault();
+        let $row = $(this).parents('tr.js-first-row');
+        let $broken_bound_entry = controller.getBrokenBoundEntry($row);
+        if ($broken_bound_entry !== null) {
+            controller.enableMedicationHistoryRow($broken_bound_entry);
+            controller.resetStopReason($broken_bound_entry);
+            controller.toggleStopControls($broken_bound_entry, false);
+            controller.resetData($broken_bound_entry, $row);
+            controller.bindEntries($broken_bound_entry, $row);
+            controller.disableRemoveButton($row);
+        }
+        $(this).hide();
     });
 
     controller.$element.on('click', '.hide-stopped', function(e) {
@@ -417,12 +437,28 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           }
 
           if (controller.options['modelName'] === "OEModule_OphCiExamination_models_HistoryMedications") {
-              controller.updateBoundEntry($full_row);
-              controller.updateTextualDisplay($full_row);
-              if (typeof $bound_entry !== 'undefined') {
-                  controller.updateTextualDisplay($full_bound_entry);
-                  if ($(e.target).hasClass('js-route')) {
-                      controller.updateRowRouteOptions($full_bound_entry);
+              let row_removed = false;
+              if ($(e.target).hasClass('js-end-date')) {
+                  let end_date = $(e.target).val();
+                  if (end_date !== '') {
+                      let default_end_date = new Date($(e.target).data('default'));
+                      end_date = new Date(end_date);
+                      if (end_date.getTime() < default_end_date.getTime()) {
+                          $row.removeData('bound_entry');
+                          $bound_entry.parent().find('tr.js-second-row[data-key='+ $bound_entry.data('key') +']').remove();
+                          $bound_entry.remove();
+                          row_removed = true;
+                      }
+                  }
+              }
+              if (!row_removed) {
+                  controller.updateBoundEntry($full_row);
+                  controller.updateTextualDisplay($full_row);
+                  if (typeof $bound_entry !== 'undefined') {
+                      controller.updateTextualDisplay($full_bound_entry);
+                      if ($(e.target).hasClass('js-route')) {
+                          controller.updateRowRouteOptions($full_bound_entry);
+                      }
                   }
               }
           } else {
@@ -446,10 +482,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
                   if (row_needs_bond_removed) {
                       $bound_entry.removeData('bound_entry');
-                      controller.setBoundEntryStop($bound_entry);
+                      controller.toggleStopControls($bound_entry);
                       $row.find('.js-bound-key').val(controller.getRandomBoundKey());
                       $row.removeData('bound_entry');
-                      controller.enableManualRowDeletion($row);
+                      controller.setBoundEntryStop($bound_entry);
+                      controller.disableMedicationHistoryRow($bound_entry);
+                      $row.find('.js-reset-mm').show();
                   }
               }
           }
@@ -543,13 +581,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let $datepicker_wrapper = $row.find(".js-end-date-wrapper");
 			  let $stop_reason_select = $row.find(".js-stop-reason-select");
 			  let $stop_reason_text = $row.find(".js-stop-reason-text");
-			  let $datepicker_control = $datepicker_wrapper.find("input");
         $row.find(".js-meds-stop-btn").hide();
-			  let default_date = $datepicker_control.attr("data-default");
-        const currently_set_date = $datepicker_control.val();
-        if(typeof default_date !== "undefined" && default_date !== false && !currently_set_date) {
-            $datepicker_control.val(default_date);
-        }
+        this.setDefaultStopDate($datepicker_wrapper);
         $datepicker_wrapper.show();
         $stop_reason_select.show();
 				$stop_reason_text.hide();
@@ -559,6 +592,36 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
             this.boundController.showStopControls($bound_entry.parent().find('tr[data-key=' + $bound_entry.data('key') + '].js-second-row'));
         }
+    };
+
+    HistoryMedicationsController.prototype.toggleStopControls = function($row, hide = true)
+    {
+        let $second_row = $row.parent().find('tr[data-key=' + $row.data('key') + '].js-second-row');
+        if (hide) {
+            $second_row.find('.end-date-column').addClass('hidden');
+            $second_row.find('.js-stop-reason-select').addClass('hidden');
+            $second_row.find('.js-stop-reason-text').addClass('hidden');
+        } else {
+            $second_row.find('.end-date-column').removeClass('hidden');
+            $second_row.find('.js-stop-reason-select').removeClass('hidden');
+            $second_row.find('.js-stop-reason-text').removeClass('hidden');
+        }
+    };
+
+    HistoryMedicationsController.prototype.getBrokenBoundEntry = function($row)
+    {
+        let $broken_bound_entry = null;
+        let $medication_history_rows = $('#OEModule_OphCiExamination_models_HistoryMedications_entry_table tbody tr.js-first-row');
+
+        $medication_history_rows.each(function (index, history_row) {
+            let medication_id = $(history_row).find('.medication_id').val();
+            let bound_key = $(history_row).find('.js-bound-key').val();
+            if (medication_id === $row.find('.medication_id').val() && bound_key !== $row.find('.js-bound-key').val()) {
+                $broken_bound_entry = $(history_row);
+            }
+        });
+
+        return $broken_bound_entry;
     };
 
   HistoryMedicationsController.prototype.popupSearch = function()
@@ -604,6 +667,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data.push(self.getRowData($(e)));
         });
         return data;
+    };
+
+    HistoryMedicationsController.prototype.inFormulary = function ($row)
+    {
+        return $row.find('i.oe-i.formulary').length !== 0;
     };
 
     /**
@@ -1023,12 +1091,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
     };
 
-	HistoryMedicationsController.prototype.removeBoundEntry = function ($row) {
-		let $bound_entry = $row.data("bound_entry");
-		if (typeof $bound_entry === "undefined") {
-			return;
-		}
-
+	HistoryMedicationsController.prototype.removeBoundEntry = function ($bound_entry) {
 		let key = $bound_entry.data('key');
 		let $full_entry = $bound_entry.parent().find('tr[data-key=' + key + ']');
 		$full_entry.remove();
@@ -1326,18 +1389,170 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
     };
 
+    HistoryMedicationsController.prototype.setDefaultStopDate = function ($date_picker)
+    {
+        let $datepicker_control = $date_picker.find("input");
+        let default_date = $datepicker_control.attr("data-default");
+        let currently_set_date = $datepicker_control.val();
+        $datepicker_control.attr("data-reset-date", currently_set_date);
+        if(typeof default_date !== "undefined" && default_date !== false && !currently_set_date) {
+            $datepicker_control.val(default_date);
+        }
+    };
+
     HistoryMedicationsController.prototype.setBoundEntryStop = function ($bound_entry) {
-    		let key = $bound_entry.data('key');
-    		let $second_part_of_bound_entry = $bound_entry.parent().find('tr[data-key=' + key + '].js-second-row');
+        let key = $bound_entry.data('key');
+        let $second_part_of_bound_entry = $bound_entry.parent().find('tr[data-key=' + key + '].js-second-row');
+        let $stop_reason_select = $second_part_of_bound_entry.find('.js-stop-reason');
+        let $selected_option = $stop_reason_select.find('option:selected');
+        let $previous_stop_reason_details = $bound_entry.find('input[name="previous_stop_reason_details"]');
+        let $datepicker_wrapper = $second_part_of_bound_entry.find(".js-end-date-wrapper");
+        this.setDefaultStopDate($datepicker_wrapper);
+
+        if ($selected_option && $selected_option.val() !== '') {
+            $previous_stop_reason_details.val($selected_option.val() + ',' + $selected_option.text());
+        }
         let stop_reason = $("option:contains('Medication parameters changed')").attr("value");
-        this.showStopControls($second_part_of_bound_entry);
-			$second_part_of_bound_entry.find('.js-stop-reason').attr('value', stop_reason);
+        $stop_reason_select.attr('value', stop_reason);
+    };
+
+    HistoryMedicationsController.prototype.enableMedicationHistoryRow = function ($row)
+    {
+        let $second_row = $row.parent().find('tr[data-key=' + $row.data('key') + '].js-second-row');
+        let $td_edit = $row.find('td.text-center');
+
+        $row.find(this.options.removeButtonSelector).show();
+        $row.removeClass('fade disabled');
+        $second_row.removeClass('fade disabled');
+        this.enableMedicationsControls($row, $second_row);
+
+        if ($td_edit.length > 0) {
+            let current_tooltip_text = $td_edit.find('i').data('tooltip-content');
+            $td_edit.find('i').data('tooltip-content', current_tooltip_text.split('<hr class="divider">').pop());
+        } else {
+            $td_edit = $row.find('td.edit-column');
+            $td_edit.find('i').remove();
+            let trash_icon = $('<i>').addClass('oe-i trash js-remove');
+            $td_edit.append(trash_icon);
+        }
+    };
+
+    HistoryMedicationsController.prototype.disableMedicationHistoryRow = function ($row)
+    {
+        let $second_row = $row.parent().find('tr[data-key=' + $row.data('key') + '].js-second-row');
+        let tooltip_text = 'This item cannot be changed here as it has been changed in the Medication Management element.';
+        let $td_edit = $row.find('td.text-center');
+
+        $row.find(this.options.removeButtonSelector).hide();
+        $row.addClass('fade disabled');
+        $second_row.addClass('fade disabled');
+        this.disableMedicationsControls($row, $second_row);
+
+        if ($td_edit.length > 0) {
+            let current_tooltip_text = $td_edit.find('i').data('tooltip-content');
+            $td_edit.find('i').data('tooltip-content', current_tooltip_text + '<hr class="divider">' + tooltip_text);
+        } else {
+            let icon = $('<i>')
+                .addClass('oe-i info small pad js-has-tooltip')
+                .attr('data-tooltip-content', tooltip_text);
+            $row.find('td.edit-column').append(icon);
+        }
+    };
+
+    HistoryMedicationsController.prototype.enableMedicationsControls = function ($row, $second_row)
+    {
+        this.options.first_row_controls_ids.forEach(function (id) {
+            let selector = ":input[name*='[" + id + "]']";
+            if (id === 'laterality') {
+                selector = '.js-' + id + ' input';
+            }
+            if (id === 'dose_unit_term') {
+                if ($row.find('.js-dose-unit-term').text() === '') {
+                    $row.find("select[name*='[" + id + "']").removeAttr('disabled');
+                }
+            } else {
+                $row.find(selector).removeAttr('disabled');
+            }
+        });
+
+        this.options.second_row_control_ids.forEach(function (id) {
+            $second_row.find(":input[name*='[" + id + "]']").removeAttr('disabled');
+        });
+    };
+
+    HistoryMedicationsController.prototype.disableMedicationsControls = function ($row, $second_row)
+    {
+        this.options.first_row_controls_ids.forEach(function (id) {
+            let selector = ":input[name*='[" + id + "]']";
+            if (id === 'laterality') {
+                selector = '.js-' + id + ' input';
+            }
+            if (id === 'dose_unit_term') {
+                if ($row.find('.js-dose-unit-term').text() === '') {
+                    $row.find("select[name*='[" + id + "']").attr('disabled', 'disabled');
+                }
+            } else {
+                $row.find(selector).attr('disabled', 'disabled');
+            }
+        });
+
+        this.options.second_row_control_ids.forEach(function (id) {
+            $second_row.find(":input[name*='[" + id + "]']").attr('disabled', 'disabled');
+        });
+    };
+
+    HistoryMedicationsController.prototype.resetStopReason = function ($row)
+    {
+        let previous_stop_reason_details = $row.find('input[name="previous_stop_reason_details"]').val();
+        let id ='';
+        let name = '';
+        if (previous_stop_reason_details !== '') {
+            let previous_stop_reason_details_array = previous_stop_reason_details.split(',');
+            name = previous_stop_reason_details_array.pop();
+            id = previous_stop_reason_details_array.pop();
+        }
+        let $second_row = $row.parent().find('tr[data-key=' + $row.data('key') + '].js-second-row');
+        $second_row.find('.js-stop-reason').attr('value', id);
+        $second_row.find('.js-stop-reason-text').html(name);
     };
 
     HistoryMedicationsController.prototype.enableManualRowDeletion = function ($row) {
         let $trash = $row.find('.trash');
         $trash.removeClass('disabled');
         $trash.parent().removeClass('js-has-tooltip');
+    };
+
+    HistoryMedicationsController.prototype.resetData = function ($history_row, $medication_management_row)
+    {
+        let controller = this;
+        controller.options.first_row_controls_ids.forEach(function (id) {
+            let history_row_value = $history_row.find(":input[name*='[" + id + "]']").val();
+            if (id === 'laterality') {
+                $medication_management_row.find(controller.options.routeOptionWrapperSelector).find('input').each(function(){
+                    if($(this).val() === history_row_value || history_row_value === "3") {
+                        $(this).prop( "checked", true);
+                    } else {
+                        $(this).prop( "checked", false);
+                    }
+                });
+            }
+
+            $medication_management_row.find(":input[name*='[" + id + "]']").val(history_row_value);
+        });
+
+        let $history_second_row = $history_row.parent().find('tr[data-key=' + $history_row.data('key') + '].js-second-row');
+        let $datepicker_wrapper = $history_second_row.find(".js-end-date-wrapper");
+        let $datepicker_control = $datepicker_wrapper.find("input");
+        let reset_date = $datepicker_control.attr("data-reset-date");
+        $datepicker_control.val(reset_date);
+    };
+
+    HistoryMedicationsController.prototype.removeDuplicateEntry = function ($history_row, $management_row)
+    {
+        if (($history_row.find('.medication_id').val() === $management_row.find('.medication_id').val()) && !$management_row.find(".js-remove").hasClass('disabled')) {
+            $management_row.parent().find('tr.js-second-row[data-key='+ $management_row.data('key') +']').remove();
+            $management_row.remove();
+        }
     };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
