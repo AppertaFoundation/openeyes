@@ -38,6 +38,19 @@ class WorklistController extends BaseAdminController
     }
 
     /**
+     * allow 'User' to access the popup content
+     */
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions' => array('renderPopups'),
+                'roles' => array('User')
+            )
+        );
+    }
+
+    /**
      * @param string $type - the classification of the message
      * @param $message - the message to display
      * @param string $id - the flash element id suffix. defaults to message
