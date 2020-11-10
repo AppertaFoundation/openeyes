@@ -41,13 +41,17 @@ if (!@$no_header) { ?>
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
 
-        $this->renderPartial('letter_start', array(
-            'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // default address is coming from the 'To'
-            'patient' => $this->patient,
-            'date' => $element->date,
-            'clinicDate' => strtotime($element->clinic_date),
-            'element' => $element,
-        )) ?>
+        if (isset($letter_header) && !empty($letter_header) && !ctype_space($letter_header)) {
+            echo $letter_header;
+        } else {
+            $this->renderPartial('letter_start', array(
+                'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
+                'patient' => $this->patient,
+                'date' => $element->date,
+                'clinicDate' => strtotime($element->clinic_date),
+                'element' => $element,
+            ));
+        }?>
     </header>
 
     <?php $this->renderPartial('reply_address', array(

@@ -2019,7 +2019,7 @@ class AdminController extends BaseAdminController
                         $setting = new SettingInstallation();
                         $setting->key = $metadata->key;
                     }
-                    $setting->value = @$_POST[$metadata->key];
+                    $metadata->setSettingValue($setting, $metadata, @$_POST[$metadata->key]);
                     if (!$setting->save()) {
                         $errors = $setting->errors;
                     } else {
@@ -2028,7 +2028,7 @@ class AdminController extends BaseAdminController
                 }
             }
         }
-        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'context' => $context, 'errors' => $errors));
     }
 
     public function actionEditInstallationSetting()
@@ -2050,7 +2050,7 @@ class AdminController extends BaseAdminController
                 $setting_installation->key = $key;
             }
             $value = \Yii::app()->request->getPost($key);
-            $setting_installation->value = $value;
+            $metadata->setSettingValue($setting_installation, $metadata, $value);
             if (!$setting_installation->save()) {
                 $errors = $setting_installation->errors;
             } else {

@@ -22,6 +22,7 @@
     <?php endif; ?>
     <?php $letter_address = isset($letter_address) ? $letter_address : null; ?>
     <?php echo $this->renderPartial('print_ElementLetter', array(
+        'letter_header' => $letter_header,
         'element' => $element,
         'letter_address' => $letter_address,
         'contact_type' => $contact_type ?: null)) ?>

@@ -11,6 +11,8 @@
     "xthiago/pdf-version-converter": "dev-master",
     "phpoffice/phpspreadsheet": "^1.6",
     "phpseclib/mcrypt_compat": "^1.0",
+    "ext-dom": "*",
+    "ext-libxml": "*",
     "symfony/process": "4.4.*",
     "nesk/rialto": "1.3.*",
     "nesk/puphpeteer": "1.6.*",

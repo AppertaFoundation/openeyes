@@ -142,11 +142,10 @@ class WorklistController extends BaseController
         if ($list_id) {
             $worklists = array_filter($worklists, function ($e) use ($list_id) {
                 return (int)$e->id === (int)$list_id;
-
             });
         }
 
-        
+
         $this->render('//worklist/print', array('worklists' => $worklists));
     }
 
@@ -154,5 +153,15 @@ class WorklistController extends BaseController
     {
         Yii::app()->session->remove('worklist');
         return $this->redirect(array('/worklist/view'));
+    }
+    public function actionRenderPopups()
+    {
+        if (isset($_POST['worklistId'])) {
+            $worklist = $this->manager->getWorklist($_POST["worklistId"]);
+            $dataProvider = $this->manager->getPatientsForWorklist($worklist);
+            foreach ($dataProvider->getData() as $dataProvider) {
+                $this->renderPartial('application.widgets.views.PatientIcons', array('data' => ($dataProvider->patient), 'page' => 'worklist'));
+            }
+        }
     }
 }

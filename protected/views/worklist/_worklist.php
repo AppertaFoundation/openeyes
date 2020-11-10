@@ -132,7 +132,7 @@ $is_printing = isset($is_printing) && ($is_printing === true);
     $(document).ready(function () {
         $.ajax({
             type: "POST",
-            url: "/Admin/worklist/renderPopups",
+            url: "/worklist/renderPopups",
             data: {
                 "worklistId" : (<?= $worklist->id?>),
                 YII_CSRF_TOKEN: YII_CSRF_TOKEN

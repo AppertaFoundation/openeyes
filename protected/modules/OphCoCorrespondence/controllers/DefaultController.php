@@ -415,11 +415,14 @@ class DefaultController extends BaseEventTypeController
      * @param $letter ElementLetter
      * @param $recipient_address string
      * @param $contact_type
+     * @param $letter_header
+     * @return string
      */
-    private function renderOneRecipient($letter, $recipient_address, $contact_type)
+    private function renderOneRecipient($letter, $recipient_address, $contact_type, $letter_header)
     {
         $this->render('print', array(
             'element' => $letter,
+            'letter_header' => $letter_header,
             'letter_address' => $recipient_address,
             'contact_type' => $contact_type
         ));
@@ -550,9 +553,51 @@ class DefaultController extends BaseEventTypeController
 
         Yii::log('Printing recipient');
 
+        $letter_header_raw = SettingMetadata::model()->getSetting('letter_header');
+
+        $parent_event = Event::model()->findByPk($id);
+        $parent_episode = $parent_event->episode;
+        $parent_patient = $parent_episode->patient;
+
+        $parent_contact = $parent_patient->contact;
+        $parent_address = $parent_contact->address;
+
+        $substitutions = array_merge(
+            SettingMetadata::getSessionSubstitutions(),
+            SettingMetadata::getPatientSubstitutions($parent_patient),
+            SettingMetadata::getRecipientAddressSubstitution($recipient_address)
+        );
+
+        $letter_header_html = SettingMetadata::performSubstitutions($letter_header_raw, $substitutions);
+
+        $letter_header_html = self::hideTableBorders($letter_header_html);
+
         $this->printInit($id);
         $this->layout = '//layouts/print';
-        $this->renderOneRecipient($letter, $recipient_address, $contact_type);
+        $this->renderOneRecipient($letter, $recipient_address, $contact_type, $letter_header_html);
+    }
+
+    private static function hideTableBorders($html)
+    {
+        $dom = new DOMDocument();
+        @$dom->loadHTML($html, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $xpath = new DOMXPath($dom);
+        $nodes = $xpath->query('//table');
+
+        foreach ($nodes as $node) {
+            $style = $node->getAttribute('style');
+
+            if (!empty($style)) {
+                $style = $style . ' ';
+            }
+
+            $style = $style . "border-style: hidden;";
+
+            $node->setAttribute('border', '0');
+            $node->setAttribute('style', $style);
+        }
+
+        return $dom->saveHTML();
     }
 
     /**
