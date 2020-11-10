@@ -520,8 +520,12 @@
             requestParams['episode_id'] = subspecialty.data('id');
         }
 
-        // set window location to the new event request URL
-        window.location = '/patientEvent/create?' + $.param(requestParams);
+        if(typeof  window.ticketMoveController != "undefined") {
+            window.ticketMoveController.navigateToEvent($('.PatientTicketing-moveTicket'), '/patientEvent/create?' + $.param(requestParams));
+        } else {
+            // set window location to the new event request URL
+            window.location = '/patientEvent/create?' + $.param(requestParams);
+        }
     };
 
     NewEventDialog.prototype.changeEventContext = function () {
