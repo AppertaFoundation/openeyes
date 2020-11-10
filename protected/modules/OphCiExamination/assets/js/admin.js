@@ -250,6 +250,11 @@ $(document).ready(function() {
           alert("Something went wrong trying to add the element type.  Please try again or contact support for assistance.");
         } else {
           $('#admin_workflow_steps tr.selected').click();
+
+          setTimeout(() => {
+              workflowSaveHandler(e);
+          }, 500);
+
         }
       }
     });
@@ -333,7 +338,7 @@ $(document).ready(function() {
     $('a.removeElementType').click(workflowRemoveElementHandler);
   }
 
-    $('#step_element_types').on('click', 'tr.clickable .workflow-item-attr',  function(){
+    $('#step_element_types').on('click', 'tr.clickable .workflow-item-attr',  function() {
         var item = this,
             $itemTd = $(this).parent(),
             $itemTr = $itemTd.parent(),

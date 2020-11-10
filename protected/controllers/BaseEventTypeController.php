@@ -351,6 +351,7 @@ class BaseEventTypeController extends BaseModuleController
                 $element_type = reset($children);
                 $struct['id'] = $element_type->id;
                 $struct['class_name'] = CHtml::modelName($element_type->class_name);
+                $struct['display_order'] = CHtml::modelName($element_type->display_order);
                 $element_types_tree[] = $struct;
             } elseif (count($children) > 0) {
                 foreach ($children as $element_type) {

@@ -498,7 +498,8 @@ class AdminController extends \ModuleAdminController
             throw new \CHttpException('404', 'Could not find item set');
         }
 
-        $item->attributes = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExamination_ElementSetItem');
+        $post = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExamination_ElementSetItem', []);
+        $item->attributes = array_shift($post);
 
         if (!$item->save()) {
             throw new \Exception('Unable to update element set item: '.print_r($item->getErrors(), true));

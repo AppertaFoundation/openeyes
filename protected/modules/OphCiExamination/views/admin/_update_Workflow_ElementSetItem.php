@@ -48,8 +48,8 @@
                   <input type="hidden" name="OphCiExamination_ElementSetItem[display_order][]" value="<?= $item->id ?>">
               </td>
             <td><?php echo $item->element_type->name?></td>
-            <td><?=\CHtml::activeCheckBox($item, 'is_hidden', array('class' => 'workflow-item-attr'))?></td>
-            <td><?=\CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
+            <td><?=\CHtml::activeCheckBox($item, "[$i]is_hidden", array('class' => 'workflow-item-attr'))?></td>
+            <td><?=\CHtml::activeCheckBox($item, "[$i]is_mandatory", array('class' => 'workflow-item-attr'))?></td>
             <td><a href="#" class="removeElementType" rel="<?php echo $item->id?>" data-element-type-id="<?php echo $item->element_type_id?>">Remove</a></td>
           </tr>
         <?php } ?>
