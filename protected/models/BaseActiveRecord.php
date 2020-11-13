@@ -16,6 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+trait purifier
+{
+    // Sanitize string
+    protected function purify($foo)
+    {
+        $purifier = new \CHtmlPurifier();
+        return $purifier->purify($foo);
+    }
+}
+
 /**
  * A class that all OpenEyes active record classes should extend.
  *
@@ -24,6 +34,7 @@
  */
 class BaseActiveRecord extends CActiveRecord
 {
+    use purifier;
     /**
      * Label field used by SelectionWidget.
      */
@@ -295,7 +306,6 @@ class BaseActiveRecord extends CActiveRecord
         } catch (Exception $e) {
             return 1;
         }
-
     }
 
     /**
@@ -810,7 +820,6 @@ class BaseActiveRecord extends CActiveRecord
             if ($this->isNewRecord) {
                 $to_be_validated = array_filter($to_be_validated, function ($i) use ($fk) {
                     return $i !== $fk;
-
                 });
             }
             if (!$rel_obj->validate($to_be_validated)) {
@@ -819,6 +828,21 @@ class BaseActiveRecord extends CActiveRecord
                 }
             }
         }
+    }
+
+
+    protected function beforeValidate()
+    {
+        $attributes = $this->getAttributes(true);
+        foreach ($attributes as $key=>$val) {
+            if (is_string($val)) {
+                if ($val != $this->purify($val)) {
+                    $this->addErrors(array("Input " . $key . " has forbidden characters or text. Please clean them and try again" . "value was " . $val));
+                }
+            }
+        }
+
+        return parent::beforeValidate();
     }
 
     /**
