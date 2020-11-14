@@ -18,11 +18,11 @@ class OEHtml extends CHtml
     public static function icon($text, $htmlOption = [])
     {
         return self::tag("i", array_merge($htmlOption, [
-            "class" => "oe-i $text"  . (isset($htmlOption["class"]) ? " " . $htmlOption["class"] : ""),
+            "class" => "oe-i $text" . (isset($htmlOption["class"]) ? " " . $htmlOption["class"] : ""),
         ]), '', true);
     }
 
-    public static function button($text, $htmlOption = [])
+    public static function button($text = 'button', $htmlOption = [])
     {
         return \CHtml::button(
             $text,
