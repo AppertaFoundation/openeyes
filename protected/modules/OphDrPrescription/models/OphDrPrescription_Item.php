@@ -34,6 +34,7 @@ class OphDrPrescription_Item extends EventMedicationUse
     const MAX_WPTEN_LINE_CHARS = 30;
 
     public $original_item_id;
+    public $from_medication_management = false;
 
     public $taper_support = true;
 
@@ -97,7 +98,7 @@ class OphDrPrescription_Item extends EventMedicationUse
 
     public function getDescription()
     {
-        return $this->getMedicationDisplay();
+        return $this->getMedicationDisplay(true);
     }
 
     public function loadDefaults(MedicationSet $set = null)

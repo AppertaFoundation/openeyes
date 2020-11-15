@@ -40,7 +40,7 @@ foreach ($element->entries as $entry) {
     $is_stopped = false;
     // if the request is POST, it means we are on the validation error screen
     // therefore we show entries just like the user set up originally
-    if (($entry->originallyStopped || $entry->isStopped()) && $entry->is_copied_from_previous_event) {
+    if ($entry->isStopped() && !empty($entry->stopped_in_event_id) && $entry->stopped_in_event_id !== $entry->event_id) {
         $is_stopped = true;
     } else {
         foreach ($history_entries as $history_entry) {
@@ -57,7 +57,6 @@ foreach ($element->entries as $entry) {
         $current_entries[] = $entry;
     }
 }
-
 if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) && !$element->id) {
     $current_entries = $element->mergeMedicationEntries($current_entries); // only need to merge on initial load, not on validation
 }
@@ -220,7 +219,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                                         'laterality_options' => $laterality_options,
                                         'route_options' => $route_options,
                                         'frequency_options' => $frequency_options,
-                                        'removable' => true,
+                                        'removable' => false,
                                         'direct_edit' => false,
                                         'usage_type' => 'OphCiExamination',
                                         'row_type' => '',
@@ -331,6 +330,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                             $new_row = $(new_rows[0]);
                             controller.disableRemoveButton($new_row);
                             controller.bindEntries($row, $new_row);
+                            controller.setMedicationManagementStartDateFromHistory($row, $new_row);
                         }
                     }
                 }

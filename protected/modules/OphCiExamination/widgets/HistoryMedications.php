@@ -149,7 +149,6 @@ class HistoryMedications extends BaseMedicationWidget
             }
         }
         $this->element->entries = array_merge($history_entries, $this->element->getEntriesForUntrackedPrescriptionItems($this->patient));
-        return !empty($management_entries);
     }
 
     /**
@@ -158,10 +157,12 @@ class HistoryMedications extends BaseMedicationWidget
     protected function setElementFromDefaults()
     {
         if (!$this->isPostedEntries()) {
-            /*  If there has never been a Management element added, the last
-            History element should be taken into account */
-            if (!$this->setEntriesWithPreviousManagement()) {
-                parent::setElementFromDefaults();
+            $this->setEntriesWithPreviousManagement();
+            if ($this->inEditMode()) {
+                foreach ($this->element->entries as $entry) {
+                    $entry->id = null;
+                    $entry->event_id = null;
+                }
             }
 
             // because the entries cloned into the new element may contain stale data for related

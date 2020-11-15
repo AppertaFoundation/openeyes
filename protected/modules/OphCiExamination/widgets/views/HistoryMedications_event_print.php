@@ -21,7 +21,7 @@
         <tbody>
         <?php foreach ($element->current_entries as $entry) { ?>
             <tr>
-                <td><?= $entry->getMedicationDisplay() ?></td>
+                <td><?= $entry->getMedicationDisplay(true) ?></td>
                 <th><?= $entry->getAdministrationDisplay() ? $entry->getAdministrationDisplay() : '' ?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : '' ?></th>
             </tr>
         <?php } ?>
@@ -34,7 +34,7 @@
         <tbody>
         <?php foreach ($element->closed_entries as $entry) { ?>
             <tr>
-                <td><?= $entry->getMedicationDisplay() ?></td>
+                <td><?= $entry->getMedicationDisplay(true) ?></td>
                 <th><?= $entry->getAdministrationDisplay() ? $entry->getAdministrationDisplay() : '' ?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : '' ?></th>
             </tr>
         <?php } ?>

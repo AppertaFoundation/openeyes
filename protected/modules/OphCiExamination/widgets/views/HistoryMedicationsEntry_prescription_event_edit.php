@@ -65,8 +65,9 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
         <input type="hidden" name="previous_stop_reason_details" value="<?= $previous_stop_reason_details ?? '' ?>">
         <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= $entry->bound_key ?>">
+        <input type="hidden" name="<?= $field_prefix ?>[stopped_in_event_id]" value="<?= $entry->stopped_in_event_id ?>" />
             <span class="js-prepended_markup">
-                            <?= $entry->getMedicationDisplay() ?>
+                            <?= $entry->getMedicationDisplay(true) ?>
             <?php if (!is_null($entry->medication_id)) {
                 if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
                     echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to '.implode(',', $patient->getPatientDrugAllergy($entry->medication_id)).'"></i>';
@@ -85,7 +86,7 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
             <input type="hidden" name="<?= $field_prefix ?>[route_id]" value="<?= $entry->route_id ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[laterality]" value="<?= $entry->laterality ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>"  />
-            <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay(true) ?>" />
 
             <?= $entry->getAdministrationDisplay(true) ?>
         </div>
@@ -126,11 +127,11 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
     <tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row <?= $stopped ? 'fade' : ''?>">
     <td class="nowrap">
             <div class="flex-meds-inputs">
-                <span>
+                <span class="start-date-column" id="<?= $model_name . "_entries_" . $row_count . "_start_date_error" ?>" >
             <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
                          value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
             <i class="oe-i start small pad"></i>
-            <span class="oe-date"><?= Helper::convertMySQL2NHS($entry->start_date) ?>
+            <span class="oe-date"><?= $entry->getStartDateDisplay() ?>
                         </span>
                     </span>
 

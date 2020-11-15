@@ -403,21 +403,6 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
                 $new->id = $entry->id;
             }
         }
-        if (!$entry->prescription_item_id) {
-            $existing_event_date = null;
-            if ($entry->copied_from_med_use_id) {
-                $copied_event = Event::model()->findByPk($entry->copied_from_med_use_id);
-                if ($copied_event) {
-                    $existing_event_date = $copied_event->event_date;
-                }
-            } else {
-                $existing_event_date = $entry->event ? $entry->event->event_date : null;
-            }
-
-            if ($existing_event_date) {
-                $new->previous_event_date = date('Y-m-d', strtotime($existing_event_date));
-            }
-        }
         if ($entry->prescription_item_id) {
             $prescription_item =  $entry->prescriptionItem;
         } elseif ($entry->isPrescription()) {

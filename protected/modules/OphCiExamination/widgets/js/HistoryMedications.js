@@ -1420,20 +1420,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         let $second_row = $row.parent().find('tr[data-key=' + $row.data('key') + '].js-second-row');
         let $td_edit = $row.find('td.text-center');
+        if ($td_edit.length === 0) {
+            $td_edit = $row.find('td.edit-column');
+        }
+        let $icon = $td_edit.find('i');
+        let removable = $row.find(this.options.removeButtonSelector).length !== 0;
 
         $row.find(this.options.removeButtonSelector).show();
         $row.removeClass('fade disabled');
         $second_row.removeClass('fade disabled');
-        this.enableMedicationsControls($row, $second_row);
+        this.toggleMedicationsControls($row, $second_row);
 
-        if ($td_edit.length > 0) {
-            let current_tooltip_text = $td_edit.find('i').data('tooltip-content');
-            $td_edit.find('i').data('tooltip-content', current_tooltip_text.split('<hr class="divider">').pop());
+        if (removable) {
+            $icon.not('.js-remove').remove();
         } else {
-            $td_edit = $row.find('td.edit-column');
-            $td_edit.find('i').remove();
-            let trash_icon = $('<i>').addClass('oe-i trash js-remove');
-            $td_edit.append(trash_icon);
+            let current_tooltip_text = $icon.data('tooltip-content');
+            $icon.data('tooltip-content', current_tooltip_text.split('<hr class="divider">').shift());
         }
     };
 
@@ -1442,24 +1444,29 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let $second_row = $row.parent().find('tr[data-key=' + $row.data('key') + '].js-second-row');
         let tooltip_text = 'This item cannot be changed here as it has been changed in the Medication Management element.';
         let $td_edit = $row.find('td.text-center');
+        if ($td_edit.length === 0) {
+            $td_edit = $row.find('td.edit-column');
+        }
+        let $icon = $td_edit.find('i');
+        let removable = $icon.hasClass('js-remove');
 
         $row.find(this.options.removeButtonSelector).hide();
         $row.addClass('fade disabled');
         $second_row.addClass('fade disabled');
-        this.disableMedicationsControls($row, $second_row);
+        this.toggleMedicationsControls($row, $second_row, false);
 
-        if ($td_edit.length > 0) {
-            let current_tooltip_text = $td_edit.find('i').data('tooltip-content');
-            $td_edit.find('i').data('tooltip-content', current_tooltip_text + '<hr class="divider">' + tooltip_text);
-        } else {
+        if (removable) {
             let icon = $('<i>')
                 .addClass('oe-i info small pad js-has-tooltip')
                 .attr('data-tooltip-content', tooltip_text);
-            $row.find('td.edit-column').append(icon);
+            $td_edit.append(icon);
+        } else {
+            let current_tooltip_text = $icon.data('tooltip-content');
+            $icon.data('tooltip-content', current_tooltip_text + '<hr class="divider">' + tooltip_text);
         }
     };
 
-    HistoryMedicationsController.prototype.enableMedicationsControls = function ($row, $second_row)
+    HistoryMedicationsController.prototype.toggleMedicationsControls = function ($row, $second_row, enable = true)
     {
         this.options.first_row_controls_ids.forEach(function (id) {
             let selector = ":input[name*='[" + id + "]']";
@@ -1468,36 +1475,25 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
             if (id === 'dose_unit_term') {
                 if ($row.find('.js-dose-unit-term').text() === '') {
-                    $row.find("select[name*='[" + id + "']").removeAttr('disabled');
+                    if (enable) {
+                        $row.find("select[name*='[" + id + "']").removeAttr('disabled');
+                    } else {
+                        $row.find("select[name*='[" + id + "']").attr('disabled', 'disabled');
+                    }
                 }
-            } else {
+            } else if (enable) {
                 $row.find(selector).removeAttr('disabled');
-            }
-        });
-
-        this.options.second_row_control_ids.forEach(function (id) {
-            $second_row.find(":input[name*='[" + id + "]']").removeAttr('disabled');
-        });
-    };
-
-    HistoryMedicationsController.prototype.disableMedicationsControls = function ($row, $second_row)
-    {
-        this.options.first_row_controls_ids.forEach(function (id) {
-            let selector = ":input[name*='[" + id + "]']";
-            if (id === 'laterality') {
-                selector = '.js-' + id + ' input';
-            }
-            if (id === 'dose_unit_term') {
-                if ($row.find('.js-dose-unit-term').text() === '') {
-                    $row.find("select[name*='[" + id + "']").attr('disabled', 'disabled');
-                }
             } else {
                 $row.find(selector).attr('disabled', 'disabled');
             }
         });
 
         this.options.second_row_control_ids.forEach(function (id) {
-            $second_row.find(":input[name*='[" + id + "]']").attr('disabled', 'disabled');
+            if (enable) {
+                $second_row.find(":input[name*='[" + id + "]']").removeAttr('disabled');
+            } else {
+                $second_row.find(":input[name*='[" + id + "]']").attr('disabled', 'disabled');
+            }
         });
     };
 
@@ -1553,6 +1549,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $management_row.parent().find('tr.js-second-row[data-key='+ $management_row.data('key') +']').remove();
             $management_row.remove();
         }
+    };
+
+    HistoryMedicationsController.prototype.setMedicationManagementStartDateFromHistory = function ($history_row, $management_row)
+    {
+        let $history_second_row = $history_row.parent().find('tr[data-key=' + $history_row.data('key') + '].js-second-row');
+        let start_date = $history_second_row.find('.js-start-date').val();
+        $management_row.find('input[name*="[start_date]"]').val(start_date);
     };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;

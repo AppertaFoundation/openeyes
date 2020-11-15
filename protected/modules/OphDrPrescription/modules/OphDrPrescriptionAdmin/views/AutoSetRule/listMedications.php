@@ -48,7 +48,7 @@
             <?php foreach ($data_provider->getData() as $medication) { ?>
                 <tr data-url="/OphDrPrescription/OphDrPrescriptionAdmin/dmdDrugsAdmin/edit/<?=$medication->id;?>">
                     <td><?=$medication->preferred_code ? $medication->preferred_code : '<i>(empty)</i>'?></td>
-                    <td><?=$medication->preferred_term?></td>
+                    <td><?=$medication->getLabel(true)?></td>
                 </tr>
             <?php } ?>
         </tbody>

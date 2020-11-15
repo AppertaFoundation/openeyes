@@ -125,6 +125,14 @@ class BaseEventElementWidget extends CWidget
     /**
      * @return bool
      */
+    protected function inDataMode() : bool
+    {
+        return $this->mode === static::$DATA_MODE;
+    }
+
+    /**
+     * @return bool
+     */
     protected function showEditTipWarning()
     {
         return $this->inEditMode() && Yii::app()->params['show_notattip_warning'] === 'on';

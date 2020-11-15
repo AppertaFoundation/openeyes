@@ -340,7 +340,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         foreach ($this->items as $item) {
             if ($item->isNewRecord) {
                 $item->event_id = $this->event_id;
-                $item->start_date = substr($this->event->event_date, 0, 10);
+                if (!$item->from_medication_management) {
+                    $item->start_date = substr($this->event->event_date, 0, 10);
+                }
             } else {
                 // Item is being updated
                 unset($existing_item_ids[$item->id]);

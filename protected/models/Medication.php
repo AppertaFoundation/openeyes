@@ -295,10 +295,10 @@ class Medication extends BaseActiveRecordVersioned
 
     public function getLabel($short = false)
     {
-        $name =  $short ? ($this->short_term != "" ? $this->short_term : $this->preferred_term): $this->preferred_term;
+        $name =  $short ? ($this->short_term != "" ? $this->short_term : $this->preferred_term) : $this->preferred_term;
 
         if ($this->isAMP() && $this->vtm_term) {
-            $name.=" (".$this->vtm_term.")";
+            $name .= " (" . $this->vtm_term . ")";
         }
 
         return $name;
@@ -314,15 +314,18 @@ class Medication extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param bool $exclude_short This will remove the short_term from the list
      * @return string
      */
 
-    public function alternativeTerms()
+    public function alternativeTerms(bool $exclude_short = false): string
     {
         $terms = [];
         foreach ($this->medicationSearchIndexes as $idx) {
-            if ($idx->alternative_term != $this->preferred_term) {
-                $terms[] = $idx->alternative_term;
+            if ($idx->alternative_term != $this->getLabel(true)) {
+                if ($idx->alternative_term !== $this->preferred_term || $idx->alternative_term === $this->preferred_term && !$exclude_short) {
+                    $terms[] = $idx->alternative_term;
+                }
             }
         }
 
@@ -369,9 +372,9 @@ class Medication extends BaseActiveRecordVersioned
                     }
                 }
                 $return[] = [
-                    'label' => $item->medication->preferred_term,
-                    'value' => $item->medication->preferred_term,
-                    'name' => $item->medication->preferred_term,
+                    'label' => $item->medication->getLabel(true),
+                    'value' => $item->medication->getLabel(true),
+                    'name' => $item->medication->getLabel(true),
                     'id' => $item->medication->id,
                     'dose_unit_term' => $item->default_dose_unit_term != "" ? $item->default_dose_unit_term : $item->medication->default_dose_unit_term,
                     'dose' => $item->default_dose ? $item->default_dose : $item->medication->default_dose,

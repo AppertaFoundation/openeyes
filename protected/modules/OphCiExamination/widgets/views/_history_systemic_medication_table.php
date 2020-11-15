@@ -17,7 +17,7 @@
         <?php foreach ($entries as $entry) : ?>
             <tr data-key="<?= $index ?>">
                 <td>
-                    <?= $entry->getMedicationDisplay() ?>
+                    <?= $entry->getMedicationDisplay(true) ?>
                     <?php $change_history = $entry->getChangeHistory();
                     if (!empty($change_history)) {
                         $tooltip_content = $entry->getChangeHistoryTooltipContent($change_history);
@@ -39,8 +39,7 @@
 
                 </td>
                 <td>
-                    <?php $earliest_entry = $entry->getEarliestEntry(); ?>
-                    <span class="oe-date"><?= $current ? $earliest_entry->getStartDateDisplay() : $entry->getEndDateDisplay() ?></span>
+                    <span class="oe-date"><?= $current ? $entry->getStartDateDisplay() : $entry->getEndDateDisplay() ?></span>
                 </td>
                 <td>
                     <?php if ($show_link) { ?>

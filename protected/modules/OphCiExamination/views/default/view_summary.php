@@ -119,8 +119,7 @@ if ($historyElement) {
                                             ?>
                                         </td>
                                         <td>
-                                            <?php $earliest_entry = $entry->getEarliestEntry(); ?>
-                                            <?= $earliest_entry->getStartDateDisplay() ?>
+                                            <?= $entry->getStartDateDisplay() ?>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -281,8 +280,8 @@ if ($historyElement) {
                                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                         ?>
                                     </td>
-                                    <td><?php $earliest_entry = $entry->getEarliestEntry(); ?>
-                                        <?= $earliest_entry->getStartDateDisplay() ?>
+                                    <td>
+                                        <?= $entry->getStartDateDisplay() ?>
                                     </td>
                                 </tr>
                             <?php } ?>

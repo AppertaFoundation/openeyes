@@ -52,17 +52,17 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
 $entries_from_previous_event = array_filter($element->entries, function ($entry) {
     return is_null($entry->id);
 });
-$element->entries = array_filter($element->entries, function ($e) {
-    if (!$e->isStopped()) {
-        if (is_null($e->latest_med_use_id)) {
-            return true;
-        } else {
-            $latest = EventMedicationUse::model()->findByPk($e->latest_med_use_id);
-            return $latest->usage_subtype === 'Management' && !$latest->prescribe;
-        }
-    }
-});
 if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) && !$element->id) {
+    $element->entries = array_filter($element->entries, function ($e) {
+        if (!$e->isStopped()) {
+            if (is_null($e->latest_med_use_id)) {
+                return true;
+            } else {
+                $latest = EventMedicationUse::model()->findByPk($e->latest_med_use_id);
+                return $latest->usage_subtype === 'Management' && !$latest->prescribe;
+            }
+        }
+    });
     $element->entries = $element->filterHistoryAndManagementMedications($element->entries, true);
 }
 ?>
