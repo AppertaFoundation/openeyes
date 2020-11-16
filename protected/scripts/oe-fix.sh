@@ -6,13 +6,13 @@
 # Find fuill folder path where this script is located, then find root folder
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-  SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+    DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 # Determine root folder for site - all relative paths will be built from here
-SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
+SCRIPTDIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 
 curuser="${LOGNAME:-root}"
 
@@ -29,40 +29,51 @@ noperms=0
 restart=0
 forceperms=0
 
-while [[ $# -gt 0 ]]
-do
+while [[ $# -gt 0 ]]; do
     p="$1"
 
     case $p in
-	    --no-clear|-nc) clearcahes=0
-	    ;;
-	    --no-assets|-na) buildassests=0
-	    ;;
-        --no-migrate|--nomigrate|-nm) migrate=0
-	    ;;
-	    --no-eyedraw|-ned|-ne) eyedraw=0
-	    ;;
-        --help) showhelp=1
+    --no-clear | -nc)
+        clearcahes=0
         ;;
-	    --no-composer|--no-dependencies|-nd) composer=0
-	    ;;
-	    --no-permissions|-np) noperms=1
-	    ;;
-        --force-perms) forceperms=1
+    --no-assets | -na)
+        buildassests=0
         ;;
-	    --no-warn-migrate) nowarnmigrate=1
-	    ;;
-	    -fc|--reset-config) resetconfig=1
-	    ;;
-        -r|--restart) restart=1
+    --no-migrate | --nomigrate | -nm)
+        migrate=0
         ;;
-		--no-compile) #reserved for future use
-		;;
-	    *)  [ ! -z $p ] && echo "Unknown command line: $p" || :
+    --no-eyedraw | -ned | -ne)
+        eyedraw=0
+        ;;
+    --help)
+        showhelp=1
+        ;;
+    --no-composer | --no-dependencies | -nd)
+        composer=0
+        ;;
+    --no-permissions | -np)
+        noperms=1
+        ;;
+    --force-perms)
+        forceperms=1
+        ;;
+    --no-warn-migrate)
+        nowarnmigrate=1
+        ;;
+    -fc | --reset-config)
+        resetconfig=1
+        ;;
+    -r | --restart)
+        restart=1
+        ;;
+    --no-compile) #reserved for future use
+        ;;
+    *)
+        [ ! -z $p ] && echo "Unknown command line: $p" || :
         ;;
     esac
 
-shift # move to next parameter
+    shift # move to next parameter
 done
 
 # Show help text
@@ -74,17 +85,17 @@ if [ $showhelp = 1 ]; then
     echo "usage: $0 <branch> [--help] [--no-clear ] [--no-assets] [--no-migrate]"
     echo ""
     echo "COMMAND OPTIONS:"
-	echo ""
-	echo "  --help         : Show this help"
-	echo "  --no-clear     : Do not clear caches"
-	echo "  --no-assets    : Do not (re)build assets"
+    echo ""
+    echo "  --help         : Show this help"
+    echo "  --no-clear     : Do not clear caches"
+    echo "  --no-assets    : Do not (re)build assets"
     echo "  --no-migrate   : Do not run db migrations"
-	echo "  --no-dependencies  : Do not update composer or npm dependencies"
-	echo "  --no-eyedraw   : Do not (re)import eyedraw configuration"
-	echo "  --no-permissions : Do not reset file permissions"
+    echo "  --no-dependencies  : Do not update composer or npm dependencies"
+    echo "  --no-eyedraw   : Do not (re)import eyedraw configuration"
+    echo "  --no-permissions : Do not reset file permissions"
     echo "  --force-perms  : force permission update, even if system thinks they're correct"
-	echo "  --restart      : restart apache"
-	echo ""
+    echo "  --restart      : restart apache"
+    echo ""
     exit 1
 fi
 
@@ -102,29 +113,35 @@ fi
 
 if [ ! -f "$WROOT/protected/config/local/common.php" ]; then
 
-	# 	************************************************************************
-	# 	************************************************************************
-	# 	********* WARNING: Restoring backed up local configuration ... *********
-	# 	*********                                                      *********
-	# 	********* Remove /etc/openeyes/backup/config/local to prevent  *********
-	# 	*********                  or use -ff flag                     *********
-	# 	************************************************************************
-	# 	************************************************************************
+    # 	************************************************************************
+    # 	************************************************************************
+    # 	********* WARNING: Restoring backed up local configuration ... *********
+    # 	*********                                                      *********
+    # 	********* Remove /etc/openeyes/backup/config/local to prevent  *********
+    # 	*********                  or use -ff flag                     *********
+    # 	************************************************************************
+    # 	************************************************************************
     #
 
-        echo "WARNING: Copying sample configuration into local ..."
-		sudo mkdir -p $WROOT/protected/config/local
-		sudo cp -n $WROOT/protected/config/local.sample/common.sample.php $WROOT/protected/config/local/common.php
-		sudo cp -n $WROOT/protected/config/local.sample/console.sample.php $WROOT/protected/config/local/console.php
+    echo "WARNING: Copying sample configuration into local ..."
+    sudo mkdir -p $WROOT/protected/config/local
+    sudo cp -n $WROOT/protected/config/local.sample/common.sample.php $WROOT/protected/config/local/common.php
+    sudo cp -n $WROOT/protected/config/local.sample/console.sample.php $WROOT/protected/config/local/console.php
 
-fi;
+fi
 
 # update composer and npm dependencies. If OE_MODE is LIVE, then do not install dev components
 if [ "$composer" == "1" ]; then
 
-
-    [[ "${OE_MODE^^}" == "LIVE" ]] && { composerexta="--no-dev --optimize-autoloader"; npmextra="--only=production"; echo "************************** LIVE MODE ******************************"; }
-    [[ "${OE_MODE^^}" == "HOST" ]] && { composerexta="--ignore-platform-reqs"; echo "-----= HOST MODE =----"; }
+    [[ "${OE_MODE^^}" == "LIVE" ]] && {
+        composerexta="--no-dev --optimize-autoloader"
+        npmextra="--only=production"
+        echo "************************** LIVE MODE ******************************"
+    }
+    [[ "${OE_MODE^^}" == "HOST" ]] && {
+        composerexta="--ignore-platform-reqs"
+        echo "-----= HOST MODE =----"
+    }
 
     echo "DEPENDENCIES BEING EVALUATED..."
 
@@ -132,7 +149,7 @@ if [ "$composer" == "1" ]; then
     sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --no-interaction $composerexta
 
     echo "Installing/updating npm dependencies"
-    cd $WROOT
+    cd "$WROOT" || exit 1
     rm package-lock.json >/dev/null 2>&1
     sudo -E npm update --no-save $npmextra
 
@@ -153,33 +170,35 @@ fi
 if [ "$migrate" == "1" ] && [ "$OE_NO_DB" != "true" ]; then
     echo ""
     echo "Migrating database..."
-	if ! bash $SCRIPTDIR/oe-migrate.sh --quiet; then
-		## Quit if migrate failed
-		exit 1
-	fi
+    if ! bash $SCRIPTDIR/oe-migrate.sh --quiet; then
+        ## Quit if migrate failed
+        exit 1
+    fi
     echo ""
 else
-	if [ "$nowarnmigrate" = "0" ]; then
-	echo "
+    if [ "$nowarnmigrate" = "0" ]; then
+        echo "
 Migrations were not run automaically. If you need to run the database migrations, run script $SCRIPTDIR/oe-migrate.sh
 "
-	fi
+    fi
 fi
 
 # import eyedraw config
 if [ "$eyedraw" = "1" ]; then
-	printf "\n\nImporting eyedraw configuration...\n\n"
-	php $WROOT/protected/yiic eyedrawconfigload --filename=$WROOT/protected/config/core/OE_ED_CONFIG.xml 2>/dev/null
+    printf "\n\nImporting eyedraw configuration...\n\n"
+    php $WROOT/protected/yiic eyedrawconfigload --filename=$WROOT/protected/config/core/OE_ED_CONFIG.xml 2>/dev/null
 fi
 
 # Clear caches
 if [ $clearcahes = 1 ]; then
-	echo "Clearing caches..."
-	sudo rm -rf $WROOT/protected/runtime/cache/* 2>/dev/null || :
+    echo "Clearing caches..."
+    sudo rm -rf $WROOT/protected/runtime/cache/* 2>/dev/null || :
     sudo mkdir -p $WROOT/protected/runtime/cache/events 2>/dev/null || :
     sudo chown www-data $WROOT/protected/runtime/cache/events 2>/dev/null
-	sudo rm -rf $WROOT/assets/* 2>/dev/null || :
-	echo ""
+    sudo rm -rf $WROOT/assets/* 2>/dev/null || :
+    # Cache-Control, etc should have been set in .htaccess in the protected assets folder - copy this to the generated assets
+    cp "$WROOT"/protected/assets/.htaccess "$WROOT"/assets/.htaccess
+    echo ""
 fi
 
 # Fix permissions
@@ -188,49 +207,48 @@ if [ $noperms = 0 ]; then
 
     # We can ignore setting file permissions when running in a docker conatiner, as we always run as root
     if [[ "$DOCKER_CONTAINER" != "TRUE" ]] || [ $forceperms == 1 ]; then
-      echo -e "\nResetting file permissions..."
-      if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ] || [ $forceperms == 1 ]; then
-          echo "updaing ownership on $WROOT"
-          sudo chown -R $curuser:www-data $WROOT
-      else
-          echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
-      fi
+        echo -e "\nResetting file permissions..."
+        if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ] || [ $forceperms == 1 ]; then
+            echo "updaing ownership on $WROOT"
+            sudo chown -R $curuser:www-data $WROOT
+        else
+            echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
+        fi
 
-      folders774=( $WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime $WROOT/protected/files )
+        folders774=($WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime $WROOT/protected/files)
 
-      for i in "${folders774[@]}"
-      do
+        for i in "${folders774[@]}"; do
             echo "updating $i to 774..."
-              sudo chmod -R 774 $i
-          
-      done
+            sudo chmod -R 774 $i
 
-      touch $WROOT/protected/runtime/testme
-      touch $WROOT/protected/files/testme
+        done
 
-      if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
-          echo "setting sticky bit for protected/runtime"
-          sudo chmod -R g+s $WROOT/protected/runtime
-      fi
+        touch $WROOT/protected/runtime/testme
+        touch $WROOT/protected/files/testme
 
-      if [ $(stat -c '%U' $WROOT/protected/files/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/files/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/files/testme") != 774 ]; then
-          echo "setting sticky bit for protected/files"
-          sudo chmod -R g+s $WROOT/protected/files
-      fi
+        if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
+            echo "setting sticky bit for protected/runtime"
+            sudo chmod -R g+s $WROOT/protected/runtime
+        fi
 
-      # re-own composer and npm config folders in user home directory (sots issues caused if sudo was used to composer/npm update previously)
-    	sudo chown -R $curuser ~/.config 2>/dev/null || :
-    	sudo chown -R $curuser ~/.composer 2>/dev/null || :
-  fi
-	#  update ImageMagick policy to allow PDFs
-	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null
-	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null
+        if [ $(stat -c '%U' $WROOT/protected/files/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/files/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/files/testme") != 774 ]; then
+            echo "setting sticky bit for protected/files"
+            sudo chmod -R g+s $WROOT/protected/files
+        fi
+
+        # re-own composer and npm config folders in user home directory (sots issues caused if sudo was used to composer/npm update previously)
+        sudo chown -R $curuser ~/.config 2>/dev/null || :
+        sudo chown -R $curuser ~/.composer 2>/dev/null || :
+    fi
+    #  update ImageMagick policy to allow PDFs
+    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &>/dev/null
+    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &>/dev/null
 fi
 
 if [ $buildassests = 1 ]; then
-	echo "(re)building assets..."
-	# use curl to ping the login page - forces php/apache to rebuild the assets directory
-	curl -s http://localhost > /dev/null
+    echo "(re)building assets..."
+    # use curl to ping the login page - forces php/apache to rebuild the assets directory
+    curl -s http://localhost >/dev/null
 fi
 
 # Set some git properties
@@ -242,7 +260,7 @@ git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
 # restart apache
 if [ "$restart" == "1" ]; then
     echo -e "\nrestarting apache..\n"
-    sudo service apache2 restart &> /dev/null
+    sudo service apache2 restart &>/dev/null
 fi
 
 echo ""
