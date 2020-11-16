@@ -164,12 +164,12 @@ $stop_fields_validation_error = array_intersect(
     <td class="edit-column">
         <?php
         if ($entry->latest_prescribed_med_use_id) {
-            echo '<i class="oe-i info small pad js-has-tooltip" data-tooltip-content= "This item was previously prescribed through OpenEyes and cannot be changed. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i>"></i>';
+            echo '<i class="oe-i info small pad js-has-tooltip" data-tooltip-content= "This item was previously prescribed through OpenEyes and cannot be changed. Please use the <strong><em>Click here to stop</em></strong> button to end this entry"></i>"></i>';
         } else if ($removable) {
             if (!$entry->is_copied_from_previous_event) {
                 echo '<i class="oe-i trash js-remove"></i>';
             } elseif (!$stopped) {
-                echo '<i class="oe-i no-permissions js-has-tooltip" data-tooltip-content="This item cannot be deleted as it was added in a previous event. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i>';
+                echo '<i class="oe-i no-permissions js-has-tooltip" data-tooltip-content="This item cannot be deleted as it was added in a previous event. Please use the <strong><em>Click here to stop</em></strong> button to end this entry"></i>';
             }
         } ?>
 </tr>
@@ -202,8 +202,8 @@ $end_date_display = str_replace('0000', '', $end_date_display);
 
                 <div class="alternative-display inline">
                     <div class="alternative-display-element textual">
-                        <a class="js-meds-stop-btn" id="<?= $model_name . "_entries_" . $row_count . "_stopped_button" ?>" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id)) {
-                                                                                                                                                                                            ?> style="display: none;" <?php
+                        <a class="js-meds-stop-btn" id="<?= $model_name . "_entries_" . $row_count . "_stopped_button" ?>" data-row_count="<?= $row_count ?>" href="javascript:void(0); " 
+                            <?php if ($entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id)) { ?> style="display: none;" <?php
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     } ?>>
                             <?php if (!is_null($entry->end_date)) : ?>
                                 <i class="oe-i stop small pad"></i>
