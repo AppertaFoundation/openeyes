@@ -29,6 +29,7 @@ namespace OEModule\OphCoMessaging\models;
  * @property int $urgent
  * @property string $message_text
  * @property int $marked_as_read
+ * @property int $cc_enabled
  *
  * The followings are the available model relations:
  * @property \ElementType $element_type
@@ -59,7 +60,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
     }
 
     protected $errorExceptions = array(
-        'OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id' => 'fao-field',
+        'OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id' => 'fao-search',
     );
 
     /**
@@ -68,9 +69,9 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read', 'safe'),
+            array('event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read, cc_enabled', 'safe'),
             array('for_the_attention_of_user_id, message_type_id, message_text, ', 'required'),
-            array('id, event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read', 'safe', 'on' => 'search'),
+            array('id, event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read, cc_enabled', 'safe', 'on' => 'search'),
         );
     }
 
@@ -89,6 +90,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'for_the_attention_of_user' => array(self::BELONGS_TO, 'User', 'for_the_attention_of_user_id'),
             'message_type' => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_MessageType', 'message_type_id'),
+            'copyto_users' => array(self::HAS_MANY, 'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_CopyTo_Users', 'element_id'),
         );
     }
 
@@ -100,12 +102,13 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'for_the_attention_of_user_id' => 'For the attention of',
+            'for_the_attention_of_user_id' => 'Send to',
             'message_type_id' => 'Type',
             'urgent' => 'Urgent',
             'marked_as_read' => 'Mark as read',
             'message_text' => 'Text',
             'comment_text' => 'Comment',
+            'copyto_users' => 'Copy To',
         );
     }
 
@@ -125,6 +128,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         $criteria->compare('urgent', $this->urgent);
         $criteria->compare('marked_as_read', $this->marked_as_read);
         $criteria->compare('message_text', $this->message_text);
+        $criteria->compare('cc_enabled', $this->cc_enabled);
         $criteria->order = 'created_date desc';
 
         return new \CActiveDataProvider(get_class($this), array(
@@ -147,5 +151,46 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 
     public function getPrint_view() {
         return 'print_'.$this->getDefaultView();
+    }
+
+    /**
+     * Get the full name and title of the users that sent the message
+     *
+     * @return array
+     */
+    public function getSenders() {
+        $criteria = new \CDbCriteria();
+        $criteria->compare('for_the_attention_of_user_id', $this->id);
+
+        $senders = array_unique(\CHtml::listData(self::model()->findAll($criteria), 'id', 'created_user_id'));
+
+        $sender_names = array();
+
+        foreach ($senders as $sender) {
+            $sender_names[$sender] = \User::model()->findByPk($sender)->getFullNameAndTitle();
+        }
+
+        return $sender_names;
+    }
+
+    public function getReadStyleClass() {
+        if (isset($this->last_comment)) {
+            if ($this->last_comment->marked_as_read === '0' && $this->last_comment->created_user_id !== \Yii::app()->user->id) {
+                return "unread";
+            }
+            return "read";
+        } elseif ($this->for_the_attention_of_user_id === \Yii::app()->user->id || $this->created_user_id === \Yii::app()->user->id) {
+            if ($this->marked_as_read) {
+                return "read";
+            }
+            return "unread";
+        } else {
+            foreach ($this->copyto_users as $copied_user) {
+                if ($copied_user->user_id === \Yii::app()->user->id && $copied_user->marked_as_read === '0') {
+                    return "unread";
+                }
+            }
+            return "read";
+        }
     }
 }

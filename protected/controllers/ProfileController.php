@@ -55,6 +55,11 @@ class ProfileController extends BaseController
             'user_id = :user_id AND `key` = "display_theme"',
             array('user_id' => $user->id)
         );
+        $user_out_of_office = UserOutOfOffice::model()->find('user_id=?', array($user->id));
+        if (!$user_out_of_office) {
+            $user_out_of_office = new UserOutOfOffice();
+            $user_out_of_office->user_id = $user->id;
+        }
 
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
@@ -65,8 +70,28 @@ class ProfileController extends BaseController
                 }
                 $user->password_hashed=true;
 
+                $fields = $_POST['UserOutOfOffice'];
+
+                $user_out_of_office->enabled = $fields['enabled'];
+                // strtotime converts empty string to 1970-01-01
+                if (!empty($fields['from_date'])) {
+                    $user_out_of_office->from_date = date("Y-m-d", strtotime($fields['from_date']));
+                } else {
+                    // Required to give validation error to user
+                    $user_out_of_office->from_date = '';
+                }
+                if (!empty($fields['to_date'])) {
+                    $user_out_of_office->to_date = date("Y-m-d", strtotime($fields['to_date']));
+                } else {
+                    // Required to give validation error to user
+                    $user_out_of_office->to_date = '';
+                }
+                $user_out_of_office->alternate_user_id = $fields['alternate_user_id'];
+
                 if (!$user->save()) {
                     $errors = $user->getErrors();
+                } elseif (!$user_out_of_office->save()) {
+                    $errors = $user_out_of_office->getErrors();
                 } else {
                     Yii::app()->user->setFlash('success', 'Your profile has been updated.');
                 }
@@ -79,6 +104,7 @@ class ProfileController extends BaseController
             'user' => $user,
             'errors' => $errors,
             'display_theme' => $display_theme_setting ? $display_theme_setting->value : null,
+            'user_out_of_office' => $user_out_of_office,
         ));
     }
 

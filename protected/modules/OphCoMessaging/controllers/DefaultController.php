@@ -19,6 +19,7 @@ namespace OEModule\OphCoMessaging\controllers;
 
 use OEModule\OphCoMessaging\components\OphCoMessaging_API;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_CopyTo_Users;
 
 class DefaultController extends \BaseEventTypeController
 {
@@ -30,6 +31,7 @@ class DefaultController extends \BaseEventTypeController
         'markread' => self::ACTION_TYPE_MARKMESSAGE,
         'markunread' => self::ACTION_TYPE_MARKMESSAGE,
         'addcomment' => self::ACTION_TYPE_MYMESSAGE,
+        'checkuseroutofoffice' => self::ACTION_TYPE_CREATE,
     );
 
     /**
@@ -49,7 +51,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkManageMyMessageAccess()
     {
-        return $this->checkAccess('OprnViewClinical') && ($this->isIntendedRecipient() || $this->isSender());
+        return $this->checkAccess('OprnViewClinical') && ($this->isIntendedRecipient() || $this->isSender() || $this->isCopiedToUser());
     }
 
     /**
@@ -59,7 +61,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkMarkMyMessageAccess()
     {
-        return $this->checkAccess('OprnViewClinical') && $this->isIntendedRecipient() || $this->isSender(\Yii::app()->user);
+        return $this->checkAccess('OprnViewClinical') && ($this->isIntendedRecipient() || $this->isSender(\Yii::app()->user) || $this->isCopiedToUser());
     }
 
     /**
@@ -138,10 +140,13 @@ class DefaultController extends \BaseEventTypeController
     {
         $el = $this->getMessageElement();
 
-        if ($el->comments) {
+        if ($el->comments && $this->canMarkCommentRead($el)) {
             $this->markCommentRead($el);
         } else {
-            $this->markMessageRead($el);
+            if ($el->for_the_attention_of_user_id === \Yii::app()->user->id) {
+                $this->markMessageRead($el);
+            }
+            $this->markCopyToRead($el);
         }
 
         if (!isset($_GET['noRedirect']) || !$_GET['noRedirect']) {
@@ -177,7 +182,19 @@ class DefaultController extends \BaseEventTypeController
             $el->last_comment->marked_as_read = false;
             $el->last_comment->save();
         } else {
-            $el->marked_as_read = false;
+            if ($el->for_the_attention_of_user_id == \Yii::app()->user->id) {
+                $el->marked_as_read = false;
+            }
+            if ($el->copyto_users) {
+                $copiedto_users = $el->copyto_users;
+                foreach ($copiedto_users as $copiedto_user) {
+                    if ($copiedto_user->user_id == \Yii::app()->user->id) {
+                        $copiedto_user->marked_as_read = false;
+                        $copiedto_user->save();
+                        break;
+                    }
+                }
+            }
             $transaction = \Yii::app()->db->beginTransaction();
             try {
                 $el->save();
@@ -258,6 +275,16 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Send the JSON message with alternate user if the recipient is out of office
+     */
+    public function actionCheckUserOutOfOffice()
+    {
+        if (isset($_POST['user_id'])) {
+            return $this->renderJSON(\UserOutOfOffice::model()->checkUserOutOfOffice($_POST['user_id']));
+        }
+    }
+
+    /**
      * Convenience function for performing redirect once a message has been manipulated.
      */
     protected function redirectAfterAction()
@@ -295,6 +322,41 @@ class DefaultController extends \BaseEventTypeController
         return false;
     }
 
+    protected function isCopiedToUser(\OEWebUser $user = null)
+    {
+        if (is_null($user)) {
+            $user = \Yii::app()->user;
+        }
+
+        if ($el = $this->getMessageElement()) {
+            if ($el->cc_enabled) {
+                foreach ($el->copyto_users as $copied_user) {
+                    if ($copied_user->user_id === $user->getId()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    protected function copiedToUserMarkedRead(\OEWebUser $user = null)
+    {
+        if (is_null($user)) {
+            $user = \Yii::app()->user;
+        }
+
+        if ($el = $this->getMessageElement()) {
+            foreach ($el->copyto_users as $copied_user) {
+                if ($copied_user->user_id === $user->getId()) {
+                    return $copied_user->marked_as_read;
+                }
+            }
+        }
+    }
+
+
     /**
      * Determine if the given user (or current if none given) is the sender of the message
      * that is being viewed.
@@ -329,8 +391,11 @@ class DefaultController extends \BaseEventTypeController
             $user = \Yii::app()->user;
         }
         $messageElement = $this->getMessageElement();
-        $canComment = $messageElement->message_type->reply_required && (!$messageElement->comments && $this->isIntendedRecipient($user)
-                || (($this->isSender($user) || $this->isIntendedRecipient($user)) && $messageElement->comments && $messageElement->last_comment->created_user_id != $user->getId()));
+        $canComment = $messageElement->message_type->reply_required && ((!$messageElement->comments && $this->isIntendedRecipient($user) && !$this->isSender($user))
+                || (($this->isIntendedRecipient($user) || $this->isSender($user))
+                && $messageElement->comments
+                && !$messageElement->last_comment->marked_as_read
+                && $messageElement->last_comment->created_user_id != $user->getId()));
 
         return $canComment;
     }
@@ -355,7 +420,9 @@ class DefaultController extends \BaseEventTypeController
     public function canMarkRead()
     {
         $el = $this->getMessageElement();
-        if ($el->comments) {
+        if ($el->cc_enabled && $this->isCopiedToUser()) {
+            return $this->canMarkCopyToRead($el);
+        } elseif ($el->comments) {
             return $this->canMarkCommentRead($el);
         } else {
             return $this->canMarkMessageRead($el);
@@ -375,6 +442,20 @@ class DefaultController extends \BaseEventTypeController
             return true;
         }
 
+        return false;
+    }
+
+    protected function canMarkCopyToRead($el)
+    {
+        $user = \Yii::app()->user;
+        if ($this->isCopiedToUser($user)) {
+            $copied_users = $el->copyto_users;
+            foreach ($copied_users as $copied_user) {
+                if ($copied_user->user_id === $user->getId() && $copied_user->marked_as_read === '0') {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -403,7 +484,8 @@ class DefaultController extends \BaseEventTypeController
                 && $el->last_comment->marked_as_read) {
                 return true;
             }
-        } elseif ($this->isIntendedRecipient() && $el->marked_as_read) {
+        } elseif (($this->isIntendedRecipient() && $el->marked_as_read)
+            || ($this->isCopiedToUser($user) && $this->copiedToUserMarkedRead($user))) {
             return true;
         }
 
@@ -451,13 +533,60 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    protected function markCopyToRead($el)
+    {
+        $user = \Yii::app()->user;
+        $transaction = \Yii::app()->db->beginTransaction();
+        try {
+            $copiedto_users = $el->copyto_users;
+            foreach ($copiedto_users as $copiedto_user) {
+                if ($copiedto_user->user_id == $user->id) {
+                    $copiedto_user->marked_as_read = true;
+                    $copiedto_user->save();
+                    break;
+                }
+            }
+
+            $this->event->audit('event', 'marked read by copied to user');
+
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollback();
+            throw $e;
+        }
+    }
+
     /**
      * Extend the parent method to set event issue data based on user selection.
      */
     protected function updateEventInfo()
     {
         parent::updateEventInfo();
+        $this->updateCopyToUsers();
         $this->updateEventIssues();
+    }
+
+    /**
+     * Save all the users that have been copied to in the message event
+     */
+    protected function updateCopyToUsers()
+    {
+        $element = $this->getMessageElement();
+
+        if (isset($_POST['OEModule_OphCoMessaging_models_OphCoMessaging_Message_CopyTo_Users']['user_id']) &&
+            trim($_POST['OEModule_OphCoMessaging_models_OphCoMessaging_Message_CopyTo_Users']['user_id']) !== '') {
+            $element->cc_enabled = 1;
+            $element->save();
+
+            $copyto_users = explode(',', @$_POST['OEModule_OphCoMessaging_models_OphCoMessaging_Message_CopyTo_Users']['user_id']);
+
+            foreach ($copyto_users as $copyto_user) {
+                $copyto = new OphCoMessaging_Message_CopyTo_Users();
+                $copyto->element_id = $element->id;
+                $copyto->user_id = $copyto_user;
+                $copyto->save();
+            }
+        }
     }
 
     /**

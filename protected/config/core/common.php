@@ -565,6 +565,12 @@ return array(
         ),
 
         /**
+         * Limit the number of users that can be copied to in the
+         * Message Event
+         */
+        'OphCoMessaging_copyto_user_limit' => 5,
+
+        /**
          *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
          */
         "auto_schedule_operation" => false,
