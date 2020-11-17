@@ -50,6 +50,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property string $comments
  * @property int $latest_med_use_id
  * @property int $stopped_in_event_id
+ * @property bool $is_discontinued
  *
  * The followings are the available model relations:
  * @property Event $copiedFromMedUse
@@ -134,7 +135,7 @@ class EventMedicationUse extends BaseElement
         return array(
             array('usage_type, medication_id', 'required'),
             array('latest_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, stop_reason_id, 
-			        prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly' => true),
+			        prescription_item_id, prescribe, hidden, is_discontinued', 'numerical', 'integerOnly' => true),
             array('dose', 'numerical'),
             array('laterality', 'validateLaterality'),
             array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id, bound_key', 'length', 'max' => 10),
@@ -583,6 +584,9 @@ class EventMedicationUse extends BaseElement
     {
         if ($this->prescription_item_id) {
             return $this->prescription_item_id;
+        }
+        if ($this->isPrescription()) {
+            return $this->id;
         }
         $previous_medication = EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $this->id]);
         return ($previous_medication && isset($previous_medication->event)) ? $previous_medication->findLatestPrescribedItemId() : null;
@@ -1115,7 +1119,7 @@ class EventMedicationUse extends BaseElement
                                 $attributes = ['latest_med_use_id' => $this->id];
                                 if (!$this->isEqualsAttributes($latest_item, true, false)) {
                                     $latest_item->setStopReasonTo('Medication parameters changed');
-                                    $attributes = array_merge($attributes, ['end_date' => date('Y-m-d'), 'stop_reason_id']);
+                                    $attributes = array_merge($attributes, ['end_date' => date('Y-m-d'), 'stop_reason_id', 'is_discontinued' => false]);
                                 }
                                 $latest_item->saveAttributes($attributes);
                             }
@@ -1123,13 +1127,15 @@ class EventMedicationUse extends BaseElement
                     }
                 }
             }
-            $this->latest_prescribed_med_use_id = $this->findLatestPrescribedItemId();
-            if ($this->getIsNewRecord()) { // needs replacing with something better, was used previously so will use here for now
-                $this->setIsNewRecord(false);
-                $this->saveAttributes(['latest_prescribed_med_use_id']);
-                $this->setIsNewRecord(true);
-            } else {
-                $this->saveAttributes(['latest_prescribed_med_use_id']);
+            if (!$this->isPrescription()) {
+                $this->latest_prescribed_med_use_id = $this->findLatestPrescribedItemId();
+                if ($this->getIsNewRecord()) { // needs replacing with something better, was used previously so will use here for now
+                    $this->setIsNewRecord(false);
+                    $this->saveAttributes(['latest_prescribed_med_use_id']);
+                    $this->setIsNewRecord(true);
+                } else {
+                    $this->saveAttributes(['latest_prescribed_med_use_id']);
+                }
             }
         }
 

@@ -404,6 +404,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 		$full_row.on("click", ".js-btn-prescribe", function () {
             let $input = $(this).closest(".toggle-switch").find("input");
             let checked = !$input.prop("checked");
+            $full_row.find('input[name*="[is_discontinued]"]').val('0');
             if(!checked) {
                 let $data_key = $row.attr('data-key');
                 $(".js-taper-row[data-parent-key='" + $data_key + "']").remove();
@@ -462,6 +463,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                   }
               }
           } else {
+              if ($(e.target).hasClass('js-end-date')) {
+                  let end_date = $(e.target).val();
+                  let reset_value = $(e.target).data('reset-value');
+                  $full_row.find('input[name*="[is_discontinued]"]').val(end_date !== reset_value ? 1 : 0);
+              }
+
               if (typeof $bound_entry !== 'undefined') {
                   let row_needs_bond_removed = true;
 
@@ -488,6 +495,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                       controller.setBoundEntryStop($bound_entry);
                       controller.disableMedicationHistoryRow($bound_entry);
                       $row.find('.js-reset-mm').show();
+                      $row.find('input[name*="[is_discontinued]"]').val('0');
                   }
               }
           }
@@ -1535,6 +1543,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
             $medication_management_row.find(":input[name*='[" + id + "]']").val(history_row_value);
         });
+
+        if ($medication_management_row.find('.js-end-date').val() !== $medication_management_row.data('reset-value')) {
+            $medication_management_row.find('input[name*="[is_discontinued]"]').val('1');
+        }
 
         let $history_second_row = $history_row.parent().find('tr[data-key=' + $history_row.data('key') + '].js-second-row');
         let $datepicker_wrapper = $history_second_row.find(".js-end-date-wrapper");

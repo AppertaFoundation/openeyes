@@ -37,10 +37,11 @@ $entries_from_previous_event = array_filter($element->entries, function ($entry)
     return is_null($entry->id);
 });
 foreach ($element->entries as $entry) {
+    $event_id = $element->id ? $entry->event_id : null;
     $is_stopped = false;
     // if the request is POST, it means we are on the validation error screen
     // therefore we show entries just like the user set up originally
-    if ($entry->isStopped() && !empty($entry->stopped_in_event_id) && $entry->stopped_in_event_id !== $entry->event_id) {
+    if ($entry->isStopped() && !empty($entry->stopped_in_event_id) && $entry->stopped_in_event_id !== $event_id) {
         $is_stopped = true;
     } else {
         foreach ($history_entries as $history_entry) {
