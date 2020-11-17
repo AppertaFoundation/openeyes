@@ -35,6 +35,16 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
                   </a>
               </li>
               <li>
+                  <a id="display-unread-received" data-filter="unread_received" class="<?= ($message_type === 'unread_received' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
+                      <div class="flex">
+                          <div>To me</div>
+                          <?php if ($number_unread_received > 0) {
+                                ?><span class="unread"><?= $number_unread_received ?></span><?php
+                          } ?>
+                      </div>
+                  </a>
+              </li>
+              <li>
                 <a id="display-unread-urgent" data-filter="unread_urgent" class="<?= ($message_type === 'unread_urgent' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
                     <div class="flex">
                         <div>Urgent</div>
@@ -65,16 +75,6 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
                   </a>
               </li>
               <li>
-                  <a id="display-unread-received" data-filter="unread_received" class="<?= ($message_type === 'unread_received' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
-                      <div class="flex">
-                          <div>To me</div>
-                          <?php if ($number_unread_received > 0) {
-                                ?><span class="unread"><?= $number_unread_received ?></span><?php
-                          } ?>
-                      </div>
-                  </a>
-              </li>
-              <li>
                   <a id="display-unread-copied" data-filter="unread_copied" class="<?= ($message_type === 'unread_copied' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
                       <div class="flex">
                           <div><i class="oe-i duplicate small pad-right no-click"></i>CC on</div>
@@ -96,16 +96,16 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
               </li>
               <li>
                   <?= \CHtml::link(
-                      "Urgent <span class='count'>($number_read_urgent)</span>",
+                      "To me <span class='count'>($number_read_received)</span>",
                       '#',
-                      array('id' => 'display-read-urgent', 'data-filter' => 'read_urgent', 'class' => ($message_type === 'read_urgent' ? 'selected ' : '') . 'js-display-counter')
+                      array('id' => 'display-read-received', 'data-filter' => 'read_received', 'class' => ($message_type === 'read_received' ? 'selected ' : '') . 'js-display-counter')
                   ); ?>
               </li>
               <li>
                   <?= \CHtml::link(
-                      "To me <span class='count'>($number_read_received)</span>",
+                      "Urgent <span class='count'>($number_read_urgent)</span>",
                       '#',
-                      array('id' => 'display-read-received', 'data-filter' => 'read_received', 'class' => ($message_type === 'read_received' ? 'selected ' : '') . 'js-display-counter')
+                      array('id' => 'display-read-urgent', 'data-filter' => 'read_urgent', 'class' => ($message_type === 'read_urgent' ? 'selected ' : '') . 'js-display-counter')
                   ); ?>
               </li>
               <li>
