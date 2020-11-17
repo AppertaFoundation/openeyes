@@ -119,4 +119,7 @@ FilterProtocol  COMPRESS  DEFLATE change=yes;byteranges=no
   AddOutputFilterByType DEFLATE application/xhtml+xml application/rss+xml application/atom+xml
   AddOutputFilterByType DEFLATE image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype
 </IfModule>
-</IfModule>
+
+<FilesMatch "\.(js|css|woff2)$">
+    Header set Cache-Control "max-age=31536000"
+</FilesMatch>

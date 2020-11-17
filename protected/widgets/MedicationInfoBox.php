@@ -61,7 +61,7 @@ class MedicationInfoBox extends \BaseCWidget
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
 
-        $alt_terms = $medication->alternativeTerms($medication);
+        $alt_terms = $medication->alternativeTerms();
         if ($alt_terms !== '') {
             $data['Aliases'] = $alt_terms;
         }
@@ -88,7 +88,7 @@ class MedicationInfoBox extends \BaseCWidget
                 $this->error = true;
             } else {
                 $data = [
-                    'label' => $medication->getLabel()
+                    'label' => $medication->getLabel(true)
                 ];
 
                 if ($medication->isAMP()) {
@@ -119,7 +119,7 @@ class MedicationInfoBox extends \BaseCWidget
         foreach ($medication->medicationSets as $sets) {
             if ($sets->hasUsageCode('Formulary', $site_id, $subspecialty_id)) {
                 $this->icon = 'formulary';
-                
+
                 //if  ( count($data) > 0 ) {$this->append_label[] ="<br/>";}
                 $this->append_label[] = "<i class='oe-i formulary pad small'></i><em>In hospital formulary.</em>";
 
@@ -155,7 +155,9 @@ class MedicationInfoBox extends \BaseCWidget
             $append_l[] = $this->getAppendLabel();
 
             // add a blank line between the data and the append label (only when there is data)
-            if (!empty($lines)){$lines[] = "";}
+            if (!empty($lines)) {
+                $lines[] = "";
+            }
             $lines = array_merge($lines, $append_l);
 
             if ($lines) {

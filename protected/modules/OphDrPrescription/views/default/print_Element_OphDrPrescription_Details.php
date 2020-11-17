@@ -125,7 +125,7 @@ if ($footer_param !== null) {
             foreach ($items as $item) {
                 ?>
             <tr class="prescriptionItem<?=$this->patient->hasDrugAllergy($item->medication_id) ? ' allergyWarning' : '';?> ">
-                <td class="prescriptionLabel"><?=$item->medication->label; ?></td>
+                <td class="prescriptionLabel"><?=$item->medication->getLabel(true); ?></td>
                 <td><?=is_numeric($item->dose) ? ($item->dose . " " . $item->dose_unit_term) : $item->dose ?></td>
                 <td><?=$item->route->term ?><?php if ($item->dose_unit_term) {
                         echo ' (' . $item->dose_unit_term . ')';

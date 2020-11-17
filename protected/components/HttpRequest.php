@@ -38,4 +38,58 @@ class HttpRequest extends CHttpRequest
             }
         }
     }
+    // Sanitize string
+    protected function purify($foo)
+    {
+        if (is_string($foo)) {
+            $purifier = new \CHtmlPurifier();
+            return $purifier->purify($foo);
+        }
+        else{
+            return $foo;
+        }
+    }
+
+    //sanitize user inputs in URL for Delete
+    public function getDelete($name,$defaultValue=null)
+    {
+        return $this->purify(parent::getDelete($name,$defaultValue));
+    }
+
+    //sanitize user inputs in URL for one parameter
+    public function getParam($name,$defaultValue=null)
+    {
+        return $this->purify(parent::getParam($name,$defaultValue));
+    }
+
+    //sanitize user inputs in URL for PATCH
+    public function getPatch($name,$defaultValue=null)
+    {
+        return $this->purify(parent::getPatch($name,$defaultValue));
+    }
+
+    //sanitize user inputs in URL for POST
+    public function getPost($name,$defaultValue=null)
+    {
+        return $this->purify(parent::getPost($name,$defaultValue));
+    }
+
+    //sanitize user inputs in URL for PUT
+    public function getPut($name,$defaultValue=null)
+    {
+        return $this->purify(parent::getPut($name,$defaultValue));
+    }
+
+    //sanitize user inputs in URL for one parameter
+    public function getQuery($name,$defaultValue=null)
+    {
+        return $this->purify(parent::getQuery($name,$defaultValue));
+    }
+
+    //sanitize user inputs in URL for all parameters
+    public function getQueryString()
+    {
+        return $this->purify(parent::getQueryString());
+    }
+ 
 }

@@ -86,7 +86,7 @@ $dispense_condition_options = array(
                         <td>
                             <input type="hidden" name="set_id" class="js-input js-medication-set-id" value="<?=$medication_set->id;?>">
 
-                            <?= (isset($med->preferred_term) ? $med->preferred_term : $med->medication->getLabel()); ?>
+                            <?= (isset($med->preferred_term) ? $med->preferred_term : $med->medication->getLabel(true)); ?>
                             <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedication[$k][id]"]); ?>
                             <?= \CHtml::activeHiddenField($med, 'medication_id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedication[$k][medication_id]"]); ?>
                         </td>
@@ -344,6 +344,9 @@ $dispense_condition_options = array(
                 data.id = '';
                 data.medication_id = medication_id;
                 data.key = OpenEyes.Util.getNextDataKey($table.find('tr'), 'key');
+                if (data.short_term) {
+                    data.preferred_term = data.short_term;
+                }
                 data.preferred_term += (data.amp_term && data.vtm_term) ? ' (' + data.vtm_term + ')' : '';
 
                 const $tr_html = Mustache.render($('#medication_template').html(), data);

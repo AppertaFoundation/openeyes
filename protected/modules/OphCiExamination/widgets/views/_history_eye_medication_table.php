@@ -18,7 +18,7 @@
         <?php foreach ($entries as $entry) : ?>
             <tr data-key="<?= $index ?>">
                 <td>
-                    <?= $entry->getMedicationDisplay() ?>
+                    <?= $entry->getMedicationDisplay(true) ?>
                     <?php
                     $comments = $entry->getComments();
                     if (!empty($comments)) { ?>
@@ -50,8 +50,7 @@
                     <?php $laterality = $entry->getLateralityDisplay();
                     $this->widget('EyeLateralityWidget', array('laterality' => $laterality, 'pad' => ''));
                     ?>
-                    <?php $earliest_entry = $entry->getEarliestEntry(); ?>
-                    <span class="oe-date"><?= $current ? $earliest_entry->getStartDateDisplay() : $entry->getEndDateDisplay() ?></span>
+                    <span class="oe-date"><?= $current ? $entry->getStartDateDisplay() : $entry->getEndDateDisplay() ?></span>
                 </td>
                 <td>
                     <?php if ($show_link) { ?>

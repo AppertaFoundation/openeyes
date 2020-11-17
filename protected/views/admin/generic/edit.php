@@ -261,7 +261,7 @@ $assetManager = Yii::app()->getAssetManager();
                                 break;
                             case 'text':
                             default:
-                                echo $form->textField($admin->getModel(), $field, $autoComplete);
+                                echo $form->textField($admin->getModel(), $field, array_merge($autoComplete, array('class' => 'cols-full')));
                                 break;
                         }
                     } ?>

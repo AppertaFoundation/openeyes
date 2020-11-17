@@ -41,7 +41,7 @@
                                    data-tooltip-content="Allergic to <?= implode(',', $this->patient->getPatientDrugAllergy($item->medication_id)) ?>">
                                 </i>
                             <?php endif; ?>
-                            <?php echo $item->getMedicationDisplay(); ?>
+                            <?php echo $item->getMedicationDisplay(true); ?>
                             <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
                         </td>
                             

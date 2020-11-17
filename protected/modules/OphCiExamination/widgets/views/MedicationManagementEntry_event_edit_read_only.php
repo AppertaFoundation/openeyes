@@ -60,7 +60,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
     >
 
         <td class="drug-details" rowspan="2">
-            <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
+            <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay(true) ?>
             <span class="js-prepended_markup">
             <?php
             if (!is_null($entry->medication_id)) {
@@ -85,7 +85,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]"
                    value="<?= $is_new ? "{{medication_id}}" : $entry->medication_id ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[medication_name]"
-                   value="<?= $entry->getMedicationDisplay() ?>" class="medication-name"/>
+                   value="<?= $entry->getMedicationDisplay(true) ?>" class="medication-name"/>
             <input type="hidden" name="<?= $field_prefix ?>[usage_type]"
                    value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />

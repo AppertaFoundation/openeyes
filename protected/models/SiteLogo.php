@@ -13,6 +13,14 @@
  */
 class SiteLogo extends BaseActiveRecord
 {
+    use purifier;
+
+    // overload this function so that the audit logs are not purified, as there is no appropriate user action to solve the validation errors
+    protected function purify($foo)
+    {
+        return $foo;
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -72,7 +80,7 @@ class SiteLogo extends BaseActiveRecord
             'secondary_logo' => 'Secondary Logo',
         );
     }
-    
+
     /**
      * @return string The URL for the logo
      */

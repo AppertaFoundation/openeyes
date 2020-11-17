@@ -65,8 +65,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         continue;
                     }
 
-                    $drug_aliases = $entry->medication->alternativeTerms() ? ' ('.$entry->medication->alternativeTerms().')': '';
-                    $drug_name = $entry->medication->preferred_term . $drug_aliases;
+                    $drug_aliases = $entry->medication->alternativeTerms(true) ? ' ('.$entry->medication->alternativeTerms(true).')': '';
+                    $drug_name = $entry->medication->getLabel(true) . $drug_aliases;
 
                     if ($entry->start_date !== "0000-00-00" && $entry->start_date !== "") {
                         $start_date = $this->changeInvalidSqlDateMonthAndDayToOne($entry->start_date, 'start');

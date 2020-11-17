@@ -49,6 +49,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property string $bound_key
  * @property string $comments
  * @property int $latest_med_use_id
+ * @property int $stopped_in_event_id
  *
  * The followings are the available model relations:
  * @property Event $copiedFromMedUse
@@ -85,7 +86,6 @@ class EventMedicationUse extends BaseElement
     public $prescription_not_synced = false;
 
     public $is_copied_from_previous_event = false;
-    public $previous_event_date;
 
     /** @var bool Whether tapers can be added */
     public $taper_support = false;
@@ -146,9 +146,10 @@ class EventMedicationUse extends BaseElement
             array('end_date', 'validateEndDateStopReason'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('start_date', 'default', 'value' => '0000-00-00'),
-            array('last_modified_date, created_date, event_id, comments, latest_med_use_id', 'safe'),
+            array('last_modified_date, created_date, event_id, comments, latest_med_use_id, stopped_in_event_id', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('stopped_in_event_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('stop_reason_id', 'validateStopReason'),
             array(
                 'id, event_id, copied_from_med_use_id, latest_prescribed_med_use_id, usage_type, usage_subtype, 
@@ -330,6 +331,8 @@ class EventMedicationUse extends BaseElement
         $criteria->compare('last_modified_date', $this->last_modified_date, true);
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
+        $criteria->compare('latest_med_use_id', $this->latest_med_use_id);
+        $criteria->compare('stopped_in_event_id', $this->stopped_in_event_id);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
@@ -348,8 +351,10 @@ class EventMedicationUse extends BaseElement
         $this->updateStateProperties();
         if ($this->copied_from_med_use_id && $this->copied_from_med_use_id !== '0' && !$this->prescription_item_id) {
             $this->is_copied_from_previous_event = true;
-            $previous_event_date = Event::model()->findByPk($this->copied_from_med_use_id)->event_date;
-            $this->previous_event_date = date('Y-m-d', strtotime($previous_event_date));
+        }
+
+        if ($this->isStopped() && empty($this->stopped_in_event_id)) {
+            $this->stopped_in_event_id = $this->event_id;
         }
         parent::afterValidate();
     }
@@ -377,6 +382,8 @@ class EventMedicationUse extends BaseElement
                 if ($check_laterality && $this->route->isEyeRoute()) {
                     $result = $this->$attribute === $medication->$attribute;
                 }
+            } elseif (empty($this->$attribute) && empty($medication->$attribute)) {
+                $result = true;
             } else {
                 $result = $this->$attribute === $medication->$attribute;
             }
@@ -564,7 +571,7 @@ class EventMedicationUse extends BaseElement
             return $this;
         }
         $previous_medication = EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $this->id]);
-        return $previous_medication && isset($previous_medication->event) ? $previous_medication->getEarliestEntry() : $this;
+        return ($previous_medication && isset($previous_medication->event)) ? $previous_medication->getEarliestEntry() : $this;
     }
 
     /**
@@ -578,7 +585,7 @@ class EventMedicationUse extends BaseElement
             return $this->prescription_item_id;
         }
         $previous_medication = EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $this->id]);
-        return $previous_medication && isset($previous_medication->event) ? $previous_medication->findLatestPrescribedItemId() : null;
+        return ($previous_medication && isset($previous_medication->event)) ? $previous_medication->findLatestPrescribedItemId() : null;
     }
 
     public function getComments()
@@ -631,24 +638,9 @@ class EventMedicationUse extends BaseElement
         if ($laterality === '') {
             return $laterality;
         }
-        $left = false;
-        $right = false;
 
-        switch ($laterality) {
-            case 'L':
-                $left = true;
-                break;
-            case 'R':
-                $right = true;
-                break;
-            case 'B':
-                $left = true;
-                $right = true;
-                break;
-        }
-
-        $right_icon = $right ? 'R' : 'NA';
-        $left_icon = $left ? 'L' : 'NA';
+        $right_icon = in_array($laterality, ['B', 'R']) ? 'R' : 'NA';
+        $left_icon = in_array($laterality, ['B', 'L']) ? 'L' : 'NA';
 
         ob_start(); ?>
         <span class="oe-eye-lat-icons">
@@ -702,9 +694,7 @@ class EventMedicationUse extends BaseElement
             $data['Route'] = $this->route->term;
         }
 
-        $earliest_entry = $this->getEarliestEntry();
-
-        $data['Start date'] = Helper::formatFuzzyDate($earliest_entry->start_date);
+        $data['Start date'] = Helper::formatFuzzyDate($this->start_date);
         if ($this->end_date) {
             $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
         }
@@ -971,6 +961,25 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
+     * Checks if medication is continued based on previous medication
+     *
+     * @param EventMedicationUse $previous_medication
+     * @return bool
+     */
+    public function isContinuedMedication(EventMedicationUse $previous_medication): bool
+    {
+        if ($this->isUndated()) {
+            if ($previous_medication->event_id !== $this->event_id) {
+                return true;
+            }
+        } elseif (!$previous_medication->isUndated() && strtotime($previous_medication->start_date) < strtotime(date('Y-m-d'))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Checks if medication has been continued
      * @return EventMedicationUse
      */
@@ -982,7 +991,7 @@ class EventMedicationUse extends BaseElement
         $previous_medication = EventMedicationUse::model()->find($criteria);
 
         if ($previous_medication && isset($previous_medication->event)) {
-            if ($previous_medication->event_id !== $this->event_id) {
+            if ($this->isContinuedMedication($previous_medication)) {
                 return $previous_medication;
             } else {
                 return $previous_medication->getContinuedMedication();
@@ -1024,7 +1033,7 @@ class EventMedicationUse extends BaseElement
      * */
     public function isUndated(): bool
     {
-        return $this->start_date === "" || $this->start_date === null || $this->start_date === '0000-00-00';
+        return empty($this->start_date) || $this->start_date === '0000-00-00';
     }
 
     public function beforeValidate()
@@ -1090,24 +1099,26 @@ class EventMedicationUse extends BaseElement
                 foreach (['OphDrPrescription' => $existing_prescription_items, 'OphCiExamination' => $existing_history_med_items] as $usage_type => $items) {
                     if ($items) {
                         $latest_item = end($items);
-                        if ($usage_type === 'OphDrPrescription') {
-                            $latest_item_end_date = $latest_item->stopDateFromDuration();
-                            if (!is_null($latest_item_end_date)) {
-                                $formatted_end_date = $latest_item_end_date->format('Y-m-d');
+                        if ($latest_item->id !== $this->latest_med_use_id) {
+                            if ($usage_type === 'OphDrPrescription') {
+                                $latest_item_end_date = $latest_item->stopDateFromDuration();
+                                if (!is_null($latest_item_end_date)) {
+                                    $formatted_end_date = $latest_item_end_date->format('Y-m-d');
+                                } else {
+                                    $formatted_end_date = $latest_item->end_date;
+                                }
                             } else {
+                                $latest_item_end_date = $latest_item->end_date;
                                 $formatted_end_date = $latest_item->end_date;
                             }
-                        } else {
-                            $latest_item_end_date = $latest_item->end_date;
-                            $formatted_end_date = $latest_item->end_date;
-                        }
-                        if (is_null($latest_item_end_date) || $formatted_end_date >= date('Y-m-d')) {
-                            $attributes = ['latest_med_use_id' => $this->id];
-                            if (!$this->isEqualsAttributes($latest_item, true, false)) {
-                                $latest_item->setStopReasonTo('Medication parameters changed');
-                                $attributes = array_merge($attributes, ['end_date' => date('Y-m-d'), 'stop_reason_id']);
+                            if (is_null($latest_item_end_date) || $formatted_end_date >= date('Y-m-d')) {
+                                $attributes = ['latest_med_use_id' => $this->id];
+                                if (!$this->isEqualsAttributes($latest_item, true, false)) {
+                                    $latest_item->setStopReasonTo('Medication parameters changed');
+                                    $attributes = array_merge($attributes, ['end_date' => date('Y-m-d'), 'stop_reason_id']);
+                                }
+                                $latest_item->saveAttributes($attributes);
                             }
-                            $latest_item->saveAttributes($attributes);
                         }
                     }
                 }
