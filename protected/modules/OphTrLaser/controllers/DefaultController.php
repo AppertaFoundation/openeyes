@@ -16,9 +16,6 @@
  */
 class DefaultController extends BaseEventTypeController
 {
-
-    protected $show_element_sidebar = true;
-
     // This map defines which elements can import eyedraw data from the most recent element type in the current episode
     public static $IMPORT_ELEMENTS = array(
         'Element_OphTrLaser_PosteriorPole' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole',
