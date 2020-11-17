@@ -21,7 +21,7 @@
     "lodash": "^4.17.4",
     "pickmeup": "~3.2.0",
     "plotly.js-dist": "^1.41.3",
-    "sortablejs": "^1.8.4",
+    "sortablejs": "~1.10.2",
     "tinymce": "^4.8.2",
     "autosize": "^4.0.0",
     "jspdf": "1.5.2",
