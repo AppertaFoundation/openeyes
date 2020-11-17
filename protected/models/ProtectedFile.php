@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+
 /**
  * This is the model class for table "protected_file".
  *
@@ -34,6 +35,15 @@
  */
 class ProtectedFile extends BaseActiveRecordVersioned
 {
+
+    use purifier;
+
+    // overload this function so that the audit logs are not purified, as there is no appropriate user action to solve the validation errors
+    protected function purify($foo)
+    {
+        return $foo;
+    }
+
     const THUMBNAIL_QUALITY = 85;
 
     /**
