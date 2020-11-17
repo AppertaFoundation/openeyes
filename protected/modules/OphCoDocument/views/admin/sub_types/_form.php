@@ -76,7 +76,7 @@
                             <label class="inline highlight" for="<?= $model_name . '_sub_type_event_icon_id_' . $key?>">
                                 <input type="radio" id="<?= $model_name . '_sub_type_event_icon_id_' . $key ?>" <?= $model->sub_type_event_icon_id === $icon->id ? 'checked="checked"' : '' ?>
                                        name="<?=$model_name?>[sub_type_event_icon_id]" value="<?= $icon->id ?>">
-                                <i class="oe-i-e large <?= $icon->name ?>"></i>
+                                <i class="oe-i-e <?= $icon->name ?>"></i>
                             </label>
                         <?php } ?>
                     </div>
