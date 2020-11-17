@@ -161,7 +161,6 @@ class HistoryMedications extends BaseMedicationWidget
             if ($this->inEditMode()) {
                 foreach ($this->element->entries as $entry) {
                     $entry->id = null;
-                    $entry->event_id = null;
                 }
             }
 

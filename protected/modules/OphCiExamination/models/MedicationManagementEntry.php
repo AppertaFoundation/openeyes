@@ -157,6 +157,9 @@ class MedicationManagementEntry extends \EventMedicationUse
 
     public function afterValidate()
     {
+        if ($this->is_discontinued && !$this->prescribe) {
+            $this->stopped_in_event_id = $this->event_id;
+        }
         // validate Tapers
         foreach ($this->tapers as $key => $taper) {
             $taper->item_id = $this->id;

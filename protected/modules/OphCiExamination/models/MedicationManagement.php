@@ -147,7 +147,8 @@ class MedicationManagement extends BaseMedicationElement
             $continued_medication = $e->getContinuedMedication();
             return (($e->start_date == $event_date || $e->isUndated()) && is_null($continued_medication)
                 && (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
-                && !in_array($e->id, $changed_entries_ids));
+                && !in_array($e->id, $changed_entries_ids))
+                && is_null($e->stopped_in_event_id);
         });
     }
 
@@ -172,10 +173,7 @@ class MedicationManagement extends BaseMedicationElement
     public function getStoppedEntries() : array
     {
         return array_filter($this->visible_entries, function ($e) {
-            $continued_medication = $e->getContinuedMedication();
-            return !is_null($e->end_date)
-                && ($e->end_date <= date('Y-m-d')
-                    || $continued_medication && !$e->prescribe && $continued_medication->end_date !== $e->end_date);
+            return !is_null($e->end_date) && $e->is_discontinued && $e->stopped_in_event_id === $e->event_id;
         });
     }
 

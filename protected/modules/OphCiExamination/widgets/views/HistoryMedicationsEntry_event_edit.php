@@ -110,7 +110,7 @@ $stop_fields_validation_error = array_intersect(
                             echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </div>
                         <span class="tabspace"></span>
-                        <button type='button' onclick="switch_alternative(this);" <?= $disabled ? 'disabled="disabled"' : ''?>>Change Dose/Freq ...</button>
+                        <button type='button' onclick="switch_alternative(this);" <?= $disabled || $stopped ? 'disabled="disabled"' : ''?>>Change Dose/Freq ...</button>
                     </div>
                     <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
@@ -164,7 +164,7 @@ $stop_fields_validation_error = array_intersect(
     <td class="edit-column">
         <?php
         if ($entry->latest_prescribed_med_use_id) {
-            echo '<i class="oe-i info small pad js-has-tooltip" data-tooltip-content= "This item was previously prescribed through OpenEyes and cannot be changed. Please use the <strong><em>Click here to stop</em></strong> button to end this entry"></i>"></i>';
+            echo '<i class="oe-i info small pad js-has-tooltip" data-tooltip-content= "This item was previously prescribed through OpenEyes and cannot be changed. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i></i>';
         } else if ($removable) {
             if (!$entry->is_copied_from_previous_event) {
                 echo '<i class="oe-i trash js-remove"></i>';
@@ -194,7 +194,7 @@ $end_date_display = str_replace('0000', '', $end_date_display);
                     <?php } ?>
                     <fieldset style="display: <?= $is_new || !empty($entry->errors) ? 'block' : 'none' ?> " class="js-datepicker-wrapper js-start-date-wrapper">
                         <i class="oe-i start small pad-right"></i>
-                        <input <?= $disabled && !$entry->isUndated() ? 'disabled="disabled"' : ''?> id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date" name="<?= $field_prefix ?>[start_date]" value="<?= $start_date_display ?>" style="width:80px;" placeholder="yyyy-mm-dd" class="js-start-date" autocomplete="off">
+                        <input <?= ($disabled || $stopped) && !$entry->isUndated() ? 'disabled="disabled"' : ''?> id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date" name="<?= $field_prefix ?>[start_date]" value="<?= $start_date_display ?>" style="width:80px;" placeholder="yyyy-mm-dd" class="js-start-date" autocomplete="off">
                     </fieldset>
                 </div>
             </span>
@@ -219,14 +219,18 @@ $end_date_display = str_replace('0000', '', $end_date_display);
                                 ?> style="display: none;" <?php
                                                                                                                                                                                                                                                                                                                                                                                                                         } ?> class="js-datepicker-wrapper js-end-date-wrapper">
                         <i class="oe-i stop small pad"></i>
-                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" name="<?= $field_prefix ?>[end_date]" value="<?= $end_date_display ?>" data-default="<?= date('Y-m-d') ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
+                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" <?= $stopped ? 'disabled="disabled"' : ''?> name="<?= $field_prefix ?>[end_date]" value="<?= $end_date_display ?>" data-default="<?= date('Y-m-d') ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
                     </fieldset>
                 </div>
             </span>
 
 
             <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5" style="<?= ((!($stop_fields_validation_error || $entry->hasErrors()) && ($entry->end_date)) || (($is_new || $entry->hasErrors()) && !($entry->end_date || $entry->stop_reason_id)) || (!$is_new && !$entry->end_date)) ? "display:none" : "" ?>">
-                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
+                <?php $stop_reason_layout = ['empty' => 'Reason stopped?', 'class' => ' js-stop-reason'];
+                if ($stopped) {
+                    $stop_reason_layout['disabled'] = 'disabled';
+                } ?>
+                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, $stop_reason_layout) ?>
             </span>
             <div class="js-stop-reason-text" style="<?= ((!$stop_fields_validation_error && !$entry->end_date) || (!$entry->hasErrors() && $entry->end_date)) ? "" : "display:none" ?>">
                 <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>

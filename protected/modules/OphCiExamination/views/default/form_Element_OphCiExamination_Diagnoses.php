@@ -41,7 +41,7 @@ $current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $user_fi
 $read_only_diagnoses = [];
 foreach ($this->patient->episodes as $ep) {
     $diagnosis = $ep->diagnosis; // Disorder model
-    if ($diagnosis && $diagnosis->specialty && $diagnosis->specialty->code == 130 && $ep->id != $current_episode->id) {
+    if ($diagnosis && $diagnosis->specialty && $diagnosis->specialty->code == 130 && (!$current_episode || $ep->id != $current_episode->id)) {
         $read_only_diagnoses[] = [
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),

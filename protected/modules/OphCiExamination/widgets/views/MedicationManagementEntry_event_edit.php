@@ -87,6 +87,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
         <input type="hidden" name="<?= $field_prefix ?>[hidden]" class="js-hidden" value="<?= $entry->hidden ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" class="js-prescription-item-id" value="<?= $entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int) $entry->is_copied_from_previous_event; ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[is_discontinued]" value="<?= (int) $entry->is_discontinued; ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[locked]" value="<?= $locked ?>" class="js-locked" />
         <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= $entry->bound_key ?>">
