@@ -375,14 +375,14 @@ class AnalyticsController extends BaseController
                     $diagnoses
                     ->where("LOWER(t.term) = '" . strtolower($params['diagnosis']) . "'")
                     ->getText()
-                    . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
+                    . ') diagnosis', 'e.patient_id = diagnosis.patient_id');
             }
             $paitent_list_command->limit($params['limit'])->offset($params['offset']);
         }
         // triggered by download csv
         if (isset($params['diagnoses_csv'])) {
             $paitent_list_command
-                ->leftJoin('(' . $diagnoses->getText() . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
+                ->leftJoin('(' . $diagnoses->getText() . ') diagnosis', 'e.patient_id = diagnosis.patient_id');
             $paitent_list_command->where("diagnosis.term IS NOT NULL");
         }
         // triggered from service screen
@@ -390,7 +390,7 @@ class AnalyticsController extends BaseController
         if (isset($params['ids'])&&((is_array($params['ids']) && count($params['ids'])) || $params['ids'])) {
             $params['ids'] = json_decode($params['ids']);
             $paitent_list_command
-                ->leftJoin('(' . $diagnoses->getText() . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
+                ->leftJoin('(' . $diagnoses->getText() . ') diagnosis', 'e.patient_id = diagnosis.patient_id');
             $paitent_list_command->where('p.id IN (' . implode(', ', $params['ids']) . ')');
         }
 
