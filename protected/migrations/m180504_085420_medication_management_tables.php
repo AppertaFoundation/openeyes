@@ -125,7 +125,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'id'                            => 'pk',
             'event_id'                      => 'INT unsigned NOT NULL',
             'copied_from_med_use_id'        => 'INT unsigned NULL',
-            'first_prescribed_med_use_id'   => 'INT NULL',
+            'latest_prescribed_med_use_id'   => 'INT NULL',
             'usage_type'                    => 'VARCHAR(45) NOT NULL',
             'usage_subtype'                 => 'VARCHAR(45) NULL',
             'medication_id'                 => 'INT NOT NULL',
@@ -135,11 +135,20 @@ class m180504_085420_medication_management_tables extends OEMigration
             'dose_unit_term'                => 'VARCHAR(255) NULL',
             'route_id'                      => 'INT NULL',
             'frequency_id'                  => 'INT NULL',
-            'duration_id'                   => 'INT(10) unsigned NULL',
+            'duration_id'                   => 'int(11) NULL',
             'dispense_location_id'          => 'INT NULL',
             'dispense_condition_id'         => 'INT NULL',
             'start_date'                    => 'date NOT NULL',
             'end_date'                      => 'date NULL',
+            'stop_reason_id'                => 'INT NULL',
+            'prescription_item_id'          => 'INT NULL',
+            'temp_prescription_item_id'     => 'INT NULL',
+            'prescribe'                     => 'BOOLEAN NOT NULL DEFAULT 0',
+            'hidden'                        => 'BOOLEAN NOT NULL DEFAULT 0',
+            'bound_key'                     => 'VARCHAR(20) NULL',
+            'latest_med_use_id'             => 'INT unsigned NULL',
+            'comments'                      => 'TINYTEXT NULL',
+            'stopped_in_event_id'           => 'int unsigned null default null',
         ), true);
 
         $this->createIndex('fk_ref_medication_idx', 'event_medication_use', 'medication_id');
@@ -148,6 +157,7 @@ class m180504_085420_medication_management_tables extends OEMigration
         $this->createIndex('fk_frequency_idx', 'event_medication_use', 'frequency_id');
         $this->createIndex('fk_event_1_idx', 'event_medication_use', 'event_id');
         $this->createIndex('fk_event_2_idx', 'event_medication_use', 'copied_from_med_use_id');
+        $this->createIndex('idx_temp_prescription_item_id', 'event_medication_use', 'temp_prescription_item_id', false);
 
         $this->addForeignKey('fk_ref_medication_2', 'event_medication_use', 'medication_id', 'medication', 'id', 'NO ACTION', 'NO ACTION');
         $this->addForeignKey('fk_form', 'event_medication_use', 'form_id', 'medication_form', 'id', 'NO ACTION', 'NO ACTION');
@@ -155,6 +165,9 @@ class m180504_085420_medication_management_tables extends OEMigration
         $this->addForeignKey('fk_frequency', 'event_medication_use', 'frequency_id', 'medication_frequency', 'id', 'NO ACTION', 'NO ACTION');
         $this->addForeignKey('fk_dispense_location', 'event_medication_use', 'dispense_location_id', 'ophdrprescription_dispense_location', 'id', 'NO ACTION', 'NO ACTION');
         $this->addForeignKey('fk_dispense_condition', 'event_medication_use', 'dispense_condition_id', 'ophdrprescription_dispense_condition', 'id', 'NO ACTION', 'NO ACTION');
+        $this->addForeignKey('fk_emu_stop_reason', 'event_medication_use', 'stop_reason_id', 'ophciexamination_medication_stop_reason', 'id');
+        $this->addForeignKey('fk_emu_prescription_item', 'event_medication_use', 'prescription_item_id', 'event_medication_use', 'id');
+        $this->addForeignKey('fk_emu_duration', 'event_medication_use', 'duration_id', 'medication_duration', 'id');
 
 
         $this->addForeignKey('fk_event_1', 'event_medication_use', 'event_id', 'event', 'id', 'NO ACTION', 'NO ACTION');
