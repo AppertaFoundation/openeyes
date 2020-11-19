@@ -90,7 +90,7 @@ class SiteController extends BaseController
     {
         if ($error = Yii::app()->errorHandler->error) {
             if (Yii::app()->request->isAjaxRequest) {
-                echo $error['message'];
+                echo htmlspecialchars($error['message']);
             } else {
                 $error_code = (int) $error['code'];
                 /*
