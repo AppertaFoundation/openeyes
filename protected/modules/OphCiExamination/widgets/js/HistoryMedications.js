@@ -18,25 +18,7 @@ var OpenEyes = OpenEyes || {};
 
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
-(function(exports) {
-
-    if(typeof window.switch_alternative !== "function") {
-        window.switch_alternative = function(anchor) {
-            let $wrapper = $(anchor).closest(".alternative-display-element");
-            $wrapper.hide();
-            $wrapper.siblings(".alternative-display-element").show();
-            let $col = $wrapper.closest(".alternative-display");
-            $col.next(".alt-display-trigger").hide();
-
-            let $dropdown = $col.find(".js-unit-dropdown");
-            let $input = $col.find(".dose_unit_term");
-
-            if($dropdown.length > 0 && $input.val() == "") {
-                $dropdown.removeAttr("disabled").show();
-                $input.attr("disabled", "disabled");
-            }
-        };
-    }
+(function (exports) {
 
 function HistoryMedicationsController(options) {
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);

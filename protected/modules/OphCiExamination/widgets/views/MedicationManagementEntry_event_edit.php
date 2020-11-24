@@ -99,10 +99,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
             array("dose", "dose_unit_term", "frequency_id", "route_id", "laterality"),
             array_keys($entry->errors)
         ); ?>
-        <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>" <?php if (!$direct_edit && empty($entry->errors)) {
-                                                                                                                                    echo 'style="display: none;"';
-                                                                      } ?>>
-
+        <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>" >
             <input class="fixed-width-small js-dose" id="<?= $model_name . "_entries_" . $row_count . "_dose" ?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
             <?php if ($is_template) { ?>
@@ -160,19 +157,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 array('class' => 'laterality-input')
             ); ?>
         </div>
-        <div class="alternative-display-element textual" <?php if ($direct_edit || !empty($entry->errors)) {
-                                                                echo 'style="display: none;"';
-                                                         } ?>>
-            <div class="flex-meds-inputs textual-display">
-                <?php $entry_text_display = $entry->getAdministrationDisplay(true);
-                echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
-                <?php if ($locked == 1) : ?>
-            </div>
-                <?php else : ?>
-            <span class="tabspace"></span>
-            <button type='button' onclick="switch_alternative(this);">Change Dose/Freq ...</button>
-        </div>
-                <?php endif; ?>
+        
     </div>
     </td>
     <td>

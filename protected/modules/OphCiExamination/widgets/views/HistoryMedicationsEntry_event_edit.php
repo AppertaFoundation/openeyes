@@ -104,13 +104,12 @@ $stop_fields_validation_error = array_intersect(
         <div id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>">
             <div class="flex-meds-inputs">
                 <div class="alternative-display inline">
-                    <div class="alternative-display-element textual flex-meds-inputs" <?= $direct_edit || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
+                    <div class="alternative-display-element textual flex-meds-inputs">
                         <div class="textual-display hint">
                             <?php $entry_text_display = $entry->getAdministrationDisplay(true);
                             echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </div>
-                        <span class="tabspace"></span>
-                        <button type='button' onclick="switch_alternative(this);" <?= $disabled || $stopped ? 'disabled="disabled"' : ''?>>Change Dose/Freq ...</button>
+                        <span class="tabspace"></span>                   
                     </div>
                     <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
