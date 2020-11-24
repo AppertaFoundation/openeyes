@@ -87,7 +87,7 @@ function HistoryMedicationsController(options) {
 HistoryMedicationsController._defaultOptions = {
     modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
     element: undefined,
-    addButtonSelector: '.js-add-select-search',
+    addButtonSelector: '#medication-history-popup .js-add-select-search',
     popup:'#add-to-medication',
     removeButtonSelector: 'i.js-remove',
     searchSource: '/medicationManagement/findRefMedications',
