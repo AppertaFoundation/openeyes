@@ -1407,7 +1407,7 @@ class DefaultController extends \BaseEventTypeController
                     'condition' => 'event.deleted = 0',
                     'with' => array(
                         'episode' => array(
-                            'condition' => 'episode.deleted = 0 and episode.id = '.$this->episode->id,
+                            'condition' => 'episode.deleted = 0 and episode.id = ' . $this->episode->id,
                         ),
                     ),
                   'order' => 'event.event_date desc, event.created_date desc',
@@ -1713,30 +1713,32 @@ class DefaultController extends \BaseEventTypeController
         $pupillary_abnormalities->eye_id = $data['eye_id'];
 
         foreach (['left', 'right'] as $side) {
-            if (isset($data['entries_' . $side])) {
-                $entries = [];
+            if ($pupillary_abnormalities->hasEye($side)) {
+                if (isset($data['entries_' . $side])) {
+                    $entries = [];
 
-                foreach ($data['entries_' . $side] as $index => $value) {
-                    $entry = new models\PupillaryAbnormalityEntry();
-                    $entry->attributes = $value;
-                    $entries[] = $entry;
-                    if (!$entry->validate()) {
-                        $entryErrors = $entry->getErrors();
-                        foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
-                            foreach ($entryErrorMessages as $entryErrorMessage) {
-                                $pupillary_abnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
-                                $errors[$et_name][] = ucfirst($side) . ' ' . $entry->getDisplayAbnormality() . " - " . $entryErrorMessage;
+                    foreach ($data['entries_' . $side] as $index => $value) {
+                        $entry = new models\PupillaryAbnormalityEntry();
+                        $entry->attributes = $value;
+                        $entries[] = $entry;
+                        if (!$entry->validate()) {
+                            $entryErrors = $entry->getErrors();
+                            foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
+                                foreach ($entryErrorMessages as $entryErrorMessage) {
+                                    $pupillary_abnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
+                                    $errors[$et_name][] = ucfirst($side) . ' ' . $entry->getDisplayAbnormality() . " - " . $entryErrorMessage;
+                                }
                             }
                         }
                     }
-                }
-                $pupillary_abnormalities->{'entries_' . $side} = $entries;
-            } else {
-                if (isset($data[$side . '_no_pupillaryabnormalities']) && $data[$side . '_no_pupillaryabnormalities'] === '1') {
-                    $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = date("Y-m-d H:i:s");
+                    $pupillary_abnormalities->{'entries_' . $side} = $entries;
                 } else {
-                    $pupillary_abnormalities->addError("{$side}_no_pa_label", ucfirst($side) . ' side has no data.');
-                    $errors[$et_name][] = ucfirst($side) . ' side has no data.';
+                    if (isset($data[$side . '_no_pupillaryabnormalities']) && $data[$side . '_no_pupillaryabnormalities'] === '1') {
+                        $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = date("Y-m-d H:i:s");
+                    } else {
+                        $pupillary_abnormalities->addError("{$side}_no_pa_label", ucfirst($side) . ' side has no data.');
+                        $errors[$et_name][] = ucfirst($side) . ' side has no data.';
+                    }
                 }
             }
         }
@@ -1796,17 +1798,19 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setAndValidatePatientTicketingFromData($data, $errors, $api)
     {
-        $err = array();
-        if (!$data['patientticket_queue']) {
-            $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
-        } else {
-            $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
-            if (!$queue) {
-                $err['patientticket_queue'] = 'Virtual Clinic not found';
+        $err = [];
+        if (isset($data['patientticket_queue'])) {
+            if (empty($data['patientticket_queue'])) {
+                $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
             } else {
-                if (QueueOutcome::model()->exists('queue_id=:queue_id', [':queue_id'=>$queue->id]) && $api->canAddPatientToQueue($this->patient, $queue)) {
-                    list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
-                    $err = array_merge($err, $fld_errs);
+                $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+                if (!$queue) {
+                    $err['patientticket_queue'] = 'Virtual Clinic not found';
+                } else {
+                    if (QueueOutcome::model()->exists('queue_id=:queue_id', [':queue_id' => $queue->id]) && $api->canAddPatientToQueue($this->patient, $queue)) {
+                        list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
+                        $err = array_merge($err, $fld_errs);
+                    }
                 }
             }
         }

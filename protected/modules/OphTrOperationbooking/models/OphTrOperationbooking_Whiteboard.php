@@ -360,9 +360,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 $unit = $lab_result->unit ? $lab_result->unit : '';
                 return [
                     'type' => $lab_result->resultType->type,
+                    'date' => Helper::convertMySQL2NHS($lab_result->event->event_date) . ' at ' . $lab_result->time,
                     'result' => $lab_result->result . " {$unit}",
-                    'time' => $lab_result->time,
-                    'date' =>  '(' . Helper::convertMySQL2NHS($lab_result->event->event_date) . ')',
                     'comment' => $lab_result->comment
                 ];
             },
@@ -377,13 +376,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $display = '';
 
         foreach ($lines as $line) {
-            $display .= "<div class='alert-box warning'>".
-            $line['type'] .
-            "<div>{$line['date']}</div>" .
-            $line['result'] . '<br>' .
-            $line['time'] . '<br>' .
-            $line['comment'] .
-            "</div>";
+            $display .= "<div class='alert-box warning'>" .
+                $line['type'] .
+                "<div>{$line['date']}</div>" .
+                $line['result'] . '<br>' .
+                "<span class='user-comment'>{$line['comment']}</span>" .
+                "</div>";
         }
 
         return $display;

@@ -103,7 +103,7 @@ $(document).ready(function() {
         return true;
 	});
 
-  $(this).on('click', '#et_save_and_schedule', function () {
+  $(this).on('click', '#et_save_and_schedule, #et_save_and_schedule_footer', function () {
     $('#schedule_now').val(1);
   });
 

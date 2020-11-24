@@ -51,6 +51,34 @@ function setDiabeticDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
+    /** Handle Systemic Diagnoses  first **/
+    const $table = document.getElementById('OEModule_OphCiExamination_models_SystemicDiagnoses_diagnoses_table');
+
+    // loop through the row to check if there is any diabetic diagnoses
+    const $trs = $table.querySelectorAll('tr');
+
+    if ($trs) {
+        $trs.forEach($tr => {
+            const is_diabetic = $tr.querySelectorAll('input[name="diabetic_diagnoses[]"][value="1"]');
+            // if is_diabetic we need to check the selected radio button
+            if (is_diabetic) {
+                const $input = $tr.querySelector('input[name*="has_disorder"]:checked');
+
+                if ($input && $input.value === "1") {
+                    $(pcrEl).val('Y');
+                } else if ($input && $input.value === "0") {
+                    $(pcrEl).val('N');
+                } else {
+                    $(pcrEl).val('NK');
+                }
+            }
+        });
+
+        $(pcrEl).trigger('change');
+        return true;
+    }
+
+    /** all back to the original behaviour **/
     if ($('input[name^="diabetic_diagnoses"]').filter('[value=true],[value="1"]').length) {
         $(pcrEl).val('Y');
     } else {
@@ -337,7 +365,7 @@ function mapExaminationToPcr() {
                 "func": setPcrPupil,
                 "init": true
             },
-            ":input[name^='diabetic_diagnoses']": {
+            ':input[name^="diabetic_diagnoses"], #OEModule_OphCiExamination_models_SystemicDiagnoses_element input[name$="[has_disorder]"]': {
                 "pcr": '.pcrrisk_diabetic',
                 "func": setDiabeticDisorder,
                 "init": true
@@ -390,8 +418,8 @@ function mapExaminationToPcr() {
  * @param risk_element
  */
 function loadFromHiddenFieds(risk_element) {
-    left_eyedraw = $("input[id$='_left_eyedraw").val();
-    right_eyedraw = $("input[id$='_right_eyedraw").val();
+    let left_eyedraw = $("input[id$='_left_eyedraw").val();
+    let right_eyedraw = $("input[id$='_right_eyedraw").val();
 
     if (left_eyedraw) {
         left_eyedraw = JSON.parse($("input[id$='_left_eyedraw").val());
