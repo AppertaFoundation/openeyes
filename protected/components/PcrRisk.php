@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -165,7 +165,13 @@ class PcrRisk
         if (isset($set_data['PcrRisk'][$side]['axial_length'])){
             $pcr['axial_length_group'] = $set_data['PcrRisk'][$side]['axial_length'];
         } else {
-            $pcr['axial_length_group'] = ($this->getAxialLength($patientId, $side) !== 'N') ? $this->getAxialLength($patientId, $side) : $pcrRiskValues->axial_length_group;
+            $calculated_axial_length = $this->getAxialLength($patientId, $side);
+
+            $pcr['axial_length_group'] = ($calculated_axial_length !== 'N') ? $calculated_axial_length : $pcrRiskValues->axial_length_group;
+
+            if(empty($pcr['axial_length_group'])) {
+                $pcr['axial_length_group'] = '0';
+            }
         }
 
         if (isset($set_data['PcrRisk'][$side]['arb'])){

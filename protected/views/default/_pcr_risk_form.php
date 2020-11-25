@@ -97,7 +97,7 @@ if ($side === 'left') {
             'doctor_grade_id' => $pcr_grades['display'],
             'pxf_phako' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
             'pupil_size' => array('Large' => 'Large', 'Medium' => 'Medium', 'Small' => 'Small'),
-            'axial_length_group' => array(0 => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
+            'axial_length_group' => array('0' => 'Not Known', '1' => '< 26', '2' => '> or = 26'),
             'arb' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
             'lie_flat' => array('N' => 'No', 'Y' => 'Yes'),
         );
