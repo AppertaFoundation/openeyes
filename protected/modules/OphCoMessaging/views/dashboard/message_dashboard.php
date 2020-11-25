@@ -116,18 +116,18 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
                   ); ?>
               </li>
           </ul>
-          <h3>Started</h3>
+          <h3>Sent</h3>
           <ul class="filter-messages">
             <li>
                 <?= \CHtml::link(
-                    "All started <span class='count'>($number_sent_all)</span>",
+                    "All sent <span class='count'>($number_sent_all)</span>",
                     '#',
                     array('id' => 'display-sent-all', 'data-filter' => 'sent_all', 'class' => ($message_type === 'sent_all' ? 'selected ' : '') . 'js-display-counter')
                 ); ?>
             </li>
             <li>
                 <?=\CHtml::link(
-                    "Waiting for query reply <span class='count'>($number_sent_unreplied)</span>",
+                    "Awaiting reply to query <span class='count'>($number_sent_unreplied)</span>",
                     '#',
                     array('id' => 'display-sent-unreplied', 'data-filter' => 'sent_unreplied', 'class' => ($message_type === 'sent_unreplied' ? 'selected ' : '') . 'js-display-counter')
                 ); ?>
