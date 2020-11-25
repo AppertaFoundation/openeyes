@@ -32,7 +32,7 @@ if (!isset($values)) {
 }
 ?>
 
-<tr class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
+<tr id="<?= $model_name ?>_entries_<?= $row_count ?>" class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
     data-status="<?= $values['status_id'] ?>">
     <td <?= $patient_ticket ? 'style="vertical-align:top"' : '' ?>>
         <?php if ($entry->id) { ?>
@@ -50,7 +50,7 @@ if (!isset($values)) {
         <?php endif; ?>
         <?= isset($condition_text) ? $condition_text : "{{condition_text}}"; ?>
     </td>
-    <td id="<?= $model_name ?>_entries_<?= $row_count ?>">
+    <td>
         <?php if (!$patient_ticket) {
             echo $values['status'] . ' ' . $values['followup_quantity'] . ' ' . $values['followup_period'] . $values['role'] . $values['followup_comments_display'];
         } else if ($patient_ticket && $ticket_api) { ?>
@@ -88,7 +88,7 @@ if (!isset($values)) {
                         </div>
                     </fieldset>
                     <div id="queue-assignment-placeholder">
-                        <?php if (isset($_POST['patientticket_queue'])) {
+                        <?php if (isset($_POST['patientticket_queue']) && !empty($_POST['patientticket_queue'])) {
                             $this->widget(
                                 $ticket_api::$QUEUE_ASSIGNMENT_WIDGET,
                                 array('queue_id' => $_POST['patientticket_queue'], 'label_width' => 3, 'data_width' => 5)

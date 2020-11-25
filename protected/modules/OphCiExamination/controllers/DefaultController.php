@@ -1590,17 +1590,19 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setAndValidatePatientTicketingFromData($data, $errors, $api)
     {
-        $err = array();
-        if (!$data['patientticket_queue']) {
-            $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
-        } else {
-            $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
-            if (!$queue) {
-                $err['patientticket_queue'] = 'Virtual Clinic not found';
+        $err = [];
+        if (isset($data['patientticket_queue'])) {
+            if (empty($data['patientticket_queue'])) {
+                $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
             } else {
-                if (QueueOutcome::model()->exists('queue_id=:queue_id', [':queue_id'=>$queue->id]) && $api->canAddPatientToQueue($this->patient, $queue)) {
-                    list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
-                    $err = array_merge($err, $fld_errs);
+                $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+                if (!$queue) {
+                    $err['patientticket_queue'] = 'Virtual Clinic not found';
+                } else {
+                    if (QueueOutcome::model()->exists('queue_id=:queue_id', [':queue_id'=>$queue->id]) && $api->canAddPatientToQueue($this->patient, $queue)) {
+                        list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
+                        $err = array_merge($err, $fld_errs);
+                    }
                 }
             }
         }
