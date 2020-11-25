@@ -141,6 +141,10 @@
         }
     };
 
+    Dialog.prototype.removeContent = function () {
+        document.querySelector('.oe-popup-content').innerHTML = '';
+    };
+
     /**
      * Binds common dialog event handlers.
      * @name OpenEyes.UI.Dialog#create
