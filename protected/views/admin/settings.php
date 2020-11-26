@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -22,19 +23,53 @@
 
     <table class="standard">
         <thead>
-        <tr>
-            <th>Setting</th>
-            <th>Value</th>
-        </tr>
+            <tr>
+                <th>Setting</th>
+                <th>Value</th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
-        <?php
-        foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) { ?>
-            <tr class="clickable" data-uri="admin/editInstallationSetting?key=<?=$metadata->key;?>">
-                <td><?php echo $metadata->name ?></td>
-                <td><?=(string)$metadata->getSettingName($metadata->key, ['SettingInstallation']);?></td>
-            </tr>
-        <?php } ?>
+            <?php
+            foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) {
+                // Setting pulled from database
+                $metadata_value = (string)$metadata->getSettingName($metadata->key, ['SettingInstallation']);
+
+                // Check to see if the param is being set in a config file
+                if (array_key_exists($metadata->key, OEConfig::getMergedConfig('main')['params'])) {
+                    $param_value = OEConfig::getMergedConfig('main')['params'][$metadata->key];
+                }
+
+                // If it isn't set, use the database value
+                if (isset($param_value) && $param_value) {
+                    // Transform the param if need be
+                    if (is_array($param_value)) {
+                        // If it's an array, implode it to display as a string
+                        $param_value = implode(",", $param_value);
+                    } else if ($data = @unserialize($metadata->data)) {
+                        // If it's an option for a serialised array get the value
+                        $param_value = $data[$param_value];
+                    }
+            ?>
+                    <tr class="disabled">
+                        <td><span class="fade"><?php echo $metadata->name ?></span></td>
+                        <td><span class="fade"><?= $param_value; ?> </span></td>
+                        <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter is being overridden by a config file and cannot be modified."></i></td>
+                    </tr>
+
+                <?php
+                } else {
+                ?>
+                    <tr class="clickable" data-uri="admin/editInstallationSetting?key=<?= $metadata->key; ?>">
+                        <td><?php echo $metadata->name ?></td>
+                        <td><?= $metadata_value; ?></td>
+                        <td></td>
+                    </tr>
+            <?php
+                }
+
+                unset($param_value, $metadata_value);
+            } ?>
         </tbody>
     </table>
 </div>
