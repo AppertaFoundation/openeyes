@@ -436,7 +436,7 @@ class AnalyticsController extends BaseController
                         MIN(e.event_date) as date_from
                     FROM et_ophtroperationnote_cataract eoc
                     JOIN event e on e.id = eoc.event_id
-                    UNION 
+                    UNION
                     SELECT
                         MAX(e2.event_date) as date_to,
                         MIN(e2.event_date) as date_from
@@ -1047,8 +1047,11 @@ class AnalyticsController extends BaseController
                 GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id')
             ->group('p.id, e.id, eye.name')
             ->order('name, e.event_date DESC');
-        if (isset($params['ids'])&&count($params['ids'] > 0)) {
-            $params['ids'] = json_decode($params['ids']);
+
+        $paramIdArray = json_decode($params['ids']);
+
+        if (isset($params['ids']) && count($paramIdArray) > 0) {
+            $params['ids'] = $paramIdArray;
             $command->where('e.id IN (' . implode(', ', $params['ids']) . ')');
         }
         $return_data = $command->queryAll();
@@ -1640,7 +1643,7 @@ class AnalyticsController extends BaseController
                     left join episode e5 on e4.episode_id = e5.id
                     left join patient p2 on e5.patient_id = p2.id
                     left join event_type e6 ON e6.id = e4.event_type_id
-                    WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0 
+                    WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0
                     and lower(e3.name) like lower('%examination%')
                 )
             ")
@@ -1676,7 +1679,7 @@ class AnalyticsController extends BaseController
                     left join episode e5 on e4.episode_id = e5.id
                     left join patient p2 on e5.patient_id = p2.id
                     left join event_type e6 ON e6.id = e4.event_type_id
-                WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0 
+                WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0
                 and lower(e3.name) like lower('%document%')
                 )
             ")
