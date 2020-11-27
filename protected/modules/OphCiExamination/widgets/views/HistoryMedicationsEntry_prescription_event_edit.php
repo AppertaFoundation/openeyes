@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -50,7 +51,6 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
     <?php if (!is_null($entry->medication_id)) :
         ?>data-allergy-ids="<?php echo implode(",", array_map(function ($e) {
             return $e->id;
-
         }, $entry->medication->allergies)); ?>"<?php
     endif; ?>
     class="divider col-gap <?= $stopped ? 'fade' : ''?> js-first-row <?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>" >
@@ -70,7 +70,7 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
                             <?= $entry->getMedicationDisplay(true) ?>
             <?php if (!is_null($entry->medication_id)) {
                 if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
-                    echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to '.implode(',', $patient->getPatientDrugAllergy($entry->medication_id)).'"></i>';
+                    echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
                 }
                 $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
             } ?>
@@ -103,7 +103,7 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
                     'rows' => '1',
                     'placeholder' => 'Comments',
                     'autocomplete' => 'off',
-                ]) ?>
+                            ]) ?>
                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
             </div>
             <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
@@ -128,47 +128,45 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
     <td class="nowrap">
             <div class="flex-meds-inputs">
                 <span class="start-date-column" id="<?= $model_name . "_entries_" . $row_count . "_start_date_error" ?>" >
-            <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
-                         value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
-            <i class="oe-i start small pad"></i>
-            <span class="oe-date"><?= $entry->getStartDateDisplay() ?>
-                        </span>
-                    </span>
-
-            <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
-
-                    <div class="alternative-display inline">
-            <div class="alternative-display-element textual">
-                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
-                    <?php if (!is_null($entry->end_date)) : ?>
-                                            <i class="oe-i stop small pad"></i>
-                                            <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
-                    <?php else : ?>
-                                            <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
-                    <?php endif; ?>
-                </a>
-            </div>
-            <fieldset class="js-datepicker-wrapper js-end-date-wrapper" <?= !($entry->hasErrors('end_date')) ?'style="display: none;"' : "" ?>>
-                            <i class="oe-i stop small pad"></i>
-                <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
-                                             name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
-                                             data-default="<?= date('Y-m-d') ?>"
-                                             style="width:80px" placeholder="yyyy-mm-dd"
-                                             autocomplete="off">
-            </fieldset>
-        </div>
+                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
+                            value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
+                    <i class="oe-i start small pad"></i>
+                    <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
                 </span>
 
-            <?php if ($entry->end_date) {
-                $entry->setStopReasonTo('Course complete');
-            } ?>
-            <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5 "
-                        style="<?=  is_null($entry->end_date) ? "display:none" : "" ?>">
-            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'js-stop-reason')) ?>
-        </span>
-            <div class="js-stop-reason-text" style="<?= is_null($entry->end_date) ? "" : "display:none" ?>">
-                <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
-            </div>
+                <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
+                    <div class="alternative-display">
+                        <div class="alternative-display-element textual">
+                            <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
+                                <?php if (!is_null($entry->end_date)) : ?>
+                                                        <i class="oe-i stop small pad"></i>
+                                                        <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
+                                <?php else : ?>
+                                                        <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
+                                <?php endif; ?>
+                            </a>
+                        </div>
+                        <fieldset class="js-datepicker-wrapper js-end-date-wrapper" <?= !($entry->hasErrors('end_date')) ? 'style="display: none;"' : "" ?>>
+                                    <i class="oe-i stop small pad"></i>
+                            <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
+                                        name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
+                                        data-default="<?= date('Y-m-d') ?>"
+                                        style="width:80px" placeholder="yyyy-mm-dd"
+                                        autocomplete="off">
+                        </fieldset>
+                    </div>
+                </span>
+
+                <?php if ($entry->end_date) {
+                    $entry->setStopReasonTo('Course complete');
+                } ?>
+                <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5 "
+                            style="<?=  is_null($entry->end_date) ? "display:none" : "" ?>">
+                    <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'js-stop-reason')) ?>
+                </span>
+                <div class="js-stop-reason-text" style="<?= is_null($entry->end_date) ? "" : "display:none" ?>">
+                    <?= !is_null($entry->stop_reason_id) ? '&nbsp;<em class="fade">(' . $entry->stopReason->name . ')</em>' : ''; ?>
+                </div>
             </div>
     </td>
 
