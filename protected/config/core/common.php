@@ -112,7 +112,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202011101211',
+            'time' => '202011241150',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -400,6 +400,11 @@ return array(
                 'position' => 3,
                 'restricted' => array('Report'),
             ),
+            'analytics' => array(
+                'title' => 'Analytics',
+                'uri' => '/Analytics/analyticsReports',
+                'position' => 4,
+            ),
             'nodexport' => array(
                 'title' => 'NOD Export',
                 'uri' => 'NodExport',
@@ -412,7 +417,6 @@ return array(
                 'position' => 6,
                 'restricted' => array('CXL Dataset'),
             ),
-
             'patientmergerequest' => array(
                 'title' => 'Patient Merge',
                 'uri' => 'patientMergeRequest/index',
@@ -449,11 +453,6 @@ return array(
                 'uri' => 'gp/index',
                 'position' => 10,
                 'restricted' => array('TaskViewGp', 'TaskCreateGp'),
-            ),
-            'analytics' => array(
-                'title' => 'Analytics',
-                'uri' => '/Analytics/analyticsReports',
-                'position' => 11,
             ),
             /*
                  //TODO: not yet implemented

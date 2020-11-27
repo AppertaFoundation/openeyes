@@ -18,27 +18,9 @@ var OpenEyes = OpenEyes || {};
 
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
-(function(exports) {
+(function (exports) {
 
-    if(typeof window.switch_alternative !== "function") {
-        window.switch_alternative = function(anchor) {
-            let $wrapper = $(anchor).closest(".alternative-display-element");
-            $wrapper.hide();
-            $wrapper.siblings(".alternative-display-element").show();
-            let $col = $wrapper.closest(".alternative-display");
-            $col.next(".alt-display-trigger").hide();
-
-            let $dropdown = $col.find(".js-unit-dropdown");
-            let $input = $col.find(".dose_unit_term");
-
-            if($dropdown.length > 0 && $input.val() == "") {
-                $dropdown.removeAttr("disabled").show();
-                $input.attr("disabled", "disabled");
-            }
-        };
-    }
-
-  function HistoryMedicationsController(options) {
+function HistoryMedicationsController(options) {
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);
     this.$element = this.options.element;
     this.$table = this.$element.find('.js-entry-table');
@@ -84,47 +66,47 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       this.options.onInit(this);
   }
 
-  HistoryMedicationsController._defaultOptions = {
-        modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
-        element: undefined,
-        addButtonSelector: '.js-add-select-search',
-        popup:'#add-to-medication',
-        removeButtonSelector: 'i.js-remove',
-        searchSource: '/medicationManagement/findRefMedications',
-        drugSetFormSource: '/medicationManagement/getDrugSetForm',
-        routeOptionSource: '/medication/retrieveDrugRouteOptions',
-        searchAsTypedPrefix: 'As typed: ',
-        drugFieldSelector: 'input[name$="[drug_id]"]',
-        medicationFieldSelector: 'input[name$="[medication_drug_id]"]',
-        asTypedFieldSelector: 'input[name$="[medication_name]"]',
-        medicationSelectOptions:'#history-medication-select-options',
-        medicationSearchOptions: '.history-medication-search-options',
-        medicationSearchInput: '#history-medication-search-field',
-        medicationSearchResult: '#history-medication-search-results',
-        medicationNameSelector: '.medication-name',
-        medicationDisplaySelector: '.js-medication-display',
-        startDateButtonSelector: '.start-medication.enable',
-        cancelStartDateButtonSelector: '.start-medication.cancel',
-        stopDateFieldSelector: 'input[name$="[stop_date]"]',
-        stopDateButtonSelector: '.stop-medication.enable',
-        cancelStopDateButtonSelector: '.stop-medication.cancel',
-        routeFieldSelector: 'select[name$="[route_id]"]',
-		routeOptionWrapperSelector: '.admin-route-options',
-        routeOptionInputSelector: '.laterality-input',
-        patientAllergies: [],
-        eyeRouteIds: [],
-        first_row_controls_ids: ['dose', 'dose_unit_term', 'frequency_id', 'route_id', 'laterality'],
-        second_row_control_ids: ['start_date', 'end_date', 'stop_reason_id'],
-        medicationsOptionsTable: '.select-options',
-          allAllergies: {},
-          classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
+HistoryMedicationsController._defaultOptions = {
+    modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
+    element: undefined,
+    addButtonSelector: '#medication-history-popup .js-add-select-search',
+    popup:'#add-to-medication',
+    removeButtonSelector: 'i.js-remove',
+    searchSource: '/medicationManagement/findRefMedications',
+    drugSetFormSource: '/medicationManagement/getDrugSetForm',
+    routeOptionSource: '/medication/retrieveDrugRouteOptions',
+    searchAsTypedPrefix: 'As typed: ',
+    drugFieldSelector: 'input[name$="[drug_id]"]',
+    medicationFieldSelector: 'input[name$="[medication_drug_id]"]',
+    asTypedFieldSelector: 'input[name$="[medication_name]"]',
+    medicationSelectOptions:'#history-medication-select-options',
+    medicationSearchOptions: '.history-medication-search-options',
+    medicationSearchInput: '#history-medication-search-field',
+    medicationSearchResult: '#history-medication-search-results',
+    medicationNameSelector: '.medication-name',
+    medicationDisplaySelector: '.js-medication-display',
+    startDateButtonSelector: '.start-medication.enable',
+    cancelStartDateButtonSelector: '.start-medication.cancel',
+    stopDateFieldSelector: 'input[name$="[stop_date]"]',
+    stopDateButtonSelector: '.stop-medication.enable',
+    cancelStopDateButtonSelector: '.stop-medication.cancel',
+    routeFieldSelector: 'select[name$="[route_id]"]',
+    routeOptionWrapperSelector: '.admin-route-options',
+    routeOptionInputSelector: '.laterality-input',
+    patientAllergies: [],
+    eyeRouteIds: [],
+    first_row_controls_ids: ['dose', 'dose_unit_term', 'frequency_id', 'route_id', 'laterality'],
+    second_row_control_ids: ['start_date', 'end_date', 'stop_reason_id'],
+    medicationsOptionsTable: '#medication-history-popup .select-options',
+    allAllergies: {},
+    classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
 
-        // Customizable callbacks
+    // Customizable callbacks
 
-          onInit: function(){},
-          onControllerBound: function (controller, name){},
-          onAddedEntry: function($row, controller){},
-          onRemovedEntry: function ($row, controller) {}
+        onInit: function(){},
+        onControllerBound: function (controller, name){},
+        onAddedEntry: function($row, controller){},
+        onRemovedEntry: function ($row, controller) {}
   };
 
   /**

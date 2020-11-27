@@ -157,7 +157,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
         </table>
     </div>
     <div class="flex-layout flex-right">
-        <div class="add-data-actions flex-item-bottom" id="medication-history-popup">
+        <div class="add-data-actions flex-item-bottom" id="medication-management-popup">
             <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
                 ?>disabled<?php
                                                                           } ?>" type="button">Add standard set</button>

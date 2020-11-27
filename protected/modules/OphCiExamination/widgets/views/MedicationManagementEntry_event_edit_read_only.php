@@ -123,7 +123,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             } ?>
         </td>
         <td>
-                <i class="oe-i no-permissions medium-icon js-has-tooltip" data-tooltip-content="You do not have permissions"></i>
+                <i class="oe-i no-permissions medium-icon js-has-tooltip" data-tooltip-content="Entries from past examinations cannot be modified. You must start a new Examination event"></i>
                 <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>" />
         </td>
         <td>
@@ -140,7 +140,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 </div>
             <?php if (isset($entry->stop_reason_id)) {
                 $stop_reason     = HistoryMedicationsStopReason::model()->findByPk($entry->stop_reason_id);
-                echo isset($stop_reason) ? $stop_reason->name : "";
+                echo isset($stop_reason) ? '&nbsp;<em class="fade">(' . $stop_reason->name . ')</em>' : "";
             } ?>
         </td>
     <td>

@@ -22,6 +22,6 @@ $errorMessages = array(
 ?>
 <div class="large-12 column">
     <div class="alert-box with-icon warning" id="flash-prescription_allergy">
-        <?php echo $errorMessages[$errorMessage] ?>
+        <?php echo htmlspecialchars($errorMessages[$errorMessage]) ?>
     </div>
 </div>

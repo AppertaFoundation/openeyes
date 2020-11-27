@@ -104,13 +104,12 @@ $stop_fields_validation_error = array_intersect(
         <div id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>">
             <div class="flex-meds-inputs">
                 <div class="alternative-display inline">
-                    <div class="alternative-display-element textual flex-meds-inputs" <?= $direct_edit || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
+                    <div class="alternative-display-element textual flex-meds-inputs">
                         <div class="textual-display hint">
                             <?php $entry_text_display = $entry->getAdministrationDisplay(true);
                             echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </div>
-                        <span class="tabspace"></span>
-                        <button type='button' onclick="switch_alternative(this);" <?= $disabled || $stopped ? 'disabled="disabled"' : ''?>>Change Dose/Freq ...</button>
+                        <span class="tabspace"></span>                   
                     </div>
                     <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
@@ -200,7 +199,7 @@ $end_date_display = str_replace('0000', '', $end_date_display);
             </span>
             <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
 
-                <div class="alternative-display inline">
+                <div class="alternative-display">
                     <div class="alternative-display-element textual">
                         <a class="js-meds-stop-btn" id="<?= $model_name . "_entries_" . $row_count . "_stopped_button" ?>" data-row_count="<?= $row_count ?>" href="javascript:void(0); " 
                             <?php if ($entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id)) { ?> style="display: none;" <?php
@@ -223,8 +222,6 @@ $end_date_display = str_replace('0000', '', $end_date_display);
                     </fieldset>
                 </div>
             </span>
-
-
             <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5" style="<?= ((!($stop_fields_validation_error || $entry->hasErrors()) && ($entry->end_date)) || (($is_new || $entry->hasErrors()) && !($entry->end_date || $entry->stop_reason_id)) || (!$is_new && !$entry->end_date)) ? "display:none" : "" ?>">
                 <?php $stop_reason_layout = ['empty' => 'Reason stopped?', 'class' => ' js-stop-reason'];
                 if ($stopped) {
@@ -233,7 +230,7 @@ $end_date_display = str_replace('0000', '', $end_date_display);
                 <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, $stop_reason_layout) ?>
             </span>
             <div class="js-stop-reason-text" style="<?= ((!$stop_fields_validation_error && !$entry->end_date) || (!$entry->hasErrors() && $entry->end_date)) ? "" : "display:none" ?>">
-                <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
+                <?= !is_null($entry->stop_reason_id) ? '&nbsp;<em class="fade">(' . $entry->stopReason->name . ')</em>' : ''; ?>
             </div>
         </div>
     </td>

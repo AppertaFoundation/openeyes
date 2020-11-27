@@ -49,7 +49,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <p>Please fix the following input errors:</p>
         <ul>
           <li>
-              <?php echo $error ?>
+              <?php echo htmlspecialchars($error) ?>
           </li>
         </ul>
       </div>
@@ -197,7 +197,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <p>Please fix the following input errors:</p>
         <ul>
           <li>
-              <?php echo $error ?>
+              <?php echo htmlspecialchars($error) ?>
           </li>
         </ul>
       </div>

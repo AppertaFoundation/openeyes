@@ -99,10 +99,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
             array("dose", "dose_unit_term", "frequency_id", "route_id", "laterality"),
             array_keys($entry->errors)
         ); ?>
-        <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>" <?php if (!$direct_edit && empty($entry->errors)) {
-                                                                                                                                    echo 'style="display: none;"';
-                                                                      } ?>>
-
+        <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>" >
             <input class="fixed-width-small js-dose" id="<?= $model_name . "_entries_" . $row_count . "_dose" ?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
             <?php if ($is_template) { ?>
@@ -160,19 +157,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 array('class' => 'laterality-input')
             ); ?>
         </div>
-        <div class="alternative-display-element textual" <?php if ($direct_edit || !empty($entry->errors)) {
-                                                                echo 'style="display: none;"';
-                                                         } ?>>
-            <div class="flex-meds-inputs textual-display">
-                <?php $entry_text_display = $entry->getAdministrationDisplay(true);
-                echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
-                <?php if ($locked == 1) : ?>
-            </div>
-                <?php else : ?>
-            <span class="tabspace"></span>
-            <button type='button' onclick="switch_alternative(this);">Change Dose/Freq ...</button>
-        </div>
-                <?php endif; ?>
+        
     </div>
     </td>
     <td>
@@ -247,31 +232,33 @@ $entry_allergy_ids = isset($entry->medication_id) ?
 </tr>
 <tr class="no-line col-gap js-second-row <?= $entry->hidden === "1" ? ' hidden' : '' ?>" data-key="<?= $row_count ?>">
     <td class="nowrap">
-        <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>" style="<?php if ($entry->prescribe) {
-            ?> display: none <?php
-                                          } ?>">
-            <div class="alternative-display inline">
-                <div class="alternative-display-element textual" style="display: <?= $entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id) ? 'none' : '' ?>">
-                    <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
-                        <?php if (!is_null($entry->end_date)) : ?>
-                            <i class="oe-i stop small pad"></i>
-                            <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
-                        <?php else : ?>
-                            <span><button type="button"><i class="oe-i stop small pad-right"></i>Click here to stop</button></span>
-                        <?php endif; ?>
-                    </a>
+        <div class="flex-meds-inputs">
+            <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>" style="<?php if ($entry->prescribe) {
+                ?> display: none <?php
+                                              } ?>">
+                <div class="alternative-display">
+                    <div class="alternative-display-element textual" style="display: <?= $entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id) ? 'none' : '' ?>">
+                        <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
+                            <?php if (!is_null($entry->end_date)) : ?>
+                                <i class="oe-i stop small pad"></i>
+                                <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
+                            <?php else : ?>
+                                <span><button type="button"><i class="oe-i stop small pad-right"></i>Click here to stop</button></span>
+                            <?php endif; ?>
+                        </a>
+                    </div>
+                    <fieldset class="js-datepicker-wrapper js-end-date-wrapper" <?= ($entry->hasErrors() && !$is_new) && ($entry->end_date || $entry->stop_reason_id) ? '' : ' style="display:none;"' ?>>
+                        <i class="oe-i stop small pad"></i>
+                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?= date('Y-m-d') ?>" data-reset-value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
+                    </fieldset>
                 </div>
-                <fieldset class="js-datepicker-wrapper js-end-date-wrapper" <?= ($entry->hasErrors() && !$is_new) && ($entry->end_date || $entry->stop_reason_id) ? '' : ' style="display:none;"' ?>>
-                    <i class="oe-i stop small pad"></i>
-                    <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?= date('Y-m-d') ?>" data-reset-value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
-                </fieldset>
+            </span>
+            <span id="<?= $model_name . '_entries_' . $row_count . '_stop_reason_id_error' ?>" class="js-stop-reason-select cols-5" style="<?= (($entry->hasErrors() || $is_new) && !($entry->end_date || $entry->stop_reason_id)) || $entry->prescribe || !$entry->hasErrors() ? 'display: none' : '' ?>">
+                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
+            </span>
+            <div class="js-stop-reason-text" style="<?= $is_new || (!$entry->hasErrors() && $entry->end_date && $entry->stop_reason_id) ? "" : "display:none" ?>">
+                <?= !is_null($entry->stop_reason_id) ? '&nbsp;<em class="fade">(' . $entry->stopReason->name . ')</em>' : ''; ?>
             </div>
-        </span>
-        <span id="<?= $model_name . '_entries_' . $row_count . '_stop_reason_id_error' ?>" class="js-stop-reason-select cols-5" style="<?= (($entry->hasErrors() || $is_new) && !($entry->end_date || $entry->stop_reason_id)) || $entry->prescribe || !$entry->hasErrors() ? 'display: none' : '' ?>">
-            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
-        </span>
-        <div class="js-stop-reason-text" style="<?= $is_new || (!$entry->hasErrors() && $entry->end_date && $entry->stop_reason_id) ? "" : "display:none" ?>">
-            <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
         </div>
     </td>
     <td>

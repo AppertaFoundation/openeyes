@@ -105,7 +105,7 @@
     <div class="alert-box alert with-icon bottom"><p>Please fix the following input errors:</p>
         <ul>
             <?php foreach ($errors as $error) { ?>
-                <li><?php echo $error ?></li>
+                <li><?php echo htmlspecialchars($error) ?></li>
             <?php } ?>
         </ul>
     </div>

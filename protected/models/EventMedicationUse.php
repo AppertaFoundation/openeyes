@@ -670,11 +670,13 @@ class EventMedicationUse extends BaseElement
                 echo htmlspecialchars('<hr class="divider">', ENT_QUOTES, 'UTF-8');
             } ?>
             <b><?= $medication_change['change_date'] ?></b> - <?= $medication_change['user'] ?><br>
-            <b>Dosage: </b><?= $medication_change['dosage'] ?><br>
-            <?php if ($medication_change['frequency'] !== '') { ?>
+            <?php if (!empty($medication_change['dosage'])) { ?>
+               <b>Dosage: </b> <?= $medication_change['dosage'] ?> <br>
+            <?php } ?>
+            <?php if (!empty($medication_change['frequency'])) { ?>
                 <b>Frequency: </b><?= $medication_change['frequency'] ?><br>
             <?php } ?>
-            <?php if ($medication_change['side'] !== '') { ?>
+            <?php if (!empty($medication_change['side'])) { ?>
                 <b>Side: </b> <?=  htmlspecialchars($medication_change['side'], ENT_QUOTES, 'UTF-8') ?><br>
             <?php } ?>
         <?php } ?>

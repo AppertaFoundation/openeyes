@@ -105,11 +105,9 @@ class HistoryMedications extends BaseMedicationElement
             }
         }
 
-        foreach (['systemic', 'ophthalmic'] as $type) {
-            $no_medications = 'no_' . $type . '_medications';
-            if (!$this->{$no_medications . '_date'} && ${$no_medications}) {
-                $this->addError($no_medications, 'Please confirm the patient is not taking any '. $type . ' medications');
-            }
+        $no_medications = 'no_ophthalmic_medications';
+        if (!$this->{$no_medications . '_date'} && ${$no_medications}) {
+            $this->addError($no_medications, 'Please confirm the patient is not taking any eye medications');
         }
 
         parent::afterValidate();

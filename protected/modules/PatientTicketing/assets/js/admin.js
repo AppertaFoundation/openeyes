@@ -252,6 +252,7 @@
           location.reload();
         }
         else {
+          formDialog.removeContent();
           formDialog.setContent(resp.form);
         }
       }.bind(this),
