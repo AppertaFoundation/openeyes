@@ -97,7 +97,7 @@ class NodExportController extends BaseController
         // tmp tables will be normal DB tables instead of real TEMPORARY tables because in some queries
         // we need to refer the tmp table (like sub-select) two or more times - and in MySQL a tmp table can be referred only once in a query
         // (this prevents error if someone starts 2 extract)
-        $this->extractIdentifier = 0;
+        $this->extractIdentifier = date('His');
 
         parent::init();
     }
@@ -163,7 +163,7 @@ class NodExportController extends BaseController
         $this->getPatients();
 
 
-        //$this->clearAllTempTables();
+        $this->clearAllTempTables();
 
     }
 
