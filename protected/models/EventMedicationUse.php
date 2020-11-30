@@ -100,6 +100,7 @@ class EventMedicationUse extends BaseElement
     public $equals_attributes = [
         'medication_id', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date', 'laterality',
     ];
+    public $taper_equals_attributes = ['dose', 'frequency_id'];
 
     /**
      * Returns the static model of the specified AR class.
@@ -393,6 +394,19 @@ class EventMedicationUse extends BaseElement
                 return $result;
             }
         }
+
+        if (($this->prescribe || $this->isPrescription())) {
+            foreach ($this->tapers as $taper) {
+                foreach ($this->taper_equals_attributes as $attribute) {
+                    $result = $taper->$attribute === $medication->$attribute;
+
+                    if (!$result) {
+                        return $result;
+                    }
+                }
+            }
+        }
+
         return $result;
     }
 
