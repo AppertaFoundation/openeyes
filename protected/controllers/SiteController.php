@@ -21,7 +21,7 @@ class SiteController extends BaseController
         return array(
             // Allow unauthenticated users to view certain pages
             array('allow',
-                'actions' => array('error', 'login', 'debuginfo'),
+                'actions' => array('error', 'login', 'loginFromOverlay', 'debuginfo'),
             ),
             array('allow',
                 'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout'),
@@ -175,6 +175,25 @@ class SiteController extends BaseController
                 'model' => $model,
             )
         );
+    }
+
+    public function actionLoginFromOverlay()
+    {
+        $model = new LoginForm();
+
+        // collect user input data
+        if (isset($_POST['LoginForm'])) {
+            $model->attributes = $_POST['LoginForm'];
+            // validate user input and redirect to the previous page if valid
+            if ($model->validate() && $model->login()) {
+                // Flag site for confirmation
+                Yii::app()->session['confirm_site_and_firm'] = true;
+                $this->renderJSON('Login success');
+                return;
+            }
+        }
+
+        $this->renderJSON('Login failed');
     }
 
     /**
