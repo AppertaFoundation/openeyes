@@ -4,7 +4,7 @@ class m200730_053753_move_email_column_to_contact extends OEMigration
 {
     public function up()
     {
-        $address_emails = Yii::app()->db->createCommand()
+        $address_emails = $this->dbConnection->createCommand()
         ->select('email, contact_id')
         ->from('address')
         ->where('email IS NOT NULL')
@@ -98,7 +98,7 @@ class m200730_053753_move_email_column_to_contact extends OEMigration
 
     public function down()
     {
-        $contact_emails = Yii::app()->db->createCommand()
+        $contact_emails = $this->dbConnection->createCommand()
         ->select('email, id')
         ->from('contact')
         ->where('email IS NOT NULL')

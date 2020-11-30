@@ -13,30 +13,44 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphGeneric\models;
+
+use BaseActiveRecord;
+use BaseEventTypeElement;
+use CActiveDataProvider;
+use CDbCriteria;
+use CDbException;
+use Event;
+use Exception;
+use Eye;
+use PatientStatistic;
+use PatientStatisticDatapoint;
+use User;
+
 /**
  * This is the model class for table "et_ophgeneric_hfa".
  *
  * The followings are the available columns in table 'et_ophgeneric_hfa':
- * @property integer $id
+ * @property int $id
  * @property string $event_id
- * @property string $eye_id
+ * @property int $eye_id
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property \User $createdUser
- * @property \Event $event
- * @property \Eye $eye
- * @property \User $lastModifiedUser
- * @property \OEModule\OphGeneric\models\HFAEntry[] $supportingInformationDetails
+ * @property User $createdUser
+ * @property Event $event
+ * @property Eye $eye
+ * @property User $lastModifiedUser
+ * @property HFAEntry[] $supportingInformationDetails
  */
-
-namespace OEModule\OphGeneric\models;
-
-class HFA extends \BaseEventTypeElement
+class HFA extends BaseEventTypeElement
 {
+    /**
+     * @var string $widgetClass
+     */
     public $widgetClass = 'OEModule\OphGeneric\widgets\HFA';
 
     /**
@@ -55,11 +69,14 @@ class HFA extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, eye_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('event_id, eye_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
-            // @todo Please remove those attributes that should not be searched.
-            array('id, event_id, eye_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array(
+                'id, event_id, eye_id, last_modified_user_id, last_modified_date, created_user_id, created_date',
+                'safe',
+                'on' => 'search'
+            ),
         );
     }
 
@@ -104,14 +121,12 @@ class HFA extends \BaseEventTypeElement
      * models according to data in model fields.
      * - Pass data provider to CGridView, CListView or any similar widget.
      *
-     * @return \CActiveDataProvider the data provider that can return the models
+     * @return CActiveDataProvider the data provider that can return the models
      * based on the search/filter conditions.
      */
     public function search()
     {
-        // @todo Please modify the following code to remove attributes that should not be searched.
-
-        $criteria=new \CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('event_id', $this->event_id, true);
@@ -121,16 +136,14 @@ class HFA extends \BaseEventTypeElement
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
 
-        return new \CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
-        ));
+        return new CActiveDataProvider($this, array('criteria' => $criteria,));
     }
 
     /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      * @param string $className active record class name.
-     * @return HFA the static model class
+     * @return HFA|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -140,5 +153,83 @@ class HFA extends \BaseEventTypeElement
     public function isHiddenInUI()
     {
         return true;
+    }
+
+    /**
+     * @throws CDbException
+     * @throws Exception
+     */
+    public function softDelete()
+    {
+        parent::softDelete();
+
+        // For each MD/VFI entry, remove the relevant datapoint from the datapoint table,
+        // and flag the affected statistics for remodelling.
+        // Age value recorded in statistic table for both statistics is point-in-time
+        // (ie. current age as of event date).
+        $md_datapoint = PatientStatisticDatapoint::model()->findByAttributes(
+            array(
+                'stat_type_mnem' => 'md',
+                'event_id' => $this->event->id,
+            )
+        );
+
+        /**
+         * @var $md_stat PatientStatistic
+         */
+        $md_stat = PatientStatistic::model()->findByAttributes(
+            array(
+                'stat_type_mnem' => 'md',
+                'patient_id' => $this->event->episode->patient_id,
+                'eye_id' => $this->eye_id,
+            )
+        );
+
+        if ($md_datapoint) {
+            // Covers the edge cases where the statistic may have already been deleted.
+            $md_datapoint->delete();
+        }
+
+        $md_stat->refresh();
+
+        // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
+        if (count($md_stat->datapoints) === 0) {
+            $md_stat->delete();
+        } else {
+            $md_stat->process_datapoints = true;
+            $md_stat->save();
+        }
+
+        $vfi_datapoint = PatientStatisticDatapoint::model()->findByAttributes(
+            array(
+                'stat_type_mnem' => 'vfi',
+                'event_id' => $this->event->id,
+            )
+        );
+        /**
+         * @var $vfi_stat PatientStatistic
+         */
+        $vfi_stat = PatientStatistic::model()->findByAttributes(
+            array(
+                'stat_type_mnem' => 'vfi',
+                'patient_id' => $this->event->episode->patient_id,
+                'eye_id' => $this->eye_id,
+            )
+        );
+
+        if ($vfi_datapoint) {
+            // Covers the edge cases where the statistic may have already been deleted.
+            $vfi_datapoint->delete();
+        }
+
+        $vfi_stat->refresh();
+
+        // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
+        if (count($vfi_stat->datapoints) === 0) {
+            $vfi_stat->delete();
+        } else {
+            $vfi_stat->process_datapoints = true;
+            $vfi_stat->save();
+        }
     }
 }
