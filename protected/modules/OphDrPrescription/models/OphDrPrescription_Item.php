@@ -246,8 +246,9 @@ class OphDrPrescription_Item extends EventMedicationUse
             $this->setAttribute($attribute, $mgment_item->getAttribute($attribute));
         }
 
-        $this->save();
         $this->updateTapers($mgment_item->tapers);
+        $this->refresh();
+        $this->save();
     }
 
     public function updateTapers(array $tapers)
