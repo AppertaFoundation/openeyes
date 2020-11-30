@@ -42,7 +42,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                     <?php foreach ($element->orderedDiagnoses as $diag) { ?>
                         <tr>
                             <td>
-                                <?= $diag->disorder; ?>   <strong>  (Present and active)</strong>
+                                <?= $diag->disorder; ?>
                             </td>
                             <td class="nowrap flex-layout">
                                 <?php $this->widget('EyeLateralityWidget', array('laterality' => $diag->side)) ?>
