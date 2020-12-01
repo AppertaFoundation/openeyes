@@ -363,6 +363,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
         $('#cancel_reason').on('click', function(e) {
             // do not continue to save
             e.preventDefault();
+            enableButtons();
             $('#js-save-mm-event').hide();
         });
 

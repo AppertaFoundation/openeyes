@@ -26,8 +26,7 @@ $(document).ready(() => {
         handle_event.initCustomEvent('handle_event', true, true);
     }
 
-    let $save_button = document.getElementById('et_save');
-    $save_button.addEventListener('click', e => {
+    function handleClick(e) {
         e.preventDefault();
         let status;
         let $handler_functions = document.querySelectorAll('.js-save-handler-function');
@@ -36,7 +35,7 @@ $(document).ready(() => {
             handler.dispatchEvent(handle_event);
             status = handler.getAttribute('status');
             if (status === "stop") {
-               break;
+                break;
             }
         };
 
@@ -47,5 +46,10 @@ $(document).ready(() => {
             }
             $(form).submit(); // Non JQuery method causes odd behaviour so left for now.
         }
-    });
+    }
+    let $save_button = document.getElementById('et_save');
+    let $bottom_save_button = document.getElementById('et_save_footer');
+
+    $save_button.addEventListener('click', handleClick);
+    $bottom_save_button.addEventListener('click', handleClick);
 });
