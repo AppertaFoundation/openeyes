@@ -215,52 +215,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Set prescription item defaults when creating.
-     *
-     * @param BaseEventTypeElement $element
-     * @param string               $action
-     */
-    protected function setElementDefaultOptions($element, $action)
-    {
-        parent::setElementDefaultOptions($element, $action);
-        if ($action === 'create' && $element instanceof \Element_OphDrPrescription_Details) {
-            // Prepopulate prescription with set by episode status
-            // FIXME: It's brittle relying on the set name matching the status
-            $items = array();
-            $status_name = $this->episode->status->name;
-            $subspecialty_id = $this->firm->getSubspecialtyID();
-            $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
-
-            $set = MedicationSet::model()->with(['medicationSetRules' => ['with' => 'usageCode']])->find(array(
-                'condition' => 'medicationSetRules.subspecialty_id = :subspecialty_id AND t.name = :status_name',
-                'params' => $params,
-            ));
-
-            if ($set) {
-                foreach ($set->items as $item) {
-                    $item_model = new OphDrPrescription_Item();
-                    $item_model->medication_id = $item->id;
-                    $item_model->loadDefaults($set);
-                    $attr = $item->getAttributes();
-                    unset($attr['drug_set_id']);
-                    $item_model->attributes = $attr;
-
-                    $item_model->tapers = $item->tapers;
-
-                    if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-                        if ($apieye = $api->getLastEye($this->patient, false)) {
-                            $item_model->laterality = $apieye;
-                        }
-                    }
-
-                    $items[] = $item_model;
-                }
-            }
-            $element->items = $items;
-        }
-    }
-
-    /**
      * Set flash message for patient allergies.
      */
     protected function showAllergyWarning()
