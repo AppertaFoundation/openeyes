@@ -381,7 +381,7 @@ class EventMedicationUse extends BaseElement
                     $result = $date1 === $date2;
                 }
             } elseif ($attribute === "laterality") {
-                if ($check_laterality && $this->route->isEyeRoute()) {
+                if ($check_laterality && $this->route && $this->route->isEyeRoute()) {
                     $result = $this->$attribute === $medication->$attribute;
                 }
             } elseif (empty($this->$attribute) && empty($medication->$attribute)) {
