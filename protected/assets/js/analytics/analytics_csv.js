@@ -5,16 +5,6 @@ const analytics_csv_download = (function () {
     const custom_url = 'DownloadCustomCSV';
     const non_custom_url = 'DownloadCSV';
 
-    function convert_array_to_string_in_csv(csv, item) {
-        item.forEach(function (element) {
-            csv += element + "|";
-        });
-        if (item.length === 0) {
-            csv += "|";
-        }
-        return csv.replace(/.$/, ",");
-    }
-
     function csv_export(filename, csv_file) {
         const blob = new Blob([csv_file], {
             type: 'text/csv;charset=utf-8;'
@@ -49,30 +39,23 @@ const analytics_csv_download = (function () {
         let csv_file;
 
         if (additional_file_name === 'vf') {
-            csv_file = 'First Name, Last Name, Hos Num, NHS Num, EyeSide, Date of Fields, MD, VFI';
+            csv_file = anonymise_flag ? 'EyeSide, Date of Fields, MD, VFI' : 'First Name, Last Name, Hos Num, NHS Num, EyeSide, Date of Fields, MD, VFI';
         } else {
-            csv_file = 'First Name, Last Name, Hos Num, NHS Num, DOB, Age, Diagnoses';
+            csv_file = anonymise_flag ? 'DOB, Age, Diagnoses' : 'First Name, Last Name, Hos Num, NHS Num, DOB, Age, Diagnoses';
         }
 
-        let file_name = current_specialty + "_clinical_diagnoses";
+        let file_name = current_specialty + '_clinical_diagnoses';
 
         if (additional_file_name === 'vf') {
-            file_name = current_specialty + "_service_vf_progression";
-        }
-
-        if (anonymise_flag) {
-            file_name += ' - Anonymised';
-            if (additional_file_name === 'vf') {
-                csv_file = "EyeSide, Date of Fields, MD, VFI";
-            } else {
-                csv_file = "DOB, Age, Diagnoses";
-            }
+            file_name = current_specialty + '_service_vf_progression';
         }
 
         if (selected_tab && selected_tab === 'service' && additional_file_name !== 'vf') {
             csv_file += ', Weeks';
             file_name = current_specialty + '_service_' + additional_file_name + '_followups';
         }
+
+        file_name = anonymise_flag ? file_name + ' - Anonymised' : file_name;
 
         csv_file += '\n';
         data.forEach(function (item) {
@@ -133,8 +116,8 @@ const analytics_csv_download = (function () {
         $.ajax({
             url: request_url + custom_url,
             type: 'POST',
-            data: "YII_CSRF_TOKEN=" + YII_CSRF_TOKEN + '&' + $('#search-form').serialize() +
-                analytics_toolbox.getDataFilters(null, side_bar_user_list, {}, current_user),
+            data: "YII_CSRF_TOKEN=" + YII_CSRF_TOKEN + '&' + $('#search-form').serialize() + '&' +
+                analytics_toolbox.getDataFilters(),
             success: function (response) {
                 // actionDownloadCustomCSV will render out json straight away, so no need to do JSON.parse again.
                 const data = response;
@@ -168,7 +151,7 @@ const analytics_csv_download = (function () {
 
     function downLoadClick(e) {
         e.stopPropagation();
-
+        e.preventDefault();
         $('#js-analytics-spinner').show();
 
         g_custom_flag = false;
@@ -253,7 +236,7 @@ const analytics_csv_download = (function () {
                 break;
             case 'clinical':
                 if (g_custom_flag) {
-                    // if change in vision is selected
+                    // if Outcomes is selected
                     // custom type depends on current selected specialty
                     const custom_type = analytics_toolbox.getCurrentSpecialty() === 'Medical Retina' ? "CRT" : "IOP";
                     current_custom_data_to_csv(custom_type, analytics_dataCenter.custom.getCustomData()['custom_data']['csv_data'], anonymise_flag);
@@ -286,6 +269,6 @@ const analytics_csv_download = (function () {
 
     return function () {
         // bind click event on download (csv) and download (csv - anonymised)
-        $('.extra-actions button').off('click').on('click', _.throttle(downLoadClick, ajaxThrottleTime));
+        $('button[id^="js-download-csv"]').off('click').on('click', _.throttle(downLoadClick, ajaxThrottleTime));
     };
 })();

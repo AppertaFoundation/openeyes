@@ -101,7 +101,6 @@ const analytics_cataract = (function () {
         };
 
         // instantiate jsPDF
-        // var doc = new jsPDF('l', 'pt', 'A4');
         const doc = new jsPDF({
             orientation: "landscape",
             unit: "pt",
@@ -200,23 +199,23 @@ const analytics_cataract = (function () {
                             // See Jira OE-8869 to find the removed code (every four plots add new page)
                         }
                     }).then(function (flag) {
-                    // once the plot is added into pdf, it will be cleared out
-                    // and show it (it is hidden before) to avoid crashing other
-                    // functions
-                    $(dict[dict_key][1]).html("");
-                    $(dict[dict_key][1]).show();
+                        // once the plot is added into pdf, it will be cleared out
+                        // and show it (it is hidden before) to avoid crashing other
+                        // functions
+                        $(dict[dict_key][1]).html("");
+                        $(dict[dict_key][1]).show();
 
-                    // the search form will be affected by initializing all the plots
-                    // bring it back at this stage
-                    if (flag) {
-                        // to reset the search form
-                        $('.js-cataract-report-type.selected').click();
-                        // without doing so, previous requests will be captured
-                        $(document).off('ajaxSuccess');
-                        $('#js-download-pdf').text(originalText);
-                        $('#js-analytics-spinner').hide();
-                    }
-                });
+                        // the search form will be affected by initializing all the plots
+                        // bring it back at this stage
+                        if (flag) {
+                            // to reset the search form
+                            $('.js-cataract-report-type.selected').click();
+                            // without doing so, previous requests will be captured
+                            $(document).off('ajaxSuccess');
+                            $('#js-download-pdf').text(originalText);
+                            $('#js-analytics-spinner').hide();
+                        }
+                    });
             }
         });
         return true;

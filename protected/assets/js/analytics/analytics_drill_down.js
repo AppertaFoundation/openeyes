@@ -86,9 +86,8 @@ const analytics_drill_down = (function () {
         const patient_str = patient_total > 1 ? 'patients are at ' : 'patient is at ';
         const plot_type = data.data['name'];
         const selected_tab = $('.analytics-section.selected').data('options');
-
         if (specialty !== 'Cataract') {
-            switch (selected_tab) {
+            switch (selected_tab.toLowerCase()) {
                 case 'service':
                     const week_num = data.pointIndex;
                     const week_str = week_num > 1 ? 'Weeks' : 'Week';
@@ -96,8 +95,8 @@ const analytics_drill_down = (function () {
                     break;
                 case 'clinical':
                     const selected_clinical = $('.clinical-plot-button.selected').text().trim();
-                    switch (selected_clinical) {
-                        case 'Diagnoses':
+                    switch (selected_clinical.toLowerCase()) {
+                        case 'diagnoses':
                             // if the plot has further drill, the data will be an object
                             const further_drill = !Array.isArray(data.customdata);
                             const diagnoses_item = data.yaxis.ticktext[data.y];
@@ -108,10 +107,10 @@ const analytics_drill_down = (function () {
                             patient_total = data.x;
                             additional_info = patient_total + ' ' + patient_str + diagnoses_item + ' for ' + str_ending;
                             break;
-                        case 'Change in vision':
+                        case 'outcomes':
                             hover_text = data.hovertext.trim();
                             hover_text = hover_text.slice(0, hover_text.indexOf('<'));
-                            additional_info = patient_total + ' ' + patient_str + hover_text + ' for ' + data.data['name'] + ' in Change in Vision';
+                            additional_info = patient_total + ' ' + patient_str + hover_text + ' for ' + data.data['name'] + ' in Outcomes';
                             break;
                     }
                     break;
@@ -181,7 +180,7 @@ const analytics_drill_down = (function () {
 
             if (Array.isArray(custom_data)) {
 
-                $('.analytics-charts').hide();
+                $('#plot').hide();
                 patient_list_container.show();
 
                 // set up patient list dom layout for cataract

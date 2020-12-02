@@ -1,6 +1,6 @@
 const plotly_min_width = 800;
 const plotly_min_height = 650;
-const page_width = $('.analytics-charts').width();
+const page_width = $('#plot').width();
 const page_height = $('main').height() - 50;
 const layout_width = plotly_min_width > page_width ? plotly_min_width : page_width;
 const layout_height = plotly_min_height > page_height ? plotly_min_height : page_height;

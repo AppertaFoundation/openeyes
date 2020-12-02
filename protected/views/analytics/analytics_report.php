@@ -2,7 +2,9 @@
 
 <head>
     <script type="text/javascript">
-        var OpenEyes = OpenEyes || {};
+        if(typeof(OpenEyes) === 'undefined'){
+            let OpenEyes = OpenEyes || {};
+        }
     </script>
     <link href="<?= Yii::app()->assetManager->createUrl('fonts/Roboto/roboto.css')?>" rel="stylesheet">
     <link href="<?= Yii::app()->assetManager->createUrl('fonts/material-design/material-icons.css')?>" rel="stylesheet">
@@ -59,7 +61,8 @@
     </div>
     <div class="oe-full-content subgrid wide-side-panel analytics-v2 use-full-screen">
         <nav class="oe-full-side-panel analytics-options-v2">
-            <div class="specialty-options" id="sidebar"></div>
+            <div class="specialty-options" id="sidebar">
+            </div>
         </nav>
         <main class="oe-full-main">
             <div class="flex-layout flex-top">

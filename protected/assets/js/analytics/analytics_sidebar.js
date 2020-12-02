@@ -4,23 +4,18 @@ const analytics_sidebar = (function () {
     const ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 1000;
 
     return function () {
-        // diagnosis filter in Service section, for update chart function
-        const common_disorders_dom = $('.btn-list li');
-        const common_disorders = common_disorders_dom.map(function (i, e) {
-            return $(e).html();
-        });
-
         const $clinical_plot_button = $('.clinical-plot-button');
-        const $search_form = $('#search-form');
-
-        // get user info
-        const side_bar_user_list = analytics_dataCenter.user.getSidebarUser();
-        const current_user = analytics_dataCenter.user.getCurrentUser();
-
+        const $update_chart_btn = $('.update-chart-btn');
         // get current Specialty
         const specialty = analytics_toolbox.getCurrentSpecialty();
-
+        const $tabs = $('.analytics-section');
         function selectSpecialtyOpt() {
+            // for IF statement below
+            // Service data options: service
+            // Clinical data options: Clinical
+            const selected_option = $(this).data('options');
+            const $tab = $('.analytics-options-v2 button');
+
             // data section is used to save plot dom element id
             // Service data section: #js-hs-chart-analytics-service
             // Clinical data section: #js-hs-chart-analytics-clinical-main
@@ -31,20 +26,22 @@ const analytics_sidebar = (function () {
             // Clinical data tab: #js-charts-clinical
             const selected_tab = $(this).data('tab');
 
-            // for IF statement below
-            // Service data options: service
-            // Clinical data options: Clinical
-            const selected_option = $(this).data('options');
-            const $tab = $('.analytics-options-v2 button');
+            // selected tab item
+            const $selected_tab_item = $(`${selected_tab} li a.selected`);
 
             // display selected tab and the things related to it
             $(this).addClass('selected');
-            $tab.not(this).removeClass('selected');
+            $tabs.not(this).removeClass('selected');
             $(selected_section).show();
-            $($tab.not(this).data('section')).hide();
-            $('hr.divider').hide();
+
+            $('#plot > div').not(selected_section).hide();
             $(selected_tab).show();
-            $($tab.not(this).data('tab')).hide();
+            $($tabs.not(this).data('tab')).hide();
+
+            $('hr.divider').hide();
+            
+            $selected_tab_item.trigger('click')
+
 
             // force display when come back from other screen, like drill down
             // and hide drill down
@@ -63,33 +60,33 @@ const analytics_sidebar = (function () {
 
         // options in clinical tab
         // All: Diagnoses
-        // GL/MR: Diagnoses, Change in vision
+        // GL/MR: Diagnoses, Outcomes
         // ----------------------------------
         // Diagnoses: bring up Diagnoses plot
-        // Change in vision: send ajax request for the plot
+        // Outcomes: send ajax request for the plot
         function selectClinicalOpt(e) {
             // for Diagnoses
             e.preventDefault();
             e.stopPropagation();
             $(this).addClass('selected');
-            $clinical_plot_button.not(this).removeClass('selected');
-            $('.js-hs-chart-analytics-clinical').hide();
-            $('.js-hs-filter-analytics-clinical').hide();
-
+            $('.clinical-plot-button').not(this).removeClass('selected');
+            $('.custom-filters > tbody > tr').hide();
+            $('table.custom-filters tr.' + $(this).data('filterid') + '-filter').show();
             // force display when come back from other screen, like drill down
             // and hide drill down
             analytics_toolbox.hideDrillDownShowChart();
 
             $($(this).data('filterid')).show();
             $($(this).data('plotid')).show();
+            $('#plot > div').not($($(this).data('plotid'))).hide();
 
-            // Change in vision selection
-            if ($(this).text().trim().toLowerCase() === 'change in vision') {
+            // Outcomes selection
+            if ($(this).data('report').trim().toLowerCase() === 'outcomes') {
                 $('#js-analytics-spinner').show();
                 $.ajax({
                     url: '/analytics/getCustomPlot',
-                    data: "YII_CSRF_TOKEN=" + YII_CSRF_TOKEN + '&' + $search_form.serialize() +
-                        analytics_toolbox.getDataFilters(specialty, side_bar_user_list, common_disorders, current_user),
+                    data: "YII_CSRF_TOKEN=" + YII_CSRF_TOKEN + '&' + $('#search-form').serialize() + '&' +
+                        analytics_toolbox.getDataFilters() + '&specialty=' + specialty,
                     dataType: 'json',
                     success: function (data) {
                         // update custom data
@@ -130,8 +127,8 @@ const analytics_sidebar = (function () {
             $('#js-analytics-spinner').show();
             $.ajax({
                 url: '/analytics/updateData',
-                data: $search_form.serialize() +
-                    analytics_toolbox.getDataFilters(specialty, side_bar_user_list, common_disorders, current_user) +
+                data: $('#search-form').serialize() + '&' +
+                    analytics_toolbox.getDataFilters() +
                     '&report=' + $('#js-charts-service .charts li a.selected').data('report'),
                 dataType: 'json',
                 success: function (data) {
@@ -177,34 +174,7 @@ const analytics_sidebar = (function () {
 
         $('#js-clear-date-range').off('click').on('click', _.throttle(clearDate, throttleTime));
         //Service, Clinical tab click
-        $('.analytics-section').off('click').on('click', _.throttle(selectSpecialtyOpt, throttleTime));
-
-
-        // according to filter (green button, hover over will display filter options) selection
-        // update filters text (below filter button)
-        $('.oe-filter-options').each(function () {
-            const id = $(this).data('filter-id');
-            const $filter_options_popup_id = $('#filter-options-popup-' + id);
-            /*
-                @param $wrap
-                @param $btn
-                @param $popup
-            */
-            enhancedPopupFixed(
-                $('#oe-filter-options-' + id),
-                $('#oe-filter-btn-' + id),
-                $filter_options_popup_id
-            );
-
-            // workout fixed poition
-
-            const $allOptionGroups = $filter_options_popup_id.find('.options-group');
-            $allOptionGroups.each(function () {
-                // listen to filter changes in the groups
-                analytics_toolbox.updateUI($(this));
-            });
-
-        });
+        $tabs.off('click').on('click', _.throttle(selectSpecialtyOpt, throttleTime));
 
         // from original code, don't where is it...
         $('#js-chart-filter-global-anonymise').off('click').on('click', function () {
@@ -236,10 +206,10 @@ const analytics_sidebar = (function () {
 
         // bind click event on options in clinical tab
         // All: Diagnoses
-        // GL/MR: Diagnoses, Change in vision
+        // GL/MR: Diagnoses, Outcomes
         $clinical_plot_button.off('click').on('click', _.throttle(selectClinicalOpt, ajaxThrottleTime));
 
         // bind submit event on search form wich is triggered bt Update Chart button
-        $search_form.off('submit').on('submit', _.throttle(updateChart, ajaxThrottleTime));
+        $update_chart_btn.off('click').on('click', _.throttle(updateChart, ajaxThrottleTime));
     };
 })();

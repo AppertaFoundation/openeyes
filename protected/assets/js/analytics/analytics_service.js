@@ -1,4 +1,13 @@
 const analytics_service = (function () {
+    function switchFilter(){
+        let type = $('#js-charts-service .charts li a.selected').data('report');
+        $('.custom-filters > tbody > tr').hide();
+        if(type === 'vf'){
+            $('table.custom-filters tr.vf-filter').show()
+        } else {
+            $('table.custom-filters tr.service-filter').show()
+        }
+    }
     return function () {
         // get ajax url
         const url = analytics_dataCenter.ajax.getAjaxURL();
@@ -25,14 +34,11 @@ const analytics_service = (function () {
         const overdue_raw = analytics_toolbox.processPlotData('overdue', service_data['plot_data']);
         analytics_toolbox.loadPlot('init', overdue_raw.data, overdue_raw.title);
 
+        switchFilter();
         // bind click event
         report_type_links.off('click').on('click', function (e) {
             e.stopPropagation();
             $('#js-analytics-spinner').show();
-
-            // reset filter to All
-            const filter_group = $('#js-charts-service .options-group');
-            $(filter_group.find('ul.btn-list li')[0]).click();
 
             const $patient_drill_down_list = $('.analytics-patient-list');
 
@@ -47,17 +53,14 @@ const analytics_service = (function () {
             $(this).addClass('selected');
             $('#js-charts-service .charts li a').not(this).removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
-
+            switchFilter();
             // get current clicked report type
             const type = $(this).data('report');
+            const specialty = analytics_toolbox.getCurrentSpecialty();
             $.ajax({
                 url: url,
-                type: "POST",
-                data: {
-                    YII_CSRF_TOKEN: YII_CSRF_TOKEN,
-                    report: type,
-                    specialty: analytics_toolbox.getCurrentSpecialty(),
-                },
+                data: "YII_CSRF_TOKEN=" + YII_CSRF_TOKEN + '&' + $('#search-form').serialize() + '&' +
+                analytics_toolbox.getDataFilters() + '&specialty=' + specialty + '&report=' + type,
                 dataType: 'json',
                 success: function (data) {
                     // update service data

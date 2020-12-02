@@ -305,8 +305,8 @@ class AnalyticsController extends BaseController
 
         $query_conditions = array('and');
 
-        if (isset($this->filters['custom_diagnosis'])) {
-            $diagnoses = implode(",", $this->filters['custom_diagnosis']);
+        if (isset($this->filters['diagnosis'])) {
+            $diagnoses = $this->filters['diagnosis'];
             $query_conditions[] = "diag.disorder_id IN ( $diagnoses )";
             $query_conditions[] = 'diag.active = 1';
         }
@@ -458,7 +458,7 @@ class AnalyticsController extends BaseController
             $subspecialty_id,
             $this->filters['date_from'],
             $this->filters['date_to'],
-            $this->filters['service_diagnosis'],
+            $this->filters['diagnosis'],
             $this->surgeon
         );
         if (Yii::app()->request->getParam('report')) {
@@ -487,9 +487,9 @@ class AnalyticsController extends BaseController
             'date_to' => strtotime(date("Y-m-d H:i:s")),
         );
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
-        $side_bar_user_list = null;
+        $side_bar_user_list = array();
         if (isset($this->surgeon)) {
-            $user_list = null;
+            $user_list = array();
         } else {
             $user_list = User::model()->findAll();
             foreach ($user_list as $user) {
@@ -507,24 +507,77 @@ class AnalyticsController extends BaseController
             'current_user' => $this->current_user->id,
             'user_list' => $side_bar_user_list,
         );
-        $data['dom']['sidebar'] = $this->renderPartial(
-            '/analytics/analytics_sidebar',
-            array(
-                'specialty' => $specialty,
-                'current_user' => $this->current_user,
-                'common_disorders' => $common_ophthalmic_disorders,
-                'user_list' => $user_list,
-            ),
-            true
+        $can_view_clinical = Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) ? true : false;
+        $is_service_manager = Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id) ? true : false;
+        $sidebar_params = array(
+            'specialty'=>$specialty,
+            'current_user'=>$this->current_user,
+            'common_disorders'=>$common_ophthalmic_disorders,
+            'user_list'=>$user_list,
+            'can_view_clinical' => $can_view_clinical,
+            'is_service_manager' => $is_service_manager,
         );
         $data['dom']['plot'] = $this->renderPartial('/analytics/analytics_plots', null, true);
         if ($specialty !== 'All') {
+            switch ($specialty) {
+                case 'Glaucoma':
+                    $procedures = $this->getIdByName(array('Cataract Extraction','Trabeculectomy', 'Aqueous Shunt','Cypass Stent Insertion','Selective laser trabeculoplasty','Laser coagulation ciliary body'), Procedure::class, 'term');
+                    $default_procedure = 'Trabeculectomy';
+                    break;
+                case 'Medical Retina':
+                    $procedures = $this->getIdByName(array('Lucentis', 'Eylea', 'Avastin', 'Triamcinolone', 'Ozurdex'), OphTrIntravitrealinjection_Treatment_Drug::class, 'name');
+                    $default_procedure = 'Lucentis';
+                    break;
+            }
+            $va_units = $this->getVAUnits()->queryAll();
+            $reformed_va_units = array();
+            $default_va_unit = 'logMAR';
+            foreach ($va_units as $va_unit) {
+                $reformed_va_units[$va_unit['name']] = $va_unit['id'];
+            }
+            $sidebar_params['procedures'] = $procedures;
+            $sidebar_params['default_procedure'] = $default_procedure;
+            $sidebar_params['va_units'] = $reformed_va_units;
+            $sidebar_params['default_va_unit'] = $default_va_unit;
             $data['dom']['plot'] .= $this->renderPartial('/analytics/analytics_custom', null, true);
         }
+        $data['dom']['sidebar'] = $this->renderPartial('/analytics/analytics_sidebar', $sidebar_params, true);
         $this->renderJSON($data);
         Yii::app()->end();
     }
+    private function getProcedures($procs)
+    {
+        $query_conditions = array('or');
+        if (isset($procs)) {
+            foreach ($procs as $proc) {
+                $query_conditions[] = "LOWER(term) LIKE '$proc'";
+            }
+        }
+        $query_procs = Yii::app()->db->createCommand()
+            ->select('
+                id,
+                term
+            ')
+            ->from('proc')
+            ->where('active = 1')
+            ->andWhere($query_conditions);
+        return $query_procs;
+    }
+    private function getVAUnits()
+    {
+        $query_conditions = array('and');
+        $query_conditions[] = 'active = 1';
+        $query_conditions[] = "name IN ('ETDRS Letters', 'Snellen Metre', 'logMAR', 'logMAR single-letter')";
 
+        $query_va_units = Yii::app()->db->createCommand()
+            ->select('
+                id,
+                name
+            ')
+            ->from('ophciexamination_visual_acuity_unit')
+            ->where($query_conditions);
+        return $query_va_units;
+    }
     /**
      * Function actionCataract(), actionMedicalRetina(), actionGlaucoma() are the main function for those three subspecialties
      * The function grab data for all the plots.
@@ -595,7 +648,9 @@ class AnalyticsController extends BaseController
 
     public function actionGetCustomPlot()
     {
-        $va_unit = VisualAcuityUnit::model()->getVAUnit(4);
+        $this->checkAuth();
+        $this->obtainFilters();
+        $va_unit = VisualAcuityUnit::model()->getVAUnit($this->filters['va_unit']);
         $va_init_ticks = VisualAcuityUnit::model()->getInitVaTicks($va_unit);
         $va_final_ticks = VisualAcuityUnit::model()->sliceVATicks($va_init_ticks, 20);
         $specialty = Yii::app()->getRequest()->getParam("specialty");
@@ -846,8 +901,6 @@ class AnalyticsController extends BaseController
 
     private function getCustomData($sn)
     {
-        $this->checkAuth();
-        $this->obtainFilters();
         $custom_data = array();
         $va_list_name = '_va_list';
 
@@ -865,6 +918,8 @@ class AnalyticsController extends BaseController
             $custom_data[] = array(
                 array(
                     'name' => 'VA',
+                    'mode' => 'lines+markers',
+                    'type' => 'scatter',
                     'x' => array_keys(${$side . $va_list_name}),
                     'y' => array_map(
                         function ($item) {
@@ -903,6 +958,8 @@ class AnalyticsController extends BaseController
                 array(
                     'name' => $sn === 'Glaucoma' ? 'IOP' : 'CRT',
                     'yaxis' => 'y2',
+                    'mode' => 'lines+markers',
+                    'type' => 'scatter',
                     'x' => array_keys(${$side . $second_list_name}),
                     'y' => array_map(
                         function ($item) {
@@ -1151,11 +1208,11 @@ class AnalyticsController extends BaseController
         }
         if (isset($this->surgeon)) {
             $query_conditions[] = 'e.created_user_id = ' . $this->surgeon;
-        } elseif (isset($this->filters['custom_surgeon_id'])) {
-            $query_conditions[] = 'e.created_user_id = ' . $this->filters['custom_surgeon_id'];
+        } elseif (isset($this->filters['user'])) {
+            $query_conditions[] = 'e.created_user_id = ' . $this->filters['user'];
         }
-        if (isset($this->filters['treatment'])) {
-            $query_conditions[] = 'eot.drug_id ' . $this->filters['treatment'];
+        if (isset($this->filters['procedure'])) {
+            $query_conditions[] = 'eot.drug_id ' . $this->filters['procedure'];
         }
         return Yii::app()->db->createCommand()
             ->select(
@@ -1297,8 +1354,8 @@ class AnalyticsController extends BaseController
         }
         if (isset($this->surgeon)) {
             $query_conditions[] = 'ops.created_user_id = ' . $this->surgeon;
-        } elseif (isset($this->filters['custom_surgeon_id'])) {
-            $query_conditions[] = 'ops.created_user_id = ' . $this->filters['custom_surgeon_id'];
+        } elseif (isset($this->filters['user'])) {
+            $query_conditions[] = 'ops.created_user_id = ' . $this->filters['user'];
         }
         if ($this->filters['procedure']) {
             $query_conditions[] = 'ops.procedure_id ' . $this->filters['procedure'];
@@ -1479,41 +1536,44 @@ class AnalyticsController extends BaseController
             $query_conditions[] = 'reading.side = :side';
         }
         $query_conditions[] = 'ep.deleted = 0 AND e.deleted = 0';
-        return Yii::app()->db->createCommand()
-            ->select(
-                '
-            e.id event_id,
-            reading.side eye_id,
-            reading.value value,
-            e.event_date event_date,
-            e.episode_id episode_id
-        '
-            )
+        if ($this->filters['va_unit']) {
+            $va_unit = $this->filters['va_unit'];
+            $query_conditions[] = "eov.unit_id = $va_unit";
+        }
+        $best_reading = Yii::app()->db->createCommand()
+            ->select('
+                e.id event_id,
+                reading.side eye_id,
+                reading.value value,
+                e.event_date event_date,
+                e.episode_id episode_id
+            ')
             ->from('event e')
             ->join('et_ophciexamination_visualacuity eov', 'e.id = eov.event_id')
-            ->join(
-                '(
-            SELECT 
-                ovr.element_id,
-                ovr.value,
-                ovr.side,
-                ovr.method_id
-            FROM (
+            ->join('
+            (
                 SELECT 
-                    element_id, 
-                    side, 
-                    max(value) value
-                FROM ophciexamination_visualacuity_reading
-                GROUP BY element_id, side
-            ) max_val
-            INNER JOIN ophciexamination_visualacuity_reading ovr USING (element_id, side, value)
-        ) reading',
-                'reading.element_id = eov.id'
-            )
-            ->join('episode ep', 'e.episode_id = ep.id')
-            ->where($query_conditions)
-            // need to confirm with James if the following is needed or not
-            ->andWhere('eov.unit_id in (2, 4) and reading.method_id in (2, 4)');
+                    ovr.element_id,
+                    ovr.value,
+                    ovr.side,
+                    ovr.method_id
+                FROM (
+                    SELECT 
+                        element_id, 
+                        side, 
+                        max(value) value
+                    FROM ophciexamination_visualacuity_reading
+                    GROUP BY element_id, side
+                ) max_val
+                INNER JOIN ophciexamination_visualacuity_reading ovr USING (element_id, side, value)
+            ) reading', 'reading.element_id = eov.id
+            ')
+        ->join('episode ep', 'e.episode_id = ep.id')
+        ->where($query_conditions)
+        // need to confirm with James if the following is needed or not
+        ->andWhere('reading.method_id in (2, 4)');
+
+        return $best_reading;
     }
 
     /**
@@ -1620,8 +1680,8 @@ class AnalyticsController extends BaseController
 
         $query_conditions = array('and');
         $query_params = array();
-        if (isset($this->filters['custom_diagnosis'])) {
-            $diagnoses = implode(",", $this->filters['custom_diagnosis']);
+        if (isset($this->filters['diagnosis'])) {
+            $diagnoses = $this->filters['diagnosis'];
             $query_conditions[] = "diag.disorder_id IN ( $diagnoses )";
             $query_conditions[] = 'diag.active = 1';
         }
@@ -1843,11 +1903,8 @@ class AnalyticsController extends BaseController
             )
             ->group('p.id, e.id, eye.name')
             ->order('name, e.event_date DESC');
-
-        $paramIdArray = json_decode($params['ids']);
-
-        if (isset($params['ids']) && count($paramIdArray) > 0) {
-            $params['ids'] = $paramIdArray;
+        if (isset($params['ids']) && count($params['ids'] > 0)) {
+            $params['ids'] = json_decode($params['ids']);
             $command->where('e.id IN (' . implode(', ', $params['ids']) . ')');
         }
         return $command->queryAll();
@@ -1900,7 +1957,7 @@ class AnalyticsController extends BaseController
 
         if ($only_name) {
             $common_ophthalmic_disorders_command = Yii::app()->db->createCommand()
-                ->select('d.term', 'DISTINCT')
+                ->select('d.id, d.term', 'DISTINCT')
                 ->from('common_ophthalmic_disorder cod')
                 ->leftJoin('disorder d', 'd.id = cod.disorder_id')
                 ->where($queryConditions);
@@ -2192,78 +2249,17 @@ class AnalyticsController extends BaseController
         $specialty = Yii::app()->request->getParam('specialty');
         $dateFrom = Yii::app()->request->getParam('from');
         $dateTo = Yii::app()->request->getParam('to');
-        $ageMin = Yii::app()->request->getParam('custom_age_min');
-        $ageMax = Yii::app()->request->getParam('custom_age_max');
-        $custom_diagnosis = Yii::app()->request->getParam('custom_diagnosis');
-        $service_diagnosis = Yii::app()->request->getParam('service_diagnosis');
-        $custom_treatment = Yii::app()->request->getParam('custom_treatment');
-        $clinical_surgeon_id = Yii::app()->request->getParam('clinical_surgeon');
-        $custom_surgeon_id = Yii::app()->request->getParam('custom_surgeon');
-        $custom_procedure = Yii::app()->request->getParam('custom_procedure');
-        $plot_va_change = Yii::app()->request->getParam('custom_plot');
+        $age = Yii::app()->request->getParam('age');
+        $diagnosis = Yii::app()->request->getParam('diagnosis');
+        $procedure = Yii::app()->request->getParam('procedure');
+        $user = Yii::app()->request->getParam('user');
+        $plot_va_change = Yii::app()->request->getParam('analytics_plot');
+        $va_unit = Yii::app()->request->getParam('va_unit');
         $time_interval_num = Yii::app()->request->getParam('time_interval_num');
         $time_interval_unit = Yii::app()->request->getParam('time_interval_unit');
 
-        if (isset($custom_diagnosis)) {
-            $diagnoses_MR = $this->getIdByName(
-                array(
-                    'age-related macular degeneration',
-                    'Branch retinal vein occlusion',
-                    'Central retinal vein occlusion',
-                    'Diabetic macular oedema'
-                ),
-                Disorder::class,
-                'term'
-            );
-            $diagnoses_GL = $this->getIdByName(
-                array(
-                    'glaucoma',
-                    'open-angle glaucoma',
-                    'angle-closure glaucoma',
-                    'Low tension glaucoma',
-                    'Ocular hypertension'
-                ),
-                Disorder::class,
-                'term'
-            );
-            $custom_diagnosis_array = explode(",", $custom_diagnosis);
-            $custom_diagnosis = array();
-            foreach ($custom_diagnosis_array as $item) {
-                if ($specialty === 'Medical Retina') {
-                    $custom_diagnosis = array_merge_recursive($custom_diagnosis, $diagnoses_MR[$item]);
-                } elseif ($specialty === 'Glaucoma') {
-                    $custom_diagnosis = array_merge_recursive($custom_diagnosis, $diagnoses_GL[$item]);
-                } else {
-                    $custom_diagnosis = null;
-                    break;
-                }
-            }
-        }
-        if (isset($custom_treatment)) {
-            $treatments = $this->getIdByName(
-                array('Lucentis', 'Eylea', 'Avastin', 'Triamcinolone', 'Ozurdex'),
-                OphTrIntravitrealinjection_Treatment_Drug::class,
-                'name'
-            );
-            $custom_treatment = $treatments[$custom_treatment];
-            $custom_treatment = 'IN (' . implode(',', $custom_treatment) . ')';
-        }
-        if (isset($custom_procedure)) {
-            $procedures = $this->getIdByName(
-                array(
-                    'cataract extraction',
-                    'Trabeculectomy',
-                    'aqueous shunt',
-                    'Cypass Stent Insertion',
-                    'Selective laser trabeculoplasty',
-                    'Laser coagulation ciliary body'
-                ),
-                Procedure::class,
-                'term'
-            );
-            $custom_procedure = $procedures[$custom_procedure];
-            $custom_procedure = 'IN (' . implode(',', $custom_procedure) . ')';
-        }
+        $user = $user ? : null;
+        $procedure = $procedure ? "IN ($procedure)" : null;
         if (isset($plot_va_change) && $plot_va_change !== 'change') {
             $plot_va_change = true;
         } else {
@@ -2281,26 +2277,24 @@ class AnalyticsController extends BaseController
         }
 
         $time_interval = array(
-            'unit' => !isset($time_interval_unit) || $time_interval_unit === 'Week(s)' ? 'WEEK' : 'MONTH',
+            'unit' => !isset($time_interval_unit) || $time_interval_unit === 'Week' ? 'WEEK' : 'MONTH',
             'num' => !isset($time_interval_num) ? 1 : $time_interval_num,
         );
-
+        $age = $age ? explode(',', $age) : null;
+        $ageMin = $age ? $age[0] : null;
+        $ageMax = $age ? $age[1] : null;
         $this->filters = array(
-            'specialty' => $specialty,
-            'date_from' => $dateFrom,
-            'date_to' => $dateTo,
-            'age_min' => $ageMin,
-            'age_max' => $ageMax,
-            'custom_diagnosis' => $custom_diagnosis,
-            'protocol' => null,
-            'plot-va' => null,
-            'treatment' => $custom_treatment,
-            'service_diagnosis' => $service_diagnosis,
-            'clinical_surgeon_id' => $clinical_surgeon_id,
-            'custom_surgeon_id' => $custom_surgeon_id,
-            'procedure' => $custom_procedure,
-            'plot_va_change' => $plot_va_change,
-            'time_interval' => $time_interval,
+          'specialty'=>$specialty,
+          'date_from' => $dateFrom,
+          'date_to' => $dateTo,
+          'age_min'=>$ageMin,
+          'age_max'=>$ageMax,
+          'diagnosis'=>$diagnosis,
+          'user'=>$user,
+          'procedure'=>$procedure,
+          'plot_va_change'=> $plot_va_change,
+          'time_interval' => $time_interval,
+          'va_unit' => $va_unit,
         );
     }
 
@@ -2314,7 +2308,7 @@ class AnalyticsController extends BaseController
                 foreach ($items as $item) {
                     $item_array[] = $item->id;
                 }
-                $return_array[] = $item_array;
+                $return_array[$name] = $item_array;
             } else {
                 $return_array[] = null;
             }
@@ -2329,7 +2323,7 @@ class AnalyticsController extends BaseController
     {
         $this->checkAuth();
         $this->obtainFilters(); // get current filters. Question: why not call validateFilters() in this function.
-        $va_unit = VisualAcuityUnit::model()->getVAUnit(4);
+        $va_unit = VisualAcuityUnit::model()->getVAUnit($this->filters['va_unit']);
         $va_init_ticks = VisualAcuityUnit::model()->getInitVaTicks($va_unit);
         $va_final_ticks = VisualAcuityUnit::model()->sliceVATicks($va_init_ticks, 20);
         $specialty = $this->filters['specialty'];
@@ -2362,9 +2356,12 @@ class AnalyticsController extends BaseController
                     $this->filters['plot_va_change_initial_va_value'] = empty(${$side . $va_list_name}) ? null : ${$side . $va_list_name}[-5]['average'];
                 }
                 $custom_data[] = array(
-                    array(
-                        'x' => array_keys(${$side . $va_list_name}),
-                        'y' => array_map(
+                  array(
+                      'name' => 'VA',
+                      'mode' => 'lines+markers',
+                      'type' => 'scatter',
+                      'x' => array_keys(${$side.$va_list_name}),
+                      'y' => array_map(
                             function ($item) {
                                 if (isset($this->filters['plot_va_change_initial_va_value'])) {
                                     $item['average'] -= $this->filters['plot_va_change_initial_va_value'];
@@ -2405,11 +2402,13 @@ class AnalyticsController extends BaseController
                             array_values(${$side . $va_list_name})
                         ),
                     ),
-                    array(
-                        'name' => $specialty === 'Glaucoma' ? 'IOP' : 'CRT',
-                        'yaxis' => 'y2',
-                        'x' => array_keys(${$side . $second_list_name}),
-                        'y' => array_map(
+                  array(
+                      'name' => $specialty === 'Glaucoma' ? 'IOP' : 'CRT',
+                      'yaxis' => 'y2',
+                      'mode' => 'lines+markers',
+                      'type' => 'scatter',
+                      'x' => array_keys(${$side . $second_list_name}),
+                      'y' => array_map(
                             function ($item) {
                                 return $item['average'];
                             },
@@ -2446,12 +2445,7 @@ class AnalyticsController extends BaseController
                 );
             }
         }
-        $disorder_data = $this->getDisorders(
-            $subspecialty_id,
-            $this->filters['clinical_surgeon_id'],
-            $this->filters['date_from'],
-            $this->filters['date_to']
-        );
+        $disorder_data = $this->getDisorders($subspecialty_id, $this->filters['user'], $this->filters['date_from'], $this->filters['date_to']);
         $clinical_data = array(
             'x' => $disorder_data['x'],
             'y' => $disorder_data['y'],
@@ -2462,7 +2456,7 @@ class AnalyticsController extends BaseController
             $subspecialty_id,
             $this->filters['date_from'],
             $this->filters['date_to'],
-            $this->filters['service_diagnosis'],
+            $this->filters['diagnosis'],
             $this->surgeon
         );
         $this->renderJSON(
@@ -2500,11 +2494,7 @@ class AnalyticsController extends BaseController
 
     private function queryDiagnosesFilteredPatientListCommand($eye_side, $caller = 'custom')
     {
-        if ($caller === 'followup') {
-            $diagnoses = isset($this->filters['service_diagnosis']) ? $this->filters['service_diagnosis'] : null;
-        } else {
-            $diagnoses = isset($this->filters['custom_diagnosis']) ? $this->filters['custom_diagnosis'] : null;
-        }
+        $diagnoses = isset($this->filters['diagnosis'])? $this->filters['diagnosis']: null;
         $command_principal = Yii::app()->db->createCommand()
             ->select('e.patient_id as patient_id', 'DISTINCT')
             ->from('episode e')
@@ -2528,13 +2518,8 @@ class AnalyticsController extends BaseController
             $command_secondary->andWhere('sd.eye_id IN (2,3)');
         }
         if (isset($diagnoses)) {
-            if (is_array($diagnoses)) {
-                $command_principal->andWhere('e.disorder_id IN (' . implode(",", $diagnoses) . ')');
-                $command_secondary->andWhere('sd.disorder_id IN (' . implode(",", $diagnoses) . ')');
-            } else {
-                $command_principal->andWhere('e.disorder_id IN (' . $diagnoses . ')');
-                $command_secondary->andWhere('sd.disorder_id IN (' . $diagnoses . ')');
-            }
+            $command_principal->andWhere('e.disorder_id IN ('.$diagnoses.')');
+            $command_secondary->andWhere('sd.disorder_id IN ('.$diagnoses.')');
         }
         return $command_secondary->union($command_principal->getText());
     }

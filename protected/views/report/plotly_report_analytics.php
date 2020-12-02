@@ -16,14 +16,10 @@
 </div>
 <script>
     var data =  <?= $report->tracesJson();?>;
-    var layout = JSON.parse('<?= $report->plotlyConfig();?>');
+    let layout = JSON.parse('<?= $report->plotlyConfig();?>');
     const plotly_min_width = 800;
     const plotly_min_height = 650;
-    var page_height = $('.oe-analytics').height()-50;
-    var layout_height = plotly_min_height > page_height? plotly_min_height : page_height;
 
-    var page_width = $('.analytics-charts').width();
-    var layout_width = plotly_min_width > page_width? plotly_min_width : page_width;
     layout['font'] = {
             color: '#fff'
         };

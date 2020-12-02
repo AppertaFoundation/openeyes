@@ -29,7 +29,7 @@ const analytics_toolbox = (function () {
     function hideDrillDownShowChart() {
         const $analytics_patient_list = $('.analytics-patient-list');
         const $back_to_common_disorder = $('#js-back-to-common-disorder');
-        const $charts = $('.analytics-charts');
+        const $charts = $('#plot');
         // hide drill down patient list
         if ($analytics_patient_list.css('display') !== 'none') {
             $analytics_patient_list.hide();
@@ -48,7 +48,7 @@ const analytics_toolbox = (function () {
     }
 
     function ajaxErrorHandling(statusCode, errorMsg) {
-        const main = document.querySelector('.oe-analytics-v2');
+        const main = document.querySelector('.analytics-v2');
         const div = document.createElement('div');
 
         main.innerHTML = '';
@@ -77,15 +77,17 @@ const analytics_toolbox = (function () {
     function initDatePicker(def) {
         const date_from = typeof (def) === 'undefined' ? false : new Date(def['date_from']);
         const date_to = typeof (def) === 'undefined' ? false : new Date(def['date_to']);
+        const date_from_elem_query = '#analytics_datepicker_from';
+        const date_to_elem_query = '#analytics_datepicker_to';
 
-        pickmeup('#analytics_datepicker_from', {
+        pickmeup(date_from_elem_query, {
             format: 'd-b-Y',
             date: date_from,
             hide_on_select: true,
             default_date: date_from,
         });
 
-        pickmeup('#analytics_datepicker_to', {
+        pickmeup(date_to_elem_query, {
             format: 'd-b-Y',
             date: date_to,
             hide_on_select: true,
@@ -94,24 +96,42 @@ const analytics_toolbox = (function () {
     }
 
     function getVATitle() {
-        const va_mode = $('#js-chart-filter-plot');
+        const va_mode = $('.custom-filter input[name="analytics_plot"]');
         let va_title;
-        if (va_mode.html().includes('change')) {
-            va_title = "Visual acuity change from baseline (LogMAR)";
+        const va_type = document.querySelector('td[data-name="analytics_va_unit"] span').dataset.label;
+        if (va_mode.val().includes('change')) {
+            va_title = "Visual acuity change from baseline (" + va_type + ")";
         } else {
-            va_title = "Visual acuity (LogMAR)";
+            va_title = "Visual acuity (" + va_type + ")";
         }
         return va_title;
     }
 
-    var drillDown = $('.analytics-patient-list table').html();
+    const report_title = $('#js-charts-service .js-plot-display-label.selected');
 
-    function getCurrentSpecialty() {
-        return $('.oescape-icon-btns li a.selected').data('specialty');
+    function getReportTitleEle() {
+        return report_title;
     }
 
-    function changeVfEyeSide(side) {
-        let opposite_side = side === 'left' ? 'right' : 'left';
+    const drillDown = $('.analytics-patient-list table').html();
+
+    function getCurrentSpecialty() {
+        return $('.oescape-icon-btns li a.active.selected').data('specialty');
+    }
+
+    function changeEyeSide() {
+        const $checked_eye_filter = $('.vf-filter input[name$="vf-eye"]:checked');
+        if($checked_eye_filter.length === 0){
+            $(this).prop('checked', true);
+            return;
+        }
+        let side = '';
+        if($(this).attr('checked')){
+            side = $(this).data('side');
+        }
+        const opposite_side = side === 'left' ? 'right' : 'left';
+        $(this).attr('checked', true);
+        $(`.vf-filter input[name="${opposite_side}-vf-eye"]`).attr('checked', false);
         $('#js-hs-chart-analytics-vf-' + side).show();
         $('#js-hs-chart-analytics-vf-' + opposite_side).hide();
 
@@ -121,19 +141,14 @@ const analytics_toolbox = (function () {
 
     function initVf(data) {
         let service_layout = oePlotly_v1.getLayout({theme: 'dark'});
+        const $eye_filter = $('.vf-filter input[name$="vf-eye"]');
         service_layout['xaxis']['title'] = "Mean Deviation Rate (dB/year)";
         service_layout['xaxis']['range'] = [-30, 15];
         service_layout['yaxis']['title'] = 'Number of Patients';
         service_layout['showlegend'] = false;
-
-        $('#filter-options-popup-custom-service-filters #js-btn-selected-eye-service').click(function () {
-            $('#js-chart-filter-service-eye-side').trigger("changeVfEyeSide");
-        });
-
-        $('#js-chart-filter-service-eye-side').bind("changeVfEyeSide", function () {
-            let side = $('#js-chart-filter-service-eye-side').text().toLowerCase();
-            changeVfEyeSide(side);
-        });
+        
+        $eye_filter.off('change').on('change', changeEyeSide);
+        
 
         Plotly.newPlot(
             'js-hs-chart-analytics-vf-right', [data[0]], service_layout, analytics_options
@@ -314,8 +329,6 @@ const analytics_toolbox = (function () {
 
         if (flag === 'init') {
             if (type === 'vf') {
-                $('#js-service-data-filter-custom').show();
-                $('#js-service-data-filter').hide();
                 initVf(null);
             } else {
                 title = title || 'Patient count';
@@ -324,16 +337,12 @@ const analytics_toolbox = (function () {
                 service_layout['yaxis']['tickformat'] = 'd';
                 service_layout['xaxis']['title'] = title;
                 service_layout['yaxis']['range'] = [0, data.max];
-                $('#js-service-data-filter').show();
-                $('#js-service-data-filter-custom').hide();
                 Plotly.newPlot(
                     'js-hs-chart-analytics-service', [data], service_layout, analytics_options
                 );
             }
         } else {
             if (type === 'vf') {
-                $('#js-service-data-filter-custom').show();
-                $('#js-service-data-filter').hide();
                 initVf(data);
             } else {
                 title = title || 'Patient count';
@@ -342,8 +351,6 @@ const analytics_toolbox = (function () {
                 service_layout['yaxis']['tickformat'] = 'd';
                 service_layout['xaxis']['title'] = title;
                 service_layout['yaxis']['range'] = [0, data.max];
-                $('#js-service-data-filter').show();
-                $('#js-service-data-filter-custom').hide();
                 Plotly.react(
                     'js-hs-chart-analytics-service', [data], service_layout, analytics_options
                 );
@@ -390,66 +397,45 @@ const analytics_toolbox = (function () {
         return plot_id;
     }
 
-    function getDataFilters(specialty, side_bar_user_list, common_disorders, current_user) {
-        const service_common_disorders = common_disorders;
-        const mr_custom_diagnosis = ['AMD(wet)', 'BRVO', 'CRVO', 'DMO'];
-        const gl_custom_diagnosis = ['Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension'];
-        const mr_custom_treatment = ['Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex'];
-        const gl_custom_procedure = ['Cataract Extraction', 'Trabeculectomy', 'Aqueous Shunt', 'Cypass', 'SLT', 'Cyclodiode'];
-        let filters = '';
-        let diagnosis_array;
-        let diagnoses;
-        $('.js-hs-filters').each(function () {
-            if ($(this).is('span') && $(this).is(':visible')) {
-                if ($(this).html() !== 'All') {
-                    if ($(this).hasClass('js-hs-surgeon')) {
-                        if (side_bar_user_list !== null) {
-                            filters += '&' + $(this).data('name') + '=' + side_bar_user_list[$(this).html().trim()];
-                        } else {
-                            filters += '&' + $(this).data('name') + '=' + current_user;
+    function getDataFilters() {
+        let updates = {};
+        const filters = document.querySelectorAll('td[data-name^="analytics_"]');
+        filters.forEach(function (td, i) {
+            let filter_values = [];
+            const selected_items = td.querySelectorAll('span');
+            if (td.dataset.name === 'analytics_time_interval') {
+                if (selected_items.length > 0) {
+                    selected_items.forEach(function (span, i) {
+                        const type = span.dataset.type;
+                        const value = span.dataset.label;
+                        updates[td.dataset.name.replace('analytics_', '') + '_' + type] = value;
+                    })
+
+                }
+            } else {
+                if (selected_items.length > 0) {
+                    for (let i = 0; i < selected_items.length; i++) {
+                        const item = selected_items[i];
+                        if (item.dataset.id && item.dataset.id !== 'none') {
+                            filter_values.push(item.dataset.id);
                         }
-                    } else if ($(this).data('name') === "service_diagnosis") {
-                        filters += '&' + $(this).data('name') + '=' + Object.keys(service_common_disorders).find(key => service_common_disorders[key] === $(this).html());
-                    } else if ($(this).hasClass('js-hs-custom-mr-diagnosis')) {
-                        diagnosis_array = $(this).html().split(",");
-                        diagnoses = "";
-                        diagnosis_array.forEach(
-                            function (item) {
-                                diagnoses += mr_custom_diagnosis.indexOf(item) + ',';
-                            }
-                        );
-                        diagnoses = diagnoses.slice(0, -1);
-                        filters += '&' + $(this).data('name') + '=' + diagnoses;
-                    } else if ($(this).hasClass('js-hs-custom-mr-treatment')) {
-                        var treatment = mr_custom_treatment.indexOf($(this).html());
-                        filters += '&' + $(this).data('name') + '=' + treatment;
-                    } else if ($(this).hasClass('js-hs-custom-gl-procedure')) {
-                        var procedure = gl_custom_procedure.indexOf($(this).html());
-                        filters += '&' + $(this).data('name') + '=' + procedure;
-                    } else if ($(this).hasClass('js-hs-custom-gl-diagnosis')) {
-                        diagnosis_array = $(this).html().split(",");
-                        diagnoses = "";
-                        diagnosis_array.forEach(
-                            function (item) {
-                                diagnoses += gl_custom_diagnosis.indexOf(item) + ',';
-                            }
-                        );
-                        diagnoses = diagnoses.slice(0, -1);
-                        filters += '&' + $(this).data('name') + '=' + diagnoses;
-                    } else if ($(this).hasClass('js-hs-custom-mr-plot-type')) {
-                        if ($(this).html().includes('change')) {
-                            filters += '&' + $(this).data('name') + '=change';
-                        }
-                    } else {
-                        filters += '&' + $(this).data('name') + '=' + $(this).html();
 
                     }
+                    filter_values = filter_values.join(',');
                 }
-            } else if ($(this).is('select')) {
-                filters += '&' + $(this).data('name') + '=' + $(this).val();
+                updates[td.dataset.name.replace('analytics_', '')] = filter_values;
             }
         });
-        return filters;
+        let url_params = "";
+        for (const key in updates) {
+            if (url_params != "") {
+                url_params += "&";
+            }
+            if (updates[key]) {
+                url_params += key + "=" + encodeURIComponent(updates[key]);
+            }
+        }
+        return url_params;
     }
 
     function setYaxisRange(data, layout, target = 'iop', min = 0, max = null) {
@@ -466,24 +452,26 @@ const analytics_toolbox = (function () {
     }
 
     function setXaxisTick(layout) {
-        var time_interval_unit = $('#js-chart-filter-time-interval-unit').text();
+        const time_interval_unit = document.querySelector('td[data-name="analytics_time_interval"] span[data-type="unit"]').dataset.label;
 
-        var time_interval_num = $('#js-chart-filter-time-interval-num').text();
+        const time_interval_num = document.querySelector('td[data-name="analytics_time_interval"] span[data-type="num"]').dataset.label;
 
         if (!layout['xaxis']) {
             layout['xaxis'] = {};
         }
 
         layout['xaxis']['title'] = {
-            text: time_interval_unit.replace(/[{()}]/g, ''),
+            text: time_interval_unit,
             font: {
                 color: '#fff'
             },
         };
 
-        if (time_interval_unit === 'Week(s)' && time_interval_num < 4) {
+        if (time_interval_unit === 'Week' && time_interval_num < 4) {
             layout['xaxis']['dtick'] = null;
+            layout['xaxis']['tickmode'] = 'auto';
         } else {
+            layout['xaxis']['tickmode'] = null;
             layout['xaxis']['dtick'] = time_interval_num;
         }
         return layout;
@@ -510,6 +498,9 @@ const analytics_toolbox = (function () {
             if ($('#js-hs-clinical-diagnoses').hasClass('selected')) {
                 const clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
                 const clinical_data = data[0];
+                const max_name_length = Math.max(...clinical_data['text'].map(function (item) {
+                    return item.length;
+                }));
                 clinical_chart.data[0]['x'] = clinical_data.x;
                 clinical_chart.data[0]['y'] = clinical_data.y;
                 clinical_chart.data[0]['customdata'] = clinical_data.customdata;
@@ -517,105 +508,73 @@ const analytics_toolbox = (function () {
                 clinical_chart.layout['yaxis']['tickvals'] = clinical_data['y'];
                 clinical_chart.layout['yaxis']['ticktext'] = clinical_data['text'];
                 clinical_chart.layout['hoverinfo'] = 'x+y';
+                clinical_chart.layout['margin']['l'] = max_name_length * 7;
                 Plotly.redraw(clinical_chart);
             }
-            if (specialty !== 'All') {
-                if ($('#js-hs-clinical-custom').hasClass('selected')) {
-                    const custom_charts = ['js-hs-chart-analytics-clinical-others-left', 'js-hs-chart-analytics-clinical-others-right'];
-                    const custom_data = data[2];
-                    const op_type = specialty === 'Glaucoma' ? 'procedure' : 'treatment';
-                    const $chart_filter = $('#js-chart-filter-' + op_type);
-                    for (let i = 0; i < custom_charts.length; i++) {
-                        const chart = $('#' + custom_charts[i])[0];
-                        chart.layout['title'] = {
-                            text: (i) ? $chart_filter.text() + ': Right' : $chart_filter.text() + ': Left',
-                            font: {
-                                color: '#fff',
-                            }
-                        };
-                        chart.layout = setXaxisTick(chart.layout);
-                        chart.layout['yaxis']['title'] = {
-                            font: {
-                                family: 'sans-serif',
-                                size: 12,
-                                color: '#fff',
-                            },
-                            text: getVATitle(),
-                        };
-                        //Set VA unit tick labels
-                        const va_mode = $('#js-chart-filter-plot');
-                        if (va_mode.html().includes('change')) {
-                            chart.layout['yaxis']['tickmode'] = 'auto';
-                        } else {
-                            let tick_position = $.parseJSON(data['va_final_ticks']['tick_position']);
-                            let tick_labels = $.parseJSON(data['va_final_ticks']['tick_labels']);
-                            tick_position = tick_position ? tick_position : data['va_final_ticks']['tick_position'];
-                            tick_labels = tick_labels ? tick_labels : data['va_final_ticks']['tick_labels'];
-                            chart.layout['yaxis']['tickmode'] = 'array';
-                            chart.layout['yaxis']['tickvals'] = data['va_final_ticks']['tick_position'];
-                            chart.layout['yaxis']['ticktext'] = data['va_final_ticks']['tick_labels'];
-                        }
-                        setYaxisRange(custom_data[i][1], chart.layout['yaxis2']);
-                        chart.data[0]['x'] = custom_data[i][0]['x'];
-                        chart.data[0]['y'] = custom_data[i][0]['y'];
-                        chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
-                        chart.data[0]['error_y'] = custom_data[i][0]['error_y'];
-                        chart.data[0]['hoverinfo'] = custom_data[i][0]['hoverinfo'];
-                        chart.data[0]['hovertext'] = custom_data[i][0]['hovertext'];
-                        chart.data[1]['x'] = custom_data[i][1]['x'];
-                        chart.data[1]['y'] = custom_data[i][1]['y'];
-                        chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
-                        chart.data[1]['error_y'] = custom_data[i][1]['error_y'];
-                        chart.data[1]['hoverinfo'] = custom_data[i][1]['hoverinfo'];
-                        chart.data[1]['hovertext'] = custom_data[i][1]['hovertext'];
-                        Plotly.redraw(chart);
-                    }
-                }
+            if (specialty !== 'All' && $('#js-hs-clinical-custom').hasClass('selected')) {
+                $('#js-hs-chart-analytics-clinical-others .js-plotly-plot').each(function (i, item) {
+                    const side = $(item).attr('id').replace('js-hs-chart-analytics-clinical-others-', '');
+                    const side_index = side === 'right' ? 1 : 0;
+                    item.data = data[2][side_index];
+                    const layout = setCustomLayout(specialty, data['va_final_ticks']);
+                    layout['title']['text'] = document.querySelector('td[data-name="analytics_procedure"] span').dataset.label + ": " + side;
+                    layout['yaxis2'] = setYaxisRange(item.data[1], layout['yaxis2']);
+                    Plotly.newPlot(
+                        $(item).attr('id'), item.data, layout, analytics_options
+                    );
+                    $('.custom-filter input[name$="eye"]').trigger('change');
+                })
             }
         }
     }
 
+    function setCustomLayout(specialty, va_ticks) {
+        let layout = JSON.parse(JSON.stringify(analytics_layout));
 
-    // update UI to show how Filter works
-    // this is pretty basic but only to demo on IDG
-    function updateUI($optionGroup) {
-        // get the ID of the IDG demo text element
-        const textID = $optionGroup.data('filter-ui-id');
-        const $allListElements = $('.btn-list li', $optionGroup);
-        const $filter_id = $('#' + textID);
+        const va_mode = document.querySelector('.custom-filter input[name="analytics_plot"]:checked').value;
 
-        $allListElements.click(function () {
-            if ($(this).parent().hasClass('js-multi-list') && $(this).text() !== "All") {
-                if ($(this).hasClass('selected')) {
-                    if ($filter_id.text().includes(',')) {
-                        $(this).removeClass('selected');
-                        $filter_id.text($filter_id.text().replace($(this).text() + ",", ""));
-                        $filter_id.text($filter_id.text().replace("," + $(this).text(), ""));
-                    }
-                } else {
-                    $(this).addClass('selected');
-                    $allListElements.filter(function () {
-                        return $(this).text() === "All";
-                    }).removeClass('selected');
-                    if ($filter_id.text() === "All") {
-                        $filter_id.text($(this).text());
-                    } else {
-                        $filter_id.text($filter_id.text() + ',' + $(this).text());
-                    }
-                }
-            } else {
-                $filter_id.text($(this).text());
-                $allListElements.removeClass('selected');
-                $(this).addClass('selected');
-            }
-        });
+        layout['title'] = {
+            text: '',
+            font: {
+                color: '#fff'
+            },
+        };
+        layout = setXaxisTick(layout);
+
+        layout['xaxis']['rangeslider'] = {};
+        layout['yaxis']['title'] = getVATitle();
+        //Set VA unit tick labels
+        if (va_mode === 'absolute') {
+            layout['yaxis']['tickmode'] = 'array';
+            layout['yaxis']['tickvals'] = va_ticks['tick_position'];
+            layout['yaxis']['ticktext'] = va_ticks['tick_labels'];
+        } else {
+            layout['yaxis']['tickmode'] = 'auto';
+        }
+
+        layout['yaxis2'] = {
+            title: specialty === 'Glaucoma' ? "IOP (mm Hg)" : "CRT &mu;m",
+            titlefont: {
+                family: 'sans-serif',
+                size: 12,
+                color: '#fff',
+            },
+            side: 'right',
+            overlaying: 'y',
+            linecolor: '#fff',
+            tickcolor: '#fff',
+            tickfont: {
+                color: '#fff',
+            },
+        };
+
+        return layout;
     }
 
     return {
         getCurrentShownPlotId: getCurrentShownPlotId,
         getDataFilters: getDataFilters,
         plotUpdate: plotUpdate,
-        updateUI: updateUI,
         getTypeData: getTypeData,
         loadPlot: loadPlot,
         processPlotData: processPlotData,
@@ -630,5 +589,7 @@ const analytics_toolbox = (function () {
         hideDrillDownShowChart: hideDrillDownShowChart,
         setYaxisRange: setYaxisRange,
         setXaxisTick: setXaxisTick,
+        getReportTitleEle: getReportTitleEle,
+        setCustomLayout: setCustomLayout,
     };
 })();

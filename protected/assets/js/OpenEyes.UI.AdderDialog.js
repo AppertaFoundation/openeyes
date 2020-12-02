@@ -426,7 +426,8 @@
         let h = document.documentElement.clientHeight;
         let right = (w - btnPos.right);
         let bottom = (h - btnPos.bottom);
-
+        let left = btnPos.left;
+        let position = 'right';
         if (w - right < 620) {
             right = w - 645;
         }
@@ -434,12 +435,20 @@
         if (h - bottom < 310) {
             bottom = h - 335;
         }
-
+        // if the adder popup is fired from a sidebar, change the positioning
+        if(this.options.source === 'sidebar'){
+            position = 'left';
+        }
+        let position_dict = {
+            'right': right,
+            'left': left,
+        }
+        let position_css = {
+            bottom: bottom
+        }
+        position_css[position] = position_dict[position];
         // set CSS Fixed position
-        this.popup.css({
-            bottom: bottom,
-            right: right
-        });
+        this.popup.css(position_css);
 
         if (this.popup.offset().top < 0) {
             this.popup.css({"bottom": Math.floor(bottom + this.popup.offset().top)});

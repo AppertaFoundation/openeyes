@@ -29,7 +29,7 @@ const analytics_csv_cataract = (function () {
         const $pcrRiskReport = $('#PcrRiskReport')[0];
         let data_x =  $pcrRiskReport.data[0].x.slice();
         let data_y =  $pcrRiskReport.data[0].y.slice();
-        const file_name = data.name;
+        const file_name = 'PCR Risk';
         data_x = data_x.concat( $pcrRiskReport.data[1].x);
         data_y = data_y.concat( $pcrRiskReport.data[1].y);
         csv_export_cataract(file_name, {x: data_x, y: data_y});

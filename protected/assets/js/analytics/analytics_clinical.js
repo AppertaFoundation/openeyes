@@ -10,11 +10,13 @@ const analytics_clinical = (function () {
 
         // get clinical plot layout settings
         const clinical_layout = JSON.parse(JSON.stringify(analytics_layout));
+        const selected_item = $('#js-charts-clinical li a.selected').data('filterid');
         // to be used to get margin left value
         const max_name_length = Math.max(...clinical_data['text'].map(function (item) {
             return item.length;
         }));
-
+        $('.custom-filters > tbody > tr').hide();
+        $('table.custom-filters tr.' + selected_item + '-filter').show();
         // set up plot data
         const data = [{
             name: clinical_data['title'],
@@ -30,6 +32,7 @@ const analytics_clinical = (function () {
         clinical_layout['xaxis']['title'] = 'Number of Patient';
         clinical_layout['xaxis']['tick0'] = 0;
         clinical_layout['yaxis']['showgrid'] = false;
+        clinical_layout['yaxis']['tickmode'] = 'array';
         clinical_layout['yaxis']['tickvals'] = clinical_data['y'];
         clinical_layout['yaxis']['ticktext'] = clinical_data['text'];
         clinical_layout['clickmode'] = 'event';
