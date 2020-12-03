@@ -396,6 +396,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             element: $('#<?= $model_name ?>_element'),
             modelName: '<?= $model_name ?>',
             patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
+            eyeRouteIds: <?= CJSON::encode(MedicationRoute::model()->listEyeRouteIds()) ?>,
             allAllergies: <?= CJSON::encode(CHtml::listData(OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
             searchSource: '/medicationManagement/findRefMedications?source=MedicationManagement',
 
