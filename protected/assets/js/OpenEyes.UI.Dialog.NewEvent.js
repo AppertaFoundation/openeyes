@@ -520,7 +520,7 @@
             requestParams['episode_id'] = subspecialty.data('id');
         }
 
-        if(typeof  window.ticketMoveController != "undefined") {
+        if (typeof window.ticketMoveController !== "undefined" && document.querySelector('.PatientTicketing-moveTicket').querySelector('[name=to_queue_id]').value !== "") {
             window.ticketMoveController.navigateToEvent($('.PatientTicketing-moveTicket'), '/patientEvent/create?' + $.param(requestParams));
         } else {
             // set window location to the new event request URL

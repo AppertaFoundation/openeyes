@@ -18,6 +18,7 @@
 
 namespace OEModule\PatientTicketing\widgets;
 
+use OEModule\PatientTicketing\components\AutoSaveTicket;
 use Yii;
 
 class TicketMove extends \CWidget
@@ -54,6 +55,11 @@ class TicketMove extends \CWidget
             };
             if (count($od) == 1) {
                 $this->outcome_queue_id = $od[0]['id'];
+            } else {
+                $form_data = AutoSaveTicket::getFormData($this->ticket->patient_id, $this->ticket->current_queue->id);
+                if ($form_data) {
+                    $this->outcome_queue_id = $form_data['to_queue_id'];
+                }
             }
         }
 
