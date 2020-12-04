@@ -378,6 +378,7 @@ class DefaultController extends \BaseModuleController
                 throw new \CHttpException(404, 'Invalid ticket id.');
             };
             $template_vars['patient_id'] = $ticket->patient_id;
+            AutoSaveTicket::saveFormData($ticket->patient_id, $ticket->current_queue->id, ['to_queue_id' => $q->id]);
         }
 
         $this->renderPartial('form_queueassign', $template_vars, false, false);
