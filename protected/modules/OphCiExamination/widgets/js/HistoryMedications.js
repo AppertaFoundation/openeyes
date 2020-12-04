@@ -470,14 +470,21 @@ HistoryMedicationsController._defaultOptions = {
                   });
 
                   if (row_needs_bond_removed) {
-                      $bound_entry.removeData('bound_entry');
-                      controller.toggleStopControls($bound_entry);
-                      $row.find('.js-bound-key').val(controller.getRandomBoundKey());
-                      $row.removeData('bound_entry');
-                      controller.setBoundEntryStop($bound_entry);
-                      controller.disableMedicationHistoryRow($bound_entry);
-                      $row.find('.js-reset-mm').show();
-                      $row.find('input[name*="[is_discontinued]"]').val('0');
+                      if (controller.eyeRouteIsSet($bound_entry)) {
+                          $bound_entry.removeData('bound_entry');
+                          controller.toggleStopControls($bound_entry);
+                          $row.find('.js-bound-key').val(controller.getRandomBoundKey());
+                          $row.removeData('bound_entry');
+                          controller.setBoundEntryStop($bound_entry);
+                          controller.disableMedicationHistoryRow($bound_entry);
+                          $row.find('.js-reset-mm').show();
+                          $row.find('input[name*="[is_discontinued]"]').val('0');
+                      } else {
+                          new OpenEyes.UI.Dialog.Alert({
+                              content: 'Please set the laterality in Medication History before making changes in Medication Management.'
+                          }).open();
+                          controller.resetData($bound_entry, $row);
+                      }
                   }
               }
           }
@@ -693,6 +700,15 @@ HistoryMedicationsController._defaultOptions = {
 
     HistoryMedicationsController.prototype.isTaper = function ($row) {
         return $row.hasClass('js-taper-row');
+    };
+
+    HistoryMedicationsController.prototype.eyeRouteIsSet = function ($row)
+    {
+        let controller = this;
+        let eyeRouteIds = controller.options.eyeRouteIds;
+        let route_id = $row.find('.js-route').val();
+
+        return !(eyeRouteIds.includes(route_id) && $row.find(controller.options.routeOptionWrapperSelector).find('input:checked').length === 0);
     };
 
     HistoryMedicationsController.prototype.setRowData = function ($row, data, excl_fields)
@@ -1513,6 +1529,11 @@ HistoryMedicationsController._defaultOptions = {
         let controller = this;
         controller.options.first_row_controls_ids.forEach(function (id) {
             let history_row_value = $history_row.find(":input[name*='[" + id + "]']").val();
+            if (id === 'route_id') {
+                let eyeRouteIds = controller.options.eyeRouteIds;
+                $medication_management_row.find('.js-laterality').toggle(eyeRouteIds.includes(history_row_value));
+            }
+
             if (id === 'laterality') {
                 $medication_management_row.find(controller.options.routeOptionWrapperSelector).find('input').each(function(){
                     if($(this).val() === history_row_value || history_row_value === "3") {

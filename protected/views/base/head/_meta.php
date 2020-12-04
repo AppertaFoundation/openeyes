@@ -22,6 +22,8 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
     <meta http-equiv="pragma" content="no-cache" />
 <?php }?>
 
+<?php header("Content-Security-Policy: default-src 'self' localhost:*; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src data: https://*/Analytics http://*/Analytics 'self'", true); ?>
+
 <link rel="apple-touch-icon" sizes="180x180" href="<?= $favicon_path ?>/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="<?= $favicon_path ?>/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="<?= $favicon_path ?>/favicon-16x16.png">

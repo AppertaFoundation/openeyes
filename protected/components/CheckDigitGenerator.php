@@ -3,7 +3,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -42,6 +42,13 @@ class CheckDigitGenerator
         $string = strrev($string);
         for ($i = 0; $i < strlen($string); ++$i) {
             $char = str_replace(range('A', 'Z'), range('1', '26'), $string[$i]);
+
+            //Prior to PHP 7.1 str_split would return false on a non-numeric value, and so hyphens in the patient's DOB would be coerced to zeros.
+            //However at time of writing, this throws an error. The following reintroduces the original behaviour.
+            if($char === '-') {
+                $char = 0;
+            }
+
             $sum += array_sum(str_split(($char * pow(2, (($i + 1) % 2)))));
         }
 

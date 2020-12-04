@@ -363,6 +363,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
         $('#cancel_reason').on('click', function(e) {
             // do not continue to save
             e.preventDefault();
+            enableButtons();
             $('#js-save-mm-event').hide();
         });
 
@@ -395,6 +396,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             element: $('#<?= $model_name ?>_element'),
             modelName: '<?= $model_name ?>',
             patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
+            eyeRouteIds: <?= CJSON::encode(MedicationRoute::model()->listEyeRouteIds()) ?>,
             allAllergies: <?= CJSON::encode(CHtml::listData(OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
             searchSource: '/medicationManagement/findRefMedications?source=MedicationManagement',
 
@@ -426,14 +428,17 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                     $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function(index, medicationManagementRow) {
                         let medication_management_bound_key = $(medicationManagementRow).find('.js-bound-key').val();
                         let duplicate_bound_key = false;
-                        if (medication_management_bound_key && medication_history_bound_key && medication_management_bound_key !== '' && medication_management_bound_key === medication_history_bound_key) {
+                        if (medication_management_bound_key && medication_management_bound_key !== '') {
                             if (!medication_management_bound_keys.includes(medication_management_bound_key)) {
                                 medication_management_bound_keys.push(medication_management_bound_key);
                             } else {
                                 duplicate_bound_key = true;
-                                if (!(has_errors || is_edit_mode)) {
-                                    window.HMController.removeDuplicateEntry($(historyMedicationRow), $(medicationManagementRow));
-                                }
+                            }
+                        }
+
+                        if (duplicate_bound_key && medication_history_bound_key && medication_history_bound_key !== '' && medication_management_bound_key === medication_history_bound_key) {
+                            if (!(has_errors || is_edit_mode)) {
+                                window.HMController.removeDuplicateEntry($(historyMedicationRow), $(medicationManagementRow));
                             }
                         }
 
