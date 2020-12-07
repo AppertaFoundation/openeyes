@@ -31,12 +31,10 @@
           data-element-type-name="<?php echo $element->elementType->name ?>"
           data-element-display-order="<?php echo $element->display_order ?>">
 
-        <div class="flex-layout flex-top data-group">
-            <?php $this->renderPartial(
-                $element->view_view,
-                array('element' => $element)
-            ); ?>
-        </div>
+          <?php $this->renderPartial(
+              $element->view_view,
+              array('element' => $element)
+          ); ?>
 
         <div class="flex-layout">
           <div class="metadata">

@@ -16,25 +16,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data cols-6">
-  <table>
-    <tbody>
-    <tr>
-      <td>
-            <?php echo $element->getAttributeLabel('specular_microscope_id') ?>:
-            <?php echo OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->getName($element->specular_microscope_id); ?>
-      </td>
-      <td>
-            <?php echo $element->getAttributeLabel('scan_quality_id') ?>:
-            <?php echo OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->getName($element->scan_quality_id); ?>
-      </td>
-      <td></td>
-    </tr>
-    </tbody>
-  </table>
+<div class="element-both-eyes">
+    <span class="fade"><?= $element->getAttributeLabel('specular_microscope_id') ?>:</span>
+    <span class="large-text"><?= OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->getName($element->specular_microscope_id); ?></span>
+    <span class="fade"><?= $element->getAttributeLabel('scan_quality_id') ?>:</span>
+    <span class="large-text"><?= OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->getName($element->scan_quality_id); ?></span>
 </div>
 
-<div class="element-data element-eyes">
+<div class="element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column">
           <?php if ($element->hasEye($eye_side)) { ?>
