@@ -27,7 +27,7 @@ MODULEROOT=$WROOT/protected/modules
 # method, then you'll need to manually set the relevant environment variables to match your db.conf
 if [ ! -z "$MYSQL_ROOT_PASSWORD" ]; then
     dbpassword="$MYSQL_ROOT_PASSWORD"
-    elif [ -f "/run/secrets/MYSQL_ROOT_PASSWORD" ]; then
+elif [ -f "/run/secrets/MYSQL_ROOT_PASSWORD" ]; then
     dbpassword="$(</run/secrets/MYSQL_ROOT_PASSWORD)"
 else
     dbpassword=""
@@ -35,7 +35,7 @@ fi
 
 if [ ! -z "$MYSQL_SUPER_USER" ]; then
     username="$MYSQL_SUPER_USER"
-    elif [ -f "/run/secrets/MYSQL_SUPER_USER" ]; then
+elif [ -f "/run/secrets/MYSQL_SUPER_USER" ]; then
     username="$(</run/secrets/MYSQL_SUPER_USER)"
 else
     # fallback to using root for deleting and restoring DB
@@ -74,113 +74,113 @@ fallbackbranch=${OE_RESET_FALLBACK_BRANCH:-master}
 PARAMS=()
 while [[ $# -gt 0 ]]; do
     p="$1"
-    
+
     case $p in
-        -nb | --no-banner)
-            nobanner=1
-            ## Do not update the user banner after reset
+    -nb | --no-banner)
+        nobanner=1
+        ## Do not update the user banner after reset
         ;;
-        --no-migrate | -nm | --nomigrate)
-            migrate=0
-            ## nomigrate will prevent database migrations from running automatically at the end of reset
+    --no-migrate | -nm | --nomigrate)
+        migrate=0
+        ## nomigrate will prevent database migrations from running automatically at the end of reset
         ;;
-        --no-event-images | -ni)
-            eventimages=0
-            ## Do not generate event lightning images after demo import
+    --no-event-images | -ni)
+        eventimages=0
+        ## Do not generate event lightning images after demo import
         ;;
-        --banner) # set banner textr and move to next param
-            bannertext="$2"
-            shift
+    --banner) # set banner textr and move to next param
+        bannertext="$2"
+        shift
         ;;
-        --branch | -b) # set branch and move to next param
-            branch="$2"
-            shift
+    --branch | -b) # set branch and move to next param
+        branch="$2"
+        shift
         ;;
-        --demo)
-            demo=1
-            ## Install demo scripts (worklists, etc)
+    --demo)
+        demo=1
+        ## Install demo scripts (worklists, etc)
         ;;
-        --develop|-d)
-            fallbackbranch=develop
-            ## fallback to the develop branch if the named branch does not exist
+    --develop | -d)
+        fallbackbranch=develop
+        ## fallback to the develop branch if the named branch does not exist
         ;;
-        --help)
-            showhelp=1
+    --help)
+        showhelp=1
         ;;
-        --no-files)
-            nofiles=1
+    --no-files)
+        nofiles=1
         ;;
-        --genetics-enable)
-            bash $SCRIPTDIR/add-genetics.sh
+    --genetics-enable)
+        bash $SCRIPTDIR/add-genetics.sh
         ;;
-        --genetics-disable)
-            bash $SCRIPTDIR/add-genetics.sh -r
+    --genetics-disable)
+        bash $SCRIPTDIR/add-genetics.sh -r
         ;;
-        -p) # set dbpassword and move on to next param
-            dbpassword="$2"
-            shift
+    -p) # set dbpassword and move on to next param
+        dbpassword="$2"
+        shift
         ;;
-        -u) # Set username and move to next param
-            username="$2"
-            shift
+    -u) # Set username and move to next param
+        username="$2"
+        shift
         ;;
-        --no-fix)
-            nofix=1
-            ## do not run oe-fix (useful when calling from other scripts)
+    --no-fix)
+        nofix=1
+        ## do not run oe-fix (useful when calling from other scripts)
         ;;
-        --host)
-            host="$2"
-            shift
-            ## Reset a different database
+    --host)
+        host="$2"
+        shift
+        ## Reset a different database
         ;;
-        --connectionID)
-            migrateparams="-q --connectionID $2"
-            shift
+    --connectionID)
+        migrateparams="-q --connectionID $2"
+        shift
         ;;
-        --no-post)
-            nopost=1
-            ## do not run local post reset scripts
+    --no-post)
+        nopost=1
+        ## do not run local post reset scripts
         ;;
-        --post-path) # change the location of the local-post folder
-            postpath="$2"
-            shift
+    --post-path) # change the location of the local-post folder
+        postpath="$2"
+        shift
         ;;
-        --clean-base)
-            cleanbase=1
-            ## Do not import base data (migrate from clean db instead)
+    --clean-base)
+        cleanbase=1
+        ## Do not import base data (migrate from clean db instead)
         ;;
-        --ignore-warnings)
-            migrateparams="$migrateparams $p"
-            # Ignore warnings during migrate
+    --ignore-warnings)
+        migrateparams="$migrateparams $p"
+        # Ignore warnings during migrate
         ;;
-        -f | --custom-file) # use a custom database backup for the restore
-            restorefile="$2"
-            shift
+    -f | --custom-file) # use a custom database backup for the restore
+        restorefile="$2"
+        shift
         ;;
-        --dmd)
-            dmdimport="TRUE"
-            ## Run the DMD import after database reset
+    --dmd)
+        dmdimport="TRUE"
+        ## Run the DMD import after database reset
         ;;
-        --hscic | -hscic | -gp | --gp)
-            hscic=1
-            # run the hscic import after reset
+    --hscic | -hscic | -gp | --gp)
+        hscic=1
+        # run the hscic import after reset
         ;;
-        --clear-audit)
-            # will clean the audit tables after reset
-            clearaudit=1
+    --clear-audit)
+        # will clean the audit tables after reset
+        clearaudit=1
         ;;
-        --drop-archive) 
-            # will drop all tables named archive_* after reset
-            droparchive=1
+    --drop-archive)
+        # will drop all tables named archive_* after reset
+        droparchive=1
         ;;
-        *)
-            if [ "$p" == "--hard" ]; then
-                echo "Unknown parameter $p $2"
-                exit 1
-            else
-                # Hold for processing later
-                PARAMS+=("$p")
-            fi
+    *)
+        if [ "$p" == "--hard" ]; then
+            echo "Unknown parameter $p $2"
+            exit 1
+        else
+            # Hold for processing later
+            PARAMS+=("$p")
+        fi
         ;;
     esac
     shift # move to next parameter
@@ -188,19 +188,17 @@ done
 
 # If we are checking out new branch,then pass all unprocessed commands to checkout command
 # Else, throw error and list unknown commands
-if  [ ${#PARAMS[@]} -gt 0 ]; then
+if [ ${#PARAMS[@]} -gt 0 ]; then
     if [ "$branch" != "0" ]; then
-        for i in "${PARAMS[@]}"
-        do
+        for i in "${PARAMS[@]}"; do
             checkoutparams="$checkoutparams $i"
         done
     else
         echo "Unknown Parameter(s):"
-        for i in "${PARAMS[@]}"
-        do
+        for i in "${PARAMS[@]}"; do
             echo $i
         done
-        exit 1;
+        exit 1
     fi
 fi
 
@@ -262,13 +260,13 @@ if ps ax | grep -v grep | grep run-dicom-service.sh >/dev/null; then
 fi
 
 if [[ ! "$branch" = "0" || ! -d $WROOT/protected/modules/sample/sql ]]; then
-    
+
     ## If no branch is specified, use build branch or fallback to master
     [ "$branch" = "0" ] && branch=${BUILD_BRANCH:-"master"} || :
-    
+
     ## Checkout new sample database branch
     echo "Downloading database for $branch"
-    
+
     bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams --${fallbackbranch}
 fi
 
@@ -303,39 +301,41 @@ if [ $nofiles = "0" ]; then
     sudo rm -rf /tmp/docman
     # remove hscic import history (otherwise hscic import requires --force to run after reset)
     if [ -d $WROOT/protected/data/hscic ]; then
-        sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} + ;
+        sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} +
     fi
 fi
 
 if [ $cleanbase = "0" ]; then
 
-	echo "importing $restorefile (may take a few minutes)...."
-	if [[ $restorefile =~ \.zip$ ]]; then
-		# If pv is installed then use it to show progress
-		[ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
-		eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-		echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-		exit 1
-		}
-	elif [[ $restorefile =~ \.sql$ ]]; then
-		# If pv is installed then use it to show progress
-		[ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
-		eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-		echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-		exit 1
-		}
-	elif [[ $restorefile == '-' ]]; then
-		# pipe stdin straight through
-		eval  "cat - | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-		echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-		exit 1
-		}
-	else
-		echo -e "\n\nCOULD NOT IMPORT $restorefile. Unrecognised file extension (Only .zip or .sql files are supported). Quiting...\n\n"
-		exit 1
-	fi
+    restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b $restorefile | cut -f1))
 
-	## belt and braces reset to the correct user password, in case the PW was altered by the imported sql
+    echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
+    if [[ $restorefile =~ \.zip$ ]]; then
+        # If pv is installed then use it to show progress
+        [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
+        eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+            exit 1
+        }
+    elif [[ $restorefile =~ \.sql$ ]]; then
+        # If pv is installed then use it to show progress
+        [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
+        eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+            exit 1
+        }
+    elif [[ $restorefile == '-' ]]; then
+        # pipe stdin straight through
+        eval "cat - | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+            exit 1
+        }
+    else
+        echo -e "\n\nCOULD NOT IMPORT $restorefile. Unrecognised file extension (Only .zip or .sql files are supported). Quiting...\n\n"
+        exit 1
+    fi
+
+    ## belt and braces reset to the correct user password, in case the PW was altered by the imported sql
     pwresetsql="ALTER USER '$dbuser'@'%' IDENTIFIED BY '$pass';"
     echo ""
     eval "$dbconnectionstring -e \"$pwresetsql\""
@@ -346,37 +346,36 @@ fi
 # First checks OE_INSTITUTION_CODE environment variable. Otherwise uses value from common.php
 [ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=institution_code. => \!empty\(trim\(getenv\(\'OE_INSTITUTION_CODE\'\)\)\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
 if [ ! -z $icode ]; then
-	checkicodecmd="SELECT id FROM institution WHERE remote_id = '$icode';"
+    checkicodecmd="SELECT id FROM institution WHERE remote_id = '$icode';"
 
-	icodeexists=$(eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$checkicodecmd\"")
-	if [ ! -n "$icodeexists" ]; then
+    icodeexists=$(eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$checkicodecmd\"")
+    if [ ! -n "$icodeexists" ]; then
 
-		echo "
+        echo "
 
 		setting institution to $icode
 
 		"
 
-		echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" > /tmp/openeyes-mysql-institute.sql
+        echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" >/tmp/openeyes-mysql-institute.sql
 
-		eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql"
+        eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql"
 
-		rm /tmp/openeyes-mysql-institute.sql
-	fi
+        rm /tmp/openeyes-mysql-institute.sql
+    fi
 fi
 
 # Run pre-migration demo scripts
 if [ $demo = "1" ]; then
-    
+
     echo "RUNNING PRE_MIGRATION SCRIPTS..."
-    
+
     shopt -s nullglob
-    for f in $(ls $MODULEROOT/sample/sql/demo/pre-migrate | sort -V)
-    do
+    for f in $(ls $MODULEROOT/sample/sql/demo/pre-migrate | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f"
-            elif [[ $f == *.sh ]]; then
+        elif [[ $f == *.sh ]]; then
             echo "running $f"
             bash -l "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
         fi
@@ -394,18 +393,17 @@ fi
 # Run demo scripts
 # Actual scripts are in sample module, for greater flexibility
 if [ $demo = "1" ]; then
-    
+
     echo "RUNNING DEMO SCRIPTS..."
-    
+
     basefolder="$MODULEROOT/sample/sql/demo"
-    
+
     shopt -s nullglob
-    for f in $(ls $basefolder | sort -V)
-    do
+    for f in $(ls $basefolder | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
-            elif [[ $f == *.sh ]]; then
+        elif [[ $f == *.sh ]]; then
             echo "running $f"
             bash -l "$basefolder/$f"
         fi
@@ -414,23 +412,22 @@ fi
 
 # Run genetics scripts if genetics is enabled
 if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "/\*'Genetics'," $WROOT/protected/config/local/common.php; then
-    
+
     echo "RUNNING Genetics files..."
-    
+
     basefolder="$MODULEROOT/sample/sql/demo/genetics"
-    
+
     shopt -s nullglob
-    for f in $(ls $basefolder | sort -V)
-    do
+    for f in $(ls $basefolder | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
-            elif [[ $f == *.sh ]]; then
+        elif [[ $f == *.sh ]]; then
             echo "running $f"
             bash -l "$basefolder/$f"
         fi
     done
-    
+
 fi
 
 # Set banner to confirm reset
@@ -439,34 +436,32 @@ if [ ! $nobanner = "1" ]; then
     echo "
 	use ${DATABASE_NAME:-'openeyes'};
 	UPDATE ${DATABASE_NAME:-"openeyes"}.setting_installation s SET s.value=\"$bannertext\" WHERE s.key=\"watermark\";
-    " | sudo tee /tmp/openeyes-mysql-setbanner.sql > /dev/null
-    
+    " | sudo tee /tmp/openeyes-mysql-setbanner.sql >/dev/null
+
     eval "$dbconnectionstring < /tmp/openeyes-mysql-setbanner.sql"
     sudo rm /tmp/openeyes-mysql-setbanner.sql
 fi
 
-
 if [ ! -z "$dmdimport" ]; then
     if ! $SCRIPTDIR/dmd-import.sh; then
-        echo  "DMD IMPORT FAILD. Aborting..."
+        echo "DMD IMPORT FAILD. Aborting..."
         exit 1
     fi
 fi
 
 # Run local post-migaration demo scripts
 if [ $nopost = "0" ]; then
-    
+
     echo "RUNNING POST RESET SCRIPTS..."
-    
+
     basefolder="$MODULEROOT/sample/sql/demo/local-post"
-    
+
     shopt -s nullglob
-    for f in $(ls $postpath | sort -V)
-    do
+    for f in $(ls $postpath | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $postpath/$f"
-            elif [[ $f == *.sh ]]; then
+        elif [[ $f == *.sh ]]; then
             echo "running $f"
             bash -l "$postpath/$f"
         fi
@@ -483,7 +478,6 @@ fi
 
 if [ $droparchive -eq 1 ]; then
     echo "Dropping archive tables..."
-
 
     sqlcmd="USE ${DATABASE_NAME:-'openeyes'};
     START TRANSACTION;
@@ -509,28 +503,27 @@ if [ $droparchive -eq 1 ]; then
 
     COMMIT;"
 
-    eval  "echo \"$sqlcmd\" | $dbconnectionstring "
+    eval "echo \"$sqlcmd\" | $dbconnectionstring "
 fi
 
 if [ $clearaudit -eq 1 ]; then
     echo "Truncating Audit..."
     sqlcmd="SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE audit_ipaddr; TRUNCATE TABLE audit_server; TRUNCATE TABLE audit_useragent; TRUNCATE TABLE audit; SET FOREIGN_KEY_CHECKS = 1;"
-    eval  "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$sqlcmd\""
+    eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$sqlcmd\""
 fi
 
 # Generate lightning event images for demo patients
 # Actual script(s) are in sample module, for greater flexibility
 if [[ $eventimages = 1 && $demo = 1 ]]; then
     echo "RUNNING POST RESET SCRIPTS..."
-    
+
     basefolder="$MODULEROOT/sample/sql/demo/event-image"
     shopt -s nullglob
-    for f in $(ls $basefolder | sort -V)
-    do
+    for f in $(ls $basefolder | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
-            elif [[ $f == *.sh ]]; then
+        elif [[ $f == *.sh ]]; then
             echo "running $f"
             bash -l "$basefolder/$f"
         fi
