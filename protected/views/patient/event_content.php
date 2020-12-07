@@ -6,7 +6,7 @@
             $this->renderPartial('//patient/event_automated');
         } ?>
         <?php if ($this->action->id === 'view') { ?>
-        <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
+        <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"  style="z-index: 100; position: relative;"></i>
         <?php } ?>
 
   </h2>
@@ -16,12 +16,12 @@
     <?php if ($this->title != 'Please select booking') { ?>
             <?php if (isset($this->event->firm)) : ?>
                 <div class="extra-info">
-                    <span class="fade">Subspecialty: </span>
-                    <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?>
+                    <small class="fade">Subspecialty: </small>
+                    <small><?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?></small>
                 </div>
                 <div class="extra-info">
-                    <span class="fade">&nbsp;Context: </span>
-                    <?= $this->event->firm->name; ?>
+                    <small class="fade">&nbsp;Context: </small>
+                    <small><?= $this->event->firm->name; ?></small>
                 </div>
             <?php endif; ?>
 

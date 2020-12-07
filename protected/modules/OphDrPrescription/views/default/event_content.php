@@ -9,7 +9,7 @@
         </span>
         <?php } ?>
         <?php if ($this->action->id === 'view') { ?>
-            <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
+            <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad" style="z-index: 100; position: relative;"></i>
         <?php } ?>
         <?php $extra_info = $this->getExtraTitleInfo();
         if ($extra_info && $extra_info !== "") : ?>
@@ -61,10 +61,11 @@
                 });
             </script>
 
-            <span class="extra-info">
-                <span class="fade">by:</span>
+            <div class="extra-info">
+                <small class="fade">by:</small><small>
                 <?= $this->event->usermodified->fullname . (isset($this->event->usermodified->registration_code) && $this->event->usermodified->registration_code !== "" ? ' ('.$this->event->usermodified->registration_code.')' : ''). (isset($this->event->episode->firm->cost_code) && $this->event->episode->firm->cost_code !== "" ? ' - ['.$this->event->episode->firm->cost_code.']' : '');?>
-            </span>
+                </small>
+            </div>
 
             <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
             <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
