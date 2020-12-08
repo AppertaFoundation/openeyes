@@ -2560,7 +2560,7 @@ class OphCiExamination_API extends \BaseAPI
                 </tbody>
             </table>
         <?php }
-        return ob_get_clean();
+        return str_replace(array("\r","\n"), '', trim(ob_get_clean()));
     }
 
     /**
