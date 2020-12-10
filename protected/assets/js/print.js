@@ -69,7 +69,7 @@ $(window).load(function () {
                         window.location.reload();
                         break;
                     default:
-                        alert("Something went wrong trying to print the event. Please try again or contact support for assistance.");
+                        alert("Something went wrong trying to (re)generate the event image. Please try again or contact support for assistance.");
                         break;
                 }
             }
