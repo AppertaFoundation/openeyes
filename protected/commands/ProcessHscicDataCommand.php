@@ -174,11 +174,40 @@ class ProcessHscicDataCommand extends CConsoleCommand
         $curlproxy = empty($curlproxy) ? getenv('http_proxy') : $curlproxy;
         $curlproxy = empty($curlproxy) ? getenv('HTTP_PROXY') : $curlproxy;
 
+        return $curlproxy;
+    }
+
+    private function getProxyUrl()
+    {
+        $curlproxy = $this->getProxy();
+
         if (!empty($curlproxy)) {
-            echo "USING PROXY '" . $curlproxy . "'";
+            // Strip the port
+            $urlParts = parse_url($curlproxy);
+            $curlproxy = $urlParts['scheme'] . "://" . $urlParts['host'] . (!empty($urlParts['path']) ? "/". $urlParts['path'] : "" );
+
+            echo "USING PROXY '" . $curlproxy . "'\n";
         }
 
         return $curlproxy;
+    }
+
+    private function getProxyPort()
+    {
+        $curlproxy = $this->getProxy();
+        $proxyport = null;
+
+        if (!empty($curlproxy)) {
+            // Strip the port
+            $urlParts = parse_url($curlproxy);
+            $proxyport = !empty($urlParts['port']) ? $urlParts['port'] : null;
+        }
+
+        if (!empty($proxyport)) {
+            echo "USING PROXY PORT: '" . $proxyport . "'\n";
+        }
+
+        return $proxyport;
     }
 
     private function getDynamicUrls()
@@ -211,10 +240,15 @@ class ProcessHscicDataCommand extends CConsoleCommand
 
         $curl = curl_init(static::$base_url . $services_path);
 
-        $curlproxy = $this->getProxy();
+        $curlproxy = $this->getProxyUrl();
 
         if (!empty($curlproxy)) {
             curl_setopt($curl, CURLOPT_PROXY, $curlproxy);
+
+            $proxyport = $this->getProxyPort();
+            if (!empty($proxyport)) {
+                curl_setopt($curl, CURLOPT_PROXYPORT, $proxyport);
+            }
         }
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -1108,10 +1142,15 @@ EOH;
         $file_handler = fopen($file, 'w');
 
         $curl = curl_init($url);
-        $curlproxy = $this->getProxy();
+        $curlproxy = $this->getProxyUrl();
 
         if (!empty($curlproxy)) {
             curl_setopt($curl, CURLOPT_PROXY, $curlproxy);
+
+            $proxyport = $this->getProxyPort();
+            if (!empty($proxyport)) {
+                curl_setopt($curl, CURLOPT_PROXYPORT, $proxyport);
+            }
         }
         curl_setopt($curl, CURLOPT_FILE, $file_handler);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
