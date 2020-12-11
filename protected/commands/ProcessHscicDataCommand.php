@@ -71,7 +71,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
      *
      * @var string
      */
-    private static $base_url = 'https://www.digital.nhs.uk';
+    private static $base_url = 'https://digital.nhs.uk';
 
 
     /**
@@ -165,49 +165,36 @@ class ProcessHscicDataCommand extends CConsoleCommand
         parent::__construct(null, null);
     }
 
-    private function getProxy()
+    /***
+     * Sets default options for curl (proxy, followlocation, etc)
+     * @param $curl an initialised curl object
+     */
+    private function setCurlOpts($curl)
     {
-        // Process proxy config in order of precedence
+        $base_scheme = strtolower(parse_url(curl_getinfo($curl)['url'])['scheme']);
+
+        // Deal with proxy (uses system proxy unless overidden by curl_proxy parameter)
         $curlproxy = Yii::app()->params['curl_proxy'];
-        $curlproxy = empty($curlproxy) ? getenv('https_proxy') : $curlproxy;
-        $curlproxy = empty($curlproxy) ? getenv('HTTPS_PROXY') : $curlproxy;
-        $curlproxy = empty($curlproxy) ? getenv('http_proxy') : $curlproxy;
-        $curlproxy = empty($curlproxy) ? getenv('HTTP_PROXY') : $curlproxy;
-
-        return $curlproxy;
-    }
-
-    private function getProxyUrl()
-    {
-        $curlproxy = $this->getProxy();
-
         if (!empty($curlproxy)) {
-            // Strip the port
             $urlParts = parse_url($curlproxy);
-            $curlproxy = $urlParts['scheme'] . "://" . $urlParts['host'] . (!empty($urlParts['path']) ? "/". $urlParts['path'] : "" );
-
-            echo "USING PROXY '" . $curlproxy . "'\n";
+            $proxyURL = $urlParts['scheme'] . "://" . $urlParts['host'] . (!empty($urlParts['path']) ? "/" . $urlParts['path'] : "" );
+            $proxyPort = $urlParts['port'] + 0;
+            curl_setopt($curl, CURLOPT_PROXY, $proxyURL);
+            curl_setopt($curl, CURLOPT_PROXYPORT, $proxyPort);
+            echo "USING PROXY '" . $curlproxy . "\n";
+        } elseif ($base_scheme == "http" && !empty(getenv('http_proxy'))) {
+            echo "Using system http_proxy:: '" . getenv('http_proxy') . "'\n";
+        } elseif ($base_scheme == "https" && !empty(getenv('https_proxy'))) {
+            echo "Using system https_proxy:: '" . getenv('https_proxy') . "'\n";
         }
 
-        return $curlproxy;
-    }
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-    private function getProxyPort()
-    {
-        $curlproxy = $this->getProxy();
-        $proxyport = null;
-
-        if (!empty($curlproxy)) {
-            // Strip the port
-            $urlParts = parse_url($curlproxy);
-            $proxyport = !empty($urlParts['port']) ? $urlParts['port'] : null;
-        }
-
-        if (!empty($proxyport)) {
-            echo "USING PROXY PORT: '" . $proxyport . "'\n";
-        }
-
-        return $proxyport;
+        return $curl;
     }
 
     private function getDynamicUrls()
@@ -239,20 +226,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         echo "Downloading from: " . static::$base_url . $services_path . "\n";
 
         $curl = curl_init(static::$base_url . $services_path);
-
-        $curlproxy = $this->getProxyUrl();
-
-        if (!empty($curlproxy)) {
-            curl_setopt($curl, CURLOPT_PROXY, $curlproxy);
-
-            $proxyport = $this->getProxyPort();
-            if (!empty($proxyport)) {
-                curl_setopt($curl, CURLOPT_PROXYPORT, $proxyport);
-            }
-        }
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        $this->setCurlOpts($curl);
         $output = curl_exec($curl);
 
         if (curl_errno($curl)) {
@@ -272,12 +246,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         if ($other_path) {
             echo "Downloading from: " . static::$base_url . $other_path . "\n";
             $curl = curl_init(static::$base_url . $other_path);
-            if (!empty($curlproxy)) {
-                curl_setopt($curl, CURLOPT_PROXY, $curlproxy);
-            }
-            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+            $this->setCurlOpts($curl);
             $output2 = curl_exec($curl);
 
             if (curl_errno($curl)) {
@@ -1142,19 +1111,8 @@ EOH;
         $file_handler = fopen($file, 'w');
 
         $curl = curl_init($url);
-        $curlproxy = $this->getProxyUrl();
-
-        if (!empty($curlproxy)) {
-            curl_setopt($curl, CURLOPT_PROXY, $curlproxy);
-
-            $proxyport = $this->getProxyPort();
-            if (!empty($proxyport)) {
-                curl_setopt($curl, CURLOPT_PROXYPORT, $proxyport);
-            }
-        }
+        $this->setCurlOpts($curl);
         curl_setopt($curl, CURLOPT_FILE, $file_handler);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_exec($curl);
 
         if (curl_errno($curl)) {
