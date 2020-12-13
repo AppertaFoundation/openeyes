@@ -8,8 +8,12 @@ if (!$this->data) {
 } else {
     $widget_css = 'oe-wb-widget ' . $css_class . ($this->colour ? ' ' . $this->colour : '');
 }
+$dataAttribute = '';
+if (isset($this->data['dataAttribute'])) {
+    $dataAttribute = 'data-'. $this->data['dataAttribute']['name'] . '="' . htmlspecialchars(json_encode($this->data['dataAttribute']['value'])) . '"';
+}
 ?>
-<div class="<?= $widget_css ?>">
+<div class="<?= $widget_css ?>" <?= $dataAttribute ?> >
     <?php if ($this->data) : ?>
     <h3>
         <?= $this->title ?>
@@ -25,4 +29,7 @@ if (!$this->data) {
     <?php else : ?>
         <!-- empty widget placeholder -->
     <?php endif; ?>
+    <?php if (isset($this->data['is_overflow_btn_required']) && $this->data['is_overflow_btn_required'] ) { ?>
+        <div class="overflow-icon-btn"></div>
+    <?php } ?>
 </div>

@@ -6,6 +6,17 @@
 $complexity_colour = 'green';
 $aconst = ((float)$data->aconst === (int)$data->aconst ? (float)$data->aconst . '.0' : (float)$data->aconst);
 
+$procedureTerms = [];
+$procedureShortTerms = [];
+foreach ($data->procedure_assignments as $procedure_assignment) {
+    $procedureTerms[] = $procedure_assignment->proc->term;
+    $procedureShortTerms[] = $procedure_assignment->proc->short_format;
+}
+
+$longText = implode(', ', $procedureTerms);
+// short text should be a maximum of 100 characters, so in case it is bigger than that get first 100 characters.
+$shortText = substr(implode(', ', $procedureShortTerms), 0, 100);
+
 switch ($data->complexity) {
     case Element_OphTrOperationbooking_Operation::COMPLEXITY_LOW:
         $complexity_colour = 'green';
@@ -32,8 +43,13 @@ $cataract_card_list = array(
     'Procedure' => array(
         'data' => array(
             'content' => $data->eye->name,
-            'extra_data' => $data->procedure,
+            'extra_data' => $shortText,
             'deleted' => $is_deleted,
+            'dataAttribute' => array(
+                'name' => 'procedure',
+                'value' => ['shortName' => $shortText, 'fullName' => $data->eye->name . ' - ' . $longText]
+            ),
+            'is_overflow_btn_required' => true,
         ),
         'colour' => $complexity_colour,
     ),
@@ -112,16 +128,26 @@ $other_card_list = array(
     (int)$data->eye_id === Eye::BOTH ? 'Procedure (1st)' : 'Procedure' => array(
         'data' => array(
             'content' => (int)$data->eye_id === Eye::BOTH ? 'Left' : $data->eye->name,
-            'extra_data' => $data->procedure,
+            'extra_data' => $shortText,
             'deleted' => $is_deleted,
+            'dataAttribute' => array(
+                'name' => 'procedure',
+                'value' => ['shortName' => $shortText, 'fullName' => $data->eye->name . ' - ' . $longText]
+            ),
+            'is_overflow_btn_required' => true,
         ),
         'colour' => $complexity_colour,
     ),
     'Procedure (2nd)' => array(
         'data' => (int)$data->eye_id === Eye::BOTH ? array(
             'content' => 'Right',
-            'extra_data' => $data->procedure,
+            'extra_data' => $shortText,
             'deleted' => $is_deleted,
+            'dataAttribute' => array(
+                'name' => 'procedure',
+                'value' => ['shortName' => $shortText, 'fullName' => $data->eye->name . ' - ' . $longText]
+            ),
+            'is_overflow_btn_required' => true,
         ) : null,
         'colour' => $complexity_colour,
     ),
@@ -236,3 +262,5 @@ $other_card_list = array(
         )); ?>
     </footer>
 </main>
+
+<script src="<?= Yii::app()->assetManager->createUrl('/newblue/whiteboardJS/wb_procedure_name.js')?>"></script>

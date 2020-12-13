@@ -35,6 +35,9 @@ class WBCard extends CWidget
                 $this->type = 'Single';
                 $this->css_class = $this->data['extra_data'] ? 'data-single-extra' : 'data-single';
                 $this->data_view = 'data/single_data';
+                if ($this->title === 'Procedure') {
+                    $this->css_class .= ' js-handle-procedure-name';
+                }
             } elseif (isset($this->data['ed_data'])) {
                 // Card with image/eyedraw graphic.
                 $this->type = 'Image';
