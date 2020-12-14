@@ -91,8 +91,8 @@ class UserController extends BaseController
     {
         $expire = Yii::app()->db->createCommand()
             ->select('expire')
-            ->from('user_session')//todo make session table by reading config ya doofus
-            ->where('id=:id', array(':id' => $_COOKIE['OESESSID']))
+            ->from('user_session')
+            ->where('id=:id', array(':id' => $_COOKIE[session_name()]))
             ->queryRow();
 
         $seconds_to_expire = $expire['expire'] - time();
