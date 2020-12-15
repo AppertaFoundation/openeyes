@@ -56,7 +56,7 @@ class PatientTicketing_API extends \BaseAPI
     public function getFollowUpFromAutoSave($patient_id, $current_queue_id)
     {
         if ($data = AutoSaveTicket::getFormData($patient_id, $current_queue_id)) {
-            if ($data['validated']) {
+            if (isset($data['validated']) && $data['validated']) {
                 if (isset($data['patientticketing_glreview'])) {
                     return $data['patientticketing_glreview'];
                 }
