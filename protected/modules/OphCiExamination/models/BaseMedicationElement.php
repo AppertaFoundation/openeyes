@@ -218,7 +218,11 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
                     $current[] = $entry;
                 }
             } elseif ($entry->usage_type == 'OphDrPrescription') {
-                $prescribed[] = $entry;
+                if ($entry->isStopped()) {
+                    $closed[] = $entry;
+                } else {
+                    $prescribed[] = $entry;
+                }
             }
         }
         $this->current_entries = $current;

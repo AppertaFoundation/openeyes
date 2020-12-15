@@ -11,7 +11,7 @@ class m200813_050735_group_IOP_exam_elements extends OEMigration
             $this->addColumn('element_type', 'group_title', 'VARCHAR(255) AFTER `tile_size`');
         }
         // Check the version table separately - as in one DB, the column existed in version, but not the main table!
-        if (!isset($this->dbConnection->schema->getTable('element_type')->columns['group_title'])) {
+        if (!isset($this->dbConnection->schema->getTable('element_type_version')->columns['group_title'])) {
             $this->addColumn('element_type_version', 'group_title', 'VARCHAR(255) AFTER `tile_size`');
         }
 

@@ -1,4 +1,5 @@
 ﻿<?php
+
 /**
  * OpenEyes.
  *
@@ -70,7 +71,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
      *
      * @var string
      */
-    private static $base_url = 'https://www.digital.nhs.uk';
+    private static $base_url = 'https://digital.nhs.uk';
 
 
     /**
@@ -164,6 +165,38 @@ class ProcessHscicDataCommand extends CConsoleCommand
         parent::__construct(null, null);
     }
 
+    /***
+     * Sets default options for curl (proxy, followlocation, etc)
+     * @param $curl an initialised curl object
+     */
+    private function setCurlOpts($curl)
+    {
+        $base_scheme = strtolower(parse_url(curl_getinfo($curl)['url'])['scheme']);
+
+        // Deal with proxy (uses system proxy unless overidden by curl_proxy parameter)
+        $curlproxy = Yii::app()->params['curl_proxy'];
+        if (!empty($curlproxy)) {
+            $urlParts = parse_url($curlproxy);
+            $proxyURL = $urlParts['scheme'] . "://" . $urlParts['host'] . (!empty($urlParts['path']) ? "/" . $urlParts['path'] : "" );
+            $proxyPort = $urlParts['port'] + 0;
+            curl_setopt($curl, CURLOPT_PROXY, $proxyURL);
+            curl_setopt($curl, CURLOPT_PROXYPORT, $proxyPort);
+            echo "USING PROXY '" . $curlproxy . "\n";
+        } elseif ($base_scheme == "http" && !empty(getenv('http_proxy'))) {
+            echo "Using system http_proxy:: '" . getenv('http_proxy') . "'\n";
+        } elseif ($base_scheme == "https" && !empty(getenv('https_proxy'))) {
+            echo "Using system https_proxy:: '" . getenv('https_proxy') . "'\n";
+        }
+
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        return $curl;
+    }
+
     private function getDynamicUrls()
     {
         echo "Identifying dynamic file URLs...\n";
@@ -172,42 +205,36 @@ class ProcessHscicDataCommand extends CConsoleCommand
         // Set url for the relevant region's files (default is England)
         switch ($this->regionName) {
             case "scotland":
-                $services_path="/services/organisation-data-service/data-downloads/home-countries";
-                $other_path=null;
+                $services_path = "/services/organisation-data-service/data-downloads/home-countries";
+                $other_path = null;
                 $file_config = static::$file_config_scotland;
                 break;
             case "ni":
-                $services_path="/services/organisation-data-service/data-downloads/home-countries";
-                $other_path=null;
+                $services_path = "/services/organisation-data-service/data-downloads/home-countries";
+                $other_path = null;
                 $file_config = static::$file_config_ni;
                 break;
             case "england":
             default:
-                $services_path="/services/organisation-data-service/data-downloads/gp-and-gp-practice-related-data";
-                $other_path='/services/organisation-data-service/data-downloads/other-nhs-organisations';
+                $services_path = "/services/organisation-data-service/data-downloads/gp-and-gp-practice-related-data";
+                $other_path = '/services/organisation-data-service/data-downloads/other-nhs-organisations';
                 $file_config = static::$file_config_england;
                 break;
         }
 
 
-        echo "Downloading from: " . static::$base_url . $services_path ."\n";
+        echo "Downloading from: " . static::$base_url . $services_path . "\n";
 
         $curl = curl_init(static::$base_url . $services_path);
-        if (!empty(Yii::app()->params['curl_proxy'])) {
-            echo "Using proxy: " . Yii::app()->params['curl_proxy'];
-            curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
-        }
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        $this->setCurlOpts($curl);
         $output = curl_exec($curl);
 
         if (curl_errno($curl)) {
-            $error_message = 'Curl error: '.curl_errno($curl);
+            $error_message = 'Curl error: ' . curl_errno($curl);
         } else {
             $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             if ($status != 200) {
-                $error_message = 'Bad Status Code: '.$status;
+                $error_message = 'Bad Status Code: ' . $status;
             }
         }
         curl_close($curl);
@@ -219,18 +246,15 @@ class ProcessHscicDataCommand extends CConsoleCommand
         if ($other_path) {
             echo "Downloading from: " . static::$base_url . $other_path . "\n";
             $curl = curl_init(static::$base_url . $other_path);
-            if (!empty(Yii::app()->params['curl_proxy'])) curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
-            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+            $this->setCurlOpts($curl);
             $output2 = curl_exec($curl);
 
             if (curl_errno($curl)) {
-                $error_message = 'Curl error: '.curl_errno($curl);
+                $error_message = 'Curl error: ' . curl_errno($curl);
             } else {
                 $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
                 if ($status != 200) {
-                    $error_message = 'Bad Status Code: '.$status;
+                    $error_message = 'Bad Status Code: ' . $status;
                 }
             }
             curl_close($curl);
@@ -364,7 +388,7 @@ EOH;
      */
     public function actionImport($type, $interval = 'full', $region = 'england')
     {
-        $this->regionName=strtolower($region);
+        $this->regionName = strtolower($region);
         $this->getDynamicUrls();
 
         if (!isset($this->files[$interval])) {
@@ -399,7 +423,7 @@ EOH;
      */
     public function actionImportall($region = 'england')
     {
-        $this->regionName=strtolower($region);
+        $this->regionName = strtolower($region);
         $this->getDynamicUrls();
 
         try {
@@ -425,7 +449,7 @@ EOH;
         $isNewResource = false;
 
         if (!file_exists($tempFile)) {
-            $this->usageError('File not found: '.$tempFile);
+            $this->usageError('File not found: ' . $tempFile);
         } elseif (!file_exists($permanentFile)) {
             // No previously processed file found
             $isNewResource = true;
@@ -455,7 +479,7 @@ EOH;
 
         $zip = new ZipArchive();
         if (($res = $zip->open($file)) !== true) {
-            throw new Exception("Failed to open zip file '{$file}': ".$res, static::$UNEXPECTED_FILE_PROBLEM);
+            throw new Exception("Failed to open zip file '{$file}': " . $res, static::$UNEXPECTED_FILE_PROBLEM);
         }
 
         $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
@@ -482,7 +506,7 @@ EOH;
 
         $zip = new ZipArchive();
         if (($res = $zip->open($file)) !== true) {
-            $this->usageError("Failed to open zip file '{$file}': ".$res);
+            $this->usageError("Failed to open zip file '{$file}': " . $res);
         }
 
         $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
@@ -530,18 +554,18 @@ EOH;
 
         $pathParts = pathinfo($this->getFileFromUrl($file['url']));
 
-        $permanentFile = $this->path.'/'.$pathParts['filename'].'/'.$pathParts['basename'];
-        $tempFile = $this->tempPath.'/'.$pathParts['basename'];
+        $permanentFile = $this->path . '/' . $pathParts['filename'] . '/' . $pathParts['basename'];
+        $tempFile = $this->tempPath . '/' . $pathParts['basename'];
 
         // check if the current file(url) is already processed or not
         if ($this->isNewResourceFile($tempFile, $permanentFile)) {
-            echo 'Processing '.$pathParts['basename']."\n";
+            echo 'Processing ' . $pathParts['basename'] . "\n";
 
             $this->tempToPermanent($tempFile, $permanentFile);
 
             $this->processCSV($type, $interval, $file['fields'], $permanentFile);
         } else {
-            echo $type.' - '.basename($permanentFile)." is already processed\n";
+            echo $type . ' - ' . basename($permanentFile) . " is already processed\n";
         }
     }
 
@@ -572,7 +596,7 @@ EOH;
             $percent = round((($i / $lineCount) * 100), 1);
 
             echo "\033[7D"; // 7 char back
-            echo str_pad($percent, 5, ' ', STR_PAD_LEFT).' %';
+            echo str_pad($percent, 5, ' ', STR_PAD_LEFT) . ' %';
 
             $data = array_combine(array_pad($fields, count($row), ''), $row);
             $transaction = Yii::app()->db->beginTransaction();
@@ -591,7 +615,7 @@ EOH;
                 }
                 $transaction->commit();
             } catch (Exception $e) {
-                $message = "Error processing {$type} row:\n".CVarDumper::dumpAsString($row)."\n$e";
+                $message = "Error processing {$type} row:\n" . CVarDumper::dumpAsString($row) . "\n$e";
                 Yii::log($message, CLogger::LEVEL_ERROR);
                 echo "\n$message\n";
                 $transaction->rollback();
@@ -621,7 +645,7 @@ EOH;
 
         if ($gp->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update'). Yii::app()->params['gp_label']);
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . Yii::app()->params['gp_label']);
             }
         }
 
@@ -650,7 +674,7 @@ EOH;
 
         if ($contact->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' '.Yii::app()->params['gp_label'].'-Contact');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' ' . Yii::app()->params['gp_label'] . '-Contact');
             }
         }
 
@@ -667,7 +691,7 @@ EOH;
 
         if ($address->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' '.Yii::app()->params['gp_label'].'-Address');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' ' . Yii::app()->params['gp_label'] . '-Address');
             }
         }
 
@@ -694,7 +718,7 @@ EOH;
 
         if ($practice->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' Practice');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
@@ -707,7 +731,7 @@ EOH;
 
         if ($contact->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' Practice-Contact');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Contact');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
@@ -725,7 +749,7 @@ EOH;
 
         if ($address->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' Practice-Address');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Address');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
@@ -749,7 +773,7 @@ EOH;
 
         if ($ccg->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' CCG');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
@@ -767,7 +791,7 @@ EOH;
 
         if ($address->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' CCG-Address');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG-Address');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
@@ -809,7 +833,7 @@ EOH;
             $assignment->practice_id = $practice->id;
 
             if (!$assignment->save()) {
-                throw new Exception('Failed to save commissioning body assignment: '.print_r($assignment->errors, true));
+                throw new Exception('Failed to save commissioning body assignment: ' . print_r($assignment->errors, true));
             }
             if ($this->audit !== 'false') {
                 Audit::add('ProcessHscicDataCommand', 'Assignment Saved');
@@ -950,7 +974,7 @@ EOH;
     {
         $dbTable = $this->getTableNameByType($type);
 
-        $fileHandler = $this->getFilePointer($this->tempPath.'/'.$file);
+        $fileHandler = $this->getFilePointer($this->tempPath . '/' . $file);
 
         echo 'Inserting rows into temp table... ';
 
@@ -1000,7 +1024,7 @@ EOH;
         $modelName = ucfirst($dbTable);
         $not_in_file = $modelName::model()->findAll($criteria);
 
-        echo 'Set '.count($not_in_file)." $type to inactive... ";
+        echo 'Set ' . count($not_in_file) . " $type to inactive... ";
         foreach ($not_in_file as $removed_instance) {
             $removed_instance->is_active = '0';
             if ($removed_instance->save() && $this->audit !== 'false') {
@@ -1035,7 +1059,7 @@ EOH;
      */
     public function actionDownload($type, $interval = 'full', $region = 'england')
     {
-        $this->regionName=strtolower($region);
+        $this->regionName = strtolower($region);
         $this->getDynamicUrls();
 
         if (!isset($this->files[$interval])) {
@@ -1045,7 +1069,7 @@ EOH;
         } else {
             try {
                 $fileName = $this->getFileFromUrl($this->url == '' ? $this->files[$interval][$type]['url'] : $this->url);
-                $this->download($this->url == '' ? $this->files[$interval][$type]['url'] : $this->url, $this->tempPath.'/'.$fileName);
+                $this->download($this->url == '' ? $this->files[$interval][$type]['url'] : $this->url, $this->tempPath . '/' . $fileName);
             } catch (Exception $e) {
                 return $this->handleException($e);
             }
@@ -1058,13 +1082,13 @@ EOH;
      */
     public function actionDownloadall($region = 'england')
     {
-        $this->regionName=strtolower($region);
+        $this->regionName = strtolower($region);
         $this->getDynamicUrls();
 
         try {
             foreach ($this->files['full'] as $file) {
                 $fileName = $this->getFileFromUrl($file['url']);
-                $this->download($file['url'], $this->tempPath.'/'.$fileName);
+                $this->download($file['url'], $this->tempPath . '/' . $fileName);
             }
         } catch (Exception $e) {
             return $this->handleException($e);
@@ -1087,18 +1111,16 @@ EOH;
         $file_handler = fopen($file, 'w');
 
         $curl = curl_init($url);
-        if (!empty(Yii::app()->params['curl_proxy'])) curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
+        $this->setCurlOpts($curl);
         curl_setopt($curl, CURLOPT_FILE, $file_handler);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_exec($curl);
 
         if (curl_errno($curl)) {
-            $error_message = ' Curl error: '.curl_errno($curl);
+            $error_message = ' Curl error: ' . curl_errno($curl);
         } else {
             $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             if ($status != 200) {
-                $error_message = ' Bad Status Code: '.$status;
+                $error_message = ' Bad Status Code: ' . $status;
             }
         }
         curl_close($curl);
