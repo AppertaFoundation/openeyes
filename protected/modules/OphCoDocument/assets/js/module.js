@@ -328,18 +328,40 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                     valid = false;
                 }
 
-                if (window.allowed_file_types.indexOf(file.type) === -1) {
-                    valid = false;
+                var mimeType=file.type;
 
-                    new OpenEyes.UI.Dialog.Alert({
-                        content: 'Only the following file types can be uploaded: ' + window.allowed_file_types.join(', ') +
-                            '\n\nFor reference, the type of the file you tried to upload is: ' + file.type
-                    }).open();
+                if (mimeType === '' || mimeType === undefined) {
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        var dataURL = event.target.result;
+                        mimeType = dataURL.split(",")[0].split(":")[1].split(";")[0];
+                        if (!this.validateFileType(mimeType)) {
+                            valid = false;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                } else if (!this.validateFileType(mimeType)) {
+                    valid = false;
                 }
             }
 
         }
+
         return valid;
+    };
+
+    DocumentUploadController.prototype.validateFileType = function(mimeType) {
+        if (window.allowed_file_types.indexOf(mimeType) === -1) {
+            new OpenEyes.UI.Dialog.Alert({
+                content: 'Only the following file types can be uploaded: ' + window.allowed_file_types.join(', ') +
+                    '\n\nFor reference, the type of the file you tried to upload is: ' + mimeType
+            }).open();
+
+            return false;
+        }
+        else{
+            return true;
+        }
     };
 
 
