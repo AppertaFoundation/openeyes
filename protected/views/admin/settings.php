@@ -47,7 +47,7 @@
                         // If it's an array, implode it to display as a string
                         $param_value = implode(",", $param_value);
                     } elseif ($data = @unserialize($metadata->data)) {
-                        // If it's an option for a serialised array get the value
+                        // If it's an option for a serialised array get the value.
                         if (array_key_exists($param_value, $data)) {
                             $param_value = $data[$param_value];
                         } elseif ($param_value === 1) {
@@ -59,7 +59,7 @@
                     ?>
                     <tr class="disabled">
                         <td><span class="fade"><?php echo $metadata->name ?></span></td>
-                        <td><span class="fade"><?= $param_value; ?> </span></td>
+                        <td><span class="fade"><?= $param_value ?> </span></td>
                         <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter is being overridden by a config file and cannot be modified."></i></td>
                     </tr>
 
