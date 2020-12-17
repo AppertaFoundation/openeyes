@@ -789,27 +789,6 @@ class DefaultController extends BaseEventTypeController
         return $formatted;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getExtraTitleInfo()
-    {
-        if ($this->getAction()->id === 'view') {
-            /* @var Element_OphTrOperationnote_SiteTheatre */
-            $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
-
-            if (!$element) {
-                return null;
-            }
-
-            return '<span class="extra-info">' .
-                '<span class="fade">Site: </span>' .
-                $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
-                '</span>';
-        }
-        return null;
-    }
-
     protected function beforeAction($action)
     {
         Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/eyedraw.js');
@@ -1379,6 +1358,30 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getExtraTitleInfo()
+    {
+        if ($this->getAction()->id === 'view') {
+            /* @var Element_OphTrOperationnote_SiteTheatre */
+            $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
+
+            if (!$element) {
+                return null;
+            }
+
+            return '<div class="extra-info">' .
+                '<small class="fade">Site: </small><small>' .
+                $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</small>' .
+                '</div>';
+        }
+        return null;
+    }
+
+    /**
+     * @param $proc_id
+     * @return OphTrOperationnote_Attribute[]
+     *
      * Returns attributes that belong
      * to the given procedure
      *

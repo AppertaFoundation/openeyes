@@ -153,4 +153,14 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
         ));
     }
 
+    /**
+     * Can this element be copied (cloned/duplicated)
+     * Override to return true if you want an element to be copyable.
+     *
+     * @return bool
+     */
+    public function canCopy()
+    {
+        return true;
+    }
 }

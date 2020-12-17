@@ -11,9 +11,10 @@
     </td>
     <td class="actions">
         <div class="wrapper">
-            <a href="javascript:void(0)" class="save">save</a> | <a href="javascript:void(0)"
-                                                                    class="delete <?php echo $instruction->isNewRecord ? 'hidden' : ''?>" >delete</a>
-
+        <a href="javascript:void(0)" class="save">save</a>        
+        <?php if (!$instruction->isNewRecord) { ?>
+            | <a href="javascript:void(0)" class="delete" >delete</a>
+        <?php } ?>
         </div>
     </td>
 </tr>

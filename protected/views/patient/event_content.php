@@ -6,7 +6,7 @@
             $this->renderPartial('//patient/event_automated');
         } ?>
         <?php if ($this->action->id === 'view') { ?>
-            <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
+            <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad" ></i>
         <?php } ?>
 
     </h2>
@@ -17,11 +17,11 @@
             <?php if (isset($this->event->firm)) : ?>
                 <div class="extra-info">
                     <small class="fade">Subspecialty: </small>
-                    <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?>
+                    <small><?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?></small>
                 </div>
                 <div class="extra-info">
                     <small class="fade">&nbsp;Context: </small>
-                    <?= $this->event->firm->name; ?>
+                    <small><?= $this->event->firm->name; ?></small>
                 </div>
             <?php endif; ?>
 
