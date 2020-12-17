@@ -235,6 +235,9 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
         if (match[0] === '<') {
             //Find first char of text (not white-space, not tags)
             match = str.match(/>\s*[^<\s]/);
+            if (match === null) {
+                return str;
+            }
             //The char we want to change is at the end of this regex match
             charPos = match.index + match.length;
         }

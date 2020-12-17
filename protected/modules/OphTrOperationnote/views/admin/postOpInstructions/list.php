@@ -95,7 +95,7 @@
                     },
                     beforeSend: function () {
                         $tr.find('td.actions .wrapper').hide();
-                        $('.loader').clone().appendTo($tr.find('td.actions')).show();
+                        $('.loader').first().clone().appendTo($tr.find('td.actions')).show();
                     },
                     success: function (data) {
                         var $actions = $tr.find('td.actions');
@@ -128,7 +128,7 @@
                     },
                     beforeSend: function () {
                         $tr.find('td.actions .wrapper').hide();
-                        $('.loader').clone().appendTo($tr.find('td.actions')).show();
+                        $('.loader').first().clone().appendTo($tr.find('td.actions')).show();
                     },
                     success: function (data) {
                         var $actions = $tr.find('td.actions');

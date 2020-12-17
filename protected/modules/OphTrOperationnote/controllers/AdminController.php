@@ -231,7 +231,11 @@ class AdminController extends ModuleAdminController
         $this->group = 'Operation note';
         if (Yii::app()->request->isAjaxRequest) {
             if ( isset($_POST['action']) && $_POST['action'] == 'save') {
-                $instruction = new OphTrOperationnote_PostopInstruction;
+                if ( isset($_POST['id']) && $_POST['id'] != null ) {
+                    $instruction = OphTrOperationnote_PostopInstruction::model()->findByPk($_POST['id']);
+                } else {
+                    $instruction = new OphTrOperationnote_PostopInstruction;
+                }
                 $instruction->content = $_POST['content'];
                 $instruction->site_id = $_POST['site_id'];
                 $instruction->subspecialty_id = $_POST['subspecialty_id'];
@@ -243,7 +247,7 @@ class AdminController extends ModuleAdminController
                 $instruction = OphTrOperationnote_PostopInstruction::model()->findByPk($_POST['id']);
 
                 $this->renderJSON(array(
-                    'success' => (int)$instruction->delete()
+                   'success' => (int)$instruction->delete()
                 ));
             }
             Yii::app()->end();

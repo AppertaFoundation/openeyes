@@ -1635,19 +1635,22 @@ class OphCiExamination_API extends \BaseAPI
         $api = \Yii::app()->moduleAPI->get('PatientTicketing');
         if ($api) {
             $patient_ticket_followup = $api->getLatestFollowUp($patient);
-            if ($patient_ticket_followup) {
-                if (@$patient_ticket_followup['followup_quantity'] == 1 && @$patient_ticket_followup['followup_period']) {
-                    $patient_ticket_followup['followup_period'] = rtrim(
-                        $patient_ticket_followup['followup_period'],
-                        's'
-                    );
+            if ($patient_ticket_followup && isset($patient_ticket_followup['followup_quantity']) && isset($patient_ticket_followup['followup_period'])) {
+                if ($patient_ticket_followup['followup_quantity'] === "1") {
+                    $patient_ticket_followup['followup_period'] = rtrim($patient_ticket_followup['followup_period'], 's');
                 }
 
                 if (!isset($patient_ticket_followup['assignment_date']) || !isset($element->event->event_date) || ($element->event->event_date < $patient_ticket_followup['assignment_date'])) {
                     if (!empty($follow_up_text)) {
                         $follow_up_text .= ' AND ';
                     }
-                    $follow_up_text .= $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+
+                    if (!empty($patient_ticket_followup['followup_quantity']) && !empty($patient_ticket_followup['followup_period'])) {
+                        $follow_up_text .= $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'];
+                        if (isset($patient_ticket_followup['clinic_location']) && !empty($patient_ticket_followup['clinic_location'])) {
+                            $follow_up_text .= ' in the ' . $patient_ticket_followup['clinic_location'];
+                        }
+                    }
                 }
             }
         }
@@ -2787,7 +2790,7 @@ class OphCiExamination_API extends \BaseAPI
                 </tbody>
             </table>
         <?php }
-        return ob_get_clean();
+        return str_replace(array("\r","\n"), '', trim(ob_get_clean()));
     }
 
     /**

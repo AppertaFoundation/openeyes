@@ -46,26 +46,32 @@
                     if (is_array($param_value)) {
                         // If it's an array, implode it to display as a string
                         $param_value = implode(",", $param_value);
-                    } else if ($data = @unserialize($metadata->data)) {
+                    } elseif ($data = @unserialize($metadata->data)) {
                         // If it's an option for a serialised array get the value
-                        $param_value = $data[$param_value];
+                        if (array_key_exists($param_value, $data)) {
+                            $param_value = $data[$param_value];
+                        } elseif ($param_value === 1) {
+                            $param_value = $data['on'];
+                        } elseif ($param_value === 0) {
+                            $param_value = $data['off'];
+                        }
                     }
-            ?>
+                    ?>
                     <tr class="disabled">
                         <td><span class="fade"><?php echo $metadata->name ?></span></td>
                         <td><span class="fade"><?= $param_value; ?> </span></td>
                         <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter is being overridden by a config file and cannot be modified."></i></td>
                     </tr>
 
-                <?php
+                    <?php
                 } else {
-                ?>
+                    ?>
                     <tr class="clickable" data-uri="admin/editInstallationSetting?key=<?= $metadata->key; ?>">
                         <td><?php echo $metadata->name ?></td>
                         <td><?= $metadata_value; ?></td>
                         <td></td>
                     </tr>
-            <?php
+                    <?php
                 }
 
                 unset($param_value, $metadata_value);
