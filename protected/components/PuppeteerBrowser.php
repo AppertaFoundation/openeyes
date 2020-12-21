@@ -451,7 +451,8 @@ class PuppeteerBrowser extends CApplicationComponent
 
         $screenshot_options = array(
             'path' => $image_file,
-            'type' => 'png',
+            'type' => 'jpeg',
+            'quality' => 75,
             'fullPage' => true,
         );
 

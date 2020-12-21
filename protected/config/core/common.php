@@ -610,7 +610,7 @@ return array(
             'debug_logging' => false,
             'event_specific' => array(
                 'Correspondence' => array(
-                    'image_width' => 1000
+                    'image_width' => 950
                 ),
                 'Biometry' => array(
                     'image_width' => 1200

@@ -2384,7 +2384,7 @@ class BaseEventTypeController extends BaseModuleController
 
         $path = $event->getImagePath(@$_GET['image_name']);
 
-        header('Content-Type: image/png');
+        header('Content-Type: image/jpeg');
         header('Content-Length: ' . filesize($path));
         readfile($path);
     }
@@ -2677,7 +2677,7 @@ class BaseEventTypeController extends BaseModuleController
         } else {
             $pdf_imagick->readImageBlob($attachment_data->blob_data);
         }
-        $pdf_imagick->setImageFormat('png');
+        $pdf_imagick->setImageFormat('jpeg');
         $original_width = $pdf_imagick->getImageGeometry()['width'];
         if ($this->image_width != 0 && $original_width != $this->image_width) {
             $original_res = $pdf_imagick->getImageResolution()['x'];
