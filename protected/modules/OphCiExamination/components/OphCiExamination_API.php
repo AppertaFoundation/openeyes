@@ -3192,7 +3192,7 @@ class OphCiExamination_API extends \BaseAPI
                     <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers: []; ?>
                     <tr>
                         <td><?= $entry->getMedicationDisplay() ?></td>
-                        <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
+                        <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : ($entry->drug ? (' ' . $entry->drug->dose_unit) : '')) ?></td>
                         <td>
                             <?php
                             $laterality = $entry->getLateralityDisplay();
@@ -3223,7 +3223,7 @@ class OphCiExamination_API extends \BaseAPI
                                 <div class="oe-i child-arrow small no-click"></div>
                                 <i> then</i>
                             </td>
-                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                            <td><?= $taper->dose . ($entry->units ? (' ' . $entry->units) : ($entry->drug ? (' ' . $entry->drug->dose_unit) : '')) ?></td>
                             <td>
                             </td>
                             <td>
@@ -3293,7 +3293,7 @@ class OphCiExamination_API extends \BaseAPI
                             <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers : []; ?>
                 <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
+                    <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : ($entry->drug ? (' ' . $entry->drug->dose_unit) : '')) ?></td>
                     <td>
                         <?= $entry->frequency ? $entry->frequency : ''; ?>
                     </td>
@@ -3318,7 +3318,7 @@ class OphCiExamination_API extends \BaseAPI
                                                     <div class="oe-i child-arrow small no-click"></div>
                                                     <i> then</i>
                                             </td>
-                                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                                            <td><?= $taper->dose . ($entry->units ? (' ' . $entry->units) : ($entry->drug ? (' ' . $entry->drug->dose_unit) : '')) ?></td>
                                             <td>
                                                     <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
                                             </td>
