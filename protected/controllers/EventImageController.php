@@ -193,9 +193,8 @@ class EventImageController extends BaseController
             $file_mod_time = strtotime($model->last_modified_date);
             $headers = $this->getRequestHeaders();
 
-            header('Content-type: image/png');
-            header('Cache-Control: public');
-            header('Pragma:');
+            header('Content-type: image/jpeg');
+            header('Cache-Control: private');
             // Check if the client is validating his cache and if it is current.
             if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $file_mod_time)) {
                 // Client's cache IS current, so we just respond '304 Not Modified'.
