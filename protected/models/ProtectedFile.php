@@ -32,7 +32,7 @@
  */
 class ProtectedFile extends BaseActiveRecordVersioned
 {
-    const THUMBNAIL_QUALITY = 85;
+    protected const THUMBNAIL_QUALITY = 85;
     // used in model creation
     protected $source_path;
     // used in model delete
@@ -70,7 +70,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
 
         $path = $file->getFilePath();
         if (!file_exists($path)) {
-            if (!@mkdir($path, 0755, true)) {
+            if (!@mkdir($path, 0775, true)) {
                 throw new Exception("$path could not be created: permission denied");
             }
         }
