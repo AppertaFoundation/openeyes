@@ -3677,6 +3677,10 @@ class OphCiExamination_API extends \BaseAPI
             array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient)
         );
 
+        if (!$element) {
+            $element = $widget->element;
+        }
+
         $entries = $widget->getMergedEntries();
 
         $route_filter = function ($entry) {
@@ -3777,6 +3781,10 @@ class OphCiExamination_API extends \BaseAPI
             'OEModule\OphCiExamination\widgets\HistoryMedications',
             array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient)
         );
+
+        if (!$element) {
+            $element = $widget->element;
+        }
 
         $entries = $widget->getMergedEntries();
 

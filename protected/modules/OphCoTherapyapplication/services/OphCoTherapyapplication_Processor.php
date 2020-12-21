@@ -61,7 +61,7 @@ class OphCoTherapyapplication_Processor
         $warnings = array();
 
         $el_diag = $this->getElement('Element_OphCoTherapyapplication_Therapydiagnosis');
-       
+
         $sides = array();
         if ($el_diag->hasLeft()) {
             $sides[] = 'left';
@@ -338,9 +338,6 @@ class OphCoTherapyapplication_Processor
             if (!@copy($this->event->getPDF('therapy_application'), $pfile->getPath())) {
                 throw new Exception('Unable to write to file: '.$pfile->getPath());
             }
-
-            $pfile->size = filesize($pfile->getPath());
-            $pfile->file_content = file_get_contents($pfile->getPath());
 
             if (!$pfile->save()) {
                 throw new Exception('Unable to save file: '.print_r($pfile->errors, true));

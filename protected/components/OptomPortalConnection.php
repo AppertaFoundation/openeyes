@@ -201,8 +201,6 @@ class OptomPortalConnection
         $protected_file = $protected_file->createForWriting('cvi_signature_' . $fileId);
 
         if (file_put_contents($protected_file->getPath(), $imageData)) {
-            $protected_file->size = filesize($protected_file->getPath());
-            $protected_file->file_content = file_get_contents($protected_file->getPath());
             $protected_file->save();
             return $protected_file;
         }

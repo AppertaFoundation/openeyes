@@ -25,7 +25,7 @@ MODULEROOT=$WROOT/protected/modules
 # If database user / pass are empty then set from environment variables of from docker secrets (secrets are the recommended approach)
 # Note that this script ignores the old db.conf method. If you are still using this deprecated
 # method, then you'll need to manually set the relevant environment variables to match your db.conf
-if [ ! -z "$MYSQL_ROOT_PASSWORD" ]; then
+if [ -n "$MYSQL_ROOT_PASSWORD" ]; then
     dbpassword="$MYSQL_ROOT_PASSWORD"
 elif [ -f "/run/secrets/MYSQL_ROOT_PASSWORD" ]; then
     dbpassword="$(</run/secrets/MYSQL_ROOT_PASSWORD)"
@@ -33,7 +33,7 @@ else
     dbpassword=""
 fi
 
-if [ ! -z "$MYSQL_SUPER_USER" ]; then
+if [ -n "$MYSQL_SUPER_USER" ]; then
     username="$MYSQL_SUPER_USER"
 elif [ -f "/run/secrets/MYSQL_SUPER_USER" ]; then
     username="$(</run/secrets/MYSQL_SUPER_USER)"
@@ -67,6 +67,7 @@ dwservrunning=0
 restorefile=""
 hscic=0
 nopost=0
+nopre=0
 postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
 eventimages=1
 fallbackbranch=${OE_RESET_FALLBACK_BRANCH:-master}
@@ -78,14 +79,17 @@ while [[ $# -gt 0 ]]; do
     case $p in
     -nb | --no-banner)
         nobanner=1
+        echo "Banner will not be (re)set"
         ## Do not update the user banner after reset
         ;;
     --no-migrate | -nm | --nomigrate)
         migrate=0
+        echo "DB migrations will not run automatically"
         ## nomigrate will prevent database migrations from running automatically at the end of reset
         ;;
     --no-event-images | -ni)
         eventimages=0
+        echo "Event Imagaes will not be automatically generated"
         ## Do not generate event lightning images after demo import
         ;;
     --banner) # set banner textr and move to next param
@@ -98,6 +102,7 @@ while [[ $# -gt 0 ]]; do
         ;;
     --demo)
         demo=1
+        echo "Demo scripts will be applied"
         ## Install demo scripts (worklists, etc)
         ;;
     --develop | -d)
@@ -108,13 +113,14 @@ while [[ $# -gt 0 ]]; do
         showhelp=1
         ;;
     --no-files)
+        echo "Protected files will not be reset"
         nofiles=1
         ;;
     --genetics-enable)
-        bash $SCRIPTDIR/add-genetics.sh
+        bash "$SCRIPTDIR"/add-genetics.sh
         ;;
     --genetics-disable)
-        bash $SCRIPTDIR/add-genetics.sh -r
+        bash "$SCRIPTDIR"/add-genetics.sh -r
         ;;
     -p) # set dbpassword and move on to next param
         dbpassword="$2"
@@ -139,7 +145,13 @@ while [[ $# -gt 0 ]]; do
         ;;
     --no-post)
         nopost=1
+        echo "Local post-demo scripts will not be run"
         ## do not run local post reset scripts
+        ;;
+    --no-pre)
+        nopre=1
+        ## do not run pre-demo scripts
+        echo "Pre-demo scripts will not be run"
         ;;
     --post-path) # change the location of the local-post folder
         postpath="$2"
@@ -160,18 +172,22 @@ while [[ $# -gt 0 ]]; do
     --dmd)
         dmdimport="TRUE"
         ## Run the DMD import after database reset
+        echo "DMD import will run automatically after reset"
         ;;
     --hscic | -hscic | -gp | --gp)
         hscic=1
+        echo "HSCIC import will be run after reset"
         # run the hscic import after reset
         ;;
     --clear-audit)
         # will clean the audit tables after reset
         clearaudit=1
+        echo "Audit tables wil be cleared after reset"
         ;;
     --drop-archive)
         # will drop all tables named archive_* after reset
         droparchive=1
+        echo "Archive tables will be droped after reset"
         ;;
     *)
         if [ "$p" == "--hard" ]; then
@@ -196,7 +212,7 @@ if [ ${#PARAMS[@]} -gt 0 ]; then
     else
         echo "Unknown Parameter(s):"
         for i in "${PARAMS[@]}"; do
-            echo $i
+            echo "$i"
         done
         exit 1
     fi
@@ -247,7 +263,7 @@ if [ $showhelp = 1 ]; then
 fi
 
 # add -p to front of dbpassword (deals with blank dbpassword)
-if [ ! -z $dbpassword ]; then
+if [ -n "$dbpassword" ]; then
     dbpassword="-p'$dbpassword'"
 fi
 
@@ -267,16 +283,16 @@ if [[ ! "$branch" = "0" || ! -d $WROOT/protected/modules/sample/sql ]]; then
     ## Checkout new sample database branch
     echo "Downloading database for $branch"
 
-    bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams --${fallbackbranch}
+    bash "$SCRIPTDIR"/oe-checkout.sh "$branch" "$checkoutparams" --${fallbackbranch}
 fi
 
-if [ -z $restorefile ]; then
+if [ -z "$restorefile" ]; then
     # Pick default restore file based on what is available
-    [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
+    [ -f "$MODULEROOT"/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
 fi
 
 # Test to see if the restore file exists before continuing (note that '-' is a special case for when piping stdin)
-[[ ! -f $restorefile && "$restorefile" != "-" ]] && {
+[[ ! -f "$restorefile" && "$restorefile" != "-" ]] && {
     echo "Restore file was found at: $restorefile. 
     Please use --custom-file to specify a valid restore file"
     exit 1
@@ -296,18 +312,18 @@ echo ""
 if [ $nofiles = "0" ]; then
     echo Deleting protected files
     # remove protected/files
-    sudo rm -rf $WROOT/protected/files/*
+    sudo rm -rf "$WROOT"/protected/files/*
     # remove any docman process files
     sudo rm -rf /tmp/docman
     # remove hscic import history (otherwise hscic import requires --force to run after reset)
-    if [ -d $WROOT/protected/data/hscic ]; then
-        sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} +
+    if [ -d "$WROOT"/protected/data/hscic ]; then
+        sudo find "$WROOT"/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} +
     fi
 fi
 
 if [ $cleanbase = "0" ]; then
 
-    restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b $restorefile | cut -f1))
+    restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "$restorefile" | cut -f1))
 
     echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
     if [[ $restorefile =~ \.zip$ ]]; then
@@ -344,12 +360,12 @@ fi
 
 # Force default institution code to match common.php (note that white-space is important in the common.php file)
 # First checks OE_INSTITUTION_CODE environment variable. Otherwise uses value from common.php
-[ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=institution_code. => \!empty\(trim\(getenv\(\'OE_INSTITUTION_CODE\'\)\)\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
-if [ ! -z $icode ]; then
+[ -n "$OE_INSTITUTION_CODE" ] && icode="$OE_INSTITUTION_CODE" || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=institution_code. => \!empty\(trim\(getenv\(\'OE_INSTITUTION_CODE\'\)\)\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" "$WROOT"/protected/config/local/common.php)
+if [ -n "$icode" ]; then
     checkicodecmd="SELECT id FROM institution WHERE remote_id = '$icode';"
 
     icodeexists=$(eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$checkicodecmd\"")
-    if [ ! -n "$icodeexists" ]; then
+    if [ -n "$icodeexists" ]; then
 
         echo "
 
@@ -357,21 +373,19 @@ if [ ! -z $icode ]; then
 
 		"
 
-        echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" >/tmp/openeyes-mysql-institute.sql
+        updateicodecmd="UPDATE institution SET remote_id = '$icode' WHERE id = 1;"
 
-        eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql"
-
-        rm /tmp/openeyes-mysql-institute.sql
+        eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$updateicodecmd\""
     fi
 fi
 
 # Run pre-migration demo scripts
-if [ $demo = "1" ]; then
+if [[ $demo == "1" && $nopre == "0" ]]; then
 
     echo "RUNNING PRE_MIGRATION SCRIPTS..."
 
     shopt -s nullglob
-    for f in $(ls $MODULEROOT/sample/sql/demo/pre-migrate | sort -V); do
+    for f in $(ls "$MODULEROOT"/sample/sql/demo/pre-migrate | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f"
@@ -383,23 +397,23 @@ if [ $demo = "1" ]; then
 fi
 
 # Run migrations
-if [ $migrate = "1" ]; then
+if [ $migrate == "1" ]; then
     echo Performing database migrations
-    bash $SCRIPTDIR/oe-migrate.sh $migrateparams
+    bash "$SCRIPTDIR"/oe-migrate.sh "$migrateparams"
     echo "The following migrations were applied..."
-    grep applied $WROOT/protected/runtime/migrate.log
+    grep applied "$WROOT"/protected/runtime/migrate.log
 fi
 
 # Run demo scripts
 # Actual scripts are in sample module, for greater flexibility
-if [ $demo = "1" ]; then
+if [ $demo == "1" ]; then
 
     echo "RUNNING DEMO SCRIPTS..."
 
     basefolder="$MODULEROOT/sample/sql/demo"
 
     shopt -s nullglob
-    for f in $(ls $basefolder | sort -V); do
+    for f in $(ls "$basefolder" | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
@@ -411,14 +425,14 @@ if [ $demo = "1" ]; then
 fi
 
 # Run genetics scripts if genetics is enabled
-if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "/\*'Genetics'," $WROOT/protected/config/local/common.php; then
+if grep -q "'Genetics'," "$WROOT"/protected/config/local/common.php && ! grep -q "/\*'Genetics'," "$WROOT"/protected/config/local/common.php; then
 
     echo "RUNNING Genetics files..."
 
     basefolder="$MODULEROOT/sample/sql/demo/genetics"
 
     shopt -s nullglob
-    for f in $(ls $basefolder | sort -V); do
+    for f in $(ls "$basefolder" | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
@@ -431,7 +445,7 @@ if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "
 fi
 
 # Set banner to confirm reset
-if [ ! $nobanner = "1" ]; then
+if [ $nobanner == "0" ]; then
     echo "setting banner to: $bannertext"
     echo "
 	use ${DATABASE_NAME:-'openeyes'};
@@ -442,22 +456,22 @@ if [ ! $nobanner = "1" ]; then
     sudo rm /tmp/openeyes-mysql-setbanner.sql
 fi
 
-if [ ! -z "$dmdimport" ]; then
-    if ! $SCRIPTDIR/dmd-import.sh; then
+if [ -n "$dmdimport" ]; then
+    if ! "$SCRIPTDIR"/dmd-import.sh; then
         echo "DMD IMPORT FAILD. Aborting..."
         exit 1
     fi
 fi
 
 # Run local post-migaration demo scripts
-if [ $nopost = "0" ]; then
+if [[ $demo == "1" && $nopost == "0" ]]; then
 
     echo "RUNNING POST RESET SCRIPTS..."
 
     basefolder="$MODULEROOT/sample/sql/demo/local-post"
 
     shopt -s nullglob
-    for f in $(ls $postpath | sort -V); do
+    for f in $(ls "$postpath" | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $postpath/$f"
@@ -468,12 +482,12 @@ if [ $nopost = "0" ]; then
     done
 fi
 
-if [ ! $nofix = 1 ]; then
-    bash $SCRIPTDIR/oe-fix.sh --no-migrate --no-warn-migrate --no-composer --no-permissions #--no-compile --no-restart
+if [ $nofix -eq 0 ]; then
+    bash "$SCRIPTDIR"/oe-fix.sh --no-migrate --no-warn-migrate --no-composer --no-permissions #--no-compile --no-restart
 fi
 
-if [ $hscic = 1 ]; then
-    bash $SCRIPTDIR/import-hscic-data.sh --force
+if [ $hscic -eq 1 ]; then
+    bash "$SCRIPTDIR"/import-hscic-data.sh --force
 fi
 
 if [ $droparchive -eq 1 ]; then
@@ -514,12 +528,12 @@ fi
 
 # Generate lightning event images for demo patients
 # Actual script(s) are in sample module, for greater flexibility
-if [[ $eventimages = 1 && $demo = 1 ]]; then
-    echo "RUNNING POST RESET SCRIPTS..."
+if [[ $eventimages == "1" && $demo == "1" ]]; then
+    echo "RUNNING EVENT IMAGE GENERATION SCRIPT(S)..."
 
     basefolder="$MODULEROOT/sample/sql/demo/event-image"
     shopt -s nullglob
-    for f in $(ls $basefolder | sort -V); do
+    for f in $(ls "$basefolder" | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
             eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
@@ -539,4 +553,4 @@ fi
 printf "\e[42m\e[97m  RESET COMPLETE  \e[0m \n"
 echo ""
 
-bash $SCRIPTDIR/oe-which.sh
+bash "$SCRIPTDIR"/oe-which.sh

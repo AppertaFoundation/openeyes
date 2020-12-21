@@ -852,7 +852,7 @@ class User extends BaseActiveRecordVersioned
                 $signature_file = ProtectedFile::model()->findByPk($this->signature_file_id);
                 $image_data = base64_decode(
                     $this->decryptSignature(
-                        $signature_file->file_content,
+                        file_get_contents($signature_file->getPath()),
                         md5(md5($this->id) . $this->generateUniqueCodeWithChecksum($this->getUniqueCode()) . $signature_pin)
                     )
                 );

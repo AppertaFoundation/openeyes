@@ -191,12 +191,11 @@ class AnonymiseVFCommand extends CConsoleCommand
     /**
      * Create a new image based on the image passed in and anonymise.
      *
-     * @param string $file specified image file to anonymise; must be a valid path
+     * @param type $file specified image file to anonymise; must be a valid path
      *                   and the image must be the correct size.
-     * @param string $out the directory to place the anonymised file.
-     * @throws ImagickException
+     * @param type $out the directory to place the anonymised file.
      */
-    private function anonymiseTif($file, $out = '')
+    private function anonymiseTif($file, $out)
     {
         $image = new Imagick($file);
         $geo = $image->getImageGeometry();
@@ -222,7 +221,7 @@ class AnonymiseVFCommand extends CConsoleCommand
     public function actionRedact($pattern = null)
     {
         $criteria = new CDbCriteria();
-        if ($pattern !== null) {
+        if ($pattern != null) {
             $criteria->condition = 'name like :name';
             $criteria->params = array(':name' => $pattern);
         } else {
@@ -235,11 +234,8 @@ class AnonymiseVFCommand extends CConsoleCommand
         echo (count($files) / 2) . ' files found for modification.';
         if ($files) {
             foreach ($files as $file) {
-                file_put_contents($file->getPath(), $file->file_content);
                 if (file_exists($file->getPath())) {
                     $this->anonymiseTif($file->getPath());
-                    $file->file_content = file_get_contents($file->getPath());
-                    $file->save();
                 } else {
                     echo 'Could not transform file; ' . $file->getPathName()
                         . ' does not exist.' . PHP_EOL;
