@@ -202,7 +202,6 @@ class CaseSearchController extends BaseModuleController
 
         // This is required when the search results return any records.
         $path = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
-        Yii::app()->clientScript->registerScriptFile($path . '/jquery.autosize.js');
 
         return parent::beforeAction($action);
     }
