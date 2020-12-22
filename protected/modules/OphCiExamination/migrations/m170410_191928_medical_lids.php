@@ -4,8 +4,10 @@ class m170410_191928_medical_lids extends OEMigration
 {
     public function up()
     {
-        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name',
-            array(':class_name' => 'OphCiExamination'))->queryScalar();
+        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+            'class_name = :class_name',
+            array(':class_name' => 'OphCiExamination')
+        )->queryScalar();
 
         $element_types = array(
             'OEModule\OphCiExamination\models\MedicalLids' => array(

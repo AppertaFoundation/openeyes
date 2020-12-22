@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -31,12 +32,12 @@
  */
 class ProtectedFile extends BaseActiveRecordVersioned
 {
-    const THUMBNAIL_QUALITY = 85;
+    protected const THUMBNAIL_QUALITY = 85;
     // used in model creation
-    protected $_source_path;
+    protected $source_path;
     // used in model delete
-    protected $_stored_path;
-    protected $_thumbnail = array();
+    protected $stored_path;
+    protected $protected_thumbnail = array();
 
     /**
      * Create a new protected file from an existing file.
@@ -69,7 +70,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
 
         $path = $file->getFilePath();
         if (!file_exists($path)) {
-            if (!@mkdir($path, 0755, true)) {
+            if (!@mkdir($path, 0775, true)) {
                 throw new Exception("$path could not be created: permission denied");
             }
         }
@@ -121,7 +122,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     public static function getBasePath()
     {
-        return Yii::app()->basePath.'/files';
+        return Yii::app()->basePath . '/files';
     }
 
     /**
@@ -131,8 +132,8 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     public function getFilePath()
     {
-        return self::getBasePath().'/'.substr($this->uid, 0, 1)
-        .'/'.substr($this->uid, 1, 1).'/'.substr($this->uid, 2, 1);
+        return self::getBasePath() . '/' . substr($this->uid, 0, 1)
+        . '/' . substr($this->uid, 1, 1) . '/' . substr($this->uid, 2, 1);
     }
 
     /**
@@ -143,7 +144,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
     public function getPath()
     {
         return $this->getFilePath()
-        .'/'.$this->uid;
+        . '/' . $this->uid;
     }
 
     /**
@@ -168,7 +169,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     public function beforeValidate()
     {
-        if (!$this->_source_path) {
+        if (!$this->source_path) {
             // the file should be in place
             $path = $this->getPath();
 
@@ -190,12 +191,12 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     public function beforeSave()
     {
-        if ($this->_source_path) {
+        if ($this->source_path) {
             if (!file_exists(dirname($this->getPath()))) {
                 mkdir(dirname($this->getPath()), 0777, true);
             }
-            copy($this->_source_path, $this->getPath());
-            $this->_source_path = null;
+            copy($this->source_path, $this->getPath());
+            $this->source_path = null;
         } elseif (!file_exists($this->getPath())) {
             throw new Exception('There has been an error with file storage');
         }
@@ -213,25 +214,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     public function beforeDelete()
     {
-        $this->_stored_path = $this->getPath();
-
-        if ($this->getApp()->db->schema->getTable('et_ophcodocument_document')) {
-            $criteria = new CDbCriteria();
-            $criteria->addCondition('single_document_id = :protected_file_id 
-                    OR left_document_id = :protected_file_id
-                    OR right_document_id = :protected_file_id');
-            $criteria->params[':protected_file_id'] = $this->id;
-            $document = Element_OphCoDocument_Document::model()->find($criteria);
-            if ($document) {
-                $document->setScenario("fileDeleted");
-                foreach (['single_document_id', 'left_document_id', 'right_document_id'] as $protected_file_attribute) {
-                    if ($document->{$protected_file_attribute} ==  $this->id) {
-                        $document->{$protected_file_attribute} = null;
-                    }
-                }
-                $document->save();
-            }
-        }
+        $this->stored_path = $this->getPath();
 
         return parent::beforeDelete();
     }
@@ -241,7 +224,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     public function afterDelete()
     {
-        unlink($this->_stored_path);
+        unlink($this->stored_path);
 
         return parent::afterDelete();
     }
@@ -258,9 +241,9 @@ class ProtectedFile extends BaseActiveRecordVersioned
         }
 
         // Set UID
-        $this->uid = sha1(microtime().$this->name);
+        $this->uid = sha1(microtime() . $this->name);
         while (file_exists($this->getPath())) {
-            $this->uid = sha1(microtime().$this->name);
+            $this->uid = sha1(microtime() . $this->name);
         }
     }
 
@@ -274,9 +257,9 @@ class ProtectedFile extends BaseActiveRecordVersioned
     public function setSource($path)
     {
         if (!file_exists($path) || is_dir($path)) {
-            throw new CException("File doesn't exist: ".$path);
+            throw new CException("File doesn't exist: " . $path);
         }
-        $this->_source_path = $path;
+        $this->source_path = $path;
 
         $this->name = basename($path);
 
@@ -334,20 +317,20 @@ class ProtectedFile extends BaseActiveRecordVersioned
         if (!$matches) {
             throw new CException('Invalid thumbnail dimensions');
         }
-        if ($regenerate || !isset($this->_thumbnail[$dimensions])) {
+        if ($regenerate || !isset($this->protected_thumbnail[$dimensions])) {
             $path = $this->getThumbnailPath($dimensions);
             if ($regenerate || !file_exists($path)) {
                 if (!$this->generateThumbnail($dimensions)) {
                     return false;
                 }
             }
-            $this->_thumbnail[$dimensions] = array(
+            $this->protected_thumbnail[$dimensions] = array(
                     'path' => $path,
                     'size' => filesize($path),
             );
         }
 
-        return $this->_thumbnail[$dimensions];
+        return $this->protected_thumbnail[$dimensions];
     }
 
     /**
@@ -359,9 +342,9 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     protected function getThumbnailPath($dimensions)
     {
-        return self::getBasePath().'/'.substr($this->uid, 0, 1)
-        .'/'.substr($this->uid, 1, 1).'/'.substr($this->uid, 2, 1)
-        .'/'.$dimensions.'/'.$this->uid;
+        return self::getBasePath() . '/' . substr($this->uid, 0, 1)
+        . '/' . substr($this->uid, 1, 1) . '/' . substr($this->uid, 2, 1)
+        . '/' . $dimensions . '/' . $this->uid;
     }
 
     /**

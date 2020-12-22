@@ -31,10 +31,15 @@ class m180704_095046_migrate_van_herick_data extends CDbMigration
                     'VanHerick' => $van_herick_element->attributes,
                 ];
 
-                \Audit::add('admin', 'create', serialize($data),
+                \Audit::add(
+                    'admin',
+                    'create',
+                    serialize($data),
                     'Create Van Herick element',
                     array('module' => 'OphCiExamination', 'model' => 'VanHerick', 'event_id' => $gonioscopy->event_id,
-                        'episode_id' => $gonioscopy->event->episode_id, 'patient_id' => $gonioscopy->event->episode->patient->id));
+                    'episode_id' => $gonioscopy->event->episode_id,
+                    'patient_id' => $gonioscopy->event->episode->patient->id)
+                );
             } else {
                 return false;
             }

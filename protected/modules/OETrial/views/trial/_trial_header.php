@@ -22,34 +22,46 @@ $editing = in_array($this->action->id, ['update', 'create'], true);
         </button>
 
             <?= CHtml::link(
-              'Cancel',
-              $trial->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl('view',
-                  array('id' => $trial->id)),
-              array('class' => 'button header-tab red')
+                'Cancel',
+                $trial->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl(
+                    'view',
+                    array('id' => $trial->id)
+                ),
+                array('class' => 'button header-tab red')
             ) ?>
         <?php } else { ?>
             <?php if ($permission && $permission->can_view && !$trial->getIsNewRecord()) { ?>
-                <?= CHtml::link('View', $this->createUrl('view', array('id' => $trial->id)),
-                  array('class' => 'button header-tab ' . ($this->action->id === 'view' ? 'selected' : ''))) ?>
+                <?= CHtml::link(
+                    'View',
+                    $this->createUrl('view', array('id' => $trial->id)),
+                    array('class' => 'button header-tab ' . ($this->action->id === 'view' ? 'selected' : ''))
+                ) ?>
             <?php } ?>
             <?php if ($permission && $permission->can_edit) { ?>
-                <?= CHtml::link('Edit', $this->createUrl('update', array('id' => $trial->id)),
-                  array('class' => 'button header-tab ' . ($editing ? 'selected' : ''))) ?>
+                <?= CHtml::link(
+                    'Edit',
+                    $this->createUrl('update', array('id' => $trial->id)),
+                    array('class' => 'button header-tab ' . ($editing ? 'selected' : ''))
+                ) ?>
             <?php } ?>
             <?php if ($permission && $permission->can_manage) { ?>
                 <?php if ($trial->is_open) { ?>
                     <?= CHtml::link(
-                      'Close Trial',
-                      $trial->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl('close',
-                          array('id' => $trial->id)),
-                      array('class' => 'button header-tab red')
+                        'Close Trial',
+                        $trial->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl(
+                            'close',
+                            array('id' => $trial->id)
+                        ),
+                        array('class' => 'button header-tab red')
                     ) ?>
                 <?php } else { ?>
                     <?= CHtml::link(
-                      'Re-open Trial',
-                      $trial->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl('reopen',
-                          array('id' => $trial->id)),
-                      array('class' => 'button header-tab green')
+                        'Re-open Trial',
+                        $trial->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl(
+                            'reopen',
+                            array('id' => $trial->id)
+                        ),
+                        array('class' => 'button header-tab green')
                     ) ?>
                 <?php } ?>
             <?php } ?>

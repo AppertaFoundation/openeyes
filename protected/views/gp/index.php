@@ -31,8 +31,11 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                         'method' => 'get',
                         'action' => Yii::app()->createUrl('/gp'),
                     )); ?>
-                    <?php echo CHtml::textField('search_term', $search_term,
-                        array('placeholder' => 'Enter search query...')); ?>
+                    <?php echo CHtml::textField(
+                        'search_term',
+                        $search_term,
+                        array('placeholder' => 'Enter search query...')
+                    ); ?>
                     <?php $this->endWidget(); ?>
                 </div>
             </div>

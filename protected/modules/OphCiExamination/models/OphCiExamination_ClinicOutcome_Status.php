@@ -69,6 +69,8 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
     {
         return [
             ['name, display_order, episode_status_id', 'required'],
+            ['followup', 'default', 'setOnEmpty' => true, 'value' => false],
+            ['patientticket', 'default', 'setOnEmpty' => true, 'value' => false],
             ['followup, episode_status_id, patientticket', 'lockIfInUse'],
             ['subspecialties', 'safe'],
             ['id, name, display_order', 'safe', 'on' => 'search'],
@@ -77,7 +79,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
 
     public function lockIfInUse($attribute, $params)
     {
-        if ($this->$attribute != (int)$this->original_attributes[$attribute]) {
+        if (!$this->isNewRecord && $this->$attribute != (int)$this->original_attributes[$attribute]) {
             if ($this->inUse()) {
                 $this->addError($attribute, "This Clinical Outcome Status is in use and so $attribute cannot be edited");
             }

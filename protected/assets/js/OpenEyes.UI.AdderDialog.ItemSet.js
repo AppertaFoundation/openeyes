@@ -23,6 +23,7 @@
         'splitIntegerNumberColumns': [], // array with min&max interval allowed for each column
         'splitIntegerNumberColumnsTypes': [],
         'deselectOnReturn' : true,
+        'resetSelectionToDefaultOnReturn' : false,
         'conditionalFlowMaps' : [],
         'hideByDefault': false,
     };

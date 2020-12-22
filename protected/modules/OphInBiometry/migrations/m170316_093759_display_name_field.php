@@ -17,7 +17,7 @@ class m170316_093759_display_name_field extends CDbMigration
                             
                             (
                                 select 
-                                    COALESCE(NULLIF(oll.display_name, "" ) ,oll.description )
+                                    COALESCE(NULLif (oll.display_name, "" ) ,oll.description )
                                 from 
                                     ophinbiometry_lenstype_lens oll 
                                 where (oll.id = eos.lens_id_left)
@@ -29,7 +29,7 @@ class m170316_093759_display_name_field extends CDbMigration
                             
                             (
                                 select 
-                                    COALESCE(NULLIF(oll.display_name, "" ) ,oll.description )
+                                    COALESCE(NULLif (oll.display_name, "" ) ,oll.description )
                                 from 
                                     ophinbiometry_lenstype_lens oll 
                                 where (oll.id = eos.lens_id_right)

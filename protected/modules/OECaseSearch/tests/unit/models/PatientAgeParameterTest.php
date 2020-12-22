@@ -19,7 +19,7 @@ class PatientAgeParameterTest extends CDbTestCase
         'patient' => 'Patient',
     );
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->parameter = new PatientAgeParameter();
@@ -27,7 +27,7 @@ class PatientAgeParameterTest extends CDbTestCase
         $this->parameter->id = 0;
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         parent::tearDown();
         unset($this->parameter, $this->searchProvider);
@@ -61,11 +61,12 @@ class PatientAgeParameterTest extends CDbTestCase
             }
             $this->assertEquals(
                 trim(preg_replace('/\s+/', ' ', $sqlValue)),
-                trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider))));
+                trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider)))
+            );
         }
 
         // Ensure that a HTTP exception is raised if an invalid operation is specified.
-        $this->setExpectedException(CHttpException::class);
+        $this->expectException(CHttpException::class);
         foreach ($invalidOps as $operator) {
             $this->parameter->operation = $operator;
             $this->parameter->query($this->searchProvider);

@@ -50,14 +50,15 @@ abstract class PASAPI_BaseTest extends RestTestCase
 
         // clear out all the data we've touched, and the user
         foreach (array_merge(
-                     array('Audit',
+            array('Audit',
                          'AuditAction',
                          'AuditType',
                          'OEModule\\PASAPI\\models\\PasApiAssignment',
                          'Patient',
                          'Address',
                          'Contact', ),
-                 $this->additional_clean_up_models) as $cls) {
+            $this->additional_clean_up_models
+        ) as $cls) {
             $cls::model()->deleteAllByAttributes(array('created_user_id' => $this->user->id));
         }
 
@@ -111,5 +112,6 @@ abstract class PASAPI_BaseTest extends RestTestCase
     public function tearDown()
     {
         $this->cleanUpTestUser();
+        parent::tearDown();
     }
 }

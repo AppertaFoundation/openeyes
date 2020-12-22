@@ -14,16 +14,18 @@
  */
 ?>
 <div class="element-data element-eyes">
-    <?= $this->renderPartial('view_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'right'
-    ]
-  ) ?>
-    <?= $this->renderPartial('view_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'left'
-    ]
-  ) ?>
+    <?= $this->renderPartial(
+        'view_Element_OphCiExamination_CataractSurgicalManagement_Side',
+        [
+        'element' => $element,
+        'side' => 'right'
+        ]
+    ) ?>
+    <?= $this->renderPartial(
+        'view_Element_OphCiExamination_CataractSurgicalManagement_Side',
+        [
+        'element' => $element,
+        'side' => 'left'
+        ]
+    ) ?>
 </div>

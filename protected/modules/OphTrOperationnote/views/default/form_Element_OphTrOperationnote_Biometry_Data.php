@@ -21,8 +21,10 @@
                 <div class="<?= $eye_side ?>-eye">
                         <h3 class="<?= $eye_side ?>-color-text"><?=\CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
                         <?php if ($element->hasEye($eye_side)) {
-                                $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields',
-                                        array('side' => $eye_side, 'element' => $element));
+                                $this->renderPartial(
+                                    'form_Element_OphTrOperationnote_Biometry_Data_Fields',
+                                    array('side' => $eye_side, 'element' => $element)
+                                );
                         } else { ?>
                                 <div class="data-value not-recorded">Not recorded</div>
                         <?php } ?>

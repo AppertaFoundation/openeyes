@@ -17,20 +17,18 @@
  */
 ?>
 <div class="eyedraw eyedraw-row flex-layout flex-top anterior-segment">
-    <div class="eyedraw-canvas">
-        <?php
-        $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
-                'side' => ($side == 'right') ? 'R' : 'L',
-                'mode' => 'view',
-                'scale' => 0.35,
-                'width' => 200,
-                'height' => 200,
-                'model' => $element,
-                'attribute' => $side.'_eyedraw',
-        ));
-        ?>
-    </div>
+    <?php
+    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
+        'side' => ($side == 'right') ? 'R' : 'L',
+        'mode' => 'view',
+        'scale' => 0.35,
+        'width' => 200,
+        'height' => 200,
+        'model' => $element,
+        'attribute' => $side.'_eyedraw',
+    ));
+    ?>
     <?php if ($element->{$side.'_lens_status'}) : ?>
         <div class="eyedraw-data stack">
           <div class="data-label">

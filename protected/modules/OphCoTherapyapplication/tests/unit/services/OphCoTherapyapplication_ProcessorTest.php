@@ -31,6 +31,7 @@ class OphCoTherapyapplication_ProcessorTest extends CTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->event = $this->getMockBuilder('Event')->disableOriginalConstructor()->getMock();
         $this->event->expects($this->any())->method('__get')->will($this->returnCallback(array($this, 'getEventProperty')));
         $this->event_props = array(
@@ -54,6 +55,7 @@ class OphCoTherapyapplication_ProcessorTest extends CTestCase
     public function tearDown()
     {
         Yii::app()->setComponent('moduleAPI', null);
+        parent::tearDown();
     }
 
     /**
@@ -202,9 +204,9 @@ class OphCoTherapyapplication_ProcessorTest extends CTestCase
 
         $exam_api->expects($this->any())->method('getInjectionManagementComplexInEpisodeForDisorder')
              ->will($this->returnCallback(
-                    function ($patient, $episode, $side) use ($injLeft, $injRight) {
-                        return ($side == 'left' && $injLeft) || ($side == 'right' && $injRight);
-                    }
+                 function ($patient, $episode, $side) use ($injLeft, $injRight) {
+                     return ($side == 'left' && $injLeft) || ($side == 'right' && $injRight);
+                 }
              ));
         $include_left_nr_values = true;
         $include_right_nr_values = true;

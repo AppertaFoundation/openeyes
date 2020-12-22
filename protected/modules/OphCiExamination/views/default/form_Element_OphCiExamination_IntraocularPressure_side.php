@@ -73,17 +73,22 @@ foreach ($readings as $reading) {
   </table>
   <div id="iop-<?= $side; ?>-comments"
        class="comment-group js-comment-container field-row-pad-top flex-layout flex-left"
-       style="<?php if (!$element->$comments) :
+       style="<?php if (!$element->$comments && !$element->hasErrors($side.'_comments')) :
             ?>display: none;<?php
               endif; ?>"
        data-comment-button="#iop-<?= $side ?>-comment-button">
-        <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false,
-          array(
+        <?= $form->textArea(
+            $element,
+            "{$side}_comments",
+            array('nowrapper' => true),
+            false,
+            array(
               'class' => 'js-comment-field',
               'rows' => 1,
               'placeholder' => 'Comments',
               'style' => 'overflow-x: hidden; word-wrap: break-word;',
-          )) ?>
+            )
+        ) ?>
     <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
   </div>
 </div>

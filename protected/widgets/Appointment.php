@@ -23,6 +23,7 @@ class Appointment extends BaseCWidget
     public $past_worklist_patients_count;
     public $worklist_patients;
     public $pro_theme = '';
+    public $is_popup;
 
     public function init()
     {
@@ -31,9 +32,9 @@ class Appointment extends BaseCWidget
         // add OpenEyes.UI.RestrictedData js
         $assetManager = \Yii::app()->getAssetManager();
         $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $assetManager->publish($baseAssetsPath, true);
 
-        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true).'/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
 
         $criteria = new \CDbCriteria();
         $criteria->join = " JOIN worklist w ON w.id = t.worklist_id";

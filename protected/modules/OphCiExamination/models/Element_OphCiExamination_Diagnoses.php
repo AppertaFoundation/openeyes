@@ -280,8 +280,11 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 if ($diagnosis->principal) {
                     $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date);
                 } else {
-                    $this->event->episode->patient->addDiagnosis($diagnosis->disorder_id,
-                        $diagnosis->eye_id, $diagnosis->date);
+                    $this->event->episode->patient->addDiagnosis(
+                        $diagnosis->disorder_id,
+                        $diagnosis->eye_id,
+                        $diagnosis->date
+                    );
                 }
             }
         }
@@ -378,8 +381,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             ->find('event_id=?', array($this->event_id))
         ) {
             foreach (OphCiExamination_FurtherFindings_Assignment::model()
-                         ->findAll('element_id=?', array($et_findings->id)
-                         ) as $finding_assignment
+                         ->findAll('element_id=?', array($et_findings->id)) as $finding_assignment
             ) {
                 $finding = $finding_assignment->finding;
                 $table_vals[] = array(
@@ -574,6 +576,6 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' || $action === 'createImage' ? 1 : null;
+        return $action === 'view' || $action === 'createImage' || $action === 'renderEventImage' ? 1 : null;
     }
 }

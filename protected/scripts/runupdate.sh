@@ -56,7 +56,7 @@ showhelp=0
 ignorelocal=0
 
 # Read in stored github config (username, root, usessh, etc)
-source $SCRIPTDIR/git.conf
+source $SCRIPTDIR/git.conf 2>/dev/null
 
 for i in "$@"
 do
@@ -190,9 +190,9 @@ for module in ${modules[@]}; do
   # Determine if module already exists (ignoring openeyes). If not, clone it
 	if [ ! -d "$MODULEROOT/$module" ] && [ "$module" != "openeyes" ]; then
 
-        printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m"
-
-        git -C $MODULEROOT clone ${basestring}/${module}.git $module
+        printf "\e[31m$module: Doesn't currently exist - Please clone it first - or use oe-checkout.sh\e[0m\n"
+        echo "Quitting..."
+        exit 1
 	fi
 
 	processgit=1

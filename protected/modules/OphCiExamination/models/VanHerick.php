@@ -61,6 +61,8 @@ class VanHerick extends \SplitEventTypeElement
             'id' => 'ID',
             'right_van_herick_id' => 'Grade',
             'left_van_herick_id' => 'Grade',
+            'right_notes' => 'Comments',
+            'left_notes' => 'Comments'
         );
     }
 
@@ -72,7 +74,7 @@ class VanHerick extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, left_van_herick_id, right_van_herick_id, eye_id', 'safe'),
+            array('event_id, left_van_herick_id, right_van_herick_id, eye_id, right_notes, left_notes', 'safe'),
         );
     }
 

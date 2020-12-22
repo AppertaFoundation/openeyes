@@ -49,7 +49,7 @@ if (@$disabled) {
         }?>
             <?php if (isset($errors[$i])) { ?>
                 <span class="error">
-                <?php echo $errors[$i] ?>
+                <?php echo htmlspecialchars($errors[$i]) ?>
                 </span>
             <?php }?>
     </td>

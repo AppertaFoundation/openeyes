@@ -25,13 +25,11 @@
                                 } ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-          <div class="eyedraw-row flex-layout flex-top">
-              <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
-                  'form' => $form,
-                  'side' => $eye_side,
-                  'element' => $element,
-              )) ?>
-          </div>
+            <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
+              'form' => $form,
+              'side' => $eye_side,
+              'element' => $element,
+            )) ?>
         </div>
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <div class="add-side">

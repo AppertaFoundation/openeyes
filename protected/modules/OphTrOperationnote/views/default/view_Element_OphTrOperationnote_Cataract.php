@@ -22,21 +22,18 @@
     </header>
     <section class="element-data full-width">
         <div class="eyedraw flex-layout">
-            <div class="eyedraw-canvas">
-                <?php
-                $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                    'idSuffix' => 'Cataract',
-                    'side' => $element->eye->getShortName(),
-                    'mode' => 'view',
-                    'width' => $this->action->id === 'view' ? 200 : 120,
-                    'height' => $this->action->id === 'view' ? 200 : 120,
-                    'model' => $element,
-                    'attribute' => 'eyedraw',
-                    'idSuffix' => 'Cataract',
-                ));
-                ?>
-            </div>
-
+            <?php
+            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+                'idSuffix' => 'Cataract',
+                'side' => $element->eye->getShortName(),
+                'mode' => 'view',
+                'width' => $this->action->id === 'view' ? 200 : 120,
+                'height' => $this->action->id === 'view' ? 200 : 120,
+                'model' => $element,
+                'attribute' => 'eyedraw',
+                'idSuffix' => 'Cataract',
+            ));
+            ?>
             <div class="eyedraw-data" style="max-width: 50%">
                 <table class="label-value no-lines last-left">
                     <colgroup>

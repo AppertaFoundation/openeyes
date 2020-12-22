@@ -49,7 +49,6 @@ class m191021_111452_add_event_subtypes extends CDbMigration
             'title_abbreviated' => 'Radial Report',
             'dicom_modality_code' => 'SC',
         ]);
-
     }
 
     public function safeDown()

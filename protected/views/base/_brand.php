@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-logo.svg';
+$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-logo.svg';
 $settings = new SettingMetadata();
 $tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']): htmlspecialchars($settings->getSetting('tech_support_provider'));
 $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'))
@@ -28,7 +28,7 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
 </div>
 
 <div class="oe-product-info" id="js-openeyes-info" style="display: none;">
-  <h3>OpenEyes <?= Yii::App()->params['oe_version'] ?></h3>
+  <h3>OpenEyes</h3>
 
   <div class="group">
     <h4>Theme</h4>
@@ -66,6 +66,7 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
     </p>
   </div>
   <div class="group">
+    <h4>Version: <?= Yii::App()->params['oe_version'] ?></h4>
     <h4>&copy; OpenEyes <?= date('Y') ?></h4>
     <p>
       <a href="<?= Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">

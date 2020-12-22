@@ -6,6 +6,12 @@
  */
 function getPcrContainer(ev) {
     var side = $(ev.target).closest('.js-element-eye').attr('data-side');
+
+    //for future debugging
+    if(!side){
+        console.log(ev);
+    }
+
     return $('.js-pcr-' + side.toLowerCase()).parent();
 }
 
@@ -96,18 +102,18 @@ function setGlaucomaDisorder(ev, pcrEl, glaucomaDiagnosisRemoved, glaucomaDiagno
     }
 
     let input_glaucoma = $('input[name^="glaucoma_diagnoses"]').filter('[value=true],[value="1"]');
-    let glaucoma_present = {'right-eye': false, 'left-eye': false};
+    let glaucoma_present = {'right-eye':false, 'left-eye':false};
 
     if (input_glaucoma.length) {
         let glaucoma_present_nk = true;
 
-        $.each(input_glaucoma, function (i, v) {
+        $.each(input_glaucoma, function(i,v){
             let parent_row = $(this).closest('tr');
             let side_checked = parent_row.find('.oe-eye-lat-icons :checked');
 
-            if (side_checked.length) {
+            if(side_checked.length){
                 glaucoma_present_nk = false;
-                switch (side_checked.length) {
+                switch(side_checked.length){
                     case 2:
                         glaucoma_present['right-eye'] = true;
                         glaucoma_present['left-eye'] = true;
@@ -119,20 +125,20 @@ function setGlaucomaDisorder(ev, pcrEl, glaucomaDiagnosisRemoved, glaucomaDiagno
             }
         });
 
-        if (glaucoma_present_nk) {
+        if(glaucoma_present_nk){
             $(pcrEl).val('NK');
         } else {
-            $.each(['right-eye', 'left-eye'], function (i, eye) {
+            $.each(['right-eye', 'left-eye'],function(i,eye){
                 let pcrrisk_section = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .' + eye);
 
-                if (glaucoma_present[eye]) {
+                if(glaucoma_present[eye]){
                     pcrrisk_section.find(pcrEl).val('Y');
-                } else if (glaucomaDiagnosisRemoved && glaucomaDiagnosisEyesSelected[eye]) {
+                } else if(glaucomaDiagnosisRemoved && glaucomaDiagnosisEyesSelected[eye]) {
                     pcrrisk_section.find(pcrEl).val('NK');
                 }
             });
         }
-    } else if (glaucomaDiagnosisRemoved) {
+    } else if(glaucomaDiagnosisRemoved) {
         $(pcrEl).val('NK');
     }
 
@@ -151,6 +157,7 @@ function setSurgeonFromNote(ev, pcrEl) {
     if (!pcrEl) {
         pcrEl = ev.data;
     }
+
     var surgeonId = $(ev.target).val();
     if (!surgeonId) {
         $(pcrEl).val('');
@@ -163,12 +170,9 @@ function setSurgeonFromNote(ev, pcrEl) {
         'url': '/user/surgeonGrade/',
         'data': {'id': surgeonId},
         'success': function (data) {
-            if ($('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked')) {
-                $('#pcrrisk_left' + pcrEl).val(data.id);
-            } else if ($('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked')) {
-                $('#pcrrisk_right' + pcrEl).val(data.id);
-            }
-
+            $(pcrEl).val(data.id);
+            $(pcrEl).attr('data-pcr-risk', data.pcr_risk);
+            $(pcrEl).text(data.grade);
             $(pcrEl).trigger('change');
         }
     });
@@ -244,8 +248,10 @@ function setPcrPxf(ev, pcrEl) {
 
     if (ev.target.checked || $related.is(':checked')) {
         $container.find(pcrEl).val('Y');
+        $container.find(pcrEl).text('Y');
     } else {
         $container.find(pcrEl).val('N');
+        $container.find(pcrEl).text('N');
     }
     $(pcrEl).trigger('change');
 
@@ -263,11 +269,45 @@ function setPcrPupil(ev, pcrEl) {
 
     var $container = getPcrContainer(ev);
     $container.find(pcrEl).val($(ev.target).val());
+    $container.find(pcrEl).text($(ev.target).val());
 
     $(pcrEl).trigger('change');
 
 }
 
+/**
+ * Sets values related to risks
+ *
+ * @param ev
+ * @param pcrEl
+ */
+function setRisks(ev) {
+    var controller = $('#OEModule_OphCiExamination_models_HistoryRisks_element').data('controller');
+    var alphaState = controller.getRiskStatus('alpha');
+    var lieFlatState = controller.getRiskStatus('lie flat');
+
+    var alphaPcr = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .pcrrisk_arb');
+    var originalAlpha = alphaPcr.val();
+    if (alphaState === '0') {
+        alphaPcr.val('N');
+    } else if (alphaState === '1') {
+        alphaPcr.val('Y');
+    }
+    if (alphaPcr.val() !== originalAlpha) {
+        alphaPcr.trigger('change');
+    }
+
+    var lieFlatPcr = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .pcr_lie_flat');
+    var originalLieFlat = lieFlatPcr.val();
+    if (lieFlatState === '0') {
+        lieFlatPcr.val('Y');
+    } else if (lieFlatState === '1') {
+        lieFlatPcr.val('N');
+    }
+    if (lieFlatPcr.val() !== originalLieFlat) {
+        lieFlatPcr.trigger('change');
+    }
+}
 
 /**
  * Maps elements in examination or op not to their respective elements in PCR risk so changes in the
@@ -277,7 +317,7 @@ function mapExaminationToPcr() {
     var left_eyedraw, right_eyedraw, risk_element;
     var examinationMap = {
             "#Element_OphTrOperationnote_Surgeon_surgeon_id": {
-                "pcr": '_doctor_grade_id',
+                "pcr": '.pcr_doctor_grade',
                 "func": setSurgeonFromNote,
                 "init": true
             },
@@ -338,6 +378,11 @@ function mapExaminationToPcr() {
             "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
                 "pcr": '.pcrrisk_no_fundal_view',
                 "func": setFundalView,
+                "init": true
+            },
+            "#OEModule_OphCiExamination_models_HistoryRisks_element input[type='radio']": {
+                "pcr": undefined,
+                "func": setRisks,
                 "init": true
             },
             ".oe-eye-lat-icons :checkbox": {
@@ -420,16 +465,20 @@ function collectValues($eyeSide) {
 
     pcrData.age = $eyeSide.find(":input[id$='age']").val();
     pcrData.gender = $eyeSide.find(":input[id$='gender']").val();
-    pcrData.glaucoma = $eyeSide.find("select[id$='glaucoma']").val();
-    pcrData.diabetic = $eyeSide.find("select[id$='diabetic']").val();
-    pcrData.fundalview = $eyeSide.find("select[id$='no_fundal_view']").val();
-    pcrData.brunescentwhitecataract = $eyeSide.find("select[id$='brunescent_white_cataract']").val();
-    pcrData.pxf = $eyeSide.find("select[id$='pxf_phako'], select[id$='pxf']").val();
-    pcrData.pupilsize = $eyeSide.find("select[id$='pupil_size']").val();
-    pcrData.axiallength = $eyeSide.find("select[id$='axial_length'], select[id$='axial_length_group']").val();
-    pcrData.alphareceptorblocker = $eyeSide.find("select[id$='arb'], select[id$='alpha_receptor_blocker']").val();
-    pcrData.abletolieflat = $eyeSide.find("select[id$='abletolieflat'], select[id$='can_lie_flat']").val();
-    pcrData.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").find(":selected").data('pcrValue');
+    pcrData.glaucoma = $eyeSide.find(":input[id$='glaucoma']").val();
+    pcrData.diabetic = $eyeSide.find(":input[id$='diabetic']").val();
+    pcrData.fundalview = $eyeSide.find(":input[id$='no_fundal_view']").val();
+    pcrData.brunescentwhitecataract = $eyeSide.find(":input[id$='brunescent_white_cataract']").val();
+    pcrData.pxf = $eyeSide.find(":input[id$='pxf_phako'], :input[id$='pxf']").val();
+    pcrData.pupilsize = $eyeSide.find(":input[id$='pupil_size']").val();
+    pcrData.axiallength = $eyeSide.find(":input[id$='axial_length'], :input[id$='axial_length_group']").val();
+    pcrData.alphareceptorblocker = $eyeSide.find(":input[id$='arb'], :input[id$='alpha_receptor_blocker']").val();
+    pcrData.abletolieflat = $eyeSide.find(":input[id$='abletolieflat'], :input[id$='can_lie_flat']").val();
+    pcrData.doctorgrade = $eyeSide.find(":input[id$='doctor_grade_id']").attr("data-pcr-risk");
+
+    if(typeof pcrData.doctorgrade === 'undefined') {
+        pcrData.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").find(":selected").data('pcrValue');
+    }
 
     return pcrData;
 }
@@ -456,7 +505,7 @@ function calculateORValue(inputValues) {
     OR.brunescentwhitecataract = {'Y': 2.99, 'N': 1, 'NK': 1};
     OR.pxf = {'Y': 2.92, 'N': 1, 'NK': 1};
     OR.pupilsize = {'Small': 1.45, 'Medium': 1.14, 'Large': 1, 'NK': 1};
-    OR.axiallength = {'0': 1, 'NK': 1, '1': 1, '2': 1.47};
+    OR.axiallength = {'0': 1,'NK': 1, '1': 1, '2': 1.47};
     OR.alphareceptorblocker = {'Y': 1.51, 'N': 1, 'NK': 1};
     OR.abletolieflat = {'Y': 1, 'N': 1.27};
     OR.doctorgrade = {};
@@ -489,8 +538,7 @@ function calculatePcrValue(ORValue) {
     var averageRiskConst,
         pcrRisk,
         excessRisk,
-        pcrColour,
-        textColour;
+        pcrColour;
 
     if (ORValue) {
         pcrRisk = ORValue * (0.00736 / (1 - 0.00736)) / (1 + (ORValue * 0.00736 / (1 - 0.00736))) * 100;
@@ -501,26 +549,21 @@ function calculatePcrValue(ORValue) {
 
         if (pcrRisk <= 1) {
             pcrColour = 'green';
-            textColour = 'white';
         } else if (pcrRisk > 1 && pcrRisk <= 5) {
             pcrColour = 'orange';
-            textColour = 'black';
         } else {
             pcrColour = 'red';
-            textColour = 'white';
         }
     } else {
         pcrRisk = "N/A";
         excessRisk = "N/A";
         pcrColour = 'blue';
-        textColour = 'white';
     }
 
     return {
         pcrRisk: pcrRisk,
         excessRisk: excessRisk,
-        pcrColour: pcrColour,
-        textColour: textColour
+        pcrColour: pcrColour
     };
 }
 
@@ -538,6 +581,7 @@ function pcrCalculate($eyeSide, side) {
     side = capitalizeFirstLetter(side);
     pcrData = calculatePcrValue(ORValue);
 
+    $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').css('background', pcrData.pcrColour);
     $eyeSide.find('.pcr-span').html(pcrData.pcrRisk);
     $eyeSide.find('.pcr-erisk').html(pcrData.excessRisk);
     if (pcrData.pcrRisk !== 'N/A') {

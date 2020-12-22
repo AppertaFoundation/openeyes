@@ -32,15 +32,6 @@
                 ?>
             </td>
         </tr>
-        <tr>
-            <td>
-                Who will collect the patient after surgery?
-            </td>
-            <td>
-                <?php $form->textField($element, 'collector_name', array("placeholder"=>"Name", 'nowrapper' => true), array(), array_merge($form->layoutColumns, array('label'=>0,'field' => 6)))?>
-                <?php $form->textField($element, 'collector_contact_number', array("placeholder"=>"Contact number", 'nowrapper' => true), array(), array_merge($form->layoutColumns, array('label'=>0,'field' => 4)))?>
-            </td>
-        </tr>
         </tbody>
     </table>
 </div>

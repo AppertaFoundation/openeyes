@@ -16,11 +16,15 @@
                     $element->{'target_refraction_' . $side} = \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement::getLatestTargetRefraction($this->patient, $side);
                 }
                 ?>
-                <?php echo $form->textField($element, 'target_refraction_'.$side,
+                <?php echo $form->textField(
+                    $element,
+                    'target_refraction_'.$side,
                     [
                         'nowrapper'=> true
                     ],
-                    null, array('label' => 4, 'field' => 2))?>
+                    null,
+                    array('label' => 4, 'field' => 2)
+                )?>
             </td>
             <td>
                 <button id="biometry-<?= $side ?>-comment-button"

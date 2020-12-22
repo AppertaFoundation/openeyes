@@ -11,5 +11,4 @@ class m191206_150527_attachment_data_add_hash_code extends CDbMigration
     {
         $this->dropColumn('attachment_data', 'hash_code');
     }
-
 }

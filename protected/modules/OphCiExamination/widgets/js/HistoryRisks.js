@@ -146,7 +146,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         $(document).ready(function () {
             if (controller.$noRisksFld.prop('checked')) {
-                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$table.find('tr').hide();
                 controller.$popupSelector.hide();
             }
             controller.updateNoRisksState();
@@ -177,12 +177,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         controller.$noRisksFld.on('click', function () {
             if (controller.$noRisksFld.prop('checked')) {
-                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$table.find('tr').hide();
                 controller.$popupSelector.hide();
                 controller.setRadioButtonsToNo();
             } else {
                 controller.$popupSelector.show();
-                controller.$table.find('tr:not(:first-child)').show();
+                controller.$table.find('tr').show();
                 controller.$table.find('input[type=radio]:checked').prop('checked', false);
             }
         });
@@ -286,6 +286,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @returns {*}
      */
     HistoryRisksController.prototype.createRow = function (risk_id, risk_name) {
+
         let template = this.templateText;
         let tableSelector = this.tableSelector;
         let data = {};
@@ -342,6 +343,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * Update the risks table with the given list of risks with comments
      */
     HistoryRisksController.prototype.addRisks = function (risks, sourceName) {
+        var risk_id;
         for (var idx in risks) {
             if (risks.hasOwnProperty(idx)) {
                 risk_id = risks[idx].id;
@@ -378,8 +380,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var self = this;
         var row = self.findTableRowForRisk(risk_id);
         if (row === undefined) {
+
             let $risk_to_add =  $('ul[data-id="risk_dialog_list"]').find('li[data-id=' + risk_id + ']');
             self.addEntry(null, $risk_to_add.data('label'));
+
             row = self.$table.find('tbody tr:last');
             row.find(self.riskSelector).val(risk_id);
         }

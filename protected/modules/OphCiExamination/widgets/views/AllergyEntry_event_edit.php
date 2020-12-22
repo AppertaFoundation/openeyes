@@ -51,14 +51,19 @@ $other_text_field_classes = $entry->hasErrors('other') ? 'highlighted-error erro
         <?php if ($removable) {
             if ($values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
-                    <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
-                        $values['has_allergy'] === (string)AllergyEntry::$PRESENT, array('value' => AllergyEntry::$PRESENT)); ?>
+                    <?=\CHtml::radioButton(
+                        $field_prefix . '[has_allergy]',
+                        $values['has_allergy'] === (string)AllergyEntry::$PRESENT,
+                        array('value' => AllergyEntry::$PRESENT)
+                    ); ?>
                     yes
                 </label>
                 <label class="inline highlight">
-                    <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
+                    <?=\CHtml::radioButton(
+                        $field_prefix . '[has_allergy]',
                         $values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT,
-                        array('value' => AllergyEntry::$NOT_PRESENT)); ?>
+                        array('value' => AllergyEntry::$NOT_PRESENT)
+                    ); ?>
                     no
                 </label>
             <?php } else {
@@ -66,21 +71,27 @@ $other_text_field_classes = $entry->hasErrors('other') ? 'highlighted-error erro
             }
         } else { ?>
         <label class="inline highlight">
-            <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
+            <?=\CHtml::radioButton(
+                $field_prefix . '[has_allergy]',
                 $values['has_allergy'] === (string)AllergyEntry::$NOT_CHECKED,
-                array('value' => AllergyEntry::$NOT_CHECKED)); ?>
+                array('value' => AllergyEntry::$NOT_CHECKED)
+            ); ?>
           Not checked
         </label>
         <label class="inline highlight">
-            <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
+            <?=\CHtml::radioButton(
+                $field_prefix . '[has_allergy]',
                 $values['has_allergy'] === (string)AllergyEntry::$PRESENT,
-                array('value' => AllergyEntry::$PRESENT)); ?>
+                array('value' => AllergyEntry::$PRESENT)
+            ); ?>
           yes
         </label>
         <label class="inline highlight">
-            <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
+            <?=\CHtml::radioButton(
+                $field_prefix . '[has_allergy]',
                 $values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT,
-                array('value' => AllergyEntry::$NOT_PRESENT)); ?>
+                array('value' => AllergyEntry::$NOT_PRESENT)
+            ); ?>
           no
         </label>
         <?php } ?>
@@ -98,7 +109,7 @@ $other_text_field_classes = $entry->hasErrors('other') ? 'highlighted-error erro
                         'rows' => '1',
                         'placeholder' => 'Comments',
                         'autocomplete' => 'off',
-                    ]) ?>
+                           ]) ?>
             <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
       </div>
         <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"

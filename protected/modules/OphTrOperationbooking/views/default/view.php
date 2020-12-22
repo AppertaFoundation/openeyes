@@ -19,7 +19,7 @@
 <?php
 $this->beginContent('//patient/event_container', array('no_face'=>true));
 
-if ($eur) {
+if (isset($eur)) {
     $this->renderPartial('view_eur', array('eur' => $eur));
 }
 if (isset($operation) && $operation) {

@@ -20,20 +20,22 @@ $primary_reasons = OEModule\OphCiExamination\models\OphCiExamination_Primary_Rea
 ?>
 <div class="element-fields element-eyes">
     <?= \CHtml::activeHiddenField($element, 'eye_id', [ 'class' => 'sideField' ]); ?>
-    <?= $this->renderPartial('form_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'right',
-      'primary_reasons' => $primary_reasons,
-    ]
-  ) ?>
-    <?= $this->renderPartial('form_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'left',
-      'primary_reasons' => $primary_reasons,
-    ]
-  ) ?>
+    <?= $this->renderPartial(
+        'form_Element_OphCiExamination_CataractSurgicalManagement_Side',
+        [
+        'element' => $element,
+        'side' => 'right',
+        'primary_reasons' => $primary_reasons,
+        ]
+    ) ?>
+    <?= $this->renderPartial(
+        'form_Element_OphCiExamination_CataractSurgicalManagement_Side',
+        [
+        'element' => $element,
+        'side' => 'left',
+        'primary_reasons' => $primary_reasons,
+        ]
+    ) ?>
 </div>
 
 
@@ -45,14 +47,14 @@ $(document).ready(function () {
     <?php foreach (['left', 'right'] as $side) : ?>
         <?= $side ?>PrimaryReasons:
         <?=CJSON::encode(
-          array_map(function ($reason) use ($element, $side) {
+            array_map(function ($reason) use ($element, $side) {
             return [
               'label' => $reason->name,
               'id' => $reason->id,
               'type' => 'primary_reason',
               'selected' => $reason->id === $element->{$side . '_reason_for_surgery_id'} ? 'selected' : '',
             ];
-          }, $primary_reasons)
+            }, $primary_reasons)
         )?>,
 
         <?= $side ?>Discussed: [
@@ -115,13 +117,13 @@ $(document).ready(function () {
         ],
         <?= $side ?>RefractiveMyopia:
         <?=CJSON::encode(
-          array_map(function ($value) {
+            array_map(function ($value) {
             return [
               'label' => $value,
               'value' => $value,
               'type' => 'refractive_myopia',
             ];
-          }, ['-0.50','-0.75','-1.00','-1.50','-2.00','-2.50'])
+            }, ['-0.50','-0.75','-1.00','-1.50','-2.00','-2.50'])
         )?>,
         <?=$side?>RefractiveCategoriesOptions: {
         'id': '<?=$side?>_refractive_categories_0',

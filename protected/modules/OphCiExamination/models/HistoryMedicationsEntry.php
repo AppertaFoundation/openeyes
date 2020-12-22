@@ -16,6 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\widgets\BaseMedicationWidget;
 
 /**
  * Class HistoryMedicationsEntry - Supports linking to prescription items as shadow records
@@ -66,7 +67,7 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     public function tableName()
     {
-        return 'ophciexamination_history_medications_entry';
+        return 'archive_ophciexamination_history_medications_entry';
     }
 
     /**
@@ -108,8 +109,7 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     protected function updateStateProperties()
     {
-        if ($this->end_date !== null
-            && $this->end_date <= date('Y-m-d', strtotime($this->element->event->event_date))) {
+        if ($this->isStopped()) {
             $this->originallyStopped = true;
         }
         if ($this->prescription_item_id) {
@@ -245,36 +245,6 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
-    public function getPrescriptionLink()
-    {
-        return '/OphDrPrescription/Default/view/' . $this->prescription_item->prescription->event_id;
-    }
-
-    public function getExaminationLink()
-    {
-        return '/OphCiExamination/Default/view/' . $this->element->event_id;
-    }
-
-    /**
-     * Check element attributes to determine if anything has been set that would allow it to be recorded
-     * Can be used to remove entries from the containing element.
-     *
-     * @return bool
-     */
-    public function hasRecordableData()
-    {
-        foreach (array('medication_drug_id', 'drug_id', 'medication_name', 'route_id', 'option_id', 'dose', 'units',
-            'frequency_id', 'end_date', 'stop_reason_id') as $attr) {
-            if ($this->$attr) {
-                return true;
-            }
-        }
-        if ($this->start_date && \Helper::formatFuzzyDate($this->start_date) != date('Y')) {
-            return true;
-        }
-        return false;
-    }
-
     public function beforeValidate()
     {
         if (strpos($this->drug_id, '@@M') !== false) {
@@ -310,7 +280,8 @@ class HistoryMedicationsEntry extends \BaseElement
             return count(OphCiExaminationRisk::findForTagIds(array_map(
                 function ($t) {
                     return $t->id;
-                }, $med->tags
+                },
+                $med->tags
             ))) > 0;
         } else {
             return false;
@@ -329,18 +300,28 @@ class HistoryMedicationsEntry extends \BaseElement
 
     public function isStopped()
     {
-        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
+        return isset($this->end_date) ? (strtotime($this->end_date) < strtotime(date("Y-m-d"))) : false;
     }
 
     /**
+     * @param include_route if true will include laterality and route in output (e.g., Right Eye)
      * @return string
      */
-    public function getAdministrationDisplay()
+    public function getAdministrationDisplay(bool $include_route = true)
     {
+        $parts = array('dose', 'units');
+
+        if ($include_route) {
+            array_push($parts, 'route', 'option');
+        }
+
+        array_push($parts, 'frequency');
+
         $res = array();
-        foreach (array('dose', 'units', 'option', 'route', 'frequency') as $k) {
+
+        foreach ($parts as $k) {
             if ($this->$k) {
-                $res[] = $this->$k;
+                    $res[] = $this->$k;
             }
         }
         return implode(' ', $res);
@@ -441,7 +422,7 @@ class HistoryMedicationsEntry extends \BaseElement
             $result[] = $this->frequency;
         }
 
-        return implode(' , ', $result    );
+        return implode(' , ', $result);
     }
 
     /**
@@ -460,7 +441,7 @@ class HistoryMedicationsEntry extends \BaseElement
     public function __toString()
     {
         $res = array();
-        foreach (array('Medication', 'Administration', 'Dates') as $k) {
+        foreach (array('ArchiveMedication', 'Administration', 'Dates') as $k) {
             if ($str = $this->{'get' . $k . 'Display'}()) {
                 $res[] = $str;
             }

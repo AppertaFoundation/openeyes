@@ -68,16 +68,21 @@
                                     'contact_type' => $contact_type,
                                     'row_index' => $row_index,
                                     'address' => $macro_data["to"]["address"],
+                                    'email' => $macro_data["to"]["email"],
                                     'is_editable_address' => (ucfirst(strtolower($contact_type)) != 'Gp') && ($contact_type != 'INTERNALREFERRAL') && ($contact_type != 'Practice'),
+                                    'can_send_electronically' => $can_send_electronically,
                                 ));
                                 ?>
                             </td>
                             <td class="docman_delivery_method align-left">
-                                    <?php $this->renderPartial('//docman/table/delivery_methods', array(
+                                    <?php
+                                    $this->renderPartial('//docman/table/delivery_methods', array(
                                             'is_draft' => $element->draft,
                                             'contact_type' => strtoupper($contact_type),
                                             'row_index' => $row_index,
-                                            'can_send_electronically' => $can_send_electronically
+                                            'can_send_electronically' => $can_send_electronically,
+                                            'email' => isset($macro_data["to"]["contact_id"]) ? (isset(Contact::model()->findByPk($macro_data["to"]["contact_id"])->id) ? Contact::model()->findByPk($macro_data["to"]["contact_id"])->email : null) : null,
+                                            'patient_id' => isset($patient_id) ? $patient_id : null,
                                     ));
                                     ?>
                             </td>
@@ -86,8 +91,8 @@
             <?php
                 // if no To was set in the macro we just display an empty row
                 $this->renderPartial(
-                        '//docman/document_row_recipient',
-                        array(
+                    '//docman/document_row_recipient',
+                    array(
                             'contact_id' => null,
                             'address' => null,
                             'row_index' => 0,
@@ -95,8 +100,9 @@
                             'contact_name' => null,
                             'contact_nickname' => null,
                             'can_send_electronically' => $can_send_electronically,
+                            'email' => null,
                         )
-                    );
+                );
             ?>
         <?php endif; ?>
         <?php $row_index++; ?>
@@ -136,18 +142,22 @@
                             'contact_type' => $contact_type,
                             'row_index' => $index,
                             'address' => $macro["address"],
+                            'email' => $macro["email"],
+                            'can_send_electronically' => $can_send_electronically,
                         ));
                         ?>
                     </td>
-                    <td class="docman_delivery_method">           
+                    <td class="docman_delivery_method">
                         <?php $this->renderPartial('//docman/table/delivery_methods', array(
-                                'is_draft' => $element->draft,
-                                'contact_type' => strtoupper($macro["contact_type"]),
-                                'row_index' => $index,
-                                'can_send_electronically' => $can_send_electronically,
-                            ));
+                            'is_draft' => $element->draft,
+                            'contact_type' => strtoupper($macro["contact_type"]),
+                            'row_index' => $index,
+                            'patient_id' => $patient_id ?? null,
+                            'can_send_electronically' => $can_send_electronically,
+                            'email' => isset($contact_id) ? (isset(Contact::model()->findByPk($contact_id)->id) ? Contact::model()->findByPk($contact_id)->email : null) : null
+                        ));
                         ?>
-                                        </td>
+                    </td>
                     <td>
                         <a class="remove_recipient removeItem <?php echo (isset($macro['is_mandatory']) && $macro['is_mandatory'])? 'hidden' : '' ?>" data-rowindex="<?php echo $index ?>">Remove</a>
                     </td>
@@ -166,6 +176,10 @@
             if (isset($defaults['To']['contact_type'])) {
                 $contact_type = $defaults['To']['contact_type'];
             }
+            $email = null;
+            if (isset($contact_id, $contact_type)) {
+                $email = isset(Contact::model()->findByPk($contact_id)->id) ? Contact::model()->findByPk($contact_id)->email : null;
+            }
             $address = null;
             if (isset($defaults['To']['address'])) {
                 $address = $defaults['To']['address'];
@@ -178,7 +192,7 @@
             if (isset($defaults['To']['contact_nickname'])) {
                 $contact_nickname = $defaults['To']['contact_nickname'];
             }
-                
+
             echo $this->renderPartial(
                 '//docman/document_row_recipient',
                 array(
@@ -188,6 +202,7 @@
                     'contact_name' => $contact_name,
                     'contact_nickname' => $contact_nickname,
                     'can_send_electronically' => $can_send_electronically,
+                    'email' => $email,
                 )
             );
         }
@@ -201,6 +216,11 @@
             $contact_type = null;
             if (isset($defaults['Cc']['contact_type'])) {
                 $contact_type = $defaults['Cc']['contact_type'];
+            }
+            $email = null;
+            if (isset($contact_id, $contact_type)) {
+                // This will always be a patient.
+                $email = isset(Contact::model()->findByPk($contact_id)->id) ? Contact::model()->findByPk($contact_id)->email : null;
             }
             $address = null;
             if (isset($defaults['Cc']['address'])) {
@@ -222,6 +242,7 @@
                     'contact_nickname' => $contact_nickname,
                     'can_send_electronically' => $can_send_electronically,
                     'is_internal_referral' => $element->isInternalReferralEnabled(),
+                    'email' => $email,
                 )
             );
         }

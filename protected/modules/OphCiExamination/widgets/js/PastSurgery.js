@@ -25,6 +25,10 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         this.options = $.extend(true, {}, PreviousSurgeryController._defaultOptions, options);
 
         //TODO: these should be driven by  options
+        this.$noPastSurgeryFld = $('.' + this.options.modelName + '_no_pastsurgery');
+        this.$noPastSurgeryWrapper = $('.' + this.options.modelName + '_no_pastsurgery_wrapper');
+        this.$commentFld = $('#' + this.options.modelName + '_comments');
+        this.$commentWrapper = $('#' + this.options.modelName + '-comments');
         this.$section = $('section.' + this.options.modelName);
         this.tableSelector = '#' + this.options.modelName + '_operation_table';
         this.$table = $('#' + this.options.modelName + '_operation_table');
@@ -37,25 +41,24 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
 
     PreviousSurgeryController._defaultOptions = {
         modelName: 'OEModule_OphCiExamination_models_PastSurgery',
-        monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     };
   /**
    * Setup Datepicker
    */
   PreviousSurgeryController.prototype.initialiseDatepicker = function () {
-      var row_count =  OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key') ;
-      for (var i=0; i<row_count;i++){
+      let row_count =  OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key') ;
+      for (let i=0; i<row_count;i++){
         this.constructDatepicker( i);
       }
   };
   PreviousSurgeryController.prototype.setDatepicker = function () {
-    var row_count =  OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key')-1 ;
+    let row_count =  OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key')-1 ;
     this.constructDatepicker(row_count);
   };
 
   PreviousSurgeryController.prototype.constructDatepicker = function (line_no) {
-    var datepicker_name = '#past-surgery-datepicker-'+line_no;
-    var datepicker= $(this.tableSelector).find(datepicker_name);
+    let datepicker_name = '#past-surgery-datepicker-'+line_no;
+    let datepicker= $(this.tableSelector).find(datepicker_name);
     if (datepicker.length!=0){
       pickmeup(datepicker_name, {
         format: 'Y-m-d',
@@ -67,7 +70,16 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
 
   PreviousSurgeryController.prototype.initialiseTriggers = function(){
 
-        var controller = this;
+        let controller = this;
+
+      $(document).ready(function () {
+          if(controller.$noPastSurgeryFld.prop('checked')) {
+              controller.$table.find('tr:not(:first-child)').hide();
+              controller.$popupSelector.hide();
+          }
+          controller.hideNoPastSurgery();
+      });
+
         controller.$popupSelector.on('click','.add-icon-btn', function(e) {
             e.preventDefault();
             controller.addEntry();
@@ -76,16 +88,17 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         controller.$table.on('click', '.remove_item', function(e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
+            controller.showNoPastSurgery();
         });
 
         controller.$section.on('input', ('#'+controller.fuzyDateWrapperSelector), function(e) {
-            var $fuzzy_fieldset = $(this).closest('fieldset');
-            var date = controller.dateFromFuzzyFieldSet($fuzzy_fieldset);
+            let $fuzzy_fieldset = $(this).closest('fieldset');
+            let date = OpenEyes.Util.dateFromFuzzyFieldSet($fuzzy_fieldset);
             $fuzzy_fieldset.closest('td').find('input[type="hidden"]').val(date);
         });
 
         controller.$section.on('input', ('.'+controller.options.modelName + '_operations'), function(e) {
-            var common_operation = $(this).find('option:selected').text();
+            let common_operation = $(this).find('option:selected').text();
             $(this).closest('td').find('.common-operation').val(common_operation);
             $(this).val(null);
         });
@@ -93,11 +106,49 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
             $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
         });
 
-        var eye_selector = new OpenEyes.UI.EyeSelector({
+      controller.$noPastSurgeryFld.on('click', function () {
+          if (controller.$noPastSurgeryFld.prop('checked')) {
+              controller.$table.find('tr:not(:first-child)').hide();
+              controller.$popupSelector.hide();
+              controller.$commentWrapper.hide();
+          } else {
+              controller.$popupSelector.show();
+              if(controller.$commentFld.val()) {
+                  controller.$commentWrapper.show();
+              }
+              controller.$table.find('tr:not(:first-child)').show();
+          }
+      });
+
+      controller.$popupSelector.on('click', function (e) {
+          e.preventDefault();
+          controller.hideNoPastSurgery();
+          if(controller.$table.hasClass('hidden')){
+              controller.$table.removeClass('hidden');
+          }
+          controller.$table.show();
+      });
+
+        let eye_selector = new OpenEyes.UI.EyeSelector({
             element: controller.$section
         });
 
         controller.$table.data('eyeSelector', eye_selector);
+    };
+
+    PreviousSurgeryController.prototype.hideNoPastSurgery = function() {
+        if (this.$table.find('tbody tr').length > 0) {
+            this.$noPastSurgeryFld.prop('checked', false);
+            this.$noPastSurgeryWrapper.hide();
+        }
+    };
+
+    PreviousSurgeryController.prototype.showNoPastSurgery = function() {
+        if (this.$table.find('tbody tr').length === 0) {
+            this.$noPastSurgeryWrapper.show();
+        } else {
+            this.hideNoPastSurgery();
+        }
     };
 
     /**
@@ -107,11 +158,11 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
      */
     PreviousSurgeryController.prototype.createRow = function(selectedItems)
     {
-      var newRows = [];
-      var template = this.templateText;
-      var tableSelector = this.tableSelector;
+      let newRows = [];
+      let template = this.templateText;
+      let tableSelector = this.tableSelector;
       $(selectedItems).each(function (e) {
-        var data = {};
+        let data = {};
         data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key')+ newRows.length;
         data['id'] = this['id'];
         if (this['label']==='Other'){
@@ -132,8 +183,8 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
      */
     PreviousSurgeryController.prototype.addEntry = function(selectedItems)
     {
-        var rows= this.createRow(selectedItems);
-        for(var i in rows){
+        let rows= this.createRow(selectedItems);
+        for(let i in rows){
           this.$table.find('tbody').append(rows[i]);
 
           let $operation = this.$table.find('tbody tr:last').find('.common-operation');
@@ -160,44 +211,6 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
             }
         }
         return true;
-    };
-
-    /**
-     * @TODO: should be common function across history elements
-     * @param fieldset
-     * @returns {*}
-     */
-    PreviousSurgeryController.prototype.dateFromFuzzyFieldSet = function(fieldset)
-    {
-        res = fieldset.find('select.fuzzy_year').val();
-        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
-        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
-        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
-        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
-
-        return res;
-    };
-
-    /**
-     *
-     * @param dt yyyy-mm-dd
-     * @returns {string}
-     */
-    PreviousSurgeryController.prototype.getFuzzyDateDisplay = function(dt)
-    {
-        var res = [],
-            bits = dt.split('-');
-
-        if(bits[2] != '00') {
-            res.push(parseInt(bits[2]).toString());
-        }
-
-        if(bits[1] != '00') {
-            res.push(this.options.monthNames[parseInt(bits[1])-1]);
-        }
-        res.push(bits[0]);
-
-        return res.join(' ');
     };
 
     return PreviousSurgeryController;

@@ -34,8 +34,7 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
     {
         return array_merge(parent::attributeNames(), array(
                 'textValue',
-            )
-        );
+            ));
     }
 
     /**
@@ -46,8 +45,7 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
     {
         return array_merge(parent::rules(), array(
                 array('textValue', 'required'),
-            )
-        );
+            ));
     }
 
     public function renderParameter($id)

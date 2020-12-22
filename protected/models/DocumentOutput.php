@@ -81,21 +81,43 @@ class DocumentOutput extends BaseActiveRecord
         return $event_id ? Event::model()->disableDefaultScope()->findByPk($event_id) : null;
     }
 
-    public function printIsUnique()
+    /**
+     * @param $outputStatus String updates the output_status column with the given string.
+     */
+    public function updateOutputStatus($outputStatus)
     {
-        $criteria = new CDbCriteria();
-        $criteria->join = "JOIN document_target ON t.document_target_id = document_target.id";
-        $criteria->join .= " JOIN document_instance ON document_target.document_instance_id = document_instance.id";
+        // Using saveAttributes so that it does not call beforesave method.
+        $this->saveAttributes(array('output_status' => $outputStatus));
+    }
 
-        $criteria->join .= " JOIN event ON document_instance.correspondence_event_id = event.id";
+    public function beforeSave()
+    {
+        $curr = self::findByPk($this->id);
 
-        $criteria->addCondition("t.`output_type`= 'Docman'");
-        $criteria->addCondition("event.id = " . $this->document_target->document_instance->correspondence_event_id);
-        $criteria->addCondition("event.deleted = 0");
-
-        if (!isset(Yii::app()->params['docman_with_internal_referral']) || Yii::app()->params['docman_with_internal_referral'] !== false) {
-            $criteria_string = " OR t.`output_type`= 'Internalreferral'";
+        if ($curr) {
+            // Set the output_status to DRAFT for print type on saving
+            if ($curr->output_type === 'Print' && $curr->output_status === 'COMPLETE') {
+                $this->output_status = 'DRAFT';
+            }
         }
-        return DocumentOutput::model()->count($criteria) == 0;
+
+        // If we are saving a new record and the output type is Email, then set the status to be SENDING.
+        if ($this->isNewRecord && $this->output_type === "Email") {
+            $this->output_status = "SENDING";
+        }
+
+        if ($this->isNewRecord && $this->output_type === "Email (Delayed)") {
+            $this->output_status = "PENDING";
+        }
+
+        if ($curr && !$this->isNewRecord) {
+            // If the type of the document output gets changed from Internal Referral to Email,
+            // this can when user updates the event and selects the Subspecialty or the firm with the set email.
+            if ( ($curr->output_type === "Internalreferral" && $curr->output_status = "PENDING") && $this->output_type === "Email") {
+                $this->output_status = "SENDING";
+            }
+        }
+
+        return parent::beforeSave();
     }
 }

@@ -17,7 +17,6 @@
  */
 class DefaultController extends BaseEventTypeController
 {
-    protected $show_element_sidebar = false;
 
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
@@ -32,11 +31,13 @@ class DefaultController extends BaseEventTypeController
     protected function beforeAction($action)
     {
         //adding Anaestethic JS
-        $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
+        $url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js'), true);
         Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
         Yii::app()->clientScript->registerScript(
             'AnaestheticController',
-            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});', CClientScript::POS_END);
+            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});',
+            CClientScript::POS_END
+        );
 
         return parent::beforeAction($action);
     }
@@ -202,8 +203,6 @@ class DefaultController extends BaseEventTypeController
         if ($this->booking_event || $this->unbooked) {
             parent::actionCreate();
         } else {
-            $bookings = array();
-
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
                 $bookings = $api->getIncompleteOperationsForEpisode($this->patient);
             }
@@ -217,15 +216,16 @@ class DefaultController extends BaseEventTypeController
             );
             $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             $this->event_actions = array(
-                    EventAction::link('Cancel',
-                            Yii::app()->createUrl($cancel_url),
-                            array('id' => 'et_cancel', 'class' => 'button small warning')
+                    EventAction::link(
+                        'Cancel',
+                        Yii::app()->createUrl($cancel_url),
+                        array('id' => 'et_cancel', 'class' => 'button small warning')
                     ),
             );
             $this->processJsVars();
             $this->render('select_event', array(
                 'errors' => $errors,
-                'bookings' => $bookings,
+                'bookings' => $bookings ? $bookings : [],
             ), false, true);
         }
     }

@@ -66,8 +66,7 @@ class OperativeDeviceMappingController extends BaseAdminController
                         'subspecialty_id' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
                         'site_id' => Yii::app()->session['selected_site_id'],
                     ),
-                )
-            );
+                ));
         }
 
         $admin->setAutocompleteField(
@@ -205,8 +204,10 @@ class OperativeDeviceMappingController extends BaseAdminController
             $criteria = new CDbCriteria();
             if (isset($_GET['term'])) {
                 $term = $_GET['term'];
-                $criteria->addCondition(array('LOWER(name) LIKE :term'),
-                    'OR');
+                $criteria->addCondition(
+                    array('LOWER(name) LIKE :term'),
+                    'OR'
+                );
                 $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
 

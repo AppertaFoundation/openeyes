@@ -22,8 +22,12 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
 ?>
 <!--
 <div class="element-fields full-width">
-    <?php $form->dropDownList($element, 'application_type_id', 'OphTrOperationnote_Antimetabolite_Application_Type',
-    array('empty' => '-- Select --')); ?>
+    <?php $form->dropDownList(
+        $element,
+        'application_type_id',
+        'OphTrOperationnote_Antimetabolite_Application_Type',
+        array('empty' => '-- Select --')
+    ); ?>
     <?php $form->dropDownList($element, 'concentration_id', 'OphTrOperationnote_Mmc_Concentration'); ?>
   <div id="ophtroperationnote-mmc-sponge" class="ophtroperationnote-mmc-application hidden">
         <?php $form->dropDownList($element, 'duration', array_combine(range(1, 5), range(1, 5))); ?>
@@ -51,9 +55,12 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
                 <?php echo $element->getAttributeLabel('application_type_id'); ?>
           </td>
           <td>
-                <?php $form->dropDownList($element, 'application_type_id',
-                  'OphTrOperationnote_Antimetabolite_Application_Type',
-                  array('nowrapper' => true, 'empty' => '-- Select --')); ?>
+                <?php $form->dropDownList(
+                    $element,
+                    'application_type_id',
+                    'OphTrOperationnote_Antimetabolite_Application_Type',
+                    array('nowrapper' => true, 'empty' => '-- Select --')
+                ); ?>
           </td>
         </tr>
         <tr>
@@ -61,8 +68,12 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
                 <?php echo $element->getAttributeLabel('concentration_id'); ?>
           </td>
           <td>
-                <?php $form->dropDownList($element, 'concentration_id', 'OphTrOperationnote_Mmc_Concentration',
-                  array('nowrapper' => true)); ?>
+                <?php $form->dropDownList(
+                    $element,
+                    'concentration_id',
+                    'OphTrOperationnote_Mmc_Concentration',
+                    array('nowrapper' => true)
+                ); ?>
           </td>
         </tr>
         </tbody>
@@ -77,18 +88,24 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
                 <?php echo $element->getAttributeLabel('duration'); ?>
           </td>
           <td>
-                <?php $form->dropDownList($element, 'duration', array_combine(range(1, 5), range(1, 5)),
-                  array('nowrapper' => true)
-              ); ?>
+                <?php $form->dropDownList(
+                    $element,
+                    'duration',
+                    array_combine(range(1, 5), range(1, 5)),
+                    array('nowrapper' => true)
+                ); ?>
         </tr>
         <tr>
           <td>
                 <?php echo $element->getAttributeLabel('number'); ?>
           </td>
           <td>
-                <?php $form->dropDownList($element, 'number', array_combine(range(1, 5), range(1, 5)),
-                  array('nowrapper' => true)
-              ); ?>
+                <?php $form->dropDownList(
+                    $element,
+                    'number',
+                    array_combine(range(1, 5), range(1, 5)),
+                    array('nowrapper' => true)
+                ); ?>
           </td>
         </tr>
         <tr>
@@ -109,8 +126,12 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
                 <?php echo $element->getAttributeLabel('volume_id'); ?>
           </td>
           <td>
-                <?php $form->dropDownList($element, 'volume_id', 'OphTrOperationnote_Mmc_Volume',
-                  array('nowrapper' => true)); ?>
+                <?php $form->dropDownList(
+                    $element,
+                    'volume_id',
+                    'OphTrOperationnote_Mmc_Volume',
+                    array('nowrapper' => true)
+                ); ?>
         </tr>
         <tr>
           <td></td>

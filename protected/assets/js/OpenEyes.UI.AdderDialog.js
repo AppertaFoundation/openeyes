@@ -53,11 +53,15 @@
         createBlackoutDiv: true,
         enableCustomSearchEntries: false,
         searchAsTypedPrefix: 'As typed: ',
+        searchAsTypedItemProperties: {},
         filter: false,
         filterDataId: "",
         listFilter:false,
         filterListId: "",
         listForFilterId: "",
+        booleanSearchFilterEnabled: false,
+        booleanSearchFilterLabel: '',
+        booleanSearchFilterURLparam: ''
     };
 
     /**
@@ -166,7 +170,7 @@
         let dialog = this;
         if (this.options.itemSets) {
             this.selectWrapper = $('<table />', {class: 'select-options'});
-            let headers = $('<thead />').appendTo(this.selectWrapper);
+            dialog.headers = $('<thead />').appendTo(this.selectWrapper);
             this.selectWrapper.appendTo(this.popup);
             let $container = $('<tbody />');
             $container.appendTo(this.selectWrapper);
@@ -174,7 +178,7 @@
 
             $(this.options.itemSets).each(function (index, itemSet) {
                 let header = (itemSet.options.header) ? itemSet.options.header : '';
-                $('<th style="'+ itemSet.options.style + '" data-id="'+itemSet.options.id + '"/>').text(header).appendTo(headers);
+                $('<th style="'+ itemSet.options.style + '" data-id="'+itemSet.options.id + '"/>').text(header).appendTo(dialog.headers);
                 let $td = $('<td />', {style: itemSet.options.style}).appendTo(dialog.$tr);
                 let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left', id: itemSet.options.id}).appendTo($td);
                 if (itemSet.options.supportSigns) {
@@ -207,6 +211,8 @@
         this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
         $td.appendTo(this.$tr);
 
+        $('<th/>').text("Search").appendTo(dialog.headers);
+
         let $searchInput = $('<input />', {
             class: 'search cols-full js-search-autocomplete',
             placeholder: 'search',
@@ -227,8 +233,14 @@
         $searchInput.appendTo($filterDiv);
         this.searchingSpinnerWrapper.appendTo($filterDiv);
 
+        let delaySearch = 0;
         $searchInput.on('keyup', function () {
-            dialog.runItemSearch($(this).val());
+            let searchInputVal = $(this).val();
+            clearTimeout(delaySearch); //stop previous search request
+
+            delaySearch = setTimeout(function(){
+                dialog.runItemSearch(searchInputVal);
+            },500);
         });
 
         if (dialog.options.filter) {
@@ -240,13 +252,37 @@
                     filterValue = $(this).data('id');
                 }
                 dialog.runItemSearch(dialog.popup.find('input.search').val(), filterValue);
-            })
+            });
         }
 
-        this.noSearchResultsWrapper = $('<span />', {style: 'display: inherit'}).text('No results found');
+        this.noSearchResultsWrapper = $('<span />', {style: 'display: inherit'}).text('');
         this.noSearchResultsWrapper.appendTo($filterDiv);
 
+        if(dialog.options.booleanSearchFilterEnabled) {
+
+            $('<th/>').text("Search options").appendTo(dialog.headers);
+            let $td = $('<td />');
+            this.searchOptionsWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
+            $td.appendTo(this.$tr);
+            $('<div class="lists-layout">' +
+                '<div class="list-wrap ">' +
+                '<ul class="add-options cols-full ">' +
+                '<li class="js-searchfilter-check" data-label="Include brand names">' +
+                '<span class="fixed-width ">Include brand names</span>' +
+                '</li></ul></div></div>').appendTo(this.searchOptionsWrapper);
+
+
+
+            this.searchOptionsWrapper.find(".js-searchfilter-check").on("click", function(e){
+                var text = $searchInput.val();
+                // Have to pass opposite of current value because there is a listener after this that changes
+                // the class
+                dialog.runItemSearch(text , undefined, !$(this).hasClass('selected'));
+            });
+        }
+
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
+        this.searchResultList.hide();
         this.searchResultList.appendTo($filterDiv);
     };
 
@@ -256,7 +292,7 @@
      * @returns {Array} A n array of ids and labels of the selected items
      */
     AdderDialog.prototype.getSelectedItems = function () {
-        return this.popup.find('li.selected').map(function () {
+        return this.popup.find('li.selected:not(.js-searchfilter-check)').map(function () {
             return $(this).data();
         }).get();
     };
@@ -285,16 +321,20 @@
             'data-multiselect': itemSet.options.multiSelect,
             'data-id': itemSet.options.id,
             'data-deselectOnReturn': itemSet.options.deselectOnReturn,
+            'data-resetSelectionToDefaultOnReturn': itemSet.options.resetSelectionToDefaultOnReturn,
         });
 
         itemSet.items.forEach(function (item) {
 
-            let dataset = AdderDialog.prototype.constructDataset(item);
-            let $listItem = $('<li />', dataset);
-            $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
-            if (item.selected) {
-                $listItem.addClass('selected');
-            }
+      let dataset = AdderDialog.prototype.constructDataset(item);
+      let $listItem = $('<li />', dataset);
+      $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+      if(typeof item.prepended_markup !== "undefined") {
+        $(item.prepended_markup).appendTo($listItem);
+    }
+      if (item.selected || item.defaultSelected) {
+        $listItem.addClass('selected');
+      }
 
             $listItem.data('itemSet', itemSet);
             $listItem.appendTo($list);
@@ -534,15 +574,29 @@
         }
 
         if (shouldClose) {
+            let itemSets = dialog.popup.find('ul');
             if (dialog.options.deselectOnReturn) {
-                let itemSets = dialog.popup.find('ul');
                 itemSets.each(function (index, itemSet) {
                     let deselect = $(itemSet).data('deselectonreturn');
-                    if (typeof deselect === "undefined" || deselect) {
+                    let reset = $(itemSet).data('resetselectiontodefaultonreturn');
+                    if (typeof deselect === "undefined" || deselect || reset) {
                         $(itemSet).find('li').removeClass('selected');
                     }
                 });
+                // deselect options when closing the adderDialog
+                dialog.popup.find('.selected').removeClass('selected');
             }
+
+            itemSets.each(function (itemSetIndex, itemSet) {
+                if ($(itemSet).data('resetselectiontodefaultonreturn')) {
+                    $(itemSet).find('li').each(function (listIndex, listItem) {
+                        let itemData = dialog.options.itemSets[itemSetIndex].items[listIndex];
+                        if ('defaultSelected' in itemData && itemData.defaultSelected) {
+                            $(listItem).addClass('selected');
+                        }
+                    });
+                }
+            });
 
             const $input = dialog.popup.find('.js-search-autocomplete.search');
             // reset search list when adding an item
@@ -575,62 +629,82 @@
      * Performs a search using the given text
      * @param {string} text The term to search with
      */
-    AdderDialog.prototype.runItemSearch = function (text, filterValue) {
+    AdderDialog.prototype.runItemSearch = function (text, filterValue, searchFilterValue) {
         let dialog = this;
         if (this.searchRequest !== null) {
             this.searchRequest.abort();
         }
-        if (typeof filterValue == "undefined" && this.options.filter) {
+        if (typeof filterValue === "undefined" && this.options.filter) {
             let selectedFilter = this.popup.find('ul[data-id="' + this.options.filterDataId + '"]').find('li.selected');
             filterValue = selectedFilter.data('id');
         }
         // reset results lists if there is no text searched
         if (!text.length && !filterValue) {
             dialog.searchResultList.empty();
-            dialog.noSearchResultsWrapper.text('No results found');
+            dialog.noSearchResultsWrapper.text('');
             dialog.noSearchResultsWrapper.toggle(true);
             return;
         }
 
         dialog.searchingSpinnerWrapper.show();
-        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
+
+        var ajaxOptions = {
             term: text,
             filter: filterValue,
             code: this.options.searchOptions.code,
             ajax: 'ajax'
-        }, function (results) {
-            dialog.searchRequest = null;
-            let no_data = !$(results).length;
+        };
 
-            dialog.searchResultList.empty();
-            dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
-            dialog.noSearchResultsWrapper.toggle(no_data);
-
-            if (dialog.options.searchOptions.resultsFilter) {
-                results = dialog.options.searchOptions.resultsFilter(results);
+        if(this.options.booleanSearchFilterEnabled) {
+            let filter_on;
+            if(typeof searchFilterValue === "undefined") {
+                filter_on = this.searchOptionsWrapper.find(".js-searchfilter-check").hasClass("selected");
+            } else {
+                filter_on = searchFilterValue;
             }
+            ajaxOptions[this.options.booleanSearchFilterURLparam] = filter_on ? 1 : 0;
+        }
 
-            $(results).each(function (index, result) {
-                var dataset = AdderDialog.prototype.constructDataset(result);
-                var item = $("<li />", dataset)
-                    .append($('<span />', {class: dialog.options.liClass}).text(dataset['data-label']));
-                dialog.searchResultList.append(item);
-            });
+        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource,
+            ajaxOptions, function (results) {
+                dialog.searchRequest = null;
+                let no_data = !$(results).length;
+
+                dialog.searchResultList.empty();
+                dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
+                dialog.noSearchResultsWrapper.toggle(no_data);
+
+                if (dialog.options.searchOptions.resultsFilter) {
+                    results = dialog.options.searchOptions.resultsFilter(results);
+                }
+
+                $(results).each(function (index, result) {
+                    var dataset = AdderDialog.prototype.constructDataset(result);
+                    var $listItem = $("<li />", dataset);
+                    $('<span />', {class: dialog.options.liClass}).text(dataset['data-label']).appendTo($listItem);
+                    if(typeof result.prepended_markup !== "undefined") {
+                        $(result.prepended_markup).appendTo($listItem);
+                    }
+                    dialog.searchResultList.append($listItem);
+                });
 
             if (dialog.options.enableCustomSearchEntries) {
                 dialog.appendCustomEntryOption(text, dialog);
+                dialog.searchResultList.show();
             } else {
                 dialog.searchResultList.toggle(!no_data);
             }
+
             dialog.searchingSpinnerWrapper.hide();
-        });
+            });
     };
 
     AdderDialog.prototype.appendCustomEntryOption = function (text, dialog) {
-        let custom_entry = AdderDialog.prototype.constructDataset({
+        let new_entry_data = $.extend({
             label: text,
             type: 'custom'
-        });
+        }, dialog.options.searchAsTypedItemProperties);
+        let custom_entry = AdderDialog.prototype.constructDataset(new_entry_data);
         let item = $("<li />", custom_entry).text(dialog.options.searchAsTypedPrefix)
             .append($('<span />', {class: 'auto-width'}).text(text));
 

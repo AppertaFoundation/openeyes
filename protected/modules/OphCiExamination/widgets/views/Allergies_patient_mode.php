@@ -33,7 +33,7 @@
     <div class="popup-overflow">
         <table class="risks">
             <colgroup>
-                <col class="cols-5">
+                <col class="cols-6">
             </colgroup>
             <tbody>
             <?php foreach ($element->entries as $i => $entry) : ?>

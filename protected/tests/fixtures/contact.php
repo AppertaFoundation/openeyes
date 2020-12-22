@@ -26,6 +26,7 @@ return array(
         'first_name' => 'Jim',
         'last_name' => 'Aylward',
         'qualifications' => '',
+        'email' => 'Aylward@Aylward.com',
         'contact_label_id' => 1,
     ),
     'contact2' => array(
@@ -37,6 +38,7 @@ return array(
         'first_name' => 'Bob',
         'last_name' => 'Collin',
         'qualifications' => '',
+        'email' => 'Collin@Collin.com',
         'contact_label_id' => 2,
     ),
     'contact3' => array(
@@ -48,6 +50,7 @@ return array(
         'first_name' => 'Edward',
         'last_name' => 'Allan',
         'qualifications' => '',
+        'email' => 'Allan@Allan.com',
         'contact_label_id' => 3,
     ),
     'contact4' => array(
@@ -58,6 +61,7 @@ return array(
         'first_name' => 'Sarah',
         'last_name' => 'Shore',
         'qualifications' => '',
+        'email' => 'Shore@Shore.com',
         'contact_label_id' => 1,
     ),
     'contact5' => array(
@@ -68,6 +72,7 @@ return array(
         'first_name' => 'Bob',
         'last_name' => 'Shore',
         'qualifications' => '',
+        'email' => 'Shore@Shore1.com',
         'contact_label_id' => 1,
     ),
     'contact6' => array(
@@ -77,5 +82,6 @@ return array(
         'title' => 'Mr',
         'first_name' => 'Dave',
         'last_name' => 'Lister',
+        'email' => 'Lister@Lister.com',
     ),
 );

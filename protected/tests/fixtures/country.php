@@ -26,7 +26,7 @@ return array(
         'name' => 'United Kingdom',
     ),
     'can' => array(
-        'code' => 'CAN',
+        'code' => 'CA',
         'name' => 'Canada',
     ),
 );

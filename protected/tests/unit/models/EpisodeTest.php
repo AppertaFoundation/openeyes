@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class EpisodeTest extends CDbTestCase
+class EpisodeTest extends ActiveRecordTestCase
 {
     /**
      * @var Episode
@@ -28,11 +28,16 @@ class EpisodeTest extends CDbTestCase
         'event' => 'Event',
     );
 
+    public function getModel()
+    {
+        return $this->model;
+    }
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new Episode();
@@ -57,8 +62,11 @@ class EpisodeTest extends CDbTestCase
         $events = $this->episode('episode2')->events;
         $events[0]->save();//only when saving the event date is set to created_date when null
         $this->assertNotNull($events[0]->event_date);
-        $this->assertLessThanOrEqual($events[1]->event_date, $events[0]->event_date,
-            'EventDate 0 : '.$events[0]->event_date.' > EventDate 1 :'.$events[1]->event_date);
+        $this->assertLessThanOrEqual(
+            $events[1]->event_date,
+            $events[0]->event_date,
+            'EventDate 0 : '.$events[0]->event_date.' > EventDate 1 :'.$events[1]->event_date
+        );
     }
 
     /**

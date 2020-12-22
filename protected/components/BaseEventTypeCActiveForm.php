@@ -26,6 +26,17 @@ class BaseEventTypeCActiveForm extends FormLayout
 
         return parent::widget($className, $properties, $captureOutput);
     }
+    
+    public function comment($element_name, $value, $htmlOptions = array(), $hidden = false, $layoutColumns = array())
+    {
+        $this->widget('application.widgets.Comment', array(
+            'element_name' => $element_name,
+            'value' => $value,
+            'htmlOptions' => $htmlOptions,
+            'hidden' => $hidden,
+            'layoutColumns' => $layoutColumns,
+        ));
+    }
 
     /**
      * @param CModel $model

@@ -16,8 +16,6 @@ tags
 /protected/media_data/*
 /protected/models/ElementExample.php
 /protected/models/elements/ElementExample.php
-/protected/modules/sample
-/protected/modules/eyedraw
 /protected/runtime/*
 /protected/runtime/
 /protected/tests/report/
@@ -40,6 +38,8 @@ node_modules
 /docs/public/assets/core
 /bin/phpunit
 /bin/webunit
+/bin/semver
+/bin/update-versions
 /docs/public
 /protected/assets/img/fieldImages/*
 /assets/
@@ -51,51 +51,50 @@ package-lock.json
 /.vscode
 .deleted
 
+# exclude external modules
+protected/modules/*
+
 # Include core modules
+!/protected/modules/Admin/
+!/protected/modules/Api/
+!/protected/modules/Genetics/
+!/protected/modules/OECaseSearch/
+!/protected/modules/OETrial/
+!/protected/modules/OphCiDidNotAttend/
 !/protected/modules/OphCiExamination/
 !/protected/modules/OphCiPhasing/
+!/protected/modules/OphTrOperationchecklists/
 !/protected/modules/OphCoCorrespondence/
+!/protected/modules/OphCoCvi/
+!/protected/modules/OphCoDocument/
+!/protected/modules/OphCoMessaging/
 !/protected/modules/OphCoTherapyapplication/
 !/protected/modules/OphDrPrescription/
+!/protected/modules/OphGeneric/
 !/protected/modules/OphInBiometry/
+!/protected/modules/OphInDnaextraction/
+!/protected/modules/OphInDnasample/
+!/protected/modules/OphInGeneticresults/
+!/protected/modules/OphInLabResults/
+!/protected/modules/OphInVisualfields/
+!/protected/modules/OphOuAnaestheticsatisfactionaudit/
+!/protected/modules/OphOuCatprom5/
 !/protected/modules/OphTrConsent/
 !/protected/modules/OphTrIntravitrealinjection/
 !/protected/modules/OphTrLaser/
 !/protected/modules/OphTrOperationbooking/
 !/protected/modules/OphTrOperationnote/
+!/protected/modules/PASAPI/
 !/protected/modules/PatientTicketing/
-!/protected/modules/OphOuAnaestheticsatisfactionaudit/
-!/protected/modules/OphInVisualfields/
-!/protected/modules/OphCoMessaging/
 
 # Tests
-/bin/.enabled-modules
 /jm_behat_report.html
 
 # Temporary, until we've sorted out vagrant for installing test dependencies
-bin/OLD selenium-server-standalone-2.33.0.jar
-bin/OLDER selenium-server-standalone-2.34.0.jar
-bin/behat
-bin/chromedriver
-bin/ciUnitTest.sh
-bin/dbunit.php
-bin/oe-git-checkout
-bin/oe-git-pull
-bin/oe-git-status
+/bin
 composer.phar
 features/bootstrap/Features/Templates/CODINGONLY.feature
 selenium-server-standalone-2.35.0.jar
-bin/jsonlint
-bin/pdepend
-bin/phpcbf
-bin/phpcpd
-bin/phpcs
-bin/phpdoc
-bin/phpdoc.php
-bin/phploc
-bin/phpmd
-bin/validate-json
-bin/yiic
 
 build/logs
 protected/widgets/views/IndexSearch_Examination.php

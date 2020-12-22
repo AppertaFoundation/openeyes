@@ -118,7 +118,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                                         <?= $opt->patientticket && (!count($queues) || !isset($authRoles['Patient Tickets'])) ? 'disabled' : '' ?>
                                         data-followup="<?= $opt->followup ?>"
                                         data-patient-ticket="<?= $opt->patientticket ?>">
-                                        <span class="restrict-width"><?= $opt->name ?></span>
+                                        <span class="fixed-width extended"><?= $opt->name ?></span>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
@@ -126,9 +126,9 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                     </td>
                     <td class="follow-up-options-follow-up-only" style="display: none">
                         <div class="flex-layout flex-top flex-left">
-                            <ul class="add-options" id="follow-up-quantity-options">
+                            <ul class="add-options number" id="follow-up-quantity-options">
                                 <?php foreach ($element->getFollowUpQuantityOptions() as $quantity) : ?>
-                                    <li data-quantity="<?= $quantity ?>"">
+                                    <li data-quantity="<?= $quantity ?>">
                                     <?= $quantity ?>
                                     </li>
                                 <?php endforeach; ?>

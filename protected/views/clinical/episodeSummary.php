@@ -256,8 +256,11 @@ if (!empty($episode)) {
       <tr>
         <td><?php echo $episode->usermodified->fullName ?></td>
         <td><?php echo $episode->NHSDate('last_modified_date') ?></td>
-        <td><?php echo substr($episode->last_modified_date,
-                11, 5) ?></td>
+        <td><?php echo substr(
+            $episode->last_modified_date,
+            11,
+            5
+        ) ?></td>
       </tr>
       </tbody>
     </table>

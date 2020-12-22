@@ -23,7 +23,7 @@ class ReportDiagnosesTest extends CDbTestCase
         'episodes' => 'Episode',
     );
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
     }
@@ -352,7 +352,8 @@ class ReportDiagnosesTest extends CDbTestCase
             'p.hos_num, c.first_name, c.last_name, p.dob, e0.created_date as pdis0_date, pdis0.fully_specified_name as pdis0_fully_specified_name, '.
             'e0.eye_id as pdis0_eye, e1.created_date as pdis1_date, pdis1.fully_specified_name as pdis1_fully_specified_name, e1.eye_id as pdis1_eye, '.
             'e2.created_date as pdis2_date, pdis2.fully_specified_name as pdis2_fully_specified_name, e2.eye_id as pdis2_eye',
-            $select);
+            $select
+        );
 
         $this->assertEquals(array(
                 ':pdis0' => 1,
@@ -398,7 +399,8 @@ class ReportDiagnosesTest extends CDbTestCase
             'p.hos_num, c.first_name, c.last_name, p.dob, e0.created_date as pdis0_date, pdis0.fully_specified_name as pdis0_fully_specified_name, '.
             'e0.eye_id as pdis0_eye, e1.created_date as pdis1_date, pdis1.fully_specified_name as pdis1_fully_specified_name, e1.eye_id as pdis1_eye, '.
             'e2.created_date as pdis2_date, pdis2.fully_specified_name as pdis2_fully_specified_name, e2.eye_id as pdis2_eye',
-            $select);
+            $select
+        );
 
         $this->assertEquals(array(
                 ':pdis0' => 1,
@@ -440,7 +442,8 @@ class ReportDiagnosesTest extends CDbTestCase
             'p.hos_num, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
             'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
-            $select);
+            $select
+        );
 
         $this->assertEquals(array(
                 ':sdis0' => 1,
@@ -486,7 +489,8 @@ class ReportDiagnosesTest extends CDbTestCase
             'p.hos_num, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
             'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
-            $select);
+            $select
+        );
 
         $this->assertEquals(array(
                 ':sdis0' => 1,
@@ -529,7 +533,8 @@ class ReportDiagnosesTest extends CDbTestCase
             'p.hos_num, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
             'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
-            $select);
+            $select
+        );
 
         $this->assertEquals(array(
                 ':sdis0' => 1,
@@ -573,7 +578,8 @@ class ReportDiagnosesTest extends CDbTestCase
             'p.hos_num, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
             'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
-            $select);
+            $select
+        );
 
         $this->assertEquals(array(
                 ':sdis0' => 1,
@@ -618,7 +624,8 @@ class ReportDiagnosesTest extends CDbTestCase
             'p.hos_num, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
             'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
-            $select);
+            $select
+        );
 
         $this->assertEquals(array(
                 ':sdis0' => 1,

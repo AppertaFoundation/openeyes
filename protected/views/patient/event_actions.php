@@ -28,7 +28,7 @@ if (isset($this->event_actions)) {
 
 ?>
 <div class="buttons-right">
-  <i class="spinner" title="Loading..." style="display: none;"></i>
+
     <?php
     $print_actions = array();
     foreach ($this->event_actions as $key => $action) {

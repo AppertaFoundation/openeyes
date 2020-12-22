@@ -35,7 +35,7 @@ class BaseTicketAssignment extends \CWidget
         $path = dirname(__FILE__);
         if (file_exists($path.'/js/'.$this->shortName.'.js')) {
             $assetManager = \Yii::app()->getAssetManager();
-            $this->assetFolder = $assetManager->publish($path.'/js/');
+            $this->assetFolder = $assetManager->publish($path . '/js/', true);
             $assetManager->registerScriptFile('js/'.$this->shortName.'.js', 'application.modules.PatientTicketing.widgets');
         }
         parent::init();

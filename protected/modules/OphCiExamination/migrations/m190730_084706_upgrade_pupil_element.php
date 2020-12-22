@@ -82,7 +82,7 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
                 'eye_id' => $item->eye_id
             ]);
 
-            $id = \Yii::app()->db->getLastInsertID();
+            $id = $this->dbConnection->getLastInsertID();
 
             foreach (['left' => 1, 'right' => 2] as $side => $eye_id) {
                 if ($item_data['no_pupillaryabnormalities_date_' . $side] === null) {

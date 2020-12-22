@@ -29,6 +29,8 @@ $config = array(
             //'Letter Types' => '/OphCoCorrespondence/oeadmin/letterType/list', //available but have to find out how could work with Internal Referral (re letter type enable, rename)
             'Internal Referral' => '/OphCoCorrespondence/oeadmin/internalReferralSettings/settings',
             'Letter settings' => '/OphCoCorrespondence/admin/letterSettings',
+            'Sender Email Addresses' => '/OphCoCorrespondence/admin/senderEmailAddresses',
+            'Email Templates' => '/OphCoCorrespondence/admin/emailTemplates',
         ),
     ),
 );

@@ -45,6 +45,7 @@ $config = array(
     'name' => 'OpenEyes Console',
     'import' => array(
             'application.components.*',
+            'application.modules.OphCoCorrespondence.components.*',
             'system.cli.commands.*',
     ),
     'commandMap' => array(

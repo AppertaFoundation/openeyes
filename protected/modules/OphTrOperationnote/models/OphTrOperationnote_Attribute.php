@@ -23,6 +23,12 @@
  */
 class OphTrOperationnote_Attribute extends BaseActiveRecordVersioned
 {
+    public function init()
+    {
+        $this->display_order = null;
+        parent::init();
+    }
+
     /**
      * @return string the associated database table name
      */

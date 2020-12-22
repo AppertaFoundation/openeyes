@@ -26,6 +26,16 @@ $model_name = CHtml::modelName($element);
 <div class="element-fields flex-layout full-width">
     <div class="data-group cols-10">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+        <div class="cols-5 align-left <?= $model_name ?>_no_pastsurgery_wrapper">
+            <label class="inline highlight" for="<?= $model_name ?>_no_pastsurgery">
+                <?= \CHtml::checkBox(
+                    $model_name . '[no_pastsurgery]',
+                    $element->no_pastsurgery_date ? true : false,
+                    array('class' => $model_name.'_no_pastsurgery')
+                ); ?>
+                No previous eye surgery or laser treatment
+            </label>
+        </div>
         <table id="<?= $model_name ?>_operation_table" class="cols-full <?= $model_name ?>_Operation">
             <colgroup>
                 <col class="cols-3">
@@ -80,8 +90,8 @@ $model_name = CHtml::modelName($element);
 
             foreach ($api->getOperationsSummaryData($this->patient) as $operation) {
                 $this->render(
-                        'PastSurgery_OperationNote_event_edit',
-                        array(
+                    'PastSurgery_OperationNote_event_edit',
+                    array(
                                 'op' => $operation['operation'],
                                 'side' => $operation['side'],
                                 'date' => $operation['date'],
@@ -114,7 +124,8 @@ $model_name = CHtml::modelName($element);
         </div>
     </div>
 
-    <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery">
+    <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery"
+         style="display: <?php echo $element->no_pastsurgery_date ? 'none' : ''; ?>">
         <button id="<?= $model_name ?>-comment-button"
                 class="button js-add-comments"
                 data-comment-container="#<?= $model_name ?>-comments"

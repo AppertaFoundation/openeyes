@@ -90,13 +90,13 @@ class WBCardTest extends CDbTestCase
         );
     }
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->widget = new WBCard();
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         unset($this->widget);
         parent::tearDown();

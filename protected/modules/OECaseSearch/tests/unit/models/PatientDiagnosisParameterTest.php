@@ -24,7 +24,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         'episode' => 'Episode',
     );
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->parameter = new PatientDiagnosisParameter();
@@ -32,7 +32,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->id = 0;
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         parent::tearDown();
         unset($this->parameter, $this->searchProvider);

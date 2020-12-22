@@ -4,12 +4,15 @@ class m140704_113301_overallman_iop_range_to_relation extends OEMigration
 {
     public function up()
     {
-        $this->createOETable('ophciexamination_targetiop',
+        $this->createOETable(
+            'ophciexamination_targetiop',
             array('id' => 'pk',
                 'name' => 'string NOT NULL',
                 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
                 'active' => 'tinyint(1) not null DEFAULT 1',
-            ), true);
+            ),
+            true
+        );
 
         $this->createIndex('tiop_unique_val', 'ophciexamination_targetiop', 'name', true);
 
@@ -39,12 +42,14 @@ class m140704_113301_overallman_iop_range_to_relation extends OEMigration
             'update et_ophciexamination_overallmanagementplan e join ophciexamination_targetiop t
 			on t.id = e.right_target_iop_id
 			set e.right_target_iop_id = CAST(t.name AS UNSIGNED)
-			');
+			'
+        );
         $this->execute(
             'update et_ophciexamination_overallmanagementplan e join ophciexamination_targetiop t
 			on t.id = e.left_target_iop_id
 			set e.left_target_iop_id = CAST(t.name AS UNSIGNED)
-			');
+			'
+        );
 
         $this->alterColumn('et_ophciexamination_overallmanagementplan', 'right_target_iop_id', 'int(10) unsigned');
         $this->alterColumn('et_ophciexamination_overallmanagementplan', 'left_target_iop_id', 'int(10) unsigned');

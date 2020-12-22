@@ -14,12 +14,18 @@ class m170515_095448_Kera_add_epithelial_status extends OEMigration
             'display_order' => 'integer NOT NULL',
         ), true);
 
-        $this->insert('ophtroperationnote_cxl_epithelial_status',
-            array('name' => 'On', 'display_order' => 1));
-        $this->insert('ophtroperationnote_cxl_epithelial_status',
-            array('name' => 'Off', 'display_order' => 2));
-        $this->insert('ophtroperationnote_cxl_epithelial_status',
-            array('name' => 'Partial Disruption', 'display_order' => 3));
+        $this->insert(
+            'ophtroperationnote_cxl_epithelial_status',
+            array('name' => 'On', 'display_order' => 1)
+        );
+        $this->insert(
+            'ophtroperationnote_cxl_epithelial_status',
+            array('name' => 'Off', 'display_order' => 2)
+        );
+        $this->insert(
+            'ophtroperationnote_cxl_epithelial_status',
+            array('name' => 'Partial Disruption', 'display_order' => 3)
+        );
 
     }
 

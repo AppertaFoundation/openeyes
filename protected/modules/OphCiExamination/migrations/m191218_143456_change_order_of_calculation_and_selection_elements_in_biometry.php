@@ -10,13 +10,15 @@ class m191218_143456_change_order_of_calculation_and_selection_elements_in_biome
 {
     public function up()
     {
-        $this->update('element_type',
+        $this->update(
+            'element_type',
             [
                 'display_order' => 20
             ],
             'name = "Element_OphInBiometry_Calculation"'
         );
-        $this->update('element_type',
+        $this->update(
+            'element_type',
             [
                 'display_order' => 30
             ],
@@ -26,13 +28,15 @@ class m191218_143456_change_order_of_calculation_and_selection_elements_in_biome
 
     public function down()
     {
-        $this->update('element_type',
+        $this->update(
+            'element_type',
             [
                 'display_order' => 30
             ],
             'name = "Element_OphInBiometry_Calculation"'
         );
-        $this->update('element_type',
+        $this->update(
+            'element_type',
             [
                 'display_order' => 20
             ],

@@ -15,9 +15,8 @@ class DefaultController extends BaseEventTypeController
     const SHORTALLIMIT = 22;
     const LONGALLIMIT = 25;
 
-    protected $show_element_sidebar = false;
     protected $render_optional_elements = false;
-
+  
     /**
      * @param Event                         $unlinkedEvent
      * @param OphInBiometry_Imported_Events $importedEvent
@@ -74,7 +73,7 @@ class DefaultController extends BaseEventTypeController
         if (count($unlinkedEvents) === 0 || Yii::app()->request->getQuery('force_manual') == '1') {
             Yii::app()->user->setFlash('issue.formula', $this->flash_message);
             parent::actionCreate();
-        } else if (count($unlinkedEvents) === 1) {
+        } elseif (count($unlinkedEvents) === 1) {
             // if we have only 1 unlinked event we just simply link that event to the episode
             $this->updateImportedEvent(Event::model()->findByPk($unlinkedEvents[0]->event_id), $unlinkedEvents[0]);
             $this->redirect(array('/OphInBiometry/default/update/' . $unlinkedEvents[0]->event_id));
@@ -89,9 +88,11 @@ class DefaultController extends BaseEventTypeController
             );
             $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             $this->event_actions[] =
-                EventAction::link('Cancel',
+                EventAction::link(
+                    'Cancel',
                     Yii::app()->createUrl($cancel_url),
-                    null, array('class' => 'button small warning')
+                    null,
+                    array('class' => 'button small warning')
                 );
 
 
@@ -241,15 +242,18 @@ class DefaultController extends BaseEventTypeController
             $this->iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
             $this->selectionValues = Element_OphInBiometry_Selection::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
             $this->calculationValues = Element_OphInBiometry_Calculation::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
         } else {
             $this->iolRefValues = array();
         }
@@ -266,11 +270,13 @@ class DefaultController extends BaseEventTypeController
             $this->iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
             $this->selectionValues = Element_OphInBiometry_Selection::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
         }
         $this->setFlashMessage($id);
 
@@ -319,7 +325,8 @@ class DefaultController extends BaseEventTypeController
         return parent::beforeAction($action);
     }
 
-    public function afterAction($action){
+    public function afterAction($action)
+    {
         return parent::afterAction($action);
     }
 
@@ -355,7 +362,8 @@ class DefaultController extends BaseEventTypeController
         return Element_OphInBiometry_Measurement::Model()->findAllByAttributes(
             array(
                 'event_id' => $this->event->id,
-            ));
+            )
+        );
     }
 
     /**
@@ -364,7 +372,8 @@ class DefaultController extends BaseEventTypeController
     protected function mergedView()
     {
         Yii::app()->db->createCommand()
-            ->update('ophinbiometry_imported_events',
+            ->update(
+                'ophinbiometry_imported_events',
                 array('is_merged' => 0),
                 'event_id=:id',
                 array(':id' => $this->event->id)

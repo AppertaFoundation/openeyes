@@ -4,29 +4,35 @@ class m150514_093834_operationnoteBiometryElement extends CDbMigration
 {
     public function up()
     {
-        $findTable = Yii::app()->db->schema->getTable('ophtroperationnote_procedure_element');
+        $findTable = $this->dbConnection->schema->getTable('ophtroperationnote_procedure_element');
 
         if (!$findTable) {
             echo '**WARNING** Cannot run migration, because OphTrOperationnote modules tables are not presented! Please install OphTrOperationnote module, and run this migration manually!';
         } else {
-            $eventType = $this->dbConnection->createCommand()->select('*')->from('event_type')->where('class_name = :class_name',
-                array(':class_name' => 'OphTrOperationnote'))->queryRow();
+            $eventType = $this->dbConnection->createCommand()->select('*')->from('event_type')->where(
+                'class_name = :class_name',
+                array(':class_name' => 'OphTrOperationnote')
+            )->queryRow();
 
             /*
              * as we moved this migration from an other module, we have to make sure that we do not duplicate the data!!
              *
              */
 
-            $currentElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('event_type_id = :event_type_id and class_name = :class_name',
+            $currentElementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                'event_type_id = :event_type_id and class_name = :class_name',
                 array(
                     ':event_type_id' => $eventType['id'],
                     ':class_name' => 'Element_OphTrOperationnote_Biometry',
-                ))->queryRow();
+                )
+            )->queryRow();
 
             if (!$currentElementType) {
                 // we need to insert if not exists
-                $parentElement = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('class_name = :class_name',
-                    array(':class_name' => 'Element_OphTrOperationnote_ProcedureList'))->queryRow();
+                $parentElement = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                    'class_name = :class_name',
+                    array(':class_name' => 'Element_OphTrOperationnote_ProcedureList')
+                )->queryRow();
 
                 $this->insert('element_type', array(
                     'event_type_id' => $eventType['id'],
@@ -37,11 +43,13 @@ class m150514_093834_operationnoteBiometryElement extends CDbMigration
                     'parent_element_type_id' => $parentElement['id'],
                 ));
 
-                $elementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('event_type_id = :event_type_id and class_name = :class_name',
+                $elementType = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                    'event_type_id = :event_type_id and class_name = :class_name',
                     array(
                         ':event_type_id' => $eventType['id'],
                         ':class_name' => 'Element_OphTrOperationnote_Biometry',
-                    ))->queryRow();
+                    )
+                )->queryRow();
             } else {
                 $elementType = $currentElementType;
             }
@@ -49,17 +57,23 @@ class m150514_093834_operationnoteBiometryElement extends CDbMigration
             $procedureNames = array('Extracapsular cataract extraction', 'Extracapsular cataract extraction and insertion of Intraocular lens', 'Intracapsular cataract extraction');
 
             foreach ($procedureNames as $procedureName) {
-                $proc = $this->dbConnection->createCommand()->select('*')->from('proc')->where('term = :term',
-                    array(':term' => $procedureName))->queryRow();
+                $proc = $this->dbConnection->createCommand()->select('*')->from('proc')->where(
+                    'term = :term',
+                    array(':term' => $procedureName)
+                )->queryRow();
                 if ($proc) {
                     $currentProcedure = $this->dbConnection->createCommand()->select('*')
                         ->from('ophtroperationnote_procedure_element')
-                        ->where('procedure_id = :procedure_id and element_type_id = :element_type_id',
-                            array(':procedure_id' => $proc['id'], ':element_type_id' => $elementType['id']))
+                        ->where(
+                            'procedure_id = :procedure_id and element_type_id = :element_type_id',
+                            array(':procedure_id' => $proc['id'], ':element_type_id' => $elementType['id'])
+                        )
                         ->queryRow();
                     if (!$currentProcedure) {
-                        $this->insert('ophtroperationnote_procedure_element',
-                            array('procedure_id' => $proc['id'], 'element_type_id' => $elementType['id']));
+                        $this->insert(
+                            'ophtroperationnote_procedure_element',
+                            array('procedure_id' => $proc['id'], 'element_type_id' => $elementType['id'])
+                        );
                     }
                 } else {
                     echo "**WARNING** '".$procedureName."' not present in proc table, not linking to element type\n";

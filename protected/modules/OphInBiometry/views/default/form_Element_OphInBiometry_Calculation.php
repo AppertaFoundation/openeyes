@@ -33,8 +33,10 @@
                                  } ?>"
            data-side="<?php echo $eye_side ?>" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-            <?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
-                array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+            <?php $this->renderPartial(
+                'form_Element_OphInBiometry_Calculation_fields',
+                array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)
+            ); ?>
         </div>
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <div class="add-side">

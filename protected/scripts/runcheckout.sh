@@ -1,15 +1,14 @@
 #!/bin/bash -l
 
-
 # Check that we are running from the /tmp folder. If not, exit
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-  SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+    DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 # Determine root folder for site - all relative paths will be built from here
-DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 
 if [ "$DIR" != "/tmp" ]; then
     echo "Must be run from /tmp directory. Use oe-checkout.sh instead"
@@ -17,61 +16,57 @@ if [ "$DIR" != "/tmp" ]; then
 fi
 
 # Process commandline parameters
-SCRIPTROOT="" # will be passed in from oe-checkout.sh
-WROOT="" # will be passed in from oe-checkout.sh
+SCRIPTDIR="" # will be passed in from oe-checkout.sh
+WROOT=""     # will be passed in from oe-checkout.sh
 force=0
-killmodules=0
 resetconfig=0
-killconfigbackup=0
-migrate=1
 fix=1
-compile=1
 nosummary=0
 # Set default branch from environment. Else, if in LIVE mode, fall back to master branch. otherwise fallback to develop branch
 defaultbranch=$OE_DEFAULT_BRANCH
-if [ -z $defaultbranch ]; then
+if [ -z "$defaultbranch" ]; then
     [ "${OE_MODE^^}" = "LIVE" ] && defaultbranch="master" || defaultbranch="develop"
 fi
-branch=$defaultbranch
-sshuserstring="git"
+branch="$defaultbranch"
 fixparams=""
 showhelp=0
 sample=0
 sampleonly=0
 usessh=""
-changesshid=0
 cloneparams=""
+fetchparams=""
+depth="2000" # by default always shallow clone to this depth (use git fetch --unshallow to revert to full depth after)
+mergebranch=""
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()
-while [[ $# -gt 0 ]]
-do
+while [[ $# -gt 0 ]]; do
     p="$1"
 
     case $p in
-        -sd) # Set SCRIPTDIR
-            SCRIPTDIR=$2
-            shift
-            shift
-            ;;
-        -wr) # Set WROOT
-            WROOT=$2
-            shift
-            shift
-            ;;
-        *) # add everything else to the params array for processing in the next section
-            PARAMS+=("$1")
-            shift
-            ;;
+    -sd) # Set SCRIPTDIR
+        SCRIPTDIR=$2
+        shift
+        shift
+        ;;
+    -wr) # Set WROOT
+        WROOT=$2
+        shift
+        shift
+        ;;
+    *) # add everything else to the params array for processing in the next section
+        PARAMS+=("$1")
+        shift
+        ;;
     esac
 done
 set -- "${PARAMS[@]}" # restore positional parameters
 
 ## Read in stored git config and modules config
-source $SCRIPTDIR/git.conf 2>/dev/null
+source "$SCRIPTDIR"/git.conf 2>/dev/null
 # if a custom config has been supplied (e.g, by a docker config) then use it, else use the default
 [ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
-source $MODULES_CONF
+source "$MODULES_CONF"
 
 # store original ssh value, needed for updating remotes during pull
 previousssh=$usessh
@@ -79,74 +74,88 @@ previousssh=$usessh
 if [ -z "$1" ]; then showhelp=1; fi
 
 PARAMS=()
-while [[ $# -gt 0 ]]
-do
+while [[ $# -gt 0 ]]; do
     p="$1"
 
     case $p in
-    	-f|-force|--force) force=1
-    		## Force will ignore any uncomitted changes and checkout over the top
-    	;;
-    	-fc|--reset-config) resetconfig=1; fixparams="$fixparams --reset-config"
-    	## remove local config files and either restore from backup (if available) or reset to sample configuration
+    -f | -force | --force)
+        force=1
+        ## Force will ignore any uncomitted changes and checkout over the top
         ;;
-    	-fff) force=1; killmodules=1; killconfigbackup=1
-    		## killmodules should only be used when moving backwards from versions 1.12.1 or later to version 1.12 or earlier - removes the /protected/modules folder and re-clones all modules
-    	;;
-    	-ffc) resetconfig=1; killconfigbackup=1; fixparams="$fixparams --reset-config"
-    	## Delete backups and reset config
-    	;;
-    	--delete-backup) killconfigbackup=1
-    	## Delete configuration backups from /etc/openeyes
-    	;;
-    	--develop|--d|-d) defaultbranch=develop
-    		## develop will use develop baranches when the named branch does not exist for a module
-    	;;
-        --master|--m|-m) defaultbranch=master
-    		## will use master baranches when the named branch does not exist for a module
-    	;;
-    	--nomigrate|--no-migrate|--n|-n|-nm) fixparams="$fixparams --no-migrate"
-    		## nomigrate will prevent database migrations from running automatically at the end of checkout
-    	;;
-    	--root|-r|--r|--remote)
-            gitroot=$2
-            shift #shift pass parameter
-    	   ;;
-    	--no-summary) nosummary=1
-    		## don't show summary of checkout at completion
-    	   ;;
-    	--no-fix) fix=0
-    		## don't run oe-fix at completion
-    	;;
-    	--no-pull|--nopull) nopull=1
-    		## Do not issue git pull after checkout
-    	;;
-    	--no-compile) compile=0
-    		## don't compile java
-    	;;
-        --help) showhelp=1
+    -fc | --reset-config)
+        resetconfig=1
+        fixparams="$fixparams --reset-config"
+        ## remove local config files and either restore from backup (if available) or reset to sample configuration
         ;;
-    	--sample) sample=1
-    	;;
-    	--sample-only) sampleonly=1
-    	;;
-        --no-oe) # Don't checkout the openeyes repo
-            delete=(openeyes)
-            modules=( "${modules[@]/$delete}" ) # removes openeyes from modules list
+    -fff)
+        force=1
         ;;
-		--depth) cloneparams="$cloneparams --depth $2"
-		shift
-		;;
-		--single-branch) cloneparams="$cloneparams --single-branch"
-		;;
-    	*)  if [ ! -z "$1" ]; then
-    			if [ "$branch" == "$defaultbranch" ]; then
-    				branch=$1
-    			else
-                    # add everything else to the params array for processing later
-                    PARAMS+=("$1")
-    			fi
-    		fi
+    -ffc)
+        resetconfig=1
+        fixparams="$fixparams --reset-config"
+        ## Delete backups and reset config
+        ;;
+    --develop | --d | -d)
+        defaultbranch=develop
+        ## develop will use develop baranches when the named branch does not exist for a module
+        ;;
+    --master | --m | -m)
+        defaultbranch=master
+        ## will use master baranches when the named branch does not exist for a module
+        ;;
+    --merge) #merge an upstream branch after checkout
+        mergebranch=$2
+        shift
+        ;;
+    --nomigrate | --no-migrate | --n | -n | -nm)
+        fixparams="$fixparams --no-migrate"
+        ## nomigrate will prevent database migrations from running automatically at the end of checkout
+        ;;
+    --root | -r | --r | --remote)
+        gitroot=$2
+        shift #shift pass parameter
+        ;;
+    --no-summary)
+        nosummary=1
+        ## don't show summary of checkout at completion
+        ;;
+    --no-fix)
+        fix=0
+        ## don't run oe-fix at completion
+        ;;
+    --no-pull | --nopull)
+        nopull=1
+        ## Do not issue git pull after checkout
+        ;;
+    --help)
+        showhelp=1
+        ;;
+    --sample)
+        sample=1
+        ;;
+    --sample-only)
+        sampleonly=1
+        ;;
+    --no-oe) # Don't checkout the openeyes repo
+        delete=(openeyes)
+        modules=("${modules[@]/$delete/}") # removes openeyes from modules list
+        ;;
+    --depth)
+        depth="$2"
+        shift
+        ;;
+    --single-branch)
+        cloneparams="$cloneparams --single-branch"
+        ;;
+    *)
+        if [ -n "$1" ]; then
+            if [ "$branch" == "$defaultbranch" ]; then
+                branch=$1
+            else
+                # add everything else to the params array for processing later
+                PARAMS+=("$1")
+            fi
+        fi
         ;;
     esac
 
@@ -154,14 +163,13 @@ do
 done
 
 # List out any unkown parameters
-if  [ ${#PARAMS[@]} -gt 0 ]; then
+if [ ${#PARAMS[@]} -gt 0 ]; then
     echo "Unknown Parameters:"
-    for i in "${PARAMS[@]}"
-    do
-        echo $i
+    for i in "${PARAMS[@]}"; do
+        echo "$i"
     done
-	echo "continuing in 5 seconds..."
-	sleep 5
+    echo "continuing in 5 seconds..."
+    sleep 5
 fi
 
 # Show help text
@@ -178,13 +186,13 @@ if [ $showhelp = 1 ]; then
     echo "  --no-migrate "
     echo "          | -n   : Prevent database migrations running automatically after"
     echo "                   checkout"
-	echo "	--no-pull		: Prevent automatic fast-forward to latest remote head"
+    echo "	--no-pull		: Prevent automatic fast-forward to latest remote head"
     echo "  --force | -f   : forces the checkout, even if local changes are uncommitted"
-	echo "	--reset-config "
-	echo "		| -fc	   : Reset config/local/common.php to default settings"
-	echo "				   : WARNING: Will destroy existing config"
-	echo "  --delete-backup : Deletes backups from /etc/openeyes. Use in "
-	echo "					  conjunction with --reset-config to fully reset config"
+    echo "	--reset-config "
+    echo "		| -fc	   : Reset config/local/common.php to default settings"
+    echo "				   : WARNING: Will destroy existing config"
+    echo "  --delete-backup : Deletes backups from /etc/openeyes. Use in "
+    echo "					  conjunction with --reset-config to fully reset config"
     echo "  --no-compile   : Do not complile java modules after Checkout"
     echo "  -r <remote>    : Use the specifed remote github fork - defaults to openeyes"
     echo "  --develop "
@@ -192,7 +200,9 @@ if [ $showhelp = 1 ]; then
     echo "                   - default woud fallback to master"
     echo "  --no-summary   : Do not display a summary of the checked-out modules after "
     echo "                   completion"
-	echo ""
+    echo "  --depth <int>  : Only clone/fetch to the given depth"
+    echo "  --merge <branch> : Perform a merge of the given upstream branch into the checked-out code"
+    echo ""
     exit 1
 fi
 
@@ -205,29 +215,29 @@ echo ""
 echo "Checking out branch $branch..."
 echo ""
 
-$(ssh-agent)  2>/dev/null
+ssh-agent >/dev/null 2>&1
 
 testgit=$(ssh git@github.com -T 2>&1 | grep -oP --color=never "Hi \K[^\!]*")
-  if [ ! -z "$testgit" ]; then
-   usessh=1 
-   echo "AUTHENTICATED TO GITHUB WITH SSH AS: $testgit"
-  else
+if [ -n "$testgit" ]; then
+    usessh=1
+    echo "AUTHENTICATED TO GITHUB WITH SSH AS: $testgit"
+else
     usessh=0
     echo "!COULD NOT AUTHENTICATE TO GITHUB WITH SSH, FALLING BACK TO HTTPS!"
-  fi
+fi
 
 # Backwards comaptibility, use OE_GITROOT if it exists and GIT_ORG if not
 # If both exist, GIT_ORG takes preference
-[ ! -z "$OE_GITROOT" ] && GIT_ORG=${GIT_ORG:-$OE_GITROOT}
+[ -n "$OE_GITROOT" ] && GIT_ORG=${GIT_ORG:-$OE_GITROOT}
 
 # If GIT_ORG is not specified then - If using https we defualt to appertafoundation. If using ssh we default to openeyes
-[ -z "$GIT_ORG" ] && { [ "$usessh" == "0" ] && gitroot="appertafoundation" || gitroot="openeyes";} || gitroot=$GIT_ORG
+[ -z "$GIT_ORG" ] && { [ "$usessh" == "0" ] && gitroot="appertafoundation" || gitroot="openeyes"; } || gitroot=$GIT_ORG
 
 # Set the base string for SSH or HTTP accordingly
 [ "$usessh" == "1" ] && basestring="git@github.com:$gitroot" || basestring="https://github.com/$gitroot"
 
 # store git settings out to disk
-echo "usessh=$usessh" | sudo tee $SCRIPTDIR/git.conf > /dev/null
+echo "usessh=$usessh" | sudo tee "$SCRIPTDIR"/git.conf >/dev/null
 
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400'
@@ -238,128 +248,178 @@ git config --global core.fileMode false 2>/dev/null
 MODULEROOT=$WROOT/protected/modules
 
 # Add sample DB to checkout if it exists or if --sample has been set
-if [[ -d "$MODULEROOT/sample" ]] || [[ $sample = 1 ]]; then modules=(${modules[@]} sample); fi
+if [[ -d "$MODULEROOT/sample" ]] || [[ $sample = 1 ]]; then modules=("${modules[@]}" sample); fi
 
 # if in sample only mode, we want only the sample module and nothing else
-if [ $sampleonly = 1 ]; then modules=(sample); javamodules=(); fi
+if [ $sampleonly = 1 ]; then
+    modules=(sample)
+fi
 
 ######################################################
 # update remote if changing from https to ssh method #
 ######################################################
 if [ ! "$usessh" == "$previousssh" ]; then
 
-	for module in ${modules[@]}; do
-		# only run if module exists
-	  if [ ! -d "$MODULEROOT/$module" ]; then
-		  if [ ! "$module" = "openeyes" ]; then
-			  break
-		  fi
-	  fi
-	  echo "updating remote for $module"
+    for module in "${modules[@]}"; do
+        # only run if module exists
+        if [ ! -d "$MODULEROOT/$module" ]; then
+            if [ ! "$module" = "openeyes" ]; then
+                break
+            fi
+        fi
+        echo "updating remote for $module"
 
-	  		  # deal with openeyes not being a real module!
-			  if [ "$module" = "openeyes" ]; then MODGITROOT=$WROOT; else MODGITROOT=$MODULEROOT/$module; fi
+        # deal with openeyes not being a real module!
+        if [ "$module" = "openeyes" ]; then MODGITROOT=$WROOT; else MODGITROOT=$MODULEROOT/$module; fi
 
-			  # check if this is a git repo (and exists)
-			  if [ -d "$MODGITROOT/.git" ]; then
+        # check if this is a git repo (and exists)
+        if [ -d "$MODGITROOT/.git" ]; then
 
-			  	# change the remote to new basestring
-				git -C $MODGITROOT remote set-url origin $basestring/$module.git
+            # change the remote to new basestring
+            git -C "$MODGITROOT" remote set-url origin "$basestring"/"$module".git
 
-			  fi
-	done
+        fi
+    done
 
 fi
 ##### END update remote #####
 
 if [ ! "$force" = "1" ]; then
     echo ""
-	echo "checking for uncommited changes"
+    echo "checking for uncommited changes"
 
-	  changes=0
-	  modulelist=""
+    changes=0
+    modulelist=""
 
-	  for module in ${modules[@]}; do
-		if [ ! -d "$MODULEROOT/$module" ]; then
-			if [ ! "$module" = "openeyes" ]; then printf "\e[31mModule $module not found\e[0m\n"
-				break
-			fi
-		fi
-
-		# deal with openeyes not being a real module!
-	  	if [ "$module" = "openeyes" ]; then MODGITROOT=$WROOT; else MODGITROOT=$MODULEROOT/$module; fi
-
-		# check if this is a git repo (and exists)
-		if [ -d "$MODGITROOT/.git" ]; then
-
-				if ! git -C $MODGITROOT diff --quiet; then
-				  changes=1
-				  modulelist="$modulelist $module"
-				fi
-		fi
-
-	  done
-
-	  #  If we have unstaged changes, then abort and warn which modules are affected
-	  if [ "$changes" = "1" ]; then
-		printf "\e[41m\e[97m  CHECKOUT ABORTED  \e[0m \n"
-		echo "There are uncommitted changes in the following modules: $modulelist"
-		printf "To ignore these changes, run: \e[1m oe-checkout.sh $branch -f \e[0m \n"
-		echo "Alternatively, manually git reset --hard to ignore, or git stash to keep, etc"
-		printf "\e[41m\e[97m  CHECKOUT ABORTED  \e[0m \n";
-		echo ""
-		exit 1
-	  fi
-fi
-
-# make sure modules directory exists
-mkdir -p $MODULEROOT
-
-for module in ${modules[@]}; do
-
-  # Determine if module already exists (ignoring openeyes). If not, clone it
-	if [ ! -d "$MODULEROOT/$module" ] && [ "$module" != "openeyes" ]; then
-
-        printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m"
-
-        git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
-	fi
-
-	processgit=1
-
-	# deal with openeyes not being a real module!
-	if [ "$module" = "openeyes" ]; then MODGITROOT=$WROOT; else MODGITROOT=$MODULEROOT/$module; fi
-
-	if [ ! -d "$MODGITROOT/.git" ]; then processgit=0; fi
-
-	if [ $processgit = 1 ]; then
-		printf "\e[32m$module: \e[0m"
-		git -C $MODGITROOT reset --hard
-		git -C $MODGITROOT config core.fileMode false 2>/dev/null
-		git -C $MODGITROOT fetch --all
-
-		if ! git -C $MODGITROOT checkout tags/$branch 2>/dev/null; then
-		      if ! git -C $MODGITROOT checkout $branch 2>/dev/null; then
-                echo "no branch $branch exists, switching to $defaultbranch"
-                git -C $MODGITROOT checkout $defaultbranch 2>/dev/null
+    for module in "${modules[@]}"; do
+        if [ ! -d "$MODULEROOT/$module" ]; then
+            if [ ! "$module" = "openeyes" ]; then
+                printf "\e[31mModule %s not found\e[0m\n" "$module"
+                break
             fi
         fi
 
-		## fast forward to latest head
-		if [ ! "$nopull" = "1" ]; then
-			echo "Pulling latest changes: "
-			git -C $MODGITROOT pull
-			git -C $MODGITROOT submodule update --init --force
-		fi
-	fi
+        # deal with openeyes not being a real module!
+        if [ "$module" = "openeyes" ]; then MODGITROOT=$WROOT; else MODGITROOT=$MODULEROOT/$module; fi
+
+        # check if this is a git repo (and exists)
+        if [ -d "$MODGITROOT/.git" ]; then
+
+            if ! git -C "$MODGITROOT" diff --quiet; then
+                changes=1
+                modulelist="$modulelist $module"
+            fi
+        fi
+
+    done
+
+    #  If we have unstaged changes, then abort and warn which modules are affected
+    if [ "$changes" = "1" ]; then
+        printf "\e[41m\e[97m  CHECKOUT ABORTED  \e[0m \n"
+        echo "There are uncommitted changes in the following modules: $modulelist"
+        printf "To ignore these changes, run: \e[1m oe-checkout.sh %s -f \e[0m \n" "$branch"
+        echo "Alternatively, manually git reset --hard to ignore, or git stash to keep, etc"
+        printf "\e[41m\e[97m  CHECKOUT ABORTED  \e[0m \n"
+        echo ""
+        exit 1
+    fi
+fi
+
+# make sure modules directory exists
+mkdir -p "$MODULEROOT"
+
+for module in "${modules[@]}"; do
+
+    # Determine if module already exists (ignoring openeyes). If not, clone it
+    if [ ! -d "$MODULEROOT/$module" ] && [ "$module" != "openeyes" ]; then
+
+        printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m\n"
+
+        # If doing a shallow clone, then make sure to add the branch name
+        if [[ ! -z $depth ]]; then
+            cloneparams+=" --depth $depth --branch $branch" # note that branch must be the last thing in the string
+        fi
+
+        if ! git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module 2>/dev/null; then
+            # if no given branch name was found when doing a shallow (or branch) clone, then fall back to the default branch
+            cloneparams=${cloneparams%$branch} # Note: This removes the branch name from the end of the string
+            cloneparams+=$defaultbranch        # This adds the *default* branch name to the end of the string
+            git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
+        fi
+    fi
+
+    processgit=1
+
+    # deal with openeyes not being a real module!
+    if [ "$module" = "openeyes" ]; then MODGITROOT=$WROOT; else MODGITROOT=$MODULEROOT/$module; fi
+
+    if [ ! -d "$MODGITROOT/.git" ]; then processgit=0; fi
+
+    if [ $processgit = 1 ]; then
+        printf "\e[32m$module: \e[0m"
+        git -C $MODGITROOT reset --hard
+        git -C $MODGITROOT config core.fileMode false 2>/dev/null
+        # Add depth if specified
+        if [[ ! -z $depth ]]; then
+            fetchparams+=" --depth=$depth"
+        fi
+
+        # Make sure the fetch root is correct - for some reason it sometimes get set to a specific
+        # branch (e.g, develop), and then matching to upstream branches will break
+        git -C $MODGITROOT config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+
+        # Attempt to only fetch the necessary branch (for speedup). If that fails then try fetching all
+        if ! git -C $MODGITROOT fetch origin $branch:$branch $fetchparams 2>/dev/null; then
+            git -C $MODGITROOT fetch --all $fetchparams
+        fi
+
+        # Try to find a named tag first, then a branch, then fallback to default branch. trackbranch is used to ensure tracking is set correctly
+        trackbranch=''
+        if ! git -C $MODGITROOT checkout tags/$branch 2>/dev/null; then
+            trackbranch=$branch
+            if ! git -C $MODGITROOT checkout $branch 2>/dev/null; then
+                trackbranch=$defaultbranch
+                echo "no branch $branch exists, switching to $defaultbranch"
+                if ! git -C $MODGITROOT checkout $defaultbranch 2>/dev/null; then trackbranch=''; fi
+            fi
+        fi
+
+        ## fast forward to latest head
+        if [ ! "$nopull" = "1" ]; then
+            echo "Pulling latest changes: "
+            if ! [ -z $trackbranch ] && ! git -C $MODGITROOT config --get branch.$branch.merge >/dev/null 2>&1; then
+                git -C $MODGITROOT branch --set-upstream-to=origin/$trackbranch
+            fi
+            git -C $MODGITROOT pull
+            git -C $MODGITROOT submodule update --init --force
+        fi
+
+        ## Attempt to merge in an upstream branch
+        mergefailed=0
+        if [[ ! -z $mergebranch && "$module" != "sample" ]]; then
+            exists_in_remote=$(git -C $MODGITROOT ls-remote --heads origin ${mergebranch})
+            if [[ -n ${exists_in_remote} ]]; then
+                echo "Attempting to merge $mergebranch...."
+                if ! git -C $MODGITROOT pull origin $mergebranch --no-edit 2>/dev/null; then
+                    printf "\n\n\e[5;41;1mUNABLE TO MERGE WITH origin/$mergebranch - ROLLING BACK... \e[0m\n\n"
+                    git -C $MODGITROOT merge --abort 2>/dev/null
+                    mergefailed=1
+                else
+                    printf "\n\e[42m\e[97m  SUCESSFULLY MERGED %s WITH origin/%s  \e[0m \n" "$module" "$mergebranch"
+                fi
+            else
+                printf "\n\e[43;30m No branch origin/%s exists on remote for %s - Skipping merge \e[0m\n\n" "$mergebranch" "$module"
+            fi
+        fi
+    fi
 
 done
 
 if [ "$resetconfig" = "1" ]; then
-	echo "
+    echo "
 WARNING: Resetting local config to defaults
-"
-	sudo rm -rf $WROOT/protected/config/local/*.php
+    "
+    sudo rm -rf $WROOT/protected/config/local/*.php
 fi
 
 # Now reset/relink various config files etc
@@ -367,8 +427,13 @@ fi
 
 # Show summary of checkout
 if [ ! "$nosummary" = "1" ]; then
-	bash $SCRIPTDIR/oe-which.sh
-	printf "\e[42m\e[97m  CHECKOUT COMPLETE  \e[0m \n"
+    bash $SCRIPTDIR/oe-which.sh
+    printf "\e[42m\e[97m  CHECKOUT COMPLETE  \e[0m \n"
+fi
+
+# Show final warning if a merge failed (only applicable when the --merge flag is set)
+if [ $mergefailed -eq 1 ]; then
+    printf "\n\e[5;41;1m  ONE OR MORE MODULES FAILED TO MERGE WITH orgin/$mergebranch - Check the logs above  \e[0m\n"
 fi
 
 echo ""

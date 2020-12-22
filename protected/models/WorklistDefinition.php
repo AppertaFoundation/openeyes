@@ -15,7 +15,8 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-use \RRule\RRule;
+
+use RRule\RRule;
 
 /**
  * Class WorklistDefinition.
@@ -97,7 +98,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         return array(
             array('name, rrule, worklist_name, start_time, end_time, description', 'safe'),
             array('rrule', 'validateRrule'),
-            array('name, rrule', 'required'),
+            array('name, rrule, start_time, end_time', 'required'),
             array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss', 'except' => 'sortDisplayOrder'),
@@ -276,12 +277,13 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             $rrule_str = $this->rrule;
             // ensure rrule string has a start date if not defined so that it will be part of the
             // formatted output
+            $dtstart = null;
             if (!$this->isNewRecord && !strpos($rrule_str, 'DTSTART=')) {
                 $created_date = new DateTime($this->created_date);
-                $rrule_str .= ";DTSTART=" . $created_date->format('Y-m-d');
+                $dtstart = $created_date->format('Y-m-d');
             }
 
-            $final_rrule = new RRule($rrule_str);
+            $final_rrule = new RRule($rrule_str,  $dtstart);
 
             return $final_rrule->humanReadable(array(
                 'date_formatter' => function ($d) {

@@ -26,7 +26,8 @@
             OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
             model()->active()->findAllByAttributes(array('is_near' => 0)),
             'id',
-            'name')
+            'name'
+        )
     ) ?>
 </form>
 

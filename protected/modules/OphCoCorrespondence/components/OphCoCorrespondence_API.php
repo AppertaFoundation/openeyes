@@ -353,11 +353,13 @@ class OphCoCorrespondence_API extends BaseAPI
                 echo json_encode(array('error' => 'DECEASED'));
                 return;
             }
+            $data['to']['email'] = $contact->contact->email ?? null;
         }
 
         if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['to']['contact_type'] = get_class($contact);
             $data['to']['contact_id'] = $contact->contact->id;
+            $data['to']['email'] = $contact->contact->email ?? null;
         }
 
         if ($macro->recipient && $macro->recipient->name == 'Optometrist') {
@@ -365,6 +367,7 @@ class OphCoCorrespondence_API extends BaseAPI
             if (isset($contact)) {
                 $data['to']['contact_type'] = "Optometrist";
                 $data['to']['contact_id'] = $contact->id;
+                $data['to']['email'] = $contact->email ?? null;
             }
         }
 
@@ -406,6 +409,7 @@ class OphCoCorrespondence_API extends BaseAPI
                 $data['cc'][$k]['contact_id'] = $patient->contact->id;
                 $data['cc'][$k]['address'] = "Letters to the " . \Yii::app()->params['gp_label'] . " should be cc'd to the patient, but this patient does not have a valid address.";
             }
+            $data['cc'][$k]['email'] = isset($patient->contact) ? $patient->contact->email : null;
             $k++;
         }
 
@@ -420,6 +424,7 @@ class OphCoCorrespondence_API extends BaseAPI
                 'delimiter' => "\n",
                 'include_prefix' => false,
             ));
+            $data['cc'][$k]['email'] = isset($cc_contact->contact) ? $cc_contact->contact->email : null;
             $k++;
         }
 
@@ -436,13 +441,14 @@ class OphCoCorrespondence_API extends BaseAPI
                     'delimiter' => "\n",
                     'include_prefix' => false,
                 ));
+                $data['cc'][$k]['email'] = isset($cc_contact) ? $cc_contact->email : null;
                 $k++;
             }
         }
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
-            $commissioningbody = $patient->practice->getCommissioningBodyOfType($commissioningbodytype);
+            $commissioningbody = isset($patient->practice) ? $patient->practice->getCommissioningBodyOfType($commissioningbodytype) : null;
             if ($commissioningbodytype && $commissioningbody) {
                 foreach ($commissioningbody->services as $service) {
                     if ($service->type->shortname == 'DRSS') {
@@ -460,7 +466,7 @@ class OphCoCorrespondence_API extends BaseAPI
                             'delimiter' => "\n",
                             'include_prefix' => false,
                         ));
-
+                        $data['cc'][$k]['email'] = isset($service->contact) ? $service->contact->email : null;
                         break;
                     }
                 }
@@ -566,7 +572,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
-            if ($commissioningbodytype && $commissioningbody = $patient->practice->getCommissioningBodyOfType($commissioningbodytype)) {
+            if ($commissioningbodytype && $commissioningbody = isset($patient->practice) ? $patient->practice->getCommissioningBodyOfType($commissioningbodytype) : null) {
                 $drss = null;
                 foreach ($commissioningbody->services as $service) {
                     if ($service->type->shortname == 'DRSS') {
@@ -660,9 +666,9 @@ class OphCoCorrespondence_API extends BaseAPI
             if ($contact == null) {
                 $contact = Contact::model()->findByPk($m[2]);
             }
-        } else if ($m[1] == 'Optometrist') {
+        } elseif ($m[1] == 'Optometrist') {
             $contact = Contact::model()->findByPk($m[2]);
-        } else if ($m[1] === 'GP') {
+        } elseif ($m[1] === 'GP') {
             $contact = Gp::model()->findByPk($m[2]);
         } else {
             if (!$contact = $m[1]::model()->findByPk($m[2])) {
@@ -711,15 +717,18 @@ class OphCoCorrespondence_API extends BaseAPI
         if ($m[1] == 'CommissioningBodyService') {
             $correspondence_name = implode(',', $correspondence_name);
         }
-
+        $email = null;
         $contact_type = $m[1];
         if ($m[1] == 'CommissioningBodyService') {
             $contact_type = 'DRSS';
-        } else if ($m[1] == 'Practice') {
+        } elseif ($m[1] == 'Practice') {
             $contact_type = 'Gp';
-        } else if ($m[1] == 'Optometrist') {
+        } elseif ($m[1] == 'Optometrist') {
             $contact_type = 'Optometrist';
         }
+
+        $contact_id = isset($contact->contact) ? $contact->contact->id : $contact->id;
+        $email = isset(Contact::model()->findByPk($contact_id)->id) ? Contact::model()->findByPk($contact_id)->email : null;
 
         if ( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist' , 'GP')) ) {
             $contact_type = 'Other';
@@ -727,7 +736,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         return $data = array(
             'contact_type' => $contact_type,
-            'contact_id' => isset($contact->contact) ? $contact->contact->id : $contact->id,
+            'contact_id' => $contact_id,
             'contact_name' => $correspondence_name,
             'contact_nickname' => isset($contact->contact) ? $contact->contact->nick_name : $contact->nick_name,
             'address' => $address ? $address : "The contact does not have a valid address.",
@@ -735,6 +744,7 @@ class OphCoCorrespondence_API extends BaseAPI
             'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
                 'nickname' => (boolean)$nickname,
             )),
+            'email' => $email,
         );
     }
 
@@ -774,9 +784,10 @@ class OphCoCorrespondence_API extends BaseAPI
             $meta_data = OphCoCorrespondenceLetterSettingValue::model()->find('`key`=?', array('letter_footer_blank_line_count'));
 
             $count = $meta_data ? $meta_data->value : 0;
-            if (is_numeric($count))
-            for ($x = 0; $x < $count; $x++) {
-                $empty_lines .= "\n";
+            if (is_numeric($count)) {
+                for ($x = 0; $x < $count; $x++) {
+                    $empty_lines .= "\n";
+                }
             }
             return "Yours sincerely" . $empty_lines . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
         }
@@ -832,8 +843,11 @@ class OphCoCorrespondence_API extends BaseAPI
         $episode = $patient->getEpisodeForCurrentSubspecialty();
         $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
 
-        if ($el = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan')
+        if ($el = $this->getMostRecentElementInEpisode(
+            $episode->id,
+            $event_type->id,
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan'
+        )
         ) {
             $result .= 'Clinic Interval: ' . $el->clinic_internal->name . "\n";
             $result .= 'Photo: ' . $el->photo->name . "\n";
@@ -889,7 +903,6 @@ class OphCoCorrespondence_API extends BaseAPI
 
     public function getLastEventInSs(\Patient $patient)
     {
-
     }
 
     public function getLastInjectionInSs(\Patient $patient)
@@ -960,7 +973,6 @@ class OphCoCorrespondence_API extends BaseAPI
         }
 
         return $this->getDefaultMacro($firm, $site_id, $macro_name);
-
     }
 
     public function getDefaultMacro($firm = null, $site_id = null, $macro_name = null)

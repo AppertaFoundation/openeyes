@@ -2,7 +2,7 @@ function setYAxis_IOP() {
   return {
     side: 'right',
     title: {
-              text: 'IOP Graph',
+              text: 'IOP (mmHg)',
               font: {
                 color: 'white'
               }

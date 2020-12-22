@@ -27,6 +27,7 @@ use Yii;
  * @property string $id
  * @property int $event_id
  * @property int $correspondence_in_large_letters
+ * @property int $agrees_to_insecure_email_correspondence
  *
  */
 class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeElement
@@ -62,11 +63,11 @@ class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeEl
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('correspondence_in_large_letters', 'safe'),
-            array('correspondence_in_large_letters', 'required'),
+            array('correspondence_in_large_letters, agrees_to_insecure_email_correspondence', 'safe'),
+            array('correspondence_in_large_letters, agrees_to_insecure_email_correspondence', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, correspondence_in_large_letters,anticoagulant ', 'safe', 'on' => 'search'),
+            array('id, event_id, correspondence_in_large_letters, agrees_to_insecure_email_correspondence, anticoagulant ', 'safe', 'on' => 'search'),
         );
     }
 
@@ -93,6 +94,7 @@ class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeEl
             'id' => 'ID',
             'event_id' => 'Event',
             'correspondence_in_large_letters' => 'Large print for correspondence',
+            'agrees_to_insecure_email_correspondence' => 'Agrees to insecure email correspondence',
         );
     }
 
@@ -112,6 +114,7 @@ class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeEl
         $criteria->compare('event_id', $this->event_id, true);
 
         $criteria->compare('correspondence_in_large_letters', $this->correspondence_in_large_letters);
+        $criteria->compare('agrees_to_insecure_email_correspondence', $this->agrees_to_insecure_email_correspondence);
 
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
@@ -120,7 +123,7 @@ class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeEl
 
     public function getLetter_string()
     {
-        return "Large print for correspondence: $this->correspondence_in_large_letters\n";
+        return "Large print for correspondence: $this->correspondence_in_large_letters\n Agrees to insecure email correspondence: $this->agrees_to_insecure_email_correspondence";
     }
 
     public function canCopy()

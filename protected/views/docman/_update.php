@@ -46,9 +46,10 @@
 
                 if ($post_targets) {
                     foreach ($post_targets as $post_target) {
-                        $target = new DocumentTarget();
-                        $target->attributes = $post_target['attributes'];
-                        $document_targets[] = $target;
+                        if (isset($post_target['attributes']['id'])) {
+                            $target = DocumentTarget::model()->findByPk($post_target['attributes']['id']);
+                            $document_targets[] = $target;
+                        }
                     }
                 }
             }
@@ -61,12 +62,13 @@
                         <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][id]", $target->id); ?>
                         <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", $target->ToCc); ?>
                     </td>
-									<td>
-										<?php if($element->draft): ?>
-											<?php
-											$contact_type = strtoupper($target->contact_type);
-											$contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
+                                    <td>
+                                        <?php if ($element->draft) : ?>
+                                            <?php
+                                            $contact_type = strtoupper($target->contact_type);
+                                            $contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
                                             $contact_nick_name = $contact_type === 'GP' ? (isset($element['event']['episode']['patient']['gp']) ? $element['event']['episode']['patient']['gp']['contact']->nick_name : '') : $element['event']['episode']['patient']['contact']->nick_name;
+                                            $email = (isset($contact_id) ? ( isset(Contact::model()->findByPk($target->contact_id)->id) ? Contact::model()->findByPk($target->contact_id)->email : null ) : ( isset($target->email) ? $target->email : null) );
 
                                             $this->renderPartial('//docman/table/contact_name_type', array(
                                                 'address_targets' => $element->address_targets,
@@ -92,14 +94,17 @@
                                         <?php endif; ?>
                                     </td>
                     <td>
-                        <?php $this->renderPartial('//docman/table/contact_address', array(
+                        <?php
+                        $this->renderPartial('//docman/table/contact_address', array(
                                     'contact_id' => $target->contact_id,
                                     'target' => $target,
                                     'contact_type' => $target->contact_type,
                                     'row_index' => $row_index,
                                     'address' => $target->address,
+                                    'email' => $email,
                                     'is_editable_address' => ($target->contact_type != Yii::app()->params['gp_label']) && ($target->contact_type != 'INTERNALREFERRAL') && ($target->contact_type != 'Practice'),
-                                ));
+                                    'can_send_electronically' => $can_send_electronically,
+                        ));
                         ?>
                     </td>
                     <td class="docman_delivery_method">
@@ -108,7 +113,8 @@
                                         'contact_type' => $contact_type,
                                         'target' => $target,
                                         'can_send_electronically' => $can_send_electronically,
-                                        'row_index' => $row_index));
+                                        'row_index' => $row_index,
+                                        'email' => $email));
                         ?>
                     </td>
                     <td>

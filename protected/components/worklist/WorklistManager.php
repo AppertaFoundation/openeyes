@@ -1026,14 +1026,14 @@ class WorklistManager extends CComponent
      * @param string   $rrule
      * @param DateTime $limit
      *
-     * @return string
+     * @return string of parts
      */
-    public function setDateLimitOnRrule($rrule, DateTime $limit)
+    public function setDateLimitOnRrule(string $rrule, DateTime $limit) : string
     {
         if (strpos($rrule, 'UNTIL=')) {
-            preg_replace('/UNTIL=[^;]*/', 'UNTIL='.$limit->format('Y-m-d'), $rrule);
+            preg_replace('/UNTIL=[^;]*/', 'UNTIL='.$limit->format('Ymd\THis\Z'), $rrule);
         } else {
-            $rrule .= ';UNTIL='.$limit->format('Y-m-d');
+            $rrule .= ';UNTIL='.$limit->format('Ymd\THis\Z');
         }
 
         return $rrule;

@@ -161,7 +161,7 @@ class BaseReportController extends BaseController
 
         $post = $_POST;
         unset($post['YII_CSRF_TOKEN']);
-        Audit::add('Reports', 'download', "<pre>" . print_r($post, true) . "</pre>", null, ['model' => $report_class] );
+        Audit::add('Reports', 'download', "<pre>" . print_r($post, true) . "</pre>", null, ['model' => $report_class]);
 
         if (!$report->validate()) {
             throw new Exception('Report errors: '.print_r($report->errors, true));

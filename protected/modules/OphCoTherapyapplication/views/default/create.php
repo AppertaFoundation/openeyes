@@ -38,4 +38,4 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 
     <?php $this->endWidget()?>
 
-<?php $this->endContent();?>
+<?php $this->endContent();

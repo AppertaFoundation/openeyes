@@ -27,7 +27,7 @@
                                 break;
                         }
                     } elseif ($item['uri'] !== '#' && strpos($item['uri'], ':') === false) {
-                        $link = Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/');
+                        $link = Yii::app()->createURL('site/index') . ltrim($item['uri'], '/');
                     }
 
                     $options = array();
@@ -50,7 +50,7 @@
                                     if (array_key_exists('options', $sub_item)) {
                                         $sub_options = $sub_item['options'];
                                     }
-                                    $sub_link = ($sub_item['uri'] !== '#' && strpos($sub_item['uri'], ':') === false) ? Yii::app()->getBaseUrl() . '/' . ltrim($sub_item['uri'], '/') : $sub_item['uri'];
+                                    $sub_link = ($sub_item['uri'] !== '#' && strpos($sub_item['uri'], ':') === false) ? Yii::app()->createURL('site/index') . ltrim($sub_item['uri'], '/') : $sub_item['uri'];
                                     echo CHtml::link($sub_item['title'], $sub_link, $sub_options) ?>
                                 </li>
                             <?php endforeach; ?>

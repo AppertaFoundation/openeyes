@@ -1,6 +1,6 @@
 <?php
 
-class TrialPatientTest extends CDbTestCase
+class TrialPatientTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'user' => 'User',
@@ -13,6 +13,11 @@ class TrialPatientTest extends CDbTestCase
         'trial_permission' => 'TrialPermission',
         'user_trial_assignment' => 'UserTrialAssignment',
     );
+
+    public function getModel()
+    {
+        return TrialPatient::model();
+    }
 
     public static function setupBeforeClass()
     {
@@ -31,7 +36,7 @@ class TrialPatientTest extends CDbTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_2');
-        $this->setExpectedException(CHttpException::class, "You can't accept this participant into your Trial because that participant has already been accepted into another Intervention trial.");
+        $this->expectException(CHttpException::class, "You can't accept this participant into your Trial because that participant has already been accepted into another Intervention trial.");
         $trialPatient->changeStatus(TrialPatientStatus::model()->find('code = "ACCEPTED"'));
         $this->assertEquals('SHORTLISTED', $trialPatient->status);
     }
@@ -53,7 +58,7 @@ class TrialPatientTest extends CDbTestCase
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_4');
         $interventionTreatment = $this->treatment_type('treatment_type_intervention');
-        $trialPatient->updateTreatmentType($interventionTreatment );
+        $trialPatient->updateTreatmentType($interventionTreatment);
         $this->assertEquals($interventionTreatment ->id, $trialPatient->treatment_type_id);
     }
 
@@ -61,7 +66,7 @@ class TrialPatientTest extends CDbTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_1');
-        $this->setExpectedException('Exception', 'You cannot change the treatment type until the trial is closed.');
+        $this->expectException('Exception', 'You cannot change the treatment type until the trial is closed.');
         $trialPatient->updateTreatmentType($this->treatment_type('treatment_type_intervention'));
     }
 
@@ -69,24 +74,30 @@ class TrialPatientTest extends CDbTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_3');
-        $this->assertTrue(TrialPatient::isPatientInInterventionTrial($trialPatient->patient),
-            'The patient is in an intervention trial, this should return true');
+        $this->assertTrue(
+            TrialPatient::isPatientInInterventionTrial($trialPatient->patient),
+            'The patient is in an intervention trial, this should return true'
+        );
     }
 
     public function testIsInAnotherInterventionTrial()
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_3');
-        $this->assertFalse(TrialPatient::isPatientInInterventionTrial($trialPatient->patient, $trialPatient->trial_id),
-            'The optional trial id argument has been passed. The patient is in no other intervention trial, so this should return false.');
+        $this->assertFalse(
+            TrialPatient::isPatientInInterventionTrial($trialPatient->patient, $trialPatient->trial_id),
+            'The optional trial id argument has been passed. The patient is in no other intervention trial, so this should return false.'
+        );
     }
 
     public function testPatientPreviousTreatmentType()
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_3');
-        $this->assertNull(TrialPatient::getLastPatientTreatmentType($trialPatient->patient),
-            'The patient has not been in an intervention trial, and should not have a treatment type');
+        $this->assertNull(
+            TrialPatient::getLastPatientTreatmentType($trialPatient->patient),
+            'The patient has not been in an intervention trial, and should not have a treatment type'
+        );
     }
 
 
@@ -94,12 +105,16 @@ class TrialPatientTest extends CDbTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_4');
-        $this->assertEquals($this->treatment_type('treatment_type_intervention')->id,
+        $this->assertEquals(
+            $this->treatment_type('treatment_type_intervention')->id,
             TrialPatient::getLastPatientTreatmentType($trialPatient->patient)->id,
-            'The patient has been in an intervention trial with intervention treatment, which should be returned.');
+            'The patient has been in an intervention trial with intervention treatment, which should be returned.'
+        );
 
 
-        $this->assertNull(TrialPatient::getLastPatientTreatmentType($trialPatient->patient, $trialPatient->trial_id),
-            'The patient has been in no intervention trial , this value should be null ');
+        $this->assertNull(
+            TrialPatient::getLastPatientTreatmentType($trialPatient->patient, $trialPatient->trial_id),
+            'The patient has been in no intervention trial , this value should be null '
+        );
     }
 }

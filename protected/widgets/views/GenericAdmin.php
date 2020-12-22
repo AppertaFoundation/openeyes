@@ -26,10 +26,11 @@
                     <div class="cols-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
                     <div class="cols-5 column end"><?=
                         CHtml::dropDownList(
-                            $filter_field['field'], $filter_field['value'],
+                            $filter_field['field'],
+                            $filter_field['value'],
                             SelectionHelper::listData($filter_field['model']),
                             array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
-                                                   );
+                        );
                                                     ?></div>
                 </div>
             <?php } ?>
@@ -96,14 +97,15 @@ if (!$get_row && $filters_ready) {
                         <?php if (!$this->cannot_add) {
                             echo CHtml::submitButton('Add', ['name' => 'admin-add', 'id' => 'et_admin-add', 'class' => 'generic-admin-add button large', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url]);
                         }?>&nbsp;
-                        <?=\CHtml::submitButton('Save', ['name' => 'admin-save', 'id' => 'et_admin-save', 'class' => 'generic-admin-save button large']); ?>&nbsp;
+                        <?php if (!$this->cannot_save) {
+                            echo \CHtml::submitButton('Save', ['name' => 'admin-save', 'id' => 'et_admin-save', 'class' => 'generic-admin-save button large']);
+                        }?>&nbsp;
                     </td>
                 </tr>
                 </tfoot>
 
         </table>
         <div>
-
         </div>
     <?= CHtml::endForm() ?>
 <?php } ?>

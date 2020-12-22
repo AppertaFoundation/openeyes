@@ -167,8 +167,11 @@ $widgetOptionsJson = json_encode(array(
                             }
                             ?>
 
-                      <select name="<?= preg_replace('#\[(.*)\]#', '[${1}_through]',
-                          $field) ?>[<?= $id ?>][<?= $through['field'] ?>]">
+                      <select name="<?= preg_replace(
+                          '#\[(.*)\]#',
+                          '[${1}_through]',
+                          $field
+                      ) ?>[<?= $id ?>][<?= $through['field'] ?>]">
                               <?php foreach ($through['options'] as $option_id => $option) { ?>
                             <option
                                 value="<?= $option_id ?>" <?php if ($currentField && $currentField == $option_id) :
@@ -188,7 +191,7 @@ $widgetOptionsJson = json_encode(array(
         <?php } ?>
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->publish('protected/widgets/js', true);
 $assetManager->registerScriptFile('components/chosen/chosen.jquery.min.js');
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js');
 ?>

@@ -32,9 +32,12 @@
             <td>
                 <?php
                 $allSlitLampConditions = \OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->findAll(array('order' => 'display_order'));
-                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_allergic_conjunctivitis_id]',
+                echo CHtml::dropDownList(
+                    'OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_allergic_conjunctivitis_id]',
                     $element->{$eye_side.'_allergic_conjunctivitis_id'},
-                    CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+                    CHtml::listData($allSlitLampConditions, 'id', 'name'),
+                    array('class' => 'MultiSelectList')
+                ); ?>
             </td>
           </tr>
           <tr>
@@ -43,9 +46,12 @@
             </td>
             <td>
                 <?php
-                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_blepharitis_id]',
+                echo CHtml::dropDownList(
+                    'OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_blepharitis_id]',
                     $element->{$eye_side.'_blepharitis_id'},
-                    CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+                    CHtml::listData($allSlitLampConditions, 'id', 'name'),
+                    array('class' => 'MultiSelectList')
+                ); ?>
             </td>
           </tr>
           <tr>
@@ -54,9 +60,12 @@
             </td>
             <td>
                 <?php
-                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_dry_eye_id]',
+                echo CHtml::dropDownList(
+                    'OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_dry_eye_id]',
                     $element->{$eye_side.'_dry_eye_id'},
-                    CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+                    CHtml::listData($allSlitLampConditions, 'id', 'name'),
+                    array('class' => 'MultiSelectList')
+                ); ?>
             </td>
           </tr>
           <tr>
@@ -66,9 +75,12 @@
             <td>
                 <?php
                 $allSlitLampCornea = \OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->findAll(array('order' => 'display_order'));
-                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_cornea_id]',
+                echo CHtml::dropDownList(
+                    'OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_cornea_id]',
                     $element->{$eye_side.'_cornea_id'},
-                    CHtml::listData($allSlitLampCornea, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+                    CHtml::listData($allSlitLampCornea, 'id', 'name'),
+                    array('class' => 'MultiSelectList')
+                ); ?>
             </td>
           </tr>
           </tbody>

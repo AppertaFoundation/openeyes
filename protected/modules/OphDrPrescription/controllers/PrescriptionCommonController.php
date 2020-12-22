@@ -39,12 +39,12 @@ class PrescriptionCommonController extends DefaultController
     {
         $this->initForPatient($patient_id);
 
-        $key = (integer) $key;
+        $key = (integer)$key;
 
-        $drug_set_items = DrugSetItem::model()->findAllByAttributes(array('drug_set_id' => $set_id));
-        foreach ($drug_set_items as $drug_set_item) {
-            if ($drug_set_item->drug->active) {
-                $this->renderPrescriptionItem($key, $drug_set_item);
+        $items = MedicationSet::model()->findByPk($set_id)->items;
+        if ($items) {
+            foreach ($items as $item) {
+                $this->renderPrescriptionItem($key, $item);
                 ++$key;
             }
         }
@@ -52,49 +52,19 @@ class PrescriptionCommonController extends DefaultController
 
     public function actionGetSetDrugs($set_id)
     {
-        $drug_set_items = DrugSetItem::model()->findAllByAttributes(array('drug_set_id' => $set_id));
+        $drug_set_items = MedicationSetItem::model()->findAllByAttributes(array('medication_set_id' => $set_id));
         $drugs = [];
+        /** @var MedicationSetItem[] $drug_set_items */
         foreach ($drug_set_items as $drug_set_item) {
-            $drug = $drug_set_item->drug;
-            if ($drug->active) {
-                $drugs[] = [
-                    'label' => $drug->name,
-                    'allergies' => array_map(function ($allergy) {
-                        return $allergy->id;
-                    }, $drug->allergies),
-                ];
-            }
+            $drug = $drug_set_item->medication;
+            $drugs[] = [
+                'label' => $drug->getLabel(),
+                'allergies' => array_map(function ($allergy) {
+                    return $allergy->id;
+                }, $drug->allergies),
+            ];
         }
         $this->renderJSON($drugs);
-    }
-
-    /**
-     * Ajax function to get drug set for admin page (we do not have patient_id there), and we also load the
-     * name and subspecialty here.
-     *
-     * @param $key
-     * @param $set_id
-     *
-     * @throws CException
-     */
-    public function actionSetFormAdmin($key, $set_id)
-    {
-        $drugset = DrugSet::model()->findByPk($set_id);
-        $returnData = array();
-
-        $returnData['drugsetName'] = $drugset->name;
-        $returnData['drugsetSubspecialtyId'] = $drugset->subspecialty_id;
-        $returnData['tableRows'] = ''; // the HTML content for the prescription items table
-
-        $key = (integer) $key;
-        $drug_set_items = DrugSetItem::model()->findAllByAttributes(array('drug_set_id' => $set_id));
-
-        foreach ($drug_set_items as $drug_set_item) {
-            $returnData['tableRows'] .= $this->renderPrescriptionItem($key, $drug_set_item);
-            ++$key;
-        }
-
-        $this->renderJSON($returnData);
     }
 
     /**
@@ -124,9 +94,11 @@ class PrescriptionCommonController extends DefaultController
 
     public function actionGetDispenseLocation($condition_id)
     {
-        $dispense_condition = OphDrPrescription_DispenseCondition::model()->findByPk($condition_id);
-        foreach ($dispense_condition->locations as $location) {
-            echo '<option value="'.$location->id.'">'.$location->name.'</option>';
+        if ($condition_id) {
+            $dispense_condition = OphDrPrescription_DispenseCondition::model()->findByPk($condition_id);
+            foreach ($dispense_condition->locations as $location) {
+                echo '<option value="' . $location->id . '">' . $location->name . '</option>';
+            }
         }
     }
 }

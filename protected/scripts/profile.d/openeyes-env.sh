@@ -64,6 +64,13 @@
 
 ## Set the endpoint for an LDAP server. Also automatically changes authentication from 'BASIC' to 'LDAP'
 # export OE_LDAP_SERVER='ldap.example.com'
+# export OE_LDAP_PORT='389'
+# export OE_LDAP_ADMIN_DN=""
+# export OE_LDAP_PASSWORD=""
+# export OE_LDAP_DN=""
+# export OE_LDAP_METHOD
+# export OE_LDAP_UPDATE_NAME
+# export OE_LDAP_UPDATE_EMAIL
 
 ## Set password format restrictions
 # export PW_RES_MIN_LEN=8
@@ -72,6 +79,21 @@
 # export PW_RES_MAX_LEN_MESS='Passwords must be at most 70 characters long'
 # export PW_RES_STRENGTH='%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%'
 # export PW_RES_STRENGTH_MESS='Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+
+## Number of password tries before triggering status change (any integer or 0 to disable)
+# export PW_STAT_TRIES =3
+
+# Amount of time before account is automatically unlocked after failed PW_STAT_TRIES - 0 to disable - (0, X days, X months, X Years,  see https://www.php.net/manual/en/function.strtotime.php  for more options)
+# export PW_SOFTLOCK_TIMEOUT='10 mins'
+
+## Password status after trigger by number of tries exceeded or after password changed by admin  -  ('current', 'stale', 'expired', 'locked') 
+# export PW_STAT_TRIES_FAILED= 'locked'
+# export PW_STAT_ADMIN_CHANGE = 'stale'
+
+## Number of days before password stales, expires or locks - 0 to disable - (0, X days, X months, X Years,  see https://www.php.net/manual/en/function.strtotime.php  for more options)
+# export PW_STAT_DAYS_STALE= '15 days'
+# export PW_STAT_DAYS_EXPIRE = '30 days' 
+# export PW_STAT_DAYS_LOCK =  '45 days'
 
 ## Set hos num parameters
 # export OE_HOS_NUM_REGEX='/^([a-zA-Z]*[0-9]*)$/'
@@ -85,3 +107,10 @@
 ##    */
 # export DOCMAN_FILENAME_FORMAT='OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}'
 # export DOCMAN_GENERATE_XML=true
+
+## Some overrides for database settings of visual mode indicators
+# export OE_TRAINING_MODE=""
+# export OE_USER_BANNER_SHORT=""
+# export OE_USER_BANNER_LONG=""
+# export OE_ADMIN_BANNER_SHORT=""
+# export OE_ADMIN_BANNER_LONG=""

@@ -61,7 +61,7 @@ class OphCoTherapyapplication_Processor
         $warnings = array();
 
         $el_diag = $this->getElement('Element_OphCoTherapyapplication_Therapydiagnosis');
-       
+
         $sides = array();
         if ($el_diag->hasLeft()) {
             $sides[] = 'left';
@@ -79,7 +79,8 @@ class OphCoTherapyapplication_Processor
                     true,
                     $side,
                     $el_diag->{$side.'_diagnosis1_id'},
-                    $el_diag->{$side.'_diagnosis2_id'})) {
+                    $el_diag->{$side.'_diagnosis2_id'}
+                )) {
                     $missing_sides[] = $side;
                 }
             }
@@ -162,8 +163,8 @@ class OphCoTherapyapplication_Processor
      */
     public function generatePreviewPdf($controller)
     {
-        Yii::app()->params['wkhtmltopdf_left_margin'] = '10mm';
-        Yii::app()->params['wkhtmltopdf_right_margin'] = '10mm';
+        Yii::app()->puppeteer->leftMargin = '10mm';
+        Yii::app()->puppeteer->rightMargin = '10mm';
 
         $ec = $this->getElement('Element_OphCoTherapyapplication_ExceptionalCircumstances');
         if (!$ec) {
@@ -187,14 +188,14 @@ class OphCoTherapyapplication_Processor
         $this->event->lock();
 
         if (!$this->event->hasPDF('therapy_application') || @$_GET['html']) {
-            $wk = new WKHtmlToPDF();
+            $wk = Yii::app()->puppeteer;
 
             $wk->setDocuments(1);
             $wk->setDocRef($this->event->docref);
             $wk->setPatient($this->event->episode->patient);
-            $wk->setBarcode($this->event->barcodeHTML);
+            $wk->setBarcode($this->event->barcodeSVG);
 
-            $wk->generatePDF($this->event->imageDirectory, 'event', 'therapy_application', $html, (boolean) @$_GET['html'], false);
+            $wk->savePageToPDF($this->event->imageDirectory, 'event', 'therapy_application', $html, false);
         }
 
         $this->event->unlock();
@@ -316,14 +317,14 @@ class OphCoTherapyapplication_Processor
             $this->event->lock();
 
             if (!$this->event->hasPDF('therapy_application')) {
-                $wk = new WKHtmlToPDF();
+                $wk = Yii::app()->puppeteer;
 
                 $wk->setDocuments(1);
                 $wk->setDocRef($this->event->docref);
                 $wk->setPatient($this->event->episode->patient);
-                $wk->setBarcode($this->event->barcodeHTML);
+                $wk->setBarcode($this->event->barcodeSVG);
 
-                $wk->generatePDF($this->event->imageDirectory, 'event', 'therapy_application', $html, false, false);
+                $wk->savePageToPDF($this->event->imageDirectory, 'event', 'therapy_application', $html, false);
             }
 
             $this->event->unlock();

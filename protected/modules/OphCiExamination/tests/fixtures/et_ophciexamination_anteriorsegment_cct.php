@@ -44,4 +44,13 @@ return array(
         'right_value' => 20,
         'left_value' => null,
     ),
+    'cct4' => array(
+        'id' => 4,
+        'event_id' => 29,
+        'eye_id' => Eye::BOTH,
+        'left_method_id' => 1,
+        'right_method_id' => 1,
+        'right_value' => 50,
+        'left_value' => 50,
+    ),
 );

@@ -22,7 +22,11 @@
         echo ' bottom';
                                          }
                                             ?>">
-        <p>Please fix the following input errors:</p>
+        <?php if (isset($errorHeaderMessage) && !empty($errorHeaderMessage)) { ?>
+            <p><?= $errorHeaderMessage ?></p>
+        <?php } else { ?>
+            <p>Please fix the following input errors:</p>
+        <?php } ?>
         <?php foreach ($errors as $field => $errs) { ?>
             <?php foreach ($errs as $err) { ?>
                 <ul>
@@ -51,6 +55,7 @@
                     }
                 }
             } else {
+                $('[id*="' + errorObject[k] + '"]').closest('.element').find('.element-title').addClass('error');
                 if (!$('[id*="' + errorObject[k] + '"]').hasClass('error')) {
                     $('[id*="' + errorObject[k] + '"]:not(:hidden)').addClass('error');
                     $('[id*="' + errorObject[k] + '"]:not(:hidden)').parent().addClass('highlight error');

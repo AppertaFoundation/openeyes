@@ -86,7 +86,6 @@ class SocialHistory extends \BaseEventTypeElement
         return array(
             array('event_id, occupation_id, smoking_status_id, accommodation_id, carer_id, substance_misuse_id, ' .
                 'alcohol_intake, comments, type_of_job, driving_statuses', 'safe'),
-            array('smoking_status_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, occupation_id, smoking_status_id, accommodation_id, carer_id, substance_misuse_id, ' .

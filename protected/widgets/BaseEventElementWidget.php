@@ -108,12 +108,26 @@ class BaseEventElementWidget extends CWidget
         );
     }
 
+
+    public function inSummaryOrViewMode()
+    {
+        return  ($this->mode === static::$PATIENT_LANDING_PAGE_MODE) || $this->inViewMode();
+    }
+
     /**
      * @return bool
      */
     protected function inEditMode()
     {
         return $this->mode === static::$EVENT_EDIT_MODE;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function inDataMode() : bool
+    {
+        return $this->mode === static::$DATA_MODE;
     }
 
     /**
@@ -198,9 +212,15 @@ class BaseEventElementWidget extends CWidget
         $this->element->widget = $this;
     }
 
+    /**
+     * Abstraction around the element tip status
+     *
+     * @return bool
+     */
     protected function isAtTip()
     {
-        return $this->element->isAtTip();
+        // if method not on element we can assume tip status is irrelevant and therefore return true.
+        return method_exists($this->element, 'isAtTip') ? $this->element->isAtTip() : true;
     }
 
     /**
@@ -272,7 +292,8 @@ class BaseEventElementWidget extends CWidget
         );
 
         return $this->getApp()->getAssetManager()->publish(
-            implode(DIRECTORY_SEPARATOR, $elements)
+            implode(DIRECTORY_SEPARATOR, $elements),
+            true
         );
     }
 
@@ -409,11 +430,15 @@ class BaseEventElementWidget extends CWidget
     }
 
     /**
-     * @return null|string
+     * @return string
      * @throws CException
      */
     public function renderWarnings()
     {
+        if (Yii::app()->params['show_notattip_warning'] !== 'on') {
+            return '';
+        }
+
         if (!$this->isAtTip()) {
             if ($this->showEditTipWarning()) {
                 return $this->render($this->notattip_edit_warning, array('element' => $this->element));
@@ -422,7 +447,6 @@ class BaseEventElementWidget extends CWidget
                 return $this->render($this->notattip_view_warning, array('element' => $this->element));
             }
         }
-        return null;
     }
 
     public function getEyeIdFromPost(array $data)

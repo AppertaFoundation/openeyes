@@ -66,7 +66,7 @@
 <script type="text/javascript">
     function searchDicomLog(){
         $.ajax({
-            'url': '<?php echo Yii::app()->createUrl('//DicomLogViewer/search'); ?>',
+            'url': '<?php echo Yii::app()->createUrl('DicomLogViewer/search'); ?>',
             'type': 'POST',
             'data': $('#auditList-filter').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
             'beforeSend':function (){
@@ -86,7 +86,7 @@
 
                 $('#dicom-file-list tbody').html();
 
-                if(files.data) {
+                if (files.data) {
                     for (let i = 0; i < files.data.length; i++) {
                         let file = files.data[i];
                         let last_slash = file.filename.lastIndexOf("/")+1;

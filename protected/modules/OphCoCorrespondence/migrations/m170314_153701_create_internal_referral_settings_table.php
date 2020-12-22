@@ -2,8 +2,9 @@
 
 class m170314_153701_create_internal_referral_settings_table extends OEMigration
 {
-    public function up()
+    public function safeUp()
     {
+        Institution::$db = $this->dbConnection;
         $this->createOETable('ophcocorrespondence_internal_referral_settings', array(
             'id' => 'pk',
             'display_order' => "tinyint(3) unsigned DEFAULT '0'",
@@ -37,10 +38,11 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
             'name' => 'Textarea'
         ));
 
-        $textarea = SettingFieldType::model()->find('name = "Textarea"');
+        $textarea = $this->dbConnection->createCommand('SELECT * FROM setting_field_type WHERE name = "Textarea"')
+            ->queryScalar();
 
         $this->insert('ophcocorrespondence_internal_referral_settings', array(
-            'field_type_id' => $textarea->id,
+            'field_type_id' => $textarea,
             'key' => 'internal_referral_booking_address',
             'name' => 'Booking Address'
         ));
@@ -48,31 +50,49 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
         $this->alterColumn('document_target', 'contact_type', "enum('PATIENT','GP','DRSS','LEGACY','OTHER', 'INTERNALREFERRAL') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'OTHER'");
         $this->alterColumn('document_output', 'output_type', 'varchar(20) COLLATE utf8_unicode_ci NOT NULL');
 
-        $internal_referral_booking_address = SettingInternalReferral::model()->findByAttributes(array('key' => 'internal_referral_booking_address'));
+        $internal_referral_booking_address = $this->dbConnection
+            ->createCommand('SELECT * FROM setting_internal_referral WHERE `key` = "internal_referral_booking_address"')
+            ->queryRow();
 
-        if (!$internal_referral_booking_address) {
-            $internal_referral_booking_address = new SettingInternalReferral();
-            $internal_referral_booking_address->key = 'internal_referral_booking_address';
+        $address = Institution::model()->getCurrent()->name . "\r" . (implode("\r", Institution::model()->getCurrent()->getLetterAddress()));
+        if ($internal_referral_booking_address) {
+            $this->update(
+                'setting_internal_referral',
+                array(
+                    'value' => $address,
+                ),
+                'id = :id',
+                array(':id' => $internal_referral_booking_address['id'])
+            );
+        } else {
+            $this->insert(
+                'setting_internal_referral',
+                array(
+                    '`key`' => 'internal_referral_booking_address',
+                    'value' => $address,
+                )
+            );
         }
-
-        $internal_referral_booking_address->value = Institution::model()->getCurrent()->name . "\r" . (implode("\r", Institution::model()->getCurrent()->getLetterAddress()));
-        $internal_referral_booking_address->save();
 
         $this->insert('ophcocorrespondence_internal_referral_settings', array(
             'field_type_id' => 4,
             'key' => 'internal_referral_method_label',
             'name' => 'Delivery Method Label'
         ));
+        $delivery_method_label = $this->dbConnection
+            ->createCommand('SELECT * FROM setting_internal_referral WHERE `key` = "internal_referral_method_label"')
+            ->queryRow();
 
-        $delivery_method_label = SettingInternalReferral::model()->findByAttributes(array('key' => 'internal_referral_method_label'));
-
-        if (!$delivery_method_label) {
-            $delivery_method_label = new SettingInternalReferral();
-            $delivery_method_label->key = 'internal_referral_method_label';
+        if ($delivery_method_label) {
+            $this->update(
+                'setting_internal_referral',
+                array('value' => 'Electronic (WinDip)'),
+                'id = :id',
+                array(':id' => $delivery_method_label->id)
+            );
+        } else {
+            $this->insert('setting_internal_referral', array('`key`' => 'internal_referral_method_label', 'value' => 'Electronic (WinDip)'));
         }
-
-        $delivery_method_label->value = 'Electronic (WinDip)';
-        $delivery_method_label->save();
     }
 
     public function down()

@@ -23,19 +23,29 @@ use OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications;
 
 $model_name = CHtml::modelName($element);
 $operationNoteList = $element->getOperationNoteList();
-$operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id',
-    (is_array($operationNoteList) ? key($operationNoteList) : null));
+$operation_note_id = \Yii::app()->request->getParam(
+    'OphCiExamination_postop_complication_operation_note_id',
+    (is_array($operationNoteList) ? key($operationNoteList) : null)
+);
 
 $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
 $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
-$right_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element->id, $operation_note_id,
-    $subspecialty_id, \Eye::RIGHT);
+$right_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList(
+    $element->id,
+    $operation_note_id,
+    $subspecialty_id,
+    \Eye::RIGHT
+);
 
 $right_eye_data = \CHtml::listData($right_eye, 'id', 'name');
 
-$left_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element->id, $operation_note_id,
-    $subspecialty_id, \Eye::LEFT);
+$left_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList(
+    $element->id,
+    $operation_note_id,
+    $subspecialty_id,
+    \Eye::LEFT
+);
 $left_eye_data = \CHtml::listData($left_eye, 'id', 'name');
 
 $defaultURL = '/' . Yii::app()->getModule('OphCiExamination')->id . '/' . Yii::app()->getModule('OphCiExamination')->defaultController;
@@ -60,7 +70,9 @@ $right_other = !empty($right_other_values) ? array_values($right_other_values)[0
     <div id="div_Element_OphTrOperationnote_ProcedureList_id">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <div class="cols-5 column end">
-            <?= \CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
+            <?= \CHtml::dropDownList(
+                'OphCiExamination_postop_complication_operation_note_id',
+                $operation_note_id,
                 $operationNoteList,
                 array(
                     'id' => 'OphCiExamination_postop_complication_operation_note_id-select',
@@ -81,14 +93,15 @@ $right_other = !empty($right_other_values) ? array_values($right_other_values)[0
             <div>
                 <?php echo $form->dropDownList(
                     OphCiExamination_PostOpComplications::model(),
-                    'name', ${$eye_side . '_eye_data'},
+                    'name',
+                    ${$eye_side . '_eye_data'},
                     array(
                         'empty' => array('-1' => 'Select Common Complication'),
                         'id' => $eye_side . '-complication-select',
                         'nolabel' => true,
                     ),
-                                   false,
-                                   array()
+                    false,
+                    array()
                 );
                 $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;
                 $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => $eye_side . '_complication_autocomplete_id']);
@@ -154,7 +167,7 @@ $right_other = !empty($right_other_values) ? array_values($right_other_values)[0
     </div>
 
 <?php endif; ?>
-<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
 <script>
   OpenEyes.UI.AutoCompleteSearch.init({
           input: $('#right_complication_autocomplete_id'),

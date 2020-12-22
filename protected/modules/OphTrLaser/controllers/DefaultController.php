@@ -16,7 +16,6 @@
  */
 class DefaultController extends BaseEventTypeController
 {
-    protected $show_element_sidebar = false;
     // This map defines which elements can import eyedraw data from the most recent element type in the current episode
     public static $IMPORT_ELEMENTS = array(
         'Element_OphTrLaser_PosteriorPole' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole',
@@ -57,7 +56,8 @@ class DefaultController extends BaseEventTypeController
         return parent::beforeAction($action);
     }
 
-    public function siteLaserOperatorCheck(){
+    public function siteLaserOperatorCheck()
+    {
         if (empty(OphTrLaser_Site_Laser::model()->findAll())) {
             Yii::app()->user->setFlash('error.no_laser_site', "No laser site has been added, please contact your administrator to add laser sites.");
         } elseif (empty(OphTrLaser_Laser_Operator::model()->findAll())) {
@@ -225,5 +225,4 @@ class DefaultController extends BaseEventTypeController
             }
         }
     }
-
 }

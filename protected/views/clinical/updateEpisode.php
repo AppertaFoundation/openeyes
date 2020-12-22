@@ -17,8 +17,11 @@
  */
 
 // Event actions
-$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/summary/' . $episode->id),
-    array('level' => 'cancel'));
+$this->event_actions[] = EventAction::link(
+    'Cancel',
+    Yii::app()->createUrl('/patient/summary/' . $episode->id),
+    array('level' => 'cancel')
+);
 $this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'episode_save', 'level' => 'save'));
 
 if ($episode->diagnosis) {
@@ -46,7 +49,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <p>Please fix the following input errors:</p>
         <ul>
           <li>
-              <?php echo $error ?>
+              <?php echo htmlspecialchars($error) ?>
           </li>
         </ul>
       </div>
@@ -86,8 +89,11 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
           <legend class="data-title">Principal eye:</legend>
             <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) { ?>
               <label class="inline">
-                  <?=\CHtml::radioButton('eye_id', ($eye->id == $eye_id),
-                      array('value' => $eye->id, 'class' => 'episodeSummaryRadio')) ?>
+                  <?=\CHtml::radioButton(
+                      'eye_id',
+                      ($eye->id == $eye_id),
+                      array('value' => $eye->id, 'class' => 'episodeSummaryRadio')
+                  ) ?>
                   <?php echo $eye->name ?>
               </label>
             <?php } ?>
@@ -142,8 +148,10 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 
     <?php
     try {
-        echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->getSubspecialtyID(),
-            array('episode' => $episode));
+        echo $this->renderPartial(
+            '/clinical/episodeSummaries/' . $episode->getSubspecialtyID(),
+            array('episode' => $episode)
+        );
     } catch (Exception $e) {
         // If there is no extra episode summary detail page for this subspecialty we don't care
     }
@@ -164,8 +172,11 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     <div class="element-fields flex-layout full-width">
       <div class="element-data">
         <label for="episode_status_id"><?=\CHtml::encode($episode->getAttributeLabel('episode_status_id')) ?>
-            <?=\CHtml::dropDownList('episode_status_id', $episode->episode_status_id,
-                EpisodeStatus::Model()->getList()) ?>
+            <?=\CHtml::dropDownList(
+                'episode_status_id',
+                $episode->episode_status_id,
+                EpisodeStatus::Model()->getList()
+            ) ?>
       </div>
     </div>
   </section>
@@ -173,8 +184,11 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
   <div class="metadata">
         <span class="info">
             Status last changed by <span class="user"><?php echo $episode->usermodified->fullName ?></span>
-            on <?php echo $episode->NHSDate('last_modified_date') ?> at <?php echo substr($episode->last_modified_date,
-                11, 5) ?>
+            on <?php echo $episode->NHSDate('last_modified_date') ?> at <?php echo substr(
+                $episode->last_modified_date,
+                11,
+                5
+            ) ?>
         </span>
   </div>
 
@@ -183,7 +197,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <p>Please fix the following input errors:</p>
         <ul>
           <li>
-              <?php echo $error ?>
+              <?php echo htmlspecialchars($error) ?>
           </li>
         </ul>
       </div>

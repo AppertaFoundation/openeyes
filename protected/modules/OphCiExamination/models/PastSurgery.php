@@ -79,10 +79,10 @@ class PastSurgery extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, operations, comments', 'safe'),
+            array('event_id, operations, comments, no_pastsurgery_date', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, comments',  'safe', 'on' => 'search')
+            array('id, event_id, comments, no_pastsurgery_date',  'safe', 'on' => 'search')
         );
     }
 
@@ -96,7 +96,8 @@ class PastSurgery extends \BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'operations' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation', 'element_id', 'order' => 'operations.date desc, operations.last_modified_date'),
+            'operations' => [self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation',
+                'element_id', 'order' => 'operations.date desc, operations.last_modified_date'],
         );
     }
 
@@ -117,6 +118,10 @@ class PastSurgery extends \BaseEventTypeElement
      */
     public function afterValidate()
     {
+        if (!$this->no_pastsurgery_date && !$this->operations && !$this->comments) {
+            $this->addError('no_pastsurgery_date', 'Please confirm patient has had no previous eye surgery or laser treatment');
+        }
+
         foreach ($this->operations as $i => $operation) {
             if (!$operation->validate()) {
                 foreach ($operation->getErrors() as $fld => $err) {
@@ -165,6 +170,11 @@ class PastSurgery extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' || $action === 'createImage' ? 1 : null;
+        return $action === 'view' || $action === 'createImage' || $action === 'renderEventImage' ? 1 : null;
+    }
+
+    public function getViewTitle()
+    {
+        return "Eye Procedures";
     }
 }

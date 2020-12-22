@@ -27,7 +27,8 @@ class m185653_149632_create_device_information_element_for_generic_event extends
             'display_order' => 11,
             'required' => 1]);
 
-        $this->createOETable('et_ophgeneric_device_information',
+        $this->createOETable(
+            'et_ophgeneric_device_information',
             [
                 'id' => 'pk',
                 'manufacturer' => 'text NULL',
@@ -57,7 +58,9 @@ class m185653_149632_create_device_information_element_for_generic_event extends
                 'model_version' => 'text NULL',
                 'sop_instance_uid' => 'text NULL',
                 'event_id' => 'int(10) unsigned NOT NULL'
-            ], true);
+            ],
+            true
+        );
         $this->addForeignKey('et_ophgeneric_device_information_event_fk', 'et_ophgeneric_device_information', 'event_id', 'event', 'id');
     }
 

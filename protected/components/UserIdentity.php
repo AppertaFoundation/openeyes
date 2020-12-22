@@ -75,14 +75,14 @@ class UserIdentity extends CUserIdentity
             Yii::app()->params['auth_source'] = 'BASIC';
         }
 
-        if(Yii::app()->params['utf8_decode_required']){
+        if (Yii::app()->params['utf8_decode_required']){
             $this->password = utf8_decode($this->password);
         }
 
         /*
          * Here we diverge depending on the authentication source.
          */
-        if (Yii::app()->params['auth_source'] == 'LDAP') {
+        if (Yii::app()->params['auth_source'] === 'LDAP') {
             /*
              * Required for LDAP authentication
              */
@@ -285,10 +285,18 @@ class UserIdentity extends CUserIdentity
                     throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(), true));
                 }
             }
-        } elseif (Yii::app()->params['auth_source'] == 'BASIC') {
-            if (!$force && !$user->validatePassword($this->password)) {
+        } elseif (Yii::app()->params['auth_source'] === 'BASIC') {
+            $user->userLogOnAttemptsCheck($user);
+            $validPw=$user->validatePassword($this->password);
+            $pwActive = !$user->testUserPWStatus('locked');
+            if (!$force && !($validPw && $pwActive)) { //if failed logon or locked
+            $user->userLogOnAttemptsCheck($user);
+                if(!$validPw && isset(Yii::app()->params['pw_status_checks']['pw_tries'])){ // if the password was not correct and we check the number of tries
+                    $user->setFailedLogin();                    
+                    $user->userLogOnAttemptsCheck($user);
+                }
                 $this->errorCode = self::ERROR_PASSWORD_INVALID;
-                $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: invalid password");
+                $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: ". ($validPw ?'valid password':'invalid password'));
 
                 return false;
             }

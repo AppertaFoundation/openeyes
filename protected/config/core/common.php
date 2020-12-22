@@ -38,7 +38,7 @@ if (file_exists('/etc/openeyes/db.conf')) {
     );
 }
 
-return array(
+$config = array(
     'name' => 'OpenEyes',
 
     // Preloading 'log' component
@@ -112,7 +112,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202012211800',
+            'time' => '202101041029',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -229,10 +229,22 @@ return array(
         ),
         'mailer' => array(
             'class' => 'Mailer',
-            'mode' => 'sendmail',
+            'mode' => 'smtp',
         ),
         'moduleAPI' => array(
             'class' => 'ModuleAPI',
+        ),
+        'puppeteer' => array(
+            'class' => 'PuppeteerBrowser',
+            'readTimeout' => 65,
+            'logBrowserConsole' => false,
+            'leftFooterTemplate' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
+            'middleFooterTemplate' => 'Page {{PAGE}} of {{PAGES}}',
+            'rightFooterTemplate' => 'OpenEyes',
+            'topMargin' => '10mm',
+            'bottomMargin' => '20mm',
+            'leftMargin' => '5mm',
+            'rightMargin' => '5mm',
         ),
         'request' => array(
             'enableCsrfValidation' => true,
@@ -262,7 +274,7 @@ return array(
             'connectionID' => 'db',
             'sessionTableName' => 'user_session',
             'autoCreateSessionTable' => false,
-            'timeout' => getenv('OE_SESSION_TIMEOUT') ?: '21600',
+            //'timeout' => getenv('OE_SESSION_TIMEOUT') ?: '21600',
             /*'cookieParams' => array(
                 'lifetime' => 300,
             ),*/
@@ -322,7 +334,7 @@ return array(
         'ldap_admin_dn' => getenv('OE_LDAP_ADMIN_DN') ?: 'CN=openeyes,CN=Users,dc=example,dc=com',
         'ldap_password' => getenv('OE_LDAP_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_LDAP_PASSWORD")) ? rtrim(file_get_contents("/run/secrets/OE_LDAP_PASSWORD")) : ''),
         'ldap_dn' => getenv('OE_LDAP_DN') ?: 'CN=Users,dc=example,dc=com',
-        'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
+        'ldap_method' => trim(getenv("OE_LDAP_METHOD")) ?: 'native', // use 'zend' for the Zend_Ldap vendor module
         // set to integer value of 2 or 3 to force specific ldap protocol
         'ldap_protocol_version' => 3,
         // alters the prefix used when binding to a user in native ldap connections
@@ -330,8 +342,8 @@ return array(
         'ldap_native_timeout' => 3,
         'ldap_info_retries' => 3,
         'ldap_info_retry_delay' => 1,
-        'ldap_update_name' => false,
-        'ldap_update_email' => true,
+        'ldap_update_name' => strtolower(getenv("OE_LDAP_UPDATE_NAME")) == "true" ? true : false,
+        'ldap_update_email' => strtolower(getenv("OE_LDAP_UPDATE_EMAIL")) == "false" ? false : true,
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
         //'watermark' => '',
         'google_analytics_account' => '',
@@ -349,7 +361,7 @@ return array(
         'pad_hos_num' => !empty(trim(getenv('OE_HOS_NUM_PAD'))) ? getenv('OE_HOS_NUM_PAD') : '%07s',
         'profile_user_can_edit' => true,
         'profile_user_show_menu' => true,
-        'profile_user_can_change_password' => true,
+        'profile_user_can_change_password' => strtolower(getenv("PW_ALLOW_CHANGE")) == "false" ? false : true,
         'tinymce_default_options' => array(
             'plugins' => 'lists table paste code pagebreak',
             'branding' => false,
@@ -386,6 +398,11 @@ return array(
                 'position' => 3,
                 'restricted' => array('Report'),
             ),
+            'analytics' => array(
+                'title' => 'Analytics',
+                'uri' => '/Analytics/analyticsReports',
+                'position' => 4,
+            ),
             'nodexport' => array(
                 'title' => 'NOD Export',
                 'uri' => 'NodExport',
@@ -398,7 +415,6 @@ return array(
                 'position' => 6,
                 'restricted' => array('CXL Dataset'),
             ),
-
             'patientmergerequest' => array(
                 'title' => 'Patient Merge',
                 'uri' => 'patientMergeRequest/index',
@@ -436,11 +452,6 @@ return array(
                 'position' => 10,
                 'restricted' => array('TaskViewGp', 'TaskCreateGp'),
             ),
-            'analytics' => array(
-                'title' => 'Analytics',
-                'uri' => '/Analytics/analyticsReports',
-                'position' => 11,
-            ),
             /*
                  //TODO: not yet implemented
                  'worklist' => array(
@@ -466,19 +477,8 @@ return array(
         'reports' => array(),
         'opbooking_disable_both_eyes' => true,
         'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
-        // html|pdf, pdf requires wkhtmltopdf with patched QT
+        // html|pdf, pdf requires puppeteer
         'event_print_method' => 'pdf',
-        // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
-        'wkhtmltoimage_path' => '/usr/local/bin/wkhtmltoimage',
-        'wkhtmltopdf_path' => '/usr/local/bin/wkhtmltopdf',
-        'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
-        'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
-        'wkhtmltopdf_footer_right' => 'OpenEyes',
-        'wkhtmltopdf_top_margin' => '10mm',
-        'wkhtmltopdf_bottom_margin' => '20mm',
-        'wkhtmltopdf_left_margin' => '5mm',
-        'wkhtmltopdf_right_margin' => '5mm',
-        'wkhtmltopdf_nice_level' => 19,
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
@@ -494,8 +494,8 @@ return array(
         'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
         'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
-        'docman_user' => getenv('OE_DOCMAN_USER') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: 'docman_user'),
-        'docman_password' => getenv('OE_DOCMAN_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: '1234qweR!'),
+        'docman_user' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: (getenv('OE_DOCMAN_USER') ?: 'docman_user'),
+        'docman_password' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: (getenv('OE_DOCMAN_PASSWORD') ?: '1234qweR!'),
         'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
 
         /* injecting autoprint JS into generated PDF */
@@ -519,7 +519,7 @@ return array(
         *
         */
         'docman_filename_format' => getenv('DOCMAN_FILENAME_FORMAT') ?: 'OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}',
-        
+
         /**
          *  Set to false to suppress XML generation for electronic correspondence
          */
@@ -599,8 +599,8 @@ return array(
          */
 
         'lightning_viewer' => array(
-            'image_width' => 800,
-            'viewport_width' => 1280,
+            'image_width' => 1720,
+            'viewport_width' => 1720,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
@@ -610,7 +610,7 @@ return array(
             'debug_logging' => false,
             'event_specific' => array(
                 'Correspondence' => array(
-                    'image_width' => 1000
+                    'image_width' => 950
                 ),
                 'Biometry' => array(
                     'image_width' => 1200
@@ -691,7 +691,7 @@ return array(
         'exclude_admin_structure_param_list' => array(
             //            'Worklist',
         ),
-        'oe_version' => '3.6.1',
+        'oe_version' => '4.0',
         // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
         'gp_label' => 'GP',
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -710,6 +710,7 @@ return array(
             'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).*$%',
             'strength_message' => getenv('PW_RES_STRENGTH_MESS') ? htmlspecialchars(getenv('PW_RES_STRENGTH_MESS')) : 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
         ),
+        'sodium_crypto_key_path' => '/run/secrets/SODIUM_CRYPTO_KEY',
         'portal' => array(
             'uri' => getenv('OE_PORTAL_URI') ?: 'http://api.localhost:8000',
             'frontend_url' => getenv('OE_PORTAL_EXTERNAL_URI') ?: 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])
@@ -726,5 +727,28 @@ return array(
                 'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ?: ''),
             ),
         ),
+        'pw_status_checks' => array(
+            /* pw_status key:
+                    'current' = user can log in as normal,
+                    'stale'  = user can log in, but they will be prompted to change their password on login. (they can also log out)
+                    'expired'  = user can log in, however the only things they can do is change their password, which they will be prompted to change on login. (they can also log out)
+                    'softlocked' = user cannot log in even with valid password, but gets annother set of tries in 10 mins
+                    'locked' = user cannot log in even with valid password,
+                Invalid statuses will act as 'locked' */
+            'pw_tries' => null !== getenv('PW_STAT_TRIES') ? getenv('PW_STAT_TRIES') : 10, //number of password tries
+            'pw_tries_failed' => null !== getenv('PW_STAT_TRIES_FAILED') ? getenv('PW_STAT_TRIES_FAILED') : 'softlocked', //password status after number of tries exceeded
+            'pw_softlock_timeout' => null !== getenv('PW_SOFTLOCK_TIMEOUT') ? getenv('PW_SOFTLOCK_TIMEOUT') : '10 mins', //time before user can try again after softlocking account
+            'pw_days_stale' => null !== getenv('PW_STAT_DAYS_STALE') ? getenv('PW_STAT_DAYS_STALE') : '0', //number of days before password stales - e.g. '15 days' - 0 to disable , also supports months, years, hours, mins and seconds
+            'pw_days_expire' => null !== getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
+            'pw_days_lock' => null !== getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
+            'pw_admin_pw_change' => null !== getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
+        ),
+        'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? strtolower(getenv('OE_TRAINING_MODE')) : null,
+        'watermark_short' => getenv('OE_USER_BANNER_SHORT') ?: null,
+        'watermark' => getenv('OE_USER_BANNER_LONG') ?: null,
+        'watermark_admin_short' => getenv('OE_ADMIN_BANNER_SHORT') ?: null,
+        'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
     ),
 );
+
+return $config;

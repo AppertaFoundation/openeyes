@@ -33,6 +33,8 @@ if (!isset($element)) {
                 'contact_type' => $contact_type,
                 'row_index' => $row_index,
                 'address' => $address,
+                'email' => $email,
+                'can_send_electronically' => $can_send_electronically,
             ));
             ?>
         </td>
@@ -42,9 +44,11 @@ if (!isset($element)) {
                     'contact_type' => $selected_contact_type,
                     'row_index' => $row_index,
                     'can_send_electronically' => $can_send_electronically,
+                    'email' => $email,
+                    'patient_id' => $patient_id ?? null,
                 ));
 ?>
-        
+
     </td>
     <td>
         <?php if ($row_index > 0) : ?>

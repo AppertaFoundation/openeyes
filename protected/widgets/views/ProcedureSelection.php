@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,10 +17,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="flex-layout procedure-selection eventDetail<?= $last ? 'eventDetailLast' : '' ?>"
-     id="typeProcedure"
-     style="<?= $hidden ? 'display: none;' : '' ?>"
->
+<div class="flex-layout procedure-selection eventDetail<?= $last ? 'eventDetailLast' : '' ?>" id="typeProcedure" style="<?= $hidden ? 'display: none;' : '' ?>">
     <?php if ($label && sizeof($label)) { ?>
         <div class="cols-2">
             <label for="select_procedure_id_<?php echo $identifier; ?>">
@@ -29,73 +27,67 @@
     <?php } ?>
     <?php $totalDuration = 0; ?>
 
-    <table class="cols-10" id="procedureList_<?php echo $identifier ?>"
-           style="<?= empty($selected_procedures) ? 'visibility: hidden;' : '' ?>">
+    <table class="cols-10" id="procedureList_<?php echo $identifier ?>" style="<?= empty($selected_procedures) ? 'visibility: hidden;' : '' ?>">
         <thead>
-        <tr>
-            <th>Procedure</th>
-            <?php if ($durations) { ?>
-                <th colspan="2">Duration (adjusted for complexity)</th>
-            <?php } ?>
-            <th></th>
-        </tr>
+            <tr>
+                <th>Procedure</th>
+                <?php if ($durations) { ?>
+                    <th colspan="2">Duration (adjusted for complexity)</th>
+                <?php } ?>
+                <th></th>
+            </tr>
         </thead>
         <tbody class="body">
-        <?php
-        if (isset($selected_procedures)) {
-            foreach ($selected_procedures as $procedure) :
-                $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
+            <?php
+            if (isset($selected_procedures)) {
+                foreach ($selected_procedures as $procedure) :
+                    $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
 
-                <tr class="item">
-                    <td class="procedure">
-                        <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]', $procedure->id, ['class' => 'js-procedure']); ?></span>
-                        <span class="value"><?= $procedure->term; ?></span>
-                    </td>
-
-                    <?php if ($durations) { ?>
-                        <td class="duration">
-                    <span data-default-duration="<?= $procedure->default_duration ?>">
-                        <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
-                    </span> mins
+                    <tr class="item">
+                        <td class="procedure">
+                            <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]', $procedure->id, ['class' => 'js-procedure']); ?></span>
+                            <span class="value"><?= $procedure->term; ?></span>
                         </td>
-                    <?php } ?>
-                    <td>
-                        <span class="removeProcedure"><i class="oe-i trash"></i></span>
-                    </td>
-                </tr>
+
+                        <?php if ($durations) { ?>
+                            <td class="duration">
+                                <span data-default-duration="<?= $procedure->default_duration ?>">
+                                    <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
+                                </span> mins
+                            </td>
+                        <?php } ?>
+                        <td>
+                            <span class="removeProcedure"><i class="oe-i trash"></i></span>
+                        </td>
+                    </tr>
 
             <?php endforeach;
-        } ?>
+            } ?>
 
-        <?php
-        if (isset($_POST[$class]['total_duration_' . $identifier])) {
-            $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
-        }
-        ?>
+            <?php
+            if (isset($_POST[$class]['total_duration_' . $identifier])) {
+                $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
+            }
+            ?>
         </tbody>
 
         <?php if ($durations) { ?>
             <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <span id="projected_duration_<?php echo $identifier ?>">
-                        <span><?= \CHtml::encode($totalDuration) ?></span> mins
-                    </span>
-                    <span class="fade">(calculated)</span>
-                </td>
-                <td class="align-left">
-                    <input
-                            type="text"
-                            value="<?= $adjusted_total_duration ?>"
-                            id="<?= $class ?>_total_duration_<?= $identifier ?>"
-                            name="<?= $class ?>[total_duration_<?= $identifier ?>]"
-                            style="width:60px"
-                            data-total-duration="<?= $total_duration ?>"
-                    />
-                    <span class="fade">mins (estimated)</span>
-                </td>
-            </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <span id="projected_duration_<?php echo $identifier ?>">
+                            <span><?= \CHtml::encode($totalDuration) ?></span> mins
+                        </span>
+                        <span class="fade">(calculated)</span>
+                    </td>
+                    <?php if ($showEstimatedDuration) { ?>
+                        <td class="align-left">
+                            <input type="text" value="<?= $adjusted_total_duration ?>" id="<?= $class ?>_total_duration_<?= $identifier ?>" name="<?= $class ?>[total_duration_<?= $identifier ?>]" style="width:60px" data-total-duration="<?= $total_duration ?>" />
+                            <span class="fade">mins (estimated)</span>
+                        </td>
+                    <?php } ?>
+                </tr>
             </tfoot>
 
         <?php } ?>
@@ -110,7 +102,7 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function() {
         const low_complexity = "0";
         const high_complexity = "10";
         const high_percentage = typeof op_booking_inc_time_high_complexity !== "undefined" ? parseInt(window.op_booking_inc_time_high_complexity) : 20;
@@ -120,7 +112,7 @@
 
         // Note: Removed_stack is probably not the best name for this. Selected procedures is more accurate.
         // It is used to suppress procedures from the add a procedure inputs
-        var removed_stack_<?php echo $identifier?> = [<?php echo implode(',', $removed_stack); ?>];
+        var removed_stack_<?php echo $identifier ?> = [<?php echo implode(',', $removed_stack); ?>];
 
         function getComplexity() {
             let $checked = $('input[name="Element_OphTrOperationbooking_Operation[complexity]"]:checked');
@@ -143,13 +135,13 @@
             // update total duration
             let totalDuration = 0;
             let adjustedTotalDuration = 0;
-            $('#procedureList_' + identifier).find('.item').map(function () {
+            $('#procedureList_' + identifier).find('.item').map(function() {
                 let $span = $(this).find('.duration span');
                 if ($span.length > 0) {
                     let duration = parseInt($span.data('default-duration'));
                     let adjustedDuration;
 
-                    if ($('input[name=\"<?=$class?>[eye_id]\"]:checked').val() == 3) {
+                    if ($('input[name=\"<?= $class ?>[eye_id]\"]:checked').val() == 3) {
                         totalDuration *= 2;
                     }
                     adjustedDuration = calculateDurationByComplexity(duration, getComplexity());
@@ -161,10 +153,10 @@
                 }
             });
 
-            if (parseInt($projected_duration.text()) === parseInt($('#<?php echo $class?>_total_duration_' + identifier).val())
-                || $('#<?php echo $class?>_total_duration_' + identifier).val() === '') {
-                $('#<?php echo $class?>_total_duration_' + identifier).val(adjustedTotalDuration);
-                $('#<?php echo $class?>_total_duration_' + identifier).data('total-duration', totalDuration);
+            if (parseInt($projected_duration.text()) === parseInt($('#<?php echo $class ?>_total_duration_' + identifier).val()) ||
+                $('#<?php echo $class ?>_total_duration_' + identifier).val() === '') {
+                $('#<?php echo $class ?>_total_duration_' + identifier).val(adjustedTotalDuration);
+                $('#<?php echo $class ?>_total_duration_' + identifier).data('total-duration', totalDuration);
             }
             $projected_duration.text(adjustedTotalDuration);
         }
@@ -176,7 +168,7 @@
             list_selector = '#typeProcedure'
         }
 
-        $(list_selector).on('click', '.removeProcedure', function () {
+        $(list_selector).on('click', '.removeProcedure', function() {
             let $table = $(this).closest("[id^='procedureList_']");
             if ($table) {
                 let identifier = $table.attr('id').match(/^procedureList_(.*?)$/);
@@ -194,34 +186,34 @@
             $table_row.remove();
 
             $projected_duration.text(0);
-            $('#<?php echo $class?>_total_duration_' + identifier).val(0);
+            $('#<?php echo $class ?>_total_duration_' + identifier).val(0);
 
-            <?php if ($durations) {?>
-            updateTotalDuration(identifier);
-            <?php }?>
+            <?php if ($durations) { ?>
+                updateTotalDuration(identifier);
+            <?php } ?>
 
             if (length < 1) {
                 $procedure_list.css('visibility', 'hidden');
-                <?php if ($durations) {?>
-                $procedure_list.find('.durations').hide();
-                <?php }?>
+                <?php if ($durations) { ?>
+                    $procedure_list.find('.durations').hide();
+                <?php } ?>
             }
 
-            if (typeof (window.callbackRemoveProcedure) === 'function') {
+            if (typeof(window.callbackRemoveProcedure) === 'function') {
                 callbackRemoveProcedure(procedure_id);
             }
 
             // Remove removed procedure from the removed_stack
             var stack = [];
             var popped = null;
-            $.each(removed_stack_<?php echo $identifier?>, function (key, value) {
+            $.each(removed_stack_<?php echo $identifier ?>, function(key, value) {
                 if (value["id"] != procedure_id) {
                     stack.push(value);
                 } else {
                     popped = value;
                 }
             });
-            removed_stack_<?php echo $identifier?> = stack;
+            removed_stack_<?php echo $identifier ?> = stack;
 
             // Refresh the current procedure select box in case the removed procedure came from there
             if ($('#subsection_id_' + identifier).length) {
@@ -230,8 +222,8 @@
             } else if (popped) {
                 // No subsections, so we should be safe to just push it back into the list
                 $('ul.add-options[data-id="select"]').append(
-                    '<li data-label="'+popped["name"]+'" data-id="'+popped["id"]+'">' +
-                    '<span class="auto-width">'+popped["name"]+'</span>' +
+                    '<li data-label="' + popped["name"] + '" data-id="' + popped["id"] + '">' +
+                    '<span class="auto-width">' + popped["name"] + '</span>' +
                     '</li>'
                 ).removeAttr('disabled');
                 sort_ul($('ul.add-options[data-id="select"]'));
@@ -256,13 +248,13 @@
             };
         }
 
-        $('select[id^=subsection_id]').unbind('change').change(function () {
+        $('select[id^=subsection_id]').unbind('change').change(function() {
             var m = $(this).attr('id').match(/^subsection_id_(.*)$/);
             updateProcedureSelect(m[1]);
         });
 
         function initialiseProcedureAdder() {
-            $('.add-options[data-id="subsections"]').on('click', 'li', function () {
+            $('.add-options[data-id="subsections"]').on('click', 'li', function() {
                 let id = $(this).attr('class') === 'selected' ? '' : $(this).data('id');
                 updateProcedureDialog(id);
             });
@@ -281,11 +273,15 @@
         function updateProcedureDialog(subsection) {
             if (subsection !== '') {
                 $.ajax({
-                    'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
+                    'url': '<?php echo Yii::app()->createUrl('procedure/list') ?>',
                     'type': 'POST',
-                    'data': {'subsection': subsection, 'dialog': true, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
-                    'success': function (data) {
-                        $('.add-options[data-id="select"]').each(function () {
+                    'data': {
+                        'subsection': subsection,
+                        'dialog': true,
+                        'YII_CSRF_TOKEN': YII_CSRF_TOKEN
+                    },
+                    'success': function(data) {
+                        $('.add-options[data-id="select"]').each(function() {
                             $(this).html(data).find('li').find('span').removeClass('auto-width').addClass('restrict-width extended');
                             $(this).show();
                         });
@@ -298,11 +294,11 @@
                 $subspecialty_procedures = ProcedureSubspecialtyAssignment::model()->getProcedureListFromSubspecialty($subspecialty_id);
                 $formatted_procedures = "";
                 foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
-                    $formatted_procedures .= "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>".
+                    $formatted_procedures .= "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>" .
                         "<span class='auto-width'>$subspecialty_procedure</span></li>";
                 }
                 ?>
-                $('.add-options[data-id="select"]').each(function () {
+                $('.add-options[data-id="select"]').each(function() {
                     $(this).html("<?= $formatted_procedures ?>");
                     $(this).show();
                 });
@@ -314,18 +310,21 @@
             let subsection = subsection_field.val();
             if (subsection !== '') {
                 $.ajax({
-                    'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
+                    'url': '<?php echo Yii::app()->createUrl('procedure/list') ?>',
                     'type': 'POST',
-                    'data': {'subsection': subsection, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
-                    'success': function (data) {
+                    'data': {
+                        'subsection': subsection,
+                        'YII_CSRF_TOKEN': YII_CSRF_TOKEN
+                    },
+                    'success': function(data) {
                         $('select[name=select_procedure_id_' + identifier + ']').attr('disabled', false);
                         $('select[name=select_procedure_id_' + identifier + ']').html(data);
 
                         // remove any items in the removed_stack
-                        $('select[name=select_procedure_id_' + identifier + '] option').map(function () {
+                        $('select[name=select_procedure_id_' + identifier + '] option').map(function() {
                             var obj = $(this);
 
-                            $.each(removed_stack_<?php echo $identifier?>, function (key, value) {
+                            $.each(removed_stack_<?php echo $identifier ?>, function(key, value) {
                                 if (value["id"] == obj.val()) {
                                     obj.remove();
                                 }
@@ -340,21 +339,21 @@
             }
         }
 
-        $('select[id^="select_procedure_id"]').unbind('change').change(function () {
+        $('select[id^="select_procedure_id"]').unbind('change').change(function() {
             var m = $(this).attr('id').match(/^select_procedure_id_(.*)$/);
             var identifier = m[1];
             var select = $(this);
             var procedure = $('select[name=select_procedure_id_' + m[1] + '] option:selected').text();
             if (procedure != 'Select a commonly used procedure') {
 
-                if (typeof (window.callbackVerifyAddProcedure) == 'function') {
-                    window.callbackVerifyAddProcedure(procedure, "<?php echo $durations ? '1' : '0';?>", function (result) {
+                if (typeof(window.callbackVerifyAddProcedure) == 'function') {
+                    window.callbackVerifyAddProcedure(procedure, "<?php echo $durations ? '1' : '0'; ?>", function(result) {
                         if (result != true) {
                             select.val('');
                             return;
                         }
 
-                        if (typeof (window.callbackAddProcedure) == 'function') {
+                        if (typeof(window.callbackAddProcedure) == 'function') {
                             var procedure_id = $('select[name=select_procedure_id_' + identifier + '] option:selected').val();
                             callbackAddProcedure(procedure_id);
                         }
@@ -362,7 +361,7 @@
                         ProcedureSelectionSelectByName(procedure, false, m[1]);
                     });
                 } else {
-                    if (typeof (window.callbackAddProcedure) == 'function') {
+                    if (typeof(window.callbackAddProcedure) == 'function') {
                         var procedure_id = $('select[name=select_procedure_id_' + identifier + '] option:selected').val();
                         callbackAddProcedure(procedure_id);
                     }
@@ -374,23 +373,25 @@
         });
 
         <?php if ($durations) : ?>
-        $(document).ready(function () {
-            if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
-                $('#projected_duration_<?php echo $identifier?> span').html(parseInt($('#projected_duration_<?php echo $identifier?> span').html()));
-            }
-            $('input[name="<?php echo $class?>[eye_id]"]').click(function () {
-                updateTotalDuration('<?php echo $identifier?>');
+            $(document).ready(function() {
+                if ($('input[name="<?php echo $class ?>[eye_id]"]:checked').val() == 3) {
+                    $('#projected_duration_<?php echo $identifier ?> span').html(parseInt($('#projected_duration_<?php echo $identifier ?> span').html()));
+                }
+                $('input[name="<?php echo $class ?>[eye_id]"]').click(function() {
+                    updateTotalDuration('<?php echo $identifier ?>');
+                });
             });
-        });
         <?php endif ?>
 
         function ProcedureSelectionSelectByName(name, callback, identifier, procedure_id) {
             $.ajax({
-                'url': baseUrl + '/procedure/details?durations=<?php echo $durations ? '1' : '0'?>&identifier=' + identifier,
+                'url': baseUrl + '/procedure/details?durations=<?php echo $durations ? '1' : '0' ?>&identifier=' + identifier,
                 'type': 'GET',
-                'data': {'name': name},
-                'success': function (data) {
-                    let enableDurations = <?php echo $durations ? 'true' : 'false'?>;
+                'data': {
+                    'name': name
+                },
+                'success': function(data) {
+                    let enableDurations = <?php echo $durations ? 'true' : 'false' ?>;
 
                     // append duration of the procedure
                     $('#procedureList_' + identifier + ' span.value:contains(' + name + ')').each(function () {
@@ -412,20 +413,23 @@
                     if ($('ul.add-options.js-search-results').children().length > 0) {
                         m = data.match(/<span class="value">(.*?)<\/span>/);
 
-                        $('ul.add-options.js-search-results').children().each(function () {
+                        $('ul.add-options.js-search-results').children().each(function() {
                             if ($(this).text() == m[1]) {
                                 let id = $(this).val();
                                 let name = $(this).text();
 
-                                removed_stack_<?php echo $identifier?>.push({name: name, id: id});
+                                removed_stack_<?php echo $identifier ?>.push({
+                                    name: name,
+                                    id: id
+                                });
 
                                 $(this).remove();
                             }
                         });
                     }
 
-                    if (callback && typeof (window.callbackAddProcedure) === 'function') {
-                        if(typeof procedure_id == "undefined") {
+                    if (callback && typeof(window.callbackAddProcedure) === 'function') {
+                        if (typeof procedure_id == "undefined") {
                             let m = data.match(/<input class="js-procedure" type=\"hidden\" value=\"([0-9]+)\"/);
                             procedure_id = m[1];
                         }
@@ -435,27 +439,38 @@
             });
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             new OpenEyes.UI.AdderDialog({
                 id: 'procedure_popup_<?= $identifier ?: ''; ?>',
                 openButton: $('#add-procedure-list-btn-<?= $identifier ?>'),
                 itemSets: [
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                        array_map(function ($key, $item) {
-                            return ['label' => $item, 'id' => $key, 'source' => 'subsections'];
-                        }, array_keys($subsections), $subsections))?>, {'id': 'subsections'}),
+                                                            array_map(
+                                                                function ($key, $item) {
+                                                                    return ['label' => $item, 'id' => $key, 'source' => 'subsections'];
+                                                                },
+                                                                array_keys($subsections),
+                                                                $subsections
+                                                            )
+                                                        ) ?>, {
+                        'id': 'subsections'
+                    }),
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                        array_map(function ($key, $item) {
-                            return ['label' => $item, 'id' => $key];
-                        }, array_keys($procedures), $procedures)
-                    ) ?>, {'id': 'select', 'multiSelect': true, 'liClass': ' restrict-width extended'})
+                                                            array_map(function ($key, $item) {
+                                                                return ['label' => $item, 'id' => $key];
+                                                            }, array_keys($procedures), $procedures)
+                                                        ) ?>, {
+                        'id': 'select',
+                        'multiSelect': true,
+                        'liClass': ' restrict-width extended'
+                    })
                 ],
                 liClass: 'restrict-width extended',
                 popupClass: 'oe-add-select-search',
-                onReturn: function (adderDialog, selectedItems) {
+                onReturn: function(adderDialog, selectedItems) {
                     //on multiselect: sort selected items alphabetically as the list could have a different display order
                     if (selectedItems.length > 1) {
-                        selectedItems.sort(function (a, b) {
+                        selectedItems.sort(function(a, b) {
                             let label_a = a.label.toUpperCase();
                             let label_b = b.label.toUpperCase();
 
@@ -470,34 +485,34 @@
                     }
 
                     for (let index = 0; index < selectedItems.length; index++) {
-                        if(selectedItems[index]['source'] === 'subsections'){
+                        if (selectedItems[index]['source'] === 'subsections') {
                             continue;
                         }
                         var existingProc = document.querySelector('#procedureList_' + identifier + ' .body input[value="' + selectedItems[index]['id'] + '"]');
-                        if(existingProc){
+                        if (existingProc) {
                             continue;
                         }
                         // append selection into procedure list
-                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");
-                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>',selectedItems[index]['id']);
+                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?= $identifier ?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");
+                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>', selectedItems[index]['id']);
                     }
                     return true;
                 },
-                onOpen: function () {
-                    $('#procedure_popup_<?=$identifier ?: ''; ?>').find('li').each(function () {
+                onOpen: function() {
+                    $('#procedure_popup_<?= $identifier ?: ''; ?>').find('li').each(function() {
                         let procedureId = $(this).data('id');
-                        let alreadyUsed = $('#procedureList_<?=$identifier ?: ''; ?>')
+                        let alreadyUsed = $('#procedureList_<?= $identifier ?: ''; ?>')
                             .find('.js-procedure[value="' + procedureId + '"]').length > 0;
                         $(this).toggle(!alreadyUsed);
                     });
                 },
                 searchOptions: {
                     searchSource: '/procedure/autocomplete',
-                    resultsFilter: function (results) {
+                    resultsFilter: function(results) {
                         let items = [];
-                        $(results).each(function (index, result) {
-                            let procedureMatchArray = $('#procedureList_<?=$identifier ?: ''; ?>')
-                                .find('span:contains(' + result.label + ')').filter(function () {
+                        $(results).each(function(index, result) {
+                            let procedureMatchArray = $('#procedureList_<?= $identifier ?: ''; ?>')
+                                .find('span:contains(' + result.label + ')').filter(function() {
                                     return $(this).text() === result.label;
                                 });
 
@@ -516,11 +531,10 @@
         $("input[id*='_complexity_']").on('click', function() {
             let $estimated = $('#Element_OphTrOperationbooking_Operation_total_duration_procs');
             if ($estimated) {
-                if(typeof updateTotalDuration === "function"){
+                if (typeof updateTotalDuration === "function") {
                     updateTotalDuration('procs');
                 }
             }
         });
     });
 </script>
-

@@ -54,11 +54,13 @@ class DefaultController extends OphTrOperationbookingEventController
             Yii::app()->assetManager->registerScriptFile('js/additional-validators.js');
 
             //adding Anaestethic JS
-            $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
+            $url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js'), true);
             Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
             Yii::app()->clientScript->registerScript(
                 'AnaestheticController',
-                'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});', CClientScript::POS_END);
+                'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});',
+                CClientScript::POS_END
+            );
 
             $this->jsVars['nhs_date_format'] = Helper::NHS_DATE_FORMAT_JS;
             $this->jsVars['op_booking_inc_time_high_complexity'] = SettingMetadata::model()->getSetting('op_booking_inc_time_high_complexity');
@@ -198,7 +200,7 @@ class DefaultController extends OphTrOperationbookingEventController
     public function actionCreate()
     {
         $cancel_url = \Yii::app()->createURL("/patient/summary/", array("id" => $this->patient->id));
-        $create_examination_url = Yii::app()->getBaseUrl(true).'/OphCiExamination/Default/create?patient_id=' . $this->patient->id;
+        $create_examination_url = Yii::app()->createAbsoluteUrl('site/index').'OphCiExamination/Default/create?patient_id=' . $this->patient->id;
 
         $this->jsVars['examination_events_count'] = $this->getExaminationEventCount();
         $this->jsVars['cancel_url'] = $cancel_url;
@@ -298,7 +300,7 @@ class DefaultController extends OphTrOperationbookingEventController
                 $_POST = array();
                 parent::actionCreate();
             }
-        } else if (isset($_POST['#']) || (isset($_POST['schedule_now']) && $_POST['schedule_now'])) {
+        } elseif (isset($_POST['#']) || (isset($_POST['schedule_now']) && $_POST['schedule_now'])) {
             // from create.php
             parent::actionCreate();
         }
@@ -398,6 +400,18 @@ class DefaultController extends OphTrOperationbookingEventController
         );
     }
 
+    /**
+     * Make sure the EUR is displayed properly in lightning viewer
+     * @param $id: event id
+     */
+    public function actionRenderEventImage($id)
+    {
+        $eur = EUREventResults::model()->findByAttributes(array('event_id' => $id));
+        if ($eur) {
+            $this->extraViewProperties = array('eur' => $eur);
+        }
+        parent::actionRenderEventImage($id);
+    }
     /**
      * Handle procedures.
      *
@@ -771,7 +785,8 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->layout = '//layouts/print';
 
         $this->pdf_print_suffix = 'admission_form';
-        $this->pdf_print_html = $this->render('../letters/admission_form',
+        $this->pdf_print_html = $this->render(
+            '../letters/admission_form',
             array(
                 'operation' => $this->operation,
                 'site' => $this->operation->site,
@@ -796,7 +811,7 @@ class DefaultController extends OphTrOperationbookingEventController
                 Yii::app()->user->setFlash('error.error', "Please cancel this operation before deleting it.");
                 return $this->redirect(array('default/view/'.$this->event->id));
             }
-        } else if ($this->eur_res) {
+        } elseif ($this->eur_res) {
             parent::actionDelete($id);
         }
     }

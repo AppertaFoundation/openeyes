@@ -21,9 +21,15 @@
  *
  * @property string $id
  * @property int $event_id
+ * @property bool $use_nickname
+ * @property string $body
+ * @property int $subspecialty_id
+ * @property int $firm_id
+ * @property int $site_id
  *
  * The followings are the available model relations:
  * @property Event $event
+ * @property Subspecialty $subspecialty
  */
 class LetterMacro extends BaseActiveRecordVersioned
 {
@@ -32,7 +38,8 @@ class LetterMacro extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ElementOperation the static model class
+     * @param string $className
+     * @return LetterMacro the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -59,6 +66,7 @@ class LetterMacro extends BaseActiveRecordVersioned
             array('site_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'site'),
             array('subspecialty_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'subspecialty'),
             array('firm_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'firm'),
+            array('episode_status_id', 'default', 'setOnEmpty' => true, 'value' => null),
         );
     }
 
@@ -135,7 +143,7 @@ class LetterMacro extends BaseActiveRecordVersioned
         switch ($this->type) {
             case 'site':
                 $this->firm_id = null;
-                $this->subspecialty = null;
+                $this->subspecialty_id = null;
                 break;
             case 'subspecialty':
                 $this->firm_id = null;
@@ -152,14 +160,17 @@ class LetterMacro extends BaseActiveRecordVersioned
 
     public function afterSave()
     {
-        if (isset($_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent']) && isset($_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'])) {
+        if (isset(
+            $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'],
+            $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod']
+        )) {
             $post_associated_content = $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'];
             $post_init_method = $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'];
 
             $order = 1;
             foreach ($post_associated_content as $key => $pac) {
                 if (isset($pac['id']) && ($pac['id'] > 0)) {
-                    $criteria = new \CDbCriteria();
+                    $criteria = new CDbCriteria();
                     $criteria->addCondition('id = ' . $pac['id']);
                     $criteria->addCondition('macro_id = ' . $this->id);
                     $associated_content = MacroInitAssociatedContent::model()->find($criteria);
@@ -171,12 +182,12 @@ class LetterMacro extends BaseActiveRecordVersioned
                 }
 
                 $associated_content->macro_id = $this->id;
-                $associated_content->is_system_hidden = (isset($pac["is_system_hidden"]) ? 1 : 0);
-                $associated_content->is_print_appended = (isset($pac["is_print_appended"]) ? 1 : 0);
-                $associated_content->init_method_id = $post_init_method[$key]["method_id"];
-                $associated_content->short_code = $post_init_method[$key]["short_code"];
+                $associated_content->is_system_hidden = (isset($pac['is_system_hidden']) ? 1 : 0);
+                $associated_content->is_print_appended = (isset($pac['is_print_appended']) ? 1 : 0);
+                $associated_content->init_method_id = $post_init_method[$key]['method_id'];
+                $associated_content->short_code = $post_init_method[$key]['short_code'];
                 $associated_content->display_order = $order;
-                $associated_content->display_title = $post_init_method[$key]["title"];
+                $associated_content->display_title = $post_init_method[$key]['title'];
 
                 $associated_content->{$method}();
                 $order++;
@@ -186,17 +197,19 @@ class LetterMacro extends BaseActiveRecordVersioned
         if (isset($_POST['delete_associated'])) {
             foreach ($_POST['delete_associated'] as $key => $da) {
                 if ($da['delete'] > 0) {
-                    $criteria = new \CDbCriteria();
+                    $criteria = new CDbCriteria();
                     $criteria->addCondition('id = ' . $da['delete']);
                     $criteria->addCondition('macro_id = ' . $this->id);
                     MacroInitAssociatedContent::model()->deleteAll($criteria);
                 }
             }
         }
-
     }
 
-
+    /**
+     * @param $patient
+     * @throws Exception
+     */
     public function substitute($patient)
     {
         $this->body = OphCoCorrespondence_Substitution::replace($this->body, $patient);

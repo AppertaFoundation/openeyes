@@ -140,6 +140,20 @@
                 ?>
             </td>
         </tr>
+        <tr>
+            <td>Email</td>
+            <td>
+                <?php
+                echo CHtml::activeTextField(
+                    $cbs->contact,
+                    'email',
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                    ]
+                ); ?>
+            </td>
+        </tr>
 
         <?php
         $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];

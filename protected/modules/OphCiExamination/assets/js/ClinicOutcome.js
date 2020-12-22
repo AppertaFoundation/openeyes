@@ -125,8 +125,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             });
         }
 
-        if ($row.is('tr:first-child')) {
-            $(this.entry_table_selector + ' tr:nth-child(2) td:first-child').html('');
+        let next_row = $(this.entry_table_selector + ' tr:nth-child(2) td:first-child');
+        // if the row to be deleted is the first row and there is a second row
+        // then remove the 'AND' text at the front of the second row
+        if ($row.is('tr:first-child') && next_row.length > 0) {
+            next_row
+            .contents()
+            .filter(function(){
+                // only the text needs to be removed
+                return this.nodeType === Node.TEXT_NODE;
+            }).remove();
         }
 
         $row.remove();

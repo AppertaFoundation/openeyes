@@ -17,21 +17,23 @@
  */
 ?>
 <div class="element-data element-eyes flex-layout flex-left col-gap">
-    <div class="right-eye cols-6">
+    <div class="right-eye cols-full">
         <div class="data-value">
             <?php if ($element->hasRight()) { ?>
                 <?php echo $element->right_value ?> &micro;m
-                (<?php echo $element->right_method->name ?>)
+                (<?php echo $element->right_method->name ?>)<br>
+                <?php echo $element->textWithLineBreaks('right_notes') ?>
             <?php } else { ?>
                 Not recorded
             <?php } ?>
         </div>
     </div>
-    <div class="left-eye cols-6">
+    <div class="left-eye cols-full">
         <div class="data-value">
             <?php if ($element->hasLeft()) { ?>
                 <?php echo $element->left_value ?> &micro;m
-                (<?php echo $element->left_method->name ?>)
+                (<?php echo $element->left_method->name ?>)<br>
+                <?php echo $element->textWithLineBreaks('left_notes') ?>
             <?php } else { ?>
                 Not recorded
             <?php } ?>

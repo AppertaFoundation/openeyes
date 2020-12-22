@@ -7,8 +7,10 @@
       <form>
         <div class="row flex-layout flex-right">
           <button type="submit" name="report" value="generate" class="button green hint"
-              <?php echo !Yii::app()->getAuthManager()->checkAccess('Report',
-                  Yii::app()->user->id) ? 'disabled' : ''; ?>
+              <?php echo !Yii::app()->getAuthManager()->checkAccess(
+                  'Report',
+                  Yii::app()->user->id
+              ) ? 'disabled' : ''; ?>
           > Generate
           </button> &nbsp; &nbsp;
           <i class="spinner loader" style="display: none;"></i>

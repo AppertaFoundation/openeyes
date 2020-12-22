@@ -107,7 +107,7 @@ class FamilyHistory extends \BaseEventTypeElement
     public function afterValidate()
     {
         if (!$this->no_family_history_date && !$this->entries) {
-            $this->addError('no_family_history_date', 'Please confirm there are no family history entries to be recorded.');
+            $this->addError('no_family_history', 'Please confirm there are no family history entries to be recorded.');
         }
 
         foreach ($this->entries as $i => $entry) {

@@ -68,7 +68,9 @@
                         }
                     }
 
-                    echo CHtml::dropDownList('cancellation_reason', @$_POST['cancellation_reason'],
+                    echo CHtml::dropDownList(
+                        'cancellation_reason',
+                        @$_POST['cancellation_reason'],
                         OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
                         array('empty' => 'Select a reason')
                     ); ?>
@@ -80,8 +82,11 @@
                     <?= CHtml::label('Comments: ', 'cancellation_comment') ?>
                 </div>
                 <div class="cols-10">
-                    <?= \CHtml::textArea('cancellation_comment', @$_POST['cancellation_comment'],
-                        array('rows' => 6, 'cols' => 40)) ?>
+                    <?= \CHtml::textArea(
+                        'cancellation_comment',
+                        @$_POST['cancellation_comment'],
+                        array('rows' => 6, 'cols' => 40)
+                    ) ?>
                 </div>
             </div>
 
@@ -100,7 +105,7 @@
     <div class="alert-box alert with-icon bottom"><p>Please fix the following input errors:</p>
         <ul>
             <?php foreach ($errors as $error) { ?>
-                <li><?php echo $error ?></li>
+                <li><?php echo htmlspecialchars($error) ?></li>
             <?php } ?>
         </ul>
     </div>

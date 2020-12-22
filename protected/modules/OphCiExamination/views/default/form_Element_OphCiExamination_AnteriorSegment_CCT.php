@@ -31,13 +31,38 @@
             Yii::app()->params['html_autocomplete'],
             'nowrapper' => true,
             'append-text'=>'&nbsp; &micro;m, using',
-            'class' => 'cct_value')) ?>
+            'class' => 'cct_value')
+        ) ?>
         <?php echo $form->dropDownList(
             $element,
             $eye_side.'_method_id',
             $methods,
-            array('nowrapper' => true, 'class' => 'inline')) ?>
+            array('nowrapper' => true, 'class' => 'inline')
+        ) ?>
+        <div class="add-data-actions flex-item-bottom ">
+
+          <button id="cct-<?= $eye_side ?>-comment-button"
+              class="button js-add-comments" data-comment-container="#cct-<?= $eye_side ?>-comments"
+              type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
+              <i class="oe-i comments small-icon"></i>
+          </button>
+
         </div>
+      </div>
+      <div id="cct-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+           style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#cct-<?= $eye_side ?>-comment-button">
+            <?=\CHtml::activeTextArea(
+                $element,
+                $eye_side . '_notes',
+                array(
+                    'rows' => 1,
+                    'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                    'class' => 'cols-full js-comment-field',
+                    'style' => 'overflow-wrap: break-word; height: 24px;',
+                )
+            ) ?>
+            <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+      </div>
       </div>
       <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : ""?>">
         <div class="add-side">

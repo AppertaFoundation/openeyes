@@ -155,4 +155,15 @@ class Subspecialty extends BaseActiveRecordVersioned
     {
         return $this->ref_spec;
     }
+
+    public function getSubspecialtyEmail()
+    {
+        $firm = $this->serviceSubspecialtyAssignment->firms;
+
+        // Checking only the first element of the array for the email, because there is a validation i.e. at most
+        // only one subspecialty can have the email address set.
+        $email = $firm[0]['service_email'];
+
+        return $email ?? null;
+    }
 }

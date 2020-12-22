@@ -22,4 +22,4 @@
 <?php $this->renderPartial('//patient/episode_content', array(
     'cssClass' => $css_class,
     'content' => $content,
-)) ?>
+));

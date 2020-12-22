@@ -517,6 +517,12 @@
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CircumcornealInjection</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Circumcorneal Injection</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+
+    <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>KoeppeNodule</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Koeppe nodule</TITLE>
       <INIT_DOODLE_JSON/>
@@ -1581,6 +1587,16 @@
       <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
     </DOODLE_USAGE>
     <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CircumcornealInjection</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>6</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
       <EYEDRAW_CLASS_MNEMONIC>Episcleritis</EYEDRAW_CLASS_MNEMONIC>
       <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
       <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
@@ -2106,6 +2122,16 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
       <COMMENT>Persist from examination, but cannot be added during op-note</COMMENT>
     </DOODLE_USAGE>
   </DOODLE_USAGE_LIST>
+  <TAG_LIST>
+    <TAG>
+      <TEXT>No evidence of Glaucoma</TEXT>
+      <SNOMED_CODE>150</SNOMED_CODE>
+    </TAG>
+    <TAG>
+      <TEXT>Glaucoma Suspect</TEXT>
+      <SNOMED_CODE>103</SNOMED_CODE>
+    </TAG>
+  </TAG_LIST>
   <EVENT_LIST>
     <EVENT>
       <EVENT_NAME>Examination</EVENT_NAME>
@@ -2138,11 +2164,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Medications</PRIMARY_TERM>
+          <PRIMARY_TERM>Medication History</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>PMH</TERM>
             <TERM>Medical History</TERM>
-            <TERM>Medication History</TERM>
+            <TERM>Medications</TERM>
           </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryMedications</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
@@ -2177,16 +2203,28 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Allergies</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Surgical History</PRIMARY_TERM>
+          <PRIMARY_TERM>Ophthalmic Surgical History</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>Past Surgical History</TERM>
             <TERM>Past Surgery</TERM>
             <TERM>Previous Surgery</TERM>
-            <TERM>Previous Opthalmic Surgery</TERM>
+            <TERM>Previous Ophthalmic Surgery</TERM>
             <TERM>POH</TERM>
             <TERM>PSH</TERM>
           </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\PastSurgery</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Systemic Surgical History</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Past Surgical History</TERM>
+            <TERM>Past Surgery</TERM>
+            <TERM>Previous Surgery</TERM>
+            <TERM>Previous Systemic Surgery</TERM>
+            <TERM>POH</TERM>
+            <TERM>SSH</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicSurgery</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>CVI Status</PRIMARY_TERM>
@@ -2865,6 +2903,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Management_comments</GOTO_ID>
         </INDEX>
         <INDEX>
+          <PRIMARY_TERM>Medication Management</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicationManagement</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_MedicationManagement</GOTO_ID>
+        </INDEX>
+        <INDEX>
           <PRIMARY_TERM>Cataract Surgical Management</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
           <INDEX_LIST>
@@ -3037,6 +3080,12 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>Drusen</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
+              <PRIMARY_TERM>Disciform AMD</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+            </INDEX>
+            <INDEX>
               <PRIMARY_TERM>Geographic</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Geographic.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
@@ -3093,6 +3142,23 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
                 </INDEX>
                 <INDEX>
                   <PRIMARY_TERM>Choroidal New Vessels</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>CNV</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Fovea</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Fovea.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal New vessels</PRIMARY_TERM>
                   <SECONDARY_TERM_LIST>
                     <TERM>CNV</TERM>
                   </SECONDARY_TERM_LIST>
@@ -3978,6 +4044,12 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/KeraticPrecipitates.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>KeraticPrecipitates</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Circumcorneal injection</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/CircumcornealInjection.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CircumcornealInjection</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>LASIK flap</PRIMARY_TERM>

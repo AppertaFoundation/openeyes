@@ -284,7 +284,7 @@ $(document).ready(function() {
     e.preventDefault();
 
     let row = $(this).parent().parent();
-    let element_type_name = row.children('td:first').text();
+    let element_type_name = row.children('td:nth-child(2)').text();
     let element_type_id = $(this).data('element-type-id');
 
     let data = {

@@ -10,8 +10,7 @@ class m180927_050129_add_general_practitioner_label_setting extends OEMigration
                 'name' => 'General Practitioner label',
                 'default_value' => 'General Practitioner',
                 'data' => ''
-            )
-        );
+            ));
         $this->insert('setting_installation', array('key' => 'general_practitioner_label', 'value' => 'General Practitioner'));
     }
 

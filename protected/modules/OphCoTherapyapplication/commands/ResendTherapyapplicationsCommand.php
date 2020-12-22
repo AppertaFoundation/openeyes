@@ -53,7 +53,8 @@ EOH;
     {
         return TherapyApplicationEvents::getEventsByStatus(
             OphCoTherapyapplication_Processor::STATUS_SENT,
-            $since);
+            $since
+        );
     }
 
     /**

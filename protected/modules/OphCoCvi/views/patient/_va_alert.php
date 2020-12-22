@@ -26,8 +26,10 @@
     This patient may be eligible for a CVI
         <?php if ($show_create) : ?>
         <a class="button create-cvi hint green"
-           href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create',
-               array('patient_id' => $this->patient->id)); ?>">
+           href="<?php echo Yii::app()->createUrl(
+               '/OphCoCvi/Default/create',
+               array('patient_id' => $this->patient->id)
+           ); ?>">
           Create CVI
         </a>
         <?php else : ?>

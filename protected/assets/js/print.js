@@ -26,135 +26,87 @@
  * @param data - associative array of GET values to append to URL
  */
 function printIFrameUrl(url, data) {
-	if (data) {
-		url += '?' + $.param(data);
-	}
-
-	$('#print_content_iframe').remove();
-	var iframe = $('<iframe></iframe>');
-	iframe.attr({
-		id: 'print_content_iframe',
-		name: 'print_content_iframe',
-		src: url,
-		style: 'display: none;',
-	});
-	$('body').append(iframe);
-	window.frames.print_content_iframe.print();
-
-	// re-enable the buttons
-	$('#print_content_iframe').load(function() {
-		enableButtons();
-	});
-}
-
-function printEvent(printOptions)
-{
-    var data = {canvas: {}};
-    var has_canvas_data = false;
-
-    $('canvas.ed-canvas-display').map(function() {
-        data['canvas'][$(this).data('drawing-name')] = $(this).get(0).toDataURL();
-    });
-
-	data['last_modified_date'] = OE_event_last_modified;
-
-	$.ajax({
-		'type': 'POST',
-		'url': baseUrl + '/' + OE_module_class + '/default/saveCanvasImages/' + OE_event_id,
-		'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-		'success': function(resp) {
-			switch (resp.trim()) {
-				case "ok":
-					printIFrameUrl(OE_print_url, printOptions);
-					break;
-				case "outofdate":
-					$.cookie('print',1);
-					window.location.reload();
-					break;
-				default:
-					alert("Something went wrong trying to print the event. Please try again or contact support for assistance.");
-					break;
-			}
-		}
-	});
-}
-
-function saveCanvasImagesToPdf( printOptions ){
-    if(typeof printOptions == "undefined"){
-        printOptions = null;
+    if (data) {
+        url += '?' + $.param(data);
     }
-    var data = {canvas: {}};
-    var has_canvas_data = false;
 
-    $('canvas.ed-canvas-display').map(function() {
-        data['canvas'][$(this).data('drawing-name')] = $(this).get(0).toDataURL();
+    $('#print_content_iframe').remove();
+    var iframe = $('<iframe></iframe>');
+    iframe.attr({
+        id: 'print_content_iframe',
+        name: 'print_content_iframe',
+        src: url,
+        style: 'display: none;',
     });
+    $('body').append(iframe);
+    window.frames.print_content_iframe.print();
 
-    if( typeof OE_event_last_modified !== "undefined" ){
+    // re-enable the buttons
+    $('#print_content_iframe').load(function () {
+        enableButtons();
+    });
+}
+
+function printEvent(printOptions) {
+    printIFrameUrl(OE_print_url, printOptions);
+}
+
+$(window).load(function () {
+    var data = {};
+    if (typeof OE_event_last_modified !== "undefined") {
         data['last_modified_date'] = OE_event_last_modified;
 
         $.ajax({
             'type': 'POST',
-            'url': baseUrl + '/' + OE_module_class + '/default/saveCanvasImages/' + OE_event_id,
+            'url': baseUrl + '/eventImage/generateImage/' + OE_event_id,
             'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-            'success': function(resp) {
+            'success': function (resp) {
                 switch (resp.trim()) {
                     case "ok":
                         break;
                     case "outofdate":
-                        $.cookie('print',1);
+                        $.cookie('print', 1);
                         window.location.reload();
                         break;
                     default:
-                        alert("Something went wrong trying to print the event. Please try again or contact support for assistance.");
+                        alert("Something went wrong trying to (re)generate the event image. Please try again or contact support for assistance.");
                         break;
                 }
             }
         });
-	}
-}
-
-
-$(document).ready(function() {
-	if ($.cookie('print') == 1) {
-		disableButtons();
-
-		$.removeCookie('print');
-		setTimeout(function() { printWhenReady(); }, 500);
-	}
-
-});
-$(window).load(function() {
-    saveCanvasImagesToPdf();
+    }
 });
 
-function printWhenReady()
-{
-	var ready = true;
+$(document).ready(function () {
+    if ($.cookie('print') == 1) {
+        disableButtons();
 
-	$('canvas.ed-canvas-display').map(function() {
-		var drawing = window.ED ? ED.getInstance($(this).data('drawing-name')) : false;
+        $.removeCookie('print');
+        setTimeout(function () {
+            printWhenReady();
+        }, 500);
+    }
 
-		if (!drawing || !drawing.isReady) {
-			ready = false;
-		}
-	});
+});
 
-	if (ready) {
-		printEvent(null);
-	} else {
-		setTimeout(function() { printWhenReady(); }, 500);
-	}
-}
+function printWhenReady() {
+    var ready = true;
 
-/*
- * DEPRECATED - should migrate to using printIFrameUrl
- */
-function printUrl(url, data, csspath) {
-	$.post(url, data, function(content) {
-		$('#printable').html(content);
-		printContent(csspath);
-	});
+    $('canvas.ed-canvas-display').map(function () {
+        var drawing = window.ED ? ED.getInstance($(this).data('drawing-name')) : false;
+
+        if (!drawing || !drawing.isReady) {
+            ready = false;
+        }
+    });
+
+    if (ready) {
+        printEvent(null);
+    } else {
+        setTimeout(function () {
+            printWhenReady();
+        }, 500);
+    }
 }
 
 /**
@@ -163,47 +115,42 @@ function printUrl(url, data, csspath) {
  */
 if (navigator.userAgent.toLowerCase().indexOf("chrome") > -1) {
 
-	// Wrap private vars in a closure
-	(function() {
-		var realPrintFunc = window.printContent;
-		var interval = 35000; // 35 secs
-		var timeout_id = null;
-		var nextAvailableTime = +new Date(); // when we can safely print again
+    // Wrap private vars in a closure
+    (function () {
+        var realPrintFunc = window.printContent;
+        var interval = 35000; // 35 secs
+        var timeout_id = null;
+        var nextAvailableTime = +new Date(); // when we can safely print again
 
-		function runPrint(csspath) {
-			realPrintFunc(csspath);
-			timeout_id = null;
-			nextAvailableTime += interval;
-		}
+        function runPrint(csspath) {
+            realPrintFunc(csspath);
+            timeout_id = null;
+            nextAvailableTime += interval;
+        }
 
-		// Overwrite window.printContent function
-		window.printContent = function(csspath) {
-			var now = +new Date();
+        // Overwrite window.printContent function
+        window.printContent = function (csspath) {
+            var now = +new Date();
 
-			if (now > nextAvailableTime) {
-				// if the next available time is in the past, print now
-				realPrintFunc(csspath);
-				nextAvailableTime = now + interval;
-			} else {
-				if (timeout_id !== null) {
-					// Skip if setTimeout has already been called (prevents user
-					// from calling print multiple times)
-					console.log('Skipping print as count down already started '
-							+ (nextAvailableTime - now) / 1000
-							+ 's left until next print');
-					alert("New print request has been queued. "
-							+ Math.floor((nextAvailableTime - now) / 1000)
-							+ "secs until print.");
-					return;
-				} else {
-					// print when next available
-					timeout_id = setTimeout(function() { runPrint(csspath); }, nextAvailableTime - now);
-					alert("Print request has been queued. "
-							+ Math.floor((nextAvailableTime - now) / 1000)
-							+ "secs until print.");
-				}
-			}
-		}
-
-	})();
+            if (now > nextAvailableTime) {
+                // if the next available time is in the past, print now
+                realPrintFunc(csspath);
+                nextAvailableTime = now + interval;
+            } else {
+                if (timeout_id !== null) {
+                    // Skip if setTimeout has already been called (prevents user
+                    // from calling print multiple times)
+                    console.log('Skipping print as count down already started ' + (nextAvailableTime - now) / 1000 + 's left until next print');
+                    alert("New print request has been queued. " + Math.floor((nextAvailableTime - now) / 1000) + "secs until print.");
+                    return;
+                } else {
+                    // print when next available
+                    timeout_id = setTimeout(function () {
+                        runPrint(csspath);
+                    }, nextAvailableTime - now);
+                    alert("Print request has been queued. " + Math.floor((nextAvailableTime - now) / 1000) + "secs until print.");
+                }
+            }
+        };
+    })();
 }

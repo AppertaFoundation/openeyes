@@ -5,7 +5,8 @@ class m191128_121205_add_document_id_and_attachment_data_id_to_event_image exten
     public function safeUp()
     {
 
-        $this->createOETable('tmp_event_image',
+        $this->createOETable(
+            'tmp_event_image',
             array(
                 'id' => 'pk',
                 'event_id' => 'int(10) unsigned NOT NULL',
@@ -16,7 +17,8 @@ class m191128_121205_add_document_id_and_attachment_data_id_to_event_image exten
                 'message' => 'text',
                 'document_number' => 'int(10) NULL',
                 'attachment_data_id' => 'int(11) NULL'
-            ));
+            )
+        );
 
         $this->addForeignKey('event_image_to_event_id_fk', 'tmp_event_image', 'event_id', 'event', 'id');
         $this->addForeignKey('event_image_to_eye_id_fk', 'tmp_event_image', 'eye_id', 'eye', 'id');

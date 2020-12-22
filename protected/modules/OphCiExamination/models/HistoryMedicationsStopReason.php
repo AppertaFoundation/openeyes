@@ -59,4 +59,19 @@ class HistoryMedicationsStopReason extends \BaseActiveRecordVersioned
     {
         return $this->name;
     }
+
+    /**
+     * Gets medication parameters changed stop reason id
+     *
+     * @return string | null
+     */
+    public static function getMedicationParametersChangedId() : ?string
+    {
+        $medication_changed_stop_reason = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Medication parameters changed']);
+        if ($medication_changed_stop_reason) {
+            return $medication_changed_stop_reason->id;
+        }
+
+        return null;
+    }
 }

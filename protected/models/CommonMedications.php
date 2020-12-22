@@ -25,7 +25,8 @@
  * @property string $medication_id
  *
  * The followings are the available model relations:
- * @property Medication $medication
+ * @property ArchiveMedication $medication
+ * @deprecated Since v4.0 - See MedicationSet
  */
 class CommonMedications extends BaseActiveRecordVersioned
 {
@@ -82,7 +83,7 @@ class CommonMedications extends BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
-            'medication_id' => 'Medication',
+            'medication_id' => 'ArchiveMedication',
         );
     }
 

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Class PrescriptionFormPrinterTest
+ * @method patients($fixtureId)
+ * @method prescription_items($fixtureId)
+ * @method prescription_item_tapers($fixtureId)
+ * @method users($fixtureId)
+ * @method firms($fixtureId)
+ * @method sites($fixtureId)
+ */
 class PrescriptionFormPrinterTest extends CDbTestCase
 {
     protected $fixtures = array(
@@ -7,14 +16,14 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         'users' => User::class,
         'firms' => Firm::class,
         'sites' => Site::class,
-        'ophdrprescription_items' => OphDrPrescription_Item::class,
-        'ophdrprescription_item_tapers' => OphDrPrescription_ItemTaper::class,
-        'drug_duration' => DrugDuration::class,
-        'drug_route' => DrugRoute::class,
-        'drug_frequency' => DrugFrequency::class,
+        'prescription_items' => OphDrPrescription_Item::class,
+        'prescription_item_tapers' => OphDrPrescription_ItemTaper::class,
+        'drug_duration' => MedicationDuration::class,
+        'drug_route' => MedicationRoute::class,
+        'drug_frequency' => MedicationFrequency::class,
     );
 
-    private $instance;
+    private PrescriptionFormPrinter $instance;
 
     public function setUp()
     {
@@ -24,7 +33,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->instance->user = $this->users('user1');
         $this->instance->firm = $this->firms('firm1');
         $this->instance->site = $this->sites('site1');
-        $this->instance->items = array($this->ophdrprescription_items('prescription_item1'), $this->ophdrprescription_items('prescription_item2'));
+        $this->instance->items = array($this->prescription_items('prescription_item1'), $this->prescription_items('prescription_item2'));
         $this->instance->init();
     }
 
@@ -59,9 +68,11 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->assertEquals($default_prescription_cost_code, $this->instance->getDefaultCostCode());
         $this->assertEquals($prescription_form_format, $this->instance->getPrintMode());
     }
+
     /**
      * @covers PrescriptionFormPrinter::init
      * @covers PrescriptionFormPrinter::run
+     * @throws CException
      */
     public function testRun()
     {
@@ -70,7 +81,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $widget_output = ob_get_clean();
         $this->assertNotNull($widget_output);
 
-        $this->instance->items[] = $this->ophdrprescription_items('prescription_item4');
+        $this->instance->items[] = $this->prescription_items('prescription_item4');
         $this->instance->init();
 
         ob_start();
@@ -118,7 +129,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->assertEquals($expected, $actual);
 
         $expected = 2;
-        $this->instance->items = array($this->ophdrprescription_items('prescription_item4'));
+        $this->instance->items = array($this->prescription_items('prescription_item4'));
         $this->instance->init();
         $actual = $this->instance->getTotalPages();
         $this->assertEquals($expected, $actual);
@@ -127,6 +138,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
     /**
      * @covers PrescriptionFormPrinter::getPageNumber
      * @covers PrescriptionFormPrinter::init
+     * @throws CException
      */
     public function testGetPageNumber()
     {
@@ -144,10 +156,10 @@ class PrescriptionFormPrinterTest extends CDbTestCase
 
         // Before output, ensure the page number has been reset to 1. Position of items in the array is important to
         // page structure, so ensure the item is inserted at the end before proceeding.
-        $this->instance->items[] = $this->ophdrprescription_items('prescription_item4');
+        $this->instance->items[] = $this->prescription_items('prescription_item4');
         $this->instance->init();
         $this->assertCount(3, $this->instance->items);
-        $this->assertEquals($this->ophdrprescription_items('prescription_item4'), $this->instance->items[2]);
+        $this->assertEquals($this->prescription_items('prescription_item4'), $this->instance->items[2]);
 
         $expected = 1;
         $this->assertEquals($expected, $this->instance->getPageNumber());
@@ -162,13 +174,13 @@ class PrescriptionFormPrinterTest extends CDbTestCase
 
         // Rearrange the array so the split-print item is the first item in the list.
         $this->instance->items = array(
-            $this->ophdrprescription_items('prescription_item4'),
-            $this->ophdrprescription_items('prescription_item1'),
-            $this->ophdrprescription_items('prescription_item2'),
+            $this->prescription_items('prescription_item4'),
+            $this->prescription_items('prescription_item1'),
+            $this->prescription_items('prescription_item2'),
         );
         $this->instance->init();
         $this->assertCount(3, $this->instance->items);
-        $this->assertEquals($this->ophdrprescription_items('prescription_item4'), $this->instance->items[0]);
+        $this->assertEquals($this->prescription_items('prescription_item4'), $this->instance->items[0]);
 
         $expected = 1;
         $this->assertEquals($expected, $this->instance->getPageNumber());
@@ -182,7 +194,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->assertEquals($expected, $this->instance->getPageNumber());
 
         // Before output, ensure the page number has been reset to 1.
-        $this->instance->items = array($this->ophdrprescription_items('prescription_item4'));
+        $this->instance->items = array($this->prescription_items('prescription_item4'));
         $this->instance->init();
         $this->assertCount(1, $this->instance->items);
         $expected = 1;
@@ -232,10 +244,10 @@ class PrescriptionFormPrinterTest extends CDbTestCase
      */
     public function testIsPrintable()
     {
-        $item = $this->ophdrprescription_items('prescription_item1');
+        $item = $this->prescription_items('prescription_item1');
         $this->assertTrue($this->instance->isPrintable($item));
 
-        $item = $this->ophdrprescription_items('prescription_item3');
+        $item = $this->prescription_items('prescription_item3');
         $this->assertFalse($this->instance->isPrintable($item));
     }
 
@@ -267,7 +279,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->assertEquals(1, $this->instance->getPageNumber());
 
         // Add single page for multi-page item.
-        $this->instance->items = array($this->ophdrprescription_items('prescription_item4'));
+        $this->instance->items = array($this->prescription_items('prescription_item4'));
         $this->instance->init();
         $current_pages = $this->instance->getTotalPages();
         $this->instance->addPages();
@@ -275,8 +287,8 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->assertEquals($current_pages, $this->instance->getTotalPages());
         $this->assertEquals(2, $this->instance->getPageNumber());
 
-        $this->instance->items[] = $this->ophdrprescription_items('prescription_item3');
-        $this->instance->items[] = $this->ophdrprescription_items('prescription_item5');
+        $this->instance->items[] = $this->prescription_items('prescription_item3');
+        $this->instance->items[] = $this->prescription_items('prescription_item5');
         $this->instance->init();
         $current_pages = $this->instance->getTotalPages();
         $this->assertEquals($current_pages, $this->instance->getTotalPages());
@@ -302,6 +314,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
      * This regression test ensures that the total item count is not polluted by the widget generation process.
      * @covers PrescriptionFormPrinter::getTotalItems
      * @covers PrescriptionFormPrinter::run
+     * @throws CException
      */
     public function testGetTotalItems()
     {

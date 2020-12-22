@@ -12,19 +12,22 @@
     "grunt-contrib-concat": "~1.0.1",
     "grunt-contrib-uglify": "~1.0.2",
     "grunt-contrib-uglify-es": "^3.3.0",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-jsdoc": "^2.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-jsdoc": "^2.3.0",
     "gzip-js": "0.3.2",
-    "load-grunt-tasks": "~3.5.0"
+    "load-grunt-tasks": "~3.5.0",
+    "shellcheck": "*"
   },
   "dependencies": {
-    "lodash": "^4.17.4",
-    "pickmeup": "~3.2.0",
-    "plotly.js-dist": "^1.41.3",
-    "sortablejs": "~1.10.2",
-    "tinymce": "^4.8.2",
+    "@nesk/puphpeteer": "^1.6.0",
+    "puppeteer": "^2.0.0",
     "autosize": "^4.0.0",
     "jspdf": "1.5.2",
+    "lodash": "^4.17.4",
+    "pickmeup": "~3.2.0",
+    "plotly.js-dist": "^1.53.0",
+    "sortablejs": "~1.10.2",
+    "tinymce": "^4.8.2",
     "video.js": "^7.7.5"
   }
 }

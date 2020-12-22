@@ -11,11 +11,21 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
             'anaesthetic_type_id' => 'int(10) unsigned NOT NULL',
         ), true);
 
-        $this->addForeignKey('ophtroperationbook_anaesthetic_type_to_anaest_type', 'ophtroperationbooking_anaesthetic_anaesthetic_type', 'anaesthetic_type_id',
-            'anaesthetic_type', 'id');
+        $this->addForeignKey(
+            'ophtroperationbook_anaesthetic_type_to_anaest_type',
+            'ophtroperationbooking_anaesthetic_anaesthetic_type',
+            'anaesthetic_type_id',
+            'anaesthetic_type',
+            'id'
+        );
 
-        $this->addForeignKey('ophtroperationbook_anaesthetic_type_to_el', 'ophtroperationbooking_anaesthetic_anaesthetic_type', 'et_ophtroperationbooking_operation_id',
-            'et_ophtroperationbooking_operation', 'id');
+        $this->addForeignKey(
+            'ophtroperationbook_anaesthetic_type_to_el',
+            'ophtroperationbooking_anaesthetic_anaesthetic_type',
+            'et_ophtroperationbooking_operation_id',
+            'et_ophtroperationbooking_operation',
+            'id'
+        );
 
         $this->dropForeignKey('et_ophtroperationbooking_operation_anaesthetic_type_id_fk', 'et_ophtroperationbooking_operation');
 
@@ -69,10 +79,15 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
                         'text' => "Anaesthetic type Topical became Anaesthetic type LA",
                     );
 
-                    Audit::add('admin', 'update', serialize($data),
+                    Audit::add(
+                        'admin',
+                        'update',
+                        serialize($data),
                         'Remove redundant Anaesthetic options',
                         array('module' => 'OphTrOperationbooking', 'model' => 'Element_OphTrOperationbooking_Operation', 'event_id' => $element->event_id,
-                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
+                        'episode_id' => $event->episode_id,
+                        'patient_id' => $episode->patient_id)
+                    );
                 } else //LAS -> LA + Sedation
                 if ( $element->anaesthetic_type_id == $anaesthetic_LAS_id) {
                     // adding LA
@@ -102,10 +117,15 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
                         'text' => "Anaesthetic type LAS became Anaesthetic type LA",
                     );
 
-                    Audit::add('admin', 'update', serialize($data),
+                    Audit::add(
+                        'admin',
+                        'update',
+                        serialize($data),
                         'Remove redundant Anaesthetic options',
                         array('module' => 'OphTrOperationbooking', 'model' => 'Element_OphTrOperationbooking_Operation', 'event_id' => $element->event_id,
-                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
+                        'episode_id' => $event->episode_id,
+                        'patient_id' => $episode->patient_id)
+                    );
                 } else {
                     $this->createOrUpdate('OphTrOperationbooking_AnaestheticAnaestheticType', array(
                         'et_ophtroperationbooking_operation_id' => $element->id,
@@ -128,10 +148,15 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
                         'text' => "Anaesthetic type moved to new table : ophtroperationbooking_anaesthetic_anaesthetic_type",
                     );
 
-                    Audit::add('admin', 'update', serialize($data),
+                    Audit::add(
+                        'admin',
+                        'update',
+                        serialize($data),
                         'Remove redundant Anaesthetic options',
                         array('module' => 'OphTrOperationbooking', 'model' => 'Element_OphTrOperationbooking_Operation', 'event_id' => $element->event_id,
-                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
+                        'episode_id' => $event->episode_id,
+                        'patient_id' => $episode->patient_id)
+                    );
                 }
             }
 
@@ -158,16 +183,12 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
 
     private function createOrUpdate($model_name, $attributes)
     {
-        if (!$model = $model_name::model()->findByAttributes($attributes)) {
-            $model = new $model_name;
-        }
-
-        foreach ($attributes as $attribute => $value) {
-            $model->{$attribute} = $value;
-        }
-
-        if (!$model->save()) {
-            throw new Exception("Unable to save : $model_name" . print_r($model->getErrors(), true));
+        $model = $this->dbConnection->createCommand("SELECT * FROM {$model_name::model()->tableName}")
+            ->where($attributes);
+        if (!$model) {
+            $this->insert($model_name::model()->tableName, $attributes);
+        } else {
+            $this->update($model_name::model()->tableName, $attributes, 'id = :id', array(':id' => $model['id']));
         }
     }
 }

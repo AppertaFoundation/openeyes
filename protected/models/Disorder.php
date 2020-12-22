@@ -210,13 +210,13 @@ class Disorder extends BaseActiveRecordVersioned
         $command->prepare();
         $result = $command->queryColumn();
         if (sizeof($result) > 0 && $this->isNewRecord === true) {
-            $this->addError( $attribute, 'ID '.$this->id.' already exists. Please choose a unique ID.');
+            $this->addError($attribute, 'ID '.$this->id.' already exists. Please choose a unique ID.');
             return true;
         }
             return false;
     }
 
-    public function getPatientDisorders($patient_id) {
+    public static function getPatientDisorders($patient_id) {
         $criteria = new CDbCriteria();
         $criteria->join = "LEFT JOIN episode ep ON ep.disorder_id = t.id AND ep.patient_id = :patient_id ";
         $criteria->join .= "LEFT JOIN secondary_diagnosis sd ON sd.disorder_id = t.id AND sd.patient_id = :patient_id";

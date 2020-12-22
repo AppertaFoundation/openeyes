@@ -12,8 +12,50 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
 
+$logo_helper = new LogoHelper();
+$default_urls = $logo_helper->getLogoURLs();
+?>
+<style>
+    .flash-success {
+        border:1px solid #1DDD50;
+        background: #C3FFD3;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+
+    .error {
+        border:1px solid #ff6666;
+        background: #ffe6e6;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+
+    .remove-logo {
+        display: block;
+        position: absolute;
+        top: 1px;
+        right: 2px;
+        padding: 11px 11px;
+        background-color: rgba(255,255,255,.5);
+    }
+</style>
+<?php if (Yii::app()->user->hasFlash('success')) : ?>
+    <div class="flash-success">
+        <?= Yii::app()->user->getFlash('success'); ?>
+    </div>
+
+<?php endif; ?>
+<?php if (Yii::app()->user->hasFlash('error')) : ?>
+    <div class="error">
+        <?= Yii::app()->user->getFlash('error'); ?>
+    </div>
+
+<?php endif; ?>
 <div class="cols-7">
 
     <?= $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
@@ -28,33 +70,62 @@
                 'label' => 2,
                 'field' => 5,
             ),
+            'method' => "POST",
+            'htmlOptions' => array('enctype' => 'multipart/form-data')
         ]
     ) ?>
 
     <div class="row divider">
-        <h2>Edit institution</h2>
+        <h2>
+            <?php
+            if ($new) {
+                echo "Add institution";
+            } else {
+                echo "Edit institution";
+            }
+            ?>
+        </h2>
     </div>
 
     <table class="standard cols-full">
         <colgroup>
-            <col class="cols-2">
+            <col class="cols-3">
             <col class="cols-5">
         </colgroup>
 
         <tbody>
+            <?php foreach (['name', 'short_name'] as $field) : ?>
             <tr>
-                <td><?= $institution->getAttributeLabel('name'); ?></td>
+                <td><?= $institution->getAttributeLabel($field); ?></td>
                 <td>
                     <?= \CHtml::activeTextField(
                         $institution,
-                        'name',
-                        ['class' => 'cols-full']
+                        $field,
+                        [
+                            'class' => 'cols-full',
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        ]
                     ); ?>
                 </td>
-            </tr>
+            </tr>            
+            <?php endforeach; ?>
         <tr>
             <td><?= $institution->getAttributeLabel('remote_id'); ?></td>
-            <td><?= htmlspecialchars($institution->remote_id) ?></td>
+            <td>
+            <?php if (!$new) { ?>
+                <?= htmlspecialchars($institution->remote_id) ?>
+            <?php } else { ?>
+                <div class="alert-box alert">Once added, this field will not be editable</div>
+                <?= CHtml::activeTextField(
+                    $institution,
+                    'remote_id',
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ]
+                );
+            } ?>
+            </td>
         </tr>
         <?php
         $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
@@ -65,7 +136,10 @@
                     <?= \CHtml::activeTextField(
                         $address,
                         $field,
-                        ['class' => 'cols-full']
+                        [
+                            'class' => 'cols-full',
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        ]
                     ); ?>
                 </td>
             </tr>
@@ -77,8 +151,79 @@
                     $address,
                     'country_id',
                     CHtml::listData(Country::model()->findAll(), 'id', 'name'),
-                    ['class' => 'cols-full']
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ]
                 ); ?>
+            </td>
+        </tr><tr>
+            <td>Primary logo</td>
+            <td>
+                <?php
+                echo $form->fileField($logo, 'primary_logo');
+                if (empty($default_urls['primaryLogo']) && !($logo->primary_logo)) {
+                    echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                } else {
+                    if (!($logo) || !($logo->primary_logo)) {
+                        echo "<div class='alert-box info'>Currently using system default logo</div>";
+                        echo "<img src='" . $default_urls['primaryLogo'] . "' style='width:100%;'>";
+                    } elseif (!$new) {
+                        echo '<div style=" margin-top: 5px; position: relative; ">';
+                        echo "<img src='" . $logo->getImageUrl() . "' style='width:100%;'>";
+                        echo '<br>' . CHtml::button(
+                            '',
+                            array('submit' => array('admin/deletelogo/'),
+                            'params' => array(
+                                'institution_id' => $institution->id,
+                                'deletePrimaryLogo' => true,
+                            ),
+                             'csrf' => true,
+                             'class' => 'remove-logo oe-i remove-circle small',
+                             'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this institution.',
+                             'data-method' => "POST"
+                            )
+                        );
+                        echo '</div>';
+                    }
+                }
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Secondary logo</td>
+            <td>
+                <?php
+                echo $form->fileField($logo, 'secondary_logo');
+                if (empty($default_urls['secondaryLogo']) && !($logo->secondary_logo)) {
+                    echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                } else {
+                    if (!($logo) || !($logo->secondary_logo)) {
+                        echo "<div class='alert-box info'>Currently using system default logo</div>";
+                        echo "<img src='" . $default_urls['secondaryLogo'] . "' style='width:100%;'>";
+                    } elseif (!$new) {
+                        echo '<div style="
+                        margin-top: 5px;
+                        position: relative;
+                    ">';
+                        echo "<img src='" . $logo->getImageUrl(true) . "' style='width:100%;'>";
+                        echo '<br>' . CHtml::button(
+                            '',
+                            array('submit' => array('admin/deletelogo/'),
+                            'params' => array(
+                                'institution_id' => $institution->id,
+                                'deleteSecondaryLogo' => true,
+                            ),
+                            'csrf' => true,
+                            'class' => 'remove-logo oe-i remove-circle small',
+                            'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this institution.',
+                            'data-method' => "POST"
+                            )
+                        );
+                        echo '</div>';
+                    }
+                }
+                ?>
             </td>
         </tr>
         </tbody>
@@ -108,7 +253,7 @@
     </table>
 
     <?php $this->endWidget() ?>
-
+<?php if (!$new) { ?>
     <br>
 
     <h2>Sites</h2>
@@ -142,4 +287,5 @@
             </tbody>
         </table>
     </form>
+<?php }?>
 </div>

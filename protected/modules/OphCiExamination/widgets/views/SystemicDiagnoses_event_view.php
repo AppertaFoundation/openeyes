@@ -22,9 +22,13 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
 ?>
 
 <div class="element-data">
-    <?php if (!$element->orderedDiagnoses && !$checkedRequiredSystemicDiagnoses && !$missingRequiredSystemicDiagnoses) { ?>
-        <div class="data-value not-recorded">
-            No diagnoses recorded during this encounter
+    <?php if (!$element->orderedDiagnoses && !$checkedRequiredSystemicDiagnoses && !$missingRequiredSystemicDiagnoses && !$element->no_systemic_diagnoses_date) { ?>
+      <div class="data-value not-recorded">
+          Nil recorded this examination
+      </div>
+    <?php } elseif ($element->no_systemic_diagnoses_date) { ?>
+        <div class="data-value">
+            Patient has no known Systemic Diagnoses
         </div>
     <?php } else { ?>
         <div class="data-value">
@@ -38,7 +42,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                     <?php foreach ($element->orderedDiagnoses as $diag) { ?>
                         <tr>
                             <td>
-                                <?= $diag->disorder; ?>   <strong>  (Present and active)</strong>
+                                <?= $diag->disorder; ?>
                             </td>
                             <td class="nowrap flex-layout">
                                 <?php $this->widget('EyeLateralityWidget', array('laterality' => $diag->side)) ?>

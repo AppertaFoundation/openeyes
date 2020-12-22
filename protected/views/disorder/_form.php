@@ -72,8 +72,10 @@ $specialties = Specialty::model()->findAll();
     </table>
 
     <div class="row flex-layout flex-left">
-        <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save',
-        array('class' => 'button green hint')); ?>
+        <?php echo CHtml::submitButton(
+            $model->isNewRecord ? 'Create' : 'Save',
+            array('class' => 'button green hint')
+        ); ?>
     </div>
 
 <?php $this->endWidget(); ?>

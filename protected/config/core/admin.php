@@ -21,7 +21,7 @@ return array(
         'admin_structure' => array(
             'System' => array(
                 'Settings' => '/admin/settings',
-                'Logo' => array('parameter' => 'letter_logo_upload', 'uri' => '/admin/logo'),
+                'System default logos' => array('parameter' => 'letter_logo_upload', 'uri' => '/admin/logo'),
                 'DICOM Log Viewer' => '/DicomLogViewer/list',
             ),
             'Core' => array(
@@ -41,7 +41,9 @@ return array(
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
                 'Patient Shortcodes' => '/admin/patientshortcodes',
-                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list'
+                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list',
+                'Event Type Custom Text' => '/admin/editEventTypeCustomText',
+                'Element Type Custom Text' => '/admin/editElementTypeCustomText',
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
@@ -55,18 +57,7 @@ return array(
                 'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list'
             ),
             'Drugs' => array(
-                'Common Drugs List' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/commonDrug/list'),
-                'Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DrugSet/list'),
-                'Common Medications List ' => '/oeadmin/commonMedications/list',
-                'Medication List' => '/oeadmin/medication/list',
-                'Formulary Drugs' => '/oeadmin/drug/list',
-                'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
-                'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
-                'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
-                'Tags' => '/TagsAdmin/list',
-                'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/drugType'),
-                'Dispense conditions' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DispenseCondition/index'),
-                'Dispense locations' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DispenseLocation/index'),
+                    // Hidden for now
                 'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
                 'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
                 'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',

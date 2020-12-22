@@ -18,8 +18,10 @@
 ?>
 <?php
 $operationNoteList = $element->getOperationNoteList();
-$operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id',
-    (is_array($operationNoteList) ? key($operationNoteList) : null));
+$operation_note_id = \Yii::app()->request->getParam(
+    'OphCiExamination_postop_complication_operation_note_id',
+    (is_array($operationNoteList) ? key($operationNoteList) : null)
+);
 ?>
 
 

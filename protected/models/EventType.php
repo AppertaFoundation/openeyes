@@ -58,9 +58,10 @@ class EventType extends BaseActiveRecordVersioned
         return array(
             array('name', 'required'),
             array('name', 'length', 'max' => 40),
+            array('custom_hint_text, hint_position', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name', 'safe', 'on' => 'search'),
+            array('id, name, custom_hint_text, hint_position', 'safe', 'on' => 'search'),
         );
     }
 
@@ -101,11 +102,12 @@ class EventType extends BaseActiveRecordVersioned
         $legacy_events = EventGroup::model()->find('code=?', array('Le'));
 
         $criteria = new CDbCriteria();
-        $criteria->condition = "class_name in ('" . implode("','",
-                array_keys(Yii::app()->getModules())) . "') and event_group_id != $legacy_events->id";
+        $criteria->addInCondition("class_name", array_keys(Yii::app()->getModules()));
+        $criteria->addCondition('event_group_id != :legacy_event_group_id');
         $criteria->order = 'name asc';
         $criteria->addCondition('parent_id is null');
         $criteria->addCondition('can_be_created_manually = 1');
+        $criteria->params[':legacy_event_group_id'] = $legacy_events->id;
 
         return self::model()->findAll($criteria);
     }
@@ -483,6 +485,9 @@ class EventType extends BaseActiveRecordVersioned
             'OphCiDidNotAttend' => 'i-PatientDNA',
             'OphGeneric' => 'i-ImOCT',
             'OphOuCatprom5' => 'i-CoCatPROM5',
+            'OphTrOperationchecklists' => 'i-TrSafetyChecklist',
+            'OphInKowastereo' => 'i-InStereoPair',
+            'SupCoPhonelog' => 'i-CoTelephoneCall',
         );
 
         return array_key_exists($this->class_name, $style_mapping) ? $style_mapping[$this->class_name] : null;

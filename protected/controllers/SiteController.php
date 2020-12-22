@@ -90,12 +90,12 @@ class SiteController extends BaseController
     {
         if ($error = Yii::app()->errorHandler->error) {
             if (Yii::app()->request->isAjaxRequest) {
-                echo $error['message'];
+                echo htmlspecialchars($error['message']);
             } else {
                 $error_code = (int) $error['code'];
                 /*
                 if ($error_code == 403) {
-                    $this->redirect(Yii::app()->baseUrl.'/');
+                    $this->redirect(Yii::app()->createURL('site/index'));
                     Yii::app()->exit();
                 }
                 */
@@ -169,7 +169,8 @@ class SiteController extends BaseController
         $criteria->order = 'short_name asc';
 
         // display the login form
-        $this->render('login',
+        $this->render(
+            'login',
             array(
                 'model' => $model,
             )

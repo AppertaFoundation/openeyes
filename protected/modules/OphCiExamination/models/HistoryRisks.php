@@ -130,7 +130,7 @@ class HistoryRisks extends \BaseEventTypeElement
      */
     public function afterValidate()
     {
-        if (!$this->no_risks_date && !$this->entries) {
+        if (!$this->no_risks_date && !$this->entries && $this->getScenario() !== 'auto') {
             $this->addError('no_risks_date', 'Please confirm the patient has no risks.');
         }
         $risk_ids = array();

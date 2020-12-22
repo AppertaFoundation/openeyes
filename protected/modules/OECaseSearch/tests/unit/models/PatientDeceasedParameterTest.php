@@ -11,7 +11,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
         'patient' => 'Patient',
     );
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->parameter = new PatientDeceasedParameter();
@@ -19,7 +19,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
         $this->parameter->id = 0;
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         parent::tearDown();
         unset($this->parameter, $this->searchProvider);
@@ -50,7 +50,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
         }
 
         // Ensure that a HTTP exception is raised if an invalid operation is specified.
-        $this->setExpectedException(CHttpException::class);
+        $this->expectException(CHttpException::class);
         foreach ($invalidOps as $operator) {
             $this->parameter->operation = $operator;
             $this->parameter->query($this->searchProvider);

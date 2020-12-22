@@ -69,7 +69,7 @@
         });
 
         const worklist_selected = $.cookie("worklist_selected");
-        if(worklist_selected){
+        if (worklist_selected){
             updateWorkLists(worklist_selected);
             $('.js-worklist-filter').filter('[data-worklist="'+worklist_selected+'"]').addClass('selected');
         }
@@ -111,4 +111,11 @@
         const dt = $("#worklist-date-to").val() === "" ? "" : "&date_to="+$("#worklist-date-to").val();
         window.open("/worklist/print?list_id=" + v + df + dt, "_blank");
     }
+
+    $(document).ready(function () {
+        $('body').on('click', '.collapse-data-header-icon', function () {
+            $(this).toggleClass('collapse expand');
+            $(this).next('div').toggle();
+        });
+    })
 </script>

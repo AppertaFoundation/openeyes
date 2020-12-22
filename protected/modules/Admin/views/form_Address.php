@@ -29,7 +29,7 @@
             <td>Email</td>
             <td class="cols-full">
                 <?= \CHtml::activeEmailField(
-                    $model,
+                    $model->contact,
                     'email',
                     ['class' => 'cols-full']
                 ); ?>

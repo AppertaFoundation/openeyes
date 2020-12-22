@@ -1,52 +1,47 @@
 <?php
-$jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/PCRCalculation.js', false, -1);
+$jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/PCRCalculation.js', true, -1);
 Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
 ?>
 <script type="text/javascript">
-  $(document).ready(function(){
-    //Map the elements
-    let $historyRisksElement = $('#OEModule_OphCiExamination_models_HistoryRisks_element');
-    if ($historyRisksElement.length) {
-        let controller = $('#OEModule_OphCiExamination_models_HistoryRisks_element').data('controller');
-        controller.setPcrRisk();
+    function pcr_init() {
+        //Map the elements
+        mapExaminationToPcr();
+        //Make the initial calculations
+        var $pcrRiskEl = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk');
+        //this needs when the PcrRisk is open and the AntSeg opened later, called when eyedraw is ready
+        loadFromHiddenFieds($pcrRiskEl);
+        pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
+        pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
+
+        $(document.body).on('change', $pcrRiskEl.find('.left-eye'), function () {
+            pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
+        });
+
+        $(document.body).on('change', $pcrRiskEl.find('.right-eye'), function () {
+            pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
+        });
+
+        $('.pcrrisk_diabetic').change(function () {
+            let pcrrisk_diabetic_value = $(this).prop('selectedIndex');
+            $('.pcrrisk_diabetic').prop('selectedIndex', pcrrisk_diabetic_value);
+        });
+
+        $('.pcrrisk_arb').change(function () {
+            let pcrrisk_arb_value = $(this).prop('selectedIndex');
+            $('.pcrrisk_arb').prop('selectedIndex', pcrrisk_arb_value);
+        });
+
+        $('.pcr_lie_flat').change(function () {
+            let pcr_lie_flat_value = $(this).prop('selectedIndex');
+            $('.pcr_lie_flat').prop('selectedIndex', pcr_lie_flat_value);
+        });
     }
-    mapExaminationToPcr();
-    //Make the initial calculations
-    var $pcrRiskEl = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk');
-    pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
-    pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
 
-    $(document.body).on('change', $pcrRiskEl.find('.left-eye'), function () {
-      pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
+    $(document).ready(function () {
+        pcr_init();
     });
-
-    $(document.body).on('change', $pcrRiskEl.find('.right-eye'), function () {
-      pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
-    });
-
-    $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_diabetic").change(function () {
-      var $pcrDiabeticRight = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_diabetic").prop('selectedIndex');
-      $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_diabetic").prop('selectedIndex', $pcrDiabeticRight);
-    });
-
-    $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_diabetic").change(function () {
-      var $pcrDiabeticLeft = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_diabetic").prop('selectedIndex');
-      $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_diabetic").prop('selectedIndex', $pcrDiabeticLeft);
-    });
-
-    $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").change(function () {
-      var $pcrAlphaRight = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").prop('selectedIndex');
-      $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").prop('selectedIndex', $pcrAlphaRight);
-    });
-
-    $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").change(function () {
-      var $pcrAlphaLeft = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").prop('selectedIndex');
-      $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").prop('selectedIndex', $pcrAlphaLeft);
-    });
-
-  });
 </script>
-<div class="element-eyes element-fields flex-layout full-width ">
+<div class="element-eyes element-fields flex-layout full-width">
     <?php
     if ($this->patient->getDiabetes()) {
         $diabeticOptions = ['Y' => 'Diabetes present'];
@@ -101,11 +96,12 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
     ];
     echo $form->hiddenInput($element, 'eye_id', false, ['class' => 'sideField']);
 
-    foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :
+    foreach (['right' => 'left','left' => 'right'] as $side => $eye) :
+        $opposite = ($side === 'right') ? 'left' : 'right';
         $pcrRisk = new PcrRisk();
-        $display = ($element->{'has' . ucfirst($eye)}()) ? 'block' : 'none'; ?>
-
-        <div class="js-element-eye <?= $eye ?>-eye column <?= $side ?>" data-side="<?= $eye ?>">
+        $activeClass = ($element->{'has' . ucfirst($side)}()) ? 'active' : 'inactive'; ?>
+        <div class="js-element-eye <?= $side ?>-eye column <?= $opposite ?> side<?= $activeClass ?>"
+             data-side="<?= $side ?>">
             <?php
             if ($this->event) {
                 $patientId = $this->event->episode->patient->id;
@@ -113,11 +109,12 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                 $patientId = Yii::app()->request->getQuery('patient_id');
             }
 
-            $pcr = $pcrRisk->getPCRData($patientId, $eye, $element);
+            $pcr = $pcrRisk->getPCRData($patientId, $side, $element);
             echo CHtml::hiddenField('age', $pcr['age_group']);
             echo CHtml::hiddenField('gender', $pcr['gender']);
             ?>
-            <div class="active-form js-pcr-<?= $eye ?>" style="display: <?= $display ?>;">
+            <div class="active-form js-pcr-<?= $side ?>"
+                 style="display: <?= !($element->{'has' . ucfirst($side)}()) ? 'none' : 'block'; ?>;">
                 <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 
                 <table class="cols-full last-left">
@@ -133,17 +130,17 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                                 <div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade"
                                      class="cols-full">
                                     <td class="cols-4 column">
-                                        <label for="<?= 'pcrrisk_' . $eye . '_doctor_grade_id' ?>">Surgeon
+                                        <label for="<?= 'pcrrisk_' . $side . '_doctor_grade_id' ?>">Surgeon
                                             Grade:</label>
                                     </td>
                                     <td class="cols-4 column">
-                                        <select id="<?= 'pcrrisk_' . $eye . '_doctor_grade_id' ?>"
+                                        <select id="<?= 'pcrrisk_' . $side . '_doctor_grade_id' ?>"
                                                 class="pcr_doctor_grade cols-full"
-                                                name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $eye ?>_doctor_grade_id]">
+                                                name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $side ?>_doctor_grade_id]">
                                             <?php if (is_array($grades)) : ?>
                                                 <?php foreach ($grades as $grade) : ?>
                                                     <?php
-                                                    if ($element->{$eye . '_doctor_grade_id'} === $grade->id) :
+                                                    if ($element->{$side . '_doctor_grade_id'} === $grade->id) :
                                                         $selected = 'selected';
                                                     else :
                                                         $selected = '';
@@ -156,8 +153,7 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                                         </select>
                                     </td>
                                 </div>
-                                <?php
-                                else :
+                                <?php else :
                                     if ($element->{'left_diabetic'} == 'Y' OR $element->{'left_diabetic'} == 'N') {
                                         $element->{'right_diabetic'} = $element->{'left_diabetic'};
                                     } elseif ($element->{'right_diabetic'} == 'Y' OR $element->{'right_diabetic'} == 'N') {
@@ -168,12 +164,12 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                                     } elseif ($element->{'right_alpha_receptor_blocker'} == 'Y' OR $element->{'right_alpha_receptor_blocker'} == 'N') {
                                         $element->{'left_alpha_receptor_blocker'} = $element->{'right_alpha_receptor_blocker'};
                                     } ?>
-                                <td>
-                                        <?= $element->getAttributeLabel($eye . '_' . $key) ?>
-                                </td>
-                                <td>
-                                        <?= CHtml::activeDropDownList($element, $eye . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
-                                </td>
+                                    <td>
+                                        <?= $element->getAttributeLabel($side . '_' . $key) ?>
+                                    </td>
+                                    <td>
+                                        <?= CHtml::activeDropDownList($element, $side . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
+                                    </td>
                                 <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
@@ -183,12 +179,12 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                     <span class="pcr-risk-div">
                         <span class="highlighter large-text">
                             PCR Risk <span class="pcr-span">&nbsp;</span> %
-                            <?php $form->hiddenInput($element, $eye . '_pcr_risk', false, ['class' => 'pcr-input']); ?>
+                            <?php $form->hiddenInput($element, $side . '_pcr_risk', false, ['class' => 'pcr-input']); ?>
                         </span>
                     </span>
                     <span>
                         <label> Excess risk compared to average eye <span class="pcr-erisk highlighter">&nbsp;</span> times
-                            <?php $form->hiddenInput($element, $eye . '_excess_risk', false, ['class' => 'pcr-erisk-input']); ?>
+                            <?php $form->hiddenInput($element, $side . '_excess_risk', false, ['class' => 'pcr-erisk-input']); ?>
                         </label>
                         <a href="https://www.nature.com/articles/6703049" target="_blank">
                             <i class="oe-i info small pad js-has-tooltip"
@@ -198,10 +194,10 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                 </div>
             </div>
             <div class="inactive-form"
-                 style="display: <?= ($element->{'has' . ucfirst($eye)}()) ? 'none' : 'flex'; ?>;">
+                 style="display: <?= ($element->{'has' . ucfirst($side)}()) ? 'none' : 'flex'; ?>;">
                 <div class="add-side">
                     <a href="#">
-                        Add <?= $eye ?> side <span class="icon-add-side"></span>
+                        Add <?= $side ?> side <span class="icon-add-side"></span>
                     </a>
                 </div>
             </div>

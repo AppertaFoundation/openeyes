@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -161,10 +162,14 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
      */
     public function getSiblingString($delimiter = ' // ')
     {
-        return implode($delimiter, array_map(
-            function ($el) {
-                return $el->elementType->name . ': ' . $el;
-            }, $this->getSiblings())
+        return implode(
+            $delimiter,
+            array_map(
+                function ($el) {
+                    return $el->elementType->name . ': ' . $el;
+                },
+                $this->getSiblings()
+            )
         );
     }
 

@@ -53,9 +53,10 @@
         <tr>
             <td>Is Private</td>
             <td><?= \CHtml::activeCheckBox(
-                    $contactlabel,
-                    'is_private',
-                    []);
+                $contactlabel,
+                'is_private',
+                []
+            );
 ?>
             </td>
         </tr>
@@ -64,7 +65,8 @@
             <td>
                 <?= \CHtml::activeNumberField(
                     $contactlabel,
-                    'max_number_per_patient'); ?>
+                    'max_number_per_patient'
+                ); ?>
             </td>
         </tr>
         </tbody>

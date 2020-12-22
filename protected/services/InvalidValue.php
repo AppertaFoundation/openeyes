@@ -22,7 +22,9 @@ class InvalidValue extends ServiceException
     public function toFhirOutcome()
     {
         return FhirOutcome::singleIssue(
-            \FhirValueSet::ISSUESEVERITY_FATAL, \FhirValueSet::ISSUETYPE_INVALID_VALUE, $this->message
+            \FhirValueSet::ISSUESEVERITY_FATAL,
+            \FhirValueSet::ISSUETYPE_INVALID_VALUE,
+            $this->message
         );
     }
 }

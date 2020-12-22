@@ -36,7 +36,7 @@ class PastSurgery extends \BaseEventElementWidget
     public function getRequiredOperation()
     {
         $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-        return $exam_api->getRequiredSurgicalHistory($this->patient);
+        return $exam_api->getRequiredOphthalmicSurgicalHistory($this->patient);
     }
 
     public function getMissingRequiredOperation()
@@ -65,6 +65,12 @@ class PastSurgery extends \BaseEventElementWidget
     {
         if (!is_a($element, 'OEModule\OphCiExamination\models\PastSurgery')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
+        }
+
+        if (array_key_exists('no_pastsurgery', $data) && $data['no_pastsurgery'] === '1' && !$element->no_pastsurgery_date) {
+            $element->no_pastsurgery_date = date('Y-m-d H:i:s');
+        } elseif ($element->no_pastsurgery_date) {
+            $element->no_pastsurgery_date = null;
         }
 
         $element->comments = $data['comments'];
@@ -127,7 +133,9 @@ class PastSurgery extends \BaseEventElementWidget
                 return array_key_exists('object', $op) ?
                     $op['object']->getDisplayDate() . ' ' .$op['object']->getDisplayOperation(false) :
                     $this->formatExternalOperation($op);
-            }, $this->getMergedOperations());
+            },
+            $this->getMergedOperations()
+        );
         return implode($this->popupListSeparator, $res);
     }
 
@@ -155,7 +163,7 @@ class PastSurgery extends \BaseEventElementWidget
 
         // merge by sorting by date
         uasort($operations, function ($a, $b) {
-            return $a['date'] >= $b['date'] ? -1 : 1;
+            return strtotime($a['date']) >= strtotime($b['date']) ? -1 : 1;
         });
 
         return $operations;
@@ -196,7 +204,9 @@ class PastSurgery extends \BaseEventElementWidget
     public function postedNotChecked($row)
     {
         return \Helper::elementFinder(
-                \CHtml::modelName($this->element) . ".operation.$row.had_operation", $_POST)
+            \CHtml::modelName($this->element) . ".operation.$row.had_operation",
+            $_POST
+        )
             == PastSurgery_Operation::$NOT_CHECKED;
     }
 }

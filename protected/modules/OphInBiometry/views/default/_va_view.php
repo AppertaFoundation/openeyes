@@ -35,12 +35,14 @@ if ($api) {
     }
     $rightData = array();
     $leftData = array();
-    for ($i = 0; $i < count($VA_data); ++$i) {
-        if ($VA_data[$i]->side == 0) {
-            $rightData[] = $VA_data[$i];
-        }
-        if ($VA_data[$i]->side == 1) {
-            $leftData[] = $VA_data[$i];
+    if ($VA_data) {
+        for ($i = 0; $i < count($VA_data); ++$i) {
+            if ($VA_data[$i]->side == 0) {
+                $rightData[] = $VA_data[$i];
+            }
+            if ($VA_data[$i]->side == 1) {
+                $leftData[] = $VA_data[$i];
+            }
         }
     }
     $methodnameRight = array();
@@ -223,8 +225,10 @@ if ($refractfound) {
                     <?php if ($refractelement->hasEye($eye_side)) {
                         ?>
                         <div class="refraction">
-                            <?php $this->renderPartial('view_Element_OphInBiometry_Measurement_OEEyeDraw',
-                                array('side' => $eye_side, 'element' => $refractelement));
+                            <?php $this->renderPartial(
+                                'view_Element_OphInBiometry_Measurement_OEEyeDraw',
+                                array('side' => $eye_side, 'element' => $refractelement)
+                            );
                             ?>
                         </div>
                         <?php

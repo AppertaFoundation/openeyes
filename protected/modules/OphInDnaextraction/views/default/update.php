@@ -29,7 +29,9 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             ),
         ));
         // Event actions
-        $this->event_actions[] = EventAction::button('Save', 'save',
+        $this->event_actions[] = EventAction::button(
+            'Save',
+            'save',
             array(
                 'id' => 'et_save',
                 'level' => 'secondary',

@@ -1,0 +1,4 @@
+# /etc/cron.d/email: sends emails
+# Run every 10 minutes and check for the events that were updated more than (what is defined in the
+# correspondence_delayed_email_processing param) minutes and sends email to the recipients.
+${CRON_EMAIL_SCH:-*/10 * * * *}   bash $WROOT/protected/scripts/cronrunner.sh '/usr/bin/php $WROOT/protected/yiic.php correspondenceemail'

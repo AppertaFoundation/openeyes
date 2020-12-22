@@ -133,7 +133,9 @@ class EDProcessor
             }
 
             foreach ($ed_json as $ed_doodle) {
-                $this->storeDoodle($element->event_id, $canvas_mnemonic, $side, $ed_doodle);
+	            if (!isset($ed_doodle->tags)) {
+                    $this->storeDoodle($element->event_id, $canvas_mnemonic, $side, $ed_doodle);
+                }
             }
         }
     }
@@ -197,15 +199,15 @@ SELECT
 FROM episode in_ep
 -- All events for subject patient
 JOIN event in_ev
-  ON in_ev.episode_id = in_ep.id 
+  ON in_ev.episode_id = in_ep.id
 -- All EyeDraw data point for subject patient events
 JOIN mview_datapoint_node in_mdp
   ON in_mdp.event_id = in_ev.id
 -- Look up eyedraw doodle/canvas rules
 JOIN eyedraw_canvas_doodle in_ecd
   ON in_ecd.eyedraw_class_mnemonic = in_mdp.eyedraw_class_mnemonic
--- Restrict-join: The doodle/canvas rule lookup required the runtime target canvas mnenonic 
--- Restrict-join: "AND NOT" the source canvas that was used to shred the doodle data)  
+-- Restrict-join: The doodle/canvas rule lookup required the runtime target canvas mnenonic
+-- Restrict-join: "AND NOT" the source canvas that was used to shred the doodle data)
  AND in_ecd.canvas_mnemonic = :cvmnm
 -- Look up eyedraw doodle rules
 JOIN eyedraw_doodle in_ed
@@ -214,7 +216,7 @@ JOIN eyedraw_doodle in_ed
 WHERE in_ep.patient_id = :patient_id -- <<<<<<<<<<<<<<<<<<<<<<<<<<< BIND APP DATA HERE
 -- Restrict to only doodles that are required to cpy forward to runtime canvas
 -- (see above eyedraw_canvas_doodle restrict-join for runtime canvas selection)
-AND in_ecd.eyedraw_carry_forward_canvas_flag = 1 
+AND in_ecd.eyedraw_carry_forward_canvas_flag = 1
 -- Restrict: Magic sub-query to eliminate OLDER event data in outer query
 -- By identifying NEWER events data within same set-intersection-tuple/laterality in sub-query)
 AND in_ev.deleted = 0
@@ -224,12 +226,12 @@ AND NOT EXISTS (
     -- All episodes for subject patient (see restriction)
     FROM episode in2_ep
     -- All events for subject patient
-    JOIN event in2_ev 
-      ON in2_ev.episode_id = in2_ep.id 
+    JOIN event in2_ev
+      ON in2_ev.episode_id = in2_ep.id
     -- All EyeDraw data point for subject patient events
     JOIN mview_datapoint_node in2_mdp
       ON in2_mdp.event_id = in2_ev.id
-    -- Look up eyedraw doodle (uses short circuit hop join - is safe J.Brown 27/07/2017) to determine set-intersection-tuples 
+    -- Look up eyedraw doodle (uses short circuit hop join - is safe J.Brown 27/07/2017) to determine set-intersection-tuples
     JOIN eyedraw_doodle in2_ed
       ON in2_ed.eyedraw_class_mnemonic = in2_mdp.eyedraw_class_mnemonic
     -- Restrict by patient subject (same as outer query)
@@ -302,8 +304,8 @@ EOSQL;
     private function getInitDoodlesForCanvas($canvas_mnemonic)
     {
         $query_string = <<<EOSQL
-SELECT ed.init_doodle_json 
-FROM eyedraw_doodle ed 
+SELECT ed.init_doodle_json
+FROM eyedraw_doodle ed
 LEFT JOIN eyedraw_canvas_doodle ecd
 ON ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
 WHERE ecd.canvas_mnemonic = :ecdcm
@@ -331,9 +333,9 @@ EOSQL;
     private function getAlwaysInitDoodlesForCanvas($canvas_mnemonic)
     {
         $query_string = <<<EOSQL
-SELECT ed.eyedraw_class_mnemonic, 
-ed.init_doodle_json 
-FROM eyedraw_doodle ed 
+SELECT ed.eyedraw_class_mnemonic,
+ed.init_doodle_json
+FROM eyedraw_doodle ed
 LEFT JOIN eyedraw_canvas_doodle ecd
 ON ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
 WHERE ecd.canvas_mnemonic = :ecdcm

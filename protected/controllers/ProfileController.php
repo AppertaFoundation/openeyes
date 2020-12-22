@@ -51,8 +51,10 @@ class ProfileController extends BaseController
         }
         $errors = array();
         $user = User::model()->findByPk(Yii::app()->user->id);
-        $display_theme_setting = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"',
-            array('user_id' => $user->id));
+        $display_theme_setting = SettingUser::model()->find(
+            'user_id = :user_id AND `key` = "display_theme"',
+            array('user_id' => $user->id)
+        );
 
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
@@ -108,6 +110,14 @@ class ProfileController extends BaseController
                 }
 
                 if (empty($errors)) {
+                    if (Yii::app()->params['auth_source'] === 'BASIC') {
+                        if ($user->password_status==="stale"||$user->password_status==="expired") {// this user pw is now current
+                            $user->password_status = 'current';
+                        }
+                        //reset pw checks
+                        $user->password_last_changed_date = date('Y-m-d H:i:s');
+                        $user->password_failed_tries = 0;
+                    }
                     $user->password = $user->password_repeat = $_POST['User']['password_new'];
                     if (!$user->save()) {
                         $errors = $user->getErrors();
@@ -273,11 +283,16 @@ class ProfileController extends BaseController
             $user = User::model()->findByPk(Yii::app()->user->id);
             $portal_conn = new OptomPortalConnection();
             if ($portal_conn) {
-                $signature_data = $portal_conn->signatureSearch(null,
-                    $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser()));
+                $signature_data = $portal_conn->signatureSearch(
+                    null,
+                    $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser())
+                );
+
                 if (is_array($signature_data) && isset($signature_data["image"])) {
-                    $signature_file = $portal_conn->createNewSignatureImage($signature_data["image"],
-                        Yii::app()->user->id);
+                    $signature_file = $portal_conn->createNewSignatureImage(
+                        $signature_data["image"],
+                        Yii::app()->user->id
+                    );
                     if ($signature_file) {
                         $user->signature_file_id = $signature_file->id;
                         $user->password_hashed = true;
@@ -318,8 +333,10 @@ class ProfileController extends BaseController
             }
             $finalUniqueCode = $user->generateUniqueCodeWithChecksum($user_code);
 
-            $QRimage = $QRSignature->createQRCode("@U:1@code:" . $finalUniqueCode . "@key:" . md5(Yii::app()->user->id),
-                250);
+            $QRimage = $QRSignature->createQRCode(
+                "@U:1@code:" . $finalUniqueCode . "@key:" . md5(Yii::app()->user->id),
+                250
+            );
 
             // Output and free from memory
             header('Content-Type: image/jpeg');
@@ -348,8 +365,10 @@ class ProfileController extends BaseController
      */
     public static function changeDisplayTheme($user_id, $display_theme)
     {
-        $display_theme_setting = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"',
-            array('user_id' => $user_id));
+        $display_theme_setting = SettingUser::model()->find(
+            'user_id = :user_id AND `key` = "display_theme"',
+            array('user_id' => $user_id)
+        );
 
         if ($display_theme) {
             if ($display_theme_setting === null) {

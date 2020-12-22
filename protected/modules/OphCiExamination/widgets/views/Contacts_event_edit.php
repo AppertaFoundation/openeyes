@@ -56,7 +56,9 @@ $element_errors = $element->getErrors();
                             'model_name' => $model_name,
                             'field_prefix' => $model_name,
                             'removable' => false,
-                            'is_template' => true,));
+                        'is_template' => true,
+                        )
+                    );
                 } ?>
                 </tbody>
             </table>
@@ -158,12 +160,12 @@ $element_errors = $element->getErrors();
 
 
         <?php $contact_labels = ContactLabel::model()->findAll(
-        [
+            [
             'select' => 't.name,t.id, t.max_number_per_patient',
             'group' => 't.name',
             'distinct' => true,
-        ]
-    );?>
+            ]
+        );?>
 
         new OpenEyes.UI.AdderDialog({
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
@@ -173,7 +175,9 @@ $element_errors = $element->getErrors();
                         'id' => $contact_label->id,
                         'patient_limit' => $contact_label->max_number_per_patient
                     ];
-                }, $contact_labels)) ?>, {'header': 'Contact Type', 'id': 'contact-type-filter'})],
+                },
+                $contact_labels)
+            ) ?>, {'header': 'Contact Type', 'id': 'contact-type-filter'})],
             openButton: $('#add-contacts-btn'),
             onReturn: function (adderDialog, selectedItems) {
                 if (!contactController.isContactInTable(selectedItems)) {

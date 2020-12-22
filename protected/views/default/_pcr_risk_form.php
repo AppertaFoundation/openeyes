@@ -19,8 +19,11 @@ if (!isset($side)) {
     $side = 'left';
 }
 if ($side === 'left') {
-    $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/PCRCalculation.js',
-        false, -1);
+    $jsPath = Yii::app()->getAssetManager()->publish(
+        Yii::getPathOfAlias('application.assets.js') . '/PCRCalculation.js',
+        true,
+        -1
+    );
     ?>
   <script type="text/javascript">
 
@@ -66,22 +69,55 @@ if ($side === 'left') {
     </header>
   </div>
   <div class="cols-full flex-layout flex-top col-gap">
-
-        <?php
+    <?php
         $patientId = Yii::app()->request->getParam('patient_id');
 
-        if ($patientId == '') {
-            $patientId = Yii::app()->request->getParam('patientId');
-        }
-        if ($patientId == '') {
-            $patientId = $this->patient->id;
-        }
+    if ($patientId == '') {
+        $patientId = Yii::app()->request->getParam('patientId');
+    }
+    if ($patientId == '') {
+        $patientId = $this->patient->id;
+    }
+
+    $grades = DoctorGrade::model()->findAll($criteria->condition = 'has_pcr_risk', array('order' => 'display_order'));
+    $pcr_grades = [];
+
+    foreach ($grades as $grade) {
+        $pcr_grades['display'][$grade->id] = $grade->grade;
+        $pcr_grades['risk'][$grade->id] = $grade->pcr_risk_value;
+    }
+
+        $default_display_label = "None selected.";
+
+        $display_labels = array(
+            'glaucoma' => array('NK' => 'Not Known', 'N' => 'No Glaucoma', 'Y' => 'Glaucoma present'),
+            'diabetic' => array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'),
+            'noview' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+            'brunescent_white_cataract' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+            'doctor_grade_id' => $pcr_grades['display'],
+            'pxf_phako' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+            'pupil_size' => array('Large' => 'Large', 'Medium' => 'Medium', 'Small' => 'Small'),
+            'axial_length_group' => array('0' => 'Not Known', '1' => '< 26', '2' => '> or = 26'),
+            'arb' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+            'lie_flat' => array('N' => 'No', 'Y' => 'Yes'),
+        );
 
         if (isset($patientId)) :
             $pcrRisk = new PcrRisk();
             $pcr = $pcrRisk->getPCRData($patientId, $side, $element, $_POST);
-            echo CHtml::hiddenField('age', $pcr['age_group']);
-            echo CHtml::hiddenField('gender', $pcr['gender']);
+
+            echo CHtml::hiddenField('age', $pcr['age_group'], array('id' => 'pcrrisk_' . $side . '_age', 'class' => 'pcrrisk_age'));
+            echo CHtml::hiddenField('gender', $pcr['gender'], array('id' => 'pcrrisk_' . $side . '_gender', 'class' => 'pcrrisk_gender'));
+            echo CHtml::hiddenField('glaucoma', $pcr['glaucoma'], array('id' => 'pcrrisk_' . $side . '_glaucoma', 'class' => 'pcrrisk_glaucoma'));
+            echo CHtml::hiddenField('diabetic', $pcr['diabetic'], array('id' => 'pcrrisk_' . $side . '_diabetic', 'class' => 'pcrrisk_diabetic'));
+            echo CHtml::hiddenField('no_fundal_view', $pcr['noview'], array('id' => 'pcrrisk_' . $side . '_no_fundal_view', 'class' => 'pcrrisk_no_fundal_view'));
+            echo CHtml::hiddenField('brunescent_white_cataract', $pcr['anteriorsegment']['brunescent_white_cataract'], array('id' => 'pcrrisk_' . $side . '_brunescent_white_cataract', 'class' => 'pcrrisk_brunescent_white_cataract'));
+            echo CHtml::hiddenField('doctor_grade_id', $pcr['doctor_grade_id'], array('id' => 'pcrrisk_' . $side . '_doctor_grade_id', 'data-pcr-risk' => $pcr_grades['risk'][$pcr['doctor_grade_id']], 'class' => 'pcr_doctor_grade'));
+            echo CHtml::hiddenField('pxf_phako', $pcr['anteriorsegment']['pxf_phako'], array('id' => 'pcrrisk_' . $side . '_pxf_phako', 'class' => 'pcrrisk_pxf_phako'));
+            echo CHtml::hiddenField('pupil_size', $pcr['anteriorsegment']['pupil_size'], array('id' => 'pcrrisk_' . $side . '_pupil_size', 'class' => 'pcrrisk_pupil_size'));
+            echo CHtml::hiddenField('axial_length', $pcr['axial_length_group'], array('id' => 'pcrrisk_' . $side . '_axial_length', 'class' => 'pcrrisk_axial_length'));
+            echo CHtml::hiddenField('arb', $pcr['arb'], array('id' => 'pcrrisk_' . $side . '_arb', 'class' => 'pcrrisk_arb'));
+            echo CHtml::hiddenField('abletolieflat', $pcr['lie_flat'], array('id' => 'pcrrisk_' . $side . '_abletolieflat', 'class' => 'pcrrisk_abletolieflat'));
             ?>
     <div id="<?= $side ?>_eye_pcr" class="cols-11">
       <div class="cols-full flex-layout flex-top col-gap">
@@ -91,35 +127,43 @@ if ($side === 'left') {
             <tr>
               <td>Glaucoma</td>
               <td>
-                  <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][glaucoma]', $pcr['glaucoma'],
-                      array('NK' => 'Not Known', 'N' => 'No Glaucoma', 'Y' => 'Glaucoma present'),
-                      array('id' => 'pcrrisk_' . $side . '_glaucoma', 'class' => 'pcrrisk_glaucoma cols-full'));
-                    ?>
+                <label id="<?= 'pcrrisk_' . $side . '_glaucoma_display'?>">
+                    <?php
+                    $value = $pcr['glaucoma'];
+                    if (isset($value)) {
+                            echo $display_labels['glaucoma'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             <tr>
               <td>Diabetic</td>
               <td>
+                <label id="<?= 'pcrrisk_' . $side . '_diabetic_display'?>">
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][diabetic]', $pcr['diabetic'],
-                      array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'),
-                      array('id' => 'pcrrisk_' . $side . '_diabetic', 'class' => 'pcrrisk_diabetic cols-full')
-                    );
-                    ?>
+                    $value = $pcr['diabetic'];
+                    if (isset($value)) {
+                            echo $display_labels['diabetic'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             <tr>
               <td>Fundus Obscured</td>
               <td>
+                <label id="<?= 'pcrrisk_' . $side . '_no_fundal_view_display'?>">
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][no_fundal_view]', $pcr['noview'],
-                      array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array(
-                          'id' => 'pcrrisk_' . $side . '_no_fundal_view',
-                          'class' => 'pcrrisk_no_fundal_view cols-full',
-                      ));
-                    ?>
+                    $value = $pcr['noview'];
+                    if (isset($value)) {
+                            echo $display_labels['noview'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             <tr>
@@ -129,15 +173,15 @@ if ($side === 'left') {
                 </label>
               </td>
               <td>
+                <label id="<?= 'pcrrisk_' . $side . '_brunescent_white_cataract_display'?>">
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][brunescent_white_cataract]',
-                      $pcr['anteriorsegment']['brunescent_white_cataract'],
-                      array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array(
-                          'id' => 'pcrrisk_' . $side . '_brunescent_white_cataract',
-                          'class' => 'pcrrisk_brunescent_white_cataract cols-full',
-                      ));
-                    ?>
+                    $value = $pcr['anteriorsegment']['brunescent_white_cataract'];
+                    if (isset($value)) {
+                            echo $display_labels['brunescent_white_cataract'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             <tr>
@@ -147,16 +191,15 @@ if ($side === 'left') {
                 </label>
               </td>
               <td>
+                <label id="<?= 'pcrrisk_' . $side . '_doctor_grade_id_display'?>" class="pcr_doctor_grade" >
                     <?php
-                      $grades = DoctorGrade::model()->findAll($criteria->condition = 'has_pcr_risk', array('order' => 'display_order'));
-                      $pcr_data_attributes = [];
-                    foreach ($grades as $grade) {
-                        $pcr_data_attributes[$grade->id] = ['data-pcr-value' => $grade->pcr_risk_value];
-                    }
-
-                      echo CHtml::dropDownList("PcrRisk[$side][pcr_doctor_grade]", $pcr['doctor_grade_id'],
-                          CHtml::listData($grades, 'id', 'grade'), ['id' => "pcrrisk_{$side}_doctor_grade_id",  'options' => $pcr_data_attributes ]);
-                    ?>
+                    $value = $pcr['doctor_grade_id'];
+                    if (isset($value)) {
+                            echo $display_labels['doctor_grade_id'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             </tbody>
@@ -172,11 +215,15 @@ if ($side === 'left') {
                 </label>
               </td>
               <td>
+                <label id="<?= 'pcrrisk_' . $side . '_pxf_phako_display'?>" class="<?= 'pcrrisk_pxf_phako' ?>">
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][pxf_phako]', $pcr['anteriorsegment']['pxf_phako'],
-                      array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array('id' => 'pcrrisk_' . $side . '_pxf_phako', 'class' => 'pcrrisk_pxf_phako cols-full'));
-                    ?>
+                    $value = $pcr['anteriorsegment']['pxf_phako'];
+                    if (isset($value)) {
+                            echo $display_labels['pxf_phako'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             <tr>
@@ -184,14 +231,15 @@ if ($side === 'left') {
                 Pupil Size
               </td>
               <td>
+                <label id="<?= 'pcrrisk_' . $side . '_pupil_size_display'?>" class="<?= 'pcrrisk_pupil_size' ?>">
                     <?php
-                    if (trim($pcr['anteriorsegment']['pupil_size']) == '') {
-                        $pcr['anteriorsegment']['pupil_size'] = 'Medium';
-                    }
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][pupil_size]', $pcr['anteriorsegment']['pupil_size'],
-                      array('Large' => 'Large', 'Medium' => 'Medium', 'Small' => 'Small'),
-                      array('id' => 'pcrrisk_' . $side . '_pupil_size', 'class' => 'pcrrisk_pupil_size cols-full'));
-                    ?>
+                    $value = $pcr['anteriorsegment']['pupil_size'];
+                    if (isset($value)) {
+                            echo $display_labels['pupil_size'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             <tr>
@@ -201,11 +249,15 @@ if ($side === 'left') {
                 </label>
               </td>
               <td>
+                <label id="<?= 'pcrrisk_' . $side . '_axial_length_display'?>">
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][axial_length]', $pcr['axial_length_group'],
-                      array('NK' => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
-                      array('id' => 'pcrrisk_' . $side . '_axial_length', 'class' => 'pcrrisk_axial_length cols-full'));
-                    ?>
+                    $value = $pcr['axial_length_group'];
+                    if (isset($value)) {
+                            echo $display_labels['axial_length_group'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             <tr>
@@ -215,12 +267,15 @@ if ($side === 'left') {
                 </label>
               </td>
               <td>
+                <label id="<?= 'pcrrisk_' . $side . '_arb_display'?>">
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][arb]', $pcr['arb'],
-                      array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array('id' => 'pcrrisk_' . $side . '_arb', 'class' => 'pcrrisk_arb cols-full')
-                    );
-                    ?>
+                    $value = $pcr['arb'];
+                    if (isset($value)) {
+                            echo $display_labels['arb'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             <tr>
@@ -230,14 +285,15 @@ if ($side === 'left') {
                 </label>
               </td>
               <td>
+                <label id="<?= 'pcrrisk_' . $side . '_abletolieflat_display'?>">
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][abletolieflat]', $pcr['lie_flat'],
-                      array('N' => 'No', 'Y' => 'Yes'),
-                      array(
-                          'id' => 'pcrrisk_' . $side . '_abletolieflat',
-                          'class' => 'pcrrisk_lie_flat cols-full',
-                      ));
-                    ?>
+                    $value = $pcr['lie_flat'];
+                    if (isset($value)) {
+                            echo $display_labels['lie_flat'][$value];
+                    } else {
+                            echo $default_display_label;
+                    } ?>
+                </label>
               </td>
             </tr>
             </tbody>
@@ -264,89 +320,109 @@ if ($side === 'left') {
       </button><!-- popup to add data to element -->
     </div>
   </div>
+  <script type="text/javascript">
+    $(document).ready(function () {
+
+      function selectItemsetOption(options, id) {
+        options.forEach((option) => {
+          //id will always be a string, option.id may be a number so we convert it and avoid automatic type coercion
+          if (option.id.toString() === id) {
+            option.selected = true;
+          }
+        });
+        return options;
+      }
+
+      var drop_glaucoma = selectItemsetOption([
+          {'id':'NK', 'label':'Not Known'},
+          {'id':'N', 'label':'No Glaucoma'},
+          {'id':'Y', 'label':'Glaucoma present'}
+        ], '<?= $pcr['glaucoma'] ?>'),
+        drop_diabetic = selectItemsetOption([
+          {'id':'NK', 'label':'Not Known'},
+          {'id':'N', 'label':'No Diabetes'},
+          {'id':'Y', 'label':'Diabetes present'}
+        ], '<?= $pcr['diabetic'] ?>'),
+        drop_lie_flat = selectItemsetOption([
+          {'id':'N', 'label':'No'},
+          {'id':'Y', 'label':'Yes'}
+        ], '<?= $pcr['lie_flat'] ?>'),
+        drop_axial_length = selectItemsetOption([
+          {'id': 0, 'label':'Not Known'},
+          {'id': 1, 'label':'< 26'},
+          {'id': 2, 'label':'> or = 26'}
+        ], '<?= $pcr['axial_length_group'] ?>'),
+        drop_fundus = selectItemsetOption([
+          {'id':'NK', 'label':'Not Known'},
+          {'id':'N', 'label':'No'},
+          {'id':'Y', 'label':'Yes'}
+        ], '<?= $pcr['noview'] ?>'),
+        drop_brunescent = selectItemsetOption([
+          {'id':'NK', 'label':'Not Known'},
+          {'id':'N', 'label':'No'},
+          {'id':'Y', 'label':'Yes'}
+        ], '<?= $pcr['anteriorsegment']['brunescent_white_cataract'] ?>'),
+        drop_arb = selectItemsetOption([
+          {'id':'NK', 'label':'Not Known'},
+          {'id':'N', 'label':'No'},
+          {'id':'Y', 'label':'Yes'}
+        ], '<?= $pcr['arb'] ?>');
+
+            <?php
+            $grade_to_risk = array();
+            foreach ($grades as $grade) {
+                $grade_to_risk[$grade->id] = $grade->pcr_risk_value;
+            }
+            ?>
+
+      let doctor_risks = <?= json_encode($grade_to_risk) ?>;
+
+      new OpenEyes.UI.AdderDialog({
+        openButton: $('#add-pcr-risk-btn-<?= $side ?>'),
+        itemSets: [
+          new OpenEyes.UI.AdderDialog.ItemSet(
+            drop_glaucoma, {'header':'Glaucoma', 'id':'glaucoma'}
+          ),
+          new OpenEyes.UI.AdderDialog.ItemSet(
+            drop_diabetic, {'header':'Diabetic', 'id':'diabetic'}
+          ),
+          new OpenEyes.UI.AdderDialog.ItemSet(
+            drop_fundus, {'header':'Fundus Obscured', 'id':'no_fundal_view'}),
+          new OpenEyes.UI.AdderDialog.ItemSet(
+            drop_brunescent, {'header':'Brunescent/ White Cataract', 'id':'brunescent_white_cataract'}
+          ),
+          new OpenEyes.UI.AdderDialog.ItemSet(
+            drop_axial_length, {'header':'Axial Length (mm)', 'id':'axial_length'}
+          ),
+          new OpenEyes.UI.AdderDialog.ItemSet(
+            drop_arb, {'header':'Alpha receptor blocker', 'id':'arb'}
+          ),
+          new OpenEyes.UI.AdderDialog.ItemSet(
+            drop_lie_flat, {'header':'Can lie flat', 'id':'abletolieflat'}
+          )
+        ],
+        deselectOnReturn: false,
+        onReturn: function(adderDialog, selectedItems) {
+          for (i in selectedItems) {
+            var label = selectedItems[i]['itemSet'].options['id'];
+            var displayLabel = selectedItems[i]['label'];
+            var id = selectedItems[i]['id'];
+            var $dataselector = $('#pcrrisk_<?= $side ?>_'+label);
+            var $displayselector = $('#pcrrisk_<?= $side ?>_'+label+'_display');
+
+            $dataselector.val(id);
+
+            if(label === "doctor_grade_id") {
+              $dataselector.attr("data-pcr-risk", doctor_risks[id]);
+            }
+
+            $dataselector.trigger('change');
+            $displayselector.text(displayLabel);
+          }
+          return true;
+        }
+      });
+    });
+  </script>
         <?php endif; ?>
 </div>
-
-<script type="text/javascript">
-  $(document).ready(function () {
-    var drop_glaucoma = [
-      {'id':'NK', 'label':'Not Known'},
-        {'id':'N', 'label':'No Glaucoma'},
-        {'id':'Y', 'label':'Glaucoma present'}
-        ],
-      drop_diabetic = [
-        {'id':'NK', 'label':'Not Known'},
-        {'id':'N', 'label':'No Diabetes'},
-        {'id':'Y', 'label':'Diabetes present'}
-      ],
-      drop_lie_flat = [
-        {'id':'N', 'label':'No'},
-        {'id':'Y', 'label':'Yes'}
-        ],
-      drop_axial_length = [
-        {'id':'NK', 'label':'Not Known'},
-        {'id': 1, 'label':'< 26'},
-        {'id': 2, 'label':'> or = 26'}
-        ],
-      drop_pupil_size = [
-        {'id':'Large', 'label':'Large'},
-        {'id':'Medium', 'label':'Medium'},
-        {'id':'Small', 'label':'Small'}
-        ],
-      drop_item1 = [
-        {'id':'NK', 'label':'Not Known'},
-        {'id':'N', 'label':'No'},
-        {'id':'Y', 'label':'Yes'}
-      ];
-
-    new OpenEyes.UI.AdderDialog({
-      openButton: $('#add-pcr-risk-btn-<?= $side ?>'),
-      itemSets: [
-        new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_glaucoma, {'header':'Glaucoma', 'id':'glaucoma'}
-        ),
-        new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_diabetic, {'header':'Diabetic', 'id':'diabetic'}
-        ),
-        new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_item1, {'header':'Fundus Obscured', 'id':'no_fundal_view'}),
-        new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_item1, {'header':'Brunescent/ White Cataract', 'id':'brunescent_white_cataract'}
-        ),
-        new OpenEyes.UI.AdderDialog.ItemSet(
-            <?= CJSON::encode(
-                array_map(function ($item) {
-                    return ['label' =>$item->grade,
-                        'risk-value'=>$item->pcr_risk_value,
-                        'id' => $item->id];
-                }, $grades) ) ?>, {'header':'Surgeon Grade', 'id':'doctor_grade_id'}
-        ),
-        new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_item1, {'header':'PXF/ Phacodonesis', 'id':'pxf_phako'}
-        ),
-        new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_pupil_size, {'header':'Pupil Size', 'id':'pupil_size'}
-        ),
-        new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_axial_length, {'header':'Axial Length (mm)', 'id':'axial_length'}
-        ),
-        new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_item1, {'header':'Alpha receptor blocker', 'id':'arb'}
-        ),
-        new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_lie_flat, {'header':'Can lie flat', 'id':'abletolieflat'}
-        )
-      ],
-      onReturn: function(adderDialog, selectedItems) {
-        for (i in selectedItems) {
-          var label = selectedItems[i]['itemSet'].options['id'];
-          var id = selectedItems[i]['id'];
-          var $selector = $('#pcrrisk_<?= $side ?>_'+label);
-          $selector.val(id);
-          $selector.trigger('change');
-        }
-        return true;
-      }
-    });
-  });
-</script>

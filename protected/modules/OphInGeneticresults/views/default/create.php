@@ -39,4 +39,4 @@ $this->displayErrors($errors, true);
 
 $this->endWidget();
 
-$this->endContent()?>
+$this->endContent();

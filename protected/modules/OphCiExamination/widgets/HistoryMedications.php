@@ -17,18 +17,25 @@
 
 namespace OEModule\OphCiExamination\widgets;
 
+use CClientScript;
+use CHttpException;
+use EventMedicationUse;
 use OEModule\OphCiExamination\models\HistoryMedications as HistoryMedicationsElement;
-use OEModule\OphCiExamination\models\HistoryMedicationsEntry;
+use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagementElement;
+use Yii;
 
 /**
  * Class HistoryMedications
  * @package OEModule\OphCiExamination\widgets
  * @property HistoryMedicationsElement $element
  */
-class HistoryMedications extends \BaseEventElementWidget
+class HistoryMedications extends BaseMedicationWidget
 {
     public static $INLINE_EVENT_VIEW = 256;
     public static $PRESCRIPTION_PRINT_VIEW = 512;
+
+    protected static $elementClass = HistoryMedicationsElement::class;
+    protected $print_view = 'HistoryMedications_event_print';
 
     public static $moduleName = 'OphCiExamination';
     public $notattip_edit_warning = 'OEModule.OphCiExamination.widgets.views.HistoryMedications_edit_nottip';
@@ -36,43 +43,6 @@ class HistoryMedications extends \BaseEventElementWidget
     public $missing_prescription_items = null;
     public $pro_theme;
 
-    protected $print_view = 'HistoryMedications_event_print';
-
-
-  /**
-   * @throws \CHttpException
-   */
-    public function init()
-    {
-        parent::init();
-
-      // add OpenEyes.UI.RestrictedData js
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
-        $assetManager->publish($baseAssetsPath);
-
-        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
-    }
-
-
-  /**
-     * @return HistoryMedicationsElement
-     */
-    protected function getNewElement()
-    {
-        return new HistoryMedicationsElement();
-    }
-
-    /**
-     * @param $mode
-     * @return bool
-     * @inheritdoc
-     */
-    protected function validateMode($mode)
-    {
-        return in_array($mode,
-            array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW), true) || parent::validateMode($mode);
-    }
 
     /**
      * @return bool
@@ -83,33 +53,18 @@ class HistoryMedications extends \BaseEventElementWidget
     }
 
     /**
-     * Creates new Entry records for any prescription items that are not in the
-     * current element.
-     *
-     * @return array
+     * @throws CHttpException
      */
-    public function getEntriesForUntrackedPrescriptionItems()
+    public function init()
     {
-        $untracked = array();
-        if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {
-            $tracked_prescr_item_ids = array_map(
-                function ($entry) {
-                    return $entry->prescription_item_id;
-                },
-                $this->element->getPrescriptionEntries()
-            );
+        parent::init();
 
-            if ($untracked_prescription_items = $api->getPrescriptionItemsForPatient(
-                $this->patient, $tracked_prescr_item_ids)
-            ) {
-                foreach ($untracked_prescription_items as $item) {
-                    $entry = new HistoryMedicationsEntry();
-                    $entry->loadFromPrescriptionItem($item);
-                    $untracked[] = $entry;
-                }
-            }
-        }
-        return $untracked;
+        // add OpenEyes.UI.RestrictedData js
+        $assetManager = Yii::app()->getAssetManager();
+        $baseAssetsPath = Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath, true);
+
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true) . '/OpenEyes.UI.RestrictData.js', CClientScript::POS_END);
     }
 
     /**
@@ -125,7 +80,7 @@ class HistoryMedications extends \BaseEventElementWidget
         if ($this->is_latest_element && $this->element->isNewRecord) {
             return true;
         }
-        $this->missing_prescription_items = (bool) $this->getEntriesForUntrackedPrescriptionItems();
+        $this->missing_prescription_items = (bool) $this->element->getEntriesForUntrackedPrescriptionItems($this->patient);
         foreach ($this->element->entries as $entry) {
             if ($entry->prescriptionNotCurrent()) {
                 return false;
@@ -135,77 +90,118 @@ class HistoryMedications extends \BaseEventElementWidget
     }
 
     /**
+     * @return array
+     */
+
+    private function getEntriesFromPreviousManagement()
+    {
+        $entries = [];
+        $element = $this->element->getModuleApi()->getLatestElement(MedicationManagementElement::class, $this->patient);
+        if (!is_null($element)) {
+            /** @var MedicationManagementElement $element */
+            foreach ($element->entries as $entry) {
+                if (!$entry->prescribe) {
+                    /** @var EventMedicationUse $new_entry */
+                    $new_entry = clone $entry;
+                    if (!$this->inSummaryOrViewMode()) {
+                        $new_entry->id = null;
+                    }
+                    $new_entry->setIsNewRecord(true);
+                    $entries[] = $new_entry;
+                }
+            }
+        }
+
+        return $entries;
+    }
+
+    public function getEntriesFromPreviousHistory()
+    {
+        $entries = [];
+        $element = $this->element->getModuleApi()->getLatestElement(HistoryMedicationsElement::class, $this->patient);
+        if (!is_null($element)) {
+            /** @var HistoryMedicationsElement $element*/
+            $entries = $element->entries;
+        }
+
+        return $entries;
+    }
+
+    /**
+     * @return bool whether any entries were set
+     */
+
+    private function setEntriesWithPreviousManagement()
+    {
+        $management_entries = $this->getEntriesFromPreviousManagement();
+        $history_entries = $this->getEntriesFromPreviousHistory();
+        foreach ($management_entries as $management_entry) {
+            $duplicate = false;
+            foreach ($history_entries as $entry) {
+                if ($entry->bound_key === $management_entry->bound_key) {
+                    $duplicate = true;
+                    break;
+                }
+            }
+
+            if (!$duplicate) {
+                $history_entries[] = $management_entry;
+            }
+        }
+        $this->element->entries = array_merge($history_entries, $this->element->getEntriesForUntrackedPrescriptionItems($this->patient));
+    }
+
+    /**
      * @inheritdoc
      */
     protected function setElementFromDefaults()
     {
-        // because the entries cloned into the new element may contain stale data for related
-        // prescription data (or that prescription item might have been deleted)
-        // we need to update appropriately.
-        $entries = array();
-        foreach ($this->element->entries as $entry) {
-            if ($entry->prescription_item_id) {
-                if ($entry->prescription_event_deleted || !$entry->prescription_item) {
-                    continue;
+        if (!$this->isPostedEntries()) {
+            $this->setEntriesWithPreviousManagement();
+            if ($this->inEditMode()) {
+                foreach ($this->element->entries as $entry) {
+                    $entry->id = null;
                 }
-                $entry->loadFromPrescriptionItem($entry->prescription_item);
             }
-            $entries[] = $entry;
-        }
 
-        if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
-            // tracking prescription items.
-            $this->element->entries = array_merge(
-                $entries,
-                $untracked);
+            // because the entries cloned into the new element may contain stale data for related
+            // prescription data (or that prescription item might have been deleted)
+            // we need to update appropriately.
+            $entries = array();
+            foreach ($this->element->entries as $entry) {
+                if ($entry->prescription_item_id) {
+                    if ($entry->prescription_event_deleted || !$entry->prescriptionItem) {
+                        continue;
+                    }
+                    $entry->loadFromPrescriptionItem($entry->prescriptionItem);
+                }
+                $entries[] = $entry;
+            }
+            $untracked = $this->element->getEntriesForUntrackedPrescriptionItems($this->patient);
+            if ($untracked) {
+                // tracking prescription items.
+                $this->element->entries = array_merge(
+                    $entries,
+                    $untracked
+                );
+            }
         }
     }
 
     /**
-     * @param HistoryMedicationsElement $element
-     * @param $data
-     * @throws \CException
+     * @return array
      */
-    protected function updateElementFromData($element, $data)
+
+    public function getMergedManagementEntries()
     {
-        if (!is_a($element, 'OEModule\OphCiExamination\models\HistoryMedications')) {
-            throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
-        }
+        $this->setElementFromDefaults();
 
-        // pre-cache current entries so any entries that remain in place will use the same db row
-        $entries_by_id = array();
-        foreach ($element->entries as $entry) {
-            $entries_by_id[$entry->id] = $entry;
-        }
+        $this->element->assortEntries();
 
-        if (array_key_exists('entries', $data)) {
-            $entries = array();
-            foreach ($data['entries'] as $entry_data) {
-                $id = array_key_exists('id', $entry_data) ? $entry_data['id'] : null;
-                $entry = ($id && array_key_exists($id, $entries_by_id)) ?
-                    $entries_by_id[$id] :
-                    new HistoryMedicationsEntry();
-
-                foreach (array('originallyStopped', 'start_date', 'end_date', 'drug_id', 'medication_drug_id',
-                             'medication_name', 'dose', 'units', 'frequency_id', 'route_id', 'option_id',
-                             'stop_reason_id', 'prescription_item_id') as $k) {
-                    $entry->$k = array_key_exists($k, $entry_data) ? $entry_data[$k] : null;
-                }
-                if ($entry_data['start_date']) {
-                    list($start_year, $start_month, $start_day) = array_pad(explode('-', $entry_data['start_date']), 3, null);
-                    $entry->start_date = \Helper::padFuzzyDate($start_year, $start_month, $start_day);
-                }
-                if ($entry_data['end_date']) {
-                    list($end_year, $end_month, $end_day) = array_pad(explode('-', $entry_data['end_date']), 3, null);
-                    $entry->end_date = \Helper::padFuzzyDate($end_year, $end_month, $end_day);
-                }
-
-                $entries[] = $entry;
-            }
-            $element->entries = $entries;
-        } else {
-            $element->entries = array();
-        }
+        return [
+            'current' => array_merge($this->element->current_entries, $this->element->prescribed_entries),
+            'stopped' => $this->element->closed_entries,
+        ];
     }
 
     /**
@@ -219,53 +215,13 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     public function getMergedEntries()
     {
+        $this->setElementFromDefaults();
 
-        //$this->element->currentOrderedEntries and stoppedOrderedEntries relations are not uses here as we
-        //need to include the untracked Prescription Items as well and those are already loaded into the
-        //$this->element->entries (alongside with tracked Prescription Items)
 
-        // setElementFromDefaults() only called when the element is a new record (BaseEventElementWidget like ~166)
-        // and this is where the untracked elements are loaded into the $this->element->entries
-        // so if it isn't a new element ->entries only contains tracked medications
-        if (!$this->element->isNewRecord) {
-            if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
-                // tracking prescription items.
-                $this->element->entries = array_merge(
-                    $this->element->entries,
-                    $untracked
-                );
-            }
-        }
-
-        $result['current'] = array();
-        $result['stopped'] = array();
-
-        if ($this->element->entries) {
-            $stopped = array();
-            $current = array();
-            foreach ($this->element->entries as $entry) {
-                $end_date_including_tapers = $entry->end_date;
-                if ($entry->prescription_item_id) {
-                    $prescription_item_end_date = $entry->prescription_item->stopDateFromDuration();
-                    if ($prescription_item_end_date && ($prescription_item_end_date < $entry->end_date)) {
-                        $end_date_including_tapers = $prescription_item_end_date;
-                    }
-                }
-                if ($end_date_including_tapers && $end_date_including_tapers <= date("Y-m-d")) {
-                    $stopped[] = $entry;
-                } else {
-                    $current[] = $entry;
-                }
-            }
-            $sorter = function ($a, $b) {
-                return $a['start_date'] >= $b['start_date'] ? -1 : 1;
-            };
-            uasort($current, $sorter);
-            uasort($stopped, $sorter);
-
-            $result['current'] = $current;
-            $result['stopped'] = $stopped;
-        }
+        $this->element->assortEntries();
+        $result['current'] = $this->element->current_entries;
+        $result['stopped'] = $this->element->closed_entries;
+        $result['prescribed'] = $this->element->prescribed_entries;
 
         // now remove any that are no longer relevant because the prescription item
         // has been deleted
@@ -275,14 +231,12 @@ class HistoryMedications extends \BaseEventElementWidget
 
         $result['current'] = array_filter($result['current'], $filter);
         $result['stopped'] = array_filter($result['stopped'], $filter);
+        $result['prescribed'] = array_filter($result['prescribed'], $filter);
+
+        $result['current'] = array_merge($result['current'], $result['prescribed']);
 
         return $result;
     }
-
-    /**
-     * @param $entry
-     * @return string
-     */
 
     /**
      * @return string
@@ -302,7 +256,7 @@ class HistoryMedications extends \BaseEventElementWidget
         // for this history element than others which just provide a list.
         $short_name = substr(strrchr(get_class($this), '\\'), 1);
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
-            return  $short_name . '_patient_popup';
+            return $short_name . '_patient_popup';
         }
         if ($this->mode === static::$INLINE_EVENT_VIEW) {
             return $short_name . '_inline_event_view';
@@ -318,10 +272,63 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     public function getViewData()
     {
-        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE)) ) {
-            return array_merge(parent::getViewData(), $this->getMergedEntries());
+        if (in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE))) {
+            return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();
+    }
 
+    /**
+     * @throws CHttpException
+     */
+    protected function initialiseElement()
+    {
+        if (!$this->element) {
+            if (!$this->patient) {
+                throw new CHttpException('Patient required to initialise ' . static::class . ' with no element.');
+            }
+
+            if ($this->mode != self::$EVENT_EDIT_MODE) {
+                // must be in a view mode so just load the most recent
+                $this->element = $this->getNewElement()->getMostRecentForPatient($this->patient);
+            } else {
+                $this->element = $this->getNewElement();
+            }
+        }
+
+        // when new we want to always set to default so we can track changes
+        // but if this element already exists then we don't want to override
+        // it with the tip data
+        if ($this->element && $this->element->getIsNewRecord() && $this->mode === self::$EVENT_EDIT_MODE) {
+            $this->setElementFromDefaults();
+        }
+
+        if ($this->data) {
+            // we set the element to the provided data
+            $this->updateElementFromData($this->element, $this->data);
+        }
+        $this->element->widget = $this;
+    }
+
+    /**
+     * @param $mode
+     * @return bool
+     * @inheritdoc
+     */
+    protected function validateMode($mode)
+    {
+        return in_array(
+            $mode,
+            array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW),
+            true
+        ) || parent::validateMode($mode);
+    }
+
+    /**
+     * @return HistoryMedicationsElement
+     */
+    protected function getNewElement()
+    {
+        return new HistoryMedicationsElement();
     }
 }

@@ -3,9 +3,9 @@
     <img src="<?php echo $logo['secondaryLogo']?>" alt="letterhead_seal" />
 </div>
 <?php }
-if (isset($logo['headerLogo'])) {
+if (isset($logo['primaryLogo'])) {
     ?>
 <div class="logo">
-    <img src="<?php echo $logo['headerLogo']; ?>" alt="logo" style="height:<?= $size ?>px" />
+    <img src="<?php echo $logo['primaryLogo']; ?>" alt="logo" style="height:<?= $size ?>px" />
 </div>
 <?php } ?>

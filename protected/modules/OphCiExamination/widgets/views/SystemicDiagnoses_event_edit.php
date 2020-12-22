@@ -34,6 +34,16 @@ $required_diagnoses_ids = array_map(function ($r) {
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
     <input type="hidden" name="diabetic_diagnoses[]"/>
+    <div class="cols-5 align-left <?= $model_name ?>_no_systemic_diagnoses_wrapper">
+        <label class="inline highlight" for="<?= $model_name ?>_no_systemic_diagnoses">
+            <?= \CHtml::checkBox(
+                $model_name . '[no_systemic_diagnoses]',
+                $element->no_systemic_diagnoses_date ? true : false,
+                array('class' => $model_name. '_no_systemic_diagnoses')
+            ); ?>
+            No systemic diagnoses
+        </label>
+    </div>
     <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
         <colgroup>
             <col class="cols-3">
@@ -79,7 +89,8 @@ $required_diagnoses_ids = array_map(function ($r) {
         ?>
         </tbody>
     </table>
-    <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup">
+    <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup"
+         style="display: <?php echo $element->no_systemic_diagnoses_date ? 'none' : ''; ?>">
         <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses">
             <i class="oe-i plus pro-theme"></i>
         </button>
@@ -134,7 +145,9 @@ $required_diagnoses_ids = array_map(function ($r) {
                             'filter-value' => $disorder_group->id,
                             'is_filter' => true,
                         ];
-                    }, $valid_common_systemic_disorder_groups)) ?>, {
+                    },
+                    $valid_common_systemic_disorder_groups)
+                ) ?>, {
                     'header': 'Disorder Group',
                     'id': 'disorder-group-filter',
                     'deselectOnReturn': false,

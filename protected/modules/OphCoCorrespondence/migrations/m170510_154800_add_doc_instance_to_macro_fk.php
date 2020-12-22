@@ -18,4 +18,3 @@ class m170510_154800_add_doc_instance_to_macro_fk extends OEMigration
         $this->dropForeignKey('fk_document_instance_data_macro_id', 'document_instance_data');
     }
 }
-

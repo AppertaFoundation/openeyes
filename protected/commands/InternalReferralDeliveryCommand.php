@@ -50,14 +50,14 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
         /*
             checking the integration if needed
 
-        if( !\Yii::app()->hasComponent('internalReferralIntegration')){
+        if ( !\Yii::app()->hasComponent('internalReferralIntegration')){
             throw new Exception("No Internal Referral integration found");
         }
 
         $template_path = \Yii::app()->internalReferralIntegration->getTemplatePath();
         $this->xml_template_file = \Yii::getPathOfAlias($template_path) . '/' . \Yii::app()->internalReferralIntegration->getWIFxmlTemplate() . '.php';
 
-        if(!file_exists($this->xml_template_file)){
+        if (!file_exists($this->xml_template_file)){
             throw new \Exception('Template '.$template_path.' does not exist.');
         }
        */
@@ -234,8 +234,10 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             $filename = "OPENEYES_Internal_" . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . $event->id . "_" . $this->getFileRandomNumber();
         } else {
             if (Yii::app()->params['filename_format'] === 'format2') {
-                $filename = 'Internal_' . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . date('YmdHi',
-                        strtotime($event->last_modified_date)) . '_' . $event->id;
+                $filename = 'Internal_' . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . date(
+                    'YmdHi',
+                    strtotime($event->last_modified_date)
+                ) . '_' . $event->id;
             } else {
                 if (Yii::app()->params['filename_format'] === 'format3') {
                     $filename = 'Internal_' . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_edtdep-OEY_' .

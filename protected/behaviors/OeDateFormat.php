@@ -77,14 +77,14 @@ class OeDateFormat extends CActiveRecordBehavior
         return ($day   !== '' ? '<span class="day">'.$day.'</span>'   : '') .
                ($month !== '' ? '<span class="mth">'.$month.'</span>' : '') .
                ($year  !== '' ? '<span class="yr">'.$year.'</span>' : '');
-
     }
 
     /**
      * Converts ISO 9075 dates to a string.
      * @return string
      */
-    private function formatFuzzyDate() {
+    private function formatFuzzyDate()
+    {
         list($day, $month, $year) = $this->formatFuzzyDateSplit();
         return $day . $month . $year;
     }
@@ -93,7 +93,8 @@ class OeDateFormat extends CActiveRecordBehavior
      * Extract day, month and year from the date in the database
      * @return array
      */
-    private function formatFuzzyDateSplit() {
+    private function formatFuzzyDateSplit()
+    {
         // get date from model
         $date = $this->Owner->{$this->fuzzy_date_field};
 

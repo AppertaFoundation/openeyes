@@ -58,7 +58,7 @@ $(document).ready(function () {
     var items_available = $('#draggablelist-items-available');
 
     var extractItemIds = function () {
-        $('#draggablelist #item_ids').val(	// remove -items 
+        $('#draggablelist #item_ids').val(	// remove -items
             items_enabled.find('.draggablelist-item').map(
                 function () {
                     return $(this).data('item-id');

@@ -19,8 +19,12 @@ $widget = $this;
 <div class="element-data">
     <div class="data-value">
         <div class="tile-data-overflow">
-            <?php if (!$operations || count($operations) === 0) { ?>
-                <div class="data-value not-recorded">No procedures recorded during this encounter</div>
+            <?php if ((!$operations || count($operations) === 0) && !$element->no_pastsurgery_date) { ?>
+                <div class="data-value not-recorded">Nil recorded this examination</div>
+            <?php } elseif ($element->no_pastsurgery_date) { ?>
+                <div class="data-value">
+                    Patient has had no previous eye surgery or laser treatment
+                </div>
             <?php } else { ?>
             <table>
                 <colgroup>
@@ -31,8 +35,10 @@ $widget = $this;
                 <tbody> <?php foreach ($operations as $operation) { ?>
                     <tr>
                         <td>
-                            <?= array_key_exists('object',
-                                $operation) ? $operation['object']->operation : $operation['operation']; ?>
+                            <?= array_key_exists(
+                                'object',
+                                $operation
+                            ) ? $operation['object']->operation : $operation['operation']; ?>
                         </td>
                         <td>
                             <?php if (array_key_exists('link', $operation)) { ?>
@@ -57,7 +63,9 @@ $widget = $this;
             } ?>
                 </tbody>
             </table>
-            <?= CHtml::encode($element->comments) ?>
+            <?php if (!$element->no_pastsurgery_date) { ?>
+                <?= CHtml::encode($element->comments) ?>
+            <?php } ?>
         </div>
     </div>
 </div>

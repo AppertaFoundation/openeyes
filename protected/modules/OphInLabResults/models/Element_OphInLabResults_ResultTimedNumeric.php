@@ -83,12 +83,14 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
         if ($this->resultType->fieldType->name === "Numeric Field") {
             if (isset($this->resultType->min_range) && $this->resultType->min_range > $this->$attribute) {
                 $this->addError(
-                    $attribute, 'Value should be greater than ' . $this->resultType->min_range
+                    $attribute,
+                    'Value should be greater than ' . $this->resultType->min_range
                 );
             }
             if (isset($this->resultType->max_range) && $this->resultType->max_range < $this->$attribute) {
                 $this->addError(
-                    $attribute, 'Value should be less than ' . $this->resultType->max_range
+                    $attribute,
+                    'Value should be less than ' . $this->resultType->max_range
                 );
             }
         }

@@ -31,12 +31,13 @@ $cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' :
                 <td>Subspecialty</td>
                 <td>
                     <?=\CHtml::dropDownList(
-                    'subspecialty_id',
-                    $subspecialty_id,
-                    CHtml::listData($subspecialities, 'id', 'name'), [
-                      'empty' => '- Select a subspecialty -',
-                    ]
-                  ); ?>
+                        'subspecialty_id',
+                        $subspecialty_id,
+                        CHtml::listData($subspecialities, 'id', 'name'),
+                        [
+                        'empty' => '- Select a subspecialty -',
+                        ]
+                    ); ?>
                 </td>
             </tr>
             </tbody>

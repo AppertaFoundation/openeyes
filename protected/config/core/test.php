@@ -38,6 +38,7 @@ if (file_exists('/etc/openeyes/db.conf')) {
 
 return array(
     'name' => 'OpenEyes Test',
+    'basePath' => __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..',
     'import' => array(
         'application.modules.admin.controllers.*',
         'application.components.*',
@@ -47,6 +48,10 @@ return array(
         'yiitests.validators.*',
     ),
     'components' => array(
+        'assetManager' => array(
+            'class' => 'AssetManager',
+            'basePath' => __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..',
+        ),
         'fixture' => array(
             'class' => 'DbFixtureManager',
         ),

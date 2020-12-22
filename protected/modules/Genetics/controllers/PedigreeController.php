@@ -38,7 +38,7 @@ class PedigreeController extends BaseModuleController
      */
     public function beforeAction($action)
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.Genetics.assets.js'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.Genetics.assets.js'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/gene_validation.js');
 
 
@@ -145,7 +145,7 @@ class PedigreeController extends BaseModuleController
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Family Saved");
 
-                $this->redirect('/Genetics/pedigree/view/'.$admin->getModel()->id );
+                $this->redirect('/Genetics/pedigree/view/'.$admin->getModel()->id);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }

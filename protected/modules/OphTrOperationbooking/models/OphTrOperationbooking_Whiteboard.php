@@ -107,7 +107,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->iol_power = 'None';
         $this->axial_length = 'Unknown';
         $this->acd = 'Unknown';
-        $this->predicted_refractive_outcome = 'Unknown';
+        $this->predicted_refractive_outcome = 0.0;
         $this->formula = 'Unknown';
         $this->axis = 0.0;
 
@@ -241,11 +241,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $status = 'Not checked';
 
-        if ($risk['status'] === true) {
-            $status = 'Present';
-        }
-        if ($risk['status'] === false) {
-            $status = 'Not present';
+        if (isset($risk)) {
+            if ($risk['status'] === true) {
+                $status = 'Present';
+            }
+            if ($risk['status'] === false) {
+                $status = 'Not present';
+            }
         }
 
         return $status;

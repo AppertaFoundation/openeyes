@@ -18,7 +18,7 @@ if ( isset($_POST['GeneticsPatient']['pedigrees']) && empty($_POST['GeneticsPati
     $(function(){
         $("#no_pedigree").click(function(){
             var checked = $(this).prop("checked");
-            if(checked)
+            if (checked)
             {
                 $("#div_GeneticsPatient_Pedigree .MultiSelectList .multi-select-remove").trigger("click");
                 $('#GeneticsPatient_pedigrees').prop('disabled', true).trigger("chosen:updated");
@@ -33,12 +33,12 @@ if ( isset($_POST['GeneticsPatient']['pedigrees']) && empty($_POST['GeneticsPati
 
         $("#generic-admin-form").submit(function(){
 
-            if(confirmed === true)
+            if (confirmed === true)
             {
                 return true;
             }
 
-            if($("#no_pedigree").prop("checked"))
+            if ($("#no_pedigree").prop("checked"))
             {
                 var confirm = new OpenEyes.UI.Dialog.Confirm({
                     content: 'Are you sure there is no pedigree?'

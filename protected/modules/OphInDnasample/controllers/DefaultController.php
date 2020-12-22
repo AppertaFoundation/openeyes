@@ -2,7 +2,6 @@
 
 class DefaultController extends BaseEventTypeController
 {
-    protected $show_element_sidebar = false;
 
     public function volumeRemaining($event_id)
     {
@@ -36,7 +35,7 @@ class DefaultController extends BaseEventTypeController
 
     private function _registerDnaTestFormJs()
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_view.js');
     }
 

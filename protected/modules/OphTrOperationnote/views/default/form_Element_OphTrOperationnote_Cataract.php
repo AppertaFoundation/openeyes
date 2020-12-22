@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -21,7 +18,6 @@
 $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
 ?>
-
 <section
     class="edit element full on-demand sub-element
         <?php echo $element->elementType->class_name ?>
@@ -60,25 +56,25 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
           )); ?>
       </div>
     </div>
-
     <span id="ophCiExaminationPCRRiskEyeLabel">
         <a href="javascript:showhidePCR('ophTrOperationnotePCRRiskDiv')">PCR Risk
         <span class="pcr-span1"></span>%</a>
     </span>
-  </div>
-</section>
-
 <section id="ophTrOperationnotePCRRiskDiv">
   <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote js-pcr-left">
         <?php
-        $this->renderPartial('application.views.default._pcr_risk_form',
-          array('form' => $form, 'element' => $element, 'side' => 'left'));
+        $this->renderPartial(
+            'application.views.default._pcr_risk_form',
+            array('form' => $form, 'element' => $element, 'side' => 'left')
+        );
         ?>
   </div>
   <div id="ophCiExaminationPCRRiskRightEye" class="pcr-exam-link-opnote js-pcr-right">
         <?php
-        $this->renderPartial('application.views.default._pcr_risk_form',
-          array('form' => $form, 'element' => $element, 'side' => 'right'));
+        $this->renderPartial(
+            'application.views.default._pcr_risk_form',
+            array('form' => $form, 'element' => $element, 'side' => 'right')
+        );
         ?>
   </div>
 </section>

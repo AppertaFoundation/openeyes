@@ -38,8 +38,7 @@ SELECT last_modified_user_id, last_modified_date FROM (
   WHERE id = :event_id
   ORDER BY last_modified_Date DESC
 ) lagged_events
-WHERE DATE(last_modified_date) != DATE(prev_date) OR last_modified_user_id != prev_user OR prev_user IS NULL'
-)->limit(10)->query(array('event_id' => $event->id));
+WHERE DATE(last_modified_date) != DATE(prev_date) OR last_modified_user_id != prev_user OR prev_user IS NULL')->limit(10)->query(array('event_id' => $event->id));
 ?>
 
 <div id="js-event-audit-trail" class="oe-popup-event-audit-trail" style="display: none;">

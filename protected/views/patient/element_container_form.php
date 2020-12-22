@@ -45,7 +45,7 @@ $set_id = isset($this->set) ? $this->set->id : null;
         <?php
         if (isset($_POST['element_dirty'][$model_name])) {
             $element_dirty = $_POST['element_dirty'][$model_name];
-        } else if ($element->isNewRecord) {
+        } elseif ($element->isNewRecord) {
             $element_dirty = 0;
         } else {
             $element_dirty = 1;
@@ -103,4 +103,11 @@ $set_id = isset($this->set) ? $this->set->id : null;
         <?php echo $content; ?>
 
     </section>
+<?php } ?>
+<?php if ($element->elementType->custom_hint_text) { ?>
+<div class="alert-box info <?= CHtml::modelName($element->elementType->class_name) ?>">
+    <div class="user-tinymce-content">
+        <?= $element->elementType->custom_hint_text ?>
+    </div>
+</div>
 <?php } ?>
