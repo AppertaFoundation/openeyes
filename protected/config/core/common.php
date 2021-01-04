@@ -38,7 +38,7 @@ if (file_exists('/etc/openeyes/db.conf')) {
     );
 }
 
-return array(
+$config = array(
     'name' => 'OpenEyes',
 
     // Preloading 'log' component
@@ -750,3 +750,5 @@ return array(
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
     ),
 );
+
+return $config;
