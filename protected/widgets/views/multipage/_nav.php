@@ -34,7 +34,10 @@ use OEModule\OphGeneric\models\RequestDetails;
             ]);
             $study_time = RequestDetails::model()->find($criteria);?>
 
-        <h4><?= $image_group[0]->attachmentData->attachmentType->attachment_type . (isset($study_time) && isset($study_time->value) ? " (" . $study_time->value . ")" : "") ?></h4>
+        <h4>
+            <?= $image_group[0]->attachmentData->attachmentType->attachment_type .
+            (isset($study_time) && isset($study_time->value) ? " (" . Helper::convertDate2NHS($study_time->value) . ")" : "") ?>
+        </h4>
             <?php foreach ($image_group as $image) { ?>
                 <div class="page-num-btn" data-page="<?=$page_num?>" data-document-number="<?=$image->document_number?>"><?= $page_num + 1?></div>
                 <?php $page_num++; ?>
