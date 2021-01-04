@@ -55,10 +55,8 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
 
         $command = Yii::app()->db->createCommand()
             ->select(
-                'patient.hos_num, contact.last_name, contact.first_name, patient.dob, address.postcode, d.created_date, medication.preferred_term, 
-                 if (medication.id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id = (SELECT id FROM medication_set WHERE name = \'Preservative free\')),1,0) AS preservative_free,
-                user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date, dc.name as dispense_condition, dl.name as dispense_location, option.name as laterality,
-                route.term as route, duration.name as duration, mf.term as frequency, emu.dose, emu.dose_unit_term as dose_unit'
+                'patient.hos_num, contact.last_name, contact.first_name, patient.dob, case when address.postcode is not null then address.postcode else "N/A" end as postcode , d.created_date, drug.tallman, IF(drug.id IN (SELECT drug_id FROM drug_tag WHERE tag_id = ' . $tag_id . '),1,0) AS preservative_free,
+                user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date,i.dose, df.long_name  as frequency, duration.name as duration, route.name as route, dc.name as dispense_condition, dl.name as dispense_location, option.name as laterality'
             )
             ->from('episode')
             ->join('event', 'episode.id = event.episode_id AND event.deleted = 0')
@@ -67,7 +65,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->join('medication', 'emu.medication_id = medication.id')
             ->join('patient', 'episode.patient_id = patient.id')
             ->join('contact', 'patient.contact_id = contact.id')
-            ->join('address', 'contact.id = address.contact_id')
+            ->leftJoin('address', 'contact.id = address.contact_id')
             ->join('user', 'd.created_user_id = user.id')
             ->join('medication_frequency mf', 'mf.id = emu.frequency_id')
             ->join('medication_duration duration', 'duration.id = emu.duration_id')
