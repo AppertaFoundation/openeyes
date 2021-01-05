@@ -41,11 +41,9 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
               <li class="<?php if ($previewType === $selectedPreviewType) :
                     ?>selected<?php
                          endif; ?>">
-                <i class="oe-i-e <?= count($events) > 0 ? reset($events)->eventType->getEventIconCssClass() : '' ?>"></i>
-                <a href="<?= Yii::app()->createUrl(
-                    '/patient/lightningViewer',
-                    array('id' => $this->patient->id, 'preview_type' => $previewType)
-                ) ?>"
+                <?= count($events) > 0 ? reset($events)->getEventIcon() : '<i class="oe-i-e "></i>' ?>
+                <a href="<?= Yii::app()->createUrl('/patient/lightningViewer',
+                    array('id' => $this->patient->id, 'preview_type' => $previewType)) ?>"
                 >
                     <?= $previewType ?> (<?= count($events) ?>)
                 </a>
@@ -83,7 +81,7 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
                       <span class="icon-event js-lightning-view-icon"
                             data-event-id="<?= $event->id ?>"
                       >
-                        <i class="oe-i-e <?= $event->eventType->getEventIconCssClass() ?>"></i>
+                        <?= $event->getEventIcon() ?>
                       </span>
                     <?php } ?>
                 </div>
@@ -129,7 +127,7 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
               >
                   <?php if (count($eventImages) === 0) { ?>
                     <p class="no-lightning-image">No preview is available at this time</p>
-                    <?php } else { ?>
+                  <?php } else { ?>
                         <?php foreach ($eventImages as $eventImage) { ?>
                       <div class="js-lightning-image-preview-page"
                            data-loaded="0"
@@ -142,7 +140,7 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
                             endif; ?>
                       ></div>
                         <?php } ?>
-                    <?php } ?>
+                  <?php } ?>
               </div>
             <?php }
         } ?>
