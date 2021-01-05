@@ -447,7 +447,7 @@ HistoryMedicationsController._defaultOptions = {
           } else {
               if ($(e.target).hasClass('js-end-date')) {
                   let end_date = $(e.target).val();
-                  let reset_value = $(e.target).data('reset-value');
+                  let reset_value = $(e.target).data('reset-date');
                   $full_row.find('input[name*="[is_discontinued]"]').val(end_date !== reset_value ? 1 : 0);
               }
 
@@ -589,6 +589,13 @@ HistoryMedicationsController._defaultOptions = {
 
             this.boundController.showStopControls($bound_entry.parent().find('tr[data-key=' + $bound_entry.data('key') + '].js-second-row'));
         }
+
+        let $endDateElement = $row.find('.js-end-date');
+
+        let end_date = $endDateElement.val();
+        let reset_value = $endDateElement.data('reset-date');
+
+        $row.find('input[name*="[is_discontinued]"]').val(end_date !== reset_value ? 1 : 0);
     };
 
     HistoryMedicationsController.prototype.toggleStopControls = function($row, hide = true)
@@ -1547,7 +1554,7 @@ HistoryMedicationsController._defaultOptions = {
             $medication_management_row.find(":input[name*='[" + id + "]']").val(history_row_value);
         });
 
-        if ($medication_management_row.find('.js-end-date').val() !== $medication_management_row.data('reset-value')) {
+        if ($medication_management_row.find('.js-end-date').val() !== $medication_management_row.data('reset-date')) {
             $medication_management_row.find('input[name*="[is_discontinued]"]').val('1');
         }
 
