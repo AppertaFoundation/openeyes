@@ -34,7 +34,18 @@ class MultiSelectList extends BaseFieldWidget
 
     public function init()
     {
-        $this->filtered_options = $this->options;
+        // only use array 1 if we get a multidemension array (for example when passing in active, you still want the allocated entries to display but give the active ones the option to be selected)
+        $lasttval = end($this->options);
+        $firstval = reset($this->options);
+        if (isset($firstval)&& is_array($firstval)) {
+            $safe_options = $this->options;
+            if (isset($safe_options[1])) {
+                $this->filtered_options = $safe_options[1];
+            }
+            $this->options = array_merge ( $firstval, $lasttval);
+        } else {
+            $this->filtered_options = $this->options;
+        }
 
         if (empty($_POST)) {
             if ($this->element && $this->element->{$this->relation}) {

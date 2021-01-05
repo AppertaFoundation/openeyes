@@ -44,10 +44,10 @@
             <td>
                 <?php echo $form->multiSelectList(
                     $model,
-                    CHtml::modelName($model).'[locations]',
-                    'locations',
+                    CHtml::modelName($model).'[all_locations]',
+                    'all_locations',
                     'id',
-                    CHtml::listData(OphDrPrescription_DispenseLocation::model()->findAll(array('order' => 'display_order')), 'id', 'name'),
+                    CHtml::listData(OphDrPrescription_DispenseLocation::model()->findAll(array('order' => 'display_order')), 'id', 'name', 'active'),
                     null,
                     array('empty' => '- Add -', 'label' => 'Locations', 'nowrapper' => true, 'class' => 'cols-full')
                 ) ?>
