@@ -61,6 +61,7 @@ class AdminController extends BaseAdminController
         $errors = array();
         foreach (($_POST['EventType'] ?? []) as $event_type_form) {
             $event_type = EventType::model()->findByPk($event_type_form['id']);
+            unset($event_type_form['id']);
             $event_type->attributes = $event_type_form;
             $event_type->save();
             $errors = array_merge($errors, $event_type->getErrors());
