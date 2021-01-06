@@ -20,6 +20,10 @@ namespace OEModule\PatientTicketing\models;
 
 class QueueSet extends \BaseActiveRecordVersioned
 {
+
+    const STATUS_YES = '1';
+    const STATUS_NO = '2';
+
     public $auto_update_relations = true;
 
     /**

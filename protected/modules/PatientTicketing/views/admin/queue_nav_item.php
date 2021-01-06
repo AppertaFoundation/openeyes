@@ -20,14 +20,18 @@
 <?php
     $queue = $queueset->initial_queue;
 ?>
-<li class="queueset-item<?= $queueset->active ? '' : ' inactive'?>" data-queueset-id="<?=$queueset->id?>" data-initial-queue-id="<?=$queue->id?>" id="queue-nav-<?=$queue->id?>">
-    <span class="queueset-link" style="cursor:pointer"><?=$queueset->name?></span> -
-    <span class="queueset-admin">
-        <span style="cursor:pointer" class="edit admin-action js-has-tooltip" data-tooltip-content="edit">edit</span>
-         |
-        <span style="cursor:pointer" class="permissions admin-action js-has-tooltip" data-tooltip-content="permissions">permissions</span>
-    </span>
-    <ul class="queue-set" id="queue-container-<?=$queue->id?>" style="display: none;">
-        <?php $this->renderPartial('queue_as_list', array('queue' => $queue)); ?>
-    </ul>
-</li>
+<tr class="queueset-item<?= $queueset->active ? '' : ' inactive'?>" data-queueset-id="<?=$queueset->id?>" data-initial-queue-id="<?=$queue->id?>" id="queue-nav-<?=$queue->id?>">
+    <td>
+        <div class="queueset-link" style="cursor:pointer"><?=$queueset->name?></div>
+    </td>
+    <td>
+        <span class="queueset-admin">
+            <button class="edit admin-action">Edit</button>
+            <button class="permissions admin-action">Permissions</button>
+        </span>
+    </td>
+</tr>
+<ul class="queue-set" id="queue-container-<?=$queue->id?>" style="display: none;">
+    <?php $this->renderPartial('queue_as_list', array('queue' => $queue)); ?>
+</ul>
+
