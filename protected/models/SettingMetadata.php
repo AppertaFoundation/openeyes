@@ -112,7 +112,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     public static function checkSetting($key, $value)
     {
-        $setting_value = Self::model()->findByAttributes(['key' => $key])->getSettingName();
+        $setting_value = self::model()->findByAttributes(['key' => $key])->getSettingName();
         if (is_string($setting_value)) {
             $setting_value = strtolower($setting_value);
         }
@@ -281,7 +281,11 @@ class SettingMetadata extends BaseActiveRecordVersioned
     {
         if (@$data = unserialize($metadata->data)) {
             $purifier = new CHtmlPurifier();
-            $value = $this->stripSubstitutions($purifier->purify($value));
+            $value = $purifier->purify($value);
+
+            if ($metadata->field_type->name === 'HTML') {
+                $value = $this->stripSubstitutions($value);
+            }
         }
 
         $setting->value = $value;
