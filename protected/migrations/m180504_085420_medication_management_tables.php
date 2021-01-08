@@ -149,6 +149,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'latest_med_use_id'             => 'INT unsigned NULL',
             'comments'                      => 'TINYTEXT NULL',
             'stopped_in_event_id'           => 'int unsigned null default null',
+            'is_discontinued'               => 'tinyint(1) unsigned default 0'
         ), true);
 
         $this->createIndex('fk_ref_medication_idx', 'event_medication_use', 'medication_id');
