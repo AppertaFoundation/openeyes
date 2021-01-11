@@ -34,7 +34,8 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     stop_reason_id,
                     prescription_item_id,
                     start_date,
-                    end_date
+                    end_date,
+                    stopped_in_event_id
                 )   			
                 SELECT 
                     event.id AS event_id,
@@ -57,7 +58,13 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     ohme.stop_reason_id,
                     ( SELECT id FROM event_medication_use WHERE ohme.prescription_item_id = temp_prescription_item_id ) AS prescription_item_id,
                     SUBSTRING(REPLACE(ohme.start_date, '-', ''), 1,8)   AS start_date,
-                    SUBSTRING(REPLACE(ohme.end_date, '-', ''), 1,8)     AS end_date
+                    SUBSTRING(REPLACE(ohme.end_date, '-', ''), 1,8)     AS end_date,
+                    CASE
+                        WHEN (DATE(ohme.end_date) < DATE(NOW())) THEN
+                            event.id
+                        ELSE
+                            NULL
+                    END AS stopped_in_event_id
                 FROM event 
                 LEFT JOIN event_type                                    AS et           ON event.event_type_id = et.id
                 LEFT JOIN et_ophciexamination_history_medications       AS ehm          ON event.id = ehm.event_id
