@@ -133,6 +133,8 @@ class HistoryMedications extends BaseMedicationElement
             $new->is_copied_from_previous_event = true;
             $entries[] = $new;
         }
+        $this->no_systemic_medications_date = $element->no_systemic_medications_date;
+        $this->no_ophthalmic_medications_date = $element->no_ophthalmic_medications_date;
         $this->entries = $entries;
         $this->assortEntries();
         $this->originalAttributes = $this->getAttributes();
