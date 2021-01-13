@@ -48,7 +48,7 @@
                             <?php foreach ($history_risks_entry_keys as $attribute) { ?>
                                 <td>
                                     <span class="large-text">
-                                        <?php if (count($history_risks_entries[$attribute] > 0)) { ?>
+                                        <?php if (count($history_risks_entries[$attribute]) > 0) { ?>
                                                 <?php foreach ($history_risks_entries[$attribute] as $entry) { ?>
                                                     <?= $entry->getDisplayRisk() ?>
                                                     <?php if ($entry['comments'] != '') { ?>

@@ -144,12 +144,12 @@ HistoryMedicationsController._defaultOptions = {
     let controller = this;
 
     $(document).ready(function () {
+        controller.hideNoMedications();
         if (controller.$noSystemicMedicationsFld.prop('checked') && controller.$noOphthalmicMedicationsFld.prop('checked')) {
             controller.$table.slice(2).hide();
             controller.$popup.hide();
             $(controller.options.medicationsOptionsTable).find('thead th:first-child, thead th:nth-child(2), tbody tr td:first-child, tbody tr td:nth-child(2)').hide();
         }
-        controller.hideNoMedications();
     });
 
     // removal button for table entries
@@ -290,19 +290,19 @@ HistoryMedicationsController._defaultOptions = {
 
   HistoryMedicationsController.prototype.hideNoMedications = function() {
       let controller = this;
-      if (controller.$table.find('tbody tr').length > 0) {
-          let $rows = controller.$table.find('tbody tr.js-first-row');
+      let $table = $('#OEModule_OphCiExamination_models_HistoryMedications_entry_table');
+      if ($table.find('tbody tr').length > 0) {
+          let $rows = $table.find('tbody tr.js-first-row');
 
-          let no_sys_meds_checked = controller.$noSystemicMedicationsFld.prop('checked');
-          let no_oph_meds_checked = controller.$noOphthalmicMedicationsFld.prop('checked');
-
-          let hideSysMed = controller.medicationTypePresentInTable($rows, 'systemic') && !no_sys_meds_checked;
-          let hideOphMed = controller.medicationTypePresentInTable($rows, 'ophthalmic') && !no_oph_meds_checked;
+          let hideSysMed = controller.medicationTypePresentInTable($rows, 'systemic');
+          let hideOphMed = controller.medicationTypePresentInTable($rows, 'ophthalmic');
 
           if (hideSysMed) {
+              controller.$noSystemicMedicationsFld.attr('checked', false);
               controller.$noSystemicMedicationsWrapper.hide();
           }
           if (hideOphMed) {
+              controller.$noOphthalmicMedicationsFld.attr('checked', false);
               controller.$noOphthalmicMedicationsWrapper.hide();
           }
 
