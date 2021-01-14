@@ -1,6 +1,7 @@
 <?php
 
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction;
+use OEModule\OphCiExamination\models\OphCiExamination_Refraction_Reading;
 
 /**
 * Class RefractionVariableTest
@@ -11,6 +12,7 @@ class RefractionVariableTest extends CDbTestCase
 
     protected $fixtures = array(
         'refraction' => Element_OphCiExamination_Refraction::class,
+        'refraction_readings' => OphCiExamination_Refraction_Reading::class,
         'events' => Event::class,
         'episodes' => Episode::class,
         'patients' => Patient::class,

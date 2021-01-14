@@ -2,6 +2,11 @@
 
 trait WithTransactions
 {
+    public function setUpWithTransactions()
+    {
+        $this->beginDatabaseTransaction();
+    }
+
     public function beginDatabaseTransaction()
     {
         $this->verifyTestsCanExistInTransaction();

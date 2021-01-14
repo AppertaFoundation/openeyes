@@ -14,51 +14,145 @@
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-use OEModule\OphCiExamination\models;
 
-class Element_OphCiExamination_ColourVisionTest extends ActiveRecordTestCase
+namespace OEModule\OphCiExamination\tests\unit\models;
+
+
+use ComponentStubGenerator;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_ColourVision;
+use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method;
+use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading;
+use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasSidedModelAssertions;
+use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasWithHeadPostureEntriesToTest;
+
+/**
+ * Class Element_OphCiExamination_ColourVisionTest
+ *
+ * @package OEModule\OphCiExamination\tests\unit\models
+ * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_ColourVision
+ * @group sample-data
+ * @group strabismus
+ * @group colour-vision
+ */
+class Element_OphCiExamination_ColourVisionTest extends \ModelTestCase
 {
-    public $fixtures = array(
-            'methods' => 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method',
-    );
+    use \HasCoreEventElementTests;
+    use \WithFaker;
+    use HasSidedModelAssertions;
 
-    public function getModel()
+    protected $element_cls = Element_OphCiExamination_ColourVision::class;
+
+    /** @test */
+    public function check_entries_relation()
     {
-        return models\OphCiExamination_ColourVision_Method::model();
+        $instance = $this->getElementInstance();
+        $relations = $instance->relations();
+
+        foreach (["", "left_", "right_"] as $prefix) {
+            $this->assertArrayHasKey("{$prefix}readings", $relations);
+            $this->assertEquals(\CHasManyRelation::class, $relations["{$prefix}readings"][0]);
+            $this->assertEquals(OphCiExamination_ColourVision_Reading::class, $relations["{$prefix}readings"][1]);
+        }
     }
 
-    public function testValidation_validatesReadings()
+    /** @test */
+    public function attribute_safety()
     {
-        $lreading = $this->getMockBuilder('OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading')
-                ->disableOriginalConstructor()
-                ->setMethods(array('validate'))
-                ->getMock();
+        $instance = $this->getElementInstance();
+        $safe = $instance->getSafeAttributeNames();
 
-        $lreading->expects($this->once())
-            ->method('validate')
-            ->will($this->returnValue(false));
+        $this->assertContains('event_id', $safe);
+        $this->assertNotContains('readings', $safe, 'readings should be populated through left and right attributes');
+        $this->assertContains('left_readings', $safe);
+        $this->assertContains('right_readings', $safe);
+    }
 
-        $test = $this->getMockBuilder('OEModule\OphCiExamination\models\Element_OphCiExamination_ColourVision')
-            ->disableOriginalConstructor()
-            ->setMethods(array('hasLeft', 'hasRight'))
-            ->getMock();
-        $test->expects($this->any())
-            ->method('hasLeft')
-            ->will($this->returnValue(true));
-        $test->expects($this->any())
-                ->method('hasRight')
-                ->will($this->returnValue(false));
+    /** @test */
+    public function left_side_validation()
+    {
+        $instance = $this->getElementInstance();
+        $instance->eye_id = \Eye::LEFT;
 
-        $test->left_readings = array($lreading);
-        $this->assertFalse($test->validate());
+        $this->assertAttributeInvalid($instance, 'left_readings', 'cannot be blank');
+        $this->assertEmpty($instance->getErrors('right_readings'));
+    }
+
+    /** @test */
+    public function right_side_validation()
+    {
+        $instance = $this->getElementInstance();
+        $instance->eye_id = \Eye::RIGHT;
+
+        $this->assertAttributeInvalid($instance, 'right_readings', 'cannot be blank');
+        $this->assertEmpty($instance->getErrors('left_readings'));
+    }
+
+    /** @test */
+    public function both_side_validation()
+    {
+        $instance = $this->getElementInstance();
+        $instance->eye_id = \Eye::BOTH;
+
+        $this->assertAttributeInvalid($instance, 'left_readings', 'cannot be blank');
+        $this->assertAttributeInvalid($instance, 'right_readings', 'cannot be blank');
+    }
+
+    /** @test */
+    public function unique_method_validation()
+    {
+        $instance = $this->getElementInstance();
+        $instance->eye_id = \Eye::LEFT;
+
+        // create two readings with random values for the same reading method
+        $method = $this->getRandomLookup(OphCiExamination_ColourVision_Method::class);
+        $method_values = $method->values;
+
+        $instance->left_readings = array_map(function($reading) use ($method_values) {
+            $reading->value_id = $method_values[array_rand($method_values)]->id;
+            return $reading;
+        }, [new OphCiExamination_ColourVision_Reading(), new OphCiExamination_ColourVision_Reading()]);
+
+        // this should not be allowed
+        $this->assertAttributeInvalid($instance, 'left_readings', 'must only have unique reading methods');
+    }
+
+    /** @test */
+    public function left_readings_are_validated()
+    {
+        $this->assertSidedRelationValidated(
+            $this->element_cls,
+            OphCiExamination_ColourVision_Reading::class,
+            "left",
+            "left_readings"
+        );
+    }
+
+    /** @test */
+    public function right_readings_are_validated()
+    {
+        $this->assertSidedRelationValidated(
+            $this->element_cls,
+            OphCiExamination_ColourVision_Reading::class,
+            "right",
+            "right_readings"
+        );
+    }
+
+    public function extractPkFromModels($models)
+    {
+        return array_map(function($model) {
+            return $model->getPrimaryKey();
+        }, $models);
     }
 
     public function testGetUnusedReadingMethods()
     {
-        $test = new OEModule\OphCiExamination\models\Element_OphCiExamination_ColourVision();
-        $test->left_readings = array(ComponentStubGenerator::generate('OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading', array('method' => $this->methods('method1'))));
+        $test = new Element_OphCiExamination_ColourVision();
 
-        $this->assertEquals(array($this->methods('method2')), $test->getUnusedReadingMethods('left'), 'Left methods should be restricted');
-        $this->assertEquals(array($this->methods('method1'), $this->methods('method2')), $test->getUnusedReadingMethods('right'), 'Right should return both methods');
+        $used_method = $this->getRandomLookup(OphCiExamination_ColourVision_Method::class);
+        $test->left_readings = array(ComponentStubGenerator::generate(OphCiExamination_ColourVision_Reading::class, ['method' => $used_method]));
+
+        $this->assertNotContains($used_method->id, $this->extractPkFromModels($test->getUnusedReadingMethods('left')), 'Left methods should be restricted');
+        $this->assertContains($used_method->id, $this->extractPkFromModels($test->getUnusedReadingMethods('right')), 'Right should return both methods');
     }
 }

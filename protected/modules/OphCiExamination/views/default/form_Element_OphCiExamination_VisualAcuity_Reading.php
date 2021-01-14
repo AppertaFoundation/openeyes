@@ -19,6 +19,7 @@
 <?php
 if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset($reading->method_id)) {
     $selected_data = array(
+        'reading_unit_id' => $reading->unit_id,
         'reading_value' => (int)$reading->value,
         'reading_display' => $values[$reading->value],
         'method_id' => (int)$reading->method_id,
@@ -34,6 +35,7 @@ if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset
             <?=\CHtml::hiddenField($name_stub .'['. $key.'][id]', @$reading->id)?>
         <?php } ?>
 
+      <?=\CHtml::hiddenField($name_stub .'['. $key.'][unit_id]', @$selected_data['reading_unit_id'])?>
       <?=\CHtml::hiddenField($name_stub .'['. $key.'][value]', @$selected_data['reading_value'], array('class' => 'va-selector'))?>
        <?= @$selected_data['reading_display']?>
   </td>

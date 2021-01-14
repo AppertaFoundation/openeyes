@@ -65,6 +65,9 @@ if (@$disabled) {
         } elseif (!$this->cannot_delete) {?>
             <button type='button'><a href="#" class="deleteRow">delete</a></button>
         <?php }?>
+        <?php foreach ($this->action_links as $link) { ?>
+        <a class="button" href="<?= call_user_func($link['url'], $row) ?>"><?= $link['label'] ?></a>
+        <?php } ?>
     </td>
     <?php if ($model::model()->hasAttribute('default')) {?>
         <td>

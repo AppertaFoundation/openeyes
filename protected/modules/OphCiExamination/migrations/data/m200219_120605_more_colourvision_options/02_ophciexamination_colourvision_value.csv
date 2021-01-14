@@ -1,0 +1,24 @@
+name,active,display_order,method_id => ophciexamination_colourvision_method.name
+0/10,1,1,Colour vision test plates for infants /10
+1/10,1,2,Colour vision test plates for infants /10
+2/10,1,3,Colour vision test plates for infants /10
+3/10,1,4,Colour vision test plates for infants /10
+4/10,1,5,Colour vision test plates for infants /10
+5/10,1,6,Colour vision test plates for infants /10
+6/10,1,7,Colour vision test plates for infants /10
+7/10,1,8,Colour vision test plates for infants /10
+8/10,1,9,Colour vision test plates for infants /10
+9/10,1,10,Colour vision test plates for infants /10
+10/10,1,11,Colour vision test plates for infants /10
+Protanope,1,1,City colour vision
+Deutarope,1,2,City colour vision
+Tritanope,1,3,City colour vision
+Protanope,1,1,Awaya
+Deutarope,1,2,Awaya
+Tritanope,1,3,Awaya
+Protanope,1,1,Farnsworth D15 hue
+Deutarope,1,2,Farnsworth D15 hue
+Tritanope,1,3,Farnsworth D15 hue
+Protanope,1,1,Farnsworth 100 hue
+Deutarope,1,2,Farnsworth 100 hue
+Tritanope,1,3,Farnsworth 100 hue

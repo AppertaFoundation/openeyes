@@ -37,7 +37,9 @@ foreach (array($common_config, $local_common_config) as $configfile) {
 }
 
 if ((getenv('OE_MODE') && strtolower(getenv('OE_MODE')) !== 'live') || (isset($environment) && $environment === 'dev')) {
-    define('YII_DEBUG', true);
+    if (!defined('YII_DEBUG')) {
+        define('YII_DEBUG', true);
+    };
 }
 
 // specify how many levels of call stack should be shown in each log message

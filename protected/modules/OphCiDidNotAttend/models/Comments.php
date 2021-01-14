@@ -30,10 +30,12 @@
  */
 namespace OEModule\OphCiDidNotAttend\models;
 
+use OEModule\OphCiDidNotAttend\widgets\Comments as CommentsWidget;
+
 class Comments extends \BaseEventTypeElement
 {
 
-    public $widgetClass = 'OEModule\OphCiDidNotAttend\widgets\Comments';
+    protected $widgetClass = CommentsWidget::class;
 
     /**
      * Returns the static model of the specified AR class.

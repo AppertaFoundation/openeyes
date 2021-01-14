@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\widgets\MedicationManagement as MedicationManagementWidget;
 use CDbCriteria;
 use Element_OphDrPrescription_Details;
 use Event;
@@ -54,7 +55,7 @@ class MedicationManagement extends BaseMedicationElement
     use traits\CustomOrdering;
     public $do_not_save_entries = false;
 
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\MedicationManagement';
+    protected $widgetClass = MedicationManagementWidget::class;
 
     public static $entry_class = MedicationManagementEntry::class;
 

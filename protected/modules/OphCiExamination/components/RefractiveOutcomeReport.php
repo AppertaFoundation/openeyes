@@ -118,10 +118,10 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
                 , MAX(post_examination.event_date) as post_exam_date
                 , post_examination.id as post_id
                 , patient.id as patient_id
-                , left_sphere
-                , right_sphere
-                , left_cylinder
-                , right_cylinder
+                , left_refraction.sphere as left_sphere
+                , right_refraction.sphere as right_sphere
+                , left_refraction.cylinder as left_cylinder
+                , right_refraction.cylinder as right_cylinder
                 , predicted_refraction
                 , note_event.id as event_id
             ')
@@ -141,6 +141,28 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
                 )
             )
             ->join('et_ophciexamination_refraction', 'post_examination.id = et_ophciexamination_refraction.event_id')
+            ->join('ophciexamination_refraction_reading right_refraction', 'right_refraction.id = (
+                    /* Need to ensure we only get one reading result, ordered by the priority of the type */
+                    SELECT single_reading.id
+                    FROM ophciexamination_refraction_reading single_reading
+                    LEFT JOIN ophciexamination_refraction_type rt
+                    ON single_reading.type_id = rt.id
+                    WHERE element_id = et_ophciexamination_refraction.id
+                    AND single_reading.eye_id = 2
+                    ORDER BY -rt.priority DESC /* Null indicates an "other" type, which negative desc ordering will make last */
+                    LIMIT 1
+                )')
+            ->join('ophciexamination_refraction_reading left_refraction', 'left_refraction.id = (
+                    /* Need to ensure we only get one reading result, ordered by the priority of the type */
+                    SELECT single_reading.id
+                    FROM ophciexamination_refraction_reading single_reading
+                    LEFT JOIN ophciexamination_refraction_type rt
+                    ON single_reading.type_id = rt.id
+                    WHERE element_id = et_ophciexamination_refraction.id
+                    AND single_reading.eye_id = 1
+                    ORDER BY -rt.priority DESC /* Null indicates an "other" type, which negative desc ordering will make last */
+                    LIMIT 1
+                )')
             ->join('et_ophtroperationnote_cataract', 'note_event.id = et_ophtroperationnote_cataract.event_id')
             ->where('post_examination.deleted <> 1 and note_event.deleted <> 1')
             ->andWhere($iol_classes, $iol_binds)

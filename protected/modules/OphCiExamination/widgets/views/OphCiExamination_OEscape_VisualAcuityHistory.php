@@ -51,6 +51,37 @@
 
     var va_plotly_ticks = pruneYTicks(va_ticks, height, 25);
 
+    let coloursForSide = {
+        'right': '#9fec6d',
+        'left': '#fe6767',
+        'beo': '#e8b131'
+    }
+
+    function generatePlotlySeriesForSide(side)
+    {
+        return {
+            name: 'VA('+side+')',
+            x: va_plotly[side]['x'].map(function (item) {
+                return new Date(item);
+            }),
+            y: va_plotly[side]['y'],
+            line: {
+                color: coloursForSide[side],
+            },
+            text: va_plotly[side]['x'].map(function (item, index) {
+                var d = new Date(item);
+                return OEScape.toolTipFormatters_plotly.VA( d, va_plotly[side]['y'][index], 'VA('+side+')');
+            }),
+            hoverinfo: 'text',
+            hoverlabel: trace_hoverlabel,
+            type: 'line',
+            mode: 'lines+markers',
+            marker: {
+                symbol: 'circle',
+                size: 10,
+            },
+        };
+    }
 
     for (var side of sides){
       var layout_VA = JSON.parse(JSON.stringify(layout_plotly));
@@ -59,28 +90,8 @@
       setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
       setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 150);
 
-      var data =[{
-        name: 'VA('+side+')',
-        x: va_plotly[side]['x'].map(function (item) {
-          return new Date(item);
-        }),
-        y: va_plotly[side]['y'],
-        line: {
-          color: (side=='right')?'#9fec6d':'#fe6767',
-        },
-        text: va_plotly[side]['x'].map(function (item, index) {
-          var d = new Date(item);
-          return OEScape.toolTipFormatters_plotly.VA( d, va_plotly[side]['y'][index], 'VA('+side+')');
-        }),
-        hoverinfo: 'text',
-        hoverlabel: trace_hoverlabel,
-        type: 'line',
-        mode: 'lines+markers',
-        marker: {
-          symbol: 'circle',
-          size: 10,
-        },
-      }];
+      var data =[generatePlotlySeriesForSide(side), generatePlotlySeriesForSide('beo')];
+
       var yaxis_options = {
         range: [-15, 150],
         tickvals: va_plotly_ticks['tick_position'],

@@ -15,6 +15,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+/**
+ * Class IndexSearchTest
+ *
+ * @group sample-data
+ */
 class IndexSearchTest extends CTestCase {
 
     private IndexSearch $search;

@@ -189,6 +189,12 @@ $(document).ready(function () {
         }
     });
 
+    $(this).on('click', '.collapse-group > .header-icon', function(e) {
+        e.preventDefault();
+        $(e.target).toggleClass('collapse');
+        $(e.target).siblings('.collapse-group-content').toggle();
+    });
+
     // Tile Data Overflow
     $('.element.tile').each(function () {
         let h = $(this).find('.data-value').height();

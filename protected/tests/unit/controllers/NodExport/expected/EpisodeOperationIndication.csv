@@ -1,0 +1,9 @@
+OperationId,Eye,IndicationId,IndicationDescription
+3686565,L,0,
+3686565,R,392288006,"Primary angle-closure glaucoma"
+3686582,L,0,
+3686582,R,53889007,"Nuclear cataract"
+3686591,L,53889007,"Nuclear cataract"
+3686591,R,0,
+3686606,L,392288006,"Primary angle-closure glaucoma"
+3686606,R,0,

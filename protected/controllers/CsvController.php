@@ -1,11 +1,5 @@
 <?php
 
-use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
-use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method;
-use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading;
-use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
-use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue;
-
 \Yii::import('application.modules.OETrial.models.*');
 
 class CsvController extends BaseController

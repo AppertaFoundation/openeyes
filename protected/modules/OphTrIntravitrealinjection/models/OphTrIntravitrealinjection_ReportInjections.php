@@ -624,7 +624,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity $va
     ) {
         if ($reading = $va->getBestReading($side)) {
-            return $reading->convertTo($reading->value, $va->unit_id) . ' (' . $reading->method->name . ')';
+            return $reading->convertTo($reading->value, $reading->unit_id) . ' (' . $reading->method->name . ')';
         }
 
         return 'N/A';

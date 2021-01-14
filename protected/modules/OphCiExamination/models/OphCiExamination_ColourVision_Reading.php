@@ -34,18 +34,12 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_ColourVision_Reading extends \BaseActiveRecordVersioned
 {
-    const LEFT = 1;
-    const RIGHT = 0;
+    use traits\HasCorrectionType;
+    use traits\HasRelationOptions;
 
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Dilation_Treatment the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+    protected $correction_type_attributes = ['correctiontype_id'];
 
     /**
      * @return string the associated database table name
@@ -60,9 +54,12 @@ class OphCiExamination_ColourVision_Reading extends \BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-                array('eye_id, value_id, element_id', 'safe'),
-                array('id, eye_id, value_id, element_id', 'safe', 'on' => 'search'),
+        return array_merge(
+            [
+                ['eye_id, value_id, element_id', 'safe'],
+                ['id, eye_id, value_id, element_id', 'safe', 'on' => 'search'],
+            ],
+            $this->rulesForCorrectionType()
         );
     }
 
@@ -71,17 +68,31 @@ class OphCiExamination_ColourVision_Reading extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array(
-            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_ColourVision', 'element_id'),
-            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'value' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Value', 'value_id'),
+        return array_merge(
+            [
+                'element' => [self::BELONGS_TO, Element_OphCiExamination_ColourVision::class, 'element_id'],
+                'eye' => [self::BELONGS_TO, \Eye::class, 'eye_id'],
+                'value' => [self::BELONGS_TO, OphCiExamination_ColourVision_Value::class, 'value_id'],
+                'user' => [self::BELONGS_TO, \User::class, 'created_user_id'],
+                'usermodified' => [self::BELONGS_TO, \User::class, 'last_modified_user_id']
+            ],
+            $this->relationsForCorrectionType()
         );
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'method_id' => 'Method',
+            'value_id' => 'Value',
+            'correctiontype_id' => 'Correction'
+        ];
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -103,5 +114,15 @@ class OphCiExamination_ColourVision_Reading extends \BaseActiveRecordVersioned
         if ($val = $this->value) {
             return $val->method;
         }
+    }
+
+    public function isRight(): bool
+    {
+        return $this->eye_id && (string) $this->eye_id === (string) \Eye::RIGHT;
+    }
+
+    public function isLeft(): bool
+    {
+        return $this->eye_id && (string) $this->eye_id === (string) \Eye::LEFT;
     }
 }

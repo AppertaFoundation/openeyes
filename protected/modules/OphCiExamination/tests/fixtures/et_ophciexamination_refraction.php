@@ -20,7 +20,7 @@ return array(
     'ref1' => array(
         'id' => 1,
         'event_id' => 1,
-        'eye_id' => 2,
+        'eye_id' => Eye::BOTH,
         'left_type_id' => 1,
         'right_type_id' => 2,
         'right_sphere' => 3,

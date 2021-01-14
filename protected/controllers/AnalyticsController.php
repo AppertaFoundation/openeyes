@@ -1,5 +1,6 @@
 <?php
 
+use OEModule\OphCiExamination\models\interfaces\SidedData;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit as VisualAcuityUnit;
 
 class AnalyticsController extends BaseController
@@ -679,7 +680,7 @@ class AnalyticsController extends BaseController
 
         $command = Yii::app()->db->createCommand()
             ->select(
-                "p.id AS id, 
+                "p.id AS id,
                 CONCAT(c.first_name, ' ', c.last_name) AS name,
                 p.hos_num,
                 p.nhs_num,
@@ -1225,14 +1226,14 @@ class AnalyticsController extends BaseController
             )
             ->from(
                 '(
-            SELECT 
+            SELECT
               event_id event_id,
               left_drug_id drug_id,
               1 eye_id
             FROM et_ophtrintravitinjection_treatment
-  
+
             UNION
-  
+
             SELECT
               event_id event_id,
               right_drug_id drug_id,
@@ -1487,7 +1488,7 @@ class AnalyticsController extends BaseController
         $patient_episode_diagnoses = Yii::app()->db->createCommand()
             ->select(
                 '
-            ep.patient_id patient_id, 
+            ep.patient_id patient_id,
             ep.disorder_id disorder_id,
             IF(ep.eye_id = 2, 0, ep.eye_id) eye_id,
             ep.id episode_id,
@@ -1552,15 +1553,15 @@ class AnalyticsController extends BaseController
             ->join('et_ophciexamination_visualacuity eov', 'e.id = eov.event_id')
             ->join('
             (
-                SELECT 
+                SELECT
                     ovr.element_id,
                     ovr.value,
                     ovr.side,
                     ovr.method_id
                 FROM (
-                    SELECT 
-                        element_id, 
-                        side, 
+                    SELECT
+                        element_id,
+                        side,
                         max(value) value
                     FROM ophciexamination_visualacuity_reading
                     GROUP BY element_id, side

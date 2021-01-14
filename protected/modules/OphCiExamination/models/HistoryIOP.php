@@ -17,10 +17,13 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\widgets\HistoryIOP as HistoryIOPWidget;
+
 /**
  * This is the model class for table "et_ophciexamination_history_iop".
  *
  * The followings are the available columns in table 'et_ophciexamination_history_iop':
+ *
  * @property integer $id
  * @property string $event_id
  * @property string $eye_id
@@ -42,7 +45,7 @@ class HistoryIOP extends \SplitEventTypeElement
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryIOP';
+    protected $widgetClass = HistoryIOPWidget::class;
     protected $default_from_previous = false;
 
     public $examination_dates = [];

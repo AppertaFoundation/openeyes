@@ -6,6 +6,7 @@ return array(
         'value' => 101,
         'method_id' => 1,
         'side' => 1,
+    'unit_id' => 1,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
     ),
@@ -14,6 +15,7 @@ return array(
         'value' => 101,
         'method_id' => 1,
         'side' => 0,
+    'unit_id' => 1,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
     )

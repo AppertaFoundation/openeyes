@@ -1,0 +1,4 @@
+name,abbreviation,display_order,active
+exophoria,X,1,1
+exotropia,XT,2,1
+exophoria at time manifest,X(T),3,1

@@ -33,21 +33,33 @@ namespace OEModule\OphCiExamination\models;
 class OphCiExamination_ColourVision_Value extends \BaseActiveRecordVersioned
 {
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Dilation_Drugs the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
     {
         return 'ophciexamination_colourvision_value';
+    }
+
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+
+    /**
+     * Use standard Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => \LookupTable::class,
+        );
+    }
+
+    public function __toString()
+    {
+        return $this->name ? : parent::__toString();
     }
 
     /**
@@ -56,7 +68,7 @@ class OphCiExamination_ColourVision_Value extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('name', 'required'),
+                array('name, display_order', 'required'),
                 array('id, name, active, display_order, method_id', 'safe', 'on' => 'search'),
         );
     }
@@ -74,7 +86,7 @@ class OphCiExamination_ColourVision_Value extends \BaseActiveRecordVersioned
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -85,5 +97,10 @@ class OphCiExamination_ColourVision_Value extends \BaseActiveRecordVersioned
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    public function attributeLabels()
+    {
+        return ['method_id' => 'Method'];
     }
 }

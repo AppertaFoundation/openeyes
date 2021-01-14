@@ -25,6 +25,14 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
 $key = 0;
 ?>
 
+<?php $this->beginClip('element-header-additional');?>
+    <button class="va-change-complexity change-complexity"
+            data-element-type-class="<?= \CHtml::modelName($element) ?>"
+            data-record-mode="<?= $element::RECORD_MODE_COMPLEX ?>"
+            data-eye-id="<?= $element::BEO | $element::LEFT | $element::RIGHT ?>"
+    >Complex inputs</button>
+<?php $this->endClip('element-header-additional');?>
+
 <div class="element-both-eyes">
   <div>
         <?php if ($element->isNewRecord) { ?>
@@ -35,8 +43,7 @@ $key = 0;
                 CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
-                array('class' => 'inline')
-            );
+                array('class' => 'inline', 'data-record-mode' => $element::RECORD_MODE_SIMPLE));
             if ($element->unit->information) { ?>
             <div class="info">
               <small><em><?php echo $element->unit->information ?></em></small>
@@ -110,7 +117,7 @@ $key = 0;
                 <i class="oe-i comments small-icon"></i>
             </button>
           <button class="button hint green addReading" id="add-NearVisualAcuity-reading-btn-<?= $eye_side?>"
-                  style=" <?= !$element->eyeAssesable($eye_side) ? 'display: none; ': '' ?>"
+                  style=" <?= !$element->eyeCanHaveReadings($eye_side) ? 'display: none; ': '' ?>"
                   type="button">
             <i class="oe-i plus pro-theme"></i>
           </button>
@@ -183,6 +190,7 @@ $key = 0;
             'methods' => $methods,
             'asset_path' => $this->getAssetPathForElement($element),
             'selected_data' => array(
+                'reading_unit_id' => $element->unit_id,
                 'reading_value' => '{{reading_value}}',
                 'reading_display' => '{{reading_display}}',
                 'method_id' => '{{method_id}}',

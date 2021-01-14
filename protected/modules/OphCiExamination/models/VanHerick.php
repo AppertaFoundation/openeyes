@@ -18,8 +18,11 @@
 namespace OEModule\OphCiExamination\models;
 
 
+use OEModule\OphCiExamination\widgets\VanHerick as VanHerickWidget;
+
 /**
  * Class VanHerick
+ *
  * @package OEModule\OphCiExamination\models
  *
  * @property int $id
@@ -38,7 +41,7 @@ class VanHerick extends \SplitEventTypeElement
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\VanHerick';
+    protected $widgetClass = VanHerickWidget::class;
 
     public function tableName()
     {

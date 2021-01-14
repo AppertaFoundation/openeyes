@@ -653,7 +653,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                     $res .= ' ';
                 }
                 if ($reading) {
-                    $res .= ucfirst($side).': '.$reading->convertTo($reading->value, $va->unit_id).' ('.$reading->method->name.')';
+                    $res .= ucfirst($side).': '.$reading->convertTo($reading->value, $reading->unit_id).' ('.$reading->method->name.')';
                 } else {
                     $res .= ucfirst($side).': Unknown';
                 }
@@ -714,7 +714,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                                 $res[$reading->method->name.'_'.$side]['side'] = $side;
                                 $res[$reading->method->name.'_'.$side]['date'] = date('j M Y', strtotime($reading->element->event->event_date));
                                 $res[$reading->method->name.'_'.$side]['method'] = $reading->method->name;
-                                $res[$reading->method->name.'_'.$side]['reading'] = $reading->convertTo($reading->value, $va->unit_id);
+                                $res[$reading->method->name.'_'.$side]['reading'] = $reading->convertTo($reading->value, $reading->unit_id);
                             }
                         }
                     }
@@ -742,7 +742,10 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 $readings = $va->getAllReadings($side);
                 if ($readings) {
                     foreach ($readings as $reading) {
-                        $res[] = array('side' => ucfirst($side), 'va_reading' => $reading->convertTo($reading->value, $va->unit_id), 'method' => $reading->method->name);
+                        $res[] = array(
+                            'side' => ucfirst($side),
+                            'va_reading' => $reading->convertTo($reading->value, $reading->unit_id),
+                            'method' => $reading->method->name);
                     }
                 } else {
                     $res[] = array('side' => ucfirst($side), 'va_reading' => '', 'method' => '');
@@ -760,7 +763,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         $criteria->addInCondition('eye_id', $this->eyesCondition($record));
         $refraction = \OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction::model()->with('event')->find($criteria);
         if ($refraction) {
-            return $refraction->getCombined(strtolower($record['eye']));
+            return $refraction->getPriorityReadingCombined(strtolower($record['eye']));
         } else {
             return 'Unknown';
         }
@@ -772,7 +775,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         $refraction = \OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction::model()->with('event')->find($criteria);
         $refraction_values = array();
         if ($refraction) {
-            $refraction_values = $refraction->getSplit(strtolower($record['eye']));
+            $refraction_values = $refraction->getPriorityReadingDataAttributes(strtolower($record['eye']));
         }
 
         return $refraction_values;
@@ -793,7 +796,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
                 if (strtotime($refraction->event->event_date) >= $two_weeks && strtotime($refraction->event->event_date) <= $six_weeks) {
                     if (strtotime($refraction->event->event_date) >= $benchmark_date) {
-                        $refraction_values = $refraction->getSplit(strtolower($record['eye']));
+                        $refraction_values = $refraction->getPriorityReadingDataAttributes(strtolower($record['eye']));
                         $refraction_values['date'] = date('j M Y', strtotime($refraction->event->event_date));
                     }
                 }

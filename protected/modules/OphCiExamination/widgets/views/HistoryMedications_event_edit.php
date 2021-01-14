@@ -29,7 +29,10 @@ foreach ($element->getFrequencyOptions() as $k => $v) {
 }
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
 $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'name');
-$unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
+$unit_options = [];
+if ($unit_of_measure = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
+    $unit_options = CHtml::listData($unit_of_measure->medicationAttributeOptions, 'description', 'description');
+}
 $history_entries = $this->getEntriesFromPreviousHistory();
 $current_entries = [];
 $stopped_entries = [];

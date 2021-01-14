@@ -1,0 +1,11 @@
+name,display_order,reason_required,column1_multiselect,column2_multiselect
+Glasses: issued,1,1,0,0
+Bifocals: issued,2,1,0,0
+Fresnel prism,3,1,0,0
+Incorporated prism,4,1,0,0
+Orthoptic exercises,5,1,0,0
+Atropine,6,0,0,0
+Patching,7,0,0,0
+Surgery,8,1,1,0
+Botulinum toxin,9,1,1,0
+Continue to monitor,10,0,0,0

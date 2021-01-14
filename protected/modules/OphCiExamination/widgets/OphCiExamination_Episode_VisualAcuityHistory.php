@@ -13,6 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 
 class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
 {
@@ -30,8 +31,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
 
     public function run()
     {
-        $va_unit_id = @$_GET[$this->va_unit_input] ?: models\Element_OphCiExamination_VisualAcuity::model()->getSetting('unit_id');
-        $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
+        $this->resolveVAUnit();
 
         $chart = $this->configureChart();
         $this->addData($chart);
@@ -39,17 +39,14 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $this->render(get_class($this), array('va_unit' => $this->va_unit, 'chart' => $chart));
     }
 
-    public function run_oescape($widgets_no = 1){
-        $va_unit_id = @$_GET[$this->va_unit_input] ?:
-          SettingMetadata::model()->getSetting(
-              'unit_id',
-              ElementType::model()->find(
-                  'class_name=?',
-                  array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
-              )
-          );
-        $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
-
+    /**
+     * @param int $widgets_no
+     * @throws CException
+     * @phpcs:disable  PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
+    public function run_oescape($widgets_no = 1)
+    {
+        $this->resolveVAUnit();
         $this->configureChart();
 
         $this->render("OphCiExamination_OEscape_VisualAcuityHistory", array('va_unit' => $this->va_unit, 'widget_no' => $widgets_no));
@@ -77,7 +74,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $no_numeric_val_count = 4;   //keep the 4 no number labels: CF, HM, PL, NPL
         $this->va_ticks = array_slice($va_ticks, 0, $no_numeric_val_count);
 
-        for ($i = $no_numeric_val_count+1; $i<=$va_len-$step; $i+=$step) {
+        for ($i = $no_numeric_val_count; $i<=$va_len-$step; $i+=$step) {
             array_push($this->va_ticks, $va_ticks[$i]);
         }
 
@@ -112,13 +109,13 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     /**
      * @param Event                                 $event
      * @param \FlotChart                            $chart
-     * @param OphCiExamination_VisualAcuity_Reading $reading
+     * @param models\OphCiExamination_VisualAcuity_Reading $reading
      * @param string                                $side
      */
     protected function addVaReading($event, \FlotChart $chart, models\OphCiExamination_VisualAcuity_Reading $reading, $side)
     {
         $series_name = "Visual Acuity ({$side})";
-        $label = "{$series_name}\n{$reading->element->unit->name}: {$reading->convertTo($reading->value)} {$reading->method->name}";
+        $label = "{$series_name}\n{$reading->unit->name}: {$reading->convertTo($reading->value)} {$reading->method->name}";
         $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading->value, $label);
     }
 
@@ -143,25 +140,39 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         return $va_data_list;
     }
 
-    public function getPlotlyVaData(){
-        $va_data_list = array('right'=>array(), 'left'=>array());
-        $va_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
-        foreach ($this->event_type->api->getElements(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
-            $this->patient,
-            false
-        ) as $va) {
-            foreach (['left', 'right'] as $side) {
+    public function getPlotlyVaData() {
+        $va_data_list = [
+            'right' => [],
+            'left' => [],
+            'beo' => []
+        ];
+        $va_plotly_list = [
+            'right' => ['x' => [], 'y' => []],
+            'left' => ['x' => [], 'y' => []],
+            'beo' => ['x' => [], 'y' => []]
+        ];
+
+        foreach (
+            $this->event_type->api->getElements(
+                Element_OphCiExamination_VisualAcuity::class,
+                $this->patient,
+                false
+            ) as $va
+        ) {
+            foreach (['left', 'right', 'beo'] as $side) {
                 $reading = $va->getBestReading($side);
                 if ($reading) {
                     $va_value = $this->getAdjustedVA((float)$reading->value);
-                    $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>date('Y-m-d', Helper::mysqlDate2JsTimestamp($va->event->event_date)/1000));
+                    $va_data_list[$side][] = [
+                        'y' => $va_value,
+                        'x' => date('Y-m-d', Helper::mysqlDate2JsTimestamp($va->event->event_date) / 1000)
+                    ];
                 }
             }
         }
-        foreach (['left', 'right'] as $side) {
+        foreach (['left', 'right', 'beo'] as $side) {
             usort($va_data_list[$side], array("EpisodeSummaryWidget","sortData"));
-            foreach ($va_data_list[$side] as $item ) {
+            foreach ($va_data_list[$side] as $item) {
                 $va_plotly_list[$side]['x'][] = $item['x'];
                 $va_plotly_list[$side]['y'][] = $item['y'];
             }
@@ -184,6 +195,16 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     }
 
     /**
+     * Sets the va_unit property based on the requested value, or from the system setting
+     * configuration for Visual Acuity unit_id
+     */
+    protected function resolveVAUnit()
+    {
+        $va_unit_id = $_GET[$this->va_unit_input] ?? models\Element_OphCiExamination_VisualAcuity::model()->getSetting('unit_id');
+        $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
+    }
+
+    /**
      * @return array
      */
     protected function getChartTicks()
@@ -191,7 +212,6 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         foreach ($this->va_unit->selectableValues as $value) {
             $va_ticks[] = array($this->getAdjustedVA($value->base_value), $value->value);
         }
-
         if ($va_ticks[0][1] !== 'NPL') {
             array_unshift($va_ticks, [$this->getAdjustedVA(4), 'CF']);
             array_unshift($va_ticks, [$this->getAdjustedVA(3), 'HM']);
@@ -201,5 +221,4 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
 
         return $va_ticks;
     }
-
 }

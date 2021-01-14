@@ -18,8 +18,11 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\widgets\HistoryRisks as HistoryRisksWidget;
+
 /**
  * Class HistoryRisks
+ *
  * @package OEModule\OphCiExamination\models
  */
 class HistoryRisks extends \BaseEventTypeElement
@@ -30,7 +33,7 @@ class HistoryRisks extends \BaseEventTypeElement
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryRisks';
+    protected $widgetClass = HistoryRisksWidget::class;
     protected $default_from_previous = true;
     protected $errorExceptions = array(
         'OEModule_OphCiExamination_models_HistoryRisks_no_risks_date' => 'OEModule_OphCiExamination_models_HistoryRisks_no_risks',

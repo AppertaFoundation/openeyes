@@ -1,0 +1,6 @@
+TreatmentId,OperationId,Eye,TreatmentTypeId,TreatmentTypeDescription
+104297,3686565,R,30880003,"Trabeculectomy ab externo"
+104298,3686565,R,416968006,"Trabeculectomy with intraoperative application of mitomycin"
+104299,3686582,R,415089008,"Phacoemulsification of cataract with intraocular lens implantation"
+218601,3686591,L,415089008,"Phacoemulsification of cataract with intraocular lens implantation"
+218602,3686606,L,,

@@ -61,27 +61,6 @@ class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
         );
     }
 
-    /**
-     * Fetches all the options for this attribute_element, standard _and_ subspecialty specific.
-     *
-     * @param int $subspecialty_id
-     *
-     * @return OphCiExamination_AttributeOption[]
-     */
-    public function findAllOptionsForSubspecialty($subspecialty_id = null)
-    {
-        $condition = 'attribute_element_id = :attribute_element_id AND ';
-        $params = array(':attribute_element_id' => $this->id);
-        if ($subspecialty_id) {
-            $condition .=  '(subspecialty_id = :subspecialty_id OR subspecialty_id IS NULL)';
-            $params[':subspecialty_id'] = $subspecialty_id;
-        } else {
-            $condition .=  'subspecialty_id IS NULL';
-        }
-
-        return OphCiExamination_AttributeOption::model()->findAll($condition, $params);
-    }
-
     public function getName()
     {
         return $this->element_type->name.' - '.$this->attribute->name;

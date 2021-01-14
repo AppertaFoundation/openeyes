@@ -1,0 +1,377 @@
+EpisodeId,Eye,DrugId,DrugRouteId,StartDate,StopDate,IsAddedByPrescription,IsContinueIndefinitely,IsStartDateApprox
+3686331,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686331,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686331,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686331,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686331,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686331,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686331,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686331,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686536,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686536,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686536,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686536,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686536,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686536,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686536,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686536,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686537,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686537,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686537,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686537,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686537,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686537,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686537,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686537,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686538,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686538,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686538,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686538,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686538,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686538,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686538,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686538,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686539,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686539,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686539,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686539,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686539,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686539,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686539,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686539,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686540,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686540,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686540,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686540,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686540,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686540,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686540,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686540,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686541,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686541,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686541,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686541,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686541,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686541,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686541,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686541,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686542,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686542,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686542,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686542,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686542,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686542,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686542,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686542,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686543,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686543,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686543,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686543,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686543,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686543,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686543,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686543,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686544,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686544,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686544,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686544,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686544,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686544,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686544,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686544,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686545,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686545,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686545,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686545,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686545,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686545,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686545,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686545,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686547,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686547,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686547,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686547,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686547,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686547,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686547,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686547,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686548,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686548,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686548,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686548,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686548,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686548,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686548,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686548,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686549,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686549,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686549,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686549,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686549,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686549,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686549,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686549,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686550,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686550,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686550,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686550,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686550,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686550,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686550,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686550,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686552,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686552,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686552,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686552,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686552,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686552,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686552,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686552,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686553,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686553,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686553,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686553,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686553,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686553,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686553,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686553,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686556,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686556,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686556,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686556,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686556,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686556,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686556,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686556,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686558,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686558,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686558,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686558,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686558,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686558,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686558,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686558,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686560,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686560,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686560,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686560,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686560,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686560,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686560,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686560,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686565,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686565,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686565,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686565,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686565,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686565,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686565,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686565,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686566,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686566,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686566,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686566,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686566,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686566,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686566,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686566,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686567,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686567,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686567,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686567,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686567,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686567,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686567,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686567,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686568,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686568,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686568,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686568,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686568,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686568,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686568,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686568,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686569,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686569,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686569,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686569,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686569,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686569,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686569,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686569,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686571,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686571,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686571,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686571,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686571,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686571,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686571,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686571,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686572,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686572,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686572,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686572,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686572,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686572,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686572,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686572,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686573,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686573,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686573,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686573,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686573,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686573,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686573,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686573,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686574,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686574,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686574,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686574,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686574,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686574,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686574,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686574,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686575,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686575,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686575,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686575,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686575,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686575,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686575,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686575,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686576,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686576,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686576,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686576,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686576,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686576,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686576,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686576,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686577,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686577,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686577,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686577,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686577,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686577,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686577,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686577,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686579,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686579,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686579,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686579,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686579,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686579,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686579,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686579,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686582,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686582,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686582,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686582,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686582,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686582,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686582,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686582,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686583,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686583,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686583,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686583,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686583,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686583,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686583,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686583,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686586,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686586,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686586,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686586,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686586,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686586,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686586,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686586,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686589,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686589,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686589,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686589,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686589,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686589,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686589,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686589,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686591,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686591,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686591,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686591,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686591,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686591,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686591,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686591,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686592,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686592,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686592,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686592,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686592,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686592,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686592,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686592,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686595,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686595,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686595,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686595,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686595,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686595,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686595,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686595,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686596,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686596,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686596,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686596,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686596,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686596,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686596,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686596,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686597,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686597,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686597,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686597,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686597,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686597,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686597,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686597,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686599,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686599,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686599,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686599,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686599,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686599,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686599,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686599,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686601,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686601,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686601,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686601,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686601,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686601,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686601,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686601,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686603,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686603,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686603,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686603,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686603,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686603,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686603,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686603,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686606,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686606,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686606,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686606,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686606,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686606,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686606,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686606,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0
+3686607,B,"Timolol 0.25% eye drops",4,2003-01-10,,1,1,0
+3686607,B,"Latanoprost 50micrograms/ml eye drops",4,2003-06-12,,1,1,0
+3686607,B,"Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free",4,2010-09-29,,1,1,0
+3686607,R,"Dorzolamide 20mg/ml eye drops 0.2ml unit dose preservative free",2,2011-07-10,,1,1,0
+3686607,R,"Chloramphenicol 0.5% eye drops",2,2014-12-09,2014-12-16,1,0,0
+3686607,R,"Dexamethasone 0.1% eye drops",2,2014-12-09,2015-01-09,1,0,0
+3686607,L,"Chloramphenicol 0.5% eye drops",1,2015-03-06,2015-03-13,1,0,0
+3686607,L,"Dexamethasone 0.1% eye drops",1,2015-03-06,2015-04-06,1,0,0

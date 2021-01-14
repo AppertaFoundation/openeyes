@@ -90,4 +90,65 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     exports.Diagnosis = new DiagnosisCore();
 
+
+    // corresponds to the values used for eye records
+    exports.eyeValues = {
+        'right': 2,
+        'left': 1
+
+    };
+
+    exports.beoEyeValues = {
+        'right': 2,
+        'left': 1,
+        'beo': 4
+    };
+
+    exports.eyeValueHasEye = function(currentValue, eye)
+    {
+        if (!exports.beoEyeValues[eye] || !currentValue) {
+            return false;
+        }
+        return (currentValue & exports.beoEyeValues[eye]) === exports.beoEyeValues[eye];
+    };
+
+    /**
+     * Given the current bitwise value for eye selection, add the given eyeToAdd to it.
+     * eyeToAdd must be a valid eye key @see Util.eyeValues
+     *
+     * @param {int} currentValue
+     * @param {string} eyeToAdd
+     * @param {boolean} includeBeo
+     * @return {number|*}
+     */
+    exports.addEyeToEyeValue = function(currentValue, eyeToAdd, includeBeo) {
+        const lookup = includeBeo ? exports.beoEyeValues : exports.eyeValues;
+
+        if (lookup[eyeToAdd] !== undefined) {
+            return currentValue | lookup[eyeToAdd];
+        }
+        return currentValue;
+    };
+
+    /**
+     * Given the current bitwise value for eye selection, remove the given eyeToRemove from it.
+     * eyeToRemove must be a valid eye key @see Util.eyeValues
+     *
+     * @param {int} currentValue
+     * @param {string} eyeToRemove
+     * @param {boolean} includeBeo
+     * @return {number|*}
+     */
+    exports.removeEyeFromEyeValue = function(currentValue, eyeToRemove, includeBeo) {
+        const lookup = includeBeo ? exports.beoEyeValues : exports.eyeValues;
+
+        if (lookup[eyeToRemove] !== undefined) {
+            if ((currentValue & lookup[eyeToRemove]) === lookup[eyeToRemove]) {
+                return currentValue ^ lookup[eyeToRemove];
+            }
+        }
+        return currentValue;
+    };
+
+
 })(OpenEyes.OphCiExamination);

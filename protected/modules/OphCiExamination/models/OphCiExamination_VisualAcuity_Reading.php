@@ -18,6 +18,9 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\models\traits\HasRelationOptions;
+use OEModule\OphCiExamination\models\traits\HasWithHeadPosture;
+
 /**
  * This is the model class for table "ophciexamination_visualacuity_reading".
  *
@@ -25,29 +28,33 @@ namespace OEModule\OphCiExamination\models;
  * @property int $element_id
  * @property int $side
  * @property int $value
+ * @property string $display_value
  * @property int $method_id
+ * @property int $source_id
+ * @property int $fixation_id
+ * @property int $occluder_id
+ *
+ * @property Element_OphCiExamination_VisualAcuity $element
+ * @property OphCiExamination_VisualAcuityUnit $unit
+ * @property OphCiExamination_VisualAcuity_Method $method
+ * @property OphCiExamination_VisualAcuityFixation $fixation
+ * @property OphCiExamination_VisualAcuityOccluder $occluder
  */
 class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
 {
+    use HasWithHeadPosture;
+    use HasRelationOptions;
+
+    const BEO = 2;
     const LEFT = 1;
     const RIGHT = 0;
 
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_VisualAcuity_Reading the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    protected $relation_options_to_skip = ['unit'];
 
-    public function init()
-    {
-        if (($default_value = Element_OphCiExamination_VisualAcuity::model()->getSetting('default_value'))) {
-            $this->value = $default_value;
-        }
-    }
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+    protected static $complex_relations = ["source", "fixation", "occluder"];
+
     /**
      * @return string the associated database table name
      */
@@ -61,10 +68,13 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-            array('id, value, method_id, side', 'safe'),
-            array('value, method_id, side', 'required'),
-            array('id, value, method_id, element_id, side', 'safe', 'on' => 'search'),
+        return array_merge(
+            [
+                ['id, unit_id, value, method_id, side, source_id, fixation_id, occluder_id', 'safe'],
+                ['unit_id, value, method_id, side', 'required'],
+                ['id, unit_id, value, method_id, element_id, side', 'safe', 'on' => 'search'],
+            ],
+            $this->rulesForWithHeadPosture()
         );
     }
 
@@ -73,9 +83,25 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
+        return [
+            'element' => [self::BELONGS_TO, Element_OphCiExamination_VisualAcuity::class, 'element_id'],
+            'unit' => [self::BELONGS_TO, OphCiExamination_VisualAcuityUnit::class, 'unit_id'],
+            'method' => [self::BELONGS_TO, OphCiExamination_VisualAcuity_Method::class, 'method_id'],
+            'source' => [self::BELONGS_TO, OphCiExamination_VisualAcuitySource::class, 'source_id'],
+            'fixation' => [self::BELONGS_TO, OphCiExamination_VisualAcuityFixation::class, 'fixation_id'],
+            'occluder' => [self::BELONGS_TO, OphCiExamination_VisualAcuityOccluder::class, 'occluder_id']
+        ];
+    }
+
+    public function attributeLabels()
+    {
         return array(
-                'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', 'element_id'),
-                'method' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method', 'method_id'),
+            'method_id' => 'Correction',
+            'unit_id' => 'Type',
+            'fixation_id' => 'Fixation',
+            'source_id' => 'Source',
+            'occluder_id' => 'Occluder',
+            'with_head_posture' => 'CHP'
         );
     }
 
@@ -88,6 +114,7 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
     {
         $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
+        $criteria->compare('unit_id', $this->id, true);
         $criteria->compare('value', $this->value, true);
         $criteria->compare('method_id', $this->method_id, true);
         $criteria->compare('element_id', $this->element_id, true);
@@ -96,6 +123,34 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    public function sourceOptions()
+    {
+        $current_pks = $this->source_id ? [$this->source_id] : [];
+        $cache_key = "distance-" . self::getRelationOptionsCacheKey(
+            OphCiExamination_VisualAcuitySource::class,
+            $current_pks
+        );
+
+        return self::getAndSetRelationOptionsCache(
+            $cache_key,
+            function () use ($current_pks) {
+                return OphCiExamination_VisualAcuitySource::model()
+                    ->activeOrPk($current_pks)
+                    ->findAll(
+                        [
+                            'condition' => 'is_near = 0',
+                            'order' => 'display_order asc'
+                        ]
+                    );
+            }
+        );
+    }
+
+    public function getDisplay_value()
+    {
+        return $this->convertTo($this->value, $this->unit_id);
     }
 
     /**
@@ -122,7 +177,7 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
     public function getClosest($base_value, $unit_id = null)
     {
         if (!$unit_id) {
-            $unit_id = $this->element->unit_id;
+            $unit_id = $this->unit_id;
         }
         $criteria = new \CDbCriteria();
         $criteria->select = array('*', 'ABS(base_value - :base_value) AS delta');
@@ -146,5 +201,70 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
             $value = $this->getClosest($base_value, $unit_id);
             $this->value = $value->base_value;
         }
+    }
+
+    public function isRight(): bool
+    {
+        return isset($this->side) && (string) $this->side === (string) self::RIGHT;
+    }
+
+    public function isLeft(): bool
+    {
+        return $this->side && (string) $this->side === (string) self::LEFT;
+    }
+
+    public function isBeo(): bool
+    {
+        return $this->side && (string) $this->side === (string) self::BEO;
+    }
+
+    public function getSideString(): ?string
+    {
+        return [
+            self::BEO => 'beo',
+            self::LEFT => 'left',
+            self::RIGHT => 'right'
+        ][$this->side] ?? null;
+    }
+
+    /**
+     * @param $side - left|right|beo
+     */
+    public function setSideByString($side)
+    {
+        $this->side = [
+            'beo' => self::BEO,
+            'left' => self::LEFT,
+            'right' => self::RIGHT
+        ][$side] ?? null;
+    }
+
+    public function getComplexAttributesString()
+    {
+        $attributes = $this->getRelatedComplexAttributes();
+
+        if ($this->withHeadPostureRecorded()) {
+            $attributes[] = sprintf(
+                "%s: %s",
+                $this->getAttributeLabel('with_head_posture'),
+                $this->display_with_head_posture
+            );
+        }
+
+        return implode(", ", $attributes);
+    }
+
+    protected function getRelatedComplexAttributes()
+    {
+        return array_reduce(
+            static::$complex_relations,
+            function ($attrs, $attr) {
+                if ($this->$attr) {
+                    $attrs[] = $this->$attr;
+                }
+                return $attrs;
+            },
+            []
+        );
     }
 }

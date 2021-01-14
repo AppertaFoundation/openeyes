@@ -18,8 +18,11 @@
 namespace OEModule\OphCiExamination\models;
 
 
+use OEModule\OphCiExamination\widgets\Allergies as AllergiesWidget;
+
 /**
  * Class Allergies
+ *
  * @package OEModule\OphCiExamination\models
  *
  * @property int $id
@@ -40,7 +43,7 @@ class Allergies extends \BaseEventTypeElement
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\Allergies';
+    protected $widgetClass = AllergiesWidget::class;
     protected $default_from_previous = true;
 
     protected $errorExceptions = array(

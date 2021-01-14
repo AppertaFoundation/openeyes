@@ -39,9 +39,22 @@ $(document).ready(function () {
       el.addClass('clicked');
       addElement(el, true, true, false, {unit_id: $(target).val()});
     } else {
-      swapElement(target_element, OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix, {unit_id: $(target).val()});
+      swapElement(target_element, OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix, {
+          'record_mode': $(target).data('recordMode'),
+          unit_id: $(target).val()
+      });
     }
 
+  }
+
+  function changeVisualAcuityMode(target) {
+    let elementTypeClass = $(target).data('elementTypeClass');
+    let targetElement = $(target).closest('.element[data-element-type-class="'+ elementTypeClass + '"]');
+    swapElement(targetElement, elementTypeClass, {
+        'record_mode': $(target).data('recordMode'),
+        'eye_id': $(target).data('eyeId'),
+        'unit_id': $(targetElement).find('.visualacuity_unit_selector').val()
+    });
   }
 
   ($('.va_readings,.near-va-readings').each(function(){
@@ -49,6 +62,10 @@ $(document).ready(function () {
         $(this).siblings('.noReadings').hide();
     }
   }));
+
+  $(this).delegate(".va-change-complexity", 'click', function() {
+    changeVisualAcuityMode(this);
+  });
 
   $(this).delegate('#nearvisualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, 'near');

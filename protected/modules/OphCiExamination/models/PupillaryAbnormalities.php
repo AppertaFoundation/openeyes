@@ -17,6 +17,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\widgets\PupillaryAbnormalities as PupillaryAbnormalitiesWidget;
+
 /**
  * This is the model class for table "et_ophciexamination_pupillary_abnormalities".
  *
@@ -37,7 +39,7 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
     use traits\CustomOrdering;
     protected $auto_update_relations = true;
 
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\PupillaryAbnormalities';
+    protected $widgetClass = PupillaryAbnormalitiesWidget::class;
     protected $default_from_previous = true;
 
     /**

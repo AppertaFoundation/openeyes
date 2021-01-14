@@ -127,11 +127,9 @@ class CxlDatasetController extends BaseController
 
         if (file_exists($this->exportPath . '/' . $this->zipName)) {
             Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
-        } else {
         }
-        
     }
-    
+
     /**
      * Generates the CSV files
      */
@@ -618,7 +616,7 @@ EOL;
                          JOIN   ophciexamination_visualacuity_method m ON m.id = r.method_id
                          JOIN   ophciexamination_visual_acuity_unit_value uv ON uv.base_value = r.value
                          WHERE  r.element_id = va.id
-                           AND  uv.unit_id = va.unit_id
+                           AND  uv.unit_id = r.unit_id
                            AND  r.side = 0
                            AND  m.name = 'Unaided'
                        ),
@@ -627,13 +625,13 @@ EOL;
                          JOIN   ophciexamination_visualacuity_method m ON m.id = r.method_id
                          JOIN   ophciexamination_visual_acuity_unit_value uv ON uv.base_value = r.value
                          WHERE  r.element_id = va.id
-                           AND  uv.unit_id = va.unit_id
+                           AND  uv.unit_id = r.unit_id
                            AND  r.side = 0
                            AND  m.name IN ('Glasses', 'Contact lens')
                        ),
-                       rf.right_sphere,
-                       rf.right_cylinder,
-                       rf.right_axis,
+                       rr.sphere,
+                       rr.cylinder,
+                       rr.axis,
                        k.right_kmax_value,
                        k.right_anterior_k1_value,
                        k.right_anterior_k2_value,
@@ -661,6 +659,17 @@ EOL;
                 LEFT JOIN et_ophciexamination_visualacuity va ON va.event_id = c.event_id
                 LEFT JOIN ophciexamination_visual_acuity_unit vau ON vau.id = va.unit_id
                 LEFT JOIN et_ophciexamination_refraction rf ON rf.event_id = c.event_id AND rf.eye_id IN (2, 3)
+                LEFT JOIN ophciexamination_refraction_reading rr ON rr.id = (
+                    /* Need to ensure we only get one reading result, ordered by the priority of the type */
+                    SELECT single_reading.id
+                    FROM ophciexamination_refraction_reading single_reading
+                    LEFT JOIN ophciexamination_refraction_type rt
+                    ON single_reading.type_id = rt.id
+                    WHERE element_id = rf.id
+                    AND single_reading.eye_id = 2
+                    ORDER BY -rt.priority DESC /* Null indicates an "other" type, which negative desc ordering will make last */
+                    LIMIT 1
+                )
                 LEFT JOIN et_ophciexamination_diagnoses d ON d.event_id = c.event_id
                 LEFT JOIN ophciexamination_diagnosis dd ON dd.element_diagnoses_id = d.id AND dd.eye_id IN (2, 3) AND dd.principal = 1
                 LEFT JOIN disorder ON disorder.id = dd.disorder_id
@@ -677,7 +686,7 @@ EOL;
                          JOIN   ophciexamination_visualacuity_method m ON m.id = r.method_id
                          JOIN   ophciexamination_visual_acuity_unit_value uv ON uv.base_value = r.value
                          WHERE  r.element_id = va.id
-                           AND  uv.unit_id = va.unit_id
+                           AND  uv.unit_id = r.unit_id
                            AND  r.side = 1
                            AND  m.name = 'Unaided'
                        ),
@@ -686,13 +695,13 @@ EOL;
                          JOIN   ophciexamination_visualacuity_method m ON m.id = r.method_id
                          JOIN   ophciexamination_visual_acuity_unit_value uv ON uv.base_value = r.value
                          WHERE  r.element_id = va.id
-                           AND  uv.unit_id = va.unit_id
+                           AND  uv.unit_id = r.unit_id
                            AND  r.side = 1
                            AND  m.name IN ('Glasses', 'Contact lens')
                        ),
-                       rf.left_sphere,
-                       rf.left_cylinder,
-                       rf.left_axis,
+                       rr.sphere,
+                       rr.cylinder,
+                       rr.axis,
                        k.left_kmax_value,
                        k.left_anterior_k1_value,
                        k.left_anterior_k2_value,
@@ -720,6 +729,17 @@ EOL;
                 LEFT JOIN et_ophciexamination_visualacuity va ON va.event_id = c.event_id
                 LEFT JOIN ophciexamination_visual_acuity_unit vau ON vau.id = va.unit_id
                 LEFT JOIN et_ophciexamination_refraction rf ON rf.event_id = c.event_id AND rf.eye_id IN (1, 3)
+                LEFT JOIN ophciexamination_refraction_reading rr ON rr.id = (
+                    /* Need to ensure we only get one reading result, ordered by the priority of the type */
+                    SELECT single_reading.id
+                    FROM ophciexamination_refraction_reading single_reading
+                    LEFT JOIN ophciexamination_refraction_type rt
+                    ON single_reading.type_id = rt.id
+                    WHERE element_id = rf.id
+                    AND single_reading.eye_id = 1
+                    ORDER BY -rt.priority DESC /* Null indicates an "other" type, which negative desc ordering will make last */
+                    LIMIT 1
+                )
                 LEFT JOIN et_ophciexamination_diagnoses d ON d.event_id = c.event_id
                 LEFT JOIN ophciexamination_diagnosis dd ON dd.element_diagnoses_id = d.id AND dd.eye_id IN (1, 3) AND dd.principal = 1
                 LEFT JOIN disorder ON disorder.id = dd.disorder_id
@@ -741,14 +761,17 @@ EOL;
 
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'Date', 'Eye', 'VisualAcuityChart', 'UDVA', 'CDVA', 'Sphere', 'Cylinder', 'Axis', 'Kmax', 'FrontK1', 'FrontK2', 'BackK1', 'BackK2', 'ThinnestPachymetry', 'BelinAmbrosio', 'QualityScoreFront', 'QualityScoreBack', 'CLRemoved', 'EndothelialCellDensity', 'CoefficientOfVariation', 'Cornea', 'Diagnosis', 'Outcome'),
+            'header' => array('PatientId', 'Date', 'Eye', 'VisualAcuityChart', 'UDVA', 'CDVA', 'Sphere', 'Cylinder',
+                'Axis', 'Kmax', 'FrontK1', 'FrontK2', 'BackK1', 'BackK2', 'ThinnestPachymetry', 'BelinAmbrosio',
+                'QualityScoreFront', 'QualityScoreBack', 'CLRemoved', 'EndothelialCellDensity', 'CoefficientOfVariation',
+                'Cornea', 'Diagnosis', 'Outcome'),
         );
 
         return $this->saveCSVfile($dataQuery, 'Assessments');
     }
-    
+
     /********** CxlSurgery **********/
-    
+
     private function createTmpCxlSurgery()
     {
         $query = <<<EOL
@@ -887,7 +910,9 @@ EOL;
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'Date', 'Eye', 'Operator', 'Device', 'EpithelialStatus', 'EpithelialDebridement', 'DebridementSize', 'IontophoresisCycles', 'IontophoresisCurrent', 'IontophoresisDuration', 'RiboflavinPreparation', 'RiboflavinDuration', 'UVIrradiance', 'UVDuration', 'UVContinuousOrPulsed', 'UVTotalEnergy', 'Comments'),
+            'header' => array('PatientId', 'Date', 'Eye', 'Operator', 'Device', 'EpithelialStatus', 'EpithelialDebridement',
+                'DebridementSize', 'IontophoresisCycles', 'IontophoresisCurrent', 'IontophoresisDuration', 'RiboflavinPreparation',
+                'RiboflavinDuration', 'UVIrradiance', 'UVDuration', 'UVContinuousOrPulsed', 'UVTotalEnergy', 'Comments'),
         );
 
         return $this->saveCSVfile($dataQuery, 'CxlSurgery');
@@ -906,7 +931,7 @@ EOL;
                 }
                 fputcsv($df, $row);
             }
-        } else if ($header) {
+        } elseif ($header) {
             fputcsv($df, $header);
         }
 
@@ -931,5 +956,4 @@ EOL;
         }
         $zip->close();
     }
-
 }

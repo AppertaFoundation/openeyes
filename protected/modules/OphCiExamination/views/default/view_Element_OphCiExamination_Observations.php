@@ -29,7 +29,7 @@
                         <span class="data-label"><?= $element->getAttributeLabel('blood_pressure') ?>:</span>
                     </td>
                     <td>
-                        <span class="data-value"><?php echo (!empty($element->blood_pressure_systolic)) ? $element->blood_pressure_systolic . '/' . $element->blood_pressure_diastolic . ' mmHg' : '' ?>
+                        <span class="data-value"><?php echo ($element->blood_pressure_systolic !== null) ? $element->blood_pressure_systolic . '/' . $element->blood_pressure_diastolic . ' mmHg' : '' ?>
                             <span>
                     </td>
                 </tr>
@@ -38,7 +38,7 @@
                         <span class="data-label"><?= $element->getAttributeLabel('blood_glucose') ?>:</span>
                     </td>
                     <td>
-                        <span class="data-value"><?php echo (!empty($element->blood_glucose)) ? $element->blood_glucose . ' mmol/l' : '' ?></span>
+                        <span class="data-value"><?php echo ($element->blood_glucose !== null) ? $element->blood_glucose . ' mmol/l' : '' ?></span>
                     </td>
 
                 </tr>
@@ -47,7 +47,7 @@
                         <span class="data-label"><?= $element->getAttributeLabel('weight') ?>:</span>
                     </td>
                     <td>
-                        <span class="data-value"><?php echo (!empty($element->weight)) ? $element->weight . ' kg' : '' ?></span>
+                        <span class="data-value"><?php echo ($element->weight !== null) ? $element->weight . ' kg' : '' ?></span>
                     </td>
                 </tr>
                 </tbody>
@@ -64,7 +64,7 @@
                             <span class="data-label"><?= $element->getAttributeLabel('o2_sat') ?>:</span>
                         </td>
                         <td>
-                            <span class="data-value"><?php echo (!empty($element->o2_sat)) ? $element->o2_sat . ' %' : '' ?></span>
+                            <span class="data-value"><?php echo ($element->o2_sat !== null) ? $element->o2_sat . ' %' : '' ?></span>
                         </td>
                     </tr>
                     <tr>
@@ -72,7 +72,7 @@
                             <span class="data-label"><?= $element->getAttributeLabel('hba1c') ?>:</span>
                         </td>
                         <td>
-                            <span class="data-value"><?php echo (!empty($element->hba1c)) ? $element->hba1c . ' mmol/mol' : '' ?></span>
+                            <span class="data-value"><?php echo ($element->hba1c !== null) ? $element->hba1c . ' mmol/mol' : '' ?></span>
                         </td>
                     </tr>
                     <tr>
@@ -80,7 +80,7 @@
                             <span class="data-label"><?= $element->getAttributeLabel('height') ?>:</span>
                         </td>
                         <td>
-                            <span class="data-value"><?php echo (!empty($element->height)) ? $element->height . ' cm' : '' ?></span>
+                            <span class="data-value"><?php echo ($element->height !== null) ? $element->height . ' cm' : '' ?></span>
                         </td>
                     </tr>
                     </tbody>
@@ -97,7 +97,7 @@
                             <span class="data-label"><?= $element->getAttributeLabel('pulse') ?>:</span>
                         </td>
                         <td>
-                            <span class="data-value"><?php echo (!empty($element->pulse)) ? $element->pulse . ' BPM' : ''; ?></span>
+                            <span class="data-value"><?php echo ($element->pulse !== null) ? $element->pulse . ' BPM' : ''; ?></span>
                         </td>
                     </tr>
                     <tr>
@@ -105,7 +105,7 @@
                             <span class="data-label"><?= $element->getAttributeLabel('temperature') ?>:</span>
                         </td>
                         <td>
-                            <span class="data-value"><?php echo (!empty($element->temperature)) ? $element->temperature . ' &deg;C' : ''; ?></span>
+                            <span class="data-value"><?php echo ($element->temperature !== null) ? $element->temperature . ' &deg;C' : ''; ?></span>
                         </td>
                     </tr>
                     <tr>

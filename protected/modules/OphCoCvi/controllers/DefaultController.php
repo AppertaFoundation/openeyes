@@ -234,20 +234,6 @@ class DefaultController extends \BaseEventTypeController
     ) {
         // only populate values into the new element if a clinical user
         if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
-            if ($exam_api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
-                if ($latest_exam = $exam_api->getMostRecentVAElementForPatient($this->patient)) {
-                    // $element->examination_date = $latest_exam['event_date'];
-                    // $element->best_corrected_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
-                    //    'aided', $latest_exam['element']);
-                    // $element->best_corrected_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left',
-                    //    'aided', $latest_exam['element']);
-                    // $element->unaided_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
-                    //    'unaided',
-                    //    $latest_exam['element']);
-                    // $element->unaided_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'unaided',
-                    //    $latest_exam['element']);
-                }
-            }
             $cvi_disorders = models\OphCoCvi_ClinicalInfo_Disorder::model()->active()->findAll();
             $cvi_ids_by_disorder_id = array();
             foreach ($cvi_disorders as $cvid) {

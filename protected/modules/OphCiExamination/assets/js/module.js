@@ -757,18 +757,8 @@ $(document).ready(function() {
         eyedraw.setParameterForDoodleOfClass('AntSeg', 'pxe', $(this).is(':checked'));
     });
 
-    $(this).delegate('.' + OE_MODEL_PREFIX + 'Element_OphCiExamination_Refraction .refractionType', 'change', function() {
-        OphCiExamination_Refraction_updateType(this);
-    });
-
     $(this).delegate('.' + OE_MODEL_PREFIX + 'Element_OphCiExamination_Gonioscopy .gonioscopy-mode', 'change', function() {
         OphCiExamination_Gonioscopy_update(this);
-    });
-
-    $('#event-content').delegate('.element .segmented select', 'change', function() {
-        var field = $(this).nextAll('input');
-        var containerEL = $(this).parent();
-        OphCiExamination_Refraction_updateSegmentedField(field , containerEL);
     });
 
     /**
@@ -915,22 +905,6 @@ $(document).ready(function() {
 
         $(":input[name^='glaucoma_diagnoses']").trigger('change');
         return false;
-    });
-
-    $('.signField').die('change').live('change',function(e) {
-        var sign_id = $(this).val() >0 ? 1 : 2;
-        var type = $(this).data('type');
-        var value = $(this).next('select').val();
-
-        $(this).next('select').html('');
-
-        var list = window['Element_OphCiExamination_Refraction_' + type][sign_id];
-
-        for (var i in list) {
-            $(this).next('select').append('<option value="' + list[i] + '">' + list[i] + '</option>');
-        }
-
-        $(this).next('select').val(value).change();
     });
 
         /** Post Operative Complication  Event Bindings **/
@@ -1219,45 +1193,6 @@ function eDparameterListener(drawing) {
 function sort_ul(element) {
 rootItem = element.children('li:first').text();
 element.append(element.children('li').sort(selectSort));
-}
-
-function OphCiExamination_Refraction_updateSegmentedField(field , containerEL) {
-    var parts = $(field).parent().children('select');
-
-    /*
-    If error box exists, the parent-children structure breaks
-     */
-    if (typeof parts[0] === "undefined"){
-        var parts = containerEL.children('select');
-        var value = $(parts[0]).val() * (parseFloat($(parts[1]).val()) + parseFloat($(parts[2]).val()));
-
-        if(isNaN(value)){
-            $(field).val('');
-        } else {
-            containerEL.find('input').val(value.toFixed(2));
-        }
-    } else {
-        var value = $(parts[0]).val() * (parseFloat($(parts[1]).val()) + parseFloat($(parts[2]).val()));
-        if(isNaN(value)){
-            $(field).val('');
-        } else {
-            $(field).val(value.toFixed(2));
-        }
-    }
-}
-
-/**
- * Show other type field only if type is set to "Other"
- */
-function OphCiExamination_Refraction_updateType(field) {
-    var other = $(field).closest('.js-element-eye').find('.refraction-type-other');
-    if ($(field).val() == '') {
-        other.show();
-        other.find('.refraction-type-other-field').focus();
-    } else {
-        other.find('.refraction-type-other-field').val('');
-        other.hide();
-    }
 }
 
 function OphCiExamination_OCT_init() {

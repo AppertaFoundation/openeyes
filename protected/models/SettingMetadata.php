@@ -32,6 +32,16 @@
  */
 class SettingMetadata extends BaseActiveRecordVersioned
 {
+    public static $CONTEXT_CLASSES = [
+        'SettingUser' => 'user_id',
+        'SettingFirm' => 'firm_id',
+        'SettingSubspecialty' => 'subspecialty_id',
+        'SettingSpecialty' => 'specialty_id',
+        'SettingSite' => 'site_id',
+        'SettingInstitution' => 'institution_id',
+        'SettingInstallation' => null
+    ];
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -170,15 +180,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $site_id = $site ? $site->id : null;
         $institution_id = $site ? $site->institution_id : null;
 
-        foreach (array(
-            'SettingUser' => 'user_id',
-            'SettingFirm' => 'firm_id',
-            'SettingSubspecialty' => 'subspecialty_id',
-            'SettingSpecialty' => 'specialty_id',
-            'SettingSite' => 'site_id',
-            'SettingInstitution' => 'institution_id',
-            'SettingInstallation' => null,
-            ) as $class => $field) {
+        foreach (static::$CONTEXT_CLASSES as $class => $field) {
             if ($allowed_classes && !in_array($class, $allowed_classes)) {
                 continue;
             }

@@ -175,7 +175,7 @@ class OphCoCorrespondence_API extends BaseAPI
         $api = $this->yii->moduleAPI->get('OphCiExamination');
         $element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context);
         if ($element) {
-            return Yii::app()->format->text($element->getCombined($side));
+            return Yii::app()->format->text($element->getPriorityReadingCombined($side));
         }
         return null;
     }

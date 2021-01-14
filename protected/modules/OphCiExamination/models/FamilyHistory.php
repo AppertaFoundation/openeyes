@@ -19,8 +19,11 @@
 namespace OEModule\OphCiExamination\models;
 
 
+use OEModule\OphCiExamination\widgets\FamilyHistory as FamilyHistoryWidget;
+
 /**
  * Class FamilyHistory
+ *
  * @package OEModule\OphCiExamination\models
  *
  * @property int $id
@@ -37,7 +40,7 @@ class FamilyHistory extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
     protected $auto_update_relations = true;
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\FamilyHistory';
+    protected $widgetClass = FamilyHistoryWidget::class;
     protected $default_from_previous = true;
     protected $errorExceptions = array(
         'OEModule_OphCiExamination_models_FamilyHistory_no_family_history_date' => 'OEModule_OphCiExamination_models_FamilyHistory_no_family_history'

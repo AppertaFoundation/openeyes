@@ -18,6 +18,10 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\models\traits\CustomOrdering;
+use OEModule\OphCiExamination\models\traits\HasRelationOptions;
+use OEModule\OphCiExamination\widgets\SocialHistory as SocialHistoryWidget;
+
 /**
  * @property string $id
  * @property int $event_id
@@ -43,11 +47,13 @@ namespace OEModule\OphCiExamination\models;
  */
 class SocialHistory extends \BaseEventTypeElement
 {
-    use traits\CustomOrdering;
+    use CustomOrdering;
+    use HasRelationOptions;
+
     protected $auto_update_relations = true;
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\SocialHistory';
+    protected $widgetClass = SocialHistoryWidget::class;
     protected $default_from_previous = true;
-    
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -149,32 +155,6 @@ class SocialHistory extends \BaseEventTypeElement
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
-    }
-
-    /**
-     * Override for consistent lookup option retrieval
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        if (substr($name, -8) === '_options') {
-            $relation_name = strtolower(substr($name, 0, -8));
-            if ($this->getMetaData()->hasRelation($relation_name)) {
-                $relation = $this->getMetaData()->relations[$relation_name];
-                $cls = $relation->className;
-                $pk = null;
-                if (is_a($relation, self::BELONGS_TO)) {
-                    $pk = $this->{$relation_name . '_id'};
-                } else {
-                    $pk = array_map(function($i) { return $i->id;
-                    }, ($this->getRelated($relation_name) ? : array()));
-                }
-                return $cls::model()->activeOrPk($pk)->findAll(array('order' => 'display_order asc'));
-            }
-        }
-        return parent::__get($name);
     }
 
     /**

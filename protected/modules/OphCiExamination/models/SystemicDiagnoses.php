@@ -18,6 +18,7 @@
 namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\components\OphCiExamination_API;
+use OEModule\OphCiExamination\widgets\SystemicDiagnoses as SystemicDiagnosesWidget;
 
 /**
  * Class SystemicDiagnoses
@@ -41,7 +42,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\SystemicDiagnoses';
+    protected $widgetClass = SystemicDiagnosesWidget::class;
     public $cached_tip_status = null;
     protected $auto_update_relations = true;
     protected $default_from_previous = true;

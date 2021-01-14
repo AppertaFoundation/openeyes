@@ -31,7 +31,7 @@ class BaseAdminController extends BaseController
     {
         $admin = new AdminSidebar();
         $admin->init();
-        
+
         if ($admin->getCurrentTitle()) {
             $name = $admin->getCurrentTitle();
         } else {
@@ -117,6 +117,7 @@ class BaseAdminController extends BaseController
             'input_class' => '',
             'div_wrapper_class' => 'cols-full',
             'return_url' => false,
+            'action_links' => []
         ), $options);
 
         $columns = $model::model()->metadata->columns;

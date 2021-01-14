@@ -12,6 +12,8 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/** @var OphCiExamination_Episode_MedicalRetinalHistory $this */
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js') ?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-MR.js') ?>"></script>
@@ -68,24 +70,18 @@
         const flag_height_perc = 0.8;
         const oneday_time = 86400000;
 
-        for (var side of sides) {
-            var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
-            layout_MR['shapes'] = [];
-            layout_MR['annotations'] = [];
-            va_yaxis['tickvals'] = va_plotly_ticks['tick_position'];
-            va_yaxis['ticktext'] = va_plotly_ticks['tick_labels'];
-            layout_MR['xaxis']['rangeslider'] = {};
+        function getVATrace(side) {
+            let colour = {
+                'right': '#9fec6d',
+                'left': '#fe6767',
+                'beo': '#e8b131'}[side];
 
-            setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
-            setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 150);
-
-            //Set trace for VA
-            var trace1 = {
+            return {
                 name: 'VA(' + side + ')',
                 x: va_plotly[side]['x'],
                 y: va_plotly[side]['y'],
                 line: {
-                    color: (side == 'right') ? '#9fec6d' : '#fe6767',
+                    color: colour,
                 },
                 hovertext: va_plotly[side]['x'].map(function (item, index) {
                     var d = new Date(item);
@@ -102,6 +98,24 @@
                     size: 10,
                 },
             };
+        }
+
+        let beoTrace = getVATrace('beo');
+
+        for (var side of sides) {
+            var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
+            layout_MR['shapes'] = [];
+            layout_MR['annotations'] = [];
+            va_yaxis['tickvals'] = va_plotly_ticks['tick_position'];
+            va_yaxis['ticktext'] = va_plotly_ticks['tick_labels'];
+            layout_MR['xaxis']['rangeslider'] = {};
+
+            setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
+            setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 150);
+
+            //Set trace for VA
+            var trace1 = getVATrace(side);
+
             //Set trace for CRT
             var trace2 = {
                 name: 'CRT(' + side + ')',
@@ -233,7 +247,7 @@
             layout_MR['yaxis2'] = setYAxis_MR(crt_yaxis);
             layout_MR['yaxis'] = setYAxis_MR(va_yaxis);
 
-            var data = [trace1, trace2, text];
+            var data = [trace1, trace2, text, beoTrace];
 
             Plotly.newPlot(
                 'plotly-MR-' + side, data, layout_MR, options_plotly

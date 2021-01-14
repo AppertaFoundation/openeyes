@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\widgets\ColourVision as ColourVisionWidget;
 use Yii;
 
 /**
@@ -42,6 +43,20 @@ use Yii;
 class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
+
+    protected $auto_update_relations = true;
+    protected $relation_defaults = array(
+        'left_readings' => array(
+            'eye_id' => \Eye::LEFT,
+        ),
+        'right_readings' => array(
+            'eye_id' => \Eye::RIGHT,
+        ),
+    );
+
+    protected $auto_validate_relations = false; // cannot auto validate with split relations
+    protected $widgetClass = ColourVisionWidget::class;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -83,14 +98,14 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading', 'element_id'),
-            'right_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading', 'element_id', 'on' => 'right_readings.eye_id = '.\Eye::RIGHT),
-            'left_readings' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading', 'element_id', 'on' => 'left_readings.eye_id = '.\Eye::LEFT),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'), // TODO: does this relation actually exist
+            'event' => array(self::BELONGS_TO, \Event::class, 'event_id'),
+            'user' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
+            'eye' => array(self::BELONGS_TO, \Eye::class, 'eye_id'),
+            'readings' => array(self::HAS_MANY, OphCiExamination_ColourVision_Reading::class, 'element_id'),
+            'right_readings' => array(self::HAS_MANY, OphCiExamination_ColourVision_Reading::class, 'element_id', 'on' => 'right_readings.eye_id = '.\Eye::RIGHT),
+            'left_readings' => array(self::HAS_MANY, OphCiExamination_ColourVision_Reading::class, 'element_id', 'on' => 'left_readings.eye_id = '.\Eye::LEFT),
         );
     }
 
@@ -140,6 +155,7 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
      * @param string                               $side   - left or right
      * @param OphCiExamination_ColourVision_Method $method
      *
+     * @deprecated
      * @return OphCiExamination_ColourVision_Reading|null
      */
     public function getReading($side, $method)
@@ -201,95 +217,26 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
     {
         foreach (array('left' => 'hasLeft', 'right' => 'hasRight') as $side => $checkFunc) {
             if ($this->$checkFunc()) {
+                if (!is_array($this->{$side.'_readings'})) {
+                    continue;
+                }
+
+                $method_ids = [];
+                $methods_not_unique = false;
                 foreach ($this->{$side.'_readings'} as $i => $reading) {
+                    if ($method = $reading->method) {
+                        $methods_not_unique = $methods_not_unique || in_array($method->id, $method_ids);
+                        $method_ids[] = $method->id;
+                    }
                     if (!$reading->validate()) {
                         foreach ($reading->getErrors() as $fld => $err) {
                             $this->addError($side.'_readings', ucfirst($side).' reading ('.($i + 1).'): '.implode(', ', $err));
                         }
                     }
                 }
-            }
-        }
-    }
-
-    /**
-     * extends standard delete method to remove all the treatments.
-     *
-     * (non-PHPdoc)
-     *
-     * @see CActiveRecord::delete()
-     */
-    public function delete()
-    {
-        $transaction = Yii::app()->db->getCurrentTransaction() === null
-                ? Yii::app()->db->beginTransaction()
-                : false;
-
-        try {
-            foreach ($this->readings as $reading) {
-                if (!$reading->delete()) {
-                    throw new Exception('Delete reading failed: '.print_r($reading->getErrors(), true));
+                if ($methods_not_unique) {
+                    $this->addError($side.'_readings', ucfirst($side).' readings must only have unique reading methods');
                 }
-            }
-            if (parent::delete()) {
-                if ($transaction) {
-                    $transaction->commit();
-                }
-            } else {
-                throw new \Exception('unable to delete');
-            }
-        } catch (\Exception $e) {
-            if ($transaction) {
-                $transaction->rollback();
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Update the dilation treatments - depends on their only being one treatment of a particular drug on a given side.
-     *
-     * @param $side \Eye::LEFT or \Eye::RIGHT
-     * @param array $readings
-     *
-     * @throws Exception
-     */
-    public function updateReadings($side, $readings)
-    {
-        $curr_by_id = array();
-        $save = array();
-
-        foreach ($this->readings as $r) {
-            if ($r->eye_id == $side) {
-                $curr_by_id[$r->method->id] = $r;
-            }
-        }
-
-        foreach ($readings as $reading) {
-            if (!$method_id = $reading['method_id']) {
-                $method_id = OphCiExamination_ColourVision_Value::model()->findByPk($reading['value_id'])->method->id;
-            }
-            if (!array_key_exists($method_id, $curr_by_id)) {
-                $obj = new OphCiExamination_ColourVision_Reading();
-            } else {
-                $obj = $curr_by_id[$method_id];
-                unset($curr_by_id[$method_id]);
-            }
-            $obj->attributes = $reading;
-            $obj->element_id = $this->id;
-            $obj->eye_id = $side;
-            $save[] = $obj;
-        }
-
-        foreach ($save as $s) {
-            if (!$s->save()) {
-                throw new \Exception('unable to save reading:'.print_r($s->getErrors(), true));
-            };
-        }
-
-        foreach ($curr_by_id as $curr) {
-            if (!$curr->delete()) {
-                throw new \Exception('unable to delete reading:'.print_r($curr->getErrors(), true));
             }
         }
     }

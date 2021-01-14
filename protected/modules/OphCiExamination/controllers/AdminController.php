@@ -21,6 +21,18 @@ namespace OEModule\OphCiExamination\controllers;
 use Audit;
 use CDbCriteria;
 use OEModule\OphCiExamination\components\ExaminationHelper;
+use OEModule\OphCiExamination\controllers\traits\AdminForColourVision;
+use OEModule\OphCiExamination\controllers\traits\AdminForContrastSensitivity;
+use OEModule\OphCiExamination\controllers\traits\AdminForElementAttribute;
+use OEModule\OphCiExamination\controllers\traits\AdminForCoverAndPrismCover;
+use OEModule\OphCiExamination\controllers\traits\AdminForPrismReflex;
+use OEModule\OphCiExamination\controllers\traits\AdminForNinePositions;
+use OEModule\OphCiExamination\controllers\traits\AdminForRefraction;
+use OEModule\OphCiExamination\controllers\traits\AdminForSensoryFunction;
+use OEModule\OphCiExamination\controllers\traits\AdminForStereoAcuity;
+use OEModule\OphCiExamination\controllers\traits\AdminForStrabismusManagement;
+use OEModule\OphCiExamination\controllers\traits\AdminForVisualAcuity;
+use OEModule\OphCiExamination\controllers\traits\AdminForSynoptophore;
 use OEModule\OphCiExamination\models;
 use Yii;
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
@@ -28,6 +40,19 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 
 class AdminController extends \ModuleAdminController
 {
+    use AdminForSensoryFunction;
+    use AdminForStereoAcuity;
+    use AdminForColourVision;
+    use AdminForVisualAcuity;
+    use AdminForElementAttribute;
+    use AdminForCoverAndPrismCover;
+    use AdminForPrismReflex;
+    use AdminForSynoptophore;
+    use AdminForRefraction;
+    use AdminForContrastSensitivity;
+    use AdminForNinePositions;
+    use AdminForStrabismusManagement;
+
     public $group = 'Examination';
 
     public $defaultAction = 'ViewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason';
@@ -703,24 +728,6 @@ class AdminController extends \ModuleAdminController
         echo '1';
     }
 
-    public function actionManageElementAttributes()
-    {
-        $this->genericAdmin(
-            'Manage Element Attributes',
-            'OEModule\OphCiExamination\models\OphCiExamination_AttributeOption',
-            array(
-                'filter_fields' => array(
-                    array('field' => 'attribute_element_id', 'model' => 'OEModule\OphCiExamination\models\OphCiExamination_AttributeElement'),
-                ),
-                'extra_fields' => array(
-                    array('field' => 'subspecialty_id', 'type' => 'lookup', 'model' => 'Subspecialty'),
-                ),
-                'div_wrapper_class' => 'cols-5',
-                'return_url' => '/oeadmin/examinationElementAttributes/list',
-            )
-        );
-    }
-
     public function actionManageOverallPeriods()
     {
         $this->genericAdmin(
@@ -1093,5 +1100,15 @@ class AdminController extends \ModuleAdminController
         }
 
         echo '1';
+    }
+
+    public function actionCorrectionTypes()
+    {
+        $this->genericAdmin('Correction Types',
+            models\CorrectionType::class,
+            [
+                'description' => 'Correction Types are used in multiple examination elements',
+            ]
+        );
     }
 }

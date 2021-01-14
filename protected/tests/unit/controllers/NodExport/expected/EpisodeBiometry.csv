@@ -1,0 +1,3 @@
+EpisodeId,Eye,AxialLength,BiometryAScanId,BiometryKeratometerId,BiometryFormulaId,K1PreOperative,K2PreOperative,AxisK1,AxisK2,ACDepth,SNR
+3686331,L,21.68,,1,4,46.11,46.30,94.0,4.0,2.75,542.5
+3686331,R,21.68,,1,4,46.11,46.30,94.0,4.0,2.75,542.5

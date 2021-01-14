@@ -81,6 +81,11 @@ class BaseEventElementWidget extends CWidget
         return $this->app;
     }
 
+    public function setApp($app)
+    {
+        $this->app = $app;
+    }
+
     public function getFirm()
     {
         if (!isset($this->firm)) {
@@ -205,7 +210,7 @@ class BaseEventElementWidget extends CWidget
             $this->setElementFromDefaults();
         }
 
-        if ($this->data) {
+        if ($this->data !== null) {
             // we set the element to the provided data
             $this->updateElementFromData($this->element, $this->data);
         }
@@ -252,8 +257,27 @@ class BaseEventElementWidget extends CWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        $element->attributes = $data;
+        $this->ensureRequiredDataKeysSet($data);
+
+        $safe_attributes = $element->getSafeAttributeNames();
+
+        $element->attributes = array_filter(
+            $data,
+            function($key) use ($safe_attributes) {
+                return in_array($key, $safe_attributes);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
     }
+
+    /**
+     * Extend to set any data attributes that should be forced to be
+     * defined. For example for records with auto relation sets, to
+     * ensure previously set values are removed.
+     *
+     * @param $data
+     */
+    protected function ensureRequiredDataKeysSet(&$data) {}
 
     /**
      * @var string base path to assets for element widget
@@ -291,9 +315,13 @@ class BaseEventElementWidget extends CWidget
             }
         );
 
-        return $this->getApp()->getAssetManager()->publish(
-            implode(DIRECTORY_SEPARATOR, $elements),
-            true
+        // wrap the publish response in createUrl to trigger cache-busting
+        return $this->getApp()->getAssetManager()->createUrl(
+            $this->getApp()->getAssetManager()->publish(
+                implode(DIRECTORY_SEPARATOR, $elements),
+                true
+            ),
+            false
         );
     }
 
@@ -376,28 +404,8 @@ class BaseEventElementWidget extends CWidget
 
         // quick way to get the base class name
         $short_name = substr(strrchr(get_class($this), '\\'), 1);
-        switch ($this->mode) {
-            case static::$EVENT_VIEW_MODE:
-                return $short_name . '_event_view';
-                break;
-            case static::$EVENT_PRINT_MODE:
-                // defaults to the standard view unless widget defines a print view
-                return $this->print_view ?: $short_name . '_event_view';
-                break;
-            case static::$EVENT_EDIT_MODE:
-                return $short_name . '_event_edit';
-                break;
-            case static::$EPISODE_SUMMARY_MODE:
-                return $short_name . '_episodesummary';
-                break;
-            case static::$DATA_MODE:
-                throw new \SystemException('No view to render when ' . static::class . ' in DATA_MODE');
-                break;
-            case static::$PATIENT_LANDING_PAGE_MODE:
-                return $short_name . '_landing_page';
-            default:
-                return $short_name . '_patient_mode';
-        }
+
+        return $this->getViewNameForPrefix($short_name);
     }
 
     /**
@@ -465,5 +473,36 @@ class BaseEventElementWidget extends CWidget
             $eye_id = -9;
         }
         return $eye_id;
+    }
+
+    /**
+     * @param $prefix
+     * @return string
+     * @throws SystemException
+     */
+    protected function getViewNameForPrefix($prefix)
+    {
+        switch ($this->mode) {
+            case static::$EVENT_VIEW_MODE:
+                return $prefix . '_event_view';
+                break;
+            case static::$EVENT_PRINT_MODE:
+                // defaults to the standard view unless widget defines a print view
+                return $this->print_view ?: $prefix . '_event_view';
+                break;
+            case static::$EVENT_EDIT_MODE:
+                return $prefix . '_event_edit';
+                break;
+            case static::$EPISODE_SUMMARY_MODE:
+                return $prefix . '_episodesummary';
+                break;
+            case static::$DATA_MODE:
+                throw new \SystemException('No view to render when ' . static::class . ' in DATA_MODE');
+                break;
+            case static::$PATIENT_LANDING_PAGE_MODE:
+                return $prefix . '_landing_page';
+            default:
+                return $prefix . '_patient_mode';
+        }
     }
 }

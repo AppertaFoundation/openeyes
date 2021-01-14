@@ -45,31 +45,55 @@ class m200623_052130_add_crt_and_refraction_views extends CDbMigration
             `e`.`patient_id` AS `patient_id`,
             `r`.`event_id` AS `event_id`,
             `e`.`event_date` AS `event_date`,
-            `r`.`left_sphere` AS `value`,
+            `rr`.`sphere` AS `value`,
             `t`.`name` AS `type`,
             1 AS `side`,
             'L' AS `eye`
         from
-            ((`et_ophciexamination_refraction` `r`
-        join `v_patient_events` `e` on
-            ((`r`.`event_id` = `e`.`event_id`)))
-        join `ophciexamination_refraction_type` `t` on
-            ((`r`.`left_type_id` = `t`.`id`)))
+            (
+                `et_ophciexamination_refraction` `r`
+                join `v_patient_events` `e` on
+                (`r`.`event_id` = `e`.`event_id`)
+                join `ophciexamination_refraction_reading` rr ON rr.id = (
+                    SELECT single_reading.id
+                    FROM ophciexamination_refraction_reading single_reading
+                    LEFT JOIN ophciexamination_refraction_type rt
+                    ON single_reading.type_id = rt.id
+                    WHERE element_id = r.id
+                    AND single_reading.eye_id = 1
+                    ORDER BY -rt.priority DESC
+                    LIMIT 1
+                )
+                join `ophciexamination_refraction_type` t on
+                rr.type_id = t.id
+            )
         union
         select
             `e`.`patient_id` AS `patient_id`,
             `r`.`event_id` AS `event_id`,
             `e`.`event_date` AS `event_date`,
-            `r`.`right_sphere` AS `value`,
+            `rr`.`sphere` AS `value`,
             `t`.`name` AS `type`,
             0 AS `side`,
             'R' AS `eye`
         from
-            ((`et_ophciexamination_refraction` `r`
-        join `v_patient_events` `e` on
-            ((`r`.`event_id` = `e`.`event_id`)))
-        join `ophciexamination_refraction_type` `t` on
-            ((`r`.`right_type_id` = `t`.`id`)))
+            (
+                `et_ophciexamination_refraction` `r`
+                join `v_patient_events` `e` on
+                `r`.`event_id` = `e`.`event_id`
+                join `ophciexamination_refraction_reading` rr ON rr.id = (
+                    SELECT single_reading.id
+                    FROM ophciexamination_refraction_reading single_reading
+                    LEFT JOIN ophciexamination_refraction_type rt
+                    ON single_reading.type_id = rt.id
+                    WHERE element_id = r.id
+                    AND single_reading.eye_id = 2
+                    ORDER BY -rt.priority DESC
+                    LIMIT 1
+                )
+                join `ophciexamination_refraction_type` `t` on
+                rr.type_id = t.id
+            )
         order by
             1,
             3");

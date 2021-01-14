@@ -1,0 +1,5 @@
+OperationId,EpisodeId,Description,IsHypertensive,ListedDate,SurgeonId,SurgeonGradeId,AssistantId,AssistantGradeId,ConsultantId,SiteName,SiteODS
+3686565,3686565,,,2011-05-14,6006,4,6,1,0,"Kings Hospital",AAAA
+3686582,3686582,,,2014-12-09,6006,4,0,,0,"Kings Hospital",AAAA
+3686591,3686591,,,2015-03-06,6006,4,0,,0,"Kings Hospital",AAAA
+3686606,3686606,,,2017-11-01,6006,4,0,,0,"Kings Hospital",AAAA

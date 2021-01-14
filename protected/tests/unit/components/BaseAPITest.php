@@ -20,6 +20,7 @@ class BaseAPITest extends CDbTestCase
         'event_types' => 'EventType',
         'events' => 'Event',
         'episodes' => 'Episode',
+        'patients' => 'Patient'
     );
 
     public function setUp()
@@ -93,11 +94,8 @@ class BaseAPITest extends CDbTestCase
      */
     public function testGetMostRecentEventInEpisode()
     {
-        $test = $this->getMockBuilder('BaseAPI')
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->setMockClassName('TestModule_API')
-            ->getMock();
+        $test = $this->getBaseApiMock();
+
         $event = $this->events('event2');
         $expectedEvent = $this->events('event3');
         $resultEvent = $test->getMostRecentEventInEpisode($event->episode_id, $event->event_type_id);
@@ -109,15 +107,104 @@ class BaseAPITest extends CDbTestCase
      */
     public function testGetMostRecentElementInEpisode()
      {
-        $test = $this->getMockBuilder('BaseAPI')
-           ->disableOriginalConstructor()
-           ->setMethods(null)
-           ->setMockClassName('TestModule_API')
-           ->getMock();
+        $test = $this->getBaseApiMock();
         $event = $this->events('event2');
 
         $resultElement = $test->getMostRecentElementInEpisode($event->episode_id, $event->event_type_id, ElementMock_TestClass::model());
         $this->assertEquals(3, $resultElement->id);
+    }
+
+    /**
+     * @covers BaseAPI
+     */
+    public function testGetLatestElement()
+    {
+        $patient = $this->patients('patient1');
+
+        $found_element = $this->getBaseApiMock()
+            ->getLatestElement(ElementMock_TestClass::class, $patient);
+        $this->assertEquals(3, $found_element->id);
+    }
+
+    /**
+     * @covers BaseAPI
+     * @group strabismus
+     */
+    public function testGetLatestElementBefore()
+    {
+        $found_element = $this->getBaseApiMock()
+            ->getLatestElement(
+                ElementMock_TestClass::class,
+                $this->patients('patient1'),
+                false,
+                date('Y-m-d 00:00:00', strtotime('-1 days'))
+            );
+        $this->assertEquals(2, $found_element->id);
+    }
+
+    /**
+     * @covers BaseAPI
+     * @group strabismus
+     */
+    public function testGetLatestElementAfter()
+    {
+        $found_element = $this->getBaseApiMock()
+            ->getLatestElement(
+                ElementMock_TestClass::class,
+                $this->patients('patient1'),
+                false,
+                null,
+                date('Y-m-d 00:00:00', strtotime('-1 days'))
+            );
+        $this->assertEquals(3, $found_element->id);
+    }
+
+    /**
+     * @covers BaseAPI
+     * @group strabismus
+     */
+    public function testGetLatestElementAfterAndBefore()
+    {
+        $found_element = $this->getBaseApiMock()
+            ->getLatestElement(
+                ElementMock_TestClass::class,
+                $this->patients('patient1'),
+                false,
+                date('Y-m-d 00:00:00', strtotime('-1 days')),
+                date('Y-m-d 00:00:00', strtotime('-3 days'))
+            );
+        $this->assertEquals(2, $found_element->id);
+    }
+
+    /**
+     * @covers BaseAPI
+     * @group strabismus
+     */
+    public function testGetLatestElementAfterReturnNull()
+    {
+        $found_element = $this->getBaseApiMock()
+            ->getLatestElement(
+                ElementMock_TestClass::class,
+                $this->patients('patient1'),
+                false,
+                date('Y-m-d 00:00:00', strtotime('-1 days')),
+                date('Y-m-d 00:00:00', strtotime('-2 days'))
+            );
+        $this->assertNull($found_element);
+    }
+
+    /**
+     * Simple abstraction for base api method calls
+     *
+     * @return \PHPUnit\Framework\MockObject\MockObject
+     */
+    protected function getBaseApiMock()
+    {
+        return $this->getMockBuilder('BaseAPI')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->setMockClassName('TestModule_API')
+            ->getMock();
     }
 
     private function generateMockTableAndData($table_name)

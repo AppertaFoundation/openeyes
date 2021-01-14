@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -234,7 +234,7 @@ class BaseAPI
             foreach($events AS $event){
                 if ($event->event_date === $latest_event->event_date){
                     $event_ids[] = $event->id;
-                } else {                
+                } else {
                     ## therefore once the array index has moved passed relevant matches, all other events are irrelevant
                     break;
                 }
@@ -318,14 +318,17 @@ class BaseAPI
      * @param string $after - date formatted string
      * @return BaseEventTypeElement|null
      */
-    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
+    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null, $after = null)
     {
         $criteria = new CDbCriteria();
         $criteria->limit = 1;
+        if ($after !== null) {
+            $criteria->compare('event.event_date', '>' . $after);
+        }
         $result = $this->getElements($element, $patient, $use_context, $before, $criteria);
         return count($result) ? $result[0] : null;
     }
-	
+
     /**
      * gets the element of type $element for the given patient in the given episode.
      *
@@ -482,4 +485,25 @@ class BaseAPI
             return $prefix . $postfix;
         }
     }
+
+    /**
+     * Simple abstraction to support generic calls to functions based on the
+     * principal eye from the current context (methods will be called with
+     * the given $use_context value).
+     *
+     * @param $prefix
+     * @param $patient
+     * @param bool $use_context defaults to false
+     * @return mixed
+     * @throws \CException
+     */
+    protected function getMethodForPrincipalEye($prefix, $patient, $use_context = false)
+    {
+        $method = $this->getEyeMethod($prefix, $this->getPrincipalEye($patient, true));
+
+        if ($method) {
+            return $this->{$method}($patient, $use_context);
+        }
+    }
+
 }

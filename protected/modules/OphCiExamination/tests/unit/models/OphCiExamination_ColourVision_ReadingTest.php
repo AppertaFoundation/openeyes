@@ -1,10 +1,4 @@
 <?php
-
-use OEModule\OphCiExamination\models\Element_OphCiExamination_ColourVision_Reading;
-use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method;
-use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading;
-use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Value;
-
 /**
  * OpenEyes.
  *
@@ -21,61 +15,39 @@ use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Value;
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\tests\unit\models;
+
+use OEModule\OphCiExamination\models\CorrectionType;
+use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading;
+use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Value;
+use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasCorrectionTypeAttributeToTest;
+use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasWithHeadPostureAttributesToTest;
+
 /**
  * Class OphCiExamination_ColourVision_ReadingTest
- * @method colourvision_reading($fixtureId)
- * @method colourvision_method($fixtureId)
+ *
+ * @package OEModule\OphCiExamination\tests\unit\models
+ * @covers \OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading
+ * @group sample-data
+ * @group strabismus
+ * @group colour-vision
  */
-class OphCiExamination_ColourVision_ReadingTest extends ActiveRecordTestCase
+class OphCiExamination_ColourVision_ReadingTest extends \ModelTestCase
 {
-    protected $fixtures = array(
-        'colourvision_reading' => OphCiExamination_ColourVision_Reading::class,
-        'colourvision_value' => OphCiExamination_ColourVision_Value::class,
-        'colourvision_method' => OphCiExamination_ColourVision_Method::class,
-    );
+    use \HasStandardRelationsTests;
+    use \HasRelationOptionsToTest;
+    use HasCorrectionTypeAttributeToTest;
 
-    private OphCiExamination_ColourVision_Reading $model;
-    public function setUp()
-    {
-        $this->model = new OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading();
-        parent::setUp();
-    }
+    protected $element_cls = OphCiExamination_ColourVision_Reading::class;
 
-    public function tearDown()
+    /** @test */
+    public function method_property_is_derived_from_value_assignment()
     {
-        parent::tearDown();
-        unset($this->model);
-    }
+        $instance = $this->getElementInstance();
+        $this->assertNull($instance->method);
 
-    public function getData()
-    {
-        return array(
-            'New reading' => array(
-                'fixture' => null,
-                'expected' => null,
-            ),
-            'Existing reading' => array(
-                'fixture' => 'reading1',
-                'expected' => 'method1'
-            )
-        );
-    }
-
-    public function getModel()
-    {
-        return OphCiExamination_ColourVision_Reading::model();
-    }
-
-    /**
-     * @dataProvider getData
-     * @param $fixture
-     * @param $expected
-     */
-    public function testgetMethod($fixture, $expected)
-    {
-        if ($fixture) {
-            $this->model = $this->colourvision_reading($fixture);
-        }
-        $this->assertEquals($expected ? $this->colourvision_method($expected) : null, $this->model->getMethod());
+        $value = $this->getRandomLookup(OphCiExamination_ColourVision_Value::class);
+        $instance->value = $value;
+        $this->assertEquals($value->method_id, $instance->method->id);
     }
 }

@@ -14,6 +14,13 @@ abstract class ActiveRecordTestCase extends OEDbTestCase
 
     protected array $columns_to_skip = [];
 
+    public function testTableExists()
+    {
+        $connection = $this->getFixtureManager()->dbConnection;
+        $table_name = $this->getModel()->tableName();
+        $this->assertNotNull($connection->schema->getTable($table_name), "Table '{$table_name}' not found, have you migrated?");
+    }
+
     /**
      * @covers BaseActiveRecord::rules
      * @throws CException

@@ -74,6 +74,11 @@ class ComponentStubMatcher implements PHPUnit\Framework\MockObject\Matcher\Invoc
         return 'Component stub matcher';
     }
 
+    public function hasMatchers()
+    {
+        return true;
+    }
+
     /**
      * @param PHPUnit\Framework\MockObject\Invocation $invocation
      * @return bool|mixed|void
