@@ -540,6 +540,16 @@ HistoryMedicationsController._defaultOptions = {
       });
   };
 
+  HistoryMedicationsController.prototype.markOptionSelected = function(markup, row, selector)
+  {
+      const value = parseInt(row.querySelector(selector).value);
+      markup.querySelectorAll(selector + ' option').forEach(function (option) {
+          if (parseInt(option.getAttribute('value')) === value) {
+              option.setAttribute('selected', true);
+          }
+      });
+  };
+
   HistoryMedicationsController.prototype.addTaper = function($row)
   {
       let row_count = $row.attr("data-key");
@@ -561,6 +571,15 @@ HistoryMedicationsController._defaultOptions = {
           }
       );
 
+      const data_row = $row[0].previousElementSibling;
+      const markup_element = OpenEyes.Util.htmlToElement(markup);
+
+      markup_element.querySelector('.js-dose').setAttribute('value',
+          data_row.querySelector('.js-dose').value);
+
+      controller.markOptionSelected(markup_element, data_row, '.js-frequency');
+      controller.markOptionSelected(markup_element, data_row, '.js-duration');
+
       let $lastrow;
 
       if($tapers.length>0) {
@@ -570,7 +589,7 @@ HistoryMedicationsController._defaultOptions = {
           $lastrow = $row;
       }
 
-      $(markup).insertAfter($lastrow);
+      $lastrow[0].insertAdjacentElement('afterend', markup_element);
   };
 
     HistoryMedicationsController.prototype.showStopControls = function($row)
@@ -1581,7 +1600,7 @@ HistoryMedicationsController._defaultOptions = {
     };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
-})(OpenEyes.OphCiExamination);
+})(OpenEyes.OphCiExamination, OpenEyes.Util);
 
 (function(exports) {
   function HistoryMedicationsViewController(options) {
