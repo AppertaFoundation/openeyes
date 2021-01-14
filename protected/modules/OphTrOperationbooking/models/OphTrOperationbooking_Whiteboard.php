@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\models\OphCiExaminationRisk;
+
 /**
  * OpenEyes
  *
@@ -420,11 +422,18 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             return $risk->name !== 'Anticoagulants';
         });
 
+        $other_risk = OphCiExaminationRisk::model()->findByAttributes(array('name' => 'Other'));
+
         $lines = array_merge(
             $lines,
             array_map(
-                static function ($risk) use ($exam_api, $patient, $whiteboard) {
-                    $exam_risk = $exam_api->getRiskByName($patient, $risk->name);
+                static function ($risk) use ($exam_api, $patient, $whiteboard, $other_risk) {
+                    $risk_name = $risk->name;
+
+                    if ($risk->risk_id === $other_risk->id) {
+                        $risk_name = 'Other';
+                    }
+                    $exam_risk = $exam_api->getRiskByName($patient, $risk_name);
                     $risk_present = $whiteboard->getDisplayHasRisk($exam_risk);
 
                     if ($risk->name === 'Alpha blockers') {
@@ -432,7 +441,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                     }
 
                     if ($risk->comments !== '') {
+                        if ($exam_risk['name'] === 'Other') {
+                            return array($risk_present, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $risk->other . '</span>');
+                        }
                         return array($risk_present, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $exam_risk['name'] . '</span>');
+                    }
+                    if ($exam_risk['name'] === 'Other') {
+                        return array($risk_present, $risk->other);
                     }
                     return array($risk_present, $exam_risk['name']);
                 },
