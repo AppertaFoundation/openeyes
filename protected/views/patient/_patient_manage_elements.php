@@ -15,7 +15,7 @@ $(document).ready(function() {
     node.appendChild(ele);
     sidebar_header.append(node);
 
-    new OpenEyes.UI.ManageElements(
+    manage_elements = new OpenEyes.UI.ManageElements(
         $('#js-manage-elements-btn'),
         $('#episodes-and-events'), {
             manage_elements_json: '<?php echo $this->getElementTree() ?>',
