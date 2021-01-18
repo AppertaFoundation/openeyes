@@ -30,7 +30,7 @@ if (!empty($episode)) {
 <main class="main-event view event-types">
 
   <h2 class="event-title">Summary: <?= $episode->getSubspecialtyText() ?>
-    <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad" style="z-index: 100; position: relative;"></i></h2>
+    <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i></h2>
 
 
     <?php $this->renderPartial('//base/_messages'); ?>

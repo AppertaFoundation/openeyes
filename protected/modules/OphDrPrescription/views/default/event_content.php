@@ -9,7 +9,7 @@
         </span>
         <?php } ?>
         <?php if ($this->action->id === 'view') { ?>
-            <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad" style="z-index: 100; position: relative;"></i>
+            <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
         <?php } ?>
         <?php $extra_info = $this->getExtraTitleInfo();
         if ($extra_info && $extra_info !== "") : ?>

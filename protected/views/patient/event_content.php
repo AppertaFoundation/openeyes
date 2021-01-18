@@ -6,7 +6,7 @@
             $this->renderPartial('//patient/event_automated');
         } ?>
         <?php if ($this->action->id === 'view') { ?>
-        <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"  style="z-index: 100; position: relative;"></i>
+        <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
         <?php } ?>
 
   </h2>
@@ -15,11 +15,11 @@
 
     <?php if ($this->title != 'Please select booking') { ?>
             <?php if (isset($this->event->firm)) : ?>
-                <div class="extra-info">
+                <div class="extra-info" style="font-size:105%">
                     <small class="fade">Subspecialty: </small>
                     <small><?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?></small>
                 </div>
-                <div class="extra-info">
+                <div class="extra-info" style="font-size:105%">
                     <small class="fade">&nbsp;Context: </small>
                     <small><?= $this->event->firm->name; ?></small>
                 </div>
@@ -71,7 +71,7 @@
                 });
           </script>
 
-          <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
+          <span class="extra-info js-event-date" style="font-size:90%"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
           <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
              data-tooltip-content="Change Event date"
              style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
