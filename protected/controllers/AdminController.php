@@ -898,7 +898,7 @@ class AdminController extends BaseAdminController
             $address = new Address();
             $logo = new SiteLogo();
             $contact = new Contact();
-            
+
             /*
             * Set default blank contact to fulfill the current relationship with a site
             */
@@ -912,7 +912,7 @@ class AdminController extends BaseAdminController
             if (!$institution) {
                 throw new CHttpException(404, 'Institution not found: ' . @$_GET['institution_id']);
             }
-            
+
             $contact = $institution->contact;
             $address = $institution->contact->address;
             if (!$address) {
@@ -933,7 +933,7 @@ class AdminController extends BaseAdminController
             }
             if ($new) {
                 $contact->save();
-                
+
                 $institution->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
             }
@@ -961,7 +961,7 @@ class AdminController extends BaseAdminController
                     }
                 }
             }
-            
+
             if (empty($errors)) {
                 // Save the logo, and if sucsessful, add the logo ID to the institution, so that the relation is established.
                 if (!$logo->save()) {
@@ -987,13 +987,13 @@ class AdminController extends BaseAdminController
                             true
                         ));
                     }
-                    
+
                     Audit::add('admin-Institution', 'add', $institution->id);
-                    
+
                     $this->redirect(array('/admin/editInstitution?institution_id=' . $institution->id));
                 } else {
                     Audit::add('admin-Institution', 'edit', $institution->id);
-                    
+
                     $this->redirect('/admin/institutions/index');
                 }
             }
@@ -1072,7 +1072,7 @@ class AdminController extends BaseAdminController
             }
             if ($new) {
                 $contact->save();
-                
+
                 $site->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
             }
@@ -1197,12 +1197,12 @@ class AdminController extends BaseAdminController
             'errors' => $errors,
         ));
     }
-    
+
     public function actionDeleteLogo()
     {
         $site_id = @$_POST['site_id'];
         $institution_id = @$_POST['institution_id'];
-        
+
         $deletePrimaryLogo = @$_POST['deletePrimaryLogo'];
         $deleteSecondaryLogo = @$_POST['deleteSecondaryLogo'];
 
@@ -1218,9 +1218,9 @@ class AdminController extends BaseAdminController
             $logo = SiteLogo::model()->findByPk(1);
         }
          //  We should now have our logos to delete from
- 
+
         $msg = 'Successfully deleted ';
-      
+
         if ($deletePrimaryLogo) {
             $logo->primary_logo = null;
             $msg .= "primary logo ";
@@ -2180,5 +2180,20 @@ class AdminController extends BaseAdminController
         $this->render('/admin/attachments/index', array(
             'event_types' => EventType::model()->findAll(),
         ));
+    }
+
+    public function actionDisableVersionCheck()
+    {
+        $value = $_POST['value'] ?? null;
+        if (Yii::app()->request->isPostRequest) {
+            $setting_installation = SettingInstallation::model()->findByAttributes(['key' => "auto_version_check"]);
+            $setting_installation->value = $value;
+            if (!$setting_installation->save()) {
+                $errors = $setting_installation->errors;
+                return $errors;
+            } else {
+                return "The version check is disabled.";
+            }
+        }
     }
 }
