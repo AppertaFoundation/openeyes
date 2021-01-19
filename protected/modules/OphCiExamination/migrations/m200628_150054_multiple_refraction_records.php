@@ -46,6 +46,8 @@ class m200628_150054_multiple_refraction_records extends OEMigration
 
         $this->migrateReadingsForSide('left', 1);
         $this->migrateReadingsForSide('right', 2);
+        $this->migrateReadingVersionsForSide('left', 1);
+        $this->migrateReadingVersionsForSide('right', 2);
 
         // remove redundant columns from the element
         $this->dropForeignKey('et_ophciexamination_refraction_lti_fk', 'et_ophciexamination_refraction');
@@ -122,7 +124,6 @@ EOSQL
 
     /**
      * Grabs all the values from the element and creates a reading entry for the given side
-     * Creates historic version entries where applicable from the history of the element as well
      *
      * @param $side
      * @param $eye_id
@@ -136,15 +137,52 @@ FROM et_ophciexamination_refraction
 WHERE eye_id in ($eye_id, 3)
 EOSQL
         );
+    }
 
-        // create version records for {$side} readings
+    /**
+     * create version records for {$side} readings
+     * this covers previous versions for sides that have been maintained on the original element
+     * Note that it assumes that it will attach to current reading of the same side as it's parent reading, and fall back
+     * to the reading for the other side if that is not present. This is to allow for a version history where the side
+     * has switched from one to the other.
+     *
+     * @param $side
+     * @param $eye_id
+     */
+    protected function migrateReadingVersionsForSide($side, $eye_id)
+    {
+
         $this->execute(<<<EOSQL
 INSERT INTO ophciexamination_refraction_reading_version (id, element_id, version_date, eye_id, sphere, cylinder, axis, type_id, type_other, last_modified_user_id, last_modified_date, created_user_id, created_date)
-SELECT reading.id as reading_id, et.id, et.version_date, $eye_id, et.{$side}_sphere, et.{$side}_cylinder, et.{$side}_axis, et.{$side}_type_id, et.{$side}_type_other, et.last_modified_user_id, et.last_modified_date, et.created_user_id, et.created_date
+SELECT IFNULL(reading.id, reading_other.id) as reading_id, et.id, et.version_date, $eye_id, et.{$side}_sphere, et.{$side}_cylinder, et.{$side}_axis, et.{$side}_type_id, et.{$side}_type_other, et.last_modified_user_id, et.last_modified_date, et.created_user_id, et.created_date
 FROM et_ophciexamination_refraction_version et
 LEFT JOIN ophciexamination_refraction_reading reading on reading.element_id = et.id AND reading.eye_id = $eye_id
+LEFT JOIN ophciexamination_refraction_reading reading_other on reading_other.element_id = et.id AND reading_other.eye_id != $eye_id
 WHERE et.eye_id in ($eye_id, 3)
 AND et.{$side}_sphere IS NOT NULL
+AND (reading.id IS NOT NULL OR reading_other.id IS NOT NULL)
+EOSQL
+        );
+
+        // if we can't find a reading id for the version entry, this indicates that we have version history for an element that has subsequently been removed from the event.
+        // To maintain the history, we create fake reading ids for these entries, and ensure they are unique by incrementing from
+        // the current maximum reading id.
+        $this->execute(<<<EOSQL
+SET @vid = (select max(id) from ophciexamination_refraction_reading);
+INSERT INTO ophciexamination_refraction_reading_version (id, element_id, version_date, eye_id, sphere, cylinder, axis, type_id, type_other, last_modified_user_id, last_modified_date, created_user_id, created_date)
+SELECT @vid:=(@vid+1) as reading_id, et.id, et.version_date, $eye_id, et.{$side}_sphere, et.{$side}_cylinder, et.{$side}_axis, et.{$side}_type_id, et.{$side}_type_other, et.last_modified_user_id, et.last_modified_date, et.created_user_id, et.created_date
+FROM et_ophciexamination_refraction_version et
+LEFT JOIN ophciexamination_refraction_reading reading on reading.element_id = et.id AND reading.eye_id = $eye_id
+LEFT JOIN ophciexamination_refraction_reading reading_other on reading_other.element_id = et.id AND reading_other.eye_id != $eye_id
+WHERE et.eye_id in ($eye_id, 3)
+AND et.{$side}_sphere IS NOT NULL
+AND (reading.id IS NULL AND reading_other.id IS NULL)
+EOSQL
+        );
+
+        $new_max_id_for_readings = $this->dbConnection->createCommand()->select('MAX(id)')->from('ophciexamination_refraction_reading_version')->queryScalar() + 1;
+        $this->execute(<<<EOSQL
+ALTER TABLE ophciexamination_refraction_reading AUTO_INCREMENT = $new_max_id_for_readings
 EOSQL
         );
     }
@@ -154,7 +192,7 @@ EOSQL
         $this->addOEColumn('ophciexamination_refraction_type', 'priority', 'int(2) unsigned', true);
 
         $max = 0;
-        foreach (['optometrist', 'ophthalmologist', 'focimetry'] as $expected_type) {
+        foreach (['optometrist', 'ophthalmologist', 'auto-refraction', 'focimetry'] as $expected_type) {
             $type_id = $this->dbConnection
                 ->createCommand()
                 ->select('id')
