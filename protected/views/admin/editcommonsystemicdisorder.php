@@ -20,7 +20,9 @@
 $this->renderPartial('//base/_messages');
 if (isset($errors)) {
     $this->renderPartial('/admin/_form_errors', $errors);
-} ?>
+}
+Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
+?>
 
 <form method="POST" action="/oeadmin/CommonSystemicDisorder/save">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
@@ -94,6 +96,20 @@ if (isset($errors)) {
 </form>
 
 <script>
+    const formStructure = {
+        'name' : 'CommonSystemicDisorder',
+        'tableSelector': '.generic-admin.standard.sortable',
+        'rowSelector': 'tr',
+        'rowIdentifier': 'row',
+        'structure': {
+            'CommonSystemicDisorder[ROW_IDENTIFIER][id]' : '',
+            'display_order[ROW_IDENTIFIER]' : '',
+            'CommonSystemicDisorder[ROW_IDENTIFIER][disorder_id]' : '#CommonSystemicDisorder_ROW_IDENTIFIER_disorder_id_actual',
+            'CommonSystemicDisorder[ROW_IDENTIFIER][display_order]' : '#CommonSystemicDisorder_ROW_IDENTIFIER_display_order',
+            'CommonSystemicDisorder[ROW_IDENTIFIER][group_id]' : '',
+        }
+    };
+    const GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
     let $table = $('.generic-admin');
 
     function initialiseRow($row) {
@@ -106,7 +122,8 @@ if (isset($errors)) {
                 "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change disorder'></i></a> " +
                 "<span class='diagnosis-name'></span></span>" +
                 "{{{input_field}}}" +
-                "<input type='hidden' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
+                "<input type='hidden' id='{{field_prefix}}_" + $row.data('row') + "_disorder_id_actual' " +
+                "name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
         });
 
         $row.on('click', 'a.delete', function () {
@@ -143,6 +160,8 @@ if (isset($errors)) {
                 });
             }
         });
+
+        document.querySelector('.generic-admin-save').addEventListener('click', () => GenericFormJSONConverter.convert());
     });
 </script>
 <script type="text/template" id="common_systemic_disorder_template">
