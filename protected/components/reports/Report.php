@@ -164,4 +164,12 @@ class Report
     {
         return str_replace('\\', '_', get_called_class());
     }
+
+    /**
+     * @return string
+     */
+    public function getReportTitle()
+    {
+        return null;
+    }
 }

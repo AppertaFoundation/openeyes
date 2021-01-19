@@ -40,7 +40,7 @@
 
 <body class="open-eyes oe-grid">
     <div class="oe-full-header use-full-screen">
-        <div class="title allcaps">
+        <div class="title lightcaps">
             <span class="oe-area">Analytics</span>
             <ul class="oescape-icon-btns">
                 <li class="icon-btn">

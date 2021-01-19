@@ -22,15 +22,13 @@ class NodAuditReport extends Report implements ReportInterface
         parent::__construct($app);
     }
 
+    public function getReportTitle()
+    {
+        return 'NOD Audit Report';
+    }
+
     protected $plotlyConfig = array(
-        'title'=>'NOD Audit Report',
-        'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
-        'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
-        'font' => array(
-            'family' => 'Roboto,Helvetica,Arial,sans-serif',
-        ),
         'xaxis' => array(
-            'title' => 'Categories',
             'titlefont' => array(
                 'size' => 11,
             ),
@@ -41,7 +39,6 @@ class NodAuditReport extends Report implements ReportInterface
             'ticks' => 'outside',
         ),
         'yaxis' => array(
-            'title' => 'Completeness',
             'ticks' => 'outside',
             'dtick' => 50,
             'tick0' => 0,
@@ -51,17 +48,13 @@ class NodAuditReport extends Report implements ReportInterface
             'automargin' => true,
             'range' => [0,1],
         ),
-        'legend' => array(
-            'x' => 0.9,
-            'y' => 1.1,
-            'bordercolor' => '#fff',
-            'borderwidth' => 1,
-            'font' => array(
-                'size' => 13
-            )
-        ),
         'barmode'=>'stack',
-        'hovermode'=>'closest'
+        'oePlotly'=> array(
+            'colors' => 'twoPosNeg',
+            'legend' => false,
+            'numTicksX' => 20,
+            'numTicksY' => 20,
+        ),
     );
 
     /**

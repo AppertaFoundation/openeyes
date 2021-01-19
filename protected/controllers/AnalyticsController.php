@@ -1904,7 +1904,7 @@ class AnalyticsController extends BaseController
             )
             ->group('p.id, e.id, eye.name')
             ->order('name, e.event_date DESC');
-        if (isset($params['ids']) && count($params['ids'] > 0)) {
+        if (isset($params['ids']) && count($params['ids']) > 0) {
             $params['ids'] = json_decode($params['ids']);
             $command->where('e.id IN (' . implode(', ', $params['ids']) . ')');
         }
