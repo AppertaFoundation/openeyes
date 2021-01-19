@@ -34,7 +34,8 @@ trait Refraction_API
 
     /**
      * Returns the latest refraction from the different elements
-     * that can record it in examination.
+     * that can record it in examination. Where multiple elements may have recorded refraction,
+     * precedence is defined as per the keys of static::$refraction_property_by_class
      *
      * @param \Patient $patient
      * @return array
@@ -113,7 +114,8 @@ trait Refraction_API
 
     /**
      * Given a list of element type classes, get the most recent for the patient
-     * per the filtering criteria provided
+     * per the filtering criteria provided. For element types on the same event date, it will
+     * return the earliest in the list of element types.
      *
      * @param array $element_types
      * @param \Patient $patient

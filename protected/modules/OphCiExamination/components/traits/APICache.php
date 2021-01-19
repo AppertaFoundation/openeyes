@@ -34,7 +34,7 @@ trait APICache
         if (!array_key_exists($cache_key, static::$data_cache)) {
             static::$data_cache[$cache_key] = call_user_func_array($callback, $callback_params);
         }
-        
+
         return static::$data_cache[$cache_key];
     }
 
@@ -45,6 +45,15 @@ trait APICache
         } else {
             unset(static::$data_cache[$cache_key]);
         }
+    }
+
+    /**
+     * Simple means of ensuring that the cache is not used - aimed primarily at testing environment
+     * as the cache should generally remain valid during the request cycle it will exist for.
+     */
+    public static function clearDataCache()
+    {
+        static::$data_cache = [];
     }
 
     /**

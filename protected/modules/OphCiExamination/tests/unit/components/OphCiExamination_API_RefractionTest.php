@@ -44,6 +44,12 @@ class OphCiExamination_API_RefractionTest extends \OEDbTestCase
 
     use \WithTransactions;
 
+    public function setUp()
+    {
+        parent::setUp();
+        OphCiExamination_API::clearDataCache();
+    }
+
     /** @test */
     public function data_structure_is_defined_correctly_for_refraction_data()
     {
