@@ -14,12 +14,12 @@ class m200830_233756_auto_version_check extends CDbMigration
             'name' => 'Automatic version check',
             'data' => serialize(['disable' => 'Disable', 'enable' => 'Enable']),
             'field_type_id' => $field_type_id,
-            'default_value' => 'enable',
+            'default_value' => 'disable',
         ));
 
         $this->insert('setting_installation', [
             'key' => 'auto_version_check',
-            'value' => 'enable',
+            'value' => 'disable',
         ]);
     }
 
