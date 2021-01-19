@@ -39,13 +39,13 @@ const analytics_service = (function () {
         report_type_links.off('click').on('click', function (e) {
             e.stopPropagation();
             $('#js-analytics-spinner').show();
+            
+            const $patient_list = $('.analytics-patient-list');
 
-            const $patient_drill_down_list = $('.analytics-patient-list');
-
-            // hide drill down patient list
-            if ($patient_drill_down_list.css('display') === 'block') {
-                $patient_drill_down_list.hide();
-            }
+			// hide drill down patient list
+			if ($patient_list.css('display') === 'block') {
+                $patient_list.hide();
+			}
 
             $('#js-hs-chart-analytics-service').hide();
             $('.js-hs-chart-analytics').hide();

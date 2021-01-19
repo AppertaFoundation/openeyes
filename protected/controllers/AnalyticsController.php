@@ -1455,17 +1455,17 @@ class AnalyticsController extends BaseController
             ->join('patient p', 'p.id = ep.patient_id');
         return Yii::app()->db->createCommand()
             ->select(
-                '
-            ops.patient_id patient_id,
-            MAX(ops.event_date) event_date,
-            ops.eye_side eye_side,
-            ops.created_user_id created_user_id
-        '
+                'ops.patient_id patient_id,
+                MAX(ops.event_date) event_date,
+                ops.eye_side eye_side,
+                ops.created_user_id created_user_id'
             )
-            // union normal procedure and laser procedure
-            ->from('(' . $op_proc->union("$laser_proc->text")->text . ') ops')
-            ->where($query_conditions)
-            ->group('ops.patient_id, ops.eye_side');
+        // union normal procedure and laser procedure
+        ->from('(' . $op_proc->union("$laser_proc->text")->text . ') ops')
+        ->where($query_conditions)
+        ->group('ops.patient_id, ops.eye_side');
+
+        return $patient_proc;
     }
 
     /**
