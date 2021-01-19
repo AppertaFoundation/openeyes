@@ -9,7 +9,7 @@ class TrialController extends BaseModuleController
 {
     public $model;
 
-    public $fixedHotlist = true;
+    public bool $fixedHotlist = true;
 
     /**
      * @return array action filters
