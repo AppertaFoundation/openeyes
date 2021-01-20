@@ -20,7 +20,8 @@
  *
  * @group sample-data
  */
-class IndexSearchTest extends CTestCase {
+class IndexSearchTest extends CTestCase
+{
 
     private IndexSearch $search;
     private array $array = [
@@ -67,7 +68,6 @@ class IndexSearchTest extends CTestCase {
         $unformattedHTML = "<div><span>Test</span></div>";
         $formattedHTML = $this->search->formatHTML($unformattedHTML);
         $this->assertEquals($expectedHTML, $formattedHTML );
-
     }
 
     /**
@@ -111,5 +111,4 @@ class IndexSearchTest extends CTestCase {
         $expected_result = "data-element-id=\"311\" data-element-name=\"History\" data-goto-id='OEModule_OphCiExamination_models_Element_OphCiExamination_History_description' data-element-class-name='OEModule\OphCiExamination\models\Element_OphCiExamination_History'";
         $this->assertEquals($expected_result, $actual_result);
     }
-
 }
