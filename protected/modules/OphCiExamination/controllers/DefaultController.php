@@ -378,6 +378,8 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionStep($id)
     {
+        $this->setContext($this->event->episode->firm);
+
         $step_id = \Yii::app()->request->getParam('step_id');
 
         if ($step_id) {

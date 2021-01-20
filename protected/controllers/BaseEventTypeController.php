@@ -1258,7 +1258,8 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param $event_date
      */
-    protected function setEventDate($event_date) {
+    protected function setEventDate($event_date)
+    {
         $event_date = Helper::convertNHS2MySQL($event_date);
         $current_event_date = substr($this->event->event_date, 0, 10);
 
@@ -2739,5 +2740,27 @@ class BaseEventTypeController extends BaseModuleController
             $imagick->setImageBackgroundColor('white');
             $imagick->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
         }
+    }
+
+        /**
+         * @param Firm $context
+         * @throws CHttpException
+         */
+    protected function setContext(Firm $context)
+    {
+            // get the user
+            $user_id = $this->getApp()->user->id;
+            $user = User::model()->findByPk($user_id);
+
+            // set the firm on the user (process taken from SiteAndFirmWidget)
+            $user->changeFirm($context->id);
+        if (!$user->save(false)) {
+            throw new CHttpException(404, 'Unexpected error setting user context.');
+        }
+
+            $this->selectedFirmId = $context->id;
+
+            $user->audit('user', 'change-firm', $user->last_firm_id);
+            $this->getApp()->session['selected_firm_id'] = $context->id;
     }
 }
