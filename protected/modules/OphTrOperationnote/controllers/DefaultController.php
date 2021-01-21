@@ -368,10 +368,10 @@ class DefaultController extends BaseEventTypeController
                         $create_correspondence = \Yii::app()->request->getParam('auto_generate_gp_letter_after_surgery');
                         if ($create_correspondence) {
                             if ($this->patient->gp_id && $this->patient->practice_id) {
-                                                            $macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
-                                                            $transaction = Yii::app()->db->beginTransaction();
-                                                            // create 'post-op' letter
-                                                            $result = $this->createCorrespondenceEvent($macro_name);
+                                                                $macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
+                                                                $transaction = Yii::app()->db->beginTransaction();
+                                                                // create 'post-op' letter
+                                                                $result = $this->createCorrespondenceEvent($macro_name);
                                 if ($result['success'] === true) {
                                     $transaction->commit();
                                 } else {
@@ -1198,16 +1198,7 @@ class DefaultController extends BaseEventTypeController
         $success = false;
 
         if ($macro) {
-            $name = addcslashes($this->event->episode->status->name, '%_'); // escape LIKE's special characters
-            $criteria = new CDbCriteria( array(
-                'condition' => "name LIKE :name",
-                'params'    => array(':name' => "$name%")
-            ) );
-
-            $letter_type = \LetterType::model()->find($criteria);
-            $letter_type_id = $letter_type ? $letter_type->id : null;
-
-            $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
+            $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $macro->letter_type_id);
             $correspondence_creator->save();
 
             $success = !$correspondence_creator->hasErrors();
