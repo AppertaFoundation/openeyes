@@ -71,7 +71,7 @@ $this->renderPartial('//elements/form_errors', array('errors' => $errors, 'botto
                 <td><?= $queueset->getAttributeLabel('default_queue_id') ?></td>
                 <td><?=\CHtml::activeDropDownList(
                         $queueset,
-                        'category_id',
+                        'default_queue_id',
                         \CHtml::listData($service->getQueueSetQueues($queueset_resource), 'id', 'name'),
                         ['class' => 'cols-11', 'empty' => '- None -']) ?>
                 </td>
