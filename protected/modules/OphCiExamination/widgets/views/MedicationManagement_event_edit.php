@@ -491,6 +491,14 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                                 window.HMController.toggleStopControls($row);
                                 window.HMController.disableMedicationHistoryRow($row);
                             }
+                        } else {
+                            let $row = window.MMController.$table.find('.js-bound-key[value="' + bound_key + '"]').parents('tr.js-first-row');
+                            if ($row.find('input[name*="[is_discontinued]"]').val() === '1') {
+                                let $history_row = window.HMController.$table.find('.js-bound-key[value="' + bound_key + '"]').parents('tr.js-first-row');
+                                window.HMController.toggleStopControls($history_row, true);
+                                window.HMController.disableMedicationHistoryRow($history_row);
+                                $row.find('.js-reset-mm').show();
+                            }
                         }
                     })
                 }
