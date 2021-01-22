@@ -2182,7 +2182,7 @@ class AdminController extends BaseAdminController
         ));
     }
 
-    public function actionDisableVersionCheck()
+    public function actionChangeVersionCheck()
     {
         $value = $_POST['value'] ?? null;
         if (Yii::app()->request->isPostRequest) {
