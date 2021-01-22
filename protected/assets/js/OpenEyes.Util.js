@@ -116,6 +116,18 @@
 			formData.append(key, data);
 		}
 	}
+
+    /**
+     * Equivalent of jquery's $(html), only using plain JavaScript
+     *
+     @param {String} html representing a single element
+     @return {Element}
+     */
+    Util.htmlToElement = function(html) {
+        const template = document.createElement('template');
+        template.innerHTML = html.trim();
+        return template.content.firstChild;
+    }
 	exports.Util = Util;
 
 }(this.OpenEyes));

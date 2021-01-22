@@ -18,6 +18,11 @@
  */
 class MedicationLaterality extends BaseActiveRecordVersioned
 {
+
+    const LEFT = 1;
+    const RIGHT = 2;
+    const BOTH = 3;
+
     /**
      * @return string the associated database table name
      */

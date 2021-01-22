@@ -1,5 +1,7 @@
 #!/bin/bash -l
 
+set -o pipefail
+
 ## NOTE: This script assumes it is in protected/scripts. If you move it then relative paths will not work!
 
 # Find fuill folder path where this script is located, then find root folder
