@@ -222,26 +222,26 @@ class SiteController extends BaseController
 
     private function doVersionCheck()
     {
-        //TODO: Ammonite URL, should change when the actual server is up.
-        $ammoniteURL = "http://192.168.44.145:8000/";
+        $ammoniteURL = Yii::App()->params['ammonite_url'];
         $lastCheckDate = \Yii::app()->db->createCommand()->select('last_version_check_date')->from('ammonite')->queryScalar();
         $uuid = \Yii::app()->db->createCommand()->select('uuid')->from('ammonite')->queryScalar();
 
         if (empty($uuid)) {
-            Yii::app()->session['shown_version_reminder'] = false;
             $apiInfo = $this->registerAPI($ammoniteURL);
-            $db = Yii::app()->db;
-            $db->createCommand()->insert('ammonite', array(
-                'uuid'=> $apiInfo->uuid,
-                'last_version_check_date'=>null,
-                'first_install_date'=>date('Y-m-d H:i:s'),
-            ));
+            if ($apiInfo === "error") {
+                Yii::app()->session['shown_version_reminder'] = true;
+                return;
+            } else {
+                Yii::app()->session['shown_version_reminder'] = false;
+                $db = Yii::app()->db;
+                $db->createCommand()->insert('ammonite', array(
+                    'uuid' => $apiInfo->uuid,
+                    'last_version_check_date' => null,
+                    'first_install_date' => date('Y-m-d H:i:s'),
+                ));
+            }
         } elseif ($this->versionExpired($lastCheckDate)) {
             Yii::app()->session['shown_version_reminder'] = true;
-            $db = Yii::app()->db;
-            $db->createCommand()->update('ammonite', array(
-                'last_version_check_date'=>date('Y-m-d H:i:s'),
-            ));
             $uuid = \Yii::app()->db->createCommand()->select('uuid')->from('ammonite')->queryScalar();
             $this->sendVersionInfo($ammoniteURL, $uuid);
         } else {
@@ -349,7 +349,7 @@ class SiteController extends BaseController
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
+            CURLOPT_TIMEOUT => 1,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "PUT",
@@ -364,9 +364,16 @@ class SiteController extends BaseController
             $error_msg = curl_error($curl);
         }
         curl_close($curl);
+
         if (isset($error_msg)) {
             // log curl error message
             \Yii::log($error_msg);
+        } else {
+            $db = Yii::app()->db;
+            $db->createCommand()->update(
+                'ammonite',
+                array('last_version_check_date' => date('Y-m-d H:i:s'))
+            );
         }
     }
 
@@ -377,6 +384,8 @@ class SiteController extends BaseController
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_VERBOSE, true);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 1);
 
         $response = curl_exec($curl);
         if (curl_errno($curl)) {
@@ -386,6 +395,7 @@ class SiteController extends BaseController
         if (isset($error_msg)) {
             // log curl error message
             \Yii::log($error_msg);
+            return "error";
         }
         return json_decode($response);
     }

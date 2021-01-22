@@ -756,6 +756,7 @@ $config = array(
         'watermark' => getenv('OE_USER_BANNER_LONG') ?: null,
         'watermark_admin_short' => getenv('OE_ADMIN_BANNER_SHORT') ?: null,
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
+        'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
     ),
 );
 

@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -54,17 +54,24 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <?php $this->endWidget()?>
 
 <script type="text/javascript">
-	$('#version_no').click(function() {
+    $('#version_no').click(function () {
         $.ajax({
             'type': 'POST',
-            'url': 'admin/disableVersionCheck',
+            'url': 'admin/changeVersionCheck',
             'data': "value=disable" + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-            success: function () {
-               $('#version-check-dialog').dialog('close');
+            complete: function () {
+                $('#version-check-dialog').dialog('close');
             }
         });
     });
-    $('#version_yes').click(function() {
-        $('#version-check-dialog').dialog('close');
+    $('#version_yes').click(function () {
+        $.ajax({
+            'type': 'POST',
+            'url': 'admin/changeVersionCheck',
+            'data': "value=enable" + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            complete: function () {
+                $('#version-check-dialog').dialog('close');
+            }
+        });
     });
 </script>
