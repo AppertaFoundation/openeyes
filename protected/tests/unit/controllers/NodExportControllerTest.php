@@ -55,11 +55,15 @@ class NodExportControllerTest extends \OEDbTestCase
             if (in_array($expectedFile, self::INCONSISTENT_FILES)) {
                 continue;
             }
-            $this->assertEquals(
-                file_get_contents("$expectedFilesPath/$expectedFile"),
-                file_get_contents("$tmpdir/$expectedFile"),
-                "Export for $expectedFile did not match"
-            );
+            $expectedFileContentString = file_get_contents("$expectedFilesPath/$expectedFile");
+            $expectedContentArray = explode(PHP_EOL, $expectedFileContentString);
+
+            $createdFileContentString = file_get_contents("$tmpdir/$expectedFile");
+            $createdContentArray = explode(PHP_EOL, $createdFileContentString);
+
+            $compare_res = !array_diff($createdContentArray, $expectedContentArray) && !array_diff($expectedContentArray, $createdContentArray);
+
+            $this->assertTrue($compare_res, "Export for $expectedFile did not match");
         }
     }
 
