@@ -25,9 +25,9 @@ class m180506_111023_medication_drugs_import extends OEMigration
             // Add the column
             $this->addColumn('medication_frequency_version', 'original_id', 'INT NULL AFTER `code`');
         }
-        
+
         $this->createIndex('fk_ref_medication_frequency_oidx', 'medication_frequency', 'original_id');
-        
+
         /*
          * set medication_set and medication_set_rule tables
          */
@@ -45,11 +45,11 @@ class m180506_111023_medication_drugs_import extends OEMigration
         if ($drug_sets) {
             foreach ($drug_sets as $set) {
                 $command = $this->dbConnection;
-                $command->createCommand("INSERT INTO medication_set(name) values ('".$set['name']."')")->execute();
+                $command->createCommand("INSERT INTO medication_set(name) values (:setname)")->execute(array(':setname' => $set['name']));
                 $last_id = $command->getLastInsertID();
-                $this->dbConnection->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id, subspecialty_id) values (".$last_id.", {$usage_codes["PRESCRIPTION_SET"]}, ".$set['subspecialty_id']." )")->execute();
+                $this->dbConnection->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id, subspecialty_id) values (" . $last_id . ", {$usage_codes["PRESCRIPTION_SET"]}, " . $set['subspecialty_id'] . " )")->execute();
             }
-            
+
             $drug_sets = null;
             $command = null;
         }
@@ -58,7 +58,7 @@ class m180506_111023_medication_drugs_import extends OEMigration
         $this->dbConnection->createCommand("INSERT INTO medication_set(name) values ('Formulary')")->execute();
         $formulary_id = $this->dbConnection->getLastInsertID();
 
-        $this->dbConnection->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['Formulary']})")->execute();
+        $this->dbConnection->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (" . $formulary_id . ", {$usage_codes['Formulary']})")->execute();
 
         /* Set for medication drugs */
 
@@ -68,18 +68,18 @@ class m180506_111023_medication_drugs_import extends OEMigration
         /*
          * set medication_route table by drug_route table
          */
-        
+
         $drugRoutesTable = 'drug_route';
         $drugRoutes = $this->dbConnection
-                ->createCommand("SELECT CONCAT(id,'_drug_route') AS code, name FROM ".$drugRoutesTable." ORDER BY id ASC")
+                ->createCommand("SELECT CONCAT(id,'_drug_route') AS code, name FROM " . $drugRoutesTable . " ORDER BY id ASC")
                 ->queryAll();
-        
+
         if ($drugRoutes) {
             foreach ($drugRoutes as $route) {
                 $command = $this->dbConnection
                 ->createCommand("
                     INSERT INTO medication_route( term, code, source_type, source_subtype) 
-                    values('".$route['name']."' , '".$route['code']."' ,'LEGACY', '".$drugRoutesTable."')
+                    values('" . $route['name'] . "' , '" . $route['code'] . "' ,'LEGACY', '" . $drugRoutesTable . "')
                 ");
                 $command->execute();
                 $command = null;
@@ -130,44 +130,44 @@ class m180506_111023_medication_drugs_import extends OEMigration
         "
         )->execute();
 
-        
+
         /*
          * set medication_frequency table by drug_frequency table
          */
-        
+
         $drugFrequencyTable = 'drug_frequency';
         $drugFrequencies = $this->dbConnection
-                ->createCommand("SELECT id AS original_id, name, CONCAT(id,'_drug_frequency') AS code, long_name FROM ".$drugFrequencyTable." ORDER BY original_id ASC")
+                ->createCommand("SELECT id AS original_id, name, CONCAT(id,'_drug_frequency') AS code, long_name FROM " . $drugFrequencyTable . " ORDER BY original_id ASC")
                 ->queryAll();
-        
+
         if ($drugFrequencies) {
             foreach ($drugFrequencies as $frequency) {
                 $command = $this->dbConnection
                 ->createCommand("
                     INSERT INTO medication_frequency( term, code , original_id ) 
-                    values('".$frequency['long_name']."' , '".$frequency['name']."', ".$frequency['original_id'].")
+                    values('" . $frequency['long_name'] . "' , '" . $frequency['name'] . "', " . $frequency['original_id'] . ")
                 ");
                 $command->execute();
                 $command = null;
             }
         }
-        
+
         /*
          * get and set medication_drug table data
          */
-      
+
         $medication_drug_table = 'medication_drug';
-        
+
         $this->dbConnection->createCommand("INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id)
-        SELECT 'LEGACY', '".$medication_drug_table."', `name`, external_code, id FROM ".$medication_drug_table." ORDER BY id ASC")->execute();
- 
+        SELECT 'LEGACY', '" . $medication_drug_table . "', `name`, external_code, id FROM " . $medication_drug_table . " ORDER BY id ASC")->execute();
+
         $this->dbConnection->createCommand("INSERT INTO medication_set_item ( medication_id , medication_set_id )
-        SELECT id, '".$medication_drugs_id."' FROM medication where source_subtype = '".$medication_drug_table."'")->execute();
-        
+        SELECT id, '" . $medication_drugs_id . "' FROM medication where source_subtype = '" . $medication_drug_table . "'")->execute();
+
         /*
          * get and set drug table data
          */
-         
+
         $drugs_table = 'drug';
         $drugs = $this->dbConnection
                 ->createCommand("
@@ -186,7 +186,7 @@ class m180506_111023_medication_drugs_import extends OEMigration
                         rmr.id AS ref_route_id,           
                         rmfreq.id AS ref_freq_id,
                         d.default_duration_id
-                    FROM ".$drugs_table."               AS d
+                    FROM " . $drugs_table . "               AS d
                     LEFT JOIN drug_form                 AS df           ON d.form_id = df.id
                     LEFT JOIN medication_form       AS rmf          ON rmf.default_dose_unit_term = df.name
                     LEFT JOIN drug_route                AS dr           ON d.default_route_id = dr.id 
@@ -196,14 +196,14 @@ class m180506_111023_medication_drugs_import extends OEMigration
                     ORDER BY original_id ASC
                  ")
                 ->queryAll();
-        
-        
+
+
         if ($drugs) {
             foreach ($drugs as $drug) {
                 $command = $this->dbConnection;
                 $command->createCommand("
                           INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id, default_form_id, default_route_id, default_dose_unit_term) 
-                        VALUES ('LEGACY', '".$drugs_table."', :drug_name, :source_old_id, :source_old_id, :default_form_id, :default_route_id, :default_dose_unit_term)
+                        VALUES ('LEGACY', '" . $drugs_table . "', :drug_name, :source_old_id, :source_old_id, :default_form_id, :default_route_id, :default_dose_unit_term)
                     ")
                 ->bindValue(':drug_name', $drug['name'])
                 ->bindValue(':source_old_id', $drug['original_id'])
@@ -218,7 +218,7 @@ class m180506_111023_medication_drugs_import extends OEMigration
                 foreach (explode(",", $drug['aliases']) as $alias) {
                     $alias = trim($alias);
                     if ($alias != "" && strcasecmp($alias, $drug['name']) !== 0) {
-                        $alternative_terms[]=$alias;
+                        $alternative_terms[] = $alias;
                     }
                 }
 
@@ -226,7 +226,7 @@ class m180506_111023_medication_drugs_import extends OEMigration
                     $this->execute("INSERT INTO medication_search_index (medication_id, alternative_term)
                                     VALUES
                                     (:id, :term)
-                                    ", array(":id"=>$ref_medication_id, ":term" => $term));
+                                    ", array(":id" => $ref_medication_id, ":term" => $term));
                 }
 
                 /* Add medication to the 'Formulary' set */
@@ -245,10 +245,11 @@ class m180506_111023_medication_drugs_import extends OEMigration
 
                 /* Add medication to their respective sets */
                 $drug_sets = $this->dbConnection->createCommand(
-                "SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id, duration_id, dose, frequency_id
+                    "SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id, duration_id, dose, frequency_id
                 FROM drug_set
                 JOIN drug_set_item ON drug_set.id = drug_set_item.drug_set_id
-                WHERE drug_set.active=1 AND drug_set_item.drug_id = :drug_id")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
+                WHERE drug_set.active=1 AND drug_set_item.drug_id = :drug_id"
+                )->bindValue(":drug_id", $drug['drug_id'])->queryAll();
 
                 if ($drug_sets) {
                     foreach ($drug_sets as $drug_set) {
@@ -272,18 +273,18 @@ class m180506_111023_medication_drugs_import extends OEMigration
                             ->bindValue(':ref_set_name', $drug_set['name'])
                             ->bindValue(':subspecialty_id', $drug_set['subspecialty_id'])
                             ->bindValue(':prescription_usage_code', $usage_codes['PRESCRIPTION_SET'])
-                            ->bindvalue(':default_dose', !empty(preg_replace('/[^\d.]+/', '', $drug_set['dose'])) ? preg_replace('/[^\d.]+/', '', $drug_set['dose']) : NULL)
+                            ->bindvalue(':default_dose', !empty(preg_replace('/[^\d.]+/', '', $drug_set['dose'])) ? preg_replace('/[^\d.]+/', '', $drug_set['dose']) : null)
                             ->bindValue(':drug_route_id', $drug['ref_route_id'])
                             ->bindValue(':defualt_freq_id', $drug_set['frequency_id'] ?: ($drug_set['default_frequency_id'] ?: $drug['ref_freq_id']))
                             ->bindValue(':default_dose_unit', $drug['dose_unit'])
                             ->bindValue(':default_duration_id', $drug_set['duration_id'] ?: $drug['default_duration_id'])
-                            ->bindValue(':dispense_condition_id', $drug_set['dispense_condition_id'] ?: NULL)
-                            ->bindValue(':dispense_location_id', $drug_set['dispense_location_id'] ?: NULL)
+                            ->bindValue(':dispense_condition_id', $drug_set['dispense_condition_id'] ?: null)
+                            ->bindValue(':dispense_location_id', $drug_set['dispense_location_id'] ?: null)
                             ->execute();
                     }
                 }
             }
-            
+
             $drugs = null;
             $command = null;
             $ref_medication_id = null;
@@ -293,7 +294,7 @@ class m180506_111023_medication_drugs_import extends OEMigration
     public function safeDown()
     {
         $this->dropIndex('fk_ref_medication_frequency_oidx', 'medication_frequency');
-        
+
         $this->execute("ALTER TABLE medication_frequency DROP COLUMN original_id");
         $this->execute("ALTER TABLE medication_frequency_version DROP COLUMN original_id");
     }

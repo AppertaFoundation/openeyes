@@ -321,11 +321,26 @@ OpenEyes.UI = OpenEyes.UI || {};
         const $actionsTd = $tr.find('td.actions');
         const controller = this;
 
-        controller.hideEditControls($tr, $tapers);
-        controller.hideGeneralControls($tr);
-        $actionsTd.append("<small style='color:red'>Deleted.</small>");
-        $tr.fadeOut(1000, function(){ $(this).remove(); });
-        $tapers.fadeOut(1000, function () { $(this).remove();});
+        $.ajax({
+            'type': 'POST',
+            'url': controller.options.deleteUrl,
+            'data': {
+                id: $tr.data('id'),
+                YII_CSRF_TOKEN: YII_CSRF_TOKEN
+            },
+            'success': function() {
+                controller.hideEditControls($tr, $tapers);
+                controller.hideGeneralControls($tr);
+                $actionsTd.append("<small style='color:red'>Deleted.</small>");
+                $tr.fadeOut(1000, function(){ $(this).remove(); });
+                $tapers.fadeOut(1000, function () { $(this).remove();});
+            },
+            'error': function () {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "This medication cannot be deleted from the current set."
+                }).open();
+            }
+        });
     };
 
     exports.TableInlineEdit = TableInlineEdit;

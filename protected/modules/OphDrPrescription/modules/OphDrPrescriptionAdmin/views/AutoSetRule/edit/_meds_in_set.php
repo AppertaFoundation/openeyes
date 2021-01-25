@@ -76,7 +76,7 @@ $dispense_condition_options = array(
                 $frequency_options = \CHtml::listData(\MedicationFrequency::model()->findAll(), 'id', 'term');
                 $duration_options = \CHtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
                 ?>
-            <?php foreach ($medication_set->medicationSetAutoRuleMedications as $k => $med) : ?>
+            <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
                     <?php
                     $med_dispense_locations = isset($med->defaultDispenseCondition) ?
                         \CHtml::listData($med->defaultDispenseCondition->locations, 'id', 'name') :
