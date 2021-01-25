@@ -290,16 +290,17 @@ class AutoSetRuleController extends BaseAdminController
         }
 
         $criteria = new \CDbCriteria();
-        $criteria->with = ['medicationSetAutoRuleMedication'];
+        $criteria->with = ['medicationSet'];
         $criteria->together = true;
-        $criteria->addCondition('medicationSetAutoRuleMedication.medication_set_id = :set_id');
+        $criteria->addCondition('medicationSet.id = :set_id');
         $criteria->params[':set_id'] = $set->id;
+        $criteria->limit = 20;
 
         if (isset($filters['query']) && $filters['query']) {
             $criteria->addSearchCondition('preferred_term', $filters['query']);
         }
 
-        $data_provider = new CActiveDataProvider('Medication', [
+        $data_provider = new CActiveDataProvider('MedicationSetAutoRuleMedication', [
             'criteria' => $criteria,
         ]);
 
@@ -408,10 +409,10 @@ class AutoSetRuleController extends BaseAdminController
     {
         $result['success'] = false;
         if (\Yii::app()->request->isPostRequest) {
-            $item = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication');
+            $id = \Yii::app()->request->getPost('id');
 
-            if (isset($item['id'])) {
-                $med = \MedicationSetAutoRuleMedication::model()->findByPk($item['id']);
+            if ($id) {
+                $med = \MedicationSetAutoRuleMedication::model()->findByPk($id);
                 $result['success'] = $med->deleteWithTapers()->delete();
             } else {
                 $result['success'] = false;
@@ -443,7 +444,7 @@ class AutoSetRuleController extends BaseAdminController
 
             case 'meds':
                 foreach ($tmp_set as $row => $med_meds) {
-                    $set_m[$row] = MedicationSetAutoRuleMedication::model()->findByPk($med_meds['id']) ?? new MedicationSetAutoRuleMedication();
+                    $set_m[$row] = isset($med_meds['id']) && $med_meds['id'] !== '' ? MedicationSetAutoRuleMedication::model()->findByPk($med_meds['id']) : new MedicationSetAutoRuleMedication();
                     $set_m[$row]->attributes =  $med_meds;
                     $tapers = \Yii::app()->request->getParam('MedicationSetAutoRuleMedicationTaper', []);
 
