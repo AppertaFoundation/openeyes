@@ -36,7 +36,7 @@ $form = $this->beginWidget('CActiveForm', array(
 ));
 ?>
 
-<div class="oe-popup-wrap" style="display: none">
+<div class="oe-popup-wrap js-wrap-virtual-clinic" style="display: none">
   <div class="oe-popup">
     <div class="title">Change Virtual Clinic</div>
     <div class="close-icon-btn">
@@ -62,12 +62,12 @@ $this->endWidget(); ?>
 <script>
   $(document).on('click', '#js-virtual-clinic-btn', function (e) {
     e.preventDefault();
-    $('.oe-popup-wrap').show();
+    $('.js-wrap-virtual-clinic').show();
   });
 
   $(document).on('click', '.oe-popup .close-icon-btn', function (e) {
     e.preventDefault();
-    $('.oe-popup-wrap').hide();
+    $('.js-wrap-virtual-clinic').hide();
   });
 
   $(".btn-list").ready(function () {
