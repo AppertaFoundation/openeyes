@@ -523,7 +523,7 @@ class EventMedicationUse extends BaseElement
             if ($this->$k) {
                 if ($k === 'route') {
                     $both_laterality = MedicationLaterality::model()->findByPk(MedicationLaterality::BOTH);
-                    $this->$k->term = ($both_laterality && $this->medicationLaterality->name === $both_laterality->name) ? $this->$k->term . 's' : $this->$k->term;
+                    $this->$k->term = ($both_laterality && $this->medicationLaterality && $this->medicationLaterality->name === $both_laterality->name) ? $this->$k->term . 's' : $this->$k->term;
                 }
                 if ($k !== "dose_unit_term" || $this->dose) {
                     $res[] = $this->$k;
