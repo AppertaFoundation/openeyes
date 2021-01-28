@@ -1005,7 +1005,11 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        return $target->contact_type;
+                        if ($target->contact_type === "DRSS") {
+                            return $target->commissioningBodyService && $target->commissioningBodyService->type ? $target->commissioningBodyService->type->shortname : null;
+                        } else {
+                            return $target->contact_type;
+                        }
                     }
                 }
             }
@@ -1025,7 +1029,11 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc != 'To') {
-                        $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                        if ($target->contact_type === "DRSS") {
+                            $contact_type = $target->commissioningBodyService && $target->commissioningBodyService->type ? $target->commissioningBodyService->type->shortname : null;
+                        } else {
+                            $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                        }
                         $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
                     }
                 }

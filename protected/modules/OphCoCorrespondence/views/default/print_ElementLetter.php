@@ -86,7 +86,7 @@ if (!@$no_header) { ?>
     <div class="spacer"></div>
     <h5>
         <?php
-        echo($toAddress ? ('To: ' . (isset($toAddressContactType) ? $toAddressContactType . ' : ' : '') . $element->renderSourceAddress($toAddress) . '<br/>') : '');
+        echo($toAddress ? ('To: ' . (isset($toAddressContactType) ? $toAddressContactType . ': ' : '') . $element->renderSourceAddress($toAddress) . '<br/>') : '');
         echo($ccString ? $ccString : ''); ?>
     </h5>
     <p nobr="true">

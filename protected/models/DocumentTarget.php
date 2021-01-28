@@ -96,4 +96,13 @@ class DocumentTarget extends BaseActiveRecord
 
         return array_combine($option_array, $option_array);
     }
+
+    /**
+     * Gets the Commissioning Body Service with the same contact id of target
+     *
+     * @return array|null
+     */
+    public function getCommissioningBodyService() {
+        return CommissioningBodyService::model()->find('contact_id=:contact_id', [':contact_id' => $this->contact_id]);
+    }
 }
