@@ -10,6 +10,8 @@
             <directory suffix="Test.php">./unit</directory>
             <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
             <directory suffix="Test.php">../modules/*/tests/unit/components</directory>
+            <directory suffix="Test.php">../modules/*/tests/unit/controllers</directory>
+            <directory suffix="Test.php">../modules/*/tests/unit/widgets</directory>
         </testsuite>
         <testsuite name="Modules">
             <directory suffix="Test.php">../modules/*/tests/unit/models</directory>

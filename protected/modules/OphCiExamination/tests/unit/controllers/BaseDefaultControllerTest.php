@@ -34,7 +34,11 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
 
     public function getDefaultController($methods = null)
     {
-        return $this->getController(DefaultController::class, $methods);
+        $base_methods_to_mock = ['addToUnbookedWorklist'];
+        if ($methods === null) {
+            $methods = [];
+        }
+        return $this->getController(DefaultController::class, array_merge($base_methods_to_mock, $methods));
     }
 
     protected function performCreateRequestForRandomPatient()
