@@ -17,6 +17,7 @@ WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 testtorun=""
 phpunitconfigxml="$WROOT/protected/tests/phpunit.xml"
 phpunitpath="$WROOT/vendor/phpunit/phpunit/phpunit"
+groupOrExclude=false
 
 while [[ $# -gt 0 ]]
 do
@@ -27,7 +28,11 @@ do
         phpunitconfigxml="$2"
         shift
         ;;
-	    *)  
+      --group=*|--exclude-group=*)
+        groupOrExclude=true
+        testtorun="$testtorun $p"
+        ;;
+	    *)
         testtorun="$testtorun $p"
         # pass all remaining commands to phpunit
         ;;
@@ -35,5 +40,29 @@ do
 
 shift # move to next parameter
 done
+status=1
+if [ "$OE_TEST_NO_GROUP" != "1" ] && [ "$groupOrExclude" = false ]; then
+    echo "***************************************************************************"
+    echo "*** Running all tests sets.                                             ***"
+    echo "*** To run specific sets, use the relevant --group or --exclude options ***"
+    echo "***************************************************************************"
+    
+    echo ""
+    echo "*** Starting tests with sample data... ***"
+    echo ""
+    eval php $phpunitpath --configuration $phpunitconfigxml --group=sample-data $testtorun
+    status=$? # Remember output status from first run
 
-eval php $phpunitpath --configuration $phpunitconfigxml $testtorun
+    echo ""
+    echo "*** Starting tests with fixtures... ***"
+    echo ""
+    if ! eval php $phpunitpath --configuration $phpunitconfigxml --exclude=sample-data,functional,undefined $testtorun; then
+      status=1 # If tests fail, set output status to failed - otherwise let result from previous run fall through
+    fi
+
+else
+  eval php $phpunitpath --configuration $phpunitconfigxml $testtorun
+  status=$?
+fi
+
+exit $status
