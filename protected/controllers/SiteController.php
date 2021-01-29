@@ -157,6 +157,7 @@ class SiteController extends BaseController
             if ($model->validate() && $model->login()) {
                 // Flag site for confirmation
                 Yii::app()->session['confirm_site_and_firm'] = true;
+                Yii::app()->session['shown_version_reminder'] = true;
                 // Check the user has admin role and auto version check enabled
                 $autoVersionEnabled = strpos(strtolower(SettingInstallation::model()->findByAttributes(['key' => "auto_version_check"])->value), 'enable');
                 if (Yii::app()->user->checkAccess('admin') && !($autoVersionEnabled === false)) {
@@ -229,7 +230,6 @@ class SiteController extends BaseController
         if (empty($uuid)) {
             $apiInfo = $this->registerAPI($ammoniteURL);
             if ($apiInfo === "error") {
-                Yii::app()->session['shown_version_reminder'] = true;
                 return;
             } else {
                 Yii::app()->session['shown_version_reminder'] = false;
@@ -241,11 +241,9 @@ class SiteController extends BaseController
                 ));
             }
         } elseif ($this->versionExpired($lastCheckDate)) {
-            Yii::app()->session['shown_version_reminder'] = true;
             $uuid = \Yii::app()->db->createCommand()->select('uuid')->from('ammonite')->queryScalar();
             $this->sendVersionInfo($ammoniteURL, $uuid);
         } else {
-            Yii::app()->session['shown_version_reminder'] = true;
             Yii::log("The version has been checked recently");
         }
     }
