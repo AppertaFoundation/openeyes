@@ -107,11 +107,11 @@ $stop_fields_validation_error = array_intersect(
                     <div class="alternative-display-element textual flex-meds-inputs">
                         <div class="textual-display hint">
                             <?php $entry_text_display = $entry->getAdministrationDisplay(true);
-                            echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
+                            echo ($entry_text_display != "" && !$element_errors) ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </div>
                         <span class="tabspace"></span>                   
                     </div>
-                    <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
+                    <div class="alternative-display-element" <?= !$direct_edit && !$element_errors ? 'style="display: none;"' : '' ?>>
                         <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
                         <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
                         <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" <?= $show_unit ? 'disabled' : '' ?> />
