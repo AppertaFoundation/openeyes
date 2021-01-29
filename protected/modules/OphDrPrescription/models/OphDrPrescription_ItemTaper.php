@@ -152,6 +152,24 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
     }
 
     /**
+     * Gets dosage for taper
+     *
+     * @return string
+     */
+    public function getDosage(): string
+    {
+        if ($this->dose) {
+            if ($this->item->dose_unit_term) {
+                return $this->dose . ' ' . $this->item->dose_unit_term;
+            }
+
+            return $this->dose;
+        }
+
+        return '';
+    }
+
+    /**
      * @param $current_date
      * @return DateTime|null
      */
