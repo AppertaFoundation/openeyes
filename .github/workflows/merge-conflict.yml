@@ -12,7 +12,5 @@ jobs:
         uses: eps1lon/actions-label-merge-conflict@releases/2.x
         with:
           dirtyLabel: "PR: merge conflicts have arisen"
-          removeOnDirtyLabel: "PR: merge conflicts have been resolved"
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           commentOnDirty: "This pull request has conflicts, please resolve those."
-          commentOnClean: "Conflicts have been resolved."
