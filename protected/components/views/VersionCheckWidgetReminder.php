@@ -57,7 +57,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     $('#version_no').click(function () {
         $.ajax({
             'type': 'POST',
-            'url': 'admin/changeVersionCheck',
+            'url': baseUrl + '/admin/changeVersionCheck',
             'data': "value=disable" + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
             complete: function () {
                 $('#version-check-dialog').dialog('close');
@@ -67,7 +67,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     $('#version_yes').click(function () {
         $.ajax({
             'type': 'POST',
-            'url': 'admin/changeVersionCheck',
+            'url': baseUrl + '/admin/changeVersionCheck',
             'data': "value=enable" + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
             complete: function () {
                 $('#version-check-dialog').dialog('close');
