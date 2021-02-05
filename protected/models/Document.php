@@ -71,7 +71,7 @@ class Document //extends BaseActiveRecord
 
     public function createNew($eventId)
     {
-        $ds = new DocumentSet;
+        $ds = new DocumentSet();
         $ds->event_id = $eventId;
         $ds->save();
 
@@ -314,10 +314,10 @@ class Document //extends BaseActiveRecord
                                 $data['id'] = $document_output['id'];
                             }
 
-                            if ($this->is_draft && ($data['output_type'] === 'Docman' || $data['output_type'] === 'Internalreferral')) {
+                            if ($this->is_draft) {
                                 $data['output_status'] = "DRAFT";
-                            } elseif ($this->is_draft == 0 && ($data['output_type'] === 'Docman' || $data['output_type'] === 'Internalreferral')) {
-                                    $data['output_status'] = "PENDING";
+                            } else {
+                                $data['output_status'] = "PENDING";
                             }
 
                             $this->createNewDocOutput($doc_target, $doc_instance_version, $data);

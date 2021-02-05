@@ -152,10 +152,10 @@ class DefaultController extends BaseEventTypeController
                         $create_correspondence = \Yii::app()->request->getParam('auto_generate_gp_letter_after_surgery');
                         if ($create_correspondence) {
                             if ($this->patient->gp_id && $this->patient->practice_id) {
-                                                            $macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
-                                                            $transaction = Yii::app()->db->beginTransaction();
-                                                            // create 'post-op' letter
-                                                            $result = $this->createCorrespondenceEvent($macro_name);
+                                                                $macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
+                                                                $transaction = Yii::app()->db->beginTransaction();
+                                                                // create 'post-op' letter
+                                                                $result = $this->createCorrespondenceEvent($macro_name);
                                 if ($result['success'] === true) {
                                     $transaction->commit();
                                 } else {
@@ -322,7 +322,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionLoadElementByProcedure()
     {
-        if (!$proc = Procedure::model()->findByPk((integer)@$_GET['procedure_id'])) {
+        if (!$proc = Procedure::model()->findByPk((int)@$_GET['procedure_id'])) {
             throw new SystemException('Procedure not found: ' . @$_GET['procedure_id']);
         }
 
@@ -385,7 +385,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetElementsToDelete()
     {
-        if (!$proc = Procedure::model()->findByPk((integer)@$_POST['procedure_id'])) {
+        if (!$proc = Procedure::model()->findByPk((int)@$_POST['procedure_id'])) {
             throw new SystemException('Procedure not found: ' . @$_POST['procedure_id']);
         }
 
@@ -1370,7 +1370,7 @@ class DefaultController extends BaseEventTypeController
                 return null;
             }
 
-            return '<div class="extra-info">' .
+            return '<div class="extra-info" style="font-size:105%">' .
                 '<small class="fade">Site: </small><small>' .
                 $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</small>' .
                 '</div>';

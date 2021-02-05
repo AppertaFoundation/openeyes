@@ -19,7 +19,6 @@ use OEModule\OphCiExamination\widgets\HistoryMedications as HistoryMedicationsWi
 use CHtml;
 use Event;
 use EventMedicationUse;
-use Medication;
 use User;
 use Yii;
 
@@ -40,7 +39,6 @@ class HistoryMedications extends BaseMedicationElement
 {
     use traits\CustomOrdering;
     protected $default_view_order = 25;
-
     protected $auto_validate_relations = true;
 
     protected $widgetClass = HistoryMedicationsWidget::class;
@@ -170,11 +168,6 @@ class HistoryMedications extends BaseMedicationElement
     public function isIndividual($action)
     {
         return $action !=='view';
-    }
-
-    public function getDisplayOrder($action, $as_parent = false)
-    {
-        return $action == 'view' ? 25 : parent::getDisplayOrder($action);
     }
 
     /**

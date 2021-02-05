@@ -1,20 +1,20 @@
 <?php
 
 /**
- * OpenEyes.
- *
- * (C) Apperta Foundation, 2020
- * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
- *
- * @link http://www.openeyes.org.uk
- *
- * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2020 Apperta Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
- */
+* OpenEyes.
+*
+* (C) Apperta Foundation, 2020
+* This file is part of OpenEyes.
+* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+*
+* @link http://www.openeyes.org.uk
+*
+* @author OpenEyes <info@openeyes.org.uk>
+* @copyright Copyright (c) 2020 Apperta Foundation
+* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+*/
 
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
@@ -359,6 +359,11 @@ $config = array(
         'specialty_sort' => array(130, 'SUP'),
         'hos_num_regex' => !empty(trim(getenv('OE_HOS_NUM_REGEX'))) ? getenv('OE_HOS_NUM_REGEX') : '/^([0-9]{1,9})$/',
         'pad_hos_num' => !empty(trim(getenv('OE_HOS_NUM_PAD'))) ? getenv('OE_HOS_NUM_PAD') : '%07s',
+        'nhs_num_label' => !empty(trim(getenv('OE_NHS_NUM_LABEL'))) ? getenv('OE_NHS_NUM_LABEL') : null,
+        'hos_num_label' => !empty(trim(getenv('OE_HOS_NUM_LABEL'))) ? getenv('OE_HOS_NUM_LABEL') : null,
+        // Parameter for short labels in patient panel, or anywhere real estate is at a premium
+        'nhs_num_label_short' => !empty(trim(getenv('OE_NHS_NUM_LABEL_SHORT'))) ? getenv('OE_NHS_NUM_LABEL_SHORT') : null,
+        'hos_num_label_short' => !empty(trim(getenv('OE_HOS_NUM_LABEL_SHORT'))) ? getenv('OE_HOS_NUM_LABEL_SHORT') : null,
         'profile_user_can_edit' => true,
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => strtolower(getenv("PW_ALLOW_CHANGE")) == "false" ? false : true,
@@ -453,6 +458,18 @@ $config = array(
                 'uri' => 'gp/index',
                 'position' => 10,
                 'restricted' => array('TaskViewGp', 'TaskCreateGp'),
+            ),
+            'analytics' => array(
+                'title' => 'Analytics',
+                'uri' => '/Analytics/analyticsReports',
+                'position' => 11,
+            ),
+            'patient_import' => array(
+                'title' => 'Import Patients',
+                'uri' => 'csv/upload?context=patients',
+                'position' => 47,
+                'requires_setting' => array('setting_key' => 'enable_patient_import', 'required_value' => 'on'),
+                'restricted' => array('admin'),
             ),
             /*
                  //TODO: not yet implemented
@@ -673,43 +690,41 @@ $config = array(
             'nhs_num_status' => 'hidden'
         ],
         //        Set the parameter below to true if you want to use practitioner praactice associations feature
-        'use_contact_practice_associate_model' => false,
+        'use_contact_practice_associate_model' => !empty(trim(getenv('OE_USE_CPA_MODEL'))) ? filter_var(getenv('OE_USE_CPA_MODEL'), FILTER_VALIDATE_BOOLEAN) : false,
         //        Set the parameter below to indicate whether PAS is being used or not
         'pas_in_use' => true,
         //        List the visibility of elements in the Patient Panel Popup - Demographics. Setting them as true or false
         'demographics_content' => [
-            'mobile' => true,
-            'next_of_kin' => true,
-            'pas' => true,
+            'mobile' => !empty(trim(getenv('OE_DEMOGRAPHICS_MOBILE'))) ? filter_var(getenv('OE_DEMOGRAPHICS_MOBILE'), FILTER_VALIDATE_BOOLEAN) : true,
+            'next_of_kin' => !empty(trim(getenv('OE_DEMOGRAPHICS_NOK'))) ? filter_var(getenv('OE_DEMOGRAPHICS_NOK'), FILTER_VALIDATE_BOOLEAN) : true,
+            'pas' => !empty(trim(getenv('OE_DEMOGRAPHICS_PAS'))) ? filter_var(getenv('OE_DEMOGRAPHICS_PAS'), FILTER_VALIDATE_BOOLEAN) : true,
         ],
         //        allow null check is to set whether duplicate checks for patient are to be performed on null RVEEh UR number or any further added patient identifiers
         'patient_identifiers' => array(
             'RVEEH_UR' => array(
-                'code' => 'RVEEH_UR',
-                'label' => 'Patient Identifier',
-                'unique' => true,
-                'allow_null_check' => false,
+                'code' => !empty(trim(getenv('OE_PATIENT_IDENTIFIER_CODE'))) ? getenv('OE_PATIENT_IDENTIFIER_CODE') : 'RVEEH_UR',
+                'label' => !empty(trim(getenv('OE_PATIENT_IDENTIFIER_LABEL'))) ? getenv('OE_PATIENT_IDENTIFIER_LABEL') : 'Patient Identifier',
+                'unique' => !empty(trim(getenv('OE_PATIENT_IDENTIFIER_UNIQUE'))) ? filter_var(getenv('OE_PATIENT_IDENTIFIER_UNIQUE'), FILTER_VALIDATE_BOOLEAN) : true,
+                'allow_null_check' => !empty(trim(getenv('OE_PATIENT_IDENTIFIER_ALLOW_NULL'))) ? filter_var(getenv('OE_PATIENT_IDENTIFIER_ALLOW_NULL'), FILTER_VALIDATE_BOOLEAN) : false
             )
         ),
         'canViewSummary' => true,
-        'default_country' => 'United Kingdom',
+        'default_country' => !empty(trim(getenv('OE_DEFAULT_COUNTRY'))) ? getenv('OE_DEFAULT_COUNTRY') : null,
         'default_patient_import_context' => 'Historic Data Entry',
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
-        'exclude_admin_structure_param_list' => array(
-            //            'Worklist',
-        ),
-        'oe_version' => '4.1 alpha 1',
-        // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
-        'gp_label' => 'GP',
+        'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
+        'oe_version' => '4.1a',
+        'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
+        'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
         'worklist_dashboard_future_days' => 0,
         // page size of worklists - recommended to be very large by default, as paging is not generally needed here
         'worklist_default_pagination_size' => 1000,
         //// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
         'worklist_dashboard_skip_days' => array('NONE'),
-        'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? getenv(@'OE_TECH_SUPPORT_PROVIDER') :  'Apperta Foundation',
-        'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  'http://www.apperta.org',
+        'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? htmlspecialchars(getenv(@'OE_TECH_SUPPORT_PROVIDER')) :  null,
+        'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  null,
         'pw_restrictions' => array(
             'min_length' => getenv('PW_RES_MIN_LEN') ?: 8,
             'min_length_message' => getenv('PW_RES_MIN_LEN_MESS') ? htmlspecialchars(getenv('PW_RES_MIN_LEN_MESS')) : 'Passwords must be at least 8 characters long',

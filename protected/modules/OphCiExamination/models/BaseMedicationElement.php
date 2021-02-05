@@ -19,7 +19,6 @@ use BaseEventTypeElement;
 use CActiveRecord;
 use CDbCriteria;
 use Element_OphDrPrescription_Details;
-use Event;
 use EventMedicationUse;
 use MedicationFrequency;
 use MedicationLaterality;
@@ -27,6 +26,7 @@ use MedicationRoute;
 
 abstract class BaseMedicationElement extends BaseEventTypeElement
 {
+    protected $default_view_order = 25;
     protected $auto_update_relations = false;
     protected $auto_validate_relations = false;
     protected $default_from_previous = true;
@@ -284,18 +284,6 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
     {
         return $action!=='view';
     }
-    /**
-     * @inheritdoc
-     */
-    public function getDisplayOrder($action)
-    {
-        if ($action=='view') {
-            return 25;
-        } else {
-            return parent::getDisplayOrder($action);
-        }
-    }
-
 
     /**
      * merges entries and selects only the latest medication

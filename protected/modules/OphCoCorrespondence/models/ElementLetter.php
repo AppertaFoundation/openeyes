@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -117,7 +118,7 @@ class ElementLetter extends BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -275,33 +276,33 @@ class ElementLetter extends BaseEventTypeElement
         } elseif (isset($this->event->episode->patient)) {
             $patient = $this->event->episode->patient;
         } else {
-            throw new Exception('patient not found: '.$patient_id);
+            throw new Exception('patient not found: ' . $patient_id);
         }
 
-        $options = array('Patient'.$patient->id => $patient->fullname.' (Patient)');
+        $options = array('Patient' . $patient->id => $patient->fullname . ' (Patient)');
         if (!isset($patient->contact->address)) {
-            $options['Patient'.$patient->id] .= ' - NO ADDRESS';
+            $options['Patient' . $patient->id] .= ' - NO ADDRESS';
         }
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' ('.((isset($patient->gp->contact->label))? $patient->gp->contact->label->name : Yii::app()->params['gp_label']).')';
+                $options['Gp' . $patient->gp_id] = $patient->gp->contact->fullname . ' (' . ((isset($patient->gp->contact->label)) ? $patient->gp->contact->label->name : Yii::app()->params['gp_label']) . ')';
             } else {
-                $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
+                $options['Gp' . $patient->gp_id] = Gp::UNKNOWN_NAME . ' (' . Yii::app()->params['gp_label'] . ')';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
-                $options['Gp'.$patient->gp_id] .= ' - NO ADDRESS';
+                $options['Gp' . $patient->gp_id] .= ' - NO ADDRESS';
             }
         } elseif ($patient->practice) {
-            $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
+            $options['Practice' . $patient->practice_id] = Gp::UNKNOWN_NAME . ' (' . Yii::app()->params['gp_label'] . ')';
             if (@$patient->practice->contact && !@$patient->practice->contact->address) {
-                $options['Practice'.$patient->practice_id] .= ' - NO ADDRESS';
+                $options['Practice' . $patient->practice_id] .= ' - NO ADDRESS';
             }
         }
 
         $patientOptometrist = $patient->getPatientOptometrist();
         if ($patientOptometrist) {
-            $options['Optometrist'.$patientOptometrist->id] = $patientOptometrist->fullname.' (Optometrist)';
+            $options['Optometrist' . $patientOptometrist->id] = $patientOptometrist->fullname . ' (Optometrist)';
         }
         // get the ids of the commissioning body types that should be shown as potential recipients to filter against
         $cbt_ids = array();
@@ -317,23 +318,24 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($cbs as $cb_type_id => $cb_list) {
                 foreach ($cb_list as $cb) {
                     if (in_array($cb_type_id, $cbt_ids, false)) {
-                        $options['CommissioningBody'.$cb->id] = $cb->name.' ('.$cbtype_lookup[$cb_type_id].')';
+                        $options['CommissioningBody' . $cb->id] = $cb->name . ' (' . $cbtype_lookup[$cb_type_id] . ')';
                         if (!$cb->getAddress()) {
-                            $options['CommissioningBody'.$cb->id] .= ' - NO ADDRESS';
+                            $options['CommissioningBody' . $cb->id] .= ' - NO ADDRESS';
                         }
                     }
 
                     // include all services at the moment, regardless of whether the commissioning body type is filtered
                     if ($services = $cb->services) {
                         foreach ($services as $svc) {
-                            $options['CommissioningBodyService'.$svc->id] = $svc->name.' ('.$svc->getTypeShortName().')';
+                            $options['CommissioningBodyService' . $svc->id] = $svc->name . ' (' . $svc->getTypeShortName() . ')';
                         }
                     }
                 }
             }
         }
 
-        foreach (PatientContactAssignment::model()->with(array(
+        foreach (
+            PatientContactAssignment::model()->with(array(
             'contact' => array(
                 'with' => array('address'),
             ),
@@ -347,9 +349,10 @@ class ElementLetter extends BaseEventTypeElement
                     ),
                 ),
             ),
-        ))->findAll('patient_id=? AND contact.active = ?', array($patient->id, 1)) as $pca) {
+            ))->findAll('patient_id=? AND contact.active = ?', array($patient->id, 1)) as $pca
+        ) {
             if ($pca->location) {
-                $options['ContactLocation'.$pca->location_id] = $pca->location->contact->fullName.' ('.$pca->location->contact->label->name . ')';
+                $options['ContactLocation' . $pca->location_id] = $pca->location->contact->fullName . ' (' . $pca->location->contact->label->name . ')';
             } elseif (!isset($pca->contact->label) || $pca->contact->label->name !== 'Optometrist') {
                 $options['Contact' . $pca->contact_id] = $pca->contact->fullName . ' (' . (isset($pca->contact->label) ? $pca->contact->label->name : '');
                 if ($pca->contact->address) {
@@ -360,13 +363,13 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
 
-        $pcassocitates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
-        if (isset($pcassocitates) && (Yii::app()->params['institution_code'] === 'CERA' || Yii::app()->params['use_contact_practice_associate_model']==true)) {
+        $pcassocitates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id));
+        if (isset($pcassocitates) && (Yii::app()->params['institution_code'] === 'CERA' || Yii::app()->params['use_contact_practice_associate_model'] == true)) {
             foreach ($pcassocitates as $pcassocitate) {
                 $gp = $pcassocitate->gp;
-                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
+                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id' => $gp->id));
                 if (isset($cpa->practice) && !empty($cpa->practice->getAddressLines())) {
-                    $options['ContactPracticeAssociate'.$cpa->id] = $gp->contact->fullname.' ('.((isset($gp->contact->label))? $gp->contact->label->name : Yii::app()->params['gp_label']).')';
+                    $options['ContactPracticeAssociate' . $cpa->id] = $gp->contact->fullname . ' (' . ((isset($gp->contact->label)) ? $gp->contact->label->name : Yii::app()->params['gp_label']) . ')';
                 }
             }
         }
@@ -383,17 +386,17 @@ class ElementLetter extends BaseEventTypeElement
 
     public function calculateRe($patient)
     {
-        $re = $patient->first_name.' '.$patient->last_name;
+        $re = $patient->first_name . ' ' . $patient->last_name;
 
         foreach (array('address1', 'address2', 'city', 'postcode') as $field) {
             if ($patient->contact->address && $patient->contact->address->{$field}) {
-                $re .= ', '.$patient->contact->address->{$field};
+                $re .= ', ' . $patient->contact->address->{$field};
             }
         }
         if (Yii::app()->params['nhs_num_private'] === true) {
-            return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code'] === 'CERA'? ': ':' No: ').$patient->hos_num;
+            return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num;
         }
-        return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code'] === 'CERA'? ': ':' No: ').$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .(Yii::app()->params['institution_code'] === 'CERA'? ': ':' No: ').$patient->nhsnum;
+        return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num . ', ' . Yii::app()->params['nhs_num_label'] . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->nhsnum;
     }
 
     /**
@@ -409,7 +412,7 @@ class ElementLetter extends BaseEventTypeElement
             if (!$patient) {
                 // determine if there are any circumstances where this is necessary. Almost certainly very redundant
                 if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
-                    throw new Exception('Patient not found: '.@$_GET['patient_id']);
+                    throw new Exception('Patient not found: ' . @$_GET['patient_id']);
                 }
             }
             // default to GP
@@ -417,18 +420,18 @@ class ElementLetter extends BaseEventTypeElement
                 $this->introduction = $patient->gp->getLetterIntroduction();
             }
 
-            $this->re = $patient->first_name.' '.$patient->last_name;
+            $this->re = $patient->first_name . ' ' . $patient->last_name;
 
             foreach (array('address1', 'address2', 'city', 'postcode') as $field) {
                 if ($patient->contact->address && $patient->contact->address->{$field}) {
-                    $this->re .= ', '.$patient->contact->address->{$field};
+                    $this->re .= ', ' . $patient->contact->address->{$field};
                 }
             }
 
             if (Yii::app()->params['nhs_num_private'] == true) {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: '). $patient->hos_num;
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num;
             } else {
-                $this->re .= ', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->nhsnum;
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num . ', ' . Yii::app()->params['nhs_num_label'] . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->nhsnum;
             }
 
             $user = Yii::app()->session['user'];
@@ -463,8 +466,8 @@ class ElementLetter extends BaseEventTypeElement
                     $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
                     if ($event_type) {
                         $criteria = new CDbCriteria();
-                        $criteria->addCondition('event_type_id = '.$event_type->id);
-                        $criteria->addCondition('episode_id = '.$episode->id);
+                        $criteria->addCondition('event_type_id = ' . $event_type->id);
+                        $criteria->addCondition('episode_id = ' . $episode->id);
                         $criteria->order = 'created_date desc';
                         $criteria->limit = 1;
 
@@ -508,7 +511,7 @@ class ElementLetter extends BaseEventTypeElement
                 ));
                 $address_contact = $patient->gp;
             } else {
-                $this->introduction = 'Dear '.Gp::UNKNOWN_SALUTATION.',';
+                $this->introduction = 'Dear ' . Gp::UNKNOWN_SALUTATION . ',';
                 $address_contact = @$patient->practice;
             }
         }
@@ -613,7 +616,7 @@ class ElementLetter extends BaseEventTypeElement
                         $enc->display_order = $i++;
                         $enc->content = $value;
                         if (!$enc->save()) {
-                            throw new Exception('Unable to save EnclosureItem: '.print_r($enc->getErrors(), true));
+                            throw new Exception('Unable to save EnclosureItem: ' . print_r($enc->getErrors(), true));
                         }
                     }
                 }
@@ -638,7 +641,7 @@ class ElementLetter extends BaseEventTypeElement
         $event = Event::model()->findByPk($event_id);
         $name = strtoupper(str_replace(' ', '_', $event->eventType->name));
 
-        return $name.'_'.$event->eventType->id;
+        return $name . '_' . $event->eventType->id;
     }
 
     public function getInfotext()
@@ -666,7 +669,7 @@ class ElementLetter extends BaseEventTypeElement
                     $ex = explode(', ', trim($cc));
 
                     if (isset($ex[1]) && (ctype_digit($ex[1]) || is_int($ex[1]))) {
-                        $ex[1] .= ' '.$ex[2];
+                        $ex[1] .= ' ' . $ex[2];
                         unset($ex[2]);
                     }
 
@@ -741,7 +744,7 @@ class ElementLetter extends BaseEventTypeElement
      */
     public function purifyContent($content)
     {
-        require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
+        require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier') . DIRECTORY_SEPARATOR . 'HTMLPurifier.standalone.php');
 
         // Refer to http://htmlpurifier.org/docs/enduser-customize.html
         // for info on whitelisting elements.
@@ -790,17 +793,17 @@ class ElementLetter extends BaseEventTypeElement
 
     public function getCreate_view()
     {
-        return 'create_'.$this->getDefaultView();
+        return 'create_' . $this->getDefaultView();
     }
 
     public function getUpdate_view()
     {
-        return 'update_'.$this->getDefaultView();
+        return 'update_' . $this->getDefaultView();
     }
 
     public function getPrint_view()
     {
-        return 'print_'.$this->getDefaultView();
+        return 'print_' . $this->getDefaultView();
     }
 
     public function getContainer_print_view()
@@ -971,7 +974,11 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        return $target->contact_type;
+                        if ($target->contact_type === "DRSS") {
+                            return $target->commissioningBodyService && $target->commissioningBodyService->type ? $target->commissioningBodyService->type->shortname : null;
+                        } else {
+                            return $target->contact_type;
+                        }
                     }
                 }
             }
@@ -990,9 +997,13 @@ class ElementLetter extends BaseEventTypeElement
         if ($this->document_instance && $this->document_instance[0]->document_target) {
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
-                    if ($target->ToCc !== 'To') {
-                        $contact_type = $target->contact_type !== Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                        $ccString .= 'CC: ' . ($contact_type !== 'Other' ? $contact_type . ': ' : '') . $target->contact_name . ', ' . $this->renderSourceAddress($target->address). ($target->isRecipientDocumentOutputEmail() ? ' (Sent by Email)' : '') .'<br/>';
+                    if ($target->ToCc != 'To') {
+                        if ($target->contact_type === "DRSS") {
+                            $contact_type = $target->commissioningBodyService && $target->commissioningBodyService->type ? $target->commissioningBodyService->type->shortname : null;
+                        } else {
+                            $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                        }
+                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
                     }
                 }
             }
@@ -1000,7 +1011,7 @@ class ElementLetter extends BaseEventTypeElement
             // for old legacy letters
             foreach (explode("\n", trim($this->cc)) as $line) {
                 if (trim($line)) {
-                    $ccString .= 'CC: ' . str_replace(';', ',', $line). '<br/>';
+                    $ccString .= 'CC: ' . str_replace(';', ',', $line) . '<br/>';
                 }
             }
         }
@@ -1066,10 +1077,10 @@ class ElementLetter extends BaseEventTypeElement
         $additional_print_info = (count($print_output) > 1 ? '&all=1' : '');
         if ($cookies->contains('savePrint')) {
             if (!$this->draft && $print_output) {
-                return '1' .$additional_print_info;
+                return '1' . $additional_print_info;
             }
         }
-        return '0' .$additional_print_info;
+        return '0' . $additional_print_info;
     }
 
     public function getInternalReferralEmail()
@@ -1077,7 +1088,7 @@ class ElementLetter extends BaseEventTypeElement
         $serviceEmail = $this->toSubspecialty ? $this->toSubspecialty->getSubspecialtyEmail() : null;
         $contextEmail = $this->toFirm ? $this->toFirm->getContextEmail() : null;
         $email = null;
-        if ($serviceEmail && !$contextEmail ) {
+        if ($serviceEmail && !$contextEmail) {
             // Only Service is selected and email exists for the service
             $email = $serviceEmail;
         } elseif ($contextEmail) {
@@ -1087,7 +1098,8 @@ class ElementLetter extends BaseEventTypeElement
         return $email;
     }
 
-    public function attachAssociatedEvent(){
+    public function attachAssociatedEvent()
+    {
         if (Yii::app()->getController()->getAction()->id === 'create' || Yii::app()->getController()->getAction()->id === 'update') {
             EventAssociatedContent::model()->deleteAll(
                 '`parent_event_id` = :parent_event_id',

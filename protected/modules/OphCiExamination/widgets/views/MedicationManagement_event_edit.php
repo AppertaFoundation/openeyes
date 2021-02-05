@@ -424,6 +424,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                     if (medication_history_bound_key && medication_history_bound_key !== '' && !medication_history_bound_keys.includes(medication_history_bound_key)) {
                         medication_history_bound_keys.push(medication_history_bound_key);
                     }
+                    medication_management_bound_keys = [];
 
                     $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function(index, medicationManagementRow) {
                         let medication_management_bound_key = $(medicationManagementRow).find('.js-bound-key').val();
@@ -442,22 +443,19 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                             }
                         }
 
-                        if (($(historyMedicationRow).find('.medication_id').val() === $(medicationManagementRow).find('.medication_id').val())) {
+                        if (($(historyMedicationRow).find('.medication_id').val() === $(medicationManagementRow).find('.medication_id').val()) && $(historyMedicationRow).hasClass('disabled')) {
                             if (medication_history_bound_key && medication_management_bound_key && medication_management_bound_key !== medication_history_bound_key) {
                                 $(medicationManagementRow).find('.js-reset-mm').show();
-                                window.MMController.disableRemoveButton($(medicationManagementRow));
                             }
                         }
 
-                        if (!duplicate_bound_key) {
-                            if (medication_history_bound_key && medication_management_bound_key === medication_history_bound_key) {
-                                window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
-                                window.MMController.disableRemoveButton($(medicationManagementRow));
-                                rowNeedsCopying = false;
-                                $medicationManagementRow = $(medicationManagementRow);
-                            } else if (!(has_errors || is_edit_mode)) {
-                                window.HMController.removeDuplicateEntry($(historyMedicationRow), $(medicationManagementRow));
-                            }
+                        if (medication_history_bound_key && medication_management_bound_key === medication_history_bound_key) {
+                            window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
+                            window.MMController.disableRemoveButton($(medicationManagementRow));
+                            rowNeedsCopying = false;
+                            $medicationManagementRow = $(medicationManagementRow);
+                        } else if (!(has_errors || is_edit_mode)) {
+                            window.HMController.removeDuplicateEntry($(historyMedicationRow), $(medicationManagementRow));
                         }
                     });
 

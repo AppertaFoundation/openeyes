@@ -36,60 +36,74 @@ class CommonSystemicDisorderController extends BaseAdminController
     public function actionSave()
     {
         $transaction = Yii::app()->db->beginTransaction();
-        $disorders = Yii::app()->request->getPost('CommonSystemicDisorder', array());
+        $JSON_string = Yii::app()->request->getPost('CommonSystemicDisorder');
 
-        $ids = array();
-        foreach ($disorders as $disorder) {
-            $common_systemic_disorder = CommonSystemicDisorder::model()->findByPk($disorder['id']);
-            if (!$common_systemic_disorder) {
-                $common_systemic_disorder = new CommonSystemicDisorder;
-            }
-
-            $common_systemic_disorder->group_id = $disorder['group_id'];
-            $common_systemic_disorder->disorder_id = $disorder['disorder_id'];
-            $common_systemic_disorder->display_order = $disorder['display_order'];
-
-            if (!$common_systemic_disorder->save()) {
-                $errors[] = $common_systemic_disorder->getErrors();
-            }
-
-            $ids[$common_systemic_disorder->id] = $common_systemic_disorder->id;
+        $json_error = false;
+        if (!$JSON_string || !array_key_exists('JSON_string', $JSON_string)) {
+            $json_error = true;
         }
+        $JSON = json_decode(str_replace("'", '"', $JSON_string['JSON_string']), true);
+        if (json_last_error() != 0) {
+            $json_error = true;
+        }
+        if (!$json_error) {
+            $disorders = array_map(function ($entry) {
+                return $entry['CommonSystemicDisorder'];
+            }, $JSON);
 
-        if (empty($errors)) {
-            //Delete items
-            $criteria = new CDbCriteria();
-            if ($ids) {
-                $criteria->addNotInCondition('id', array_map(function ($id) {
-                    return $id;
-                }, $ids));
-            }
-
-            $to_delete = CommonSystemicDisorder::model()->findAll($criteria);
-            foreach ($to_delete as $item) {
-                if (!$item->delete()) {
-                    $errors[] = $item->getErrors();
+            $ids = array();
+            foreach ($disorders as $disorder) {
+                $common_systemic_disorder = CommonSystemicDisorder::model()->findByPk($disorder['id']);
+                if (!$common_systemic_disorder) {
+                    $common_systemic_disorder = new CommonSystemicDisorder;
                 }
-                Audit::add('admin', 'delete', $item->primaryKey, null, array(
-                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                    'model' => CommonSystemicDisorder::getShortModelName(),
-                ));
-            }
 
-            $transaction->commit();
+                $common_systemic_disorder->group_id = $disorder['group_id'];
+                $common_systemic_disorder->disorder_id = $disorder['disorder_id'];
+                $common_systemic_disorder->display_order = $disorder['display_order'];
 
-            Yii::app()->user->setFlash('success', 'List updated.');
-        }
-
-        if (!empty($errors)) {
-            foreach ($errors as $error) {
-                foreach ($error as $attribute => $error_array) {
-                    $display_errors = '<strong>' . $common_systemic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
-                    Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
+                if (!$common_systemic_disorder->save()) {
+                    $errors[] = $common_systemic_disorder->getErrors();
                 }
+
+                $ids[$common_systemic_disorder->id] = $common_systemic_disorder->id;
             }
-            $transaction->rollback();
+
+            if (empty($errors)) {
+                //Delete items
+                $criteria = new CDbCriteria();
+                if ($ids) {
+                    $criteria->addNotInCondition('id', array_map(function ($id) {
+                        return $id;
+                    }, $ids));
+                }
+
+                $to_delete = CommonSystemicDisorder::model()->findAll($criteria);
+                foreach ($to_delete as $item) {
+                    if (!$item->delete()) {
+                        $errors[] = $item->getErrors();
+                    }
+                    Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                        'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                        'model' => CommonSystemicDisorder::getShortModelName(),
+                    ));
+                }
+
+                $transaction->commit();
+
+                Yii::app()->user->setFlash('success', 'List updated.');
+            }
+
+            if (!empty($errors)) {
+                foreach ($errors as $error) {
+                    foreach ($error as $attribute => $error_array) {
+                        $display_errors = '<strong>' . (new CommonOphthalmicDisorder())->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                        Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
+                    }
+                }
+                $transaction->rollback();
+            }
+            $this->redirect(Yii::app()->request->urlReferrer);
         }
-        $this->redirect(Yii::app()->request->urlReferrer);
     }
 }

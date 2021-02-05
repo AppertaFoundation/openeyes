@@ -29,38 +29,91 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 $this->renderPartial('//elements/form_errors', array('errors' => $errors, 'bottom' => false));
 
 ?>
-    <h3>Queue Set:</h3>
-    <div>
-        <?php
-        if (!$service = Yii::app()->service->getService('PatientTicketing_QueueSet')) {
-            throw new Exception('Service not found: PatientTicketing_QueueSet');
-        }
-        $queueset_resource = $service->modelToResource($queueset);
-        ?>
-        <?php echo $form->dropdownList($queueset, 'category_id', \CHtml::listData(OEModule\PatientTicketing\models\QueueSetCategory::model()->activeOrPk($queueset->category_id)->findAll(), 'id', 'name')); ?>
-        <?php echo $form->textField($queueset, 'name'); ?>
-        <?php echo $form->textArea($queueset, 'description'); ?>
-        <?php echo $form->radioBoolean($queueset, 'allow_null_priority'); ?>
-        <?php echo $form->radioBoolean($queueset, 'summary_link'); ?>
-    <?php echo $form->dropDownList($queueset, 'default_queue_id', \CHtml::listData($service->getQueueSetQueues($queueset_resource), 'id', 'name'), array('empty' => '- None -'))?>
-    </div>
-
-    <div>
-        <h3>Search Filters:</h3>
-        <?php echo $form->radioBoolean($queueset, 'filter_priority'); ?>
-        <?php echo $form->radioBoolean($queueset, 'filter_subspecialty'); ?>
-        <?php echo $form->radioBoolean($queueset, 'filter_firm'); ?>
-        <?php echo $form->radioBoolean($queueset, 'filter_closed_tickets'); ?>
-    </div>
-
+    <h3>Queue Set</h3>
+    <?php
+    if (!$service = Yii::app()->service->getService('PatientTicketing_QueueSet')) {
+        throw new Exception('Service not found: PatientTicketing_QueueSet');
+    }
+    $queueset_resource = $service->modelToResource($queueset);
+    ?>
+    <table>
+        <colgroup>
+            <col class="cols-5">
+            <col>
+        </colgroup>
+        <tbody>
+            <tr>
+                <td><?= $queueset->getAttributeLabel('category_id') ?></td>
+                <td>
+                    <?=\CHtml::activeDropDownList(
+                        $queueset,
+                        'category_id',
+                        \CHtml::listData(OEModule\PatientTicketing\models\QueueSetCategory::model()->activeOrPk($queueset->category_id)->findAll(), 'id', 'name'),
+                        ['class' => 'cols-11']); ?>
+                </td>
+            </tr>
+            <tr>
+                <td><?= $queueset->getAttributeLabel('name') ?></td>
+                <td><?=\CHtml::activeTextField($queueset, 'name', ['class' => 'cols-full']); ?></td>
+            </tr>
+            <tr>
+                <td><?= $queueset->getAttributeLabel('description') ?></td>
+                <td><?= \CHtml::activeTextArea(
+                        $queueset,
+                        'description',
+                        ['class' => 'cols-full']); ?>
+                </td>
+            </tr>
+            <?php foreach (['allow_null_priority', 'summary_link'] as $field) {
+                $this->renderPartial('form_queueset_radio', ['queueset' => $queueset, 'field' => $field]);
+            } ?>
+            <tr>
+                <td><?= $queueset->getAttributeLabel('default_queue_id') ?></td>
+                <td><?=\CHtml::activeDropDownList(
+                        $queueset,
+                        'default_queue_id',
+                        \CHtml::listData($service->getQueueSetQueues($queueset_resource), 'id', 'name'),
+                        ['class' => 'cols-11', 'empty' => '- None -']) ?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+<h4>Search Filters</h4>
+<table>
+    <colgroup>
+        <col class="cols-5">
+        <col>
+    </colgroup>
+    <tbody>
+    <?php foreach (['filter_priority', 'filter_subspecialty', 'filter_firm', 'filter_closed_tickets'] as $field) {
+        $this->renderPartial('form_queueset_radio', ['queueset' => $queueset, 'field' => $field]);
+    } ?>
+    </tbody>
+</table>
     <?php if ($queue) {?>
-        <h3>Initial Queue:</h3>
-        <div>
-            <?php echo $form->textField($queue, 'name'); ?>
-            <?php echo $form->textArea($queue, 'description'); ?>
-            <?php echo $form->textArea($queue, 'report_definition'); ?>
-            <?php echo $form->textArea($queue, 'assignment_fields'); ?>
-        </div>
+        <h4>Initial Queue</h4>
+    <table>
+        <colgroup>
+            <col class="cols-5">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr>
+            <td><?= $queue->getAttributeLabel('name') ?></td>
+            <td><?=\CHtml::activeTextField($queue, 'name', ['class' => 'cols-full']); ?></td>
+        </tr>
+        <?php foreach (['description', 'report_definition', 'assignment_fields'] as $field) { ?>
+            <tr>
+                <td><?= $queue->getAttributeLabel($field) ?></td>
+                <td><?= \CHtml::activeTextArea(
+                        $queue,
+                        $field,
+                        ['class' => 'cols-full']); ?>
+                </td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
     <?php }?>
 
 <?php
