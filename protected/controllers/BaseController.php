@@ -188,7 +188,7 @@ class BaseController extends Controller
                     $this->redirect(Yii::app()->homeUrl);
                 }
                 $user->testUserPwDate();
-                
+
                 $user->userLogOnAttemptsCheck();
 
                 $whitelistedRequest = ($_SERVER['REQUEST_URI']=='/profile/password')||($_SERVER['REQUEST_URI']=='/site/logout'); // get stale pw whitelisted actions
@@ -333,7 +333,8 @@ class BaseController extends Controller
      */
     protected function renderJSON($data)
     {
-        header('Content-type: application/json');
+        header('Content-type: application/json', true);
+        header('Cache-Control: no-store');
         echo json_encode($data);
 
         foreach (Yii::app()->log->routes as $route) {
@@ -444,7 +445,7 @@ class BaseController extends Controller
                     continue;
                 }
                 $pattern = '/<(?:(?!\b' . implode('\b|\b', $allowable_tags) . '\b).)*?>/';
-                $value = preg_replace_callback($pattern,  function ($matches) {
+                $value = preg_replace_callback($pattern, function ($matches) {
                     return CHtml::encode($matches[0]);
                 }, $value);
                 $input[$key] = $value;

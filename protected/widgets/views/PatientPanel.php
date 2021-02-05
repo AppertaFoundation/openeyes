@@ -40,7 +40,7 @@ if ($summary) {
     $this->render('application.widgets.views.PatientPanelSummary', array('deceased'=>$deceased,'trialContext'=>$trialContext,'navIconsUrl'=>$navIconsUrl));
 
     $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js');
+    $widgetPath = $assetManager->publish('protected/widgets/js', true);
     Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
 } else { ?>
     <td>

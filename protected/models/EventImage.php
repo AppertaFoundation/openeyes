@@ -129,6 +129,7 @@ class EventImage extends BaseActiveRecord
         }
 
         $options['document_number'] = $this->document_number;
+        $options['last_modified'] = $this->last_modified_date;
         return Yii::app()->createUrl('eventImage/view', $options);
     }
 }

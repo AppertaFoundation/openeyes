@@ -523,7 +523,7 @@ class EventMedicationUse extends BaseElement
             if ($this->$k) {
                 if ($k === 'route') {
                     $both_laterality = MedicationLaterality::model()->findByPk(MedicationLaterality::BOTH);
-                    $this->$k->term = ($both_laterality && $this->medicationLaterality->name === $both_laterality->name) ? $this->$k->term . 's' : $this->$k->term;
+                    $this->$k->term = ($both_laterality && $this->medicationLaterality && $this->medicationLaterality->name === $both_laterality->name) ? $this->$k->term . 's' : $this->$k->term;
                 }
                 if ($k !== "dose_unit_term" || $this->dose) {
                     $res[] = $this->$k;
@@ -618,32 +618,88 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
+     * Gets full change history
+     *
+     * @param int $max_no_of_previous_history_changes
+     * @return array
+     * @throws Exception
+     */
+    public function getChangeHistory(int $max_no_of_previous_history_changes = 3) : array
+    {
+        $change_history = $this->getMedicationChangeHistory();
+        if ($this->isPrescription()) {
+            $change_history = array_merge($change_history, $this->getTaperChangeHistory());
+        }
+
+        usort($change_history, function ($a, $b) {
+            return strtotime($a['change_date']) < strtotime($b['change_date']) ? -1 : 1;
+        });
+
+        $no_of_changes = count($change_history);
+        $offset = ($no_of_changes > $max_no_of_previous_history_changes) ? ($no_of_changes - $max_no_of_previous_history_changes) : 0;
+
+        return array_slice($change_history, $offset, $no_of_changes);
+    }
+
+    /**
      *
      * gets history of changes for the medication
      *
      * @param $change_history array
-     * @param int $max_no_of_previous_history_changes
      * @return array
      */
-    public function getChangeHistory(array $change_history = [], int $max_no_of_previous_history_changes = 3) : array
+    public function getMedicationChangeHistory(array $change_history = []) : array
     {
         $id = $this->hasLinkedPrescribedEntry() ? $this->prescription_item_id : $this->id;
-        if (!$id || count($change_history) === $max_no_of_previous_history_changes ) {
+        if (!$id) {
             return $change_history;
         }
-        $medication_changed_stop_reason_id = HistoryMedicationsStopReason::getMedicationParametersChangedId();
         $previous_changed_medication = \EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $id]);
         if ($previous_changed_medication) {
-            if (isset($previous_changed_medication->event) && $previous_changed_medication->stop_reason_id === $medication_changed_stop_reason_id) {
+            if (isset($previous_changed_medication->event) && $previous_changed_medication->isChangedMedication()) {
                 $change_history[] = [
                     'change_date' => Helper::formatFuzzyDate($previous_changed_medication->event->event_date),
                     'dosage' => $previous_changed_medication->getDoseAndFrequency(false),
                     'frequency' => $previous_changed_medication->frequency ? $previous_changed_medication->frequency->code : '',
                     'side' => $previous_changed_medication->getTooltipLateralityDisplay($previous_changed_medication->getLateralityDisplay()),
-                    'user' => $this->createdUser->getFullName()
+                    'label' => $this->createdUser->getFullName()
                 ];
             }
-            return $previous_changed_medication->getChangeHistory($change_history);
+            return $previous_changed_medication->getMedicationChangeHistory($change_history);
+        }
+
+        return $change_history;
+    }
+
+    /**
+     * gets history of changes for the tapers
+     * @return array
+     * @throws Exception
+     */
+    public function getTaperChangeHistory() : array
+    {
+        $change_history = [];
+        $prescription_item = OphDrPrescription_Item::model()->findByPk($this->id);
+        $start_date = new DateTime($prescription_item->start_date);
+        $taper_start_date = $start_date;
+        if (!in_array($prescription_item->medicationDuration->name, array('Once', 'Other', 'Ongoing'))) {
+            $taper_start_date = $start_date->add(DateInterval::createFromDateString($prescription_item->medicationDuration->name));
+        }
+        $current_date = new DateTime();
+
+        foreach ($prescription_item->tapers as $taper) {
+            $display_date = $taper_start_date->format('Y-m-d');
+            if (!in_array($taper->duration->name, array('Once', 'Other', 'Ongoing'))) {
+                $taper_start_date = $taper_start_date->add(DateInterval::createFromDateString($taper->duration->name));
+            }
+            if ($current_date > $taper_start_date) {
+                $change_history[] = [
+                    'change_date' => Helper::formatFuzzyDate($display_date),
+                    'dosage' => $taper->getDosage(),
+                    'frequency' => $taper->frequency ? $taper->frequency->code : '',
+                    'label' => 'Taper'
+                ];
+            }
         }
 
         return $change_history;
@@ -687,7 +743,7 @@ class EventMedicationUse extends BaseElement
             if ($key !== 0) {
                 echo htmlspecialchars('<hr class="divider">', ENT_QUOTES, 'UTF-8');
             } ?>
-            <b><?= $medication_change['change_date'] ?></b> - <?= $medication_change['user'] ?><br>
+            <b><?= $medication_change['change_date'] ?></b> - <?= $medication_change['label'] ?><br>
             <?php if (!empty($medication_change['dosage'])) { ?>
                <b>Dosage: </b> <?= $medication_change['dosage'] ?> <br>
             <?php } ?>

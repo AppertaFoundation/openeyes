@@ -136,6 +136,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                         $this->render(
                             'HistoryMedicationsEntry_event_edit',
                             array(
+                                'element_errors' => $element->hasErrors(),
                                 'entry' => $entry,
                                 'form' => $form,
                                 'allergy_ids' => '',
@@ -213,6 +214,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                                 $this->render(
                                     'HistoryMedicationsEntry_event_edit',
                                     array(
+                                        'element_errors' => $element->hasErrors(),
                                         'entry' => $entry,
                                         'form' => $form,
                                         'allergy_ids' => '',
@@ -258,6 +260,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
         $this->render(
             'HistoryMedicationsEntry_event_edit',
             array(
+                'element_errors' => $element->hasErrors(),
                 'entry' => $empty_entry,
                 'form' => $form,
                 'allergy_ids' => '{{allergy_ids}}',

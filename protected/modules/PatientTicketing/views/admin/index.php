@@ -22,36 +22,23 @@ $assetManager = Yii::app()->getAssetManager();
 $widgetPath = $assetManager->publish('protected/widgets/js', true);
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js');
 ?>
-
-<div class="cols-5">
-
-<div class="row divider">
-    <?php echo $title ?></h2>
-</div>
-
+<h2><?= $title ?></h2>
+<div class="cols-half">
 <form id="admin_patient_ticketing">
-    <table class="standard">
-        <tbody>
-        <?php foreach ($queuesets as $i => $set) : ?>
-            <tr>
-                <td>
-                    <?php $this->renderPartial('queue_nav_item', array('queueset' => $set)); ?>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-        </tbody>
-        <tfooter class="pagination-container">
-            <tr>
-                <td>
-                    <button id="add-queueset" type="button" class="secondary small">Add Queue Set</button>
-                </td>
-            </tr>
-        </tfooter>
-    </table>
+    <div class="row">
+        <table class="standard last-right">
+            <tbody>
+            <?php foreach ($queuesets as $i => $set) {
+                $this->renderPartial('queue_nav_item', array('queueset' => $set));
+            } ?>
+            </tbody>
+        </table>
+    </div>
+    <hr class="divider">
+    <button id="add-queueset" type="button" class="hint green cols-half">Add Queue Set</button>
     <div class="alert-box info" style="display: none;" id="message-box">
     </div>
-
+    <hr>
     <div id="chart" class="column large-8 end orgChart" style="color:white;overflow-y: auto;"></div>
 </form>
 </div>

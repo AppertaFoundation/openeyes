@@ -196,8 +196,6 @@ if [ $clearcahes = 1 ]; then
     sudo mkdir -p $WROOT/protected/runtime/cache/events 2>/dev/null || :
     sudo chown www-data $WROOT/protected/runtime/cache/events 2>/dev/null
     sudo rm -rf $WROOT/assets/* 2>/dev/null || :
-    # Cache-Control, etc should have been set in .htaccess in the protected assets folder - copy this to the generated assets
-    cp "$WROOT"/protected/assets/.htaccess "$WROOT"/assets/.htaccess
     echo ""
 fi
 
