@@ -319,13 +319,14 @@
     });
 
     $(this).on('click', '.queueset-link', function () {
-      queueAdmin.displayQueue($(this).parents('li').data('initial-queue-id'));
+      queueAdmin.displayQueue($(this).parents('tr').data('initial-queue-id'));
     });
 
-    $(this).on('click', '.queueset-admin .permissions', function () {
-      var queueSetId = $(this).parents('li').data('queueset-id');
+    $(this).on('click', '.queueset-admin .permissions', function (e) {
+      e.preventDefault();
+      var queueSetId = $(this).parents('tr').data('queueset-id');
       queueAdmin.editQueueSetPermissions(queueSetId);
-      queueAdmin.displayQueue($(this).parents('li').data('initial-queue-id'));
+      queueAdmin.displayQueue($(this).parents('tr').data('initial-queue-id'));
     });
 
     $(this).on('click', '.add-child', function (e) {
@@ -333,10 +334,11 @@
       queueAdmin.addQueue(queueId);
     });
 
-    $(this).on('click', '.queueset-admin .edit', function () {
-      var queueSetId = $(this).parents('li').data('queueset-id');
+    $(this).on('click', '.queueset-admin .edit', function (e) {
+      e.preventDefault();
+      var queueSetId = $(this).parents('tr').data('queueset-id');
       queueAdmin.editQueueSet(queueSetId);
-      queueAdmin.displayQueue($(this).parents('li').data('initial-queue-id'));
+      queueAdmin.displayQueue($(this).parents('tr').data('initial-queue-id'));
     });
 
     $(this).on('click', '.queue .edit', function () {

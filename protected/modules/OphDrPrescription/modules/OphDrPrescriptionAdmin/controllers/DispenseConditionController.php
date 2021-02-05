@@ -72,7 +72,7 @@ class DispenseConditionController extends BaseAdminController
     {
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphDrPrescription_DispenseCondition'];
-            $model->locations = isset($_POST['OphDrPrescription_DispenseCondition']['locations']) ? $_POST['OphDrPrescription_DispenseCondition']['locations'] : [];
+            $model->all_locations = isset($_POST['OphDrPrescription_DispenseCondition']['all_locations']) ? $_POST['OphDrPrescription_DispenseCondition']['all_locations'] : [];
             $model->display_order =  isset($model->id) ? $model->display_order : $model->getNextHighestDisplayOrder(1);
 
             return $model->save();

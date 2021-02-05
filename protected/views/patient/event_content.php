@@ -6,7 +6,7 @@
             $this->renderPartial('//patient/event_automated');
         } ?>
         <?php if ($this->action->id === 'view') { ?>
-            <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad" ></i>
+        <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
         <?php } ?>
 
     </h2>
@@ -15,11 +15,11 @@
 
         <?php if ($this->title != 'Please select booking') { ?>
             <?php if (isset($this->event->firm)) : ?>
-                <div class="extra-info">
+                <div class="extra-info" style="font-size:105%">
                     <small class="fade">Subspecialty: </small>
                     <small><?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?></small>
                 </div>
-                <div class="extra-info">
+                <div class="extra-info" style="font-size:105%">
                     <small class="fade">&nbsp;Context: </small>
                     <small><?= $this->event->firm->name; ?></small>
                 </div>
@@ -73,12 +73,12 @@
                 });
             </script>
 
-          <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
+          <span class="extra-info js-event-date" style="font-size:90%"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
         <span class="js-has-tooltip" data-tooltip-content="Change Event date">
             <i class="oe-i history large pad-left js-change-event-date"
                style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
         </span>
-    <?php } ?>
+        <?php } ?>
         </div>
 
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
@@ -87,7 +87,7 @@
         $this->event->eventType->custom_hint_text
         && $this->event->eventType->hint_position === 'TOP'
         && in_array($this->action->id, array('create', 'update'))
-    ) { ?>
+) { ?>
         <div class="alert-box info">
             <div class="user-tinymce-content">
                 <?= $this->event->eventType->custom_hint_text ?>
@@ -99,7 +99,7 @@
         $this->event->eventType->custom_hint_text
         && $this->event->eventType->hint_position === 'BOTTOM'
         && in_array($this->action->id, array('create', 'update'))
-    ) { ?>
+) { ?>
         <div class="alert-box info">
             <div class="user-tinymce-content">
                 <?= $this->event->eventType->custom_hint_text ?>

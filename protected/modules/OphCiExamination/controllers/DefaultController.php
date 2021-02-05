@@ -202,25 +202,6 @@ class DefaultController extends \BaseEventTypeController
         $this->initEdit();
     }
 
-    /**
-     * Action to move the workflow forward a step on the given event.
-     *
-     * @param $id
-     */
-    public function actionStep($id)
-    {
-        $step_id = \Yii::app()->request->getParam('step_id');
-
-        if ($step_id) {
-            $this->step = models\OphCiExamination_ElementSet::model()->findByPk($step_id);
-        } else {
-            $this->step = $this->getCurrentStep()->getNextStep();
-        }
-
-        // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
-        $this->actionUpdate($id);
-    }
-
     public function actionUpdate($id)
     {
         $this->setCurrentSet();
@@ -819,6 +800,28 @@ class DefaultController extends \BaseEventTypeController
             $this->allergies = $this->patient->allergyAssignments;
         }
     }
+
+    /**
+     * Action to move the workflow forward a step on the given event.
+     *
+     * @param $id
+     */
+    public function actionStep($id)
+    {
+        $this->setContext($this->event->episode->firm);
+
+        $step_id = \Yii::app()->request->getParam('step_id');
+
+        if ($step_id) {
+            $this->step = models\OphCiExamination_ElementSet::model()->findByPk($step_id);
+        } else {
+            $this->step = $this->getCurrentStep()->getNextStep();
+        }
+
+        // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
+        $this->actionUpdate($id);
+    }
+
     /**
      * Override action value when action is step to be update.
      *
