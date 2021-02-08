@@ -65,7 +65,11 @@ class AttachmentDisplayController extends BaseApiController
             $mime_type = isset($_GET['mime']) ? $_GET['mime'] : '';
 
             header('Content-type: ' . $mime_type);
-            header('Cache-Control: public');
+            /*
+            * It should be safe to make the file immutable, as attachment references should always be unique ids, and modifications result in a new id.
+            * However, if not then the last modified timestamp should be appended to all urls to ensure cachebusting (same as EventImages)
+            */
+            header('Cache-Control: private, max-age=31536000, immutable');
             header('Pragma:');
             // Check if the client is validating his cache and if it is current.
             if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $file_mod_time)) {
