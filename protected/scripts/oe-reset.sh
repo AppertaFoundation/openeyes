@@ -304,7 +304,7 @@ fi
 
 echo "Clearing current database..."
 
-dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant all privileges on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%' identified by '$pass'; flush privileges;"
+dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%' identified by '$pass'; flush privileges;"
 
 echo ""
 ## write-out command to console (helps with debugging)
@@ -370,7 +370,7 @@ if [ -n "$icode" ]; then
     checkicodecmd="SELECT id FROM institution WHERE remote_id = '$icode';"
 
     icodeexists=$(eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$checkicodecmd\"")
-    if [ -n "$icodeexists" ]; then
+    if [ -z "$icodeexists" ]; then
 
         echo "
 
