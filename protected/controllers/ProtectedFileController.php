@@ -60,8 +60,6 @@ class ProtectedFileController extends BaseController
             throw new CException('File not found on filesystem: '.$file->getPath());
         }
         header('Content-Type: '.$file->mimetype);
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
 
         $image_size = getimagesize($filepath);
         $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
@@ -91,8 +89,6 @@ class ProtectedFileController extends BaseController
             throw new CHttpException(404, 'Thumbnail not available');
         }
         header('Content-Type: '.$file->mimetype);
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
         header('Content-Length: '.$thumbnail['size']);
         ob_clean();
         flush();
