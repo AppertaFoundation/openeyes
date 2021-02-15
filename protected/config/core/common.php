@@ -715,8 +715,8 @@ $config = array(
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
         'oe_version' => '4.1a',
-        'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
-        'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
+        'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : 'GP',
+        'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : 'General Practitioner',
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
         'worklist_dashboard_future_days' => 0,
         // page size of worklists - recommended to be very large by default, as paging is not generally needed here
