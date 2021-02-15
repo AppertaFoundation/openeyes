@@ -34,9 +34,6 @@
         </div>
         <div class="cols-3 column text-right">
           <i class="spinner" title="Loading..." style="display: none;"></i>
-          <button type="submit" class="primary">
-            Search
-          </button>
         </div>
 
     </div>
