@@ -8,7 +8,7 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
         $locations = array('N/A','Pharmacy','TTO Pre-Pack','Patient Own Drugs','Ward Fridge','Home','FP 10 HP','Already On');
         $conditions_setup = array(
             'Hospital to supply'=>array('Pharmacy','TTO Pre-Pack','Ward Fridge'),
-            'Hospital to supply and '.Yii::app()->params['gp_label'].' to continue'=>array('Pharmacy','TTO Pre-Pack','Ward Fridge'),
+            'Hospital to supply and '.\SettingMetadata::model()->getSetting('gp_label').' to continue'=>array('Pharmacy','TTO Pre-Pack','Ward Fridge'),
             'GP to supply'=>array('N/A'),
             'Patient self-supply'=>array('Patient Own Drugs','Home','Already On')
             );

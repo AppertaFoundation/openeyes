@@ -58,7 +58,7 @@
                     <?php } ?>
                 </div>
                 <div class="nhs-number">
-                    <?= Yii::app()->params['nhs_num_label'] ?>
+                    <?= \SettingMetadata::model()->getSetting('nhs_num_label') ?>
                     <?= $this->patient->nhsnum ?>
                 </div>
             </div>
