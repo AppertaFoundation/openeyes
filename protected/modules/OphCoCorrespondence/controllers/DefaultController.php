@@ -187,7 +187,7 @@ class DefaultController extends BaseEventTypeController
                 $cc['targets'][] = '<input type="hidden" name="CC_Targets[]" value="Patient' . $patient->id . '" />';
             } else {
                 $data['alert'] = 'Letters to the '
-                    . Yii::app()->params['gp_label'] . " should be cc'd to the patient, but this patient does not have a valid address.";
+                    . \SettingMetadata::model()->getSetting('gp_label')." should be cc'd to the patient, but this patient does not have a valid address.";
             }
         }
 
@@ -449,7 +449,7 @@ class DefaultController extends BaseEventTypeController
                     'document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',
                     array(
                         ':id' => $document_instance->id,
-                        ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'],
+                        ':ToCc' => 'To', ':type_gp' => \SettingMetadata::model()->getSetting('gp_label'),
                         ':type_ir' => 'INTERNALREFERRAL',
                     )
                 );
@@ -470,7 +470,7 @@ class DefaultController extends BaseEventTypeController
                     $recipients[$document_target->id] = ($document_target->contact_name . "\n" . $document_target->address);
 
                     //extra printout for note when the main recipient is NOT GP
-                    if ($document_target->ToCc == 'To' && $document_target->contact_type != Yii::app()->params['gp_label']) {
+                    if ($document_target->ToCc == 'To' && $document_target->contact_type != \SettingMetadata::model()->getSetting('gp_label')) {
                         if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
                             $recipients[$document_target->id] = $document_target->contact_name . "\n" . $document_target->address;
                         }
@@ -489,7 +489,7 @@ class DefaultController extends BaseEventTypeController
              * where the main recipient is NOT the GP than we need to cherrypick it
              */
             if (isset($_GET['print_only_gp']) && $_GET['print_only_gp'] === '1') {
-                $gp_targets = $letter->getTargetByContactType(Yii::app()->params['gp_label']);
+                $gp_targets = $letter->getTargetByContactType(\SettingMetadata::model()->getSetting('gp_label'));
                 foreach ($gp_targets as $gp_target) {
                     $recipients[] = $gp_target->contact_name . "\n" . $gp_target->address;
                 }
@@ -1117,7 +1117,7 @@ class DefaultController extends BaseEventTypeController
                 $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
                 if (($action === 'update') && $letter->draft && !Yii::app()->request->isPostRequest) {
-                    $gp_targets = $letter->getTargetByContactType(Yii::app()->params['gp_label']);
+                    $gp_targets = $letter->getTargetByContactType(\SettingMetadata::model()->getSetting('gp_label'));
 
                     foreach ($gp_targets as $gp_target) {
                         $api->updateDocumentTargetAddressFromContact($gp_target->id, 'Gp', $letter->id);

@@ -42,7 +42,7 @@
                     <!-- NHS number -->
                     <span class="hide-text print-only">
                                                 <!--                Parameterized for CERA-519-->
-                        <?php echo Yii::app()->params['nhs_num_label'].':'?>
+                        <?php echo \SettingMetadata::model()->getSetting('nhs_num_label').':'?>
                     </span>
                 </td>
                 <td>

@@ -478,7 +478,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             self::LETTER_INVITE => 'Invitation',
             self::LETTER_REMINDER_1 => '1st Reminder',
             self::LETTER_REMINDER_2 => '2nd Reminder',
-            self::LETTER_GP => 'Refer to '.Yii::app()->params['gp_label'],
+            self::LETTER_GP => 'Refer to '.\SettingMetadata::model()->getSetting('gp_label'),
         );
     }
 
@@ -488,7 +488,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $letterType = ($this->getDueLetter() !== null && isset($letterTypes[$this->getDueLetter()])) ? $letterTypes[$this->getDueLetter()] : false;
 
         if ($letterType == false && $this->getLastLetter() == self::LETTER_GP) {
-            $letterType = 'Refer to '.Yii::app()->params['gp_label'];
+            $letterType = 'Refer to '.\SettingMetadata::model()->getSetting('gp_label');
         }
 
         return $letterType;

@@ -276,7 +276,7 @@ class BaseController extends Controller
         $this->jsVars['OE_html_autocomplete'] = Yii::app()->params['html_autocomplete'];
         $this->jsVars['OE_event_print_method'] = Yii::app()->params['event_print_method'];
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
-        $this->jsVars['OE_GP_Setting'] = Yii::app()->params['gp_label'];
+        $this->jsVars['OE_GP_Setting'] = \SettingMetadata::model()->getSetting('gp_label');
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
         $this->jsVars['popupMode'] = SettingMetadata::model()->getSetting('patient_overview_popup_mode');
 

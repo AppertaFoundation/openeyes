@@ -645,7 +645,7 @@ EOH;
 
         if ($gp->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . Yii::app()->params['gp_label']);
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . \SettingMetadata::model()->getSetting('gp_label'));
             }
         }
 
@@ -674,7 +674,7 @@ EOH;
 
         if ($contact->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' ' . Yii::app()->params['gp_label'] . '-Contact');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' ' . \SettingMetadata::model()->getSetting('gp_label') . '-Contact');
             }
         }
 
@@ -691,7 +691,7 @@ EOH;
 
         if ($address->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' ' . Yii::app()->params['gp_label'] . '-Address');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' ' . \SettingMetadata::model()->getSetting('gp_label') . '-Address');
             }
         }
 

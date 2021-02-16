@@ -69,7 +69,7 @@ if (!@$no_header) { ?>
                 if (Yii::app()->params['nhs_num_private'] == true) {
                     echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num;
                 } else {
-                    echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num . ', ' . Yii::app()->params['nhs_num_label'] . ': ' . $element->event->episode->patient->nhsnum;
+                    echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num . ', ' . \SettingMetadata::model()->getSetting('nhs_num_label') . ': ' . $element->event->episode->patient->nhsnum;
                 }
             } else {
                 echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->calculateRe($this->patient)));

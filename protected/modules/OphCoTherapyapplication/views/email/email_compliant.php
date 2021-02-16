@@ -58,7 +58,7 @@ Patient consents to share data: <?php echo(is_null($service_info->patient_shared
 Patient Details:
 Full Name: <?php echo $patient->getFullName()."\n" ?>
 Number:<?php echo $patient->hos_num."\n" ?>
-<?php echo Yii::app()->params['nhs_num_label']?> Number: <?php echo $patient->nhs_num."\n" ?>
+<?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> Number: <?php echo $patient->nhs_num."\n" ?>
 DoB: <?php echo $patient->NHSDate('dob')."\n" ?>
 Gender: <?php echo $patient->getGenderString()."\n" ?>
 Address: <?php echo ($address = $patient->getLetterAddress(array('delimiter' => ', '))) ? $address."\n" : "Unknown\n"; ?>

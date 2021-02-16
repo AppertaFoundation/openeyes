@@ -14,7 +14,7 @@ $this->beginWidget('CActiveForm', array(
 <?php
 if ($context == "sidebar") { ?>
     <div id="oe-search-patient">
-        <h4>Search by <?php echo (Yii::app()->params['hos_num_label']) . ', ' . (Yii::app()->params['nhs_num_label'])?>, Firstname Surname or Surname, Firstname.</h4>
+        <h4>Search by <?php echo (Yii::app()->params['hos_num_label']) . ', ' . (\SettingMetadata::model()->getSetting('nhs_num_label'))?>, Firstname Surname or Surname, Firstname.</h4>
         <div class="search-patient row">
             <?=CHtml::textField('query', isset($search_term) ? $search_term : '', [
                 'autocomplete' => 'off',
@@ -35,7 +35,7 @@ if ($context == "sidebar") { ?>
                 'placeholder' => 'Search',
           ]); ?>
         <button type="submit" id="js-find-patient" class="blue hint">Find Patient</button>
-        <div class="find-by">Search by <?php echo (Yii::app()->params['hos_num_label']) . ', ' . (Yii::app()->params['nhs_num_label'])?>, Firstname Surname or Surname, Firstname.</div>
+        <div class="find-by">Search by <?php echo (Yii::app()->params['hos_num_label']) . ', ' . (\SettingMetadata::model()->getSetting('nhs_num_label'))?>, Firstname Surname or Surname, Firstname.</div>
       <i class="spinner" style="display: none;" title="Loading..."></i>
     </div>
 </div>

@@ -31,7 +31,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
 
 <div id="pas_warnings" class="alert-box alert with-icon" style="display: none;">
   <ul>
-    <li>One or more patients has no <?php echo \Yii::app()->params['gp_label'] ?> practice address, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.</li>
+    <li>One or more patients has no <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> practice address, please correct in PAS before printing <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> letter.</li>
     <li>One or more patients has no Address, please correct in PAS before printing a letter for them.</li>
   </ul>
   <a href="#" class="close">×</a>
@@ -107,7 +107,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
               <i class="oe-i letter-2 small js-has-tooltip" data-tooltip-content="2nd Reminder"></i>
             <?php } ?>
             <?php if ($eo->sentGPLetter()) { ?>
-                <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= "<?=\Yii::app()->params['gp_label']." Removal"?>"></i>
+                <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= "<?=\SettingMetadata::model()->getSetting('gp_label')." Removal"?>"></i>
             <?php } ?>
         </td>
 
@@ -158,7 +158,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
                 $('#pas_warnings').show();
                 $('#pas_warnings .no_gp').show();
               </script>
-              <span class="no-gp error">No <?php echo \Yii::app()->params['gp_label'] ?> </span>
+              <span class="no-gp error">No <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> </span>
             <?php } ?>
 
             <?php if ($patient && !$patient->contact->correspondAddress) { ?>
@@ -198,7 +198,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
             <i class="oe-i letter-2 small"></i>- 2<sup>nd</sup> Reminder
           </li>
           <li>
-            <i class="oe-i letter-GP small"></i>- <?php echo \Yii::app()->params['gp_label'] ?>  Removal
+            <i class="oe-i letter-GP small"></i>- <?php echo \SettingMetadata::model()->getSetting('gp_label') ?>  Removal
           </li>
         </ul>
         <ul>
@@ -209,7 +209,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
             Send another reminder (2 weeks)
           </li>
           <li class="send-gp-removal-letter">
-            Send <?php echo \Yii::app()->params['gp_label'] ?> removal letter
+            Send <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> removal letter
           </li>
           <li class="patient-due-removed">
             Patient is due to be removed
