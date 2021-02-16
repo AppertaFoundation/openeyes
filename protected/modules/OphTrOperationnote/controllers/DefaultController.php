@@ -1370,9 +1370,9 @@ class DefaultController extends BaseEventTypeController
                 return null;
             }
 
-            return '<div class="extra-info" style="font-size:105%">' .
+            return '<div class="extra-info">' .
                 '<small class="fade">Site: </small><small>' .
-                $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</small>' .
+                $element->site->name . ', ' . ($element->theatre->name ?? 'None') . '</small>' .
                 '</div>';
         }
         return null;

@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var $content string
+ * @var $form_id string
+ */
+?>
 <main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content">
 
     <h2 class="event-title">
@@ -13,15 +19,15 @@
     <?php $extra_info = $this->getExtraTitleInfo(); ?>
     <div class="event-title-extra-info flex-layout">
 
-        <?php if ($this->title != 'Please select booking') { ?>
+        <?php if ($this->title !== 'Please select booking') { ?>
             <?php if (isset($this->event->firm)) : ?>
-                <div class="extra-info" style="font-size:105%">
+                <div class="extra-info">
                     <small class="fade">Subspecialty: </small>
-                    <small><?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?></small>
+                    <small><?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name ?></small>
                 </div>
-                <div class="extra-info" style="font-size:105%">
+                <div class="extra-info">
                     <small class="fade">&nbsp;Context: </small>
-                    <small><?= $this->event->firm->name; ?></small>
+                    <small><?= $this->event->firm->name ?></small>
                 </div>
             <?php endif; ?>
 
@@ -52,7 +58,7 @@
             ?>
             <script>
                 $(document).ready(function() {
-                    var $date_input = $('.js-event-date-input');
+                    const $date_input = $('.js-event-date-input');
                     $('.js-change-event-date').on('click', function() {
                         if (!$(this).hasClass('disabled')) {
                             $date_input.show();
@@ -65,15 +71,16 @@
                     $('.pickmeup.pmu-view-days').on('click', function() {
                         if ($(this).hasClass('pmu-hidden')) {
                             $date_input.hide();
-                            $('.js-event-date').html($date_input.val());
+                            const $event_date = $('.js-event-date')
+                            $event_date .html($date_input.val());
                             $('.js-change-event-date').show();
-                            $('.js-event-date').show();
+                            $event_date.show();
                         }
                     });
                 });
             </script>
 
-          <span class="extra-info js-event-date" style="font-size:90%"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
+          <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
         <span class="js-has-tooltip" data-tooltip-content="Change Event date">
             <i class="oe-i history large pad-left js-change-event-date"
                style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
@@ -120,7 +127,7 @@
             // For every eyedraw element
             $('.eyedraw').each(function() {
                 // find it's "twin" element
-                var $other = $(this).closest('.element').find('.eyedraw').not(this);
+                const $other = $(this).closest('.element').find('.eyedraw').not(this);
                 // and scale up this eyedraw element if it is smaller than the twin
                 if ($(this).height() < $other.height()) {
                     $(this).css('height', $other.height());
