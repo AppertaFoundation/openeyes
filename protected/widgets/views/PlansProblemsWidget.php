@@ -32,6 +32,12 @@
         <?php } ?>
     </ul>
 
+    <?php if ($allow_save) : ?>
+        <div class="create-new-problem-plan flex-layout">
+            <input class="create-problem-plan" type="text" placeholder="Add Problem or Plan">
+            <button class="button hint green js-add-pp-btn"><i class="oe-i plus pro-theme"></i></button>
+        </div>
+    <?php endif; ?>
     <?php if (count($past_plans_problems) > 0) {
         if (isset($is_popup) ) { ?>
             <h3>Past/closed problems</h3>

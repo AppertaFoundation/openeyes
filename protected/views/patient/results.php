@@ -94,7 +94,7 @@ $based_on = implode(', ', $based_on);
                              'Born',
                              'Age',
                              'Gender',
-                             Yii::app()->params['nhs_num_label'],
+                             \SettingMetadata::model()->getSetting('nhs_num_label'),
                          ) as $i => $field) { ?>
               <th id="patient-grid_c<?php echo $i; ?>">
                   <?php

@@ -86,7 +86,7 @@ class GpService extends ModelService
     public function delete($id)
     {
         if (!($gp = $this->model->findByPk($id))) {
-            throw new NotFound(Yii::app()->params['gp_label']." with ID '$id' not found");
+            throw new NotFound(\SettingMetadata::model()->getSetting('gp_label')." with ID '$id' not found");
         }
 
         $crit = new \CDbCriteria();

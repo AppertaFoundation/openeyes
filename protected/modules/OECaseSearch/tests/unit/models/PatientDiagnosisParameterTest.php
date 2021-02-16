@@ -84,7 +84,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             ),
             'Firm' => array(
                 'attribute' => 'firm_id',
-                'expected' => 'by Aylward Firm',
+                'expected' => 'Aylward Firm',
             ),
             'Only latest event' => array(
                 'attribute' => 'only_latest_event',

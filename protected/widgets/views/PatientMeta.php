@@ -34,7 +34,7 @@ if ($this->controller->id != "patient" && $this->controller->id != 'default') { 
                     <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
                 </div>
                 <div class="nhs-number">
-                    <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
+                    <span><?php echo \SettingMetadata::model()->getSetting('nhs_num_label') ?></span>
                     <?php echo $this->patient->nhsnum ?>
                     <?php if ($this->patient->nhsNumberStatus) : ?>
                         <i class="oe-i <?= isset($this->patient->nhsNumberStatus->icon->class_name) ? $this->patient->nhsNumberStatus->icon->class_name : 'exclamation' ?> small"></i>

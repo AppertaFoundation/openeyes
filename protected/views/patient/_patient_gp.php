@@ -18,7 +18,7 @@
 ?>
 <section class="element view full patient-info js-toggle-container">
     <header class="element-header">
-        <h3 class="element-title"><?= Yii::app()->params['general_practitioner_label'] ?: 'General Practitioner'?></h3>
+        <h3 class="element-title"><?= \SettingMetadata::model()->getSetting('general_practitioner_label') ?: 'General Practitioner'?></h3>
     </header>
     <div class="element-data full-width js-toggle-body">
         <table class="standard">
@@ -33,11 +33,11 @@
             </tr>
             <?php if (Yii::app()->user->checkAccess('admin')) { ?>
                 <tr class="data-group">
-                    <td class="data-label"><?= Yii::app()->params['gp_label'] ?: 'GP'?> Address:</td>
+                    <td class="data-label"><?= \SettingMetadata::model()->getSetting('gp_label') ?: 'GP'?> Address:</td>
                     <td class="data-value"><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown' ?></td>
                 </tr>
                 <tr class="data-group">
-                    <td class="data-label"><?= Yii::app()->params['gp_label'] ?: 'GP'?> Telephone:</td>
+                    <td class="data-label"><?= \SettingMetadata::model()->getSetting('gp_label') ?: 'GP'?> Telephone:</td>
                     <td class="data-value"><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown' ?></td>
                 </tr>
             <?php } ?>

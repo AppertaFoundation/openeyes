@@ -206,7 +206,7 @@ class Patient extends BaseResource
                 if ($gp = \Gp::model()->findByAttributes(array('nat_id' => $code))) {
                     $patient->gp_id = $gp->id;
                 } else {
-                    $this->addWarning('Could not find '.\Yii::app()->params['gp_label'].' for code '.$code);
+                    $this->addWarning('Could not find '.\SettingMetadata::model()->getSetting('gp_label').' for code '.$code);
                 }
             } else {
                 $patient->gp_id = null;
@@ -315,7 +315,7 @@ class Patient extends BaseResource
                 if ($status = \NhsNumberVerificationStatus::model()->findByAttributes(array('code' => $code))) {
                     $patient->nhs_num_status_id = $status->id;
                 } else {
-                    $this->addWarning('Unrecognised '.\Yii::app()->params['nhs_num_label'].' number status code '.$code);
+                    $this->addWarning('Unrecognised '.\SettingMetadata::model()->getSetting('nhs_num_label').' number status code '.$code);
                 }
             } else {
                 $patient->nhs_num_status_id = null;

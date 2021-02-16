@@ -146,7 +146,7 @@ class DocmanController extends BaseController
         if ($selected_contact_type == 'PATIENT') {
             $contact_id = $patient->contact_id;
         } else {
-            if ($selected_contact_type == Yii::app()->params['gp_label']) {
+            if ($selected_contact_type == \SettingMetadata::model()->getSetting('gp_label')) {
                 if (isset($patient->practice)) {
                     $contact_id = $patient->practice->contact->id;
                 } else {
@@ -164,7 +164,7 @@ class DocmanController extends BaseController
             $contact = Contact::model()->findByPk($contact_id);
             $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
             if (!$address) {
-                if ($selected_contact_type == Yii::app()->params['gp_label']) {
+                if ($selected_contact_type == \SettingMetadata::model()->getSetting('gp_label')) {
                     $address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : $patient->practice->contact->address;
                 }
             }

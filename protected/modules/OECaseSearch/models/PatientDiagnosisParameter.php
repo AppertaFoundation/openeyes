@@ -63,12 +63,13 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
             switch ($attribute) {
                 case 'value':
                     return Disorder::model()->findByPk($this->$attribute)->term;
-                    break;
                 case 'firm_id':
-                    return 'by ' . Firm::model()->findByPk($this->$attribute)->name;
-                    break;
+                    if ($this->$attribute !== '' && $this->$attribute !== null) {
+                        return Firm::model()->findByPk($this->$attribute)->name;
+                    }
+                    return 'Any context';
                 case 'only_latest_event':
-                    return 'Only patient\'s latest event';
+                    return $this->$attribute ? 'Only patient\'s latest event' : '';
                 default:
                     return parent::getValueForAttribute($attribute);
             }

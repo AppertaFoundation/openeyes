@@ -34,7 +34,7 @@
         <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
             <i class="oe-i exclamation pad-right no-click medium-icon"></i>
             <b>
-                <?php echo Yii::app()->params['nhs_num_label'] .
+                <?php echo \SettingMetadata::model()->getSetting('nhs_num_label') .
                   ((Yii::app()->params['institution_code'] === 'CERA') ? '' : ' Number') ?>:
                 <?= $this->patient->nhsNumberStatus->description; ?>
             </b>
@@ -55,7 +55,7 @@
                 <?php } ?>
             </div>
             <div class="nhs-number">
-                <?= Yii::app()->params['nhs_num_label'] ?>
+                <?= \SettingMetadata::model()->getSetting('nhs_num_label') ?>
                 <?= $this->patient->nhsnum ?>
             </div>
         </div>
@@ -113,15 +113,15 @@
                     <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
                         <tbody>
                         <tr>
-                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') ?></td>
                             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['general_practitioner_label'] . ' Role' ?></td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') . ' Role' ?></td>
                             <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Telephone</td>
                             <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
                         </tr>
                         <?php if (($this->patient->gp_id)) {
@@ -192,11 +192,11 @@
                         <tr>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') ?></td>
                             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Address</td>
                             <td>
                                 <?php
                                     // Show GP Practice address if available, otherwise fallback to GP address
@@ -210,7 +210,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Telephone</td>
                             <td>
                                 <?php
                                     // Show Practice phone number first, if not, fall back to GP phone number
@@ -243,11 +243,11 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') ?></td>
                             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Address</td>
                             <td>
                                 <?php
                                     // Show GP Practice address if available, otherwise fallback to GP address
@@ -261,7 +261,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Telephone</td>
                             <td>
                                 <?php
                                     // Show Practice phone number first, if not, fall back to GP phone number
@@ -275,7 +275,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Email</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Email</td>
                             <td>
                                 <?php
                                     // Show Email address

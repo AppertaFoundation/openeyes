@@ -38,7 +38,7 @@
     </p>
 
     <p class="accessible">
-        Despite a reminder letter, I have not heard from you. I am therefore referring you back to your <?php echo \Yii::app()->params['gp_label'] ?> and have removed you from our waiting list.
+        Despite a reminder letter, I have not heard from you. I am therefore referring you back to your <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> and have removed you from our waiting list.
     </p>
 
     <?php echo $this->renderPartial('../letters/letter_end', array('accessible' => true)); ?>

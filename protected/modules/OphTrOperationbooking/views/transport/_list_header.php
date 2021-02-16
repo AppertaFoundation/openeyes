@@ -17,7 +17,7 @@
  */
 ?>
 <div id="no_gp_warning" class="alert-box alert with-icon hide">
-    One or more patients has no <?php echo \Yii::app()->params['gp_label'] ?> practice, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.
+    One or more patients has no <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> practice, please correct in PAS before printing <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> letter.
 </div>
 <div id="transportList">
     <table class="standard transport">
