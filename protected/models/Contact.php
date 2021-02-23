@@ -78,7 +78,8 @@ class Contact extends BaseActiveRecordVersioned
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
             array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
-            array('title, first_name, last_name, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
+            array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
+            array('first_name, last_name', 'parenthesisValidator'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message'=>'Please select a Role.'),
             array('primary_phone', 'requiredValidator'),
@@ -92,6 +93,21 @@ class Contact extends BaseActiveRecordVersioned
         );
     }
 
+    public function parenthesisValidator($attribute, $params)
+    {
+        $scenario = $this->getScenario();
+        if ($scenario === 'admin_contact') {
+            // if the first name and last name are from admin contact, allow alphabets, parenthesis, and dash (-)
+            if (!preg_match("/^[a-zA-Z \(\)-]+$/", $this->$attribute)) {
+                $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered. bracket");
+            }
+        } else {
+            // use the conventional regex for any other scenario
+            if (!preg_match('/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', $this->$attribute)) {
+                $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered. default");
+            }
+        }
+    }
     public function requiredValidator($attribute, $params)
     {
         $scenario = $this->getScenario();
@@ -289,7 +305,7 @@ class Contact extends BaseActiveRecordVersioned
     }
 
     protected function performAjaxValidation($model)
-        {
+    {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
