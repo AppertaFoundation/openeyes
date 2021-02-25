@@ -91,14 +91,21 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
         $result['errors'] = "";
         try {
             foreach ($delete_ids as $group_id) {
-                $group = CommonSystemicDisorderGroup::model()->deleteByPk($group_id);
-                if ($group) {
-                    Audit::add('admin-common-systemic-disorder-group', 'delete', $group);
-                } else {
+                //check if there are disorders in the disorder group before deleting the group
+                $disorderGroup = CommonSystemicDisorderGroup::model()->findByPk($group_id);
+                $disorder = CommonSystemicDisorder::model()->findByAttributes(array('group_id' => $group_id));
+                if (isset($disorder) && isset($disorderGroup->name)) {
                     $success = false;
                     $result['status'] = 0;
-                    $result['errors'][] = $group->getErrors();
+                    $result['errors']= array(
+                        "There are disorders associated with the Group: '" . $disorderGroup->name . "', please remove disorder from the Group before deleting."
+                    );
                     break;
+                } else {
+                    $deleteGroup = CommonSystemicDisorderGroup::model()->deleteByPk($group_id);
+                    if ($deleteGroup) {
+                        Audit::add('admin-common-systemic-disorder-group', 'delete', $deleteGroup);
+                    }
                 }
             }
         } catch (Exception $e) {
