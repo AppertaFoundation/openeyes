@@ -1,5 +1,5 @@
 <li class="oe-nav-btn" id="js-nav-shortcuts">
-        <a class="nav-js-btn icon-btn" id="js-nav-shortcuts-btn" onclick="returnFalse()">
+        <a class="nav-js-btn icon-btn" id="js-nav-shortcuts-btn">
             <svg viewBox="0 0 80 40" class="icon shortcuts">
                 <use xlink:href="<?= $navIconUrl . '#shortcuts-icon' ?>"></use>
             </svg>
