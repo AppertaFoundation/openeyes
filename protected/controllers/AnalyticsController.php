@@ -1298,7 +1298,8 @@ class AnalyticsController extends BaseController
         // Start with the biggest dataset (optional match on procedures).
         $base_id_list = $proc_command->queryColumn();
 
-        if (count($base_id_list) !== $total_patients) {
+        $num_patients_returned = count($base_id_list);
+        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
             // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
             // This will be used to bypass giant IN conditions.
             $diag_command = $diag_command->andWhere('p.id IN (' . implode(', ', $base_id_list). ')');
@@ -1310,7 +1311,9 @@ class AnalyticsController extends BaseController
             )
         )->queryColumn();
 
-        if (count($base_id_list) !== $total_patients) {
+        $num_patients_returned = count($base_id_list);
+
+        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
             // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
             // This will be used to bypass giant IN conditions.
             $age_command = $age_command->andWhere('p.id IN (' . implode(', ', $base_id_list). ')');
@@ -1322,7 +1325,9 @@ class AnalyticsController extends BaseController
             )
         )->queryColumn();
 
-        if (count($base_id_list) !== $total_patients) {
+        $num_patients_returned = count($base_id_list);
+
+        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
             // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
             // This will be used to bypass giant IN conditions.
             $surgeon_command = $surgeon_command->andWhere('p.id IN (' . implode(', ', $base_id_list). ')');
@@ -1333,7 +1338,9 @@ class AnalyticsController extends BaseController
             )
         )->queryColumn();
 
-        if (count($base_id_list) === $total_patients) {
+        $num_patients_returned = count($base_id_list);
+
+        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
             // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
             // This will be used to bypass giant IN conditions.
             return null;
