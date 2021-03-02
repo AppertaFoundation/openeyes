@@ -97,14 +97,22 @@ class Contact extends BaseActiveRecordVersioned
     {
         $scenario = $this->getScenario();
         if ($scenario === 'admin_contact') {
-            // if the first name and last name are from admin contact, allow alphabets, parenthesis, and dash (-)
-            if (!preg_match("/^[a-zA-Z \(\)-]+$/", $this->$attribute)) {
-                $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered. bracket");
+            // One of first name and last name needs to be entered
+            if (!$this->first_name && !$this->last_name) {
+                // to avoid duplicated warning messages
+                if (!$this->getErrors('Empty Names')) {
+                    $this->addError('Empty Names', "First Name and Last Name cannot be both blank");
+                }
+            } else {
+                // if the first name and last name are from admin contact, allow alphabets, parenthesis, and dash (-)
+                if ($this->$attribute && !preg_match("/^[a-zA-Z \(\)-]+$/", $this->$attribute)) {
+                    $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered.");
+                }
             }
         } else {
             // use the conventional regex for any other scenario
             if (!preg_match('/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', $this->$attribute)) {
-                $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered. default");
+                $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered.");
             }
         }
     }
