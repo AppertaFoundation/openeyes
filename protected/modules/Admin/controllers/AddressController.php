@@ -57,6 +57,7 @@ class AddressController extends BaseAdminController
             $model->attributes = $request->getPost('Address');
             if ($request->getPost('Contact')) {
                 $model->contact->attributes = $request->getPost('Contact');
+                $model->contact->setScenario('admin_contact');
                 if (!$model->contact->save()) {
                     $errors = $model->contact->getErrors();
                 }
