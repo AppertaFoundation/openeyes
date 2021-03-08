@@ -40,63 +40,26 @@
             <tr>
                 <td>Upload</td>
                 <td>
-                    <label class="inline highlight ">
+                    <label class="inline highlight">
                         <input type="radio" value="single" id="upload_single"
                                name="upload_mode"
-                            <?= $element->single_document_id || (!$element->right_document_id && !$element->left_document_id) ? "checked" : ""; ?>
-                            <?= ($element->left_document_id || $element->right_document_id ? ' disabled' : '') ?>>
+                            <?= $element->single_document_id || !$element->hasSidedAttributesSet("AND") ? "checked" : ""; ?>
+                            <?= ($element->hasSidedAttributesSet("OR") ? ' disabled' : '') ?>>
                                Single file
-                    </label> <label class="inline highlight ">
+                    </label> <label class="inline highlight">
                         <input type="radio" name="upload_mode"
                                value="double"
-                            <?= ($element->left_document_id || $element->right_document_id ? "checked" : ""); ?>
-                            <?= ($element->single_document_id ? " disabled" : ""); ?>>
+                            <?= ($element->hasSidedAttributesSet("OR") ? "checked" : ""); ?>
+                            <?= ($element->single_document_id || $element->single_comment ? " disabled" : ""); ?>>
                                Right/Left sides
                     </label></td>
             </tr>
             </tbody>
         </table>
-        <div class="element-fields flex-layout flex-top col-gap">
-            <div class="cols-11">
-                <div id="document-comments" data-comment-button="#document_comment_button"
-                     class="cols-full js-comment-container "
-                     style="<?php if ($element->comment == null) {
-                            echo 'display:none';
-                            } ?>">
-                    <div class="comment-group flex-layout flex-left " style="padding-top:5px">
-                        <?php
-                        echo $form->textArea(
-                            $element,
-                            'comment',
-                            array('rows' => '1','nowrapper' => true),
-                            false,
-                            ['placeholder' => 'Comments' , 'class' => 'autosize ']
-                        );
-                        ?>
-                        <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="cols-1 last-right">
-                <div class="add-data-actions">
-                    <button id="document_comment_button"
-                            class="button js-add-comments"
-                            data-comment-container="#document-comments"
-                            type="button"
-                            style="visibility:<?php if ($element->comment != null) {
-                                echo 'hidden';
-                                              } ?>">
-
-                        <i class="oe-i comments small-icon"></i>
-                    </button>
-                </div>
-            </div>
-
-        </div>
         <hr class="divider">
         <div id="single_document_uploader" class="data-group js-document-upload-wrapper"
             <?= (!$element->single_document_id &&
-            ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : ''); ?>>
+            ($element->hasSidedAttributesSet("OR")) ? 'style="display:none"' : ''); ?>>
             <div id="single-rotate-actions"
                 <?= (!$element->single_document_id ||
                 $element->single_document->mimetype == "application/pdf" ?
@@ -148,11 +111,33 @@
                 </tr>
                 </tbody>
             </table>
+            <div class="cols-11">
+                <div class="js-comment-container flex-layout flex-left"
+                     id="document-single-comments"
+                     style="display: <?= $element->single_comment || array_key_exists('single_comment', $element->getErrors()) ? 'block;' : 'none;' ?>"
+                     data-comment-button="#document_single_comment_button">
+                    <?= $form->textArea(
+                        $element,
+                        'single_comment',
+                        array('rows' => '1', 'nowrapper' => true),
+                        false,
+                        ['placeholder' => 'Comments', 'class' => 'js-comment-field autosize']
+                    ); ?>
+                    <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+                </div>
+                <button id="document_single_comment_button"
+                        class="button js-add-comments"
+                        data-comment-container="#document-single-comments"
+                        type="button"
+                        data-hide-method="display"
+                        style="display: <?= $element->single_comment || array_key_exists('single_comment', $element->getErrors()) ? 'none;' : 'block;' ?>">
+                    <i class="oe-i comments small-icon"></i>
+                </button>
+            </div>
         </div>
 
-
         <div id="double_document_uploader" class="data-group js-document-upload-wrapper"
-            <?= ($element->left_document_id || $element->right_document_id ? '' : 'style="display:none"'); ?> >
+            <?= ($element->hasSidedAttributesSet("OR") ? '' : 'style="display:none"'); ?> >
             <table class="last-left cols-full">
                 <colgroup>
                     <col class="cols-half" span="2">
@@ -206,13 +191,32 @@
                             <button class="hint red" data-side="<?=$side?>">remove uploaded file</button>
                         </div>
                         <?= CHtml::activeHiddenField($element, $side.'_document_id', ['class' => 'js-document-id']); ?>
+                            <div class="js-comment-container flex-layout flex-left" id="document-<?= $side ?>-comments"
+                                <?= $element->{$side."_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? '' : 'style="display:none;"' ?>
+                                 data-comment-button="#document_<?= $side ?>_comment_button">
+                                <?= $form->textArea(
+                                    $element,
+                                    "{$side}_comment",
+                                    array('rows' => '1', 'nowrapper' => true),
+                                    false,
+                                    ['placeholder' => 'Comments', 'class' => 'js-comment-field autosize cols-full']
+                                ); ?>
+                                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+                            </div>
+                            <button id="document_<?= $side ?>_comment_button"
+                                    class="button js-add-comments"
+                                    data-comment-container="#document-<?= $side ?>-comments"
+                                    type="button"
+                                    data-hide-method="display"
+                                    style="display: <?= $element->{$side."_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? 'none;' : 'block;' ?>">
+                                <i class="oe-i comments small-icon"></i>
+                            </button>
                     </td>
                     <?php endforeach; ?>
                 </tr>
                 </tbody>
             </table>
         </div>
-
 
         <div class="data-group fade">
             The following file types are accepted: <?php echo implode(', ', $this->getAllowedFileTypes()); ?> (Maximum
