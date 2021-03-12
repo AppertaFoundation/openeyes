@@ -64,7 +64,8 @@ class SystemicDiagnoses extends \BaseEventElementWidget
      */
     public function getMissingRequiredSystemicDiagnoses()
     {
-        $current_ids = array_map(function ($e) { return $e->disorder_id;
+        $current_ids = array_map(function ($e) {
+            return $e->disorder_id;
         }, array_merge($this->element->diagnoses, $this->element->checked_required_diagnoses));
         $missing = array();
         $firm_id = $this->element->event ? $this->element->event->firm_id : null;
@@ -86,7 +87,8 @@ class SystemicDiagnoses extends \BaseEventElementWidget
 
     public function getCheckedRequiredSystemicDiagnoses()
     {
-        $current_disorder_ids = array_map(function ($e) { return $e->disorder_id;
+        $current_disorder_ids = array_map(function ($e) {
+            return $e->disorder_id;
         }, array_merge($this->element->diagnoses));
         $checked = array();
         foreach ($this->element->checked_required_diagnoses as $diag) {
@@ -111,11 +113,13 @@ class SystemicDiagnoses extends \BaseEventElementWidget
 
         $ret[] = implode(" // ", $present);
         if (!empty($required_checked)) {
-            $ret[] = implode(" // ", array_map(function($e){ return '<strong>Not present: </strong>'. $e->disorder->term;
+            $ret[] = implode(" // ", array_map(function($e){
+                return '<strong>Not present: </strong>'. $e->disorder->term;
             }, $required_checked));
         }
         if (!empty($required_not_checked)) {
-            $ret[] = implode(" // ", array_map(function($e){ return '<strong>Not checked: </strong>'. $e->disorder->term;
+            $ret[] = implode(" // ", array_map(function($e){
+                return '<strong>Not checked: </strong>'. $e->disorder->term;
             }, $required_not_checked));
         }
 
@@ -133,9 +137,11 @@ class SystemicDiagnoses extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        if (array_key_exists('no_systemic_diagnoses', $data) && $data['no_systemic_diagnoses'] === '1' && !$element->no_systemic_diagnoses_date) {
-            $element->no_systemic_diagnoses_date = date('Y-m-d H:i:s');
-        } elseif ($element->no_systemic_diagnoses_date) {
+        if (array_key_exists('no_systemic_diagnoses', $data) && $data['no_systemic_diagnoses'] === '1') {
+            if (!$element->no_systemic_diagnoses_date) {
+                $element->no_systemic_diagnoses_date = date('Y-m-d H:i:s');
+            }
+        } else {
             $element->no_systemic_diagnoses_date = null;
         }
 
