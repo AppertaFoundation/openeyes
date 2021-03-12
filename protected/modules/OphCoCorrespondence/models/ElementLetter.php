@@ -439,8 +439,8 @@ class ElementLetter extends BaseEventTypeElement
 
             $contact = $user->contact;
             if ($contact) {
-                $this->footer = $api->getFooterText();
-                $ssa = $firm->serviceSubspecialtyAssignment;
+                // if no correspondence_sign_off_user_id set in the user's profile than the sign is blank
+                $this->footer = $user->signOffUser ? $api->getFooterText($user->signOffUser) : '';
             }
 
             // Look for a macro based on the episode_status

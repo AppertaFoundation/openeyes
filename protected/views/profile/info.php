@@ -111,15 +111,15 @@
               <div class="cols-2">
                   <label for="user_out_of_office">Out of office:</label>
               </div>
-            <div class="cols-5 left-align">
-                <label class="inline highlight">
-                    <?= $form->checkBox($user_out_of_office, 'enabled', array(
-                        'nowrapper' => true,
-                        'no-label' => true,
-                        'checked' => $user_out_of_office->enabled ? true : false,
-                        'style' =>'width:20px;')).'Yes' ?>
-                </label>
-            </div>
+              <div class="cols-5 left-align">
+                  <label class="inline highlight">
+                      <?= $form->checkBox($user_out_of_office, 'enabled', array(
+                          'nowrapper' => true,
+                          'no-label' => true,
+                          'checked' => $user_out_of_office->enabled ? true : false,
+                          'style' =>'width:20px;')).'Yes' ?>
+                  </label>
+              </div>
           </div>
       </td>
   </tr>
@@ -146,6 +146,58 @@
           </div>
       </td>
   </tr>
+  <tr>
+      <td>
+          <div class="data-group flex-layout cols-full js-correspondence-sign-off">
+              <div class="cols-2">
+                  <label for="User_qualifications">Default correspondence sign-off:</label>
+              </div>
+              <div class="cols-5">
+
+                  <label class="inline highlight ">
+                      <input style="width:15px"
+                            value=""
+                            id="ElementLetter_is_signed_off_blank"
+                            type="radio"
+                            <?=$user->correspondence_sign_off_user_id === null ? 'checked' : ''?>
+                            name="User[correspondence_sign_off_user_id]"><span>Blank</span>
+                  </label>
+                  <label class="inline highlight ">
+                      <input style="width:15px"
+                             value="<?=$user->id?>"
+                             id="ElementLetter_is_signed_off_1"
+                             type="radio"
+                             <?=$user->correspondence_sign_off_user_id == $user->id ? 'checked' : ''?>
+                             name="User[correspondence_sign_off_user_id]"><span>Myself</span>
+                  </label>
+                  <label class="inline highlight ">
+                      <input style="width:15px"
+                             value="<?=$user->correspondence_sign_off_user_id;?>"
+                             id="correspondence_sign_off_user_id_other"
+                             type="radio"
+                            <?=!in_array($user->correspondence_sign_off_user_id, [$user->id, null]) ? 'checked' : ''?>
+                             name="User[correspondence_sign_off_user_id]"><span>Other</span>
+                  </label>
+                  <div class="js-autocomplete-wrapper" style="display:
+                    <?=($user->correspondence_sign_off_user_id != $user->id) && ($user->correspondence_sign_off_user_id !== null) ? "block" : "none";?>
+                    ">
+                      <?php $this->widget(
+                          'application.widgets.AutoCompleteSearch',
+                          ['htmlOptions' => ['placeholder' => 'Search users']]
+                      ); ?>
+                      <div class="js-autocomplete-results">
+                          <ul class="oe-multi-select inline">
+                              <?php if ($user->correspondence_sign_off_user_id && $user->correspondence_sign_off_user_id != $user->id) :?>
+                                  <li><?=$user->signOffUser->fullName;?><i class="oe-i remove-circle small-icon pad-left"></i></li>
+                              <?php endif;?>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </td>
+  </tr>
+
   <tr id="alternate_user_row" style="<?php echo $user_out_of_office->enabled ? '' : 'display: none' ?>">
       <td>
           <div class="data-group flex-layout cols-full">
@@ -220,6 +272,56 @@
             $('#UserOutOfOffice_alternate_user_id').val('');
         });
 
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#oe-autocompletesearch'),
+            url: baseUrl + '/OphCoCorrespondence/default/users/correspondence-footer/true',
+            onSelect: function () {
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                const $ul = document.querySelector('.js-autocomplete-results ul');
+
+                // remove all child
+                $ul.innerHTML = '';
+
+                const name = document.createTextNode(AutoCompleteResponse.fullname);
+                const $li = document.createElement("li");
+                const $i = document.createElement("i");
+                $i.classList.add('oe-i', 'remove-circle', 'small-icon', 'pad-left');
+
+                $li.appendChild(name);
+                $li.appendChild($i);
+                $ul.appendChild($li);
+
+                document.getElementById('correspondence_sign_off_user_id_other').value = AutoCompleteResponse.id;
+            }
+        });
+
+        document.querySelector('.js-correspondence-sign-off').addEventListener('click', function(e) {
+            function handler() {
+                document.querySelector('.js-autocomplete-wrapper').style.display = this.id === 'correspondence_sign_off_user_id_other' ? 'block' : 'none';
+            }
+            // loop parent nodes from the target to the delegation node
+            for (let target = e.target; target && target != this; target = target.parentNode) {
+                if (target.matches('input[type=radio]')) {
+                    handler.call(target, e);
+                    break;
+                }
+            }
+        }, false);
+
+        document.querySelector('.js-correspondence-sign-off').addEventListener('click', function(e) {
+            function handler() {
+                const $ul = document.querySelector('.js-autocomplete-results ul');
+                $ul.innerHTML = '';
+                document.getElementById('correspondence_sign_off_user_id_other').value = null;
+            }
+            // loop parent nodes from the target to the delegation node
+            for (let target = e.target; target && target != this; target = target.parentNode) {
+                if (target.matches('.remove-circle')) {
+                    handler.call(target, e);
+                    break;
+                }
+            }
+        }, false);
     });
 </script>
 

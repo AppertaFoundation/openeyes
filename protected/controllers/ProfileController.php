@@ -63,7 +63,7 @@ class ProfileController extends BaseController
 
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
-                foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications') as $field) {
+                foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications', 'correspondence_sign_off_user_id') as $field) {
                     if (isset($_POST['User'][$field])) {
                         $user->{$field} = $_POST['User'][$field];
                     }
@@ -97,6 +97,10 @@ class ProfileController extends BaseController
                 }
 
                 $display_theme_setting = self::changeDisplayTheme($user->id, $_POST['display_theme']);
+
+                // make sure session has the latest data
+                $user->refresh();
+                Yii::app()->session['user'] = $user;
             }
         }
 

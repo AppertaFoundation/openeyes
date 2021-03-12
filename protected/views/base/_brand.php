@@ -74,6 +74,12 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
       </a>
     </p>
   </div>
+  <div class="group">
+    <p>
+      Execution time: <span class="js-execution-time"></span>s<br />
+      Memory usage: <span class="js-memory-usage"></span>
+    </p>
+  </div>
 </div>
 
 <script>
@@ -116,5 +122,7 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
       }).open();
     });
 
+    document.querySelector('.js-execution-time').innerHTML = execution_time;
+    document.querySelector('.js-memory-usage').innerHTML = memory_usage;
   });
 </script>

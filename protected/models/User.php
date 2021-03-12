@@ -34,6 +34,7 @@
  * @property int    $password_failed_tries
  * @property string $password_status
  * @property date   $password_softlocked_until
+ * @property date   $correspondence_sign_off_user_id
  */
 class User extends BaseActiveRecordVersioned
 {
@@ -80,11 +81,11 @@ class User extends BaseActiveRecordVersioned
         $commonRules = array(
             // Added for uniqueness of username
             array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
-            array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
+            array('id, username, first_name, last_name, email, active, global_firm_rights, correspondence_sign_off_user_id', 'safe', 'on' => 'search'),
             array('title, first_name, last_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
             array(
                 'username, first_name, last_name, email, active, global_firm_rights, title, qualifications, role, salt, password, is_consultant, is_surgeon,
-                 has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
+                 has_selected_firms,doctor_grade_id, registration_code, signature_file_id, correspondence_sign_off_user_id',
                 'safe',
             ),
         );
@@ -196,6 +197,7 @@ class User extends BaseActiveRecordVersioned
             'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
             'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
             'signature' => array(self::BELONGS_TO, 'ProtectedFile', 'signature_file_id'),
+            'signOffUser' => array(self::BELONGS_TO, 'User', 'correspondence_sign_off_user_id'),
         );
     }
 
@@ -501,10 +503,19 @@ class User extends BaseActiveRecordVersioned
         return $pwd;
     }
 
+    public function beforeSave()
+    {
+        if (!$this->correspondence_sign_off_user_id) {
+            $this->correspondence_sign_off_user_id = null;
+        }
+
+        return parent::beforeSave();
+    }
+
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
-  
+
         if ($this->isNewRecord && \Yii::app()->params['auth_source'] === 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;
@@ -1031,7 +1042,7 @@ class User extends BaseActiveRecordVersioned
         if ($threshold) { //only check pw tries if we have a threshold to check against
             $pwTriesFailed = Yii::app()->params['p
             w_status_checks']['pw_tries_failed']?? 'locked';
-            
+
             if ($pwTriesFailed === 'softlocked' && $user->password_status === 'softlocked' ) {
                 if ( $user->password_softlocked_until < date("Y-m-d H:i:s")) {
                     $user->password_failed_tries = 0;

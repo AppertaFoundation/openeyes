@@ -223,6 +223,11 @@ class BaseController extends Controller
         if (isset($this->action)) {
             Yii::app()->getAssetManager()->registerFiles($this->isPrintAction($this->action->id));
         }
+
+        $execution_time = CJavaScript::encode(round(Yii::getLogger()->executionTime, 3));
+        $memory_usage = round(Yii::getLogger()->memoryUsage/1024/1024, 3)." MB";
+        Yii::app()->getClientScript()->registerScript('scr_' . "execution_time", "execution_time = $execution_time;", CClientScript::POS_HEAD);
+        Yii::app()->getClientScript()->registerScript('scr_' . "memory_usage", "memory_usage = '$memory_usage';", CClientScript::POS_HEAD);
     }
 
     protected function setSessionPatient($patient)
