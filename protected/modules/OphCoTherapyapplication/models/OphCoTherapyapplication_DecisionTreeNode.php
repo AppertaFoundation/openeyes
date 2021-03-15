@@ -205,7 +205,7 @@ class OphCoTherapyapplication_DecisionTreeNode extends BaseActiveRecordVersioned
     public function bestVisualAcuityForEye($side, $patient, $episode)
     {
         if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-            return ($best = $api->getBestVisualAcuity($patient, $episode, $side, false)) ? $best->value : null;
+            return ($best = $api->getBestVisualAcuity($patient, $side, false)) ? $best->value : null;
         }
 
         return;
