@@ -159,6 +159,18 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected $show_manage_elements = false;
 
+    /**
+     * Additional errors outside of the scope of the Elements
+     * An example usage of this is for CreateEventsAfterEventSavedBehavior
+     * where we need to validate inputs not belonging to any elements
+     * and there would be no point to add validation to every Controller we want to use.
+     * At the time of writing $external_errors is only used in OpNote DefaultController actionCreate
+     * and added in this controllers actionCreate
+     *
+     * @var array
+     */
+    public array $external_errors = [];
+
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
@@ -844,6 +856,9 @@ class BaseEventTypeController extends BaseModuleController
 
             // set and validate
             $errors = $this->setAndValidateElementsFromData($_POST);
+            if ($this->external_errors) {
+                $errors = array_merge($errors, $this->external_errors);
+            }
 
             // creation
             if (empty($errors)) {
@@ -867,6 +882,12 @@ class BaseEventTypeController extends BaseModuleController
                         Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 
                         $transaction->commit();
+
+                        /*
+                         * After event saved and transaction is commited
+                         * here we can generate additional events with their own transactions
+                         */
+                        $this->afterCreateEvent($this->event);
 
                         if ($this->event->parent_id) {
                             $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
@@ -2192,6 +2213,14 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->render('delete', $viewData);
     }
+
+    /**
+     * Called after the event is saved, transaction is commited
+     * useful for creating additional events automatically with their own transactions
+     *
+     * @param \Event $event
+     */
+    protected function afterCreateEvent($event) {}
 
     /**
      * Called after event (and elements) has been updated.

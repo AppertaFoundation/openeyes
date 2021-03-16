@@ -34,6 +34,32 @@ class DefaultController extends BaseEventTypeController
     protected $booking_procedures;
 
     /**
+     * @inheritDoc
+     */
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(), [
+            'afterCreateEventGenerate' => [
+                'class' => 'CreateEventsAfterEventSavedBehavior',
+                'determine_eye_from_element' => 'Element_OphTrOperationnote_ProcedureList'
+            ]
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function afterCreateEvent($event)
+    {
+        // implemented in CreateEventsAfterEventSavedBehavior
+        $this->checkAndCreatePrescriptionEvent();
+        $this->checkAndCreateCorrespondenceEvent();
+        $this->checkAndCreateOptomCorrespondenceEvent();
+
+        parent::afterCreateEvent($event);
+    }
+
+    /**
      * Handle the selection of a booking for creating an op note.
      *
      * (non-phpdoc)
@@ -111,6 +137,9 @@ class DefaultController extends BaseEventTypeController
 
             // set and validate
             $errors = $this->setAndValidateElementsFromData($_POST);
+            if ($this->external_errors) {
+                $errors = array_merge($errors, $this->external_errors);
+            }
 
             // creation
             if (empty($errors)) {
@@ -136,53 +165,11 @@ class DefaultController extends BaseEventTypeController
 
                         $transaction->commit();
 
-                        $create_prescription = \Yii::app()->request->getParam('auto_generate_prescription_after_surgery');
-                        if ($create_prescription) {
-                            $transaction = Yii::app()->db->beginTransaction();
-                            // create 'post-op' prescription
-                            $result = $this->createPrescriptionEvent();
-                            if ($result['success'] === true) {
-                                $transaction->commit();
-                            } else {
-                                $transaction->rollback();
-                                $this->logEventCreationFail($result['errors'], 'OphDrPrescription', 'Element_OphDrPrescription_Details');
-                            }
-                        }
-
-                        $create_correspondence = \Yii::app()->request->getParam('auto_generate_gp_letter_after_surgery');
-                        if ($create_correspondence) {
-                            if ($this->patient->gp_id && $this->patient->practice_id) {
-                                                                $macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
-                                                                $transaction = Yii::app()->db->beginTransaction();
-                                                                // create 'post-op' letter
-                                                                $result = $this->createCorrespondenceEvent($macro_name);
-                                if ($result['success'] === true) {
-                                    $transaction->commit();
-                                } else {
-                                    $transaction->rollback();
-                                    $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
-                                }
-                            } else {
-                                    Yii::app()->user->setFlash('error', "GP letter could not be created because the patient has no GP");
-                                    $this->logEventCreationFail(['Error Message' => 'GP letter could not be created because the patient has no GP', 'gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
-                            }
-                        }
-
-                        $create_optom_correspondence = \Yii::app()->request->getParam('auto_generate_optom_post_op_letter_after_surgery');
-
-
-                        if ($create_optom_correspondence) {
-                            $macro_name = \SettingMetadata::model()->getSetting('default_optom_post_op_letter');
-                            $transaction = Yii::app()->db->beginTransaction();
-                            // create optometrist 'post-op' letter
-                            $result = $this->createCorrespondenceEvent($macro_name);
-                            if ($result['success'] === true) {
-                                $transaction->commit();
-                            } else {
-                                $transaction->rollback();
-                                $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
-                            }
-                        }
+                        /*
+                         * After event saved and transaction is commited
+                         * here we can generate additional events with their own transactions
+                         */
+                        $this->afterCreateEvent($this->event);
 
                         if ($this->event->parent_id) {
                             $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
@@ -1395,16 +1382,5 @@ class DefaultController extends BaseEventTypeController
         $crit->order = "display_order";
 
         return OphTrOperationnote_Attribute::model()->findAll($crit);
-    }
-
-    protected function logEventCreationFail($errors, $module, $model)
-    {
-        $log = print_r($errors, true);
-        \Audit::add('event', 'create-failed', 'Automatic Event creation Failed<pre>' . $log . '</pre>', $log, [
-            'module' => $module,
-            'episode_id' => $this->event->episode->id,
-            'patient_id' => $this->patient->id,
-            'model' => $model
-        ]);
     }
 }
