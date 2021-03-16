@@ -783,7 +783,6 @@ EOL;
         );
 
         $this->saveCSVfile($dataQuery, 'Surgeon');
-
     }
 
     /********** end of Surgeon **********/
@@ -1382,7 +1381,6 @@ EOL;
 EOL;
 
         return $query;
-
     }
 
     private function getEpisodeRefraction()
@@ -1537,7 +1535,6 @@ EOL;
                 );
 EOL;
         return $query;
-
     }
 
     private function populateTmpRcoNodEpisodeDrug()
@@ -1918,7 +1915,7 @@ EOL;
                 }
                 fputcsv($df, $row);
             }
-        } else if ($header) {
+        } elseif ($header) {
             fputcsv($df, $header);
         }
 
@@ -2026,7 +2023,6 @@ EOL;
                 WHERE epoce.eye_id IN (2, 3) /* 2 = RIGHT EYE, 3 = BOTH EYES */ ;
 EOL;
         return $query;
-
     }
 
     private function getEpisodePostOpComplication()
@@ -2664,7 +2660,6 @@ EOL;
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract');
-
     }
 
     /********** end of EpisodeTreatmentCataract **********/
@@ -3039,7 +3034,6 @@ EOL;
         );
 
         return $this->saveCSVfile($dataQuery, 'OperationIndicationCodeLookup');
-
     }
 
     /********** end of EpisodeOperationIndication **********/
@@ -3290,7 +3284,6 @@ EOL;
             'header' => array('OperationId', 'EpisodeId', 'Description', 'IsHypertensive', 'ListedDate', 'SurgeonId', 'SurgeonGradeId', 'AssistantId', 'AssistantGradeId', 'ConsultantId', 'SiteName', 'SiteODS'),
         );
         return $this->saveCSVfile($dataQuery, 'EpisodeOperation');
-
     }
 
     /********** end of EpisodeOperation **********/
