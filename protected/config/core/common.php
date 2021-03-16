@@ -750,13 +750,13 @@ $config = array(
                     'softlocked' = user cannot log in even with valid password, but gets annother set of tries in 10 mins
                     'locked' = user cannot log in even with valid password,
                 Invalid statuses will act as 'locked' */
-            'pw_tries' => null !== getenv('PW_STAT_TRIES') ? getenv('PW_STAT_TRIES') : 10, //number of password tries
-            'pw_tries_failed' => null !== getenv('PW_STAT_TRIES_FAILED') ? getenv('PW_STAT_TRIES_FAILED') : 'softlocked', //password status after number of tries exceeded
-            'pw_softlock_timeout' => null !== getenv('PW_SOFTLOCK_TIMEOUT') ? getenv('PW_SOFTLOCK_TIMEOUT') : '10 mins', //time before user can try again after softlocking account
-            'pw_days_stale' => null !== getenv('PW_STAT_DAYS_STALE') ? getenv('PW_STAT_DAYS_STALE') : '0', //number of days before password stales - e.g. '15 days' - 0 to disable , also supports months, years, hours, mins and seconds
-            'pw_days_expire' => null !== getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
-            'pw_days_lock' => null !== getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
-            'pw_admin_pw_change' => null !== getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
+            'pw_tries' => false !== getenv('PW_STAT_TRIES') ? getenv('PW_STAT_TRIES') : 10, //number of password tries
+            'pw_tries_failed' => false !== getenv('PW_STAT_TRIES_FAILED') ? getenv('PW_STAT_TRIES_FAILED') : 'softlocked', //password status after number of tries exceeded
+            'pw_softlock_timeout' => false !== getenv('PW_SOFTLOCK_TIMEOUT') ? getenv('PW_SOFTLOCK_TIMEOUT') : '10 mins', //time before user can try again after softlocking account
+            'pw_days_stale' => false !== getenv('PW_STAT_DAYS_STALE') ? getenv('PW_STAT_DAYS_STALE') : '0', //number of days before password stales - e.g. '15 days' - 0 to disable , also supports months, years, hours, mins and seconds
+            'pw_days_expire' => false !== getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
+            'pw_days_lock' => false !== getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
+            'pw_admin_pw_change' => false !== getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
         ),
         'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? strtolower(getenv('OE_TRAINING_MODE')) : null,
         'watermark_short' => getenv('OE_USER_BANNER_SHORT') ?: null,

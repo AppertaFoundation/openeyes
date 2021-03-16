@@ -549,7 +549,7 @@ class AdminController extends BaseAdminController
             } else {
                 $user->password_hashed = false;
                 if (Yii::app()->params['auth_source'] === 'BASIC') {
-                    $user->setPWStatusHarsher(Yii::app()->params['pw_status_checks']['pw_admin_pw_change']?: 'stale', null, false);
+                    $user->setPWStatusHarsher(!empty(Yii::app()->params['pw_status_checks']['pw_admin_pw_change'])?Yii::app()->params['pw_status_checks']['pw_admin_pw_change']: 'stale', null, false);
                     $user->password_last_changed_date = date('Y-m-d H:i:s');
                     $user->password_failed_tries = 0;
                 }
