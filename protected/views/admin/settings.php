@@ -13,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="cols-7">
@@ -68,7 +69,11 @@
                     ?>
                     <tr class="clickable" data-uri="admin/editInstallationSetting?key=<?= $metadata->key; ?>">
                         <td><?php echo $metadata->name ?></td>
-                        <td><?= $metadata_value; ?></td>
+                        <td><?php
+                                $purifier = new CHtmlPurifier();
+                                echo $purifier->purify($metadata_value);
+                        ?>
+                        </td>
                         <td></td>
                     </tr>
                     <?php
