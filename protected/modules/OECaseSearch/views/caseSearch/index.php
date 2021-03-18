@@ -59,6 +59,7 @@ $user_searches = array_map(
             </button>
         </div>
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <input type="hidden" name="var" value="<?= isset($variables[0]) ? $variables[0]->field_name : null ?>"/>
         <hr class="divider"/>
         <h3>Date range</h3>
         <div class="flex-layout">
