@@ -481,6 +481,13 @@ function createLoginOverlay() {
     passwordField.id = 'js-password';
     passwordField.type = 'password';
     passwordField.placeholder = 'Password';
+    $(passwordField).keyup(
+        function(e) {
+            if(e.which === 13){
+                loginWithOverlay();
+            }
+        }
+    );
     userDiv.append(passwordField);
 
     let loginButton = document.createElement('button');
