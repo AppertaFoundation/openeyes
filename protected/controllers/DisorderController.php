@@ -129,7 +129,8 @@ class DisorderController extends BaseController
         ));
     }
 
-    protected function postRequest($model, $options, &$errors){
+    protected function postRequest($model, $options, &$errors)
+    {
         $tx = Yii::app()->db->beginTransaction();
         $j = 0;
 
@@ -242,7 +243,6 @@ class DisorderController extends BaseController
 
         $this->renderJSON($return);
         Yii::app()->end();
-
     }
 
     public function actionDetails()
@@ -513,8 +513,9 @@ class DisorderController extends BaseController
                 $model->$key = $value;
             }
             $model->attributes=$_POST['Disorder'];
-            if ($model->save())
+            if ($model->save()) {
                 $this->redirect(array('view','id'=>$model->id));
+            }
         }
 
         $this->render('create', array(
@@ -539,8 +540,9 @@ class DisorderController extends BaseController
                 $model->$key = $value;
             }
 
-            if ($model->save())
+            if ($model->save()) {
                 $this->redirect(array('view','id'=>$model->id));
+            }
         }
 
         $this->render('update', array(
@@ -558,8 +560,9 @@ class DisorderController extends BaseController
             $this->loadModel($id)->delete();
 
             // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-            if (!isset($_GET['ajax']))
-                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+        if (!isset($_GET['ajax'])) {
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+        }
     }
 
     /**
@@ -569,8 +572,9 @@ class DisorderController extends BaseController
     {
         $model=new Disorder('search');
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['Disorder']))
+        if (isset($_GET['Disorder'])) {
             $model->attributes=$_GET['Disorder'];
+        }
 
         if (Yii::app()->user->checkAccess('TaskCreateDisorder') || Yii::app()->user->checkAccess('admin')) {
             $this->render('admin', array(
@@ -593,8 +597,9 @@ class DisorderController extends BaseController
     public function loadModel($id)
     {
         $model=Disorder::model()->findByPk($id);
-        if ($model===null)
+        if ($model===null) {
             throw new CHttpException(404, 'The requested page does not exist.');
+        }
         return $model;
     }
 
@@ -610,7 +615,8 @@ class DisorderController extends BaseController
         }
     }
 
-    public function getSpecialtyNameFromId($data) {
+    public function getSpecialtyNameFromId($data)
+    {
         $specialties = Specialty::model()->findAll();
         if ($data->specialty_id !== null || $data->specialty_id != '') {
             foreach ($specialties as $specialty) {

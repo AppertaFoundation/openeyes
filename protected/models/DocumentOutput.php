@@ -99,6 +99,10 @@ class DocumentOutput extends BaseActiveRecord
             if ($curr->output_type === 'Print' && $curr->output_status === 'COMPLETE') {
                 $this->output_status = 'DRAFT';
             }
+            // Set the output_status of the email output_type to PENDING_RETRY, if it is in COMPLETE status.
+            if ($curr->output_type === 'Email' && $curr->output_status === 'COMPLETE') {
+                $this->output_status = 'PENDING_RETRY';
+            }
         }
 
         // If we are saving a new record and the output type is Email, then set the status to be SENDING.

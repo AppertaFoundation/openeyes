@@ -208,9 +208,9 @@ class CaseSearchController extends BaseModuleController
                 }
             }
             return $variable;
-        } else {
-            return new $var($ids);
         }
+
+        return new $var($ids);
     }
 
     /**
@@ -260,7 +260,7 @@ class CaseSearchController extends BaseModuleController
          */
         $type = Yii::app()->request->getQuery('type');
         $parameter = new $type();
-        echo json_encode($parameter->getOptions());
+        $this->renderJSON($parameter->getOptions());
     }
 
     /**
@@ -406,7 +406,7 @@ class CaseSearchController extends BaseModuleController
          */
         $values = $type::getCommonItemsForTerm($term);
 
-        echo json_encode($values);
+        $this->renderJSON($values);
     }
 
     /**

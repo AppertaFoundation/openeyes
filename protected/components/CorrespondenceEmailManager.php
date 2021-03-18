@@ -18,7 +18,7 @@
 class CorrespondenceEmailManager
 {
     protected $contactTypes = array('INTERNALREFERRAL', 'GP', 'OPTOMETRIST', 'PATIENT', 'DRSS', 'OTHER');
-    protected $emailStatuses = array('SENDING', 'COMPLETE', 'FAILED', 'PENDING');
+    protected $emailStatuses = array('PENDING_RETRY', 'COMPLETE', 'FAILED', 'PENDING', 'SENDING');
     protected $filePath;
     public $isConsole = false;
 
@@ -37,7 +37,7 @@ class CorrespondenceEmailManager
                 ->join('document_target dt', 'dt.document_instance_id = di.id')
                 ->join('document_output do', 'do.document_target_id = dt.id')
                 ->where('di.correspondence_event_id = :id and lower(do.output_type) = lower(:output_type)', array(':id' => $eventId, ':output_type' => 'Email'))
-                ->andWhere(['in', 'do.output_status', array_slice($this->emailStatuses,0,3)])
+                ->andWhere(['in', 'do.output_status', [$this->emailStatuses[0], $this->emailStatuses[2], $this->emailStatuses[4]]])
                 ->andWhere(['in', 'dt.contact_type', $this->contactTypes])
                 ->queryAll();
 
@@ -110,7 +110,7 @@ class CorrespondenceEmailManager
 
                 $this->trace('Processing event ' . $eventId . PHP_EOL);
 
-                if($outputStatus === 'COMPLETE') {
+                if($outputStatus === 'PENDING_RETRY') {
                     $shouldAppendSubject = true;
                 }
 
@@ -240,76 +240,91 @@ class CorrespondenceEmailManager
      * @throws CException
      */
     private function getSenderAddress($email, $institutionId, $siteId) {
-        $query = 'SELECT host, username, password, reply_to_address, port, security FROM ophcocorrespondence_sender_email_addresses osea';
+        $command = Yii::app()->db->createCommand();
         // Algorithm for matching
 
         // get domain from email.
         $emailDomain = substr($email, strpos($email, '@'));
 
         // Get the sender email address for the same institution and site id
-        $command = Yii::app()->db->createCommand($query)
+        $query = $command
+            ->select('host, username, password, reply_to_address, port, security')
+            ->from('ophcocorrespondence_sender_email_addresses osea')
             ->where('osea.institution_id = :institution_id and osea.site_id = :site_id and osea.domain = :domain',
                 array('institution_id' => $institutionId, 'site_id' => $siteId, 'domain' => $emailDomain))
-            ->queryAll();
-
-        if ( count($command) > 0 ) {
-            return $command[0];
+            ->queryRow();
+        if (!(empty($query))) {
+            return $query;
         } else {
-            $command = Yii::app()->db->createCommand($query)
+            $command->reset();
+            $query = $command
+                ->select('host, username, password, reply_to_address, port, security')
+                ->from('ophcocorrespondence_sender_email_addresses osea')
                 ->where('osea.institution_id = :institution_id and osea.site_id = :site_id and osea.domain = :domain',
                     array('institution_id' => $institutionId, 'site_id' => $siteId, 'domain' => '*'))
-                ->queryAll();
-
-            if ( count($command) > 0 ) {
-                return $command[0];
+                ->queryRow();
+            if (!(empty($query))) {
+                return $query;
             } else {
-                $command = Yii::app()->db->createCommand($query)
+                $command->reset();
+                $query = $command
+                    ->select('host, username, password, reply_to_address, port, security')
+                    ->from('ophcocorrespondence_sender_email_addresses osea')
                     ->where('osea.institution_id IS NULL and osea.site_id = :site_id and osea.domain = :domain',
                         array('site_id' => $siteId, 'domain' => $emailDomain))
-                    ->queryAll();
-
-                if ( count($command) > 0 ) {
-                    return $command[0];
+                    ->queryRow();
+                if (!(empty($query))) {
+                    return $query;
                 } else {
-                    $command = Yii::app()->db->createCommand($query)
+                    $command->reset();
+                    $query = $command
+                        ->select('host, username, password, reply_to_address, port, security')
+                        ->from('ophcocorrespondence_sender_email_addresses osea')
                         ->where('osea.institution_id IS NULL and osea.site_id = :site_id and osea.domain = :domain',
                             array('site_id' => $siteId, 'domain' => '*'))
-                        ->queryAll();
-
-                    if ( count($command) > 0 ) {
-                        return $command[0];
+                        ->queryRow();
+                    if (!(empty($query))) {
+                        return $query;
                     } else {
-                        $command = Yii::app()->db->createCommand($query)
+                        $command->reset();
+                        $query = $command
+                            ->select('host, username, password, reply_to_address, port, security')
+                            ->from('ophcocorrespondence_sender_email_addresses osea')
                             ->where('osea.institution_id = :institution_id and osea.site_id IS NULL and osea.domain = :domain',
                                 array('institution_id' => $institutionId, 'domain' => $emailDomain))
-                            ->queryAll();
-
-                        if ( count($command) > 0 ) {
-                            return $command[0];
+                            ->queryRow();
+                        if (!(empty($query))) {
+                            return $query;
                         } else {
-                            $command = Yii::app()->db->createCommand($query)
+                            $command->reset();
+                            $query = $command
+                                ->select('host, username, password, reply_to_address, port, security')
+                                ->from('ophcocorrespondence_sender_email_addresses osea')
                                 ->where('osea.institution_id = :institution_id and osea.site_id IS NULL and osea.domain = :domain',
                                     array('institution_id' => $institutionId, 'domain' => '*'))
-                                ->queryAll();
-
-                            if ( count($command) > 0 ) {
-                                return $command[0];
+                                ->queryRow();
+                            if (!(empty($query))) {
+                                return $query;
                             } else {
-                                $command = Yii::app()->db->createCommand($query)
+                                $command->reset();
+                                $query = $command
+                                    ->select('host, username, password, reply_to_address, port, security')
+                                    ->from('ophcocorrespondence_sender_email_addresses osea')
                                     ->where('osea.institution_id IS NULL and osea.site_id IS NULL and osea.domain = :domain',
                                         array('domain' => $emailDomain))
-                                    ->queryAll();
-
-                                if ( count($command) > 0 ) {
-                                    return $command[0];
+                                    ->queryRow();
+                                if (!(empty($query))) {
+                                    return $query;
                                 } else {
-                                    $command = Yii::app()->db->createCommand($query)
+                                    $command->reset();
+                                    $query = $command
+                                        ->select('host, username, password, reply_to_address, port, security')
+                                        ->from('ophcocorrespondence_sender_email_addresses osea')
                                         ->where('osea.institution_id IS NULL and osea.site_id IS NULL and osea.domain = :domain',
                                             array('domain' => '*'))
-                                        ->queryAll();
-
-                                    if ( count($command) > 0 ) {
-                                        return $command[0];
+                                        ->queryRow();
+                                    if (!(empty($query))) {
+                                        return $query;
                                     } else {
                                         return null;
                                     }
@@ -323,43 +338,52 @@ class CorrespondenceEmailManager
     }
 
     private function getEmailTemplateForRecipient($recipient, $institutionId, $siteId) {
-        $query = 'SELECT * FROM ophcocorrespondence_email_template oet';
+        $command = Yii::app()->db->createCommand();
 
         // Check if there is any template that exists for the institution, the site and the recipient type.
-        $command = Yii::app()->db->createCommand($query)
+        $query = $command
+            ->select('*')
+            ->from('ophcocorrespondence_email_template oet')
             ->where('oet.institution_id = :institution_id and oet.site_id = :site_id and oet.recipient_type = :recipient_type',
                 array('institution_id' => $institutionId, 'site_id' => $siteId, 'recipient_type' => $recipient))
-            ->queryAll();
+            ->queryRow();
 
-        if ( !(count($command) === 0) ) {
-            return array('subject' => $command[0]['subject'], 'body' => $command[0]['body']);
+        if (!(empty($query))) {
+            return array('subject' => $query['subject'], 'body' => $query['body']);
         } else {
+            $command->reset();
             // if not, then check the email template for the institution and the recipient type.
-            $command = Yii::app()->db->createCommand($query)
+            $query = $command
+                ->select('*')
+                ->from('ophcocorrespondence_email_template oet')
                 ->where('oet.institution_id = :institution_id and oet.site_id IS NULL and oet.recipient_type = :recipient_type',
                     array('institution_id' => $institutionId, 'recipient_type' => $recipient))
-                ->queryAll();
+                ->queryRow();
 
-            if ( !(count($command) === 0) ) {
-                return array('subject' => $command[0]['subject'], 'body' => $command[0]['body']);
+            if (!(empty($query))) {
+                return array('subject' => $query['subject'], 'body' => $query['body']);
             } else {
+                $command->reset();
                 // if not, then check the email template for the site and the recipient type.
-                $command = Yii::app()->db->createCommand($query)
+                $query = $command->select('*')
+                    ->from('ophcocorrespondence_email_template oet')
                     ->where('oet.institution_id IS NULL and oet.site_id = :site_id and oet.recipient_type = :recipient_type',
                         array('site_id' => $siteId, 'recipient_type' => $recipient))
-                    ->queryAll();
+                    ->queryRow();
 
-                if ( !(count($command) === 0) ) {
-                    return array('subject' => $command[0]['subject'], 'body' => $command[0]['body']);
+                if (!(empty($query))) {
+                    return array('subject' => $query['subject'], 'body' => $query['body']);
                 } else {
+                    $command->reset();
                     // if everything else fails, then get the default email template for the recipient (i.e. institution and site both are NULL)
-                    $command = Yii::app()->db->createCommand($query)
+                    $query = $command->select('*')
+                        ->from('ophcocorrespondence_email_template oet')
                         ->where('oet.institution_id IS NULL and oet.site_id IS NULL and oet.recipient_type = :recipient_type',
                             array('recipient_type' => $recipient))
-                        ->queryAll();
+                        ->queryRow();
 
-                    if ( !(count($command) === 0) ) {
-                        return array('subject' => $command[0]['subject'], 'body' => $command[0]['body']);
+                    if (!(empty($query))) {
+                        return array('subject' => $query['subject'], 'body' => $query['body']);
                     } else {
                         return null;
                     }

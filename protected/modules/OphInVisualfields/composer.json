@@ -1,8 +1,0 @@
-{
-  "name" : "openeyes/oph-in-visualfields",
-  "description": "Module capable of communicating with Visual Fields machine to import images",
-  "type": "openeyes-module",
-  "require": {
-    "openeyes/module-installer": "*"
-  }
-}

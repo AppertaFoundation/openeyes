@@ -49,11 +49,11 @@
         </div>
     </td>
     <td>
-        <div>
+        <div>   
             <?php echo $entry->duration_id ? $entry->medicationDuration->name . "<i class='oe-i d-slash small-icon no-click'></i>" : '' ?>
             <?php if ($entry->dispense_condition_id) {
                 if ($entry->dispense_condition->name === 'Print to {form_type}') {
-                    echo str_replace('{form_type}', $form_setting, $entry->dispense_condition->name) . " / {$entry->dispense_location->name}";
+                    echo str_replace('{form_type}', $form_setting, $entry->dispense_condition->name) . ( $entry->dispense_location->name != 'N/A' ? "<i class='oe-i d-slash small-icon no-click'></i>" . "{$entry->dispense_location->name}" : null);
                 } else {
                     echo $entry->dispense_condition->name . "<i class='oe-i d-slash small-icon no-click'></i>" . (isset($entry->dispense_location) ? $entry->dispense_location->name : "");
                 }

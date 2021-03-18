@@ -29,7 +29,6 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
             $time_predicate = 'SELECT MAX(reading_time) FROM v_patient_iop iop2 WHERE iop2.patient_id = iop.patient_id AND iop2.eye = iop.eye AND iop2.event_date = iop.event_date';
         }
 
-        Yii::log($this->field_name);
         switch ($this->csv_mode) {
             case 'BASIC':
                 return "

@@ -89,8 +89,8 @@ if ( isset($target->document_output)) {
             ( Subspecialty::model()->findByPk($_POST['ElementLetter']['to_subspecialty_id']) ?
                 Subspecialty::model()->findByPk($_POST['ElementLetter']['to_subspecialty_id'])->getSubspecialtyEmail() : null ) : null ;
         $contextEmail = isset($_POST['ElementLetter']['to_firm_id']) ?
-            ( Subspecialty::model()->findByPk($_POST['ElementLetter']['to_firm_id']) ?
-                Subspecialty::model()->findByPk($_POST['ElementLetter']['to_firm_id'])->getContextEmail() : null ): null ;
+            ( Firm::model()->findByPk($_POST['ElementLetter']['to_firm_id']) ?
+                Firm::model()->findByPk($_POST['ElementLetter']['to_firm_id'])->getContextEmail() : null ): null ;
     }
     if ($serviceEmail && !$contextEmail ) {
         // Only Service is selected and email exists for the service

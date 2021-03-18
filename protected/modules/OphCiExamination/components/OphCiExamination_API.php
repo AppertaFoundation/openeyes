@@ -2905,7 +2905,7 @@ class OphCiExamination_API extends \BaseAPI
                     'table_class' => 'drugs-stopped-today'
                 );
 
-                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams, true);
             }
         }
 
@@ -2931,7 +2931,7 @@ class OphCiExamination_API extends \BaseAPI
                     'table_class' => 'drugs-stopped-today'
                 );
 
-                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams, true);
             }
         }
 
@@ -2957,7 +2957,7 @@ class OphCiExamination_API extends \BaseAPI
                     'table_class' => 'drugs-continued-today'
                 );
 
-                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams, true);
             }
         }
 
@@ -2983,7 +2983,7 @@ class OphCiExamination_API extends \BaseAPI
                     'table_class' => 'drugs-continued-today'
                 );
 
-                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams, true);
             }
         }
 
@@ -3010,7 +3010,7 @@ class OphCiExamination_API extends \BaseAPI
                 'table_class' => 'medication-management-summary'
             );
 
-            return \Yii::app()->controller->renderPartial("_druglist_all", $viewparams);
+            return \Yii::app()->controller->renderPartial("_druglist_all", $viewparams, true);
         }
 
         return "(medication management summary not available)";

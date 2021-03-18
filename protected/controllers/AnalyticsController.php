@@ -1298,7 +1298,8 @@ class AnalyticsController extends BaseController
         // Start with the biggest dataset (optional match on procedures).
         $base_id_list = $proc_command->queryColumn();
 
-        if (count($base_id_list) !== $total_patients) {
+        $num_patients_returned = count($base_id_list);
+        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
             // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
             // This will be used to bypass giant IN conditions.
             $diag_command = $diag_command->andWhere('p.id IN (' . implode(', ', $base_id_list). ')');
@@ -1310,7 +1311,9 @@ class AnalyticsController extends BaseController
             )
         )->queryColumn();
 
-        if (count($base_id_list) !== $total_patients) {
+        $num_patients_returned = count($base_id_list);
+
+        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
             // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
             // This will be used to bypass giant IN conditions.
             $age_command = $age_command->andWhere('p.id IN (' . implode(', ', $base_id_list). ')');
@@ -1322,7 +1325,9 @@ class AnalyticsController extends BaseController
             )
         )->queryColumn();
 
-        if (count($base_id_list) !== $total_patients) {
+        $num_patients_returned = count($base_id_list);
+
+        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
             // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
             // This will be used to bypass giant IN conditions.
             $surgeon_command = $surgeon_command->andWhere('p.id IN (' . implode(', ', $base_id_list). ')');
@@ -1333,7 +1338,9 @@ class AnalyticsController extends BaseController
             )
         )->queryColumn();
 
-        if (count($base_id_list) === $total_patients) {
+        $num_patients_returned = count($base_id_list);
+
+        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
             // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
             // This will be used to bypass giant IN conditions.
             return null;
@@ -1539,7 +1546,7 @@ class AnalyticsController extends BaseController
         $query_conditions[] = 'ep.deleted = 0 AND e.deleted = 0';
         if ($this->filters['va_unit']) {
             $va_unit = $this->filters['va_unit'];
-            $query_conditions[] = "eov.unit_id = $va_unit";
+            $query_conditions[] = "reading.unit_id = $va_unit";
         }
         $best_reading = Yii::app()->db->createCommand()
             ->select('
@@ -1557,16 +1564,18 @@ class AnalyticsController extends BaseController
                     ovr.element_id,
                     ovr.value,
                     ovr.side,
-                    ovr.method_id
+                    ovr.method_id,
+                    ovr.unit_id
                 FROM (
                     SELECT
                         element_id,
                         side,
-                        max(value) value
+                        max(value) value,
+                        unit_id
                     FROM ophciexamination_visualacuity_reading
-                    GROUP BY element_id, side
+                    GROUP BY element_id, side, unit_id
                 ) max_val
-                INNER JOIN ophciexamination_visualacuity_reading ovr USING (element_id, side, value)
+                INNER JOIN ophciexamination_visualacuity_reading ovr USING (element_id, side, value, unit_id)
             ) reading', 'reading.element_id = eov.id
             ')
         ->join('episode ep', 'e.episode_id = ep.id')
@@ -2357,12 +2366,12 @@ class AnalyticsController extends BaseController
                     $this->filters['plot_va_change_initial_va_value'] = empty(${$side . $va_list_name}) ? null : ${$side . $va_list_name}[-5]['average'];
                 }
                 $custom_data[] = array(
-                  array(
-                      'name' => 'VA',
-                      'mode' => 'lines+markers',
-                      'type' => 'scatter',
-                      'x' => array_keys(${$side.$va_list_name}),
-                      'y' => array_map(
+                    array(
+                        'name' => 'VA',
+                        'mode' => 'lines+markers',
+                        'type' => 'scatter',
+                        'x' => array_keys(${$side.$va_list_name}),
+                        'y' => array_map(
                             function ($item) {
                                 if (isset($this->filters['plot_va_change_initial_va_value'])) {
                                     $item['average'] -= $this->filters['plot_va_change_initial_va_value'];
@@ -2403,13 +2412,13 @@ class AnalyticsController extends BaseController
                             array_values(${$side . $va_list_name})
                         ),
                     ),
-                  array(
-                      'name' => $specialty === 'Glaucoma' ? 'IOP' : 'CRT',
-                      'yaxis' => 'y2',
-                      'mode' => 'lines+markers',
-                      'type' => 'scatter',
-                      'x' => array_keys(${$side . $second_list_name}),
-                      'y' => array_map(
+                    array(
+                        'name' => $specialty === 'Glaucoma' ? 'IOP' : 'CRT',
+                        'yaxis' => 'y2',
+                        'mode' => 'lines+markers',
+                        'type' => 'scatter',
+                        'x' => array_keys(${$side . $second_list_name}),
+                        'y' => array_map(
                             function ($item) {
                                 return $item['average'];
                             },

@@ -1043,10 +1043,7 @@ class DefaultController extends BaseEventTypeController
         return $letter->markDocumentRelationTreeDeleted();
     }
 
-    public function afterUpdateElements($event)
-    {
-        parent::afterUpdateElements($event);
-
+    private function afterCreateorUpdateElements($event) {
         $data = array();
         $letter = null;
         foreach ($this->open_elements as $element) {
@@ -1064,29 +1061,23 @@ class DefaultController extends BaseEventTypeController
         }
 
         $document->createNewDocSet($data);
+
+        $cookies = Yii::app()->request->cookies;
+        $cookies['email'] = new CHttpCookie('email', $event->id, [
+            'expire' => strtotime('+20 seconds')
+        ]);
+    }
+
+    public function afterUpdateElements($event)
+    {
+        parent::afterUpdateElements($event);
+        $this->afterCreateorUpdateElements($event);
     }
 
     public function afterCreateElements($event)
     {
         parent::afterCreateElements($event);
-
-        $letter = null;
-        foreach ($this->open_elements as $element) {
-            if (get_class($element) === 'ElementLetter') {
-                $letter = $element;
-            }
-        }
-        $data = array();
-
-        $document = new Document();
-        $document->event_id = $this->event->id;
-        $document->is_draft = $letter ? $letter->draft : null;
-
-        foreach (['DocumentTarget', 'DocumentSet', 'DocumentInstance', 'DocumentInstanceData', 'macro_id'] as $name) {
-            $data[$name] = Yii::app()->request->getPost($name);
-        }
-
-        $document->createNewDocSet($data);
+        $this->afterCreateorUpdateElements($event);
     }
 
     /**
@@ -1271,9 +1262,6 @@ class DefaultController extends BaseEventTypeController
     {
         $cookies = Yii::app()->request->cookies;
         $cookies['savePrint'] = new CHttpCookie('savePrint', $event->id, [
-            'expire' => strtotime('+20 seconds')
-        ]);
-        $cookies['email'] = new CHttpCookie('email', $event->id, [
             'expire' => strtotime('+20 seconds')
         ]);
         $letter = ElementLetter::model()->find('event_id=?', array($event->id));

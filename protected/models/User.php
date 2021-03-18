@@ -977,7 +977,7 @@ class User extends BaseActiveRecordVersioned
                 if ($user->password_status !='locked') {
                     $user->password_status ='softlocked';
                     $temp_now = new DateTime();
-                    $pw_timeout = Yii::app()->params['pw_status_checks']['pw_softlock_timeout'] ?? '10 mins';
+                    $pw_timeout = !empty(Yii::app()->params['pw_status_checks']['pw_softlock_timeout'])? Yii::app()->params['pw_status_checks']['pw_softlock_timeout'] : '10 mins';
                     $user->password_softlocked_until = date_format(date_add($temp_now, date_interval_create_from_date_string($pw_timeout)), "Y-m-d H:i:s");
                     if ($save) {
                         return $user->saveAttributes(array('password_status', 'password_softlocked_until'));
@@ -1040,8 +1040,7 @@ class User extends BaseActiveRecordVersioned
         }
         $threshold = isset(Yii::app()->params['pw_status_checks']['pw_tries'])?Yii::app()->params['pw_status_checks']['pw_tries']:3;
         if ($threshold) { //only check pw tries if we have a threshold to check against
-            $pwTriesFailed = Yii::app()->params['p
-            w_status_checks']['pw_tries_failed']?? 'locked';
+            $pwTriesFailed = Yii::app()->params['pw_status_checks']['pw_tries_failed']?? 'locked';
 
             if ($pwTriesFailed === 'softlocked' && $user->password_status === 'softlocked' ) {
                 if ( $user->password_softlocked_until < date("Y-m-d H:i:s")) {
@@ -1083,9 +1082,9 @@ class User extends BaseActiveRecordVersioned
             $date = date("Y-m-d H:i:s");
         }
         //Get params
-        $pwDaysLock = isset(Yii::app()->params['pw_status_checks']['pw_days_lock']) ? Yii::app()->params['pw_status_checks']['pw_days_lock'] : null; //get tolerance for pw expiry
-        $pwDaysExpire = isset(Yii::app()->params['pw_status_checks']['pw_days_expire']) ? Yii::app()->params['pw_status_checks']['pw_days_expire'] : null ; //get tolerance for pw expiry
-        $pwDaysStale = isset(Yii::app()->params['pw_status_checks']['pw_days_stale']) ? Yii::app()->params['pw_status_checks']['pw_days_stale'] : null; //get tolerance for pw expiry
+        $pwDaysLock = !empty(Yii::app()->params['pw_status_checks']['pw_days_lock']) ? Yii::app()->params['pw_status_checks']['pw_days_lock'] : null; //get tolerance for pw expiry
+        $pwDaysExpire = !empty(Yii::app()->params['pw_status_checks']['pw_days_expire']) ? Yii::app()->params['pw_status_checks']['pw_days_expire'] : null ; //get tolerance for pw expiry
+        $pwDaysStale = !empty(Yii::app()->params['pw_status_checks']['pw_days_stale']) ? Yii::app()->params['pw_status_checks']['pw_days_stale'] : null; //get tolerance for pw expiry
 
         if ($pwDaysLock && $user->password_last_changed_date) {
             $pwDateCutoffLock =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysLock)); // get last valid time
@@ -1148,9 +1147,9 @@ class User extends BaseActiveRecordVersioned
         }
         $daysLeft = array();
         if ($user->password_last_changed_date) {
-            $pwDaysStale = isset(Yii::app()->params['pw_status_checks']['pw_days_stale'])?Yii::app()->params['pw_status_checks']['pw_days_stale'] : null; //get tolerance for pw expiry
-            $pwDaysExpire = isset(Yii::app()->params['pw_status_checks']['pw_days_expire'])?Yii::app()->params['pw_status_checks']['pw_days_expire'] : null; //get tolerance for pw expiry
-            $pwDaysLock = isset(Yii::app()->params['pw_status_checks']['pw_days_lock'])?Yii::app()->params['pw_status_checks']['pw_days_lock'] : null; //get tolerance for pw expiry
+            $pwDaysStale = !empty(Yii::app()->params['pw_status_checks']['pw_days_stale'])?Yii::app()->params['pw_status_checks']['pw_days_stale'] : null; //get tolerance for pw expiry
+            $pwDaysExpire = !empty(Yii::app()->params['pw_status_checks']['pw_days_expire'])?Yii::app()->params['pw_status_checks']['pw_days_expire'] : null; //get tolerance for pw expiry
+            $pwDaysLock = !empty(Yii::app()->params['pw_status_checks']['pw_days_lock'])?Yii::app()->params['pw_status_checks']['pw_days_lock'] : null; //get tolerance for pw expiry
 
             if ($pwDaysStale) {
                 $daysLeft["DaysStale"]=date_diff(date_create(date("Y-m-d H:i:s", strtotime('-'.$pwDaysStale))), date_create($user->password_last_changed_date))->format('%a days');
