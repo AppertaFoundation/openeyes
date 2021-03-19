@@ -675,20 +675,40 @@ function concatenateArrayItemLabels(arrayItems){
 }
 
 function showToolTip(element) {
-	var text = $(element).data('tooltip-content');
+
+	// get js object from jquery
+	const el = element[0];
+
+	let text;
+	let json;
+	let is_bilateral = false;
+
+	if (el.hasAttribute('data-tt')) {
+		json = JSON.parse(el.dataset.tt);
+		is_bilateral = json.type === 'bilateral';
+
+		text = `<div class="right">${json.tipR}</div>`;
+		text += `<div class="left">${json.tipL}</div>`;
+		text += `</div>`;
+	} else if (el.hasAttribute('data-tooltip-content')) {
+		text = $(element).data('tooltip-content');
+	} else {
+		console.error('Necessary tooltip data attributes are missing (data-tt or data-tooltip-content)');
+	}
+
 	var leftPos, toolCSS;
 
 	// get icon DOM position
-	let iconPos = $(element)[ 0 ].getBoundingClientRect();
+	let iconPos = $(element)[0].getBoundingClientRect();
 	let iconCenter = iconPos.width / 2;
 
 	// check for the available space for tooltip:
 	if ( ( $( window ).width() - iconPos.left) < 100 ){
 		leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
-		toolCSS = "oe-tooltip offset-left";
+		toolCSS = `oe-tooltip offset-left ${is_bilateral ? 'bilateral' : ''}`;
 	} else {
 		leftPos = (iconPos.left - 100) + iconCenter - 0.5; 	// tooltip is 200px (center on the icon)
-		toolCSS = "oe-tooltip";
+		toolCSS = `oe-tooltip ${is_bilateral ? 'bilateral' : ''}`;
 	}
 
 	// check if tooltip is in a popup(oe-popup, oe-popup-wrap)
@@ -715,6 +735,12 @@ function showToolTip(element) {
 	var h = $(".oe-tooltip").height();
 	// update position and show
 	var top = iconPos.y - h - 25;
+
+	// is there enough space on the top ?
+	if (top < h) {
+		top = iconPos.y + 25;
+		$(".oe-tooltip").addClass('offset-left inverted');
+	}
 
 	$(".oe-tooltip").css({"top":top+"px"});
 }

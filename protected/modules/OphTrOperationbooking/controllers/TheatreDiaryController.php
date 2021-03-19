@@ -152,7 +152,6 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function getDiaryTheatres($data)
     {
-        $firmId = Yii::app()->session['selected_firm_id'];
         $error = false;
         $errorMessage = '';
 
@@ -229,8 +228,6 @@ class TheatreDiaryController extends BaseModuleController
         }
 
         $criteria->order = 'site.short_name, `t`.display_order, `t`.code, sessions.date, sessions.start_time, sessions.end_time';
-
-        Yii::app()->event->dispatch('start_batch_mode');
 
         return OphTrOperationbooking_Operation_Theatre::model()
             ->with(array(

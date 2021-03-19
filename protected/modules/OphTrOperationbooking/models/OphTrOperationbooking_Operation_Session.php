@@ -112,6 +112,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 
             'sequence' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Sequence', 'sequence_id'),
             'unavailablereason' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Session_UnavailableReason', 'unavailablereason_id'),
+
             'activeBookings' => array(self::HAS_MANY, 'OphTrOperationbooking_Operation_Booking', 'session_id',
                 'on' => 'activeBookings.booking_cancellation_date is null',
                 'order' => 'activeBookings.display_order ASC, activeBookings.id ASC',
@@ -144,7 +145,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     {
         $criteria = array(
             'with' => array(
-                'operation',
                 'operation.anaesthetic_type',
                 'operation.priority',
                 'operation.event' => array('joinType' => 'join'),
@@ -161,7 +161,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
                 'user',
             ),
         );
-        if ((int)$ward_id) {
+
+        if ((int)$ward_id != 'All') {
             $criteria['condition'] = 'ward.id = :ward_id';
             $criteria['params'][':ward_id'] = (int)$ward_id;
         }

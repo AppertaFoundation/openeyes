@@ -178,7 +178,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      * @param $patient
      * @return mixed
      */
-    protected function recentBiometry($patient)
+    public function recentBiometry($patient)
     {
         $biometryCriteria = new CDbCriteria();
         $biometryCriteria->addCondition('patient_id = :patient_id');

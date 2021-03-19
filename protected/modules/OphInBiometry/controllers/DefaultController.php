@@ -16,7 +16,7 @@ class DefaultController extends BaseEventTypeController
     const LONGALLIMIT = 25;
 
     protected $render_optional_elements = false;
-  
+
     /**
      * @param Event                         $unlinkedEvent
      * @param OphInBiometry_Imported_Events $importedEvent
@@ -339,7 +339,7 @@ class DefaultController extends BaseEventTypeController
      */
     protected function isAutoBiometryEvent($id)
     {
-        return count(OphInBiometry_Imported_Events::model()->findAllByAttributes(array('event_id' => $id))) > 0;
+        return OphInBiometry_Imported_Events::model()->countByAttributes(['event_id' => $id]) > 0;
     }
 
     /**
