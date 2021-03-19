@@ -113,6 +113,7 @@ class DidNotAttend extends BaseResource
                 foreach ($did_not_attend_creator->event->getErrors() as $error) {
                     $this->addError($error);
                 }
+                return;
             }
             $transaction->commit();
             return $id;
