@@ -1,0 +1,18 @@
+{
+  "NHSNumber": {
+    "type": "string",
+    "required": true
+  },
+  "HospitalNumber": {
+    "type": "string",
+    "required": true
+  },
+  "Date": {
+    "type": "date",
+    "required": true
+  },
+  "Comments": {
+    "type": "string",
+    "required": true
+  }
+}

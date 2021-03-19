@@ -91,6 +91,16 @@ abstract class BaseResource
     }
 
     /**
+     * Is the resource enabled for use by PASAPI.
+     *
+     * Allows usage of an admin setting to enable/disable PASAPI features.
+     */
+    public function isEnabled()
+    {
+        return true;
+    }
+
+    /**
      * Abstraction for getting instance of class.
      *
      * @param $class
