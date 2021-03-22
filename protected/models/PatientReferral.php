@@ -80,12 +80,16 @@ class PatientReferral extends BaseActiveRecord
      */
     protected function beforeSave()
     {
-        $file = CUploadedFile::getInstance($this, 'uploadedFile');
-        if ($file) {
-            $this->file_size = $file->size;
-            $this->file_name = $file->name;
-            $this->file_content = file_get_contents($file->tempName);
-            $this->file_type = $file->type;
+        if (
+            !empty($_FILES['PatientReferral']['tmp_name']['uploadedFile'])
+            && $_FILES['PatientReferral']['error']['uploadedFile'] === UPLOAD_ERR_OK
+        ) {
+            $tmp_name = $_FILES['PatientReferral']['tmp_name']['uploadedFile'];
+
+            $this->file_size = $_FILES['PatientReferral']['size']['uploadedFile'];
+            $this->file_name = $_FILES['PatientReferral']['name']['uploadedFile'];
+            $this->file_content = file_get_contents($tmp_name);
+            $this->file_type = $_FILES['PatientReferral']['type']['uploadedFile'];
         }
 
         return parent::beforeSave();
