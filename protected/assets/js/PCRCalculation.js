@@ -246,12 +246,21 @@ function setPcrPxf(ev, pcrEl) {
     var $container = getPcrContainer(ev);
     var $related = $(ev.data.related);
 
+    let inputType = $container.find(pcrEl)[0].type;
+    let changeTextValue = true;
+    if(inputType === "select-one") {
+        changeTextValue = false;
+    }
     if (ev.target.checked || $related.is(':checked')) {
         $container.find(pcrEl).val('Y');
-        $container.find(pcrEl).text('Y');
+        if(changeTextValue) {
+            $container.find(pcrEl).text('Y');
+        }
     } else {
         $container.find(pcrEl).val('N');
-        $container.find(pcrEl).text('N');
+        if(changeTextValue) {
+            $container.find(pcrEl).text('N');
+        }
     }
     $(pcrEl).trigger('change');
 
