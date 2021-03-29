@@ -383,7 +383,7 @@ class Patient extends BaseActiveRecordVersioned
             'date_of_death' => 'Date of Death',
             'gender' => 'Gender',
             'ethnic_group_id' => 'Ethnic Group',
-            'hos_num' => Yii::app()->params['hos_num_label'],
+            'hos_num' => \SettingMetadata::model()->getSetting('hos_num_label'),
             'nhs_num' => \SettingMetadata::model()->getSetting('nhs_num_label'),
             'deleted' => 'Is Deleted',
             'nhs_num_status_id' => \SettingMetadata::model()->getSetting('nhs_num_label') . ' Status',

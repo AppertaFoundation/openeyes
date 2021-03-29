@@ -32,7 +32,7 @@ $event_type = $event->eventType->name;
             ))?>
             <br />
             <br />
-            <?php echo Yii::app()->params['hos_num_label'].': '?><strong><?php echo $this->patient->hos_num ?></strong>
+            <?php echo \SettingMetadata::model()->getSetting('hos_num_label').': '?><strong><?php echo $this->patient->hos_num ?></strong>
             <br />
             <?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> No: <strong><?php echo $this->patient->nhsnum ?></strong>
             <br />

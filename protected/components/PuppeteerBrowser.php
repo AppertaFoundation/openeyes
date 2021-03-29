@@ -146,7 +146,7 @@ class PuppeteerBrowser extends CApplicationComponent
                 '<span class="totalPages"></span>',
                 CJavaScript::encode($this->custom_tags),
                 \SettingMetadata::model()->getSetting('nhs_num_label'),
-                Yii::app()->params['hos_num_label'],
+                \SettingMetadata::model()->getSetting('hos_num_label'),
                 $this->_top_margin,
                 $this->_left_margin,
                 $this->_right_margin

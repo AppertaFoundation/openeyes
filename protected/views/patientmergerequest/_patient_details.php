@@ -30,7 +30,7 @@
             <tbody>
             <tr>
                 <!--                Parameterized for CERA-519-->
-                <td> <?php echo (Yii::app()->params['hos_num_label']).':'?>
+                <td> <?php echo (\SettingMetadata::model()->getSetting('hos_num_label')).':'?>
                 </td>
                 <td>
                     <span class="data-value hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
