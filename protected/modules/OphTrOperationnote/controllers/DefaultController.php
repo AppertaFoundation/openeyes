@@ -20,6 +20,7 @@ class DefaultController extends BaseEventTypeController
     protected static $action_types = array(
         'loadElementByProcedure' => self::ACTION_TYPE_FORM,
         'getElementsToDelete' => self::ACTION_TYPE_FORM,
+        'getUserSettingsValues' => self::ACTION_TYPE_FORM,
         'verifyProcedure' => self::ACTION_TYPE_FORM,
         'getImage' => self::ACTION_TYPE_FORM,
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
@@ -164,9 +165,8 @@ class DefaultController extends BaseEventTypeController
                         Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 
                         $transaction->commit();
-
                         /*
-                         * After event saved and transaction is commited
+                         * After event saved and transaction is committed
                          * here we can generate additional events with their own transactions
                          */
                         $this->afterCreateEvent($this->event);
@@ -220,7 +220,7 @@ class DefaultController extends BaseEventTypeController
 
     private function createPrescriptionEvent()
     {
-        $drug_set_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_drug_set");
+        $drug_set_name = SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_drug_set");
         $subspecialty_id = $this->firm->getSubspecialtyID();
         $params = [':subspecialty_id' => $subspecialty_id, ':name' => $drug_set_name];
 
@@ -248,7 +248,7 @@ class DefaultController extends BaseEventTypeController
             $errors[] = [$msg];
             $errors[] = $params; // these are only going to the logs and audit, not displayed to the user
 
-            \Yii::app()->user->setFlash('issue.prescription', $msg);
+            Yii::app()->user->setFlash('issue.prescription', $msg);
         }
 
         return [
@@ -305,11 +305,11 @@ class DefaultController extends BaseEventTypeController
      * Ajax action to load the required elements for a procedure.
      *
      * @throws SystemException
-     * @throws CHttpException
+     * @throws Exception
      */
     public function actionLoadElementByProcedure()
     {
-        if (!$proc = Procedure::model()->findByPk((int)@$_GET['procedure_id'])) {
+        if (!$proc = Procedure::model()->findByPk((integer)@$_GET['procedure_id'])) {
             throw new SystemException('Procedure not found: ' . @$_GET['procedure_id']);
         }
 
@@ -944,6 +944,33 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    protected function getUserSettings($surgeon_id): array
+    {
+        $element_type = ElementType::model()->find('class_name = :class_name', array(':class_name' => 'Element_OphTrOperationnote_Cataract'));
+        $user_settings = SettingUser::model()->findAll('user_id = :user_id AND element_type_id = :element_type_id', array(':user_id' => $surgeon_id, ':element_type_id' => $element_type->id));
+        $settings = [];
+
+        foreach ($user_settings as $key => $user_setting) {
+            $settings[$user_setting->key] = $user_setting->value;
+        }
+
+        return $settings;
+    }
+
+    protected function setOpNoteSettings($op_note_user_settings)
+    {
+        if ($op_note_user_settings) {
+            $this->jsVars['number_of_ports'] = ($op_note_user_settings['number_of_ports'] ?? 2);
+            $this->jsVars['surgeon_position'] = [0 => $op_note_user_settings['surgeon_position_right_eye'], 1 => $op_note_user_settings['surgeon_position_left_eye']];
+            $this->jsVars['incision_centre_position'] = [0 => $op_note_user_settings['incision_centre_position_right_eye'], 1 => $op_note_user_settings['incision_centre_position_left_eye']];
+            parent::processJsVars();
+        }
+    }
+
+    public function actionGetUserSettingsValues($surgeon_id) {
+        echo json_encode($this->getUserSettings($surgeon_id));
+    }
+
     /**
      * Set up the controller properties for booking relationship.
      *
@@ -955,6 +982,12 @@ class DefaultController extends BaseEventTypeController
 
         /** @var OphTrOperationbooking_API $api */
         $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+        $surgeon_id = Yii::app()->user->id;
+
+        if (\Yii::app()->request->isPostRequest) {
+            $surgeoun_element_array = \Yii::app()->request->getParam('Element_OphTrOperationnote_Surgeon');
+            $surgeon_id = $surgeoun_element_array['surgeon_id'] ?? $surgeon_id;
+        }
 
         if (isset($_GET['booking_event_id'])) {
             if (!$api) {
@@ -968,6 +1001,8 @@ class DefaultController extends BaseEventTypeController
         }
 
         $this->initEdit();
+        $op_note_user_settings = $this->getUserSettings($surgeon_id);
+        $this->setOpNoteSettings($op_note_user_settings);
     }
 
     /**
@@ -1051,7 +1086,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         if (isset($data['Element_OphTrOperationnote_ProcedureList']['eye_id'])) {
-            $element->setEye(\Eye::model()->findByPk($data['Element_OphTrOperationnote_ProcedureList']['eye_id']));
+            $element->setEye(Eye::model()->findByPk($data['Element_OphTrOperationnote_ProcedureList']['eye_id']));
         }
 
         $element->complications = $complications;
@@ -1248,7 +1283,7 @@ class DefaultController extends BaseEventTypeController
         $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         if (empty($macro_name)) {
-            $macro_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_letter");
+            $macro_name = SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_letter");
         }
         $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id'], $macro_name);
 
@@ -1261,7 +1296,7 @@ class DefaultController extends BaseEventTypeController
                 'params'    => array(':name' => "$name%")
             ));
 
-            $letter_type = \LetterType::model()->find($criteria);
+            $letter_type = LetterType::model()->find($criteria);
             $letter_type_id = $letter_type ? $letter_type->id : null;
 
             $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
@@ -1273,7 +1308,7 @@ class DefaultController extends BaseEventTypeController
             $msg = "Unable to create default Letter because: No macro named '{$macro_name}' was found";
             $errors[] = [$msg];
 
-            \Yii::app()->user->setFlash('issue.correspondence', $msg);
+            Yii::app()->user->setFlash('issue.correspondence', $msg);
         }
 
         return [

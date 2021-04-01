@@ -4,7 +4,7 @@
  * @var $form_id string
  */
 ?>
-<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content">
+<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content" data-has-errors="<?=($has_errors ?? 'false') ?>">
 
     <h2 class="event-title">
         <?php echo $this->title ?>

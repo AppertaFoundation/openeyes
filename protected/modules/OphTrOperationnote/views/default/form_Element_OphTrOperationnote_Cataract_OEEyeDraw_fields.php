@@ -310,5 +310,13 @@
                 $(this).hide();
             }
         });
+
+        if (window.event_has_errors !== true) {
+            setTimeout(() => {
+                let $op_note_surgeon = $('#Element_OphTrOperationnote_Surgeon_surgeon_id');
+                $op_note_surgeon.trigger('input');
+            }, 500);
+
+        }
     });
 </script>

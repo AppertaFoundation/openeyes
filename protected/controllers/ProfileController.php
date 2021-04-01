@@ -417,4 +417,45 @@ class ProfileController extends BaseController
 
         return $display_theme_setting;
     }
+
+    public function actionUsersettings()
+    {
+        $element_type = ElementType::model()->find('class_name = :class_name', array(':class_name' => 'Element_OphTrOperationnote_Cataract'));
+        $setting_metadata = \Yii::app()->request->getPost('SettingMetadata');
+        if ($setting_metadata) {
+            SettingUser::model()->deleteAll('user_id = :user_id AND element_type_id = :element_type_id', array(':user_id' => Yii::app()->user->id, ':element_type_id' => $element_type->id));
+            foreach ($setting_metadata as $key => $value) {
+                $cataract_op_note_setting = new SettingUser();
+                $cataract_op_note_setting->user_id = Yii::app()->user->id;
+                $cataract_op_note_setting->element_type_id = $element_type->id;
+                $cataract_op_note_setting->key = $key;
+                $cataract_op_note_setting->value = $value;
+                if (!$cataract_op_note_setting->save()) {
+                    $errors = $cataract_op_note_setting->getErrors();
+                }
+                Yii::app()->cache->delete('op_note_user_settings');
+            }
+        }
+
+        $settings_user = $this->getUserSettings($element_type);
+        $settings_metadata = SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id = :element_type_id', array(':element_type_id' => $element_type->id));
+        $user_settings = CHtml::listData($settings_user, 'key', 'value');
+        if ($settings_user) {
+            foreach ($settings_metadata as $value) {
+                if (isset($user_settings[$value->key])) {
+                    $value->default_value = $user_settings[$value->key];
+                }
+            }
+        }
+        $errors = array();
+        $this->render('/profile/user_settings', array(
+            'errors' => $errors,
+            'settings' => $settings_metadata,
+        ));
+    }
+
+    public function getUserSettings($elementType)
+    {
+        return SettingUser::model()->findAll('user_id = :user_id AND element_type_id = :element_type_id', array(':user_id' => Yii::app()->user->id, ':element_type_id' => $elementType->id));
+    }
 }

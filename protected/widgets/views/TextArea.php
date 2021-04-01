@@ -23,15 +23,15 @@
       <?php if (!$no_label) : ?>
         <div class="cols-<?= $layoutColumns['label'] ?> column">
           <label for="<?= CHtml::modelName($element) . "_$field" ?>">
-              <?= ($label) ? CHtml::encode($element->getAttributeLabel($field)) . ':' : '' ?>
+              <?= (isset($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($htmlOptions['label'])) . ':' : ($label ? CHtml::encode($element->getAttributeLabel($field)) . ':' : '')); ?>
           </label>
         </div>
         <?php endif; ?>
         <div class="cols-<?php echo $layoutColumns['field']?> column">
 <?php endif;
 $attr = array(
-    'id' => CHtml::modelName($element).'_'.$field,
-    'name' => CHtml::modelName($element).'['.$field.']',
+    'id' => (isset($htmlOptions['name']) ? $htmlOptions['name'] : CHtml::modelName($element).'_'.$field),
+    'name' => (isset($htmlOptions['name']) ? $htmlOptions['name'] : CHtml::modelName($element).'['.$field.']'),
     'placeholder' => @$htmlOptions['placeholder'],
 );
 if ($rows) {
@@ -41,7 +41,7 @@ if ($cols) {
     $attr['cols'] = $cols;
 }
 ?>
-<textarea class="cols-full column <?= @$htmlOptions['class'] ?>"
+<textarea class="<?= isset($htmlOptions['class']) ? $htmlOptions['class'] : 'cols-full column'?>"
     <?= CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>
 ><?=\CHtml::encode($value)?>
 </textarea>

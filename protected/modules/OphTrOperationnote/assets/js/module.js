@@ -16,6 +16,12 @@
  */
 
 $(document).ready(function () {
+    window.event_has_errors = false;
+    const $event_content = document.getElementById('event-content');
+    if ($event_content) {
+        window.event_has_errors = $event_content.dataset.hasErrors === 'true' ? true : false;
+    }
+
     highlightBiometryElement();
     if (window.location.href.indexOf("update") == -1) {
         loadBiometryElementData();
@@ -38,10 +44,11 @@ $(document).ready(function () {
 
 async function callbackAddProcedure(procedure_id) {
     var eye = $('input[name="Element_OphTrOperationnote_ProcedureList\\[eye_id\\]"]:checked').val();
+    let surgeon_id = $('#Element_OphTrOperationnote_Surgeon_surgeon_id').val();
 
     $.ajax({
         'type': 'GET',
-        'url': baseUrl + '/OphTrOperationnote/Default/loadElementByProcedure?procedure_id=' + procedure_id + '&eye=' + eye + '&patientId=' + OE_patient_id,
+        'url': baseUrl + '/OphTrOperationnote/Default/loadElementByProcedure?procedure_id=' + procedure_id + '&eye=' + eye +'&patientId=' + OE_patient_id + "&surgeon_id=" + surgeon_id,
         'success': function (html) {
             if (html.length > 0) {
                 if (html.match(/must-select-eye/)) {
@@ -303,6 +310,61 @@ $(document).ready(function () {
         var drawing_name = $('#Element_OphTrOperationnote_Trabectome_eyedraw').prev('canvas').data('drawing-name');
         reportEyedraw(element, ED.getInstance(drawing_name), 'description');
     });
+
+    let $op_note_surgeon = $('#Element_OphTrOperationnote_Surgeon_surgeon_id');
+
+    $op_note_surgeon.on('input', function () {
+        let selected_surgeon_id = $(this).val();
+        current_surgeon_id = selected_surgeon_id;
+        let surgeon_drawing = window.ED ? ED.getInstance('ed_drawing_edit_Position') : undefined;
+        let cataract_drawing = window.ED ? ED.getInstance('ed_drawing_edit_Cataract') : undefined;
+
+        $.ajax({
+            type: 'GET',
+            url: baseUrl + '/OphTrOperationnote/Default/getUserSettingsValues/',
+            dataType: "json",
+            data: {
+                surgeon_id: selected_surgeon_id
+            },
+            success: function (settings) {
+                if (typeof cataract_drawing !== 'undefined' && settings) {
+                    let eye_side = cataract_drawing.eye === 0 ? 'right' : 'left';
+                    let surgeon_doodle = surgeon_drawing.firstDoodleOfClass('Surgeon');
+                    let phako_incision_doodles = cataract_drawing.allDoodlesOfClass('PhakoIncision');
+
+                    cataract_drawing.deleteDoodlesOfClass('SidePort');
+                    cataract_drawing.addDoodle('SidePort', {rotation: 0});
+                    if (+settings['number_of_ports'] === 2) {
+                        cataract_drawing.addDoodle('SidePort', {rotation: Math.PI});
+                    }
+
+                    surgeon_doodle.setParameterWithAnimation('surgeonPosition', settings['surgeon_position_' + eye_side + '_eye']);
+
+                    setTimeout(() => {
+                        phako_incision_doodles[0].setParameterFromString('incisionMeridian', settings['incision_centre_position_' + eye_side + '_eye'], true);
+                    }, 500);
+
+                    setTimeout(() => {
+                        phako_incision_doodles[0].setParameterFromString('incisionMeridian', settings['incision_centre_position_' + eye_side + '_eye'], true);
+
+                        const side_ports = cataract_drawing.allDoodlesOfClass('SidePort');
+                        if (typeof (side_ports[0]) !== 'undefined') {
+                            side_ports[0].setSimpleParameter('rotation', (phako_incision_doodles[0].rotation + Math.PI / 2) % (2 * Math.PI));
+                        }
+
+                        if (typeof (side_ports[1]) !== 'undefined') {
+                            side_ports[1].setSimpleParameter('rotation', (phako_incision_doodles[0].rotation - Math.PI / 2) % (2 * Math.PI));
+                        }
+
+                        cataract_drawing.deselectDoodles();
+
+                    }, 700);
+
+
+                }
+            }
+        });
+    });
 });
 
 var OphTrOperationnote_reports = {};
@@ -390,16 +452,6 @@ AnaestheticSlide.prototype = {
                 $('#div_Element_OphTrOperationnote_Anaesthetic_anaesthetic_witness_id').slideToggle('fast');
             }
         }
-
-
-        /* $('#Element_OphTrOperationnote_Anaesthetic_anaesthetic_delivery_id').slideToggle('fast');
-         $('#div_Element_OphTrOperationnote_Anaesthetic_Agents').slideToggle('fast');
-         $('#div_Element_OphTrOperationnote_Anaesthetic_Complications').slideToggle('fast');
-         $('#div_Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment').slideToggle('fast', function () {
-             anaestheticSlide.anaestheticTypeSliding = false;
-
-         });
-*/
     }
 };
 
@@ -635,16 +687,98 @@ function PCIOLController(_drawing) {
     };
 }
 
-function sidePortController(_drawing) {
-    var phakoIncision;
-    var sidePort1;
-    var sidePort2;
+function getSurgeonPosition(_value, isRE = true) {
+    returnArray = [];
+    switch (_value) {
+        case 'Superior':
+            returnArray['rotation'] = 0;
+            break;
+        case 'Supero-temporal':
+            returnArray['rotation'] = isRE ? 7 * Math.PI / 4 : 1 * Math.PI / 4;
+            break;
+        case 'Temporal':
+            returnArray['rotation'] = isRE ? 6 * Math.PI / 4 : 2 * Math.PI / 4;
+            break;
+        case 'Infero-temporal':
+            returnArray['rotation'] = isRE ? 5 * Math.PI / 4 : 3 * Math.PI / 4;
+            break;
+        case 'Inferior':
+            returnArray['rotation'] = Math.PI;
+            break;
+        case 'Infero-nasal':
+            returnArray['rotation'] = isRE ? 3 * Math.PI / 4 : 5 * Math.PI / 4;
+            break;
+        case 'Nasal':
+            returnArray['rotation'] = isRE ? 2 * Math.PI / 4 : 6 * Math.PI / 4;
+            break;
+        case 'Supero-nasal':
+            returnArray['rotation'] = isRE ? 1 * Math.PI / 4 : 7 * Math.PI / 4;
+            break;
+    }
 
-    var iol_position;
-    var site_id;
-    var type_id;
-    var length;
-    var meridian;
+    return returnArray;
+}
+function surgeonController(_drawing) {
+    // Register controller for notifications
+    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'parameterChanged']);
+
+    // Method called for notification
+    this.notificationHandler = function (_messageArray) {
+        const isRE = _drawing.eye == ED.eye.Right;
+        const surgeon = _drawing.firstDoodleOfClass('Surgeon');
+        switch (_messageArray['eventName']) {
+            case 'ready':
+                _drawing.addDoodle('OperatingTable');
+
+                if (!surgeon) {
+                    _drawing.addDoodle('Surgeon');
+                }
+
+                _drawing.deselectDoodles();
+                break;
+            case 'parameterChanged':
+                const _cataractDrawing = ED.getInstance('ed_drawing_edit_Cataract');
+                const doodle = _messageArray.object.doodle;
+                if (doodle.className === 'Surgeon' && _messageArray.object.parameter === 'surgeonPosition') {
+
+                    const phakoIncision = _cataractDrawing.firstDoodleOfClass('PhakoIncision');
+                    if (phakoIncision && surgeon && _messageArray.object.value !==_messageArray.object.oldValue) {
+                        const oldRotation = getSurgeonPosition(_messageArray.object.oldValue, isRE)['rotation']*180/Math.PI;
+                        const newRotation = getSurgeonPosition(_messageArray.object.value, isRE)['rotation']*180/Math.PI;
+
+                        let mod = (oldRotation < newRotation ? 1 : -1);
+                        if (newRotation === 0 && oldRotation > 300) {
+                            mod = 1;
+                        }
+                        if (newRotation === 0 && oldRotation < 50) {
+                            mod = -1;
+                        }
+                        if (oldRotation === 0 && newRotation > 300) {
+                            mod = -1;
+                        }
+                        phakoIncision.setParameterFromString('rotation', '' + (phakoIncision.rotation + ((45*Math.PI/180)* mod) ));
+                        if ((surgeon.rotation*180/Math.PI) % 45 === 0) {
+
+                        }
+                    }
+                }
+                break;
+        }
+    };
+}
+
+function sidePortController(_drawing) {
+    let phakoIncision;
+    let sidePort1;
+    let sidePort2;
+
+    let iol_position;
+    let site_id;
+    let type_id;
+    let length;
+    let meridian;
+    let meridian_element = 'Element_OphTrOperationnote_Cataract_meridian';
+    let eye_id = ED.getInstance('ed_drawing_edit_Cataract').eye;
 
     // Register controller for notifications
     _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'afterReset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted', 'doodlesLoaded']);
@@ -654,8 +788,10 @@ function sidePortController(_drawing) {
         var doodles = _drawing.allDoodlesOfClass('SidePort');
 
         sidePort1 = has_sideport ? doodles[0] : _drawing.addDoodle('SidePort', {rotation: 0});
-        sidePort2 = has_sideport ? doodles[1] : _drawing.addDoodle('SidePort', {rotation: Math.PI});
 
+        if(typeof number_of_ports === 'undefined' || number_of_ports === 2){
+            sidePort2 = has_sideport ? doodles[1] : _drawing.addDoodle('SidePort', {rotation: Math.PI});
+        }
         _drawing.deselectDoodles();
     };
 
@@ -671,18 +807,38 @@ function sidePortController(_drawing) {
                 // If this is a newly created drawing, add two sideports
                 if ($(_drawing.canvas).parents('.eyedraw-row.cataract').data('isNew')) {
                     this.addSidePorts();
+
+                    if (typeof (phakoIncision) !== 'undefined') {
+                        let incision_meridian = '180';
+                        if (typeof incision_centre_position !== 'undefined' && incision_centre_position[eye_id] !== 'undefined') {
+                            incision_meridian = ''+incision_centre_position[eye_id];
+                        }
+                        
+                        if (window.event_has_errors !== true) {
+
+                            setTimeout(() => {
+                                phakoIncision.setParameterFromString('incisionMeridian', incision_meridian, true);
+
+                                const side_ports = _drawing.allDoodlesOfClass('SidePort');
+                                if (typeof (side_ports[0]) !== 'undefined') {
+                                    side_ports[0].setSimpleParameter('rotation', (phakoIncision.rotation + Math.PI / 2) % (2 * Math.PI));
+                                }
+
+                                if (typeof (side_ports[1]) !== 'undefined') {
+                                    side_ports[1].setSimpleParameter('rotation', (phakoIncision.rotation - Math.PI / 2) % (2 * Math.PI));
+                                }
+
+                                _drawing.deselectDoodles();
+                            }, 1000);
+                        }
+                    }
                 }
                 // Else cancel sync for an updated drawing
                 else {
-                    if (typeof (phakoIncision) != 'undefined') {
+                    if (typeof (phakoIncision) !== 'undefined') {
                         phakoIncision.willSync = false;
                     }
                 }
-
-                site_id = $('#Element_OphTrOperationnote_Cataract_incision_site_id').val();
-                type_id = $('#Element_OphTrOperationnote_Cataract_incision_type_id').val();
-                length = $('#Element_OphTrOperationnote_Cataract_length').val();
-                meridian = $('#Element_OphTrOperationnote_Cataract_meridian').val();
 
                 break;
 
@@ -712,13 +868,14 @@ function sidePortController(_drawing) {
                 }
                 // Else cancel sync for an updated drawing
                 else {
-                    if (typeof (phakoIncision) != 'undefined') {
+                    if (typeof (phakoIncision) !== 'undefined') {
                         phakoIncision.willSync = false;
                     }
                 }
                 break;
             // Parameter change notification
             case 'parameterChanged':
+
                 // Get rotation value of surgeon doodle
                 var surgeonDrawing = ED.getInstance('ed_drawing_edit_Position');
                 var surgeonRotation = surgeonDrawing.firstDoodleOfClass('Surgeon').rotation;
@@ -728,7 +885,7 @@ function sidePortController(_drawing) {
 
                 // Stop syncing if PhakoIncision or a SidePort is changed
                 if (masterDoodle.drawing.isActive && (masterDoodle.className == 'PhakoIncision' || masterDoodle.className == 'SidePort')) {
-                    if (typeof (phakoIncision) != 'undefined') {
+                    if (typeof (phakoIncision) !== 'undefined') {
                         phakoIncision.willSync = false;
                     }
                 }
@@ -736,12 +893,14 @@ function sidePortController(_drawing) {
                 // Keep sideports in sync with PhakoIncision while surgeon is still syncing with it
                 if (masterDoodle.className == "PhakoIncision" && masterDoodle.willSync && typeof surgeonRotation === 'number') {
 
-                    if (typeof (sidePort1) != 'undefined') {
-                        sidePort1.setSimpleParameter('rotation', (surgeonRotation + Math.PI / 2) % (2 * Math.PI));
-                    }
-                    if (typeof (sidePort2) != 'undefined') {
-                        sidePort2.setSimpleParameter('rotation', (surgeonRotation - Math.PI / 2) % (2 * Math.PI));
-                    }
+                    // This functionality is buggy, will be solved in OE-10343
+                    //const doodles = _drawing.allDoodlesOfClass('SidePort');
+                    // if (typeof (doodles[0]) != 'undefined') {
+                    //     doodles[0].setSimpleParameter('rotation', (masterDoodle.rotation + Math.PI / 2) % (2 * Math.PI));
+                    // }
+                    // if (typeof (doodles[1]) != 'undefined') {
+                    //     doodles[1].setSimpleParameter('rotation', (masterDoodle.rotation - Math.PI / 2) % (2 * Math.PI));
+                    // }
                 }
 
                 break;
@@ -850,7 +1009,7 @@ function changeEye() {
 
         // Set surgeon position to temporal side
         var doodle = drawingEdit1.firstDoodleOfClass('Surgeon');
-        doodle.setParameterWithAnimation('surgeonPosition', 'Temporal');
+        doodle.setParameterWithAnimation('surgeonPosition', (typeof surgeon_position !== 'undefined' && surgeon_position !== false ? surgeon_position[drawingEdit1.eye] : 'Temporal'));
     }
 
     if (typeof (drawingEdit2) != 'undefined') {
