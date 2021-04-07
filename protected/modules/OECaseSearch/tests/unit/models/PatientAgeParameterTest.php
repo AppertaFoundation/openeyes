@@ -106,6 +106,7 @@ class PatientAgeParameterTest extends CDbTestCase
         // test an exact search using a simple operation. This also ensures coverage of the constructors.
         $patients = array($this->patient('patient1'));
         $parameter = new PatientAgeParameter();
+        $parameter->id = 1;
         $parameter->operation = '=';
         $dob = new DateTime($this->patient('patient1')['dob']);
         $parameter->value = $dob->diff(new DateTime())->format('%y');
@@ -171,7 +172,7 @@ class PatientAgeParameterTest extends CDbTestCase
         $search->refresh();
 
         $loaded_search = SavedSearch::model()->findByPk($search->id);
-        $loaded_criteria = unserialize($loaded_search->search_criteria, array('allowed_classes' => true));
+        $loaded_criteria = unserialize($loaded_search->search_criteria);
         $loaded_parameter = new PatientAgeParameter();
         $loaded_parameter->loadSearch($loaded_criteria[0]);
 

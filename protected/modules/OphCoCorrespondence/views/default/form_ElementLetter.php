@@ -45,7 +45,7 @@ $creating = $creating ?? false;
 ?>
 <?php if ($creating === false) : ?>
     <input type="hidden" id="re_default"
-           value="<?php echo $element->calculateRe($element->event->episode->patient) ?>"/>
+           value="<?= $element->calculateRe() ?>"/>
 <?php endif; ?>
 <div class="element-fields full-width flex-layout flex-top col-gap">
     <div class="cols-3">

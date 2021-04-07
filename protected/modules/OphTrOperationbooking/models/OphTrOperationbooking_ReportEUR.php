@@ -1,11 +1,12 @@
 <?php
- 
-class OphTrOperationbooking_ReportEUR extends BaseReport{
+
+class OphTrOperationbooking_ReportEUR extends BaseReport
+{
     public $date_from;
     public $date_to;
     public $consultant_id;
     public $eurs;
- 
+
     public function attributeNames()
     {
         return array(
@@ -54,7 +55,12 @@ class OphTrOperationbooking_ReportEUR extends BaseReport{
             }
             $deciding_question = max($eur->eurAnswerResults);
             $row = array();
-            $row['District Number'] = $eur->event->episode->patient->hos_num;
+            $primary_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
+                Yii::app()->params['display_primary_number_usage_code'],
+                $eur->event->episode->patient->id,
+                $eur->event->institution_id, $eur->event->site_id
+            ));
+            $row['District Number'] = $primary_identifier_value;
             $row['1st/2nd Eye'] = $eur->eye_num == 1 ? '1st Eye' : '2nd Eye';
             $row['EUR'] = ($eur->result == 1 ? 'PASSED' : 'FAILED') . ' -- ' . $deciding_question->question->question;
             $row['Date Submitted'] = date("d/m/Y", $event_date);

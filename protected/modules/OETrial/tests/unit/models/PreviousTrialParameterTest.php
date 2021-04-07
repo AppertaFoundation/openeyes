@@ -9,12 +9,13 @@
  * @method trial_patient($fixtureId)
  * @method treatment_type($fixtureId)
  */
+
 class PreviousTrialParameterTest extends CDbTestCase
 {
     /**
      * @var PreviousTrialParameter $object
      */
-    protected $object;
+    protected PreviousTrialParameter $object;
 
     protected $fixtures = array(
         'user' => User::class,
@@ -28,7 +29,7 @@ class PreviousTrialParameterTest extends CDbTestCase
         'trial_patient' => TrialPatient::class,
     );
 
-    public static function setUpBeforeClass() : void
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
@@ -69,7 +70,7 @@ class PreviousTrialParameterTest extends CDbTestCase
      * @param string $op
      * @param string $mode
      */
-    public function testQueryOperation($op, $mode)
+    public function testQueryOperation(string $op, string $mode)
     {
         $this->populateDummyData($op, $mode);
 
@@ -83,16 +84,16 @@ class PreviousTrialParameterTest extends CDbTestCase
         $this->object->operation = $op;
         switch ($mode) {
             case 'empty':
-                $this->object->status = '';
-                $this->object->trialTypeId = '';
-                $this->object->trial = '';
-                $this->object->treatmentTypeId = '';
+                $this->object->status = null;
+                $this->object->trialTypeId = null;
+                $this->object->trial = null;
+                $this->object->treatmentTypeId = null;
                 break;
             case 'partial':
-                $this->object->status = '';
+                $this->object->status = null;
                 $this->object->trialTypeId = $this->trial_type('trial_type_intervention')->id;
-                $this->object->trial = '';
-                $this->object->treatmentTypeId = '';
+                $this->object->trial = null;
+                $this->object->treatmentTypeId = null;
                 break;
             default:
                 // Full
@@ -115,18 +116,19 @@ class PreviousTrialParameterTest extends CDbTestCase
 
         $binds = array();
         if ($this->object->trialType) {
-            if ($this->object->trial === '') {
+            if (!$this->object->trial) {
                 $binds[":p_t_trial_type_0"] = $this->object->trialTypeId;
             } else {
                 $binds[":p_t_trial_0"] = $this->object->trial;
             }
         }
 
-        if ($this->object->status !== '' && $this->object->status !== null) {
+        if ($this->object->status && $this->object->status !== null) {
             $binds[":p_t_status_0"] = $this->object->status;
         }
-        if ((!$this->object->trialType || $this->object->trialType->code !== TrialType::NON_INTERVENTION_CODE)
-            && $this->object->treatmentTypeId !== '' && $this->object->treatmentTypeId !== null
+        if (
+            (!$this->object->trialType || $this->object->trialType->code !== TrialType::NON_INTERVENTION_CODE)
+            && $this->object->treatmentTypeId && $this->object->treatmentTypeId !== null
         ) {
             $binds[":p_t_treatment_type_id_0"] = $this->object->treatmentTypeId;
         }
@@ -155,15 +157,27 @@ class PreviousTrialParameterTest extends CDbTestCase
                 break;
             case 'partial':
                 $this->assertEquals('Any trial status', $this->object->getValueForAttribute('status'));
-                $this->assertEquals('Participating in ' . $this->trial_type('trial_type_intervention')->name . ' trial', $this->object->getValueForAttribute('trialTypeId'));
+                $this->assertEquals(
+                    'Participating in ' . $this->trial_type('trial_type_intervention')->name . ' trial',
+                    $this->object->getValueForAttribute('trialTypeId')
+                );
                 $this->assertEquals('Any trial', $this->object->getValueForAttribute('trial'));
                 $this->assertEquals('Received any treatment', $this->object->getValueForAttribute('treatmentTypeId'));
                 break;
             default:
-                $this->assertEquals($this->trial_patient_status('trial_patient_status_accepted')->name . ' into trial', $this->object->getValueForAttribute('status'));
-                $this->assertEquals('Participating in ' . $this->trial_type('trial_type_intervention')->name . ' trial', $this->object->getValueForAttribute('trialTypeId'));
+                $this->assertEquals(
+                    $this->trial_patient_status('trial_patient_status_accepted')->name . ' into trial',
+                    $this->object->getValueForAttribute('status')
+                );
+                $this->assertEquals(
+                    'Participating in ' . $this->trial_type('trial_type_intervention')->name . ' trial',
+                    $this->object->getValueForAttribute('trialTypeId')
+                );
                 $this->assertEquals($this->trial('trial1')->name, $this->object->getValueForAttribute('trial'));
-                $this->assertEquals('Received ' . $this->treatment_type('treatment_type_placebo')->name . ' treatment', $this->object->getValueForAttribute('treatmentTypeId'));
+                $this->assertEquals(
+                    'Received ' . $this->treatment_type('treatment_type_placebo')->name . ' treatment',
+                    $this->object->getValueForAttribute('treatmentTypeId')
+                );
                 break;
         }
 
@@ -199,7 +213,10 @@ class PreviousTrialParameterTest extends CDbTestCase
                 $this->assertEquals('', $results['treatmentTypeId']);
                 break;
             default:
-                $this->assertEquals($this->trial_patient_status('trial_patient_status_accepted')->id, $results['status']);
+                $this->assertEquals(
+                    $this->trial_patient_status('trial_patient_status_accepted')->id,
+                    $results['status']
+                );
                 $this->assertEquals($this->trial_type('trial_type_intervention')->id, $results['trialTypeId']);
                 $this->assertEquals($this->trial('trial1')->id, $results['trial']);
                 $this->assertEquals($this->treatment_type('treatment_type_placebo')->id, $results['treatmentTypeId']);
@@ -225,10 +242,13 @@ class PreviousTrialParameterTest extends CDbTestCase
         $trials = Trial::getTrialList(isset($this->trialType) ? $this->object->trialType->id : '');
         $treatmentTypeList = TreatmentType::getOptions();
 
-        $status = $this->object->status === null || $this->object->status === '' ? 'Included in' : $statusList[$this->object->status];
+        $status = $this->object->status === null || $this->object->status === ''
+            ? 'Included in' : $statusList[$this->object->status];
         $type = !$this->object->trialType ? 'Any Trial Type with' : $trialTypes[$this->object->trialTypeId];
-        $trial = $this->object->trial === null || $this->object->trial === '' ? 'Any trial with' : $trials[$this->object->trial] . ' with ';
-        $treatment = $this->object->treatmentTypeId === null || $this->object->treatmentTypeId === '' ? 'Any Treatment' : $treatmentTypeList[$this->object->treatmentTypeId];
+        $trial = $this->object->trial === null || $this->object->trial === ''
+            ? 'Any trial with' : $trials[$this->object->trial] . ' with ';
+        $treatment = $this->object->treatmentTypeId === null || $this->object->treatmentTypeId === ''
+            ? 'Any Treatment' : $treatmentTypeList[$this->object->treatmentTypeId];
 
         $expected = "previous_trial: {$this->object->operation} $status $type $trial $treatment";
 

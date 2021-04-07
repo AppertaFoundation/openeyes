@@ -564,7 +564,7 @@ class DefaultController extends BaseEventTypeController
 
         $substitutions = array_merge(
             SettingMetadata::getSessionSubstitutions(),
-            SettingMetadata::getPatientSubstitutions($parent_patient),
+            SettingMetadata::getPatientSubstitutions($parent_patient, $parent_event),
             SettingMetadata::getRecipientAddressSubstitution($recipient_address)
         );
 
@@ -636,10 +636,8 @@ class DefaultController extends BaseEventTypeController
 
         $criteria = new CDbCriteria();
 
-        $criteria->addCondition(array('active = :active'));
         $criteria->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) LIKE :term"));
 
-        $params[':active'] = 1;
         $params[':term'] = '%' . strtolower(strtr($_GET['term'], array('%' => '\%'))) . '%';
 
         $criteria->params = $params;

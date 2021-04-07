@@ -1,6 +1,6 @@
 <?php
 
-class m200424_133000_add_hos_num_label extends CDbMigration
+class m200300_133000_add_hos_num_label extends CDbMigration
 {
     public function safeUp()
     {

@@ -174,6 +174,8 @@ $message_type_to_css_class = [
                                         <?= $event_issue_text ?>
                                     </div>
                                 <?php } ?>
+                                <div class="event-name">Institution: <strong><?=$event->institution ?? '-';?></strong></div>
+                                <div class="event-name">Site: <strong><?=$event->site ?? '-';?></strong></div>
                             </div>
 
                             <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">

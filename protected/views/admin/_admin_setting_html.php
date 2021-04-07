@@ -29,7 +29,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
         SettingMetadata::getPatientSubstitutions(),
         SettingMetadata::getRecipientAddressSubstitution()
     );
-    \OELog::log(print_r($substitutions, true));
     ?>
 
 <h2>Letterhead</h2>

@@ -3,6 +3,7 @@
 /**
  * Class FamilyHistoryParameter
  */
+
 use OEModule\OphCiExamination\models\FamilyHistoryCondition;
 use OEModule\OphCiExamination\models\FamilyHistoryRelative;
 use OEModule\OphCiExamination\models\FamilyHistorySide;
@@ -10,23 +11,23 @@ use OEModule\OphCiExamination\models\FamilyHistorySide;
 class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var int $relative
+     * @var int|null $relative
      */
-    public $relative;
+    public $relative = null;
 
     /**
-     * @var int $side
+     * @var int|null $side
      */
-    public $side;
+    public $side = null;
 
     /**
-     * @var int $condition
+     * @var int|null $condition
      */
-    public $condition;
+    public $condition = null;
 
-    protected $label_ = 'Family History';
+    protected ?string $label_ = 'Family History';
 
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'multi_select',
     );
 
@@ -53,7 +54,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'side',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any', 'selected' => true,)
+                        array('id' => null, 'label' => 'Any', 'selected' => true,)
                     ),
                     array_map(
                         static function ($item) {
@@ -68,7 +69,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'relative',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any', 'selected' => true,)
+                        array('id' => null, 'label' => 'Any', 'selected' => true,)
                     ),
                     array_map(
                         static function ($item) {
@@ -83,7 +84,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'condition',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any', 'selected' => true,)
+                        array('id' => null, 'label' => 'Any', 'selected' => true,)
                     ),
                     array_map(
                         static function ($item) {
@@ -96,19 +97,22 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         );
     }
 
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
                 case 'relative':
-                    return FamilyHistoryRelative::model()->findByPk($this->$attribute) ? FamilyHistoryRelative::model()->findByPk($this->$attribute)->name : 'Any relative';
-                    break;
+                    return $this->$attribute
+                        ? (FamilyHistoryRelative::model()->findByPk($this->$attribute))->name
+                        : 'Any relative';
                 case 'side':
-                    return FamilyHistorySide::model()->findByPk($this->$attribute) ? FamilyHistorySide::model()->findByPk($this->$attribute)->name : 'Any side of family';
-                    break;
+                    return $this->$attribute
+                        ? (FamilyHistorySide::model()->findByPk($this->$attribute))->name
+                        : 'Any side of family';
                 case 'condition':
-                    return FamilyHistoryCondition::model()->findByPk($this->$attribute) ? 'has ' . FamilyHistoryCondition::model()->findByPk($this->$attribute)->name : 'Any condition';
-                    break;
+                    return $this->$attribute
+                        ? 'has ' . (FamilyHistoryCondition::model()->findByPk($this->$attribute))->name
+                        : 'Any condition';
                 default:
                     return parent::getValueForAttribute($attribute);
             }
@@ -117,7 +121,8 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
     }
 
     /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
+     * Override this function if the parameter subclass has extra validation rules.
+     * If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
     public function rules()

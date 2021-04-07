@@ -5,11 +5,11 @@
  */
 class PatientAgeParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'number',
     );
 
-    protected $label_ = 'Age';
+    protected ?string $label_ = 'Age';
 
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -37,7 +37,8 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
 
     /**
      * Generate the SQL query for patient age.
-     * @return null|string The query string for use by the search provider, or null if not implemented for the specified search provider.
+     * @return null|string The query string for use by the search provider,
+     * or null if not implemented for the specified search provider.
      */
     public function query()
     {

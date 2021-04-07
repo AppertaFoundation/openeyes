@@ -5,7 +5,7 @@
  */
 class AgeVariable extends CaseSearchVariable implements DBProviderInterface
 {
-    public function __construct($id_list)
+    public function __construct(?array $id_list)
     {
         parent::__construct($id_list);
         $this->field_name = 'age';
@@ -16,7 +16,13 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
     public function query()
     {
         if ($this->csv_mode === 'ADVANCED') {
-            return 'SELECT p.nhs_num, TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, p.created_date, null
+            return 'SELECT (
+            SELECT pi.value
+            FROM patient_identifier pi
+                JOIN patient_identifier_type pit ON pit.id = pi.patient_identifier_type_id
+            WHERE pi.patient_id = p.id
+            AND pit.usage_type = \'GLOBAL\'
+            ) nhs_num, TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, p.created_date, null
         FROM patient p
         JOIN contact c ON c.id = p.contact_id
         WHERE p.id IN (' . implode(', ', $this->id_list) . ')

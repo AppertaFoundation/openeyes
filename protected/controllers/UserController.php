@@ -35,7 +35,8 @@ class UserController extends BaseController
             $term = strtolower($term);
 
             $criteria = new \CDbCriteria;
-            $criteria->compare("LOWER(username)", $term, true, 'OR');
+            $criteria->join = 'JOIN user_authentication user_auth ON t.id = user_auth.user_id';
+            $criteria->compare("LOWER(user_auth.username)", $term, true, 'OR');
             $criteria->compare("LOWER(first_name)", $term, true, 'OR');
             $criteria->compare("LOWER(last_name)", $term, true, 'OR');
             $words = explode(" ", $term);
@@ -55,14 +56,13 @@ class UserController extends BaseController
             if ($consultant_only) {
                 $criteria->compare("is_consultant", true);
             }
-            $criteria->compare('active', true);
+            $criteria->compare('user_auth.active', true);
 
             foreach (\User::model()->findAll($criteria) as $user) {
                 $res[] = array(
                     'id' => $user->id,
                     'label' => $user->getFullNameAndTitle(),
                     'value' => $user->id,
-                    'username' => $user->username,
                 );
             }
         }

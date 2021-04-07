@@ -387,8 +387,27 @@ class ElementLetter extends BaseEventTypeElement
         return LetterStringGroup::model()->findAll(array('order' => 'display_order'));
     }
 
-    public function calculateRe($patient)
+    public function calculateRe(Patient $patient = null)
     {
+        if ($this->event && $this->event->institution) {
+            $institution_id = $this->event->institution->id;
+            $site_id = isset($this->event->site) ? $this->event->site->id : null;
+            $patient = $patient ?? $this->event->getPatient();
+        } else {
+            $institution_id = Institution::model()->getCurrent()->id;
+            $site_id = Yii::app()->session['selected_site_id'];
+        }
+        if (!$patient) {
+            throw new \Exception('Patient not found.');
+        }
+        $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+            Yii::app()->params['display_primary_number_usage_code'],
+            $patient->id, $institution_id, $site_id
+        );
+        $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+            Yii::app()->params['display_secondary_number_usage_code'],
+            $patient->id, $institution_id, $site_id
+        );
         $re = $patient->first_name . ' ' . $patient->last_name;
 
         foreach (array('address1', 'address2', 'city', 'postcode') as $field) {
@@ -396,10 +415,10 @@ class ElementLetter extends BaseEventTypeElement
                 $re .= ', ' . $patient->contact->address->{$field};
             }
         }
-        if (Yii::app()->params['nhs_num_private'] === true) {
-            return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num;
+        if (Yii::app()->params['nhs_num_private'] == true || !$secondary_identifier) {
+            return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier);
         }
-        return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num . ', ' . \SettingMetadata::model()->getSetting('nhs_num_label') . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->nhsnum;
+        return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier) . ', ' . PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($secondary_identifier);
     }
 
     /**
@@ -423,19 +442,7 @@ class ElementLetter extends BaseEventTypeElement
                 $this->introduction = $patient->gp->getLetterIntroduction();
             }
 
-            $this->re = $patient->first_name . ' ' . $patient->last_name;
-
-            foreach (array('address1', 'address2', 'city', 'postcode') as $field) {
-                if ($patient->contact->address && $patient->contact->address->{$field}) {
-                    $this->re .= ', ' . $patient->contact->address->{$field};
-                }
-            }
-
-            if (Yii::app()->params['nhs_num_private'] == true) {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num;
-            } else {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num . ', ' . \SettingMetadata::model()->getSetting('nhs_num_label') . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->nhsnum;
-            }
+            $this->re = $this->calculateRe($patient);
 
             $user = Yii::app()->session['user'];
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);

@@ -99,7 +99,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->eye = $eye;
         $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
         $this->date_of_birth = $patient['dob'];
-        $this->hos_num = $patient['hos_num'];
         $this->allergies = $allergyString;
         $this->complexity = $booking->complexity;
 

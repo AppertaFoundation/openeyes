@@ -289,10 +289,10 @@ class Audit extends BaseActiveRecord
         }
 
         if (isset($properties['user_id'])) {
-            $username = User::model()->findByPk($properties['user_id'])->username;
+            $user_id = $properties['user_id'];
         }
 
-        $log_message && OELog::log($log_message, @$username);
+        $log_message && OELog::log($log_message, @$user_id);
 
         return $audit;
     }

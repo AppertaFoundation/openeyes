@@ -5,7 +5,7 @@
  */
 class PatientAllergyParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $label_ = 'Allergy';
+    protected ?string $label_ = 'Allergy';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -18,7 +18,7 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
         $this->operation = '=';
     }
 
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
@@ -43,17 +43,18 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
         );
     }
 
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term)
     {
         $allergies = Allergy::model()->findAllBySql('
 SELECT a.*
 FROM allergy a 
 WHERE LOWER(a.name) LIKE LOWER(:term) ORDER BY a.name LIMIT  ' . self::_AUTOCOMPLETE_LIMIT, array('term' => "$term%"));
-        $values = array();
-        foreach ($allergies as $allergy) {
-            $values[] = array('id' => $allergy->id, 'label' => $allergy->name);
-        }
-        return $values;
+        return array_map(
+            static function ($allergy) {
+                return array('id' => $allergy->id, 'label' => $allergy->name);
+            },
+            $allergies
+        );
     }
 
     /**

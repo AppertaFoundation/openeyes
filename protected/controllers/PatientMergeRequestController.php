@@ -59,8 +59,8 @@ class PatientMergeRequestController extends BaseController
     public function actionIndex()
     {
         $filters = Yii::app()->request->getParam('PatientMergeRequestFilter');
-        $filters['secondary_hos_num_filter'] = isset($filters['secondary_hos_num_filter']) ? $filters['secondary_hos_num_filter'] : null;
-        $filters['primary_hos_num_filter'] = isset($filters['primary_hos_num_filter']) ? $filters['primary_hos_num_filter'] : null;
+        $filters['secondary_patient_identifier'] = $filters['secondary_patient_identifier'] ??  null;
+        $filters['primary_patient_identifier'] = $filters['primary_patient_identifier'] ??  null;
 
         $cookie_key = 'show_merged_'.Yii::app()->user->id;
 
@@ -84,8 +84,8 @@ class PatientMergeRequestController extends BaseController
         $criteria = new CDbCriteria();
         $criteria->compare('deleted', 0);
         $criteria->addCondition('status != :status');
-        $criteria->addSearchCondition('secondary_hos_num', $filters['secondary_hos_num_filter']);
-        $criteria->addSearchCondition('primary_hos_num', $filters['primary_hos_num_filter']);
+        $criteria->addSearchCondition('secondary_local_identifier_value', $filters['secondary_patient_identifier']);
+        $criteria->addSearchCondition('primary_local_identifier_value', $filters['primary_patient_identifier']);
 
         if (!$cookie_value) {
             $criteria->params[':status'] = PatientMergeRequest::STATUS_MERGED;
@@ -172,7 +172,7 @@ class PatientMergeRequestController extends BaseController
             } elseif ($personal_details_conflict_confirm['is_conflict'] && !isset($patient_merge_request['personal_details_conflict_confirm'])) {
                 Yii::app()->user->setFlash('warning.user_error', 'Please tick the checkboxes.');
             } elseif ($numbers_not_unique) {
-                Yii::app()->user->setFlash('warning.merge_error_duplicate', 'One of the Hospital Numbers are already in the Patient Merge Request list, please merge them first.');
+                Yii::app()->user->setFlash('warning.merge_error_duplicate', 'One of the identifiers are already in the Patient Merge Request list, please merge them first.');
                 $this->redirect(array('index'));
             }
         }
@@ -183,9 +183,11 @@ class PatientMergeRequestController extends BaseController
             }
         }
 
+        $patient_identifier_types = PatientIdentifierType::model()->findAll();
         $this->pageTitle = 'Create Patient Merge Request';
         $this->render('//patientmergerequest/create', array(
             'model' => $model,
+            'patient_identifier_types' => $patient_identifier_types,
         ));
     }
 
@@ -221,10 +223,16 @@ class PatientMergeRequestController extends BaseController
     public function actionView($id)
     {
         $model = $this->loadModel($id);
+        $patient_identifier_types = PatientIdentifierType::model()->findAll();
+        $primary_patient = $this->compilePatientDetails($model->primaryPatient);
+        $secondary_patient = $this->compilePatientDetails($model->secondaryPatient);
 
         $this->pageTitle = 'View Patient Merge Request';
         $this->render('//patientmergerequest/view', array(
             'model' => $model,
+            'patient_identifier_types' => $patient_identifier_types,
+            'primary_patient_JSON' => CJavaScript::jsonEncode($primary_patient),
+            'secondary_patient_JSON' => CJavaScript::jsonEncode($secondary_patient),
         ));
     }
 
@@ -263,37 +271,17 @@ class PatientMergeRequestController extends BaseController
         $primary = Patient::model()->findByPk($merge_request->primary_id);
         $secondary = Patient::model()->findByPk($merge_request->secondary_id);
 
+        $patient_identifier_types = PatientIdentifierType::model()->findAll();
+        $primary_patient = $this->compilePatientDetails($primary);
+        $secondary_patient = $this->compilePatientDetails($secondary);
+
         $this->pageTitle = 'Update Patient Merge Request';
         $this->render('//patientmergerequest/update', array(
             'model' => $merge_request,
+            'patient_identifier_types' => $patient_identifier_types,
             'personal_details_conflict_confirm' => $personal_details_conflict_confirm['is_conflict'],
-            'primary_patient_JSON' => CJavaScript::jsonEncode(array(
-                            'id' => $primary->id,
-                            'first_name' => $primary->first_name,
-                            'last_name' => $primary->last_name,
-                            'age' => ($primary->isDeceased() ? 'Deceased' : $primary->getAge()),
-                            'gender' => $primary->getGenderString(),
-                            'genderletter' => $primary->gender,
-                            'dob' => ($primary->dob) ? $primary->NHSDate('dob') : 'Unknown',
-                            'hos_num' => $primary->hos_num,
-                            'is_local' => $primary->is_local,
-                            'nhsnum' => $primary->nhsnum,
-                            'all-episodes' => htmlentities(str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($primary))),
-                        )),
-
-            'secondary_patient_JSON' => CJavaScript::jsonEncode(array(
-                            'id' => $secondary->id,
-                            'first_name' => $secondary->first_name,
-                            'last_name' => $secondary->last_name,
-                            'age' => ($secondary->isDeceased() ? 'Deceased' : $secondary->getAge()),
-                            'gender' => $secondary->getGenderString(),
-                            'genderletter' => $secondary->gender,
-                            'dob' => ($secondary->dob) ? $secondary->NHSDate('dob') : 'Unknown',
-                            'hos_num' => $secondary->hos_num,
-                            'is_local' => $secondary->is_local,
-                            'nhsnum' => $secondary->nhsnum,
-                            'all-episodes' => htmlentities(str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($secondary))),
-                        )),
+            'primary_patient_JSON' => CJavaScript::jsonEncode($primary_patient),
+            'secondary_patient_JSON' => CJavaScript::jsonEncode($secondary_patient),
             ));
     }
 
@@ -331,7 +319,7 @@ class PatientMergeRequestController extends BaseController
 
                 try {
                     if ($merge_handler->merge()) {
-                        $msg = 'Merge Request '.$merge_request->secondaryPatient->hos_num.' INTO '.$merge_request->primaryPatient->hos_num.'(hos_num) successfully done.';
+                        $msg = 'Merge Request ('.PatientIdentifierHelper::getIdentifierPrompt($merge_handler->secondary_patient_identifier).')'.PatientIdentifierHelper::getIdentifierValue($merge_handler->secondary_patient_identifier).' INTO ('.PatientIdentifierHelper::getIdentifierPrompt($merge_handler->primary_patient_identifier).')'.PatientIdentifierHelper::getIdentifierValue($merge_handler->primary_patient_identifier).' successfully done.';
                         $merge_handler->addLog($msg);
                         $merge_request->status = $merge_request::STATUS_MERGED;
                         $merge_request->merge_json = json_encode(array('log' => $merge_handler->getLog()));
@@ -339,7 +327,7 @@ class PatientMergeRequestController extends BaseController
                         Audit::add('Patient Merge', 'Patient Merge Request successfully done.', $msg);
                         $this->redirect(array('log', 'id' => $merge_request->id));
                     } else {
-                        $msg = 'Merge Request '.$merge_request->secondaryPatient->hos_num.' INTO '.$merge_request->primaryPatient->hos_num.' FAILED.';
+                        $msg = 'Merge Request '.PatientIdentifierHelper::getIdentifierValue($merge_handler->secondary_patient_identifier).' INTO '.PatientIdentifierHelper::getIdentifierValue($merge_handler->primary_patient_identifier).' FAILED.';
                         $merge_handler->addLog($msg);
                         $merge_request->status = $merge_request::STATUS_CONFLICT;
                         $merge_request->merge_json = json_encode(array('log' => $merge_handler->getLog()));
@@ -356,11 +344,17 @@ class PatientMergeRequestController extends BaseController
                 }
             }
         }
+        $primary_patient = $this->compilePatientDetails($merge_request->primaryPatient);
+        $secondary_patient = $this->compilePatientDetails($merge_request->secondaryPatient);
 
+        $patient_identifier_types = PatientIdentifierType::model()->findAll();
         $this->pageTitle = 'Patient Merge';
         $this->render('//patientmergerequest/merge', array(
             'model' => $merge_request,
             'personal_details_conflict_confirm' => $personal_details_conflict_confirm['is_conflict'],
+            'patient_identifier_types' => $patient_identifier_types,
+            'primary_patient_JSON' => CJavaScript::jsonEncode($primary_patient),
+            'secondary_patient_JSON' => CJavaScript::jsonEncode($secondary_patient),
 
         ));
     }
@@ -435,7 +429,7 @@ class PatientMergeRequestController extends BaseController
 
         $patient_search = new PatientSearch();
 
-        if ($patient_search->isValidSearchTerm($term)) {
+        if ($patient_search->getValidSearchTerm($term)) {
             $data_provider = $patient_search->search($term);
             foreach ($data_provider->getData() as $patient) {
                 // check if the patient is already in the Request List
@@ -458,23 +452,12 @@ class PatientMergeRequestController extends BaseController
                     }
                 }
 
-                $result[] = array(
-                    'id' => $patient->id,
-                    'first_name' => $patient->first_name,
-                    'last_name' => $patient->last_name,
-                    'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
-                    'gender' => $patient->getGenderString(),
-                    'genderletter' => $patient->gender,
-                    'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
-                    'hos_num' => $patient->hos_num,
-                    'nhsnum' => $patient->nhsnum,
-                    'is_local' => $patient->is_local ? 1 : 0,
-                    'all-episodes' => $this->getEpisodesHTML($patient),
+                $result[] = array_merge($this->compilePatientDetails($patient, false), array(
                     'warning' => $warning,
                     'notice' => $notice,
                     'genetics-panel' => $genetics_panel,
                     'subject_id' => $subject ? $subject->id : null,
-                );
+                ));
             }
         }
 
@@ -526,6 +509,54 @@ class PatientMergeRequestController extends BaseController
         }
 
         return $html;
+    }
+
+    public function compilePatientDetails($patient, $htmlentities = true)
+    {
+        $current_institution_id = \Institution::model()->getCurrent()->id;
+        $current_site_id = Yii::app()->session['selected_site_id'];
+        $local_identifier = PatientIdentifierHelper::getIdentifierForPatient('LOCAL',
+            $patient->id, $current_institution_id, $current_site_id);
+        $global_identifier = PatientIdentifierHelper::getIdentifierForPatient('GLOBAL',
+            $patient->id, $current_institution_id, $current_site_id);
+
+
+        foreach ($patient->identifiers as $identifier) {
+            $patient_identifiers[] = [
+                'title' => $identifier->patientIdentifierType->long_title ?? $identifier->patientIdentifierType->short_title,
+                'value' => PatientIdentifierHelper::getIdentifierValue($identifier),
+                'save_value' => $identifier->equals($local_identifier) || $identifier->equals($global_identifier)
+            ];
+        }
+
+        $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
+                    $patient->id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+
+        if ($htmlentities) {
+            $all_episode = htmlentities(str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($patient)));
+        } else {
+            $all_episode = $this->getEpisodesHTML($patient);
+        }
+
+        $patient_details = array(
+            'id' => $patient->id,
+            'first_name' => $patient->first_name,
+            'last_name' => $patient->last_name,
+            'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
+            'gender' => $patient->getGenderString(),
+            'genderletter' => $patient->gender,
+            'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
+            'is_local' => $patient->is_local ? 1 : 0,
+            'all-episodes' => $all_episode,
+            'patient_identifiers' => $patient_identifiers,
+            'primary_patient_identifiers' => [
+                'title' => (!is_null($local_identifier->patientIdentifierType->long_title) ? $local_identifier->patientIdentifierType->long_title : $local_identifier->patientIdentifierType->short_title),
+                'value' => $local_identifier->value,
+                'display_value' => PatientIdentifierHelper::getIdentifierValue($local_identifier)
+            ]
+        );
+
+        return $patient_details;
     }
 
 }

@@ -1,5 +1,6 @@
 <?php
 
+use OEModule\PASAPI\models\PasApiAssignment;
 class ContextController extends BaseAdminController
 {
     // public $defaultAction = 'firms';

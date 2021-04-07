@@ -74,12 +74,13 @@ class Institution extends BaseActiveRecordVersioned
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('name, remote_id, short_name', 'required'),
+        return [
+            ['name, remote_id, short_name', 'required'],
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name', 'safe', 'on' => 'search'),
-        );
+            ['any_number_search_allowed, first_used_site_id', 'safe'],
+            ['id, name, any_number_search_allowed', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -95,6 +96,12 @@ class Institution extends BaseActiveRecordVersioned
                 'condition' => 'sites.active = 1',
                 'order' => 'name asc',
             ),
+            'authenticationMethods' =>  [
+                self::HAS_MANY,
+                InstitutionAuthentication::class,
+                'institution_id',
+                'condition' => 'authenticationMethods.active = 1',
+            ],
             'logo' => array(self::BELONGS_TO, 'SiteLogo', 'logo_id'),
         );
     }
@@ -133,15 +140,30 @@ class Institution extends BaseActiveRecordVersioned
      */
     public function getCurrent()
     {
-        if (!isset(Yii::app()->params['institution_code'])) {
-            throw new Exception('Institution code is not set');
+        if (!isset(Yii::app()->session['selected_institution_id'])) {
+            throw new Exception('Institution id is not set');
         }
 
-        $institution = $this->find('source_id=? and remote_id=?', array(1, Yii::app()->params['institution_code']));
+        $institution = $this->findByPk(Yii::app()->session['selected_institution_id']);
         if (!$institution) {
-            throw new Exception("Institution with code '".Yii::app()->params['institution_code']."' not found");
+            throw new Exception("Institution with id '".Yii::app()->session['selected_institution_id']."' not found");
         }
 
         return $institution;
+    }
+
+    public function getCorrespondenceName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Returns the name of the institution
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return $this->short_name;
     }
 }

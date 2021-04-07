@@ -52,7 +52,13 @@ class AgeVariableTest extends CDbTestCase
             ),
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
-                'query_template' => 'SELECT p.nhs_num, TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, p.created_date, null
+                'query_template' => 'SELECT (
+            SELECT pi.value
+            FROM patient_identifier pi
+                JOIN patient_identifier_type pit ON pit.id = pi.patient_identifier_type_id
+            WHERE pi.patient_id = p.id
+            AND pit.usage_type = \'GLOBAL\'
+            ) nhs_num, TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, p.created_date, null
         FROM patient p
         JOIN contact c ON c.id = p.contact_id
         WHERE p.id IN (1, 2, 3)

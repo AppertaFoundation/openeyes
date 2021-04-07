@@ -15,8 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$model_name = CHtml::modelName($model);
 ?>
-
 <section class="<?php echo $type; ?> box patient-info js-toggle-container element">
     <h3 class="box-title">Personal Details:</h3>
     <?= \CHtml::activeHiddenField($model, "{$type}_id", array('class' => 'id-input')); ?>
@@ -28,35 +28,32 @@
                 <col class="cols-1">
             </colgroup>
             <tbody>
-            <tr>
-                <!--                Parameterized for CERA-519-->
-                <td> <?php echo (Yii::app()->params['hos_num_label']).':'?>
-                </td>
-                <td>
-                    <span class="data-value hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
-                    <?= \CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <!-- NHS number -->
-                    <span class="hide-text print-only">
-                                                <!--                Parameterized for CERA-519-->
-                        <?php echo \SettingMetadata::model()->getSetting('nhs_num_label').':'?>
-                    </span>
-                </td>
-                <td>
-                    <span data-default="000 000 0000"
-                          class="data-value nhsnum"><?php echo $model->isNewRecord ? '000 000 0000' : $model->{"{$type}_nhsnum"}; ?></span>
-                    <?= \CHtml::activeHiddenField($model, "{$type}_nhsnum", array('class' => 'nhsnum-input')); ?>
-                </td>
-            </tr>
+            <?php $patient_identifier_types_used = []; ?>
+            <?php foreach ($patient_identifier_types as $patient_identifier_type) {
+                $patient_identifier_title = $patient_identifier_type->long_title ?? $patient_identifier_type->short_title;
+                ?>
+                <tr>
+                    <!--                Parameterized for CERA-519-->
+                    <td> <?= $patient_identifier_title; ?>:
+                    </td>
+                    <td>
+                        <span class="data-value patient_identifiers_<?= str_replace(" ", "_", strtolower($patient_identifier_title)); ?>"></span>
+                        <?php if (!array_key_exists($patient_identifier_type->usage_type, $patient_identifier_types_used)) {
+                            $patient_identifier_types_used[$patient_identifier_type->usage_type] = true; ?>
+                            <input class="patient_identifiers_<?= str_replace(" ", "_", strtolower($patient_identifier_title)); ?>-input"
+                                   name="<?= $model_name; ?>[<?= $type . '_' . strtolower($patient_identifier_type->usage_type) . '_identifier_value'; ?>]"
+                                   id="<?= $model_name . '_' . $type . '_' . strtolower($patient_identifier_type->usage_type) . '_identifier_value'; ?>"
+                                   type="hidden" value="">
+                        <?php } ?>
+                    </td>
+                </tr>
+            <?php } ?>
             <tr>
                 <td>
                     First name(s):
                 </td>
                 <td>
-                    <div class="data-value first_name"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->first_name; ?></div>
+                    <div class="data-value first_name"></div>
                 </td>
             </tr>
             <tr>
@@ -64,20 +61,20 @@
                     Last name:
                 </td>
                 <td>
-                    <div class="data-value last_name"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->last_name; ?></div>
+                    <div class="data-value last_name"></div>
                 </td>
             </tr>
             <tr>
                 <td> Date of Birth:</td>
                 <td>
-                    <div class="data-value dob"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->NHSDate('dob'); ?></div>
+                    <div class="data-value dob"></div>
                     <?= \CHtml::activeHiddenField($model, "{$type}_dob", array('class' => 'dob-input')); ?>
                 </td>
             </tr>
             <tr>
                 <td> Gender:</td>
                 <td>
-                    <div class="data-value gender"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->getGenderString(); ?></div>
+                    <div class="data-value gender"></div>
                     <?= \CHtml::activeHiddenField($model, "{$type}_gender", array('class' => 'genderletter-input')); ?>
                 </td>
             </tr>
@@ -88,6 +85,6 @@
 </section>
 
 <?php if (!$model->isNewRecord) : ?>
-    <?php echo $this->getEpisodesHTML($model->{"{$type}Patient"});?>
+    <?php echo $this->getEpisodesHTML($model->{"{$type}Patient"}); ?>
     <?php echo $this->getGeneticsHTML($model->{"{$type}Patient"}); ?>
 <?php endif; ?>

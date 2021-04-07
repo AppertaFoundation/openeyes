@@ -4,13 +4,14 @@
  * Base class for all parameters usable in Advanced Search.
  * @property string $label
  */
+
 abstract class CaseSearchParameter extends CFormModel
 {
     protected const _AUTOCOMPLETE_LIMIT = 30;
     /**
      * @var string $name Internal name of the parameter.
      */
-    public $name;
+    public string $name;
 
     /**
      * @var bool|string $operation The operator to use in searching.
@@ -20,22 +21,22 @@ abstract class CaseSearchParameter extends CFormModel
     /**
      * @var int $id Internal unique ID assigned to the parameter instance. This allows repeating parameters.
      */
-    public $id;
+    public int $id;
 
     /**
-     * @var string|int|bool $value Parameter value.
+     * @var mixed $value Parameter value.
      */
     public $value;
 
     /**
-     * @var string $label Label to display in adder dialog for the parameter.
+     * @var string|null $label Label to display in adder dialog for the parameter.
      */
-    protected $label_ = null;
+    protected ?string $label_ = null;
 
     /**
      * @var string[] $options List of options for the Adder Dialog.
      */
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'string',
     );
 
@@ -64,12 +65,13 @@ abstract class CaseSearchParameter extends CFormModel
     }
 
     /**
-     * Retrieves a list of common items for the given search term. This is used for any parameter where the value_type is 'string_search'.
+     * Retrieves a list of common items for the given search term.
+     * This is used for any parameter where the value_type is 'string_search'.
      * Override this function to specify how to retrieve the common items.
      * @param $term string Search term.
      * @return array The list of common items for the specified term.
      */
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term)
     {
         // Override in subclasses where relevant
         return array($term);
@@ -77,7 +79,8 @@ abstract class CaseSearchParameter extends CFormModel
 
     /**
      * Override this function if the parameter subclass has extra validation rules.
-     * If doing so, ensure you invoke the parent function first to obtain the initial list of rules and merge the arrays together.
+     * If doing so, ensure you invoke the parent function first to
+     * obtain the initial list of rules and merge the arrays together.
      * @return array The validation rules for the parameter.
      */
     public function rules()
@@ -110,7 +113,7 @@ abstract class CaseSearchParameter extends CFormModel
      * @throws CException Attribute does not exist.
      * @uses CFormModel::attributeNames()
      */
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             return $this->$attribute;
@@ -119,7 +122,8 @@ abstract class CaseSearchParameter extends CFormModel
     }
 
     /**
-     * Override this function to customise the output within the audit table. Generally it should be something like "name: < val".
+     * Override this function to customise the output within the audit table.
+     * Generally it should be something like "name: < val".
      * @return string|null The audit string.
      */
     public function getAuditData()
@@ -128,7 +132,8 @@ abstract class CaseSearchParameter extends CFormModel
     }
 
     /**
-     * Returns an array representing the parameter to store in the database. This array will be serialised before storage.
+     * Returns an array representing the parameter to store in the database.
+     * This array will be serialised before storage.
      * Subclasses should override this method and extend the array with any extra properties that need to be saved.
      * @return array
      */
@@ -144,10 +149,11 @@ abstract class CaseSearchParameter extends CFormModel
     }
 
     /**
-     * Load the specified array into the parameter. This should follow the same convention as how the parameter was saved.
+     * Load the specified array into the parameter.
+     * This should follow the same convention as how the parameter was saved.
      * @param $serialised_data array
      */
-    public function loadSearch($serialised_data)
+    public function loadSearch(array $serialised_data)
     {
         foreach ($serialised_data as $property => $value) {
             if ($property !== 'class_name') {

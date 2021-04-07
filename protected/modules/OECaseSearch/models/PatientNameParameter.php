@@ -5,11 +5,11 @@
  */
 class PatientNameParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'string_search',
     );
 
-    protected $label_ = 'Name';
+    protected ?string $label_ = 'Name';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -33,13 +33,12 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
         );
     }
 
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
                 case 'value':
                     return Patient::model()->findByPk($this->$attribute)->getFullName();
-                    break;
                 default:
                     return parent::getValueForAttribute($attribute);
             }
@@ -59,7 +58,7 @@ WHERE p.id = :p_n_name_{$this->id}
 ";
     }
 
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term)
     {
         $patients = Patient::model()->findAllBySql(
             "SELECT p.* FROM patient p
@@ -70,11 +69,12 @@ WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) LIKE LOWER(:term)) OR (LOWE
 ORDER BY c.first_name, c.last_name LIMIT " . self::_AUTOCOMPLETE_LIMIT,
             array('term' => "%$term%")
         );
-        $values = array();
-        foreach ($patients as $patient) {
-            $values[] = array('id' => $patient->id, 'label' => $patient->getFullName());
-        }
-        return $values;
+        return array_map(
+            static function ($patient) {
+                return array('id' => $patient->id, 'label' => $patient->getFullName());
+            },
+            $patients
+        );
     }
 
     /**

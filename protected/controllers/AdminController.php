@@ -146,11 +146,11 @@ class AdminController extends BaseAdminController
 
             if (!$json_error) {
                 $display_orders = array_map(function ($entry) {
-                      return $entry['display_order'];
+                    return $entry['display_order'];
                 }, $JSON);
 
                 $disorders = array_map(function ($entry) {
-                      return $entry['CommonOphthalmicDisorder'];
+                    return $entry['CommonOphthalmicDisorder'];
                 }, $JSON);
 
 
@@ -470,20 +470,29 @@ class AdminController extends BaseAdminController
         ));*/
     }
 
-    public function actionUserFind()
+    public function actionCheckInstAuthType()
+    {
+        $institution_authentication_id = Yii::app()->request->getParam('id');
+        $institution_authentication = InstitutionAuthentication::model()->findByPk($institution_authentication_id);
+        if ($institution_authentication) {
+            echo $institution_authentication->user_authentication_method;
+        } else {
+            echo "ERROR";
+        }
+    }
+
+    public function actionUserFind($term)
     {
         $res = array();
         if (Yii::app()->request->isAjaxRequest && $term) {
             $criteria = new CDbCriteria();
-            $criteria->compare('LOWER(username)', strtolower($term), true, 'OR');
             $criteria->compare('LOWER(first_name)', strtolower($term), true, 'OR');
             $criteria->compare('LOWER(last_name)', strtolower($term), true, 'OR');
             foreach (User::model()->findAll($criteria) as $user) {
                 $res[] = array(
                     'id' => $user->id,
-                    'label' => $user->getFullName() . '(' . $user->username . ')',
+                    'label' => $user->getFullName(),
                     'value' => $user->getFullName(),
-                    'username' => $user->username,
                 );
             }
         }
@@ -497,7 +506,6 @@ class AdminController extends BaseAdminController
 
         $criteria = new CDbCriteria();
         if (!empty($_GET['search'])) {
-            $criteria->compare('LOWER(username)', strtolower($_GET['search']), true, 'OR');
             $criteria->compare('LOWER(first_name)', strtolower($_GET['search']), true, 'OR');
             $criteria->compare('LOWER(last_name)', strtolower($_GET['search']), true, 'OR');
             $criteria->compare('LOWER(id)', $_GET['search'], false, 'OR');
@@ -531,6 +539,10 @@ class AdminController extends BaseAdminController
     {
 
         $user = User::model()->findByPk($id);
+        $invalid_entries = [];
+        $invalid_existing = [];
+        $errors = [];
+        $user_auth_errors = [];
 
         if ($id && !$user) {
             throw new Exception("User not found: $id");
@@ -544,27 +556,61 @@ class AdminController extends BaseAdminController
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
 
-            if ($id && empty($userAtt['password'])) {
-                unset($userAtt['password']);
-                $user->password_hashed = true;
-            } else {
-                $user->password_hashed = false;
-                if (Yii::app()->params['auth_source'] === 'BASIC') {
-                    $user->setPWStatusHarsher(!empty(Yii::app()->params['pw_status_checks']['pw_admin_pw_change'])?Yii::app()->params['pw_status_checks']['pw_admin_pw_change']: 'stale', null, false);
-                    $user->password_last_changed_date = date('Y-m-d H:i:s');
-                    $user->password_failed_tries = 0;
-                }
-            }
             if (Yii::app()->params['auth_source'] === 'BASIC' && $id && empty($userAtt['password_status'])) {
                 unset($userAtt['password_status']);
             }
             $user->attributes = $userAtt;
 
+            $user_auths_attributes = $request->getPost('UserAuthentication', []);
+
             if (!$user->validate()) {
                 $errors = $user->getErrors();
-            } else {
+                foreach ($user_auths_attributes as $user_auth_attributes) {
+                    $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
+                    if (array_key_exists('id', $user_auth_attributes) && !$user_auth_attributes['id']) {
+                        $invalid_entries['UserAuthentication'][] = $user_auth_attributes;
+                    } else {
+                        $invalid_existing[] = $user_auth;
+                    }
+                }
+            } elseif (empty($user_auth_errors)) {
                 if (!$user->save(false)) {
                     throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
+                }
+
+                //delete deleted auths first
+                $ids = array_column($user_auths_attributes, 'id');
+                $criteria = new CDbCriteria();
+                $criteria->addCondition('user_id=:user_id');
+                $criteria->addNotInCondition('id', array_map(function ($id) {
+                    return $id;
+                }, $ids));
+                $criteria->params[':user_id'] = $user->id;
+                UserAuthentication::model()->deleteAll($criteria);
+
+                foreach ($user_auths_attributes as $user_auth_attributes) {
+                    $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
+                    if (!$user_auth->user_id) {
+                        $user_auth->user_id = $user->id;
+                    }
+
+                    $special_usernames = Yii::app()->params['special_usernames'] ?? [];
+                    if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
+                        $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
+                        if (array_key_exists('id', $user_auth_attributes) && !$user_auth_attributes['id']) {
+                            $invalid_entries['UserAuthentication'][] = $user_auth_attributes;
+                        } else {
+                            $invalid_existing[] = $user_auth;
+                        }
+                    } else {
+                        $user_auth->handlePassword();
+                        $user_auth->setPasswordHash();
+                        if (!$user_auth->save(false)) {
+                            throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
+                        } else {
+                            Audit::add('admin-User-Authentication', 'save', $user_auth->id);
+                        }
+                    }
                 }
 
                 $contact = $user->contact;
@@ -603,11 +649,14 @@ class AdminController extends BaseAdminController
 
                 try {
                     $user->saveFirms($userAtt['firms']);
-                    $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
                 } catch (FirmSaveException $e) {
                     $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
                     $errors = $user->getErrors();
                 }
+            }
+            $errors = array_merge($errors, $user_auth_errors);
+            if (empty($errors)) {
+                $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
             }
         } else {
             if ($id) {
@@ -615,43 +664,12 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $user->password = '';
-        $user->password_repeat = '';
-
         $this->render('/admin/edituser', array(
             'user' => $user,
             'errors' => @$errors,
-            'is_ldap' => \Yii::app()->params['auth_source'] === 'LDAP',
+            'invalid_entries' => $invalid_entries,
+            'invalid_existing' => $invalid_existing,
         ));
-    }
-
-    /**
-     * Flags selected users as inactive
-     * @throws Exception
-     */
-
-    public function actionDeleteUsers()
-    {
-        $result = 1;
-
-        if (!empty($_POST['users'])) {
-            foreach (User::model()->findAllByPk($_POST['users']) as $user) {
-                try {
-                    $user->active = 0;
-                    if (!$user->save(false)) {
-                        $result = 0;
-                    }
-                } catch (Exception $e) {
-                    $result = 0;
-                }
-
-                if ($result) {
-                    Audit::add('admin-User', 'deactivate');
-                }
-            }
-        }
-
-        echo $result;
     }
 
     /**
@@ -662,9 +680,9 @@ class AdminController extends BaseAdminController
     {
         Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
 
-        $user = User::model()->find('username=?', array($_GET['username']));
-        if ($user) {
-            echo $user->id;
+        $user_auth = UserAuthentication::model()->find('username=?', array($_GET['username']));
+        if ($user_auth) {
+            echo $user_auth->user->id;
         } else {
             echo 'NOTFOUND';
         }
@@ -854,6 +872,66 @@ class AdminController extends BaseAdminController
         ));
     }
 
+    public function actionLDAPConfig($id = false)
+    {
+        Audit::add('admin-LDAP-Config', 'list');
+        $ldap_configs = LDAPConfig::model()->findAll();
+
+        $this->render('/admin/ldap_config/index', array(
+            'ldap_configs' => $ldap_configs,
+        ));
+    }
+
+    public function actionEditLDAPConfig()
+    {
+        $request = Yii::app()->request;
+        if ($request->isPostRequest) {
+            $transaction = Yii::app()->db->beginTransaction();
+            $attributes = $request->getPost('LDAPConfig', []);
+            $new = empty($attributes['id']);
+            $ldap_config = !$new ? LDAPConfig::model()->findByPk($attributes['id']) : new LDAPConfig();
+            if (!$ldap_config) {
+                $transaction->rollback();
+                throw new CHttpException(500, 'Unable to save LDAP configuration: resource not found');
+            }
+
+            if (!$new && empty($attributes['ldap_admin_password'])) {
+                $attributes['ldap_admin_password'] = $ldap_config->ldap_admin_password;
+            }
+            $ldap_config->attributes = $attributes;
+            foreach ($ldap_config->ldap_attributes as $ldap_attribute) {
+                $ldap_config->$ldap_attribute = $attributes[$ldap_attribute] ?? null;
+            }
+            if (!$ldap_config->save()) {
+                $transaction->rollback();
+                Audit::add('admin-LDAP-Config', 'view', $ldap_config->id);
+                $ldap_config->ldap_admin_password = '';
+                $this->render('/admin/ldap_config/editldapconfig', array(
+                    'ldap_config' => $ldap_config,
+                    'errors' => $ldap_config->getErrors(),
+                ));
+            } else {
+                Audit::add('admin-LDAP-Config', $new ? 'add' : 'edit', $ldap_config->id);
+                $transaction->commit();
+                $this->redirect(array('/admin/ldapconfig'));
+            }
+        } else {
+            $ldap_config_id = (int)$request->getParam('ldap_config_id');
+            $ldap_config = $ldap_config_id ?
+                LDAPConfig::model()->findByPk($ldap_config_id) :
+                new LDAPConfig();
+            if ($ldap_config) {
+                $ldap_config->ldap_admin_password = '';
+                $this->render('/admin/ldap_config/editldapconfig', array(
+                    'ldap_config' => $ldap_config,
+                    'errors' => [],
+                ));
+            } else {
+                $this->redirect(array('/admin/ldapconfig'));
+            }
+        }
+    }
+
     public function actionGetInstitutionSites()
     {
         $institution = Institution::model()->findByPk(@$_GET['institution_id']);
@@ -892,26 +970,84 @@ class AdminController extends BaseAdminController
         $this->actionEditInstitution(true);
     }
 
+    public function actionEditInstitutionAuthentication()
+    {
+        $request = Yii::app()->request;
+        if ($request->isPostRequest) {
+            $transaction = Yii::app()->db->beginTransaction();
+            $attributes = $request->getPost('InstitutionAuthentication', []);
+            $new = empty($attributes['id']);
+            $institution_authentication = !$new ? InstitutionAuthentication::model()->findByPk($attributes['id']) : new InstitutionAuthentication();
+            if (!$institution_authentication) {
+                throw new CHttpException(500, 'Unable to save institution authentication: resource not found');
+                $transaction->rollback();
+            }
+
+            $institution_authentication->attributes = $attributes;
+            $institution_authentication->validate();
+
+            if (empty($institution_authentication->getErrors())) {
+                try {
+                    if (!$institution_authentication->save()) {
+                        throw new CHttpException(500, 'Unable to save institution authentication: ' . print_r($institution_authentication->getErrors(), true));
+                    }
+
+                    Audit::add('admin-Institution-Authentication', $new ? 'add' : 'edit', $institution_authentication->id);
+                    $transaction->commit();
+                    $this->redirect(array('/admin/editInstitution?institution_id=' . $institution_authentication->institution_id));
+                } catch (Exception $exception) {
+                    $transaction->rollback();
+                    Audit::add('admin-Institution', 'view', $institution_authentication->institution_id);
+                    $this->redirect(array('/admin/editInstitution?institution_id=' . $institution_authentication->institution_id));
+                }
+            } else {
+                $transaction->rollback();
+                $this->render('/admin/institutions/editinstitutionauthentication', array(
+                    'institution_authentication' => $institution_authentication,
+                    'errors' => $institution_authentication->getErrors(),
+                ));
+            }
+        } else {
+            $institution_id = (int)$request->getParam('institution_id');
+            $institution_authentication_id = (int)$request->getParam('institution_authentication_id');
+            $institution_authentication = $institution_authentication_id ?
+                InstitutionAuthentication::model()->findByPk($institution_authentication_id) :
+                ($institution_id ?
+                    InstitutionAuthentication::newFromInstitution($institution_id) :
+                    null);
+            if ($institution_authentication) {
+                $this->render('/admin/institutions/editinstitutionauthentication', array(
+                    'institution_authentication' => $institution_authentication,
+                    'errors' => [],
+                ));
+            } else {
+                $this->redirect(array('/admin/institutions'));
+            }
+        }
+    }
+
     public function actionEditInstitution($new = false)
     {
+        $request = Yii::app()->request;
         if ($new) {
             $institution = new Institution();
             $address = new Address();
             $logo = new SiteLogo();
-            $contact = new Contact();
+            $contact = new Contact('admin_contact');
 
             /*
             * Set default blank contact to fulfill the current relationship with a site
             */
             $contact->nick_name = 'NULL';
             $contact->title = null;
-            $contact->first_name = '';
-            $contact->last_name = '';
+            $contact->first_name = '-';
+            $contact->last_name = '-';
             $contact->qualifications = null;
         } else {
-            $institution = Institution::model()->findByPk(@$_GET['institution_id']);
+            $institution_id = $request->getParam('institution_id');
+            $institution = Institution::model()->findByPk($institution_id);
             if (!$institution) {
-                throw new CHttpException(404, 'Institution not found: ' . @$_GET['institution_id']);
+                throw new CHttpException(404, 'Institution not found: ' . $institution_id);
             }
 
             $contact = $institution->contact;
@@ -925,91 +1061,366 @@ class AdminController extends BaseAdminController
                 $logo = new SiteLogo();
             }
         }
+        $site_id = $request->getPost('patient_identifier_site', null);
+        $usage_type = $request->getPost('patient_identifier_usage_type');
         $errors = array();
-        if (!empty($_POST)) {
-            $institution->attributes = $_POST['Institution'];
+        $form_entries = array();
 
-            if (!$institution->validate()) {
-                $errors = $institution->getErrors();
-            }
-            if ($new) {
-                $contact->save();
+        $patient_identifier_types = PatientIdentifierType::model()->findAllByAttributes(['institution_id' => $institution->id]);
 
-                $institution->contact_id = $contact->id;
-                $address->contact_id = $contact->id;
-            }
+        if ($request->isPostRequest) {
+            $transaction = Yii::app()->db->beginTransaction();
 
-            $address->attributes = $_POST['Address'];
+            try {
+                $sites = array();
+                $site_addresses = array();
+                $new_patient_identifier_types = array();
+                $unique_row_strings = array();
+                $institution->attributes = $request->getPost('Institution', []);
 
-            if (!$address->validate()) {
-                $errors = array_merge(@$errors, $address->getErrors());
-            }
-            if (isset($_FILES['SiteLogo'])) {
-                if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
-                    $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
-
-                    // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
-                        $pl_file = file_get_contents($primary_logo);
-                        $logo->primary_logo = $pl_file;
-                    }
-                }
-                if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
-                    $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-
-                    // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['secondary_logo'])==0) {
-                        $sl_file=file_get_contents($secondary_logo);
-                        $logo->secondary_logo = $sl_file;
-                    }
-                }
-            }
-
-            if (empty($errors)) {
-                // Save the logo, and if sucsessful, add the logo ID to the institution, so that the relation is established.
-                if (!$logo->save()) {
-                    throw new CHttpException(500, 'Unable to save Logo: ' . print_r($logo->getErrors(), true));
-                }
-                $institution->logo_id = $logo->id;
-                // revalidate institution
                 if (!$institution->validate()) {
                     $errors = $institution->getErrors();
                 }
-            }
-            if (empty($errors)) {
-                if (!$institution->save()) {
-                    throw new CHttpException(500, 'Unable to save institution: ' . print_r($institution->getErrors(), true));
-                }
-                if (!$address->save()) {
-                    throw new CHttpException(500, 'Unable to save institution address: ' . print_r($address->getErrors(), true));
-                }
                 if ($new) {
-                    if (!$institution->contact->save()) {
-                        throw new CHttpException(500, 'Institution contact could not be saved: ' . print_r(
-                            $institution->contact->getErrors(),
-                            true
-                        ));
+                    $contact->save();
+
+                    $institution->contact_id = $contact->id;
+                    $address->contact_id = $contact->id;
+                }
+
+                $address->attributes = $request->getPost('Address', []);
+
+                if (!$address->validate()) {
+                    $errors = array_merge($errors, $address->getErrors());
+                }
+                if (isset($_FILES['SiteLogo'])) {
+                    if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
+                        $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
+
+                        // if no error uploading use uploaded image
+                        if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
+                            $pl_file = file_get_contents($primary_logo);
+                            $logo->primary_logo = $pl_file;
+                        }
+                    }
+                    if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
+                        $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
+
+                        // if no error uploading use uploaded image
+                        if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
+                            $sl_file=file_get_contents($secondary_logo);
+                            $logo->secondary_logo = $sl_file;
+                        }
+                    }
+                }
+
+                if (empty($errors)) {
+                    // Save the logo, and if sucsessful, add the logo ID to the institution, so that the relation is established.
+                    if (!$logo->save()) {
+                        throw new CHttpException(500, 'Unable to save Logo: ' . print_r($logo->getErrors(), true));
+                    }
+                    $institution->logo_id = $logo->id;
+                    // revalidate institution
+                    if (!$institution->validate()) {
+                        $errors = $institution->getErrors();
+                    }
+                }
+
+                if (empty($errors)) {
+                    if (!$institution->save()) {
+                        throw new CHttpException(500, 'Unable to save institution: ' . print_r($institution->getErrors(), true));
+                    }
+                    if (!$address->save()) {
+                        throw new CHttpException(500, 'Unable to save institution address: ' . print_r($address->getErrors(), true));
+                    }
+                    if ($new) {
+                        Audit::add('admin-Institution', 'add', $institution->id);
+                    } else {
+                        Audit::add('admin-Institution', 'edit', $institution->id);
+                    }
+                }
+
+                foreach ($request->getPost('PatientIdentifierType', []) as $identifier_type_attributes) {
+                    $new_identifier_type = PatientIdentifierType::model()->findByPk($identifier_type_attributes['id']);
+                    if (!$new_identifier_type) {
+                        $new_identifier_type = new PatientIdentifierType();
                     }
 
-                    Audit::add('admin-Institution', 'add', $institution->id);
+                    $new_identifier_type->attributes = $identifier_type_attributes;
+                    $new_identifier_type->institution_id = $institution->id;
 
-                    $this->redirect(array('/admin/editInstitution?institution_id=' . $institution->id));
-                } else {
-                    Audit::add('admin-Institution', 'edit', $institution->id);
+                    if ($new_identifier_type->site_id === '') {
+                        $new_identifier_type->site_id = null;
+                    }
 
-                    $this->redirect('/admin/institutions/index');
+                    if (!$new_identifier_type->validate()) {
+                        $errors = array_merge($errors, $new_identifier_type->getErrors());
+                    }
+
+                    $unique_row_string = $new_identifier_type->generateUniqueRowStringIdentifier();
+
+                    if (in_array($unique_row_string, $unique_row_strings)) {
+                        $new_identifier_type->addError('usage_type', 'You have already selected a ' . strtolower($new_identifier_type->usage_type) . ' usage type for the chosen site');
+                        $errors = array_merge($errors, $new_identifier_type->getErrors());
+                    }
+
+                    $form_entries['PatientIdentifierType'][] = $new_identifier_type;
+
+                    $unique_row_strings[] = $unique_row_string;
+                    $new_patient_identifier_types[] = $new_identifier_type;
                 }
+
+                if (empty($errors)) {
+                    foreach ($new_patient_identifier_types as $patient_identifier_type) {
+                        if (!$patient_identifier_type->save()) {
+                            throw new Exception('Unable to save patient identifier type: ' . print_r($patient_identifier_type->getErrors(), true));
+                        }
+                    }
+                }
+
+                foreach ($request->getPost('Site', []) as $key => $site_attributes) {
+                    $new_site = Site::model()->findByPk($site_attributes['id']);
+                    $site_address_attributes = $request->getPost('SiteAddress', []);
+                    $site_address = new Address();
+                    $site_address->attributes = $site_address_attributes[$key];
+
+                    if (!$new_site) {
+                        $new_site = new Site();
+                    }
+
+                    $new_site->attributes = $site_attributes;
+                    $new_site->institution_id = $institution->id;
+                    $this->initialiseEmptyContactForSiteAndAddress($new_site, $site_address);
+
+                    if (!$new_site->validate()) {
+                        $errors = array_merge($errors, $new_site->getErrors());
+                    }
+
+                    if (!$site_address->validate()) {
+                        $errors = array_merge($errors, $site_address->getErrors());
+                    }
+
+                    $form_entries['Site'][] = $new_site;
+                    $form_entries['SiteAddress'][] = $site_address;
+
+                    $sites[] = $new_site;
+                    $site_addresses[] = $site_address;
+                }
+
+                if (empty($errors)) {
+                    foreach ($sites as $key => $site) {
+                        if (!$site->save()) {
+                            throw new Exception('Unable to save site: ' . print_r($site->getErrors(), true));
+                        }
+
+                        if (!$site_addresses[$key]->save()) {
+                            throw new Exception('Unable to save site address: ' . print_r($site_addresses[$key]->getErrors(), true));
+                        }
+                    }
+                }
+
+                $errors = array_merge($errors, $this->savePatientIdentifierDisplayPreferences($usage_type, $institution->id, $site_id));
+            } catch (Exception $e) {
+                $transaction->rollback();
+                throw $e;
+            }
+
+            if (empty($errors)) {
+                $transaction->commit();
+                $this->redirect('/admin/institutions/index');
+            } else {
+                $transaction->rollback();
             }
         } else {
-            Audit::add('admin-Institution', 'view', @$_GET['institution_id']);
+            Audit::add('admin-Institution', 'view', $request->getParam('institution_id'));
         }
+
+        $necessity_options = \PatientIdentifierTypeDisplayOrder::getNecessityOptions();
+        $necessity_options_with_labels = [];
+        foreach ($necessity_options as $necessity_option) {
+            $necessity_options_with_labels[$necessity_option] = \PatientIdentifierTypeDisplayOrder::getNecessityLabel($necessity_option);
+        }
+
         $this->render('/admin/institutions/edit', array(
             'institution' => $institution,
             'address' => $address,
-            'errors' => $errors,
+            'patient_identifier_types' => $patient_identifier_types,
             'logo' => $logo,
             'new' => $new,
+            'errors' => $errors,
+            'invalid_entries' => $form_entries,
+            'necessity_options_with_labels' => $necessity_options_with_labels,
         ));
+    }
+
+    public function actionPatientIdentifierType()
+    {
+        Audit::add('admin-PatientIdentifierType', 'list');
+
+        $criteria = new \CDbCriteria();
+        $search = [];
+        $search['institution'] = \Yii::app()->request->getQuery('institution', '');
+        $search['site'] = \Yii::app()->request->getQuery('site', '');
+
+        if ($search['institution']) {
+            $criteria->addCondition('institution_id = :institution_id');
+            $criteria->params[':institution_id'] = $search['institution'];
+        }
+
+        if ($search['site']) {
+            $criteria->addCondition('site_id = :site_id');
+            $criteria->params[':site_id'] = $search['site'];
+        }
+
+        $patient_identifier_type_model = PatientIdentifierType::model();
+        $pagination = $this->initPagination($patient_identifier_type_model, $criteria);
+
+        $this->render('/admin/patient_identifier_types/index', [
+            'patient_identifier_types' => $patient_identifier_type_model->findAll($criteria),
+            'pagination' => $pagination,
+            'element' => $patient_identifier_type_model,
+            'search' => $search
+        ]);
+    }
+
+    public function actionEditPatientIdentifierType()
+    {
+        $patient_identifier_type_id = Yii::app()->request->getParam('patient_identifier_type_id');
+        $patient_identifier_type = PatientIdentifierType::model()->findByPk($patient_identifier_type_id);
+        if (!$patient_identifier_type) {
+            throw new Exception('Patient identifier type not found: ' . $patient_identifier_type_id);
+        }
+
+        $errors = array();
+
+        if (Yii::app()->request->isPostRequest) {
+            $patient_identifier_type->attributes = Yii::app()->request->getPost('PatientIdentifierType');
+
+            if (!$patient_identifier_type->save()) {
+                $errors = $patient_identifier_type->getErrors();
+            }
+
+            if (empty($errors)) {
+                Audit::add('admin-PatientIdentifierType', 'edit', $patient_identifier_type_id);
+                $this->redirect('/admin/patientidentifiertype');
+            }
+        } else {
+            Audit::add('admin-PatientIdentifierType', 'view', $patient_identifier_type_id);
+        }
+
+        $this->render('/admin/patient_identifier_types/edit', array(
+            'patient_identifier_type' => $patient_identifier_type,
+            'errors' => $errors,
+        ));
+    }
+
+
+    public function actionAddPatientIdentifierType()
+    {
+        $errors = array();
+        $patient_identifier_type = new PatientIdentifierType();
+
+        if (Yii::app()->request->isPostRequest) {
+            $patient_identifier_type->attributes = Yii::app()->request->getPost('PatientIdentifierType');
+
+            if (!$patient_identifier_type->save()) {
+                $errors = $patient_identifier_type->getErrors();
+            }
+
+            if (empty($errors)) {
+                Audit::add('admin-PatientIdentifierType', 'add', $patient_identifier_type->id);
+                $this->redirect('/admin/patientidentifiertype');
+            }
+        }
+
+        $this->render('/admin/patient_identifier_types/edit', array(
+            'patient_identifier_type' => $patient_identifier_type,
+            'errors' => $errors,
+        ));
+    }
+
+    public function actionDeletePatientIdentifierTypes()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('id', Yii::app()->request->getPost('patient_identifier_types'));
+
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            foreach (PatientIdentifierType::model()->findAll($criteria) as $pit) {
+                if (!$pit->delete()) {
+                    $transaction->rollback();
+                    echo '0';
+                    return;
+                }
+            }
+            $transaction->commit();
+        } catch (Exception $exception) {
+            $transaction->rollback();
+            echo '0';
+            return;
+        }
+
+        Audit::add('admin-PatientIdentifierType', 'delete');
+
+        echo '1';
+    }
+
+    public function savePatientIdentifierDisplayPreferences($usage_type, $institution_id, $site_id)
+    {
+        $errors = [];
+        $patient_identifier_rules = Yii::app()->request->getPost('PatientIdentifierTypeDisplayOrder', []);
+        $ids = array_column($patient_identifier_rules, 'id');
+
+        //Delete items first
+        $criteria = new CDbCriteria();
+
+        $criteria->addNotInCondition('t.id', array_map(function ($id) {
+            return $id;
+        }, $ids));
+        $criteria->with = 'patientIdentifierType';
+        $criteria->addCondition('patientIdentifierType.usage_type=:usage_type');
+        $criteria->params[':usage_type'] = $usage_type;
+        $criteria->addCondition('t.institution_id=:institution_id');
+        $criteria->params[':institution_id'] = $institution_id;
+        if ($site_id) {
+            $criteria->addCondition('t.site_id=:site_id');
+            $criteria->params[':site_id'] = $site_id;
+        } else {
+            $criteria->addCondition('t.site_id IS NULL');
+        }
+
+        $to_delete = PatientIdentifierTypeDisplayOrder::model()->findAll($criteria);
+        foreach ($to_delete as $item) {
+            if (!$item->delete()) {
+                $errors[] = $item->getErrors();
+            }
+            Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                'model' => PatientIdentifierTypeDisplayOrder::getShortModelName(),
+            ));
+        }
+
+        foreach ($patient_identifier_rules as $patient_identifier_rule) {
+            $patient_identifier_display_order = PatientIdentifierTypeDisplayOrder::model()->findByPk($patient_identifier_rule['id']);
+            if (!$patient_identifier_display_order) {
+                $patient_identifier_display_order = new PatientIdentifierTypeDisplayOrder();
+                $patient_identifier_display_order->institution_id = $institution_id;
+                $patient_identifier_display_order->site_id = $site_id;
+            }
+
+            $patient_identifier_display_order->display_order = $patient_identifier_rule['display_order'];
+            $patient_identifier_display_order->patient_identifier_type_id = $patient_identifier_rule['patient_identifier_type_id'];
+            $patient_identifier_display_order->searchable = $patient_identifier_rule['searchable'];
+            $patient_identifier_display_order->search_protocol_prefix = $patient_identifier_rule['search_protocol_prefix'];
+            $patient_identifier_display_order->necessity = $patient_identifier_rule['necessity'];
+            $patient_identifier_display_order->status_necessity = $patient_identifier_rule['status_necessity'];
+
+            if (!$patient_identifier_display_order->save()) {
+                $errors[] = $patient_identifier_display_order->getErrors();
+            }
+        }
+
+        return $errors;
     }
 
     public function actionSites($id = false)
@@ -1048,7 +1459,6 @@ class AdminController extends BaseAdminController
     {
         if ($new) {
             $site = new Site();
-            $contact = new Contact();
             $address = new Address();
             $logo = new SiteLogo();
             $errors = array();
@@ -1070,14 +1480,16 @@ class AdminController extends BaseAdminController
         if (!empty($_POST)) {
             $site->attributes = $_POST['Site'];
 
+
+
             if (!$site->validate()) {
                 $errors = $site->getErrors();
             }
             if ($new) {
-                $contact->save();
-
-                $site->contact_id = $contact->id;
-                $address->contact_id = $contact->id;
+                /*
+            * Set default blank contact to fulfill the current relationship with a site
+            */
+                $this->initialiseEmptyContactForSiteAndAddress($site, $address);
             }
             $address->attributes = $_POST['Address'];
 
@@ -1089,7 +1501,7 @@ class AdminController extends BaseAdminController
                     $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
 
                     // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                    if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
                         $pl_file = file_get_contents($primary_logo);
                         $logo->primary_logo = $pl_file;
                     }
@@ -1098,13 +1510,13 @@ class AdminController extends BaseAdminController
                     $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
 
                     // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['secondary_logo'])==0) {
+                    if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
                         $sl_file=file_get_contents($secondary_logo);
                         $logo->secondary_logo = $sl_file;
                     }
                 }
 
-                 // get or generate institution logo ID
+                // get or generate institution logo ID
 
                 if ($site->institution->logo_id) {
                     $institution_logo = $site->institution->logo;
@@ -1122,7 +1534,6 @@ class AdminController extends BaseAdminController
                     $logo = SiteLogo::model()->findByPk($site->logo_id);
                 }
             }
-
             if (empty($errors)) {
                 // Save the logo, and if sucsessful, add the logo ID to the site, so that the relation is established.
                 if (!$logo->save()) {
@@ -1146,7 +1557,7 @@ class AdminController extends BaseAdminController
                 Yii::app()->user->setFlash('success', "{$site->name} updated.");
 
                 $new = false;
-                $this->redirect(array('/admin/editSite?site_id=' . $site->id));
+                $this->redirect(array('/admin/sites'));
             }
         } else {
             Audit::add('admin-Site', 'view', @$_GET['site_id']);
@@ -1161,6 +1572,22 @@ class AdminController extends BaseAdminController
         ));
     }
 
+    private function initialiseEmptyContactForSiteAndAddress($site, $address)
+    {
+        $contact = new Contact('admin_contact');
+        $contact->nick_name = 'NULL';
+        $contact->title = null;
+        $contact->first_name = '-';
+        $contact->last_name = '-';
+        $contact->qualifications = null;
+
+        $contact->save();
+
+        $site->contact_id = $contact->id;
+        $address->contact_id = $contact->id;
+    }
+
+
     public function actionLogo()
     {
         // go find our default logo
@@ -1172,7 +1599,7 @@ class AdminController extends BaseAdminController
                 $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
 
                 // if no error uploading use uploaded image
-                if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
                     $pl_file = file_get_contents($primary_logo);
                     $logo->primary_logo = $pl_file;
                 }
@@ -1181,7 +1608,7 @@ class AdminController extends BaseAdminController
                 $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
 
                 // if no error uploading use uploaded image
-                if (($_FILES['SiteLogo']['error']['secondary_logo'])==0) {
+                if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
                     $sl_file=file_get_contents($secondary_logo);
                     $logo->secondary_logo = $sl_file;
                 }
@@ -1213,7 +1640,7 @@ class AdminController extends BaseAdminController
         $deletePrimaryLogo = @$_POST['deletePrimaryLogo'];
         $deleteSecondaryLogo = @$_POST['deleteSecondaryLogo'];
 
-         // go find our logos
+        // go find our logos
         $site = Site::model()->findByPk($site_id);
         $institution = Institution::model()->findByPk($institution_id);
         if (isset($site)) {
@@ -1224,7 +1651,7 @@ class AdminController extends BaseAdminController
         } else {
             $logo = SiteLogo::model()->findByPk(1);
         }
-         //  We should now have our logos to delete from
+        //  We should now have our logos to delete from
 
         $msg = 'Successfully deleted ';
 
@@ -2002,6 +2429,7 @@ class AdminController extends BaseAdminController
 
         $this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
     }
+
     public function actionSettings()
     {
         $this->group = "System";

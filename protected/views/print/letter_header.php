@@ -21,21 +21,25 @@
 <?php
 $event = $this->event;
 $event_type = $event->eventType->name;
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, Institution::model()->getCurrent()->id, $this->selectedSiteId);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, Institution::model()->getCurrent()->id, $this->selectedSiteId);
 ?>
 <header class="header">
     <?= $logo_helper->render() ?>
-        <div class="cols-4 column patient">
-            <strong><?php echo $this->patient->contact->fullName?></strong>
-            <br />
-            <?php echo $this->patient->getLetterAddress(array(
-                'delimiter' => '<br/>',
-            ))?>
-            <br />
-            <br />
-            <?php echo Yii::app()->params['hos_num_label'].': '?><strong><?php echo $this->patient->hos_num ?></strong>
-            <br />
-            <?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> No: <strong><?php echo $this->patient->nhsnum ?></strong>
-            <br />
-            DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
-        </div>
+    <div class="cols-4 column patient">
+        <strong><?= $this->patient->contact->fullName ?></strong>
+        <br/>
+        <?= $this->patient->getLetterAddress(array(
+            'delimiter' => '<br/>',
+        )) ?>
+        <br/>
+        <br/>
+        <?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' ?>
+        <strong><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></strong>
+        <br/>
+        <?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?> No:
+        <strong><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></strong>
+        <br/>
+        DOB: <strong><?= Helper::convertDate2NHS($this->patient->dob) ?> (<?= $this->patient->getAge() ?>)</strong>
+    </div>
 </header>

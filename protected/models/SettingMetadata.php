@@ -387,7 +387,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         );
     }
 
-    public static function getPatientSubstitutions($patient = null)
+    public static function getPatientSubstitutions($patient = null, $event = null)
     {
         $patient_contact = null;
 
@@ -407,8 +407,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
             'patient_last_name' => array('label' => 'Patient Last Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->last_name) : null),
             'patient_date_of_birth' => array('label' => 'Patient Date Of Birth', 'value' => $patient ? self::makeSpan($patient->dob) : null),
             'patient_gender' => array('label' => 'Patient Gender', 'value' => $patient ? self::makeSpan($patient->getGenderString()) : null),
-            'patient_nhs_num' => array('label' => 'Patient NHS Number', 'value' => $patient ? self::makeSpan($patient->nhs_num) : null),
-            'patient_hos_num' => array('label' => 'Patient Hospital Number', 'value' => $patient ? self::makeSpan($patient->hos_num) : null),
+            'patient_nhs_num' => array('label' => 'Patient NHS Number', 'value' => $patient ? self::makeSpan($patient->getNhs($event ? $event->institution_id : null, $event ? $event->site_id : null)) : null),
+            'patient_hos_num' => array('label' => 'Patient Hospital Number', 'value' => $patient ? self::makeSpan($patient->getHos($event ? $event->institution_id : null, $event ? $event->site_id : null)) : null),
             'patient_last_exam_date' => array('label' => 'Patient Last Examination Date', 'value' => $last_exam ? self::makeSpan((new DateTime($last_exam->event_date))->format('d-M-Y')) : null),
         );
     }

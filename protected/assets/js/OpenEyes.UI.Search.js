@@ -79,7 +79,11 @@
         ul.addClass("oe-autocomplete patient-ajax-list");
         return $("<li></li>")
             .data("item.autocomplete ui-menu-item oe-menu-item", item)
-            .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ") " + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() + "_trans'>" + item.gender + "</span>" + "<div class='nhs-number'>" + item.nhsnum + "</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>")
+            .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ") " +
+                "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() + "_trans'>" + item.gender +
+                "</span>" + "<div class='nhs-number'>" + item.secondary_identifier_value + "</div><br>" +
+                item.primary_patient_identifiers.title + ": " + item.primary_patient_identifiers.value +
+                "<br>Date of birth: " + item.dob + "</a>")
             .appendTo(ul);
     };
 

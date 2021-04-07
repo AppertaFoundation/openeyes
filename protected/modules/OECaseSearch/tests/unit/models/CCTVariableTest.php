@@ -65,7 +65,13 @@ class CCTVariableTest extends CDbTestCase
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
                 'query_template' => '
-        SELECT p.nhs_num, cct.value, cct.side, cct.event_date, null
+        SELECT (
+            SELECT pi.value
+            FROM patient_identifier pi
+                JOIN patient_identifier_type pit ON pit.id = pi.patient_identifier_type_id
+            WHERE pi.patient_id = p.id
+            AND pit.usage_type = \'GLOBAL\'
+            ) nhs_num, cct.value, cct.side, cct.event_date, null
         FROM v_patient_cct cct
         JOIN patient p ON p.id = cct.patient_id
         WHERE patient_id IN (1, 2, 3)

@@ -30,6 +30,7 @@
  * @property string $postcode
  * @property string $fax
  * @property string $telephone
+ * @property int $institution_id
  *
  * The followings are the available model relations:
  * @property Institution $institution
@@ -81,7 +82,9 @@ class Site extends BaseActiveRecordVersioned
         return array(
             array('name, short_name, remote_id, telephone', 'required'),
             array('name', 'length', 'max' => 255),
+            array('remote_id', 'length', 'max' => 10),
             array('institution_id, name, remote_id, short_name, location_code, fax, telephone, contact_id, replyto_contact_id, source_id, active, logo_id', 'safe'),
+            array('location', 'default', 'value' => ''),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
@@ -228,5 +231,15 @@ class Site extends BaseActiveRecordVersioned
 
             return $this->getLetterAddress($params);
         }
+    }
+
+    /**
+     * Returns the short_name of the site
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return $this->short_name;
     }
 }

@@ -33,7 +33,7 @@
         <input type="hidden" id="previous_event_type_id" value="<?= \Yii::app()->request->getPost('event_type_id') ?>" />
         <input type="hidden" id="previous_date_from" value="<?= \Yii::app()->request->getPost('date_from') ?>" />
         <input type="hidden" id="previous_date_to" value="<?= \Yii::app()->request->getPost('date_to') ?>" />
-        <input type="hidden" id="previous_hos_num" value="<?= \Yii::app()->request->getPost('hos_num') ?>" />
+        <input type="hidden" id="previous_patient_identifier_value" value="<?= \Yii::app()->request->getPost('patient_identifier_value') ?>" />
         <?= $this->renderPartial('_filters');?>
 
         <div id="search-loading-msg" class="large-12 column hidden">

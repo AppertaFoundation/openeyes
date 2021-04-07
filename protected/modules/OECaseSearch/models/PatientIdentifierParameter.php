@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -22,12 +23,12 @@
  */
 class PatientIdentifierParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $code;
-    protected $options = array(
+    public ?int $type = null;
+    protected array $options = array(
         'value_type' => 'string_search',
     );
 
-    protected $label_ = 'Identifier Number';
+    protected ?string $label_ = 'Identifier Number';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -41,14 +42,14 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         $this->operation = '='; // Remove if more operations are added.
         $this->options['option_data'] = array(
             array(
-                'id' => 'code',
-                'field' => 'code',
+                'id' => 'type',
+                'field' => 'type',
                 'options' => array_map(
                     static function ($item, $key) {
                         return array('id' => $key, 'label' => $item);
                     },
-                    $this->getAllCodes(),
-                    array_keys($this->getAllCodes())
+                    $this->getAllTypes(),
+                    array_keys($this->getAllTypes())
                 ),
             ),
         );
@@ -63,23 +64,27 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         return array_merge(
             parent::attributeLabels(),
             array(
-                'code' => 'Code'
+                'type' => 'Identifier Type'
             )
         );
     }
 
     /**
-     * @param $attribute
+     * @param string $attribute
      * @return string|null
      * @throws CException
      */
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
-                case 'code':
-                    return 'Code - ' . $this->$attribute;
-                    break;
+                case 'type':
+                    if ($this->$attribute) {
+                        $type = PatientIdentifierType::model()->findByPk($this->$attribute);
+                        return 'Identifier Type - ' . $type->short_title;
+                    } else {
+                        return 'All identifier types';
+                    }
                 default:
                     return parent::getValueForAttribute($attribute);
             }
@@ -88,14 +93,15 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     }
 
     /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
+     * Override this function if the parameter subclass has extra validation rules.
+     * If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('value, code', 'required'),
-            array('value, code', 'safe')
+            array('value', 'required'),
+            array('value, type', 'safe')
         ));
     }
 
@@ -108,22 +114,26 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         $op = '=';
         return "SELECT DISTINCT p.patient_id 
 FROM patient_identifier p
-WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
+WHERE (:p_type_{$this->id} IS NULL OR p.patient_identifier_type_id {$op} :p_type_{$this->id})
+  AND p.value {$op} :p_id_number_{$this->id}";
     }
 
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term)
     {
-        $patients = PatientIdentifier::model()->findAllBySql(
-            "SELECT p.* FROM patient_identifier p
+        $patients = Yii::app()->db->createCommand(
+            "SELECT DISTINCT p.value FROM patient_identifier p
 WHERE p.value LIKE :term
-ORDER BY p.value, p.code LIMIT " . self::_AUTOCOMPLETE_LIMIT,
-            array('term' => "%$term%")
+ORDER BY p.value, p.patient_identifier_type_id LIMIT " . self::_AUTOCOMPLETE_LIMIT,
+
+        )
+            ->bindValues(array('term' => "%$term%"))
+            ->queryAll();
+        return array_map(
+            static function ($patient) {
+                return array('id' => $patient['value'], 'label' => $patient['value']);
+            },
+            $patients
         );
-        $values = array();
-        foreach ($patients as $patient) {
-            $values[] = array('id' => $patient->value, 'label' => $patient->value);
-        }
-        return $values;
     }
 
     /**
@@ -135,7 +145,7 @@ ORDER BY p.value, p.code LIMIT " . self::_AUTOCOMPLETE_LIMIT,
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
             "p_id_number_$this->id" => $this->value,
-            "p_code_$this->id" => $this->code,
+            "p_type_$this->id" => $this->type,
         );
     }
 
@@ -144,21 +154,22 @@ ORDER BY p.value, p.code LIMIT " . self::_AUTOCOMPLETE_LIMIT,
      */
     public function getAuditData()
     {
-        return "$this->name: = $this->code $this->value";
+        $type = PatientIdentifierType::model()->findByPk($this->type);
+        $typeStr = $type ? '(' . $type->short_title . ')' : '(All identifiers)';
+        return "$this->name: = $this->value $typeStr";
     }
 
     /**
-     * @return array contains all identifier codes
-     * @throws CException
+     * @return array contains all identifier types
      */
-    public function getAllCodes()
+    public function getAllTypes()
     {
-        $all_codes = Yii::app()->db->createCommand('SELECT DISTINCT code FROM patient_identifier')->queryAll();
-        $codes = array();
-        foreach ($all_codes as $code) {
-            $codes[$code['code']] = $code['code'];
+        $all_types = PatientIdentifierType::model()->findAll();
+        $types = array();
+        foreach ($all_types as $type) {
+            $types[$type->id] = $type->short_title;
         }
-        return $codes;
+        return $types;
     }
 
     public function saveSearch()
@@ -166,7 +177,7 @@ ORDER BY p.value, p.code LIMIT " . self::_AUTOCOMPLETE_LIMIT,
         return array_merge(
             parent::saveSearch(),
             array(
-                'code' => $this->code,
+                'type' => $this->type,
             )
         );
     }

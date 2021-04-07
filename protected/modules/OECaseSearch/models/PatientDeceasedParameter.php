@@ -3,13 +3,14 @@
 /**
  * Class PatientDeceasedParameter
  */
+
 class PatientDeceasedParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'boolean',
     );
 
-    protected $label_ = 'Patient Deceased';
+    protected ?string $label_ = 'Patient Deceased';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -27,7 +28,6 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
     }
 
     /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
     public function rules()
@@ -47,13 +47,10 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
         switch ($this->operation) {
             case '0':
                 return 'SELECT id FROM patient WHERE NOT(is_deceased)';
-                break;
             case '1':
                 return 'SELECT id FROM patient WHERE is_deceased';
-                break;
             default:
                 throw new CHttpException(400, "Invalid value specified: $this->operation");
-                break;
         }
     }
 

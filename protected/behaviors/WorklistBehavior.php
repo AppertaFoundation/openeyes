@@ -150,23 +150,36 @@ class WorklistBehavior extends CBehavior
 
         // for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
         if ($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE' && !($worklist_patient_today_AE))) {
-            $unbooked_worklist_manager = new \UnbookedWorklist();
-            $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
 
-            if ($unbooked_worklist) {
-                $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
-                if ($worklist_patient) {
-                    //event already saved here we need to set this indicidually
-                    $this->owner->event->saveAttributes(['worklist_patient_id' => $worklist_patient->id]);
+            $site = Site::model()->findByPk($site_id);
+
+            $patient_identifier_type = PatientIdentifierHelper::getPatientIdentifierType('LOCAL', $site->institution_id, $site->id) ??
+                PatientIdentifierHelper::getPatientIdentifierType('LOCAL', $site->institution_id);
+            if ($patient_identifier_type) {
+                $unbooked_worklist_manager = new \UnbookedWorklist();
+                $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
+
+
+                if ($unbooked_worklist) {
+                    $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
+                    if ($worklist_patient) {
+                        //event already saved here we need to set this indicidually
+                        $this->owner->event->saveAttributes(['worklist_patient_id' => $worklist_patient->id]);
+                    } else {
+                        \OELog::log("Patient patient_id: {$this->owner->patient->id} cannot be added to " .
+                            "unbooked worklist {$unbooked_worklist->id} " .
+                            "Errors: " . implode(", ", $this->worklist_manager->getErrors()));
+                    }
+                    return true;
                 } else {
-                    \OELog::log("Patient patient_id: {$this->owner->patient->id} cannot be added to " .
-                        "unbooked worklist {$unbooked_worklist->id} " .
-                        "Errors: " . implode(", ", $this->worklist_manager->getErrors()));
+                    \OELog::log("Unbooked worklist cannot be found for patient_id: {$this->owner->patient->id}");
                 }
-                return true;
+
             } else {
-                \OELog::log("Unbooked worklist cannot be found for patient_id: {$this->owner->patient->id}");
+                \OELog::log("Unbooked worklist cannot be found for patient_id: {$this->owner->patient->id} for 
+                institutions/sites that do not have a patient identifier type");
             }
+
         }
         return false;
     }

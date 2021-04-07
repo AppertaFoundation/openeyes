@@ -25,7 +25,6 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
  * The followings are the available columns in table 'patient':
  *
  * @property int $id
- * @property string $pas_key
  * @property string $title
  * @property string $first_name
  * @property string $last_name
@@ -60,6 +59,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
  * @property CommissioningBody[] $commissioningbodies
  * @property SocialHistory $socialhistory
  * @property TrialPatient[] $trials
+ * @property ArchivePatientIdentifier[] $archiveIdentifiers
  * @property PatientIdentifier[] $identifiers
  *
  * The following are available through get methods
@@ -74,7 +74,7 @@ class Patient extends BaseActiveRecordVersioned
     const PATIENT_SOURCE_REFERRAL = 1;
     const PATIENT_SOURCE_SELF_REGISTER = 2;
 
-    public $use_pas = true;
+    public $use_pas = false;
     protected $_clinical_warnings = null;
     protected $_nonclinical_warnings = null;
     private $_orderedepisodes;
@@ -108,6 +108,20 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * Allow PAS integration.
+     *
+     * @return Patient
+     */
+    public function usePas()
+    {
+        // Clone to avoid singleton problems with use_pas flag
+        $model = clone $this;
+        $model->use_pas = true;
+
+        return $model;
+    }
+
+    /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -121,24 +135,17 @@ class Patient extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('pas_key', 'length', 'max' => 10),
             array('dob, patient_source', 'required'),
-            array('hos_num', 'required', 'on' => Yii::app()->params['pas_in_use'] === true ? 'pas' : '' ),
             array('gender', 'required', 'on' => array('self_register')),
             array('practice_id', 'required', 'on' => 'referral'),
             array('practice_id', 'gpPracticeValidator', 'on' => 'referral'),
-
-            array('hos_num, nhs_num', 'length', 'max' => 40),
-            array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
-            array('nhs_num', 'nhsNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
-
-            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
+            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local, patient_source', 'safe'),
             array('deleted', 'safe'),
             array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('dob', 'dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('date_of_death', 'deathDateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
-            array('dob, hos_num, nhs_num, date_of_death, deleted,is_local patient_source', 'safe', 'on' => 'search'),
+            array('dob, date_of_death, deleted,is_local patient_source', 'safe', 'on' => 'search'),
         );
     }
 
@@ -184,91 +191,15 @@ class Patient extends BaseActiveRecordVersioned
             'referrals' => array(self::HAS_MANY, 'Referral', 'patient_id'),
             'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
-            'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id'),
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
             'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id'),
-            'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id', 'alias' => 'patient_user_referral', 'order' => 'patient_user_referral.created_date DESC'),
+            'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id','alias' => 'patient_user_referral','order' => 'patient_user_referral.created_date DESC' ),
+            'archiveIdentifiers' => array(self::HAS_MANY, 'ArchivePatientIdentifier', 'patient_id'),
             'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
+            'globalIdentifier' => array(self::HAS_ONE, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="GLOBAL"', 'with' => 'patientIdentifierType'),
+            'localIdentifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="LOCAL"', 'with' => 'patientIdentifierType'),
             'patientContactAssociates'=>array(self::HAS_MANY,'PatientContactAssociate','patient_id'),
         );
-    }
-
-    /**
-     * Validate the hos_num attribute based on the PatientSearch pattern.
-     * this was implemented because of the leading zero check
-     * 0123 and 123 is different hos_num when using the 'unique' built in validator
-     *
-     * @param $attribute
-     * @param $params
-     *
-     */
-    public function hosNumValidator($attribute, $params)
-    {
-        // This condition does not work for CERA but leaving the code here as the functionality might break for UK. NEEDS TESTING before removal
-            // Use the PatientSearch to sanitise and validate the hospital number
-            $hos_num = (new PatientSearch())->getHospitalNumber($this->hos_num);
-        if ($hos_num) {
-            // Add an error if another patient with the same hos_num exists
-            $item_count = Patient::model()->count(
-                'hos_num = ? AND id != ?',
-                array($hos_num, $this->id ?: -1)
-            );
-            if ($item_count) {
-                $this->addError($attribute, 'A patient already exists with this number. The next available auto generated number is '.$this->autoCompleteHosNum());
-            }
-        } elseif (!empty($this->hos_num)) {
-            $this->addError($attribute, 'Not a valid Hospital Number');
-        }
-    }
-
-
-    public function nhsNumValidator($attribute, $params)
-    {
-        // Validation only triggers for Australia
-        if (Yii::app()->params['default_country'] === 'Australia') {
-            // Throw validation warning message if user has entered non-numeric character
-            if (!ctype_digit($this->nhs_num) && strlen($this->nhs_num) > 0) {
-                $this->addError($attribute, 'Please enter only numbers.');
-            }
-
-            $medicareNo = preg_replace("/[^\d]/", "", $this->nhs_num);
-
-            // Check for 11 digits
-            $length = strlen($medicareNo);
-            if ($length > 0) {
-                if ($length == 11) {
-                    // Unique check
-                    $query = Yii::app()->db->createCommand()
-                        ->select('p.id')
-                        ->from('patient p')
-                        ->where(
-                            'LOWER(p.nhs_num) = LOWER(:nhs_num) and p.id != COALESCE(:patient_id, "")',
-                            array(':nhs_num' => $this->nhs_num, ':patient_id' => $this->id)
-                        )
-                        ->queryAll();
-
-                    if (count($query) !== 0) {
-                        $this->addError($attribute, 'Duplicate Medicare Number entered.');
-                    }
-
-                    // Test leading digit and checksum
-                    if (preg_match("/^([2-6]\d{7})(\d)/", $medicareNo, $matches)) {
-                        $base = $matches[1];
-                        $checkDigit = $matches[2];
-                        $sum = 0;
-                        $weights = array(1, 3, 7, 9, 1, 3, 7, 9);
-                        foreach ($weights as $position => $weight) {
-                            $sum += $base[$position] * $weight;
-                        }
-                        return ($sum % 10) == intval($checkDigit);
-                    } else {
-                        $this->addError($attribute, 'Not a valid Medicare Number');
-                    }
-                } else {
-                    $this->addError($attribute, 'Not a valid Medicare Number');
-                }
-            }
-        }
     }
 
     /**
@@ -378,7 +309,6 @@ class Patient extends BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
-            'pas_key' => 'PAS Key',
             'dob' => 'Date of Birth',
             'date_of_death' => 'Date of Death',
             'gender' => 'Gender',
@@ -454,16 +384,20 @@ class Patient extends BaseActiveRecordVersioned
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * @param array $params
-     *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @param null|int $patient_identifier_type_id
+     * @return CActiveDataProvider
      */
-    public function search($params = array())
+    public function search($params = array(), $patient_identifier_type_id = null)
     {
         $params += array(
             'pageSize' => 20,
-            'sortBy' => 'hos_num*1',
             'sortDir' => 'asc',
+            // Non existing patient will be saved from this PAS if there are multiple patient
+            // happens when user click on a patient on patient result screen -> means, selects a user and a type
+            // he/she wants to work with
+            'save_from_pas_by_type_id' => $patient_identifier_type_id
         );
+
         $criteria = new CDbCriteria();
         $criteria->compare('t.id', $this->id);
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
@@ -477,48 +411,83 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']), false);
         }
 
-        $nhs_num_length = SettingMetadata::model()->getSetting('nhs_num_length');
-        if (!$nhs_num_length) {
-            $nhs_num_length_setting = SettingInstallation::model()->find("key = ?", ['nhs_num_length']);
-            $nhs_num_length = $nhs_num_length_setting ? $nhs_num_length_setting->value : null;
-        }
+        $criteria->join .= ' JOIN patient_identifier pi ON t.id = patient_id AND pi.deleted = 0';
+        $criteria->join .= ' JOIN patient_identifier_type pt ON pt.id = pi.patient_identifier_type_id';
 
-        // if number search we check both nhs_num and hos_num
-        // these values are populated in PatientSearch after the search term validation
-        // so there can be cases where a term both valid for hos_num and nhs_num
-        if ($this->nhs_num && $this->hos_num) {
-            $criteria->addCondition("hos_num = :hos_num OR nhs_num = :nhs_num");
-            $criteria->params[':nhs_num'] = $this->nhs_num;
-            $criteria->params[':hos_num'] = $this->hos_num;
-        } elseif (strlen($this->nhs_num) == $nhs_num_length) {
-            $criteria->compare('nhs_num', $this->nhs_num, false);
-        } else {
-            if (strlen($this->nhs_num) === (int)$nhs_num_length) {
-                $criteria->compare('nhs_num', $this->nhs_num, false);
-            } else {
-                $criteria->compare('hos_num', $this->hos_num, false);
+        // loop through all the possible types we want to search in and prepare the criteria
+        if (isset($params['terms_with_types']) && $params['terms_with_types'] && !$params['is_name_search']) {
+            $conditions_array = [];
+            foreach ($params['terms_with_types'] as $twt_key => $terms_with_type) {
+                $term = $terms_with_type['term'] ?? '';
+                $type = $terms_with_type['patient_identifier_type'] ?? [];
+
+                // if the user already selected a type we do not care about the rest
+                if ($patient_identifier_type_id && $type->id != $patient_identifier_type_id) {
+                    continue;
+                }
+
+                $conditions_array[] = "(pt.id = :{$twt_key}_pid AND value = :{$twt_key}_value)";
+
+                $criteria->params["{$twt_key}_value"] =  $term;
+                $criteria->params["{$twt_key}_pid"] =  $type['id'];
             }
+
+            if ($conditions_array) {
+                $criteria->addCondition("(" . implode(' OR ', $conditions_array) . ")");
+            }
+        } elseif (!$params['first_name'] && !$params['last_name']) {
+            // if name search we don't need to worry about this, doing search as normal, without types
+            // However, we need types for PAS, if $params['terms_with_types'] set PAS will use it, but here we do not need
+
+            // if term with types isn't set or empty means no type returned we could search in
+            // therefore we do not display any result (patient_identifier_type_display_order.searchable can play a big part)
+            // However, if it is a name search we do need to display result (without types)
+            $criteria->addCondition("1=0");
         }
 
         $criteria->compare('t.deleted', 0);
 
         $criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
+        $criteria->distinct = true;
 
-        $results_from_event = array();
-        if ($this->use_pas == true) {
-            Yii::app()->event->dispatch('patient_search_criteria', array('results' => &$results_from_event, 'patient' => $this, 'criteria' => $criteria, 'params' => $params));
-        }
-
-        $dataProvider = new CActiveDataProvider(get_class($this), array(
+        $data_provider = new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
             'pagination' => array('pageSize' => $params['pageSize']),
         ));
 
-        $results = $dataProvider->getData();
+        $results = $data_provider->getData();
 
-        $dataProvider->setData(array_merge($results, $results_from_event));
+        $local_results_count = $data_provider->getItemCount();
 
-        return $dataProvider;
+        $results_from_pas = array();
+        if ($this->use_pas == true) {
+            Yii::app()->event->dispatch('patient_search_criteria',
+                [
+                    'results' => &$results_from_pas, 'patient' => $this,
+                    'criteria' => $criteria, 'params' => $params,
+                    'local_results_count' => $local_results_count
+                ]
+            );
+        }
+
+        //Unset PAS results which are duplicate of already found patient from a local search
+        foreach ($results as $local_result) {
+            foreach ($results_from_pas as $pas_result_key => $pas_result) {
+                $pas_result_identifier_value = (string)$pas_result->localIdentifiers[0]->value;
+                $pas_result_identifier_type_id = $pas_result->localIdentifiers[0]->patient_identifier_type_id;
+                foreach ($local_result->localIdentifiers as $localIdentifier) {
+                    if ($localIdentifier->value == $pas_result_identifier_value &&
+                        $localIdentifier->patient_identifier_type_id ==$pas_result_identifier_type_id) {
+                        unset($results_from_pas[$pas_result_key]);
+                    }
+                }
+            }
+        }
+
+
+        $data_provider->setData(array_merge($results, $results_from_pas));
+
+        return $data_provider;
     }
 
     public function beforeSave()
@@ -1721,13 +1690,6 @@ class Patient extends BaseActiveRecordVersioned
         return $nhs_num;
     }
 
-    public function hasLegacyLetters()
-    {
-        if ($api = Yii::app()->moduleAPI->get('OphLeEpatientletter')) {
-            return $this->patientHasLegacyLetters($this->hos_num);
-        }
-    }
-
     /**
      * Diabetes mellitus as a letter string.
      *
@@ -2231,9 +2193,16 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getNhs()
+    public function getNhs($institution_id = null, $site_id = null) : string
     {
-        return $this->nhs_num;
+        $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
+        $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
+        return PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
+            Yii::app()->params['display_secondary_number_usage_code'],
+            $this->id,
+            $institution_id,
+            $site_id
+        ));
     }
 
     /**
@@ -2241,9 +2210,16 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getHos()
+    public function getHos($institution_id = null, $site_id = null) : string
     {
-        return $this->hos_num;
+        $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
+        $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
+        return PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
+            Yii::app()->params['display_primary_number_usage_code'],
+            $this->id,
+            $institution_id,
+            $site_id
+        ));
     }
 
     /**
@@ -2297,7 +2273,7 @@ class Patient extends BaseActiveRecordVersioned
         return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
     }
 
-    public static function findDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null)
+    public static function findDuplicatesByIdentifier($identifier_type_id, $identifier_value, $id = null)
     {
         $sql = '
             SELECT p.*
@@ -2305,12 +2281,13 @@ class Patient extends BaseActiveRecordVersioned
             JOIN patient_identifier pid
               ON p.id = pid.patient_id
             WHERE pid.value = :identifier_value
-              AND pid.code = :identifier_code
+              AND pid.patient_identifier_type_id = :identifier_type_id
               AND (:id IS NULL OR p.id != :id)
               AND p.deleted = 0
+              AND pid.deleted = 0
               ';
 
-        return Patient::model()->findAllBySql($sql, array(':identifier_code' => $identifier_code, ':identifier_value' => $identifier_value, ':id' => $id));
+        return Patient::model()->findAllBySql($sql, array(':identifier_type_id' => $identifier_type_id, ':identifier_value' => $identifier_value, ':id' => $id));
     }
 
     /**
@@ -2400,7 +2377,6 @@ class Patient extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->compare('secondary_id', $this->id);
-        $criteria->compare('secondary_hos_num', $this->hos_num);
         $criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
 
         return PatientMergeRequest::model()->find($criteria);

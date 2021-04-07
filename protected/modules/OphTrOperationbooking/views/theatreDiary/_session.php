@@ -34,9 +34,16 @@
     'id' => $session->id,
     'action' => Yii::app()->createUrl('/OphTrOperationbooking/theatreDiary/saveSession'),
     'enableAjaxValidation' => false,
-
 ));
 
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
+$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+
+$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
+    $display_primary_number_usage_code,
+    $institution->id ,
+    $selected_site_id);
 
 $minutes_status = ($session->availableMinutes > 0);
 $proc_status = (!$session->isProcedureCountLimited() || $session->getAvailableProcedureCount() > 0);

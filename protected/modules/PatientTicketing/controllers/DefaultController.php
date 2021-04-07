@@ -176,16 +176,21 @@ class DefaultController extends \BaseModuleController
         }
 
         $search = new \PatientSearch();
-        $search_terms = $search->parseTerm($term);
+        $search_terms = $search->prepareSearch($term);
 
         $patient = new Patient();
         $patient->use_pas = false;
 
-        $patient->hos_num = $search_terms['hos_num'];
-        $patient->nhs_num = $search_terms['nhs_num'];
-
         $data_provider = $patient->search($search_terms);
         $criteria = $data_provider->getCriteria();
+
+        $search_terms['terms_with_types'] = $search_terms['terms_with_types'] ?? [];
+
+        if (!$search_terms['terms_with_types'] && !$search_terms['first_name'] && !$search_terms['last_name']) {
+            // no name search and no types found to search in
+            // we return no result
+            $criteria->addCondition("1=0");
+        }
 
         $criteria->distinct = true;
 
@@ -206,6 +211,17 @@ class DefaultController extends \BaseModuleController
 
         $result = [];
         foreach ($data_provider->getData(true) as $patient) {
+            $pi = [];
+            foreach ($patient->identifiers as $identifier) {
+                $pi[] = [
+                    'title' => $identifier->patientIdentifierType->long_title ?? $identifier->patientIdentifierType->short_title,
+                    'value' => $identifier->value
+                ];
+            }
+
+            $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
+                $patient->id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+
             $result[] = array(
                 'id' => $patient->id,
                 'first_name' => $patient->first_name,
@@ -214,10 +230,12 @@ class DefaultController extends \BaseModuleController
                 'gender' => $patient->getGenderString(),
                 'genderletter' => $patient->gender,
                 'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
-                'hos_num' => $patient->hos_num,
-                'nhsnum' => $patient->nhsnum,
-                'label' => $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')',
                 'is_deceased' => $patient->is_deceased,
+                'patient_identifiers' => $pi,
+                'primary_patient_identifiers' => [
+                    'title' => \PatientIdentifierHelper::getIdentifierPrompt($primary_identifier),
+                    'value' => \PatientIdentifierHelper::getIdentifierValue($primary_identifier)
+                ]
             );
         }
 

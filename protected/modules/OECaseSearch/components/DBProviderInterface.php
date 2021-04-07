@@ -3,10 +3,12 @@
 /**
  * Interface DBProviderInterface
  */
+
 interface DBProviderInterface
 {
     /**
-     * Generate a SQL fragment representing a self-contained query. This fragment can be used in a subquery or standalone.
+     * Generate a SQL fragment representing a self-contained query.
+     * This fragment can be used in a subquery or standalone.
      * @return string The constructed query string.
      */
     public function query();

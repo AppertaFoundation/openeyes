@@ -107,6 +107,21 @@
         return res;
     }
 
+    /**
+     * Get cookie by name.
+     *
+     * @param name
+     * @returns {String}
+     */
+    Util.getCookie = function (name) {
+        let cookie = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        if (cookie) {
+            return cookie[2];
+        } else {
+            return '';
+        }
+    }
+
 	Util.createFormData = function(formData, key, data) {
 		if (data === Object(data) || Array.isArray(data)) {
 			for (var index in data) {
@@ -116,6 +131,7 @@
 			formData.append(key, data);
 		}
 	}
+
 
     /**
      * Equivalent of jquery's $(html), only using plain JavaScript
@@ -128,6 +144,7 @@
         template.innerHTML = html.trim();
         return template.content.firstChild;
     }
+
 	exports.Util = Util;
 
 }(this.OpenEyes));

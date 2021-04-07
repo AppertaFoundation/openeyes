@@ -1,4 +1,4 @@
-<tr id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
+<tr class="cols-full alert-box error" style="font-style: italic; font-size: small;">
     <?php if (isset($patients)) : ?>
         <td class="row field-row">
             <p>Duplicate patient detected.</p>
@@ -7,7 +7,7 @@
             <table class="last-left">
                 <thead>
                 <tr>
-                    <th> <?= Yii::app()->params['patient_identifiers'][$identifier_code ]['label']; ?></th>
+                    <th> <?= PatientIdentifierType::model()->findByPk($identifier_type_id)->short_title ?></th>
                     <th>Name</th>
                     <th></th>
                 </tr>
@@ -16,7 +16,7 @@
                 <tr>
                     <?php foreach ($patients as $patient) :
                         foreach ($patient->identifiers as $pid) :
-                            if ($pid->code == $identifier_code) : ?>
+                            if ($pid->deleted == 0 && $pid->patient_identifier_type_id == $identifier_type_id) : ?>
                 <tr>
                     <td><?php echo CHtml::link(
                         $pid->value,

@@ -31,13 +31,14 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             'drugs' => 'Prescribed drugs',
             'start_date' => 'Date from',
             'start_end' => 'Date end',
+            'all_ids' => "Patient's IDs",
         );
     }
 
     public function rules()
     {
         return array(
-            array('start_date, end_date, drugs, user_id, dispense_condition', 'safe'),
+            array('start_date, end_date, drugs, user_id, dispense_condition,institution_id', 'safe'),
             array('drugs', 'requiredIfNoUser'),
         );
     }
@@ -51,11 +52,14 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
 
     public function run()
     {
+        $user_id = Yii::app()->user->id;
+        $this->setInstitutionAndSite($user_id);
+
         $tag_id = Yii::app()->params['preservative_free_tag_id'];
 
         $command = Yii::app()->db->createCommand()
             ->select(
-                'patient.hos_num, contact.last_name, contact.first_name, patient.dob, case when address.postcode is not null then address.postcode else "N/A" end as postcode , d.created_date, drug.tallman, IF(drug.id IN (SELECT drug_id FROM drug_tag WHERE tag_id = ' . $tag_id . '),1,0) AS preservative_free,
+                'patient.id, contact.last_name, contact.first_name, patient.dob, case when address.postcode is not null then address.postcode else "N/A" end as postcode , d.created_date, drug.tallman, IF(drug.id IN (SELECT drug_id FROM drug_tag WHERE tag_id = ' . $tag_id . '),1,0) AS preservative_free,
                 user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date,i.dose, df.long_name  as frequency, duration.name as duration, route.name as route, dc.name as dispense_condition, dl.name as dispense_location, option.name as laterality'
             )
             ->from('episode')
@@ -78,12 +82,17 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             $command->andWhere(array('in', 'medication.id', $this->drugs));
         }
 
+        if ($this->institution_id) {
+            $command->andWhere('event.institution_id = :institution_id');
+            $params[':institution_id'] = $this->institution_id;
+        }
+
         $command->andWhere('event.created_date >= :start_date', array(':start_date' => date('Y-m-d', strtotime($this->start_date)) . ' 00:00:00'))
             ->andWhere('event.created_date <= :end_date', array(':end_date' => date('Y-m-d', strtotime($this->end_date)) . ' 23:59:59'))
             ->andWhere('episode.deleted = 0');
 
-        if (!Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) {
-            $this->user_id = Yii::app()->user->id;
+        if (!Yii::app()->getAuthManager()->checkAccess('Report', $user_id)) {
+            $this->user_id = $user_id;
         }
 
         if (is_numeric($this->user_id)) {
@@ -95,17 +104,33 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
         }
 
         $this->items = $command->queryAll();
+        $this->setPatientIdentifiers();
+    }
+
+    public function setPatientIdentifiers()
+    {
+        $items = [];
+        foreach ($this->items as $item) {
+            $item['identifier'] = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+            $item['all_ids'] = PatientIdentifierHelper::getAllPatientIdentifiersForReports($item['id']);
+            $items[] = $item;
+        }
+
+        $this->items = $items;
     }
 
     public function toCSV()
     {
-        $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Drug dose,  Frequency, Duration, Route, Dispense Condition, Dispense Location, Laterality, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free\n";
+        $output = $this->getPatientIdentifierPrompt() . ",  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Drug dose,  Frequency, Duration, Route, Dispense Condition, Dispense Location, Laterality, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free, " . $this->getAttributeLabel('all_ids') . "\n";
         foreach ($this->items as $item) {
-            $output .= $item['hos_num'] . ', ' . $item['last_name'] . ', ' . $item['first_name'] . ', ' . ($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown') . ', ' . $item['postcode'] . ', ';
+            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+
+            $output .= $patient_identifier_value . ', ' . $item['last_name'] . ', ' . $item['first_name'] . ', ' . ($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown') . ', ' . $item['postcode'] . ', ';
             $output .= (date('j M Y', strtotime($item['created_date'])) . ' ' . (substr($item['created_date'], 11, 5))) . ', ' . $item['preferred_term'] . ', ';
             $output .= $item['dose'].' '.$item['dose_unit'].', '.$item['frequency'].', '.$item['duration'].', '.$item['route'].', '.$item['dispense_condition'].', '.$item['dispense_location'].', '.$item['laterality'].', ';
             $output .= $item['user_first_name'] . ' ' . $item['user_last_name'] . ', ' . $item['role'] . ', ' . (date('j M Y', strtotime($item['event_date'])) . ' ' . (substr($item['event_date'], 11, 5))) . ', ';
             $output .= $item['preservative_free'] ? 'Yes' : 'No';
+            $output .= ',"' . $item['all_ids'] . '"';
             $output .= "\n";
         }
 

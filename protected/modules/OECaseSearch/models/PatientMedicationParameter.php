@@ -5,7 +5,7 @@
  */
 class PatientMedicationParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $label_ = 'Medication';
+    protected ?string $label_ = 'Medication';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -29,27 +29,27 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
         );
     }
 
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term)
     {
         $drugs = Medication::model()->findAllBySql('
 SELECT *
 FROM medication d 
 WHERE LOWER(d.preferred_term) LIKE LOWER(:term) ORDER BY d.preferred_term LIMIT 30', array('term' => "$term%"));
 
-        $values = array();
-        foreach ($drugs as $drug) {
-            $values[] = array('id' => $drug->id, 'label' => $drug->preferred_term);
-        }
-        return $values;
+        return array_map(
+            static function ($drug) {
+                return array('id' => $drug->id, 'label' => $drug->preferred_term);
+            },
+            $drugs
+        );
     }
 
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
                 case 'value':
                     return Medication::model()->findByPk($this->$attribute)->preferred_term;
-                    break;
                 default:
                     return parent::getValueForAttribute($attribute);
             }

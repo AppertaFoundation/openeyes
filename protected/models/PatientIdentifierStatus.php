@@ -25,7 +25,7 @@
  * @property string $name
  * @property int $icon_id
  */
-class NhsNumberVerificationStatus extends BaseActiveRecord
+class PatientIdentifierStatus extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
@@ -42,7 +42,7 @@ class NhsNumberVerificationStatus extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'nhs_number_verification_status';
+        return 'patient_identifier_status';
     }
 
     /**

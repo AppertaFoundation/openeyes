@@ -26,7 +26,7 @@
     <?php }?>
     <header class="print-header">
     <div class="logo">
-        <?= $logo_helper->render('//base/_logo', 50) ?>
+        <?= $logo_helper->render('//base/_logo', 50, $this->event->site_id, false, null, $this->event->institution_id) ?>
     </div>
     </header>
 <div class="flex-layout">
@@ -39,6 +39,9 @@
         }
         ?>
     </h1>
-    <?php $this->renderPartial('_address', array('site' => $this->site)); ?>
+    <?php $this->renderPartial('_address', [
+        'site' => $this->site,
+        'institution' => $this->event->institution,
+    ]); ?>
 </div>
     <?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy)); ?>

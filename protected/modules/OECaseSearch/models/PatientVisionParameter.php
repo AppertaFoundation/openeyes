@@ -1,6 +1,7 @@
 <?php
 
 use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
 
 /**
  * Class PatientVisionParameter
@@ -20,17 +21,18 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     /**
      * @var string[] $options List of options for the Adder Dialog.
      */
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'multi_select',
     );
 
     /**
-     * @var string $label_ Label to display in adder dialog for the parameter.
+     * @var string|null $label_ Label to display in adder dialog for the parameter.
      */
-    protected $label_ = 'Vision';
+    protected ?string $label_ = 'Vision';
 
     /**
-     * PatientVisionParameter constructor. This overrides the parent constructor so that the name can be immediately set.
+     * PatientVisionParameter constructor.
+     * This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario Model scenario.
      */
     public function __construct($scenario = '')
@@ -40,7 +42,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
         $this->options['operations'][] = array('label' => 'IS LESS THAN', 'id' => '<');
         $this->options['operations'][] = array('label' => 'IS MORE THAN', 'id' => '>');
         $this->va_values = Element_OphCiExamination_VisualAcuity::model()->getUnitValuesForForm(
-            OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name' => 'ETDRS Letters'))->id,
+            OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name' => 'ETDRS Letters'))->id,
             false
         )[0];
         $this->options['option_data'] = array(
@@ -65,15 +67,14 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
         );
     }
 
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
                 case 'value':
                     return $this->va_values[$this->$attribute];
-                    break;
                 case 'bothEyesIndicator':
-                    return 'Both eyes';
+                    return $this->$attribute ? 'Both eyes' : '';
                 default:
                     return parent::getValueForAttribute($attribute);
             }
@@ -96,7 +97,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
 
     /**
      * Generate the SQL query for patient vision.
-     * @return null|string The query string for use by the search provider, or null if not implemented for the specified search provider.
+     * @return string The query string for use by the search provider.
      */
     public function query()
     {
@@ -135,17 +136,21 @@ FROM (
                                             FROM patient
                                                    LEFT JOIN episode e ON patient.id = e.patient_id
                                                    LEFT JOIN event ON event.episode_id = e.id
-                                                   LEFT JOIN et_ophciexamination_visualacuity eov ON event.id = eov.event_id
-                                                   LEFT JOIN ophciexamination_visualacuity_reading ovr ON eov.id = ovr.element_id
+                                                   LEFT JOIN et_ophciexamination_visualacuity eov
+                                                       ON event.id = eov.event_id
+                                                   LEFT JOIN ophciexamination_visualacuity_reading ovr
+                                                       ON eov.id = ovr.element_id
                                             WHERE ovr.value IS NOT NULL
                                               AND ovr.side IS NOT NULL
                                               AND ovr.last_modified_date IS NOT NULL) t2
                                       WHERE t2.patient_id = t1.patient_id
                                         AND t1.va_side = t2.va_side)
                    ) t3) t4
-       GROUP BY patient_id) t5';
+       GROUP BY patient_id) t5
+';
 
-        $subQueryStr = " WHERE (t5.left_va_value $op :p_v_value_$this->id) $second_operation (t5.right_va_value $op :p_v_value_$this->id)";
+        $subQueryStr = "WHERE (t5.left_va_value $op :p_v_value_$this->id)
+$second_operation (t5.right_va_value $op :p_v_value_$this->id)";
 
         return $queryStr . $subQueryStr;
     }

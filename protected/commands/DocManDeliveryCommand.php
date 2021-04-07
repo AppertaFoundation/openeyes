@@ -307,8 +307,15 @@ EOH;
 
             if ($this->updateDelivery($output_id)) {
                 $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $event->id));
+
+                $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
+                    'LOCAL',
+                    $event->episode->patient->id,
+                    $event->institution_id, $event->site_id
+                ));
+
                 $this->logData(array(
-                    'hos_num' => $event->episode->patient->hos_num,
+                    'hos_num' => $local_identifier_value,
                     'clinician_name' => $event->user->getFullName(),
                     'letter_type' => (isset($element_letter->letterType->name) ? $element_letter->letterType->name : ''),
                     'letter_finalised_date' => $event->last_modified_date,
@@ -375,13 +382,19 @@ EOH;
         $fileNameFormat = Yii::app()->params['docman_filename_format'];
         $templateStrings = $this->getStringsToReplace($fileNameFormat);
 
+        $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
+            'LOCAL',
+            $this->event->episode->patient->id,
+            $this->event->institution_id, $this->event->site_id
+        ));
+
         foreach ($templateStrings as $templateString) {
             switch ($templateString) {
                 case '{prefix}':
                     $replacePairs[$templateString] = isset($prefix) && !empty($prefix) ? $prefix . '_' : '';
                     break;
                 case '{patient.hos_num}':
-                    $replacePairs[$templateString] = $this->event->episode->patient->hos_num;
+                    $replacePairs[$templateString] = $local_identifier_value;
                     break;
                 case '{event.id}':
                     $replacePairs[$templateString] = $this->event->id;
@@ -430,10 +443,21 @@ EOH;
                     'internal_id' => $this->event->worklist_patient_id,
                     'internal_type' => '\WorklistPatient']);
 
+        $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
+            'LOCAL',
+            $this->event->episode->patient->id,
+            $this->event->institution_id, $this->event->site_id
+        ));
+        $global_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
+            'GLOBAL',
+            $this->event->episode->patient->id,
+            $this->event->institution_id, $this->event->site_id
+        ));
+
         //I decided to pass each value separately to keep the XML files clean and easier to modify each value if necessary
         $data = [
-            'hos_num' => $this->event->episode->patient->hos_num,
-            'nhs_num' => $this->event->episode->patient->nhs_num,
+            'hos_num' => $local_identifier_value,
+            'nhs_num' => $global_identifier_value,
             'full_name' => $this->event->episode->patient->contact->getFullName(),
             'last_name' => $this->event->episode->patient->contact->last_name,
             'first_name' => $this->event->episode->patient->contact->first_name,

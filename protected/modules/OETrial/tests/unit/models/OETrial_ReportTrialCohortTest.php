@@ -11,7 +11,11 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         'user' => 'User',
         'trial_type' => 'TrialType',
         'trial' => 'Trial',
-        'patient' => 'Patient',
+        'institution' => Institution::class,
+        'site' => Site::class,
+        'patient_identifier_type' => PatientIdentifierType::class,
+        'patient' => Patient::class,
+        'patient_identifier' => PatientIdentifier::class,
         'contact' => Contact::class,
         'treatment_type' => 'TreatmentType',
         'trial_patient_status' => 'TrialPatientStatus',
@@ -28,13 +32,23 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
 
     public static function setUpBeforeClass()
     {
+        Yii::app()->session['selected_institution_id'] = 1;
+        Yii::app()->params['display_primary_number_usage_code'] = 'LOCAL';
         Yii::app()->getModule('OETrial');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        unset(Yii::app()->session['selected_institution_id']);
+        unset(Yii::app()->params['display_primary_number_usage_code']);
     }
 
     public function setUp()
     {
         parent::setUp();
         $this->instance = new OETrial_ReportTrialCohort();
+        $this->instance->user_institution_id = 1;
+        $this->instance->user_selected_site_id = 1;
     }
 
     public function tearDown()
@@ -51,15 +65,15 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         return array(
             array(
                 'fixture' => 'patient1',
-                'expected_row' => '12345,"1 Jan 1970",Jim,Aylward,abc,Unknown,Shortlisted,{{DIAGNOSES}},,' . "\n"
+                'expected_row' => '12345,"1 Jan 1970",Jim,Aylward,abc,Unknown,Shortlisted,{{DIAGNOSES}},,,"{{IDs}}"' . "\n"
             ),
             array(
                 'fixture' => 'patient3',
-                'expected_row' => '34567,"1 Jan 1960",Edward,Allan,def,Unknown,Shortlisted,{{DIAGNOSES}},,' . "\n"
+                'expected_row' => '34567,"1 Jan 1960",Edward,Allan,def,Unknown,Shortlisted,{{DIAGNOSES}},,,"{{IDs}}"' . "\n"
             ),
             array(
                 'fixture' => 'patient4',
-                'expected_row' => '34321,"1 Jan 1977",Sarah,Shore,qwerty,Intervention,Accepted,{{DIAGNOSES}},,' . "\n"
+                'expected_row' => '34321,"1 Jan 1977",Sarah,Shore,qwerty,Intervention,Accepted,{{DIAGNOSES}},,,"{{IDs}}"' . "\n"
             ),
         );
     }
@@ -104,15 +118,20 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
     {
         $this->assertCount(0, $this->instance->patients);
         $item = $this->patient($fixture);
+        $localIdentifier = $item->localIdentifiers[0];
+        $globalIdentifier = $item->globalIdentifier;
+
         $patient = array(
             'id' => $item->id,
-            'hos_num' => $item->hos_num,
+            'identifier' => $localIdentifier->value,
             'dob' => $item->dob,
             'first_name' => $item->first_name,
             'last_name' => $item->last_name,
             'external_trial_identifier' => $item->trials[0]->external_trial_identifier,
             'trial_patient_id' => $item->trials[0]->id,
             'comment' => $item->trials[0]->comment,
+            'all_ids' => $localIdentifier->patientIdentifierType->long_title . ' (' . $localIdentifier->patientIdentifierType->institution->name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
+                            $globalIdentifier->patientIdentifierType->long_title . ' (' . $globalIdentifier->patientIdentifierType->institution->name . '): ' . $globalIdentifier->getDisplayValue() . ', ',
         );
 
         $this->instance->addPatientResultItem($patient);
@@ -131,7 +150,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
      */
     public function testToCSV($fixture, $expected_row = null)
     {
-        $baseStr = "\"Hos Num\",\"Date of Birth\",\"First Name\",\"Last Name\",\"Trial Identifier\",\"Treatment Type\",\"Status Id\",Diagnoses,Medications,Comments\n";
+        $baseStr = "ID,\"Date of Birth\",\"First Name\",\"Last Name\",\"Trial Identifier\",\"Treatment Type\",\"Status Id\",Diagnoses,Medications,Comments,\"Patient IDs\"\n";
         $item = $this->patient($fixture);
         $diagnoses = array();
         foreach ($item->getOphthalmicDiagnosesSummary() as $diagnosis) {
@@ -143,9 +162,15 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         }
         $diagStr = (!empty($diagnoses) ? '"' : null) . implode('; ', $diagnoses) . (!empty($diagnoses) ? '"' : null);
         $baseStr .= str_replace('{{DIAGNOSES}}', $diagStr, $expected_row);
+
+        $localIdentifier = $item->localIdentifiers[0];
+        $globalIdentifier = $item->globalIdentifier;
+
+        $IDStr = $localIdentifier->patientIdentifierType->long_title . ' (' . $localIdentifier->patientIdentifierType->institution->name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
+            $globalIdentifier->patientIdentifierType->long_title . ' (' . $globalIdentifier->patientIdentifierType->institution->name . '): ' . $globalIdentifier->getDisplayValue() . ', ';
+        $baseStr = str_replace('{{IDs}}', $IDStr, $baseStr);
         $patient = array(
             'id' => $item->id,
-            'hos_num' => $item->hos_num,
             'dob' => $item->dob,
             'first_name' => $item->first_name,
             'last_name' => $item->last_name,
@@ -168,7 +193,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
             'JOIN `patient` `p` ON p.id = t_p.patient_id',
             'JOIN `contact` `c` ON p.contact_id = c.id'
         );
-        $expected_group = '`p`.`id`, `p`.`hos_num`, `c`.`first_name`, `c`.`last_name`, `p`.`dob`, `t_p`.`external_trial_identifier`, `t_p`.`treatment_type_id`, `t_p`.`status_id`, `t_p`.`comment`';
+        $expected_group = '`p`.`id`, `c`.`first_name`, `c`.`last_name`, `p`.`dob`, `t_p`.`external_trial_identifier`, `t_p`.`treatment_type_id`, `t_p`.`status_id`, `t_p`.`comment`';
         $this->assertEquals('`trial` `t`', $actual->from);
         $this->assertEquals($expected_join, $actual->join);
         $this->assertEquals($expected_group, $actual->group);

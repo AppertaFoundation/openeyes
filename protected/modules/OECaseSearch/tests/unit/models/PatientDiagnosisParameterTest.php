@@ -60,7 +60,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         // Ensure that all bind values are returned.
         $this->assertEquals($expected, $this->parameter->bindValues());
 
-        $this->parameter->firm_id = '';
+        $this->parameter->firm_id = null;
 
         $expected = array(
             'p_d_value_0' => $this->parameter->value,
@@ -175,7 +175,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             'Exact match, no firm' => array(
                 'op' => 'IN',
                 'value' => 1,
-                'firm_id' => '',
+                'firm_id' => null,
                 'expected_ids' => array(1, 2, 3, 7),
             ),
             'Exact match with firm' => array(
@@ -187,7 +187,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             'Does not match, no firm' => array(
                 'op' => 'NOT IN',
                 'value' => 1,
-                'firm_id' => '',
+                'firm_id' => null,
                 'expected_ids' => array(4, 5, 6, 8, 9, 10),
             ),
             'Does not match, including firm' => array(

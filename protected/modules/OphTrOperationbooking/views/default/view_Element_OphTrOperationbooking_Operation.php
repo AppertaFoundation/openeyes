@@ -433,7 +433,7 @@
         <div class="element-data cols-10">
             <div class="data-value">
                 Cancelled on
-                <?php echo $element->NHSDate('operation_cancellation_date') . ' by user ' . $element->cancellation_user->username .
+                <?php echo $element->NHSDate('operation_cancellation_date') . ' by ' . $element->cancellation_user->getFullName() .
                     ' for reason: ' . CHtml::encode($element->cancellation_reason->text); ?>
             </div>
         </div>

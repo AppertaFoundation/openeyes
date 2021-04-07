@@ -31,23 +31,23 @@ class FamilyHistoryParameterTest extends CDbTestCase
     {
         return array(
             'Any match' => array(
-                'relative' => '',
-                'side' => '',
-                'condition' => '',
+                'relative' => null,
+                'side' => null,
+                'condition' => null,
             ),
             'Specific relative' => array(
                 'relative' => 1,
-                'side' => '',
-                'condition' => '',
+                'side' => null,
+                'condition' => null,
             ),
             'Specific side' => array(
-                'relative' => '',
+                'relative' => null,
                 'side' => 1,
-                'condition' => '',
+                'condition' => null,
             ),
             'Specific condition' => array(
-                'relative' => '',
-                'side' => '',
+                'relative' => null,
+                'side' => null,
                 'condition' => 1,
             ),
             'Exact match' => array(

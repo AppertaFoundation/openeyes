@@ -41,18 +41,18 @@
                 }
 
                 // If it isn't set, use the database value
-                if (isset($param_value) && $param_value) {
+                if (isset($param_value)) {
                     // Transform the param if need be
                     if (is_array($param_value)) {
                         // If it's an array, implode it to display as a string
                         $param_value = implode(",", $param_value);
                     } elseif ($data = @unserialize($metadata->data)) {
-                        // If it's an option for a serialised array get the value.
-                        if (array_key_exists($param_value, $data)) {
+                        // If it's an option for a serialised array get the value
+                        if (gettype($param_value) != "boolean" && array_key_exists($param_value, $data)) {
                             $param_value = $data[$param_value];
-                        } elseif ($param_value === 1) {
+                        } elseif ($param_value === 1 || $param_value === true) {
                             $param_value = $data['on'];
-                        } elseif ($param_value === 0) {
+                        } elseif ($param_value === 0 || $param_value === false) {
                             $param_value = $data['off'];
                         }
                     }

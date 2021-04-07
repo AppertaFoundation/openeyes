@@ -7,7 +7,7 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
  */
 class PreviousProceduresParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $label_ = 'Previous Procedure';
+    protected ?string $label_ = 'Previous Procedure';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -32,11 +32,11 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
     }
 
     /**
-     * @param $attribute
+     * @param string $attribute
      * @return string|null
      * @throws CException
      */
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
@@ -47,7 +47,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
                         return $op->operation;
                     }
                     return $op->term;
-                    break;
                 default:
                     return parent::getValueForAttribute($attribute);
             }
@@ -55,7 +54,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         return parent::getValueForAttribute($attribute);
     }
 
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term)
     {
         $criteria = new CDbCriteria();
         $criteria->limit = 15;

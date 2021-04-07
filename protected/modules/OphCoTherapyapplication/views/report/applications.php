@@ -3,6 +3,7 @@
   <form>
     <table class="standard cols-full">
       <tbody>
+      <?php $this->renderPartial('//report/_institution_table_row', ['field_name' => "institution_id"]);?>
       <tr>
         <td><?=\CHtml::label('Consultant', 'firm_id') ?></td>
         <td>

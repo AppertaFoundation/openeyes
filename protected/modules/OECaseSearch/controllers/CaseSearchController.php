@@ -5,6 +5,7 @@
  *
  * @property null|Trial $trialContext
  */
+
 class CaseSearchController extends BaseModuleController
 {
     public $trialContext;
@@ -45,13 +46,15 @@ class CaseSearchController extends BaseModuleController
                     'renderPopups'
                 ),
                 'users' => array('@'),
+                'roles' => array('Advanced Search'),
             ),
         );
     }
 
     /**
      * Primary case search action.
-     * @param $trial_id int The Trial that this case search is in context of
+     * @param int|null $trial_id int The Trial that this case search is in context of
+     * @throws CException
      * @throws Exception
      */
     public function actionIndex($trial_id = null)
@@ -82,7 +85,8 @@ class CaseSearchController extends BaseModuleController
             $this->actionClear();
             $ids = array_column(Yii::app()->searchProvider->search($this->parameters), 'id');
 
-            // Only copy to the $_SESSION array if it isn't already there - Shallow copy is done at the start if it is already set.
+            // Only copy to the $_SESSION array if it isn't already there.
+            // Shallow copy is done at the start if it is already set.
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
                 $_SESSION['last_search'] = $ids;
             }
@@ -94,7 +98,9 @@ class CaseSearchController extends BaseModuleController
         $criteria->with = 'contact';
         $criteria->compare('t.deleted', 0);
 
-        // A data provider is used here to allow faster search times. Results are iterated through using the data provider's pagination functionality and the CListView widget's pager.
+        // A data provider is used here to allow faster search times.
+        // Results are iterated through using the data provider's pagination functionality and the
+        // CListView widget's pager.
         $patientData = new CActiveDataProvider('Patient', array(
             'criteria' => $criteria,
             'totalItemCount' => count($ids),
@@ -177,7 +183,8 @@ class CaseSearchController extends BaseModuleController
 
         $this->render('index', array(
             'paramList' => $paramList,
-            'params' => (empty($this->parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $this->parameters,
+            'params' => (empty($this->parameters) && isset($_SESSION['last_search_params']))
+                ? $_SESSION['last_search_params'] : $this->parameters,
             'patients' => $patientData,
             'patientsID' => $ids,
             'variables' => $variables,
@@ -231,7 +238,7 @@ class CaseSearchController extends BaseModuleController
             if (is_array($param['value'])) {
                 foreach ($param['value'] as $value) {
                     $key = $value['field'];
-                    $parameter->$key = $value['id'];
+                    $parameter->$key = $value['id'] ?? null;
                 }
             } else {
                 $parameter->value = $param['value'];
@@ -278,7 +285,7 @@ class CaseSearchController extends BaseModuleController
             throw new CHttpException(404, 'Saved search not found');
         }
         $this->actionClear();
-        $params = unserialize($search->search_criteria, array('allowed_classes' => true));
+        $params = unserialize($search->search_criteria);
         echo '<tbody>';
 
         foreach ($params as $param) {
@@ -346,8 +353,9 @@ class CaseSearchController extends BaseModuleController
      * Deletes the selected saved search
      * @param $id int ID of the saved search to delete.
      * @throws CHttpException
+     * @throws CDbException
      */
-    public function actionDeleteSearch($id)
+    public function actionDeleteSearch(int $id)
     {
         $search = SavedSearch::model()->findByPk($id);
 
@@ -361,7 +369,7 @@ class CaseSearchController extends BaseModuleController
 
     /**
      * Populate the list of search parameters.
-     * @param bool $populate_param_cache True if the controller's parameter cache should be populated as well; otherwise false.
+     * @param bool $populate_param_cache True if the parameter cache should be populated as well; otherwise false.
      * @return bool
      */
     protected function populateParams($populate_param_cache = false)
@@ -411,10 +419,11 @@ class CaseSearchController extends BaseModuleController
 
     /**
      * Get the drilldown list for the selected datapoint.
-     * @param $patient_ids string List of patient IDs as a string (List is a string due to it being a parameter of a HTTP request).
+     * @param $patient_ids string List of patient IDs as a string (String because it is a parameter of a HTTP request).
      * @throws CException
      */
-    public function actionGetDrilldownList($patient_ids) {
+    public function actionGetDrilldownList(string $patient_ids)
+    {
         $pagination = array(
             'pageSize' => 10,
         );
@@ -492,7 +501,10 @@ class CaseSearchController extends BaseModuleController
         $this->populateParams();
         $ids = array_column(Yii::app()->searchProvider->search($this->parameters), 'id');
 
-        $variable = $this->getVariableInstance(Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var], $ids);
+        $variable = $this->getVariableInstance(
+            Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var],
+            $ids
+        );
 
         if (!isset($_POST['show-all-dates']) || $_POST['show-all-dates'] !== '1') {
             if (isset($_POST['from_date']) && $_POST['from_date']) {
@@ -513,7 +525,10 @@ class CaseSearchController extends BaseModuleController
 
     public function beforeAction($action)
     {
-        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OECaseSearch.assets'), true);
+        $assetPath = Yii::app()->assetManager->publish(
+            Yii::getPathOfAlias('application.modules.OECaseSearch.assets'),
+            true
+        );
         Yii::app()->clientScript->registerCssFile($assetPath . '/css/module.css');
 
         // This is required when the search results return any records.
@@ -522,12 +537,24 @@ class CaseSearchController extends BaseModuleController
             Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js');
         }
 
-        if (!Yii::app()->clientScript->isScriptFileRegistered($assetPath . '/js/OpenEyes.UI.Dialog.LoadSavedSearch.js')) {
-            Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.LoadSavedSearch.js', 'application.modules.OECaseSearch.assets', -10);
+        if (!Yii::app()->clientScript->isScriptFileRegistered(
+            $assetPath . '/js/OpenEyes.UI.Dialog.LoadSavedSearch.js'
+        )) {
+            Yii::app()->assetManager->registerScriptFile(
+                'js/OpenEyes.UI.Dialog.LoadSavedSearch.js',
+                'application.modules.OECaseSearch.assets',
+                -10
+            );
         }
 
-        if (!Yii::app()->clientScript->isScriptFileRegistered($assetPath . '/js/OpenEyes.UI.Dialog.SaveSearch.js')) {
-            Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.SaveSearch.js', 'application.modules.OECaseSearch.assets', -10);
+        if (!Yii::app()->clientScript->isScriptFileRegistered(
+            $assetPath . '/js/OpenEyes.UI.Dialog.SaveSearch.js'
+        )) {
+            Yii::app()->assetManager->registerScriptFile(
+                'js/OpenEyes.UI.Dialog.SaveSearch.js',
+                'application.modules.OECaseSearch.assets',
+                -10
+            );
         }
 
         return parent::beforeAction($action);

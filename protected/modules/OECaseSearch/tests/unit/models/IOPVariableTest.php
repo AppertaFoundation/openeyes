@@ -72,7 +72,13 @@ class IOPVariableTest extends CDbTestCase
                 'csv_mode' => 'ADVANCED',
                 'var_mode' => 'last',
                 'query_template' => '
-        SELECT p.nhs_num, iop.value iop, iop.side, iop.event_date, iop.reading_time
+        SELECT (
+            SELECT pi.value
+            FROM patient_identifier pi
+                JOIN patient_identifier_type pit ON pit.id = pi.patient_identifier_type_id
+            WHERE pi.patient_id = p.id
+            AND pit.usage_type = \'GLOBAL\'
+            ) nhs_num, iop.value iop, iop.side, iop.event_date, iop.reading_time
         FROM v_patient_iop iop
         JOIN patient p ON p.id = iop.patient_id
         WHERE iop.patient_id IN (1, 2, 3)

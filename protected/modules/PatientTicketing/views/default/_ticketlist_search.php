@@ -113,7 +113,14 @@
         <tr class="col-gap">
             <td class="fade">Patients:</td>
             <td id="patient-search-wrapper">
-                <?php $this->widget('application.widgets.AutoCompleteSearch', ['htmlOptions' => ['placeholder' => 'Hospital Number, NHS Number, Firstname Surname or Surname, Firstname'], 'layoutColumns' => ['field' => '11']]); ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', [
+                        'htmlOptions' => [
+                                'placeholder' => 'Patient identifier, Firstname Surname or Surname, Firstname'
+                        ],
+                        'layoutColumns' => [
+                                'field' => '11'
+                        ]
+                ]); ?>
                 <div style="display:inline-block">
                     <div class="js-spinner-as-icon loader" style="display: none;"><i class="spinner as-icon"></i></div>
                 </div>
@@ -163,7 +170,7 @@
                 <ul id="patient-result-list" class="oe-multi-select inline">
                     <?php foreach ($patients as $patient) : ?>
                         <li data-patient_id="<?= $patient->id ?>">
-                            <?= "{$patient->first_name} {$patient->last_name} ({$patient->hos_num})" ?>
+                            <?="{$patient->first_name} {$patient->last_name}"?>
                             <i class="oe-i remove-circle small-icon pad-left"></i>
                             <input name="patient-ids[]" type="hidden" id="<?= "{$patient->id}"; ?>"
                                    value="<?= "{$patient->id}"; ?>">

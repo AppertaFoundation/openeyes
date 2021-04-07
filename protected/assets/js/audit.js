@@ -54,7 +54,7 @@ AuditLog.prototype = {
                     '&firm_id='+$('#previous_firm_id').val()+'&oe-autocompletesearch='+user_id+
                     '&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+
                     '&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+
-                    '&hos_num='+$('#previous_hos_num').val(),
+                    '&patient_identifier_value='+$('#previous_patient_identifier_value').val(),
                 'success': function(html) {
                     if ($.trim(html).length >0) {
                         $(audit.data_selector).html(html + $(audit.data_selector).html());

@@ -5,12 +5,13 @@
  *
  * @property string $driver
  */
+
 class DBProvider extends SearchProvider
 {
     /**
      * @var string $driver_ Driver name.
      */
-    private $driver_ = 'mariadb';
+    private string $driver_ = 'mariadb';
 
     /**
      * Gets the driver name. Used as a magic method.
@@ -22,22 +23,24 @@ class DBProvider extends SearchProvider
     }
 
     /**
-     * Sets the driver name. Used as a magic method. Setter is used implicitly when specifying override values in config files.
+     * Sets the driver name. Used as a magic method.
+     * Setter is used implicitly when specifying override values in config files.
      * @param $driver string Driver label.
      */
-    public function setDriver($driver)
+    public function setDriver(string $driver)
     {
         $this->driver_ = $driver;
     }
 
     /**
      * Execute the search using the given parameters.
-     * @param CaseSearchParameter[] $criteria The parameters to search with. The parameters must implement the DBProviderInterface interface.
+     * @param CaseSearchParameter[] $criteria The parameters to search with.
+     * The parameters must implement the DBProviderInterface interface to be searched using this provider.
      * @return array The returned data from the search.
      * @throws CDbException
      * @throws CException
      */
-    protected function executeSearch($criteria)
+    protected function executeSearch(array $criteria)
     {
         $bindValues = array();
         $queryStr = 'SELECT DISTINCT p.id FROM patient p ';
@@ -47,7 +50,8 @@ class DBProvider extends SearchProvider
         foreach ($criteria as $id => $param) {
             // Ignore any case search parameters that do not implement DBProviderInterface
             if ($param instanceof DBProviderInterface) {
-                // Get the query component of the parameter, append it in the correct manner and augment the list of binds.
+                // Get the query component of the parameter,
+                // append it in the correct manner and augment the list of binds.
                 $from = $param->query();
                 $queryStr .= ($pos === 0) ? "WHERE p.id IN ($from)" : " AND p.id IN ($from)";
                 $bindValues = array_merge($bindValues, $param->bindValues());
@@ -78,8 +82,12 @@ class DBProvider extends SearchProvider
      * @return array|null The raw variable data for display in plots or CSV files.
      * @throws CException
      */
-    private function getVariableDataInternal($variable, $start_date, $end_date, $mode = null)
-    {
+    private function getVariableDataInternal(
+        CaseSearchVariable $variable,
+        ?DateTime $start_date,
+        ?DateTime $end_date,
+        ?string $mode = null
+    ) {
         $data = null;
         if ($variable instanceof DBProviderInterface) {
             $variable->csv_mode = $mode;
@@ -109,8 +117,13 @@ class DBProvider extends SearchProvider
      * @return array|void Variable data for plotting. No data is returned if rendering a CSV.
      * @throws CException
      */
-    public function getVariableData($variables, $start_date = null, $end_date = null, $return_csv = false, $mode = 'BASIC')
-    {
+    public function getVariableData(
+        $variables,
+        ?DateTime $start_date = null,
+        ?DateTime $end_date = null,
+        bool $return_csv = false,
+        string $mode = 'BASIC'
+    ) {
         $csv_columns = array();
         $variable_data_list = array();
         if ($return_csv) {

@@ -70,6 +70,7 @@ class DBProviderTest extends CDbTestCase
     public function testSearch()
     {
         $parameter = new PatientDeceasedParameter();
+        $parameter->id = 1;
         $parameter->operation = false;
 
         $results =  $this->searchProvider->search(array($parameter));
@@ -79,6 +80,7 @@ class DBProviderTest extends CDbTestCase
         $parameter = new PreviousProceduresParameter();
         $parameter->operation = '=';
         $parameter->value = 1;
+        $parameter->id = 1;
 
         $results = $this->searchProvider->search(array($parameter));
 

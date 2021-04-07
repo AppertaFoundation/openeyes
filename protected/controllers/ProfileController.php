@@ -68,7 +68,6 @@ class ProfileController extends BaseController
                         $user->{$field} = $_POST['User'][$field];
                     }
                 }
-                $user->password_hashed=true;
 
                 $fields = $_POST['UserOutOfOffice'];
 
@@ -118,50 +117,50 @@ class ProfileController extends BaseController
             $this->redirect(array('/profile/sites'));
         }
         $errors = array();
-        $user = User::model()->findByPk(Yii::app()->user->id);
+        $user_auth = Yii::app()->session['user_auth'];
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_change_password']) {
-                if (empty($_POST['User']['password_old'])) {
+                if (empty($_POST['UserAuthentication']['password_old'])) {
                     $errors['Current password'] = array('Please enter your current password');
-                } elseif (!$user->validatePassword($_POST['User']['password_old'])) {
+                } elseif (!$user_auth->verifyPassword($_POST['UserAuthentication']['password_old'])) {
                     $errors['Current password'] = array('Password is incorrect');
                 }
 
-                if (empty($_POST['User']['password_new'])) {
+                if (empty($_POST['UserAuthentication']['password_new'])) {
                     $errors['New password'] = array('Please enter your new password');
                 }
 
-                if (empty($_POST['User']['password_confirm'])) {
+                if (empty($_POST['UserAuthentication']['password_confirm'])) {
                     $errors['Confirm password'] = array('Please confirm your new password');
                 }
 
-                if ($_POST['User']['password_new'] != $_POST['User']['password_confirm']) {
+                if ($_POST['UserAuthentication']['password_new'] != $_POST['UserAuthentication']['password_confirm']) {
                     $errors['Confirm password'] = array("Passwords don't match");
                 }
 
                 if (empty($errors)) {
-                    if (Yii::app()->params['auth_source'] === 'BASIC') {
-                        if ($user->password_status==="stale"||$user->password_status==="expired") {// this user pw is now current
-                            $user->password_status = 'current';
+                    if ($user_auth->institutionAuthentication->user_authentication_method === 'LOCAL') {
+                        if ($user_auth->password_status==="stale"||$user_auth->password_status==="expired") {// this user pw is now current
+                            $user_auth->password_status = 'current';
                         }
                         //reset pw checks
-                        $user->password_last_changed_date = date('Y-m-d H:i:s');
-                        $user->password_failed_tries = 0;
+                        $user_auth->password_last_changed_date = date('Y-m-d H:i:s');
+                        $user_auth->password_failed_tries = 0;
                     }
-                    $user->password = $user->password_repeat = $_POST['User']['password_new'];
-                    if (!$user->save()) {
-                        $errors = $user->getErrors();
+                    $user_auth->password = $user_auth->password_repeat = $_POST['UserAuthentication']['password_new'];
+                    if (!$user_auth->save()) {
+                        $errors = $user_auth->getErrors();
                     } else {
                         Yii::app()->user->setFlash('success', 'Your password has been changed.');
                     }
                 }
             }
-            unset($_POST['User']['password_old']);
-            unset($_POST['User']['password_new']);
-            unset($_POST['User']['password_confirm']);
+            unset($_POST['UserAuthentication']['password_old']);
+            unset($_POST['UserAuthentication']['password_new']);
+            unset($_POST['UserAuthentication']['password_confirm']);
         }
         $this->render('/profile/password', array(
-            'user' => $user,
+            'user_auth' => $user_auth,
             'errors' => $errors,
         ));
     }
@@ -279,8 +278,6 @@ class ProfileController extends BaseController
                     throw new Exception('Unable to save UserFirm: ' . print_r($us->getErrors(), true));
                 }
 
-                $user->password_hashed = true;
-
                 $user->has_selected_firms = 1;
                 if (!$user->save()) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
@@ -325,7 +322,6 @@ class ProfileController extends BaseController
                     );
                     if ($signature_file) {
                         $user->signature_file_id = $signature_file->id;
-                        $user->password_hashed = true;
                         if ($user->save()) {
                             echo true;
                         }

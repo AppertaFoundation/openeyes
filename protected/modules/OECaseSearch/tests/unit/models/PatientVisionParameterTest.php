@@ -40,7 +40,14 @@ class PatientVisionParameterTest extends CDbTestCase
         $this->parameter->value = 101;
         $this->parameter->bothEyesIndicator = true;
 
-        $expected = 'a:6:{s:10:"class_name";s:22:"PatientVisionParameter";s:4:"name";s:6:"vision";s:9:"operation";s:2:"IN";s:2:"id";i:0;s:5:"value";i:101;s:17:"bothEyesIndicator";b:1;}';
+        $expected = serialize(array(
+            'class_name' => 'PatientVisionParameter',
+            'name' => 'vision',
+            'operation' => 'IN',
+            'id' => 0,
+            'value' => 101,
+            'bothEyesIndicator' => true
+        ));
 
         $this->assertEquals($expected, serialize($this->parameter->saveSearch()));
     }
@@ -134,17 +141,22 @@ FROM (
                                             FROM patient
                                                    LEFT JOIN episode e ON patient.id = e.patient_id
                                                    LEFT JOIN event ON event.episode_id = e.id
-                                                   LEFT JOIN et_ophciexamination_visualacuity eov ON event.id = eov.event_id
-                                                   LEFT JOIN ophciexamination_visualacuity_reading ovr ON eov.id = ovr.element_id
+                                                   LEFT JOIN et_ophciexamination_visualacuity eov
+                                                       ON event.id = eov.event_id
+                                                   LEFT JOIN ophciexamination_visualacuity_reading ovr
+                                                       ON eov.id = ovr.element_id
                                             WHERE ovr.value IS NOT NULL
                                               AND ovr.side IS NOT NULL
                                               AND ovr.last_modified_date IS NOT NULL) t2
                                       WHERE t2.patient_id = t1.patient_id
                                         AND t1.va_side = t2.va_side)
                    ) t3) t4
-       GROUP BY patient_id) t5 WHERE (t5.left_va_value {$op} :p_v_value_0) {$second_operation} (t5.right_va_value {$op} :p_v_value_0)";
+       GROUP BY patient_id) t5
+WHERE (t5.left_va_value {$op} :p_v_value_0)
+{$second_operation} (t5.right_va_value {$op} :p_v_value_0)";
 
-        // Have to use str_replace here because the line endings are different between the text block above and the block used within the parameter.
+        // Using str_replace here because the line endings are different
+        // between the text block above and the block used within the parameter.
         $this->assertEquals(str_replace("\r\n", "\n", $expected), $this->parameter->query());
     }
 

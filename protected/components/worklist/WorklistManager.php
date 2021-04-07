@@ -92,6 +92,11 @@ class WorklistManager extends CComponent
     protected $do_audit = true;
 
     /**
+     * @var PatientIdentifierType
+     */
+    public $patient_identifier_type = null;
+
+    /**
      * @var CApplication
      */
     protected $yii;
@@ -667,17 +672,21 @@ class WorklistManager extends CComponent
     public function shouldDisplayWorklistForContext(Worklist $worklist, Site $site, Firm $firm)
     {
         if ($definition = $worklist->worklist_definition) {
-            $display_contexts = $definition->display_contexts;
-            if (!count($display_contexts)) {
-                return true;
-            }
-            foreach ($display_contexts as $dc) {
-                if ($dc->checkSite($site) && $dc->checkFirm($firm)) {
+            if ($definition->patient_identifier_type->institution_id == $site->institution_id) {
+                $display_contexts = $definition->display_contexts;
+                if (!count($display_contexts)) {
                     return true;
                 }
+                foreach ($display_contexts as $dc) {
+                    if ($dc->checkSite($site) && $dc->checkFirm($firm)) {
+                        return true;
+                    }
+                }
+                // got this far, we haven't found a valid display context
+                return false;
+            } else {
+                return false;
             }
-            // got this far, we haven't found a valid display context
-            return false;
         }
 
         // not implemented context checking for non-automatic worklists yet
@@ -1360,8 +1369,10 @@ class WorklistManager extends CComponent
 
         $candidates = array();
         foreach ($model->search(false)->getData() as $wl) {
-            if ($this->checkWorklistMappingMatch($wl, $attributes)) {
-                $candidates[] = $wl;
+            if(isset($this->patient_identifier_type) && $wl->worklist_definition->patient_identifier_type_id == $this->patient_identifier_type->id) {
+                if ($this->checkWorklistMappingMatch($wl, $attributes)) {
+                    $candidates[] = $wl;
+                }
             }
         }
 

@@ -50,8 +50,8 @@
     <?=\CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types', 'class' => 'cols-full'))?>
     <h4>User</h4>
     <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
-    <h4>Hospital Number</h4>
-    <?=\CHtml::textField('hos_num', @$_POST['hos_num'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search cols-full', 'placeholder'=>'Enter Hospital Number'))?>
+    <h4>Patient Identifier</h4>
+    <?=\CHtml::textField('patient_identifier_value', Yii::app()->request->getPost('patient_identifier_value'), array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search cols-full', 'placeholder'=>'Enter Patient Identifier'))?>
     <h3>Filter by Date</h3>
     <div class="flex-layout">
         <fieldset>

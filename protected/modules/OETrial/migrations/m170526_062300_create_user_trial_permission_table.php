@@ -18,23 +18,23 @@ class m170526_062300_create_user_trial_permission_table extends OEMigration
         $this->insert('trial_permission', array(
             'name' => 'View',
             'code' => 'VIEW',
-            'can_view' => true,
-            'can_edit' => false,
-            'can_manage' => false,
+            'can_view' => 1,
+            'can_edit' => 0,
+            'can_manage' => 0,
         ));
         $this->insert('trial_permission', array(
             'name' => 'Edit',
             'code' => 'EDIT',
-            'can_view' => true,
-            'can_edit' => true,
-            'can_manage' => false,
+            'can_view' => 1,
+            'can_edit' => 1,
+            'can_manage' => 0,
         ));
         $this->insert('trial_permission', array(
             'name' => 'Manage',
             'code' => 'MANAGE',
-            'can_view' => true,
-            'can_edit' => true,
-            'can_manage' => true,
+            'can_view' => 1,
+            'can_edit' => 1,
+            'can_manage' => 1,
         ));
 
         $this->createOETable('user_trial_assignment', array(

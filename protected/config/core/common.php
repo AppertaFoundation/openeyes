@@ -29,14 +29,15 @@ if (file_exists('/etc/openeyes/db.conf')) {
         'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ? : 'openeyes'),
         'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ? : 'openeyes'),
     );
-    $db_test = array(
-        'host' => getenv('DATABASE_TEST_HOST') ?: (getenv('DATABASE_HOST') ?: 'localhost'),
-        'port' => getenv('DATABASE_TEST_PORT') ?: (getenv('DATABASE_PORT') ?: '3306'),
-        'dbname' => getenv('DATABASE_TEST_NAME') ?: (getenv('DATABASE_NAME') ?: 'openeyes_test'),
-        'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_USER")) ?: (getenv('DATABASE_TEST_USER') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ?: 'openeyes'))),
-        'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_PASS")) ?: (getenv('DATABASE_TEST_PASS') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ?: 'openeyes'))),
-    );
 }
+
+$db_test = array(
+    'host' => getenv('DATABASE_TEST_HOST') ?: (getenv('DATABASE_HOST') ?: 'localhost'),
+    'port' => getenv('DATABASE_TEST_PORT') ?: (getenv('DATABASE_PORT') ?: '3306'),
+    'dbname' => getenv('DATABASE_TEST_NAME') ?: (getenv('DATABASE_NAME') ?: 'openeyes_test'),
+    'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_USER")) ?: (getenv('DATABASE_TEST_USER') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ?: 'openeyes'))),
+    'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_PASS")) ?: (getenv('DATABASE_TEST_PASS') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ?: 'openeyes'))),
+);
 
 $config = array(
     'name' => 'OpenEyes',
@@ -54,6 +55,7 @@ $config = array(
         'application.components.reports.*',
         'application.components.actions.*',
         'application.components.worklist.*',
+        'application.components.patientSearch.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
         'application.commands.*',
@@ -238,7 +240,7 @@ $config = array(
             'class' => 'PuppeteerBrowser',
             'readTimeout' => 65,
             'logBrowserConsole' => false,
-            'leftFooterTemplate' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
+            'leftFooterTemplate' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_PRIMARY_IDENTIFIER}}{{PATIENT_SECONDARY_IDENTIFIER}}{{PATIENT_DOB}}',
             'middleFooterTemplate' => 'Page {{PAGE}} of {{PAGES}}',
             'rightFooterTemplate' => 'OpenEyes',
             'topMargin' => '10mm',
@@ -643,6 +645,11 @@ $config = array(
             ),
         ),
 
+        // used in behaviors/ExtraLog.php
+        // setting this true adding more (step by step type) logs
+        // useful for debugging the very complex patient search and PAS connections
+        'extra_debug_log' => false,
+
         'event_image' => [
             'base_url' => 'http://localhost/'
         ],
@@ -686,8 +693,6 @@ $config = array(
             'last_name' => 'mandatory',
             'dob' => 'mandatory',
             'primary_phone' => '',
-            'hos_num' => 'mandatory',
-            'nhs_num_status' => 'hidden'
         ],
         //        Set the parameter below to true if you want to use practitioner praactice associations feature
         'use_contact_practice_associate_model' => !empty(trim(getenv('OE_USE_CPA_MODEL'))) ? filter_var(getenv('OE_USE_CPA_MODEL'), FILTER_VALIDATE_BOOLEAN) : false,

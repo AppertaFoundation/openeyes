@@ -141,6 +141,10 @@ class UnbookedWorklist extends CComponent
         $definition->end_time = '23:59:59';
         $definition->active_from = $today->modify('midnight')->format('Y-m-d H:i:s');
 
+        $patient_identifier_type = PatientIdentifierHelper::getPatientIdentifierType('LOCAL', $site->institution_id, $site->id) ??
+            PatientIdentifierHelper::getPatientIdentifierType('LOCAL', $site->institution_id);
+        $definition->patient_identifier_type_id = $patient_identifier_type->id;
+
         if ($definition->save()) {
             $context = new \WorklistDefinitionDisplayContext();
             $context->firm_id = $firm_id;

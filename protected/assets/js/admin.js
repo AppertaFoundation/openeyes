@@ -181,3 +181,46 @@ $(document).ready(function () {
         });
     });
 });
+
+function getInstitutionSites(institution_id, $site_dropdown) {
+    let empty_text = $site_dropdown.find("option[value='']").text();
+    if (institution_id !== '') {
+        $.ajax({
+            'type': 'GET',
+            'dataType': 'json',
+            'url': baseUrl + '/admin/getInstitutionSites?institution_id=' + institution_id,
+            'beforeSend': function(){
+                $('#et_save').prop('disabled', true);
+            },
+            'success': function (sites) {
+                let options = '<option value="">' + empty_text + '</option>';
+                for (let i in sites) {
+                    options += '<option value="' + i + '">' + sites[i] + '</option>';
+                }
+                $site_dropdown.html(options);
+                sort_selectbox($site_dropdown);
+            },
+            'complete' : function () {
+                $('#et_save').prop('disabled', false);
+            }
+        });
+    } else {
+        $site_dropdown.html('<option value="">' + empty_text + '</option>');
+    }
+};
+
+function sort_selectbox(element) {
+    rootItem = element.children('option:first').text();
+    element.append(element.children('option').sort(selectSort));
+};
+
+function selectSort(a, b) {
+    if (a.innerHTML == rootItem) {
+        return -1;
+    } else if (b.innerHTML == rootItem) {
+        return 1;
+    }
+    return (a.innerHTML > b.innerHTML) ? 1 : -1;
+};
+
+var rootItem = null;

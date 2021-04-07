@@ -23,14 +23,6 @@ $(function () {
   $(this).on('click', '#waitingList-filter button[type="submit"]', function (e) {
     e.preventDefault();
 
-    if (!validateHosNum()) {
-      //using timeout to mirror the chrome fix in buttons.js for disableButtons()
-      setTimeout(function () {
-        enableButtons();
-      });
-      return;
-    }
-
     searchLoadingMsg.show();
     searchResults.empty();
     $('#btn_confirm_selected').addClass('disabled');
@@ -99,10 +91,10 @@ $(function () {
     e.preventDefault();
   });
 
-  $('#hos_num').focus();
+  $('#patient_identifier_value').focus();
 
   if ($('#subspecialty-id').length) {
-    if ($('#subspecialty-id').val() != '') {
+    if ($('#subspecialty-id').val() !== '') {
       var firm_id = $('#firm-id').val();
       $.ajax({
         url: baseUrl + '/OphTrOperationbooking/waitingList/filterFirms',
@@ -150,16 +142,16 @@ $(function () {
     });
   });
 
-  $('#hos_num').bind('keyup', function (e) {
-    if (validateHosNum()) {
+  $('#patient_identifier_value').bind('keyup', function (e) {
+
       $.ajax({
         url: baseUrl + '/OphTrOperationbooking/waitingList/filterSetHosNum',
         type: "POST",
-        data: "hos_num=" + $('#hos_num').val() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+        data: "patient_identifier_value=" + $('#patient_identifier_value').val() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
         success: function (data) {
         }
       });
-    }
+
   });
 
   new OpenEyes.UI.StickyElement('.panel.actions', {

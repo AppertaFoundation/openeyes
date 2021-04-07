@@ -13,14 +13,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if ($site) {?>
+<?php
+$contact = $site ?? $institution;
+if ($contact) {?>
     <h5 class="right-align">
-        <?php
-        echo $site->getLetterAddress(array(
+        <?= $contact->getLetterAddress([
             'include_name' => true,
             'delimiter' => '<br />',
             'include_telephone' => true,
             'include_fax' => true,
-        ))?>
+        ])?>
     </h5>
 <?php }?>

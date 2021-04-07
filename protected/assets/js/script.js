@@ -14,14 +14,17 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+let prepopulationData;
 
 $(document).ready(function () {
-  $(document.body).append(createLoginOverlay());
+  if(window.location.pathname !== '/site/login') {
+    $(document.body).append(createLoginOverlay());
 
-  let loginOverlay = $('#js-overlay');
-  loginOverlay.hide();
+    let loginOverlay = $('#js-overlay');
+    loginOverlay.hide();
 
-  checkLoginOverlay();
+    checkLoginOverlay();
+  }
 
   var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapperEvents($('.openeyes-brand'));
   $('.openeyes-brand').off('mouseenter');
@@ -443,6 +446,22 @@ function pollUserAuthenticated() {
 }
 
 function createLoginOverlay() {
+    $.ajax({
+        url: '/Site/getOverlayPrepopulationData',
+        async: false,
+        data: {
+            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+        },
+        success: function(resp) {
+            prepopulationData = resp;
+        },
+        error: function (resp) {
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Unable to request existing user session information.\n\nPlease contact support for assistance."
+            }).open();
+        }
+    });
+
     let overlay = document.createElement('div');
     overlay.id = 'js-overlay';
     overlay.classList.add('oe-popup-wrap');
@@ -467,6 +486,26 @@ function createLoginOverlay() {
     errorDiv.classList.add('error');
     loginDiv.append(errorDiv);
 
+    let detailsDiv = document.createElement('div');
+    detailsDiv.classList.add('login-details');
+    loginDiv.append(detailsDiv);
+
+    let detailsList = document.createElement('ul');
+    detailsList.classList.add('row-list');
+    detailsDiv.append(detailsList);
+
+    let institutionListItem = document.createElement('li');
+    institutionListItem.id = 'js-institution';
+    institutionListItem.classList.add('login-institution');
+    institutionListItem.innerText = prepopulationData['institution']['name'];
+    detailsList.append(institutionListItem);
+
+    let siteListItem = document.createElement('li');
+    siteListItem.id = 'js-site';
+    siteListItem.classList.add('login-site');
+    siteListItem.innerText = prepopulationData['site']['name'];
+    detailsList.append(siteListItem);
+
     let userDiv = document.createElement('div');
     userDiv.classList.add('user');
     loginDiv.append(userDiv);
@@ -475,6 +514,9 @@ function createLoginOverlay() {
     usernameField.id = 'js-username';
     usernameField.type = 'text';
     usernameField.placeholder = 'Username';
+    if('username' in prepopulationData) {
+        usernameField.text = prepopulationData['username'];
+    }
     userDiv.append(usernameField);
 
     let passwordField = document.createElement('input');
@@ -503,6 +545,26 @@ function createLoginOverlay() {
     infoDiv.innerText = 'For security reasons you have been logged out. Please login again';
     loginDiv.append(infoDiv);
 
+    let returnDiv = document.createElement('div');
+    returnDiv.classList.add('flex-c');
+    loginDiv.append(returnDiv);
+
+    let returnButton = document.createElement('a');
+    returnButton.classList.add('button');
+    returnButton.innerText = 'Or exit to homepage';
+    returnButton.href = document.location.origin + '/site/login';
+
+    //Event handler fires before default behaviour of the element is triggered
+    //The following causes the link change target to logout action and then fire the redirect if the user has a valid session
+    //This could occur if the user logs in again using a seperate tab
+    returnButton.onclick = function () {
+        if (pollUserAuthenticated()) {
+            returnButton.href = document.location.origin + '/site/logout';
+        }
+    }
+
+    returnDiv.append(returnButton);
+
     return overlay;
 }
 
@@ -511,20 +573,22 @@ function loginWithOverlay() {
     let errorBox = $('#js-login-error');
     errorBox.hide();
 
+    let loginInformation = {
+        "username": $('#js-username').val(),
+        "password": $('#js-password').val(),
+        "site_id": prepopulationData['site']['id'],
+        "institution_id": prepopulationData['institution']['id'],
+    };
+
     $.ajax({
         type: 'POST',
         url: '/Site/loginFromOverlay',
         async: false,
         data: {
             "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-            "LoginForm": {
-                "username": $('#js-username').val(),
-                "password": $('#js-password').val(),
-            },
+            "LoginForm": loginInformation,
         },
         success: function(resp) {
-            // TODO We should check that the newly logged-in user is the same that was originally logged in
-
             if(resp === 'Login success'){
                 loginOverlay.hide();
                 queueLoginOverlay();
@@ -734,7 +798,15 @@ function showToolTip(element) {
 	// calc height:
 	var h = $(".oe-tooltip").height();
 	// update position and show
-	var top = iconPos.y - h - 25;
+    var top;
+    if(iconPos.y - iconPos.height < 50) {
+        top = iconPos.y + 25;
+        tip.addClass('inverted');
+    } else {
+        // update position and show
+        top = iconPos.y - h - 25;
+        tip.removeClass('inverted');
+    }
 
 	// is there enough space on the top ?
 	if (top < h) {

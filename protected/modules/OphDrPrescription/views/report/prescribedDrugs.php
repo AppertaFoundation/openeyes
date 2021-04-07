@@ -60,6 +60,7 @@ $fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findBy
       <col class="cols-4">
     </colgroup>
     <tbody>
+    <?php $this->renderPartial('//report/_institution_table_row', ['field_name' => "institution_id"]);?>
     <tr>
       <td>Date from:</td>
       <td>

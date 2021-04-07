@@ -43,10 +43,10 @@ class UserTest extends ActiveRecordTestCase
     public function dataProvider_Search()
     {
         return array(
-            array(array('username' => 'Joe'), 1, array('user1')),
-            array(array('username' => 'Jane'), 1, array('user2')),
+            array(array('first_name' => 'Joe'), 1, array('user1')),
+            array(array('first_name' => 'Jane'), 1, array('user2')),
             array(array('last_name' => 'bloggs'), 2, array('user1', 'user2')), /* case insensitivity test - needs _ci column collation */
-            array(array('username' => 'no-one'), 0, array()),
+            array(array('first_name' => 'no-one'), 0, array()),
         );
     }
 

@@ -201,6 +201,7 @@ class DefaultController extends BaseEventTypeController
     public function printInit($id)
     {
         parent::printInit($id);
+        $this->site = $this->event->site;
         if (!$prescription = Element_OphDrPrescription_Details::model()->find('event_id=?', array($id))) {
             throw new Exception('Prescription not found: '.$id);
         }
@@ -514,7 +515,8 @@ class DefaultController extends BaseEventTypeController
 
     public function actionPDFPrint($id)
     {
-        $this->pdf_print_suffix = Site::model()->findByPk(Yii::app()->session['selected_site_id'])->id;
+        $event = \Event::model()->findByPk($id);
+        $this->pdf_print_suffix = $event->site_id ?? \Yii::app()->session['selected_site_id'];
 
         $document_count = 1;
         if (Yii::app()->params['disable_print_notes_copy'] === 'off') {

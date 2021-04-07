@@ -28,7 +28,9 @@ if (!Yii::app()->user->isGuest) {
             $this->widget('SiteAndFirmWidgetReminder');
         }
 
-        if ((Yii::app()->params['auth_source'] === 'BASIC') && $user->testUserPWStatus('stale') && empty(Yii::app()->session['shown_pw_reminder'])) {
+        $user_auth = Yii::app()->params['user_auth'];
+        if ($user_auth && $user_auth->institutionAuthentication->user_authentication_method == "LOCAL"
+            && PasswordUtils::testStatus('stale', $user_auth) && empty(Yii::app()->session['shown_pw_reminder'])) {
             Yii::app()->session['shown_pw_reminder'] = true;
             $this->widget('PasswordStaleWidgetReminder');
         }
@@ -56,8 +58,8 @@ if (!Yii::app()->user->isGuest) {
                     <a href="<?= Yii::app()->createUrl('/profile'); ?>">profile</a>
                 <?php } ?>
             </li>
-
-            <li><?= Site::model()->findByPk($this->selectedSiteId)->short_name; ?></li>
+            <li id="user-profile-site-institution"><?= Site::model()->findByPk($this->selectedSiteId)->short_name . ' (' .
+                    Institution::model()->findByPk($this->selectedInstitutionId)->short_name . ')';?></li>
             <li>
                 <?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?>
                 <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a>

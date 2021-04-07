@@ -41,7 +41,9 @@ class SiteAndFirmWidget extends CWidget
     public function run()
     {
         $model = new SiteAndFirmForm();
-        $user = User::model()->findByPk(Yii::app()->user->id);
+        $user_auth = Yii::app()->session['user_auth'];
+        $user = $user_auth->user;
+
         if (isset($_POST['SiteAndFirmForm'])) {
             $model->attributes = $_POST['SiteAndFirmForm'];
             if ($model->validate()) {
@@ -54,6 +56,7 @@ class SiteAndFirmWidget extends CWidget
 
                 Yii::app()->session['selected_site_id'] = $model->site_id;
                 $this->controller->selectedSiteId = $model->site_id;
+                Yii::app()->request->cookies['current_site_id'] = new CHttpCookie('current_site_id', $model->site_id);
                 Yii::app()->session['selected_firm_id'] = $model->firm_id;
                 $this->controller->selectedFirmId = $model->firm_id;
                 Yii::app()->session['confirm_site_and_firm'] = false;
@@ -84,9 +87,28 @@ class SiteAndFirmWidget extends CWidget
         }
 
         $sites = $user->activeSiteSelections;
+        $filtered_sites = array_filter(
+            Institution::model()->getCurrent()->sites,
+            function ($site) use ($user) { return !UserAuthentication::userHasExactMatch($user, $site->institution_id, $site->id); }
+        );
+
         if (!$sites) {
-            $sites = Institution::model()->getCurrent()->sites;
+            $sites = $filtered_sites;
+        } else {
+            $sites = array_uintersect($sites, $filtered_sites,
+                function ($a, $b) {
+                    return ($a->id == $b->id) ? 0 : (($a->id > $b->id) ? 1 : -1);
+                }
+            );
         }
+
+        $disable_site = false;
+        $inst_auth = $user_auth->institutionAuthentication;
+        if ($inst_auth->institution_id && $inst_auth->site_id) {
+            $disable_site = true;
+            $sites = [ Site::model()->findByPk($inst_auth->site_id) ];
+        }
+
 
         $user_firm_ids = array();
         if (Yii::app()->params['profile_user_can_edit']) {
@@ -135,7 +157,8 @@ class SiteAndFirmWidget extends CWidget
             'model' => $model,
             'firms' => $firms,
             'sites' => CHtml::listData($sites, 'id', 'short_name'),
-            'mode' => $this->mode
+            'mode' => $this->mode,
+            'disable_site' => $disable_site
         ));
     }
 }

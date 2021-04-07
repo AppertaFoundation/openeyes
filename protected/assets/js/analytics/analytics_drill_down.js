@@ -46,7 +46,21 @@ const analytics_drill_down = (function () {
                 if (response['dom']) {
                     $("#p_list").append(response['dom']);
                 }
-                $('#p_list tr.analytics-patient-list-row.clickable').on("click", _.throttle(patientDetails, ajaxThrottleTime));
+				if (response['headers']){
+					$("#p_header tr").empty();
+					response['headers'].forEach(function(header){
+						if (header === 'patient_id' || header === 'last name'|| header === 'event_id') {
+							return;
+						}
+
+						if (header === 'first name') {
+							header = 'name';
+						}
+						header = header.charAt(0).toUpperCase() + header.slice(1);
+						$("#p_header tr").append('<th class="text-left" style="vertical-align: center;">'+header+'</th>');
+					});
+				}
+				$('#p_list tr.analytics-patient-list-row.clickable').on("click", _.throttle(patientDetails, ajaxThrottleTime));
             },
             complete: function () {
                 $('#js-analytics-spinner').hide();
@@ -192,8 +206,8 @@ const analytics_drill_down = (function () {
                     colGroup.append('<col style="width: 3.5%;"><col style="width: 24%;"><col style="width: 7%;">');
                 } else {
                     // set up patient list dom layout for non cataract
-                    // for procedures column
-                    colGroup.append('<col style="width: 24%;">');
+					// for procedures, all ids columns
+					colGroup.append('<col style="width: 19%;"><col style="width: 19%;">');
                 }
                 // deep copy from passed in data
                 g_data = custom_data.slice();
@@ -218,6 +232,7 @@ const analytics_drill_down = (function () {
             } else {
                 // clicked item has further plot
                 analytics_clinical('update', custom_data);
+				analytics_clinical('update', custom_data);
             }
         });
         $('main').off('scroll').on('scroll', _.throttle(scrollPatientList, ajaxThrottleTime));

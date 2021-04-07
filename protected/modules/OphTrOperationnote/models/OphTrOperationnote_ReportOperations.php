@@ -88,6 +88,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             'supervising_surgeon_role',
             'opnote_comments',
             'patient_oph_diagnoses',
+            'institution_id'
         );
     }
 
@@ -125,6 +126,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             'supervising_surgeon_role' => 'Supervising surgeon role',
             'opnote_comments' => 'Operation note comments',
             'patient_oph_diagnoses' => 'Patient ophthalmic diagnoses',
+            'all_ids' => 'Patient IDs',
         );
     }
 
@@ -138,6 +140,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
     public function run()
     {
+        $this->setInstitutionAndSite();
+
         $surgeon = null;
         $date_from = date('Y-m-d', strtotime('-1 year'));
         $date_to = date('Y-m-d');
@@ -230,7 +234,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
         $command = Yii::app()->db->createCommand()
             ->select(
-                'e.id, c.first_name, c.last_name, e.event_date, su.surgeon_id, su.assistant_id, su.supervising_surgeon_id, p.hos_num,p.gender, p.dob, pl.id as plid, cat.id as cat_id, eye.name AS eye'
+                'e.id, c.first_name, c.last_name, e.event_date, su.surgeon_id, su.assistant_id, su.supervising_surgeon_id, p.id as pid, p.gender, p.dob, pl.id as plid, cat.id as cat_id, eye.name AS eye'
             )
             ->from('event e')
             ->join('episode ep', 'e.episode_id = ep.id')
@@ -249,6 +253,11 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 '(su.surgeon_id = :user_id or su.assistant_id = :user_id or su.supervising_surgeon_id = :user_id)'
             );
             $params[':user_id'] = $surgeon_id;
+        }
+
+        if ($this->institution_id) {
+            $command->andWhere('e.institution_id = :institution_id');
+            $params[':institution_id'] = $this->institution_id;
         }
 
         $results = array();
@@ -302,9 +311,12 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 }
             }
 
+            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['pid'], $this->user_institution_id, $this->user_selected_site_id));
+            $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['pid']);
+
             $record = array(
                 'operation_date' => date('j M Y', strtotime($row['event_date'])),
-                'patient_hosnum' => $row['hos_num'],
+                'patient_identifier' => $patient_identifier,
                 'patient_firstname' => $row['first_name'],
                 'patient_surname' => $row['last_name'],
                 'patient_gender' => $row['gender'],
@@ -335,6 +347,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             $this->appendBookingValues($record, $row['id'], $booking_diagnosis, $theatre, $bookingcomments, $surgerydate);
             $this->appendOpNoteValues($record, $row['id'], $anaesthetic_type, $anaesthetic_delivery, $anaesthetic_comments, $anaesthetic_complications, $cataract_report, $incision_site, $cataract_complication_notes, $cataract_predicted_refraction, $cataract_iol_type, $cataract_iol_power, $tamponade_used, $surgeon, $surgeon_role, $assistant, $assistant_role, $supervising_surgeon, $supervising_surgeon_role, $opnote_comments);
             $this->appendExaminationValues($record, $row['id'], $comorbidities, $target_refraction, $cataract_surgical_management, $first_eye, $va_values, $refraction_values);
+
+            $record['all_ids'] = $patient_identifiers;
 
             $results[] = $record;
         }
@@ -391,11 +405,11 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                     $record['theatre'] = $theatreName;
                 }
 
-                if ($this->bookingcomments) {
+                if ($operationElement && $this->bookingcomments) {
                     $record['bookingcomments'] = $operationElement['comments'];
                 }
 
-                if ($this->surgerydate) {
+                if ($operationBooking && $this->surgerydate) {
                     $record['surgerydate'] = $operationBooking['session_date'];
                 }
             }
@@ -611,15 +625,20 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
     protected function getCataractPrimaryReason($criteria)
     {
-        $cataractSurgicalManagementElement = \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event', 'reasonForSurgery'))->find($criteria);
-
-        $reasons = ($cataractSurgicalManagementElement['reasonForSurgery']);
-
         $res = '';
+        $cataractSurgicalManagementElement = \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event', 'leftReasonForSurgery', 'rightReasonForSurgery'))->find($criteria);
+
+        if ($cataractSurgicalManagementElement) {
+            foreach (['left', 'right'] as $side) {
+                if ($cataractSurgicalManagementElement[$side . 'ReasonForSurgery']) {
+                    $reasons[$side] = $cataractSurgicalManagementElement[$side . 'ReasonForSurgery'];
+                }
+            }
+        }
 
         if ($reasons) {
-            foreach ($reasons as $reason) {
-                $res .= $reason['originalAttributes']['name']."\n";
+            foreach ($reasons as $side => $reason) {
+                $res .= $side . ' reason: ' . $reason['originalAttributes']['name'] . PHP_EOL;
             }
         }
 
@@ -931,7 +950,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
     {
         $return = array(
             'Operation date',
-            Patient::model()->getAttributeLabel('hos_num'),
+            $this->getPatientIdentifierPrompt(),
             Patient::model()->getAttributeLabel('first_name'),
             Patient::model()->getAttributeLabel('last_name'),
             Patient::model()->getAttributeLabel('gender'),
@@ -1034,6 +1053,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             $return[] = 'Most recent post-op Unaided';
             $return[] = 'Most recent post-op Pinhole';
         }
+
+        $return[] = $this->getAttributeLabel('all_ids');
 
         return $return;
     }

@@ -1960,6 +1960,10 @@ class BaseEventTypeController extends BaseModuleController
         Yii::app()->puppeteer->setDocref($this->event->docref);
         Yii::app()->puppeteer->setPatient($this->event->episode->patient);
         Yii::app()->puppeteer->setBarcode($this->event->barcodeSVG);
+        Yii::app()->puppeteer->setInstitutionAndSite(
+            isset($this->event->institution) ? $this->event->institution->id : null,
+            isset($this->event->site) ? $this->event->site->id : null
+        );
 
         foreach (array('left', 'middle', 'right') as $section) {
             if (isset(Yii::app()->params['puppeteer_footer_' . $section . '_' . $this->event_type->class_name])) {
@@ -2271,8 +2275,13 @@ class BaseEventTypeController extends BaseModuleController
     public function processJsVars()
     {
         if ($this->patient) {
+            $patient_identifier = PatientIdentifier::model()->find(
+                'patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id',
+                [':patient_id' => $this->patient->id,
+                    ':patient_identifier_type_id' => Yii::app()->params['oelauncher_patient_identifier_type']]
+            );
             $this->jsVars['OE_patient_id'] = $this->patient->id;
-            $this->jsVars['OE_patient_hosnum'] = $this->patient->hos_num;
+            $this->jsVars['OE_patient_hosnum'] = $patient_identifier->value?? null;
         }
         if ($this->event) {
             $this->jsVars['OE_event_id'] = $this->event->id;

@@ -3,12 +3,15 @@
 class PatientIdentifierParameterTest extends CDbTestCase
 {
     protected $fixtures = array(
-        'patients' => Patient::class,
-        'identifiers' => PatientIdentifier::class,
+        'institution' => Institution::class,
+        'site' => Site::class,
+        'patient_identifier_type' => PatientIdentifierType::class,
+        'patient' => Patient::class,
+        'patient_identifier' => PatientIdentifier::class,
     );
 
-    public $parameter;
-    private $ignoreTests = false;
+    public PatientIdentifierParameter $parameter;
+    private bool $ignoreTests = false;
 
     public static function setUpBeforeClass()
     {
@@ -23,6 +26,7 @@ class PatientIdentifierParameterTest extends CDbTestCase
         parent::setUp();
         $this->parameter = new PatientIdentifierParameter();
         $this->parameter->id = 0;
+        $this->parameter->type = (int)(PatientIdentifierType::model()->findByPk(1))->id;
     }
 
     public function tearDown()
@@ -33,12 +37,11 @@ class PatientIdentifierParameterTest extends CDbTestCase
 
     public function testBindValues()
     {
-        $this->parameter->code = 'RVEEH_UR';
         $this->parameter->value = 12345;
 
         $expected = array(
             "p_id_number_0" => 12345,
-            "p_code_0" => 'RVEEH_UR',
+            "p_type_0" => 1,
         );
 
         $this->assertEquals($expected, $this->parameter->bindValues());
@@ -53,25 +56,23 @@ class PatientIdentifierParameterTest extends CDbTestCase
     {
         $labels = $this->parameter->attributeLabels();
 
-        $this->assertEquals('Code', $labels['code']);
+        $this->assertEquals('Identifier Type', $labels['type']);
     }
 
     public function testGetAuditData()
     {
-        $this->parameter->code = 'RVEEH_UR';
         $this->parameter->value = 12345;
-        $expected = "patient_identifier: = RVEEH_UR 12345";
+        $expected = "patient_identifier: = 12345 (ID)";
 
         $this->assertEquals($expected, $this->parameter->getAuditData());
     }
 
     public function testSaveSearch()
     {
-        $this->parameter->code = 'RVEEH UR';
         $this->parameter->value = 12345;
 
         $actual = $this->parameter->saveSearch();
-        $this->assertEquals('RVEEH UR', $actual['code']);
+        $this->assertEquals(1, $actual['type']);
     }
 
     /**
@@ -83,9 +84,8 @@ class PatientIdentifierParameterTest extends CDbTestCase
             $this->ignoreTests = true;
             $this->markTestSkipped('Patient identifiers not configured.');
         } else {
-            $this->parameter->code = 'RVEEH_UR';
             $this->parameter->value = 12345;
-            $this->assertEquals('Code - RVEEH_UR', $this->parameter->getValueForAttribute('code'));
+            $this->assertEquals('Identifier Type - ID', $this->parameter->getValueForAttribute('type'));
             $this->assertEquals(12345, $this->parameter->getValueForAttribute('value'));
 
             $this->expectException('CException');
@@ -102,26 +102,27 @@ class PatientIdentifierParameterTest extends CDbTestCase
             $this->ignoreTests = true;
             $this->markTestSkipped('Patient identifiers not configured.');
         } else {
-            $all_codes = Yii::app()->db->createCommand('SELECT DISTINCT code FROM patient_identifier')->queryAll();
-            $codes = array();
-            foreach ($all_codes as $code) {
-                $codes[$code['code']] = $code['code'];
+            $all_types = Yii::app()->db->createCommand(
+                'SELECT id, short_title FROM patient_identifier_type'
+            )->queryAll();
+            $types = array();
+            foreach ($all_types as $type) {
+                $types[$type['id']] = $type['short_title'];
             }
-            $this->assertEquals($codes, $this->parameter->getAllCodes());
+            $this->assertEquals($types, $this->parameter->getAllTypes());
         }
     }
 
     public function testQuery()
     {
         $this->parameter->value = 12345;
-        $this->parameter->code = 'RVEEH_UR';
         $this->parameter->operation = '=';
 
         $this->assertTrue($this->parameter->validate());
         $expected = "SELECT DISTINCT p.patient_id 
 FROM patient_identifier p
-WHERE p.code = :p_code_0 AND p.value = :p_id_number_0";
-
+WHERE (:p_type_0 IS NULL OR p.patient_identifier_type_id = :p_type_0)
+  AND p.value = :p_id_number_0";
         $this->assertEquals($expected, $this->parameter->query());
     }
 }

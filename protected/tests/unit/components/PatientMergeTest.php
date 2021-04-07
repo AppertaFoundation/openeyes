@@ -60,6 +60,16 @@ class PatientMergeTest extends CDbTestCase
         return Yii::app()->getModule('Genetics') !== null;
     }
 
+    public static function setUpBeforeClass()
+    {
+        Yii::app()->session['selected_institution_id'] = 1;
+    }
+
+    public static function tearDownAfterClass()
+    {
+        unset(Yii::app()->session['selected_institution_id']);
+    }
+
     public function setUp()
     {
         if ($this->shouldTestGenetics()) {
@@ -297,7 +307,7 @@ class PatientMergeTest extends CDbTestCase
         $episode9->start_date = date('Y-m-d', strtotime('-30 days'));
         $episode9->end_date = null;
         $episode9->save();
-        
+
         $this->assertTrue($episode7->status->order < $episode9->status->order);
 
         $this->assertEquals(2, count($primary_patient->episodes));
@@ -325,7 +335,7 @@ class PatientMergeTest extends CDbTestCase
 
         $episode7->refresh();
         $this->assertEquals(0, count($episode7->events));
-        
+
         $episode9->refresh();
         $this->assertEquals(4, count($episode9->events));
 
@@ -500,29 +510,29 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateOphthalmicDiagnoses()
     {
         $merge_handler = new PatientMerge();
-        
+
         $primary_patient = $this->patients('patient7');
         $secondary_patient = $this->patients('patient8');
-        
+
         $secondary_diagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
         $secondary_diagnoses8->patient_id = 8;
         $secondary_diagnoses8->save();
         $secondary_diagnoses8->refresh();
-        
+
         // Before we update the Ophthalmic Diagnoses we check if the patient id is equals to the secondary patient id
         $this->assertEquals(8, $secondary_diagnoses8->patient_id);
-        
+
         $secondary_patient->refresh();
         $this->assertTrue(is_array($secondary_patient->ophthalmicDiagnoses));
         $this->assertEquals(1, count($secondary_patient->ophthalmicDiagnoses));
-        
+
         $merge_handler->updateOphthalmicDiagnoses($primary_patient, $secondary_patient->ophthalmicDiagnoses);
-        
+
         $secondary_diagnoses8->refresh();
         $secondary_patient->refresh();
-        
+
         $this->assertEquals(0, count($secondary_patient->ophthalmicDiagnoses));
-        
+
         $this->assertEquals(7, $secondary_diagnoses8->patient_id);
     }
 
@@ -533,10 +543,10 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateSystemicDiagnoses()
     {
         $merge_handler = new PatientMerge();
-        
+
         $primary_patient = $this->patients('patient7');
         $secondary_patient = $this->patients('patient8');
-        
+
         $secondary_diagnoses8 = $this->secondary_diagnosis('secondaryDiagnoses8');
         $secondary_diagnoses8->patient_id = 8;
         $secondary_diagnoses8->disorder_id = 5;
@@ -546,17 +556,17 @@ class PatientMergeTest extends CDbTestCase
         // Before we update the Ophthalmic Diagnoses we check if the patient id is equals to the secondary patient id
         $this->assertEquals(8, $secondary_diagnoses8->patient_id);
         $this->assertEquals(5, $secondary_diagnoses8->disorder_id);
-        
+
         $secondary_patient->refresh();
         $this->assertTrue(is_array($secondary_patient->systemicDiagnoses));
         $this->assertEquals(1, count($secondary_patient->systemicDiagnoses));
-        
+
         $merge_handler->updateOphthalmicDiagnoses($primary_patient, $secondary_patient->systemicDiagnoses);
-        
+
         $secondary_diagnoses8->refresh();
-        
+
         $this->assertEquals(7, $secondary_diagnoses8->patient_id);
-        
+
         $this->assertEquals(0, count($secondary_patient->systemicDiagnoses));
         $this->assertEquals(1, count($primary_patient->systemicDiagnoses));
     }
@@ -586,7 +596,6 @@ class PatientMergeTest extends CDbTestCase
 
         $genetics_secondary_patient->refresh();
         $this->assertEquals($primary_patient->id, $genetics_secondary_patient->patient_id);
-
     }
 
     /**
@@ -595,7 +604,8 @@ class PatientMergeTest extends CDbTestCase
     /**
      * @covers PatientMerge
      */
-    public function testUpdateGenetics_Secondary_not_genetics(){
+    public function testUpdateGenetics_Secondary_not_genetics()
+    {
         if (!$this->shouldTestGenetics()) {
             $this->markTestSkipped('Genetics module needs to be enabled for this test.');
         }
@@ -665,7 +675,6 @@ class PatientMergeTest extends CDbTestCase
 
         $subject2 = $this->genetics_study_subject('genetics_study_subject2');
         $this->assertEquals($genetics_primary_patient->id, $subject2->subject_id);
-
     }
 
     /**

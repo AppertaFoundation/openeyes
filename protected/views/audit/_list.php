@@ -57,6 +57,6 @@ if (empty($data['items'])) {?>
         $('#previous_event_type_id').val("<?=\Yii::app()->request->getPost('event_type_id')?>");
         $('#previous_date_from').val("<?=\Yii::app()->request->getPost('date_from')?>");
         $('#previous_date_to').val("<?=\Yii::app()->request->getPost('date_to')?>");
-        $('#previous_hos_num').val("<?=\Yii::app()->request->getPost('hos_num')?>");
+        $('#previous_patient_identifier_value').val("<?=\Yii::app()->request->getPost('patient_identifier_value')?>");
     });
 </script>

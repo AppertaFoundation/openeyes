@@ -27,6 +27,7 @@
     "sinon": true,
     "expect": true,
     "dialogPolyfill": true,
+    "ED": true,
     "_": true,
     "analytics_dataCenter": true,
     "analytics_toolbox": true,

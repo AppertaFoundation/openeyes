@@ -16,41 +16,63 @@
  */
 ?>
 <?php
-    $deceased = $this->patient->isDeceased();
+$deceased = $this->patient->isDeceased();
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
+$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+$display_secondary_number_usage_code = Yii::app()->params['display_secondary_number_usage_code'];
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
 if ($this->controller->id != "patient" && $this->controller->id != 'default') { ?>
-        <div class="oe-patient-meta">
-            <div class="patient-name">
-                <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
-                    <span class="patient-surname"><?= $this->patient->getLast_name(); ?></span>,
-                    <span class="patient-firstname">
+    <div class="oe-patient-meta">
+        <div class="patient-name">
+            <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
+                <span class="patient-surname"><?= $this->patient->getLast_name(); ?></span>,
+                <span class="patient-firstname">
                         <?= $this->patient->getFirst_name(); ?>
                         <?= $this->patient->getTitle() ? "({$this->patient->getTitle()})" : ''; ?>
                     </span>
-                </a>
-            </div>
-            <div class="patient-details">
+            </a>
+        </div>
+        <div class="patient-details">
+            <?php if ($display_primary_number_usage_code) { ?>
                 <div class="hospital-number">
-                    <span><?php echo Yii::app()->params['hos_num_label'] ?></span>
-                    <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
+                    <span><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier); ?> </span>
+                    <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;">
+                        <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier); ?>
+                        <?php
+                        $this->widget(
+                            'application.widgets.PatientIdentifiers',
+                            [
+                                'patient' => $this->patient,
+                                'show_all' => true
+                            ]); ?>
+                        <?php if ($display_primary_number_usage_code === 'GLOBAL' && $primary_identifier && $primary_identifier->patientIdentifierStatus) { ?>
+                            <i class="oe-i <?= isset($primary_identifier->patientIdentifierStatus->icon->class_name) ? $primary_identifier->patientIdentifierStatus->icon->class_name : 'exclamation' ?> small"></i>
+                        <?php } ?>
+                    </div>
                 </div>
+            <?php }
+            if ($display_secondary_number_usage_code) { ?>
                 <div class="nhs-number">
-                    <span><?php echo \SettingMetadata::model()->getSetting('nhs_num_label') ?></span>
-                    <?php echo $this->patient->nhsnum ?>
-                    <?php if ($this->patient->nhsNumberStatus) : ?>
-                        <i class="oe-i <?= isset($this->patient->nhsNumberStatus->icon->class_name) ? $this->patient->nhsNumberStatus->icon->class_name : 'exclamation' ?> small"></i>
-                    <?php endif; ?>
+                    <span><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier); ?></span>
+                    <?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier); ?>
+                    <?php if ($display_secondary_number_usage_code === 'GLOBAL' && $secondary_identifier && $secondary_identifier->patientIdentifierStatus) { ?>
+                        <i class="oe-i <?= isset($secondary_identifier->patientIdentifierStatus->icon->class_name) ? $secondary_identifier->patientIdentifierStatus->icon->class_name : 'exclamation' ?> small"></i>
+                    <?php } ?>
                 </div>
-                <div class="patient-gender">
+            <?php } ?>
+            <div class="patient-gender">
                     <em>Gender</em>
-                    <?php echo $this->patient->getGenderString() ?>
-                </div>
-                <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
-                    <?php if ($deceased) : ?>
-                        <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
-                    <?php endif; ?>
-                    <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge().'y'; ?>
-                </div>
+                <?php echo $this->patient->getGenderString() ?>
+            </div>
+            <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
+                <?php if ($deceased) : ?>
+                    <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
+                <?php endif; ?>
+                <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge() . 'y'; ?>
             </div>
         </div>
+    </div>
 <?php } ?>
 

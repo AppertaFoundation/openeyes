@@ -6,20 +6,20 @@
 class PatientDiagnosisParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var int $firm_id
+     * @var int|null $firm_id
      */
-    public $firm_id;
+    public $firm_id = null;
 
     /**
      * @var bool $only_last_event
      */
-    public $only_latest_event;
+    public $only_latest_event = false;
 
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'string_search',
     );
 
-    protected $label_ = 'Diagnosis';
+    protected ?string $label_ = 'Diagnosis';
 
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -51,13 +51,13 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
                 'id' => 'latest-event',
                 'field' => 'only_latest_event',
                 'options' => array(
-                    array('id' => 1, 'label' => 'Only latest event')
+                    array('id' => true, 'label' => 'Only latest event')
                 ),
             ),
         );
     }
 
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
@@ -78,7 +78,6 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
     }
 
     /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
     public function rules()
@@ -114,7 +113,8 @@ AND (:p_d_only_latest_event_$this->id = 0 OR
     JOIN event later_event ON later_event.id = later_diagnoses.event_id
     JOIN episode later_episode ON later_episode.id = later_event.episode_id
     WHERE later_episode.patient_id = episode.patient_id
-    AND later_event.event_date > event.event_date OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
+       AND later_event.event_date > event.event_date
+       OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
   )
 )
 
@@ -135,7 +135,8 @@ AND (:p_d_only_latest_event_$this->id = 0 OR
     JOIN event later_event ON later_event.id = later_diagnoses.event_id
     JOIN episode later_episode ON later_episode.id = later_event.episode_id
     WHERE later_episode.patient_id = episode.patient_id
-    AND later_event.event_date > event.event_date OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
+       AND later_event.event_date > event.event_date
+       OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
   )
 )";
         if (($this->firm_id === '' || $this->firm_id === null) && $this->only_latest_event === 0) {
@@ -163,7 +164,7 @@ WHERE p1.id NOT IN (
         return $query;
     }
 
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term)
     {
         $disorders = Disorder::model()->findAllBySql(
             'SELECT * FROM disorder
@@ -173,11 +174,12 @@ WHERE LOWER(term) LIKE LOWER(:term)
 ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
             array('term' => "$term%")
         );
-        $values = array();
-        foreach ($disorders as $disorder) {
-            $values[] = array('id' => $disorder->id, 'label' => $disorder->term);
-        }
-        return $values;
+        return array_map(
+            static function ($disorder) {
+                return array('id' => $disorder->id, 'label' => $disorder->term);
+            },
+            $disorders
+        );
     }
 
     /**

@@ -81,7 +81,9 @@ class ReportController extends BaseReportController
                 $date_to = date('Y-m-d', strtotime($_GET['date_to']));
             }
 
-            $results = $this->getApplications($date_from, $date_to, $firm);
+            $institution_id = Yii::app()->request->getParam('institution_id', null);
+
+            $results = $this->getApplications($date_from, $date_to, $firm, $institution_id);
 
             $filename = 'therapyapplication_report_'.date('YmdHis').'.csv';
             $this->sendCsvHeaders($filename);
@@ -105,12 +107,12 @@ class ReportController extends BaseReportController
         }
     }
 
-    protected function getApplications($date_from, $date_to, $firm = null)
+    protected function getApplications($date_from, $date_to, $firm = null, $institution_id)
     {
         $command = Yii::app()->db->createCommand()
             ->select(
                 "p.id as patient_id, diag.left_diagnosis1_id, diag.left_diagnosis2_id, diag.right_diagnosis1_id, diag.right_diagnosis2_id, e.id,
-						c.first_name, c.last_name, e.created_date, p.hos_num,p.gender, p.dob, eye.name AS eye, site.name as site_name,
+						c.first_name, c.last_name, e.created_date, p.gender, p.dob, eye.name AS eye, site.name as site_name,
 						firm.name as firm_name, concat(uc.first_name, ' ', uc.last_name) as created_user,
 						ps.left_treatment_id, ps.right_treatment_id, ps.left_nice_compliance, ps.right_nice_compliance"
             )
@@ -137,12 +139,22 @@ class ReportController extends BaseReportController
             $params[':consultant_id'] = $firm->id;
         }
 
+        if ($institution_id) {
+            $command->andWhere('e.institution_id = :institution_id');
+            $params[':institution_id'] = $institution_id;
+        }
+
         $results = array();
 
         foreach ($command->queryAll(true, $params) as $row) {
+            $display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+            $patient_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution($display_primary_number_usage_code, Institution::model()->getCurrent()->id, $this->selectedSiteId);
+            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $row['patient_id'], Institution::model()->getCurrent()->id, $this->selectedSiteId));
+            $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['patient_id']);
+
             $record = array(
                 'application_date' => date('j M Y', strtotime($row['created_date'])),
-                'patient_hosnum' => $row['hos_num'],
+                $patient_identifier_prompt => $patient_identifier_value,
                 'patient_firstname' => $row['first_name'],
                 'patient_surname' => $row['last_name'],
                 'patient_gender' => $row['gender'],
@@ -163,6 +175,8 @@ class ReportController extends BaseReportController
 
             $this->appendSubmissionValues($record, $row['id']);
             $this->appendInjectionValues($record, $row['patient_id'], $row['left_treatment_id'], $row['right_treatment_id']);
+
+            $record['patient_ids'] = $patient_identifiers;
 
             $results[] = $record;
         }
@@ -350,11 +364,14 @@ class ReportController extends BaseReportController
         $sent = false;
         $get = array('report-name' => 'Pending Therapy applications') + $_GET;
 
+
         if (Yii::app()->getRequest()->getQuery('report') === 'generate') {
+            $institution_id = Yii::app()->request->getParam('institution_id', null);
+
             $pendingApplications = new PendingApplications();
 
             try {
-                $sent = $pendingApplications->emailCsvFile(Yii::app()->params['applications_alert_recipients']);
+                $sent = $pendingApplications->emailCsvFile(Yii::app()->params['applications_alert_recipients'], $institution_id);
                 $get['success'] = ($sent ? 'Email sent to addresses defined in config "applications_alert_recipients"' : 'Email sending failed.');
             } catch (Exception $e) {
                 \Yii::app()->user->setFlash('error.error', "Failed to send report email.");
