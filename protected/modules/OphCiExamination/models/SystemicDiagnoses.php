@@ -87,7 +87,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, diagnoses, checked_required_diagnoses', 'safe'),
+            array('event_id, diagnoses, checked_required_diagnoses, no_systemic_diagnoses_date', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id', 'safe', 'on' => 'search')
@@ -152,6 +152,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             $diagnosis->date = $prev->date;
             $diagnoses[] = $diagnosis;
         }
+        $this->no_systemic_diagnoses_date = $element->no_systemic_diagnoses_date;
         $this->diagnoses = $diagnoses;
     }
 
@@ -161,6 +162,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     public function setDefaultOptions(\Patient $patient = null)
     {
         if ($patient) {
+            $this->no_systemic_diagnoses_date = $patient->get_no_systemic_diagnoses_date();
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
             $both = array(true, false);

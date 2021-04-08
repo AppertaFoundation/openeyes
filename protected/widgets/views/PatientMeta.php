@@ -30,7 +30,7 @@ if ($this->controller->id != "patient" && $this->controller->id != 'default') { 
             </div>
             <div class="patient-details">
                 <div class="hospital-number">
-                    <span><?php echo Yii::app()->params['hos_num_label'] ?></span>
+                    <span><?php echo \SettingMetadata::model()->getSetting('hos_num_label') ?></span>
                     <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
                 </div>
                 <div class="nhs-number">

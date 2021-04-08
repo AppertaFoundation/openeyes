@@ -332,7 +332,7 @@ class PatientController extends BaseController
 
                 $message = 'Sorry, no results ';
                 if ($search_terms['hos_num']) {
-                    $message .= 'for ' . Yii::app()->params['hos_num_label'] . ' <strong>"' . $search_terms['hos_num'] . '"</strong>';
+                    $message .= 'for ' . \SettingMetadata::model()->getSetting('hos_num_label') . ' <strong>"' . $search_terms['hos_num'] . '"</strong>';
 
                     // check if the record was merged into another record
                     $criteria = new CDbCriteria();

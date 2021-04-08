@@ -40,7 +40,7 @@
         <div class="patient-details">
             <div class="hospital-number">
                 <!--                Displaying only ID label (instead of CERA ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", Yii::app()->params['hos_num_label'])[1] : Yii::app()->params['hos_num_label'] ) ?> </span>
+                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", \SettingMetadata::model()->getSetting('hos_num_label'))[1] : \SettingMetadata::model()->getSetting('hos_num_label') ) ?> </span>
                 <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
             </div>
             <div class="nhs-number">

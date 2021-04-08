@@ -47,7 +47,7 @@ $logo_helper = new LogoHelper();
             <p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
             <?php }?>
             <p>Service: <strong><?php echo $this->event->episode->firm->getSubspecialtyText() ?></strong></p>
-            <p><?php echo Yii::app()->params['hos_num_label'].': '?><strong><?php echo $this->patient->hos_num ?></strong>
+            <p><?php echo \SettingMetadata::model()->getSetting('hos_num_label').': '?><strong><?php echo $this->patient->hos_num ?></strong>
             <br />
                 <?php echo \SettingMetadata::model()->getSetting('nhs_num_label').': '?><strong><?php echo $this->patient->nhsnum ?></strong>
             <br />

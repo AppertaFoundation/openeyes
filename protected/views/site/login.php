@@ -44,10 +44,11 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
     <div class="info">
       <div class="flex-layout">
         <span class="large-text"> Need Help?&nbsp;
+          <?php  $purifier = new CHtmlPurifier(); ?>
           <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
-                <?= Yii::app()->params['helpdesk_phone'] ? "<strong>" . htmlspecialchars(Yii::app()->params['helpdesk_phone']) . "</strong>" : null ?></strong>
-                <?= Yii::app()->params['helpdesk_email'] ? "<br/>" . htmlspecialchars(Yii::app()->params['helpdesk_email']) : null ?>
-                <?= Yii::app()->params['helpdesk_hours'] ? "<br/> (" . htmlspecialchars(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
+                <?= Yii::app()->params['helpdesk_phone'] ? "<strong>" . $purifier->purify(Yii::app()->params['helpdesk_phone']) . "</strong>" : null ?></strong>
+                <?= Yii::app()->params['helpdesk_email'] ? "<br/>" . $purifier->purify(Yii::app()->params['helpdesk_email']) : null ?>
+                <?= Yii::app()->params['helpdesk_hours'] ? "<br/> (" . $purifier->purify(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
           <?php elseif ($tech_support_provider) : ?>
             <strong><a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a></strong>
           <?php endif; ?>

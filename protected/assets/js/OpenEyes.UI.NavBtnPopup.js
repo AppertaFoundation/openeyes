@@ -46,6 +46,8 @@
                   popup.groupController.adjustLeft(popup.button, popup.content);
                 }
             }
+            // show the close icon only when the user “clicks“ the button to open a panel
+            $($(popup.content).find(popup.closeBtn)).show();
 
             $(".oe-i.remove-circle.medium").on('click',function () {
               popup.unlatch();
