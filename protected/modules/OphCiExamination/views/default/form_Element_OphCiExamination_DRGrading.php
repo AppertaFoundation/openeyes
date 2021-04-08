@@ -59,8 +59,10 @@ function getLevelColour($risk_level){
     <fieldset class="data-group">
                 <?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>:
             <?php
-            if ($diabetes = $this->patient->getDiabetesType()) {
+            $diabetes = $this->patient->getDiabetesType();
+            if ($diabetes) {
                 echo '<span class="data-value">'.$diabetes->term.'</span>';
+                echo \CHtml::hiddenField(CHtml::modelName($element).'[secondarydiagnosis_disorder_id]', $diabetes->id);
             } else {
                 $form->radioButtons($element, 'secondarydiagnosis_disorder_id', $element->getDiabetesTypes(), null, false, false, false, false, array('nowrapper' => true));
             } ?>
