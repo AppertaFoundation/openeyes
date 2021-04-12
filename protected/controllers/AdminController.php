@@ -579,7 +579,12 @@ class AdminController extends BaseAdminController
                 }
 
                 //delete deleted auths first
-                $ids = array_column($user_auths_attributes, 'id');
+                $ids = array_filter(
+                    array_column($user_auths_attributes, 'id'),
+                    function ($id) {
+                        return !empty($id);
+                    }
+                );
                 $criteria = new CDbCriteria();
                 $criteria->addCondition('user_id=:user_id');
                 $criteria->addNotInCondition('id', array_map(function ($id) {
