@@ -942,7 +942,21 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        return $target->contact_name . "\n" . $target->address;
+                        // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
+                        if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
+                            $addressPart = explode("\n", $target->address);
+                            $address ='';
+                            foreach ($addressPart as $index=>$part) {
+                                if ($index === 0) {
+                                    $address = $part."\n";
+                                } else {
+                                    $address = $address.$part;
+                                }
+                            }
+                            return $target->contact_name . "\n" . $address;
+                        } else {
+                            return $target->contact_name . "\n" . $target->address;
+                        }
                     }
                 }
             }
