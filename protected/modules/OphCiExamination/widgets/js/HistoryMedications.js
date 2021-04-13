@@ -1167,42 +1167,48 @@ HistoryMedicationsController._defaultOptions = {
 
 
     /**
-   * From the tags on the given item, retrieve the associated risks and update the core
-   * register accordingly.
-   *
-   * @param setIds
-   * @param drug_name
-   */
-  HistoryMedicationsController.prototype.processRisks = function(setIds , drug_name)
-  {
-      if (typeof setIds === "undefined" || setIds.length === 0 || (setIds.length === 1 && setIds[0] === "")) {
-          return;
-      }
-      $.getJSON('/OphCiExamination/Risks/forSets', { set_ids: setIds }, res => {
-          this.addDrugForRisks(drug_name, res);
-      });
-  };
+     * From the tags on the given item, retrieve the associated risks
+     * and send this drug name and associated risks to the core manager for inclusion in history risks
+     *
+     * @param medications_sets_map
+     */
+    HistoryMedicationsController.prototype.processRisks = function (medications_sets_map) {
+        var risks = [];
+        const medications = Object.keys(medications_sets_map);
+        const medications_count = medications.length;
+        for (const [i, medication] of medications.entries()) {
+            if (medications_sets_map[medication] === "") {
+                continue;
+            }
 
-  /**
-   * send this drug name and associated risks to the core manager for inclusion in history risks
-   *
-   * @param drugName
-   * @param risks
-   */
-  HistoryMedicationsController.prototype.addDrugForRisks = function(drugName, risks)
-  {
-      let risksMap = [];
-      for (let i=0; i < risks.length; i++) {
-          risksMap.push({id: risks[i].id, comments: [drugName], risk_name: risks[i].name});
-      }
+            $.getJSON('/OphCiExamination/Risks/forSets', {set_ids: medications_sets_map[medication]}, res => {
+                if (res.length > 0) {
+                    for (let i = 0; i < res.length; i++) {
+                        let found = false;
+                        //check if risk already exists and append comment
+                        for (let j = 0, n = risks.length; j < n; j++) {
+                            if (risks[j].id === res[i].id) {
+                                risks[j].comments.push(medication);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            risks.push({id: res[i].id, comments: [medication], risk_name: res[i].name});
+                        }
+                    }
+                }
 
-      //checking the risksMap.length because HistoryRisksCore (js class) will automatically open the element if it isn't there
-      if(risksMap.length){
-          exports.HistoryRisks.addRisksForSource(risksMap, 'Medications');
-      }
-
-  };
-
+                //last iteration we're sending the data to Risks element
+                if (i === medications_count - 1) {
+                    // checking the risks.length because HistoryRisksCore (js class) will automatically open the element if it isn't there
+                    if (risks.length) {
+                        exports.HistoryRisks.addRisksForSource(risks, 'Medications');
+                    }
+                }
+            });
+        }
+    };
 
   HistoryMedicationsController.prototype.showDate = function($row, $type)
   {
@@ -1267,11 +1273,11 @@ HistoryMedicationsController._defaultOptions = {
           );
       }
 
+      let medications_sets_map = {};
     for (let i in medications) {
       data = medications[i];
       data['tapers'] = medications[i]['tapers'];
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
-      this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
       data['bound_key'] = this.getRandomBoundKey();
       data['has_dose_unit_term'] = typeof medications[i]['dose_unit_term'] !== 'undefined' && medications[i]['dose_unit_term'] !== "" ;
@@ -1292,7 +1298,9 @@ HistoryMedicationsController._defaultOptions = {
           });
       }
 
+      medications_sets_map[medications[i]['medication_name']] = medications[i]['set_ids'.split(",")];
     }
+      this.processRisks(medications_sets_map);
 
     return newRows;
   };

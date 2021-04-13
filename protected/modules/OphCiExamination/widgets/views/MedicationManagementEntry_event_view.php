@@ -88,7 +88,6 @@
             <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $entry->dose_unit_term) : $taper->dose ?>
                 <?php echo $taper->frequency->term; ?></td>
             <td class="nowrap">
-                <!-- no needed in taper -->
             </td>
             <td><?php echo $taper->duration->name; ?></td>
             <td class="nowrap"><i class="oe-i spacer small pad-right"></i></td>
