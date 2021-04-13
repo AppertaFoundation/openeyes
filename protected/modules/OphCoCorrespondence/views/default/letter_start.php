@@ -34,14 +34,19 @@ $logo_helper = new LogoHelper();
             <div class="spacer"></div>
             To:
             <br/>
-            <div class="address-to">
+            <div class="address-to"
+                <?= // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
+                    SettingMetadata::model()->getSetting('default_country') === 'Australia' ? "style='white-space: nowrap'" : null;
+                ?>>
                 <?php echo str_replace("\n", '<br/>', CHtml::encode($toAddress)) ?>
             </div>
         </div>
 
         <div class="address-from change-font large-font">
             <?php if ($element->site) { ?>
-                <h5>
+                <h5 <?= // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
+                    SettingMetadata::model()->getSetting('default_country') === 'Australia' ? "style='white-space: nowrap'" : null;
+                ?> >
                     <?php
                     echo $element->site->getLetterAddress(array(
                         'include_name' => true,
