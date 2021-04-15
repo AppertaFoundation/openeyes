@@ -48,6 +48,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
 {
     public $password;
     public $password_repeat;
+    private $old_attributes;
 
     /**
      * @return string the associated database table name
@@ -192,6 +193,10 @@ class UserAuthentication extends BaseActiveRecordVersioned
                 if ($this->password != $this->password_repeat) {
                     $this->addError('password_repeat', 'Password confirmation must match exactly');
                 } else {
+                    // Password set and matches
+                    $this->password_last_changed_date = date('Y-m-d H:i:s');
+                    $this->password_failed_tries = 0;
+                    $this->password_status = "current";
                     $this->password_salt = PasswordUtils::randomSalt();
                 }
             } elseif ($this->getIsNewRecord()) {
@@ -219,12 +224,30 @@ class UserAuthentication extends BaseActiveRecordVersioned
     {
         parent::afterValidate();
         $this->setPasswordHash();
+        if ($this->old_attributes['password_status'] != $this->password_status) {
+            if ($this->password_status == 'current') {
+                $this->password_last_changed_date = date('Y-m-d H:i:s');
+                $this->password_failed_tries = 0;
+            }
+        }
+    }
+
+    public function afterFind()
+    {
+        $this->old_attributes = $this->attributes;
+        return parent::afterFind();
     }
 
     public function verifyPassword($password)
     {
         if (!$this->password_salt) {
-            return password_verify($password, $this->password_hash);
+            if (password_verify($password, $this->password_hash)) {
+                $this->password_failed_tries = 0;
+                $this->saveAttributes(['password_failed_tries']);
+                return true;
+            } else {
+                return false;
+            }
         }
         if (PasswordUtils::hashPassword($password, $this->password_salt) === $this->password_hash) {
             // Regenerate the hash using the new method.
@@ -235,7 +258,14 @@ class UserAuthentication extends BaseActiveRecordVersioned
                 return false;
             }
             $this->audit('login', 'auto-encrypt-password', "user_authentication_id = {$this->id}");
-            return password_verify($password, $this->password_hash);
+
+            if (password_verify($password, $this->password_hash)) {
+                $this->password_failed_tries = 0;
+                $this->saveAttributes(['password_failed_tries']);
+                return true;
+            } else {
+                return false;
+            }
         }
         return false;
     }
