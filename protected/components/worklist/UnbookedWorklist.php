@@ -21,7 +21,8 @@ class UnbookedWorklist extends CComponent
      */
     public $worklist_manager;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->worklist_manager = new \WorklistManager();
     }
 
@@ -93,10 +94,10 @@ class UnbookedWorklist extends CComponent
         $criteria->with = ['display_contexts', 'mappings.values'];
         $criteria->addCondition('display_contexts.site_id = :site_id');
         if (\SettingMetadata::model()->getSetting('include_subspecialty_name_in_unbooked_worklists')) {
-          $criteria->addCondition('display_contexts.subspecialty_id = :subspecialty_id');
-          $criteria->params[':subspecialty_id'] = $subspecialty_id;
+            $criteria->addCondition('display_contexts.subspecialty_id = :subspecialty_id');
+            $criteria->params[':subspecialty_id'] = $subspecialty_id;
         } else {
-          $criteria->addCondition('display_contexts.subspecialty_id is null');
+            $criteria->addCondition('display_contexts.subspecialty_id is null');
         }
 
         $criteria->addCondition('mappings.key = "UNBOOKED"');
@@ -129,10 +130,12 @@ class UnbookedWorklist extends CComponent
         $site = Site::model()->findByPk($site_id);
         $today = new \DateTime();
         $definition = new \WorklistDefinition();
+        $site_name = CHtml::encode($site->name);
         if ($include_subspecialty_name_in_unbooked_worklists) {
-          $definition->name = "Unbooked - {$subspecialty->name} - {$site->name}";
+            $subspecialty_name = CHtml::encode($subspecialty->name);
+            $definition->name = "Unbooked - {$subspecialty_name} - {$site_name}";
         } else {
-          $definition->name = "Unbooked - {$site->name}";
+            $definition->name = "Unbooked - {$site_name}";
         }
         $definition->description = 'Patients for unbooked worklist';
         $definition->worklist_name = null;
@@ -149,7 +152,7 @@ class UnbookedWorklist extends CComponent
             $context = new \WorklistDefinitionDisplayContext();
             $context->firm_id = $firm_id;
             if ($include_subspecialty_name_in_unbooked_worklists) {
-              $context->subspecialty_id = $subspecialty_id;
+                $context->subspecialty_id = $subspecialty_id;
             }
             $context->site_id = $site_id;
             $context->worklist_definition_id = $definition->id;
