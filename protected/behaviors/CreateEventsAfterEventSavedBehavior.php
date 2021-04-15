@@ -190,20 +190,28 @@ class CreateEventsAfterEventSavedBehavior extends CBehavior
         $success = false;
 
         if ($macro) {
-            $name = addcslashes($this->owner->event->episode->status->name, '%_'); // escape LIKE's special characters
-            $criteria = new CDbCriteria(array(
-                'condition' => "name LIKE :name",
-                'params'    => array(':name' => "$name%")
-            ));
+            //check if macro has recipient
+            if ($macro->recipient_id) {
+                $name = addcslashes($this->owner->event->episode->status->name, '%_'); // escape LIKE's special characters
+                $criteria = new CDbCriteria(array(
+                    'condition' => "name LIKE :name",
+                    'params'    => array(':name' => "$name%")
+                ));
 
-            $letter_type = \LetterType::model()->find($criteria);
-            $letter_type_id = $letter_type->id ?? null;
+                $letter_type = \LetterType::model()->find($criteria);
+                $letter_type_id = $letter_type->id ?? null;
 
-            $correspondence_creator = new CorrespondenceCreator($this->owner->event->episode, $macro, $letter_type_id);
-            $correspondence_creator->save();
+                $correspondence_creator = new CorrespondenceCreator($this->owner->event->episode, $macro, $letter_type_id);
+                $correspondence_creator->save();
 
-            $success = !$correspondence_creator->hasErrors();
-            $errors = $correspondence_creator->getErrors();
+                $success = !$correspondence_creator->hasErrors();
+                $errors = $correspondence_creator->getErrors();
+            } else {
+                $msg = "Unable to create default Letter because: macro '{$macro_name}' does not have any target.";
+                $errors[] = [$msg];
+
+                \Yii::app()->user->setFlash('issue.correspondence', $msg);
+            }
         } else {
             $msg = "Unable to create default Letter because: No macro named '{$macro_name}' was found";
             $errors[] = [$msg];
