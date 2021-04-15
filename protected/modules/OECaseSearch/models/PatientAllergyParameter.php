@@ -5,7 +5,15 @@
  */
 class PatientAllergyParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected ?string $label_ = 'Allergy';
+    protected string $label_ = 'Allergy';
+
+    protected array $options = array(
+        'value_type' => 'string_search',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '='),
+            array('label' => 'IS NOT', 'id' => '!='),
+        )
+    );
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -21,13 +29,10 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
     public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
-            switch ($attribute) {
-                case 'value':
-                    return Allergy::model()->findByPk($this->$attribute)->name;
-                    break;
-                default:
-                    return parent::getValueForAttribute($attribute);
+            if ($attribute === 'value') {
+                return Allergy::model()->findByPk($this->$attribute)->name;
             }
+            return parent::getValueForAttribute($attribute);
         }
         return parent::getValueForAttribute($attribute);
     }
@@ -43,7 +48,7 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
         );
     }
 
-    public static function getCommonItemsForTerm(string $term)
+    public static function getCommonItemsForTerm(string $term) : array
     {
         $allergies = Allergy::model()->findAllBySql('
 SELECT a.*
@@ -61,7 +66,7 @@ WHERE LOWER(a.name) LIKE LOWER(:term) ORDER BY a.name LIMIT  ' . self::_AUTOCOMP
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @return string The constructed query string.
      */
-    public function query()
+    public function query(): string
     {
         $query = "SELECT DISTINCT p.id 
 FROM patient p 
@@ -85,7 +90,7 @@ $query
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
@@ -96,7 +101,7 @@ $query
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $allergy = Allergy::model()->findByPk($this->value);
         if ($this->operation === '=') {
@@ -104,6 +109,7 @@ $query
         } else {
             $op = '!=';
         }
-        return "$this->name: $op \"$allergy->name\"";
+        $name = $allergy->name ?? 'Unknown';
+        return "$this->name: $op \"{$name}\"";
     }
 }

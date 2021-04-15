@@ -26,6 +26,7 @@
 <div class="oe-full-content subgrid oe-audit">
     <form method="post" action="/audit/search" id="auditList-filter" class="clearfix">
         <input type="hidden" id="previous_site_id" value="<?= \Yii::app()->request->getPost('site_id') ?>" />
+        <input type="hidden" id="previous_institution_id" value="<?= \Yii::app()->request->getPost('institution_id') ?>" />
         <input type="hidden" id="previous_firm_id" value="<?= \Yii::app()->request->getPost('firm_id') ?>" />
         <input type="hidden" id="previous_user_id" value="<?= \Yii::app()->request->getPost('user') ?>" />
         <input type="hidden" id="previous_action" value="<?= \Yii::app()->request->getPost('action') ?>" />
@@ -62,6 +63,7 @@
                 'data': $('#auditList-filter').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
                 'success': function(data) {
                     $('#previous_site_id').val($('#site_id').val());
+                    $('#previous_institution_id').val($('#institution_id').val());
                     $('#previous_firm_id').val($('#firm_id').val());
                     $('#previous_user').val($('#user').val());
                     $('#previous_action').val($('#action').val());

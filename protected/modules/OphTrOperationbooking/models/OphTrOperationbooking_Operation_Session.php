@@ -49,13 +49,12 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @param string $className
-     *
-     * @return the static model class
+     * @param string $class_name
+     * @return OphTrOperationbooking_Operation_Session|BaseActiveRecord static model class
      */
-    public static function model($className = __CLASS__)
+    public static function model($class_name = __CLASS__)
     {
-        return parent::model($className);
+        return parent::model($class_name);
     }
 
     /**
@@ -109,7 +108,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'theatre' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Theatre', 'theatre_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'sequence' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Sequence', 'sequence_id'),
             'unavailablereason' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Session_UnavailableReason', 'unavailablereason_id'),
 

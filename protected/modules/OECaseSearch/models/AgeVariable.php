@@ -13,7 +13,7 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
         $this->x_label = 'Age (y)';
     }
 
-    public function query()
+    public function query(): string
     {
         if ($this->csv_mode === 'ADVANCED') {
             return 'SELECT (
@@ -29,7 +29,9 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
         AND (:start_date IS NULL OR p.created_date > :start_date)
         AND (:end_date IS NULL OR p.created_date < :end_date)
         ORDER BY 1, 2, 3';
-        } elseif ($this->csv_mode === 'BASIC') {
+        }
+
+        if ($this->csv_mode === 'BASIC') {
             return 'SELECT (10*FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)) age, COUNT(*) frequency
         FROM patient p
         WHERE p.id IN (' . implode(', ', $this->id_list) . ')
@@ -37,18 +39,18 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
         AND (:end_date IS NULL OR p.created_date < :end_date)
         GROUP BY FLOOR(TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))/10)
         ORDER BY 1';
-        } else {
-            return 'SELECT (10*FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)) age, COUNT(*) frequency, GROUP_CONCAT(DISTINCT id) patient_id_list
-        FROM patient p
-        WHERE p.id IN (' . implode(', ', $this->id_list) . ')
-        AND (:start_date IS NULL OR p.created_date > :start_date)
-        AND (:end_date IS NULL OR p.created_date < :end_date)
-        GROUP BY FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)
-        ORDER BY 1';
         }
+
+        return 'SELECT (10*FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)) age, COUNT(*) frequency, GROUP_CONCAT(DISTINCT id) patient_id_list
+    FROM patient p
+    WHERE p.id IN (' . implode(', ', $this->id_list) . ')
+    AND (:start_date IS NULL OR p.created_date > :start_date)
+    AND (:end_date IS NULL OR p.created_date < :end_date)
+    GROUP BY FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)
+    ORDER BY 1';
     }
 
-    public function bindValues()
+    public function bindValues(): array
     {
         return array();
     }

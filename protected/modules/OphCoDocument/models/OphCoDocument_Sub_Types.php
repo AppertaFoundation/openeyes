@@ -19,10 +19,9 @@
 
 class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
 {
-
     /**
      * Returns the static model of the specified AR class.
-     * @return the static model class
+     * @return OphCoDocument_Sub_types|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {

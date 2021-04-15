@@ -35,7 +35,7 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphTrOperationbooking_Operation_Theatre|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -85,6 +85,7 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'sessions' => array(self::HAS_MANY, 'OphTrOperationbooking_Operation_Session', 'theatre_id'),
             'ward' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Ward', 'ward_id'),
         );
@@ -163,5 +164,16 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
         $criteria->order = 'short_name';
 
         return Site::model()->findAll($criteria);
+    }
+
+    public static function getTheatresForCurrentInstitution()
+    {
+        $site_id_list = array_map(
+            static function ($site) {
+                return $site->id;
+            },
+            Institution::model()->getCurrent()->sites
+        );
+        return self::model()->active()->findAll('site_id IN (' . implode(', ', $site_id_list) . ')');
     }
 }

@@ -24,6 +24,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property string $name
  * @property string $label
+ * @property int $institution_id
  * @property OphCiExamination_AttributeElement[] $attribute_elements
  */
 class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
@@ -55,7 +56,7 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name', 'required'),
-                array('id, name, label', 'safe', 'on' => 'search'),
+                array('id, name, label, institution_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -67,6 +68,7 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
         return array(
                 'attribute_elements_id' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_AttributeElement', 'attribute_id'),
                 'attribute_elements' => array(self::MANY_MANY, 'ElementType', 'ophciexamination_attribute_element(attribute_id,element_type_id)'),
+                'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -137,6 +139,7 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
         $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
@@ -150,6 +153,7 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
             'label' => 'Attribute Label',
             'element_type.name' => 'Element Mapping',
             'attribute_elements.name' => 'Element Mapping',
+            'institution.name' => 'Institution',
         );
     }
 }

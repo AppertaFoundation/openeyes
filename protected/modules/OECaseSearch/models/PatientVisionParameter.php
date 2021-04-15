@@ -11,7 +11,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     /**
      * @var bool $bothEyesIndicator Indicates whether value must be identical for both eyes when searching.
      */
-    public $bothEyesIndicator = false;
+    public bool $bothEyesIndicator = false;
 
     /**
      * @var array $va_values List of VA values ($base_value => $etdrs_value)
@@ -23,12 +23,18 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
      */
     protected array $options = array(
         'value_type' => 'multi_select',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '='),
+            array('label' => 'IS NOT', 'id' => '!='),
+            array('label' => 'IS LESS THAN', 'id' => '<'),
+            array('label' => 'IS MORE THAN', 'id' => '>')
+        )
     );
 
     /**
      * @var string|null $label_ Label to display in adder dialog for the parameter.
      */
-    protected ?string $label_ = 'Vision';
+    protected string $label_ = 'Vision';
 
     /**
      * PatientVisionParameter constructor.
@@ -39,8 +45,6 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     {
         parent::__construct($scenario);
         $this->name = 'vision';
-        $this->options['operations'][] = array('label' => 'IS LESS THAN', 'id' => '<');
-        $this->options['operations'][] = array('label' => 'IS MORE THAN', 'id' => '>');
         $this->va_values = Element_OphCiExamination_VisualAcuity::model()->getUnitValuesForForm(
             OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name' => 'ETDRS Letters'))->id,
             false
@@ -67,6 +71,11 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
         );
     }
 
+    /**
+     * @param string $attribute
+     * @return mixed|void
+     * @throws CException
+     */
     public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
@@ -99,7 +108,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
      * Generate the SQL query for patient vision.
      * @return string The query string for use by the search provider.
      */
-    public function query()
+    public function query(): string
     {
         $second_operation = 'OR';
         $op = $this->operation;
@@ -158,7 +167,7 @@ $second_operation (t5.right_va_value $op :p_v_value_$this->id)";
     /**
      * @return array The list of bind values being used by the current parameter instance.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         return array(
             "p_v_value_$this->id" => (int)$this->value
@@ -168,14 +177,14 @@ $second_operation (t5.right_va_value $op :p_v_value_$this->id)";
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $bothEyes = $this->bothEyesIndicator ? ' searching both eyes' : '';
 
         return "$this->name: $this->operation $this->value" . $bothEyes;
     }
 
-    public function saveSearch()
+    public function saveSearch() : array
     {
         return array_merge(
             parent::saveSearch(),

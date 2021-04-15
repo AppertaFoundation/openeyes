@@ -13,7 +13,7 @@ class VAVariable extends CaseSearchVariable implements DBProviderInterface
         $this->min_value = -0.9;
     }
 
-    public function query()
+    public function query(): string
     {
         switch ($this->csv_mode) {
             case 'BASIC':
@@ -76,7 +76,7 @@ class VAVariable extends CaseSearchVariable implements DBProviderInterface
         }
     }
 
-    public function bindValues()
+    public function bindValues(): array
     {
         return array();
     }

@@ -29,12 +29,12 @@ class PatientMergeRequestController extends BaseController
         return array(
             array('allow',
                 'actions' => array('index', 'create', 'view', 'log', 'search', 'merge', 'update', 'delete'),
-                'roles' => array('Patient Merge'),
+                'roles' => array('OprnPatientMerge'),
             ),
 
             array('allow',
                 'actions' => array('index', 'create', 'view', 'log', 'search', 'update', 'delete'),
-                'roles' => array('Patient Merge Request'),
+                'roles' => array('OprnPatientMergeRequest'),
             ),
 
         );

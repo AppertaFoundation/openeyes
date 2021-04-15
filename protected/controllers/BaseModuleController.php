@@ -16,6 +16,8 @@
  */
 class BaseModuleController extends BaseController
 {
+    /* @var Institution - the institution that user is logged in as for current action action */
+    public $institution;
     /* @var Firm - the firm that user is logged in as for current action action */
     public $firm;
     /* @var string alias path for the module of this controller */
@@ -71,6 +73,16 @@ class BaseModuleController extends BaseController
         }
         if (!$this->firm || $this->firm->id != $firm_id) {
             $this->firm = Firm::model()->findByPk($firm_id);
+        }
+    }
+
+    protected function setInstitutionFromSession()
+    {
+        if (!$institution_id = Yii::app()->session->get('selected_institution_id')) {
+            throw new CHttpException(400, 'Institution not selected');
+        }
+        if (!$this->institution || $this->institution->id != $institution_id) {
+            $this->institution = Institution::model()->findByPk($institution_id);
         }
     }
 

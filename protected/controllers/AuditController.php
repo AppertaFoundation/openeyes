@@ -64,6 +64,7 @@ class AuditController extends BaseController
         $criteria = new CDbCriteria();
         $request = \Yii::app()->getRequest();
         $user_name = $request->getParam('oe-autocompletesearch');
+        $institution_id = Yii::app()->user->checkAccess('Institution Audit') ? $request->getParam('institution_id') : Yii::app()->session['selected_institution_id'];
         $site_id = $request->getParam('site_id');
         $firm_id = $request->getParam('firm_id');
         $action = $request->getParam('action');
@@ -75,6 +76,11 @@ class AuditController extends BaseController
 
         if ($count) {
             $criteria->select = 'count(*) as count';
+        }
+
+        if ($institution_id) {
+            $criteria->addCondition('t.institution_id = :institution_id');
+            $criteria->params[':institution_id'] = $institution_id;
         }
 
         if ($site_id) {
@@ -142,7 +148,7 @@ class AuditController extends BaseController
             $patient_search_details = $patient_search->prepareSearch($patient_identifier_value);
             $terms_with_types = $patient_search_details['terms_with_types'] ?? [];
 
-            if(empty($terms_with_types)){
+            if (empty($terms_with_types)) {
                 $criteria->addCondition("1 = 0");
             } else {
                 $id_condition = [];

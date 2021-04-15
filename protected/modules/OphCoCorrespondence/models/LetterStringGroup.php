@@ -21,6 +21,7 @@
  *
  * @property string $id
  * @property int $event_id
+ * @property int $institution_id
  *
  * The followings are the available model relations:
  * @property Event $event
@@ -56,11 +57,11 @@ class LetterStringGroup extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, display_order', 'safe'),
+            array('name, display_order, institution_id', 'safe'),
             array('name', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('name, display_order', 'safe', 'on' => 'search'),
+            array('name, display_order, institution_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -77,6 +78,7 @@ class LetterStringGroup extends BaseEventTypeElement
             'firmLetterStrings' => array(self::HAS_MANY, 'FirmLetterString', 'letter_string_group_id'),
             'subspecialtyLetterStrings' => array(self::HAS_MANY, 'SubspecialtyLetterString', 'letter_string_group_id'),
             'siteLetterStrings' => array(self::HAS_MANY, 'LetterString', 'letter_string_group_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -86,6 +88,7 @@ class LetterStringGroup extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
+            'institution.name' => 'Institution',
         );
     }
 
@@ -103,6 +106,7 @@ class LetterStringGroup extends BaseEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

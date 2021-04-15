@@ -32,7 +32,7 @@
  *
  * The followings are the available model relations:
  * @property Site $site
- * @property Theatre $theatre
+ * @property OphTrOperationbooking_Operation_Theatre $theatre
  */
 class OphTrOperationbooking_Operation_Ward extends BaseActiveRecordVersioned
 {
@@ -45,7 +45,7 @@ class OphTrOperationbooking_Operation_Ward extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphTrOperationbooking_Operation_Ward|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -79,7 +79,7 @@ class OphTrOperationbooking_Operation_Ward extends BaseActiveRecordVersioned
             array('site_id', 'length', 'max' => 10),
             array('name', 'length', 'max' => 255),
             // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
+            // Please remove those attributes thaSt should not be searched.
             array('id, site_id, name, long_name, restriction', 'safe', 'on' => 'search'),
         );
     }

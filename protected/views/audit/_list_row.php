@@ -29,6 +29,7 @@ $core_api = new CoreAPI();
             <?php echo $log->NHSDate('created_date').' '.substr($log->created_date, 11, 8)?>
         </a>
     </td>
+    <td><?php echo $log->institution ? ($log->institution->name ? $log->institution->name : $log->institution->short_name) : '-'?></td>
     <td><?php echo $log->site ? ($log->site->short_name ? $log->site->short_name : $log->site->name) : '-'?></td>
     <td><?php echo $log->firm ? $log->firm->name : '-'?></td>
     <td><?php echo $log->user ? $log->user->first_name.' '.$log->user->last_name : '-'?></td>

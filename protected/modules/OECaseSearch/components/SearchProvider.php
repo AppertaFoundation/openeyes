@@ -24,7 +24,7 @@ abstract class SearchProvider extends CApplicationComponent
      * Override this function to customise the behaviour of the search provider before performing the search.
      * @param $parameters CaseSearchParameter[]
      */
-    protected function beforeSearch(array $parameters)
+    protected function beforeSearch(array $parameters) : void
     {
     }
 
@@ -36,7 +36,7 @@ abstract class SearchProvider extends CApplicationComponent
      * @param $result_count int Number of results
      * @throws Exception
      */
-    protected function afterSearch(array $parameters, int $result_count)
+    protected function afterSearch(array $parameters, int $result_count) : void
     {
         $auditValues = array();
         if ($result_count === 0) {
@@ -56,7 +56,7 @@ abstract class SearchProvider extends CApplicationComponent
     /**
      * Search delegate function. Implement this function to specify how the search will be executed.
      * @param $criteria CaseSearchParameter[] A list of search parameters.
-     * @return array Search results.
+     * @return mixed Search results.
      */
     abstract protected function executeSearch(array $criteria);
 
@@ -76,5 +76,5 @@ abstract class SearchProvider extends CApplicationComponent
         ?DateTime $end_date = null,
         bool $return_csv = false,
         string $mode = 'BASIC'
-    );
+    ): array;
 }

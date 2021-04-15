@@ -854,7 +854,7 @@ class DefaultController extends \BaseModuleController
         echo \CHtml::dropDownList(
             'firm-id',
             '',
-            \Firm::model()->getList($subspecialty->id),
+            \Firm::model()->getList(Yii::app()->session['selected_institution_id'], $subspecialty->id),
             ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']
         );
     }

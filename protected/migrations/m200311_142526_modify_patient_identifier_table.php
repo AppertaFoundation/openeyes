@@ -89,25 +89,38 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
 
         foreach (['local', 'global'] as $usage_type) {
             if ($usage_type === 'local') {
-                $institution_id = $this->getDbConnection()->createCommand("SELECT * FROM institution WHERE remote_id = '" . Yii::app()->params['institution_code'] . "'")->queryScalar();
-                $validate_regex = "'" . Yii::app()->params['hos_num_regex'] . "'";
-                $pad = "'" . Yii::app()->params['pad_hos_num'] . "'";
+                $institution_id = $this->dbConnection->createCommand()
+                    ->select('id')
+                    ->from('institution')
+                    ->where('remote_id = :institution_code')
+                    ->bindValues(array(':institution_code' => Yii::app()->params['institution_code']))
+                    ->queryScalar();
+                $validate_regex = Yii::app()->params['hos_num_regex'];
+                $pad = Yii::app()->params['pad_hos_num'];
                 $short_title = $this->getSettingValue("hos_num_label_short");
                 $long_title = $this->getSettingValue("hos_num_label");
             } else {
-                $institution_id = $this->getDbConnection()->createCommand("SELECT * FROM institution WHERE remote_id = 'NHS'")->queryScalar();
-                $validate_regex = isset(Yii::app()->params['nhs_num_length']) ? "'" . '/^([0-9]{' . Yii::app()->params['nhs_num_length'] . '})$/i' . "'" : "'" . '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i' . "'";
-                $pad = 'NULL';
+                $institution_id = $this->getDbConnection()->createCommand("SELECT id FROM institution WHERE remote_id = 'NHS'")->queryScalar();
+                $validate_regex = isset(Yii::app()->params['nhs_num_length']) ? '/^([0-9]{' . Yii::app()->params['nhs_num_length'] . '})$/i' : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
+                $pad = null;
                 $short_title = $global_short_name;
                 $long_title = $global_name;
             }
 
-            $to_insert_into_patient_identifier_type = ['usage_type' => "'" . strtoupper($usage_type) . "'", 'short_title' => "'" . $short_title . "'", 'long_title' => "'" . $long_title . "'", 'institution_id' => $institution_id, 'validate_regex' => $validate_regex, 'pad' => $pad, 'last_modified_date' => "'" . date('Y-m-d H:i:s') . "'", 'created_date' => "'" . date('Y-m-d H:i:s') . "'"];
+            $to_insert_into_patient_identifier_type = [
+                'usage_type' => strtoupper($usage_type),
+                'short_title' => $short_title,
+                'long_title' => $long_title,
+                'institution_id' => $institution_id,
+                'validate_regex' => $validate_regex,
+                'pad' => $pad,
+            ];
 
-            $this->execute("
+            $this->insert('patient_identifier_type', $to_insert_into_patient_identifier_type);
+            /*$this->execute("
                 INSERT INTO patient_identifier_type (usage_type, short_title,long_title, institution_id, validate_regex, pad, last_modified_date, created_date)
                 VALUES (" . implode(",", $to_insert_into_patient_identifier_type) . ");
-            ");
+            ");*/
         }
 
         $local_type_id = $this->getDbConnection()->createCommand("SELECT id FROM patient_identifier_type WHERE usage_type = 'local'")->queryScalar();

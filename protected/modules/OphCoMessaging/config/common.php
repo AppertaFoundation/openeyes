@@ -33,6 +33,7 @@ return array(
                 'Message sub type settings' => array(
                     'module' => 'OphCoMessaging',
                     'uri' => '/OphCoMessaging/MessageSubTypesSettings',
+                    'restricted' => array('admin'),
                 ),
             ),
         ),

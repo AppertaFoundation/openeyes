@@ -33,6 +33,7 @@
  * @property string $server_name
  * @property string $request_uri
  * @property int $site_id
+ * @property int $institution_id
  * @property int $firm_id
  *
  * The following are the available model relations:
@@ -42,6 +43,7 @@
  * @property Event $event
  * @property User $user
  * @property Site $site
+ * @property Institution $institution
  * @property Firm $firm
  */
 class Audit extends BaseActiveRecord
@@ -76,7 +78,7 @@ class Audit extends BaseActiveRecord
         return array(
             array('action_id,type_id', 'required'),
             // array('name', 'length', 'max'=>255),
-            array('id,action,target_type,patient_id,episode_id,event_id,user_id,data,remote_addr,event_type_id,http_user_agent,server_name,request_uri,site_id,firm_id', 'safe', 'on' => 'search'),
+            array('id,action,target_type,patient_id,episode_id,event_id,user_id,data,remote_addr,event_type_id,http_user_agent,server_name,request_uri,site_id, institution_id, firm_id', 'safe', 'on' => 'search'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
         );
@@ -96,6 +98,7 @@ class Audit extends BaseActiveRecord
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'user_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
             'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'action' => array(self::BELONGS_TO, 'AuditAction', 'action_id'),
@@ -125,6 +128,7 @@ class Audit extends BaseActiveRecord
             'server_name' => 'Server name',
             'request_uri' => 'Request URI',
             'site_id' => 'Site',
+            'institution_id' => 'Institution',
             'firm_id' => 'Firm',
             'event_type_id' => 'Event Type'
         );
@@ -184,6 +188,7 @@ class Audit extends BaseActiveRecord
             $this->request_uri = $_SERVER['REQUEST_URI'];
 
             if ($this->user) {
+                $this->institution_id = Yii::app()->session['selected_institution_id'];
                 $this->site_id = Yii::app()->session['selected_site_id'];
                 $this->firm_id = Yii::app()->session['selected_firm_id'];
             }

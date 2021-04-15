@@ -254,6 +254,11 @@ class DefaultController extends BaseEventTypeController
 
             $criteria->addCondition('deleted_date IS NULL');
 
+            //Will only fetch the locally sourced medications that are assigned for use in the current institution
+            $institution_assigned_ids = array_map(function($item) { return $item->id; }, Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
+            $criteria->addCondition("source_type != 'LOCAL'");
+            $criteria->addInCondition("t.id", $institution_assigned_ids, "OR");
+
             $params = [];
             $return = array();
 
@@ -268,7 +273,7 @@ class DefaultController extends BaseEventTypeController
 
             $preservative_free = \Yii::app()->request->getParam('preservative_free');
             if ($preservative_free) {
-                $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE 
+                $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE
                                                 medication_set_id = (SELECT id FROM medication_set WHERE name = 'Preservative free'))");
             }
 

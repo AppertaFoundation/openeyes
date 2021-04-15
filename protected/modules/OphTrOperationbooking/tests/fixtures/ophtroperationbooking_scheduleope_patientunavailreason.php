@@ -18,24 +18,22 @@
  */
 return array(
     'reason1' => array(
-            'id' => 1,
-            'name' => 'Reason 1',
-            'enabled' => true,
-            'display_order' => 1,
-            'last_modified_user_id' => 1,
-            'last_modified_date' => '1901-01-01 00:00:00',
-            'created_user_id' => 1,
-            'created_date' => '1901-01-01 00:00:00',
+        'id' => 1,
+        'name' => 'Reason 1',
+        'display_order' => 1,
+        'last_modified_user_id' => 1,
+        'last_modified_date' => '1901-01-01 00:00:00',
+        'created_user_id' => 1,
+        'created_date' => '1901-01-01 00:00:00',
     ),
     'inactive_reason' => array(
-            'id' => 2,
-            'name' => 'Inactive Reason',
-            'enabled' => false,
-            'display_order' => 2,
-            'last_modified_user_id' => 1,
-            'last_modified_date' => '1901-01-01 00:00:00',
-            'created_user_id' => 1,
-            'created_date' => '1901-01-01 00:00:00',
+        'id' => 2,
+        'name' => 'Inactive Reason',
+        'display_order' => 2,
+        'last_modified_user_id' => 1,
+        'last_modified_date' => '1901-01-01 00:00:00',
+        'created_user_id' => 1,
+        'created_date' => '1901-01-01 00:00:00',
     ),
 
 );

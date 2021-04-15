@@ -152,6 +152,26 @@ class Institution extends BaseActiveRecordVersioned
         return $institution;
     }
 
+    public function getList($current_institution_only = true)
+    {
+        $result = array();
+        if ($current_institution_only) {
+            $current_institution = $this->getCurrent();
+            $result[$current_institution->id] = $current_institution->name;
+        } else {
+            $cmd = Yii::app()->db->createCommand()
+                ->select('i.id, i.name')
+                ->from('institution i');
+
+            foreach ($cmd->queryAll() as $institution) {
+                $result[$institution['id']] = $institution['name'];
+            }
+
+            natcasesort($result);
+        }
+        return $result;
+    }
+
     public function getCorrespondenceName()
     {
         return $this->name;

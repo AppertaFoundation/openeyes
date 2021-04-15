@@ -460,6 +460,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
+        $this->setInstitutionFromSession();
         $this->setFirmFromSession();
 
         if (!isset($this->firm)) {

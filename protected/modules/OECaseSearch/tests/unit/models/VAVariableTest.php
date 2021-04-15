@@ -5,9 +5,10 @@ use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue;
 
 /**
-* Class VAVariableTest
-*/
-
+ * Class VAVariableTest
+ * @covers VAVariable
+ * @covers CaseSearchVariable
+ */
 class VAVariableTest extends CDbTestCase
 {
     protected VAVariable $variable;
@@ -42,7 +43,7 @@ class VAVariableTest extends CDbTestCase
         unset($this->variable);
     }
 
-    public function getData()
+    public function getData(): array
     {
         return array(
             'Standard' => array(
@@ -116,23 +117,23 @@ class VAVariableTest extends CDbTestCase
      * @param $csv_mode
      * @param $query_template
      */
-    public function testQuery($csv_mode, $query_template)
+    public function testQuery($csv_mode, $query_template): void
     {
         $expected = $query_template;
         $this->variable->csv_mode = $csv_mode;
-        $this->assertEquals($expected, $this->variable->query());
+        self::assertEquals($expected, $this->variable->query());
     }
 
-    public function testGetVariableData()
+    public function testGetVariableData(): void
     {
-        $this->assertEquals('va', $this->variable->field_name);
-        $this->assertEquals('VA (best)', $this->variable->label);
-        $this->assertEquals('VA (LogMAR)', $this->variable->x_label);
-        $this->assertNotEmpty($this->variable->id_list);
+        self::assertEquals('va', $this->variable->field_name);
+        self::assertEquals('VA (best)', $this->variable->label);
+        self::assertEquals('VA (LogMAR)', $this->variable->x_label);
+        self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        $this->assertCount(0, $results[$this->variable->field_name]);
+        self::assertCount(0, $results[$this->variable->field_name]);
     }
 }

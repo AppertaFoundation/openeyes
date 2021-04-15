@@ -8,18 +8,22 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
     /**
      * @var int|null $firm_id
      */
-    public $firm_id = null;
+    public ?int $firm_id = null;
 
     /**
      * @var bool $only_last_event
      */
-    public $only_latest_event = false;
+    public bool $only_latest_event = false;
 
     protected array $options = array(
         'value_type' => 'string_search',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '='),
+            array('label' => 'IS NOT', 'id' => '!='),
+        )
     );
 
-    protected ?string $label_ = 'Diagnosis';
+    protected string $label_ = 'Diagnosis';
 
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -57,6 +61,11 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         );
     }
 
+    /**
+     * @param string $attribute
+     * @return mixed|void
+     * @throws CException
+     */
     public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
@@ -95,7 +104,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @return string The constructed query string.
      */
-    public function query()
+    public function query(): string
     {
         $query = "
 SELECT episode.patient_id
@@ -139,7 +148,7 @@ AND (:p_d_only_latest_event_$this->id = 0 OR
        OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
   )
 )";
-        if (($this->firm_id === '' || $this->firm_id === null) && $this->only_latest_event === 0) {
+        if (($this->firm_id === '' || $this->firm_id === null) && !$this->only_latest_event) {
             $query .= ' UNION ';
             $query .= "SELECT p3.id
 FROM patient p3 
@@ -164,7 +173,7 @@ WHERE p1.id NOT IN (
         return $query;
     }
 
-    public static function getCommonItemsForTerm(string $term)
+    public static function getCommonItemsForTerm(string $term) : array
     {
         $disorders = Disorder::model()->findAllBySql(
             'SELECT * FROM disorder
@@ -186,11 +195,11 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         return array(
             "p_d_value_$this->id" => $this->value,
-            "p_d_only_latest_event_$this->id" => $this->only_latest_event,
+            "p_d_only_latest_event_$this->id" => (int)$this->only_latest_event,
             "p_d_firm_$this->id" => $this->firm_id ?: null,
         );
     }
@@ -198,7 +207,7 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $op = '=';
         $result = null;
@@ -209,7 +218,9 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
 
         if ($this->firm_id !== '' && $this->firm_id !== null) {
             $firm = Firm::model()->findByPk($this->firm_id);
-            $result .= " diagnosed by {$firm->getNameAndSubspecialty()}";
+            if ($firm) {
+                $result .= " diagnosed by {$firm->getNameAndSubspecialty()}";
+            }
         }
 
         if ($this->only_latest_event) {
@@ -219,7 +230,7 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
         return $result;
     }
 
-    public function saveSearch()
+    public function saveSearch() : array
     {
         return array_merge(
             parent::saveSearch(),

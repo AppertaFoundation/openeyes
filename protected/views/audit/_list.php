@@ -27,6 +27,7 @@ if (empty($data['items'])) {?>
     <thead>
     <tr>
         <th>Timestamp</th>
+        <th>Institution</th>
         <th>Site</th>
         <th>Firm</th>
         <th>User</th>
@@ -49,6 +50,7 @@ if (empty($data['items'])) {?>
 <script>
     $(document).ready(function() {
         // set hidden input values from index.php needed in audit.js
+        $('#previous_institution_id').val("<?=\Yii::app()->request->getPost('institution_id')?>");
         $('#previous_site_id').val("<?=\Yii::app()->request->getPost('site_id')?>");
         $('#previous_firm_id').val("<?=\Yii::app()->request->getPost('firm_id')?>");
         $('#previous_user_id').val("<?=\Yii::app()->request->getPost('oe-autocompletesearch')?>");

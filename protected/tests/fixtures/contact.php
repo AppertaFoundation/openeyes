@@ -28,6 +28,7 @@ return array(
         'qualifications' => '',
         'email' => 'Aylward@Aylward.com',
         'contact_label_id' => 1,
+        'created_institution_id' => 1,
     ),
     'contact2' => array(
         'id' => 2,
@@ -40,6 +41,7 @@ return array(
         'qualifications' => '',
         'email' => 'Collin@Collin.com',
         'contact_label_id' => 2,
+        'created_institution_id' => 1,
     ),
     'contact3' => array(
         'id' => 3,
@@ -52,6 +54,7 @@ return array(
         'qualifications' => '',
         'email' => 'Allan@Allan.com',
         'contact_label_id' => 3,
+        'created_institution_id' => 1,
     ),
     'contact4' => array(
         'id' => 4,
@@ -63,6 +66,7 @@ return array(
         'qualifications' => '',
         'email' => 'Shore@Shore.com',
         'contact_label_id' => 1,
+        'created_institution_id' => 1,
     ),
     'contact5' => array(
         'id' => 5,
@@ -74,6 +78,7 @@ return array(
         'qualifications' => '',
         'email' => 'Shore@Shore1.com',
         'contact_label_id' => 1,
+        'created_institution_id' => 1,
     ),
     'contact6' => array(
         'id' => 6,
@@ -83,6 +88,7 @@ return array(
         'first_name' => 'Dave',
         'last_name' => 'Lister',
         'email' => 'Lister@Lister.com',
+        'created_institution_id' => 1,
     ),
     'contact7' => array(
         'id' => 7,
@@ -91,5 +97,6 @@ return array(
         'title' => 'Mr',
         'first_name' => 'Empty',
         'last_name' => 'Space',
+        'created_institution_id' => 1,
     ),
 );

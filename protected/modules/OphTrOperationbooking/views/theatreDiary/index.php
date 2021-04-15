@@ -33,6 +33,7 @@
         'enableAjaxValidation' => false,
     )) ?>
 
+
     <?php $this->renderPartial('side_panel', [
         'theatres' => $theatres,
         'wards' => $wards

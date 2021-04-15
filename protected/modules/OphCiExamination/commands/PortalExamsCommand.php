@@ -201,6 +201,7 @@ class PortalExamsCommand extends CConsoleCommand
         $optometrist_contact_label = ContactLabel::model()->find("name = ?", ['Optometrist']);
         $optometrist_contact = new Contact();
         $optometrist_contact->contact_label_id = $optometrist_contact_label->id;
+        $optometrist_contact->created_institution_id = Yii::app()->session['selected_institution_id'];
         $optometrist_contact->national_code = $goc_number;
         $optometrist_contact->last_name = $name;
 

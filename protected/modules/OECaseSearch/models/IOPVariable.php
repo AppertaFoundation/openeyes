@@ -11,12 +11,17 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         $this->eye_cardinality = true;
     }
 
-    public function getPrimaryDataPointName()
+    /**
+     * This function is overridden to ensure that iop is always returned rather
+     * than the actual field name which is either iop_first or iop_last.
+     * @return string
+     */
+    public function getPrimaryDataPointName() : string
     {
         return 'iop';
     }
 
-    public function query()
+    public function query(): string
     {
         $mode = $this->query_flags[0];
         $date_predicate = null;
@@ -73,7 +78,7 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         }
     }
 
-    public function bindValues()
+    public function bindValues(): array
     {
         return array();
     }

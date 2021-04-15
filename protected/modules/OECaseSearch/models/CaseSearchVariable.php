@@ -63,7 +63,7 @@ abstract class CaseSearchVariable
      * Get the name of the primary datapoint used in the plotting queries.
      * @return string Name of variable
      */
-    public function getPrimaryDataPointName()
+    public function getPrimaryDataPointName(): string
     {
         return $this->field_name;
     }

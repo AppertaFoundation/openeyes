@@ -25,6 +25,7 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property int $id
  * @property string $name
+ * @property int $institution_id
  * @property int $display_order
  * @property boolean $is_other
  * @property \MedicationSet[] $medicationSets
@@ -33,6 +34,18 @@ namespace OEModule\OphCiExamination\models;
 class OphCiExaminationRisk extends \BaseActiveRecordVersioned
 {
     protected $auto_update_relations = true;
+
+    use \MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return \ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'risk_id';
+    }
 
     /**
      * Returns the static model of the specified AR class.
@@ -81,6 +94,8 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
     {
         return array(
             'medicationSets' => array(self::MANY_MANY, \MedicationSet::class, 'ophciexamination_risk_tag(risk_id, medication_set_id)'),
+            'risk_institution' => array(self::HAS_MANY, 'OphCiExaminationRisk_Institution', 'risk_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', 'ophciexamination_risk_institution(risk_id,institution_id)'),
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
             'episodeStatus' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
@@ -95,8 +110,9 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'institutions.name' => 'Institutions',
             'medicationSets' => 'Drug sets',
-                      'display_on_whiteboard' => 'Display on Whiteboard',
+            'display_on_whiteboard' => 'Display on Whiteboard',
         );
     }
 

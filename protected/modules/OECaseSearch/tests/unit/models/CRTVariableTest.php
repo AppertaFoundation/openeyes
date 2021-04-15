@@ -3,11 +3,13 @@
 use OEModule\OphCiExamination\models\Element_OphCiExamination_OCT;
 
 /**
-* Class CRTVariableTest
-*/
+ * Class CRTVariableTest
+ * @covers CRTVariable
+ * @covers CaseSearchVariable
+ */
 class CRTVariableTest extends CDbTestCase
 {
-    protected $variable;
+    protected CRTVariable $variable;
 
     protected $fixtures = array(
         'crt' => Element_OphCiExamination_OCT::class,
@@ -37,7 +39,7 @@ class CRTVariableTest extends CDbTestCase
         unset($this->variable);
     }
 
-    public function getData()
+    public function getData(): array
     {
         return array(
             'Standard' => array(
@@ -87,22 +89,22 @@ class CRTVariableTest extends CDbTestCase
      * @param $csv_mode
      * @param $query_template
      */
-    public function testQuery($csv_mode, $query_template)
+    public function testQuery($csv_mode, $query_template): void
     {
         $this->variable->csv_mode = $csv_mode;
-        $this->assertEquals($query_template, $this->variable->query());
+        self::assertEquals($query_template, $this->variable->query());
     }
 
-    public function testGetVariableData()
+    public function testGetVariableData(): void
     {
-        $this->assertEquals('crt', $this->variable->field_name);
-        $this->assertEquals('CRT', $this->variable->label);
-        $this->assertEquals('CRT (microns)', $this->variable->x_label);
-        $this->assertNotEmpty($this->variable->id_list);
+        self::assertEquals('crt', $this->variable->field_name);
+        self::assertEquals('CRT', $this->variable->label);
+        self::assertEquals('CRT (microns)', $this->variable->x_label);
+        self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        $this->assertCount(1, $results[$this->variable->field_name]);
+        self::assertCount(1, $results[$this->variable->field_name]);
     }
 }

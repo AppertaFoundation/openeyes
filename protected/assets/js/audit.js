@@ -49,8 +49,8 @@ AuditLog.prototype = {
             var audit;
             $.ajax({
                 'type': 'GET',
-                'url': baseUrl+'/audit/updateList?last_id='+last_id+'&site_id='+$('#previous_site_id').val()+
-                    '&event_type_id='+event_type_id+
+                'url': baseUrl+'/audit/updateList?last_id='+last_id+'&institution_id='+$('#previous_institution_id').val()+
+                    '&site_id='+$('#previous_site_id').val()+'&event_type_id='+event_type_id+
                     '&firm_id='+$('#previous_firm_id').val()+'&oe-autocompletesearch='+user_id+
                     '&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+
                     '&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+
@@ -198,6 +198,20 @@ $(document).ready(function() {
             }
         });
     }
+
+    $('#institution_id').change(function (e) {
+        e.preventDefault();
+        let institution = this.value;
+        // Reset site filter everytime institution is changed
+        $("#site_id").val($("#target option:first").val());
+        $('#site_id option[institution]').each(function () {
+            if ($(this).attr('institution') === institution && $(this).hasClass('hidden')) {
+                $(this).removeClass('hidden');
+            } else if (!$(this).hasClass('hidden')) {
+                $(this).addClass('hidden');
+            }
+        });
+    });
 });
 
 if (window.auditLog == undefined) {

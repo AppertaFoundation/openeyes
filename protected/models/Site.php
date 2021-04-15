@@ -219,6 +219,18 @@ class Site extends BaseActiveRecordVersioned
         return array($this->institution->name, $this->name);
     }
 
+    public function getListForAllInstitutions()
+    {
+        $result = array();
+        $sites = $this->findAll();
+
+        foreach ($sites as $site) {
+            $result['list'][$site->id] = $site->short_name;
+            $result['options'][$site->id] = array('institution' => $site->institution_id, 'class' => 'hidden');
+        }
+        return $result;
+    }
+
     public function getShortname()
     {
         return $this->short_name ? $this->short_name : $this->name;
@@ -231,6 +243,24 @@ class Site extends BaseActiveRecordVersioned
 
             return $this->getLetterAddress($params);
         }
+    }
+
+    /**
+     * @return Site
+     * @throws Exception
+     */
+    public function getCurrent(): Site
+    {
+        if (!isset(Yii::app()->session['selected_site_id'])) {
+            throw new Exception('Site id is not set');
+        }
+
+        $site = $this->findByPk(Yii::app()->session['selected_site_id']);
+        if (!$site) {
+            throw new Exception("Site with id '".Yii::app()->session['selected_site_id']."' not found");
+        }
+
+        return $site;
     }
 
     /**

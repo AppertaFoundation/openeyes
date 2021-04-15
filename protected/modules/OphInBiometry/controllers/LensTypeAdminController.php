@@ -102,13 +102,85 @@ class LensTypeAdminController extends BaseAdminController
     {
         if (Yii::app()->request->isPostRequest) {
             $ids = Yii::app()->request->getPost('select');
+            $saved = true;
 
-            foreach ($ids as $id) {
-                if (!OphInBiometry_LensType_Lens::model()->deleteByPk($id)) {
-                    echo "error";
+            $transaction = Yii::app()->db->beginTransaction();
+
+            $lens_type_list = OphInBiometry_LensType_Lens::model()->findAllByPk($ids);
+
+            try {
+                foreach ($lens_type_list as $model) {
+                    if (!$model->deleteMappings(ReferenceData::LEVEL_INSTITUTION)) {
+                        $saved = false;
+                    }
+
+                    if (!$model->delete()) {
+                        $saved = false;
+                    }
                 }
+            } catch (Exception $e) {
+                $saved = false;
+            }
+
+            if ($saved) {
+                $transaction->commit();
+                echo 1;
+            } else {
+                $transaction->rollback();
+                echo 'error';
             }
         }
-        echo 1;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionAddInstitutionMapping()
+    {
+        $ids = Yii::app()->request->getPost('select');
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = array();
+        $institution_id = Institution::model()->getCurrent()->id;
+        $lens_types = OphInBiometry_LensType_Lens::model()->findAllByPk($ids);
+        try {
+            foreach ($lens_types as $lens_type) {
+                $lens_type->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if (!empty($errors)) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+        $this->redirect('/OphInBiometry/lensTypeAdmin/list');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionDeleteInstitutionMapping()
+    {
+        $ids = Yii::app()->request->getPost('select');
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = array();
+        $institution_id = Institution::model()->getCurrent()->id;
+        $lens_types = OphInBiometry_LensType_Lens::model()->findAllByPk($ids);
+        try {
+            foreach ($lens_types as $lens_type) {
+                $lens_type->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if (!empty($errors)) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+        $this->redirect('/OphInBiometry/lensTypeAdmin/list');
     }
 }

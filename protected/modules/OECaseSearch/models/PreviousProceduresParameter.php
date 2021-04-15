@@ -7,7 +7,15 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
  */
 class PreviousProceduresParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected ?string $label_ = 'Previous Procedure';
+    protected string $label_ = 'Previous Procedure';
+
+    protected array $options = array(
+        'value_type' => 'string_search',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '='),
+            array('label' => 'IS NOT', 'id' => '!='),
+        )
+    );
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -17,7 +25,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
     {
         parent::__construct($scenario);
         $this->name = 'previous_procedures';
-        $this->operation = 'LIKE';
     }
 
     public function rules()
@@ -33,28 +40,29 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
 
     /**
      * @param string $attribute
-     * @return string|null
+     * @return mixed|void
      * @throws CException
      */
     public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
-            switch ($attribute) {
-                case 'value':
-                    $op = Procedure::model()->findByPk($this->$attribute);
-                    if (!$op) {
-                        $op = PastSurgery_Operation::model()->findByPk($this->$attribute);
-                        return $op->operation;
-                    }
-                    return $op->term;
-                default:
-                    return parent::getValueForAttribute($attribute);
+            if ($attribute === 'value') {
+                /**
+                 * @var $op Procedure|PastSurgery_Operation
+                 */
+                $op = Procedure::model()->findByPk($this->$attribute);
+                if (!$op) {
+                    $op = PastSurgery_Operation::model()->findByPk($this->$attribute);
+                    return $op->operation;
+                }
+                return $op->term;
             }
+            return parent::getValueForAttribute($attribute);
         }
         return parent::getValueForAttribute($attribute);
     }
 
-    public static function getCommonItemsForTerm(string $term)
+    public static function getCommonItemsForTerm(string $term) : array
     {
         $criteria = new CDbCriteria();
         $criteria->limit = 15;
@@ -83,7 +91,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
      * @return string The constructed query string.
      *
      */
-    public function query()
+    public function query(): string
     {
         $query = "
             SELECT pa.id
@@ -121,7 +129,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
@@ -129,10 +137,17 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         );
     }
 
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $str =  parent::getAuditData();
+        /**
+         * @var $proc Procedure|PastSurgery_Operation
+         */
         $proc = Procedure::model()->findByPk($this->value);
-        return $str . ": $this->operation $proc->term";
+        if (!$proc) {
+            $proc = PastSurgery_Operation::model()->findByPk($this->value);
+        }
+        $term = $proc->term ?? 'Unknown';
+        return $str . ": $this->operation $term";
     }
 }

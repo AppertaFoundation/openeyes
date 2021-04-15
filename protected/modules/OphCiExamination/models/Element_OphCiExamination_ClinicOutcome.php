@@ -194,4 +194,41 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         TicketQueueAssignment::model()->deleteAllByAttributes(array('ticket_id' => $ticket->id));
         $ticket->delete();
     }
+
+    public static function getRiskStatuses($entries)
+    {
+        // get a copy of $entries;
+        $sorted_entries = $entries;
+        // sort entries by risk score
+        usort($sorted_entries, function ($e1, $e2) {
+            return $e2->risk_status->score - $e1->risk_status->score;
+        });
+        // get highest risk entry color
+        $wrapper_color = $sorted_entries[0]->risk_status->getIndicatorColor();
+        $list_items = '';
+        foreach ($entries as $entry) {
+            $subspecialty = $entry->element->event->episode->getSubspecialtyText();
+            $risk_status_details = "{$entry->risk_status->alias} ({$entry->risk_status->name})";
+            $entry_risk_status_color = $entry->risk_status->getIndicatorColor();
+            $list_items .= "<li><div class='flex'><i class='oe-i triangle-{$entry_risk_status_color} small pad-right'></i><div style='flex:1'>{$subspecialty}<br /><small>{$risk_status_details}<br />Due</small> {$entry->getDueDate()}</div></div></li>";
+        }
+        $content = "<ul class='row-list'>$list_items</ul>";
+        $ret = "<i class='oe-i mpr-{$wrapper_color} js-has-tooltip' data-tt-type='basic' data-tooltip-content=\"{$content}\"></i>";
+        return $ret;
+    }
+
+    public function getLatestEntry($status = null)
+    {
+        $temp = $this->entries;
+        if ($status) {
+            $temp = array_filter($this->entries, function ($entry) use ($status) {
+                return strtolower($entry->status) === strtolower($status);
+            });
+        }
+        usort($temp, function ($e1, $e2) {
+            return $e2->created_date > $e1->created_date;
+        });
+
+        return $temp[0];
+    }
 }

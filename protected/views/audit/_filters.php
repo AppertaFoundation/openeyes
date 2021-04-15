@@ -26,10 +26,23 @@
             </colgroup>
             <tr>
                 <td>
+                    Institution
+                </td>
+                <td>
+                    <?= Yii::app()->user->checkAccess('Institution Audit') ?
+                        \CHtml::dropDownList('institution_id', @$_POST['institution_id'], Institution::model()->getList(false), array('class'=>'cols-full', 'empty' => 'All institutions')) :
+                        \CHtml::dropDownList('institution_id', Yii::app()->session['selected_institution_id'], Institution::model()->getList(true), array('class'=>'cols-full', 'disabled' => 'disabled')) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     Site
                 </td>
                 <td>
-                    <?=\CHtml::dropDownList('site_id', @$_POST['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites','class'=>'cols-full'))?>
+                    <?php $site_list = Site::model()->getListForAllInstitutions();
+                        echo Yii::app()->user->checkAccess('Institution Audit') ?
+                            \CHtml::dropDownList('site_id', @$_POST['site_id'], $site_list['list'], array('class'=>'cols-full', 'empty' => 'All sites', 'options' => $site_list['options'])) :
+                            \CHtml::dropDownList('site_id', @$_POST['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites','class'=>'cols-full')); ?>
                 </td>
             </tr>
             <tr>

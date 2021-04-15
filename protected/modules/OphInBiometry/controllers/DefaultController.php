@@ -298,7 +298,12 @@ class DefaultController extends BaseEventTypeController
     {
         $lens_types = array();
 
-        foreach (OphInBiometry_LensType_Lens::model()->findAll() as $lens) {
+        $criteria = new CDbCriteria();
+        $criteria->with = 'institutions';
+        $criteria->condition = 'institutions_institutions.institution_id = :institution_id';
+        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
+
+        foreach (OphInBiometry_LensType_Lens::model()->findAll($criteria) as $lens) {
             $lens_types[$lens->name] = array(
                 'model' => $lens->name,
                 'description' => $lens->description,
@@ -317,6 +322,7 @@ class DefaultController extends BaseEventTypeController
      * @param CAction $action
      *
      * @return bool
+     * @throws CHttpException
      */
     protected function beforeAction($action)
     {

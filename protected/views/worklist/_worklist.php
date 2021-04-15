@@ -29,9 +29,10 @@ $display_primary_number_usage_code = Yii::app()->params['display_primary_number_
 
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
     $display_primary_number_usage_code,
-    $institution->id ,
+    $institution->id,
     $selected_site_id);
 
+$exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.TableController.js'), ClientScript::POS_END);
 
 $is_printing = isset($is_printing) && ($is_printing === true);
@@ -51,7 +52,8 @@ $is_printing = isset($is_printing) && ($is_printing === true);
             <colgroup>
                 <col class="cols-1"><!--Time-->
                 <col class="cols-1"><!--Hos Num-->
-            <col class="cols-1"><!--All in one icon-->
+                <col class="cols-1"><!--All in one icon-->
+                <col class="cols-1"><!--Risk status-->
                 <col class="cols-3"><!--Name-->
                 <!--spacing, this will be removed and PSD will be placed here, probably with auto widths for reset -->
                 <?php for ($i = 1; $i <= 2 - count($worklist->displayed_mapping_attributes); $i++) : ?>
@@ -70,8 +72,9 @@ $is_printing = isset($is_printing) && ($is_printing === true);
                 <th>Time</th>
                 <th class="nowrap"><?= $primary_identifier_prompt ?></th>
                 <!--<th class="nowrap">P1-3</th>-->
-            <!--all in one icon-->
-            <th></th>
+                <!--all in one icon-->
+                <th></th>
+                <th>R1-3</th>
                 <th>Name</th>
                 <?php for ($i = 1; $i <= 2 - count($worklist->displayed_mapping_attributes); $i++) : ?>
                     <th></th>
@@ -106,13 +109,16 @@ $is_printing = isset($is_printing) && ($is_printing === true);
                         <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn"></i>
                     </td>
                     <td>
+                        <?= $exam_api->getLatestOutcomeRiskStatus($wl_patient->patient, $wl_patient->worklist); ?>
+                    </td>
+                    <td>
                         <?php if (!$is_printing) :
-                        ?><a href="<?= $link; ?>"><?php
-                            endif; ?>
+                            ?><a href="<?= $link; ?>"><?php
+                        endif; ?>
                             <?= $wl_patient->patient->getHSCICName(); ?>
                             <?php if (!$is_printing) :
-                            ?></a><?php
-                    endif; ?>
+                                ?></a><?php
+                            endif; ?>
                     </td>
 
                     <?php for ($i = 1; $i <= 2 - count($worklist->displayed_mapping_attributes); $i++) : ?>
@@ -132,7 +138,7 @@ $is_printing = isset($is_printing) && ($is_printing === true);
             </tbody>
             <tfoot <?= $is_printing ? "class=\"hidden\"" : "" ?>>
             <tr>
-                <td colspan="8">
+                <td colspan="9">
                     <?php $this->widget('LinkPager', ['pages' => $data_provider->getPagination()]); ?>
                 </td>
             </tr>

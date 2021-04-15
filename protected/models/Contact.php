@@ -27,6 +27,7 @@
  * @property string $title
  * @property string $first_name
  * @property string $last_name
+ * @property int $created_institution_id
  * @property string $qualifications
  * @property string $comment
  * @property string $national_code
@@ -77,7 +78,7 @@ class Contact extends BaseActiveRecordVersioned
             array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name,
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
-            array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
+            array('first_name, last_name, created_institution_id', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
             array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
             array('first_name, last_name', 'parenthesisValidator'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),

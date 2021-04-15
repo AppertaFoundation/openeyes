@@ -19,6 +19,7 @@
 namespace OEModule\OphCiExamination\controllers;
 
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
+use OEModule\OphCiExamination\models\OphCiExaminationRisk_Institution;
 
 class RisksAdminController extends \ModuleAdminController
 {
@@ -32,9 +33,14 @@ class RisksAdminController extends \ModuleAdminController
         $admin->setListFields(array(
                 'id',
                 'name',
+                'institutions.name',
                 'active'
             ));
+        $admin->div_wrapper_class = 'cols-full';
 
+        if (!\Yii::app()->user->checkAccess('admin')) {
+            $admin->getSearch()->setSearchItems(['institution_id' => ['default' => \Yii::app()->session['selected_institution_id']]]);
+        }
         $admin->listModel(true);
     }
 
@@ -67,13 +73,35 @@ class RisksAdminController extends \ModuleAdminController
 
     private function _getEditAdmin($id = null)
     {
+        $is_admin = \Yii::app()->user->checkAccess('admin');
         $admin = $this->_getAdmin($id);
         $admin->setEditFields(array(
-            'name' => 'text',
-            'active' => 'checkbox',
+            'name' => [
+                'widget' => 'text',
+                'htmlOptions' => [
+                    'disabled' => !$is_admin,
+                ]],
+            'institutions' => array(
+                'widget' => 'MultiSelectList',
+                'relation_field_id' => 'id',
+                'options' => \Institution::model()->getList(!$is_admin),
+                'htmlOptions' => [
+                    'label' => 'Institutions',
+                    'empty' => '-- Add --',
+                    'searchable' => false,
+                    'class' => 'cols-8',
+                ],
+            ),
+            'active' => [
+                'widget' => 'checkbox',
+                'htmlOptions' => [
+                    'disabled' => !$is_admin,
+                ]],
             'medicationSets' => array(
                 'widget' => 'CustomView',
-                'viewName' => 'application.modules.OphCiExamination.views.admin.edit_risk_set_assignment',
+                'viewName' => ($is_admin || is_null($id)) ?
+                    'application.modules.OphCiExamination.views.admin.edit_risk_set_assignment' :
+                    'application.modules.OphCiExamination.views.admin.view_risk_set_assignment',
                 'viewArguments' => array(
                     'model' => $admin->getModel()
                 )
@@ -95,7 +123,10 @@ class RisksAdminController extends \ModuleAdminController
         /** @var OphCiExaminationRisk $model */
 
         $data = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRisk');
-        $this->_setModelData($model, $data);
+        $institutions = \Yii::app()->request->getPost('OEModule\OphCiExamination\models\OphCiExaminationRisk')['institutions'];
+        if (\Yii::app()->user->checkAccess('admin') || is_null($id)) {
+            $this->_setModelData($model, $data);
+        }
 
         if ($model->hasErrors()) {
             $admin = $this->_getEditAdmin($model);
@@ -114,7 +145,17 @@ class RisksAdminController extends \ModuleAdminController
                     \Yii::app()->db->createCommand("INSERT INTO ophciexamination_risk_tag (risk_id, medication_set_id) VALUES ({$model->id}, $id)")->execute();
                 }
             }
+
             $trans->commit();
+
+            if (\Yii::app()->user->checkAccess('admin')) {
+                OphCiExaminationRisk_Institution::model()->deleteAll('risk_id = :risk_id', [':risk_id' => $model->id]);
+            } elseif ($model->hasMapping(\ReferenceData::LEVEL_INSTITUTION, \Yii::app()->session['selected_institution_id'])) {
+                $model->deleteMapping(\ReferenceData::LEVEL_INSTITUTION, \Yii::app()->session['selected_institution_id']);
+            }
+            if (!empty($institutions)) {
+                $model->createMappings(\ReferenceData::LEVEL_INSTITUTION, $institutions);
+            }
         } else {
             $trans->rollback();
         }

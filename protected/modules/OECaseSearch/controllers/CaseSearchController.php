@@ -4,13 +4,14 @@
  * Class CaseSearchController
  *
  * @property null|Trial $trialContext
+ * @property OECaseSearchModule $module
  */
 
 class CaseSearchController extends BaseModuleController
 {
     public $trialContext;
-    protected $parameters = array();
-    protected $parameterList = array();
+    protected array $parameters = array();
+    protected array $parameterList = array();
 
     public function filters()
     {
@@ -81,9 +82,24 @@ class CaseSearchController extends BaseModuleController
         $criteria = new CDbCriteria();
         $valid = $this->populateParams(true);
 
+        // Only run this next statement if not an advanced search super user.
+        if (!$this->checkAccess('TaskCaseSearchSuperUser')) {
+            $this->parameters[] = $this->buildParameterInstance(
+                999,
+                InstitutionParameter::class,
+                '=',
+                '{institution}',
+                false
+            );
+        }
+
         if ($valid && !empty($this->parameters)) {
             $this->actionClear();
-            $ids = array_column(Yii::app()->searchProvider->search($this->parameters), 'id');
+            /**
+             * @var $searchProvider SearchProvider
+             */
+            $searchProvider = Yii::app()->searchProvider;
+            $ids = array_column($searchProvider->search($this->parameters), 'id');
 
             // Only copy to the $_SESSION array if it isn't already there.
             // Shallow copy is done at the start if it is already set.
@@ -134,7 +150,10 @@ class CaseSearchController extends BaseModuleController
             ),
         ));
 
-        $all_searches = SavedSearch::model()->findAll();
+        $all_searches = SavedSearch::model()->findAllByUserOrInstitution(
+            Yii::app()->user->id,
+            $this->selectedInstitutionId
+        );
 
         if (!empty($ids)) {
             foreach (Yii::app()->params['CaseSearch']['variables']['OECaseSearch'] as $var) {
@@ -191,7 +210,7 @@ class CaseSearchController extends BaseModuleController
             'variableList' => $variableList,
             'variableData' => $variable_data,
             'saved_searches' => $all_searches,
-            'search_label' => isset($_POST['search_name']) ? $_POST['search_name'] : '',
+            'search_label' => $_POST['search_name'] ?? '',
             'from_date' => $from ? $from->format('Y-m-d') : null,
             'to_date' => $to ? $to->format('Y-m-d') : null,
             'show_all_dates' => $show_all_dates,
@@ -203,7 +222,7 @@ class CaseSearchController extends BaseModuleController
      * @param $ids int[]|null
      * @return CaseSearchVariable
      */
-    protected function getVariableInstance($var, $ids = null)
+    protected function getVariableInstance($var, $ids = null): CaseSearchVariable
     {
         $variable = null;
 
@@ -228,22 +247,12 @@ class CaseSearchController extends BaseModuleController
     {
         $param = $_GET['parameter'];
 
-        /**
-         * @var $parameter CaseSearchParameter
-         */
-        $parameter = new $param['type']();
-        $parameter->id = $param['id'];
-        $parameter->operation = $param['operation'];
-        if (array_key_exists('value', $param)) {
-            if (is_array($param['value'])) {
-                foreach ($param['value'] as $value) {
-                    $key = $value['field'];
-                    $parameter->$key = $value['id'] ?? null;
-                }
-            } else {
-                $parameter->value = $param['value'];
-            }
-        }
+        $parameter = $this->buildParameterInstance(
+            $param['id'],
+            $param['type'],
+            $param['operation'],
+            $param['value'] ?? null
+        );
 
         if ($parameter->validate()) {
             $this->renderPartial('parameter_form', array(
@@ -258,6 +267,42 @@ class CaseSearchController extends BaseModuleController
         }
 
         Yii::app()->end();
+    }
+
+    /**
+     * @param $id string
+     * @param $type string
+     * @param $operation string
+     * @param $value array|int|float|string
+     * @param $isSaved bool
+     * @return CaseSearchParameter
+     */
+    protected function buildParameterInstance(
+        string $id,
+        string $type,
+        string $operation,
+        $value,
+        $isSaved = true
+    ): CaseSearchParameter
+    {
+        /**
+         * @var $parameter CaseSearchParameter
+         */
+        $parameter = new $type();
+        $parameter->id = $id;
+        $parameter->operation = $operation;
+        if ($value) {
+            if (is_array($value)) {
+                foreach ($value as $valueEntry) {
+                    $key = $valueEntry['field'];
+                    $parameter->$key = $valueEntry['id'] ?? null;
+                }
+            } else {
+                $parameter->value = $value;
+            }
+        }
+        $parameter->isSaved = $isSaved;
+        return $parameter;
     }
 
     public function actionGetOptions()
@@ -278,7 +323,7 @@ class CaseSearchController extends BaseModuleController
      */
     public function actionLoadSearch($id)
     {
-        $preview = isset($_GET['preview']) ? $_GET['preview'] : null;
+        $preview = $_GET['preview'] ?? null;
 
         $search = SavedSearch::model()->findByPk($id);
         if (!$search) {
@@ -334,11 +379,15 @@ class CaseSearchController extends BaseModuleController
                 /**
                  * @var $mergedParam CaseSearchParameter
                  */
-                $criteria_list[] = $parameter->saveSearch();
+                if ($parameter->isSaved) {
+                    // Only save parameters that are permitted to be saved.
+                    $criteria_list[] = $parameter->saveSearch();
+                }
             }
             $search_criteria = serialize($criteria_list);
             $search->search_criteria = $search_criteria;
             $search->name = $_POST['search_name'];
+            $search->institution_id = $this->selectedInstitutionId;
 
             if (!$search->save()) {
                 Yii::log(var_export($search->getErrors(), true));
@@ -361,6 +410,10 @@ class CaseSearchController extends BaseModuleController
 
         if (!$search) {
             throw new CHttpException(404, 'Unable to delete saved search - Saved search not found.');
+        }
+        // We want to ensure that only the creating user (or perhaps a super user) has permissions to delete a saved search.
+        if ($search->created_user_id !== Yii::app()->user->id) {
+            throw new CHttpException(403, 'You do not have permissions to delete this saved search.');
         }
         if (!$search->delete()) {
             throw new CHttpException(500, 'Unable to delete saved search - Unknown error occurred.');
@@ -392,7 +445,9 @@ class CaseSearchController extends BaseModuleController
                          * @var $newParam CaseSearchParameter
                          */
                         $newParam = new $paramName();
-                        $newParam->attributes = $_POST[$paramName][$id];
+                        $attributes = $_POST[$paramName][$id];
+                        unset($attributes['type']);
+                        $newParam->attributes = $attributes;
                         if (!$newParam->validate()) {
                             $valid = false;
                         }
@@ -409,9 +464,6 @@ class CaseSearchController extends BaseModuleController
         $term = Yii::app()->request->getQuery('term');
         $type = Yii::app()->request->getQuery('type');
 
-        /**
-         * @var $type CaseSearchParameter
-         */
         $values = $type::getCommonItemsForTerm($term);
 
         $this->renderJSON($values);

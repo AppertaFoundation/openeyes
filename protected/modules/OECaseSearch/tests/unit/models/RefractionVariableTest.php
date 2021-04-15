@@ -4,11 +4,13 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction;
 use OEModule\OphCiExamination\models\OphCiExamination_Refraction_Reading;
 
 /**
-* Class RefractionVariableTest
+ * Class RefractionVariableTest
+ * @covers RefractionVariable
+ * @covers CaseSearchVariable
 */
 class RefractionVariableTest extends CDbTestCase
 {
-    protected $variable;
+    protected RefractionVariable $variable;
 
     protected $fixtures = array(
         'refraction' => Element_OphCiExamination_Refraction::class,
@@ -39,7 +41,7 @@ class RefractionVariableTest extends CDbTestCase
         unset($this->variable);
     }
 
-    public function getData()
+    public function getData(): array
     {
         return array(
             'Standard' => array(
@@ -88,22 +90,22 @@ class RefractionVariableTest extends CDbTestCase
      * @param $csv_mode
      * @param $query_template
      */
-    public function testQuery($csv_mode, $query_template)
+    public function testQuery($csv_mode, $query_template): void
     {
         $this->variable->csv_mode = $csv_mode;
-        $this->assertEquals($query_template, $this->variable->query());
+        self::assertEquals($query_template, $this->variable->query());
     }
 
-    public function testGetVariableData()
+    public function testGetVariableData(): void
     {
-        $this->assertEquals('refraction', $this->variable->field_name);
-        $this->assertEquals('Refraction', $this->variable->label);
-        $this->assertEquals('Refraction (mean sph)', $this->variable->x_label);
-        $this->assertNotEmpty($this->variable->id_list);
+        self::assertEquals('refraction', $this->variable->field_name);
+        self::assertEquals('Refraction', $this->variable->label);
+        self::assertEquals('Refraction (mean sph)', $this->variable->x_label);
+        self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        $this->assertCount(1, $results[$this->variable->field_name]);
+        self::assertCount(1, $results[$this->variable->field_name]);
     }
 }

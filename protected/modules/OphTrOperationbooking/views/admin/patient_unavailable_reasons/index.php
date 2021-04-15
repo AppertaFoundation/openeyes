@@ -17,30 +17,43 @@
  */
 ?>
 <div class="cols-5">
-    <form id="admin_patientunavailablereasons">
+    <form id="admin_patientunavailablereasons" method="POST">
+        <input type="hidden" name="model" value="OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason"/>
+        <input type="hidden" name="redirect-url" value="/OphTrOperationbooking/admin/viewPatientUnavailableReasons"/>
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard">
             <thead>
             <tr>
-                <th>Enabled</th>
+                <th><input type="checkbox" id="selectall"/></th>
                 <th>Name</th>
+                <th>Active for Current Institution</th>
             </tr>
             </thead>
             <tbody class="sortable" data-sort-uri="/OphTrOperationbooking/admin/sortpatientunavailablereasons">
             <?php
             $criteria = new CDbCriteria();
             $criteria->order = 'display_order asc';
-            foreach (OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason::model()->findAll() as $i => $patientunavailablereason) {?>
+            $reasons = OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason::model()->findAll($criteria);
+            $institution_id = Institution::model()->getCurrent()->id;
+            foreach ($reasons as $i => $patientunavailablereason) {?>
                 <tr class="clickable" data-attr-id="<?php echo $patientunavailablereason->id?>" data-uri="OphTrOperationbooking/admin/editpatientunavailablereason/<?php echo $patientunavailablereason->id?>">
-                    <td><input type="checkbox" name="patientunavailablereason[]" value="<?php echo $patientunavailablereason->id?>" class="patientunavailablereasons-enabled" <?php if ($patientunavailablereason->enabled) {
-                        echo 'checked';
-                                                                                        } ?> /></td>
-                    <td><?php echo $patientunavailablereason->name?></td>
+                    <td><input type="checkbox" name="select[]" value="<?php echo $patientunavailablereason->id?>" class="patientunavailablereasons-enabled" id="select[<?= $patientunavailablereason->id ?>"/></td>
+                    <td>
+                        <?php echo $patientunavailablereason->name?>
+                    </td>
+                    <td>
+                        <?php if ($patientunavailablereason->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) { ?>
+                        <i class="oe-i tick small"></i>
+                        <?php } else { ?>
+                        <i class="oe-i remove small"></i>
+                        <?php } ?>
+                    </td>
                 </tr>
             <?php }?>
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="2">
+                <td colspan="3">
                     <?= \CHtml::submitButton(
                         'Add',
                         [
@@ -49,45 +62,28 @@
                             'data-uri' => '/OphTrOperationbooking/admin/AddPatientUnavailableReason',
                             'id' => 'et_add'
                         ]
-                    ); ?>
+                    ) ?>
+                    <?= \CHtml::submitButton(
+                        'Enable selected for current institution',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add-mapping',
+                            'formaction' => '/OphTrOperationbooking/admin/AddInstitutionMapping',
+                            'id' => 'et_add_mapping'
+                        ]
+                    ) ?>
+                    <?= \CHtml::submitButton(
+                        'Disable selected for current institution',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete-mapping',
+                            'formaction' => '/OphTrOperationbooking/admin/DeleteInstitutionMapping',
+                            'id' => 'et_delete_mapping'
+                        ]
+                    ) ?>
                 </td>
             </tr>
             </tfoot>
         </table>
     </form>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('.patientunavailablereasons-enabled').on('change', function() {
-            var checkbox = $(this);
-            var id = $(this).val();
-            var action = 'disabled';
-            if ($(this).is(':checked')) {
-                action = 'enabled';
-            }
-            $.ajax({
-                'type': 'POST',
-                'url': baseUrl+'/OphTrOperationbooking/admin/SwitchEnabledPatientUnavailableReason',
-                'data': {id: id, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
-                'success': function(resp) {
-                    new OpenEyes.UI.Dialog.Alert({
-                        content: "Reason " + action
-                    }).open();
-                },
-                'error': function(resp) {
-                    if (checkbox.is(':checked')) {
-                        checkbox.prop('checked', false);
-                    }
-                    else {
-                        checkbox.prop('checked', true);
-                    }
-                    new OpenEyes.UI.Dialog.Alert({
-                        content: "Unexpected error"
-                    }).open();
-                }
-            });
-        });
-    });
-
-</script>

@@ -1,3 +1,4 @@
+
 <?php
 
 class m200508_140416_add_system_setting_for_oelauncher_hosnum extends CDbMigration

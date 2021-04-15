@@ -22,6 +22,7 @@
  * The followings are the available columns in table 'setting_institution':
  *
  * @property int $id
+ * @property int $institution_id
  * @property int $element_type_id
  * @property string $key
  * @property string $value
@@ -54,7 +55,7 @@ class SettingInstitution extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('institution_id, element_type_id, key, value', 'required'),
+            array('institution_id, key', 'required'),
             array('institution_id, element_type_id, key, value', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.

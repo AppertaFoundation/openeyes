@@ -22,6 +22,7 @@ OpenEyes.UI = OpenEyes.UI || {};
      * EpisodeSideBar constructor. The EpisodeSideBar manages the controls of the patient episode side bar when in single
      * episode behaviour, managing the sorting and grouping of the patient events.
      *
+     * @param element
      * @param options
      * @constructor
      */
@@ -32,8 +33,9 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.create();
     }
 
-    var groupings = [
+    const groupings = [
         {id: 'none', label: 'Events by date'},
+        {id: 'institution', label: 'Events by institution'},
         {id: 'event-year-display', label: 'Events by year'},
         // removed due to similiarity to Year filtering
         //{id: 'event-date-display', label: 'Date'},
@@ -52,17 +54,17 @@ OpenEyes.UI = OpenEyes.UI || {};
         scroll_selector: 'div.oe-scroll-wrapper'
     };
 
-    var sidebarCookie = 'oe-sidebar-state';
+    const sidebarCookie = 'oe-sidebar-state';
 
     /**
      * Load the previous state of the sidebar from cookie storage
      */
     EpisodeSidebar.prototype.loadState = function () {
-        var self = this;
+        const self = this;
         if (typeof (Storage) !== "undefined") {
-            state = sessionStorage.getItem(sidebarCookie);
+            let state = sessionStorage.getItem(sidebarCookie);
             if (state) {
-                stateObj = JSON.parse(state);
+                let stateObj = JSON.parse(state);
                 if (stateObj.sortOrder)
                     self.sortOrder = stateObj.sortOrder;
                 if (stateObj.grouping)
@@ -75,9 +77,9 @@ OpenEyes.UI = OpenEyes.UI || {};
      * Save the current sidebar state to cookie storage
      */
     EpisodeSidebar.prototype.saveState = function () {
-        var self = this;
+        const self = this;
         if (typeof (Storage) !== "undefined") {
-            var state = {
+            const state = {
                 sortOrder: self.sortOrder,
                 grouping: self.grouping
             };
@@ -86,9 +88,36 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     EpisodeSidebar.prototype.create = function () {
+
+        //Shows the current event image if it's loaded and the quickview is open
+        function showCurrentEventImage() {
+            //First check the parent element is visible
+            let quickview = $('.oe-event-quickview');
+            let loader = quickview.find('.spinner');
+            let event_id = quickview.data('current_event');
+            if (quickview.is(':visible') && event_id) {
+                let img = quickview.find('img[data-event-id=' + event_id + ']');
+                if (img.data('loaded')) {
+                    img.show();
+                    loader.hide();
+                } else {
+                    loader.show();
+                }
+            }
+        }
+
+        function setEventImageSrcFromData(li_item) {
+            let event_id = li_item.data('event-id');
+            let quickview = $('.oe-event-quickview');
+            let img = quickview.find('img[data-event-id=' + event_id + ']');
+            if (img.attr('src') === undefined) {
+                img.attr('src', img.data('src'));
+            }
+        }
+
         let self = this;
 
-        if (self.options.default_sort == 'asc') {
+        if (self.options.default_sort === 'asc') {
             self.sortOrder = 'asc';
         } else {
             self.sortOrder = 'desc';
@@ -97,7 +126,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             id: groupings[0].id
         };
 
-        var $scrollElement = self.element.parents(self.options.scroll_selector + ':first');
+        const $scrollElement = self.element.parents(self.options.scroll_selector + ':first');
         if ($scrollElement.length) {
             // if the scrollbar controller is in place, then when we have changed the content
             // we want to trigger the resize event, as the element list may be longer than the
@@ -156,13 +185,13 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         self.element.on('mouseenter', '.event-type', function (e) {
-            var $iconHover = $(e.target);
-            var $li = $iconHover.parent().parents('li:first');
+            const $iconHover = $(e.target);
+            const $li = $iconHover.parent().parents('li:first');
             let event_id = $li.data('event-id');
             const $eventQuickview =  $('.oe-event-quickview');
             $li.find('.quicklook').show();
 
-            var $screenshots = $('.oe-event-quickview .quickview-screenshots');
+            const $screenshots = $('.oe-event-quickview .quickview-screenshots');
             $screenshots.find('img').hide();
 
             $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
@@ -238,6 +267,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $(document).ready(function () {
 
+
             let events = [];
             $('.event-type').each(function () {
                 events.push($(this).parents('li:first'));
@@ -284,12 +314,12 @@ OpenEyes.UI = OpenEyes.UI || {};
         // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
         let counter = 1;
         this.element.find(this.options.event_list_selector).each(function () {
-            var $container = $('.oe-event-quickview .quickview-screenshots');
+            const $container = $('.oe-event-quickview .quickview-screenshots');
             if ($container.find('img[data-event-id="' + $(this).data('event-id') + '"]').length > 0) {
                 return;
             }
 
-            var $img = $('<img />', {
+            const $img = $('<img />', {
                 class: 'js-quickview-image',
                 style: 'display: none;',
                 'data-event-id': $(this).data('event-id'),
@@ -303,20 +333,20 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     EpisodeSidebar.prototype.orderEvents = function () {
-        var self = this;
-        if (self.lastSort == self.sortOrder)
+        const self = this;
+        if (self.lastSort === self.sortOrder)
             return;
 
-        var items = this.element.find(this.options.event_list_selector);
+        const items = this.element.find(this.options.event_list_selector);
 
-        var parent = items.parent();
+        const parent = items.parent();
 
         function dateSort(b, a) {
-            var edA = (new Date($(a).data('event-date'))).getTime();
-            var cdA = (new Date($(a).data('created-date'))).getTime();
-            var edB = (new Date($(b).data('event-date'))).getTime();
-            var cdB = (new Date($(b).data('created-date'))).getTime();
-            var ret = null;
+            const edA = (new Date($(a).data('event-date'))).getTime();
+            const cdA = (new Date($(a).data('created-date'))).getTime();
+            const edB = (new Date($(b).data('event-date'))).getTime();
+            const cdB = (new Date($(b).data('created-date'))).getTime();
+            let ret;
             // for some reason am unable to do a chained ternery operator for the comparison, hence the somewhat convoluted
             // if statements to perform the comparison here.
             if (edA === edB) {
@@ -331,9 +361,9 @@ OpenEyes.UI = OpenEyes.UI || {};
             return ret;
         }
 
-        var sorted = items.sort(dateSort);
+        let sorted = items.sort(dateSort);
 
-        if (self.sortOrder == 'asc')
+        if (self.sortOrder === 'asc')
             sorted = sorted.get().reverse();
 
         self.lastSort = self.sortOrder;
@@ -342,8 +372,8 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     EpisodeSidebar.prototype.addControls = function () {
-        var self = this;
-        var controls = '';
+        const self = this;
+        let controls = '';
         controls += self.getGroupingPicker();
 
         $(controls).insertBefore(self.element.find('.events'));
@@ -369,15 +399,15 @@ OpenEyes.UI = OpenEyes.UI || {};
             self.updateGrouping();
             self.saveState();
         });
-    }
+    };
 
     EpisodeSidebar.prototype.getGroupingPicker = function () {
-        var self = this;
-        var select = '<div class="sidebar-grouping">';
+        const self = this;
+        let select = '<div class="sidebar-grouping">';
         select += '<select name="grouping-picker" class="' + self.options.grouping_picker_class + '">';
         $(groupings).each(function () {
             select += '<option value="' + this.id + '"';
-            if (self.grouping && self.grouping.id == this.id)
+            if (self.grouping && self.grouping.id === this.id)
                 select += ' selected';
             select += '>' + this.label + '</option>';
         });
@@ -387,7 +417,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     EpisodeSidebar.prototype.getListControls = function () {
-        var controls = '<div class="list-controls">';
+        let controls = '<div class="list-controls">';
         controls += '<span class="sorting-order asc"><i class="oe-i arrow-up pro-theme"></i></span>';
         controls += '<span class="sorting-order desc"><i class="oe-i arrow-down pro-theme"></i></span>';
         controls += '<div class="right">';
@@ -405,15 +435,15 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     EpisodeSidebar.prototype.updateGrouping = function () {
-        var self = this;
+        const self = this;
         self.resetGrouping();
-        if (self.grouping.id == 'none')
+        if (self.grouping.id === 'none')
             return;
 
-        itemsByGrouping = {};
-        groupingVals = [];
+        let itemsByGrouping = {};
+        let groupingVals = [];
         self.element.find(self.options.event_list_selector).each(function () {
-            var groupingVal = $(this).data(self.grouping.id);
+            const groupingVal = $(this).data(self.grouping.id);
             if (!groupingVal) {
                 console.log('ERROR: missing grouping data attribute ' + self.grouping.id);
             } else {
@@ -426,9 +456,9 @@ OpenEyes.UI = OpenEyes.UI || {};
             }
         });
 
-        var groupingElements = '<div class="groupings">';
+        let groupingElements = '<div class="groupings">';
         $(groupingVals).each(function () {
-            var grouping = '<div class="collapse-group" data-grouping-val="' + this + '">' +
+            let grouping = '<div class="collapse-group" data-grouping-val="' + this + '">' +
                 '<div class="collapse-group-icon">' +
                 '<i class="oe-i minus pro-theme"></i>' +
                 '<i class="oe-i plus pro-theme"></i>' +
@@ -454,14 +484,14 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     EpisodeSidebar.prototype.setGroupingState = function (groupingValue, state) {
-        if (this.grouping.state == undefined)
+        if (this.grouping.state === undefined)
             this.grouping.state = {};
         this.grouping.state[groupingValue] = state;
     };
 
     EpisodeSidebar.prototype.expandGrouping = function (element, saveState) {
-        var self = this;
-        if (saveState == undefined)
+        const self = this;
+        if (saveState === undefined)
             saveState = true;
 
         element.find('ol.events').show();
@@ -478,8 +508,8 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     EpisodeSidebar.prototype.collapseGrouping = function (element, saveState) {
-        var self = this;
-        if (saveState == undefined)
+        const self = this;
+        if (saveState === undefined)
             saveState = true;
 
         element.find('ol.events').hide();
@@ -506,12 +536,12 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
     //TODO: loading is not working, need to verify where we're at!!
     EpisodeSidebar.prototype.processGroupingState = function () {
-        var self = this;
-        if (self.grouping.state == undefined) {
+        const self = this;
+        if (self.grouping.state === undefined) {
             self.expandAll();
         } else {
             self.element.find('.collapse-group').each(function () {
-                if (self.grouping.state[$(this).data('grouping-val')] == 'collapse') {
+                if (self.grouping.state[$(this).data('grouping-val')] === 'collapse') {
                     self.collapseGrouping($(this), false);
                 } else {
                     self.expandGrouping($(this), false);

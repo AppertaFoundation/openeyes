@@ -25,7 +25,7 @@ class WorklistController extends BaseController
 
     public function accessRules()
     {
-        return array(array('allow', 'roles' => array('User')));
+        return array(array('allow', 'roles' => array('OprnWorklist')));
     }
 
     protected function beforeAction($action)

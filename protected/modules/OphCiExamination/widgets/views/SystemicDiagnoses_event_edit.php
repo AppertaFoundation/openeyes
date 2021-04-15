@@ -136,7 +136,9 @@ $required_diagnoses_ids = array_map(function ($r) {
             openButton: $('#add-history-systemic-diagnoses'),
             itemSets: [
                 <?php
-                $valid_common_systemic_disorder_groups = CommonSystemicDisorderGroup::model()->findAll('id IN (SELECT DISTINCT group_id FROM `common_systemic_disorder` WHERE group_id IS NOT NULL)');
+                $criteria = new CDbCriteria();
+                $criteria->addCondition('id IN (SELECT DISTINCT group_id FROM `common_systemic_disorder` WHERE group_id IS NOT NULL)');
+                $valid_common_systemic_disorder_groups = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
                 if (!empty($valid_common_systemic_disorder_groups)) { ?>
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                     array_map(function ($disorder_group) {
@@ -147,7 +149,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                         ];
                     },
                     $valid_common_systemic_disorder_groups)
-                ) ?>, {
+                                                    ) ?>, {
                     'header': 'Disorder Group',
                     'id': 'disorder-group-filter',
                     'deselectOnReturn': false,

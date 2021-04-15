@@ -19,6 +19,7 @@
 namespace OEModule\PatientTicketing\controllers;
 
 use OEModule\PatientTicketing\models;
+use ReferenceData;
 use Yii;
 
 class AdminController extends \ModuleAdminController
@@ -62,7 +63,9 @@ class AdminController extends \ModuleAdminController
      */
     public function actionIndex()
     {
-        $this->render('index', array('queuesets' => models\QueueSet::model()->findAll(), 'title' => 'Queue Sets'));
+        $queuesets = models\QueueSet::model()->findAll();
+
+        $this->render('index', array('queuesets' => $queuesets, 'title' => 'Queue Sets'));
     }
 
     public function actionQueueSetCategories()
@@ -70,7 +73,9 @@ class AdminController extends \ModuleAdminController
         $this->genericAdmin(
             'Edit Queue Set Categories',
             'OEModule\PatientTicketing\models\QueueSetCategory',
-            ['div_wrapper_class' => 'cols-5']
+            ['div_wrapper_class' => 'cols-5'],
+            null,
+            true
         );
     }
 
@@ -92,7 +97,9 @@ class AdminController extends \ModuleAdminController
                     ),
                 ),
                 'div_wrapper_class' => 'cols-5',
-            )
+            ),
+            null,
+            true
         );
     }
 
@@ -490,7 +497,9 @@ class AdminController extends \ModuleAdminController
         $this->genericAdmin(
             'Clinic locations',
             'OEModule\PatientTicketing\models\ClinicLocation',
-            ['div_wrapper_class' => 'cols-5']
+            ['div_wrapper_class' => 'cols-5'],
+            null,
+            true
         );
     }
 }

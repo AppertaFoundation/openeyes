@@ -11,7 +11,7 @@ class CRTVariable extends CaseSearchVariable implements DBProviderInterface
         $this->eye_cardinality = true;
     }
 
-    public function query()
+    public function query(): string
     {
         switch ($this->csv_mode) {
             case 'BASIC':
@@ -50,7 +50,7 @@ class CRTVariable extends CaseSearchVariable implements DBProviderInterface
         }
     }
 
-    public function bindValues()
+    public function bindValues(): array
     {
         return array();
     }

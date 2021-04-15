@@ -104,8 +104,10 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailable extends BaseAct
     public function getPatientUnavailbleReasons()
     {
         $criteria = new CDbCriteria();
-        $criteria->condition = 'enabled = true';
+        $criteria->addCondition('enabled = true');
         $criteria->order = 'display_order asc';
+        $criteria->addCondition('institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
 
         $reasons = OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason::model()->findAll($criteria);
         // just use standard list
@@ -149,14 +151,15 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailable extends BaseAct
      *
      * @param $attribute
      * @param $params - 'model' is the model that the $attribute is the id for
+     * @throws Exception
      */
     public function validateReasonIsEnabled($attribute, $params)
     {
         $model = $params['model'];
         if ($this->$attribute) {
             $obj = $model::model()->findByPk($this->$attribute);
-            if (!$obj->enabled) {
-                $this->addError($attribute, $this->getAttributeLabel($attribute).' must be active for new entry');
+            if (!$obj->hasMapping(ReferenceData::LEVEL_INSTITUTION, Institution::model()->getCurrent()->id)) {
+                $this->addError($attribute, $this->getAttributeLabel($attribute).' must be active for current institution for new entry');
             }
         }
     }

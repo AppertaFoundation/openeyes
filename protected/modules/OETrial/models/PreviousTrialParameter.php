@@ -12,28 +12,35 @@
 
 class PreviousTrialParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $trial = null;
-    public $trialTypeId = null;
-    public $status = null;
-    public $treatmentTypeId = null;
+    public ?string $trial;
+    public ?string $trialTypeId;
+    public ?string $status;
+    public ?string $treatmentTypeId;
 
     private array $statusList;
 
-    protected ?string $label_ = 'Previous Trial';
+    protected string $label_ = 'Previous Trial';
 
     protected array $options = array(
         'value_type' => 'multi_select',
+        'operations' => array(
+            array('label' => 'INCLUDES', 'id' => 'IN'),
+            array('label' => 'DOES NOT INCLUDE', 'id' => 'NOT IN'),
+        )
     );
 
     /**
-     * @return TrialType
+     * @return TrialType|null
      */
-    public function getTrialType()
+    public function getTrialType(): ?TrialType
     {
         return TrialType::model()->findByPk($this->trialTypeId);
     }
 
-    public function getTreatmentType()
+    /**
+     * @return TreatmentType|null
+     */
+    public function getTreatmentType(): ?TreatmentType
     {
         return TreatmentType::model()->findByPk($this->treatmentTypeId);
     }
@@ -51,16 +58,11 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         $trialTypes = TrialType::getOptions();
         $treatmentTypes = TreatmentType::getOptions();
 
-        $this->options['operations'][0]['label'] = 'INCLUDES';
-        $this->options['operations'][0]['id'] = 'IN';
-        $this->options['operations'][1]['label'] = 'DOES NOT INCLUDE';
-        $this->options['operations'][1]['id'] = 'NOT IN';
-
         $intervention_type_id = TrialType::model()->findByAttributes(array('code' => 'INTERVENTION'))->id;
         $non_intervention_type_id = TrialType::model()->findByAttributes(array('code' => 'NON_INTERVENTION'))->id;
 
-        $intervention_trials = Trial::getTrialList($intervention_type_id);
-        $non_intervention_trials = Trial::getTrialList($non_intervention_type_id);
+        $intervention_trials = Trial::getTrialList(TrialType::model()->findByAttributes(array('code' => 'INTERVENTION'))->id);
+        $non_intervention_trials = Trial::getTrialList(TrialType::model()->findByAttributes(array('code' => 'NON_INTERVENTION'))->id);
 
         $this->statusList = array(
             TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id => 'Shortlisted in trial',
@@ -179,8 +181,10 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
                 case 'trial':
-                    return $this->trialTypeId
-                        ? ($this->$attribute ? Trial::model()->findByPk($this->$attribute)->name : 'Any trial') : '';
+                    if ($this->trialTypeId) {
+                        return $this->$attribute ? Trial::model()->findByPk($this->$attribute)->name : 'Any trial';
+                    }
+                    return '';
                 case 'trialTypeId':
                     return 'Participating in ' . ($this->$attribute ? $this->getTrialType()->name : 'any') . ' trial';
                 case 'treatmentTypeId':
@@ -198,7 +202,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
      * Generate a SQL fragment representing the sub-query of a FROM condition.
      * @return mixed The constructed query string.
      */
-    public function query()
+    public function query() : string
     {
         $condition = null;
         $joinCondition = 'JOIN';
@@ -255,7 +259,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues() : array
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         $binds = array();
@@ -283,7 +287,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $trialTypes = TrialType::getOptions();
 
@@ -304,7 +308,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         return "$this->name: $this->operation $status $type $trial $treatment";
     }
 
-    public function saveSearch()
+    public function saveSearch() : array
     {
         return array_merge(
             parent::saveSearch(),

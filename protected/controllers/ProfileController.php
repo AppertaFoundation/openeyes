@@ -173,6 +173,14 @@ class ProfileController extends BaseController
         ));
     }
 
+    public function actionInstitutions()
+    {
+        $user = User::model()->findByPk(Yii::app()->user->id);
+        $this->render('/profile/institutions', array(
+            'user' => $user,
+        ));
+    }
+
     /**
      * Sites deletion from user profile
      *

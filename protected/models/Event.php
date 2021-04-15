@@ -40,6 +40,7 @@
  * @property Episode $episode
  * @property User $user
  * @property EventType $eventType
+ * @property Institution $institution
  */
 class Event extends BaseActiveRecordVersioned
 {

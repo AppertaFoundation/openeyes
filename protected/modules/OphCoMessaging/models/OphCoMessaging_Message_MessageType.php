@@ -17,6 +17,9 @@
 
 namespace OEModule\OphCoMessaging\models;
 
+use BaseActiveRecord;
+use CActiveDataProvider;
+
 /**
  * This is the model class for table "ophcomessaging_message_message_type".
  *
@@ -28,18 +31,18 @@ namespace OEModule\OphCoMessaging\models;
  * @property int $reply_required
  *
  * The followings are the available model relations:
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
- * @property User $user
- * @property User $usermodified
+ * @property \ElementType $element_type
+ * @property \EventType $eventType
+ * @property \Event $event
+ * @property \User $user
+ * @property \User $usermodified
  */
 class OphCoMessaging_Message_MessageType extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphCoMessaging_Message_MessageType|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -102,7 +105,7 @@ class OphCoMessaging_Message_MessageType extends \BaseActiveRecordVersioned
         $criteria->compare('display_order', $this->display_order, true);
         $criteria->compare('reply_required', $this->reply_required, true);
 
-        return new \CActiveDataProvider(get_class($this), array(
+        return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
     }

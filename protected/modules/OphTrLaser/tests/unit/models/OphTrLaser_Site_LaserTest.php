@@ -69,4 +69,14 @@ class OphTrLaser_Site_LaserTest extends ActiveRecordTestCase
             $this->assertEquals(true, $laser->active);
         }
     }
+
+    public function testFindLasersForInstitution()
+    {
+        $lasers = $this->ophtrlaser_site_laser('laser1')->findAll(['condition' => 'institution_id = 1']);
+
+        $this->assertEquals(1, count($lasers));
+        foreach ($lasers as $laser) {
+            $this->assertEquals('TestLaser', $laser->name);
+        }
+    }
 }

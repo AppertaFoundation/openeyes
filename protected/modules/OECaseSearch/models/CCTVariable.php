@@ -18,7 +18,7 @@ class CCTVariable extends CaseSearchVariable implements DBProviderInterface
      * Get the SQL query string.
      * @return string Query
      */
-    public function query()
+    public function query(): string
     {
         switch ($this->csv_mode) {
             case 'BASIC':
@@ -61,7 +61,7 @@ class CCTVariable extends CaseSearchVariable implements DBProviderInterface
      * Get list of bind values
      * @return array List of bind variables.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         return array();
     }

@@ -117,11 +117,12 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function getFirstStep()
     {
+        $institution_id = $this->institution->id;
         $firm_id = $this->firm->id;
         $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
         $workflow = new models\OphCiExamination_Workflow_Rule();
 
-        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+        return $workflow->findWorkflowCascading($institution_id, $firm_id, $status_id)->getFirstStep();
     }
 
     /**
@@ -959,10 +960,11 @@ class DefaultController extends \BaseEventTypeController
 
     protected function getSetFromEpisode($episode)
     {
+        $institution_id = $this->institution->id;
         $firm_id = $this->firm->id;
         $status_id = ($episode) ? $episode->episode_status_id : 1;
         $workflow = new models\OphCiExamination_Workflow_Rule();
-        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+        return $workflow->findWorkflowCascading($institution_id, $firm_id, $status_id)->getFirstStep();
     }
 
     /**

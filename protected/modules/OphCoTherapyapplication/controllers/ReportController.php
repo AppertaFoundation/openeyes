@@ -96,7 +96,7 @@ class ReportController extends BaseReportController
             $subspecialty = Subspecialty::model()->find('ref_spec=:ref_spec', array(':ref_spec' => 'MR'));
 
             $context = array(
-                'firms' => Firm::model()->getList($subspecialty->id),
+                'firms' => Firm::model()->getList(Yii::app()->session['selected_institution_id'], $subspecialty->id),
                 'date_from' => $date_from,
                 'date_to' => $date_to,
             );

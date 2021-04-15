@@ -750,7 +750,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetConsultantsBySubspecialty($subspecialty_id = null)
     {
-        $firms = Firm::model()->getListWithSpecialties(false, $subspecialty_id);
+        $firms = Firm::model()->getListWithSpecialties(Yii::app()->session['institution_id'], false, $subspecialty_id);
         $this->renderJSON($firms);
 
         Yii::app()->end();

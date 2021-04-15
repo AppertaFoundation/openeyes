@@ -8,7 +8,7 @@ class OECaseSearchModule extends BaseModule
     /**
      * @var array $config
      */
-    private $config;
+    private array $config;
 
     public function init()
     {
@@ -41,7 +41,7 @@ class OECaseSearchModule extends BaseModule
     /**
      * @return array The list of parameter classes configured for the case search module.
      */
-    public function getParamList()
+    public function getParamList(): array
     {
         $keys = array();
         foreach ($this->config['parameters'] as $group) {
@@ -58,7 +58,7 @@ class OECaseSearchModule extends BaseModule
         return $keys;
     }
 
-    public function getVariableList()
+    public function getVariableList(): array
     {
         $keys = array();
         foreach ($this->config['variables'] as $group) {

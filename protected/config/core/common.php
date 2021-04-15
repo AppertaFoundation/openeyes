@@ -50,6 +50,7 @@ $config = array(
         'application.vendors.*',
         'application.modules.*',
         'application.models.*',
+        'application.models.traits.*',
         'application.models.elements.*',
         'application.components.*',
         'application.components.reports.*',
@@ -393,7 +394,7 @@ $config = array(
                 'title' => 'Admin',
                 'uri' => 'admin',
                 'position' => 1,
-                'restricted' => array('admin'),
+                'restricted' => array('OprnInstitutionAdmin'),
             ),
             'audit' => array(
                 'title' => 'Audit',
@@ -428,7 +429,7 @@ $config = array(
                 'title' => 'Patient Merge',
                 'uri' => 'patientMergeRequest/index',
                 'position' => 17,
-                'restricted' => array('Patient Merge', 'Patient Merge Request'),
+                'restricted' => array('OprnPatientMerge', 'OprnPatientMergeRequest'),
             ),
             'patient' => array(
                 'title' => 'Add Patient',

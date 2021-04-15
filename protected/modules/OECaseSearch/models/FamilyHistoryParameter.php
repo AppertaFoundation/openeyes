@@ -13,19 +13,19 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
     /**
      * @var int|null $relative
      */
-    public $relative = null;
+    public ?int $relative = null;
 
     /**
      * @var int|null $side
      */
-    public $side = null;
+    public ?int $side = null;
 
     /**
      * @var int|null $condition
      */
-    public $condition = null;
+    public ?int $condition = null;
 
-    protected ?string $label_ = 'Family History';
+    protected string $label_ = 'Family History';
 
     protected array $options = array(
         'value_type' => 'multi_select',
@@ -139,7 +139,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @return string The constructed query string.
      */
-    public function query()
+    public function query(): string
     {
         $query_side = '';
         $query_relative = '';
@@ -164,16 +164,15 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
 
         if ($this->operation === 'IN') {
             return $baseQuery;
-        } else {
-            return "SELECT id FROM patient p WHERE id NOT IN ({$baseQuery})";
         }
+        return "SELECT id FROM patient p WHERE id NOT IN ({$baseQuery})";
     }
 
     /**
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         // Matched bind parameter numbers to those on the query - CERA-538
@@ -193,7 +192,7 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $side = $this->side ?: 'Any side';
         $relative = $this->relative ?: 'any relative';
@@ -208,7 +207,7 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
         return "$this->name: $side $relative $op \"$condition\"";
     }
 
-    public function saveSearch()
+    public function saveSearch() : array
     {
         return array_merge(
             parent::saveSearch(),

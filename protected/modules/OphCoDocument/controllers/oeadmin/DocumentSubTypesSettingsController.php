@@ -22,6 +22,7 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
 
     /**
      * Renders the index page
+     * @throws CHttpException
      */
     public function actionIndex()
     {
@@ -40,23 +41,27 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
         }
         $criteria = new \CDbCriteria();
         $criteria->order = 'display_order';
-        $sub_types = $OphCoDocument_Sub_Types->findAll($criteria);
-
-        $this->render(
-            '/admin/sub_types/index',
-            [
-                'sub_types' => $sub_types,
-                'pagination' => $this->initPagination($OphCoDocument_Sub_Types),
-            ]
-        );
+        if ($this->checkAccess('admin')) {
+            $sub_types = $OphCoDocument_Sub_Types->findAll($criteria);
+            $this->render(
+                '/admin/sub_types/index',
+                [
+                    'sub_types' => $sub_types,
+                    'pagination' => $this->initPagination($OphCoDocument_Sub_Types),
+                ]
+            );
+        } else {
+            throw new CHttpException(403, 'Only a system admin is permitted to change these settings.');
+        }
     }
 
     /**
      * Renders the create page
+     * @throws Exception
      */
     public function actionCreate()
     {
-        $model = new OphCoDocument_Sub_Types;
+        $model = new OphCoDocument_Sub_Types();
 
         $errors = array();
 
@@ -76,7 +81,7 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
 
     /**
      * Renders the edit page
-     * @param model id $id
+     * @param $id int model id
      */
     public function actionEdit($id)
     {
@@ -104,6 +109,8 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
      * If the data model is not found, an HTTP exception will be raised.
      *
      * @param int $id the ID of the model to be loaded
+     * @return array|CActiveRecord|mixed
+     * @throws CHttpException
      */
     public function loadModel($id)
     {

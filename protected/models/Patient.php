@@ -386,6 +386,7 @@ class Patient extends BaseActiveRecordVersioned
      * @param array $params
      * @param null|int $patient_identifier_type_id
      * @return CActiveDataProvider
+     * @throws Exception
      */
     public function search($params = array(), $patient_identifier_type_id = null)
     {
@@ -408,7 +409,7 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->addSearchCondition('contact.last_name', $params['last_name'] . '%', false);
         }
         if (isset($params['maiden_name'])) {
-            $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']), false);
+            $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']));
         }
 
         $criteria->join .= ' JOIN patient_identifier pi ON t.id = patient_id AND pi.deleted = 0';
@@ -422,7 +423,7 @@ class Patient extends BaseActiveRecordVersioned
                 $type = $terms_with_type['patient_identifier_type'] ?? [];
 
                 // if the user already selected a type we do not care about the rest
-                if ($patient_identifier_type_id && $type->id != $patient_identifier_type_id) {
+                if ($patient_identifier_type_id && $type->id !== $patient_identifier_type_id) {
                     continue;
                 }
 
@@ -443,6 +444,12 @@ class Patient extends BaseActiveRecordVersioned
             // therefore we do not display any result (patient_identifier_type_display_order.searchable can play a big part)
             // However, if it is a name search we do need to display result (without types)
             $criteria->addCondition("1=0");
+        }
+
+        // If the institution parameter exists, we assume the user is not a super-user,
+        // so results are restricted to the currently selected institution.
+        if (isset($params['institution'])) {
+            $criteria->addSearchCondition('pt.institution_id', $params['institution']);
         }
 
         $criteria->compare('t.deleted', 0);
@@ -1930,9 +1937,9 @@ class Patient extends BaseActiveRecordVersioned
         return Event::model()->with('episode')->find($criteria);
     }
 
-    public function getLatestExaminationEvent()
+    public function getLatestExaminationEvent($event_type_name = 'Examination')
     {
-        $event_type = EventType::model()->findByAttributes(array("name" => "Examination"));
+        $event_type = EventType::model()->findByAttributes(array("name" => $event_type_name));
 
         $criteria = new CDbCriteria();
         $criteria->addCondition('episode.patient_id = :pid');
@@ -2262,6 +2269,7 @@ class Patient extends BaseActiveRecordVersioned
 
         $validPatient = new Patient('manual');
         $validContact = new Contact('manual');
+        $validContact->created_institution_id = Yii::app()->session['selected_institution_id'];
         $validContact->first_name = $firstName;
         $validContact->last_name = $last_name;
         $validPatient->dob = $dob;

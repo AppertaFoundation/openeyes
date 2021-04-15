@@ -93,6 +93,11 @@ class MedicationManagementController extends BaseController
         $ret_data = [];
         $criteria = new \CDbCriteria();
 
+        //Will only fetch the locally sourced medications that are assigned for use in the current institution
+        $institution_assigned_ids = array_map(function($item) { return $item->id; }, Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
+        $criteria->addCondition("source_type != 'LOCAL'");
+        $criteria->addInCondition("t.id", $institution_assigned_ids, "OR");
+
         if ($term !== '') {
             $criteria->addCondition("preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term");
             $criteria->params['term'] = "%$term%";

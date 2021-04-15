@@ -5,6 +5,7 @@
         if (Yii::app()->params['profile_user_show_menu']) {
             $links['Basic information'] = '/profile/info';
             $links['Sites'] = '/profile/sites';
+            $links['Institutions'] = '/profile/institutions';
             $links[Firm::contextLabel() . 's'] = '/profile/firms';
             $links['User settings'] = '/profile/usersettings';
         }

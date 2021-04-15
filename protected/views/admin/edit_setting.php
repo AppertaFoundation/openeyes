@@ -12,6 +12,11 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var $metadata SettingMetadata
+ * @var $allowed_classes string[]
+ */
 ?>
 
 <div>
@@ -29,25 +34,28 @@
             'field' => 5,
         )))?>
     <?php
-        $this->renderPartial(
-            '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
-            ['metadata' => $metadata, 'allowed_classes' => $allowed_classes]
-        );
-        ?>
+    if (isset($institution_id)) {
+        echo CHtml::hiddenField($metadata->key.'_institution_id', $institution_id);
+    }
+    $this->renderPartial(
+        '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
+        ['metadata' => $metadata, 'allowed_classes' => $allowed_classes]
+    );
+    ?>
     <hr class="divider">
     <div class="row">
         <?= CHtml::submitButton('Save ' . $metadata->name, [
                 'class' => 'green hint',
                 'name' => 'save',
                 'id' => 'et_save'
-            ]);
+            ])
 ?>
 
         <?= CHtml::submitButton('Cancel', [
                 'class' => 'blue hint',
                 'name' => 'cancel',
                 'id' => 'et_cancel'
-            ]);
+            ])
 ?>
     </div>
 

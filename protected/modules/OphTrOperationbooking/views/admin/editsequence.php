@@ -15,6 +15,21 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+if ($this->checkAccess('admin')) {
+    $theatres = OphTrOperationbooking_Operation_Theatre::model()
+        ->activeOrPk($sequence->theatre_id)
+        ->findAll(['order' => 'name']);
+} else {
+    $site_id_list = array_map(
+        static function ($site) {
+            return $site->id;
+        },
+        Institution::model()->getCurrent()->sites
+    );
+    $theatres = OphTrOperationbooking_Operation_Theatre::model()
+        ->activeOrPk($sequence->theatre_id)
+        ->findAll(['order' => 'name', 'condition' => 'site_id IN (' . implode(', ', $site_id_list) . ')']);
+}
 ?>
 
 <div class="box admin cols-5">
@@ -49,15 +64,14 @@
                     <?= $form->dropDownList(
                         $sequence,
                         'theatre_id',
-                        CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->
-                        activeOrPk($sequence->theatre_id)->findAll(['order' => 'name']), 'id', 'nameWithSite'),
+                        CHtml::listData($theatres, 'id', 'nameWithSite'),
                         ['empty' => '- None -', 'nowrapper' => true]
                     )?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?= $form->labelEx($sequence, 'start_date'); ?>
+                    <?= $form->labelEx($sequence, 'start_date') ?>
                 </td>
                 <td>
                     <?= $form->datePicker(

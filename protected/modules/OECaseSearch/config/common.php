@@ -18,7 +18,7 @@ return array(
                 'title' => 'Advanced Search',
                 'uri' => '/OECaseSearch/caseSearch/index',
                 'position' => 4,
-                'restricted' => array('Advanced Search'),
+                'restricted' => array('TaskCaseSearch'),
             ),
         ),
         'CaseSearch' => array(
@@ -34,6 +34,7 @@ return array(
                     'PreviousProcedures',
                     'PatientVision',
                     'PatientDeceased',
+                    'Institution',
                 ),
             ),
             'variables' => array(
@@ -60,6 +61,17 @@ return array(
             'providers' => array(
                 'mysql' => 'DBProvider',
             ),
+            /// Template strings function like shortcodes,
+            /// allowing substitution of application state values into search parameters. These will take the form of
+            /// selectable options in the frontend.
+            /// Format: 'template_string' => 'Template display string'
+            'enabled_template_strings' => array(
+                'institution',
+                'site',
+                'firm',
+                'user',
+            ),
+            'template_string_regex' => "/{[A-za-z_]+}/",
         ),
     ),
 );

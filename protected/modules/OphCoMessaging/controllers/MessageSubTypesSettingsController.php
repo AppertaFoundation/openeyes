@@ -25,9 +25,13 @@ class MessageSubTypesSettingsController extends \ModuleAdminController
 
     /**
      * Renders the index page
+     * @throws \CHttpException
      */
     public function actionIndex()
     {
+        if (!$this->checkAccess('admin')) {
+            throw new \CHttpException(403, 'Only system admins may access these settings.');
+        }
         $OphCoMessaging_message_types = OphCoMessaging_Message_MessageType::model();
         $path = \Yii::getPathOfAlias('application.widgets.js');
         $generic_admin = \Yii::app()->assetManager->publish($path . '/GenericAdmin.js', true);
@@ -42,6 +46,7 @@ class MessageSubTypesSettingsController extends \ModuleAdminController
         }
         $criteria = new \CDbCriteria();
         $criteria->order = 'display_order';
+
         $sub_types = $OphCoMessaging_message_types->findAll($criteria);
 
         $this->render(
@@ -55,9 +60,13 @@ class MessageSubTypesSettingsController extends \ModuleAdminController
 
     /**
      * Renders the create page
+     * @throws \CHttpException
      */
     public function actionCreate()
     {
+        if (!$this->checkAccess('admin')) {
+            throw new \CHttpException(403, 'Only system admins may access these settings.');
+        }
         $model = new OphCoMessaging_Message_MessageType();
 
         $errors = array();
@@ -78,9 +87,13 @@ class MessageSubTypesSettingsController extends \ModuleAdminController
 
     /**
      * Renders the edit page
+     * @throws \CHttpException
      */
     public function actionEdit()
     {
+        if (!$this->checkAccess('admin')) {
+            throw new \CHttpException(403, 'Only system admins may access these settings.');
+        }
         if (!$model = OphCoMessaging_Message_MessageType::model()->find('`id`=?', array(@$_GET['id']))) {
             $this->redirect(array('/OphCoMessaging/MessageSubTypesSettings'));
         }
@@ -108,12 +121,13 @@ class MessageSubTypesSettingsController extends \ModuleAdminController
      *
      * @param int $id the ID of the model to be loaded
      * @return OphCoMessaging_Message_MessageType
+     * @throws \CHttpException
      */
     public function loadModel($id)
     {
         $model = OphCoMessaging_Message_MessageType::model()->findByPk((int)$id);
         if ($model === null) {
-            throw new CHttpException(404, 'The requested page does not exist.');
+            throw new \CHttpException(404, 'The requested page does not exist.');
         }
 
         return $model;

@@ -38,7 +38,8 @@ return array(
                 'Document sub type settings' => array(
                     'module' => 'OphCoDocument',
                     'uri' => '/OphCoDocument/oeadmin/DocumentSubTypesSettings',
-                    ),
+                    'restricted' => array('admin'),
+                ),
             ),
         )
     )

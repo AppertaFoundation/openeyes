@@ -19,62 +19,43 @@ abstract class CaseSearchParameter extends CFormModel
     public $operation;
 
     /**
-     * @var int $id Internal unique ID assigned to the parameter instance. This allows repeating parameters.
+     * @var string|int $id Internal unique ID assigned to the parameter instance. This allows repeating parameters.
      */
     public int $id;
 
     /**
-     * @var mixed $value Parameter value.
+     * @var string|int|null $value Parameter value.
      */
     public $value;
 
     /**
      * @var string|null $label Label to display in adder dialog for the parameter.
      */
-    protected ?string $label_ = null;
+    protected string $label_ = '';
+
+    /**
+     * @var bool $isSaved Indicates whether the parameter should be saved when saving a search.
+     */
+    public bool $isSaved = true;
 
     /**
      * @var string[] $options List of options for the Adder Dialog.
      */
     protected array $options = array(
         'value_type' => 'string',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '='),
+            array('label' => 'IS NOT', 'id' => '!='),
+        )
     );
-
-    /**
-     * CaseSearchParameter constructor.
-     * @param string $scenario
-     */
-    public function __construct($scenario = '')
-    {
-        parent::__construct($scenario);
-        if (!array_key_exists('operations', $this->options)) {
-            $this->options['operations'] = array(
-                array('label' => 'IS', 'id' => '='),
-                array('label' => 'IS NOT', 'id' => '!=')
-            );
-        }
-    }
 
     /**
      * Get the parameter label. This is generally used implicitly in a magic method.
      * @return string The human-readable name of the parameter (for display purposes).
      */
-    final public function getLabel()
+    final public function getLabel(): string
     {
         return $this->label_;
-    }
-
-    /**
-     * Retrieves a list of common items for the given search term.
-     * This is used for any parameter where the value_type is 'string_search'.
-     * Override this function to specify how to retrieve the common items.
-     * @param $term string Search term.
-     * @return array The list of common items for the specified term.
-     */
-    public static function getCommonItemsForTerm(string $term)
-    {
-        // Override in subclasses where relevant
-        return array($term);
     }
 
     /**
@@ -111,7 +92,6 @@ abstract class CaseSearchParameter extends CFormModel
      * @param $attribute string The attribute name
      * @return mixed|void The representation of the attribute value.
      * @throws CException Attribute does not exist.
-     * @uses CFormModel::attributeNames()
      */
     public function getValueForAttribute(string $attribute)
     {
@@ -124,9 +104,9 @@ abstract class CaseSearchParameter extends CFormModel
     /**
      * Override this function to customise the output within the audit table.
      * Generally it should be something like "name: < val".
-     * @return string|null The audit string.
+     * @return string The audit string.
      */
-    public function getAuditData()
+    public function getAuditData(): string
     {
         return $this->name;
     }
@@ -137,7 +117,7 @@ abstract class CaseSearchParameter extends CFormModel
      * Subclasses should override this method and extend the array with any extra properties that need to be saved.
      * @return array
      */
-    public function saveSearch()
+    public function saveSearch(): array
     {
         return array(
             'class_name' => get_class($this),
@@ -153,7 +133,7 @@ abstract class CaseSearchParameter extends CFormModel
      * This should follow the same convention as how the parameter was saved.
      * @param $serialised_data array
      */
-    public function loadSearch(array $serialised_data)
+    public function loadSearch(array $serialised_data): void
     {
         foreach ($serialised_data as $property => $value) {
             if ($property !== 'class_name') {
@@ -166,7 +146,7 @@ abstract class CaseSearchParameter extends CFormModel
      * Get the list of adder dialog options
      * @return string[] List of adder dialog options.
      */
-    final public function getOptions()
+    final public function getOptions(): array
     {
         return $this->options;
     }

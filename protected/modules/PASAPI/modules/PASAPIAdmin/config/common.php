@@ -16,7 +16,7 @@
 $config = [
     'params' => [
         'admin_menu' => array(
-            'Value Remaps' => '/PASAPI/admin/default/viewXpathRemaps',
+            'PASAPI' => ['Value Remaps' => '/PASAPI/admin/default/viewXpathRemaps'],
         ),
     ],
 

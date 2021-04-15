@@ -563,6 +563,10 @@ class ElementLetter extends BaseEventTypeElement
         }
     }
 
+    /**
+     * @return array
+     * @throws Exception
+     */
     public function getLetter_macros()
     {
         $macros = array();
@@ -571,12 +575,17 @@ class ElementLetter extends BaseEventTypeElement
         $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
         $criteria = new CDbCriteria();
-        $criteria->condition = 'firm_id = :firm_id OR site_id = :site_id';
-        $criteria->params = [':firm_id' => $firm->id, ':site_id' => Yii::app()->session['selected_site_id']];
+        $criteria->with = ['institutions, sites, firms, subspecialties'];
+        $criteria->condition = '(firms_firms.firm_id = :firm_id OR sites_sites.site_id = :site_id  OR institutions_institutions.institution_id = :institution_id';
+        $criteria->params = [':firm_id' => $firm->id, ':site_id' => Yii::app()->session['selected_site_id'], ':institution_id' => Yii::app()->session['selected_institution_id']];
         if ($firm->service_subspecialty_assignment_id) {
-            $criteria->condition .= ' OR subspecialty_id = :subspecialty_id';
-            $criteria->params = array_merge($criteria->params, [':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id]);
+            $criteria->condition .= ' OR subspecialties_subspecialties.subspecialty_id = :subspecialty_id';
+            $criteria->params[':subspecialty_id'] = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         }
+        // Ensure that only installation-level macros
+        // and macros applicable only to the current institution are returned.
+        $criteria->condition .= ')';/* AND (institution_id IS NULL OR institution_id = :institution_id)';
+        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];*/
         $criteria->order = 'display_order asc';
 
         foreach (LetterMacro::model()->findAll($criteria) as $macro) {

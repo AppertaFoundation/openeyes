@@ -22,9 +22,23 @@
  * @property int $id
  * @property string $name
  * @property int $display_order
+ * @property int $institution_id
  */
 class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return $this->tableName().'_id';
+    }
+
+
     public function tableName()
     {
         return 'common_systemic_disorder_group';
@@ -34,11 +48,35 @@ class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
     {
         return array(
             array('name', 'required'),
+            array('display_order', 'safe'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
         );
     }
 
     public function defaultScope()
     {
         return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'name' => 'Name',
+        );
     }
 }

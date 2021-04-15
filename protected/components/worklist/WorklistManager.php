@@ -176,6 +176,18 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * @return Institution|null
+     */
+    protected function getCurrentInstitution()
+    {
+        if (!$institution_id = $this->yii->session['selected_institution_id']) {
+            return;
+        }
+
+        return $this->getModelForClass('Institution')->findByPk($institution_id);
+    }
+
+    /**
      * @return Site|null
      */
     protected function getCurrentSite()
@@ -642,6 +654,7 @@ class WorklistManager extends CComponent
         if (!$user) {
             $user = $this->getCurrentUser();
         }
+        $institution = $this->getCurrentInstitution();
         $site = $this->getCurrentSite();
         $firm = $this->getCurrentFirm();
 
@@ -649,7 +662,7 @@ class WorklistManager extends CComponent
         foreach ($days as $when) {
 
 
-            foreach ($this->getCurrentAutomaticWorklistsForUserContext($site, $firm, $when) as $worklist) {
+            foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
                     $worklists[] = $worklist;
@@ -669,7 +682,7 @@ class WorklistManager extends CComponent
         return $unique_worklists;
     }
 
-    public function shouldDisplayWorklistForContext(Worklist $worklist, Site $site, Firm $firm)
+    public function shouldDisplayWorklistForContext(Worklist $worklist, Institution $institution, Site $site, Firm $firm)
     {
         if ($definition = $worklist->worklist_definition) {
             if ($definition->patient_identifier_type->institution_id == $site->institution_id) {
@@ -678,7 +691,7 @@ class WorklistManager extends CComponent
                     return true;
                 }
                 foreach ($display_contexts as $dc) {
-                    if ($dc->checkSite($site) && $dc->checkFirm($firm)) {
+                    if ($dc->checkInstitution($institution) && $dc->checkSite($site) && $dc->checkFirm($firm)) {
                         return true;
                     }
                 }
@@ -701,14 +714,14 @@ class WorklistManager extends CComponent
      *
      * @return array
      */
-    public function getCurrentAutomaticWorklistsForUserContext(Site $site, Firm $firm, DateTime $when)
+    public function getCurrentAutomaticWorklistsForUserContext(Institution $institution, Site $site, Firm $firm, DateTime $when)
     {
         $worklists = array();
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
         $model->on = $when;
         foreach ($model->with(array('worklist_definition', 'worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
-            if ($this->shouldDisplayWorklistForContext($wl, $site, $firm)) {
+            if ($this->shouldDisplayWorklistForContext($wl, $institution, $site, $firm)) {
                 $worklists[] = $wl;
             }
         }
@@ -978,13 +991,14 @@ class WorklistManager extends CComponent
         if (!$user) {
             $user = $this->getCurrentUser();
         }
+        $institution = $this->getCurrentInstitution();
         $site = $this->getCurrentSite();
         $firm = $this->getCurrentFirm();
 
         $content = '';
         $days = $this->getDashboardRenderDates(new DateTime());
         foreach ($days as $when) {
-            foreach ($this->getCurrentAutomaticWorklistsForUserContext($site, $firm, $when) as $worklist) {
+            foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
                 $content .= $this->renderWorklistForDashboard($worklist);
             }
         }

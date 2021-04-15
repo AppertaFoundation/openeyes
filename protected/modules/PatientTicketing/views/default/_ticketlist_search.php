@@ -142,7 +142,7 @@
                     <?= \CHtml::dropDownList(
                         'firm-id',
                         \Yii::app()->request->getParam('firm-id'),
-                        Firm::model()->getList($subspecialty_id),
+                        Firm::model()->getList(Yii::app()->session['selected_institution_id'], $subspecialty_id),
                         array(
                             'class' => 'cols-11',
                             'empty' => 'All ' . Firm::contextLabel() . 's',

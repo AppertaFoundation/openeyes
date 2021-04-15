@@ -469,6 +469,7 @@ class CsvController extends BaseController
             array('var_name' => 'maiden_name', 'default' => null,),
             array('var_name' => 'qualifications', 'default' => null,),
             array('var_name' => 'contact_label_id', 'default' => null,),
+            array('var_name' => 'created_institution_id', 'default' => Yii::app()->session['selected_institution_id'])
         );
 
         foreach ($contact_cols as $col) {

@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use \RRule\RRule;
 namespace OEModule\OphCiExamination\models;
 use Period;
 
@@ -25,6 +26,7 @@ use Period;
  * @property int $id
  * @property int $element_id
  * @property int $status_id
+ * @property int $risk_status_id
  * @property int $followup_quantity
  * @property int $followup_period_id
  * @property string $followup_comments
@@ -38,6 +40,7 @@ use Period;
  * @property OphCiExamination_ClinicOutcome_Status $status
  * @property Period $followupPeriod
  * @property OphCiExamination_ClinicOutcome_Role $role
+ * @property OphCiExamination_ClinicOutcome_Risk_Status $risk_status
  */
 class ClinicOutcomeEntry extends \BaseElement
 {
@@ -70,7 +73,7 @@ class ClinicOutcomeEntry extends \BaseElement
             array('status_id', 'required'),
             array('status_id', 'statusDependencyValidation'),
             array('role_id', 'roleDependencyValidation'),
-            array('followup_quantity', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('followup_quantity, risk_status_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('followup_quantity', 'numerical', 'integerOnly' => true, 'min' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MIN, 'max' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MAX),
             array('element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe', 'on' => 'search'),
         );
@@ -90,6 +93,7 @@ class ClinicOutcomeEntry extends \BaseElement
             'status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status', 'status_id'],
             'followupPeriod' => [self::BELONGS_TO, 'Period', 'followup_period_id'],
             'role' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role', 'role_id'],
+            'risk_status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status', 'risk_status_id'],
         );
     }
 
@@ -169,44 +173,97 @@ class ClinicOutcomeEntry extends \BaseElement
         parent::afterDelete();
     }
 
-    public function getStatusLabel() {
+    public function getStatusLabel()
+    {
         return $this->status->name;
     }
 
-    public function getRoleLabel() {
+    public function getRoleLabel()
+    {
         if ($this->status->followup && $this->role) {
             return ' with ' . $this->role->name;
         }
         return '';
     }
 
-    public function getPeriodLabel() {
+    public function getPeriodLabel()
+    {
         if ($this->status->followup && $this->followupPeriod) {
             return $this->followupPeriod->name;
         }
         return '';
     }
 
-    public function getDisplayComments() {
+    public function getRiskStatusLabel($for_worklist = false)
+    {
+        $ret = array(
+            'class' => '',
+            'content' => '',
+            'icon' => '',
+        );
+
+        if ($this->status->followup && $this->risk_status) {
+            $size_css = "";
+            $position_css = "";
+            $content = "";
+            if (!$for_worklist) {
+                $size_css = "small";
+                $position_css = "pad-right";
+                $content = "{$this->risk_status->name}. {$this->risk_status->alias}";
+            } else {
+                $subspecialty = $this->element->event->episode->getSubspecialtyText();
+                $due_date = "$subspecialty due: {$this->getDueDate()}";
+                $risk_status_details = "{$this->risk_status->alias} ({$this->risk_status->name}):";
+                $riskt_status_desc = $this->risk_status->description;
+                $content = "{$due_date}<br/><br/>${risk_status_details}<br/>{$riskt_status_desc}";
+            }
+            $risk_status_icon_color = $this->risk_status->getIndicatorColor();
+            $ret['class'] = "oe-i triangle-{$risk_status_icon_color} $size_css $position_css js-has-tooltip";
+            $ret['content'] = $content;
+            $ret['icon'] = "<i class='{$ret['class']}' data-tooltip-content='{$ret['content']}'></i>";
+        }
+        return $ret;
+    }
+
+    public function getDueDate()
+    {
+        $event_date = $this->element->event->event_date;
+        $due_date = null;
+        if ($this->status->followup) {
+            $period = strtolower($this->followupPeriod);
+            $quantity = intval($this->followup_quantity);
+            $due_date = date('Y-m-d', strtotime("+$quantity $period", strtotime($event_date)));
+            $due_date = \Helper::convertDate2NHS($due_date, ' ');
+        }
+
+        return $due_date;
+    }
+
+    public function getDisplayComments()
+    {
         return $this->followup_comments ? ' (' . $this->followup_comments . ')' : '';
     }
 
-    public function getInfos() {
+    public function getInfos()
+    {
         if ($this->isFollowUp()) {
-            return $this->getStatusLabel() . ' ' . $this->followup_quantity . ' ' . $this->getPeriodLabel() . $this->getRoleLabel() . ' ' . $this->getDisplayComments();
+            $risk_status_info = $this->getRiskStatusLabel();
+            return $this->getStatusLabel() . ' ' . $this->followup_quantity . ' ' . $this->getPeriodLabel() . $this->getRoleLabel() . ' ' . $this->getDisplayComments() . $risk_status_info['icon'];
         } else {
             return $this->getStatusLabel();
         }
     }
 
-    public function isPatientTicket() {
+    public function isPatientTicket()
+    {
         if ($this->status->patientticket) {
             return true;
         }
         return false;
     }
 
-    public function isFollowUp() {
+    public function isFollowUp()
+    {
         if ($this->status->followup) {
             return true;
         }

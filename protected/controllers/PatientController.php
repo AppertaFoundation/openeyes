@@ -112,6 +112,11 @@ class PatientController extends BaseController
                 'allow',
                 'actions' => array('summary'),
                 'roles' => array('User'),
+            ),
+            array(
+                'allow',
+                'actions' => array('delete'),
+                'roles' => array('OprnDeletePatient')
             )
         );
     }
@@ -533,8 +538,8 @@ class PatientController extends BaseController
                 $model = $merged->primaryPatient;
                 // set a flash to inform user patient x was merged into this patient
                 Yii::app()->user->setFlash('warning.patient-merged', $merged->getMergedMessage());
-            } else {
-                // if the patient is deleted and not merged into any other patient
+            } elseif (!\Yii::app()->user->checkAccess('OprnDeletePatient')) {
+                // Users with patient deletion access can see patient summary
                 // throw exception
                 throw new CHttpException(404, 'The requested page does not exist.');
             }
@@ -1560,11 +1565,11 @@ class PatientController extends BaseController
             }
         }
 
-        if (@$_POST['contact_label_id'] == 'nonspecialty' && !@$_POST['label_id']) {
+        if (@$_POST['contact_label_id'] === 'nonspecialty' && !@$_POST['label_id']) {
             $errors['label_id'] = 'Please select a label';
         }
 
-        $contact = new Contact();
+        $contact = Contact::model();
 
         foreach (array('title', 'first_name', 'last_name') as $field) {
             if (!@$_POST[$field]) {
@@ -1575,6 +1580,9 @@ class PatientController extends BaseController
         $this->renderJSON($errors);
     }
 
+    /**
+     * @throws Exception
+     */
     public function actionAddContact()
     {
         if (@$_POST['site_id']) {
@@ -1617,15 +1625,14 @@ class PatientController extends BaseController
 
         $contact = new Contact();
         $contact->attributes = $_POST;
+        $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
 
-        if (@$_POST['contact_label_id'] == 'nonspecialty') {
+        if (@$_POST['contact_label_id'] === 'nonspecialty') {
             if (!$label = ContactLabel::model()->findByPk(@$_POST['label_id'])) {
                 throw new Exception('Contact label not found: ' . @$_POST['label_id']);
             }
-        } else {
-            if (!$label = ContactLabel::model()->find('name=?', array(@$_POST['contact_label_id']))) {
-                throw new Exception('Contact label not found: ' . @$_POST['contact_label_id']);
-            }
+        } elseif (!$label = ContactLabel::model()->find('name=?', array(@$_POST['contact_label_id']))) {
+            throw new Exception('Contact label not found: ' . @$_POST['contact_label_id']);
         }
 
         $contact->contact_label_id = $label->id;
@@ -1899,6 +1906,7 @@ class PatientController extends BaseController
 
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
             $contact->attributes = $_POST['Contact'];
+            $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
 
@@ -2555,11 +2563,16 @@ class PatientController extends BaseController
     {
         $patient = $this->loadModel($id);
         $patient->deleted = 1;
-        $patient->save();
+        if ($patient->save()) {
+            $message = 'Patient "<strong>'.$patient->getFullName().'</strong>" was deleted';
+            Audit::add('patient', 'delete', $message, null);
+            $message .= ' successfully';
+            Yii::app()->user->setFlash('success', $message);
+        }
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax'])) {
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('site'));
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : Yii::app()-> createURL('site/index'));
         }
     }
 

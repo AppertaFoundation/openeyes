@@ -38,6 +38,7 @@
         <thead>
         <tr>
             <th><input type="checkbox" name="selectall" id="selectall"/></th>
+            <th>Institution</th>
             <th>Site</th>
             <th>Letter types</th>
             <th>Recipient name</th>
@@ -49,6 +50,9 @@
             <tr class="clickable" data-id="<?php echo $model->id ?>"
                 data-uri="OphCoTherapyapplication/admin/editEmailRecipient/<?php echo $model->id ?>">
                 <td><input type="checkbox" name="email_recipients[]" value="<?php echo $model->id ?>"/></td>
+                <td>
+                    <?php echo $model->institution ? $model->institution->name : '-' ?>
+                </td>
                 <td>
                     <?php echo $model->site ? $model->site->name : 'All sites' ?>
                 </td>

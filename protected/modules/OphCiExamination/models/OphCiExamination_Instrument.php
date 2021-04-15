@@ -23,10 +23,25 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property int $id
  * @property string $name
+ * @property string $short_name
  * @property int $display_order
  */
 class OphCiExamination_Instrument extends \BaseActiveRecordVersioned
 {
+
+    use \MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return \ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'instrument_id';
+    }
+
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -68,6 +83,8 @@ class OphCiExamination_Instrument extends \BaseActiveRecordVersioned
     {
         return array(
             'scale' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Qualitative_Scale', 'scale_id'),
+            'instrument_institution' => array(self::HAS_MANY, 'OphCiExamination_Instrument_Institution', 'instrument_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', 'ophciexamination_instrument_institution(instrument_id,institution_id)'),
         );
     }
 
@@ -88,7 +105,7 @@ class OphCiExamination_Instrument extends \BaseActiveRecordVersioned
         $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
-        $criteria->compare('short_name', $this->name, true);
+        $criteria->compare('short_name', $this->short_name, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
