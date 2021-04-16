@@ -91,7 +91,7 @@ class AuditController extends BaseController
         if ($firm_id) {
             $firm = Firm::model()->findByPk($firm_id);
             $firm_ids = array();
-            foreach (Firm::model()->findAll('name=?', array($firm->name)) as $firm) {
+            foreach (Firm::model()->findAll('name=? AND institution_id = ?', array($firm->name, Yii::app()->session['selected_institution_id'])) as $firm) {
                 $firm_ids[] = $firm->id;
             }
             if (!empty($firm_ids)) {

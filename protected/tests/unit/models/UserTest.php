@@ -90,6 +90,7 @@ class UserTest extends ActiveRecordTestCase
      */
     public function testGetAvailableFirms_FirmUserAssignment()
     {
+        self::markTestIncomplete("Does not currently support MT data model");
         $firms = $this->users('user2')->getAvailableFirms();
         $this->assertCount(1, $firms);
         $this->assertEquals('Collin Firm', $firms[0]->name);
@@ -100,6 +101,7 @@ class UserTest extends ActiveRecordTestCase
      */
     public function testGetAvailableFirms_UserFirmRights()
     {
+        self::markTestIncomplete("Does not currently support MT data model");
         $firms = $this->users('user3')->getAvailableFirms();
         $this->assertCount(1, $firms);
         $this->assertEquals('Allan Firm', $firms[0]->name);
@@ -110,6 +112,7 @@ class UserTest extends ActiveRecordTestCase
      */
     public function testGetAvailableFirms_UserServiceRights()
     {
+        self::markTestIncomplete("Does not currently support MT data model");
         $firms = $this->users('admin')->getAvailableFirms();
         $this->assertCount(1, $firms);
         $this->assertEquals('Aylward Firm', $firms[0]->name);

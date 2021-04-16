@@ -716,6 +716,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             $criteria->params[':sub_id'] = $subspecialty_id;
         }
 
+        $criteria->compare('institution_id', Yii::app()->session['selected_institution_id']);
+
         return \Firm::model()->findAll($criteria);
     }
 }

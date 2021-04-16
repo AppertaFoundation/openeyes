@@ -246,7 +246,7 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
 
     public function findWorkflowSteps($institution_id, $episode_status_id)
     {
-        $firms = \Firm::model()->findAll();
+        $firms = \Firm::model()->findAll('institution_id = :institution_id', array(':institution_id' => $institution_id));
         $workflowSteps = [];
 
         foreach ($firms as $firm) {

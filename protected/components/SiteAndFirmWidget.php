@@ -126,6 +126,7 @@ class SiteAndFirmWidget extends CWidget
                     $preferred_firm->active && $preferred_firm->runtime_selectable &&
                     (count($user_firm_ids) === 0 || in_array($preferred_firm->id, $user_firm_ids)) &&
                     (!$this->subspecialty || ($preferred_firm->serviceSubspecialtyAssignment && $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id))
+                    && (int)$preferred_firm->institution_id === (int)Yii::app()->session['selected_institution_id']
                 ) {
                     if ($preferred_firm->serviceSubspecialtyAssignment) {
                         $firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
@@ -137,12 +138,16 @@ class SiteAndFirmWidget extends CWidget
         }
 
         foreach ($this->controller->firms as $firm_id => $firm_label) {
-            if ((count($user_firm_ids) === 0 || in_array($firm_id,
-                        $user_firm_ids)) && !isset($firms['Recent'][$firm_id])
+            if ((count($user_firm_ids) === 0 || (!isset($firms['Recent'][$firm_id]) && in_array(
+                        $firm_id,
+                        $user_firm_ids,
+                        true
+                    )))
             ) {
                 $firm = Firm::model()->findByPk($firm_id);
                 if ($firm instanceof Firm && $firm->active && $firm->runtime_selectable &&
-                    (!$this->subspecialty || ($firm->serviceSubspecialtyAssignment && $firm->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id))
+                    (!$this->subspecialty || ($firm->serviceSubspecialtyAssignment && $firm->serviceSubspecialtyAssignment->subspecialty_id === $this->subspecialty->id))
+                    && (int)$firm->institution_id === (int)Yii::app()->session['selected_institution_id']
                 ) {
                     if ($preferred_firms) {
                         $firms['Other'][$firm_id] = $firm_label;

@@ -500,16 +500,33 @@ class User extends BaseActiveRecordVersioned
      */
     public function getAvailableFirms()
     {
-        $crit = new CDbCriteria;
-        $crit->compare('active', 1);
+        $crit = new CDbCriteria();
+        $crit->compare('t.active', 1);
         if (!$this->global_firm_rights) {
-            $crit->join = "left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = :user_id " .
-                "left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = :user_id " .
-                "left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id " .
-                "left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = :user_id ";
+            $crit->join =
+                'join institution i on i.id = t.institution_id ' .
+                'join institution_authentication ia on ia.institution_id = i.id and ia.active = 1 ' .
+                'join user_authentication ua ON ua.institution_authentication_id = ia.id and ua.active = 1 ' .
+                'left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = ua.user_id ' .
+                'left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = ua.user_id ' .
+                'left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id ' .
+                'left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = ua.user_id ';
             $crit->addCondition("fua.id is not null or ufr.id is not null or usr.id is not null");
-            $crit->params['user_id'] = $this->id;
+            $crit->addCondition("ua.user_id = :user_id");
+            $crit->params[':user_id'] = $this->id;
         }
+
+        return Firm::model()->findAll($crit);
+    }
+
+    public function getAllAvailableFirms()
+    {
+        $crit = new CDbCriteria();
+        $crit->compare('t.active', 1);
+        $crit->join = "join institution i on i.id = t.institution_id
+            join institution_authentication ia on ia.institution_id = i.id and ia.active = 1
+            join user_authentication ua on ua.institution_authentication_id = ia.id  and ua.active = 1";
+        $crit->compare('ua.user_id', $this->id);
 
         return Firm::model()->findAll($crit);
     }

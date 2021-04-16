@@ -106,8 +106,8 @@ $form = $this->beginWidget(
                 <td>
                     <?php
                     $firm_label = [];
-                    foreach (Firm::model()->findAll() as $firm) {
-                        $firm_label[$firm->id] = "{$firm->name} ". ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "");
+                    foreach ($user->getAllAvailableFirms() as $firm) {
+                        $firm_label[$firm->id] = "{$firm->name} ". ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "") . " [{$firm->institution->name}]";
                     }
                     echo $form->multiSelectList(
                         $user,
