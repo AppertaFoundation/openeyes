@@ -351,6 +351,7 @@ $creating = $creating ?? false;
                             }
 
                             $with = array(
+                                'letterStrings',
                                 'firmLetterStrings' => array(
                                     'on' => 'firm_id is null or firm_id = :firm_id',
                                     'params' => array(
@@ -367,14 +368,26 @@ $creating = $creating ?? false;
                                     'params' => array(
                                         ':site_id' => Yii::app()->session['selected_site_id'],
                                     ),
-                                    'order' => 'siteLetterStrings.display_order',
+                                    'order' => 'letterStrings.display_order',
+                                ),
+                                'institutionLetterStrings' => array(
+                                    'on' => 'institutionLetterStrings.institution_id is null or institutionLetterStrings.institution_id = :institution_id',
+                                    'params' => array(
+                                        ':institution_id' => Yii::app()->session['selected_institution_id'],
+                                    ),
+                                    'order' => 'letterStrings.display_order',
                                 ),
                             );
                             if ($firm->getSubspecialtyID()) {
                                 $with['subspecialtyLetterStrings']['on'] = 'subspecialty_id is null or subspecialty_id = :subspecialty_id';
                                 $with['subspecialtyLetterStrings']['params'] = array(':subspecialty_id' => $firm->getSubspecialtyID());
                             }
-                            foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
+
+                            $criteria = new CDbCriteria();
+                            $criteria->addCondition('t.institution_id = :institution_id');
+                            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
+                            $criteria->order = 't.display_order asc';
+                            foreach (LetterStringGroup::model()->with($with)->findAll($criteria) as $string_group) {
                                 $strings = $string_group->getStrings($patient, $event_types);
                                 ?>
                                 <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(

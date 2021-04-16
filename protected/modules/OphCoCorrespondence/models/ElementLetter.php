@@ -384,7 +384,10 @@ class ElementLetter extends BaseEventTypeElement
 
     public function getStringGroups()
     {
-        return LetterStringGroup::model()->findAll(array('order' => 'display_order'));
+        return LetterStringGroup::model()->findAll([
+            'condition' => 'institution_id = :institution_id',
+            'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+            'order' => 'display_order']);
     }
 
     public function calculateRe(Patient $patient = null)
@@ -456,12 +459,14 @@ class ElementLetter extends BaseEventTypeElement
             // Look for a macro based on the episode_status
             $episode = $patient->getEpisodeForCurrentSubspecialty();
             if ($episode) {
-                $this->macro = LetterMacro::model()->find('firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
+                $this->macro = LetterMacro::model()->with('firms')->find('firms_firms.firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
                 if (!$this->macro && $firm->service_subspecialty_assignment_id) {
                     $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-                    $this->macro = LetterMacro::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
+                    $this->macro = LetterMacro::model()->with('subspecialties')->find('subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
                     if (!$this->macro) {
-                        $this->macro = LetterMacro::model()->find('site_id=? and episode_status_id=?', array(Yii::app()->session['selected_site_id'], $episode->episode_status_id));
+                        $this->macro = LetterMacro::model()->with('sites', 'institutions')->find([
+                            'condition' => '(institutions_institutions.institution_id=? OR sites_sites.site_id=?) AND episode_status_id=?',
+                            'params' => array(Yii::app()->session['selected_institution_id'], Yii::app()->session['selected_site_id'], $episode->episode_status_id)]);
                     }
                 }
             }
@@ -575,7 +580,7 @@ class ElementLetter extends BaseEventTypeElement
         $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
         $criteria = new CDbCriteria();
-        $criteria->with = ['institutions, sites, firms, subspecialties'];
+        $criteria->with = ['institutions', 'sites', 'firms', 'subspecialties'];
         $criteria->condition = '(firms_firms.firm_id = :firm_id OR sites_sites.site_id = :site_id  OR institutions_institutions.institution_id = :institution_id';
         $criteria->params = [':firm_id' => $firm->id, ':site_id' => Yii::app()->session['selected_site_id'], ':institution_id' => Yii::app()->session['selected_institution_id']];
         if ($firm->service_subspecialty_assignment_id) {

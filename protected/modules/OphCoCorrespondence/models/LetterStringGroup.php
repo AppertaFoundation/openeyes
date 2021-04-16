@@ -75,9 +75,11 @@ class LetterStringGroup extends BaseEventTypeElement
         return array(
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'letterStrings' => array(self::HAS_MANY, 'LetterString', 'letter_string_group_id'),
             'firmLetterStrings' => array(self::HAS_MANY, 'FirmLetterString', 'letter_string_group_id'),
             'subspecialtyLetterStrings' => array(self::HAS_MANY, 'SubspecialtyLetterString', 'letter_string_group_id'),
-            'siteLetterStrings' => array(self::HAS_MANY, 'LetterString', 'letter_string_group_id'),
+            'siteLetterStrings' => array(self::HAS_MANY, 'LetterString_Site', 'letter_string_group_id', 'through' => 'letterStrings'),
+            'institutionLetterStrings' => array(self::HAS_MANY, 'LetterString_Institution', 'letter_string_group_id', 'through' => 'letterStrings'),
             'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
@@ -144,10 +146,10 @@ class LetterStringGroup extends BaseEventTypeElement
             }
         }
 
-        foreach ($this->siteLetterStrings as $slm) {
-            if (!in_array($slm->name, $string_names)) {
-                if ($slm->shouldShow($patient, $event_types)) {
-                    $strings['site'.$slm->id] = $string_names[] = $slm->name;
+        foreach ($this->letterStrings as $lm) {
+            if (!in_array($lm->name, $string_names)) {
+                if ($lm->shouldShow($patient, $event_types)) {
+                    $strings[$lm->id] = $string_names[] = $lm->name;
                 }
             }
         }
