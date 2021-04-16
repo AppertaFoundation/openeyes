@@ -131,7 +131,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
      */
     public function testToCSV($fixture, $expected_row = null)
     {
-        $baseStr = "\"Hos Num\",\"Date of Birth\",\"First Name\",\"Last Name\",\"Trial Identifier\",\"Treatment Type\",\"Status Id\",Diagnoses,Medications,Comments\n";
+        $baseStr = "ID,\"Date of Birth\",\"First Name\",\"Last Name\",\"Trial Identifier\",\"Treatment Type\",\"Status Id\",Diagnoses,Medications,Comments\n";
         $item = $this->patient($fixture);
         $diagnoses = array();
         foreach ($item->getOphthalmicDiagnosesSummary() as $diagnosis) {

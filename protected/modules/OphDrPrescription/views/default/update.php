@@ -29,53 +29,56 @@ $form_format = $settings->getSetting('prescription_form_format');
 $this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
 
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => $form_id,
-            'enableAjaxValidation' => false,
-        ));
+    'id' => $form_id,
+    'enableAjaxValidation' => false,
+    ));
 
-        // Event actions
-        $this->event_actions[] = EventAction::button(
-            'Save draft',
-            'savedraft',
-            array('level' => 'primary'),
-            array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id)
-        );
-        $this->event_actions[] = EventAction::button(
-            'Save',
-            'save',
-            array('level' => 'secondary'),
-            array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id)
-        );
-        $this->event_actions[] = EventAction::button(
-            'Save and print',
-            'saveprint',
-            array('level' => 'secondary'),
-            array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id)
-        );
-        $this->event_actions[] = EventAction::button(
-            "Save and print $form_format",
-            'saveprintform',
-            array('level' => 'secondary'),
-            array(
-                'id' => 'et_save_print_form',
-                'class' => 'button small',
-                'style' => 'display: none;',
-                'form' => $form_id,
-                'data-enabled' => $settings->getSetting('enable_prescription_overprint')
-            )
-        );
-        ?>
+// Event actions
+$this->event_actions[] = EventAction::button(
+    'Save draft',
+    'savedraft',
+    array('level' => 'primary'),
+    array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id)
+);
+$this->event_actions[] = EventAction::button(
+    'Save',
+    'save',
+    array('level' => 'secondary'),
+    array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id)
+);
 
-        <input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_id"
-               name="Element_OphDrPrescription_Details[edit_reason_id]" value="<?php echo htmlentities($reason_id); ?>" />
-        <input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_other_text"
-               name="Element_OphDrPrescription_Details[edit_reason_other]" value="<?php echo htmlentities($reason_other_text); ?>" />
+if ($this->checkPrintAccess()) {
+    $this->event_actions[] = EventAction::button(
+        'Save and print',
+        'saveprint',
+        array('level' => 'secondary'),
+        array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id)
+    );
+    $this->event_actions[] = EventAction::button(
+        "Save and print $form_format",
+        'saveprintform',
+        array('level' => 'secondary'),
+        array(
+            'id' => 'et_save_print_form',
+            'class' => 'button small',
+            'style' => 'display: none;',
+            'form' => $form_id,
+            'data-enabled' => $settings->getSetting('enable_prescription_overprint')
+        )
+    );
+}
+?>
 
-        <?php $this->displayErrors($errors)?>
-        <?php $this->renderOpenElements($this->action->id, $form); ?>
-        <?php $this->renderOptionalElements($this->action->id, $form); ?>
-        <?php $this->displayErrors($errors, true)?>
+<input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_id"
+       name="Element_OphDrPrescription_Details[edit_reason_id]" value="<?php echo htmlentities($reason_id); ?>" />
+<input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_other_text"
+       name="Element_OphDrPrescription_Details[edit_reason_other]" value="<?php echo htmlentities($reason_other_text); ?>" />
 
-        <?php $this->endWidget(); ?>
+<?php $this->displayErrors($errors)?>
+<?php $this->renderOpenElements($this->action->id, $form); ?>
+<?php $this->renderOptionalElements($this->action->id, $form); ?>
+<?php $this->displayErrors($errors, true)?>
+
+<?php $this->endWidget(); ?>
 
 <?php $this->endContent();?>
