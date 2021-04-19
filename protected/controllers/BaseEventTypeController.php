@@ -1294,7 +1294,7 @@ class BaseEventTypeController extends BaseModuleController
         $event_date = Helper::convertNHS2MySQL($event_date);
         $current_event_date = substr($this->event->event_date, 0, 10);
 
-        if ($event_date < $current_event_date) {
+        if ($event_date !== $current_event_date) {
             $this->event->event_date = $event_date;
         }
     }
