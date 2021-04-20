@@ -77,7 +77,7 @@ FROM et_ophdrprescription_details eod
     JOIN ophdrprescription_dispense_location odl
         ON odl.id = emu2.dispense_location_id
     LEFT JOIN ophdrprescription_edit_reasons oer
-        ON oer.id = etd.edit_reason_id;
+        ON oer.id = eod.edit_reason_id;
 
 CREATE OR REPLACE ALGORITHM = UNDEFINED
 VIEW v_prescription_items AS
