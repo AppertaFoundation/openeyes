@@ -166,8 +166,8 @@ if [[ $nozip -eq 0 ]]; then
   echo "Deleting temp files..."
   rm ${tmpfile}
 
-  echo "Testing ${outfile}.zip..."
-  #gzip -t -v ${outfile}
+  echo "Testing ${outfile}..."
+  gzip -t -v ${outfile}
 else
   echo "Finshed: $tmpfile"
 fi

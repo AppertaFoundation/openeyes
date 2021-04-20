@@ -1,7 +1,4 @@
-﻿Openeyes Term,Code,DM+D Term,NOTES,JEM comment,Reviewed
-Acetazolamide 250mg in 5ml suspension,8270911000001106,Acetazolamide 250mg/5ml oral suspension,,,yes
-Acetazolamide 250mg modified release capsules,35891911000001105,Acetazolamide 250mg modified-release capsules,,,yes
-Acetazolamide 250mg tablets,330601002,Acetazolamide 250mg tablets,,,yes
+﻿Acetazolamide 250mg tablets,330601002,Acetazolamide 250mg tablets,,,yes
 Acetylcysteine 10% eye drops,347086005,Acetylcysteine 10% eye drops,,,yes
 Aciclovir 400mg tablets,324729006,Aciclovir 400mg tablets,,,yes
 Aciclovir 800mg dispersible tablets,324734005,Aciclovir 800mg dispersible tablets,,,yes
@@ -69,7 +66,6 @@ Dorzolamide 2% with timolol 0.5% single use eye drops (PF COSOPT),10931011000001
 Doxycycline 50mg capsules,324070004,Doxycycline 50mg capsules,,,yes
 Fluorescein sodium 2% single use eye drops,36068011000001100,Fluorescein 2% eye drops 0.5ml unit dose preservative free,,,yes
 Fluorometholone 0.1% eye drops,330466003,Fluorometholone 0.1% eye drops,,,yes
-Fusidic acid 1% eye drops,330404003,Fusidic acid 1% modified-release eye drops,,,yes
 Ganciclovir 0.15% eye gel,408597001,Ganciclovir 0.15% eye gel,,,yes
 Gentamicin 0.3% eye drops,347272000,Gentamicin 0.3% ear/eye drops,,,yes
 Gentamicin 1.5% forte eye drops,36062911000001104,Gentamicin 1.5% eye drops preservative free,,,yes
@@ -101,13 +97,13 @@ Pilocarpine 2% eye drops,330680003,Pilocarpine hydrochloride 2% eye drops,,,yes
 Pilocarpine 2% single use eye drops,36016511000001108,Pilocarpine nitrate 2% eye drops 0.5ml unit dose preservative free,,,yes
 Pilocarpine 4% eye drops,330682006,Pilocarpine hydrochloride 4% eye drops,,,yes
 Prednisolone 0.5% eye/ear drops,354028007,Prednisolone sodium phosphate 0.5% ear/eye drops,,,yes
-Prednisolone 0.5% single use eye drops,9408911000001103,Prednisolone sodium phosphate 0.5% eye drops,,,yes
+Prednisolone 0.5% single use eye drops,38752911000001104,Prednisolone sodium phosphate 0.5% eye drops 0.5ml unit dose preservative free,,,yes
 Prednisolone 1% eye drops,347223007,Prednisolone acetate 1% eye drops,,yes,yes
 Proxymetacaine 0.5% single use eye drops,4090611000001102,Proxymetacaine 0.5% eye drops 0.5ml unit dose preservative free,,,yes
 Sodium cromoglycate 2% eye drops,330507008,Sodium cromoglicate 2% eye drops,,,yes
 Sodium hyaluronate 0.1% eye drops,23946711000001106,Sodium hyaluronate 0.1% eye drops,,,yes
 Sodium hyaluronate 0.1% eye drops (Hylo-Tear),10579511000001100,Sodium hyaluronate 0.1% eye drops preservative free,,,yes
-Sodium hyaluronate 0.15% single use eye drops,14779611000001102,Sodium hyaluronate 0.15% eye drops 0.5ml unit dose preservative free,,,yes
+Sodium hyaluronate 0.15% single use eye drops,18496711000001103,Sodium hyaluronate 0.15% eye drops 0.3ml unit dose preservative free,,,yes
 Sodium hyaluronate 0.2% eye drops,16132911000001102,Sodium hyaluronate 0.2% eye drops preservative free,,,yes
 Sodium hyaluronate 0.2% eye drops (Hylo-Forte),16132911000001102,Sodium hyaluronate 0.2% eye drops preservative free,,yes,yes
 Tafluprost 15 micrograms in 1ml single use eye drops,15915911000001102,Tafluprost 15micrograms/ml eye drops 0.3ml unit dose preservative free,,,yes
@@ -123,7 +119,7 @@ Timolol 0.25% eye gel (Timoptol-LA),35918511000001104,Timolol 0.25% eye gel,,,ye
 Timolol 0.25% single use eye drops,3655611000001105,Timolol 0.25% eye drops 0.2ml unit dose preservative free,,,yes
 Timolol 0.5% eye drops,330721008,Timolol 0.5% eye drops,,,yes
 Timolol 0.5% eye drops (TIMOPTOL),330721008,Timolol 0.5% eye drops,,,yes
-Timolol 0.5% eye gel (TIMOPTOL-LA),35918611000001100,Timolol 0.5% eye gel,,,yes
+Timolol 0.5% eye gel (TIMOPTOL-LA),359186110000011003410811000001105,Timoptol-LA 0.5% ophthalmic gel-forming solution (Santen UK Ltd),,,yes
 Timolol 0.5% single use eye drops,3496911000001103,Timolol 0.5% eye drops 0.2ml unit dose preservative free,,,yes
 Tobramycin 0.3% with dexamethasone 0.1% per 1 ml,134748003,Dexamethasone 0.1% / Tobramycin 0.3% eye drops,,,yes
 Tranexamic acid 500mg tablets,319861004,Tranexamic acid 500mg tablets,,,yes
@@ -134,43 +130,73 @@ Travoprost 40 micrograms in 1ml eye drops (TRAVATAN),407803003,Travoprost 40micr
 Tropicamide 0.5% single use eye drops,36145711000001107,Tropicamide 0.5% eye drops 0.5ml unit dose preservative free,,,yes
 Tropicamide 1% single use eye drops,36145911000001109,Tropicamide 1% eye drops 0.5ml unit dose preservative free,,,yes
 Xailin night 5g,24268011000001101,Xailin Night eye ointment preservative free (Visufarma UK Ltd),"This is correct, but could prescribe as generic xalin night eye ointment 24268111000001100",,yes
-Acetazolamide 500mg injection,4377611000001107,Acetazolamide 500mg powder for solution for injection vials,"","",""
-Aciclovir 200mg in 5ml sugar free suspension,35892311000001100,Aciclovir 200mg/5ml oral suspension sugar free,"","",""
-Aflibercept 40mg in 1mL injection (EYLEA),21674211000001100,Aflibercept 4mg/100microlitres solution for injection vials,"","",""
-Aspirin 75mg enteric-coated tablets,319781007,Aspirin 75mg gastro-resistant tablets,"","",""
-Bevacizumab 1.25mg in 0.05ml syringe,21929811000001100,Bevacizumab 1.25mg/0.05ml solution for injection pre-filled syringes,"","",""
-Bimatoprost 0.03% with timolol 0.5% eye drops,10514411000001107,Bimatoprost 300micrograms/ml / Timolol 5mg/ml eye drops,"","",""
-Bimatoprost 0.3mg in 1ml eye drops,407891009,Bimatoprost 300micrograms/ml eye drops 3 ml (product),"","",""
-Botulinum a toxin 50 units injection (xeomin),19431311000001100,Xeomin 50unit powder for solution for injection vials (Merz Pharma UK Ltd),"","",""
-Botulinum a toxin 500 units injection (dysport),4784711000001101,Dysport 500unit powder for solution for injection vials (Ipsen Ltd),"","",""
-Brinzolamide 1% with timolol 0.5% eye drops,15473511000001102,Brinzolamide 10mg/ml / Timolol 5mg/ml eye drops,"","",""
-Brinzolamide 10mg in 1ml eye drops,330738007,Brinzolamide 10mg/ml eye drops,"","",""
-Carbomer 0.25% eye gel,5611711000001103,Carbomer 974P 0.25% eye gel (product),"","",""
-Carmellose 0.5% single use eye drops,28384711000001104,Lumecare Singles Carmellose 0.5% eye drops 0.4ml unit dose (Medicom Healthcare Ltd),"","",""
-Ciclosporin 0.06% eye drops,21147811000001108,Ciclosporin 0.06% eye drops preservative free,"","",""
-Ciclosporin 0.2% veterinary eye ointment,9404611000001104,Ciclosporin 0.2% eye ointment,"","",""
-Co-amoxiclav 125/31 sugar free suspension,36565811000001104,Co-amoxiclav 125mg/31mg/5ml oral suspension sugar free,"","",""
-Co-amoxiclav 250/62 sugar free suspension,37083611000001104,Co-amoxiclav 250mg/62mg/5ml oral suspension sugar free,"","",""
-Co-amoxiclav 375mg tablets,323563001,Co-amoxiclav 250mg/125mg tablets,"","",""
-Co-amoxiclav 625mg tablets,323539009,Co-amoxiclav 500mg/125mg tablets,"","",""
-Dexamethasone 0.7mg intravitreal implant,17658411000001106,Ozurdex 700microgram intravitreal implant in applicator (Allergan Ltd) (product),"","",""
-Diclofenac sodium,36409011000001100,Diclofenac sodium,"","",""
-Diclofenac sodium 0.1% single use eye drops,36098011000001102,Diclofenac 0.1% eye drops 0.3ml unit dose preservative free (product),"","",""
-Dorzolamide 2% with timolol 0.5% eye drops,330734009,Dorzolamide 20mg/ml / Timolol 5mg/ml eye drops,"","",""
-Erythromycin 125mg in 5ml suspension,324232005,Erythromycin ethyl succinate 125mg/5ml oral suspension,"","",""
-Erythromycin 250mg in 5ml sugar free suspension,324233000,Erythromycin ethyl succinate 250mg/5ml oral suspension,"","",""
-Erythromycin 250mg tablets,324180003,Erythromycin stearate 250mg tablets,"","",""
-Flucloxacillin 125mg in 5ml syrup,323484009,Flucloxacillin 125mg/5ml oral solution,"","",""
-Flucloxacillin 250mg in 5ml syrup,323485005,Flucloxacillin 250mg/5ml oral solution,"","",""
-Latanoprost 0.005% eye drops,330729005,Latanoprost 50micrograms/ml eye drops,"","",""
-Latanoprost 0.005% single use eye drops,22154311000001107,Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free,"","",""
-Olopatadine 1mg in 1ml eye drops,408020000,Olopatadine 1mg/ml eye drops,"","",""
-Omeprazole 20mg capsules,317291008,Omeprazole 20mg gastro-resistant capsules,"","",""
-Paraffin eye ointment (lacri-lube),3544411000001102,Generic Lacri-lube eye ointment,"","",""
-Paraffin eye ointment lanolin free,31344211000001109,HydraMed night eye ointment preservative free,"","",""
-Prednisolone 0.5% single use eye drops,38752911000001104,Prednisolone sodium phosphate 0.5% eye drops 0.5ml unit dose preservative free,"","",""
-Prednisolone 2.5mg enteric-coated tablets,325442004,Prednisolone 2.5mg gastro-resistant tablets,"","",""
-Prednisolone 5mg enteric-coated tablets,325443009,Prednisolone 5mg gastro-resistant tablets,"","",""
-Rimexolone 1% eye drops,330545009,Rimexolone 10mg/ml eye drops,"","",""
-Sodium hyaluronate 0.15% single use eye drops,13454511000001107,Sodium hyaluronate 0.15% eye drops (product),"","",""
-Timolol 0.5% eye gel (Timoptol-LA),9367201000001104,Timoptol-LA (product),"","",""
+Acetazolamide 500mg injection,4377611000001107,Acetazolamide 500mg powder for solution for injection vials,,,
+Aciclovir 200mg in 5ml sugar free suspension,35892311000001100,Aciclovir 200mg/5ml oral suspension sugar free,,,
+Aflibercept 40mg in 1mL injection (EYLEA),21674211000001100,Aflibercept 4mg/100microlitres solution for injection vials,,,
+Aspirin 75mg enteric-coated tablets,319781007,Aspirin 75mg gastro-resistant tablets,,,
+Bevacizumab 1.25mg in 0.05ml syringe,21929811000001100,Bevacizumab 1.25mg/0.05ml solution for injection pre-filled syringes,,,
+Bimatoprost 0.03% with timolol 0.5% eye drops,10514411000001107,Bimatoprost 300micrograms/ml / Timolol 5mg/ml eye drops,,,
+Bimatoprost 0.3mg in 1ml eye drops,407891009,Bimatoprost 300micrograms/ml eye drops 3 ml (product),,,
+Botulinum a toxin 50 units injection (xeomin),19431311000001100,Xeomin 50unit powder for solution for injection vials (Merz Pharma UK Ltd),,,
+Botulinum a toxin 500 units injection (dysport),4784711000001101,Dysport 500unit powder for solution for injection vials (Ipsen Ltd),,,
+Brinzolamide 1% with timolol 0.5% eye drops,15473511000001102,Brinzolamide 10mg/ml / Timolol 5mg/ml eye drops,,,
+Brinzolamide 10mg in 1ml eye drops,330738007,Brinzolamide 10mg/ml eye drops,,,
+Carbomer 0.25% eye gel,5611711000001103,Carbomer 974P 0.25% eye gel (product),,,
+Carmellose 0.5% single use eye drops,28384711000001104,Lumecare Singles Carmellose 0.5% eye drops 0.4ml unit dose (Medicom Healthcare Ltd),,,
+Ciclosporin 0.06% eye drops,21147811000001108,Ciclosporin 0.06% eye drops preservative free,,,
+Ciclosporin 0.2% veterinary eye ointment,9404611000001104,Ciclosporin 0.2% eye ointment,,,
+Co-amoxiclav 125/31 sugar free suspension,36565811000001104,Co-amoxiclav 125mg/31mg/5ml oral suspension sugar free,,,
+Co-amoxiclav 250/62 sugar free suspension,37083611000001104,Co-amoxiclav 250mg/62mg/5ml oral suspension sugar free,,,
+Co-amoxiclav 375mg tablets,323563001,Co-amoxiclav 250mg/125mg tablets,,,
+Co-amoxiclav 625mg tablets,323539009,Co-amoxiclav 500mg/125mg tablets,,,
+Dexamethasone 0.7mg intravitreal implant,17658411000001106,Ozurdex 700microgram intravitreal implant in applicator (Allergan Ltd) (product),,,
+Diclofenac sodium,36409011000001100,Diclofenac sodium,,,
+Diclofenac sodium 0.1% single use eye drops,36098011000001102,Diclofenac 0.1% eye drops 0.3ml unit dose preservative free (product),,,
+Dorzolamide 2% with timolol 0.5% eye drops,330734009,Dorzolamide 20mg/ml / Timolol 5mg/ml eye drops,,,
+Erythromycin 125mg in 5ml suspension,324232005,Erythromycin ethyl succinate 125mg/5ml oral suspension,,,
+Erythromycin 250mg in 5ml sugar free suspension,324233000,Erythromycin ethyl succinate 250mg/5ml oral suspension,,,
+Erythromycin 250mg tablets,324180003,Erythromycin stearate 250mg tablets,,,
+Flucloxacillin 125mg in 5ml syrup,323484009,Flucloxacillin 125mg/5ml oral solution,,,
+Flucloxacillin 250mg in 5ml syrup,323485005,Flucloxacillin 250mg/5ml oral solution,,,
+Latanoprost 0.005% eye drops,330729005,Latanoprost 50micrograms/ml eye drops,,,
+Latanoprost 0.005% single use eye drops,22154311000001107,Latanoprost 50micrograms/ml eye drops 0.2ml unit dose preservative free,,,
+Olopatadine 1mg in 1ml eye drops,408020000,Olopatadine 1mg/ml eye drops,,,
+Omeprazole 20mg capsules,317291008,Omeprazole 20mg gastro-resistant capsules,,,
+Paraffin eye ointment (lacri-lube),3544411000001102,Generic Lacri-lube eye ointment,,,
+Paraffin eye ointment lanolin free,31344211000001109,HydraMed night eye ointment preservative free,,,
+Prednisolone 0.5% single use eye drops,38752911000001104,Prednisolone sodium phosphate 0.5% eye drops 0.5ml unit dose preservative free,,,
+Prednisolone 2.5mg enteric-coated tablets,325442004,Prednisolone 2.5mg gastro-resistant tablets,,,
+Prednisolone 5mg enteric-coated tablets,325443009,Prednisolone 5mg gastro-resistant tablets,,,
+Rimexolone 1% eye drops,330545009,Rimexolone 10mg/ml eye drops,,,
+Sodium hyaluronate 0.15% single use eye drops,13454511000001107,Sodium hyaluronate 0.15% eye drops (product),,,
+Timolol 0.5% eye gel (Timoptol-LA),3410811000001105,Timoptol-LA 0.5% ophthalmic gel-forming solution (Santen UK Ltd),,,
+Hypromellose 0.3% single use eye drops,17174711000001107,Hypromellose 0.3% eye drops 0.5ml unit dose preservative free,,,
+Mycophenolate mofetil 500mg tablets (cellcept),327106003,Mycophenolate mofetil 500mg tablets,,,
+Lansoprazole 15mg dispersible tablets,4053411000001103,Lansoprazole 15mg orodispersible tablets,,,
+Omeprazole 20mg dispersible tablets,39021511000001103,Omeprazole 20mg dispersible gastro-resistant tablets,,,
+Paracetamol 10mg in 1ml infusion,34887511000001102,Paracetamol 100mg/10ml solution for infusion ampoules,,,
+Polyvinyl alcohol 1.4% single use eye drops,36017711000001100,Polyvinyl alcohol 1.4% eye drops 0.4ml unit dose preservative free,,,
+Prednisolone 0.01% eye drops,9407211000001108,Prednisolone sodium phosphate 0.01% eye drops,,,
+Prednisolone 0.03% eye drops,9407611000001105,Prednisolone sodium phosphate 0.03% eye drops,,,
+Prednisolone 0.1% eye drops,9408011000001102,Prednisolone sodium phosphate 0.1% eye drops,,,
+Prednisolone 0.3% eye drops,9408711000001100,Prednisolone sodium phosphate 0.3% eye drops,,,
+Triamcinolone acetonide 40mg in 1ml injection,35921611000001103,Triamcinolone acetonide 40mg/1ml suspension for injection pre-filled syringes,,,
+Calcium carbonate d3 forte chewable tablets,329367009,Colecalciferol 400unit / Calcium carbonate 1.25g chewable tablets,,,
+Folinic acid 15mg tablets,327587003,Calcium folinate 15mg tablets,,,
+Ciclosporin 50mg capsules (Neoral),327085000,Ciclosporin 50mg capsules,,,
+Co-codamol 8/500 tablets,322307006,Co-codamol 8mg/500mg tablets,,,
+Co-trimoxazole 480mg tablets,324357002,Co-trimoxazole 80mg/400mg tablets,,,
+Diclofenac sodium 50mg dispersible tablets,329591004,Diclofenac 50mg dispersible tablets sugar free,,,
+Diclofenac sodium 50mg enteric coated tablets,329587009,Diclofenac sodium 50mg gastro-resistant tablets,,,
+Fusidic acid 1% eye drops,39020911000001103,Fusidic acid 1% modified-release eye drops,,,
+Acetazolamide 250mg modified release capsules,35891911000001105,Acetazolamide 250mg modified-release capsules,,,
+Acetazolamide 250mg in 5ml suspension,8270911000001106,Acetazolamide 250mg/5ml oral suspension,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
