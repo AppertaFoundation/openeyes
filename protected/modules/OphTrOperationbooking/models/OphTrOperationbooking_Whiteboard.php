@@ -119,7 +119,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
             $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
             $this->acd = $biometry->attributes["acd_$eyeLabel"];
-            $this->predicted_refractive_outcome = $biometry->attributes["predicted_refraction_$eyeLabel"];
+            $this->predicted_refractive_outcome = !empty($biometry->attributes["predicted_refraction_$eyeLabel"]) ? $biometry->attributes["predicted_refraction_$eyeLabel"] : 0.0;
             $this->formula = $biometry->attributes["formula_$eyeLabel"];
             $this->aconst = $biometry->attributes["lens_acon_$eyeLabel"];
             $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"];
