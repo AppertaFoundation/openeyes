@@ -7,7 +7,7 @@ function Reports_AddDiagnosis(disorder_id, name) {
 		'<td>' +
 		'<a href="#" class="small removeDiagnosis" rel="'+disorder_id+'"><i class="oe-i trash"></i></a>' +
 		'</td></tr>');
-	$('#selected_diagnoses').append('<input type="hidden" name="secondary[]" value="'+disorder_id+'" />');
+	$('#selected_diagnoses').append('<input type="hidden" name="all[]" value="'+disorder_id+'" />');
 }
 
 $(document).ready(function() {
