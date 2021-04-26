@@ -32,6 +32,16 @@
  */
 class SettingMetadata extends BaseActiveRecordVersioned
 {
+    public static $CONTEXT_CLASSES = [
+        'SettingUser' => 'user_id',
+        'SettingFirm' => 'firm_id',
+        'SettingSubspecialty' => 'subspecialty_id',
+        'SettingSpecialty' => 'specialty_id',
+        'SettingSite' => 'site_id',
+        'SettingInstitution' => 'institution_id',
+        'SettingInstallation' => null
+    ];
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -63,6 +73,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_type_id, display_order, field_type_id, key, name, data, default_value', 'safe', 'on' => 'search'),
+            array('default_value,', 'filter', 'filter' => array($obj = new CHtmlPurifier(),'purify')),
         );
     }
 
@@ -112,7 +123,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     public static function checkSetting($key, $value)
     {
-        $setting_value = Self::model()->findByAttributes(['key' => $key])->getSettingName();
+        $setting_value = self::model()->findByAttributes(['key' => $key])->getSettingName();
         if (is_string($setting_value)) {
             $setting_value = strtolower($setting_value);
         }
@@ -170,15 +181,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $site_id = $site ? $site->id : null;
         $institution_id = $site ? $site->institution_id : null;
 
-        foreach (array(
-            'SettingUser' => 'user_id',
-            'SettingFirm' => 'firm_id',
-            'SettingSubspecialty' => 'subspecialty_id',
-            'SettingSpecialty' => 'specialty_id',
-            'SettingSite' => 'site_id',
-            'SettingInstitution' => 'institution_id',
-            'SettingInstallation' => null,
-            ) as $class => $field) {
+        foreach (static::$CONTEXT_CLASSES as $class => $field) {
             if ($allowed_classes && !in_array($class, $allowed_classes)) {
                 continue;
             }
@@ -223,7 +226,9 @@ class SettingMetadata extends BaseActiveRecordVersioned
         }
 
         if ($data = @unserialize($this->data)) {
-            return $data[$value];
+            if (key_exists($value, $data)) {
+                return $data[$value];
+            }
         }
 
         return $value;
@@ -237,9 +242,209 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
                 return $model::model()->findByPk($setting->value);
             }
+
+            //remove following block and apply manually per event
+            if (isset($data['substitutions'])) {
+                $substitutions = self::getSessionSubstitutions();
+
+                //todo: pull into own function where substitutions can be passed in as an argument
+
+                $dom = new DOMDocument();
+                @$dom->loadHTML($setting->value, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+                $xpath = new DOMXPath($dom);
+                $nodes = $xpath->query("//span[@data-substitution]");
+
+                foreach ($nodes as $node) {
+                    $key = $node->getAttribute('data-substitution');
+
+                    if (in_array($key, $data['substitutions']) &&
+                        key_exists($key, $substitutions) &&
+                        isset($substitutions[$key]['value']) &&
+                        $substitutions[$key]['value'] != ''
+                    ) {
+                        $sub = $substitutions[$key]['value'];
+                    } else {
+                        $sub = '<span>[' . $key . ']</span>';
+                    }
+
+                    self::substituteNode($dom, $sub, $node);
+                }
+
+                return $dom->saveHTML();
+            }
         }
 
         return $setting->value;
+    }
+
+    /**
+     * Sets a setting's value after performing some processing operations such as stripping values of HTML substitutions
+     */
+    public function setSettingValue($setting, $metadata, $value)
+    {
+        if (@$data = unserialize($metadata->data)) {
+            $purifier = new CHtmlPurifier();
+            $value = $purifier->purify($value);
+
+            if ($metadata->field_type->name === 'HTML') {
+                $value = $this->stripSubstitutions($value);
+            }
+        }
+
+        $setting->value = $value;
+    }
+
+    public function stripSubstitutions($value)
+    {
+        $dom = new DOMDocument();
+        @$dom->loadHTML($value, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $xpath = new DOMXPath($dom);
+        $nodes = $xpath->query("//span[@data-substitution]");
+
+        foreach ($nodes as $node) {
+            $key = $node->getAttribute('data-substitution');
+
+            // Strip substitution contents to avoid saving sensitive information in the settings value
+            $sub = '<span>[' . $key . ']</span>';
+
+            self::substituteNode($dom, $sub, $node);
+        }
+
+        return $dom->saveHTML();
+    }
+
+    public static function performSubstitutions($html, $substitutions = array())
+    {
+        $dom = new DOMDocument();
+        @$dom->loadHTML($html, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $xpath = new DOMXPath($dom);
+        $nodes = $xpath->query("//span[@data-substitution]");
+
+        foreach ($nodes as $node) {
+            $key = $node->getAttribute('data-substitution');
+
+            if (key_exists($key, $substitutions) &&
+                isset($substitutions[$key]['value']) &&
+                !empty($substitutions[$key]['value'])
+            ) {
+                $sub = $substitutions[$key]['value'];
+            } else {
+                $sub = '<span>[' . $key . ']</span>';
+            }
+
+            self::substituteNode($dom, $sub, $node);
+        }
+
+        return $dom->saveHTML();
+    }
+
+    private static function substituteNode($dom, $sub, $node)
+    {
+        while ($node->hasChildNodes()) {
+            $node->removeChild($node->firstChild);
+        }
+
+        $sub_dom = new DomDocument();
+        @$sub_dom->loadHTML($sub, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $sub_node = $dom->importNode($sub_dom->documentElement, true);
+
+        $node->appendChild($sub_node);
+    }
+
+    /**
+     * Returns an array describing the substitutions to perform in a HTML setting with the 'substitutions' data key set
+     * This will return every possible HTML substitution inferrable from session data
+     * @return array
+     */
+    public static function getSessionSubstitutions()
+    {
+        $session = Yii::app()->session;
+
+        $user = isset($session) ? $session['user'] : null;
+        $firm = isset($user) ? Firm::model()->findByPk($user->last_firm_id) : null;
+        $site = isset($user) ? Site::model()->findByPk($user->last_site_id) : null;
+
+        $site_contact = isset($site) ? $site->contact : null;
+        $site_address = isset($site_contact) ? $site_contact->address : null;
+        $institution = isset($site) ? $site->institution : null;
+
+        $logo_helper = new LogoHelper();
+        $logos = $logo_helper->getLogoURLs(isset($site) ? $site->id : null);
+
+        return array(
+            'user_name' => array('label' => 'User Name', 'value' => $user ? self::makeSpan($user->getFullName()) : null),
+            'user_title' => array('label' => 'User Title', 'value' => $user->contact ? self::makeSpan($user->contact->title) : null),
+            'firm_name' => array('label' => 'Firm Name', 'value' => $firm ? self::makeSpan($firm->name) : null),
+            'site_name' => array('label' => 'Site Name', 'value' => $site ? self::makeSpan($site->name) : null),
+            'site_address' => array('label' => 'Site Address', 'value' => $site_address ? self::makeSpan($site_address->getSummary()) : null),
+            'site_phone' => array('label' => 'Site Phone', 'value' => isset($site) && !empty($site->telephone) ? self::makeSpan($site->telephone) : null),
+            'site_fax' => array('label' => 'Site Fax', 'value' => isset($site) && !empty($site->fax) ? self::makeSpan($site->fax) : null),
+            'site_email' => array('label' => 'Site Email', 'value' => !empty($site_address->email) ? self::makeSpan($site_address->email) : null),
+            'site_city' => array('label' => 'Site City', 'value' => !empty($site_address->city) ? self::makeSpan($site_address->city) : null),
+            'site_postcode' => array('label' => 'Site Postcode', 'value' => $site_address ? self::makeSpan($site_address->postcode) : null),
+            'primary_logo' => array('label' => 'Primary Logo', 'value' => isset($logos['primaryLogo']) ? self::makeImg($logos['primaryLogo']) : null),
+            'secondary_logo' => array('label' => 'Secondary Logo', 'value' => isset($logos['secondaryLogo']) ? self::makeImg($logos['secondaryLogo']) : null),
+            'current_date' => array('label' => 'Current Date', 'value' => self::makeSpan(date('d-M-Y'))),
+        );
+    }
+
+    public static function getPatientSubstitutions($patient = null)
+    {
+        $patient_contact = null;
+
+        if (isset($patient)) {
+            $patient_contact = $patient->contact;
+        }
+
+        $last_exam = null;
+
+        if (isset($patient)) {
+            $last_exam = $patient->getLatestExaminationEvent();
+        }
+
+        return array(
+            'patient_full_name' => array('label' => 'Patient Full Name', 'value' => $patient ? self::makeSpan($patient->getFullName()) : null),
+            'patient_first_name' => array('label' => 'Patient First Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->first_name) : null),
+            'patient_last_name' => array('label' => 'Patient Last Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->last_name) : null),
+            'patient_date_of_birth' => array('label' => 'Patient Date Of Birth', 'value' => $patient ? self::makeSpan($patient->dob) : null),
+            'patient_gender' => array('label' => 'Patient Gender', 'value' => $patient ? self::makeSpan($patient->getGenderString()) : null),
+            'patient_nhs_num' => array('label' => 'Patient NHS Number', 'value' => $patient ? self::makeSpan($patient->nhs_num) : null),
+            'patient_hos_num' => array('label' => 'Patient Hospital Number', 'value' => $patient ? self::makeSpan($patient->hos_num) : null),
+            'patient_last_exam_date' => array('label' => 'Patient Last Examination Date', 'value' => $last_exam ? self::makeSpan((new DateTime($last_exam->event_date))->format('d-M-Y')) : null),
+        );
+    }
+
+    public static function getCorrespondenceSubstitutions($element_letter = null)
+    {
+        return array(
+            'to_address' => array('label' => 'Recipient Address', 'value' => isset($element_letter) && !empty($element_letter->address_target) ? self::makeSpan($element_letter->address_target) : null),
+            'source_address' => array('label' => 'Source Address', 'value' => isset($element_letter) && !empty($element_letter->source_address) ? self::makeSpan($element_letter->source_address) : null),
+            'cc_address' => array('label' => 'CC Address', 'value' => isset($element_letter) && !empty($element_letter->cc) ? self::makeSpan($element_letter->cc) : null),
+        );
+    }
+
+    public static function getDocumentTargetSubstitutions($doc_target = null)
+    {
+        return array(
+            'doc_target_address' => array('label' => 'Document Target Address', 'value' => isset($doc_target) && !empty($doc_target->address) ? self::makeSpan($doc_target->address) : null),
+        );
+    }
+
+    public static function getRecipientAddressSubstitution($recipient_address = null)
+    {
+        return array(
+            'recipient_address' => array('label' => 'Recipient Address', 'value' => isset($recipient_address) && !empty($recipient_address) ? self::makeSpan($recipient_address) : null),
+        );
+    }
+
+    private static function makeSpan($text)
+    {
+        return '<span>' . $text . '</span>';
+    }
+
+    private static function makeImg($src)
+    {
+        return '<img style="width:100%; display: block;" src="' . $src . '">';
     }
 
     public function scopes()

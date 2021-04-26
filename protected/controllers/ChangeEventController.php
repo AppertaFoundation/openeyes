@@ -176,7 +176,7 @@ class ChangeEventController extends BaseController
         $this->checkCreateAccess();
 
         // the widget will initialise the values correctly on the element.
-        $this->createWidget($this->element->widgetClass, array(
+        $this->createWidget($this->element->getWidgetClass(), array(
             'element' => $this->element,
             'data' => $request->getParam(CHtml::modelName($this->element)),
             'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE

@@ -258,7 +258,7 @@ foreach ($ethnic_list as $key => $item) {
         </tr>
         <tr>
           <td>
-            <?= Yii::app()->params['nhs_num_label']?>
+            <?= \SettingMetadata::model()->getSetting('nhs_num_label')?>
           </td>
           <td>
                 <?= $form->textField(
@@ -357,7 +357,7 @@ foreach ($ethnic_list as $key => $item) {
 
         <tr id="js-patient-gp-row">
             <td>
-                <?php echo Yii::app()->params['gp_label']; ?>
+                <?php echo \SettingMetadata::model()->getSetting('gp_label'); ?>
                 <br/>
                 <?php
                 /*

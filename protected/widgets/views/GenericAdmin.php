@@ -28,7 +28,7 @@
                         CHtml::dropDownList(
                             $filter_field['field'],
                             $filter_field['value'],
-                            SelectionHelper::listData($filter_field['model']),
+                            $filter_field['choices'] ?? SelectionHelper::listData($filter_field['model']),
                             array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
                         );
                                                     ?></div>

@@ -14,7 +14,7 @@ defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 1);
 
 if (version_compare(PHP_VERSION, '5.3', '>='))
     require_once(dirname(__FILE__) . '/compatability.php');
-    
+
 // change the following paths if necessary
 $dirname = dirname(__FILE__);
 if (file_exists($dirname . '/../../vendor/yiisoft/yii/framework/yiit.php')) {
@@ -25,6 +25,16 @@ if (file_exists($dirname . '/../../vendor/yiisoft/yii/framework/yiit.php')) {
 $config = dirname(__FILE__) . '/../config/test.php';
 
 require_once $yiit;
+
+/**
+ * The custom autoloader for Yii will endeavour to load filenames based on the test suite names
+ * in phpunit.xml - specifying this filter prevents this. There doesn't appear to be a means
+ * by which this can simply be added as a filter, but at the time of creation, no other use of
+ * this autoloading filter existed.
+ */
+Yii::$autoloaderFilters = ['filterTestSuiteNames' => function($className) {
+    return in_array($className, ['all', 'core', 'Modules']);
+}];
 
 Yii::createWebApplication($config);
 

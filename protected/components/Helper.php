@@ -22,15 +22,15 @@
  */
 class Helper
 {
-    const NHS_DATE_FORMAT = 'j M Y';
-    const NHS_DATE_FORMAT_JS = 'd M yy';
-    const NHS_DATE_REGEX = '/^\d{1,2} \w{3} \d{4}$/';
-    const NHS_DATE_EXAMPLE = '5 Dec 2011';
-    const SHORT_DATE_FORMAT = 'd/m/y';
-    const EPOCHDAY = 86400000;
-    const EPOCHWEEK = 604800000;
-    const EPOCHMONTH = 2629743000;
-    const FULL_YEAR_FORMAT = 'd/m/Y';
+    public const NHS_DATE_FORMAT = 'j M Y';
+    public const NHS_DATE_FORMAT_JS = 'd M yy';
+    public const NHS_DATE_REGEX = '/^\d{1,2} \w{3} \d{4}$/';
+    public const NHS_DATE_EXAMPLE = '5 Dec 2011';
+    public const SHORT_DATE_FORMAT = 'd/m/y';
+    public const EPOCHDAY = 86400000;
+    public const EPOCHWEEK = 604800000;
+    public const EPOCHMONTH = 2629743000;
+    public const FULL_YEAR_FORMAT = 'd/m/Y';
 
 
     /**
@@ -182,9 +182,10 @@ class Helper
      *
      * @param string $dob
      * @param string $date_of_death
-     * @param string $check_date    Optional date to check age at (default is today)
+     * @param string $check_date Optional date to check age at (default is today)
      *
      * @return string $age
+     * @throws Exception
      */
     public static function getAge($dob, $date_of_death = null, $check_date = null)
     {
@@ -214,11 +215,12 @@ class Helper
      * @param null $date_of_death
      *
      * @return null|string
+     * @throws Exception
      */
     public static function getDateForAge($dob, $age, $date_of_death = null)
     {
         if (!$dob) {
-            return;
+            return null;
         }
 
         $dob_datetime = new DateTime($dob);
@@ -227,7 +229,7 @@ class Helper
         if ($date_of_death) {
             $dod_datetime = new DateTime($date_of_death);
             if ($dod_datetime < $age_date) {
-                return;
+                return null;
             }
         }
 
@@ -275,10 +277,10 @@ class Helper
 
     /**
      * Formats a fuzzy day MONTH year format string to styled HTML
-     * 
+     *
      * @param string $dateStr the date to format (e.g. 01 Apr 1979)
-     * 
-     * @param $echo if true (default) will echo back the HTML string. Else will return the HTML to the calling function
+     *
+     * @return string
      */
     public static function oeDateAsStr($dateStr){
         if ($dateStr === "" || $dateStr === "Undated") return $dateStr;
@@ -301,10 +303,8 @@ class Helper
                 $yr = $arr[2];
                 break;
         }
-        
-        $domStr = '<span class="oe-date"><span class="day">'.$day.'</span><span class="mth">'.$mth.'</span><span class="yr">'.$yr.'</span></span>';
-        
-        return $domStr;
+
+        return '<span class="oe-date"><span class="day">'.$day.'</span><span class="mth">'.$mth.'</span><span class="yr">'.$yr.'</span></span>';
     }
 
     /**
@@ -330,6 +330,7 @@ class Helper
             case 6: return 'Saturday';
             case 7: return 'Sunday';
         }
+        return null;
     }
 
     /**
@@ -349,9 +350,10 @@ class Helper
             return $val;
         }
 
-        if (preg_match('/^([\d\.]+)('.$regexp.')$/', strtoupper($val), $matches)) {
+        if (preg_match('/^([\d.]+)('.$regexp.')$/', strtoupper($val), $matches)) {
             return $matches[1] * pow(1024, $units[$matches[2]]);
         }
+        return null;
     }
 
     /**
@@ -396,7 +398,7 @@ class Helper
     /**
      * Format a list of strings with comma separators and a final 'and'.
      *
-     * @param string $items
+     * @param array $items
      *
      * @return string
      */
@@ -416,6 +418,11 @@ class Helper
         }
     }
 
+    /**
+     * @param $instance
+     * @return string
+     * @throws ReflectionException
+     */
     public static function getNSShortname($instance)
     {
         $r = new ReflectionClass($instance);
@@ -425,8 +432,8 @@ class Helper
 
     /**
      * @param $string
-     * @param integer $line_count
-     * @param integer $protect
+     * @param int $line_count
+     * @param int $protect
      * @param string $delimiter
      * @param string $joiner
 
@@ -500,7 +507,6 @@ class Helper
      * Check if the given DateTime string is valid
      *
      * @param string $date_time
-     * @param string $pattern
      * @return bool True if parsing. False if parsing fails.
      */
     public static function isValidDateTime($date_time)
@@ -514,6 +520,7 @@ class Helper
      * @param $date
      * @param $datetime
      * @return string
+     * @throws Exception
      */
     public static function combineMySQLDateAndDateTime($date, $datetime)
     {
@@ -522,6 +529,7 @@ class Helper
         ) {
             return substr($date, 0, 10) . ' ' . substr($datetime, -8);
         }
+        throw new Exception('Not a valid date and/or time string');
     }
 
     /**
@@ -533,16 +541,16 @@ class Helper
     public static function getEyeIdFromArray(array $data)
     {
         $eye_id = null;
-        $left_eye = \Helper::elementFinder('left_eye', $data);
-        $right_eye = \Helper::elementFinder('right_eye', $data);
-        $na_eye = \Helper::elementFinder('na_eye', $data);
+        $left_eye = Helper::elementFinder('left_eye', $data);
+        $right_eye = Helper::elementFinder('right_eye', $data);
+        $na_eye = Helper::elementFinder('na_eye', $data);
 
         if ($left_eye && $right_eye) {
-            $eye_id = \EYE::BOTH;
+            $eye_id = EYE::BOTH;
         } elseif ($left_eye) {
-            $eye_id = \EYE::LEFT;
+            $eye_id = EYE::LEFT;
         } elseif ($right_eye) {
-            $eye_id = \EYE::RIGHT;
+            $eye_id = EYE::RIGHT;
         } elseif ($na_eye) {
             $eye_id = -9;
         }
@@ -559,10 +567,10 @@ class Helper
             $return_info .= $value.'<br>';
         }
         return $return_info;
-		}
+    }
 
     /**
-     * Return bites based on the ini_get returns value e.g. 2M
+     * Return bytes based on the ini_get returns value e.g. 2M
      * @param $val
      * @return int|string
      */
@@ -572,11 +580,11 @@ class Helper
         $val = (int) $val;
         switch($last) {
             case 'g':
-                $val *= (1024 * 1024 * 1024); //1073741824
+                $val *= pow(1024, 3); //1073741824
                 break;
             case '':
             case 'm':
-                $val *= (1024 * 1024); //1048576
+                $val *= pow(1024, 2); //1048576
                 break;
             case 'k':
                 $val *= 1024;

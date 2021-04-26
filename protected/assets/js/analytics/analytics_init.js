@@ -1,67 +1,72 @@
-var analytics_init = (function () {
-	var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 1000;
-	var init = function () {
-		function selectSpecialty(e) {
-			e.preventDefault();
+const analytics_init = (function () {
+    const ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 1000;
+    return function () {
+        const $oescape_icon_btns = $('.oe-full-header .oescape-icon-btns a');
+        function selectSpecialty(e) {
+            e.preventDefault();
 
-			// display spinner
-			$('#js-analytics-spinner').show();
+            // display spinner
+            $('#js-analytics-spinner').show();
 
-			analytics_toolbox.hideDrillDownShowChart();
+            analytics_toolbox.hideDrillDownShowChart();
 
-			$(this).addClass('selected');
+            $(this).removeClass('inactive');
 
-			$('.select-analytics .oescape-icon-btns a').not(this).removeClass('selected');
+            $(this).addClass('active selected');
 
-			var target = $(this).data('link');
+            $oescape_icon_btns.not(this).removeClass('inactive selected');
+            $oescape_icon_btns.not(this).addClass('inactive');
 
-			analytics_dataCenter.ajax.setAjaxURL(target);
+            const target = $(this).data('link');
 
-			var specialty = analytics_toolbox.getCurrentSpecialty();
+            analytics_dataCenter.ajax.setAjaxURL(target);
 
-			$('.specialty').html(specialty);
+            const specialty = analytics_toolbox.getCurrentSpecialty();
 
-			$.ajax({
-				url: target,
-				type: "POST",
-				data: {
-					"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-					"specialty": specialty,
-				},
-				success: function (response) {
-					var data = JSON.parse(response);
-					analytics_dataCenter.specialtyData.setResponseData(data)
-					$('#sidebar').html(data['dom']['sidebar']);
-					$('#plot').html(data['dom']['plot']);
-					$('#plot').html(data['dom']['drill'])
-					if (specialty.toLowerCase() === 'cataract') {
-						$('#js-analytics-spinner').hide();
-						// clear search criteria when navigate to cataract screen
-						analytics_dataCenter.cataract.clearCataractSearchForm();
-						analytics_cataract(data['data']);
-						return;
-					}
-					// load Sidebar
-					analytics_sidebar();
-					// defaultly load Service screen
-					analytics_service();
-					// initialize datePicker
-					analytics_toolbox.initDatePicker();
-					// load drill down
-					analytics_drill_down();
-				},
-				complete: function () {
-					$('#js-analytics-spinner').hide();
-				},
-				error: function (jqXHR, textStatus, errorThrown) {
-					analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
-				}
-			});
-		}
-		// specialty options buttons: All CA GL MR
-		$('.select-analytics .oescape-icon-btns a').on('click', _.throttle(selectSpecialty, ajaxThrottleTime));
+            $('#specialty').text(specialty);
 
-		$('#js-all-specialty-tab').click();
-	}
-	return init;
-})()
+            $.ajax({
+                url: target,
+                type: "POST",
+                data: {
+                    "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+                    "specialty": specialty,
+                },
+                success: function (response) {
+                    const data = response;
+                    let $plot = $('#plot');
+                    analytics_dataCenter.specialtyData.setResponseData(data);
+                    $('#sidebar').html(data['dom']['sidebar']);
+                    $plot.html(data['dom']['plot']);
+                    $plot.html(data['dom']['drill']);
+                    if (specialty.toLowerCase() === 'cataract') {
+                        $('#js-analytics-spinner').hide();
+                        // clear search criteria when navigate to cataract screen
+                        analytics_dataCenter.cataract.clearCataractSearchForm();
+                        analytics_cataract(data['data']);
+                        return;
+                    }
+                    // load Sidebar
+                    analytics_sidebar();
+                    // defaultly load Service screen
+                    analytics_service();
+                    // initialize datePicker
+                    analytics_toolbox.initDatePicker();
+                    // load drill down
+                    analytics_drill_down(null);
+                },
+                complete: function () {
+                    $('#js-analytics-spinner').hide();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown);
+                }
+            });
+        }
+
+        // specialty options buttons: All CA GL MR
+        $oescape_icon_btns.on('click', _.throttle(selectSpecialty, ajaxThrottleTime));
+
+        $('#js-all-specialty-tab').click();
+    };
+})();

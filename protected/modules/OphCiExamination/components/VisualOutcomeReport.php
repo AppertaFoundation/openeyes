@@ -140,19 +140,15 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             )->join(
                 'et_ophciexamination_visualacuity pre_acuity',
                 'pre_examination.id = pre_acuity.event_id
-                AND (pre_acuity.eye_id = op_procedure.eye_id
-                OR pre_acuity.eye_id = 3)'
-            )->join(
-                'et_ophciexamination_visualacuity post_acuity',
+                AND (pre_acuity.eye_id & op_procedure.eye_id = op_procedure.eye_id)' // bitwise comparator to capture BEO records
+            )->join('et_ophciexamination_visualacuity post_acuity',
                 'post_examination.id = post_acuity.event_id
-                AND (post_acuity.eye_id = op_procedure.eye_id
-                OR post_acuity.eye_id = 3)'
-            )->join(
-                $table.' pre_reading',
+                AND (post_acuity.eye_id & op_procedure.eye_id = op_procedure.eye_id)' // bitwise comparator to capture BEO records
+            )->join($table.' pre_reading',
                 'pre_acuity.id = pre_reading.element_id
                 AND if (op_procedure.eye_id = 1, pre_reading.side = 1, if (op_procedure.eye_id = 2,
                                                                            pre_reading.side = 0,
-                                                                           pre_reading.side IS NOT NULL))'
+                                                                           pre_reading.side = 0 OR pre_reading.side = 1))' // ONLY L or R
             )->join($table.' post_reading', 'post_acuity.id = post_reading.element_id
                AND post_reading.side = pre_reading.side
                AND post_reading.method_id = pre_reading.method_id')

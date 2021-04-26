@@ -3,7 +3,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -30,7 +30,7 @@ class OEMigration extends CDbMigration
      * This method executes the specified SQL statement using {@link dbConnection}.
      *
      * @param string $sql the SQL statement to be executed
-     * @param array  $params input parameters (name=>value) for the SQL execution. See {@link CDbCommand::execute} for more details.
+     * @param array $params input parameters (name=>value) for the SQL execution. See {@link CDbCommand::execute} for more details.
      * @param string $message optional message to display instead of SQL
      */
     public function execute($sql, $params = array(), $message = null)
@@ -78,6 +78,14 @@ class OEMigration extends CDbMigration
         return true;
     }
 
+    protected function getDataDirectory($migrations_path, $data_directory = null)
+    {
+        if (!$data_directory) {
+            $data_directory = get_class($this);
+        }
+        return $migrations_path . '/data/' . $data_directory . '/';
+    }
+
     /**
      * Initialise tables with default data
      * Filenames must to be in the format "nn_tablename.csv", where nn is the processing order
@@ -85,10 +93,7 @@ class OEMigration extends CDbMigration
      */
     public function initialiseData($migrations_path, $update_pk = null, $data_directory = null)
     {
-        if (!$data_directory) {
-            $data_directory = get_class($this);
-        }
-        $data_path = $migrations_path . '/data/' . $data_directory . '/';
+        $data_path = $this->getDataDirectory($migrations_path, $data_directory);
         $this->csvFiles = glob($data_path . '*.csv');
 
         if ($this->testdata) {
@@ -174,6 +179,12 @@ class OEMigration extends CDbMigration
         }
     }
 
+    /**
+     * @param $migrationName
+     * @param $tables
+     * @return OEMigrationResult
+     * @throws OEMigrationException
+     */
     public function exportData($migrationName, $tables)
     {
         if (!is_writable($this->getMigrationPath())) {
@@ -217,7 +228,7 @@ class OEMigration extends CDbMigration
     }
 
     /**
-     * @param string         $migrationName - name of the migration, a folder with name will be created under data
+     * @param string $migrationName - name of the migration, a folder with name will be created under data
      * @param CDbTableSchema $table - name of the table being exported
      *
      * @return int - return totRows
@@ -271,8 +282,8 @@ class OEMigration extends CDbMigration
      * Create a table with the standard OE columns and options.
      *
      * @param string $name
-     * @param array  $columns
-     * @param bool   $versioned
+     * @param array $columns
+     * @param bool $versioned
      */
     protected function createOETable($name, array $columns, $versioned = false, $fk_prefix = null)
     {
@@ -360,23 +371,26 @@ class OEMigration extends CDbMigration
     /**
      * @param string $event_type Class name of event type
      * @param string $name Name of event
-     * @param array  $params Supported values and defaults are: class_name, display_order (1), default (false), required (false), parent_name (null)
+     * @param array $params Supported values and defaults are: class_name, display_order (1), default (false), required (false), parent_name (null)
      *
      * @return int Element type ID
      */
     protected function createElementType($event_type, $name, array $params = array())
     {
+        $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
+
         $row = array(
             'name' => $name,
-            'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_" . str_replace(' ', '', $name),
-            'event_type_id' => $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = ?', array($event_type))->queryScalar(),
+            'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_" . str_replace(' ',
+                    '', $name),
+            'event_type_id' => $event_type_id,
             'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
             'default' => isset($params['default']) ? $params['default'] : 0,
             'required' => isset($params['required']) ? $params['required'] : 0,
         );
 
         if (isset($params['group_name'])) {
-            $row['element_group_id'] = $this->getIdOfElementGroupByName($params['group_name']);
+            $row['element_group_id'] = $this->getIdOfElementGroupByName($params['group_name'], $event_type_id);
         }
 
         $this->insert('element_type', $row);
@@ -385,35 +399,105 @@ class OEMigration extends CDbMigration
     }
 
     /**
+     * @param $event_type
+     * @param $element_type_class
+     * @throws CException
+     */
+    protected function deleteElementType($event_type, $element_type_class)
+    {
+        $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
+        $element_type_id = $this->getIdOfElementTypeByClassName($element_type_class, $event_type_id);
+        $this->delete('ophciexamination_element_set_item', 'element_type_id = :element_type_id',
+            [':element_type_id' => $element_type_id]);
+        $this->delete('element_type', 'id = :id',
+            [':id' => $element_type_id]);
+    }
+
+
+    /**
      * @description used within subclasses to find out the element_type id based on Class Name
      *
-     * @param $className - string
-     *
+     * @param $class_name
+     * @param $event_type_id
      * @return mixed - the value of the id. False is returned if there is no value.
+     * @throws CException
      */
-    protected function getIdOfElementTypeByClassName($className)
+    protected function getIdOfElementTypeByClassName($class_name, $event_type_id = null)
     {
+        $where = 'class_name=:class_name';
+        $params = [':class_name' => $class_name];
+        if ($event_type_id !== null) {
+            $where .= ' AND event_type_id = :event_type_id';
+            $params[':event_type_id'] = $event_type_id;
+        }
+
         return $this->dbConnection->createCommand()
             ->select('id')
             ->from('element_type')
-            ->where('class_name=:class_name', array(':class_name' => $className))
+            ->where($where, $params)
             ->queryScalar();
     }
 
     /**
      * @description used within subclasses to find out the element_group id based on Name
      *
-     * @param $className - string
-     *
+     * @param string $name
+     * @param int|null $event_type_id
      * @return int - the value of the id. False is returned if there is no value.
+     * @throws CException
      */
-    protected function getIdOfElementGroupByName($name)
+    protected function getIdOfElementGroupByName($name, $event_type_id = null)
     {
-        return $this->dbConnection->createCommand()
+        $query = $this->dbConnection->createCommand()
             ->select('id')
-            ->from('element_group')
-            ->where('name = :name', array(':name' => $name))
-            ->queryScalar();
+            ->from('element_group');
+        if ($event_type_id !== null) {
+            $query->where('name = :name and event_type_id = :event_type_id', [
+                ':name' => $name,
+                ':event_type_id' => $event_type_id
+            ]);
+        } else {
+            $query->where('name = :name', array(':name' => $name));
+        }
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * @param $name
+     * @param $event_type
+     * @param int $display_order
+     * @return mixed|string
+     */
+    protected function createElementGroupForEventType($name, $event_type, $display_order = 1)
+    {
+        $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
+
+        $row = array(
+            'name' => $name,
+            'display_order' => $display_order,
+            'event_type_id' => $event_type_id,
+        );
+
+        $this->insert('element_group', $row);
+
+        return $this->dbConnection->lastInsertID;
+    }
+
+    /**
+     * @param $name
+     * @param $event_type
+     * @throws CException
+     */
+    protected function deleteElementGroupForEventType($name, $event_type)
+    {
+        $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
+        $this->delete(
+            'element_group',
+            'name = :name AND event_type_id = :event_type_id', [
+            ':name' => $name,
+            ':event_type_id' => $event_type_id
+        ]);
     }
 
     /**
@@ -421,6 +505,7 @@ class OEMigration extends CDbMigration
      *
      * @param $className
      * @return mixed - the value of the id. False is returned if there is no value.
+     * @throws CException
      */
     protected function getIdOfEventTypeByClassName($className)
     {
@@ -428,6 +513,20 @@ class OEMigration extends CDbMigration
             ->select('id')
             ->from('event_type')
             ->where('class_name=:class_name', array(':class_name' => $className))
+            ->queryScalar();
+    }
+
+    /**
+     * @param $name
+     * @return string
+     * @throws CException
+     */
+    protected function getIdOfSubspecialtyByName($name)
+    {
+        return $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('subspecialty')
+            ->where('LOWER(name)=:name', [':name' => strtolower($name)])
             ->queryScalar();
     }
 
@@ -495,7 +594,7 @@ class OEMigration extends CDbMigration
 
     /**
      * @param array $element_types
-     * @param int   $event_type_id
+     * @param int $event_type_id
      *
      * @return array - list of the element_types ids inserted
      */
@@ -506,26 +605,28 @@ class OEMigration extends CDbMigration
         foreach ($element_types as $element_type_class => $element_type_data) {
             $default = isset($element_type_data['default']) ? $element_type_data['default'] : 1;
             $confirmedDisplayOrder = isset($element_type_data['display_order']) ?
-            $element_type_data['display_order'] : $display_order * 10;
+                $element_type_data['display_order'] : $display_order * 10;
             $required = isset($element_type_data['required']) ? $element_type_data['required'] : null;
 
             $to_insert = array(
-                    'name' => $element_type_data['name'],
-                    'class_name' => $element_type_class,
-                    'event_type_id' => $event_type_id,
-                    'display_order' => $confirmedDisplayOrder,
-                    'default' => $default,
-                    'required' => $required,
-                );
+                'name' => $element_type_data['name'],
+                'class_name' => $element_type_class,
+                'event_type_id' => $event_type_id,
+                'display_order' => $confirmedDisplayOrder,
+                'default' => $default,
+                'required' => $required,
+            );
 
-            $element_type = Yii::app()->db->schema->getTable('element_type');
+            $element_type = $this->dbConnection->schema->getTable('element_type');
             if (isset($element_type->columns['element_group_id'])) {
                 //this is needed to se the parent id for those elements set as children elements of another element type
                 $thisGroupId = isset($element_type_data['element_group_id']) ? $element_type_data['element_group_id'] : null;
                 $to_insert['element_group_id'] = $thisGroupId;
-            } else if (isset($element_type->columns['parent_element_type_id'])) {
-                $thisParentId = isset($element_type_data['parent_element_type_id']) ? $this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : null;
-                $to_insert['parent_element_type_id'] = $thisParentId;
+            } else {
+                if (isset($element_type->columns['parent_element_type_id'])) {
+                    $thisParentId = isset($element_type_data['parent_element_type_id']) ? $this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : null;
+                    $to_insert['parent_element_type_id'] = $thisParentId;
+                }
             }
 
             $this->insert(
@@ -555,7 +656,7 @@ class OEMigration extends CDbMigration
      * @description method needed to delete records from multi key tables
      *
      * @param string $tableName
-     * @param array  $fieldsValsArray
+     * @param array $fieldsValsArray
      *                                example of fieldsValsArray
      *                                $fieldsValsArray should look like
      *
@@ -606,7 +707,7 @@ class OEMigration extends CDbMigration
     {
         $this->migrationEcho("Creating archive table for $table->name ...\n");
 
-        $a = Yii::app()->db->createCommand("show create table $table->name;")->queryRow();
+        $a = $this->dbConnection->createCommand("show create table $table->name;")->queryRow();
 
         $create = $a['Create Table'];
 
@@ -646,7 +747,7 @@ class OEMigration extends CDbMigration
             $create = preg_replace("/CONSTRAINT `{$key}`/", "CONSTRAINT `$_key`", $create);
         }
 
-        Yii::app()->db->createCommand($create)->query();
+        $this->dbConnection->createCommand($create)->query();
 
         $this->alterColumn("{$table->name}_version", 'id', 'int(10) unsigned NOT NULL');
         $this->dropPrimaryKey('id', "{$table->name}_version");
@@ -706,7 +807,7 @@ class OEMigration extends CDbMigration
         return;
     }
 
-    private function migrationEcho($msg)
+    protected function migrationEcho($msg)
     {
         if ($this->verbose) {
             echo $msg;
@@ -734,18 +835,21 @@ class OEMigration extends CDbMigration
 
         $default_code = $code;
 
-        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => strtolower($code)))->queryRow()) {
+        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code',
+            array(':code' => strtolower($code)))->queryRow()) {
             $n = '00';
-            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => 'z'.$n))->queryRow()) {
-                $n = str_pad((int) $n + 1, 2, '0', STR_PAD_LEFT);
+            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code',
+                array(':code' => 'z' . $n))->queryRow()) {
+                $n = str_pad((int)$n + 1, 2, '0', STR_PAD_LEFT);
             }
             $code = "z$n";
 
             echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
         }
 
-        if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('id = :id',array(':id' => $event_type_id))->queryScalar()){
-            $event_type_id = NULL;
+        if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('id = :id',
+            array(':id' => $event_type_id))->queryScalar()) {
+            $event_type_id = null;
         }
 
         $cols = array(
@@ -873,15 +977,17 @@ class OEMigration extends CDbMigration
             $this->renameColumn($table . '_version', $name, $newName);
         }
     }
-    
+
     public function removeOperationFromTask($oprn_name, $task_name)
     {
-        $this->delete('authitemchild', 'parent = :task_name and child = :oprn_name', array(":task_name" => $task_name, ':oprn_name' => $oprn_name));
+        $this->delete('authitemchild', 'parent = :task_name and child = :oprn_name',
+            array(":task_name" => $task_name, ':oprn_name' => $oprn_name));
     }
 
     public function removeTaskFromRole($task_name, $role_name)
     {
-        $this->delete('authitemchild', 'parent = :role_name and child = :task_name', array(":role_name" => $role_name, ':task_name' => $task_name));
+        $this->delete('authitemchild', 'parent = :role_name and child = :task_name',
+            array(":role_name" => $role_name, ':task_name' => $task_name));
     }
 
     public function removeRole($role_name)
@@ -907,7 +1013,7 @@ class OEMigration extends CDbMigration
      * @return int|null
      * @throws CException
      */
-    public function getSearchIndexByTerm(string $term, $parent_id = null) :? int
+    public function getSearchIndexByTerm(string $term, $parent_id = null): ?int
     {
         $params[] = $term;
         if ($parent_id) {
@@ -930,7 +1036,7 @@ class OEMigration extends CDbMigration
      */
     protected function verifyTableVersioned($table_name, $warn = true)
     {
-        if (Yii::app()->db->schema->getTable($table_name . '_version') !== null) {
+        if ($this->dbConnection->schema->getTable($table_name . '_version') !== null) {
             return true;
         }
         if ($warn) {
@@ -941,14 +1047,45 @@ class OEMigration extends CDbMigration
         return false;
     }
 
-    protected function renameOETable($current_name, $new_name, $versioned=false){
-        $this->renameTable($current_name, $new_name);
-
-        if($versioned && $this->verifyTableVersioned($current_name)){
-            $this->renameTable($current_name.'_version', $new_name.'_version');
-        }
-
+    protected function verifyTableExists($table_name)
+    {
+        return $this->dbConnection->schema->getTable($table_name) !== null;
     }
 
+    /**
+     * remove the given setting for the given class from metadata and the various context
+     * setting tables
+     *
+     * @param $keyName
+     * @param null $element_cls
+     * @throws CException
+     */
+    protected function removeOESettingForElementType($keyName, $element_cls = null)
+    {
+        $conditions = "`key`= ?";
+        $params = [$keyName];
 
+        if ($element_cls) {
+            $conditions .= ' AND element_type_id = ?';
+            $params[] = $this->getIdOfElementTypeByClassName($element_cls);
+        }
+
+        foreach (array_keys(SettingMetadata::$CONTEXT_CLASSES) as $cls) {
+            $context_table_name = $cls::model()->tableName();
+            if ($this->verifyTableExists($context_table_name)) {
+                $this->delete($context_table_name, $conditions, $params);
+            }
+        }
+
+        $this->delete('setting_metadata', $conditions, $params);
+    }
+
+    protected function renameOETable($current_name, $new_name, $versioned = false)
+    {
+        $this->renameTable($current_name, $new_name);
+
+        if ($versioned && $this->verifyTableVersioned($current_name)) {
+            $this->renameTable($current_name . '_version', $new_name . '_version');
+        }
+    }
 }

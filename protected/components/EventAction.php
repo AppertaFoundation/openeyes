@@ -95,6 +95,10 @@ class EventAction
             $label = '<i class="oe-i print"></i>';
             $this->htmlOptions['class'] .= ' icon';
         }
+        if ($this->options['level'] === 'read') {
+            $label .= '<i class="oe-i save small pad-left selected"></i>';
+            $this->htmlOptions['class'] .= ' icon';
+        }
 
         if ($this->options['disabled']) {
             $this->htmlOptions['class'] .= ' disabled';

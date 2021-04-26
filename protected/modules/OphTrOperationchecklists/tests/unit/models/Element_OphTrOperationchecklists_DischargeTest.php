@@ -22,7 +22,10 @@ class Element_OphTrOperationchecklists_DischargeTest extends ActiveRecordTestCas
     public $fixtures = array(
         'event' => Event::class,
         'element_type' => ElementType::class,
-        'event_type' => EventType::class
+        'event_type' => EventType::class,
+        'ophtroperationchecklists_questions' => OphTrOperationchecklists_Questions::class,
+        'ophtroperationchecklists_answers' => OphTrOperationchecklists_Answers::class,
+        'ophtroperationchecklists_question_answer_assignment' => OphTrOperationchecklists_QuestionAnswerAssignment::class,
     );
     public $elementIds = array();
 
@@ -70,9 +73,9 @@ class Element_OphTrOperationchecklists_DischargeTest extends ActiveRecordTestCas
 
         $elementType = $this->element_type('admission');
         // get the first radio button
-        $question = OphTrOperationchecklists_Questions::model()->find('element_type_id = ? AND type = ?', array($elementType->id, 'RADIO'));
+        $question = OphTrOperationchecklists_Questions::model()->find('element_type_id = :element_type_id AND type = :type', array(':element_type_id' => $elementType->id, ':type' => 'RADIO'));
         $answerIds = [];
-        $questionAnswerAssignments = OphTrOperationchecklists_QuestionAnswerAssignment::model()->findAll('question_id = ?', array($question->id));
+        $questionAnswerAssignments = OphTrOperationchecklists_QuestionAnswerAssignment::model()->findAll('question_id = :question_id', array(':question_id' => $question->id));
         foreach ($questionAnswerAssignments as $questionAnswerAssignment) {
             $answerIds[] = $questionAnswerAssignment->answer_id;
         }
@@ -92,7 +95,7 @@ class Element_OphTrOperationchecklists_DischargeTest extends ActiveRecordTestCas
             $element->dischargeChecklistResults = array($result);
             $element->saveDischargeData();
 
-            $checklist_results = OphTrOperationchecklists_DischargeResults::model()->findAll('element_id = ? AND question_id = ?', array($element->id, $question->id));
+            $checklist_results = OphTrOperationchecklists_DischargeResults::model()->findAll('element_id = :element_id AND question_id = :question_id', array(':element_id' => $element->id, ':question_id' => $question->id));
 
             // check the table contains a single row with the correct data.
             $this->assertCount(1, $checklist_results);
@@ -102,7 +105,7 @@ class Element_OphTrOperationchecklists_DischargeTest extends ActiveRecordTestCas
     public function tearDown()
     {
         foreach ($this->elementIds as $id) {
-            foreach (OphTrOperationchecklists_DischargeResults::model()->findAll('element_id = ?', array($id)) as $t) {
+            foreach (OphTrOperationchecklists_DischargeResults::model()->findAll('element_id = :element_id', array(':element_id' => $id)) as $t) {
                 $t->noVersion()->delete();
             }
             Element_OphTrOperationchecklists_Discharge::model()->noVersion()->deleteByPk($id);

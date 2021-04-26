@@ -21,6 +21,7 @@ $this->widget('MultiSelectList', array(
                 'field' => $params['field']."[$i]",
                 'relation' => $params['field'],
                 'relation_id_field' => 'id',
+                'selected_ids' => $_POST[$params['field']][$i] ?? [],
                 'htmlOptions' => @$params['htmlOptions'],
                 'options' => @$params['options'],
                 'noSelectionsMessage' => @$params['noSelectionsMessage'],

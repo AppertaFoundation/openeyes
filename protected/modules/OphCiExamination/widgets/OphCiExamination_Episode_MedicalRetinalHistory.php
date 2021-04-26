@@ -23,21 +23,23 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
 
     protected $injections = array();
 
-
-    public function run_right_side(){
-        $this->render(get_class($this).'_Right');
+    /**
+     * @throws CException
+     * @phpcs:disable  PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
+    public function run_right_side()
+    {
+        $this->render(get_class($this) . '_Right');
     }
 
-    public function run_oescape($widgets_no = 1){
-        $va_unit_id = @$_GET[$this->va_unit_input] ?:
-        SettingMetadata::model()->getSetting(
-            'unit_id',
-            ElementType::model()->find(
-                'class_name=?',
-                array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
-            )
-        );
-        $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
+    /**
+     * @param int $widgets_no
+     * @throws CException
+     * @phpcs:disable  PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
+    public function run_oescape($widgets_no = 1)
+    {
+        $this->resolveVAUnit();
 
         $va_ticks = $this->getChartTicks();
 

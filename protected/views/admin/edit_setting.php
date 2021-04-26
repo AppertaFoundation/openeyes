@@ -14,11 +14,9 @@
  */
 ?>
 
-
-<div class="cols-7">
-
+<div>
     <div class="row divider">
-        <h2>Edit setting</h2>
+        <h2>Edit setting: <?= $metadata->name ?></h2>
     </div>
 
     <?php
@@ -29,48 +27,29 @@
         'layoutColumns' => array(
             'label' => 2,
             'field' => 5,
-        ),
-    )) ?>
-
-    <table class="cols-full last-left standard">
-        <colgroup>
-            <col class="cols-1">
-            <col class="cols-1">
-        </colgroup>
-        <tbody>
-        <tr>
-
-            <td><?= $metadata->name ?></td>
-            <td>
-                <?php
-                $this->renderPartial(
-                    '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
-                    ['metadata' => $metadata, 'allowed_classes' => $allowed_classes]
-                );
-                ?>
-            </td>
-        </tr>
-        </tbody>
-        <tfoot class="pagination-container">
-        <tr>
-            <td colspan="2">
-                <?= CHtml::submitButton('Save', [
-                        'class' => 'button large',
-                        'name' => 'save',
-                        'id' => 'et_save'
-                    ]);
+        )))?>
+    <?php
+        $this->renderPartial(
+            '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
+            ['metadata' => $metadata, 'allowed_classes' => $allowed_classes]
+        );
+        ?>
+    <hr class="divider">
+    <div class="row">
+        <?= CHtml::submitButton('Save ' . $metadata->name, [
+                'class' => 'green hint',
+                'name' => 'save',
+                'id' => 'et_save'
+            ]);
 ?>
 
-                <?= CHtml::submitButton('Cancel', [
-                        'class' => 'button large',
-                        'name' => 'cancel',
-                        'id' => 'et_cancel'
-                    ]);
+        <?= CHtml::submitButton('Cancel', [
+                'class' => 'blue hint',
+                'name' => 'cancel',
+                'id' => 'et_cancel'
+            ]);
 ?>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
+    </div>
 
     <?php $this->endWidget() ?>
 </div>

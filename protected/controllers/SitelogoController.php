@@ -48,7 +48,7 @@ class SiteLogoController extends BaseController
         } else {
             $logo = SiteLogo::model()->findByPk(1);
         }
-        
+
         if (!$logo) {
             // THen return that url
             $url = $logo->getImageUrl($logo_type);
@@ -91,7 +91,7 @@ class SiteLogoController extends BaseController
         $criteria->addCondition('id = :logo_id');
         $criteria->params[':logo_id'] = $id;
         $logo = SiteLogo::model()->find($criteria);
-        
+
         if ($secondary_logo) {
             if (!$logo->secondary_logo) {
                 $criteria = new CDbCriteria();
@@ -122,8 +122,7 @@ class SiteLogoController extends BaseController
         $headers = $this->getRequestHeaders();
 
         header('Content-type: image/png');
-        header('Cache-Control: public');
-        header('Pragma:');
+        header('Cache-Control: public, max-age=31536000, immutable');
         // Check if the client is validating his cache and if it is current.
         if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $file_mod_time)) {
             // Client's cache IS current, so we just respond '304 Not Modified'.

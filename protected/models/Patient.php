@@ -383,11 +383,11 @@ class Patient extends BaseActiveRecordVersioned
             'date_of_death' => 'Date of Death',
             'gender' => 'Gender',
             'ethnic_group_id' => 'Ethnic Group',
-            'hos_num' => Yii::app()->params['hos_num_label'],
-            'nhs_num' => Yii::app()->params['nhs_num_label'],
+            'hos_num' => \SettingMetadata::model()->getSetting('hos_num_label'),
+            'nhs_num' => \SettingMetadata::model()->getSetting('nhs_num_label'),
             'deleted' => 'Is Deleted',
-            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'] . ' Status',
-            'gp_id' => Yii::app()->params['general_practitioner_label'],
+            'nhs_num_status_id' => \SettingMetadata::model()->getSetting('nhs_num_label') . ' Status',
+            'gp_id' => \SettingMetadata::model()->getSetting('general_practitioner_label'),
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',
             'patient_source' => 'Patient Source'
@@ -490,6 +490,8 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->addCondition("hos_num = :hos_num OR nhs_num = :nhs_num");
             $criteria->params[':nhs_num'] = $this->nhs_num;
             $criteria->params[':hos_num'] = $this->hos_num;
+        } elseif (strlen($this->nhs_num) == $nhs_num_length) {
+            $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
             if (strlen($this->nhs_num) === (int)$nhs_num_length) {
                 $criteria->compare('nhs_num', $this->nhs_num, false);

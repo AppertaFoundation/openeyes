@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Class TrialTest
+ *
+ * @method trial($fixtureId)
+ * @method trial_patient_status($fixtureId)
+ * @method user($fixtureId)
+ * @method patient($fixtureId)
+ * @method treatment_type($fixtureId)
+ * @method trial_patient($fixtureId)
+ * @method trial_permission($fixtureId)
+ * @method user_trial_assignment($fixtureId)
+ */
 class TrialTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
@@ -19,11 +31,14 @@ class TrialTest extends ActiveRecordTestCase
         return Trial::model();
     }
 
-    public static function setupBeforeClass()
+    public static function setupBeforeClass() : void
     {
         Yii::app()->getModule('OETrial');
     }
 
+    /**
+     * @throws Exception
+     */
     public function testTitle()
     {
         $trial = new Trial();
@@ -49,7 +64,7 @@ class TrialTest extends ActiveRecordTestCase
         $trial = new Trial();
         $trial->started_date = date('Y-m-d', strtotime('1970-01-01'));
         $trial->closed_date = date('Y-m-d', strtotime('2012-12-21'));
-        $this->assertEquals($trial->getClosedDateForDisplay(), '21 Dec 2012');
+        $this->assertEquals('21 Dec 2012', $trial->getClosedDateForDisplay());
 
         $trial->closed_date = date('Y-m-d', strtotime('1972-1-1'));
         $this->assertEquals('1 Jan 1972', $trial->getClosedDateForDisplay());
@@ -218,6 +233,9 @@ class TrialTest extends ActiveRecordTestCase
         $this->assertTrue((bool)$trial->getUserPermission($this->user('user3')->id)->can_view);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testAddPatient()
     {
         /* @var Trial $trial */
@@ -240,6 +258,9 @@ class TrialTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function testRemovePatient()
     {
         /* @var TrialPatient $trialPatient */
@@ -268,6 +289,9 @@ class TrialTest extends ActiveRecordTestCase
         ), 'The patient should no longer be in the trial');
     }
 
+    /**
+     * @throws Exception
+     */
     public function testAddUserPermission()
     {
         /* @var Trial $trial2 */
@@ -283,6 +307,9 @@ class TrialTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function testAddUserPermissionClash()
     {
         /* @var Trial $trial */
@@ -297,6 +324,9 @@ class TrialTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function testRemoveUserPermission()
     {
         /* @var Trial $trial */
@@ -311,6 +341,9 @@ class TrialTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function testRemoveOwner()
     {
         /* @var Trial $trial */
@@ -325,6 +358,9 @@ class TrialTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function testCloseTrial()
     {
         /* @var Trial $trial */
@@ -336,6 +372,9 @@ class TrialTest extends ActiveRecordTestCase
         $this->assertEquals(0, $trial->is_open, 'The trial should now be closed');
     }
 
+    /**
+     * @throws Exception
+     */
     public function testReopenTrial()
     {
         /* @var Trial $trial */
@@ -347,6 +386,9 @@ class TrialTest extends ActiveRecordTestCase
         $this->assertEquals(1, $trial->is_open, 'The trial should now be open');
     }
 
+    /**
+     * @throws Exception
+     */
     public function testClosingTrialDoesNotSetClosedDateIfNotEmpty()
     {
         /* @var Trial $trial */

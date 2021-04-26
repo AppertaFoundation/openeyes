@@ -24,6 +24,8 @@ namespace OEModule\OphCoMessaging\models;
  *
  * @property string $id
  * @property string $name
+ * @property int $display_order
+ * @property int $reply_required
  *
  * The followings are the available model relations:
  * @property ElementType $element_type
@@ -58,9 +60,9 @@ class OphCoMessaging_Message_MessageType extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name', 'safe'),
-            array('name', 'required'),
-            array('id, name', 'safe', 'on' => 'search'),
+            array('name, display_order, reply_required', 'safe'),
+            array('name, display_order', 'required'),
+            array('id, name, display_order, reply_required', 'safe', 'on' => 'search'),
         );
     }
 
@@ -97,6 +99,8 @@ class OphCoMessaging_Message_MessageType extends \BaseActiveRecordVersioned
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('display_order', $this->display_order, true);
+        $criteria->compare('reply_required', $this->reply_required, true);
 
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

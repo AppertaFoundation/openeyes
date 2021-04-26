@@ -19,6 +19,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\widgets\Contacts as ContactsWidget;
+
 class Element_OphCiExamination_Contacts extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
@@ -26,7 +28,7 @@ class Element_OphCiExamination_Contacts extends \BaseEventTypeElement
     protected $auto_validate_relations = true;
 
     protected $default_from_previous = true;
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\Contacts';
+    protected $widgetClass = ContactsWidget::class;
     /**
      * @return string the associated database table name
      */

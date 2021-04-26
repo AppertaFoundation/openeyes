@@ -14,7 +14,6 @@
 			this.latchable = this.options.latchable;
 			this.isLatched = false;
 			this.css = this.options.css;
-			this.closeBtn = $(".oe-i.remove-circle.medium");
 			this.init();
     }
 
@@ -47,7 +46,6 @@
                   popup.groupController.adjustLeft(popup.button, popup.content);
                 }
             }
-            popup.button.addClass(popup.css.active);
             // show the close icon only when the user “clicks“ the button to open a panel
             $($(popup.content).find(popup.closeBtn)).show();
 
@@ -56,12 +54,7 @@
               popup.hide();
             });
         }).mouseenter(function () {
-            if (popup.isLatched) {
-                $($(popup.content).find(popup.closeBtn)).show();
-                return;
-            }else{
-                $($(popup.content).find(popup.closeBtn)).hide();
-            }
+
             if (popup.groupController){
             	  popup.groupController.closeAll();
             	  popup.groupController.unlockAll();
@@ -94,7 +87,7 @@
                     if(closeContent){
                         // Close if mouse leaves btn
                         popup.hide();
-                    }                   
+                    }
                 },10);
             }
         });

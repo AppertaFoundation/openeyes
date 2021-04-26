@@ -1,10 +1,10 @@
-.trial-count{
+.trial-count {
     display: inline-block;
     padding: 0 6px 5px 6px;
     border-left: 1px solid #26303d;
 }
 
-.trial-count em{
+.trial-count em {
     opacity: 0.5;
 }
 
@@ -15,4 +15,3 @@
 .parameter-option {
     padding-right: 15px
 }
-

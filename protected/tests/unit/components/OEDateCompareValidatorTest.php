@@ -17,6 +17,10 @@
  */
 class OEDateCompareValidatorTest extends BasePHPUnit
 {
+    /**
+     * @param bool $expect_message
+     * @throws ReflectionException
+     */
     public function doValidateAttribute($expect_message = false)
     {
         $attr = new DateTime('2015-05-06');
@@ -66,16 +70,28 @@ class OEDateCompareValidatorTest extends BasePHPUnit
         $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
+    /**
+     * @covers OEDateCompareValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttributeSuccess()
     {
         $this->doValidateAttribute();
     }
 
+    /**
+     * @covers OEDateCompareValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttributeFailure()
     {
         $this->doValidateAttribute(true);
     }
 
+    /**
+     * @covers OEDateCompareValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttributeEmptyValue()
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
@@ -98,6 +114,10 @@ class OEDateCompareValidatorTest extends BasePHPUnit
         $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
+    /**
+     * @covers OEDateCompareValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttributeEmptyValue_allowed()
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
@@ -121,6 +141,10 @@ class OEDateCompareValidatorTest extends BasePHPUnit
         $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
+    /**
+     * @covers OEDateCompareValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttributeCompareEmptyValue()
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
@@ -143,6 +167,10 @@ class OEDateCompareValidatorTest extends BasePHPUnit
         $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
+    /**
+     * @covers OEDateCompareValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttributeCompareEmptyValue_allowed()
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
@@ -166,6 +194,10 @@ class OEDateCompareValidatorTest extends BasePHPUnit
         $m->invokeArgs($validator, array($obj, 'attr'));
     }
 
+    /**
+     * @covers OEDateCompareValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttributeInvalidValues()
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
@@ -202,7 +234,9 @@ class OEDateCompareValidatorTest extends BasePHPUnit
     }
 
     /**
+     * @covers       OEDateCompareValidator
      * @dataProvider compareProvider
+     * @throws CException
      */
     public function test_doComparison($value, $compare, $op, $pass)
     {

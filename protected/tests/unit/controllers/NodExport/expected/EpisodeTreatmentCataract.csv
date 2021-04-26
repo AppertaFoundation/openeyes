@@ -1,0 +1,3 @@
+TreatmentId,IsFirstEye,PreparationDrugId,IncisionSiteId,IncisionLengthId,IncisionPlanesId,IncisionMeridean,PupilSizeId,IolPositionId,IOLModelId,IOLPower,PredictedPostOperativeRefraction,WoundClosureId
+104299,1,,4,2.8,4,180,,8,MA60AC,25.50,-0.50,
+218601,1,,4,2.8,4,0,,8,MA60AC,24.50,0.20,

@@ -16,9 +16,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-logo.svg';
 $settings = new SettingMetadata();
-$tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']): htmlspecialchars($settings->getSetting('tech_support_provider'));
+$tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']) : htmlspecialchars($settings->getSetting('tech_support_provider'));
 $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'))
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
@@ -56,10 +57,11 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
     <h4>Support</h4>
     <p>
     <span class="large-text"> Need Help?&nbsp;
+        <?php  $purifier = new CHtmlPurifier(); ?>
         <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
-          <?= Yii::app()->params['helpdesk_phone'] ? htmlspecialchars(Yii::app()->params['helpdesk_phone']): null ?>
-          <?= Yii::app()->params['helpdesk_email'] ? htmlspecialchars(Yii::app()->params['helpdesk_email']): null ?>
-          <?= Yii::app()->params['helpdesk_hours'] ? "<br/>(". htmlspecialchars(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
+            <?= Yii::app()->params['helpdesk_phone'] ? $purifier->purify(Yii::app()->params['helpdesk_phone']) : null ?>
+            <?= Yii::app()->params['helpdesk_email'] ? $purifier->purify(Yii::app()->params['helpdesk_email']) : null ?>
+            <?= Yii::app()->params['helpdesk_hours'] ? "<br/>(" . $purifier->purify(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
         <?php elseif ($tech_support_provider) : ?>
           <a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a>
         <?php endif; ?>

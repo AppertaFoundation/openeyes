@@ -172,7 +172,7 @@ class Gp extends BaseActiveRecordVersioned
     public function getLetterAddress($params = array())
     {
         if (!isset($params['patient'])) {
-            throw new Exception('Patient must be passed for '.Yii::app()->params['gp_label'].' contacts.');
+            throw new Exception('Patient must be passed for '.\SettingMetadata::model()->getSetting('gp_label').' contacts.');
         }
 
         $contact = $address = null;
@@ -196,7 +196,7 @@ class Gp extends BaseActiveRecordVersioned
      */
     public function getPrefix()
     {
-        return \Yii::app()->params['gp_label'];
+        return SettingMetadata::model()->getSetting('gp_label');
     }
 
     /**

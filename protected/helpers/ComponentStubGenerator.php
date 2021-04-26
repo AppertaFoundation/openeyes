@@ -26,11 +26,12 @@ class ComponentStubGenerator
     /**
      * @param string $class_name
      * @param array $properties
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return PHPUnit\Framework\MockObject\MockObject
+     * @throws ReflectionException
      */
     public static function generate($class_name, array $properties = array())
     {
-        $stub = (new PHPUnit_Framework_MockObject_Generator())->getMock($class_name, array(), array(), '', false, false, true, false);
+        $stub = (new PHPUnit\Framework\MockObject\Generator())->getMock($class_name, array(), array(), '', false, false, true, false);
 
 
         self::propertiesSetAndMatch($stub, $properties);
@@ -39,10 +40,10 @@ class ComponentStubGenerator
     }
 
     /**
-     * iteratest through properties to set values on the stub that exists on the stub class. If $force is true,
+     * Iterates through properties to set values on the stub that exists on the stub class. If $force is true,
      * will set the value regardless of whether or not the property exists on the element.
      *
-     * @param $stub PHPUnit_Framework_MockObject_MockObject
+     * @param $stub PHPUnit\Framework\MockObject\MockObject
      * @param array $properties
      * @param bool  $force
      */
@@ -59,46 +60,51 @@ class ComponentStubGenerator
     }
 }
 
-class ComponentStubMatcher implements PHPUnit_Framework_MockObject_Matcher_Invocation
+class ComponentStubMatcher implements PHPUnit\Framework\MockObject\Matcher\Invocation
 {
-    protected $properties;
+    protected array $properties;
 
     public function __construct(array $properties)
     {
         $this->properties = $properties;
     }
 
-    public function toString()
+    public function toString() : string
     {
-        echo 'Component stub matcher';
+        return 'Component stub matcher';
+    }
+
+    public function hasMatchers()
+    {
+        return true;
     }
 
     /**
-     * @param PHPUnit_Framework_MockObject_Invocation $invocation
-     * @return bool|mixed|null
+     * @param PHPUnit\Framework\MockObject\Invocation $invocation
+     * @return bool|mixed|void
      */
-    public function matches(PHPUnit_Framework_MockObject_Invocation $invocation)
+    public function matches(PHPUnit\Framework\MockObject\Invocation $invocation)
     {
-        if ($invocation->methodName === '__set') {
-            $this->properties[$invocation->parameters[0]] = $invocation->parameters[1];
-            return null;
+        if ($invocation->getMethodName() === '__set') {
+            $this->properties[$invocation->getParameters()[0]] = $invocation->getParameters()[1];
+            return;
         }
 
-        if ($invocation->methodName === '__get' || $invocation->methodName === '__isset') {
-            return array_key_exists($invocation->parameters[0], $this->properties);
+        if ($invocation->getMethodName() === '__get' || $invocation->getMethodName() === '__isset') {
+            return array_key_exists($invocation->getParameters()[0], $this->properties);
         }
 
         return $this->methodNameToProperty($invocation, true);
     }
 
-    public function invoked(PHPUnit_Framework_MockObject_Invocation $invocation)
+    public function invoked(PHPUnit\Framework\MockObject\Invocation $invocation)
     {
-        if ($invocation->methodName === '__get') {
-            return $this->properties[$invocation->parameters[0]];
+        if ($invocation->getMethodName() === '__get') {
+            return $this->properties[$invocation->getParameters()[0]];
         }
 
-        if ($invocation->methodName === '__isset') {
-            return isset($this->properties[$invocation->parameters[0]]);
+        if ($invocation->getMethodName() === '__isset') {
+            return isset($this->properties[$invocation->getParameters()[0]]);
         }
 
         return $this->methodNameToProperty($invocation, false);
@@ -108,9 +114,9 @@ class ComponentStubMatcher implements PHPUnit_Framework_MockObject_Matcher_Invoc
     {
     }
 
-    protected function methodNameToProperty(PHPUnit_Framework_MockObject_Invocation $invocation, $return_bool)
+    protected function methodNameToProperty(PHPUnit\Framework\MockObject\Invocation $invocation, $return_bool)
     {
-        if (preg_match('/^get(.*)$/', $invocation->methodName, $matches) && count($invocation->parameters) === 0) {
+        if (preg_match('/^get(.*)$/', $invocation->getMethodName(), $matches) && count($invocation->getParameters()) === 0) {
             $search = strtolower($matches[1]);
             foreach ($this->properties as $name => $value) {
                 if (strtolower($name) === $search) {

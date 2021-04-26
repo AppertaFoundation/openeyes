@@ -40,6 +40,7 @@ class WorklistDefinitionMappingTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers WorklistDefinitionMapping
      * @dataProvider updateValues_Provider
      *
      * @param $values
@@ -70,6 +71,7 @@ class WorklistDefinitionMappingTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers WorklistDefinitionMapping
      * @dataProvider updateValues_Provider
      *
      * @param $values

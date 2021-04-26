@@ -24,9 +24,12 @@ if ($this->isRequired($element)) {
     $section_classes[] = 'required';
 }
 if ($this->isHiddenInUI($element)) {
-    $section_classes[] = 'hide';
+    $section_classes[] = 'hidden';
 }
-if (is_subclass_of($element, 'SplitEventTypeElement')) {
+if (
+    is_subclass_of($element, 'SplitEventTypeElement')
+    || is_subclass_of($element, \OEModule\OphCiExamination\models\interfaces\SidedData::class)
+) {
     $section_classes[] = 'eye-divider';
 }
 
@@ -60,6 +63,13 @@ $set_id = isset($this->set) ? $this->set->id : null;
                 <input type="hidden" name="[element_removed]<?php echo $model_name?>" value="0">
                 <!-- Element title -->
                 <h3 class="element-title"><?php echo $element->getFormTitle() ?></h3>
+                <?php if (isset($this->clips['element-header-additional'])) { ?>
+                    <?php
+                    $this->renderClip('element-header-additional');
+                    // don't want the header clip to repeat in child elements
+                    unset($this->clips['element-header-additional']);
+                    ?>
+                <?php } ?>
             </header>
             <!-- Additional element title information -->
             <?php if (isset($this->clips['element-title-additional'])) { ?>

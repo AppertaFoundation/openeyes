@@ -32,11 +32,13 @@ class WorklistDefinitionDisplayContextTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers WorklistDefinitionDisplayContext
      * @dataProvider checkSiteProvider
      *
      * @param $context_attrs
      * @param $site_attrs
      * @param $expected
+     * @throws ReflectionException
      */
     public function test_checkSite($context_attrs, $site_attrs, $expected)
     {
@@ -62,11 +64,13 @@ class WorklistDefinitionDisplayContextTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers WorklistDefinitionDisplayContext
      * @dataProvider checkFirmProvider
      *
      * @param $context_attrs
      * @param $firm_attrs
      * @param $expected
+     * @throws ReflectionException
      */
     public function test_checkFirm($context_attrs, $firm_attrs, $expected)
     {

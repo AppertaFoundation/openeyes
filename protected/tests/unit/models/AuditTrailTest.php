@@ -49,7 +49,7 @@ class AuditTrailTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AuditTrail::model
+     * @covers AuditTrail
      */
     public function testModel()
     {
@@ -57,7 +57,7 @@ class AuditTrailTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AuditTrail::tableName
+     * @covers AuditTrail
      */
     public function testTableName()
     {
@@ -65,7 +65,10 @@ class AuditTrailTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers       AuditTrail
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $expectedKeys)
     {

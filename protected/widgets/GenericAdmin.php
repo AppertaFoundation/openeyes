@@ -27,6 +27,7 @@ class GenericAdmin extends BaseCWidget
     public $no_form = false;
     public $input_class;
     public $return_url;
+    public $action_links;
 
     public function init()
     {

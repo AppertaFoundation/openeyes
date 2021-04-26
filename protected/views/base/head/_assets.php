@@ -52,6 +52,8 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.ItemSet.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.PrescriptionDialog.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.Util.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.QuerySearchDialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.InputFieldValidation.js');?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.LightningViewer.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnPopup.js')?>
@@ -62,6 +64,8 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Widgets.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.FieldImages.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Window.js'); ?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.ElementController.js'); ?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.ElementController.MultiRow.js'); ?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.Form.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Search.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.CopyToClipboard.js')?>
@@ -74,3 +78,4 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('../../node_modules/pickmeup/js/pickmeup.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('../../node_modules/tinymce/tinymce.js');?>
 <?php $assetManager->registerScriptFile('../../node_modules/lodash/lodash.min.js');?>
+

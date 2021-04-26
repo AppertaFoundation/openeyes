@@ -39,7 +39,7 @@ class AssessmentEntry extends \BaseActiveRecordVersioned
         // will receive user inputs.
         return [
             ['element_id, last_modified_user_id, created_user_id', 'length', 'max' => 10],
-            ['crt,cst,avg_thickness,total_vol,irf,srf,cysts,retinal_thickening,ped,cmo,dmo,heamorrhage,exudates,avg_rnfl,cct,cd_ratio, eye_id, comments, abac_json', 'safe'],
+            ['crt,cst,avg_thickness,total_vol,irf,srf,cysts,retinal_thickening,ped,cmo,dmo,heamorrhage,exudates,avg_rnfl,cct,cd_ratio, eye_id, comments, abac_json, md, vfi', 'safe'],
             ['crt,cst,avg_thickness,total_vol,irf,srf,cysts,retinal_thickening,ped,cmo,dmo,heamorrhage,exudates,avg_rnfl,cct,cd_ratio', 'numerical', 'max' => 1000000000],
             ['id, element_id, last_modified_user_id, last_modified_date, created_user_id, created_date, eye_id', 'safe', 'on' => 'search'],
         ];

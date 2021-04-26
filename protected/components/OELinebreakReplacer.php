@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2020
  *
  * This file is part of OpenEyes.
@@ -20,8 +20,13 @@ class OELinebreakReplacer
 {
     public static function replace($text)
     {
-        $text = preg_replace('/(\n[\n]+|\r\n[\r\n]+|\r[\r]+)/', '<i class="oe-i d-slash small pad"></i>', $text);
+        $text = preg_replace('/(\n[\n]+|\r\n[\r\n]+|\r[\r]+)/', '<i class="oe-i d-slash small pad"></i>', trim($text));
         $text = preg_replace('/(\n|\r\n|\r)/', '<i class="oe-i line-break"></i>', $text);
         return $text;
+    }
+
+    public static function plainTextReplace($text)
+    {
+        return preg_replace('/[\n\r]+/', " ", trim($text));
     }
 }

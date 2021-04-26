@@ -332,7 +332,7 @@ class PatientController extends BaseController
 
                 $message = 'Sorry, no results ';
                 if ($search_terms['hos_num']) {
-                    $message .= 'for ' . Yii::app()->params['hos_num_label'] . ' <strong>"' . $search_terms['hos_num'] . '"</strong>';
+                    $message .= 'for ' . \SettingMetadata::model()->getSetting('hos_num_label') . ' <strong>"' . $search_terms['hos_num'] . '"</strong>';
 
                     // check if the record was merged into another record
                     $criteria = new CDbCriteria();
@@ -345,7 +345,7 @@ class PatientController extends BaseController
                         $message = 'Hospital Number <strong>' . $search_terms['hos_num'] . '</strong> was merged into <strong>' . $patientMergeRequest->primary_hos_num . '</strong>';
                     }
                 } elseif ($search_terms['nhs_num']) {
-                    $message .= 'for ' . Yii::app()->params['nhs_num_label'] . ' <strong>"' . $search_terms['nhs_num'] . '"</strong>';
+                    $message .= 'for ' . \SettingMetadata::model()->getSetting('nhs_num_label') . ' <strong>"' . $search_terms['nhs_num'] . '"</strong>';
                 } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
                     $message .= 'for Patient Name <strong>"' . $search_terms['first_name'] . ' ' . $search_terms['last_name'] . '"</strong>';
                 } else {
@@ -945,7 +945,7 @@ class PatientController extends BaseController
         }
 
         // Don't assign the patient's own GP
-        if ($contact->label == Yii::app()->params['general_practitioner_label']) {
+        if ($contact->label == \SettingMetadata::model()->getSetting('general_practitioner_label')) {
             if ($gp = Gp::model()->find('contact_id=?', array($contact->id))) {
                 if ($gp->id == $patient->gp_id) {
                     return;

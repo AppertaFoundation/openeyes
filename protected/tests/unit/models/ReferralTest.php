@@ -7,7 +7,7 @@ class ReferralTest extends ActiveRecordTestCase
     /**
      * @var Referral
      */
-    protected $object;
+    protected Referral $object;
 
     public function getModel()
     {
@@ -24,6 +24,10 @@ class ReferralTest extends ActiveRecordTestCase
         parent::setUp();
     }
 
+    /**
+     * @covers Referral
+     * @throws ReflectionException
+     */
     public function testgetActiveRTT_noneActive()
     {
         $referral = $this->getMockBuilder('Referral')
@@ -40,6 +44,9 @@ class ReferralTest extends ActiveRecordTestCase
         $this->assertEmpty($referral->getActiveRTT());
     }
 
+    /**
+     * @covers Referral
+     */
     public function testgetActiveRTT_noRTT()
     {
         $referral = $this->getMockBuilder('Referral')
@@ -52,6 +59,10 @@ class ReferralTest extends ActiveRecordTestCase
         $this->assertEmpty($referral->getActiveRTT());
     }
 
+    /**
+     * @covers Referral
+     * @throws ReflectionException
+     */
     public function testgetActiveRTT_many()
     {
         $referral = $this->getMockBuilder('Referral')

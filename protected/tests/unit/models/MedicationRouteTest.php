@@ -42,7 +42,7 @@ class MedicationRouteTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugForm::model
+     * @covers MedicationRoute
      */
     public function testModel()
     {
@@ -50,7 +50,7 @@ class MedicationRouteTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugForm::tableName
+     * @covers MedicationRoute
      */
     public function testTableName()
     {
@@ -58,7 +58,7 @@ class MedicationRouteTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugForm::rules
+     * @covers MedicationRoute
      * @throws CException
      */
     public function testRules()

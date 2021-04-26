@@ -64,7 +64,6 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                                     'field_prefix' => $model_name . '[entries_' . $eye_side . '][' . $row_count . ']',
                                     'row_count' => $row_count,
                                     'eye_id' => $eye_side === "left" ? 1 : 2,
-                                    'posted_not_checked' => $element->widget->postedNotChecked($row_count, $eye_side),
                                 )
                             );
                             $row_count++;
@@ -84,7 +83,6 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                                     'row_count' => $row_count,
                                     'has_abnormality' => $entry->has_abnormality,
                                     'eye_id' => $eye_side === "left" ? 1 : 2,
-                                    'posted_not_checked' => $element->widget->postedNotChecked($row_count, $eye_side),
                                 )
                             );
                             $row_count++;
@@ -156,7 +154,6 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
             'field_prefix' => $model_name . '[entries_{{side}}][{{row_count}}]',
             'row_count' => '{{row_count}}',
             'eye_id' => '{{eye_id}}',
-            'posted_not_checked' => false,
             'values' => array(
                 'id' => '',
                 'abnormality_id' => '{{abnormality_id}}',

@@ -28,8 +28,11 @@ class UserTest extends ActiveRecordTestCase
         'UserServiceRights',
     );
 
-    protected $columns_to_skip = [
-        'title', 'qualifications', 'role', 'has_selected_firms'
+    protected array $columns_to_skip = [
+        'title',
+        'qualifications',
+        'role',
+        'has_selected_firms'
     ];
 
     public function getModel()
@@ -48,7 +51,11 @@ class UserTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers User
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {
@@ -69,12 +76,18 @@ class UserTest extends ActiveRecordTestCase
         $this->assertEquals($expectedResults, $data);
     }
 
+    /**
+     * @covers User
+     */
     public function testGetAvailableFirms_GlobalRights()
     {
         $firms = $this->users('user1')->getAvailableFirms();
         $this->assertCount(count($this->firms), $firms);
     }
 
+    /**
+     * @covers User
+     */
     public function testGetAvailableFirms_FirmUserAssignment()
     {
         $firms = $this->users('user2')->getAvailableFirms();
@@ -82,6 +95,9 @@ class UserTest extends ActiveRecordTestCase
         $this->assertEquals('Collin Firm', $firms[0]->name);
     }
 
+    /**
+     * @covers User
+     */
     public function testGetAvailableFirms_UserFirmRights()
     {
         $firms = $this->users('user3')->getAvailableFirms();
@@ -89,6 +105,9 @@ class UserTest extends ActiveRecordTestCase
         $this->assertEquals('Allan Firm', $firms[0]->name);
     }
 
+    /**
+     * @covers User
+     */
     public function testGetAvailableFirms_UserServiceRights()
     {
         $firms = $this->users('admin')->getAvailableFirms();

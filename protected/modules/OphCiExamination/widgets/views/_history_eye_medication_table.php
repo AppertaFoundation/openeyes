@@ -4,7 +4,7 @@
         <col>
     </colgroup>
     <thead style="display:none;">
-        <!-- These hidden headers are required for Katalon / automated tests to find corect columns -->
+        <!-- These hidden headers are required for Katalon tests to find corect columns -->
         <tr>
             <th>Drug</th>
             <th></th>
@@ -19,6 +19,13 @@
             <tr data-key="<?= $index ?>">
                 <td>
                     <?= $entry->getMedicationDisplay(true) ?>
+                    <?php
+                    $comments = $entry->getComments();
+                    if (!empty($comments)) { ?>
+                        <i class="oe-i comments-who small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="<em><?= $comments ?></em>">
+                        </i> <?php
+                    }
+                    ?>
                     <?php $change_history = $entry->getChangeHistory();
                     if (!empty($change_history)) {
                         $tooltip_content = $entry->getChangeHistoryTooltipContent($change_history);

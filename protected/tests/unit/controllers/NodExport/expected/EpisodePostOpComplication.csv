@@ -1,0 +1,5 @@
+EpisodeId,OperationId,Eye,ComplicationTypeId,ComplicationTypeDescription
+3686566,3686566,L,0
+3686595,3686595,L,0
+3686566,3686566,R,56
+3686595,3686595,R,0

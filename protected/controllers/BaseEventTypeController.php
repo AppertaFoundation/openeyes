@@ -251,16 +251,13 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function getElementWidgetMode($action)
     {
-        $action_type = $this->getActionType($action);
-
-        return in_array(
-            $action_type,
-            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM)
-        )
-            ? BaseEventElementWidget::$EVENT_EDIT_MODE
-            : ($action_type === static::ACTION_TYPE_PRINT
-                ? BaseEventElementWidget::$EVENT_PRINT_MODE
-                : BaseEventElementWidget::$EVENT_VIEW_MODE);
+        return [
+            static::ACTION_TYPE_CREATE => BaseEventElementWidget::$EVENT_EDIT_MODE,
+            static::ACTION_TYPE_EDIT => BaseEventElementWidget::$EVENT_EDIT_MODE,
+            static::ACTION_TYPE_FORM => BaseEventElementWidget::$EVENT_EDIT_MODE,
+            static::ACTION_TYPE_PRINT => BaseEventElementWidget::$EVENT_PRINT_MODE,
+        ][$this->getActionType($action)]
+            ?? BaseEventElementWidget::$EVENT_VIEW_MODE;
     }
 
     /**
@@ -850,7 +847,7 @@ class BaseEventTypeController extends BaseModuleController
 
             // creation
             if (empty($errors)) {
-                $transaction = Yii::app()->db->beginTransaction();
+                $transaction = Yii::app()->db->beginInternalTransaction();
 
                 try {
                     $success = $this->saveEvent($_POST);
@@ -876,6 +873,7 @@ class BaseEventTypeController extends BaseModuleController
                         } else {
                             $this->redirect(array($this->successUri . $this->event->id));
                         }
+                        return;
                     } else {
                         throw new Exception('could not save event');
                     }
@@ -1004,7 +1002,7 @@ class BaseEventTypeController extends BaseModuleController
 
             // update the event
             if (empty($errors)) {
-                $transaction = Yii::app()->db->beginTransaction();
+                $transaction = Yii::app()->db->beginInternalTransaction();
 
                 try {
                     //TODO: should all the auditing be moved into the saving of the event
@@ -1033,6 +1031,7 @@ class BaseEventTypeController extends BaseModuleController
                         } else {
                             $this->redirect([$this->successUri]);
                         }
+                        return;
                     } else {
                         throw new Exception('Unable to save edits to event');
                     }
@@ -1193,8 +1192,8 @@ class BaseEventTypeController extends BaseModuleController
         $model_name = \CHtml::modelName($element);
         $el_data = is_null($index) ? $data[$model_name] : $data[$model_name][$index];
 
-        if ($element->widgetClass) {
-            $widget = $this->createWidget($element->widgetClass, array(
+        if ($widget_cls = $element->getWidgetClass()) {
+            $widget = $this->createWidget($widget_cls, array(
                 'patient' => $this->patient,
                 'element' => $element,
                 'data' => $el_data,
@@ -1294,7 +1293,7 @@ class BaseEventTypeController extends BaseModuleController
         $event_date = Helper::convertNHS2MySQL($event_date);
         $current_event_date = substr($this->event->event_date, 0, 10);
 
-        if ($event_date < $current_event_date) {
+        if ($event_date !== $current_event_date) {
             $this->event->event_date = $event_date;
         }
     }
@@ -1670,11 +1669,11 @@ class BaseEventTypeController extends BaseModuleController
 
             // Render the view.
             ($use_container_view) && $this->beginContent($container_view, $view_data);
-            if ($element->widgetClass) {
+            if ($widget_cls = $element->getWidgetClass()) {
                 // only wrap the element in a widget if it's not already in one
                 $widget = $element->widget ?:
                     $this->createWidget(
-                        $element->widgetClass,
+                        $widget_cls,
                         array(
                             'patient' => $this->patient,
                             'element' => $view_data['element'],
@@ -1682,6 +1681,7 @@ class BaseEventTypeController extends BaseModuleController
                             'mode' => $this->getElementWidgetMode($action),
                         )
                     );
+                $element->widget = $widget;
                 $widget->form = $view_data['form'];
                 $this->renderPartial('//elements/widget_element', array('widget' => $widget), $return, $processOutput);
             } else {
@@ -1724,13 +1724,15 @@ class BaseEventTypeController extends BaseModuleController
         }
         $rows = array(array());
         foreach ($elements as $element) {
-            if ($element->widgetClass) {
-                $widget = $this->createWidget($element->widgetClass, array(
-                    'patient' => $this->patient,
-                    'element' => $element,
-                    'data' => $data,
-                    'mode' => $this->getElementWidgetMode($action),
-                ));
+            if ($widget_cls = $element->getWidgetClass()) {
+                $widget = $element->widget ?:
+                    $this->createWidget($widget_cls, array(
+                        'patient' => $this->patient,
+                        'element' => $element,
+                        'data' => $data,
+                        'mode' => $this->getElementWidgetMode($action),
+                    ));
+
                 $element->widget = $widget;
                 $element->widget->renderWarnings();
             }
@@ -2253,7 +2255,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
         $this->jsVars['OE_asset_path'] = $this->assetPath;
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $firm = Firm::model()->findByPk(Yii::app()->session->get('selected_firm_id'));
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
         $this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
         $this->jsVars['OE_site_id'] = Yii::app()->session['selected_site_id'];

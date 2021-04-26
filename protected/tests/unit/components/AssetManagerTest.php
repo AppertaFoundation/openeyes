@@ -22,6 +22,8 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
     const BASE_PATH_ALIAS = 'application.tests.assets';
     const BASE_URL = 'assets';
 
+    private $globalInstance;
+
     public function setUp()
     {
         $this->globalInstance = Yii::app()->assetManager;
@@ -44,6 +46,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         return $instance;
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testInstanceCreated()
     {
         $this->assertTrue(
@@ -69,6 +74,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testGetPublishedPathOfAlias()
     {
         $instance = self::getInstance();
@@ -93,6 +101,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testCreateUrl()
     {
         $instance = self::getInstance();
@@ -157,6 +168,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testGetPublishedPath()
     {
         $instance = self::getInstance();
@@ -192,6 +206,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testRegisterCoreCssFile()
     {
         $assetManager = $this->getMockBuilder('CustomBasePathAliasAssetManager')
@@ -252,6 +269,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetManager->registerCoreCssFile('test.css', 10, AssetManager::OUTPUT_PRINT, false);
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testRegisterCoreScript()
     {
         // As this method is simply a proxy to clientscript we just need to
@@ -260,6 +280,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         $instance = self::getInstance();
 
+        /**
+         * @var $clientScript ClientScript
+         */
         $clientScript = $this->getMockBuilder('ClientScript')
             ->setMethods(array('registerCoreScript'))
             ->getMock();
@@ -276,6 +299,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
     // eg:
     // runTestAddingFiles('css')
     // runTestAddingFiles('js')
+    /**
+     * @param string|null $type
+     */
     private function runTestAddingFiles($type = null)
     {
         $instance = self::getInstance();
@@ -346,8 +372,8 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $last = array_pop($files);
 
         $this->assertEquals(
-            $last['priority'],
             10,
+            $last['priority'],
             'The asset should be added with a custom priority if specified'
         );
 
@@ -356,8 +382,8 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
         $last = array_pop($files);
         $this->assertEquals(
-            $last['output'],
             AssetManager::OUTPUT_PRINT,
+            $last['output'],
             'The asset should be added with a custom output if specified'
         );
 
@@ -388,16 +414,25 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testRegisterCssFile()
     {
         $this->runTestAddingFiles('css');
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testRegisterScriptFile()
     {
         $this->runTestAddingFiles('js');
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testAdjustScriptMapping()
     {
         $instance = self::getInstance();
@@ -426,6 +461,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testRegisterFiles()
     {
         /* Test that files are registered with clientScript */
@@ -611,6 +649,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->registerFiles();
     }
 
+    /**
+     * @covers AssetManager
+     */
     public function testReset()
     {
         $instance = self::getInstance();
@@ -631,14 +672,14 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $js = PHPUnit_Framework_Assert::readAttribute($instance, 'js');
 
         $this->assertEquals(
-            $css,
             array(),
+            $css,
             'The list of css assets should be empty after resetting'
         );
 
         $this->assertEquals(
-            $js,
             array(),
+            $js,
             'The list of js assets should be empty after resetting'
         );
     }

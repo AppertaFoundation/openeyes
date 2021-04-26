@@ -59,7 +59,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::rules
+     * @covers Contact
      * @throws CException
      */
     public function testRules()
@@ -70,7 +70,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::attributeLabels
+     * @covers Contact
      */
     public function testAttributeLabels()
     {
@@ -90,7 +90,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::getFullName
+     * @covers Contact
      */
     public function testGetFullName()
     {
@@ -103,7 +103,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::getReversedFullName
+     * @covers Contact
      */
     public function testGetReversedFullName()
     {
@@ -116,7 +116,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::getSalutationName
+     * @covers Contact
      */
     public function testGetSalutationName()
     {
@@ -128,7 +128,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::contactLine
+     * @covers Contact
      */
     public function testContactLine_withLocation()
     {
@@ -141,7 +141,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::contactLine
+     * @covers Contact
      */
     public function testContactLine_withoutLocation()
     {
@@ -152,7 +152,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::findByLabel
+     * @covers Contact
      */
     public function testFindByLabel_noPartialMatch()
     {
@@ -163,7 +163,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::findByLabel
+     * @covers Contact
      */
     public function testFindByLabel_wildcardMatchWithoutLocation()
     {
@@ -181,7 +181,7 @@ class ContactTest extends ActiveRecordTestCase
         $this->assertEquals($expected, $res, 'Should match the contact with wildcard appended to substring of last name');
     }
     /**
-     * @covers Contact::findByLabel
+     * @covers Contact
      */
     public function testFindByLabel_wildcardMatchWithLocation()
     {
@@ -194,7 +194,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::findByLabel
+     * @covers Contact
      */
     public function testFindByLabel_wildcardMatchPerson()
     {
@@ -209,7 +209,10 @@ class ContactTest extends ActiveRecordTestCase
 
     /**
      * @dataProvider dataProvider_Search
-     * @covers Contact::search
+     * @covers Contact
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {
@@ -230,7 +233,7 @@ class ContactTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Contact::getType
+     * @covers Contact
      */
     public function testGetType()
     {

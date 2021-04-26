@@ -50,7 +50,7 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonSystemicDisorder::model
+     * @covers CommonSystemicDisorder
      */
     public function testModel()
     {
@@ -58,7 +58,7 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonSystemicDisorder::tableName
+     * @covers CommonSystemicDisorder
      */
     public function testTableName()
     {
@@ -66,7 +66,7 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonSystemicDisorder::rules
+     * @covers CommonSystemicDisorder
      * @throws CException
      */
     public function testRules()
@@ -77,7 +77,7 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonSystemicDisorder::attributeLabels
+     * @covers CommonSystemicDisorder
      */
     public function testAttributeLabels()
     {
@@ -90,7 +90,7 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonSystemicDisorder::getList
+     * @covers CommonSystemicDisorder
      */
     public function testGetList()
     {
@@ -105,7 +105,11 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers CommonSystemicDisorder
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {

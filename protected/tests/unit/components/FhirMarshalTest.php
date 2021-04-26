@@ -33,11 +33,17 @@ class FhirMarshalTest extends PHPUnit_Framework_TestCase
         $this->marshal = new FhirMarshal();
     }
 
+    /**
+     * @covers FhirMarshal
+     */
     public function testIsStandardType_True()
     {
         $this->assertTrue($this->marshal->isStandardType('Patient'));
     }
 
+    /**
+     * @covers FhirMarshal
+     */
     public function testIsStandardType_False()
     {
         $this->assertFalse($this->marshal->isStandardType('Armadillo'));
@@ -64,7 +70,11 @@ class FhirMarshalTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers       FhirMarshal
      * @dataProvider xmlDataProvider
+     * @param $name
+     * @param $xml
+     * @param $json
      */
     public function testXmlToJson($name, $xml, $json)
     {
@@ -72,13 +82,20 @@ class FhirMarshalTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->marshal->parseXml($xml));
     }
 
+    /**
+     * @covers FhirMarshal
+     */
     public function testParseXml_Malformed()
     {
         $this->assertEquals(null, $this->marshal->parseXml('>'));
     }
 
     /**
+     * @covers FhirMarshal
      * @dataProvider xmlDataProvider
+     * @param $name
+     * @param $xml
+     * @param $json
      */
     public function testJsonToXml($name, $xml, $json)
     {
@@ -86,6 +103,9 @@ class FhirMarshalTest extends PHPUnit_Framework_TestCase
         $this->assertXmlStringEqualsXmlString($xml, $actual);
     }
 
+    /**
+     * @covers FhirMarshal
+     */
     public function testRenderXml_NonContiguousArrays()
     {
         $res = (object) array(

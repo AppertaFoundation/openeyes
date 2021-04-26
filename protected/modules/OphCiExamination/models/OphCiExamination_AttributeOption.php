@@ -31,6 +31,7 @@ namespace OEModule\OphCiExamination\models;
 class OphCiExamination_AttributeOption extends \BaseActiveRecordVersioned
 {
     const SELECTION_LABEL_FIELD = 'value';
+    protected $auto_update_relations = true;
 
     /**
      * @return string the associated database table name
@@ -45,11 +46,12 @@ class OphCiExamination_AttributeOption extends \BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-            array('value, delimiter', 'required'),
-            array('id, value, delimiter', 'safe', 'on' => 'search'),
-            array('subspecialty_id, attribute_element_id', 'numerical', 'integerOnly' => true),
-        );
+        return [
+            ['value', 'required'],
+            ['value, delimiter, subspecialty_id, excluded_subspecialties', 'safe'],
+            ['id, value, delimiter, excluded_subspecialties', 'safe', 'on' => 'search'],
+            ['subspecialty_id, attribute_element_id', 'numerical', 'integerOnly' => true],
+        ];
     }
 
     public function getLabel()
@@ -59,7 +61,7 @@ class OphCiExamination_AttributeOption extends \BaseActiveRecordVersioned
 
     public function getSlug()
     {
-        return $this->value.$this->delimiter.' ';
+        return $this->value . $this->delimiter . ' ';
     }
 
     /**
@@ -67,10 +69,15 @@ class OphCiExamination_AttributeOption extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array(
-                'attribute_element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_AttributeElement', 'attribute_element_id'),
-                'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-        );
+        return [
+            'attribute_element' => [self::BELONGS_TO, OphCiExamination_AttributeElement::class, 'attribute_element_id'],
+            'subspecialty' => [self::BELONGS_TO, \Subspecialty::class, 'subspecialty_id'],
+            'excluded_subspecialties' => [
+                self::MANY_MANY,
+                \Subspecialty::class,
+                'ophciexamination_attribute_option_exclude(option_id, subspecialty_id)'
+            ]
+        ];
     }
 
     public function attributeLabels()

@@ -31,10 +31,7 @@
           data-element-type-name="<?php echo $element->elementType->name ?>"
           data-element-display-order="<?php echo $element->display_order ?>">
 
-          <?php $this->renderPartial(
-              $element->view_view,
-              array('element' => $element)
-          ); ?>
+        <?php $this->renderElement($element, 'view', null, null) ?>
 
         <div class="flex-layout">
           <div class="metadata">

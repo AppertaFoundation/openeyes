@@ -21,6 +21,10 @@ class UserController extends BaseController
                 'actions' => array('autoComplete', 'surgeonGrade'),
                 'roles' => array('OprnViewClinical'),
             ),
+            array('allow',
+                'actions' => array('testAuthenticated', 'getSecondsUntilSessionExpire'),
+                'roles' => array('User'),
+            ),
         );
     }
 
@@ -75,5 +79,24 @@ class UserController extends BaseController
             'grade' => ($user->grade) ? $user->grade->grade : null,
             'pcr_risk' => $user->grade->pcr_risk_value,
         ));
+    }
+
+    public function actionTestAuthenticated()
+    {
+        //If the user is not authenticated, the request will be blocked and this will not be returned
+        $this->renderJSON('Success');
+    }
+
+    public function actionGetSecondsUntilSessionExpire()
+    {
+        $expire = Yii::app()->db->createCommand()
+            ->select('expire')
+            ->from('user_session')
+            ->where('id=:id', array(':id' => $_COOKIE[session_name()]))
+            ->queryRow();
+
+        $seconds_to_expire = $expire['expire'] - time();
+
+        $this->renderJSON($seconds_to_expire);
     }
 }

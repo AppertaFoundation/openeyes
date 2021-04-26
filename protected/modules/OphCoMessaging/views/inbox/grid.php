@@ -25,56 +25,77 @@ if ($read_check) {
 }
 ?>
 <?php
+$sortDirection = $dp->sort->getDirections();
 $cols = array(
     array(
         'id' => 'hos_num',
-        'header' => $dp->getSort()->link('hos_num', 'No.', array('class' => 'sort-link')),
+        'header' => 'No.',
         'value' => '$data->event->episode->patient->hos_num',
     ),
     array(
         'id' => 'gender',
-        'header' => $dp->getSort()->link('gender', 'Gender', array('class' => 'sort-link')),
+        'header' => 'Gender',
         'value' => '$data->event->episode->patient->getGenderString()',
     ),
     array(
         'id' => 'age',
-        'header' => $dp->getSort()->link('age', 'Age', array('class' => 'sort-link')),
+        'header' => 'Age',
         'value' => '$data->event->episode->patient->getAge() . "y"',
     ),
     array(
         'id' => 'patient_name',
         'class' => 'CLinkColumn',
-        'header' => $dp->getSort()->link('patient_name', 'Patient', array('class' => 'sort-link')),
+        'header' => 'Patient',
         'urlExpression' => 'Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id))',
         'labelExpression' => '$data->event->episode->patient->getHSCICName()',
         'htmlOptions' => array('class' => 'nowrap patient'),
     ),
     array(
+        'name' => 'priority',
+        'header' => '',
+        'htmlOptions' => array('class' => 'urgent-status'),
+        'value' => function ($data) {
+            return $data->urgent ? '<i class="oe-i status-urgent small no-hover js-has-tooltip" data-tt-type="basic" data-tooltip-content="Urgent!"></i>' : '';
+        },
+        'type' => 'raw',
+    ),
+    array(
+        'id' => 'message_type',
+        'header' => $dp->getSort()->link('message_type', 'Type', array('class' => 'column-sort '. (array_key_exists('message_type', $sortDirection)  ?
+                'active '. ($sortDirection['message_type'] ? 'descend' : 'ascend') : 'ascend'))),
+        'htmlOptions' => array('class' => 'message-status nowrap'),
+        'value' => function ($data) {
+            if (isset($data->copyto_users)) {
+                $copied_users = $data->copyto_users;
+                foreach ($copied_users as $copied_user) {
+                    if ($copied_user->user_id == Yii::app()->user->id) {
+                        echo '<i class="oe-i duplicate small pad-right no-click"></i>';
+                    }
+                }
+            }
+            return $data->message_type->name === 'Query' ?
+                (isset($data->last_comment) ?
+                '<i class="oe-i status-query-reply small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query reply"></i>' :
+                '<i class="oe-i status-query small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query"></i>') :
+                '<span class="fade">' . substr(\OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findByPk($data->message_type_id)->name, 0, 3) . '.</span>';
+        },
+        'type' => 'raw',
+    ),
+    array(
         'id' => 'event_date',
         'class' => 'CDataColumn',
-        'header' => '<a href="#" class="sortable">Messages <i class="oe-i arrow-down-bold small pad"></i></a>',
+        'header' => $dp->getSort()->link('event_date', 'Date', array('class' => 'column-sort '. (array_key_exists('event_date', $sortDirection)  ? 'active '. ($sortDirection['event_date'] ? 'descend' : 'ascend') : 'ascend'))),
         'value' => function ($data) {
             return '<span class="oe-date">' . Helper::convertDate2HTML(Helper::convertMySQL2NHS($data->created_date)) . '</span>';
         },
         'type' => 'raw'
     ),
     array(
-        'name' => 'priority_and_type',
-        'header' => '',
-        'htmlOptions' => array('class' => 'nowrap'),
-        'value' => function ($data) {
-            $urgent_icon = $data->urgent ? '
-            <i class="js-has-tooltip" data-tooltip-content="Urgent"><svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg></i>' : '';
-            $query_icon = $data->message_type_id === '2' ? '
-						<i class="js-has-tooltip" data-tooltip-content="Reply requested"><svg class="reply-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg></i>' : '';
-            return $urgent_icon . $query_icon;
-        },
-        'type' => 'raw',
-    ),
-    array(
         'id' => 'user',
-        'header' => '',
-        'value' => $message_type === 'sent' ?
+        'header' => $dp->getSort()->link('user',
+            (strpos($message_type, 'sent') !== false) ? 'Recipient' : 'Sender',
+            array('class' => 'column-sort '. (array_key_exists('user', $sortDirection)  ? 'active '. ($sortDirection['user'] ? 'descend' : 'ascend') : 'ascend'))),
+        'value' => (strpos($message_type, 'sent') !== false) ?
             '\User::model()->findByPk($data->for_the_attention_of_user_id)->getFullNameAndTitle()' :
             '\User::model()->findByPk($data->created_user_id)->getFullNameAndTitle()',
         'cssClassExpression' => '"nowrap sender"',
@@ -84,8 +105,16 @@ $cols = array(
         'name' => 'Message',
         'cssClassExpression' => '"js-message"',
         'value' => function ($data) {
-            return '<div class="js-preview-message message">' . Yii::app()->format->text(rtrim($data->message_text)) . '</div>' .
-                '<div class="js-expanded-message message expand">' . Yii::app()->format->Ntext(rtrim($data->message_text)) . '</div>';
+            $commentslist = '';
+            if ($data->comments) {
+                foreach ($data->comments as $comment) {
+                    $commentslist .= '<br><i class="oe-i child-arrow small pad-right no-click"></i>' .
+                        Yii::app()->format->Ntext(preg_replace("/[\r\n]+/", "\n", $comment->comment_text));
+                }
+            }
+            return '<div class="js-preview-message message">' . Yii::app()->format->text(rtrim($data->message_text)) .
+                (isset($data->last_comment) ? '<i class="oe-i child-arrow no-click small pad"></i>' . Yii::app()->format->text(rtrim($data->last_comment->comment_text)) : '')  . '</div>' .
+                '<div class="js-expanded-message message expand">' . Yii::app()->format->Ntext(rtrim(preg_replace("/[\r\n]+/", "\n", $data->message_text))) . $commentslist . '</div>';
         },
         'type' => 'raw',
     ),
@@ -94,6 +123,7 @@ $cols = array(
         'header' => '',
         'value' => '\'<i class="oe-i small js-expand-message expand"></i>\'',
         'type' => 'raw',
+        'cssClassExpression' => '"valign-top"',
     ),
     array(
         'header' => '',
@@ -102,9 +132,17 @@ $cols = array(
         'buttons' => array(
             'mark' => array(
                 'options' => array('title' => 'Mark as read'),
-                'label' => '<i class="oe-i small tick pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as Read"></i>',
+                'label' => '<i class="oe-i small save pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as Read"></i>',
                 'visible' => function ($row, $data) {
-                    return $data->marked_as_read === '0'
+                    if (isset($data->copyto_users)) {
+                        $copied_users = $data->copyto_users;
+                        foreach ($copied_users as $copied_user) {
+                            if ($copied_user->user_id == Yii::app()->user->id && $copied_user->marked_as_read === '0') {
+                                return true;
+                            }
+                        }
+                    }
+                    return ($data->marked_as_read === '0' && $data->for_the_attention_of_user_id === Yii::app()->user->id)
                         || (isset($data->last_comment) && $data->last_comment->marked_as_read === '0' &&
                             $data->last_comment->created_user_id != \Yii::app()->user->id);
                 },
@@ -132,12 +170,11 @@ $header_style = 'background: transparent url(' . $asset_path . 'img/small.png) l
         'itemsCssClass' => 'standard messages highlight-rows',
         'dataProvider' => $dp,
         'htmlOptions' => array('id' => 'inbox-table'),
-        'rowCssClassExpression' => '
-        isset($data->last_comment) ? 
-        ($data->last_comment->marked_as_read === "0" && $data->last_comment->created_user_id != \Yii::app()->user->id ?
-         "unread" : "read"): 
-        ($data->marked_as_read ? "read" : "unread")',
+        'rowCssClassExpression' => '$data->getReadStyleClass()',
         'summaryText' => '',
+        'emptyTagName' => 'div',
+        'emptyCssClass' => 'alert-box info align-left',
+        'emptyText' => 'No Messages',
         'columns' => $cols,
         'enableHistory' => true,
         'enablePagination' => false,

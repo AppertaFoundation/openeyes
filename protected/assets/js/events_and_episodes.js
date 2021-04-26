@@ -189,6 +189,15 @@ $(document).ready(function () {
         }
     });
 
+
+    // this event handler should attach only to the elements. For the element sidebar, the collapse/expand
+    // functionality is already defined in the OpenEyes.UI.PatientSidebar.js file
+    $(this).find('section').on('click', '.collapse-group > .header-icon', function(e) {
+        e.preventDefault();
+        $(e.target).toggleClass('collapse');
+        $(e.target).siblings('.collapse-group-content').toggle();
+    });
+
     // Tile Data Overflow
     $('.element.tile').each(function () {
         let h = $(this).find('.data-value').height();

@@ -19,21 +19,23 @@ class InstitutionTest extends ActiveRecordTestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Institution code is not set
+     * @covers Institution
      */
     public function testGetCurrent_CodeNotSet()
     {
+        $this->expectExceptionMessage("Institution code is not set");
+        $this->expectException(Exception::class);
         unset(Yii::app()->params['institution_code']);
         Institution::model()->getCurrent();
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Institution with code 'bar' not found
+     * @covers Institution
      */
     public function testGetCurrent_NotFound()
     {
+        $this->expectExceptionMessage("Institution with code 'bar' not found");
+        $this->expectException(Exception::class);
         Yii::app()->params['institution_code'] = 'bar';
         Institution::model()->getCurrent();
     }

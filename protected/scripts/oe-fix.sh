@@ -149,16 +149,20 @@ if [ "$composer" == "1" ]; then
     sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --no-interaction $composerexta
 
     echo "Installing/updating npm dependencies"
+
+    # have to cd, as not all npm commands support setting a working directory
     cd "$WROOT" || exit 1
+
+    # If we've switched from dev to live, remove dev dependencies, else, just prune
+    [ "${OE_MODE^^}" == "LIVE" ] && sudo -E npm prune --production || sudo -E npm prune
+    
     rm package-lock.json >/dev/null 2>&1
     sudo -E npm update --no-save $npmextra
-
-    # If we've switched from dev to live, remove dev dependencies
-    [ "${OE_MODE^^}" == "LIVE" ] && sudo -E npm prune --production
 
     # List current modules (will show any issues if above commands have been blocked by firewall).
     npm list --depth=0
 
+    # return to original directory
     cd - >/dev/null 2>&1
 
     # Refresh git submodules
@@ -196,8 +200,6 @@ if [ $clearcahes = 1 ]; then
     sudo mkdir -p $WROOT/protected/runtime/cache/events 2>/dev/null || :
     sudo chown www-data $WROOT/protected/runtime/cache/events 2>/dev/null
     sudo rm -rf $WROOT/assets/* 2>/dev/null || :
-    # Cache-Control, etc should have been set in .htaccess in the protected assets folder - copy this to the generated assets
-    cp "$WROOT"/protected/assets/.htaccess "$WROOT"/assets/.htaccess
     echo ""
 fi
 

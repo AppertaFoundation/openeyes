@@ -29,7 +29,6 @@ class OphCiExamination_Episode_KeratometryChartRight extends \EpisodeSummaryWidg
     public function run()
     {
         // TODO: should be using API methods here and need to fix that it's restricted to the episode
-//        $va_unit_id = @$_GET[$this->va_unit_input] ?: models\Element_OphCiExamination_VisualAcuity::model()->getSetting('unit_id');
         $criteria = new CDbCriteria();
         $criteria->compare('episode_id', $this->episode->id);
         $criteria->compare('event_type_id', $this->event_type->id);

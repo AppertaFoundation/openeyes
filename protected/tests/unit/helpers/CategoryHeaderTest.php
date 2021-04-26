@@ -43,7 +43,10 @@ class CategoryHeaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers       CategoryHeader
      * @dataProvider parseDataProvider
+     * @param $header
+     * @param $categories
      */
     public function testParse($header, $categories)
     {

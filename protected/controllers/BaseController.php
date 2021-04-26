@@ -24,7 +24,7 @@ class BaseController extends Controller
 {
 
     public $renderPatientPanel = false;
-    public $fixedHotlist = true;
+    public bool $fixedHotlist = true;
     public $selectedFirmId;
     public $selectedSiteId;
     public $firms;
@@ -188,7 +188,7 @@ class BaseController extends Controller
                     $this->redirect(Yii::app()->homeUrl);
                 }
                 $user->testUserPwDate();
-                
+
                 $user->userLogOnAttemptsCheck();
 
                 $whitelistedRequest = ($_SERVER['REQUEST_URI']=='/profile/password')||($_SERVER['REQUEST_URI']=='/site/logout'); // get stale pw whitelisted actions
@@ -276,7 +276,7 @@ class BaseController extends Controller
         $this->jsVars['OE_html_autocomplete'] = Yii::app()->params['html_autocomplete'];
         $this->jsVars['OE_event_print_method'] = Yii::app()->params['event_print_method'];
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
-        $this->jsVars['OE_GP_Setting'] = Yii::app()->params['gp_label'];
+        $this->jsVars['OE_GP_Setting'] = \SettingMetadata::model()->getSetting('gp_label');
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
         $this->jsVars['popupMode'] = SettingMetadata::model()->getSetting('patient_overview_popup_mode');
 
@@ -333,7 +333,8 @@ class BaseController extends Controller
      */
     protected function renderJSON($data)
     {
-        header('Content-type: application/json');
+        header('Content-type: application/json', true);
+        header('Cache-Control: no-store');
         echo json_encode($data);
 
         foreach (Yii::app()->log->routes as $route) {
@@ -444,7 +445,7 @@ class BaseController extends Controller
                     continue;
                 }
                 $pattern = '/<(?:(?!\b' . implode('\b|\b', $allowable_tags) . '\b).)*?>/';
-                $value = preg_replace_callback($pattern,  function ($matches) {
+                $value = preg_replace_callback($pattern, function ($matches) {
                     return CHtml::encode($matches[0]);
                 }, $value);
                 $input[$key] = $value;

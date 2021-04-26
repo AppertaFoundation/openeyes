@@ -35,9 +35,8 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::model
+     * @covers Firm
      *
-     * @todo   Implement testModel().
      */
     public function testModel()
     {
@@ -45,7 +44,7 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::getServiceText
+     * @covers Firm
      */
     public function testGetServiceText()
     {
@@ -55,7 +54,7 @@ class FirmTest extends ActiveRecordTestCase
 
 
     /**
-     * @covers Firm::getConsultantName
+     * @covers Firm
      */
     public function testGetConsultantName()
     {
@@ -63,7 +62,7 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::getConsultantName
+     * @covers Firm
      */
     public function testGetConsultantName_NoConsultant()
     {
@@ -71,7 +70,7 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::getReportDisplay
+     * @covers Firm
      */
     public function testGetReportDisplay()
     {
@@ -79,19 +78,24 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::getNameAndSubspecialty
+     * @covers Firm
      */
     public function testGetNameAndSubspecialty()
     {
         $this->assertEquals('Aylward Firm (Subspecialty 1)', $this->firms('firm1')->getNameAndSubspecialty());
     }
 
-
+    /**
+     * @covers Firm
+     */
     public function testIsSupportServicesFirm_False()
     {
         $this->assertFalse(Firm::model()->findByPk(1)->isSupportServicesFirm());
     }
 
+    /**
+     * @covers Firm
+     */
     public function testIsSupportServicesFirm_True()
     {
         $this->assertTrue(Firm::model()->findByPk(4)->isSupportServicesFirm());

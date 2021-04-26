@@ -26,5 +26,8 @@ $(document).ready(function() {
         $('#new-comment-form').toggle();
         $('#add-comment-button-container').toggle();
     });
+
+    // Disable all buttons on the page when send reply is clicked
+    handleButton($('#send_reply'));
 });
 

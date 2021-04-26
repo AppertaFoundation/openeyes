@@ -20,6 +20,8 @@ $(window).load(function() {
     // when the event is created, the OE_event_id will be null but the cookie email will exist at that point.
     // Hence, checking the existence of the cookie.
     if ($.cookie('email') === OE_event_id || typeof $.cookie('email') !== 'undefined') {
+        // deleting the email cookie by setting the expire time in the past so that the sendEmail request won't execute if the browser is refreshed
+        document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         $.get(baseUrl + '/OphCoCorrespondence/default/sendEmail?event_id=' + OE_event_id);
     }
 });

@@ -34,7 +34,7 @@
         <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
             <i class="oe-i exclamation pad-right no-click medium-icon"></i>
             <b>
-                <?php echo Yii::app()->params['nhs_num_label'] .
+                <?php echo \SettingMetadata::model()->getSetting('nhs_num_label') .
                   ((Yii::app()->params['institution_code'] === 'CERA') ? '' : ' Number') ?>:
                 <?= $this->patient->nhsNumberStatus->description; ?>
             </b>
@@ -55,7 +55,7 @@
                 <?php } ?>
             </div>
             <div class="nhs-number">
-                <?= Yii::app()->params['nhs_num_label'] ?>
+                <?= \SettingMetadata::model()->getSetting('nhs_num_label') ?>
                 <?= $this->patient->nhsnum ?>
             </div>
         </div>
@@ -113,15 +113,15 @@
                     <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
                         <tbody>
                         <tr>
-                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') ?></td>
                             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['general_practitioner_label'] . ' Role' ?></td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') . ' Role' ?></td>
                             <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Telephone</td>
                             <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
                         </tr>
                         <?php if (($this->patient->gp_id)) {
@@ -192,11 +192,11 @@
                         <tr>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') ?></td>
                             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Address</td>
                             <td>
                                 <?php
                                     // Show GP Practice address if available, otherwise fallback to GP address
@@ -210,7 +210,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Telephone</td>
                             <td>
                                 <?php
                                     // Show Practice phone number first, if not, fall back to GP phone number
@@ -243,11 +243,11 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') ?></td>
                             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Address</td>
                             <td>
                                 <?php
                                     // Show GP Practice address if available, otherwise fallback to GP address
@@ -261,7 +261,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Telephone</td>
                             <td>
                                 <?php
                                     // Show Practice phone number first, if not, fall back to GP phone number
@@ -275,7 +275,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><?php echo Yii::app()->params['gp_label'] ?> Email</td>
+                            <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Email</td>
                             <td>
                                 <?php
                                     // Show Email address
@@ -341,61 +341,40 @@
 <div class="oe-patient-popup patient-summary-quicklook" style="display:none;">
     <div class="situational-awareness flex-layout flex-left flex-top">
         <?php
-            $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
-            $visualAcuityLeft = $exam_api->getLetterVisualAcuityLeft($patient);
+        $vaData = $exam_api->getMostRecentVADataStandardised($patient);
 
-        if ($visualAcuityLeft || $visualAcuityRight) {
-            $lDate = $exam_api->getLetterVisualAcuityDate($patient, 'left');
-            $rDate = $exam_api->getLetterVisualAcuityDate($patient, 'right');
-            ?>
-                <div class="group">
+        if ($vaData) { ?>
+            <div class="group">
                 <span class="label">VA:</span>
-                <?php if ($lDate == $rDate) { ?>
-                        <span class="data">R <?= $visualAcuityRight ?: 'NA'; ?></span>
-                        <span class="data" style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
-                        <?= $exam_api->getLetterVAMethodName($patient, 'right') ?>
-                    </span>
-                        <span class="data"> L <?= $visualAcuityLeft ?: 'NA' ?></span>
-                        <span class="data" style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
-                        <?= $exam_api->getLetterVAMethodName($patient, 'left') ?>
-                    </span>
-                        <span class="oe-date" style="text-align: left;">
-                        <?= Helper::convertDate2NHS($rDate); ?>
-                    </span>
-                <?php } else { ?>
-                        <span class="data"> R <?= $visualAcuityRight ?: 'NA'; ?></span>
-                        <span class="data" style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
-                        <?= $exam_api->getLetterVAMethodName($patient, 'right') ?>
-                    </span>
-                        <span class="oe-date" style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
-                        <?= Helper::convertDate2NHS($rDate); ?>
-                    </span>
-                        <span class="data">
-                        L <?= $visualAcuityLeft ?: 'NA' ?>
-                    </span>
-                        <span class="data"
-                              style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
-                        <?= $exam_api->getLetterVAMethodName($patient, 'left') ?>
-                    </span>
-                        <span class="oe-date"
-                              style="text-align: left; display : <?= $visualAcuityLeft ? '' : 'none' ?>">
-                        <?= Helper::convertDate2NHS($lDate); ?>
-                    </span>
+                <?php if ($vaData['has_beo']) { ?>
+                    <span class="data">BEO <?= $vaData['beo_result'] ?></span>
+                    <span class="data"><?= $vaData['beo_method_abbr'] ?></span>
                 <?php } ?>
-                </div>
+                <span class="data">R <?= $vaData['has_right'] ? $vaData['right_result'] : 'NA'; ?></span>
+                <?php if ($vaData['has_right']) { ?>
+                    <span class="data"><?= $vaData['right_method_abbr'] ?></span>
+                <?php } ?>
+                <span class="data"> L <?= $vaData['has_left'] ? $vaData['left_result'] : 'NA' ?></span>
+                <?php if ($vaData['has_left']) { ?>
+                    <span class="data"><?= $vaData['left_method_abbr'] ?></span>
+                <?php } ?>
+                <span class="oe-date" style="text-align: left;">
+                    <?= Helper::convertDate2NHS($vaData['event_date']); ?>
+                </span>
+            </div>
         <?php } ?>
 
         <div class="group">
             <span class="label">Ref:</span>
             <?php
-                $leftRefraction = $correspondence_api->getLastRefraction($patient, 'left');
-                $rightRefraction = $correspondence_api->getLastRefraction($patient, 'right');
-            if ($leftRefraction !== null || $rightRefraction !== null) {
+                $refractionData = $exam_api->getLatestRefractionReadingFromAnyElementType($patient);
+
+            if ($refractionData) {
                 ?>
-                    <span class="data">R <?= $rightRefraction ?: 'NA' ?></span>
-                    <span class="data">L <?= $leftRefraction ?: 'NA' ?></span>
+                    <span class="data">R <?= $refractionData['right'] ?: 'NA' ?></span>
+                    <span class="data">L <?= $refractionData['left'] ?: 'NA' ?></span>
                     <span class="oe-date"
-                          style="text-align: left"><?= Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient)) ?></span>
+                          style="text-align: left"><?= Helper::convertDate2NHS($refractionData['event_date']) ?></span>
             <?php } else { ?>
                     <span class="data">NA</span>
             <?php } ?>

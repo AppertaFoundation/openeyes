@@ -41,13 +41,17 @@ if (!@$no_header) { ?>
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
 
-        $this->renderPartial('letter_start', array(
-            'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // default address is coming from the 'To'
-            'patient' => $this->patient,
-            'date' => $element->date,
-            'clinicDate' => strtotime($element->clinic_date),
-            'element' => $element,
-        )) ?>
+        if (isset($letter_header) && !empty($letter_header) && !ctype_space($letter_header)) {
+            echo $letter_header;
+        } else {
+            $this->renderPartial('letter_start', array(
+                'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
+                'patient' => $this->patient,
+                'date' => $element->date,
+                'clinicDate' => strtotime($element->clinic_date),
+                'element' => $element,
+            ));
+        }?>
     </header>
 
     <?php $this->renderPartial('reply_address', array(
@@ -67,9 +71,9 @@ if (!@$no_header) { ?>
                 echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->re));
             } elseif ($contact_type === "PATIENT") {
                 if (Yii::app()->params['nhs_num_private'] == true) {
-                    echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num;
+                    echo \SettingMetadata::model()->getSetting('hos_num_label') . ': ' . $element->event->episode->patient->hos_num;
                 } else {
-                    echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num . ', ' . Yii::app()->params['nhs_num_label'] . ': ' . $element->event->episode->patient->nhsnum;
+                    echo \SettingMetadata::model()->getSetting('hos_num_label') . ': ' . $element->event->episode->patient->hos_num . ', ' . \SettingMetadata::model()->getSetting('nhs_num_label') . ': ' . $element->event->episode->patient->nhsnum;
                 }
             } else {
                 echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->calculateRe($this->patient)));

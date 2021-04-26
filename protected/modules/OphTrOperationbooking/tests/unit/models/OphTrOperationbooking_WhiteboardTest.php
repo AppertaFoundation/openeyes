@@ -3,8 +3,14 @@
 use OEModule\OphCiExamination\models\HistoryRisks;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
 
+/**
+ * Class OphTrOperationbooking_WhiteboardTest
+ *
+ * @method whiteboards($fixtureId)
+ */
 class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
 {
+    protected OphTrOperationbooking_Whiteboard $whiteboard;
     protected $fixtures = array(
         'operations' => Element_OphTrOperationbooking_Operation::class,
         'operation_procedures' => OphTrOperationbooking_Operation_Procedures::class,
@@ -29,7 +35,7 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
         return OphTrOperationbooking_Whiteboard::model();
     }
 
-    protected $columns_to_skip = [
+    protected array $columns_to_skip = [
         'date_of_birth'
     ];
 
@@ -55,7 +61,6 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
             'New whiteboard' => array(
                 'booking_id' => 26,
                 'fixtureId' => null,
-                'procedure' => 'Foobar Procedure',
                 'aconst' => null,
                 'equipment' => null,
                 'comment' => null,
@@ -65,7 +70,6 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
             'Existing editable whiteboard' => array(
                 'booking_id' => 26,
                 'fixtureId' => 'whiteboard1',
-                'procedure' => 'Foobar Procedure',
                 'aconst' => 118.0,
                 'equipment' => "Test equipment 1\nTest equipment 2",
                 'comment' => 'Test whiteboard',
@@ -75,7 +79,6 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
             'Existing non-editable whiteboard' => array(
                 'booking_id' => null,
                 'fixtureId' => 'whiteboard2',
-                'procedure' => 'Test Procedure',
                 'aconst' => 118.0,
                 'equipment' => "Test equipment 1\nTest equipment 2",
                 'comment' => 'Test whiteboard',
@@ -88,7 +91,6 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
     /**
      * @param $booking_id int
      * @param $fixtureId string|null
-     * @param $procedure string
      * @param $aconst double|null
      * @param $equipment string
      * @param $comment string
@@ -97,7 +99,7 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
      * @covers OphTrOperationbooking_Whiteboard
      * @throws CHttpException
      */
-    public function testLoadData($booking_id, $fixtureId, $procedure, $aconst, $equipment, $comment, $complexity = 0)
+    public function testLoadData($booking_id, $fixtureId, $aconst, $equipment, $comment, $complexity = 0)
     {
         if ($booking_id) {
             if ($fixtureId !== null) {
@@ -106,18 +108,19 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
                 $this->whiteboard = new OphTrOperationbooking_Whiteboard();
             }
             $this->whiteboard->loadData($booking_id);
-            $this->assertEquals($procedure, $this->whiteboard->procedure);
             $this->assertEquals($aconst, $this->whiteboard->aconst);
             $this->assertEquals($equipment, $this->whiteboard->predicted_additional_equipment);
             $this->assertEquals($comment, $this->whiteboard->comments);
             $this->assertEquals($complexity, $this->whiteboard->complexity);
+        } else {
+            // The only time this condition should be reached is for a non-editable existing whiteboard.
+            $this->markTestSkipped('Data loading test not required for non-editable existing whiteboard');
         }
     }
 
     /**
      * @param $booking_id int
      * @param $fixtureId string|null
-     * @param $procedure string
      * @param $aconst double|null
      * @param $equipment string
      * @param $comment string
@@ -131,7 +134,6 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
     public function testGetPatientRisksDisplay(
         $booking_id,
         $fixtureId,
-        $procedure,
         $aconst = null,
         $equipment = null,
         $comment = null,

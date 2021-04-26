@@ -18,6 +18,8 @@ services:
       TZ: "Europe/London"
     stdin_open: true
     tty: true
+    tmpfs:
+      - /var/lib/mysql
     ports:
       - "3333:3306"
     command:
@@ -39,6 +41,8 @@ services:
       WAIT_SLEEP_INTERVAL: "2"
       USE_DEMO_DATA: "FALSE"
       DATABASE_NAME: "phpunitdb"
+      # temporarily fallback to develop branch, as some eyedraw tests require something that is not in master yet
+      OE_DEFAULT_BRANCH: "develop"
     secrets:
       - source: SSH_PRIVATE_KEY
     stdin_open: true

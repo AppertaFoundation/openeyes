@@ -117,9 +117,9 @@ return array(
     ),
     'event_type15' => array(
         'id' => 44,
-        'name' => 'Theatre Admission',
+        'name' => 'Operation Checklists',
         'event_group_id' => 1,
-        'class_name' => 'OphCiTheatreadmission',
+        'class_name' => 'OphTrOperationchecklists',
         'support_services' => 0,
         'show_attachments' => 1,
     ),

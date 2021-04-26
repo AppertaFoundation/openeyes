@@ -19,6 +19,7 @@ class BaseActiveRecordVersionedTest extends CDbTestCase
     );
 
     /**
+     * @covers BaseActiveRecordVersioned
      * @throws Exception
      */
     public function testPositionalParams()

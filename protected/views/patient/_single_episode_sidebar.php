@@ -56,6 +56,10 @@ $correspondence_email_status_to_css_class = [
     'Complete' => 'done',
     'Failed' => 'cancelled',
     'Pending' => 'scheduled',
+];
+$message_type_to_css_class = [
+    '0' => '',
+    '1' => 'urgent',
 ]; ?>
 <div class="sidebar-eventlist">
     <?php if (is_array($ordered_episodes)) { ?>
@@ -155,7 +159,16 @@ $correspondence_email_status_to_css_class = [
                                         $event_issue_text = $eventStatus;
                                     }
                                 }
-
+                                $message = $event->getElementByClass('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message');
+                                if ($message) {
+                                    $urgent_status = $message->urgent;
+                                    $css_class = $message_type_to_css_class[$urgent_status];
+                                    $event_icon_class .= ' ' . $css_class;
+                                    if ($urgent_status) {
+                                        $event_issue_class .= ' ' . $css_class;
+                                        $event_issue_text .= $message->message_type->name . "\n";
+                                    }
+                                }
                                 if (!empty($event_issue_text)) { ?>
                                     <div class="<?= $event_issue_class ?>">
                                         <?= $event_issue_text ?>

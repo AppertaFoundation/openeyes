@@ -45,6 +45,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
+     * @param string $className
      * @return CommonOphthalmicDisorder the static model class
      */
     public static function model($className = __CLASS__)
@@ -82,6 +83,11 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
         );
     }
 
+    /**
+     * @param $object
+     * @param $attribute
+     * @return bool
+     */
     public function containsDisorderOrFinding($object, $attribute)
     {
         if (empty($this->disorder_id) && empty($this->finding_id)) {
@@ -160,12 +166,12 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
         $criteria = new CDbCriteria();
 
-        $criteria->compare('id', $this->id, true);
-        $criteria->compare('disorder_id', $this->disorder_id, true);
-        $criteria->compare('finding_id', $this->finding_id, true);
-        $criteria->compare('group_id', $this->group_id, true);
-        $criteria->compare('alternate_disorder_id', $this->subspecialty_id, true);
-        $criteria->compare('subspecialty_id', $this->subspecialty_id, true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('disorder_id', $this->disorder_id);
+        $criteria->compare('finding_id', $this->finding_id);
+        $criteria->compare('group_id', $this->group_id);
+        $criteria->compare('alternate_disorder_id', $this->subspecialty_id);
+        $criteria->compare('subspecialty_id', $this->subspecialty_id, false, 'OR');
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
@@ -183,7 +189,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
             return 'finding';
         } elseif ($this->disorder_id || $this->finding_id) {
             // Finding or disorder is inactive
-            return;
+            return null;
         } else {
             return 'none';
         }
@@ -191,6 +197,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
     /**
      * @return Disorder|Finding
+     * @throws CDbException
      */
     public function getDisorderOrFinding()
     {
@@ -199,19 +206,21 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
         } elseif ($this->finding) {
             return $this->finding;
         }
+        throw new CDbException('Cannot find disorder or finding for common ophthalmic disorder');
     }
 
     /**
      * Fetch options list of disorders (and optionally findings).
      *
-     * @param Firm $firm
+     * @param Firm|null $firm
      * @param bool $include_findings
-     *
+     * @param bool $include_patient_disorders
+     * @param null $patient
      * @return array
      *
      * @throws CException
      */
-    public static function getList(Firm $firm, $include_findings = false , $include_patient_disorders = false , $patient = null)
+    public static function getList($firm, $include_findings = false, $include_patient_disorders = false, $patient = null)
     {
         if (empty($firm)) {
             throw new CException('Firm is required.');
@@ -222,9 +231,9 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
             $prefix = 'disorder-';
         }
 
-        if($include_patient_disorders && isset($patient)) {
-            $patient_disorders = Disorder::getPatientDisorders($patient->id);
-            foreach($patient_disorders as $disorder) {
+        if ($include_patient_disorders && isset($patient)) {
+            $patient_disorders = Disorder::model()->getPatientDisorders($patient->id);
+            foreach ($patient_disorders as $disorder) {
                 $disorders[$prefix . $disorder->id] = $disorder->term;
             }
         }
@@ -237,7 +246,6 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
                     'disorder' => array('joinType' => 'LEFT JOIN'),
                     'finding' => array('joinType' => 'LEFT JOIN'),
                 );
-
             }
             $cods = self::model()->with($with)->findAll(array(
                 'condition' => 't.subspecialty_id = :subspecialty_id',

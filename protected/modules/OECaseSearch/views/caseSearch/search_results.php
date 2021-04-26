@@ -6,7 +6,7 @@
 
 $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
 $warnings = array();
-foreach ($data->getWarnings(true) as $warn) {
+foreach ($data->getWarnings() as $warn) {
     $warnings[] = "{$warn['long_msg']}: {$warn['details']}";
 }
 $data->hasAllergyStatus();

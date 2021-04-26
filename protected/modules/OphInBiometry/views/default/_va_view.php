@@ -15,221 +15,93 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <?php
-$eventtype = EventType::model()->find('class_name = "OphCiExamination"');
-if ($eventtype) {
-    $eventtypeid = $eventtype->id;
+$va_data = null;
+$near_va_data = null;
+$examination_api = Yii::app()->moduleAPI->get('OphCiExamination');
+if ($examination_api) {
+    $va_data = $examination_api->getMostRecentVAData($this->patient);
+    $near_va_data = $examination_api->getMostRecentNearVAData($this->patient);
 }
+
+$section_cls_append = [
+    'update' => 'edit  edit-biometry',
+    'view' => 'priority'
+][$action] ?? '';
+
 ?>
-<?php
-$VAdate = "";
-$VA_data = null;
-$api = Yii::app()->moduleAPI->get('OphCiExamination');
-if ($api) {
-    $chosenVA = array();
-    $latest_VA_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', $this->patient);
-    if ($latest_VA_element && !$VA_data) {
-        $VA_data = $api->getMostRecentVAData($latest_VA_element->id);
-        $chosenVA = $latest_VA_element;
-        $VAdate = date("d M Y", strtotime($latest_VA_element->event->event_date));
-    }
-    $rightData = array();
-    $leftData = array();
-    if ($VA_data) {
-        for ($i = 0; $i < count($VA_data); ++$i) {
-            if ($VA_data[$i]->side == 0) {
-                $rightData[] = $VA_data[$i];
-            }
-            if ($VA_data[$i]->side == 1) {
-                $leftData[] = $VA_data[$i];
-            }
-        }
-    }
-    $methodnameRight = array();
-    $methodnameLeft = array();
-    if ($VA_data) {
-        $unitId = $chosenVA->unit_id;
-        for ($i = 0; $i < count($rightData); ++$i) {
-            $VAfinalright = $api->getVAvalue($rightData[$i]->value, $unitId);
-        }
-        for ($i = 0; $i < count($leftData); ++$i) {
-            $VAfinalleft = $api->getVAvalue($leftData[$i]->value, $unitId);
-        }
-        $methodIdRight = $api->getMethodIdRight($chosenVA->id);
-        for ($i = 0; $i < count($methodIdRight); ++$i) {
-            $methodnameRight[$i] = $api->getMethodName($methodIdRight[$i]->method_id);
-        }
-        $methodIdLeft = $api->getMethodIdLeft($chosenVA->id);
-        for ($i = 0; $i < count($methodIdLeft); ++$i) {
-            $methodnameLeft[$i] = $api->getMethodName($methodIdLeft[$i]->method_id);
-        }
-        $unitname = $api->getUnitName($unitId);
-    }
-}
-?>
-<section class="element full <?php if ($action == 'update') {
-    echo 'edit  edit-biometry';
-                             } else if ($action == 'view') {
-                                 echo 'priority';
-                             } ?>
-  eye-divider ">
+<section class="element full <?= $section_cls_append ?> eye-divider ">
     <header class="element-header">
-        <h3 class="element-title">Visual Acuity <?= '<br />' . $VAdate; ?></h3>
+        <h3 class="element-title">Visual Acuity <?= '<br />' . ($va_data !== null ? date("d M Y", strtotime($va_data['event_date'])) : ''); ?></h3>
     </header>
     <div class="element-fields element-eyes data-group">
-        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) {
+            $formatted_readings = array_map(function ($reading) {
+                return $reading['value'] . " " . $reading['method_name'] . " (" . $reading['unit'] . ")";
+            }, $va_data["{$eye_side}_readings"] ?? []);
+        ?>
         <div class="js-element-eye <?= $eye_side ?>-eye column">
-            <?php
-            $_method_name = 'methodname' . ucfirst($eye_side);
-            $method_name = ${$_method_name};
-            $_data = $eye_side . 'Data';
-            $data = ${$_data};
-            if (count($method_name)) {
-                ?>
-            <div class="data-value">
-                <?= $unitname ?>
-            </div>
-            <div class="data-group">
-                <div class="data-value">
-                    <?php
-                    for ($i = 0; $i < count($method_name); ++$i) {
-                        echo $api->getVAvalue($data[$i]->value, $unitId) . " " . $method_name[$i];
-                        if ($i != (count($method_name) - 1)) {
-                            echo ", ";
-                        }
-                    }
-                    ?>
+            <?php if (count($formatted_readings)) { ?>
+                <div class="data-group">
+                    <div class="data-value"><?= implode(", ", $formatted_readings) ?></div>
                 </div>
-            </div>
+            <?php } else { ?>
+                <div class="data-value not-recorded">Not recorded</div>
+            <?php } ?>
         </div>
-                <?php
-            } else { ?>
-        <div class="data-value not-recorded">
-            Not recorded
-        </div>
-    </div>
-            <?php }
-        endforeach; ?>
+        <?php } ?>
     </div>
 </section>
-<?php
-// Near VA
-$NearVAdate = "";
-$nearVAdata = null;
-if ($api) {
-    $chosenNearVA = array();
-    $latest_Near_VA_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity', $this->patient);
 
-    if ($latest_Near_VA_element && !$nearVAdata) {
-        $nearVAdata = $api->getMostRecentNearVAData($latest_Near_VA_element->id);
-        $chosenNearVA = $latest_Near_VA_element;
-        $NearVAdate = date("d M Y", strtotime($latest_Near_VA_element->event->event_date));
-    }
-    $rightNearData = array();
-    $leftNearData = array();
-
-    if ($nearVAdata) {
-        for ($i = 0; $i < count($nearVAdata); ++$i) {
-            if ($nearVAdata[$i]->side == 0) {
-                $rightNearData[] = $nearVAdata[$i];
-            }
-            if ($nearVAdata[$i]->side == 1) {
-                $leftNearData[] = $nearVAdata[$i];
-            }
-        }
-        $unitId = $chosenNearVA->unit_id;
-        for ($i = 0; $i < count($rightNearData); ++$i) {
-            $VAfinalright = $api->getVAvalue($rightNearData[$i]->value, $unitId);
-        }
-        for ($i = 0; $i < count($leftNearData); ++$i) {
-            $VAfinalleft = $api->getVAvalue($leftNearData[$i]->value, $unitId);
-        }
-        $methodIdRight = $api->getMethodIdNearRight($chosenNearVA->id);
-        for ($i = 0; $i < count($rightNearData); ++$i) {
-            $methodnameRight[$i] = $api->getMethodName($rightNearData[$i]->method_id);
-        }
-        $methodIdLeft = $api->getMethodIdNearLeft($chosenNearVA->id);
-        for ($i = 0; $i < count($leftNearData); ++$i) {
-            $methodnameLeft[$i] = $api->getMethodName($leftNearData[$i]->method_id);
-        }
-        $unitname = $api->getUnitName($unitId);
-    }
-}
-?>
-<section class="element full <?php if ($action == 'update') {
-    echo 'edit  edit-biometry';
-                             } else if ($action == 'view') {
-                                 echo 'priority';
-                             } ?>
-  eye-divider ">
+<section class="element full  <?= $section_cls_append ?> eye-divider ">
     <header class="element-header">
-        <h2 class="element-title">Near Visual Acuity <?= '<br />' . $NearVAdate; ?></h2>
+        <h2 class="element-title">Near Visual Acuity <?= '<br />' . ($near_va_data !== null ? date("d M Y", strtotime($near_va_data['event_date'])) : ''); ?></h2>
     </header>
     <div class="element-fields element-eyes data-group">
-        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) {
+            $formatted_readings = array_map(function ($reading) {
+                return $reading['value'] . " " . $reading['method_name'] . " (" . $reading['unit'] . ")";
+            }, $near_va_data["{$eye_side}_readings"] ?? []);
+            ?>
             <div class="js-element-eye <?= $eye_side ?>-eye column">
-                <?php
-                $_method_name = 'methodname' . ucfirst($eye_side);
-                $method_name = ${$_method_name};
-                $data = ${$eye_side . 'NearData'};
-                if (count($data)) { ?>
-                    <div class="data-value">
-                        <?= $unitname ?>
+                <?php if (count($formatted_readings)) { ?>
+                    <div class="data-group">
+                        <div class="data-value"><?= implode(", ", $formatted_readings) ?></div>
                     </div>
-                    <div class="data-value">
-                        <?php
-                        for ($i = 0; $i < count($data); ++$i) {
-                            echo $api->getVAvalue($data[$i]->value, $unitId) . " " . $method_name[$i];
-                            if ($i != (count($data) - 1)) {
-                                echo ", ";
-                            }
-                        } ?>
-                    </div>
-                    <?php
-                } else { ?>
-                    <div class="data-value not-recorded">
-                        Not recorded
-                    </div>
+                <?php } else { ?>
+                    <div class="data-value not-recorded">Not recorded</div>
                 <?php } ?>
             </div>
-        <?php endforeach; ?>
+        <?php } ?>
     </div>
 </section>
 <?php
 // Refraction here
-$refractfound = false;
-if ($api) {
-    $latest_refraction_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction', $this->patient);
-    if ($latest_refraction_element) {
-        $refraction_values = $api->getRefractionValues($latest_refraction_element->event->id);
-        $refractelement = $refraction_values;
-        $refract_event_date = $latest_refraction_element->event->event_date;
-        $refractfound = true;
-    }
+$refraction_data = null;
+if ($examination_api) {
+    $refraction_data = $examination_api->getMostRecentRefractionData($this->patient);
 }
 
-if ($refractfound) {
+if ($refraction_data) {
     ?>
-    <section class="element full <?php if ($action == 'update') {
-        echo 'edit  edit-biometry';
-                                 } else if ($action == 'view') {
-                                                          echo 'priority';
-                                 } ?>
-  eye-divider ">
+    <section class="element full eye-divider <?= $section_cls_append ?>">
         <header class="element-header">
-            <h3 class="element-title">Refraction <?= '<br />' . \Helper::convertDate2NHS($refract_event_date); ?></h3>
+            <h3 class="element-title">Refraction <?= '<br />' . \Helper::convertDate2NHS($refraction_data['event_date']); ?></h3>
         </header>
         <div class="element-fields element-eyes data-group">
             <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
                 <div class="js-element-eye <?= $eye_side ?>-eye column">
-                    <?php if ($refractelement->hasEye($eye_side)) {
+                    <?php if ($refraction_data["{$eye_side}_comments"] || $refraction_data["{$eye_side}_priority_reading"]) {
                         ?>
                         <div class="refraction">
-                            <?php $this->renderPartial(
-                                'view_Element_OphInBiometry_Measurement_OEEyeDraw',
-                                array('side' => $eye_side, 'element' => $refractelement)
-                            );
-                            ?>
+                            <div class="data-value">
+                                <?= $refraction_data["{$eye_side}_priority_reading"]["refraction"] ?><br />
+                                <?= $refraction_data["{$eye_side}_priority_reading"]["spherical_equivalent"] ?>
+                                <?= $refraction_data["{$eye_side}_comments"]
+                                    ? Yii::app()->format->Ntext($refraction_data["{$eye_side}_comments"])
+                                    : ""?>
+                            </div>
                         </div>
                         <?php
                     } else { ?>
@@ -243,12 +115,7 @@ if ($refractfound) {
     </section>
         <?php
 } else { ?>
-<section class="element full <?php if ($action == 'update') {
-    echo 'edit  edit-biometry';
-                             } else if ($action == 'view') {
-                                                  echo 'priority';
-                             } ?>
-  eye-divider ">
+<section class="element full  <?= $section_cls_append ?> eye-divider ">
     <header class="element-header">
         <h3 class="element-title">Refraction</h3>
     </header>

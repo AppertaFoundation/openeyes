@@ -489,7 +489,7 @@ class Event extends BaseActiveRecordVersioned
         $properties['event_id'] = $this->id;
         $properties['episode_id'] = $this->episode_id;
         $properties['patient_id'] = $this->episode->patient_id;
-
+        $data = is_null($data)? 'Event Info: ' . $this->info : $data;
         parent::audit($target, $action, $data, $log, $properties);
     }
 

@@ -3,15 +3,11 @@
     <ul class="oe-autocomplete hidden" id="ui-id-1" tabindex="0">
     </ul>
     <?php if ($hide_no_result_msg === false): ?>
-        <div class="data-group no-result warning alert-box hidden">
-            <div class="small-12 column text-center">
-                No results found.
-            </div>
+        <div class="js-no-result info alert-box hidden">
+            No results found.
         </div>
-        <div class="data-group min-chars warning alert-box hidden">
-            <div class="small-12 column text-center">
-                Minimum of 2 characters
-            </div>
+        <div class="js-min-chars info alert-box hidden">
+            Minimum of 2 characters
         </div>
     <?php endif; ?>
 </div>

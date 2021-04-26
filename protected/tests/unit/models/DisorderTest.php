@@ -51,7 +51,7 @@ class DisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Disorder::model
+     * @covers Disorder
      */
     public function testModel()
     {
@@ -59,7 +59,7 @@ class DisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Disorder::tableName
+     * @covers Disorder
      */
     public function testTableName()
     {
@@ -67,7 +67,7 @@ class DisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Disorder::rules
+     * @covers Disorder
      * @throws CException
      */
     public function testRules()
@@ -78,9 +78,8 @@ class DisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Disorder::getDisorderOptions
+     * @covers Disorder
      *
-     * @todo   Implement testGetDisorderOptions().
      */
     public function testGetDisorderOptions()
     {
@@ -92,7 +91,11 @@ class DisorderTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers Disorder
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {

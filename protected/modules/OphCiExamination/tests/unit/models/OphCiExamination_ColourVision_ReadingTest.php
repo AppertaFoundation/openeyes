@@ -1,7 +1,4 @@
 <?php
-
-use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading;
-
 /**
  * OpenEyes.
  *
@@ -17,14 +14,40 @@ use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading;
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphCiExamination_ColourVision_ReadingTest extends ActiveRecordTestCase
+
+namespace OEModule\OphCiExamination\tests\unit\models;
+
+use OEModule\OphCiExamination\models\CorrectionType;
+use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading;
+use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Value;
+use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasCorrectionTypeAttributeToTest;
+use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasWithHeadPostureAttributesToTest;
+
+/**
+ * Class OphCiExamination_ColourVision_ReadingTest
+ *
+ * @package OEModule\OphCiExamination\tests\unit\models
+ * @covers \OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading
+ * @group sample-data
+ * @group strabismus
+ * @group colour-vision
+ */
+class OphCiExamination_ColourVision_ReadingTest extends \ModelTestCase
 {
-    public function getModel()
+    use \HasStandardRelationsTests;
+    use \HasRelationOptionsToTest;
+    use HasCorrectionTypeAttributeToTest;
+
+    protected $element_cls = OphCiExamination_ColourVision_Reading::class;
+
+    /** @test */
+    public function method_property_is_derived_from_value_assignment()
     {
-        return OphCiExamination_ColourVision_Reading::model();
-    }
-    public function testgetMethod()
-    {
-        $this->markTestIncomplete('TODO');
+        $instance = $this->getElementInstance();
+        $this->assertNull($instance->method);
+
+        $value = $this->getRandomLookup(OphCiExamination_ColourVision_Value::class);
+        $instance->value = $value;
+        $this->assertEquals($value->method_id, $instance->method->id);
     }
 }

@@ -15,8 +15,8 @@
         <div class="search-examples">
             Find a patient by
             <!--            Parameterised for CERA-519-->
-            <strong><?php echo (Yii::app()->params['hos_num_label'])?></strong>,
-            <strong><?php echo Yii::app()->params['nhs_num_label']?> </strong>,
+            <strong><?php echo (\SettingMetadata::model()->getSetting('hos_num_label'))?></strong>,
+            <strong><?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> </strong>,
             <strong>Firstname Surname</strong> or
             <strong>Surname, Firstname</strong>.
         </div>

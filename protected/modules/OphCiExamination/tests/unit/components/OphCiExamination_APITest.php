@@ -66,30 +66,30 @@ class OphCiExamination_APITest extends CDbTestCase
         'va_unit_values' => '\OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue',
     );
 
-    public function testgetLetterVisualAcuityForEpisode_Side_hasReading()
+    public function testgetSnellenVisualAcuityForSide_hasReading()
     {
         foreach (array('Left', 'Right') as $side) {
-            $method = 'getLetterVisualAcuityForEpisode'.$side;
+            $method = 'getSnellenVisualAcuityFor'.$side;
             $this->assertEquals('6/9', $this->api->$method($this->patient('patient1')));
         }
     }
 
-    public function testgetLetterVisualAcuityForEpisode_Side_hasNoReading()
+    public function testgetSnellenVisualAcuityForSide_hasNoReading()
     {
         foreach (array('Left', 'Right') as $side) {
-            $method = 'getLetterVisualAcuityForEpisode'.$side;
+            $method = 'getSnellenVisualAcuityFor'.$side;
             $this->assertNull($this->api->$method($this->patient('patient2')));
         }
     }
 
-    public function testgetLetterVisualAcuityForEpisodeBoth_hasReading()
+    public function testgetSnellenVisualAcuityForBoth_hasReading()
     {
-        $this->assertEquals('6/9 on the right and 6/9 on the left', $this->api->getLetterVisualAcuityForEpisodeBoth($this->episode('episode1'), true));
+        $this->assertEquals('6/9 on the right and 6/9 on the left', $this->api->getSnellenVisualAcuityForBoth($this->patient('patient1'), true));
     }
 
-    public function testgetLetterVisualAcuityForEpisodeBoth_hasNoReading()
+    public function testgetSnellenVisualAcuityForBoth_hasNoReading()
     {
-        $this->assertEquals('not recorded on the right and not recorded on the left', $this->api->getLetterVisualAcuityForEpisodeBoth($this->episode('episode3'), false));
+        $this->assertEquals('not recorded on the right and not recorded on the left', $this->api->getSnellenVisualAcuityForBoth($this->patient('patient2'), false));
     }
 
     public function testGetPrincipalCCT()
@@ -549,7 +549,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetIOPValuesAsTableNotRecorded()
     {
-        $this->assertEquals('', $this->api->getIOPValuesAsTable($this->patient('patient1')));
+        $this->assertEquals('', $this->api->getIOPValuesAsTable($this->patient('patient2')));
     }
 
     private function createEvent($event_date = null)
@@ -667,6 +667,4 @@ class OphCiExamination_APITest extends CDbTestCase
 
         return $element;
     }
-
-
 }

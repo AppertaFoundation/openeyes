@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\widgets\HistoryMedications;
+
 /**
  * Class OETrial_ReportTrialCohort
  */
@@ -40,6 +42,8 @@ class OETrial_ReportTrialCohort extends BaseReport
 
     /**
      * Runs the report and adds the result set to $patients
+     *
+     * @throws CException
      */
     public function run()
     {
@@ -95,6 +99,7 @@ class OETrial_ReportTrialCohort extends BaseReport
      * Output the report in CSV format.
      *
      * @return string
+     * @throws CHttpException
      */
     public function toCSV()
     {
@@ -127,18 +132,18 @@ class OETrial_ReportTrialCohort extends BaseReport
 
             $diagnoses = array();
             foreach ($trial_patient->patient->getOphthalmicDiagnosesSummary() as $diagnosis) {
-                list($side, $name, $date) = explode('~', $diagnosis, 3);
+                $name = explode('~', $diagnosis, 3)[1];
                 $diagnoses[] = $name;
             }
             foreach ($trial_patient->patient->systemicDiagnoses as $diagnosis) {
                 $diagnoses[] = $diagnosis->disorder->term;
             }
-            $cols[] = implode($diagnoses, '; ');
+            $cols[] = implode('; ', $diagnoses);
 
-            /* @var \OEModule\OphCiExamination\widgets\HistoryMedications $medicationsWidget */
+            /* @var HistoryMedications $medicationsWidget */
             $medicationsWidget = Yii::app()->getWidgetFactory()->createWidget(
                 $this,
-                \OEModule\OphCiExamination\widgets\HistoryMedications::class,
+                HistoryMedications::class,
                 array(
                     'patient' => $trial_patient->patient,
                     'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
@@ -151,7 +156,7 @@ class OETrial_ReportTrialCohort extends BaseReport
             foreach ($medicationData['current'] as $medication) {
                 $medications[] = $medication->getMedicationDisplay();
             }
-            $cols[] = implode($medications, '; ');
+            $cols[] = implode('; ', $medications);
             $cols[] = $trial_patient->comment;
             $rows[] = $cols;
         }

@@ -21,10 +21,16 @@
  * @property string $id
  * @property int $event_id
  * @property string $comments
+ * @property string $printed_by_user
+ * @property string $printed_date
+ * @property string $authorised_by_user
+ * @property string $authorised_date
  *
  * The followings are the available model relations:
  * @property Event $event
  * @property OphDrPrescription_Item[] $items
+ * @property User $printedByUser
+ * @property User $authorisedByUser
  *
  * @method auditAllergicDrugEntries($target, $action = "allergy_override")
  */
@@ -93,7 +99,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 OphDrPrescription_Item::class,
                 array('event_id' => 'event_id')
             ),
-            'edit_reason' => array(self::BELONGS_TO, 'OphDrPrescriptionEditReasons', 'edit_reason_id')
+            'edit_reason' => array(self::BELONGS_TO, 'OphDrPrescriptionEditReasons', 'edit_reason_id'),
+            'printedByUser' => array(self::BELONGS_TO, 'User', 'printed_by_user'),
+            'authorisedByUser' => array(self::BELONGS_TO, 'User', 'authorised_by_user'),
         );
     }
 
