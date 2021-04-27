@@ -104,8 +104,8 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailable extends BaseAct
     public function getPatientUnavailbleReasons()
     {
         $criteria = new CDbCriteria();
-        $criteria->addCondition('enabled = true');
         $criteria->order = 'display_order asc';
+        $criteria->join = 'join ophtroperationbooking_patientunavailreason_institution inst on inst.patientunavailreason_id = t.id';
         $criteria->addCondition('institution_id = :institution_id');
         $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
 
