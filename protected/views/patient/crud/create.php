@@ -7,7 +7,7 @@
  */
 ?>
 <div class="oe-full-header flex-layout">
-  <div class="title wordcaps">Add <b>New Patient</b></div>
+  <div class="title wordcaps">Add&nbsp;<b>New Patient</b></div>
 </div>
 <?php $this->renderPartial('crud/_form', array(
     'patient' => $patient,
