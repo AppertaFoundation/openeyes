@@ -12,7 +12,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
 <div class="oe-home">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
-            Practice <b>Summary</b>
+            Practice&nbsp;<b>Summary</b>
         </div>
     </div>
 
