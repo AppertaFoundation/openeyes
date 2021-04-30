@@ -224,7 +224,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
     {
         parent::afterValidate();
         $this->setPasswordHash();
-        if ($this->old_attributes['password_status'] != $this->password_status) {
+        if (isset($this->old_attributes['password_status']) && $this->old_attributes['password_status'] != $this->password_status) {
             if ($this->password_status == 'current') {
                 $this->password_last_changed_date = date('Y-m-d H:i:s');
                 $this->password_failed_tries = 0;
