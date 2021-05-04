@@ -152,6 +152,12 @@
                 currentFirm: <?= $currentFirm ?>,
                 eventType: "<?= $event_types ?>",
             }).open();
+
+            //scroll view to selected service
+            const selected_service = document.querySelector('.oe-specialty-service.selected');
+            if (selected_service) {
+                selected_service.scrollIntoView();
+            }
         });
     });
 </script>
