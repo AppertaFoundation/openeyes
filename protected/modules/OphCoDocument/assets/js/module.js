@@ -23,25 +23,53 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
     function DocumentUploadController(options) {
         this.options = $.extend(true, {}, DocumentUploadController._defaultOptions, options);
-
         this.initialiseTriggers();
     }
 
     DocumentUploadController._defaultOptions = {
         "wrapperSelector": ".js-document-upload-wrapper",
         "fileInputSelector": ".js-document-file-input",
-        "removeButtonSelector": ".js-remove-document-wrapper button",
+        "removeButtonSelector": ".js-remove-document-action",
         "singleUploadSelector": "#single_document_uploader",
         "doubleUploadSelector": "#double_document_uploader",
         "dropAreaSelector": ".upload-label",
         "uploadModeSelector": "input[name='upload_mode']",
         "action": "",
-        "removedDocumentsSelector": "#removed-docs"
+        "removedDocumentsSelector": "#removed-docs",
+        "finalizeImageSelector": ".js-finalize-image",
+        "rotateImageSelector": ".js-rotate-image",
+        "cancelAnnotationActionSelector": ".js-cancel-annotation-action",
+        "saveAnnotationActionSelector": ".js-save-annotation-action",
+        "documentUploadSummarySelector": ".js-document-summary-wrapper",
+        "annotateImageActionSelector": ".js-annotate-image-action",
+        "downloadImageActionSelector": ".js-download-image-action",
+        "documentNameSelector": ".js-document-name",
+        "documentSizeSelector": ".js-document-size",
+        "pdfPrevButtonSelector": ".js-pdf-prev",
+        "pdfNextButtonSelector": ".js-pdf-next",
+        "documentEventSubTypeSelector": "#Element_OphCoDocument_Document_event_sub_type",
     };
 
     DocumentUploadController.prototype.initialiseTriggers = function () {
 
         let controller = this;
+
+        function saveCancelAnnotation(controller, tdElem, side) {
+            // show the save and cancel buttons to the user
+            tdElem.querySelectorAll(`${controller.options.saveAnnotationActionSelector}, ${controller.options.cancelAnnotationActionSelector}`).forEach(hideElement);
+            tdElem.querySelectorAll(`${controller.options.annotateImageActionSelector}, ${controller.options.downloadImageActionSelector}`).forEach(showElement);
+
+            if (side !== 'single') {
+                let oppositeSide = side === 'left' ? 'right' : 'left';
+                document.querySelector(`.js-document-summary-wrapper [data-side=${side}]`).className = 'cols-half';
+                document.querySelectorAll(`.js-document-summary-wrapper div[data-side=${oppositeSide}]`).forEach(showElement);
+                side = 'double';
+            }
+
+            document.querySelector(`#${side}_document_uploader`).style.display = '';
+            tdElem.querySelectorAll(`${controller.options.saveAnnotationActionSelector}, ${controller.options.cancelAnnotationActionSelector}`).forEach(hideElement);
+            controller.clearCanvasData();
+        }
 
         $(controller.options.dropAreaSelector).on({
             "dragenter, dragover": function(ev){
@@ -65,12 +93,242 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         });
 
         $(controller.options.wrapperSelector).on('change', controller.options.fileInputSelector, function () {
-            controller.documentUpload($(this), this.files[0].type);
+            let $field = $(this);
+            let file_type = this.files[0].type;
+
+            let formData = new FormData();
+            formData.append($field.attr('name'), $field.prop('files')[0]);
+            const fileName = $field.prop('files')[0].name;
+            const fileSize = (Math.round((($field.prop('files')[0].size / (10 ** 6)) + Number.EPSILON) * 100) / 100) + "Mb";
+            if (controller.validateFile($field)) {
+                $.ajax({
+                    url: '/OphCoDocument/Default/fileUpload',
+                    type: 'POST',
+                    xhr: function () {
+                        var myXhr = $.ajaxSettings.xhr();
+                        if (myXhr.upload) {
+                            myXhr.upload.addEventListener('progress', function(evt) {
+                                if (evt.lengthComputable) {
+                                    let percentage = (evt.loaded / evt.total) * 100;
+                                    controller.setUploadStatusText($field, 'Uploading: ' + parseInt(percentage) + '%');
+                                }
+                            }, false);
+                        }
+                        return myXhr;
+                    },
+                    enctype: 'multipart/form-data',
+                    data: formData,
+                    dataType: 'json',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.s === 0) {
+                            new OpenEyes.UI.Dialog.Alert({
+                                content: response.msg
+                            }).open();
+                        } else {
+                            $.each(response, function (index, value) {
+                                let filedata = $field.val().split('.');
+                                let extension = filedata[filedata.length - 1].toLowerCase();
+                                let $hidden_field = $('#Element_OphCoDocument_Document_' + index);
+                                let $td = $field.closest('td');
+                                let side = $td.data('side');
+                                if ($hidden_field.length) {
+                                    $hidden_field.val(value);
+                                }
+
+                                let fileUploadObject = {};
+                                fileUploadObject.td = $td;
+                                fileUploadObject.value = value;
+                                fileUploadObject.extension = extension;
+                                fileUploadObject.side = side;
+                                fileUploadObject.fileType = file_type;
+                                fileUploadObject.fileSize = fileSize;
+                                fileUploadObject.fileName = fileName;
+
+                                controller.documentUpload(fileUploadObject, true);
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        alert(xhr.responseText);
+                    },
+                });
+            }
         });
 
-        $(controller.options.wrapperSelector).on('click', controller.options.removeButtonSelector, function (e) {
-            e.preventDefault();
-            controller.removeDocument($(this).data('side'));
+        $(controller.options.documentEventSubTypeSelector).on('change', function () {
+            let uploadMode = $("input[name='upload_mode']:checked").val();
+
+            $.ajax({
+                url: '/OphCoDocument/Default/getImage',
+                type: 'POST',
+                data: {subTypeId: this.options[this.selectedIndex].value,
+                    uploadMode: uploadMode,
+                    YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+                success: function (response) {
+                    if (response) {
+                        response['document'].forEach(function(side) {
+                            const td = document.querySelector(`.js-document-upload-wrapper td[data-side=${side}]`);
+                            let $hidden_field = td.querySelector(`#Element_OphCoDocument_Document_${side}_document_id`);
+
+                            if (typeof($hidden_field) !== 'undefined' && $hidden_field != null) {
+                                $hidden_field.value = response['file_id'];
+                            }
+
+                            let fileUploadObject = {};
+                            fileUploadObject.td = $(document.querySelector(`.js-document-upload-wrapper td[data-side=${side}]`));
+                            fileUploadObject.value = response['file_id'];
+                            fileUploadObject.extension = response['extension'];
+                            fileUploadObject.side = side;
+                            fileUploadObject.fileType = response['mime_type'];
+                            fileUploadObject.fileSize = response['file_size'];
+                            fileUploadObject.fileName = response['file_name'];
+
+                            controller.documentUpload(fileUploadObject);
+                        });
+                    }
+                },
+                error: function () {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "Sorry, an internal error occurred and we were unable to load the template for the selected document subtype.\n\nPlease contact support for assistance."
+                    }).open();
+                }
+            });
+        });
+
+        Array.from(document.querySelectorAll(controller.options.removeButtonSelector)).forEach(function(element) {
+            element.addEventListener('click', function(event) {
+                event.preventDefault();
+                controller.removeDocument(element.dataset.side);
+            });
+        });
+
+        Array.from(document.querySelectorAll(controller.options.annotateImageActionSelector)).forEach(function(element) {
+            element.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const div = element.parentElement;
+                // show the save and cancel buttons
+                div.querySelectorAll(`${controller.options.saveAnnotationActionSelector}, ${controller.options.cancelAnnotationActionSelector}`).forEach(showElement);
+                div.querySelectorAll(`${controller.options.annotateImageActionSelector}, ${controller.options.downloadImageActionSelector}`).forEach(hideElement);
+
+                const summarySideElem = div.closest('div[data-side]');
+                const side = summarySideElem.dataset.side;
+
+                document.querySelectorAll(`.js-document-summary-wrapper div[data-side]:not([data-side=${side}])`).forEach(hideElement);
+
+                summarySideElem.className = 'cols-full';
+
+                const template = document.querySelector('#oe-annotate-image-template');
+                // Clone the new row and insert it into the table
+                const clone = template.content.cloneNode(true);
+
+                document.querySelector('#js-annotate-image').appendChild(clone);
+
+                const el = document.querySelector(`${controller.options.wrapperSelector} [data-side="${side}"] .ophco-image-container`);
+                const format = el.getAttribute('data-file-format');
+                const imageEl = el.querySelector(el.getAttribute('data-image-el'));
+                const fileType = el.getAttribute('data-file-type');
+
+                if (fileType === 'pdf') {
+                    showElement(document.querySelector('#pdf-message'));
+                }
+
+                let data = {attribute: 'data-side', value : side};
+                OpenEyes.UI.ImageAnnotator.init(imageEl.src, imageEl.naturalWidth, imageEl.naturalHeight, document.querySelectorAll('.js-document-upload-wrapper'), format, data, side);
+            });
+        });
+
+        Array.from(document.querySelectorAll(controller.options.downloadImageActionSelector)).forEach(function(element) {
+            element.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const div = element.parentElement;
+                const summarySideElem = div.closest('div[data-side]');
+                const side = summarySideElem.dataset.side;
+
+                const el = document.querySelector(`${controller.options.wrapperSelector} [data-side="${side}"] .ophco-image-container`);
+                const fileType = el.getAttribute('data-file-type');
+
+                if (fileType !== 'pdf') {
+                    const format = el.getAttribute('data-file-format');
+                    let url = el.querySelector(el.getAttribute('data-image-el')).src;
+                    downloadImage(url, `download.${format}`);
+                } else {
+                    element.parentElement.querySelector('.js-protected-file-content').value = generatePdfOutput(el, true);
+                }
+            });
+        });
+
+        Array.from(document.querySelectorAll(controller.options.saveAnnotationActionSelector)).forEach(function(element) {
+            element.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const div = element.parentElement;
+                const summarySideElem = div.closest('div[data-side]');
+                const side = summarySideElem.dataset.side;
+                const el = document.querySelector(`${controller.options.wrapperSelector} [data-side="${side}"] .ophco-image-container`);
+                const imageEl = el.querySelector(el.getAttribute('data-image-el'));
+                const fileType = el.getAttribute('data-file-type');
+                const canvasDataUrl =  OpenEyes.UI.ImageAnnotator.getCanvasDataUrl();
+                imageEl.src = canvasDataUrl;
+                if (fileType !== 'pdf') {
+                    document.querySelector(`#ProtectedFile_${side}_file_content`).value = canvasDataUrl;
+                }
+
+                saveCancelAnnotation(controller, div, side);
+            });
+        });
+
+        Array.from(document.querySelectorAll(controller.options.cancelAnnotationActionSelector)).forEach(function(element) {
+            element.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const div = element.parentElement;
+                const summarySideElem = div.closest('div[data-side]');
+                const side = summarySideElem.dataset.side;
+                saveCancelAnnotation(controller, div, side);
+
+            });
+        });
+
+        Array.from(document.querySelectorAll(controller.options.pdfPrevButtonSelector)).forEach(function(element) {
+            element.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const td = element.parentElement.parentElement;
+                const side = td.dataset.side;
+                const el = td.querySelector(`.ophco-image-container`);
+                let currentPage = parseInt(el.getAttribute('data-current-page'));
+                let totalPages = parseInt(el.getAttribute('data-total-pages'));
+                if (currentPage !== 1) {
+                    el.querySelector(`.page-${currentPage}`).style.display = 'none';
+                    el.querySelector(`.page-${currentPage-1}`).style.display = '';
+                    el.setAttribute('data-current-page', (currentPage - 1).toString());
+                    el.setAttribute('data-image-el', `.page-${currentPage - 1}`);
+                    document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] label`).innerText = `Page: ${currentPage - 1}/${totalPages}`;
+                }
+            });
+        });
+
+        Array.from(document.querySelectorAll(controller.options.pdfNextButtonSelector)).forEach(function(element) {
+            element.addEventListener('click', function(event) {
+                event.preventDefault();
+                const td = element.parentElement.parentElement;
+                const side = td.dataset.side;
+                const el = td.querySelector(`.ophco-image-container`);
+                let currentPage = parseInt(el.getAttribute('data-current-page'));
+                let totalPages = parseInt(el.getAttribute('data-total-pages'));
+                if (currentPage !== totalPages) {
+                    el.querySelector(`.page-${currentPage}`).style.display = 'none';
+                    el.querySelector(`.page-${currentPage+1}`).style.display = '';
+                    el.setAttribute('data-current-page', (currentPage + 1).toString());
+                    el.setAttribute('data-image-el', `.page-${currentPage + 1}`);
+                    document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] label`).innerText = `Page: ${currentPage + 1}/${totalPages}`;
+                }
+            });
         });
 
         window.addEventListener("paste", function (event) {
@@ -130,9 +388,101 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
            controller.options.action = 'cancel';
         });
 
-        $("#et_save,#et_save_footer").on('click', function () {
-           controller.options.action = 'save';
+        $("#et_save,#et_save_footer").on('click', function (e) {
+            controller.options.action = 'save';
+            e.preventDefault();
+
+            let canvasData = OpenEyes.UI.ImageAnnotator.getCanvasDataUrl();
+
+            if ((typeof canvasData !== "boolean")){
+                const side = document.querySelector('#js-annotate-image .canvas-js').getAttribute('data-side');
+                const containerElem = document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] .ophco-image-container`);
+                const imageElem = containerElem.querySelector(containerElem.getAttribute('data-image-el'));
+                const fileType = containerElem.getAttribute('data-file-type');
+                imageElem.src = canvasData;
+                if (fileType === 'image') {
+                    containerElem.parentElement.querySelector('.js-protected-file-content').value = canvasData;
+                }
+            }
+
+            // before submitting it, check if the pdf was uploaded or not
+            document.querySelectorAll('.ophco-image-container').forEach(function (element) {
+                if ((element.getAttribute('data-file-type') === 'pdf') && (element.parentElement.querySelector('.js-canvas-modified').value === '1')) {
+                    // then generate a base64 pdf
+                    console.log('generating pdf' + element);
+                    element.parentElement.querySelector('.js-protected-file-content').value = generatePdfOutput(element);
+                }
+            });
+
+            $('#document-create').submit();
         });
+    };
+
+    function generatePdfOutput(element, shouldSavePdf = false) {
+        let doc = new jsPDF();
+        let imageObjs = element.querySelectorAll('img');
+
+        imageObjs.forEach(function (imageObj, index) {
+            if (index !== 0) {
+                doc.addPage();
+                doc.setPage(index + 1);
+            }
+            doc.addImage(
+                imageObj.src,
+                "PNG",
+                0,
+                0,
+                doc.internal.pageSize.getWidth(),
+                doc.internal.pageSize.getHeight(),
+                `page-${index + 1}`,
+                undefined
+            );
+        });
+
+        if (shouldSavePdf) {
+            doc.save('preview.pdf');
+        } else {
+            return doc.output('datauristring');
+        }
+    }
+
+    DocumentUploadController.prototype.rotateImage = function (type, event) {
+        event.preventDefault();
+
+        let image_id = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
+        const imageEl = $(`#${type}-image-${image_id}`);
+        let image_src = imageEl.attr('src');
+        image_src = image_src.split('?');
+        let src = image_src[0];
+        let currentDegree = 0;
+        if(typeof image_src[1] !== 'undefined') {
+            // does not exist
+            currentDegree = Number(image_src[1].split('=')[1]);
+        }
+
+        let degree = (-90 + currentDegree) % 360 ;
+        imageEl.animate({  transform: degree }, {
+            step: function() {
+                $(this).attr({
+                    'src': src + '?rotate=' + degree
+                });
+            }
+        });
+    };
+
+    DocumentUploadController.prototype.finalizeImage = function (event) {
+        let controller = this;
+        event.preventDefault();
+        const element = event.target;
+        const uploadOrientationElem = element.parentElement.parentElement.parentElement;
+        const side = uploadOrientationElem.parentElement.parentElement.dataset.side;
+        const summarySideSelector = document.querySelector(`${controller.options.documentUploadSummarySelector} [data-side=${side}]`);
+        const div = uploadOrientationElem.parentElement;
+        const imageElem = uploadOrientationElem.getElementsByTagName('img')[0];
+        uploadOrientationElem.remove();
+        div.appendChild(imageElem);
+
+        summarySideSelector.querySelectorAll(`${controller.options.annotateImageActionSelector}, ${controller.options.downloadImageActionSelector}`).forEach(showElement);
     };
 
     DocumentUploadController.prototype.removeDocument = function (side) {
@@ -142,15 +492,38 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         $td.find('.ophco-image-container').remove();
         $('#'+side+'_document_rotate').val(0);
         $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file or DROP here");
-        $td.find('.js-remove-document-wrapper').hide();
+
+        const tdEl = $td[0];
+        hideElement(tdEl.querySelector('.pdf-actions'));
+
+        const documentSummarySideEl = document.querySelector(`${controller.options.documentUploadSummarySelector} div[data-side=${side}]`);
 
         if(side === 'single'){
             $(controller.options.uploadModeSelector).attr('disabled', false);
+            showElement(document.querySelector('#single_document_uploader'));
+            document.querySelector('#document-event').className = "cols-11";
+            showElement(document.querySelector('#document-event-info'));
+
+            hideElement(documentSummarySideEl);
+            hideElement(document.querySelector('#document_summary'));
         } else {
             let opposite_side = side === 'right' ? 'left' : 'right';
             if( $('#Element_OphCoDocument_Document_'+ opposite_side + '_document_id').val() === '') {
                 $(controller.options.uploadModeSelector).attr('disabled', false);
+                showElement(document.querySelector('#double_document_uploader'));
+                showElement(document.querySelector('#document-event-info'));
+                document.querySelector('#document-event').className = "cols-11";
+                hideElement(document.querySelector('#document_summary'));
+            } else {
+                showElement(document.querySelector('#double_document_uploader'));
+                showElement(document.querySelector(`.js-document-summary-wrapper div[data-side=${opposite_side}]`));
             }
+
+            // hideElement(document.querySelector(`.js-document-summary-wrapper div[data-side=${side}]`));
+            hideElement(documentSummarySideEl);
+            document.querySelectorAll(`.js-document-summary-wrapper div[data-side=${side}], .js-document-summary-wrapper div[data-side=${opposite_side}]`).forEach(function(element) {
+                element.className = 'cols-half';
+            });
         }
 
         let deleted_doc = $td.find('.js-document-id').val();
@@ -165,7 +538,16 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
         $(controller.options.fileInputSelector).val("");
         $td.find('.js-document-id').val("");
-        $('#' + side + '-rotate-actions').hide();
+        $td.find('.js-canvas-modified').val("");
+
+        showElement(document.querySelector('#accepted-file-types'));
+        documentSummarySideEl.querySelectorAll(`${controller.options.documentNameSelector}, ${controller.options.documentSizeSelector}`).forEach(clearElementInnerHTML);
+
+        const annotationEl = document.querySelector(`.js-document-summary-wrapper div[data-side=${side}]`);
+        annotationEl.querySelectorAll(`${controller.options.annotateImageActionSelector}, ${controller.options.downloadImageActionSelector},
+        ${controller.options.saveAnnotationActionSelector}, ${controller.options.cancelAnnotationActionSelector}`).forEach(hideElement);
+        document.querySelector(`#ProtectedFile_${side}_file_content`).value = '';
+        controller.clearCanvasData();
     };
 
     DocumentUploadController.prototype.paste = function (side, files) {
@@ -181,92 +563,110 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         $label.text(text);
     };
 
-    DocumentUploadController.prototype.documentUpload = function($field, file_type) {
+    DocumentUploadController.prototype.documentUpload = function(fileUploadObject, isRotationRequired) {
         let controller = this;
-        let formData = new FormData();
-        formData.append($field.attr('name'), $field.prop('files')[0]);
 
-        if (controller.validateFile($field)) {
-            $.ajax({
-                url: '/OphCoDocument/Default/fileUpload',
-                type: 'POST',
-                xhr: function () {
-                    var myXhr = $.ajaxSettings.xhr();
-                    if (myXhr.upload) {
-                        myXhr.upload.addEventListener('progress', function(evt) {
-                            if (evt.lengthComputable) {
-                                let percentage = (evt.loaded / evt.total) * 100;
-                                controller.setUploadStatusText($field, 'Uploading: ' + parseInt(percentage) + '%');
-                            }
-                        }, false);
-                    }
-                    return myXhr;
-                },
-                enctype: 'multipart/form-data',
-                data: formData,
-                dataType: 'json',
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function () {
+        let $td = fileUploadObject.td;
+        let value = fileUploadObject.value;
+        let file_type = fileUploadObject.fileType;
+        let extension = fileUploadObject.extension;
+        let fileName = fileUploadObject.fileName;
+        let fileSize = fileUploadObject.fileSize;
+        let side = fileUploadObject.side;
 
-                },
-                success: function (response) {
-                    if (response.s === 0) {
-                        new OpenEyes.UI.Dialog.Alert({
-                            content: response.msg
-                        }).open();
-                    } else {
-                        $.each(response, function (index, value) {
-                            let filedata = $field.val().split('.');
-                            let $hidden_field = $('#Element_OphCoDocument_Document_' + index);
-                            let $td = $field.closest('td');
-                            if ($hidden_field.length) {
-                                $hidden_field.val(value);
-                            }
+        let view = controller.generateView($td, value, extension, side, isRotationRequired);
+        //clearInputFile(index);
 
-                            var view = controller.generateView(response, index, value, filedata);
-                            //clearInputFile(index);
-
-                            $td.find(".upload-box").after(view);
-                            $td.find(".upload-box").hide();
-
-                            $field.closest('td').find('.js-remove-document-wrapper').show();
-
-                            $(controller.options.uploadModeSelector + ":not(:checked").attr('disabled', true);
-
-                            if (file_type !== "application/pdf") {
-                                $('#' + $field.data('side') + '-rotate-actions').show();
-                            }
-                        });
-                    }
-
-
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.responseText);
-                },
-                complete: function () {
-                }
-            });
+        if (file_type !== "application/pdf") {
+            $td.find(".upload-box").after(view);
         }
+
+        $td.find(".upload-box").hide();
+
+        $(controller.options.uploadModeSelector + ":not(:checked").attr('disabled', true);
+
+        const documentSummarySideEl = document.querySelector(`${controller.options.documentUploadSummarySelector} [data-side=${side}]`);
+        if (side === 'left') {
+            documentSummarySideEl.style.marginLeft = 'auto';
+        }
+        hideElement(document.querySelector('#document-event-info'));
+        showElement(document.querySelector('#document_summary'));
+        showElement(documentSummarySideEl);
+        documentSummarySideEl.querySelector(controller.options.documentNameSelector).innerHTML = fileName;
+        documentSummarySideEl.querySelector(controller.options.documentSizeSelector).innerHTML = fileSize;
+        hideElement(document.querySelector('#accepted-file-types'));
+        document.querySelector('#document-event').className = "cols-full";
     };
 
-    DocumentUploadController.prototype.generateView = function(res, index, value, filedata) {
+    DocumentUploadController.prototype.generatePDF = function($td, $div, value, extension, side) {
+        let controller = this;
+        let thePDF = null;
+        let numPages = 0;
+        let currPage = 1; //Pages are 1-based not 0-based
+        // get base64 data of the uploaded pdf
+        let loadingTask = pdfjsLib.getDocument('/file/view/' + value + '/image.' + extension);
+        loadingTask.promise.then(function (pdf) {
+            thePDF = pdf;
+            numPages = pdf.numPages;
+            //Start with first page
+            pdf.getPage( 1 ).then( handlePages.bind(this, controller, thePDF, numPages, currPage, $div, $td, side) );
+        }, function (reason) {
+        });
+    };
 
-        let extension = filedata[filedata.length - 1].toLowerCase();
+    function handlePages(controller, thePDF, numPages, currPage, $div, $td, side, page)
+    {
+        let canvas = document.createElement( "canvas" );
+        canvas.id = 'page' + currPage;
+        let context = canvas.getContext('2d');
+        let viewport = page.getViewport( {scale:1} );
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        // render the page on the canvas
+        let renderTask = page.render({canvasContext: context, viewport: viewport});
+        renderTask.promise.then(function() {
+            let dataUrl = canvas.toDataURL('image/jpeg', 1.0 );
+            let image = document.createElement('img');
+            image.src = dataUrl;
+            image.setAttribute('class', "page-" + currPage);
+            image.setAttribute('width', "100%");
+            image.setAttribute('height', "auto");
+            image.style.display = 'none';
+            $div.appendChild(image);
+
+            currPage++;
+            if ( thePDF !== null && currPage <= numPages )
+            {
+                thePDF.getPage( currPage ).then( handlePages.bind(this, controller, thePDF,numPages,currPage, $div, $td, side) );
+            } else {
+                $div.setAttribute('data-image-el', '.page-1');
+                $div.setAttribute('data-file-type', 'pdf');
+                $div.setAttribute('data-current-page', '1');
+                $div.setAttribute('data-total-pages', numPages);
+
+                $div.querySelector('.page-1').style.display = '';
+                $td.find(".upload-box").after($div);
+
+                const pdfActionsEl = document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] .pdf-actions`);
+                showElement(pdfActionsEl);
+                pdfActionsEl.querySelector('label').innerText = `Page: 1/${numPages}`;
+
+                const summarySideSelector = document.querySelector(`${controller.options.documentUploadSummarySelector} [data-side=${side}]`);
+                summarySideSelector.querySelectorAll(`${controller.options.annotateImageActionSelector}, ${controller.options.downloadImageActionSelector}`).forEach(showElement);
+            }
+        });
+    }
+
+    DocumentUploadController.prototype.generateView = function($td, value, extension, side, isRotationRequired = false) {
+        let controller = this;
         let result;
 
-        let side_id;
-        if (res.single_document_id) {
-            side_id = res.single_document_id;
-        } else if (res.right_document_id) {
-            side_id = res.right_document_id;
-        } else {
-            side_id = res.left_document_id;
-        }
 
-        let $div = $('<div>', {"id": 'ophco-image-container-' + side_id, "class": "ophco-image-container"});
+        let $div = document.createElement('div');
+        $div.id = 'ophco-image-container-' + value;
+        $div.classList.add('ophco-image-container');
+
         let $img;
 
         switch (extension) {
@@ -274,20 +674,37 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             case 'jpeg':
             case 'png':
             case 'gif':
-                    $img = $('<img>', {
-                        "id": "single-image-" + side_id,
-                        "class": "image-upload-del", "src": "/file/view/" + value + "/image." + extension,
-                        "width": "100%"
-                        });
-                    result = $div.append($img);
+                $div.setAttribute('data-image-el', '.image-upload-del');
+                $div.setAttribute('data-file-type', 'image');
+                $div.setAttribute('data-file-format', extension === 'png' ? 'png' : 'jpeg');
+
+                $img = document.createElement('img');
+                $img.id = `${side}-image-${value}`;
+                $img.classList.add('image-upload-del');
+                $img.src = `/file/view/${value}/image.${extension}`;
+                $img.style.width = "100%";
+                $img.style.height = "auto";
+
+                if (isRotationRequired) {
+                    const template = document.querySelector('#oe-upload-orientation-template');
+                    // Clone the template
+                    const clone = template.content.cloneNode(true);
+                    const adjustmentEl = clone.querySelector('.adjustments');
+                    adjustmentEl.parentNode.insertBefore($img, adjustmentEl.nextSibling);
+                    $div.appendChild(clone);
+                    $div.querySelector(controller.options.rotateImageSelector).addEventListener('click', controller.rotateImage.bind(controller, side));
+                    $div.querySelector(controller.options.finalizeImageSelector).addEventListener('click', controller.finalizeImage.bind(controller));
+                } else {
+                    $div.appendChild($img);
+                    const summarySideSelector = document.querySelector(`${controller.options.documentUploadSummarySelector} [data-side=${side}]`);
+                    summarySideSelector.querySelectorAll(`${controller.options.annotateImageActionSelector}, ${controller.options.downloadImageActionSelector}`).forEach(showElement);
+                }
+
+                result = $div;
                 break;
             case 'pdf':
-                result =
-                    '<div id="ophco-image-container-' + side_id + '" class="ophco-image-container">' +
-                        '<object height="800" width="100%" data="/file/view/' + value + '/image.' + extension + '" type="application/pdf">' +
-                            '<embed height="100%" width="100%" src="/file/view/' + value + '/image.' + extension + '" type="application/pdf" />' +
-                        '</object>' +
-                    '</div>';
+                $div.setAttribute('data-file-format', 'jpeg');
+                result = controller.generatePDF($td, $div, value, extension, side);
                 break;
             case 'mp4':
             case 'ogg':
@@ -364,6 +781,34 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         }
     };
 
+    DocumentUploadController.prototype.clearCanvasData = function() {
+        const annotateEl = document.querySelector('#js-annotate-image');
+        annotateEl.style.display = 'none';
+        annotateEl.innerHTML = '';
+        OpenEyes.UI.ImageAnnotator.clearCanvas();
+        hideElement(document.querySelector('#pdf-message'));
+    };
+
+    function clearElementInnerHTML(element) {
+        element.innerHTML = '';
+    }
+
+    function showElement(element) {
+        element.style.display = '';
+    }
+
+    function hideElement(element) {
+        element.style.display = 'none';
+    }
+
+    function downloadImage(data, filename = 'untitled.png') {
+        let a = document.createElement('a');
+        a.href = data;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    }
 
     exports.DocumentUploadController = DocumentUploadController;
 

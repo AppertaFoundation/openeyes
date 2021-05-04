@@ -67,8 +67,17 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
 
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphCoDocument_Sub_Types'];
-            if ($model->save()) {
-                $this->redirect(array('/OphCoDocument/oeadmin/DocumentSubTypesSettings'));
+
+            if ($model->validate()) {
+                $imageUploadFile = CUploadedFile::getInstance($model, 'image');
+                if ($imageUploadFile !== null) { // only do if file is really uploaded
+                    if ($id = $this->uploadFile($imageUploadFile->tempName, $imageUploadFile->name)) {
+                        $model->document_id = $id;
+                    }
+                }
+                if ($model->save(false)) {
+                    $this->redirect(array('/OphCoDocument/oeadmin/DocumentSubTypesSettings'));
+                }
             } else {
                 $errors = $model->getErrors();
             }
@@ -81,7 +90,7 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
 
     /**
      * Renders the edit page
-     * @param $id int model id
+     * @param int $id the ID of the model to be loaded
      */
     public function actionEdit($id)
     {
@@ -93,8 +102,24 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
 
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphCoDocument_Sub_Types'];
-            if ($model->save()) {
-                $this->redirect(array('/OphCoDocument/oeadmin/DocumentSubTypesSettings'));
+
+            if ($model->validate()) {
+                // delete the existing file first, before trying to upload a new file.
+                if (isset($model->document_id)) {
+                    $documentId = $model->document_id;
+                    $model->saveAttributes(array('document_id' => null));
+                    ProtectedFile::model()->deleteByPk($documentId);
+                }
+                $imageUploadFile = CUploadedFile::getInstance($model, 'image');
+                if ($imageUploadFile !== null) { // only do if file is really uploaded
+                    if ($id = $this->uploadFile($imageUploadFile->tempName, $imageUploadFile->name)) {
+                        $model->document_id = $id;
+                    }
+                }
+                // just save the model because the validation already ran.
+                if ($model->save(false)) {
+                    $this->redirect(array('/OphCoDocument/oeadmin/DocumentSubTypesSettings'));
+                }
             } else {
                 $errors = $model->errors;
             }
@@ -120,5 +145,25 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
         }
 
         return $model;
+    }
+
+
+    /**
+     * @param $tmp_name
+     * @param $original_name
+     * @return int|boolean
+     */
+    private function uploadFile($tmp_name, $original_name)
+    {
+        $p_file = ProtectedFile::createFromFile($tmp_name);
+        $p_file->name = $original_name;
+        $p_file->title = $original_name;
+        if ($p_file->save()) {
+            unlink($tmp_name);
+            return $p_file->id;
+        }
+
+        unlink($tmp_name);
+        return false;
     }
 }
