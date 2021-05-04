@@ -387,14 +387,13 @@ class UserIdentity extends CUserIdentity
                     throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors() , true) .  $message);
                 }
             }
-
         } elseif ($this->is_special || $inst_auth->user_authentication_method == 'LOCAL') {
             $validPw = $user_authentication->verifyPassword($this->password);
             $is_softlocked =  PasswordUtils::testStatus('softlocked', $user_authentication) && $user_authentication->password_softlocked_until > date("Y-m-d H:i:s");
             $pwActive = $this->is_special ? true : !(PasswordUtils::testStatus('locked', $user_authentication) || $is_softlocked);
 
             if (!($validPw && $pwActive)) { //if failed logon or locked
-                if(!$this->is_special && (!$validPw || $is_softlocked) && isset(Yii::app()->params['pw_status_checks']['pw_tries'])){ // if the password was not correct and we check the number of tries
+                if(!$this->is_special && (!$validPw || $is_softlocked) && !empty(Yii::app()->params['pw_status_checks']['pw_tries'])){ // if the password was not correct and we check the number of tries
                     PasswordUtils::incrementFailedTries($user_authentication);
                 }
                 $this->errorCode = self::ERROR_PASSWORD_INVALID;
