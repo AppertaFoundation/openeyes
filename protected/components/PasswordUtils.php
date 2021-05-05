@@ -97,9 +97,9 @@ class PasswordUtils
         return md5($salt . $password);
     }
 
-    public static function testStatus($status = 'locked', $user_authentication)
+    public static function testStatus($status = 'locked', $user_authentication, $is_special = false)
     {
-        if ($user_authentication->institutionAuthentication->user_authentication_method != 'LOCAL') {
+        if (!$is_special && $user_authentication->institutionAuthentication->user_authentication_method != 'LOCAL') {
             return null;
             //throw exception?
         }
