@@ -41,7 +41,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
     {
         $this->resolveVAUnit();
 
-        $va_ticks = $this->getChartTicks();
+        $va_ticks = $this->getVAChartTicks();
 
 
         $this->va_ticks = $va_ticks;

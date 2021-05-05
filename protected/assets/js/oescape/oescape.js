@@ -159,19 +159,23 @@ var OEScape = {
     },
   },
   toolTipFormatters_plotly: {
-    VA: function (x, y, series_name) {
-      var nearestTickIndex = 0;
-      var ticks = OEScape.full_va_ticks;
-      for (var ii = 0; ii < ticks.tick_position.length; ii++){
-        if(ticks.tick_position[ii] <= y){
-          nearestTickIndex = ii;
-        } else {
-          break;
-        }
-      }
+      VA: function (x, y, series_name) {
+          var nearestTickIndex = 0;
+          var ticks = OEScape.full_va_ticks;
+          for (var ii = 0; ii < ticks.tick_position.length; ii++) {
+              if (ticks.tick_position[ii] <= y) {
+                  nearestTickIndex = ii;
+              } else {
+                  break;
+              }
+          }
 
-      return OEScape.epochToDateStr(x) +'<br>' + series_name + ': ' +  ticks.tick_labels[nearestTickIndex];
-    }
+          return OEScape.epochToDateStr(x) + '<br>' + series_name + ': ' + ticks.tick_labels[nearestTickIndex];
+      },
+      VFI: function (x, y, side) {
+          let rounded_y = Math.round(y * 10)/10;
+          return OEScape.epochToDateStr(x) + '<br>' + 'VFI(' + side + ') : ' + rounded_y;
+      },
   },
   epochToDateStr: function(epoch){
     var date = new Date(epoch);

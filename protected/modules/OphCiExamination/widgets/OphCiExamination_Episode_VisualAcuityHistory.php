@@ -25,6 +25,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
 
     protected $va_axis;
     protected $va_ticks;
+    protected $vfi_ticks;
     protected $va_unit;
     protected $va_y_min;
     protected $va_y_max;
@@ -59,7 +60,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
      */
     public function getAdjustedVA($val)
     {
-        return $val > 4 ? $val : ($val-2) * 10;
+        return $val > 4 ? $val : ($val-4) * 10;
     }
 
 
@@ -68,7 +69,8 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
      * @return FlotChart
      */
     public function configureChart() {
-        $va_ticks = $this->getChartTicks();
+        $this->vfi_ticks = $this->getVfiChartTicks();
+        $va_ticks = $this->getVAChartTicks();
         $va_len = sizeof($va_ticks);
         $step = $va_len/20;
         $no_numeric_val_count = 4;   //keep the 4 no number labels: CF, HM, PL, NPL
@@ -181,6 +183,43 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         return $va_plotly_list;
     }
 
+    public function getPlotlyVfiData()
+    {
+        $vfi_data_list = [
+            'right' => [],
+            'left' => []
+        ];
+        $vfi_plotly_list = [
+            'right' => ['x' => [], 'y' => []],
+            'left' => ['x' => [], 'y' => []]
+        ];
+        $generic_api = Yii::app()->moduleAPI->get('OphGeneric');
+        $hfa = $generic_api->getElements(\OEModule\OphGeneric\models\HFA::class, $this->patient, false);
+        foreach ($hfa as $h) {
+            $reading = $h->getMeanDeviation();
+            if ($reading['side'] === 'right') {
+                $vfi_data_list['right'][] = [
+                    'y' => $reading['vfi'],
+                    'x' => date('Y-m-d', Helper::mysqlDate2JsTimestamp($h->event->event_date) / 1000)
+                ];
+            } else {
+                $vfi_data_list['left'][] = [
+                    'y' => $reading['vfi'],
+                    'x' => date('Y-m-d', Helper::mysqlDate2JsTimestamp($h->event->event_date) / 1000)
+                ];
+            }
+        }
+        foreach (['left', 'right'] as $side) {
+            usort($vfi_data_list[$side], array("EpisodeSummaryWidget","sortData"));
+            foreach ($vfi_data_list[$side] as $item) {
+                $vfi_plotly_list[$side]['x'][] = $item['x'];
+                $vfi_plotly_list[$side]['y'][] = $item['y'];
+            }
+        }
+
+        return $vfi_plotly_list;
+    }
+
     public function getVaAxis() {
         return $this->va_axis;
     }
@@ -189,6 +228,15 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $tick_data = array('tick_position'=> array(), 'tick_labels'=> array());
         foreach ($this->va_ticks as $tick) {
             array_push($tick_data['tick_position'], (float)$tick[0]);
+            array_push($tick_data['tick_labels'], $tick[1]);
+        }
+        return $tick_data;
+    }
+
+    public function getVfiTicks() {
+        $tick_data = array('tick_position'=> array(), 'tick_labels'=> array());
+        foreach ($this->vfi_ticks as $tick) {
+            array_push($tick_data['tick_position'], $tick[0]);
             array_push($tick_data['tick_labels'], $tick[1]);
         }
         return $tick_data;
@@ -207,7 +255,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     /**
      * @return array
      */
-    protected function getChartTicks()
+    protected function getVAChartTicks()
     {
         foreach ($this->va_unit->selectableValues as $value) {
             $va_ticks[] = array($this->getAdjustedVA($value->base_value), $value->value);
@@ -220,5 +268,13 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         }
 
         return $va_ticks;
+    }
+
+    protected function getVFIChartTicks()
+    {
+        for ($value = -30; $value < 10;$value += 5) {
+            $vfi_ticks[] = array($value, $value);
+        }
+        return $vfi_ticks;
     }
 }
