@@ -54,7 +54,7 @@ class OphCiExamination_Refraction_Reading extends \BaseActiveRecordVersioned
             [
                 'type_id', 'exist', 'allowEmpty' => true,
                 'attributeName' => 'id',
-                'className' => OphCiExamination_Refraction_Reading::class,
+                'className' => OphCiExamination_Refraction_Type::class,
                 'message' => '{attribute} is invalid'
             ],
             ['type_id', 'requiredIfNotRefractionTypeOther'],
