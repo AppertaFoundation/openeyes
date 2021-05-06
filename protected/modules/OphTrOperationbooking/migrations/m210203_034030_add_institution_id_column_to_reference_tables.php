@@ -146,10 +146,12 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
             ->crossJoin('institution i')
             ->queryAll();
 
-        $this->insertMultiple(
-            'ophtroperationbooking_sessionunavailreason_institution',
-            $mappings
-        );
+        if (!empty($mappings)) {
+            $this->insertMultiple(
+                'ophtroperationbooking_sessionunavailreason_institution',
+                $mappings
+            );
+        }
     }
 
     /**
