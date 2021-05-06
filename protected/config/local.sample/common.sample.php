@@ -129,6 +129,7 @@ $config = array(
         // 'worklist_allow_duplicate_patients' => bool
         //// any appointments sent in before this date will not trigger errors when sent in
         // 'worklist_ignore_date => 'Y-m-d',
+        'correspondence_export_url' => 'localhost',
     ),
 );
 
