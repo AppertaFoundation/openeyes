@@ -68,10 +68,16 @@ class OphCiExamination_Episode_VisualAcuityHistoryTest extends \OEDbTestCase
             ->with(Element_OphCiExamination_VisualAcuity::class, $patient, false)
             ->willReturn([]);
 
-        $result = $widget->getPlotlyVaData();
-        $this->assertIsArray($result);
+        $result_va = $widget->getPlotlyVaData();
+        $this->assertIsArray($result_va);
         foreach (['right', 'left', 'beo'] as $side) {
-            $this->assertArrayHasKey($side, $result);
+            $this->assertArrayHasKey($side, $result_va);
+        }
+
+        $result_vfi = $widget->getPlotlyVfiData();
+        $this->assertIsArray($result_vfi);
+        foreach (['right', 'left'] as $side) {
+            $this->assertArrayHasKey($side, $result_vfi);
         }
     }
 

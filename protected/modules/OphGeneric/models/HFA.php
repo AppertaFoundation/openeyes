@@ -232,4 +232,15 @@ class HFA extends BaseEventTypeElement
             $vfi_stat->save();
         }
     }
+
+    public function getMeanDeviation()
+    {
+        $data = [];
+        $criteria = new \CDbCriteria();
+        $criteria->compare('element_id', $this->id);
+        $hfaEntry = HFAEntry::model()->find($criteria);
+        $data['vfi'] = $hfaEntry->mean_deviation;
+        $data['side'] = ((integer)$this->eye_id === 1) ? 'left' : 'right';
+        return $data;
+    }
 }
