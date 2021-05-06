@@ -93,7 +93,7 @@ class DefaultController extends BaseEventTypeController
      */
     protected function initEdit()
     {
-        if (!$this->checkPrintAccess()) {
+        if (!$this->checkEditAccess()) {
             return false;
         }
 
@@ -520,6 +520,23 @@ class DefaultController extends BaseEventTypeController
 
     public function actionPDFPrint($id)
     {
+        if (!$prescription = Element_OphDrPrescription_Details::model()->find('event_id=?', array($id))) {
+            throw new Exception("Prescription not found for event id: $id");
+        }
+
+        $prescription->printed_by_user = Yii::app()->session['user'] ? Yii::app()->session['user']->id : null;
+        $prescription->printed_date = date('Y-m-d H:i:s');
+
+        if (!$prescription->save()) {
+            throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
+        }
+
+        Audit::add(
+            'print-prescription',
+            'print',
+            Yii::app()->session['user']->username .' printed the prescription.'
+        );
+
         $event = \Event::model()->findByPk($id);
         $this->pdf_print_suffix = $event->site_id ?? \Yii::app()->session['selected_site_id'];
 
@@ -845,7 +862,14 @@ class DefaultController extends BaseEventTypeController
 
             if ($model) {
                 $model->draft = 0;
+                $model->authorised_by_user = Yii::app()->session['user'] ? Yii::app()->session['user']->id : null;
+                $model->authorised_date = date('Y-m-d H:i:s');
                 $model->update();
+                Audit::add(
+                    'authorise-prescription',
+                    'authorise',
+                    Yii::app()->session['user']->username . ' authorises the prescription.'
+                );
                 $result = [
                     'success' => 1
                 ];

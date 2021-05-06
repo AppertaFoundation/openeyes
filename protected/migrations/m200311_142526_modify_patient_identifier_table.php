@@ -80,7 +80,6 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         if (Yii::app()->params['default_country'] === 'Australia') {
             $global_name = "Medicare";
         }
-
         $this->insert('contact', ['active' => 1]);
         $this->execute("
                 INSERT INTO institution (name, remote_id, short_name, contact_id, last_modified_date, created_date)

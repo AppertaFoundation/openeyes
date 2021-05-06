@@ -297,7 +297,7 @@ fi
 
 # Test to see if the restore file exists before continuing (note that '-' is a special case for when piping stdin)
 [[ ! -f "$restorefile" && "$restorefile" != "-" ]] && {
-    echo "Restore file was found at: $restorefile. 
+    echo "Restore file was found at: $restorefile.
     Please use --custom-file to specify a valid restore file"
     exit 1
 } || :
@@ -515,7 +515,7 @@ if [ $droparchive -eq 1 ]; then
         SET FOREIGN_KEY_CHECKS = 0;
         set @s = (SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' ) FROM information_schema.tables WHERE table_schema = '${DATABASE_NAME:-openeyes}' AND table_name LIKE 'archive_%');
         PREPARE stmt FROM @s;
-        EXECUTE stmt; 
+        EXECUTE stmt;
         SET FOREIGN_KEY_CHECKS = 1;
     END IF;
 
