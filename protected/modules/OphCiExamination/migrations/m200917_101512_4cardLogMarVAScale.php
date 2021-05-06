@@ -51,6 +51,7 @@ class m200917_101512_4cardLogMarVAScale extends OEMigration
         $values[] = ['-0.3', 125];
 
         foreach ($values as $row) {
+            echo "\nInserting value=" . $row[0] . " :  base_value=" . $row[1] . "\n";
             $this->insert('ophciexamination_visual_acuity_unit_value', [
                 'unit_id' => $unit_id,
                 'value' => $row[0],
