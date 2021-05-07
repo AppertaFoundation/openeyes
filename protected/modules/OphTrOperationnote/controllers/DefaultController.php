@@ -967,7 +967,8 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-    public function actionGetUserSettingsValues($surgeon_id) {
+    public function actionGetUserSettingsValues($surgeon_id)
+    {
         echo json_encode($this->getUserSettings($surgeon_id));
     }
 

@@ -315,7 +315,6 @@ $(document).ready(function () {
 
     $op_note_surgeon.on('input', function () {
         let selected_surgeon_id = $(this).val();
-        current_surgeon_id = selected_surgeon_id;
         let surgeon_drawing = window.ED ? ED.getInstance('ed_drawing_edit_Position') : undefined;
         let cataract_drawing = window.ED ? ED.getInstance('ed_drawing_edit_Cataract') : undefined;
 
@@ -327,7 +326,8 @@ $(document).ready(function () {
                 surgeon_id: selected_surgeon_id
             },
             success: function (settings) {
-                if (typeof cataract_drawing !== 'undefined' && settings) {
+                if ((typeof cataract_drawing !== 'undefined') && settings && settings.length) {
+
                     let eye_side = cataract_drawing.eye === 0 ? 'right' : 'left';
                     let surgeon_doodle = surgeon_drawing.firstDoodleOfClass('Surgeon');
                     let phako_incision_doodles = cataract_drawing.allDoodlesOfClass('PhakoIncision');
@@ -757,9 +757,12 @@ function surgeonController(_drawing) {
                             mod = -1;
                         }
                         phakoIncision.setParameterFromString('rotation', '' + (phakoIncision.rotation + ((45*Math.PI/180)* mod) ));
-                        if ((surgeon.rotation*180/Math.PI) % 45 === 0) {
 
-                        }
+                        // rotate sidePorts as well
+                        const sidePorts = _cataractDrawing.allDoodlesOfClass('SidePort');
+                        sidePorts.forEach(sidePort => {
+                            sidePort.setParameterFromString('rotation', '' + (sidePort.rotation + ((45*Math.PI/180)* mod) ));
+                        });
                     }
                 }
                 break;
@@ -833,12 +836,6 @@ function sidePortController(_drawing) {
                         }
                     }
                 }
-                // Else cancel sync for an updated drawing
-                else {
-                    if (typeof (phakoIncision) !== 'undefined') {
-                        phakoIncision.willSync = false;
-                    }
-                }
 
                 break;
 
@@ -866,12 +863,6 @@ function sidePortController(_drawing) {
                     $(_drawing.canvas).parents('.eyedraw-row.cataract').data('isNew')) {
                     this.addSidePorts();
                 }
-                // Else cancel sync for an updated drawing
-                else {
-                    if (typeof (phakoIncision) !== 'undefined') {
-                        phakoIncision.willSync = false;
-                    }
-                }
                 break;
             // Parameter change notification
             case 'parameterChanged':
@@ -882,27 +873,6 @@ function sidePortController(_drawing) {
 
                 // Get doodle that has moved in opnote drawing
                 var masterDoodle = _messageArray['object'].doodle;
-
-                // Stop syncing if PhakoIncision or a SidePort is changed
-                if (masterDoodle.drawing.isActive && (masterDoodle.className == 'PhakoIncision' || masterDoodle.className == 'SidePort')) {
-                    if (typeof (phakoIncision) !== 'undefined') {
-                        phakoIncision.willSync = false;
-                    }
-                }
-
-                // Keep sideports in sync with PhakoIncision while surgeon is still syncing with it
-                if (masterDoodle.className == "PhakoIncision" && masterDoodle.willSync && typeof surgeonRotation === 'number') {
-
-                    // This functionality is buggy, will be solved in OE-10343
-                    //const doodles = _drawing.allDoodlesOfClass('SidePort');
-                    // if (typeof (doodles[0]) != 'undefined') {
-                    //     doodles[0].setSimpleParameter('rotation', (masterDoodle.rotation + Math.PI / 2) % (2 * Math.PI));
-                    // }
-                    // if (typeof (doodles[1]) != 'undefined') {
-                    //     doodles[1].setSimpleParameter('rotation', (masterDoodle.rotation - Math.PI / 2) % (2 * Math.PI));
-                    // }
-                }
-
                 break;
             case 'doodleDeleted':
                 showHideIOLFields(_drawing, true);
