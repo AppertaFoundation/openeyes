@@ -64,7 +64,7 @@ class EventAutoGenerateCheckboxesWidget extends BaseCWidget
 
         // Values
         $this->drug_set_name = \SettingMetadata::model()->getSetting('default_drug_set_' . $this->suffix);
-        $this->macro_name = \SettingMetadata::model()->getSetting('default_letter' . $this->suffix);
+        $this->macro_name = \SettingMetadata::model()->getSetting('default_letter_' . $this->suffix);
         $this->optom_letter_name = \SettingMetadata::model()->getSetting('default_optom_letter_' . $this->suffix);
 
         $firm_id = \Yii::app()->session->get('selected_firm_id');
