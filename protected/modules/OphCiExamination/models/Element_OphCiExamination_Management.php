@@ -162,13 +162,20 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
      */
     public function getSiblingString($delimiter = ' // ')
     {
+        // To handle the bug reported in OE-11241
+        $siblingsWithoutMedManagement = [];
+        foreach ($this->getSiblings() as $sibling) {
+            if (get_class($sibling) !== MedicationManagement::class) {
+                $siblingsWithoutMedManagement[] = $sibling;
+            }
+        }
         return implode(
             $delimiter,
             array_map(
                 function ($el) {
                     return $el->elementType->name . ': ' . $el;
                 },
-                $this->getSiblings()
+                $siblingsWithoutMedManagement
             )
         );
     }
