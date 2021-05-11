@@ -59,8 +59,7 @@ if ($side === 'left') {
 
     });
   </script>
-<?php }
-    $criteria = new CDbCriteria(); ?>
+<?php } ?>
 
 <div class="sub-element-fields element" id="div_<?=\CHtml::modelName($element) ?>_pcr_risk">
   <div>
@@ -79,7 +78,7 @@ if ($side === 'left') {
         $patientId = $this->patient->id;
     }
 
-    $grades = DoctorGrade::model()->findAll($criteria->condition = 'has_pcr_risk', array('order' => 'display_order'));
+    $grades = DoctorGrade::model()->findAll(array('order' => 'display_order'));
     $pcr_grades = [];
 
     foreach ($grades as $grade) {
