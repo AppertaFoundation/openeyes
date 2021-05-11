@@ -20,7 +20,6 @@ namespace OEModule\PASAPI\resources;
 /**
  * Class DidNotAttend.
  *
- * @property string $NHSNumber
  * @property string $HospitalNumber
  * @property date $Date
  * @property string $Comments
@@ -29,7 +28,6 @@ class DidNotAttend extends BaseResource
 {
     const DEFAULT_AUTOGEN_MESSAGE = "Entry automatically created by the PAS.";
     protected static $resource_type = 'DidNotAttend';
-    public $NHSNumber;
     public $HospitalNumber;
     public $Date;
     public $Comments;

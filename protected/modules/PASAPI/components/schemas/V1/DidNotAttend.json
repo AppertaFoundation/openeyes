@@ -1,8 +1,4 @@
 {
-  "NHSNumber": {
-    "type": "string",
-    "required": true
-  },
   "HospitalNumber": {
     "type": "string",
     "required": true
