@@ -119,7 +119,7 @@ if (!$get_row && $filters_ready) {
                             }
 
                             echo \CHtml::submitButton(
-                                'Add to current '.$level_prefix,
+                                'Add selected to current '.$level_prefix,
                                 [
                                     'name' => 'admin-map-add',
                                     'id' => 'et_admin-map-add',
@@ -127,7 +127,7 @@ if (!$get_row && $filters_ready) {
                                     'formaction' => '/admin/addMapping',
                                 ]);
                             echo \CHtml::submitButton(
-                                'Remove from current '.$level_prefix,
+                                'Remove selected from current '.$level_prefix,
                                 [
                                     'name' => 'admin-map-remove',
                                     'id' => 'et_admin-map-remove',
@@ -155,8 +155,8 @@ if (!$get_row && $filters_ready) {
             $('#mapping_level').change(
                 function(val) {
                     let displayString = $('#mapping_level option:selected').text();
-                    $('#et_admin-map-add').val("Add to current " + displayString);
-                    $('#et_admin-map-remove').val("Remove from current " + displayString);
+                    $('#et_admin-map-add').val("Add selected to current " + displayString);
+                    $('#et_admin-map-remove').val("Remove selected from current " + displayString);
                 });
         });
     </script>

@@ -12,20 +12,28 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/** @var Patient $patient */
+/** @var OphDrPrescription_Item $item */
+
 $fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
 $overprint_setting = SettingMetadata::model()->getSetting('enable_prescription_overprint');
 $fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
+
+$dispense_conditions = OphDrPrescription_DispenseCondition::model()->findAllAtLevel(
+    ReferenceData::LEVEL_INSTITUTION,
+    array(
+         'condition' => $overprint_setting === 'off' ? "id != :fpten_id" : null,
+         'params' => $overprint_setting === 'off' ? array(':fpten_id' => $fpten_dispense_condition->id) : array(),
+         'order' => 'display_order',
+     )
+);
 
 $dispense_condition_options = array(
     $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
 );
 ?>
-
-<?php
-/** @var Patient $patient */
-/** @var OphDrPrescription_Item $item */
-?>
-<tr data-key="<?= $key ?>" class="prescription-item prescriptionItem <?= $item->getErrors() ? 'errors' : ''; ?> ">
+<tr data-key="<?= $key ?>" class="prescription-item prescriptionItem <?= $item->getErrors() ? 'errors' : '' ?> ">
     <td>
         <button class="js-add-taper">
             <i class="oe-i child-arrow small"></i>
@@ -33,14 +41,14 @@ $dispense_condition_options = array(
     </td>
     <td class="drug-details">
         <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][usage_type]"
-               value="<?= OphDrPrescription_Item::getUsageType(); ?>"/>
+               value="<?= OphDrPrescription_Item::getUsageType() ?>"/>
         <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][usage_subtype]"
-               value="<?= OphDrPrescription_Item::getUsageSubType(); ?>"/>
+               value="<?= OphDrPrescription_Item::getUsageSubType() ?>"/>
         <?php if (isset($patient) && $patient->hasDrugAllergy($item->medication_id)) : ?>
             <i class="oe-i warning small pad js-has-tooltip"
                data-tooltip-content="Allergic to <?= implode(',', $patient->getPatientDrugAllergy($item->medication_id)) ?>"></i>
         <?php endif; ?>
-        <span class='js-medication-display'><?= $item->getMedicationDisplay(true); ?></span>
+        <span class='js-medication-display'><?= $item->getMedicationDisplay(true) ?></span>
         <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
         <?php if ($item->id) { ?>
             <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][id]"
@@ -50,12 +58,12 @@ $dispense_condition_options = array(
                value="<?= $item->medication_id ?>"/>
         <?php if ($item->comments) { ?>
             <i class="oe-i comments-added active medium-icon pad js-add-comments js-has-tooltip" style=""
-               data-tooltip-content="<?= \CHtml::encode($item->comments); ?>"></i>
+               data-tooltip-content="<?= \CHtml::encode($item->comments) ?>"></i>
         <?php } else { ?>
             <i class="oe-i comments medium-icon pad js-add-comments" style=""></i>
         <?php } ?>
         <div id="comments-<?= $key ?>" class="cols-full prescription-comments" style="display:none"
-             data-key="<?= $key; ?>">
+             data-key="<?= $key ?>">
             <!-- comment-group, textarea + icon -->
             <div class="comment-group flex-layout flex-left" style="padding-top:5px">
                 <?php
@@ -64,7 +72,11 @@ $dispense_condition_options = array(
                     'rows' => '1', 'class' => 'js-input-comments cols-full ',
                     'style' => 'overflow-x: hidden;word-wrap: break-word;'
                 ];
-                echo CHtml::textArea('Element_OphDrPrescription_Details[items][' . $key . '][comments]', \CHtml::encode($item->comments), $htmlOptions) ?>
+                echo CHtml::textArea(
+                    'Element_OphDrPrescription_Details[items][' . $key . '][comments]',
+                    CHtml::encode($item->comments),
+                    $htmlOptions
+                ) ?>
                 <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
             </div>
         </div>
@@ -155,12 +167,7 @@ $dispense_condition_options = array(
             'Element_OphDrPrescription_Details[items][' . $key . '][dispense_condition_id]',
             $item->dispense_condition_id,
             CHtml::listData(
-                OphDrPrescription_DispenseCondition::model()->findAll(array(
-                'condition' => '(active'
-                  . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
-                  . ") or id='" . $item->dispense_condition_id . "'",
-                'order' => 'display_order',
-                )),
+                $dispense_conditions,
                 'id',
                 'name'
             ),
@@ -170,7 +177,7 @@ $dispense_condition_options = array(
     </td>
     <td>
         <?php
-        $locations = $item->dispense_condition ? $item->dispense_condition->locations : array('');
+        $locations = $item->dispense_condition ? $item->dispense_condition->getLocationsForCurrentInstitution() : array('');
         $style = $item->dispense_condition ? '' : 'display: none;';
         echo CHtml::dropDownList(
             'Element_OphDrPrescription_Details[items][' . $key . '][dispense_location_id]',

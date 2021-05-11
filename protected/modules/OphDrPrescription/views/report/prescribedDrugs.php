@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
-$fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
+$fpten_dispense_condition_id = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'))->id;
 ?>
 <h2>Prescribed drugs report</h2>
 
@@ -115,7 +115,7 @@ $fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findBy
       <td>Dispense Condition/Location</td>
       <td>
         <?= CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[dispense_condition]', '', CHtml::listData($dispense_conditions, 'id', 'name'), array('empty' => 'Select', 'options' => array(
-            $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
+            $fpten_dispense_condition_id => array('label' => "Print to $fpten_setting")
             )))?>
       </td>
     </tr>

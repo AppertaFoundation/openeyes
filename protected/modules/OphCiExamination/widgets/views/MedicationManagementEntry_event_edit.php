@@ -177,12 +177,14 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 $field_prefix . '[dispense_condition_id]',
                 $entry->dispense_condition_id,
                 CHtml::listData(
-                    OphDrPrescription_DispenseCondition::model()->findAll(array(
-                        'condition' => '(active'
-                            . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
-                            . ") or id='" . $entry->dispense_condition_id . "'",
-                        'order' => 'display_order',
-                    )),
+                    OphDrPrescription_DispenseCondition::model()->findAllAtLevel(
+                        ReferenceData::LEVEL_INSTITUTION,
+                        array(
+                            'condition' => $overprint_setting === 'off' ? "id != :fpten_id" : null,
+                            'params' => $overprint_setting === 'off' ? array(':fpten_id' => $fpten_dispense_condition->id) : array(),
+                            'order' => 'display_order',
+                        )
+                    ),
                     'id',
                     'name'
                 ),
@@ -190,7 +192,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
             ); ?>
 
             <?php
-            $locations = $entry->dispense_condition ? $entry->dispense_condition->locations : array('');
+            $locations = $entry->dispense_condition ? $entry->dispense_condition->getLocations() : array('');
             $style = $entry->dispense_condition ? '' : 'display: none;';
             echo CHtml::dropDownList(
                 $field_prefix . '[dispense_location_id]',

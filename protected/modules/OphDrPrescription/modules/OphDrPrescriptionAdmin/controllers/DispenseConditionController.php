@@ -50,7 +50,6 @@ class DispenseConditionController extends BaseAdminController
             'errors' => $model->errors,
             'title' => 'Edit dispense condition'
         ]);
-
     }
 
     public function actionCreate()
@@ -66,6 +65,56 @@ class DispenseConditionController extends BaseAdminController
             'errors' => $model->errors,
             'title' => 'Create dispense condition'
         ]);
+    }
+
+    public function actionAddMapping()
+    {
+        $model = $_POST['model']::model();
+
+        $ids = Yii::app()->request->getPost('select');
+
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = array();
+        $records = $model->findAllByPk($ids);
+        try {
+            foreach ($records as $record) {
+                $record->createMapping(ReferenceData::LEVEL_INSTITUTION, $model->getIdForLevel(ReferenceData::LEVEL_INSTITUTION));
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if (!empty($errors)) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+        $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
+    }
+
+    public function actionRemoveMapping()
+    {
+        $model = $_POST['model']::model();
+        $level = ReferenceData::LEVEL_INSTITUTION;
+
+        $ids = Yii::app()->request->getPost('select');
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = array();
+        $records = $model->findAllByPk($ids);
+        try {
+            foreach ($records as $record) {
+                $record->deleteMapping($level, $model->getIdForLevel($level));
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if (!empty($errors)) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+        $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
     }
 
     private function saveModel($model)
