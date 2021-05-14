@@ -72,6 +72,16 @@
     </td>
   </tr>
   <tr>
+      <td>
+         <?php echo $form->textField(
+             $user,
+             'username',
+             array('autocomplete' => Yii::app()->params['html_autocomplete'],
+                'readonly' => true, 'style' => 'opacity:0.5')
+         );?>
+      </td>
+  </tr>
+  <tr>
     <td>
         <?php echo $form->textField(
             $user,

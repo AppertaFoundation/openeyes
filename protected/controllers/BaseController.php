@@ -180,7 +180,7 @@ class BaseController extends Controller
             }
         } else {
             $user = User::model()->findByPk(Yii::app()->user->id);
-            if ($user) {
+            if ($user && Yii::app()->params['auth_source'] === 'BASIC') {
                 // if not a active user, force log out
                 if (!$user->getUserActiveStatus($user)||$user->testUserPWStatus()) {
                     $user->audit('BaseControler', 'force-logout', null, "User $user->username logged out because their account is not active");

@@ -43,7 +43,11 @@ return array(
                 'Patient Shortcodes' => '/admin/patientshortcodes',
                 'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list',
                 'Event Type Custom Text' => '/admin/editEventTypeCustomText',
-                'Element Type Custom Text' => '/admin/editElementTypeCustomText',
+                'Element Type Custom Text' => '/admin/editElementTypeCustomText'
+            ),
+            'SSO Settings' => array(
+                'Default SSO Permissions' => '/sso/defaultssopermissions',
+                'SSO Roles Mappings' => '/sso/ssorolesauthassignment'
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',

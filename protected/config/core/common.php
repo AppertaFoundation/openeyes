@@ -258,6 +258,7 @@ $config = array(
                 'OphCoDocument/Default/create',
                 'OphCoDocument/Default/update',
                 'OphCoDocument/Default/fileUpload',
+                'sso',
             ),
         ),
         'service' => array(
@@ -772,6 +773,7 @@ $config = array(
         'watermark' => getenv('OE_USER_BANNER_LONG') ?: null,
         'watermark_admin_short' => getenv('OE_ADMIN_BANNER_SHORT') ?: null,
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
+        'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
     ),
 );
