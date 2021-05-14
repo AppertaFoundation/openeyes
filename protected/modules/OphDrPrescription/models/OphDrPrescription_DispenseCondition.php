@@ -123,4 +123,19 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
         }
         return $locations;
     }
+
+    public function withSettings($overprint_setting, $fpten_dispense_condition_id)
+    {
+        $condition = array();
+        if ($overprint_setting === 'off') {
+            $condition = array(
+                'condition' => "id != :fpten_id",
+                'params' => array(
+                    ':fpten_id' => $fpten_dispense_condition_id
+                )
+            );
+        }
+        $this->getDbCriteria()->mergeWith($condition);
+        return $this;
+    }
 }

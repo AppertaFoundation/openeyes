@@ -177,14 +177,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 $field_prefix . '[dispense_condition_id]',
                 $entry->dispense_condition_id,
                 CHtml::listData(
-                    OphDrPrescription_DispenseCondition::model()->findAllAtLevel(
-                        ReferenceData::LEVEL_INSTITUTION,
-                        array(
-                            'condition' => $overprint_setting === 'off' ? "id != :fpten_id" : null,
-                            'params' => $overprint_setting === 'off' ? array(':fpten_id' => $fpten_dispense_condition->id) : array(),
-                            'order' => 'display_order',
-                        )
-                    ),
+                    OphDrPrescription_DispenseCondition::model()->withSettings($overprint_setting, $fpten_dispense_condition->id)->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION),
                     'id',
                     'name'
                 ),
