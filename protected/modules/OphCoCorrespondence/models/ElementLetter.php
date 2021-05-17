@@ -293,7 +293,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     'trace' => Yii::app()->params['environment'] === 'DEV',
                     'encoding' => 'UTF-8',
                 );
-                if (isset(Yii::app()->params['correspondence_export_location_url'])) {
+                if (Yii::app()->params['correspondence_export_location_url']) {
                     $ws_params['location'] = Yii::app()->params['correspondence_export_location_url'];
                 }
                 $source = $this->letterType ? (': ' . $this->letterType->name) : null;
