@@ -89,6 +89,31 @@ class PatientIdentifierHelper
         return $institutions[0]->id;
     }
 
+
+    /**
+     * Returns the patient identified by the given value and patient identifier type.
+     *
+     * @param $identifier_value
+     * @param $identifier_type_key
+     * @return Patient|null
+     */
+    public static function getPatientByPatientIdentifier($identifier_value, $identifier_type_key)
+    {
+        $patient_identifier_type = PatientIdentifierType::model()->findByAttributes([
+            'unique_row_str' => $identifier_type_key
+        ]);
+        if (isset($patient_identifier_type)) {
+            $patient_identifier = PatientIdentifier::model()->findByAttributes([
+                'value' => $identifier_value,
+                'patient_identifier_type_id' => $patient_identifier_type->id
+            ]);
+            return $patient_identifier ? $patient_identifier->patient : null;
+        } else {
+            throw new exception("Patient Identifier Type for '$identifier_type_key' not found.");
+        }
+    }
+
+
     /**
      * Returns the identifier of the specified patient.
      *

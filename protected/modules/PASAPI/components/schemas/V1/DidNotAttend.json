@@ -3,6 +3,10 @@
     "type": "string",
     "required": true
   },
+  "IdentifierType": {
+    "type": "string",
+    "required": true
+  },
   "Date": {
     "type": "date",
     "required": true

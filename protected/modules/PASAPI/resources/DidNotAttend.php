@@ -29,6 +29,7 @@ class DidNotAttend extends BaseResource
     const DEFAULT_AUTOGEN_MESSAGE = "Entry automatically created by the PAS.";
     protected static $resource_type = 'DidNotAttend';
     public $HospitalNumber;
+    public $IdentifierType;
     public $Date;
     public $Comments;
     private $patient;
@@ -68,7 +69,7 @@ class DidNotAttend extends BaseResource
 
     private function getPatient()
     {
-        return \Patient::model()->findByAttributes([ 'hos_num' => $this->HospitalNumber ]);
+        return \PatientIdentifierHelper::getPatientByPatientIdentifier($this->HospitalNumber, $this->IdentifierType);
     }
 
     private function getEpisode($firm = null)
