@@ -104,6 +104,7 @@ if ($side === 'left') {
         if (isset($patientId)) :
             $pcrRisk = new PcrRisk();
             $pcr = $pcrRisk->getPCRData($patientId, $side, $element, $_POST);
+            $pcr_doctor_grade = $pcr_grades['risk'][$pcr['doctor_grade_id']] ?? null;
 
             echo CHtml::hiddenField('age', $pcr['age_group'], array('id' => 'pcrrisk_' . $side . '_age', 'class' => 'pcrrisk_age'));
             echo CHtml::hiddenField('gender', $pcr['gender'], array('id' => 'pcrrisk_' . $side . '_gender', 'class' => 'pcrrisk_gender'));
@@ -111,7 +112,7 @@ if ($side === 'left') {
             echo CHtml::hiddenField('diabetic', $pcr['diabetic'], array('id' => 'pcrrisk_' . $side . '_diabetic', 'class' => 'pcrrisk_diabetic'));
             echo CHtml::hiddenField('no_fundal_view', $pcr['noview'], array('id' => 'pcrrisk_' . $side . '_no_fundal_view', 'class' => 'pcrrisk_no_fundal_view'));
             echo CHtml::hiddenField('brunescent_white_cataract', $pcr['anteriorsegment']['brunescent_white_cataract'], array('id' => 'pcrrisk_' . $side . '_brunescent_white_cataract', 'class' => 'pcrrisk_brunescent_white_cataract'));
-            echo CHtml::hiddenField('doctor_grade_id', $pcr['doctor_grade_id'], array('id' => 'pcrrisk_' . $side . '_doctor_grade_id', 'data-pcr-risk' => $pcr_grades['risk'][$pcr['doctor_grade_id']], 'class' => 'pcr_doctor_grade'));
+            echo CHtml::hiddenField('doctor_grade_id', $pcr['doctor_grade_id'], array('id' => 'pcrrisk_' . $side . '_doctor_grade_id', 'data-pcr-risk' => $pcr_doctor_grade, 'class' => 'pcr_doctor_grade'));
             echo CHtml::hiddenField('pxf_phako', $pcr['anteriorsegment']['pxf_phako'], array('id' => 'pcrrisk_' . $side . '_pxf_phako', 'class' => 'pcrrisk_pxf_phako'));
             echo CHtml::hiddenField('pupil_size', $pcr['anteriorsegment']['pupil_size'], array('id' => 'pcrrisk_' . $side . '_pupil_size', 'class' => 'pcrrisk_pupil_size'));
             echo CHtml::hiddenField('axial_length', $pcr['axial_length_group'], array('id' => 'pcrrisk_' . $side . '_axial_length', 'class' => 'pcrrisk_axial_length'));
