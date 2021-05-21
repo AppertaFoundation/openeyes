@@ -127,8 +127,8 @@ if ($footer_param !== null) {
             <tr class="prescriptionItem<?=$this->patient->hasDrugAllergy($item->medication_id) ? ' allergyWarning' : '';?> ">
                 <td class="prescriptionLabel"><?=$item->medication->getLabel(true); ?></td>
                 <td><?=is_numeric($item->dose) ? ($item->dose . " " . $item->dose_unit_term) : $item->dose ?></td>
-                <td><?=$item->route->term ?><?php if ($item->dose_unit_term) {
-                        echo ' (' . $item->dose_unit_term . ')';
+                <td><?=$item->route->term ?><?php if ($item->laterality) {
+                        echo ' (' . $item->medicationLaterality->name . ')';
                             } ?></td>
                 <td><?=$item->frequency->term; ?></td>
                 <td><?=$item->medicationDuration->name ?></td>
