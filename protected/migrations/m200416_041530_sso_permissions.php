@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -66,8 +67,22 @@ class m200416_041530_sso_permissions extends OEMigration
             'sso_user_id' => 'int(10)',
             'roles' => 'varchar(64) not null'
         ), true);
-        // The authitem table has collation of utf8_bin which creates error in ceating foreign keys
-        $this->execute('alter table sso_default_user_roles convert to character set utf8 collate utf8_bin');
+        // In some databases the authitem table has utf8_bin collation, which causes issues with creating FKs
+        // As we're not currently sure of the consequences of changing the collation of authitem, we change sso_default_user_roles to match authitem
+        echo("\nauthitem_charset: " . $authitem_charset  = $this->getTableCharset("authitem"));
+        echo("\nauthitem_collation: " . $authitem_collation = $this->getTableCollation("authitem"));
+        echo("\nsso_charset: " . $sso_charset = $this->getTableCharset("sso_default_user_roles"));
+        echo("\nsso_collation: " . $sso_collation = $this->getTableCollation("sso_default_user_roles"));
+
+        if ($authitem_charset != $sso_charset || $authitem_collation != $sso_collation) {
+            echo "\n\nChanging character set of sso_default_user_roles to match authitem\n\n";
+            $this->dbConnection->createCommand("ALTER TABLE sso_default_user_roles CONVERT TO CHARACTER SET :charset COLLATE :collation")->execute(array(':charset' => $authitem_charset, ':collation' => $authitem_collation));
+            // and also change _version table
+            $this->dbConnection->createCommand("ALTER TABLE sso_default_user_roles_version CONVERT TO CHARACTER SET :charset COLLATE :collation")->execute(array(':charset' => $authitem_charset, ':collation' => $authitem_collation));
+        } else {
+            echo "\n\nCharacter sets match, moving on\n\n";
+        }
+
         $this->addForeignKey(
             'fk_rights_roles',
             'sso_default_user_roles',
@@ -98,5 +113,31 @@ class m200416_041530_sso_permissions extends OEMigration
         $this->dropOETable('sso_default_user_rights', true);
         $this->dropOETable('sso_default_user_firms', true);
         $this->dropOETable('sso_default_user_roles', true);
+    }
+
+    /**
+     * Returns the character set (as a string) for a given table name
+     * @param table the name of the table to query
+     * @return string
+     */
+    private function getTableCharset($table)
+    {
+        return $this->dbConnection->createCommand("SELECT CCSA.character_set_name FROM information_schema.`TABLES` T,
+                                                information_schema.`COLLATION_CHARACTER_SET_APPLICABILITY` CCSA
+                                            WHERE CCSA.collation_name = T.table_collation
+                                            AND T.table_schema = DATABASE()
+                                            AND T.table_name = :tablename;")->queryScalar(array(':tablename' => $table ));
+    }
+
+    /**
+     * Returns the character set (as a string) for a given table name
+     * @param table the name of the table to query
+     * @return string
+     */
+    private function getTableCollation($table)
+    {
+        return $this->dbConnection->createCommand("SELECT T.TABLE_COLLATION FROM information_schema.`TABLES` T
+                                                    WHERE T.table_schema = DATABASE()
+                                                    AND T.table_name = :tablename;")->queryScalar(array(':tablename' => $table ));
     }
 }
