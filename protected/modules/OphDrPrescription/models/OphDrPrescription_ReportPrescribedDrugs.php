@@ -55,22 +55,53 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
         $user_id = Yii::app()->user->id;
         $this->setInstitutionAndSite($user_id);
 
-        $tag_id = Yii::app()->params['preservative_free_tag_id'];
-
         $command = Yii::app()->db->createCommand()
             ->select(
-                'patient.id, contact.last_name, contact.first_name, patient.dob, case when address.postcode is not null then address.postcode else "N/A" end as postcode , d.created_date, drug.tallman, IF(drug.id IN (SELECT drug_id FROM drug_tag WHERE tag_id = ' . $tag_id . '),1,0) AS preservative_free,
-                user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date,i.dose, df.long_name  as frequency, duration.name as duration, route.name as route, dc.name as dispense_condition, dl.name as dispense_location, option.name as laterality'
+                '
+                patient.id
+                , contact.last_name
+                , contact.first_name
+                , patient.dob
+                , IF(address.postcode IS NOT NULL, address.postcode, "N/A") as postcode
+                , IF(d.authorised_date IS NOT NULL, d.authorised_date, d.last_modified_date) as created_date
+                , IF(au.first_name IS NOT NULL, au.first_name, lu.first_name) as user_first_name
+                , IF(au.last_name IS NOT NULL, au.last_name, lu.last_name) as user_last_name
+                , IF(au.role IS NOT NULL, au.role, lu.role) as role
+                , event.created_date as event_date
+                , m.preferred_term
+                , emu.dose
+                , emu.dose_unit_term as dose_unit
+                , mf.term as frequency
+                , duration.name as duration
+                , route.term as route
+                , dc.name as dispense_condition
+                , dl.name as dispense_location
+                , option.name as laterality
+                , IF(preservative_free.id IS NOT NULL, 1, 0) as preservative_free
+                '
             )
             ->from('episode')
             ->join('event', 'episode.id = event.episode_id AND event.deleted = 0')
             ->join('et_ophdrprescription_details d', 'event.id = d.event_id')
             ->join('event_medication_use emu', 'emu.event_id = d.event_id AND emu.usage_type = \'OphDrPrescription\'')
-            ->join('medication', 'emu.medication_id = medication.id')
+            ->join('medication m', 'emu.medication_id = m.id')
+            ->leftJoin(
+                "
+                (
+                    SELECT maa.id, maa.medication_id
+                    FROM medication_attribute_assignment maa
+                    JOIN medication_attribute_option mao ON maa.medication_attribute_option_id = mao.id
+                    JOIN medication_attribute ma ON mao.medication_attribute_id = ma.id
+                    where LOWER(ma.name) = 'preservative_free'
+                ) preservative_free
+                ",
+                'preservative_free.medication_id = m.id'
+            )
             ->join('patient', 'episode.patient_id = patient.id')
             ->join('contact', 'patient.contact_id = contact.id')
             ->leftJoin('address', 'contact.id = address.contact_id')
-            ->join('user', 'd.created_user_id = user.id')
+            ->leftjoin('user au', 'd.authorised_by_user = au.id')
+            ->join('user lu', 'd.last_modified_user_id = lu.id')
             ->join('medication_frequency mf', 'mf.id = emu.frequency_id')
             ->join('medication_duration duration', 'duration.id = emu.duration_id')
             ->join('medication_route route', 'route.id = emu.route_id')
@@ -89,7 +120,9 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
 
         $command->andWhere('event.created_date >= :start_date', array(':start_date' => date('Y-m-d', strtotime($this->start_date)) . ' 00:00:00'))
             ->andWhere('event.created_date <= :end_date', array(':end_date' => date('Y-m-d', strtotime($this->end_date)) . ' 23:59:59'))
-            ->andWhere('episode.deleted = 0');
+            ->andWhere('episode.deleted = 0')
+            // draft prescription event should not be considered
+            ->andWhere('d.draft = 0');
 
         if (!Yii::app()->getAuthManager()->checkAccess('Report', $user_id)) {
             $this->user_id = $user_id;
