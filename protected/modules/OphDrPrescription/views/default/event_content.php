@@ -63,11 +63,21 @@
 
             <div class="extra-info">
                 <small class="fade">by:</small><small>
-                <?= $this->event->usermodified->fullname . (isset($this->event->usermodified->registration_code) && $this->event->usermodified->registration_code !== "" ? ' ('.$this->event->usermodified->registration_code.')' : ''). (isset($this->event->episode->firm->cost_code) && $this->event->episode->firm->cost_code !== "" ? ' - ['.$this->event->episode->firm->cost_code.']' : '');?>
+                <?php
+                    $element = Element_OphDrPrescription_Details::model()->find('event_id=?', array($this->event->id));
+                    $prescribed_by = $this->event->usermodified;
+                    $prescribed_date = Helper::convertDate2NHS($this->event->event_date);
+
+                if (isset($element->authorisedByUser)) {
+                    $prescribed_by = $element->authorisedByUser;
+                    $prescribed_date = $element->NHSDate('authorised_date');
+                }
+                ?>
+                <?= $prescribed_by->fullname . (isset($prescribed_by->registration_code) && $prescribed_by->registration_code !== "" ? ' ('.$prescribed_by->registration_code.')' : ''). (isset($this->event->episode->firm->cost_code) && $this->event->episode->firm->cost_code !== "" ? ' - ['.$this->event->episode->firm->cost_code.']' : '');?>
                 </small>
             </div>
 
-        <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
+        <span class="extra-info js-event-date"><?= $prescribed_date ?></span>
         <i id="js-change-event-date" class=" oe-i history large pad-left js-has-tooltip js-change-event-date" data-tooltip-content="Change Event date" style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
     </div>
 
