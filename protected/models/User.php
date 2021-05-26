@@ -717,7 +717,7 @@ class User extends BaseActiveRecordVersioned
 
         return $users_with_roles;
     }
-    
+
     /// NOTE: SSO is not currently supported under the multi-tenancy model. To support it, these functions will likely
     /// need to move to UserAuthentication.
     public function setSSOUserInformation($response)
