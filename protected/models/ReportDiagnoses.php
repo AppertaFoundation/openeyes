@@ -165,14 +165,14 @@ class ReportDiagnoses extends BaseReport
                 $condition_p = $this->joinDisorder(ReportDiagnoses::TYPE_PRINCIPAL_ALL, $i, $disorder_id, $select, $whereParams, $query);
                 $condition_s = $this->joinDisorder(ReportDiagnoses::TYPE_SECONDARY_ALL, $i, $disorder_id, $select, $whereParams, $query);
 
-            $join_method = $this->condition_type == 'and' ? 'join' : 'leftJoin';
+                $join_method = $this->condition_type == 'and' ? 'join' : 'leftJoin';
 
-            $query->$join_method("{$join_table[0]} {$join_table[1]}$i", $join_condition);
-            $query->$join_method("disorder {$select_prefix}$i", "{$select_prefix}$i.id = {$join_table[1]}$i.disorder_id");
+                $query->$join_method("{$join_table[0]} {$join_table[1]}$i", $join_condition);
+                $query->$join_method("disorder {$select_prefix}$i", "{$select_prefix}$i.id = {$join_table[1]}$i.disorder_id");
 
-            if ($this->condition_type == 'or') {
-                $or_conditions[] = "{$select_prefix}$i.id is not null";
-            }
+                if ($this->condition_type == 'or') {
+                    $or_conditions[] = "{$select_prefix}$i.id is not null";
+                }
 
                 ++$i;
             }
