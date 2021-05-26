@@ -305,7 +305,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                         preg_replace(
                             '/(H|Hosnum)\s*[:;]\s*/',
                             '',
-                            $this->event->episode->patient->hos_num
+                            $this->event->episode->patient->getHos()
                         ),
                         6,
                         '0',
