@@ -1240,9 +1240,9 @@ Diabetes mellitus type 1 (Principal or Secondary)
 Between 10 May 2002 and 19 May 2002
 
 '.$r->getPatientIdentifierPrompt().',Date of Birth,First Name,Last Name,Date,Diagnoses
-"12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Left one (Principal)", "12345, "
-"12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Right two (Secondary)", "12345, "
-"12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Both bloo (Principal)", "12345, "
+"12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Left one (Principal)","12345, "
+"12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Right two (Secondary)","12345, "
+"12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Both bloo (Principal)","12345, "
 ', $csv);
     }
 
