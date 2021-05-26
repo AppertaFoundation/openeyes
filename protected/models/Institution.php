@@ -82,7 +82,7 @@ class Institution extends BaseActiveRecordVersioned
             // Please remove those attributes that should not be searched.
             ['any_number_search_allowed, first_used_site_id', 'safe'],
             ['id, name, any_number_search_allowed', 'safe', 'on' => 'search'],
-        ];
+        );
     }
 
     /**

@@ -96,9 +96,6 @@ class ReportDiagnoses extends BaseReport
 
         $this->setInstitutionAndSite();
 
-        if (!empty($this->secondary)) {
-            $this->secondary = $this->filterDiagnoses();
-        }
         if (!empty($this->all)) {
             $this->all = $this->filterDiagnoses();
         }
@@ -120,7 +117,7 @@ class ReportDiagnoses extends BaseReport
         $query->select($select);
 
         if ($this->condition_type == 'or') {
-            $condition = '( ' . implode(' or ', $or_conditions) . ' )';
+            $condition = '( ' . implode(' or ', $and_or_conditions) . ' )';
             if ($this->institution_id) {
                 $condition .= " AND ";
             }
