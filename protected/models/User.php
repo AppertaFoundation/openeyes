@@ -717,4 +717,110 @@ class User extends BaseActiveRecordVersioned
 
         return $users_with_roles;
     }
+    
+    /// NOTE: SSO is not currently supported under the multi-tenancy model. To support it, these functions will likely
+    /// need to move to UserAuthentication.
+    public function setSSOUserInformation($response)
+    {
+        // Set user credentials that login through SAML authentication
+        if (Yii::app()->params['auth_source'] === 'SAML') {
+            $this->username = $response['username'][0];
+            $this->first_name = $response['FirstName'][0];
+            $this->last_name = $response['LastName'][0];
+            $this->email = $response['username'][0];   // For SAML users, email would be their username
+            $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
+            $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'][0] : '';
+            $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
+        } elseif (Yii::app()->params['auth_source'] === 'OIDC') {
+            // Set the user credentials that login through OIDC suthentication
+            $this->username = $response['email'];       // OIDC users set emails as their usernames
+            $this->first_name = $response['given_name'];
+            $this->last_name = $response['family_name'];
+            $this->email = $response['email'];
+            $this->title = array_key_exists('title', $response) ? $response['title'] : '';
+            $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'] : '';
+            $this->role = array_key_exists('position', $response) ? $response['position'] : '';
+            $this->doctor_grade_id = array_key_exists('doctor_grade', $response) ? DoctorGrade::model()->find("grade = :grade", [':grade' => $response['doctor_grade']])->id : '';
+            $this->registration_code = array_key_exists('registration_code', $response) ? $response['registration_code'] : '';
+            $this->is_consultant = array_key_exists('consultant', $response) && strtolower($response['consultant']) === 'yes' ? 1 : 0;
+            $this->is_surgeon = array_key_exists('surgeon', $response) && strtolower($response['surgeon']) === 'yes' ? 1 : 0;
+        }
+
+        // Set the user active regardless
+        $this->active = true;
+        $this->setdefaultSSORights();
+
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
+        $user = self::model()->find('username = :username', array(':username' => $this->username));
+        //If the user is logging into the OE for the first time, assign default roles and firms
+        if ($user === null) {
+            $this->save();
+            $this->id = self::model()->find('username = :username', array(':username' => $this->username))->id;
+
+            $this->setdefaultSSOFirms();
+            $this->setdefaultSSORoles();
+        } else {
+            $this->id = $user->id;
+        }
+        // Roles from the token need to be assigned to the user after every login
+        if (!$defaultRights['default_enabled']) {
+            // Pass the array of roles from the token
+            $this->setRolesFromSSOToken($response['roles']);
+        }
+
+        return array(
+            'username' => $this->username,
+            'password' => $this->password
+        );
+    }
+
+    public function setdefaultSSORights()
+    {
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
+        $this->global_firm_rights = $defaultRights['global_firm_rights'];
+        // If global firm rights have been provided then no need to select firms and vice versa
+        $this->has_selected_firms = !$this->global_firm_rights;
+    }
+
+    public function setdefaultSSOFirms()
+    {
+        $ssoFirms = SsoDefaultFirms::model()->findAll();
+        $defaultFirms = array();
+        foreach ($ssoFirms as $ssoFirm) {
+            $defaultFirms[] = $ssoFirm['firm_id'];
+        }
+        $this->saveFirms($defaultFirms);
+    }
+
+    public function setdefaultSSORoles()
+    {
+        $ssoRoles = SsoDefaultRoles::model()->findAll();
+        $defaultRoles = array();
+        foreach ($ssoRoles as $ssoRole) {
+            $defaultRoles[] = $ssoRole['roles'];
+        }
+        $this->saveRoles($defaultRoles);
+    }
+
+    public function setRolesFromSSOToken($roles)
+    {
+        $assignedRoles = array();
+        foreach ($roles as $role) {
+            $userRoles = SsoRoles::model()->find("name = :role", [':role' => $role]);
+            if (!$userRoles) {
+                $this->audit('SsoRoles', 'assign-role', 'SSO Role "' . $role . '" not found for user ' . $this->username);
+                if (Yii::app()->params['strict_SSO_roles_check']) {
+                    $this->audit('SsoRoles', 'login-failed', "SSO Role not found so cannot login: $this->username", true);
+                    throw new Exception('The role "' . $role . '" was not found in OpenEyes');
+                }
+            } else {
+                foreach ($userRoles->sso_roles_assignment as $userRole) {
+                    if (!in_array($userRole->authitem_role, $assignedRoles, true)) {
+                        $assignedRoles[] = $userRole->authitem_role;
+                    }
+                }
+            }
+        }
+        $this->saveRoles($assignedRoles);
+    }
 }
