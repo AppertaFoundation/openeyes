@@ -192,7 +192,7 @@ class ReportDiagnosesTest extends CDbTestCase
 
         $r->expects($this->once())
             ->method('joinDisorders')
-            ->with('All', array(1, 2, 3), 'p.hos_num, c.first_name, c.last_name, p.dob', array(), array(), $query);
+            ->with('All', array(1, 2, 3), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query);
 
         $r->run();
     }
@@ -250,15 +250,15 @@ class ReportDiagnosesTest extends CDbTestCase
 
         $r->expects($this->at(1))
             ->method('joinDisorders')
-            ->with('Principal', array(1, 2, 3), 'p.hos_num, c.first_name, c.last_name, p.dob', array(), array(), $query);
+            ->with('Principal', array(1, 2, 3), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query);
 
         $r->expects($this->at(2))
             ->method('joinDisorders')
-            ->with('Secondary', array(4, 5, 6), 'p.hos_num, c.first_name, c.last_name, p.dob', array(), array(), $query);
+            ->with('Secondary', array(4, 5, 6), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query);
 
         $r->expects($this->at(3))
             ->method('joinDisorders')
-            ->with('All', array(7, 8, 9), 'p.hos_num, c.first_name, c.last_name, p.dob', array(), array(), $query);
+            ->with('All', array(7, 8, 9), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query);
 
         $r->run();
     }
@@ -632,14 +632,14 @@ class ReportDiagnosesTest extends CDbTestCase
 
         $r->condition_type = 'or';
 
-        $select = 'p.hos_num, c.first_name, c.last_name, p.dob';
+        $select = 'p.id, c.first_name, c.last_name, p.dob';
         $whereParams = array();
         $or_conditions = array();
 
         $r->joinDisorders('All', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.hos_num, c.first_name, c.last_name, p.dob, ea0.created_date as padis0_date, padis0.fully_specified_name as padis0_fully_specified_name, '.
+            'p.id, c.first_name, c.last_name, p.dob, ea0.created_date as padis0_date, padis0.fully_specified_name as padis0_fully_specified_name, '.
             'ea0.eye_id as padis0_eye, sda0.date as sadis0_date, sadis0.fully_specified_name as sadis0_fully_specified_name, sda0.eye_id as sadis0_eye, '.
             'ea1.created_date as padis1_date, padis1.fully_specified_name as padis1_fully_specified_name, ea1.eye_id as padis1_eye, sda1.date as sadis1_date,'.
             ' sadis1.fully_specified_name as sadis1_fully_specified_name, sda1.eye_id as sadis1_eye, ea2.created_date as padis2_date, '.
@@ -696,14 +696,14 @@ class ReportDiagnosesTest extends CDbTestCase
 
         $r->condition_type = 'and';
 
-        $select = 'p.hos_num, c.first_name, c.last_name, p.dob';
+        $select = 'p.id, c.first_name, c.last_name, p.dob';
         $whereParams = array();
         $or_conditions = array();
 
         $r->joinDisorders('All', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.hos_num, c.first_name, c.last_name, p.dob, ea0.created_date as padis0_date, padis0.fully_specified_name as padis0_fully_specified_name, '.
+            'p.id, c.first_name, c.last_name, p.dob, ea0.created_date as padis0_date, padis0.fully_specified_name as padis0_fully_specified_name, '.
             'ea0.eye_id as padis0_eye, sda0.date as sadis0_date, sadis0.fully_specified_name as sadis0_fully_specified_name, sda0.eye_id as sadis0_eye, '.
             'ea1.created_date as padis1_date, padis1.fully_specified_name as padis1_fully_specified_name, ea1.eye_id as padis1_eye, sda1.date as sadis1_date,'.
             ' sadis1.fully_specified_name as sadis1_fully_specified_name, sda1.eye_id as sadis1_eye, ea2.created_date as padis2_date, '.
@@ -1203,7 +1203,7 @@ ID,Date of Birth,First Name,Last Name,Date,Diagnoses,Patient IDs
 
         $r->diagnoses = array(
             array(
-                'hos_num' => 12345,
+                'identifier' => 12345,
                 'dob' => '1 Jan 1980',
                 'first_name' => 'Jim',
                 'last_name' => 'Jones',
@@ -1238,7 +1238,7 @@ Posterior vitreous detachment (Principal or Secondary)
 Diabetes mellitus type 1 (Principal or Secondary)
 Between 10 May 2002 and 19 May 2002
 
-'.Patient::model()->getAttributeLabel('hos_num').',Date of Birth,First Name,Last Name,Date,Diagnoses
+'.$r->getPatientIdentifierPrompt().',Date of Birth,First Name,Last Name,Date,Diagnoses
 "12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Left one (Principal)"
 "12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Right two (Secondary)"
 "12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Both bloo (Principal)"
@@ -1390,7 +1390,7 @@ Between 10 May 2002 and 19 May 2002
 
         $row = array_shift($r->diagnoses);
 
-        $this->assertEquals('12345', $row['hos_num']);
+        $this->assertEquals('12345', $row['identifier']);
         $this->assertEquals('1970-01-01', $row['dob']);
         $this->assertEquals('Jim', $row['first_name']);
         $this->assertEquals('Aylward', $row['last_name']);
@@ -1448,7 +1448,7 @@ Between 10 May 2002 and 19 May 2002
 
         $row = array_pop($r->diagnoses);
 
-        $this->assertEquals('12345', $row['hos_num']);
+        $this->assertEquals('12345', $row['identifier']);
         $this->assertEquals('1970-01-01', $row['dob']);
         $this->assertEquals('Jim', $row['first_name']);
         $this->assertEquals('Aylward', $row['last_name']);
