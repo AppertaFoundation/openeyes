@@ -46,22 +46,18 @@ class PuppeteerBrowser extends CApplicationComponent
     public $page_height;
     protected $_scale;
 
-    public function __destruct()
-    {
-        // Close the browser instance once the component is destroyed if one has been opened.
-        if ($this->browser) {
-            $this->browser->close();
-        }
-    }
-
     /**
      * Initialise the Puppeteer browser component.
      */
     public function init()
     {
         parent::init();
-        $puppeteer = new Puppeteer(['read_timeout' => $this->readTimeout, 'log_browser_console' => $this->logBrowserConsole]);
-        $this->browser = $puppeteer->launch(array('headless' => true, 'args' => array('--no-sandbox', '--window-size=1280,720')));
+        $puppeteer = new Puppeteer(
+            ['read_timeout' => $this->readTimeout, 'log_browser_console' => $this->logBrowserConsole]
+        );
+        $this->browser = $puppeteer->launch(
+            array('headless' => true, 'args' => array('--no-sandbox', '--window-size=1280,720'))
+        );
     }
 
     /**
@@ -338,11 +334,22 @@ class PuppeteerBrowser extends CApplicationComponent
 
         $this->findOrCreateDirectory($imageDirectory);
 
-        $pdf_file = $suffix ? $imageDirectory . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.pdf" : $imageDirectory . DIRECTORY_SEPARATOR . "$prefix.pdf";
+        $pdf_file = $suffix
+            ? $imageDirectory . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.pdf"
+            : $imageDirectory . DIRECTORY_SEPARATOR . "$prefix.pdf";
 
-        $footer_file = $suffix ? $imageDirectory . DIRECTORY_SEPARATOR . "footer_$suffix.html" : $imageDirectory . DIRECTORY_SEPARATOR . 'footer.html';
+        $footer_file = $suffix
+            ? $imageDirectory . DIRECTORY_SEPARATOR . "footer_$suffix.html"
+            : $imageDirectory . DIRECTORY_SEPARATOR . 'footer.html';
         $footer = $this->formatFooter(
-            $this->readFile(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'print' . DIRECTORY_SEPARATOR . 'pdf_footer.php'),
+            $this->readFile(
+                Yii::app()->basePath . DIRECTORY_SEPARATOR
+                . 'views'
+                . DIRECTORY_SEPARATOR
+                . 'print'
+                . DIRECTORY_SEPARATOR
+                . 'pdf_footer.php'
+            ),
             $this->_left,
             $this->_middle,
             $this->_right
@@ -423,7 +430,7 @@ class PuppeteerBrowser extends CApplicationComponent
      * @param array $options
      * @param bool $use_cookies
      */
-    protected function savePageToPDFInternal($url, $options, $use_cookies = false)
+    protected function savePageToPDFInternal(string $url, array $options, $use_cookies = false)
     {
         $page = $this->newPage();
         if ($use_cookies) {

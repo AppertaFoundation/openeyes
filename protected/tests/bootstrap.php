@@ -12,8 +12,9 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false)
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 1);
 
-if (version_compare(PHP_VERSION, '5.3', '>='))
+if (version_compare(PHP_VERSION, '5.3', '>=')) {
     require_once(dirname(__FILE__) . '/compatability.php');
+}
 
 // change the following paths if necessary
 $dirname = dirname(__FILE__);
@@ -46,7 +47,7 @@ function PHPUnit_shutdownFunction()
 {
     // http://www.php.net/manual/en/errorfunc.constants.php
     $error = error_get_last();
-    if (!is_null($error)) {
+    if ($error !== null) {
         if ($error['type'] & (E_ERROR + E_PARSE + E_CORE_ERROR + E_COMPILE_ERROR + E_USER_ERROR + E_RECOVERABLE_ERROR)) {
             echo 'Test Bootstrap: Caught untrapped fatal error: ';
             var_export($error);

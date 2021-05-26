@@ -14,7 +14,6 @@
 			this.latchable = this.options.latchable;
 			this.isLatched = false;
 			this.css = this.options.css;
-			this.closeBtn = $(".oe-i.remove-circle.medium");
 			this.init();
     }
 
@@ -55,12 +54,7 @@
               popup.hide();
             });
         }).mouseenter(function () {
-            if (popup.isLatched) {
-                $($(popup.content).find(popup.closeBtn)).show();
-                return;
-            }else{
-                $($(popup.content).find(popup.closeBtn)).hide();
-            }
+
             if (popup.groupController){
             	  popup.groupController.closeAll();
             	  popup.groupController.unlockAll();

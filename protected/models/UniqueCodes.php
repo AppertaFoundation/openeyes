@@ -114,12 +114,12 @@ class UniqueCodes extends BaseActiveRecord
 
     /**
      * @param $code
-     *
-     * @return CActiveRecord
+     * @return Event|null
+     * @throws CException
      */
     public function eventFromUniqueCode($code)
     {
-        $eventId = $this->dbConnection->createCommand()
+        $event_id = $this->dbConnection->createCommand()
             ->select('event.id')
             ->from('unique_codes')
             ->join('unique_codes_mapping', 'unique_codes.id = unique_codes_mapping.unique_code_id')
@@ -127,7 +127,11 @@ class UniqueCodes extends BaseActiveRecord
             ->where('unique_codes.code = ? ', array($code))
             ->queryRow();
 
-        return Event::model()->findByPk($eventId['id']);
+        if ($event_id) {
+            return Event::model()->findByPk($event_id['id']);
+        }
+
+        return null;
     }
 
     /**

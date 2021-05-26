@@ -164,8 +164,6 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         }
                     }
                 }
-            } else {
-                OELog::log("Could not find IOP examination element for event");
             }
         }
 

@@ -170,7 +170,7 @@ $(document).ready(function () {
       }
     });
 
-    var text = anchor.data('text');
+    var text = anchor.data('text').toString();
     var select = container.find('select');
 
     var attr_str = '';

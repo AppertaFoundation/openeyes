@@ -111,7 +111,7 @@ class User extends BaseActiveRecordVersioned
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
+        $relations = array(
             'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'user_id'),
             'firms' => array(
                 self::MANY_MANY,
@@ -123,15 +123,6 @@ class User extends BaseActiveRecordVersioned
             'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
-            'preferred_firms' => array(
-                self::HAS_MANY,
-                'Firm',
-                'firm_id',
-                'through' => 'firm_preferences',
-                'order' => 'firm_preferences.position DESC',
-                'limit' => (string)SettingMetadata::model()->getSetting('recent_context_firm_limit'), //Method to get recent_context_firm_limit from setting_installation (default is 6)
-                'group' => 'user_id, firm_id',
-            ),
             'firmSelections' => array(
                 self::MANY_MANY,
                 'Firm',
@@ -145,6 +136,20 @@ class User extends BaseActiveRecordVersioned
             'signOffUser' => array(self::BELONGS_TO, 'User', 'correspondence_sign_off_user_id'),
             'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id')
         );
+
+        if ($this->getScenario() !== 'portal_command') {
+            $relations['preferred_firms'] = [
+                self::HAS_MANY,
+                'Firm',
+                'firm_id',
+                'through' => 'firm_preferences',
+                'order' => 'firm_preferences.position DESC',
+                'limit' => (string)SettingMetadata::model()->getSetting('recent_context_firm_limit'), //Method to get recent_context_firm_limit from setting_installation (default is 6)
+                'group' => 'user_id, firm_id',
+            ];
+        }
+
+        return $relations;
     }
 
 

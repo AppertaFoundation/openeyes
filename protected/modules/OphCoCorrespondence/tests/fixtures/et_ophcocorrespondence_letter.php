@@ -16,7 +16,7 @@
  */
 
 return array(
-     array(
+     'letter1' => array(
         'id' => 1,
         'event_id' => 6,
         'date' => '2014-09-15 11:13:01',
@@ -38,7 +38,7 @@ Clinician',
         'last_modified_date' => '2014-09-15 11:11:11',
         'created_user_id' => 2,
     ),
-     array(
+     'letter2' => array(
         'id' => 2,
         'event_id' => 7,
         'date' => '2014-09-15 11:13:01',

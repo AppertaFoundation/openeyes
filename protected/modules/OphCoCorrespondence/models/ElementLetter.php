@@ -53,7 +53,7 @@
  * @property LetterType $letterType
  * @property LetterMacro $macro
  */
-class ElementLetter extends BaseEventTypeElement
+class ElementLetter extends BaseEventTypeElement implements Exportable
 {
     public $cc_targets = array();
     public $address_target = null;
@@ -263,6 +263,69 @@ class ElementLetter extends BaseEventTypeElement
     {
         parent::afterFind();
         $this->source_address = $this->address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportUrl()
+    {
+        return Yii::app()->params['correspondence_export_url'];
+    }
+
+    /**
+     * @param string $pdf_path Path to the PDF file to export for the event.
+     * @param string $ws_type Web service type. Currently handled value is SOAP, though this can be extended in future to include RPC and REST.
+     * @param mixed $client_obj The web service client object (if one has already been instantiated). If null, a client object will be created.
+     * @return object The response object from the web service.
+     * @throws SoapFault
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function export($pdf_path, $ws_type = 'SOAP', $client_obj = null)
+    {
+        if ($ws_type === 'SOAP') {
+            $wsdl = $this->getExportUrl();
+
+            if ($wsdl) {
+                // This should only execute if a WSDL URL has been specified.
+                $ws_params = array(
+                    'trace' => Yii::app()->params['environment'] === 'DEV',
+                    'encoding' => 'UTF-8',
+                );
+                if (Yii::app()->params['correspondence_export_location_url']) {
+                    $ws_params['location'] = Yii::app()->params['correspondence_export_location_url'];
+                }
+                $source = $this->letterType ? (': ' . $this->letterType->name) : null;
+                $file_content = file_get_contents($pdf_path);
+
+                $wrapper = new stdClass();
+                $wrapper->crn = new SoapVar(
+                    'U' . str_pad(
+                        preg_replace(
+                            '/(H|Hosnum)\s*[:;]\s*/',
+                            '',
+                            $this->event->episode->patient->hos_num
+                        ),
+                        6,
+                        '0',
+                        STR_PAD_LEFT
+                    ),
+                    XSD_STRING
+                );
+                $wrapper->bfsId = new SoapVar($this->event_id, XSD_STRING);
+                $wrapper->key = new SoapVar('GENERAL LETTER', XSD_STRING);
+                $wrapper->source = new SoapVar("OpenEyes Correspondence$source", XSD_STRING);
+                $wrapper->fileContent = new SoapVar(base64_encode($file_content), XSD_BASE64BINARY);
+                $wrapper->fileType = new SoapVar('.pdf', XSD_STRING);
+                $request = new SoapParam($wrapper, 'ReceiveFileByCrn');
+
+                $client = $client_obj ?: new SoapClient($wsdl, $ws_params);
+                return $client->ReceiveFileByCrn($request);
+            }
+            throw new CHttpException(404, 'WSDL URL has not been specified.');
+        }
+        throw new CHttpException(400, 'Invalid or unsupported web service type specified');
     }
 
     /**
@@ -968,7 +1031,21 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        return $target->contact_name . "\n" . $target->address;
+                        // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
+                        if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
+                            $addressPart = explode("\n", $target->address);
+                            $address ='';
+                            foreach ($addressPart as $index=>$part) {
+                                if ($index === 0) {
+                                    $address = $part."\n";
+                                } else {
+                                    $address = $address.$part;
+                                }
+                            }
+                            return $target->contact_name . "\n" . $address;
+                        } else {
+                            return $target->contact_name . "\n" . $target->address;
+                        }
                     }
                 }
             }

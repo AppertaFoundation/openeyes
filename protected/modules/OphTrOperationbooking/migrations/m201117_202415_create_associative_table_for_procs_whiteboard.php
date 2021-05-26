@@ -15,7 +15,7 @@ class m201117_202415_create_associative_table_for_procs_whiteboard extends OEMig
         $whiteboardProcAssignmentData = array_map(function ($whiteboardTableRow) {
             $whiteboardId = $whiteboardTableRow['id'];
 
-            $procedures = explode(", ", $whiteboardTableRow['procedure']);
+            $procedures = array_map('trim', explode(",", $whiteboardTableRow['procedure']));
 
             $results = $this->dbConnection->createCommand()
                 ->select('id as proc_id, row_number()over(order by id) as display_order, ' . $whiteboardId . ' as whiteboard_id')
@@ -55,9 +55,11 @@ class m201117_202415_create_associative_table_for_procs_whiteboard extends OEMig
             'id'
         );
 
-        if ( count($whiteboardProcAssignmentData) > 0 ) {
-            foreach ( $whiteboardProcAssignmentData as $wpad) {
-                $this->insertMultiple('ophtroperationbooking_whiteboard_proc_assignment', $wpad);
+        if (count($whiteboardProcAssignmentData) > 0) {
+            foreach ($whiteboardProcAssignmentData as $wpad) {
+                if (!empty($wpad)) {
+                    $this->insertMultiple('ophtroperationbooking_whiteboard_proc_assignment', $wpad);
+                }
             }
         }
 

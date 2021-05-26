@@ -566,6 +566,11 @@ $(document).ready(function () {
         }
     });
 
+    $(this).on('click', '#et_export', function (e) {
+        e.preventDefault();
+        OphCoCorrespondence_do_export();
+    });
+
     $(this).on('click', '#et_confirm_printed', function () {
         $.ajax({
             'type': 'GET',
@@ -788,6 +793,35 @@ function OphCoCorrespondence_do_print(all) {
     });
 }
 
+function OphCoCorrespondence_do_export() {
+    $.ajax({
+        'type': 'POST',
+        'url': '/OphCoCorrespondence/default/export/' + OE_event_id,
+        'data': {
+            'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
+            'auto_print': false
+        },
+        'success': function (response) {
+            if (response.hasOwnProperty('DocId')) {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'Export completed successfully',
+                    closeCallback: enableButtons
+                }).open();
+            } else {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'Export unable to be performed: ' + response.ErrorMessage,
+                    closeCallback: enableButtons
+                }).open();
+            }
+        },
+        'error': function () {
+            new OpenEyes.UI.Dialog.Alert({
+                content: 'An unknown error occurred.',
+                closeCallback: enableButtons
+            }).open();
+        }
+    });
+}
 function OphCoCorrespondence_addAttachments(selectedItems) {
     if (selectedItems.length) {
         var table = $('#correspondence_attachments_table').find('tbody');
