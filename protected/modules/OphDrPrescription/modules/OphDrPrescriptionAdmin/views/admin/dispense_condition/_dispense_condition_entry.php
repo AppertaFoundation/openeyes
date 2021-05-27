@@ -13,5 +13,12 @@
     </td>
     <td><?= $name ?></td>
     <td><?= $display_order ?></td>
-    <td><i class="oe-i <?=($is_active ? 'tick' : 'remove')?> small"></i></td>
+    <td>
+        <?php if ($is_active) {?>
+            <i class="oe-i tick small"></i>
+        <?php } else {?>
+            <i class="oe-i remove small"></i>
+            <i class="oe-i info small pad js-has-tooltip" data-tooltip-content="Please add this to current institution before associating any dispense locations"></i>
+        <?php } ?>
+    </td>
 </tr>
