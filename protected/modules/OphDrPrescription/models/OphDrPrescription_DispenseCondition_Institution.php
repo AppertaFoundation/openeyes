@@ -7,6 +7,7 @@
  */
 class OphDrPrescription_DispenseCondition_Institution extends BaseActiveRecordVersioned
 {
+    protected $auto_update_relations = true;
     /**
      * @return string the associated database table name
      */
@@ -25,7 +26,7 @@ class OphDrPrescription_DispenseCondition_Institution extends BaseActiveRecordVe
         return array(
             array('dispense_condition_id', 'numerical', 'integerOnly' => true),
             array('institution_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-            array('last_modified_date, created_date', 'safe'),
+            array('last_modified_date, created_date, dispense_location_institutions', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, dispense_condition_id, institution_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),

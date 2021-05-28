@@ -119,18 +119,40 @@ class DispenseConditionController extends BaseAdminController
 
     private function saveModel($model)
     {
-        if (Yii::app()->request->isPostRequest) {
-            $model->attributes = $_POST['OphDrPrescription_DispenseCondition'];
-            $model->all_locations = isset($_POST['OphDrPrescription_DispenseCondition']['all_locations']) ? $_POST['OphDrPrescription_DispenseCondition']['all_locations'] : [];
-            $model->display_order =  isset($model->id) ? $model->display_order : $model->getNextHighestDisplayOrder(1);
-
-            return $model->save();
+        if (!Yii::app()->request->isPostRequest) {
+            return false;
         }
-
-        return false;
+        $institution_id = Yii::app()->session['selected_institution_id'];
+        $model->attributes = Yii::app()->request->getParam('OphDrPrescription_DispenseCondition', array());
+        $dci_data = Yii::app()->request->getParam('OphDrPrescription_DispenseCondition_Institution', array());
+        $dci_associated_dli_ids = array_key_exists('dispense_location_institutions', $dci_data) ? $dci_data['dispense_location_institutions'] : array();
+        $errors = array();
+        $transaction = \Yii::app()->db->beginTransaction();
+        foreach ($model->dispense_condition_institutions as $dci) {
+            if (intval($dci->institution_id) !== intval($institution_id)) {
+                continue;
+            }
+            $temp_dlis = array_map(function ($dci_associated_dli_id) {
+                $dli = \OphDrPrescription_DispenseLocation_Institution::model()->findByPk($dci_associated_dli_id);
+                return $dli;
+            }, $dci_associated_dli_ids);
+            $dci->dispense_location_institutions = $temp_dlis;
+            $dci->save();
+            $errors = array_merge($dci->getErrors(), $errors);
+        }
+        $model->display_order =  isset($model->id) ? $model->display_order : $model->getNextHighestDisplayOrder(1);
+        $model->save();
+        $errors = array_merge($model->getErrors(), $errors);
+        if ($errors) {
+            $transaction->rollback();
+            return false;
+        }
+        $transaction->commit();
+        return true;
     }
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'sortConditions' => [
                 'class' => 'SaveDisplayOrderAction',
@@ -139,5 +161,4 @@ class DispenseConditionController extends BaseAdminController
             ],
         ];
     }
-
 }

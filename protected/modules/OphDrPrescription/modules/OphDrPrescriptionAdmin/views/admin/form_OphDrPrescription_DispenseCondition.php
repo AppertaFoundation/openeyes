@@ -14,10 +14,14 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$institution_id = Yii::app()->session['selected_institution_id'];
+$criteria = new CDbCriteria();
+$criteria->with = array('dispense_location_institutions', 'dispense_location_institutions.dispense_location');
+$criteria->compare('t.dispense_condition_id', $model->id);
+$criteria->compare('t.institution_id', $institution_id);
+$criteria->compare('dispense_location_institutions.institution_id', $institution_id);
+$dc_institution = OphDrPrescription_DispenseCondition_Institution::model()->find($criteria);
 
-$dc_institution = OphDrPrescription_DispenseCondition_Institution::model()->findByAttributes(
-    ['dispense_condition_id' => $model->id, 'institution_id' => Yii::app()->session['institution']]
-);
 if (!$dc_institution) {
     $dc_institution = OphDrPrescription_DispenseCondition_Institution::model();
 }
