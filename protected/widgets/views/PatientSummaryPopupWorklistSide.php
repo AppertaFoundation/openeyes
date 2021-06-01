@@ -281,7 +281,7 @@
             <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]) ?>
             <?php $this->widget(
                 'application.widgets.PlansProblemsWidget',
-                ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true]
+                ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true, 'allow_save' => false]
             ); ?>
         </div>
         <?php if (Yii::app()->getModule('OETrial')) {
