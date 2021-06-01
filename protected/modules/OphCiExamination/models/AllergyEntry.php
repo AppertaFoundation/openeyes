@@ -31,6 +31,7 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property OphCiExaminationAllergy $allergy
  * @property Allergies $element
+ * @property array $reactions
  */
 class AllergyEntry extends \BaseElement
 {
@@ -38,6 +39,8 @@ class AllergyEntry extends \BaseElement
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
     public static $OTHER_VAL = 17;
+
+    public $reaction_ids = array();
 
     /**
      * Returns the static model of the specified AR class.
@@ -63,13 +66,13 @@ class AllergyEntry extends \BaseElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, allergy_id, other, comments, has_allergy', 'safe'),
+            array('element_id, allergy_id, reaction_id, other, comments, has_allergy', 'safe'),
             array('allergy_id', 'required'),
             array('other', 'validateOtherAllergies'),
             array('has_allergy', 'required', 'message'=>'Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, element_id, allergy_id, other, comments, has_allergy', 'safe', 'on' => 'search'),
+            array('id, element_id, allergy_id, reaction_id, other, comments, has_allergy', 'safe', 'on' => 'search'),
         );
     }
 
@@ -81,8 +84,10 @@ class AllergyEntry extends \BaseElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy', 'element_id'),
+            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Allergies', 'element_id'),
             'allergy' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', 'allergy_id'),
+            'reactions' => array(self::MANY_MANY, 'OphCiExaminationAllergyReaction', 'ophciexamination_allergy_reaction_assignment(allergy_entry_id, reaction_id)'),
+            'reaction_assignments' => array(self::HAS_MANY, 'AllergyEntryReactionAssignment', 'allergy_entry_id'),
         );
     }
     /**
@@ -122,6 +127,12 @@ class AllergyEntry extends \BaseElement
         return parent::beforeSave();
     }
 
+    protected function afterSave()
+    {
+        $this->refreshReactionAssignments();
+        return parent::afterSave();
+    }
+
     /**
      * @return string
      */
@@ -146,6 +157,19 @@ class AllergyEntry extends \BaseElement
         return $this->allergy ? $this->allergy->name : '';
     }
 
+    /**
+     * @return string
+     */
+    public function getReactionString()
+    {
+        $reactions = array();
+        foreach ($this->reactions as $reaction) {
+            $reactions[] = $reaction->name;
+        }
+
+        return implode(', ', $reactions);
+    }
+
 
     /**
      * @return string
@@ -165,11 +189,12 @@ class AllergyEntry extends \BaseElement
      * @throws Exception if record is new as it does not have a allergy_id to check against
      * @return bool true if entry is 'Other' (ie not in the standard list so needs editable field)
      */
-    public function isOther(){
+    public function isOther()
+    {
         if (!$this->isNewRecord) {
             return $this->allergy_id == AllergyEntry::$OTHER_VAL;
         } else {
-            throw new Exception('Cannot check if new allergy entry is other without proposed allergy id, 
+            throw new Exception('Cannot check if new allergy entry is other without proposed allergy id,
             new records do not have allergy_id set, please use staticIsOther($allergy_id)');
         }
     }
@@ -178,6 +203,36 @@ class AllergyEntry extends \BaseElement
     {
         if ($this->allergy_id == AllergyEntry::$OTHER_VAL && $this->$attribute == "" ) {
             $this->addError($attribute, 'Allergy cannot be blank');
+        }
+    }
+
+    /***
+     * Assigns an allergy reaction to this entry
+     */
+    public function assignReaction($reaction_id)
+    {
+        $assignment = new \AllergyEntryReactionAssignment();
+
+        $assignment->allergy_entry_id = $this->id;
+        $assignment->reaction_id = $reaction_id;
+
+        $assignment->save();
+    }
+
+    /***
+     * Adds allergy reactions that don't already have an assignment, and removes reactions that shouldn't have an assignment
+     */
+    public function refreshReactionAssignments()
+    {
+        foreach ($this->reaction_assignments as $assignment) {
+            if (!in_array($assignment->reaction_id, $this->reaction_ids)) {
+                $assignment->delete();
+            }
+        }
+        foreach ($this->reaction_ids as $reaction_id) {
+            if (!\AllergyEntryReactionAssignment::model()->exists("allergy_entry_id = :allergy_entry_id AND reaction_id = :reaction_id", array(':allergy_entry_id' => $this->id, ':reaction_id'=> $reaction_id))) {
+                $this->assignReaction($reaction_id);
+            }
         }
     }
 }

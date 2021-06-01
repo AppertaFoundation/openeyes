@@ -21,6 +21,7 @@ $config = [
                 'Workflows' => '/OphCiExamination/admin/viewWorkflows',
                 'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
                 'Allergies' => '/OphCiExamination/admin/Allergies/index',
+                'Allergy Reactions' => ['uri' => '/OphCiExamination/admin/AllergyReactions/index', 'restricted' => array('admin')],
                 'Required Allergy Assignment' => '/OphCiExamination/admin/AllergyAssignment/index',
                 'Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalities/index',
                 'Required Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalityAssignment/index',

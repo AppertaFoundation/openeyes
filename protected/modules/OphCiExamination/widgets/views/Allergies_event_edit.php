@@ -41,6 +41,7 @@ $required_allergy_ids = array_map(function ($r) {
             <col class="cols-3">
             <col class="cols-3">
             <col class="cols-4">
+            <col class="cols-3">
             <col class="cols-2">
         </colgroup>
         <tbody>
@@ -119,17 +120,69 @@ $required_allergy_ids = array_map(function ($r) {
 </script>
 
 <script type="text/javascript">
-
     $(function () {
       var allergyController;
+
+      let createReactionListItem = function(val, label, rowDataKey) {
+          let $listElement = $(document.createElement('li'));
+          $listElement.text(label);
+
+          let $trashIcon = $(document.createElement('i'));
+          $trashIcon.addClass('oe-i remove-circle small-icon pad-left');
+          $trashIcon.click(function () {
+              $(this).parent().remove();
+          });
+          $listElement.append($trashIcon);
+
+          let hiddenInputName = `OEModule_OphCiExamination_models_Allergies[entries][${rowDataKey}][reactions][]`;
+
+          let $hiddenInput = $(document.createElement('input'));
+          $hiddenInput.attr("type", "hidden");
+          $hiddenInput.attr("name", hiddenInputName);
+          $hiddenInput.val(val);
+          $listElement.append($hiddenInput);
+
+          return $listElement;
+      };
+
+      let bindEventsToRow = function($row) {
+          let rowDataKey = $row.data('key');
+          let $reactionTd = $row.find('td.reaction-selection');
+          let $reactionDropdown = $reactionTd.find('select');
+          let $reactionList = $reactionTd.find('ul');
+
+          $reactionDropdown.change(function() {
+              let val = $reactionDropdown.val();
+              let label = $reactionDropdown.find('option:selected').text();
+              $reactionList.append(createReactionListItem(val, label, rowDataKey));
+              $reactionDropdown.val('');
+          });
+
+          $reactionList.find('li i').each(function() {
+              $(this).click(function () {
+                  $(this).parent().remove();
+              });
+          });
+      }
+
+      let refreshEventBindings = function($tableSelector) {
+          $($tableSelector).find('tr').each(function() {
+              let $thisRow = $(this);
+              $thisRow.find('td select').off('change');
+              bindEventsToRow($thisRow);
+          });
+      }
+
       $(document).ready(function () {
             allergyController = new OpenEyes.OphCiExamination.AllergiesController({
                 element: $('#<?=$model_name?>_element'),
                 allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>
             });
-      });
 
-      new OpenEyes.UI.AdderDialog({
+          refreshEventBindings($("table#<?=$model_name?>_entry_table"));
+        });
+
+        new OpenEyes.UI.AdderDialog({
         openButton: $('#add-allergy-btn'),
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($allergy) {
@@ -139,6 +192,7 @@ $required_allergy_ids = array_map(function ($r) {
         onReturn: function (adderDialog, selectedItems) {
             allergyController.addEntry(selectedItems);
             allergyController.showTable();
+            refreshEventBindings($("table#<?=$model_name?>_entry_table"));
             return true;
         }
       });
