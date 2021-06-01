@@ -600,10 +600,12 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     public function getUnavailableReasonList()
     {
         $criteria = new CDbCriteria();
-        $criteria->condition = 'enabled = true';
         $criteria->order = 'display_order asc';
 
-        $reasons = OphTrOperationbooking_Operation_Session_UnavailableReason::model()->findAll($criteria);
+        $reasons = OphTrOperationbooking_Operation_Session_UnavailableReason::model()->findAllAtLevel(
+            ReferenceData::LEVEL_INSTITUTION,
+            $criteria
+        );
         // just use standard list
         if (!$this->unavailablereason_id) {
             return $reasons;

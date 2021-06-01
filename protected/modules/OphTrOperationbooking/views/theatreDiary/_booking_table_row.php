@@ -13,6 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+/**
+ * @var $coreapi CoreAPI
+ */
 ?>
 <tr id="<?=$booking->element_id ?>">
     <td>
@@ -27,18 +30,18 @@
     <td><!-- patient meta data -->
         <div class="oe-patient-meta">
             <div class="patient-name">
-                <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($patient); ?>">
-                    <span class="patient-surname"><?= strtoupper($patient->last_name); ?></span>,
-                    <span class="patient-firstname"><?= $patient->first_name . " ($patient->title)" ?></span>
+                <a href="<?= $coreapi->generatePatientLandingPageLink($patient) ?>">
+                    <span class="patient-surname"><?= strtoupper($patient->last_name) ?></span>,
+                    <span class="patient-firstname"><?= "$patient->first_name ($patient->title)" ?></span>
                 </a>
             </div>
             <div class="patient-details">
                 <div class="hospital-number">
                     <span>ID</span>
-                    <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($patient); ?>"><?= $patient->hos_num; ?></a>
+                    <a href="<?= $coreapi->generatePatientLandingPageLink($patient) ?>"><?= $patient->getHos() ?></a>
                 </div>
-                <div class="patient-gender"><em>Gen</em><?= $patient->getGenderString(); ?></div>
-                <div class="patient-age"><em>Age</em><?= $patient->age; ?></div>
+                <div class="patient-gender"><em>Gen</em><?= $patient->getGenderString() ?></div>
+                <div class="patient-age"><em>Age</em><?= $patient->age ?></div>
             </div>
         </div><!-- .oe-patient-meta -->
         <div class="theatre-patient-icons">
@@ -71,33 +74,33 @@
         </div>
     </td>
     <td>
-        <i class="oe-i circle-<?= $operation->getComplexityColor(); ?> small pad js-has-tooltip" data-tt-type="basic"
-           data-tooltip-content="<?= strtoupper($operation->getComplexityCaption()); ?> complexity">
+        <i class="oe-i circle-<?= $operation->getComplexityColor() ?> small pad js-has-tooltip" data-tt-type="basic"
+           data-tooltip-content="<?= strtoupper($operation->getComplexityCaption()) ?> complexity">
         </i>
     </td>
     <td>
         <div class="operation">[<?= Eye::methodPostFix($operation->eye_id); ?>
-            ] <?= $operation->getProceduresCommaSeparated(); ?></div>
+            ] <?= $operation->getProceduresCommaSeparated() ?></div>
         <div class="operation-details">
             <ul class="dot-list">
 
                 <?php if ($operation->priority->name === 'Urgent') :?>
                     <span class="highlighter red"><?=$operation->priority->name;?></span>
                 <?php else : ?>
-                    <?=$operation->priority->name;?>
+                    <?=$operation->priority->name?>
                 <?php endif; ?>
                 <li><?=implode("</li><li>", $operation->anaesthetic_type);?></li>
-                <li><?=$session->theatre->ward->name;?></li>
+                <li><?=$session->theatre->ward->name?></li>
 
                 <li>
                     <div class="theatre-procedure-icons">
                         <?php if ($operation->comments_rtt) :?>
-                            <i class="oe-i waiting small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="<?=$operation->comments_rtt;?>"></i>
+                            <i class="oe-i waiting small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="<?=$operation->comments_rtt?>"></i>
                         <?php endif;?>
                         <?php if ($operation->comments) :?>
                             <i class="oe-i comments-who small pad js-has-tooltip"
                                data-tt-type="basic"
-                               data-tooltip-content="<em><?=$operation->comments;?></em><br>by <?=$operation->op_user->fullName;?>"></i>
+                               data-tooltip-content="<em><?=$operation->comments?></em><br>by <?=$operation->op_user->fullName?>"></i>
                         <?php endif;?>
                         <?php if ($operation->is_golden_patient) :?>
                             <i class="oe-i star small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="Golden patient"></i>
@@ -106,13 +109,13 @@
                             <i class="oe-i exclamation-red small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="Consultant required"></i>
                         <?php endif;?>
 
-                        <i class="oe-i audit-trail small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="Operation booking by </br><?=$operation->op_user->fullName;?>"></i>
+                        <i class="oe-i audit-trail small pad js-has-tooltip" data-tt-type="basic" data-tooltip-content="Operation booking by </br><?=$operation->op_user->fullName?>"></i>
                     </div>
                 </li>
             </ul>
         </div>
         <div class="operation-actions">
-            <a target="_blank" href="<?=\Yii::app()->createUrl('/' . $event->eventType->class_name . '/whiteboard/view/' . $event->id);?>" class="button">
+            <a target="_blank" href="<?=\Yii::app()->createUrl('/' . $event->eventType->class_name . '/whiteboard/view/' . $event->id)?>" class="button">
                 <i class="oe-i whiteboard small pad-right "></i>Whiteboard
             </a>
             <a href="/OphTrOperationbooking/default/view/<?=$event->id?>" class="button">
@@ -122,10 +125,10 @@
 
             <?php if ($biometry) :?>
                 <?php
-                    $biometry_event = \Event::model()->findByPk($biometry->event_id);
-                    $is_automated = \OphInBiometry_Imported_Events::model()->countByAttributes(['event_id' => $event->id]);
-                    $al_right = "AL {$biometry->axial_length_right} mm" . (!$is_automated ? ' * AL entered manually' :'');
-                    $al_left = "AL {$biometry->axial_length_left} mm" . (!$is_automated ? ' * AL entered manually' :'');
+                    $biometry_event = Event::model()->findByPk($biometry->event_id);
+                    $is_automated = OphInBiometry_Imported_Events::model()->countByAttributes(['event_id' => $event->id]);
+                    $al_right = "AL {$biometry->axial_length_right} mm" . (!$is_automated ? ' * AL entered manually' : '');
+                    $al_left = "AL {$biometry->axial_length_left} mm" . (!$is_automated ? ' * AL entered manually' : '');
                     $k1_right = "{$biometry->k1_right} D @ {$biometry->k1_axis_right}°";
                     $k1_left = "{$biometry->k1_left} D @ {$biometry->k1_axis_left}°";
                     $k2_right = "{$biometry->k2_right} D @ {$biometry->k2_axis_right}°";
@@ -138,12 +141,12 @@
                     $acd_left = "ACD {$biometry->acd_left} mm";
                 ?>
 
-                <i class="oe-i-e i-InBiometry js-has-tooltip" data-tt='{"type":"bilateral","tipR":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date;?><br \/><b>Lens <?=$biometry->lens_right;?><\/b><br \/><b>Power <?=$biometry->iol_power_right;?><\/b><br \/><?=$biometry->formula_right;?>\/T<br \/><?=$al_right?><br \/><?=$k1_right;?><br \/><?=$k2_right;?><br \/><?=$delta_k_right;?><br \/><?=$acd_right;?>","tipL":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date;?><br \/><b>Lens <?=$biometry->lens_left; ?><\/b><br \/><b>Power <?=$biometry->iol_power_left; ?><\/b><br \/><?=$biometry->formula_right;?><br \/><?=$al_left?><br \/><?=$k1_left;?><br \/><?=$k2_left;?><br \/><?=$delta_k_left;?><br \/><?=$acd_left;?>","eyeIcons":true,"clickPopup":false}'></i>
-                <a href="/OphInBiometry/default/view/<?=$biometry_event->id;?>" class="button"> Biometry</a>
+                <i class="oe-i-e i-InBiometry js-has-tooltip" data-tt='{"type":"bilateral","tipR":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date;?><br \/><b>Lens <?=$biometry->lens_right;?><\/b><br \/><b>Power <?=$biometry->iol_power_right;?><\/b><br \/><?=$biometry->formula_right;?>\/T<br \/><?=$al_right?><br \/><?=$k1_right?><br \/><?=$k2_right?><br \/><?=$delta_k_right?><br \/><?=$acd_right?>","tipL":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date?><br \/><b>Lens <?=$biometry->lens_left ?><\/b><br \/><b>Power <?=$biometry->iol_power_left ?><\/b><br \/><?=$biometry->formula_right?><br \/><?=$al_left?><br \/><?=$k1_left?><br \/><?=$k2_left?><br \/><?=$delta_k_left?><br \/><?=$acd_left?>","eyeIcons":true,"clickPopup":false}'></i>
+                <a href="/OphInBiometry/default/view/<?=$biometry_event->id?>" class="button"> Biometry</a>
             <?php endif; ?>
 
             <?php if ($consent_event) :?>
-                <a href="/OphTrConsent/default/view/<?=$consent_event->event_id;?>" class="button">
+                <a href="/OphTrConsent/default/view/<?=$consent_event->event_id?>" class="button">
                     <i class="oe-i-e i-CoPatientConsent pad-right"></i>Consent
                 </a>
             <?php endif; ?>

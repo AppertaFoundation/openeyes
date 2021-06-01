@@ -19,6 +19,7 @@
 /**
  * @var $session OphTrOperationbooking_Operation_Session
  * @var $theatre OphTrOperationbooking_Operation_Theatre
+ * @var $coreapi CoreAPI
  * @var $ward_id int
  */
 ?>
@@ -176,7 +177,7 @@ $active_bookings = $session->getActiveBookingsForWard($ward_id);
                 'session' => $session,
                 'event' => $booking->operation->event,
                 'biometry' => OphTrOperationbooking_Whiteboard::model()->recentBiometry($patient),
-
+                'coreapi' => $coreapi,
                 'consent_event' => (function () use ($booking) {
                     $criteria = new CDbCriteria();
                     $criteria->addCondition('booking_event_id = :booking_event_id');
