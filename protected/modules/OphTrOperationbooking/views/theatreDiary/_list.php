@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $whiteboard_display_mode = SettingMetadata::model()->getSetting('theatre_diary_whiteboard_display_mode');
+$coreapi = new CoreAPI();
 
 if (empty($diary)) { ?>
     <div id="theatre-search-no-results">
@@ -38,6 +39,7 @@ if (empty($diary)) { ?>
                         'theatre' => $theatre,
                         'assetPath' => $assetPath,
                         'ward_id' => $ward_id,
+                        'coreapi' => $coreapi,
                         'whiteboard_display_mode' => $whiteboard_display_mode
                     )
                 );
