@@ -22,6 +22,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('SystemicDiagnoses.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('OpenEyes.UI.DiagnosesSearch.js', true) ?>"></script>
+<script type="text/javascript" src="<?= $this->getPublishedPath('../widgets/js', 'EyeSelector.js', true) ?>"></script>
 
 <?php
 $model_name = CHtml::modelName($element);
