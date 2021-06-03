@@ -593,7 +593,11 @@ class ReportDiagnosesTest extends CDbTestCase
                 ':sdis2' => 3,
             ), $whereParams);
 
-        $this->assertEquals(array(), $or_conditions);
+        $this->assertEquals(array(
+            'sdis0.id is not null',
+            'sdis1.id is not null',
+            'sdis2.id is not null',
+        ), $or_conditions);
     }
 
     /**
