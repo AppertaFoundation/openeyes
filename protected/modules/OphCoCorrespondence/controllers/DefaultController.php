@@ -39,6 +39,7 @@ class DefaultController extends BaseEventTypeController
         'printForRecipient' => self::ACTION_TYPE_PRINT,
         'getInternalReferralOutputType' => self::ACTION_TYPE_FORM,
         'getDraftPrintRecipients' => self::ACTION_TYPE_PRINT,
+        'export' => self::ACTION_TYPE_FORM,
     );
 
     protected $pdf_output;
@@ -78,6 +79,23 @@ class DefaultController extends BaseEventTypeController
         }
 
         parent::actionUpdate($id);
+    }
+
+    /**
+     * @param $id
+     * @throws Exception
+     */
+    public function actionExport($id)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        if (!$letter) {
+            throw new CHttpException(404, 'Correspondence event could not be found.');
+        }
+        $this->event = $letter->event;
+        $url = $this->generatePDF($letter->event, true);
+        $response = $letter->export($url);
+        unlink($url);
+        $this->renderJSON($response->ReceiveFileByCrnResult);
     }
 
     /**

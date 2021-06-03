@@ -89,7 +89,6 @@ $lists = array(
                         <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $entry->dose_unit_term) : $taper->dose ?>
                             </td>
                         <td class="nowrap">
-                            <!-- no needed in taper -->
                         </td>
                         <td><?= $taper->frequency->term ?></td>
                         <td class="nowrap"><?= $taper_display_date ? \Helper::convertDate2NHS($taper_display_date->format('Y-m-d')) : $taper->duration->name; ?></td>

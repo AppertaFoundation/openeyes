@@ -49,6 +49,7 @@ $is_admin = $this->checkAccess('admin');
         </thead>
         <tbody>
             <?php
+            $purifier = new CHtmlPurifier();
             foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) {
                 // Setting pulled from database
                 $metadata_value = (string)$metadata->getSettingName($metadata->key, ['SettingInstallation', 'SettingInstitution']);
@@ -103,7 +104,7 @@ $is_admin = $this->checkAccess('admin');
                 <?php } else { ?>
                     <tr class="clickable" data-uri="<?= $data_uri ?>">
                         <td><?php echo $metadata->name ?></td>
-                        <td><?= $metadata_value ?></td>
+                        <td><?= $purifier->purify($metadata_value);?></td>
                         <td></td>
                     </tr>
                     <?php

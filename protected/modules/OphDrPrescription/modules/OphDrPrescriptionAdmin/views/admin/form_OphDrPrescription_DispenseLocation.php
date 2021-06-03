@@ -16,7 +16,7 @@
  */
 ?>
 <div class="cols-5">
-    <?=\CHtml::activeHiddenField($model, 'id'); ?>
+    <?= CHtml::activeHiddenField($model, 'id') ?>
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-1">
@@ -26,17 +26,11 @@
         <tr>
             <td>Name</td>
             <td>
-                <?=\CHtml::activeTextField(
+                <?= CHtml::activeTextField(
                     $model,
                     'name',
                     ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Is Active</td>
-            <td>
-                <?=\CHtml::activeCheckBox($model, 'active') ?>
+                ) ?>
             </td>
         </tr>
         </tbody>
@@ -50,7 +44,7 @@
                         'name' => 'save',
                         'id' => 'et_save'
                     ]
-                ); ?>
+                ) ?>
                 <?=\CHtml::submitButton(
                     'Cancel',
                     [
@@ -59,7 +53,7 @@
                         'name' => 'cancel',
                         'id' => 'et_cancel',
                     ]
-                ); ?>
+                ) ?>
             </td>
         </tr>
         </tfoot>

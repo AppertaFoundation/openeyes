@@ -50,23 +50,24 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js'
     <button id="add-queueset" type="button" class="hint green cols-half">Add Queue Set</button>
     <?php
     echo CHtml::submitButton(
-    'Add to current Institution',
-    [
-        'name' => 'admin-map-add',
-        'id' => 'et_admin-map-add',
-        'class' => 'generic-admin-save button large',
-        'formaction' => '/admin/addMapping',
-        'formmethod' => 'POST',
-    ]);
+        'Add selected to current Institution',
+        [
+            'name' => 'admin-map-add',
+            'id' => 'et_admin-map-add',
+            'class' => 'generic-admin-save button large',
+            'formaction' => '/admin/addMapping',
+            'formmethod' => 'POST',
+        ]);
     echo CHtml::submitButton(
-    'Remove from current Institution',
-    [
-        'name' => 'admin-map-remove',
-        'id' => 'et_admin-map-remove',
-        'class' => 'generic-admin-save button large',
-        'formaction' => '/admin/removeMapping',
-        'formmethod' => 'POST',
-    ]); ?>
+        'Remove selected from current Institution',
+        [
+            'name' => 'admin-map-remove',
+            'id' => 'et_admin-map-remove',
+            'class' => 'generic-admin-save button large',
+            'formaction' => '/admin/removeMapping',
+            'formmethod' => 'POST',
+        ]
+    ); ?>
     <div class="alert-box info" style="display: none;" id="message-box">
     </div>
     <hr>

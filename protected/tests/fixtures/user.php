@@ -60,4 +60,16 @@ return array(
         'email' => 'admin@mail.com',
         'global_firm_rights' => 0,
     ),
+    'ssouser' => array(
+        'username' => 'ssouser',
+        'first_name' => 'User',
+        'last_name' => 'SSO',
+        'title' => 'Mr',
+        'qualifications' => 'test',
+        'role' => 'user',
+        'has_selected_firms' => 0,
+        'email' => 'sso@testuser.com',
+        'active' => 1,
+        'global_firm_rights' => 1,
+    ),
 );

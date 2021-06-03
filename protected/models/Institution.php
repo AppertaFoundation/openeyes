@@ -24,6 +24,7 @@
  * @property int $id
  * @property string $name
  * @property int $remote_id
+ * @property string $pas_key
  * @property string $short_name
  * @property int $contact_id
  * @property int $source_id
@@ -74,13 +75,14 @@ class Institution extends BaseActiveRecordVersioned
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return [
-            ['name, remote_id, short_name', 'required'],
+        return array(
+            array('pas_key', 'length', 'max' => 10),
+            array('name, remote_id, short_name', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             ['any_number_search_allowed, first_used_site_id', 'safe'],
             ['id, name, any_number_search_allowed', 'safe', 'on' => 'search'],
-        ];
+        );
     }
 
     /**
@@ -112,6 +114,7 @@ class Institution extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
+            'pas_key' => 'PAS Key',
         );
     }
 

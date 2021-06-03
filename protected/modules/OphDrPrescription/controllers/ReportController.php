@@ -54,7 +54,7 @@ class ReportController extends BaseReportController
     {
         $drugs = Element_OphDrPrescription_Details::model()->commonDrugs();
         $users = User::model()->findAll(array('order' => 'first_name asc,last_name asc'));
-        $dispense_conditions = OphDrPrescription_DispenseCondition::model()->findAll();
+        $dispense_conditions = OphDrPrescription_DispenseCondition::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
 
         Audit::add('Reports', 'view', print_r(['report-name' => 'Prescribed Drugs'], true));
         $this->pageTitle = 'Prescribed Drugs report';

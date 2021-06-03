@@ -433,25 +433,26 @@ if [ $demo == "1" ]; then
             bash -l "$basefolder/$f"
         fi
     done
-fi
 
-# Run genetics scripts if genetics is enabled
-if grep -q "'Genetics'," "$WROOT"/protected/config/local/common.php && ! grep -q "/\*'Genetics'," "$WROOT"/protected/config/local/common.php; then
+    # Run genetics scripts if genetics is enabled
+    if grep -q "'Genetics'," "$WROOT"/protected/config/local/common.php && ! grep -q "/\*'Genetics'," "$WROOT"/protected/config/local/common.php; then
 
-    echo "RUNNING Genetics files..."
+        echo "RUNNING Genetics files..."
 
-    basefolder="$MODULEROOT/sample/sql/demo/genetics"
+        basefolder="$MODULEROOT/sample/sql/demo/genetics"
 
-    shopt -s nullglob
-    for f in $(ls "$basefolder" | sort -V); do
-        if [[ $f == *.sql ]]; then
-            echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
-        elif [[ $f == *.sh ]]; then
-            echo "running $f"
-            bash -l "$basefolder/$f"
-        fi
-    done
+        shopt -s nullglob
+        for f in $(ls "$basefolder" | sort -V); do
+            if [[ $f == *.sql ]]; then
+                echo "importing $f"
+                eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
+            elif [[ $f == *.sh ]]; then
+                echo "running $f"
+                bash -l "$basefolder/$f"
+            fi
+        done
+
+    fi
 
 fi
 

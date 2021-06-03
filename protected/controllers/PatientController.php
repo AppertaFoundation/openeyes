@@ -366,7 +366,7 @@ class PatientController extends BaseController
                         $message = 'Identifier <strong>' . implode(', ', $search_terms['patient_identifier_value']) . '</strong> was merged into <strong>' . $patientMergeRequest->primary_local_identifier_value . '</strong>';
                     }
                 } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
-                    $message .= 'for Patient Name <strong>"' . $search_terms['first_name'] . ' ' . $search_terms['last_name'] . '"</strong>';
+                    $message .= 'for Patient Name/DOB <strong>"' . $search_terms['first_name'] . ' ' . $search_terms['last_name'] . ($search_terms['dob'] ? ' ' . $search_terms['dob'] : '') . '"</strong>';
                 } else {
                     $message .= 'found for your search.';
                 }

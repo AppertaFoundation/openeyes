@@ -115,7 +115,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202101111444',
+            'time' => '202104011656',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -261,6 +261,7 @@ $config = array(
                 'OphCoDocument/Default/create',
                 'OphCoDocument/Default/update',
                 'OphCoDocument/Default/fileUpload',
+                'sso',
             ),
         ),
         'service' => array(
@@ -356,6 +357,10 @@ $config = array(
         'institution_code' => !empty(trim(getenv('OE_INSTITUTION_CODE'))) ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'institution_specialty' => 130,
         'erod_lead_time_weeks' => 3,
+        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : '',
+        // In most instances the location URL is derived from the WSDL provided above,
+        // but for local testing using SoapUI this will need to be manually specified.
+        'correspondence_export_location_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_URL")) : null,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(130),
         // specifies the order in which different specialties are laid out (use specialty codes)
@@ -777,6 +782,7 @@ $config = array(
         'watermark' => getenv('OE_USER_BANNER_LONG') ?: null,
         'watermark_admin_short' => getenv('OE_ADMIN_BANNER_SHORT') ?: null,
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
+        'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
     ),
 );

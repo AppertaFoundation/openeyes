@@ -402,6 +402,9 @@ class UserIdentity extends CUserIdentity
 
                 return [false, $validPw ? ($is_softlocked ? "User locked, retry in 10 minutes" : "User locked, please contact an admin.") : "Invalid login."];
             }
+        } elseif (Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC') {
+            // The user is already authenticated from the portal so directly register the username for the session
+            $user->username = $this->username;
         } else {
             /*
              * Unknown auth_source, error

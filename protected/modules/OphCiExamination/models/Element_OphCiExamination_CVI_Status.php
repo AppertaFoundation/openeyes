@@ -46,6 +46,7 @@ class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
             array('cvi_status_id', 'required'),
             array('event_id, cvi_status_id, created_user_id, last_modified_user_id', 'length', 'max'=>10),
             array('event_id, element_date, created_date, last_modified_date', 'safe'),
+            array('element_date', 'default', 'setOnEmpty' => true, 'value' => null),
             // The following rule is used by search().
             array('id, event_id, cvi_status_id, element_date, created_date, created_user_id, last_modified_date, last_modified_user_id', 'safe', 'on'=>'search'),
         );

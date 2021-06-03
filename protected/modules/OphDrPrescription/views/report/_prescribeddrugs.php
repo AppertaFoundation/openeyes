@@ -17,6 +17,7 @@
     <thead>
         <tr>
             <th><?= $report->getPatientIdentifierPrompt() ?></th>
+            <th><?= $report->getAttributeLabel('all_ids') ?></th>
             <th>Patient’s Surname</th>
             <th>Patient’s First name</th>
             <th>Patient’s DOB</th>
@@ -34,7 +35,6 @@
             <th>Prescribed Clinician’s Job-role</th>
             <th>Prescription event date</th>
             <th>Preservative Free</th>
-            <th><?= $report->getAttributeLabel('all_ids') ?></th>
         </tr>
     </thead>
     <tbody>
@@ -46,6 +46,7 @@
             <?php foreach ($report->items as $drug) :?>
                 <tr>
                     <td><?= $drug['identifier']?></td>
+                    <td><?= $drug['all_ids'] ?></td>
                     <td><?= $drug['last_name']?></td>
                     <td><?= $drug['first_name']?></td>
                     <td><?= $drug['dob'] ? date('j M Y', strtotime($drug['dob'])) : 'Unknown'?></td>
@@ -63,7 +64,6 @@
                     <td><?= $drug['role']; ?></td>
                     <td><?= date('j M Y', strtotime($drug['event_date']))?> <?= substr($drug['event_date'], 11, 5)?></td>
                     <td><?= $drug['preservative_free'] ? 'Yes' : 'No'; ?></td>
-                    <td><?= $drug['all_ids'] ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php endif; ?>
