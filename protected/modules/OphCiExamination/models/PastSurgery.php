@@ -158,7 +158,7 @@ class PastSurgery extends \BaseEventTypeElement
                 $operations[] = $operation;
             }
         }
-
+        $this->no_pastsurgery_date = $element->no_pastsurgery_date;
         $this->operations = $operations;
         $this->comments = $element->comments;
     }

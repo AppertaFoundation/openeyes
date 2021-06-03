@@ -60,6 +60,7 @@ class SettingInstitution extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_type_id, key, value', 'safe', 'on' => 'search'),
+            array('value,', 'filter', 'filter' => array($obj = new CHtmlPurifier(),'purify')),
         );
     }
 

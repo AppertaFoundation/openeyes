@@ -59,7 +59,7 @@ foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->su
       itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($itemSet ) {
           return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {'header': $itemSet.header,'multiSelect': $itemSet.multiSelect });
       }),
-      liClass: 'restrict-width',
+      liClass: 'auto-width',
       onReturn: function (adderDialog, selectedItems) {
         var inputText = managementDiv.find(
           '#<?= CHtml::modelName($element) ?>_comments'

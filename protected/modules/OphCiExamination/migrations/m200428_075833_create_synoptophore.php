@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -19,6 +20,31 @@ class m200428_075833_create_synoptophore extends OEMigration
     protected const ELEMENT_CLS_NAME = 'OEModule\OphCiExamination\models\Synoptophore';
     public function safeUp()
     {
+
+        // if an old version of synoptaphore exists (i.e, from MEH), archive it first
+        $exists = $this->dbConnection->createCommand("SELECT Count(*)
+                                                        FROM information_schema.tables 
+                                                        WHERE table_schema = DATABASE()
+                                                            AND table_type = 'BASE TABLE'
+                                                            AND table_name = 'et_ophciexamination_synoptophore';'")->queryScalar();
+
+        if ($exists >= 1) {
+            // remove foreign keys
+            $this->dbConnection->createCommand("ALTER TABLE `et_ophciexamination_synoptophore` DROP FOREIGN KEY `fk_et_ophciexamination_synoptophore_event`")->execute();
+            $this->dbConnection->createCommand("ALTER TABLE `et_ophciexamination_synoptophore` DROP FOREIGN KEY `fk_et_ophciexamination_synoptophore_pf`")->execute();
+            $this->dbConnection->createCommand("ALTER TABLE `et_ophciexamination_synoptophore` DROP FOREIGN KEY `et_ophciexamination_synoptophore_cui_fk`")->execute();
+            $this->dbConnection->createCommand("ALTER TABLE `et_ophciexamination_synoptophore` DROP FOREIGN KEY `et_ophciexamination_synoptophore_lmui_fk`")->execute();
+
+            // remove / rename indexes
+            $this->dbConnection->createCommand("ALTER TABLE `et_ophciexamination_synoptophore` DROP INDEX `et_ophciexamination_synoptophore_cui_fk`")->execute();
+            $this->dbConnection->createCommand("ALTER TABLE `et_ophciexamination_synoptophore` DROP INDEX `et_ophciexamination_synoptophore_lmui_fk`")->execute();
+            $this->dbConnection->createCommand("ALTER TABLE `et_ophciexamination_synoptophore` DROP INDEX `fk_et_ophciexamination_synoptophore_event`")->execute();
+            $this->dbConnection->createCommand("ALTER TABLE `et_ophciexamination_synoptophore` DROP INDEX `fk_et_ophciexamination_synoptophore_pf`")->execute();
+
+            $this->dbConnection->createCommand("RENAME TABLE `et_ophciexamination_synoptophore` TO `archive_et_ophciexamination_synoptophore`")->execute();
+            $this->dbConnection->createCommand("RENAME TABLE `et_ophciexamination_synoptophore_version` TO `archive_et_ophciexamination_synoptophore_version`")->execute();
+        }
+
         $this->createElementType('OphCiExamination', 'Synoptophore', [
             'class_name' => self::ELEMENT_CLS_NAME,
             'display_order' => 405,

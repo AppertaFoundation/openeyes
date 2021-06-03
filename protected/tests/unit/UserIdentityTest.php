@@ -221,4 +221,34 @@ class UserIdentityTest extends CDbTestCase
         $this->assertTrue($userIdentity->authenticate());
         $this->assertEquals($this->users['user1']['id'], $userIdentity->getId());
     }
+
+    /**
+     * @covers UserIdentity
+     */
+    public function testSAMLLogin()
+    {
+        Yii::app()->params['auth_source'] = 'SAML';
+
+        $userIdentity = new UserIdentity(
+            'JoeBloggs',
+            'password'
+        );
+
+        $this->assertTrue($userIdentity->authenticate(true));
+    }
+
+    /**
+     * @covers UserIdentity
+     */
+    public function testOIDCLogin()
+    {
+        Yii::app()->params['auth_source'] = 'OIDC';
+
+        $userIdentity = new UserIdentity(
+            'JoeBloggs',
+            'password'
+        );
+
+        $this->assertTrue($userIdentity->authenticate(true));
+    }
 }

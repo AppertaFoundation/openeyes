@@ -117,4 +117,46 @@ class UserTest extends ActiveRecordTestCase
         $this->assertCount(1, $firms);
         $this->assertEquals('Aylward Firm', $firms[0]->name);
     }
+
+    /**
+     * @covers User
+     */
+    public function testSetSAMLUserInformation_checkArrayKey()
+    {
+        self::markTestSkipped('This test does not support the multi-tenancy data model.');
+        $attributes = array(
+            'id' => 1,
+            'default_enabled' => 1,
+            'global_firm_rights' => 1,
+            'is_consultant' => 1,
+            'is_surgeon' => 1,
+        );
+        // Enable default rights to be assigned to the user
+        SsoDefaultRights::model()->saveDefaultRights($attributes);
+        Yii::app()->params['auth_source'] = 'SAML';
+        $testuser = array('username' => array(0 => 'ssouser@unittest.com'), 'FirstName' => array(0 => 'User'), 'LastName' => array(0 => 'SSO'));
+        $this->assertArrayHasKey('username', $this->users('ssouser')->setSSOUserInformation($testuser));
+        $this->assertArrayHasKey('password', $this->users('ssouser')->setSSOUserInformation($testuser));
+    }
+
+    /**
+     * @covers User
+     */
+    public function testSetOIDCUserInformation_checkArrayKey()
+    {
+        self::markTestSkipped('This test does not support the multi-tenancy data model.');
+        $attributes = array(
+            'id' => 1,
+            'default_enabled' => 1,
+            'global_firm_rights' => 1,
+            'is_consultant' => 1,
+            'is_surgeon' => 1,
+        );
+        // Enable default rights to be assigned to the user
+        SsoDefaultRights::model()->saveDefaultRights($attributes);
+        Yii::app()->params['auth_source'] = 'OIDC';
+        $testuser = array('email' => 'user@unittest.com', 'given_name' => 'User', 'family_name' => 'SSO');
+        $this->assertArrayHasKey('username', $this->users('ssouser')->setSSOUserInformation($testuser));
+        $this->assertArrayHasKey('password', $this->users('ssouser')->setSSOUserInformation($testuser));
+    }
 }

@@ -47,6 +47,10 @@ return array(
                 'Event Type Custom Text' => ['uri' => '/admin/editEventTypeCustomText', 'restricted' => array('admin')],
                 'Element Type Custom Text' => ['uri' => '/admin/editElementTypeCustomText', 'restricted' => array('admin')],
             ),
+            'SSO Settings' => array(
+                'Default SSO Permissions' => ['uri' => '/sso/defaultssopermissions', 'restricted' => array('admin')],
+                'SSO Roles Mappings' => ['uri' => '/sso/ssorolesauthassignment', 'restricted' => array('admin')]
+            ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
             ),

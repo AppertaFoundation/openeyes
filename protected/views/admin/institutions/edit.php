@@ -146,6 +146,19 @@ $default_urls = $logo_helper->getLogoURLs();
             } ?>
             </td>
         </tr>
+        <tr>
+            <td><?= $institution->getAttributeLabel('pas_key'); ?></td>
+            <td>
+                <?= CHtml::activeTextField(
+                    $institution,
+                    'pas_key',
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ]
+                ) ?>
+            </td>
+        </tr>
         <?php
         $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
         foreach ($address_fields as $field) : ?>
