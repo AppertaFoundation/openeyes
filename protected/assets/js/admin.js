@@ -2,7 +2,9 @@ $(document).ready(function () {
 
     autosize($('.autosize'));
 
-    var $globalFirmRights = $("input[name='User[global_firm_rights]']");
+    const $globalFirmRights = $("input[name='User[global_firm_rights]']");
+    const $ssoGlobalFirmRights = $("input[name='SsoDefaultRights[global_firm_rights]']");
+    const $ssoDefaultEnabled = $("input[name='SsoDefaultRights[default_enabled]']");
 
     $('#selectall').click(function () {
         $('input[type="checkbox"]').attr('checked', this.checked);
@@ -118,7 +120,28 @@ $(document).ready(function () {
         }
     });
 
+    // when changing the global rights radiobutton in SSO Permissions, remove the firms
+    $ssoGlobalFirmRights.on('change', function () {
+        $wrapper = $('#SsoDefaultRights_sso_default_firms').closest('.multi-select');
+        if ($("input:radio[name='SsoDefaultRights[global_firm_rights]']:checked").val() === '1') {
+            $wrapper.hide();
+        } else {
+            $wrapper.show();
+        }
+    });
+
+    $ssoDefaultEnabled.on('change', function () {
+        $wrapper = $("#SsoDefaultRights_sso_default_roles").closest('.multi-select');
+        if ($("input:radio[name='SsoDefaultRights[default_enabled]']:checked").val() === '1') {
+            $wrapper.show();
+        } else {
+            $wrapper.hide();
+        }
+    });
+
     $globalFirmRights.trigger('change');
+    $ssoGlobalFirmRights.trigger('change');
+    $ssoDefaultEnabled.trigger('change');
 
     $('#et_delete_disorder').click(function (e) {
         e.preventDefault();

@@ -91,9 +91,10 @@ class DefaultController extends BaseEventTypeController
     /**
      * @return bool
      */
-    protected function initEdit()
+    protected function initEdit($action)
     {
-        if (!$this->checkEditAccess()) {
+        $method_name = 'check' . ucfirst($action) . 'Access';
+        if (!$this->$method_name()) {
             return false;
         }
 
@@ -146,7 +147,7 @@ class DefaultController extends BaseEventTypeController
     protected function initActionCreate()
     {
         parent::initActionCreate();
-        $this->initEdit();
+        $this->initEdit('create');
     }
 
     /**
@@ -156,7 +157,7 @@ class DefaultController extends BaseEventTypeController
     protected function initActionUpdate()
     {
         parent::initActionUpdate();
-        $this->initEdit();
+        $this->initEdit('edit');
     }
 
     /**

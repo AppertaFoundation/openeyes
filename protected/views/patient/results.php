@@ -17,6 +17,9 @@
  */
 ?>
 <?php
+/**
+ * @var $search_terms array
+ */
 
 $based_on = array();
 $search_term = "";
@@ -27,6 +30,10 @@ if ($search_terms['last_name']) {
 if ($search_terms['first_name']) {
     $based_on[] = 'FIRST NAME';
     $search_term = $search_terms['first_name'];
+}
+if ($search_terms['dob']) {
+    $based_on[] = 'DOB';
+    $search_term .= ' ' . $search_terms['dob'];
 }
 if ($search_terms['patient_identifier_value']) {
     $based_on[] = 'PATIENT IDENTIFIER';

@@ -50,7 +50,6 @@ class DispenseConditionController extends BaseAdminController
             'errors' => $model->errors,
             'title' => 'Edit dispense condition'
         ]);
-
     }
 
     public function actionCreate()
@@ -68,20 +67,92 @@ class DispenseConditionController extends BaseAdminController
         ]);
     }
 
-    private function saveModel($model)
+    public function actionAddMapping()
     {
-        if (Yii::app()->request->isPostRequest) {
-            $model->attributes = $_POST['OphDrPrescription_DispenseCondition'];
-            $model->all_locations = isset($_POST['OphDrPrescription_DispenseCondition']['all_locations']) ? $_POST['OphDrPrescription_DispenseCondition']['all_locations'] : [];
-            $model->display_order =  isset($model->id) ? $model->display_order : $model->getNextHighestDisplayOrder(1);
+        $model = $_POST['model']::model();
 
-            return $model->save();
+        $ids = Yii::app()->request->getPost('select');
+
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = array();
+        $records = $model->findAllByPk($ids);
+        try {
+            foreach ($records as $record) {
+                $record->createMapping(ReferenceData::LEVEL_INSTITUTION, $model->getIdForLevel(ReferenceData::LEVEL_INSTITUTION));
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
         }
 
-        return false;
+        if (!empty($errors)) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+        $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
     }
 
-    public function actions() {
+    public function actionRemoveMapping()
+    {
+        $model = $_POST['model']::model();
+        $level = ReferenceData::LEVEL_INSTITUTION;
+
+        $ids = Yii::app()->request->getPost('select');
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = array();
+        $records = $model->findAllByPk($ids);
+        try {
+            foreach ($records as $record) {
+                $record->deleteMapping($level, $model->getIdForLevel($level));
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if (!empty($errors)) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+        $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
+    }
+
+    private function saveModel($model)
+    {
+        if (!Yii::app()->request->isPostRequest) {
+            return false;
+        }
+        $institution_id = Yii::app()->session['selected_institution_id'];
+        $model->attributes = Yii::app()->request->getParam('OphDrPrescription_DispenseCondition', array());
+        $dci_data = Yii::app()->request->getParam('OphDrPrescription_DispenseCondition_Institution', array());
+        $dci_associated_dli_ids = array_key_exists('dispense_location_institutions', $dci_data) ? $dci_data['dispense_location_institutions'] : array();
+        $errors = array();
+        $transaction = \Yii::app()->db->beginTransaction();
+        foreach ($model->dispense_condition_institutions as $dci) {
+            if (intval($dci->institution_id) !== intval($institution_id)) {
+                continue;
+            }
+            $temp_dlis = array_map(function ($dci_associated_dli_id) {
+                $dli = \OphDrPrescription_DispenseLocation_Institution::model()->findByPk($dci_associated_dli_id);
+                return $dli;
+            }, $dci_associated_dli_ids);
+            $dci->dispense_location_institutions = $temp_dlis;
+            $dci->save();
+            $errors = array_merge($dci->getErrors(), $errors);
+        }
+        $model->display_order =  isset($model->id) ? $model->display_order : $model->getNextHighestDisplayOrder(1);
+        $model->save();
+        $errors = array_merge($model->getErrors(), $errors);
+        if ($errors) {
+            $transaction->rollback();
+            return false;
+        }
+        $transaction->commit();
+        return true;
+    }
+
+    public function actions()
+    {
         return [
             'sortConditions' => [
                 'class' => 'SaveDisplayOrderAction',
@@ -90,5 +161,4 @@ class DispenseConditionController extends BaseAdminController
             ],
         ];
     }
-
 }

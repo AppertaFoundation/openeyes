@@ -33,8 +33,11 @@ foreach ($subspecialty_arr as $sub) {
     <?php echo $content; ?>
 </div>
 <script type="text/javascript">
-  $('#oescape-layout').ready(function() {
-    //Immediately set the size to the selected value
-    setOEScapeSize($('.js-oes-area-resize.selected').attr('data-area'));
-  });
+    $('#oescape-layout').ready(function() {
+        //Immediately set the size to the selected value
+        setOEScapeSize();
+        window.addEventListener('resize', () => {
+            setOEScapeSize();
+        });
+    });
 </script>

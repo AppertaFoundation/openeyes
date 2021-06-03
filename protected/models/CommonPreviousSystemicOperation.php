@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -33,6 +34,18 @@
  */
 class CommonPreviousSystemicOperation extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    public function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    public function mappingColumn(int $level): string
+    {
+        return 'common_previous_systemic_operation_id';
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -51,9 +64,9 @@ class CommonPreviousSystemicOperation extends BaseActiveRecordVersioned
         return [
             ['name, display_order', 'safe'],
             ['name', 'required'],
-            ['name', 'length', 'max'=>1024],
+            ['name', 'length', 'max' => 1024],
             // The following rule is used by search().
-            ['id, name', 'safe', 'on'=>'search'],
+            ['id, name', 'safe', 'on' => 'search'],
         ];
     }
 
@@ -98,13 +111,13 @@ class CommonPreviousSystemicOperation extends BaseActiveRecordVersioned
      */
     public function search()
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
 
         return new CActiveDataProvider($this, [
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ]);
     }
 

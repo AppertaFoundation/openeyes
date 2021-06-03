@@ -134,7 +134,7 @@ class PastSurgery extends \BaseEventElementWidget
         $res = array_map(
             function ($op) {
                 return array_key_exists('object', $op) ?
-                    $op['object']->getDisplayDate() . ' ' .$op['object']->getDisplayOperation(false) :
+                    $op['object']->getDisplayDate() . ' ' . $op['object']->getDisplayOperation(false) :
                     $this->formatExternalOperation($op);
             },
             $this->getMergedOperations()
@@ -180,9 +180,9 @@ class PastSurgery extends \BaseEventElementWidget
 
         foreach ($this->element->operations as $i => $op) {
             if (in_array($op->operation, $required_operation_list)) {
-                $operations[] = ['op' => $op, 'required' => true, ];
+                $operations[] = ['op' => $op, 'required' => true,];
             } else {
-                $required[] = ['op' => $op, 'required' => false, ];
+                $required[] = ['op' => $op, 'required' => false,];
             }
         }
 
@@ -207,9 +207,9 @@ class PastSurgery extends \BaseEventElementWidget
     public function postedNotChecked($row)
     {
         return \Helper::elementFinder(
-            \CHtml::modelName($this->element) . ".operation.$row.had_operation",
-            $_POST
-        )
+                \CHtml::modelName($this->element) . ".operation.$row.had_operation",
+                $_POST
+            )
             == PastSurgery_Operation::$NOT_CHECKED;
     }
 }

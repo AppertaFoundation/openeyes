@@ -39,11 +39,11 @@
       <TITLE>Anterior chamber IOL</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
-<!--    <DOODLE>-->
-<!--      <EYEDRAW_CLASS_MNEMONIC>ConjunctivalHaem</EYEDRAW_CLASS_MNEMONIC>-->
-<!--      <TITLE>Conjunctival haemorrhage</TITLE>-->
-<!--      <INIT_DOODLE_JSON/>-->
-<!--    </DOODLE>-->
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ConjunctivalHaem</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Conjunctival haemorrhage</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>ACMaintainer</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>AC maintainer</TITLE>
@@ -521,7 +521,11 @@
       <TITLE>Circumcorneal Injection</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
-
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CellsAndFlare</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Cells and flare</TITLE>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"CellsAndFlare","order":3}</INIT_DOODLE_JSON>
+    </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>KoeppeNodule</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Koeppe nodule</TITLE>
@@ -1406,16 +1410,16 @@
       <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
       <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
     </DOODLE_USAGE>
-<!--    <DOODLE_USAGE>-->
-<!--      <EYEDRAW_CLASS_MNEMONIC>ConjunctivalHaem</EYEDRAW_CLASS_MNEMONIC>-->
-<!--      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>-->
-<!--      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>-->
-<!--      <ON_TOOLBAR_ORDER>15</ON_TOOLBAR_ORDER>-->
-<!--      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>-->
-<!--      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>-->
-<!--      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>-->
-<!--      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>-->
-<!--    </DOODLE_USAGE>-->
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>ConjunctivalHaem</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>15</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
     <DOODLE_USAGE>
       <EYEDRAW_CLASS_MNEMONIC>LasikFlap</EYEDRAW_CLASS_MNEMONIC>
       <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
@@ -1582,6 +1586,16 @@
       <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
       <ON_TOOLBAR_ORDER>6</ON_TOOLBAR_ORDER>
       <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CellsAndFlare</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>3</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>7</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
       <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
       <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
       <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
@@ -3706,12 +3720,45 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>ACIOL</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
-<!--            <INDEX>-->
-<!--              <PRIMARY_TERM>Conjunctival haemorrhage</PRIMARY_TERM>-->
-<!--              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ConjunctivalHaem.png</IMG_URL>-->
-<!--              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>-->
-<!--              <GOTO_DOODLE_CLASS_NAME>ConjunctivalHaem</GOTO_DOODLE_CLASS_NAME>-->
-<!--            </INDEX>-->
+            <INDEX>
+              <PRIMARY_TERM>Conjunctival haemorrhage</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ConjunctivalHaem.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ConjunctivalHaem</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Conjunctivitis</PRIMARY_TERM>
+                  <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ConjunctivalHaem.png</IMG_URL>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>ConjunctivalHaem</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Conjunctivitis</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Hyperaemia</PRIMARY_TERM>
+                  <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ConjunctivalHaem.png</IMG_URL>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>ConjunctivalHaem</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Haemorrhage</PRIMARY_TERM>
+                  <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ConjunctivalHaem.png</IMG_URL>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>ConjunctivalHaem</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Swelling</PRIMARY_TERM>
+                  <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ConjunctivalHaem.png</IMG_URL>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>ConjunctivalHaem</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Mucopurulent</PRIMARY_TERM>
+                  <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ConjunctivalHaem.png</IMG_URL>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>ConjunctivalHaem</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
             <INDEX>
               <PRIMARY_TERM>Adenoviral keratitis</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/AdenoviralKeratitis.png</IMG_URL>
@@ -4044,6 +4091,12 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/KeraticPrecipitates.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>KeraticPrecipitates</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Cells and flare</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/CellsAndFlare.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CellsAndFlare</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Circumcorneal injection</PRIMARY_TERM>

@@ -95,9 +95,15 @@ class PrescriptionCommonController extends DefaultController
     public function actionGetDispenseLocation($condition_id)
     {
         if ($condition_id) {
-            $dispense_condition = OphDrPrescription_DispenseCondition::model()->findByPk($condition_id);
-            foreach ($dispense_condition->locations as $location) {
-                echo '<option value="' . $location->id . '">' . $location->name . '</option>';
+            $institution_id = Yii::app()->session['selected_institution_id'];
+            $criteria = new CDbCriteria();
+            $criteria->with = array('dispense_location_institutions', 'dispense_location_institutions.dispense_location');
+            $criteria->compare('t.dispense_condition_id', $condition_id);
+            $criteria->compare('t.institution_id', $institution_id);
+            $criteria->compare('dispense_location_institutions.institution_id', $institution_id);
+            $dispense_condition = OphDrPrescription_DispenseCondition_Institution::model()->find($criteria);
+            foreach ($dispense_condition->dispense_location_institutions as $location_institution) {
+                echo '<option value="' . $location_institution->dispense_location->id . '">' . $location_institution->dispense_location->name . '</option>';
             }
         }
     }

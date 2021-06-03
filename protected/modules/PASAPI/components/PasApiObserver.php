@@ -58,7 +58,7 @@ class PasApiObserver
         // Non existing patient will be saved from this PAS if there are multiple patient.
         // Happens when user click on a patient on patient result screen -> means, selects a user and a type
         // he/she wants to work with
-        $this->save_patient_from_pas_type_id = (int) $data['params']['save_from_pas_by_type_id'] ?? 0;
+        $this->save_patient_from_pas_type_id = (int)$data['params']['save_from_pas_by_type_id'] ?? 0;
 
         $pas_results = [];
         foreach ($data['params']['terms_with_types'] ?? [] as $terms_with_type) {
@@ -82,6 +82,7 @@ class PasApiObserver
                 // at the same time
                 'last_name' => $data['lastname'] ?? '',
                 'first_name' => $data['first_name'] ?? '',
+                'dob' => $data['dob'] ?? '',
 
                 // we return error message via patient model
                 'patient' => $data['patient']
@@ -226,23 +227,6 @@ class PasApiObserver
 
             if (!$pas) {
                 continue;
-            }
-
-            $request_data = [
-                'patient_identifier_value' => $global_number,
-                'patient_identifier_type_id' => $type->id,
-                'is_global_search' => true
-            ];
-
-            if (!$pas->isAvailable() || !$pas->isPASqueryRequired($request_data)) {
-                continue;
-            }
-
-            $results = $pas->request($request_data);
-
-            if ($results) {
-                // results by type
-                $pas_results[$type->id] = $results;
             }
         }
 

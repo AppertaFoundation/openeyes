@@ -227,6 +227,9 @@ class TheatreDiaryController extends BaseModuleController
             }
         }
 
+        $criteria->addCondition('site.institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
+
         $criteria->order = 'site.short_name, `t`.display_order, `t`.code, sessions.date, sessions.start_time, sessions.end_time';
 
         return OphTrOperationbooking_Operation_Theatre::model()

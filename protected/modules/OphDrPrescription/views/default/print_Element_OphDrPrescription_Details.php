@@ -44,10 +44,18 @@ if ($footer_param !== null) {
 ?>
 
 <?php
-$firm = $element->event->episode->firm;
-$cost_code = $firm->cost_code ? " ($firm->cost_code)" : '';
-$consultantName = $firm->consultant ? ($firm->consultant->getFullName() . $cost_code) : 'None';
-$subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
+    $firm = $element->event->episode->firm;
+    $cost_code = $firm->cost_code ? " ($firm->cost_code)" : '';
+    $consultantName = $firm->consultant ? ($firm->consultant->getFullName() . $cost_code) : 'None';
+    $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
+
+    $prescribed_by = $element->event->usermodified;
+    $prescribed_date = $element->event->NHSDate('last_modified_date');
+
+if (isset($element->authorisedByUser)) {
+    $prescribed_by = $element->authorisedByUser;
+    $prescribed_date = $element->NHSDate('authorised_date');
+}
 ?>
 
 <?php if (!isset($data['print_mode']) || ($data['print_mode'] !== 'WP10' && $data['print_mode'] !== 'FP10')) {
@@ -131,42 +139,42 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                 ?>
                 <tr class="prescriptionItem<?= $this->patient->hasDrugAllergy($item->medication_id) ? ' allergyWarning' : ''; ?> ">
                 <td class="prescriptionLabel"><?=$item->medication->getLabel(true); ?></td>
-                    <td><?= is_numeric($item->dose) ? ($item->dose . " " . $item->dose_unit_term) : $item->dose ?></td>
-                    <td><?= $item->route->term ?><?php if ($item->dose_unit_term) {
-                            echo ' (' . $item->dose_unit_term . ')';
-                        } ?></td>
-                    <td><?= $item->frequency->term; ?></td>
-                    <td><?= $item->medicationDuration->name ?></td>
-                    <?php if (strpos($group_name, 'Hospital') !== false) { ?>
-                        <td><?= $item->dispense_location->name ?></td>
-                        <td></td>
-                    <?php } ?>
-                </tr>
-                <?php foreach ($item->tapers as $taper) { ?>
-                    <tr class="prescriptionTaper">
-                        <td class="prescriptionLabel">then</td>
-                        <td><?= is_numeric($taper->dose) ? ($taper->dose . " " . $item->dose_unit_term) : $taper->dose ?></td>
-                        <td>-</td>
-                        <td><?= $taper->frequency->term ?></td>
-                        <td><?= $taper->duration->name ?></td>
+                <td><?=is_numeric($item->dose) ? ($item->dose . " " . $item->dose_unit_term) : $item->dose ?></td>
+                <td><?=$item->route->term ?><?php if ($item->laterality) {
+                        echo ' (' . $item->medicationLaterality->name . ')';
+                            } ?></td>
+                <td><?=$item->frequency->term; ?></td>
+                <td><?=$item->medicationDuration->name ?></td>
                         <?php if (strpos($group_name, 'Hospital') !== false) { ?>
+                            <td><?= $item->dispense_location->name ?></td>
                             <td></td>
-                            <td>-</td>
                         <?php } ?>
                     </tr>
-                    <?php
-                }
+                    <?php foreach ($item->tapers as $taper) { ?>
+                        <tr class="prescriptionTaper">
+                            <td class="prescriptionLabel">then</td>
+                    <td><?=is_numeric($taper->dose) ? ($taper->dose . " " . $item->dose_unit_term) : $taper->dose ?></td>
+                            <td>-</td>
+                            <td><?= $taper->frequency->term ?></td>
+                            <td><?= $taper->duration->name ?></td>
+                            <?php if (strpos($group_name, 'Hospital') !== false) { ?>
+                                <td></td>
+                                <td>-</td>
+                            <?php } ?>
+                        </tr>
+                        <?php
+                    }
 
-                if (strlen($item->comments) > 0) { ?>
-                    <tr class="prescriptionComments">
-                        <td class="prescriptionLabel">Comments:</td>
-                        <td colspan="<?= strpos($group_name, 'Hospital') !== false ? 7 : 4 ?>">
-                            <i><?= CHtml::encode($item->comments) ?></i></td>
-                    </tr>
-                <?php }
+                    if (strlen($item->comments) > 0) { ?>
+                        <tr class="prescriptionComments">
+                            <td class="prescriptionLabel">Comments:</td>
+                            <td colspan="<?= strpos($group_name, 'Hospital') !== false ? 7 : 4 ?>">
+                                <i><?= CHtml::encode($item->comments) ?></i></td>
+                </tr>
+                    <?php }
             } ?>
-            </tbody>
-        </table>
+        </tbody>
+    </table>
     <?php } ?>
     <div class="spacer"></div>
 
@@ -194,12 +202,12 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
     <table class="borders done_bys">
         <tr>
             <th>Prescribed by</th>
-            <td><?= $element->usermodified->fullname ?><?php if ($element->usermodified->registration_code) {
-                    echo ' (' . $element->usermodified->registration_code . ')';
+            <td><?=$prescribed_by->fullname ?><?php if ($prescribed_by->registration_code) {
+                echo ' (' . $prescribed_by->registration_code . ')';
                 } ?>
             </td>
             <th>Date</th>
-            <td><?= $element->NHSDate('last_modified_date') ?>
+            <td><?= $prescribed_date ?>
             </td>
         </tr>
         <tr class="handWritten">
