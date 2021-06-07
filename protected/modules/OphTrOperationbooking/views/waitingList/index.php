@@ -107,6 +107,27 @@
                         'class' => 'cols-full',
                     )
                 ) ?>
+
+          <h4>PAC Outcome</h4>
+          <label for="fit-for-surgery-checkbox">
+              <span class="pac-state-icon fit js-has-tooltip" data-tooltip-content="PAC<br/>Patient is fit for surgery" >PAC</span>
+          </label>
+          <input id="fit-for-surgery-checkbox" name="patient-is-fit-for-surgery" type="checkbox" class="fit-for-surgery-checkbox pac-outcome-checkbox">
+
+          <label for="reschedule-surgery-checkbox">
+              <span class="pac-state-icon reschedule js-has-tooltip" data-tooltip-content="PAC<br/>Re-schedule date - patient is fit for surgery">PAC</span>
+          </label>
+          <input id="reschedule-surgery-checkbox" name="reschedule-surgery-date" type="checkbox" class="reschedule-surgery-checkbox pac-outcome-checkbox">
+
+          <label for="hold-for-outstanding">
+              <span class="pac-state-icon hold js-has-tooltip" data-tooltip-content="PAC<br/>Hold for outstanding actions">PAC</span>
+          </label>
+          <input id="hold-for-outstanding" name="hold-for-outstanding-actions" type="checkbox" class="hold-for-outstanding-checkbox pac-outcome-checkbox">
+
+          <label for="the-patient-is-not-fit">
+              <span class="pac-state-icon not-fit js-has-tooltip" data-tooltip-content="PAC<br/>Patient is not fit/ready for surgery">PAC</span>
+          </label>
+          <input id="the-patient-is-not-fit" name="the-patient-is-not-fit" type="checkbox" class="the-patient-is-not-fit-checkbox pac-outcome-checkbox">
         <div class="row">
           <button class="green hint cols-full" type="submit">Search Waiting List</button>
         </div>

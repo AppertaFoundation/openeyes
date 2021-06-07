@@ -31,7 +31,7 @@ $selected_site_id = Yii::app()->session['selected_site_id'];
 $primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
     $primary_identifier_usage_type,
-    $institution->id ,
+    $institution->id,
     $selected_site_id);
 
 ?>
@@ -47,7 +47,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
 <table class="standard waiting-list">
   <thead>
   <tr>
-    <th>Letters sent</th>
+    <th></th>
     <th>Patient</th>
     <th><?= $primary_identifier_prompt ?></th>
     <th>Location</th>
@@ -58,6 +58,9 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
     <th>Priority</th>
     <th>Complexity</th>
     <th>Book status (requires...)</th>
+      <?php if ($this->pac_api) : ?>
+          <th>PAC Outcome</th>
+      <?php endif; ?>
     <th>
       <label>
         <input id="checkall" value="" type="checkbox">
@@ -153,6 +156,13 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
         <td><?php echo $eo->getComplexityCaption(); ?></td>
         <td><?php echo ucfirst(preg_replace('/^Requires /', '', $eo->status->name)) ?></td>
 
+            <?php if ($this->pac_api && $this->pac_api->pac_booking_result) : ?>
+              <td>
+                  <?php if (isset($this->pac_api->pac_booking_result->{$eo->event_id})) : ?>
+                      <span class="pac-state-icon <?=$this->pac_api->getOutcomeStatusByPac($this->pac_api->pac_booking_result->{$eo->event_id}->pre_assessment_outcome)['icon']?> js-has-tooltip" data-tooltip-content="PAC<br/><?=$this->pac_api->pac_booking_result->{$eo->event_id}->pre_assessment_outcome?>">PAC</span>
+                  <?php endif; ?>
+              </td>
+            <?php endif; ?>
 
         <td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) {
             ?> class="admin-td"<?php
