@@ -65,14 +65,15 @@ $warnings = $this->patient->getWarnings($clinical);
             </p>
           </div>
           <br/>
-        <div class="cols-8">
+        <div class="cols-10">
           <div class="data-group" style="padding-left: 100px">
-            <table class="cols-10 last-left">
+            <table class="cols-10">
               <thead>
               <tr>
                 <th>Booked Date</th>
                 <th>Procedure</th>
                 <th>Comments</th>
+                <th></th>
               </tr>
               </thead>
               <tbody>
@@ -80,7 +81,7 @@ $warnings = $this->patient->getWarnings($clinical);
                 <?php foreach ($operations as $operation) : ?>
                 <tr>
                   <td>
-                    <span class="cols-3 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
+                    <span class="cols-4 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
                     <?php if (!$theatre_diary_disabled) {
                         if ($operation->booking) {
                             echo $operation->booking->session->NHSDate('date');
@@ -89,25 +90,31 @@ $warnings = $this->patient->getWarnings($clinical);
                     </span>
                   </td>
                   <td>
-                    <a href="#" class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">
-                        <?php
-                        echo implode('<br />', array_map(function ($procedure) use ($operation) {
-                            return $operation->eye->name . ' ' . $procedure->term;
-                        }, $operation->procedures));
-                        ?>
-                    </a>
+                    <?php
+                    echo implode('<br />', array_map(function ($procedure) use ($operation) {
+                        return $operation->eye->name . ' ' . $procedure->term;
+                    }, $operation->procedures));
+                    ?>
                   </td>
                   <td>
                       <?= $operation->comments; ?>
+                  </td>
+                  <td>
+                    <button class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">
+                      Create op note
+                    </button>
                   </td>
                 </tr>
                 <?php endforeach; ?>
               <tr>
                 <td>N/A</td>
                 <td>
-                  <a href="#" class="booking-select" data-booking="emergency">Emergency / Unbooked<a>
+                  Emergency / Unbooked
                 </td>
                 <td></td>
+                <td>
+                   <button class="booking-select" data-booking="emergency">Create default op note</button>
+                </td>
               </tr>
               </tbody>
             </table>

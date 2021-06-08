@@ -415,7 +415,7 @@ class Patient extends BaseActiveRecordVersioned
         if (isset($params['maiden_name']) && $params['maiden_name']) {
             $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']), false);
         }
-        if ($params['dob']) {
+        if (isset($params['dob']) && $params['dob']) {
             $criteria->compare('t.dob', date('Y-m-d', strtotime($params['dob'])));
         }
 

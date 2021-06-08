@@ -177,6 +177,7 @@ $active_bookings = $session->getActiveBookingsForWard($ward_id);
                 'session' => $session,
                 'event' => $booking->operation->event,
                 'biometry' => OphTrOperationbooking_Whiteboard::model()->recentBiometry($patient),
+                'pac_api' => $session->pac_api,
                 'coreapi' => $coreapi,
                 'consent_event' => (function () use ($booking) {
                     $criteria = new CDbCriteria();

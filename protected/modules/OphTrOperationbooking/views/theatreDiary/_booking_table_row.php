@@ -90,7 +90,6 @@
                     <?=$operation->priority->name?>
                 <?php endif; ?>
                 <li><?=implode("</li><li>", $operation->anaesthetic_type);?></li>
-                <li><?=$session->theatre->ward->name?></li>
 
                 <li>
                     <div class="theatre-procedure-icons">
@@ -122,6 +121,13 @@
                 <i class="oe-i-e i-TrOperation pad-right"></i>
                 Op-Booking
             </a>
+
+            <?php if ($pac_api && $pac_api->pac_booking_result) : ?>
+                <?php
+                if (isset($pac_api->pac_booking_result->{$operation->event->id})) : ?>
+                    <span class="pac-state-icon <?=$pac_api->getOutcomeStatusByPac($pac_api->pac_booking_result->{$operation->event->id}->pre_assessment_outcome)['icon']?> js-has-tooltip" data-tooltip-content="PAC<br/><?=$pac_api->pac_booking_result->{$operation->event->id}->pre_assessment_outcome?>">PAC</span>
+                <?php endif; ?>
+            <?php endif; ?>
 
             <?php if ($biometry) :?>
                 <?php
