@@ -15,10 +15,6 @@ class m201029_060203_create_sso_roles_mapping_with_openeyes extends OEMigration
             'authitem_role' => 'varchar(64) not null',
         ), true);
 
-        // Needed to form foreign key with authitem table
-        $this->execute('alter table sso_roles_authassignment convert to character set utf8 collate utf8_bin');
-        $this->execute('alter table sso_roles_authassignment_version convert to character set utf8 collate utf8_bin');
-
         // In some databases the authitem table has utf8_bin collation, which causes issues with creating FKs
         // As we're not currently sure of the consequences of changing the collation of authitem, we change sso_roles_authassignment to match authitem
         echo("\nauthitem_charset: " . $authitem_charset  = $this->getTableCharset("authitem"));
