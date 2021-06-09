@@ -717,6 +717,17 @@ function arrayIndex(needle, haystack) {
 	return false;
 }
 
+function addLineBreakToString(value) {
+    if (typeof value !== 'string') {
+        throw new TypeError('addLineBreakToString requires a string argument');
+    }
+    let outputString = value.trimEnd();
+    if (outputString){
+        outputString += '\n';
+    }
+    return outputString;
+}
+
 function formatStringToEndWithCommaAndWhitespace(value){
 	if (typeof value !== 'string'){
 		throw new TypeError('formatStringToEndWithWhiteSpace requires a string argument');
