@@ -823,4 +823,15 @@ class User extends BaseActiveRecordVersioned
         }
         $this->saveRoles($assignedRoles);
     }
+
+
+    public function getUserNamesWithStatuses()
+    {
+        $usernames_with_statuses = [];
+        foreach ($this->authentications as $authentication) {
+            $usernames_with_statuses[] = $authentication->username . " ($authentication->password_status)";
+        }
+
+        return $usernames_with_statuses;
+    }
 }
