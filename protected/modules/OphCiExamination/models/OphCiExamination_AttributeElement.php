@@ -47,7 +47,6 @@ class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
     {
         return array(
             array('attribute_id, element_type_id', 'required'),
-            array('default', 'setOnEmpty' => true, 'value' => null),
             array('id, attribute_id, element_type_id', 'safe', 'on' => 'search'),
         );
     }
