@@ -351,6 +351,7 @@ class PasApiObserver
         $patient = new \Patient();
 
         $contact = new \Contact();
+        $contact->created_institution_id = \Yii::app()->session['selected_institution_id'];
         $patient->contact = $contact;
 
         $global_type = \PatientIdentifierHelper::getCurrentGlobalType();
