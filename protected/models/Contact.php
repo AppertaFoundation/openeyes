@@ -79,7 +79,7 @@ class Contact extends BaseActiveRecordVersioned
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
             array('first_name, last_name, created_institution_id', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
-            array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
+            array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
             array('first_name, last_name', 'parenthesisValidator'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message'=>'Please select a Role.'),
@@ -97,6 +97,9 @@ class Contact extends BaseActiveRecordVersioned
     public function parenthesisValidator($attribute, $params)
     {
         $scenario = $this->getScenario();
+        if ($scenario === 'hscic_import') {
+            return;
+        }
         if ($scenario === 'admin_contact') {
             // One of first name and last name needs to be entered
             if (!$this->first_name && !$this->last_name) {
