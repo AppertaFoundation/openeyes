@@ -23,8 +23,7 @@ class m200917_101512_4cardLogMarVAScale extends OEMigration
         $this->insert('ophciexamination_visual_acuity_unit', [
             'name' => self::UNIT_NAME,
             'active' => '1',
-            'complex_only' => '1']
-        );
+            'complex_only' => '1']);
         $unit_id = $this->getInsertId('ophciexamination_visual_acuity_unit');
 
         $base_value = 20;
