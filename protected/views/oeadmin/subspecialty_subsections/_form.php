@@ -68,7 +68,26 @@
         });
         alert.content.on('click', '.ok', (sub_event, main_event=event) => {
             let params = main_event.target.dataset;
-            window.location.href = '/oeadmin/subspecialtySubsections/delete?id=' + params['id'] + '&subspecialty_id=' + params['subspecialty_id'];
+            $.ajax({
+                'type': 'POST',
+                'url': baseUrl + '/oeadmin/subspecialtySubsections/delete?id=' + params['id'] + '&subspecialty_id=' + params['subspecialty_id'],
+                'data': "YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                'success': function (response) {
+                    if (response === 'false') {
+                        let delete_alert = new OpenEyes.UI.Dialog.Alert({
+                            content: "Please delete the procedures for this subsection before removing this subsection."
+                        });
+
+                        delete_alert.content.on('click', '.ok', (sub_event, main_event=event) => {
+                            window.location.href = '/oeadmin/subspecialtySubsections/list?subspecialty_id=' + params['subspecialty_id'];
+                        });
+
+                        delete_alert.open();
+                    } else {
+                        window.location.href = '/oeadmin/subspecialtySubsections/list?subspecialty_id=' + params['subspecialty_id'];
+                    }
+                }
+            });
         });
 
         event.preventDefault();

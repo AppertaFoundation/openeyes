@@ -1336,6 +1336,10 @@ class DefaultController extends BaseEventTypeController
                 $errors[$this->event_type->name][] = $element_type->name . ' is required';
                 $elements[] = $element_type->getInstance();
             }
+
+            if ($element_type->class_name === "Element_OphTrOperationnote_Cataract") {
+                $elements[] = new Element_OphTrOperationnote_Biometry();
+            }
         }
 
         // Filter disabled elements from validation

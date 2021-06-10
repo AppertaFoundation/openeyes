@@ -16,20 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-/**
- * This is the model class for table "element_procedurelist".
- *
- * The followings are the available columns in table 'element_operation':
- *
- * @property string $id
- * @property int $event_id
- * @property int $surgeon_id
- * @property int $assistant_id
- * @property int $anaesthetic_type
- *
- * The followings are the available model relations:
- * @property Event $event
- */
 class Element_OphTrOperationnote_Biometry extends Element_OnDemand
 {
     // these are legacy and should be removed one switch to using the constants on the Eye model
@@ -77,7 +63,7 @@ class Element_OphTrOperationnote_Biometry extends Element_OnDemand
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ElementOperation the static model class
+     * @return Element_OphTrOperationnote_Biometry the static model class
      */
     public static function model($className = __CLASS__)
     {

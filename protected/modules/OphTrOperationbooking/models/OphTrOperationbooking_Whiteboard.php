@@ -19,6 +19,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationRisk;
  */
 class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 {
+    private $procedure_short_format_threshold = 64;
     /**
      * Returns the static model of the specified AR class.
      * @param $className string
@@ -90,7 +91,19 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $blockers = $this->alphaBlockerStatusAndDate($patient);
         $anticoag = $this->anticoagsStatusAndDate($patient);
 
-        $operationIds = $this->operation($id);
+        $operation = $this->operation($id);
+        $procedures_text = implode(', ', array_column($operation, 'term'));
+        if (strlen($procedures_text) > $this->procedure_short_format_threshold) {
+            $procedures_text = [];
+            foreach ($operation as $procedure) {
+                if (!empty($procedure['short_term'])) {
+                    $procedures_text[] = $procedure['short_term'];
+                } else {
+                    $procedures_text[] = $procedure['term'];
+                }
+            }
+            $procedures_text = implode(', ', $procedures_text);
+        }
         $allergyString = $this->allergyString($episode);
 
         $this->event_id = $id;
@@ -99,6 +112,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->eye = $eye;
         $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
         $this->date_of_birth = $patient['dob'];
+        $this->procedure = $procedures_text;
         $this->allergies = $allergyString;
         $this->complexity = $booking->complexity;
 
@@ -132,7 +146,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->alpha_blocker_name = $blockers;
         $this->anticoagulant_name = $anticoag;
 
-        
+
 
         if (!$this->predicted_additional_equipment) {
             $op_note_user_settings = Yii::app()->cache->get('op_note_user_settings');
@@ -146,13 +160,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                         ':key' => 'additional_equipment'
                     )
                 );
-                
+
                 $op_note_user_settings['additional_equipment'] = $user_settings;
             }
             $this->predicted_additional_equipment = $booking->special_equipment_details . ( ( !empty($op_note_user_settings['additional_equipment']->value) ) ? "\n" . $op_note_user_settings['additional_equipment']->value : "" );
         }
 
-       
+
         if (!$this->comments) {
             $this->comments = '';
         }
@@ -513,10 +527,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             }
         }
 
-        if (!$patient->no_risks_date
+        if (
+            !$patient->no_risks_date
             && !$risks
             && empty($anticoag)
-            && $this->anticoagulant_name !== 'No Anticoagulants') {
+            && $this->anticoagulant_name !== 'No Anticoagulants'
+        ) {
             $total_risks = 0;
             $display .= '<div class="alert-box info">Status unknown</div>';
         }

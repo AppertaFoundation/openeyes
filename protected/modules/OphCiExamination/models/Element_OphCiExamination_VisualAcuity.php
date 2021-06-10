@@ -550,6 +550,11 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
         return true;
     }
 
+    public function canCopy()
+    {
+        return true;
+    }
+
     public function getViewTitle()
     {
         if ($this->record_mode === self::RECORD_MODE_COMPLEX || !$this->unit) {
