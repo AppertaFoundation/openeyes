@@ -18,19 +18,13 @@
 $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
 ?>
-<section
-    class="edit element full on-demand sub-element
-        <?php echo $element->elementType->class_name ?>
-        <?php if (@$ondemand) {
-            ?>hidden<?php
-        } ?>
-        <?php if ($this->action->id == 'update' && !$element->event_id) {
-            ?>missing<?php
-        } ?>"
-    data-element-type-id="<?php echo $element->elementType->id ?>"
-    data-element-type-class="<?php echo $element->elementType->class_name ?>"
-    data-element-type-name="<?php echo $element->elementType->name ?>"
-    data-element-display-order="<?php echo $element->elementType->display_order ?>">
+<section class="edit element full on-demand sub-element
+        <?= $element->elementType->class_name ?>
+        <?= $this->action->id == 'update' && !$element->event_id ? "missing" : "" ?>"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="<?php echo $element->elementType->name ?>"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
   <header class="element-header">
     <h4 class="element-title"><?php echo $element->elementType->name; ?></h4>
@@ -60,6 +54,9 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
         <a href="javascript:showhidePCR('ophTrOperationnotePCRRiskDiv')">PCR Risk
         <span class="pcr-span1"></span>%</a>
     </span>
+  </div>
+</section>
+
 <section id="ophTrOperationnotePCRRiskDiv">
   <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote js-pcr-left">
         <?php

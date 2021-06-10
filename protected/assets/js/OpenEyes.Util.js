@@ -107,6 +107,12 @@
         return res;
     }
 
+    Util.htmlDecode = function(input) {
+        let element = document.createElement('div');
+        element.innerHTML = input;
+        return element.childNodes.length === 0 ? "" : element.childNodes[0].nodeValue;
+    }
+
 	Util.createFormData = function(formData, key, data) {
 		if (data === Object(data) || Array.isArray(data)) {
 			for (var index in data) {

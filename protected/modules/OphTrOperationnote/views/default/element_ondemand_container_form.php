@@ -17,19 +17,13 @@
  */
 
 ?>
-<section
-        class="element edit full
-    <?php if (is_subclass_of($element, 'SplitEventTypeElement')) {
-            echo 'eye-divider';
-    } ?>
-    <?php echo $element->elementType->class_name ?>
-    <?php if (@$ondemand) {
-        ?>hidden<?php
-    } ?>"
-        data-element-type-id="<?php echo $element->elementType->id ?>"
-        data-element-type-class="<?php echo $element->elementType->class_name ?>"
-        data-element-type-name="<?php echo $element->elementType->name ?>"
-        data-element-display-order="<?php echo $element->elementType->display_order ?>">
+<section class="element edit full
+        <?= is_subclass_of($element, 'SplitEventTypeElement') ? 'eye-divider' : '' ?>
+        <?= $element->elementType->class_name ?>"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="<?php echo $element->elementType->name ?>"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
     <header class="element-header">
         <h4 class="element-title"><?php echo $element->elementType->name; ?></h4>
@@ -43,9 +37,8 @@
 
 </section>
 <?php if ($element->elementType->custom_hint_text) { ?>
-    <div class="alert-box info <?php if (isset($ondemand) && $ondemand) {
-        ?>hidden<?php
-                               } ?> <?= CHtml::modelName($element->elementType->class_name) ?>"
+    <div class="alert-box info <?= isset($ondemand) && $ondemand ? "hidden" : "" ?>
+    <?= CHtml::modelName($element->elementType->class_name) ?>"
          data-element-type-class="<?= CHtml::modelName($element->elementType->class_name) ?>">
         <div class="user-tinymce-content">
             <?= $element->elementType->custom_hint_text ?>
