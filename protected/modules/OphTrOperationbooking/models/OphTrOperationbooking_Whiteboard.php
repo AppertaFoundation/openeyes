@@ -91,19 +91,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $blockers = $this->alphaBlockerStatusAndDate($patient);
         $anticoag = $this->anticoagsStatusAndDate($patient);
 
-        $operation = $this->operation($id);
-        $procedures_text = implode(', ', array_column($operation, 'term'));
-        if (strlen($procedures_text) > $this->procedure_short_format_threshold) {
-            $procedures_text = [];
-            foreach ($operation as $procedure) {
-                if (!empty($procedure['short_term'])) {
-                    $procedures_text[] = $procedure['short_term'];
-                } else {
-                    $procedures_text[] = $procedure['term'];
-                }
-            }
-            $procedures_text = implode(', ', $procedures_text);
-        }
+        $operationIds = $this->operation($id);
         $allergyString = $this->allergyString($episode);
 
         $this->event_id = $id;
@@ -112,7 +100,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->eye = $eye;
         $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
         $this->date_of_birth = $patient['dob'];
-        $this->procedure = $procedures_text;
         $this->allergies = $allergyString;
         $this->complexity = $booking->complexity;
 
