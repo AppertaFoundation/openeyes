@@ -331,7 +331,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
     public function flagRequired($attribute, $params)
     {
         $flag = $params['flag'];
-        if ($flag && empty($this->$attribute)) {
+        if ($this->$flag && empty($this->$attribute)) {
             $this->addError($attribute, $this->getAttributeLabel($attribute).' is required');
         }
     }

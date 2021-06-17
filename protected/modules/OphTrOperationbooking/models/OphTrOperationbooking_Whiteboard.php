@@ -132,7 +132,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->alpha_blocker_name = $blockers;
         $this->anticoagulant_name = $anticoag;
 
-        
+
 
         if (!$this->predicted_additional_equipment) {
             $op_note_user_settings = Yii::app()->cache->get('op_note_user_settings');
@@ -146,13 +146,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                         ':key' => 'additional_equipment'
                     )
                 );
-                
+
                 $op_note_user_settings['additional_equipment'] = $user_settings;
             }
             $this->predicted_additional_equipment = $booking->special_equipment_details . ( ( !empty($op_note_user_settings['additional_equipment']->value) ) ? "\n" . $op_note_user_settings['additional_equipment']->value : "" );
         }
 
-       
+
         if (!$this->comments) {
             $this->comments = '';
         }
@@ -261,7 +261,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     protected function operation($id)
     {
         $operation = Yii::app()->db->createCommand()
-            ->select('proc.term as term, proc.short_format as short_term, proc.id as id')
+            ->select('proc.id as id')
             ->from('et_ophtroperationbooking_operation op')
             ->leftJoin('ophtroperationbooking_operation_procedures_procedures opp', 'opp.element_id = op.id')
             ->leftJoin('proc', 'opp.proc_id = proc.id')
@@ -513,10 +513,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             }
         }
 
-        if (!$patient->no_risks_date
+        if (
+            !$patient->no_risks_date
             && !$risks
             && empty($anticoag)
-            && $this->anticoagulant_name !== 'No Anticoagulants') {
+            && $this->anticoagulant_name !== 'No Anticoagulants'
+        ) {
             $total_risks = 0;
             $display .= '<div class="alert-box info">Status unknown</div>';
         }
