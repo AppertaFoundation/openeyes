@@ -19,7 +19,6 @@ use OEModule\OphCiExamination\models\OphCiExaminationRisk;
  */
 class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 {
-    private $procedure_short_format_threshold = 64;
     /**
      * Returns the static model of the specified AR class.
      * @param $className string
@@ -262,7 +261,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     protected function operation($id)
     {
         $operation = Yii::app()->db->createCommand()
-            ->select('proc.term as term, proc.short_format as short_term, proc.id as id')
+            ->select('proc.id as id')
             ->from('et_ophtroperationbooking_operation op')
             ->leftJoin('ophtroperationbooking_operation_procedures_procedures opp', 'opp.element_id = op.id')
             ->leftJoin('proc', 'opp.proc_id = proc.id')
