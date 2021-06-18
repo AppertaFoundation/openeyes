@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -22,6 +23,18 @@ class m200302_134907_multi_unit_va extends OEMigration
 
     public function safeUp()
     {
+        $this->execute("CREATE INDEX exam_et_va_version_i ON et_ophciexamination_visualacuity_version(version_date) USING HASH;");
+        $this->execute("CREATE INDEX exam_va_n_reading_version_i_id ON et_ophciexamination_visualacuity_version(id) USING HASH;");
+
+        $this->execute("CREATE INDEX exam_va_reading_version_i ON ophciexamination_visualacuity_reading_version(version_date) USING HASH;");
+        $this->execute("CREATE INDEX exam_va_reading_version_i_id ON ophciexamination_visualacuity_reading_version(id) USING HASH;");
+
+        $this->execute("CREATE INDEX exam_et_n_va_version_i ON et_ophciexamination_nearvisualacuity_version(version_date) USING HASH;");
+        $this->execute("CREATE INDEX exam_et_n_va_version_i_id ON et_ophciexamination_nearvisualacuity_version(id) USING HASH;");
+
+        $this->execute("CREATE INDEX exam_va_n_reading_version_i ON ophciexamination_nearvisualacuity_reading_version(version_date) USING HASH;");
+        $this->execute("CREATE INDEX exam_va_n_reading_version_i_id ON ophciexamination_nearvisualacuity_reading_version(id) USING HASH;");
+
         foreach ($this->va_tables as $tables) {
             $reading_table = $tables[0];
             $element_table = $tables[1];
@@ -70,9 +83,13 @@ EOSQL
             );
 
             $this->alterOEColumn($reading_table, 'unit_id', 'int(10) unsigned NOT NULL', true);
-            $this->addForeignKey($reading_table . '_unit_fk',
-                $reading_table, 'unit_id',
-                'ophciexamination_visual_acuity_unit', 'id');
+            $this->addForeignKey(
+                $reading_table . '_unit_fk',
+                $reading_table,
+                'unit_id',
+                'ophciexamination_visual_acuity_unit',
+                'id'
+            );
 
             $this->dropForeignKey($element_table . '_unit_fk', $element_table);
             $this->alterOEColumn($element_table, 'unit_id', 'int(10) unsigned', true);
@@ -80,6 +97,11 @@ EOSQL
 
             $this->addOEColumn($element_table, 'record_mode', "varchar(15) not null default 'simple'", true);
         }
+
+        $this->execute("ALTER TABLE et_ophciexamination_visualacuity_version DROP INDEX exam_et_va_version_i;");
+        $this->execute("ALTER TABLE ophciexamination_visualacuity_reading_version DROP INDEX exam_va_reading_version_i;");
+        $this->execute("ALTER TABLE et_ophciexamination_nearvisualacuity_version DROP INDEX exam_et_n_va_version_i;");
+        $this->execute("ALTER TABLE ophciexamination_nearvisualacuity_reading_version DROP INDEX exam_va_n_reading_version_i;");
     }
 
     public function safeDown()
@@ -94,9 +116,13 @@ EOSQL
             // readings.
             $this->alterOEColumn($element_table, 'archive_unit_id', 'int(10) unsigned NOT NULL', true);
             $this->renameOEColumn($element_table, 'archive_unit_id', 'unit_id', true);
-            $this->addForeignKey($element_table . '_unit_fk',
-                $element_table, 'unit_id',
-                'ophciexamination_visual_acuity_unit', 'id');
+            $this->addForeignKey(
+                $element_table . '_unit_fk',
+                $element_table,
+                'unit_id',
+                'ophciexamination_visual_acuity_unit',
+                'id'
+            );
 
             $this->dropForeignKey($reading_table . '_unit_fk', $reading_table);
             $this->dropOEColumn($reading_table, 'unit_id', true);

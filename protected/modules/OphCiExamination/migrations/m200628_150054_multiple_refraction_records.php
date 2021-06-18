@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -50,8 +51,31 @@ class m200628_150054_multiple_refraction_records extends OEMigration
         $this->migrateReadingVersionsForSide('right', 2);
 
         // remove redundant columns from the element
-        $this->dropForeignKey('et_ophciexamination_refraction_lti_fk', 'et_ophciexamination_refraction');
-        $this->dropForeignKey('et_ophciexamination_refraction_rti_fk', 'et_ophciexamination_refraction');
+        $fk_exists = $this->dbConnection->createCommand(
+            'SELECT count(*)
+            FROM information_schema.table_constraints
+            WHERE table_schema = DATABASE()
+                AND table_name = "et_ophciexamination_refraction"
+                AND constraint_name = "et_ophciexamination_refraction_lti_fk"
+                AND constraint_type = "FOREIGN KEY"'
+        )->queryScalar();
+        if ($fk_exists) {
+            $this->dropForeignKey('et_ophciexamination_refraction_lti_fk', 'et_ophciexamination_refraction');
+        }
+
+        // right key
+        $fk_exists = $this->dbConnection->createCommand(
+            'SELECT count(*)
+            FROM information_schema.table_constraints
+            WHERE table_schema = DATABASE()
+            AND table_name = "et_ophciexamination_refraction"
+            AND constraint_name = "et_ophciexamination_refraction_rti_fk"
+            AND constraint_type = "FOREIGN KEY"'
+        )->queryScalar();
+        if ($fk_exists) {
+            $this->dropForeignKey('et_ophciexamination_refraction_rti_fk', 'et_ophciexamination_refraction');
+        }
+
         foreach (['left', 'right'] as $side) {
             foreach (['_sphere', '_cylinder', '_axis', '_axis_eyedraw', '_type_id', '_type_other'] as $column_postfix) {
                 $this->dropOEColumn('et_ophciexamination_refraction', "{$side}{$column_postfix}", true);
