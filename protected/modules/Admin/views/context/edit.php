@@ -158,14 +158,3 @@
         }
     })
 </script>
-<?php
-if ($firm->id && Episode::model()->count('firm_id=?', [$firm->id]) !== '0') : ?>
-<script>
-    $(document).ready(function () {
-        let can_own_episode = $('#Firm_can_own_an_episode');
-        can_own_episode.attr('disabled', true);
-        can_own_episode.prop('checked', true);
-        can_own_episode.after('<i class="oe-i info small pad js-has-tooltip" data-tooltip-content="Cannot edit: service in use"></i>');
-    });
-</script>
-<?php endif; ?>

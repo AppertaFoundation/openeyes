@@ -243,18 +243,22 @@ function setPcrPxf(ev, pcrEl) {
         pcrEl = ev.data.pcr;
     }
 
-    var $container = getPcrContainer(ev);
-    var $related = $(ev.data.related);
+    let $container = getPcrContainer(ev);
+    let $related = $(ev.data.related);
+    let $row = $container.find(pcrEl);
 
     if (ev.target.checked || $related.is(':checked')) {
-        $container.find(pcrEl).val('Y');
-        $container.find(pcrEl).text('Y');
+        $row.val('Y');
+        if ($row.nodeName === "LABEL") {
+            $row.text('Y');
+        }
     } else {
-        $container.find(pcrEl).val('N');
-        $container.find(pcrEl).text('N');
+        $row.val('N');
+        if ($row.nodeName === "LABEL") {
+            $row.text('N');
+        }
     }
     $(pcrEl).trigger('change');
-
 }
 
 /**
