@@ -8,7 +8,7 @@ function getPcrContainer(ev) {
     var side = $(ev.target).closest('.js-element-eye').attr('data-side');
 
     //for future debugging
-    if(!side){
+    if (!side) {
         console.log(ev);
     }
 
@@ -102,18 +102,18 @@ function setGlaucomaDisorder(ev, pcrEl, glaucomaDiagnosisRemoved, glaucomaDiagno
     }
 
     let input_glaucoma = $('input[name^="glaucoma_diagnoses"]').filter('[value=true],[value="1"]');
-    let glaucoma_present = {'right-eye':false, 'left-eye':false};
+    let glaucoma_present = { 'right-eye': false, 'left-eye': false };
 
     if (input_glaucoma.length) {
         let glaucoma_present_nk = true;
 
-        $.each(input_glaucoma, function(i,v){
+        $.each(input_glaucoma, function (i, v) {
             let parent_row = $(this).closest('tr');
             let side_checked = parent_row.find('.oe-eye-lat-icons :checked');
 
-            if(side_checked.length){
+            if (side_checked.length) {
                 glaucoma_present_nk = false;
-                switch(side_checked.length){
+                switch (side_checked.length) {
                     case 2:
                         glaucoma_present['right-eye'] = true;
                         glaucoma_present['left-eye'] = true;
@@ -125,20 +125,20 @@ function setGlaucomaDisorder(ev, pcrEl, glaucomaDiagnosisRemoved, glaucomaDiagno
             }
         });
 
-        if(glaucoma_present_nk){
+        if (glaucoma_present_nk) {
             $(pcrEl).val('NK');
         } else {
-            $.each(['right-eye', 'left-eye'],function(i,eye){
+            $.each(['right-eye', 'left-eye'], function (i, eye) {
                 let pcrrisk_section = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .' + eye);
 
-                if(glaucoma_present[eye]){
+                if (glaucoma_present[eye]) {
                     pcrrisk_section.find(pcrEl).val('Y');
-                } else if(glaucomaDiagnosisRemoved && glaucomaDiagnosisEyesSelected[eye]) {
+                } else if (glaucomaDiagnosisRemoved && glaucomaDiagnosisEyesSelected[eye]) {
                     pcrrisk_section.find(pcrEl).val('NK');
                 }
             });
         }
-    } else if(glaucomaDiagnosisRemoved) {
+    } else if (glaucomaDiagnosisRemoved) {
         $(pcrEl).val('NK');
     }
 
@@ -168,7 +168,7 @@ function setSurgeonFromNote(ev, pcrEl) {
     $.ajax({
         'type': 'GET',
         'url': '/user/surgeonGrade/',
-        'data': {'id': surgeonId},
+        'data': { 'id': surgeonId },
         'success': function (data) {
             $(pcrEl).val(data.id);
             $(pcrEl).attr('data-pcr-risk', data.pcr_risk);
@@ -243,22 +243,23 @@ function setPcrPxf(ev, pcrEl) {
         pcrEl = ev.data.pcr;
     }
 
-    var $container = getPcrContainer(ev);
-    var $related = $(ev.data.related);
+    let $container = getPcrContainer(ev);
+    let $related = $(ev.data.related);
+    let $row = $container.find(pcrEl);
 
     let inputType = $container.find(pcrEl)[0].type;
     let changeTextValue = true;
-    if(inputType === "select-one") {
+    if (inputType === "select-one") {
         changeTextValue = false;
     }
     if (ev.target.checked || $related.is(':checked')) {
         $container.find(pcrEl).val('Y');
-        if(changeTextValue) {
+        if (changeTextValue) {
             $container.find(pcrEl).text('Y');
         }
     } else {
         $container.find(pcrEl).val('N');
-        if(changeTextValue) {
+        if (changeTextValue) {
             $container.find(pcrEl).text('N');
         }
     }
@@ -324,81 +325,81 @@ function setRisks(ev) {
 function mapExaminationToPcr() {
     var left_eyedraw, right_eyedraw, risk_element;
     var examinationMap = {
-            "#Element_OphTrOperationnote_Surgeon_surgeon_id": {
-                "pcr": '.pcr_doctor_grade',
-                "func": setSurgeonFromNote,
-                "init": true
-            },
-            "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id": {
-                "pcr": {
-                    "related": {
-                        "left": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id",
-                        "right": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id"
-                    },
-                    "pcr": '.pcrrisk_brunescent_white_cataract'
-                },
-                "func": setPcrBrunescent,
-                "init": true
-            },
-            "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id": {
-                "pcr": {
-                    "related": {
-                        "left": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id",
-                        "right": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id"
-                    },
-                    "pcr": '.pcrrisk_brunescent_white_cataract'
-                },
-                "func": setPcrBrunescent,
-                "init": true
-            },
-
-            ":checkbox[id*='_pxe_control']": {
-                "pcr": {
-                    "related": ":checkbox[id*='_phako']",
-                    "pcr": '.pcrrisk_pxf_phako'
-                },
-                "func": setPcrPxf,
-                "init": true
-            },
-            ":checkbox[id*='_phako']": {
-                "pcr": {
-                    "related": ":checkbox[id*='_pxe_control']",
-                    "pcr": '.pcrrisk_pxf_phako'
-                },
-                "func": setPcrPxf,
-                "init": true
-            },
-            ":input[id*='_pupilSize_control']": {
-                "pcr": '.pcrrisk_pupil_size',
-                "func": setPcrPupil,
-                "init": true
-            },
-            ':input[name^="diabetic_diagnoses"], #OEModule_OphCiExamination_models_SystemicDiagnoses_element input[name$="[has_disorder]"]': {
-                "pcr": '.pcrrisk_diabetic',
-                "func": setDiabeticDisorder,
-                "init": true
-            },
-            ":input[name^='glaucoma_diagnoses']": {
-                "pcr": '.pcrrisk_glaucoma',
-                "func": setGlaucomaDisorder,
-                "init": true
-            },
-            "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
-                "pcr": '.pcrrisk_no_fundal_view',
-                "func": setFundalView,
-                "init": true
-            },
-            "#OEModule_OphCiExamination_models_HistoryRisks_element input[type='radio']": {
-                "pcr": undefined,
-                "func": setRisks,
-                "init": true
-            },
-            ".oe-eye-lat-icons :checkbox": {
-                "pcr": '.pcrrisk_glaucoma',
-                "func": setGlaucomaDisorder,
-                "init": true
-            },
+        "#Element_OphTrOperationnote_Surgeon_surgeon_id": {
+            "pcr": '.pcr_doctor_grade',
+            "func": setSurgeonFromNote,
+            "init": true
         },
+        "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id": {
+            "pcr": {
+                "related": {
+                    "left": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id",
+                    "right": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id"
+                },
+                "pcr": '.pcrrisk_brunescent_white_cataract'
+            },
+            "func": setPcrBrunescent,
+            "init": true
+        },
+        "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_cortical_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_cortical_id": {
+            "pcr": {
+                "related": {
+                    "left": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id",
+                    "right": "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id"
+                },
+                "pcr": '.pcrrisk_brunescent_white_cataract'
+            },
+            "func": setPcrBrunescent,
+            "init": true
+        },
+
+        ":checkbox[id*='_pxe_control']": {
+            "pcr": {
+                "related": ":checkbox[id*='_phako']",
+                "pcr": '.pcrrisk_pxf_phako'
+            },
+            "func": setPcrPxf,
+            "init": true
+        },
+        ":checkbox[id*='_phako']": {
+            "pcr": {
+                "related": ":checkbox[id*='_pxe_control']",
+                "pcr": '.pcrrisk_pxf_phako'
+            },
+            "func": setPcrPxf,
+            "init": true
+        },
+        ":input[id*='_pupilSize_control']": {
+            "pcr": '.pcrrisk_pupil_size',
+            "func": setPcrPupil,
+            "init": true
+        },
+        ':input[name^="diabetic_diagnoses"], #OEModule_OphCiExamination_models_SystemicDiagnoses_element input[name$="[has_disorder]"]': {
+            "pcr": '.pcrrisk_diabetic',
+            "func": setDiabeticDisorder,
+            "init": true
+        },
+        ":input[name^='glaucoma_diagnoses']": {
+            "pcr": '.pcrrisk_glaucoma',
+            "func": setGlaucomaDisorder,
+            "init": true
+        },
+        "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
+            "pcr": '.pcrrisk_no_fundal_view',
+            "func": setFundalView,
+            "init": true
+        },
+        "#OEModule_OphCiExamination_models_HistoryRisks_element input[type='radio']": {
+            "pcr": undefined,
+            "func": setRisks,
+            "init": true
+        },
+        ".oe-eye-lat-icons :checkbox": {
+            "pcr": '.pcrrisk_glaucoma',
+            "func": setGlaucomaDisorder,
+            "init": true
+        },
+    },
         examinationObj,
         examinationEl;
 
@@ -484,7 +485,7 @@ function collectValues($eyeSide) {
     pcrData.abletolieflat = $eyeSide.find(":input[id$='abletolieflat'], :input[id$='can_lie_flat']").val();
     pcrData.doctorgrade = $eyeSide.find(":input[id$='doctor_grade_id']").attr("data-pcr-risk");
 
-    if(typeof pcrData.doctorgrade === 'undefined') {
+    if (typeof pcrData.doctorgrade === 'undefined') {
         pcrData.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").find(":selected").data('pcrValue');
     }
 
@@ -505,17 +506,17 @@ function calculateORValue(inputValues) {
     var orMultiplied = 1;  // base value
 
     // multipliers for the attributes and selected values
-    OR.age = {'1': 1, '2': 1.14, '3': 1.42, '4': 1.58, '5': 2.37};
-    OR.gender = {'Male': 1.28, 'Female': 1, 'Other': 1.14, 'Unknown': 1.14};
-    OR.glaucoma = {'Y': 1.30, 'N': 1, 'NK': 1};
-    OR.diabetic = {'Y': 1.63, 'N': 1, 'NK': 1};
-    OR.fundalview = {'Y': 2.46, 'N': 1, 'NK': 1};
-    OR.brunescentwhitecataract = {'Y': 2.99, 'N': 1, 'NK': 1};
-    OR.pxf = {'Y': 2.92, 'N': 1, 'NK': 1};
-    OR.pupilsize = {'Small': 1.45, 'Medium': 1.14, 'Large': 1, 'NK': 1};
-    OR.axiallength = {'0': 1,'NK': 1, '1': 1, '2': 1.47};
-    OR.alphareceptorblocker = {'Y': 1.51, 'N': 1, 'NK': 1};
-    OR.abletolieflat = {'Y': 1, 'N': 1.27};
+    OR.age = { '1': 1, '2': 1.14, '3': 1.42, '4': 1.58, '5': 2.37 };
+    OR.gender = { 'Male': 1.28, 'Female': 1, 'Other': 1.14, 'Unknown': 1.14 };
+    OR.glaucoma = { 'Y': 1.30, 'N': 1, 'NK': 1 };
+    OR.diabetic = { 'Y': 1.63, 'N': 1, 'NK': 1 };
+    OR.fundalview = { 'Y': 2.46, 'N': 1, 'NK': 1 };
+    OR.brunescentwhitecataract = { 'Y': 2.99, 'N': 1, 'NK': 1 };
+    OR.pxf = { 'Y': 2.92, 'N': 1, 'NK': 1 };
+    OR.pupilsize = { 'Small': 1.45, 'Medium': 1.14, 'Large': 1, 'NK': 1 };
+    OR.axiallength = { '0': 1, 'NK': 1, '1': 1, '2': 1.47 };
+    OR.alphareceptorblocker = { 'Y': 1.51, 'N': 1, 'NK': 1 };
+    OR.abletolieflat = { 'Y': 1, 'N': 1.27 };
     OR.doctorgrade = {};
 
     if (Object.keys(inputValues).length !== Object.keys(OR).length) {
