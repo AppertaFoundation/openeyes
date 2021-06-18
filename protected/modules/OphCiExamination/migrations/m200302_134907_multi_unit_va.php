@@ -62,7 +62,7 @@ el.version_id = (
     SELECT version_id
     FROM $element_table_version join_el
     WHERE join_el.id = reading.element_id
-    ORDER BY ABS(TIMEDIFF(join_el.version_date, reading.version_date))
+    ORDER BY ABS(TIMESTAMPDIFF(SECOND, join_el.version_date, reading.version_date))
     LIMIT 1)
 SET reading.unit_id = el.unit_id
 WHERE reading.unit_id IS NULL
