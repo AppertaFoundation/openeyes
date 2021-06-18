@@ -263,7 +263,6 @@ function setPcrPxf(ev, pcrEl) {
         }
     }
     $(pcrEl).trigger('change');
-
 }
 
 /**

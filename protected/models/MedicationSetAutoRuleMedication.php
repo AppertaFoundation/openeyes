@@ -59,7 +59,7 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
             array('medication_set_id, medication_id', 'required'),
             array('medication_set_id, medication_id, include_parent, include_children, default_dose', 'numerical', 'integerOnly'=>true),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
-            array('last_modified_date, created_date, default_route_id, default_frequency_id, default_duration_id, default_dispense_condition_id, default_dispense_location_id, include_parent, include_children', 'safe'),
+            array('include_parent, include_children, default_route_id, default_frequency_id, default_duration_id, default_dose_unit_term, default_dispense_condition_id, default_dispense_location_id, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('tapers', 'safe'), // auto update relation
