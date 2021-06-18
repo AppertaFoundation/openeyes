@@ -933,7 +933,7 @@ class AdminController extends BaseAdminController
                 $errors = $institution->getErrors();
             }
             if ($new) {
-                $contact->save();
+                $contact->save(false);
 
                 $institution->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
@@ -982,7 +982,7 @@ class AdminController extends BaseAdminController
                     throw new CHttpException(500, 'Unable to save institution address: ' . print_r($address->getErrors(), true));
                 }
                 if ($new) {
-                    if (!$institution->contact->save()) {
+                    if (!$institution->contact->save(false)) {
                         throw new CHttpException(500, 'Institution contact could not be saved: ' . print_r(
                             $institution->contact->getErrors(),
                             true
@@ -1072,7 +1072,7 @@ class AdminController extends BaseAdminController
                 $errors = $site->getErrors();
             }
             if ($new) {
-                $contact->save();
+                $contact->save(false);
 
                 $site->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
