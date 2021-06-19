@@ -112,6 +112,20 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         <?php } ?>
     </div>
 </div>
+</section>
+<section class="element view full">
+        <?php
+        $associated_content = EventAssociatedContent::model()
+            ->with('initAssociatedContent')
+            ->findAllByAttributes(
+                array('parent_event_id' => $element->event_id),
+                array('order' => 't.display_order asc')
+            );
+
+        $this->renderPartial('view_event_associated_content', array(
+            'associated_content' => $associated_content,
+        ));
+        ?>
 <script type="text/javascript">
     $(document).ready(function () {
         let options = [];

@@ -221,7 +221,7 @@ class AdminController extends BaseAdminController
                 foreach ($disorders as $key => $disorder) {
                     $common_ophthalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id']);
                     if (!$common_ophthalmic_disorder) {
-                        $common_ophthalmic_disorder = new CommonOphthalmicDisorder;
+                        $common_ophthalmic_disorder = new CommonOphthalmicDisorder();
                         $disorder['id'] = null;
                     }
 
@@ -332,7 +332,7 @@ class AdminController extends BaseAdminController
             foreach ($disorders as $key => $disorder) {
                 $common_ophtalmic_disorder = SecondaryToCommonOphthalmicDisorder::model()->findByPk($disorder['id']);
                 if (!$common_ophtalmic_disorder) {
-                    $common_ophtalmic_disorder = new SecondaryToCommonOphthalmicDisorder;
+                    $common_ophtalmic_disorder = new SecondaryToCommonOphthalmicDisorder();
                     $disorder['id'] = null;
                 }
 
@@ -1233,7 +1233,7 @@ class AdminController extends BaseAdminController
                     $errors = $institution->getErrors();
                 }
                 if ($new) {
-                    $contact->save();
+                    $contact->save(false);
 
                     $institution->contact_id = $contact->id;
                     $address->contact_id = $contact->id;
@@ -1259,7 +1259,7 @@ class AdminController extends BaseAdminController
 
                         // if no error uploading use uploaded image
                         if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                            $sl_file=file_get_contents($secondary_logo);
+                            $sl_file = file_get_contents($secondary_logo);
                             $logo->secondary_logo = $sl_file;
                         }
                     }
@@ -1666,7 +1666,7 @@ class AdminController extends BaseAdminController
 
                     // if no error uploading use uploaded image
                     if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                        $sl_file=file_get_contents($secondary_logo);
+                        $sl_file = file_get_contents($secondary_logo);
                         $logo->secondary_logo = $sl_file;
                     }
                 }
@@ -1737,7 +1737,7 @@ class AdminController extends BaseAdminController
         $contact->qualifications = null;
         $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
 
-        $contact->save();
+        $contact->save(false);
 
         $site->contact_id = $contact->id;
         $address->contact_id = $contact->id;
@@ -1765,7 +1765,7 @@ class AdminController extends BaseAdminController
 
                 // if no error uploading use uploaded image
                 if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                    $sl_file=file_get_contents($secondary_logo);
+                    $sl_file = file_get_contents($secondary_logo);
                     $logo->secondary_logo = $sl_file;
                 }
             }
@@ -2306,7 +2306,7 @@ class AdminController extends BaseAdminController
                 }
             }
         } else {
-            $cbs = new CommissioningBodyService;
+            $cbs = new CommissioningBodyService();
             $commissioning_bt_id = Yii::app()->request->getQuery('commissioning_body_type_id');
             if ($commissioning_bt_id) {
                 $commissioning_bt = CommissioningBodyType::model()->findByPk($commissioning_bt_id);

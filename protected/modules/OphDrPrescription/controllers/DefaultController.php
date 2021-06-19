@@ -688,7 +688,7 @@ class DefaultController extends BaseEventTypeController
      * @throws CException
      * @throws Exception
      */
-    public function renderPrescriptionItem($key, $source)
+    public function renderPrescriptionItem($key, $source, $label = null)
     {
         $item = new OphDrPrescription_Item();
         $item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
@@ -747,8 +747,27 @@ class DefaultController extends BaseEventTypeController
                     $item->tapers = $tapers;
                 }
             } elseif (is_int($source) || (int) $source) {
-                // Source is an integer, so we use it as a drug_id
-                $item->medication_id = $source;
+                // as typed, save as a new local drug - with no defaults
+                if ($source == EventMedicationUse::USER_MEDICATION_ID) {
+                    $medication = new Medication();
+                    $medication->preferred_term = $label;
+                    $medication->short_term = $label;
+                    $medication->source_type = EventMedicationUse::USER_MEDICATION_SOURCE_TYPE;
+                    $medication->source_subtype = EventMedicationUse::USER_MEDICATION_SOURCE_SUBTYPE;
+                    $medication->preferred_code = Medication::getNextUnmappedPreferredCode();
+
+                    if ($medication->save()) {
+                        $medication->addDefaultSearchIndex();
+                    } else {
+                        throw new Exception(print_r($medication->getErrors(), true));
+                    }
+
+                    $item->medication_id = $medication->id;
+                } else {
+                    // Source is an integer (!=-1), so we use it as a drug_id
+                    $item->medication_id = $source;
+                }
+
                 $medSet = $this->getCommonDrugsRefSet();
                 $item->loadDefaults($medSet);
             } else {

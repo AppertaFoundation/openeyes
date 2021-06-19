@@ -110,6 +110,7 @@ $dispense_condition_options = array(
                             ); ?>
                         </td>
                         <td>
+                            <input type="hidden" name="MedicationSetAutoRuleMedication[<?= $k ?>][default_dose_unit_term]" value="<?= $med->default_dose_unit_term ? $med->default_dose_unit_term : ''; ?>">
                             <span data-type="default_dose" data-id="<?= $med->default_dose_unit_term ? $med->default_dose_unit_term : ''; ?>"><?= $med->default_dose_unit_term ? $med->default_dose_unit_term : '-'; ?></span>
                         </td>
                         <td class="js-input-wrapper">
@@ -277,6 +278,7 @@ $dispense_condition_options = array(
             <input class="js-input cols-full" name="MedicationSetAutoRuleMedication[{{key}}][default_dose]" id="MedicationSetAutoRuleMedication" type="text" value="{{default_dose}}">
         </td>
         <td class="js-input-wrapper">
+            <input type="hidden" name="MedicationSetAutoRuleMedication[{{key}}][default_dose_unit_term]" value="{{default_dose_unit_term}}">
             <span data-type="default_dose_unit_term">{{^default_dose_unit_term}}-{{/default_dose_unit_term}}{{#default_dose_unit_term}}{{default_dose_unit_term}}{{/default_dose_unit_term}}</span>
         </td>
         <td class="js-input-wrapper">

@@ -4,9 +4,10 @@
             <thead>
             <tr>
                 <th>Attachment type</th>
-                <th>Title</th>
+                <th>Attachment name in letter</th>
                 <th>Event Date</th>
-                <th></th>
+                <th>Status</th>
+                <th><!-- trash --></th>
             </tr>
             </thead>
             <tbody>
@@ -103,9 +104,20 @@
                                value="<?= $ac->short_code ?>"/>
                         <?= $event_date ?>
                     </td>
-                                    <td>
-                                        <i class="oe-i trash"></i>
-                                    </td>
+                    <td class="attachment_status">
+                        <?php if ($ac->associated_protected_file_id) { ?>
+                            <i class="oe-i tick-green small pad-right"></i>Attached
+                        <?php } else {
+                            $tooltip_content = 'Temporary error, please try again. If the error still occurs, please contact support.';
+                            ?>
+                            <i class="oe-i cross-red small pad-right"></i>Unable to attach
+                            <i class="oe-i oe-i info small pad js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>"></i>
+                        <?php } ?>
+                    </td>
+                    <td style="text-align: right;">
+                        <button class="reprocess_btn" style="display: <?= $ac->associated_protected_file_id ? 'none' : ''?>" type="button">Try again</button>
+                        <i class="oe-i trash"></i>
+                    </td>
                 </tr>
                 <?php $row_index++;
             }
@@ -156,7 +168,13 @@
         ) ?>, {'multiSelect': true})],
 
         onReturn: function (adderDialog, selectedItems) {
-            OphCoCorrespondence_addAttachments(selectedItems);
+            if(selectedItems.length) {
+                disableButtons();
+                for (let key in selectedItems) {
+                    OphCoCorrespondence_addAttachment(selectedItems[key].id);
+                }
+                enableButtons();
+            }
             return true;
         },
         onOpen: function () {

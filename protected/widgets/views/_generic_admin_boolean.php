@@ -17,4 +17,6 @@
  */
 $htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
 $value = $row ? $row->{$params['field']} : null;
-echo CHtml::checkBox($params['field']."[{$i}]", $value, $htmlOptions);
+?>
+<input type="hidden" value="0" name="<?= $params['field']."[{$i}]" ?>">
+<?= CHtml::checkBox($params['field']."[{$i}]", $value, $htmlOptions);

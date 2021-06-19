@@ -529,4 +529,29 @@ class Medication extends BaseActiveRecordVersioned
 
         return $ret;
     }
+
+    /**
+     * Returns the next preferred_code for local, unmapped medication
+     * @return string
+     */
+    public static function getNextUnmappedPreferredCode(): string
+    {
+        $unmapped_string = EventMedicationUse::USER_MEDICATION_SOURCE_SUBTYPE;
+        $unmapped_string_length = strlen($unmapped_string);
+        $start_at_position = $unmapped_string_length + 1;
+
+        $sql = "SELECT MAX(CAST(SUBSTRING(`preferred_code`, :start_at_position, LENGTH(`preferred_code`)-:unmapped_string_length) AS UNSIGNED))
+                FROM `medication`
+                WHERE preferred_code LIKE :unmapped_string";
+
+        $number = \Yii::app()->db->createCommand($sql)
+            ->bindValue(':start_at_position', $start_at_position)
+            ->bindValue(':unmapped_string_length', $unmapped_string_length)
+            ->bindValue(':unmapped_string', "%{$unmapped_string}%")
+            ->queryScalar();
+
+        $number = !$number && !is_numeric($number) ? 0 : ++$number;
+
+        return "{$unmapped_string}{$number}";
+    }
 }
