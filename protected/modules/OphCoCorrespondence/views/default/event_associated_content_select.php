@@ -34,7 +34,13 @@ if (empty($patient)) {
             }, $events)
         ) ?>, {'multiSelect': true})],
         onReturn: function (adderDialog, selectedItems) {
-            OphCoCorrespondence_addAttachments(selectedItems);
+            if(selectedItems.length) {
+                disableButtons();
+                for (let key in selectedItems) {
+                    OphCoCorrespondence_addAttachment(selectedItems[key].id);
+                }
+                enableButtons();
+            }
             return true;
         },
         onOpen: function () {

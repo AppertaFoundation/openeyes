@@ -65,6 +65,77 @@ function updateCorrespondence(macro_id) {
     autosize($('.autosize'));
 }
 
+function OphCoCorrespondence_attachmentStatusRequestError(row) {
+    const status = row.querySelector('.attachment_status');
+    const tooltip_content = 'Temporary error, please try again. If the error still occurs, please contact support.';
+
+    status.innerHTML = '<i class="oe-i cross-red small pad-right"></i>Unable to attach' +
+        '<i class="oe-i oe-i info small pad js-has-tooltip" data-tooltip-content="'+ tooltip_content +'"></i>';
+    row.querySelector('.reprocess_btn').style.display = '';
+}
+
+function OphCoCorrespondence_getAttachmentStatus(module_name, row, data_id) {
+    let event_id = row.querySelector('.attachments_event_id').value;
+    let title = row.querySelector('.attachments_display_title').value;
+
+    const request = new XMLHttpRequest();
+    request.open('GET', baseUrl + '/' + module_name + '/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0&pdf_documents=1&attachment_print_title='+title, true);
+    request.setRequestHeader('X-Requested-With', 'pdfprint');
+
+    request.onload = function() {
+        if (this.status >= 200 && this.status < 400) {
+            const response = JSON.parse(this.response);
+
+            if(response.success == 1) {
+                const status = row.querySelector('.attachment_status');
+                status.innerHTML = '<i class="oe-i tick-green small pad-right"></i>Attached';
+                const hidden = OpenEyes.Util.htmlToElement('<input type="hidden" name="file_id[' + data_id+ ']" value="'+response.file_id+'" />');
+
+                row.appendChild(hidden);
+                row.querySelector('.reprocess_btn').style.display = 'none';
+            }
+        } else {
+            OphCoCorrespondence_attachmentStatusRequestError(row);
+        }
+
+        enableButtons();
+    };
+
+    request.onerror = function() {
+        OphCoCorrespondence_attachmentStatusRequestError(row);
+    };
+
+    request.send();
+}
+
+function OphCoCorrespondence_addAttachment(event_id) {
+    const request = new XMLHttpRequest();
+    request.open('POST', baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById', true);
+    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+    request.onload = function() {
+        if (this.status >= 200 && this.status < 400) {
+            const response = JSON.parse(this.response);
+
+            if (response.success == 1) {
+                const table = document.getElementById('correspondence_attachments_table').querySelector('tbody');
+                const data_id = table.children.length;
+                const content = OpenEyes.Util.htmlToElement(response.content);
+
+                table.appendChild(content);
+                content.setAttribute('data-id', data_id);
+                content.querySelector('.attachments_event_id').setAttribute('name', 'attachments_event_id[' + data_id + ']');
+                content.querySelector('.attachments_display_title').setAttribute('name', 'attachments_display_title[' + data_id + ']');
+                OphCoCorrespondence_getAttachmentStatus(response.module, content, data_id);
+            }
+        }
+    };
+
+    request.send("YII_CSRF_TOKEN=" + encodeURIComponent(YII_CSRF_TOKEN) +
+        '&id=' + encodeURIComponent(event_id) +
+        '&patient_id=' + encodeURIComponent(OE_patient_id));
+}
+
 function togglePrintDisabled(isSignedOff) {
     $('#et_save_print').prop('disabled', !isSignedOff);
 }
@@ -524,6 +595,20 @@ $(document).ready(function () {
         }
     }
 
+    this.addEventListener('click', function (e) {
+        for (var target = e.target; target && target != this; target = target.parentNode) {
+            if (target.matches('.reprocess_btn')) {
+                const row = target.closest('tr');
+                const status = row.querySelector('.attachment_status');
+                const class_name = row.querySelector('.attachments_event_class_name').value;
+                const data_id = row.getAttribute('data-id');
+
+                status.innerHTML = '<i class="oe-i waiting small pad-right"></i>Pending...';
+                OphCoCorrespondence_getAttachmentStatus(class_name, row, data_id);
+            }
+        }
+    }, false);
+
     $(this).on('click', '#et_print', function (e) {
         if ($('#correspondence_out').hasClass('draft')) {
             $.ajax({
@@ -821,62 +906,6 @@ function OphCoCorrespondence_do_export() {
             }).open();
         }
     });
-}
-function OphCoCorrespondence_addAttachments(selectedItems) {
-    if (selectedItems.length) {
-        var table = $('#correspondence_attachments_table').find('tbody');
-        for (let key in selectedItems) {
-            // selectedItems[key]['label'] format: Event_type - Event_date
-            // attachment_info format: [Event_type, Event_date]
-            var attachment_info = selectedItems[key]['label'].split(' - ');
-            
-            var tr = document.createElement('tr');
-            
-            // create td elements for the tr
-            var attachment_type_td = document.createElement('td');
-            var attachment_title_td = document.createElement('td');
-            var attachment_date_td = document.createElement('td');
-            var trash_icon_td = document.createElement('td');
-
-            // create child element for the td
-            var trash_icon = document.createElement('i');
-            var attachment_type_hidden_input = document.createElement('input');
-            var attachment_title_input = document.createElement('input');
-
-            tr.dataset.id = key;
-
-            // setup attachments_event_id
-            attachment_type_td.innerText = attachment_info[0];
-            attachment_type_hidden_input.setAttribute('type', 'hidden');
-            attachment_type_hidden_input.setAttribute('name', 'attachments_event_id[]');
-            attachment_type_hidden_input.className = 'attachments_event_id'
-            attachment_type_hidden_input.setAttribute('value', selectedItems[key]['id']);
-            attachment_type_td.appendChild(attachment_type_hidden_input);
-
-            // setup attachments_display_title
-            attachment_title_input.setAttribute('type', 'text');
-            attachment_title_input.className = 'attachments_display_title';
-            attachment_title_input.setAttribute('name', 'attachments_display_title[]');
-            attachment_title_input.setAttribute('value', attachment_info[0]);
-            attachment_title_td.appendChild(attachment_title_input);
-
-            // setup event
-            attachment_date_td.innerText = attachment_info[1];
-
-            // setup trash icon
-            trash_icon.className = 'oe-i trash';
-            trash_icon_td.appendChild(trash_icon);
-            
-            // append the tds to the tr
-            tr.appendChild(attachment_type_td);
-            tr.appendChild(attachment_title_td);
-            tr.appendChild(attachment_date_td);
-            tr.appendChild(trash_icon_td);
-            
-            // append the tr to table
-            table.append(tr);
-        }
-    }
 }
 
 /**

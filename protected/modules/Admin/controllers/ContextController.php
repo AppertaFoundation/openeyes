@@ -91,10 +91,7 @@ class ContextController extends BaseAdminController
         $firm->subspecialty_id = $firm->getSubspecialtyID();
 
         if (!empty($_POST)) {
-            $firm->attributes = $_POST['Firm'];
-            if ($firm->id && Episode::model()->count('firm_id=?', [$firm->id]) !== '0') {
-                $firm->can_own_an_episode = 1;
-            }
+			$firm->attributes = $_POST['Firm'];
             if (!$firm->validate()) {
                 $errors = $firm->getErrors();
             } else {

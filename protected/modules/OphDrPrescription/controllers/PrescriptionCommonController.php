@@ -74,10 +74,10 @@ class PrescriptionCommonController extends DefaultController
      * @param $patient_id
      * @param $drug_id
      */
-    public function actionItemForm($key, $patient_id, $drug_id)
+    public function actionItemForm($key, $patient_id, $drug_id, $label = null)
     {
         $this->initForPatient($patient_id);
-        $this->renderPrescriptionItem($key, $drug_id);
+        $this->renderPrescriptionItem($key, $drug_id, $label);
     }
 
     /**

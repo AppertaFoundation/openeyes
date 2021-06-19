@@ -39,7 +39,7 @@ trait AdminForStrabismusManagement
                         "type" => "boolean"
                     ],
                     "column2_multiselect" => [
-                        "field" => "column1_multiselect",
+                        "field" => "column2_multiselect",
                         "type" => "boolean"
                     ]
                 ],
