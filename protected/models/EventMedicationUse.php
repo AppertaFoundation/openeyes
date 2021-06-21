@@ -395,13 +395,15 @@ class EventMedicationUse extends BaseElement
             }
         }
 
-        if (($this->prescribe || $this->isPrescription())) {
-            foreach ($this->tapers as $taper) {
-                foreach ($this->taper_equals_attributes as $attribute) {
-                    $result = $taper->$attribute === $medication->$attribute;
+        if (isset($this->tapers)) {
+            if ((!$this->prescribe || $this->isPrescription())) {
+                foreach ($this->tapers as $taper) {
+                    foreach ($this->taper_equals_attributes as $attribute) {
+                        $result = $taper->$attribute === $medication->$attribute;
 
-                    if (!$result) {
-                        return $result;
+                        if (!$result) {
+                            return $result;
+                        }
                     }
                 }
             }
