@@ -1125,7 +1125,7 @@ class EventMedicationUse extends BaseElement
             $medication->short_term = $this->medication_name;
             $medication->source_type = self::USER_MEDICATION_SOURCE_TYPE;
             $medication->source_subtype = self::USER_MEDICATION_SOURCE_SUBTYPE;
-            $medication->preferred_code = self::USER_MEDICATION_SOURCE_SUBTYPE;
+            $medication->preferred_code = Medication::getNextUnmappedPreferredCode();
             if ($medication->save()) {
                 $medication->addDefaultSearchIndex();
                 $this->medication_id = $medication->id;
