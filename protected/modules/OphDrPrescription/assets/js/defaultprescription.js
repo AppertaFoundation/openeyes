@@ -283,11 +283,12 @@ function addItems(selectedItems) {
 function addItem(label, item_id) {
     // we need to call different functions for admin and public pages here
     $.ajaxSetup({async: false});
-    if (controllerName == 'DefaultController') {
+    if (controllerName === 'DefaultController') {
         $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/ItemForm", {
             key: getNextKey(),
             patient_id: OE_patient_id,
             drug_id: item_id,
+            label: label
         }, function (data) {
             $('#prescription_items').find('tbody').append(data);
         });
@@ -295,6 +296,7 @@ function addItem(label, item_id) {
         $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/ItemFormAdmin", {
             key: getNextKey(),
             drug_id: item_id,
+            label: label
         }, function (data) {
             $('#prescription_items').find('tbody').append(data);
         });

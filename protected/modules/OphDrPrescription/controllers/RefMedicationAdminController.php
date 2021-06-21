@@ -68,6 +68,10 @@ class RefMedicationAdminController extends BaseAdminController
     {
         if (is_null($id)) {
             $model = new Medication();
+            $model->source_type = EventMedicationUse::USER_MEDICATION_SOURCE_TYPE;
+            $model->source_subtype = EventMedicationUse::USER_MEDICATION_SOURCE_SUBTYPE;
+            $model->preferred_code = Medication::getNextUnmappedPreferredCode();
+
             if (isset($this->source_type)) {
                 $model->source_type = $this->source_type;
             }
@@ -199,6 +203,9 @@ class RefMedicationAdminController extends BaseAdminController
     {
         if (is_null($id)) {
             $model = new Medication();
+            $model->source_type = EventMedicationUse::USER_MEDICATION_SOURCE_TYPE;
+            $model->source_subtype = EventMedicationUse::USER_MEDICATION_SOURCE_SUBTYPE;
+            $model->preferred_code = Medication::getNextUnmappedPreferredCode();
         } else {
             if (!$model = Medication::model()->findByPk($id)) {
                 throw new CHttpException(404);
