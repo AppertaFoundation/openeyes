@@ -800,7 +800,7 @@ class PatientController extends BaseController
             if (!array_key_exists($groupType, $previewGroups)) {
                 $previewGroups[$groupType] = [];
             }
-            $previewGroups[$groupType] += $events;
+            $previewGroups[$groupType] = array_merge($previewGroups[$groupType], $events);
         }
 
         // Default to letters if no other preview type exists
