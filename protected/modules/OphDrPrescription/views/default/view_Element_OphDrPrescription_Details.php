@@ -47,7 +47,7 @@
                             
                         <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
                         <td><?php echo $item->route->term ?>
-                            <?php if ($item->laterality) {
+                            <?php if ($item->route->has_laterality) {
                                 echo ' (' . $item->medicationLaterality->name . ')';
                             } ?>
                         </td>
