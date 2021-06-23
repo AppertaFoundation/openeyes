@@ -890,48 +890,45 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetInitMethodDataById()
     {
-        if (Yii::app()->request->isAjaxRequest) {
-            if (!isset($_POST['id'])) {
-                $result = array(
-                    'success' => 0,
-                    'message' => 'No ID provided',
-                );
-                echo $this->renderJSON($result);
-            }
-
-            if (!$event = Event::model()->findByPk($_POST['id'])) {
-                $result = array(
-                    'success' => 0,
-                    'message' => "Method not found: " . $_POST['id']
-                );
-
-                echo $this->renderJSON($result);
-            }
-
-            if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
-                $result = array(
-                    'success' => 0,
-                    'message' => 'Patient not found: ' . @$_POST['patient_id']
-                );
-
-                echo $this->renderJSON($result);
-            }
-
-            $content = $this->renderPartial('init_method_row', array(
-                'event' => $event,
-                'patient' => $patient,
-            ), true);
-
-
+        if (!isset($_POST['id'])) {
             $result = array(
-                'success' => 1,
-                'content' => $content,
-                'module' => $event->eventType->class_name
+                'success' => 0,
+                'message' => 'No ID provided',
+            );
+            echo $this->renderJSON($result);
+        }
+
+        if (!$event = Event::model()->findByPk($_POST['id'])) {
+            $result = array(
+                'success' => 0,
+                'message' => "Method not found: " . $_POST['id']
             );
 
-            $this->renderJSON($result);
+            echo $this->renderJSON($result);
         }
-        throw new CHttpException(400, 'Invalid method');
+
+        if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+            $result = array(
+                'success' => 0,
+                'message' => 'Patient not found: ' . @$_POST['patient_id']
+            );
+
+            echo $this->renderJSON($result);
+        }
+
+        $content = $this->renderPartial('init_method_row', array(
+            'event' => $event,
+            'patient' => $patient,
+        ), true);
+
+
+        $result = array(
+            'success' => 1,
+            'content' => $content,
+            'module' => $event->eventType->class_name
+        );
+
+        $this->renderJSON($result);
     }
 
     /**
