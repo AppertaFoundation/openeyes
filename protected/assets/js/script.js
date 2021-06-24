@@ -447,6 +447,8 @@ function createLoginOverlay() {
     overlay.id = 'js-overlay';
     overlay.classList.add('oe-popup-wrap');
     overlay.classList.add('dark');
+    //Make overlay opaque to hide patient information in the background
+    overlay.style.background = "rgb(37, 35, 35)";
 
     let timeoutDiv = document.createElement('div');
     timeoutDiv.classList.add('oe-login');
@@ -496,6 +498,17 @@ function createLoginOverlay() {
     infoDiv.innerText = 'For security reasons you have been logged out. Please login again';
     loginDiv.append(infoDiv);
 
+    let returnDiv = document.createElement('div');
+    returnDiv.classList.add('flex-c');
+    loginDiv.append(returnDiv);
+
+    let returnButton = document.createElement('a');
+    returnButton.classList.add('button');
+    returnButton.innerText = 'Or exit to homepage';
+    returnButton.href = document.location.origin + '/site/login';
+
+    returnDiv.append(returnButton);
+
     return overlay;
 }
 
@@ -521,6 +534,9 @@ function loginWithOverlay() {
             if(resp === 'Login success'){
                 loginOverlay.hide();
                 queueLoginOverlay();
+            } else if (resp === 'Username different') {
+                errorBox.text('Username is different from previous session. Please exit to homepage to start a new session');
+                errorBox.show();
             } else {
                 errorBox.text('Invalid login.');
                 errorBox.show();
