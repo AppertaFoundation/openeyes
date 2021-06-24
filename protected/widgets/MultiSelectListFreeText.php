@@ -67,7 +67,7 @@ class MultiSelectListFreeText extends BaseFieldWidget
             }
         }
 
-        if (empty($_POST)) {
+        if (empty($_POST) || !$this->element->isNewRecord) {
             if ($this->element && $this->element->{$this->relation}) {
                 foreach ($this->element->{$this->relation} as $item) {
                     $this->selected_ids[] = $item->{$this->relation_id_field};
