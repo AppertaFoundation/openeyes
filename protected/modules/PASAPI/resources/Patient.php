@@ -147,6 +147,7 @@ class Patient extends BaseResource
         $this->assignProperty($contact, 'first_name', 'FirstName');
         $this->assignProperty($contact, 'last_name', 'Surname');
         $this->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
+        $this->assignProperty($contact, 'mobile_phone', 'MobilePhoneNumber');
 
         if (!$contact->validate()) {
             $this->addModelErrors($contact->getErrors());

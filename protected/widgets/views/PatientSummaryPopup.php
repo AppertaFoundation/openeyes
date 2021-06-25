@@ -60,7 +60,7 @@
                     <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
                         <tr>
                             <td>Mobile</td>
-                            <td>Unknown</td>
+                            <td><?= $this->patient->contact->mobile_phone ?? 'Unknown' ?></td>
                         </tr>
                     <?php endif; ?>
                     <tr>

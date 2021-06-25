@@ -392,6 +392,7 @@ class PasApiObserver
         $resource->assignProperty($contact, 'first_name', 'FirstName');
         $resource->assignProperty($contact, 'last_name', 'Surname');
         $resource->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
+        $resource->assignProperty($contact, 'mobile_phone', 'MobilePhoneNumber');
         $resource->addGlobalNumberStatus($patient);
 
         return $patient;
