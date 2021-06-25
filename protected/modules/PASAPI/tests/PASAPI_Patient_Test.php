@@ -109,6 +109,8 @@ EOF;
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         $this->put('TEST02', $xml);
@@ -147,6 +149,8 @@ EOF;
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         $this->put('TESTUpdateOnly', $xml);
@@ -200,6 +204,8 @@ EOF;
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         $this->put('TEST03', $xml);
@@ -247,6 +253,8 @@ EOF;
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         $this->put('TESTUpdateOnly', $xml, array(
@@ -295,6 +303,8 @@ EOF;
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         // structure for expectation of values which can be merged with a new array to
@@ -462,6 +472,8 @@ EOF;
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         // structure for expectation of values which can be merged with a new array to

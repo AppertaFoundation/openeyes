@@ -157,6 +157,7 @@ class Patient extends BaseResource
         $contact->save();
 
         $this->mapAddresses($contact);
+        $this->mapLanguageCodeAndInterpreterRequired($patient);
 
         if (!$this->errors) {
             return true;
@@ -217,6 +218,96 @@ class Patient extends BaseResource
         } elseif (!$this->partial_record) {
             $patient->gp_id = null;
         }
+    }
+
+    /**
+     * Handle mapping of the Language and Interpreter Required resource code to the patient model.
+     *
+     * @param \Patient $patient
+     */
+    private function mapLanguageCodeAndInterpreterRequired(\Patient $patient)
+    {
+        if (property_exists($this, 'LanguageCode') || property_exists($this, 'InterpreterRequired')) {
+            $episode = new \Episode();
+            $change_episode = $episode->getChangeEpisode($patient);
+            $change_episode->save();
+
+            $event = $this->createExamination($change_episode);
+
+            $communication_pref = $this->createCommunicationElement($event);
+
+            if (property_exists($this, 'LanguageCode')) {
+                $code = $this->getAssignedProperty('LanguageCode');
+                if ($code) {
+                    if ($language = \Language::model()->findByAttributes(array('pas_term' => strtolower($code)))) {
+                        $communication_pref->language_id = $language->id;
+                    } else {
+                        $this->addWarning('Could not find Language for code '.$code);
+                    }
+                } else {
+                    $communication_pref->language_id = null;
+                }
+            } else {
+                if (!$this->partial_record) {
+                    $communication_pref->language_id = null;
+                }
+            }
+
+            if (property_exists($this, 'InterpreterRequired')) {
+                $code = $this->getAssignedProperty('InterpreterRequired');
+                if ($code) {
+                    if ($language = \Language::model()->findByAttributes(array('interpreter_pas_code' => strtolower($code)))) {
+                        $communication_pref->interpreter_required_id = $language->id;
+                    } else {
+                        $this->addWarning('Could not find Language for Interpreter Required code '.$code);
+                    }
+                } else {
+                    $communication_pref->interpreter_required_id = null;
+                }
+            } else {
+                if (!$this->partial_record) {
+                    $communication_pref->interpreter_required_id = null;
+                }
+            }
+            $communication_pref->save();
+        }
+    }
+
+    /**
+     * Creates a new examination event
+     *
+     * @param \Episode $change_episode
+     */
+    private function createExamination(\Episode $change_episode)
+    {
+        $event = new \Event();
+        $event->episode_id = $change_episode->id;
+        $event_type = \EventType::model()->find('class_name=:class_name', array(':class_name' => 'OphCiExamination'));
+        $event->event_type_id = $event_type->id;
+        $event->last_modified_date = date('Y-m-d H:i:s');
+        $event->created_date = date('Y-m-d H:i:s');
+        $event->event_date = date('Y-m-d H:i:s');
+        $event->institution_id = 1;
+        $event->save();
+
+        return $event;
+    }
+
+    /**
+     * Creates a new examination event
+     *
+     * @param \Event $event
+     */
+    private function createCommunicationElement(\Event $event)
+    {
+        $communication_pref = new \OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences();
+        $communication_pref->event_id = $event->id;
+        $communication_pref->correspondence_in_large_letters = 0;
+        $communication_pref->last_modified_date = date('Y-m-d H:i:s');
+        $communication_pref->created_date = date('Y-m-d H:i:s');
+        $communication_pref->agrees_to_insecure_email_correspondence = 0;
+
+        return $communication_pref;
     }
 
     /**
@@ -311,7 +402,7 @@ class Patient extends BaseResource
      */
     public function addGlobalNumberStatus(\Patient $patient)
     {
-        if($patient->globalIdentifier) {
+        if ($patient->globalIdentifier) {
             if (property_exists($this, 'NHSNumberStatus')) {
                 $code = $this->getAssignedProperty('NHSNumberStatus');
                 if ($code) {
@@ -332,7 +423,7 @@ class Patient extends BaseResource
                     $patient->globalIdentifier->patient_identifier_status_id = null;
                 }
             }
-            if(!$patient->globalIdentifier->isNewRecord){
+            if (!$patient->globalIdentifier->isNewRecord) {
                 $patient->globalIdentifier->update(['patient_identifier_status_id']);
             }
         }

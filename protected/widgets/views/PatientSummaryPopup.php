@@ -301,6 +301,18 @@
                                 <span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->agrees_to_insecure_email_correspondence) ? 'Yes' : 'No' ?></span>
                             </td>
                         </tr>
+                        <tr>
+                            <td>Language</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->language_id)) ? $examination_communication_preferences->language->name : 'Unknown' ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Interpreter required</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) ? $examination_communication_preferences->interpreter_required->name : 'Unknown' ?></span>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 <?php } ?>
