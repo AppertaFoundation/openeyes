@@ -115,12 +115,16 @@ class PatientController extends BaseController
             ),
             array(
                 'allow',
+                'actions' => array('getHieSource'),
+                'roles' => array('View clinical'),
+            ),
+            array(
+                'allow',
                 'actions' => array('delete'),
                 'roles' => array('OprnDeletePatient')
             )
         );
     }
-
 
     public function behaviors()
     {
@@ -167,10 +171,74 @@ class PatientController extends BaseController
         $this->redirect(array('summary', 'id' => $id));
     }
 
+    /**
+     * @param $id
+     */
+    public function actionGetHieSource($id)
+    {
+        $errors = [];
+        $url = '';
+
+        try {
+            $this->patient = Patient::model()->findByPk($id);
+
+            if (\SettingMetadata::model()->getSetting('enable_hie_link') !== 'on') {
+                throw new Exception("'Enabled HIE link' value is 'off'.");
+            }
+
+            if (is_null($this->patient)) {
+                throw new Exception("Patient not found: $id");
+            }
+
+            $nhs_number = $this->patient->getNhs();
+            if (strlen($nhs_number)===0) {
+                throw new Exception("NHS number is missing.");
+            }
+
+            if ($component = $this->getApp()->getComponent('hieIntegration')) {
+                $url = $component->generateHieUrl($this->patient, $nhs_number);
+            }
+
+            if ($url==='') {
+                throw new Exception("Empty Url.");
+            }
+
+            $data = $component->getData();
+            \Audit::add(
+                'search',
+                'search',
+                json_encode(array_merge($data, ['patient_id' => $this->patient->id])),
+                $log_message = 'HIE search: patinet id = ' . $this->patient->id,
+            );
+        } catch (Exception $exception) {
+            \Yii::log($exception);
+            $errors[] = $exception->getMessage();
+        }
+
+        $episodes = $this->patient->episodes;
+        $support_service_episodes = $this->patient->supportserviceepisodes;
+        $events = $this->patient->getEvents();
+        $legacy_episodes = $this->patient->legacyepisodes;
+        $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+
+        if ($no_episodes) {
+            $this->layout = '//layouts/events_and_episodes_no_header';
+        } else {
+            $this->layout = '//layouts/events_and_episodes';
+        }
+
+        $this->render('hie_view', array(
+            'encrypted_url' => $url,
+            'patient' => $this->patient,
+            'errors' => $errors
+        ));
+    }
+
     public function actionSummary($id)
     {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($id, false);
+
         // if the ids are different, it means the $id belongs to a merged patient
         if ($id !== $this->patient->id) {
             $link = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
@@ -525,7 +593,7 @@ class PatientController extends BaseController
      */
     public function loadModel($id, $allow_deleted = true)
     {
-        $model = Patient::model()->findByPk((int) $id);
+        $model = Patient::model()->findByPk((int)$id);
         // cannot find any patient by id, throw exception
         if ($model === null) {
             throw new CHttpException(404, 'The requested page does not exist.');
@@ -806,14 +874,14 @@ class PatientController extends BaseController
 
         foreach ($eventTypeMap as $eventType => $events) {
             switch ($eventType) {
-                    // Document events should be ignored, as they have already been broken down by document sub type
+                // Document events should be ignored, as they have already been broken down by document sub type
                 case 'Document':
                     continue 2;
-                    // Biometry events and report documents should be in the same bucket
+                // Biometry events and report documents should be in the same bucket
                 case 'Biometry':
                     $groupType = 'BiometryReport';
                     break;
-                    // Correspondence events should go in th 'Letters' bucket
+                // Correspondence events should go in th 'Letters' bucket
                 case 'Correspondence':
                     $groupType = 'Letters';
                     break;
@@ -1528,7 +1596,7 @@ class PatientController extends BaseController
                     ':patient_identifier_type_id' => Yii::app()->params['oelauncher_patient_identifier_type']]
             );
             $this->jsVars['OE_patient_id'] = $this->patient->id;
-            $this->jsVars['OE_patient_hosnum'] = $patient_identifier->value?? null;
+            $this->jsVars['OE_patient_hosnum'] = $patient_identifier->value ?? null;
         }
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
@@ -2157,12 +2225,12 @@ class PatientController extends BaseController
             } else {
                 //Get all the validation errors
                 foreach ([
-                    'patient',
-                    'contact',
-                    'address',
-                    'patient_user_referral',
+                             'patient',
+                             'contact',
+                             'address',
                              'patient_user_referral',
-                ] as $model) {
+                             'patient_user_referral',
+                         ] as $model) {
                     if (isset(${$model})) {
                         if (is_array(${$model})) {
                             foreach (${$model} as $item) {
@@ -2306,7 +2374,7 @@ class PatientController extends BaseController
                 $patient_identifier_to_delete = PatientIdentifier::model()->findByAttributes([
                     'patient_id' => $patient->id,
                     'patient_identifier_type_id' => $patient_identifier->patient_identifier_type_id,
-                    ]);
+                ]);
                 if ($patient_identifier_to_delete && !$patient_identifier_to_delete->delete()) {
                     $success = false;
                 }
@@ -2451,7 +2519,7 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $referral = isset($patient->referral) ? $patient->referral : new PatientReferral();
         $this->pageTitle = 'Update Patient' . ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ?
-            ' - ' . $patient->last_name . ', ' . $patient->first_name : '');
+                ' - ' . $patient->last_name . ', ' . $patient->first_name : '');
         $gpcontact = isset($patient->gp) ? $patient->gp->contact : new Contact();
         $practice = isset($patient->practice) ? $patient->practice : new Practice();
         $practicecontact = isset($patient->practice) ? $patient->practice->contact : new Contact();

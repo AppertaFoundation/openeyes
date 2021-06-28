@@ -43,7 +43,19 @@ if (!Yii::app()->user->isGuest) {
     if (empty(Yii::app()->session['user'])) {
         Yii::app()->session['user'] = User::model()->findByPk(Yii::app()->user->id);
     }
+
     $user = Yii::app()->session['user'];
+    if (\SettingMetadata::model()->getSetting('enable_hie_link') === 'on' && isset($this->patient)) {
+        $hie_to_menu = [
+            'hie' => [
+                'title' => 'View HIE Record (Only to be used for Direct Clinical Care)',
+                'position' => count(Yii::app()->params['menu_bar_items'])+100,
+                'uri' => Yii::app()->createUrl('patient/getHieSource') . '/' . $this->patient->id,
+            ]
+        ];
+        Yii::app()->params['menu_bar_items'] = array_merge(Yii::app()->params['menu_bar_items'], $hie_to_menu);
+    }
+
     $menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
     $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
     ?>

@@ -758,6 +758,16 @@ class AdminController extends BaseAdminController
                     }
                 }
 
+                if (!is_null($hieAccessLevelData = $request->getPost('UserHieAccessLevelAssignment'))) {
+                    $hieAccessLevelAssignment = $user->hieAccessLevelAssignment;
+                    if (!$hieAccessLevelAssignment) {
+                        $hieAccessLevelAssignment = new UserHieAccessLevelAssignment();
+                        $hieAccessLevelAssignment->user_id = $user->id;
+                    }
+                    $hieAccessLevelAssignment->hie_access_level_id = $hieAccessLevelData['hie_access_level_id'];
+                    $hieAccessLevelAssignment->save();
+                }
+
                 $contact = $user->contact;
                 if (!$contact) {
                     $contact = new Contact();

@@ -325,6 +325,9 @@ $config = array(
         'widgetFactory' => array(
             'class' => 'WidgetFactory',
         ),
+        'hieIntegration' => array(
+            "class" => "HieIntegration"
+        )
     ),
 
     'params' => array(
@@ -348,6 +351,14 @@ $config = array(
         'ldap_info_retry_delay' => 1,
         'ldap_update_name' => strtolower(getenv("OE_LDAP_UPDATE_NAME")) == "true" ? true : false,
         'ldap_update_email' => strtolower(getenv("OE_LDAP_UPDATE_EMAIL")) == "false" ? false : true,
+        // This is used in HIEIntegration component
+        'hie_remote_url' => trim(@file_get_contents("/run/secrets/HIE_REMOTE_URL")) ?: (trim(getenv('HIE_REMOTE_URL')) ?: null),
+        'hie_usr_org' => trim(getenv('HIE_USR_ORG')) ?: null,
+        'hie_usr_fac' => trim(getenv('HIE_USR_FAC')) ?: null,
+        'hie_external' => trim(getenv('HIE_EXTERNAL')) ?: null,
+        'hie_org_user' => trim(@file_get_contents("/run/secrets/HIE_ORG_USER")) ?: (trim(getenv('HIE_ORG_USER')) ?: ''),
+        'hie_org_pass' => trim(@file_get_contents("/run/secrets/HIE_ORG_PASS")) ?: (trim(getenv('HIE_ORG_PASS')) ?: ''),
+        'hie_aes_encryption_password' => trim(@file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) ?: (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: ''),
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
         //'watermark' => '',
         'google_analytics_account' => '',
