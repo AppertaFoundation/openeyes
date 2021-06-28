@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
 	/* Set the config */
 	grunt.initConfig(require('./grunt/config')(grunt));

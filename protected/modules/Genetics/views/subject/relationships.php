@@ -1,13 +1,13 @@
 <?php
-$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true);
-Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.Genetics.Relationships.js');
-Yii::app()->clientScript->registerScriptFile($assetPath.'/js/relationships.js');
+$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'));
+Yii::app()->clientScript->registerScriptFile($assetPath . '/js/OpenEyes.Genetics.Relationships.js');
+Yii::app()->clientScript->registerScriptFile($assetPath . '/js/relationships.js');
 ?>
-<div class="data-group">
-    <div class="cols-2 column">
+<div class="data-group  flex-layout cols-full">
+    <div class="cols-7 column">
         <label for="genetics_patient_lookup">Relationships:</label>
     </div>
-    <div class="cols-5 column">
+    <div class="cols-4 column">
         <input type="text" name="genetics_patient_lookup" id="genetics_patient_lookup" placeholder="Search for a related patient">
         <div style="display:none" class="no-result-patients warning alert-box">
           <div class="small-12 column text-center">

@@ -2196,6 +2196,7 @@ class PatientController extends BaseController
     ) {
 
         $patientScenario = $patient->getScenario();
+        $isNewPatient = $patient->isNewRecord ? true : false;
         $transaction = Yii::app()->db->beginTransaction();
         try {
             $success =
@@ -2212,7 +2213,7 @@ class PatientController extends BaseController
                 if (
                     isset(Yii::app()->modules["Genetics"])
                     && Yii::app()->user->checkAccess('Genetics Clinical')
-                    && $patient->isNewRecord
+                    && $isNewPatient
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
                 } elseif ($prevUrl !== '') {

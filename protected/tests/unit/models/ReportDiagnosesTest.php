@@ -419,14 +419,14 @@ class ReportDiagnosesTest extends CDbTestCase
             ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
             ->getMock();
 
-        for ($i = 0;$i < 3;++$i) {
+        for ($i = 0; $i < 3; ++$i) {
             $query->expects($this->at($i * 2))
                 ->method('leftJoin')
-                ->with('episode e'.$i, 'e'.$i.'.patient_id = p.id and e'.$i.'.disorder_id = :pdis'.$i);
+                ->with('episode e' . $i, 'e' . $i . '.patient_id = p.id and e' . $i . '.disorder_id = :pdis' . $i);
 
             $query->expects($this->at(($i * 2) + 1))
                 ->method('leftJoin')
-                ->with('disorder pdis'.$i, 'pdis'.$i.'.id = e'.$i.'.disorder_id');
+                ->with('disorder pdis' . $i, 'pdis' . $i . '.id = e' . $i . '.disorder_id');
         }
 
         $r = new ReportDiagnoses();
@@ -440,8 +440,8 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->joinDisorders('Principal', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.id, c.first_name, c.last_name, p.dob, e0.created_date as pdis0_date, pdis0.fully_specified_name as pdis0_fully_specified_name, '.
-            'e0.eye_id as pdis0_eye, e1.created_date as pdis1_date, pdis1.fully_specified_name as pdis1_fully_specified_name, e1.eye_id as pdis1_eye, '.
+            'p.id, c.first_name, c.last_name, p.dob, e0.created_date as pdis0_date, pdis0.fully_specified_name as pdis0_fully_specified_name, ' .
+            'e0.eye_id as pdis0_eye, e1.created_date as pdis1_date, pdis1.fully_specified_name as pdis1_fully_specified_name, e1.eye_id as pdis1_eye, ' .
             'e2.created_date as pdis2_date, pdis2.fully_specified_name as pdis2_fully_specified_name, e2.eye_id as pdis2_eye',
             $select
         );
@@ -466,14 +466,14 @@ class ReportDiagnosesTest extends CDbTestCase
             ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
             ->getMock();
 
-        for ($i = 0;$i < 3;++$i) {
+        for ($i = 0; $i < 3; ++$i) {
             $query->expects($this->at($i * 2))
                 ->method('leftJoin')
-                ->with('episode e'.$i, 'e'.$i.'.patient_id = p.id and e'.$i.'.disorder_id = :pdis'.$i);
+                ->with('episode e' . $i, 'e' . $i . '.patient_id = p.id and e' . $i . '.disorder_id = :pdis' . $i);
 
             $query->expects($this->at(($i * 2) + 1))
                 ->method('leftJoin')
-                ->with('disorder pdis'.$i, 'pdis'.$i.'.id = e'.$i.'.disorder_id');
+                ->with('disorder pdis' . $i, 'pdis' . $i . '.id = e' . $i . '.disorder_id');
         }
 
         $r = new ReportDiagnoses();
@@ -487,8 +487,8 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->joinDisorders('Principal', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.id, c.first_name, c.last_name, p.dob, e0.created_date as pdis0_date, pdis0.fully_specified_name as pdis0_fully_specified_name, '.
-            'e0.eye_id as pdis0_eye, e1.created_date as pdis1_date, pdis1.fully_specified_name as pdis1_fully_specified_name, e1.eye_id as pdis1_eye, '.
+            'p.id, c.first_name, c.last_name, p.dob, e0.created_date as pdis0_date, pdis0.fully_specified_name as pdis0_fully_specified_name, ' .
+            'e0.eye_id as pdis0_eye, e1.created_date as pdis1_date, pdis1.fully_specified_name as pdis1_fully_specified_name, e1.eye_id as pdis1_eye, ' .
             'e2.created_date as pdis2_date, pdis2.fully_specified_name as pdis2_fully_specified_name, e2.eye_id as pdis2_eye',
             $select
         );
@@ -513,14 +513,14 @@ class ReportDiagnosesTest extends CDbTestCase
             ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
             ->getMock();
 
-        for ($i = 0;$i < 3;++$i) {
+        for ($i = 0; $i < 3; ++$i) {
             $query->expects($this->at($i * 2))
                 ->method('leftJoin')
-                ->with('secondary_diagnosis sd'.$i, 'sd'.$i.'.patient_id = p.id and sd'.$i.'.disorder_id = :sdis'.$i);
+                ->with('secondary_diagnosis sd' . $i, 'sd' . $i . '.patient_id = p.id and sd' . $i . '.disorder_id = :sdis' . $i);
 
             $query->expects($this->at(($i * 2) + 1))
                 ->method('leftJoin')
-                ->with('disorder sdis'.$i, 'sdis'.$i.'.id = sd'.$i.'.disorder_id');
+                ->with('disorder sdis' . $i, 'sdis' . $i . '.id = sd' . $i . '.disorder_id');
         }
 
         $r = new ReportDiagnoses();
@@ -534,8 +534,8 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->joinDisorders('Secondary', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
-            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
+            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, ' .
+            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, ' .
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
             $select
         );
@@ -560,14 +560,14 @@ class ReportDiagnosesTest extends CDbTestCase
             ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
             ->getMock();
 
-        for ($i = 0;$i < 3;++$i) {
+        for ($i = 0; $i < 3; ++$i) {
             $query->expects($this->at($i * 2))
                 ->method('leftJoin')
-                ->with('secondary_diagnosis sd'.$i, 'sd'.$i.'.patient_id = p.id and sd'.$i.'.disorder_id = :sdis'.$i);
+                ->with('secondary_diagnosis sd' . $i, 'sd' . $i . '.patient_id = p.id and sd' . $i . '.disorder_id = :sdis' . $i);
 
             $query->expects($this->at(($i * 2) + 1))
                 ->method('leftJoin')
-                ->with('disorder sdis'.$i, 'sdis'.$i.'.id = sd'.$i.'.disorder_id');
+                ->with('disorder sdis' . $i, 'sdis' . $i . '.id = sd' . $i . '.disorder_id');
         }
 
         $r = new ReportDiagnoses();
@@ -581,8 +581,8 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->joinDisorders('Secondary', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
-            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
+            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, ' .
+            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, ' .
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
             $select
         );
@@ -610,22 +610,22 @@ class ReportDiagnosesTest extends CDbTestCase
             ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
             ->getMock();
 
-        for ($i = 0;$i < 3;++$i) {
+        for ($i = 0; $i < 3; ++$i) {
             $query->expects($this->at($i * 4))
                 ->method('leftJoin')
-                ->with('episode ea'.$i, 'ea'.$i.'.patient_id = p.id and ea'.$i.'.disorder_id = :padis'.$i);
+                ->with('episode ea' . $i, 'ea' . $i . '.patient_id = p.id and ea' . $i . '.disorder_id = :padis' . $i);
 
             $query->expects($this->at(($i * 4) + 1))
                 ->method('leftJoin')
-                ->with('disorder padis'.$i, 'padis'.$i.'.id = ea'.$i.'.disorder_id');
+                ->with('disorder padis' . $i, 'padis' . $i . '.id = ea' . $i . '.disorder_id');
 
             $query->expects($this->at(($i * 4) + 2))
                 ->method('leftJoin')
-                ->with('secondary_diagnosis sda'.$i, 'sda'.$i.'.patient_id = p.id and sda'.$i.'.disorder_id = :sadis'.$i);
+                ->with('secondary_diagnosis sda' . $i, 'sda' . $i . '.patient_id = p.id and sda' . $i . '.disorder_id = :sadis' . $i);
 
             $query->expects($this->at(($i * 4) + 3))
                 ->method('leftJoin')
-                ->with('disorder sadis'.$i, 'sadis'.$i.'.id = sda'.$i.'.disorder_id');
+                ->with('disorder sadis' . $i, 'sadis' . $i . '.id = sda' . $i . '.disorder_id');
         }
 
         $r = new ReportDiagnoses();
@@ -639,11 +639,11 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->joinDisorders('All', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.id, c.first_name, c.last_name, p.dob, ea0.created_date as padis0_date, padis0.fully_specified_name as padis0_fully_specified_name, '.
-            'ea0.eye_id as padis0_eye, sda0.date as sadis0_date, sadis0.fully_specified_name as sadis0_fully_specified_name, sda0.eye_id as sadis0_eye, '.
-            'ea1.created_date as padis1_date, padis1.fully_specified_name as padis1_fully_specified_name, ea1.eye_id as padis1_eye, sda1.date as sadis1_date,'.
-            ' sadis1.fully_specified_name as sadis1_fully_specified_name, sda1.eye_id as sadis1_eye, ea2.created_date as padis2_date, '.
-            'padis2.fully_specified_name as padis2_fully_specified_name, ea2.eye_id as padis2_eye, sda2.date as sadis2_date, '.
+            'p.id, c.first_name, c.last_name, p.dob, ea0.created_date as padis0_date, padis0.fully_specified_name as padis0_fully_specified_name, ' .
+            'ea0.eye_id as padis0_eye, sda0.date as sadis0_date, sadis0.fully_specified_name as sadis0_fully_specified_name, sda0.eye_id as sadis0_eye, ' .
+            'ea1.created_date as padis1_date, padis1.fully_specified_name as padis1_fully_specified_name, ea1.eye_id as padis1_eye, sda1.date as sadis1_date,' .
+            ' sadis1.fully_specified_name as sadis1_fully_specified_name, sda1.eye_id as sadis1_eye, ea2.created_date as padis2_date, ' .
+            'padis2.fully_specified_name as padis2_fully_specified_name, ea2.eye_id as padis2_eye, sda2.date as sadis2_date, ' .
             'sadis2.fully_specified_name as sadis2_fully_specified_name, sda2.eye_id as sadis2_eye',
             $select
         );
@@ -674,22 +674,22 @@ class ReportDiagnosesTest extends CDbTestCase
             ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
             ->getMock();
 
-        for ($i = 0;$i < 3;++$i) {
+        for ($i = 0; $i < 3; ++$i) {
             $query->expects($this->at($i * 4))
                 ->method('leftJoin')
-                ->with('episode ea'.$i, 'ea'.$i.'.patient_id = p.id and ea'.$i.'.disorder_id = :padis'.$i);
+                ->with('episode ea' . $i, 'ea' . $i . '.patient_id = p.id and ea' . $i . '.disorder_id = :padis' . $i);
 
             $query->expects($this->at(($i * 4) + 1))
                 ->method('leftJoin')
-                ->with('disorder padis'.$i, 'padis'.$i.'.id = ea'.$i.'.disorder_id');
+                ->with('disorder padis' . $i, 'padis' . $i . '.id = ea' . $i . '.disorder_id');
 
             $query->expects($this->at(($i * 4) + 2))
                 ->method('leftJoin')
-                ->with('secondary_diagnosis sda'.$i, 'sda'.$i.'.patient_id = p.id and sda'.$i.'.disorder_id = :sadis'.$i);
+                ->with('secondary_diagnosis sda' . $i, 'sda' . $i . '.patient_id = p.id and sda' . $i . '.disorder_id = :sadis' . $i);
 
             $query->expects($this->at(($i * 4) + 3))
                 ->method('leftJoin')
-                ->with('disorder sadis'.$i, 'sadis'.$i.'.id = sda'.$i.'.disorder_id');
+                ->with('disorder sadis' . $i, 'sadis' . $i . '.id = sda' . $i . '.disorder_id');
         }
 
         $r = new ReportDiagnoses();
@@ -703,11 +703,11 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->joinDisorders('All', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.id, c.first_name, c.last_name, p.dob, ea0.created_date as padis0_date, padis0.fully_specified_name as padis0_fully_specified_name, '.
-            'ea0.eye_id as padis0_eye, sda0.date as sadis0_date, sadis0.fully_specified_name as sadis0_fully_specified_name, sda0.eye_id as sadis0_eye, '.
-            'ea1.created_date as padis1_date, padis1.fully_specified_name as padis1_fully_specified_name, ea1.eye_id as padis1_eye, sda1.date as sadis1_date,'.
-            ' sadis1.fully_specified_name as sadis1_fully_specified_name, sda1.eye_id as sadis1_eye, ea2.created_date as padis2_date, '.
-            'padis2.fully_specified_name as padis2_fully_specified_name, ea2.eye_id as padis2_eye, sda2.date as sadis2_date, '.
+            'p.id, c.first_name, c.last_name, p.dob, ea0.created_date as padis0_date, padis0.fully_specified_name as padis0_fully_specified_name, ' .
+            'ea0.eye_id as padis0_eye, sda0.date as sadis0_date, sadis0.fully_specified_name as sadis0_fully_specified_name, sda0.eye_id as sadis0_eye, ' .
+            'ea1.created_date as padis1_date, padis1.fully_specified_name as padis1_fully_specified_name, ea1.eye_id as padis1_eye, sda1.date as sadis1_date,' .
+            ' sadis1.fully_specified_name as sadis1_fully_specified_name, sda1.eye_id as sadis1_eye, ea2.created_date as padis2_date, ' .
+            'padis2.fully_specified_name as padis2_fully_specified_name, ea2.eye_id as padis2_eye, sda2.date as sadis2_date, ' .
             'sadis2.fully_specified_name as sadis2_fully_specified_name, sda2.eye_id as sadis2_eye',
             $select
         );
@@ -735,14 +735,14 @@ class ReportDiagnosesTest extends CDbTestCase
             ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
             ->getMock();
 
-        for ($i = 0;$i < 3;++$i) {
+        for ($i = 0; $i < 3; ++$i) {
             $query->expects($this->at($i * 2))
                 ->method('leftJoin')
-                ->with('secondary_diagnosis sd'.$i, 'sd'.$i.'.patient_id = p.id and sd'.$i.'.disorder_id = :sdis'.$i.' and sd'.$i.'.date >= :start_date');
+                ->with('secondary_diagnosis sd' . $i, 'sd' . $i . '.patient_id = p.id and sd' . $i . '.disorder_id = :sdis' . $i . ' and sd' . $i . '.date >= :start_date');
 
             $query->expects($this->at(($i * 2) + 1))
                 ->method('leftJoin')
-                ->with('disorder sdis'.$i, 'sdis'.$i.'.id = sd'.$i.'.disorder_id');
+                ->with('disorder sdis' . $i, 'sdis' . $i . '.id = sd' . $i . '.disorder_id');
         }
 
         $r = new ReportDiagnoses();
@@ -757,8 +757,8 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->joinDisorders('Secondary', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
-            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
+            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, ' .
+            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, ' .
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
             $select
         );
@@ -784,14 +784,14 @@ class ReportDiagnosesTest extends CDbTestCase
             ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
             ->getMock();
 
-        for ($i = 0;$i < 3;++$i) {
+        for ($i = 0; $i < 3; ++$i) {
             $query->expects($this->at($i * 2))
                 ->method('leftJoin')
-                ->with('secondary_diagnosis sd'.$i, 'sd'.$i.'.patient_id = p.id and sd'.$i.'.disorder_id = :sdis'.$i.' and sd'.$i.'.date <= :end_date');
+                ->with('secondary_diagnosis sd' . $i, 'sd' . $i . '.patient_id = p.id and sd' . $i . '.disorder_id = :sdis' . $i . ' and sd' . $i . '.date <= :end_date');
 
             $query->expects($this->at(($i * 2) + 1))
                 ->method('leftJoin')
-                ->with('disorder sdis'.$i, 'sdis'.$i.'.id = sd'.$i.'.disorder_id');
+                ->with('disorder sdis' . $i, 'sdis' . $i . '.id = sd' . $i . '.disorder_id');
         }
 
         $r = new ReportDiagnoses();
@@ -806,8 +806,8 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->joinDisorders('Secondary', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
-            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
+            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, ' .
+            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, ' .
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
             $select
         );
@@ -833,14 +833,14 @@ class ReportDiagnosesTest extends CDbTestCase
             ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
             ->getMock();
 
-        for ($i = 0;$i < 3;++$i) {
+        for ($i = 0; $i < 3; ++$i) {
             $query->expects($this->at($i * 2))
                 ->method('leftJoin')
-                ->with('secondary_diagnosis sd'.$i, 'sd'.$i.'.patient_id = p.id and sd'.$i.'.disorder_id = :sdis'.$i.' and sd'.$i.'.date >= :start_date and sd'.$i.'.date <= :end_date');
+                ->with('secondary_diagnosis sd' . $i, 'sd' . $i . '.patient_id = p.id and sd' . $i . '.disorder_id = :sdis' . $i . ' and sd' . $i . '.date >= :start_date and sd' . $i . '.date <= :end_date');
 
             $query->expects($this->at(($i * 2) + 1))
                 ->method('leftJoin')
-                ->with('disorder sdis'.$i, 'sdis'.$i.'.id = sd'.$i.'.disorder_id');
+                ->with('disorder sdis' . $i, 'sdis' . $i . '.id = sd' . $i . '.disorder_id');
         }
 
         $r = new ReportDiagnoses();
@@ -856,8 +856,8 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->joinDisorders('Secondary', array(1, 2, 3), $select, $whereParams, $or_conditions, $query);
 
         $this->assertEquals(
-            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, '.
-            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, '.
+            'p.id, c.first_name, c.last_name, p.dob, sd0.date as sdis0_date, sdis0.fully_specified_name as sdis0_fully_specified_name, ' .
+            'sd0.eye_id as sdis0_eye, sd1.date as sdis1_date, sdis1.fully_specified_name as sdis1_fully_specified_name, sd1.eye_id as sdis1_eye, ' .
             'sd2.date as sdis2_date, sdis2.fully_specified_name as sdis2_fully_specified_name, sd2.eye_id as sdis2_eye',
             $select
         );
@@ -1239,7 +1239,7 @@ Posterior vitreous detachment (Principal or Secondary)
 Diabetes mellitus type 1 (Principal or Secondary)
 Between 10 May 2002 and 19 May 2002
 
-'.$r->getPatientIdentifierPrompt().',Date of Birth,First Name,Last Name,Date,Diagnoses,Patient IDs
+' . $r->getPatientIdentifierPrompt() . ',Date of Birth,First Name,Last Name,Date,Diagnoses,Patient IDs
 "12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Left one (Principal)","12345, "
 "12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Right two (Secondary)","12345, "
 "12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Both bloo (Principal)","12345, "
@@ -1276,14 +1276,14 @@ Between 10 May 2002 and 19 May 2002
 
         $this->assertEquals('Principal', $first['type']);
         $this->assertEquals('Myopia (disorder)', $first['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $first['date']);
+        $this->assertRegExp('/^' . date('Y-m-d') . '/', $first['date']);
         $this->assertEquals('Left', $first['eye']);
 
         $second = array_shift($row['diagnoses']);
 
         $this->assertEquals('Principal', $second['type']);
         $this->assertEquals('Retinal lattice degeneration (disorder)', $second['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $second['date']);
+        $this->assertRegExp('/^' . date('Y-m-d') . '/', $second['date']);
         $this->assertEquals('Both', $second['eye']);
     }
 
@@ -1422,14 +1422,14 @@ Between 10 May 2002 and 19 May 2002
 
         $this->assertEquals('Principal', $fourth['type']);
         $this->assertEquals('Myopia (disorder)', $fourth['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $fourth['date']);
+        $this->assertRegExp('/^' . date('Y-m-d') . '/', $fourth['date']);
         $this->assertEquals('Left', $fourth['eye']);
 
         $fifth = array_shift($row['diagnoses']);
 
         $this->assertEquals('Principal', $fifth['type']);
         $this->assertEquals('Retinal lattice degeneration (disorder)', $fifth['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $fifth['date']);
+        $this->assertRegExp('/^' . date('Y-m-d') . '/', $fifth['date']);
         $this->assertEquals('Both', $fifth['eye']);
     }
 
@@ -1508,14 +1508,14 @@ Between 10 May 2002 and 19 May 2002
 
         $this->assertEquals('Principal', $second['type']);
         $this->assertEquals('Myopia (disorder)', $second['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $second['date']);
+        $this->assertRegExp('/^' . date('Y-m-d') . '/', $second['date']);
         $this->assertEquals('Left', $second['eye']);
 
         $third = array_shift($row['diagnoses']);
 
         $this->assertEquals('Principal', $third['type']);
         $this->assertEquals('Retinal lattice degeneration (disorder)', $third['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $second['date']);
+        $this->assertRegExp('/^' . date('Y-m-d') . '/', $second['date']);
         $this->assertEquals('Both', $third['eye']);
     }
 

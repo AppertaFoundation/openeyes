@@ -56,7 +56,7 @@ class ReportDiagnoses extends BaseReport
     public function rules()
     {
         return array(
-            array('principal, secondary, all, condition_type, start_date, end_date, institution_id', 'safe'),
+            array('principal, secondary, all, condition_type, start_date, end_date,institution_id', 'safe'),
             array('start_date, end_date, condition_type', 'required'),
         );
     }
@@ -75,8 +75,10 @@ class ReportDiagnoses extends BaseReport
         $all = array();
 
         foreach ($this->all as $disorder_id) {
-            if ((empty($this->principal) || !in_array($disorder_id, $this->principal)) &&
-                (empty($this->secondary) || !in_array($disorder_id, $this->secondary))) {
+            if (
+                (empty($this->principal) || !in_array($disorder_id, $this->principal)) &&
+                (empty($this->secondary) || !in_array($disorder_id, $this->secondary))
+            ) {
                 $all[] = $disorder_id;
             }
         }
@@ -314,8 +316,10 @@ class ReportDiagnoses extends BaseReport
      */
     private function getDateColumnName($type)
     {
-        if ($type === self::TYPE_PRINCIPAL_ONLY
-            || $type === self::TYPE_PRINCIPAL_ALL) {
+        if (
+            $type === self::TYPE_PRINCIPAL_ONLY
+            || $type === self::TYPE_PRINCIPAL_ALL
+        ) {
             return 'created_date';
         } else {
             return 'date';
@@ -352,8 +356,10 @@ class ReportDiagnoses extends BaseReport
      */
     private function getTypeReportName($type)
     {
-        if ($type === self::TYPE_PRINCIPAL_ONLY
-            || $type === self::TYPE_PRINCIPAL_ALL) {
+        if (
+            $type === self::TYPE_PRINCIPAL_ONLY
+            || $type === self::TYPE_PRINCIPAL_ALL
+        ) {
             return 'Principal';
         } else {
             return 'Secondary';

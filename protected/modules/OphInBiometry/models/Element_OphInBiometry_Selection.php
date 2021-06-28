@@ -90,7 +90,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
             array('formula_id_left', 'checkSelectedLensFormula', 'selectData' => 'left_formula'),
             array('lens_id_right', 'checkSelectedLensFormula', 'selectData' => 'right_lens'),
             array('formula_id_right', 'checkSelectedLensFormula', 'selectData' => 'right_formula'),
-            array('lens_id_left, lens_id_right', 'default', 'setOnEmpty' => true, 'value' => 0),
+            array('lens_id_left, lens_id_right', 'default', 'setOnEmpty' => true, 'value' => null),
 
             // Please remove those attributes that should not be searched.
             array('id, event_id ', 'safe', 'on' => 'search'),

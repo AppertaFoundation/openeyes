@@ -212,6 +212,7 @@ class DefaultController extends BaseEventTypeController
         $storage->letter = Yii::app()->request->getPost('dnaextraction_letter');
         $storage->number = Yii::app()->request->getPost('dnaextraction_number');
         $storage->letter = $storage->letter ? strtoupper($storage->letter) : $storage->letter;
+        $storage->display_order = $storage->calculateDefaultDisplayOrder();
 
         if ( $storage->save() ) {
             $selectedID = $storage->getPrimaryKey();

@@ -577,6 +577,15 @@
                 <div class="subtitle">Appointments</div>
                 <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]) ?>
             </div><!-- .popup-overflow -->
+
+            <div class="popup-overflow" ">
+                        <?php
+                            $this->widget('application.modules.Genetics.widgets.PatientGeneticSummary', array(
+                                'patient' => $this->patient,
+                            ));
+                        ?>
+            </div>
+
         </div><!-- left -->
         <div class="cols-right">
             <div class="popup-overflow">
@@ -621,3 +630,4 @@
         </div>
     </div>
 <?php } ?>
+

@@ -41,12 +41,12 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('box_id, letter, number', 'required'),
+            array('box_id, letter, number, display_order', 'required'),
             array('number', 'numerical', 'min' => 1),
             array('box_id','availabeStorage'),
             array('letter','letterValidation'),
             array('number','numberValidation'),
-            array('box_id, letter, number','safe'),
+            array('box_id, letter, number, display_order','safe'),
         );
     }
 
@@ -117,6 +117,19 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * calculate the appropriate default displayorder for this record.
+     *
+     * @return int
+     */
+    public function calculateDefaultDisplayOrder()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->order = 'display_order desc';
+        $criteria->limit = 1;
+        return ($order = self::model()->find($criteria)) ? $order->display_order + 1 : 1;
     }
     
     public function relations()

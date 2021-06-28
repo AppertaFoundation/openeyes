@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -28,12 +29,9 @@
 class GeneticsPatient extends BaseActiveRecord
 {
     protected $auto_update_relations = true;
-
     protected $statuses = array();
-
     protected $preExistingPedigreesIds = array();
-
-    //for searching on the subject/list page
+//for searching on the subject/list page
     public $patient_dob;
     public $patient_firstname;
     public $patient_lastname;
@@ -41,8 +39,7 @@ class GeneticsPatient extends BaseActiveRecord
     public $patient_yob;
     public $patient_disorder_id;
     public $patient_pedigree_id;
-
-    /**
+/**
      * Returns the static model of the specified AR class.
      *
      * @return Issue the static model class
@@ -70,7 +67,7 @@ class GeneticsPatient extends BaseActiveRecord
         return array(
             array('studies', 'isProposable'),
             array('pedigrees', 'isEmptyPedigrees'),
-            array('patient_id', 'unique', 'on'=>'insert', 'message'=>'The selected patient is already linked to a genetics subject.'),
+            array('patient_id', 'unique', 'on' => 'insert', 'message' => 'The selected patient is already linked to a genetics subject.'),
             array('id, patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
 
             //for searching on the subject/list page
@@ -91,7 +88,7 @@ class GeneticsPatient extends BaseActiveRecord
             if ($this->studies) {
                 foreach ($this->studies as $study) {
                     if (in_array($study->id, $existing, true)) {
-                        continue;
+                            continue;
                     }
                     //New study has been added, make sure that it's possible for the user to propose this.
               /*      if (!$study->canBeProposedByUser(Yii::app()->user)){
@@ -99,7 +96,7 @@ class GeneticsPatient extends BaseActiveRecord
                     }*/
 
                     if (!$study->canBeProposedByUserDateCheck(Yii::app()->user)) {
-                        $this->addError($attribute, 'You cannot propose subjects for ' . $study->name. ' as it has ended');
+                        $this->addError($attribute, 'You cannot propose subjects for ' . $study->name . ' as it has ended');
                     }
                 }
             }
@@ -194,11 +191,10 @@ class GeneticsPatient extends BaseActiveRecord
 
     public function isEmptyPedigrees()
     {
-        if ( Yii::app()->request->isPostRequest ) {
+        if (Yii::app()->request->isPostRequest) {
             $no_pedigree = Yii::app()->request->getPost('no_pedigree');
             $genetics_patient = Yii::app()->request->getPost('GeneticsPatient');
-
-            if (!$no_pedigree && $genetics_patient && empty($genetics_patient['pedigrees']) ) {
+            if (!$no_pedigree && $genetics_patient && empty($genetics_patient['pedigrees'])) {
                 $this->addError('pedigrees', 'Please add at least one pedigree!');
             }
         }
@@ -210,32 +206,24 @@ class GeneticsPatient extends BaseActiveRecord
     protected function afterSave()
     {
         parent::afterSave();
-
         if ($this->getIsNewRecord()) {
             $this->updateDiagnoses();
-
-            /*
+        /*
              * Auto-generate a new pedigree and
              * assign it to the genetic subject
              */
 
             if (isset($_POST['no_pedigree'])) {
                 $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
-
                 $pedigree = new Pedigree();
-
                 $pedigree->inheritance_id = $pedigree_inheritance ? $pedigree_inheritance->id : null;
                 $pedigree->comments = '';
                 $pedigree->consanguinity = false;
-
                 $pedigree->save(false);
-
                 $p_id = $pedigree->id;
-
                 $link = new GeneticsPatientPedigree();
                 $link->pedigree_id = $p_id;
                 $link->patient_id = $this->id;
-
                 $link->save(false);
             }
 
@@ -250,9 +238,7 @@ class GeneticsPatient extends BaseActiveRecord
 
             $added = array_diff($this->preExistingPedigreesIds, $pedigreeIds);
             $deleted = array_diff($pedigreeIds, $this->preExistingPedigreesIds);
-
             $difference = Pedigree::model()->findAllByPk(array_merge($added, $deleted));
-
             foreach ($difference as $pedigree) {
                 $pedigree->updateDiagnosis();
             }
@@ -267,7 +253,6 @@ class GeneticsPatient extends BaseActiveRecord
     protected function updateDiagnoses()
     {
         $diagnoses = $this->patient->getAllDisorders();
-
         foreach ($diagnoses as $diagnosis) {
             $geneticsDiagnosis = new GeneticsPatientDiagnosis();
             $geneticsDiagnosis->patient_id = $this->id;
@@ -292,9 +277,7 @@ class GeneticsPatient extends BaseActiveRecord
             'pedigree_id' => $pedigree_id,
             'patient_id' => $this->id,
         );
-
         $patientPedigree = GeneticsPatientPedigree::model()->find($criteria);
-
         if (!$patientPedigree || !$patientPedigree->status) {
             return 'Unknown';
         }
@@ -318,18 +301,19 @@ class GeneticsPatient extends BaseActiveRecord
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->with = array('patient', 'patient.contact');
         $criteria->compare('t.id', $this->id);
         $criteria->compare('patient_id', $this->patient_id, true);
         $criteria->compare('comments', $this->comments, true);
         $criteria->compare('gender_id', $this->gender_id, true);
         $criteria->compare('is_deceased', $this->is_deceased);
-
         $criteria->compare('patient.dob', $this->patient_dob, true);
         $criteria->compare('patient.dob', $this->patient_yob, true);
-
-        if ( $this->patient_pedigree_id ) {
+        $patient_search = new PatientSearch();
+        $patient_hos_num = $patient_search->getHospitalNumber($this->patient_hos_num);
+        $criteria->compare('patient.hos_num', $patient_hos_num, false);
+        if ($this->patient_pedigree_id) {
             $criteria->with['genetics_patient_pedigree'] = array('select' => 'genetics_patient_pedigree.pedigree_id', 'together' => true);
             $criteria->compare('genetics_patient_pedigree.pedigree_id', $this->patient_pedigree_id, false);
         }
@@ -337,21 +321,20 @@ class GeneticsPatient extends BaseActiveRecord
         $criteria->compare('contact.first_name', $this->patient_firstname, true);
         $criteria->compare('contact.last_name', $this->patient_lastname, true);
         $criteria->compare('contact.maiden_name', $this->patient_maidenname, true);
-
-        //because of the 'together' => true , yii returns wrong row counts when 'patient_disorder_id' is not present
+//because of the 'together' => true , yii returns wrong row counts when 'patient_disorder_id' is not present
         if ($this->patient_disorder_id > 0) {
             $criteria->with['genetics_diagnosis'] = array('select' => 'genetics_diagnosis.disorder_id', 'together' => true);
             $criteria->compare('genetics_diagnosis.disorder_id', $this->patient_disorder_id, false);
         }
 
         $dataProvider = new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
             'sort' => array(
                 'attributes' => array(
                     'id',
                     'patient.fullName' => array(
-                        'asc'=>"CONCAT(contact.first_name, ' ', contact.last_name)",
-                        'desc'=>"CONCAT(contact.first_name, ' ', contact.last_name) DESC"
+                        'asc' => "CONCAT(contact.first_name, ' ', contact.last_name)",
+                        'desc' => "CONCAT(contact.first_name, ' ', contact.last_name) DESC"
                     ),
                     'patient.dob',
                     'patient.firstName' => array(
@@ -376,7 +359,6 @@ class GeneticsPatient extends BaseActiveRecord
             ),
 
         ));
-
         return $dataProvider;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="admin box">
@@ -89,7 +91,7 @@
             array(
                 'id' => 'hos_num',
                 'header' => $primary_identifier_prompt,
-                'htmlOptions' => array('width' => '70px'),
+                'htmlOptions' => array('width' => '110px'),
                 'value' => function ($data) {
                     $institution = Institution::model()->getCurrent();
                     $selected_site_id = Yii::app()->session['selected_site_id'];

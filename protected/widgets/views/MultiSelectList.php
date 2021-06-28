@@ -59,7 +59,7 @@ $widgetOptionsJson = json_encode(array(
 
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div id="<?php echo $div_id ?>"
-     class="<?php echo $div_class ?> row widget" <?php if ($hidden) {
+     class="<?php echo $div_class ?> row widget flex-layout" <?php if ($hidden) {
             ?>hidden<?php
             } ?>>
   <div class="cols-<?php echo $layoutColumns['label']; ?> column">
