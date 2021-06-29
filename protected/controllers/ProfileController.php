@@ -51,6 +51,7 @@ class ProfileController extends BaseController
         }
         $errors = array();
         $user = User::model()->findByPk(Yii::app()->user->id);
+        $user_auth = Yii::app()->session['user_auth'];
         $display_theme_setting = SettingUser::model()->find(
             'user_id = :user_id AND `key` = "display_theme"',
             array('user_id' => $user->id)
@@ -105,6 +106,7 @@ class ProfileController extends BaseController
 
         $this->render('/profile/info', array(
             'user' => $user,
+            'user_auth' => $user_auth,
             'errors' => $errors,
             'display_theme' => $display_theme_setting ? $display_theme_setting->value : null,
             'user_out_of_office' => $user_out_of_office,
