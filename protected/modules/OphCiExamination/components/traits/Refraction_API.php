@@ -91,8 +91,12 @@ trait Refraction_API
                     </thead>
                     <tbody>
                         <tr>
-                          <td class="VA-tbl-td">' . $right_spherical . '</td>
-                          <td class="VA-tbl-td">' . $left_spherical . '</td>
+                            <td class="VA-tbl-td">' . $right_spherical . '</td>
+                            <td class="VA-tbl-td">' . $left_spherical . '</td>
+                        </tr>
+                        <tr>
+                            <td class="VA-tbl-td">' . $refract_element->getPriorityReadingCombined('right') . '</td>
+                            <td class="VA-tbl-td">' . $refract_element->getPriorityReadingCombined('left') . '</td>
                         </tr>
                     </tbody>
                 </table>';
