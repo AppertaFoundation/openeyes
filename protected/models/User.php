@@ -21,12 +21,12 @@
  *
  * The followings are the available columns in table 'User':
  *
- * @property int    $id
+ * @property int $id
  * @property string $first_name
  * @property string $last_name
  * @property string $email
- * @property int    $global_firm_rights
- * @property date   $correspondence_sign_off_user_id
+ * @property int $global_firm_rights
+ * @property date $correspondence_sign_off_user_id
  */
 class User extends BaseActiveRecordVersioned
 {
@@ -293,10 +293,10 @@ class User extends BaseActiveRecordVersioned
     public function getFullNameAndTitleAndQualifications()
     {
         return implode(' ', array(
-            $this->title,
-            $this->first_name,
-            $this->last_name,
-        )) . ($this->qualifications ? ' ' . $this->qualifications : '');
+                $this->title,
+                $this->first_name,
+                $this->last_name,
+            )) . ($this->qualifications ? ' ' . $this->qualifications : '');
     }
 
     /**
@@ -326,8 +326,8 @@ class User extends BaseActiveRecordVersioned
      *
      * @param       $target
      * @param       $action
-     * @param null  $data
-     * @param bool  $log
+     * @param null $data
+     * @param bool $log
      * @param array $properties
      */
     public function audit($target, $action, $data = null, $log = false, $properties = array())
@@ -456,7 +456,7 @@ class User extends BaseActiveRecordVersioned
                     $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
                     $criteria = new CDbCriteria();
                     $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id';
-                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>$newPermission->trial_permission_id );
+                    $criteria->params = array(':user_id' => $this->id, ':trial_id' => $trial->id, ':trial_permission_id' => $newPermission->trial_permission_id);
                     if (UserTrialAssignment::model()->exists($criteria) == false) {
                         if (!$newPermission->save()) {
                             throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
@@ -475,7 +475,7 @@ class User extends BaseActiveRecordVersioned
                 foreach ($trials as $trial) {
                     $criteria = new CDbCriteria();
                     $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id AND role IS NULL AND is_principal_investigator=:is_principal_investigator AND is_study_coordinator=:is_study_coordinator';
-                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>TrialPermission::model()->find('code = ?', array('MANAGE'))->id,':is_principal_investigator'=>0,':is_study_coordinator'=>0 );
+                    $criteria->params = array(':user_id' => $this->id, ':trial_id' => $trial->id, ':trial_permission_id' => TrialPermission::model()->find('code = ?', array('MANAGE'))->id, ':is_principal_investigator' => 0, ':is_study_coordinator' => 0);
                     if (UserTrialAssignment::model()->exists($criteria)) {
                         if (!UserTrialAssignment::model()->deleteAll($criteria)) {
                             throw new CHttpException(500, 'The user permissions for this trial could not be removed: '
@@ -639,7 +639,7 @@ class User extends BaseActiveRecordVersioned
     {
         $pw_restrictions = Yii::app()->params['pw_restrictions'];
 
-        if ($pw_restrictions===null) {
+        if ($pw_restrictions === null) {
             $pw_restrictions = array(
                 'min_length' => 8,
                 'min_length_message' => 'Passwords must be at least 8 characters long',
@@ -653,13 +653,13 @@ class User extends BaseActiveRecordVersioned
             $pw_restrictions['min_length'] = 8;
         }
         if (!isset($pw_restrictions['min_length_message'])) {
-            $pw_restrictions['min_length_message'] = 'Passwords must be at least '.$pw_restrictions['min_length'].' characters long';
+            $pw_restrictions['min_length_message'] = 'Passwords must be at least ' . $pw_restrictions['min_length'] . ' characters long';
         }
         if (!isset($pw_restrictions['max_length'])) {
             $pw_restrictions['max_length'] = 70;
         }
         if (!isset($pw_restrictions['max_length_message'])) {
-            $pw_restrictions['max_length_message'] = 'Passwords must be at most '.$pw_restrictions['max_length'].' characters long';
+            $pw_restrictions['max_length_message'] = 'Passwords must be at most ' . $pw_restrictions['max_length'] . ' characters long';
         }
         if (!isset($pw_restrictions['strength_regex'])) {
             $pw_restrictions['strength_regex'] = "%.*%";
@@ -716,7 +716,7 @@ class User extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->addInCondition('t.id', $user_ids);
 
-        if ( !empty($user_ids)) {
+        if (!empty($user_ids)) {
             $users = $this->findAll($criteria);
 
             foreach ($users as $id => $user) {
@@ -842,7 +842,10 @@ class User extends BaseActiveRecordVersioned
     {
         $usernames_with_statuses = [];
         foreach ($this->authentications as $authentication) {
-            $usernames_with_statuses[] = $authentication->username . " ($authentication->password_status)";
+            $is_active = $authentication->active ? 'Active' : 'Inactive';
+            $password_status = $authentication->isLocalAuth() ? $authentication->password_status : "LDAP";
+
+            $usernames_with_statuses[] = $authentication->username . " ($is_active / $password_status)";
         }
 
         return $usernames_with_statuses;
