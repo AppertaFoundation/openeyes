@@ -25,6 +25,7 @@ $config = [
                 'Allergy Reactions' => ['uri' => '/OphCiExamination/admin/AllergyReactions/index', 'restricted' => array('admin')],
                 'Required Allergy Assignment' => '/OphCiExamination/admin/AllergyAssignment/index',
                 'Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalities/index',
+                'Red Flags' => '/OphCiExamination/admin/redFlags',
                 'Required Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalityAssignment/index',
                 'Risks' => '/OphCiExamination/risksAdmin/list',
                 'Required Risk Assignment' => '/OphCiExamination/admin/RisksAssignment/index',

@@ -1253,4 +1253,10 @@ class AdminController extends \ModuleAdminController
             ]
         );
     }
+    public function actionRedFlags()
+    {
+        Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_AE_RedFlags_Options'));
+
+        $this->genericAdmin('Edit Red Flags Options', 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options', ['div_wrapper_class' => 'cols-5', 'return_url' => '/OphCiExamination/admin/redFlags'], null, true);
+    }
 }
