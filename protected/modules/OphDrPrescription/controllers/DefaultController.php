@@ -535,7 +535,7 @@ class DefaultController extends BaseEventTypeController
         Audit::add(
             'print-prescription',
             'print',
-            Yii::app()->session['user']->username .' printed the prescription.'
+            Yii::app()->session['user_auth']->username .' printed the prescription.'
         );
 
         $event = \Event::model()->findByPk($id);
@@ -888,7 +888,7 @@ class DefaultController extends BaseEventTypeController
                 Audit::add(
                     'authorise-prescription',
                     'authorise',
-                    Yii::app()->session['user']->username . ' authorises the prescription.'
+                    Yii::app()->session['user_auth']->username . ' authorises the prescription.'
                 );
                 $result = [
                     'success' => 1
