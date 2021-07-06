@@ -87,7 +87,7 @@ class PopulatePatientDemographicsCommand extends CConsoleCommand
                     sleep(self::DELAY_SECONDS);
                 }
                 $transaction->commit();
-                if (count($unaltered_patients > 0)) {
+                if (count($unaltered_patients) > 0) {
                     OELog::log(
                         "PopulatePatientDemographics: Patients with the following IDs could not be saved: ["
                         . implode(', ', $unaltered_patients)
