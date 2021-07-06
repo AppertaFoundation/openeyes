@@ -18,7 +18,6 @@ namespace OEModule\OphCiExamination\controllers\traits;
 
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityFixation;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityOccluder;
-use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityQualifier;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuitySource;
 
 trait AdminForVisualAcuity
@@ -58,17 +57,6 @@ trait AdminForVisualAcuity
                         "type" => "boolean"
                     ]
                 ]
-            ]
-        );
-    }
-
-    public function actionVisualAcuityQualifiers()
-    {
-        $this->genericAdmin(
-            "Visual Acuity - Qualifiers",
-            OphCiExamination_VisualAcuityQualifier::class,
-            [
-                'description' => "Measurement Qualifier options for Visual Acuity Elements"
             ]
         );
     }
