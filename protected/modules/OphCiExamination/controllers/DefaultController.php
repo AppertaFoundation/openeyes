@@ -1203,6 +1203,43 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Save pain score.
+     *
+     * @param $element
+     * @param $data
+     * @param $index
+     */
+    protected function saveComplexAttributes_Element_OphCiExamination_Pain($element, $data, $index)
+    {
+        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Pain']['entries'];
+
+        foreach ($entries as $entry) {
+            if (isset($entry['id'])) {
+                $entry_object = \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry::model()->findByPk($entry['id']);
+            } else {
+                $entry_object = new \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry();
+            }
+
+            $entry_object->element_id = $element->id;
+            $entry_object->pain_score = $entry['pain_score'];
+            $entry_object->comment = $entry['comment'];
+            $entry_object->datetime = $entry['datetime'];
+
+            $entry_object->save();
+        }
+
+        $ids_to_delete = json_decode($data['pain_ids_to_delete']);
+        foreach ($ids_to_delete as $id) {
+            $object_to_delete = \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry::model()->findByPk($id);
+            if ($object_to_delete->element_id === $element->id) {
+                $object_to_delete->delete();
+            } else {
+                throw new \Exception("Tried to delete pain entry from another element!");
+            }
+        }
+    }
+
+    /**
      * Save diagnoses.
      *
      * @param $element
