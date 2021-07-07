@@ -38,6 +38,27 @@ if (file_exists('/etc/openeyes/db.conf')) {
     );
 }
 
+/** START SINGLE SIGN-ON OPTIONS */
+    // The base url for single-sign-on using SAML Authentication
+    $ssoBaseurl = getenv('SSO_BASE_URL') ?: 'http://localhost';
+    $ssoEntityId = getenv('SSO_ENTITY_ID') ?: '';
+    $ssoAppEmbedLink = getenv('SSO_APP_EMBED_LINK') ?: '';
+
+    // Credentials necessary for single-sign-on using OpenID-Connect
+    $ssoProviderURL = getenv('SSO_PROVIDER_URL') ?: '';
+    $ssoClientID = getenv('SSO_CLIENT_ID') ?: '';
+    $ssoClientSecret = getenv('SSO_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/SSO_CLIENT_SECRET")) ?: '');
+    $ssoIssuerURL = getenv('SSO_ISSUER_URL') ?: null;
+    $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
+    $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
+    $ssoImplicitFLow = strtolower(getenv('SSO_IMPLICIT_FLOW')) === 'true';
+    $ssoUserAttributes = getenv('SSO_USER_ATTRIBUTES') ?: '';
+    $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
+
+    $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
+    $authSource = getenv('AUTH_SOURCE') ?: 'BASIC';
+/** END SINGLE SIGN-ON SETTINGS */
+
 $config = array(
     'name' => 'OpenEyes',
 
@@ -778,6 +799,63 @@ $config = array(
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
+        /** START SINGLE SIGN-ON PARAMS */
+        'strict_SSO_roles_check' => $ssoMappingsCheck,
+        // Settings for OneLogin PHP-SAML toolkit
+        'SAML_settings' => array(
+            // BaseURL of the view that will process the SAML message
+            'baseurl' => '',// baseurl is set to null at the moment because of the OneLogin known issue in Github(Link: https://github.com/onelogin/php-saml/issues/249).
+            // If true then all unsigned and unencrypted messages will be rejected and should also follow set standards and rules
+            'strict' => true,
+            // Debug mode to print errors
+            'debug' => false,
+            // Service Provider data - OpenEyes
+            'sp' => array(
+                'entityId' => $ssoBaseurl . '/sso/login',   // Identifier of SP (URI)
+                'assertionConsumerService' => array(
+                  'url' => $ssoBaseurl . '/sso/login',    // URL where SAMLResponse will be sent
+                  'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',  // HTTP-POST binding only
+                ),
+                'NameIDFormat' => 'emailAddress', // Constraints on name identifier to be used
+            ),
+            'idp' => array(
+                'entityId' => $ssoEntityId,    //Metadata Source
+                'singleSignOnService' => array( //SSO endpoint information
+                  'url' => $ssoAppEmbedLink, // URL Target where the IdP will send the authentication request
+                  'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                ),
+                'singleLogoutService' => array(
+                  'url' => '', //URL where the SP will send the logout request
+                  'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect', // HTTP-Redirect binding only
+                ),
+                'x509cert' => '',
+            )
+        ),
+        'OIDC_settings' => array(
+            // OpenID Party (OP) that will send the token
+            'provider_url' => $ssoProviderURL,
+            // Client ID given by the portal
+            'client_id' => $ssoClientID,
+            // CLient Secret given by the portal
+            'client_secret' => $ssoClientSecret,
+            // URL for the custom Authorization Server (Optional)
+            'issuer' => $ssoIssuerURL,
+            // Absolute URL where the OIDC token will be sent
+            'redirect_url' => $ssoRedirectURL . '/sso/login',      // Remove trailing slashes
+            // Response type - can be [code id_token token]
+            'response_type' => $ssoResponseType,
+            // Implicit flows
+            'implicit_flow' => $ssoImplicitFLow,
+            // Scopes - These are all the necessary and sufficient scopes at this stage
+            'scopes' => array('openid', 'email', 'profile'),
+            // Method used to send authorization code.
+            'authParams' => array('response_mode' => 'form_post'),
+            // Generates random encryption key for openssl
+            'encryptionKey' => $ssoClientSecret,
+            // Configure custom claims with the user attributes that the claims are for
+            'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+        ),
+        /** END SINGLE SIGN-ON PARAMS */
     ),
 );
 
