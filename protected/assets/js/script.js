@@ -15,10 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 let prepopulationData;
+let loginOverlayTemplate;
 
 $(document).ready(function () {
-	if (window.location.pathname !== '/site/login') {
-		$(document.body).append(createLoginOverlay());
+  if(window.location.pathname !== '/site/login') {
+      loginOverlayTemplate = createLoginOverlay();
+    $(document.body).append(loginOverlayTemplate);
 
 		let loginOverlay = $('#js-overlay');
 		loginOverlay.hide();
@@ -371,8 +373,9 @@ $(document).ready(function () {
 function showLoginOverlay() {
 	let loginOverlay = $('#js-overlay');
 
-	if (!loginOverlay.length) {
-		$(document.body).append(createLoginOverlay());
+    if (!loginOverlay.length)
+    {
+        $(document.body).append(loginOverlayTemplate);
 
 		loginOverlay = $('#js-overlay');
 		loginOverlay.hide();
