@@ -46,8 +46,11 @@ class DefaultController extends \BaseEventTypeController
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
         'dismissCVIalert' => self::ACTION_TYPE_FORM,
         'getOctAssessment' => self::ACTION_TYPE_FORM,
-        'getAttachment' => self::ACTION_TYPE_FORM
+        'getAttachment' => self::ACTION_TYPE_FORM,
+        'resolveSafeguardingElement' => self::ACTION_TYPE_SAFEGUARDING,
     );
+
+    private const ACTION_TYPE_SAFEGUARDING = 'Safeguarding';
 
     /**
      * Set to true if the index search bar should appear in the header when creating/editing the event
@@ -1539,6 +1542,92 @@ class DefaultController extends \BaseEventTypeController
             }
             $prescription->event->audit('event', 'update', serialize(array_merge($prescription->attributes, ['prescription_edit_reason' => $audit_prescription_edit_reason])), null, array('module' => 'Prescription', 'model' => 'Element_OphDrPrescription_Details'));
         }
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_Safeguarding($element, $data, $index)
+    {
+        $element_data = $data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())];
+
+        $element->no_concerns = $element_data['no_concerns'];
+
+        if (isset($data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())]['entries'])) {
+            $entries = $data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())]['entries'];
+
+            foreach ($entries as $entry) {
+                if (isset($entry['id'])) {
+                    $entry_object = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findByPk($entry['id']);
+                } else {
+                    $entry_object = new \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry();
+                }
+
+                $entry_object->element_id = $element->id;
+                $entry_object->concern_id = $entry['concern_id'];
+                if (isset($entry['comment']) && !empty($entry['comment'])) {
+                    $entry_object->comment = $entry['comment'];
+                }
+
+                $entry_object->save();
+            }
+        }
+
+        $ids_to_delete = json_decode($data['safeguarding_ids_to_delete']);
+        foreach ($ids_to_delete as $id) {
+            $object_to_delete = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findByPk($id);
+            if ($object_to_delete->element_id === $element->id) {
+                $object_to_delete->delete();
+            } else {
+                throw new \Exception("Tried to delete safeguarding entry from another element!");
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkSafeguardingAccess()
+    {
+        return $this->checkAccess('Safeguarding', Yii::app()->session['user']);
+    }
+
+    public function actionResolveSafeguardingElement()
+    {
+        $element = \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model()->findByPk($_POST['element_id']);
+
+        $element->outcome_id = $_POST['outcome_id'];
+        $element->outcome_comments = $_POST['outcome_comments'];
+
+        // Using == instead of === as the POST request values are stringified
+        if ($element->outcome_id == \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::CONFIRM_SAFEGUARDING_CONCERNS) {
+            $risk_entry = new \OEModule\OphCiExamination\models\HistoryRisksEntry();
+
+            $risk_entry->risk_id = \OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findByAttributes(array('name' => 'Safeguarding'))->id;
+            $risk_entry->comments = $element->outcome_comments;
+            $risk_entry->has_risk = 1;
+
+            $risks_element =
+                $element->event->getElementByClass(\OEModule\OphCiExamination\models\HistoryRisks::class) ?:
+                    new \OEModule\OphCiExamination\models\HistoryRisks();
+
+            $existing_entries = $risks_element->entries;
+
+            $risks_element->event_id = $element->event_id;
+
+            $existing_entries[] = $risk_entry;
+
+            $risks_element->entries = $existing_entries;
+
+            if (!$risks_element->save()) {
+                echo \CJSON::encode(array("success" => false, "errors" => $risks_element->getErrors()));
+                return;
+            }
+        }
+
+        if (!$element->save()) {
+            echo \CJSON::encode(array("success" => false, "errors" => $element->getErrors()));
+            return;
+        }
+
+        echo \CJSON::encode(array("success" => true));
     }
 
     /**
