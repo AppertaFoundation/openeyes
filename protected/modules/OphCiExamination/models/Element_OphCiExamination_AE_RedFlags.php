@@ -198,12 +198,17 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         $criteria = new \CDbCriteria();
         $criteria->condition = "active = 1";
         $options = OphCiExamination_AE_RedFlags_Options::model()->findAll($criteria);
+        $currentFlags = array_map(function ($flag) {
+            return $flag->red_flag_id;
+        }, $this->flags);
         $levels = OphCiExamination_AE_RedFlags_Options::model()->enumerateSupportedLevels();
         $output = [];
         foreach ($options as $option) {
-            foreach ($levels as $level) {
-                if ($option->hasMapping($level, OphCiExamination_AE_RedFlags_Options::model()->getIdForLevel($level))) {
-                    $output[]= $option->id;
+            if (in_array($option->id, $currentFlags)) {
+                foreach ($levels as $level) {
+                    if ($option->hasMapping($level, OphCiExamination_AE_RedFlags_Options::model()->getIdForLevel($level))) {
+                        $output[] = $option->id;
+                    }
                 }
             }
         }

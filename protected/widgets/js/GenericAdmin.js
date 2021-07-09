@@ -102,9 +102,16 @@ $(document).ready(function() {
 				}
 			});
 		}
-	});
-});
+    });
 
+    $('#select-all').change(function () {
+        if (this.checked == true) {
+            $('input[id^="selected_"]').not('input[id="selected_{{key}}"]').prop('checked', true);
+        } else {
+            $('input[id^="selected_"]').not('input[id="selected_{{key}}"]').prop('checked', false);
+        }
+    });
+});
 
 function GenericAdmin_ReindexDefault()
 {
