@@ -64,6 +64,7 @@ var OpenEyes = OpenEyes || {};
         tinymce.init(Object.assign(
             {
                 selector: '#' + editor_id,
+                relative_urls: false,
                 table_default_styles: {
                     'border-collapse': 'separate',
                     'width': '100%',
