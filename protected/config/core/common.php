@@ -57,7 +57,7 @@ $db_test = array(
     $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
-    $authSource = getenv('AUTH_SOURCE') ?: 'BASIC';
+    $authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');    // OIDC, SAML, BASIC or LDAP;
 /** END SINGLE SIGN-ON SETTINGS */
 
 $config = array(
@@ -355,7 +355,7 @@ $config = array(
         'utf8_decode_required' => true,
         'pseudonymise_patient_details' => false,
         'ab_testing' => false,
-        'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
+        'auth_source' => $authSource,
         // This is used in contact page
         'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
         'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
@@ -876,4 +876,4 @@ $config = array(
     ),
 );
 
-return $config;
+    return $config;
