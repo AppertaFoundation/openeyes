@@ -2,17 +2,17 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2019
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 
@@ -256,12 +256,13 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             $result['preferredInfoFormat' . $fmt->code] = 'X';
             if ($fmt->require_email) {
                 $result['preferredInfoFormatEmailAddress'] = $this->info_email ?: ' ';
-            } else {
+            }
+            else {
                 $result['preferredInfoFormatEmailAddress'] = ' ';
             }
         }
 
-        if ($this->preferred_language_text) {
+        if ($this->preferred_language_text){
             $result['preferredLanguage'] = $this->preferred_language_text;
         } else {
             $result['preferredLanguage'] = $this->preferred_language ? $this->preferred_language->name : ' ';
@@ -280,20 +281,18 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
     public function patientFactorList($element_id)
     {
         $factors = array();
-        $patient_factor = OphCoCvi_ClericalInfo_PatientFactor::model()->findAll('`active` = ?', array(1));
+        $element = $this::model()->findByPk($element_id);
+
+        $patient_factor = OphCoCvi_ClericalInfo_PatientFactor::model()->findAll('`active` = ? and event_type_version = ?', array(1, $element->event->version));
         foreach ($patient_factor as $key => $factor) {
             $factors[$key]['id'] = $factor->id;
             $factors[$key]['name'] = $factor->name;
             $factors[$key]['is_comments'] = $factor->require_comments;
             $factors[$key]['label'] = $factor->comments_label;
-            $factors[$key]['is_factor'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer(
-                $factor->id,
-                $element_id
-            );
-            $factors[$key]['comments'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments(
-                $factor->id,
-                $element_id
-            );
+            $factors[$key]['is_factor'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id,
+                $element_id);
+            $factors[$key]['comments'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments($factor->id,
+                $element_id);
         }
         return $factors;
     }
@@ -326,7 +325,8 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             if (array_key_exists($answer->patient_factor_id, $data)) {
                 $this->updateAnswer($answer, $data[$answer->patient_factor_id]);
                 unset($data[$answer->patient_factor_id]);
-            } else {
+            }
+            else {
                 if (!$answer->delete()) {
                     throw new \Exception('Unable to delete CVI Patient Factor Answer: ' . print_r($answer->getErrors(), true));
                 }
@@ -355,10 +355,5 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             }
         }
         return null;
-    }
-
-    public function getContainer_form_view()
-    {
-        return '//patient/element_container_form_no_bin';
     }
 }

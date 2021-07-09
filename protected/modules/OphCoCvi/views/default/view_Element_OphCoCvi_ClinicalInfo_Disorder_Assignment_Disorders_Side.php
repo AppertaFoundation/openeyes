@@ -1,26 +1,21 @@
-<table class="last-left">
-  <colgroup>
-    <col>
-    <col class="cols-2">
-    <col class="cols-2">
-  </colgroup>
+<table>
     <thead>
-    <tr>
-      <th>Disorder</th>
-      <th>Status</th>
-      <th>Main Cause</th>
-    </tr>
+        <td>Disorder</td>
+        <td>Status</td>
+        <td>Main Cause</td>
     </thead>
     <tbody>
-    <?php foreach ($disorder_section->disorders as $disorder) {
+    <?php
+    foreach ($disorder_section->disorders as $disorder) {
         $affected = $element->hasCviDisorderForSide($disorder, $side);
         $main_cause = $element->isCviDisorderMainCauseForSide($disorder, $side);
-        ?>
+             ?>
             <tr>
-              <td><?php echo $disorder->name; ?></td>
-              <td><?php echo ($affected) ? 'Yes' : 'No'; ?></td>
-              <td><?php echo ($main_cause) ? 'Yes' : 'No';?></td>
+                    <td><?php echo CHtml::encode($disorder->name); ?></td>
+                    <td><?php echo ($affected) ? 'Yes' : 'No'; ?></td>
+                    <td><?php echo ($main_cause) ? 'Yes' : 'No';?></td>
             </tr>
-    <?php } ?>
+        <?php
+    }?>
     </tbody>
 </table>

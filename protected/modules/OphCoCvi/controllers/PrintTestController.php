@@ -9,7 +9,13 @@
 namespace OEModule\OphCoCvi\controllers;
 
 use \OEModule\OphCoCvi\components\ODTTemplateManager;
+use mikehaertl\pdftk\XfdfFile;
+use mikehaertl\pdftk\FdfFile;
+use mikehaertl\pdftk\Pdf;
 
+use FPDF;
+
+require_once str_replace('index.php', 'vendor/setasign/fpdi/pdf_parser.php', \Yii::app()->getRequest()->getScriptFile());
 /**
  * Class PrintTestController
  *
@@ -89,9 +95,43 @@ class PrintTestController extends \BaseController
      */
     public function actionGetPDF()
     {
-        $file = '/var/www/openeyes/protected/runtime/document.pdf';
+        $folder = realpath(__DIR__ . '/..') . '/views/odtTemplate/';
+        $file = realpath(__DIR__ . '/..') . '/views/odtTemplate/CVI_test.pdf';
+        $image = realpath(__DIR__ . '/..') . '/views/odtTemplate/cvi_image.jpg';
+        
+        $pdf = new Pdf($file);
+        //$data = $pdf->getDataFields();
+        
+        $pdf->fillForm([
+                'Address1'  => 'UXBRIDGE, 76  Canterbury Road',
+                'Postcode1' => 'UB8 8JX',
+                'Title_Surname' => 'Test Patient',
+                'Sex' => '0'
+            ])
+            ->flatten()
+            ->saveAs($folder.'CVI_example.pdf');
+
+
+        $fpdf = new \FPDI();
+     
+        $pagecount = $fpdf->setSourceFile($folder.'CVI_example.pdf');
+        for ($i = 1; $i <= 8; $i++) {
+            $fpdf->importPage($i);
+            $fpdf->AddPage();
+            $fpdf->useTemplate($i);
+
+            if($i == 1){
+                $fpdf->Image($image, 28, 194, 52, 6);
+            }
+        }
+      
+        $fpdf->Output($folder.'CVI_example_img.pdf','F');
+        var_dump($data);
+        exit;
+       
+        
         header('Content-type: application/pdf');
-        header('Content-Disposition: inline; filename="document.pdf"');
+        header('Content-Disposition: inline; filename="CVI_test.pdf"');
         header('Content-Transfer-Encoding: binary');
         header('Content-Length: ' . filesize($file));
         @readfile($file);
@@ -118,7 +158,7 @@ class PrintTestController extends \BaseController
         $data = array(
             array('X', 'Local council / Care trust'),
             array('', 'Patient'),
-            array('', 'Patinet’s '.\SettingMetadata::model()->getSetting('gp_label')),
+            array('', 'Patient’s GP'),
             array('', 'Hospital notes'),
             array('', 'Epidemiological analysis'),
         );

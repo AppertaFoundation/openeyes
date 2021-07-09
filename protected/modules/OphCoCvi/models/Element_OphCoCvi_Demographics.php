@@ -3,8 +3,6 @@
 
 namespace OEModule\OphCoCvi\models;
 
-use PatientIdentifierHelper;
-
 /**
  * Class Element_OphCoCvi_Demographics
  *
@@ -62,7 +60,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     {
         return array(
             array(
-                'event_id, title_surname, other_names, date_of_birth, address, postcode, email, telephone, gender_id, '
+                'event_id, title_surname, other_names, date_of_birth, address, postcode, postcode_2nd, email, telephone, gender_id, '
                 . 'ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone, la_name, la_address, la_telephone',
                 'safe'
             ),
@@ -73,16 +71,17 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
                 'other_names', 'length', 'max' => 100
             ),
             array(
-                'postcode', 'length', 'max' => 4
+                'postcode, postcode_2nd, gp_postcode, gp_postcode_2nd, la_postcode, la_postcode_2nd', 'filter', 'filter'=>'trim'
             ),
+            array(
+                'postcode, postcode_2nd, gp_postcode, gp_postcode_2nd, la_postcode, la_postcode_2nd', 'length', 'max' => 4 ,  
+            ),
+            
             array(
                 'email, gp_name, la_name', 'length', 'max' => 255
             ),
             array(
                 'telephone, gp_telephone, la_telephone', 'length', 'max' => 20
-            ),
-            array(
-                'telephone, gp_telephone, la_telephone', 'OEPhoneNumberValidator'
             ),
             array(
                 'title_surname, other_names, date_of_birth, address, postcode, telephone, gender_id, ethnic_group_id, '
@@ -91,7 +90,6 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
                 'on' => 'finalise'
             ),
             array('date_of_birth', 'OEDateValidatorNotFuture'),
-            array('email','email'),
         );
     }
 
@@ -125,16 +123,18 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         return array(
             'title_surname' => 'Title and Surname',
             'date_of_birth' => 'Date of Birth',
-            'nhs_number' => \SettingMetadata::model()->getSetting('nhs_num_label').' Number',
+            'nhs_number' => 'NHS Number',
             'address' => 'Address (incl. Post Code)',
             'postcode' => 'Post Code (1st half)',
+            'postcode_2nd' => 'Post Code (2nd half)',
+            'gp_postcode' => 'GP Post Code (1st half)',
             'email' => 'Email',
             'telephone' => 'Telephone',
             'gender_id' => 'Gender',
             'ethnic_group_id' => 'Ethnic Group',
-            'gp_name' => \SettingMetadata::model()->getSetting('gp_label').'\'s Name',
-            'gp_address' => \SettingMetadata::model()->getSetting('gp_label').'\'s Address',
-            'gp_telephone' => \SettingMetadata::model()->getSetting('gp_label').'\'s Telephone',
+            'gp_name' => 'GP\'s Name',
+            'gp_address' => 'GP\'s Address',
+            'gp_telephone' => 'GP\'s Telephone',
             'la_name' => 'Local Authority Name',
             'la_address' => 'Local Authority Address',
             'la_telephone' => 'Local Authority Telephone',
@@ -172,13 +172,15 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     public function initFromPatient(\Patient $patient)
     {
-        $primary_global_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-            'GLOBAL', $patient->id, \Institution::model()->getCurrent()->id, \Yii::app()->session['selected_site_id']);
         $this->date_of_birth = $patient->dob;
-        $this->nhs_number =\PatientIdentifierHelper::getIdentifierValue($primary_global_identifier);
+        $this->nhs_number = $patient->getNhsnum();
         $this->address = $patient->getSummaryAddress(",\n");
+        
         if ($patient->contact && $patient->contact->address) {
-            $this->postcode = substr($patient->contact->address->postcode, 0, 4);
+            $postcode = explode(" ", \Helper::setPostCodeFormat($patient->contact->address->postcode));
+            
+            $this->postcode = $postcode[0];
+            $this->postcode_2nd = $postcode[1];
         }
         $this->email = $patient->getEmail();
         $this->telephone = $patient->getPrimary_phone();
@@ -190,12 +192,19 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         if ($patient->gp) {
             $this->gp_name = $patient->gp->getFullName();
             $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ",\n", 'patient' => $patient));
+            
+            $gpPostcode = explode(" ", \Helper::setPostCodeFormat( $patient->gp->getGPPostcode(array('patient' => $patient))));
+            
+            $this->gp_postcode = $gpPostcode[0];
+            $this->gp_postcode_2nd = $gpPostcode[1];
             if ($practice = $patient->practice) {
                 $this->gp_telephone = $practice->phone;
             }
+
         }
     }
-
+    
+    
     /**
      * Use the stored values to make a decent stab at putting together the patient name in its normalised form.
      *
@@ -212,7 +221,8 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         if ($parts = explode(' ', $this->title_surname, 2)) {
             if (count($parts) == 1) {
                 $name[] = $parts[0];
-            } else {
+            }
+            else {
                 array_unshift($name, $parts[0]);
                 $name[] = $parts[1];
             }
@@ -226,7 +236,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredGenderHeader()
     {
-        $gender_data = array_fill(0, 4, '');
+        $gender_data = array_fill(0,4, '');
 
         if ($gender = $this->gender) {
             if (strtolower($gender->name) == 'male') {
@@ -258,7 +268,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredPostcodeHeader()
     {
-        $postcode_header = array_fill(0, 4, '');
+        $postcode_header = array_fill(0,4,'');
 
         if ($this->postcode) {
             $parts = explode(' ', $this->postcode, 2);
@@ -303,14 +313,14 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'patientDateOfBirth' => $this->date_of_birth,
             'nhsNumber' => $this->nhs_number,
             'gender' => $this->gender->name,
-            'patientAddress' => \Helper::lineLimit($this->address, 1, 0, "\n", ''),
+            'patientAddress' => \Helper::lineLimit($this->address,1, 0, "\n", ''),
             'patientEmail' => $this->email,
             'patientTel' => $this->telephone,
             'gpName' => $this->gp_name,
-            'gpAddress' => \Helper::lineLimit($this->gp_address, 1, 0, "\n", ''),
+            'gpAddress' => \Helper::lineLimit($this->gp_address,1, 0, "\n", ''),
             'gpTel' => $this->gp_telephone,
             'localAuthorityName' => $this->la_name,
-            'localAuthorityAddress' => \Helper::lineLimit($this->la_address, 1, 0, "\n", ''),
+            'localAuthorityAddress' => \Helper::lineLimit($this->la_address,1, 0, "\n", ''),
             'localAuthorityTel' => $this->la_telephone,
         );
 
@@ -324,9 +334,64 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
 
         return $data;
     }
-
-    public function getContainer_form_view()
+    
+    /*
+     * Get elements for CVI PDF
+     * 
+     * @return array
+     */
+    public function getElementsForCVIpdf()
     {
-        return '//patient/element_container_form_no_bin';
+        
+        $nhsNum = preg_replace('/[^0-9]/', '', $this->nhs_number);
+
+        switch($this->gender_id){
+            case 2:
+                $sex = 0;
+                break;
+            case 1:
+                $sex = 1;
+                break;
+            default:
+                $sex = 2;
+        }
+        
+        
+        $patientAddress = $this->getAddressFormatForPDF( $this->address );
+        $gpAddress = $this->getAddressFormatForPDF( $this->gp_address );
+        $laAddress = $this->getAddressFormatForPDF( $this->la_address );
+        
+        $elements = [
+            'Title_Surname' => $this->title_surname,
+            'All_other_names' => $this->other_names,
+            'Address1' => $patientAddress['address1'],
+            'Address2' => $patientAddress['address2'],
+            'Postcode1' => $this->postcode,
+            'Postcode2' => $this->postcode_2nd,
+            'Telephone' => $this->telephone,
+            'Email' => $this->email,
+            'DoB' => \Helper::convertMySQL2NHS($this->date_of_birth),
+            'Sex' => $sex,
+            'NHS_1' => substr($nhsNum, 0, 3),
+            'NHS_2' => substr($nhsNum, 3, 3),
+            'NHS_3' => substr($nhsNum, 6, 4),
+            'GP_name' => $this->gp_name,            
+            'GP_Address' => $gpAddress['address1'],         
+            'GP_Address_Line_2' => $gpAddress['address2'],  
+            'GP_postcode_1' => $this->gp_postcode,      
+            'GP_postcode_2' => $this->gp_postcode_2nd,      
+            'GP_Telephone' => $this->gp_telephone,     
+            'Council_Name' => $this->la_name,      
+            'Council_Address' => $laAddress['address1'],      
+            'Council_Address2' => $laAddress['address2'],      
+            'Council_Postcode1' => $this->la_postcode,       
+            'Council_Postcode2' => $this->la_postcode_2nd,      
+            'Council_Telephone' => $this->la_telephone,       
+            'Ethnicity' => $this->ethnic_group_id - 1,          //Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16, "Off", "Yes"
+            
+        ];
+        
+        return $elements;
     }
+   
 }

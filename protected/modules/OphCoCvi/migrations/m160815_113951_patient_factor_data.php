@@ -18,7 +18,7 @@ class m160815_113951_patient_factor_data extends CDbMigration
 
     public function down()
     {
-        $this->truncateTable('ophcocvi_clinicinfo_patient_factor');
+		$this->truncateTable('ophcocvi_clinicinfo_patient_factor');
     }
 
     /*

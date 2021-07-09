@@ -2,17 +2,17 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2019
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 namespace OEModule\OphCoCvi\models;
@@ -85,7 +85,7 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'social_history_occupation' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\SocialHistoryOccupation', 'social_history_occupation_id')
+            'social_history_occupation' => array(self::BELONGS_TO, 'SocialHistoryOccupation', 'social_history_occupation_id')
         );
     }
 
@@ -151,13 +151,13 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
     }
 
     /**
-     * @param $social_history
+     * @param \SocialHistory $history
      * @return int|null
      */
-    public static function defaultForSocialHistoryId($social_history)
+    public static function defaultForSocialHistoryId(\SocialHistory $history)
     {
-        if ($social_history->occupation_id !== null) {
-            if ($default = self::model()->active()->findByAttributes(array('social_history_occupation_id' => $social_history->occupation_id))) {
+        if ($history->occupation_id !== null) {
+            if ($default = self::model()->active()->findByAttributes(array('social_history_occupation_id' => $history->occupation_id))) {
                 return $default->id;
             }
         }

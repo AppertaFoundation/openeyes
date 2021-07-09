@@ -2,23 +2,27 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2019
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 
 namespace OEModule\OphCoCvi\components;
 
-use Patient;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo_V1;
+use \Patient;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 
 /**
  * Class OphCoCvi_API
@@ -27,6 +31,21 @@ use Patient;
  */
 class OphCoCvi_API extends \BaseAPI
 {
+    protected $yii;
+
+    /**
+     * OphCoCvi_API constructor.
+     *
+     * @param \CApplication|null $yii
+     */
+    public function __construct(\CApplication $yii = null)
+    {
+        if (is_null($yii)) {
+            $yii = \Yii::app();
+        }
+
+        $this->yii = $yii;
+    }
 
     public $createOprn = 'OprnCreateCvi';
     public $createOprnArgs = array('user_id', 'firm', 'episode');
@@ -35,52 +54,18 @@ class OphCoCvi_API extends \BaseAPI
      * Get all events regardless of episode.
      *
      * @param Patient $patient
-     * @param boolean $use_context
-     * @param string $before - date formatted
-     * @param integer $limit
-     * @param integer $limit
      * @return \Event[]
      * @throws \Exception
      */
-    public function getEvents(Patient $patient, $use_context = false, $before = null, $limit = null)
+    public function getEvents(Patient $patient)
     {
-        // This was implemented before the core implementation of getEvents, and expects events in
-        // the opposite order
-        return array_reverse(parent::getEvents($patient, $use_context, $before, $limit));
-    }
-
-    /**
-     * Ensure namespace prepended appropriately if necessary
-     *
-     * @param $element
-     * @return string
-     */
-    private function namespaceElementName($element)
-    {
-        if (strpos($element, 'models') == 0) {
-            $element = 'OEModule\OphCoCvi\\' . $element;
-        }
-        return $element;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null, $after = null)
-    {
-        return parent::getLatestElement(
-            $this->namespaceElementName($element),
-            $patient,
-            $use_context,
-            $before,
-            $after
-        );
+        return $this->getManager()->getEventsForPatient($patient);
     }
 
     /**
      * Convenience wrapper to allow template rendering.
      *
-     * @param string $view
+     * @param       $view
      * @param array $parameters
      * @return mixed
      */
@@ -104,24 +89,6 @@ class OphCoCvi_API extends \BaseAPI
         }
 
         return $this->cvi_manager;
-    }
-
-    /**
-     * Convenience wrapper to get the current Patient CVI Status as a piece of text.
-     *
-     * @throws \Exception
-     */
-    public function getSummaryText(Patient $patient)
-    {
-        if ($events = $this->getEvents($patient)) {
-            $latest = array_pop($events);
-            $mgr = $this->getManager();
-            return $mgr->getDisplayStatusForEvent($latest) .
-                ' (' . \Helper::convertMySQL2NHS($mgr->getDisplayStatusDateForEvent($latest)) . ')';
-        } else {
-            return $patient->getOphInfo()->cvi_status->name .
-                ' (' . \Helper::formatFuzzyDate($patient->getOphInfo()->cvi_status_date) . ')';
-        }
     }
 
     /**
@@ -207,7 +174,7 @@ class OphCoCvi_API extends \BaseAPI
      */
     public function hasCVI(\Patient $patient)
     {
-        if (count($this->getEvents($patient)) || $patient->getCviSummary()[0] !== 'Unknown') {
+        if (count($this->getEvents($patient))) {
             return true;
         }
         $oph_info = $patient->getOphInfo();
@@ -252,32 +219,7 @@ class OphCoCvi_API extends \BaseAPI
      */
     public function renderAlertForVA(Patient $patient, $element, $show_create = false)
     {
-        $show_alert = false;
-        $base_values = array();
-        if ($element) {
-            $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);
-            foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
-                $base_values[] = $reading->value;
-            }
-        }
-        return $this->renderPartial('OphCoCvi.views.patient._va_alert', array(
-            'element' => $element,
-            'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
-            'visible' => $show_alert && $this->isVaBelowThreshold($base_values),
-            'has_cvi' => $this->hasCVI($patient),
-            'show_create' => $show_create,
-        ));
-    }
-
-    /**
-     * @param Patient $patient
-     * @param         $element
-     * @return boolean
-     */
-    public function renderAlertForCVI(Patient $patient, $element, $show_create = false)
-    {
         if (!$element->cvi_alert_dismissed && !$this->hasCVI($patient)) {
-            $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);
             $base_values = array();
             foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
                 $base_values[] = $reading->value;
@@ -285,8 +227,7 @@ class OphCoCvi_API extends \BaseAPI
 
             return $this->renderPartial('OphCoCvi.views.patient._va_alert', array(
                 'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
-                'visible' => $show_alert && $this->isVaBelowThreshold($base_values),
-                'has_cvi' => $this->hasCVI($patient),
+                'visible' => $this->isVaBelowThreshold($base_values),
                 'show_create' => $show_create,
             ));
         }
@@ -295,26 +236,18 @@ class OphCoCvi_API extends \BaseAPI
     }
 
     /**
-     * Returns the date for the CVI status.
-     * @param $patient
-     * @return string
+     * @return \Event[]
      */
-    public function getCviSummaryDate($patient){
-        if ($events = $this->getEvents($patient)) {
-            $latest = array_pop($events);
-            $mgr = $this->getManager();
-            return $mgr->getDisplayStatusDateForEvent($latest);
-        } else {
-            return $patient->getOphInfo()->cvi_status_date;
-        }
-    }
 
-    /**
-     * Returns the display date for the CVI status.
-     * @param $patient
-     * @return string
-     */
-    public function getCviSummaryDisplayDate($patient){
-        return \Helper::convertDate2HTML($this->getCviSummaryDate($patient));
+    public function getPendingDeliveryEvents()
+    {
+        $crit = new \CDbCriteria();
+        $crit->join = "LEFT JOIN et_ophcocvi_eventinfo AS einfo ON einfo.event_id = t.id";
+        $crit->addCondition("einfo.gp_delivery = 1 AND einfo.gp_delivery_status = 'PENDING'", "OR");
+        $crit->addCondition("einfo.la_delivery = 1 AND einfo.la_delivery_status = 'PENDING'", "OR");
+        $crit->addCondition("einfo.rco_delivery = 1 AND einfo.rco_delivery_status = 'PENDING'", "OR");
+        $crit->addCondition("t.deleted = 0");
+
+        return \Event::model()->findAll($crit);
     }
 }

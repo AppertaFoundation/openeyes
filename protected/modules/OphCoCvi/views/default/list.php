@@ -2,28 +2,20 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2019
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 $manager = $this->getManager();
-
-$institution = Institution::model()->getCurrent();
-$selected_site_id = Yii::app()->session['selected_site_id'];
-
-$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
-        Yii::app()->params['display_primary_number_usage_code'],
-        $institution->id ,
-        $selected_site_id);
 
 $cols = array(
     array(
@@ -59,14 +51,8 @@ $cols = array(
     array(
         'id' => 'hosnum',
         'class' => 'CDataColumn',
-        'header' => $dp->getSort()->link('hosnum', $primary_identifier_prompt, array('class' => 'sort-link')),
-        'value' => function ($data) {
-            $institution = Institution::model()->getCurrent();
-            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $data->event->episode->patient->id, $institution->id, $this->selectedSiteId);
-            $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers', ['patient' => $data->event->episode->patient, 'show_all' => true, 'tooltip_size' => 'small'], true);
-            return PatientIdentifierHelper::getIdentifierValue($primary_identifier) . $patient_identifier_widget;
-        },
-        'type' => 'raw'
+        'header' => $dp->getSort()->link('hosnum', 'Hospital No.', array('class' => 'sort-link')),
+        'value' => '$data->event->episode->patient->hos_num'
     ),
     array(
         'id' => 'creator',
@@ -75,10 +61,33 @@ $cols = array(
     ),
     array(
         'id' => 'consultant',
-        'header' => $dp->getSort()->link('consultant', 'Consultant', array('class' => 'sort-link')),
+        'header' => $dp->getSort()->link('consultant', 'Consultant signed by', array('class' => 'sort-link')),
         'value' => function ($data) use ($manager) {
-            if ($consultant = $manager->getClinicalConsultant($data)) {
-                return $consultant->getFullNameAndTitle();
+            if ($data->event->version == 0) {
+                if ($clinical = $manager->getClinicalConsultant($data)) {
+                    return $clinical->getFullNameAndTitle();
+                } else {
+                    return '-';
+                }
+            } else {
+                if ($consultant = $manager->getConsultantSignedBy($data)) {
+                    if (isset($consultant->signed_by)) {
+                        return $consultant->signed_by->getFullNameAndTitle();
+                    } else {
+                        return '-';
+                    }
+                } else {
+                    return '-';
+                }
+            }
+        }
+    ),
+    array(
+        'id' => 'consultant_in_charge_of_this_cvi_id',
+        'header' => $dp->getSort()->link('consultant_in_charge_of_this_cvi_id', 'Consultant in charge', array('class' => 'sort-link')),
+        'value' => function ($data) {
+            if (!is_null($data->consultant_in_charge_of_this_cvi_id)) {
+                return $data->consultantInChargeOfThisCvi->getNameAndSubspecialty();
             } else {
                 return '-';
             }
@@ -90,7 +99,8 @@ $cols = array(
         'value' => function ($data) {
             if ($data->event->info) {
                 return $data->event->info;
-            } else {
+            }
+            else {
                 // TODO: possibly don't need this, or this method should handle the above conditional
                 return $data->getIssueStatusForDisplay();
             }
@@ -127,7 +137,7 @@ $cols = array(
                                         "id" => $data->event_id))',
                 'label' => '<button class="secondary small">Edit</button>',
                 'visible' => function ($row, $data) {
-                    return $data->is_draft;
+                    return $data->is_draft && $data->event->version == $data->event->eventType->version;
                 },
             ),
         ),
@@ -135,20 +145,21 @@ $cols = array(
 );
 
 ?>
-<div class="oe-full-header flex-layout">
-    <div class="title wordcaps">CVI List</div>
-</div>
-<div class="oe-full-content subgrid oe-audit">
-    <nav class="oe-full-side-panel audit-filters">
-        <?php $this->renderPartial('list_filter', array('list_filter' => $list_filter)) ?>
-    </nav>
-    <main id="searchResults" class="oe-full-main audit-main">
-        <?php $this->widget('zii.widgets.grid.CGridView', array(
-            'itemsCssClass' => 'standard',
-            'dataProvider' => $dp,
-            'htmlOptions' => array('id' => 'inbox-table'),
-            'summaryText' => '<small> {start}-{end} of {count} </small>',
-            'columns' => $cols,
-        )); ?>
-    </main>
+<h1 class="badge">CVI List</h1>
+<div class="box content">
+    <?php $this->renderPartial('list_filter', array('list_filter' => $list_filter)) ?>
+
+    <div class="row">
+        <div class="large-12 column">
+            <div class="box generic">
+                <?php $this->widget('zii.widgets.grid.CGridView', array(
+                    'itemsCssClass' => 'grid',
+                    'dataProvider' => $dp,
+                    'htmlOptions' => array('id' => 'inbox-table'),
+                    'summaryText' => '<small> {start}-{end} of {count} </small>',
+                    'columns' => $cols,
+                )); ?>
+            </div>
+        </div>
+    </div>
 </div>

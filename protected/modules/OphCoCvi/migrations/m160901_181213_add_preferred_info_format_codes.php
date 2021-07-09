@@ -7,30 +7,14 @@ class m160901_181213_add_preferred_info_format_codes extends CDbMigration
         $this->addColumn('ophcocvi_clericinfo_preferred_info_fmt', 'code', 'varchar(15)');
         $this->addColumn('ophcocvi_clericinfo_preferred_info_fmt_version', 'code', 'varchar(15)');
 
-        $this->update(
-            'ophcocvi_clericinfo_preferred_info_fmt',
-            array('code' => 'LGPRINT'),
-            'name = :name',
-            array(':name' => 'In large print')
-        );
-        $this->update(
-            'ophcocvi_clericinfo_preferred_info_fmt',
-            array('code' => 'CD'),
-            'name = :name',
-            array(':name' => 'On CD')
-        );
-        $this->update(
-            'ophcocvi_clericinfo_preferred_info_fmt',
-            array('code' => 'BRAILLE'),
-            'name = :name',
-            array(':name' => 'In braille')
-        );
-        $this->update(
-            'ophcocvi_clericinfo_preferred_info_fmt',
-            array('code' => 'EMAIL'),
-            'name = :name',
-            array(':name' => 'By email')
-        );
+        $this->update('ophcocvi_clericinfo_preferred_info_fmt', array('code' => 'LGPRINT'), 'name = :name',
+            array(':name' => 'In large print'));
+        $this->update('ophcocvi_clericinfo_preferred_info_fmt', array('code' => 'CD'), 'name = :name',
+            array(':name' => 'On CD'));
+        $this->update('ophcocvi_clericinfo_preferred_info_fmt', array('code' => 'BRAILLE'), 'name = :name',
+            array(':name' => 'In braille'));
+        $this->update('ophcocvi_clericinfo_preferred_info_fmt', array('code' => 'EMAIL'), 'name = :name',
+            array(':name' => 'By email'));
 
     }
 

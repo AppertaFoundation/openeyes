@@ -2,17 +2,17 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2019
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 namespace OEModule\OphCoCvi\models;
@@ -27,6 +27,14 @@ namespace OEModule\OphCoCvi\models;
  * @property integer $generated_document_id
  * @property string last_modified_date
  * @property integer $site_id
+ *
+ * @property int $gp_delivery
+ * @property int $la_delivery
+ * @property int $rco_delivery
+ *
+ * @property string $gp_delivery_status
+ * @property string $la_delivery_status
+ * @property string $rco_delivery_status
  *
  * The followings are the available model relations:
  *
@@ -101,7 +109,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('event_id, is_draft, generated_document_id, site_id', 'safe'),
+            array('event_id, is_draft, generated_document_id, site_id, consultant_in_charge_of_this_cvi_id', 'safe'),
             array('id, event_id, is_draft, generated_document_id, ', 'safe', 'on' => 'search'),
         );
     }
@@ -145,14 +153,22 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature',
                 array('id' => 'event_id'),
                 'through' => 'consent_event'
-            ),
+            ), 
             'demographics_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'demographics_element' => array(
                 self::HAS_ONE,
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics',
                 array('id' => 'event_id'),
                 'through' => 'demographics_event'
-            )
+            ),
+            'consultantInChargeOfThisCvi' => array(self::BELONGS_TO, 'Firm', 'consultant_in_charge_of_this_cvi_id'),
+            'consultant_event'  => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'consultant_element' => array(
+                self::HAS_ONE,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsultantSignature',
+                array('id' => 'event_id'),
+                'through' => 'consultant_event'
+            ),
         );
     }
 
@@ -167,9 +183,10 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
             'is_draft' => 'Is draft',
             'generated_document_id' => 'Generated file',
             'site_id' => 'Site',
+            'consultant_in_charge_of_this_cvi_id' => 'Consultant in charge of this CVI',
         );
     }
-
+    
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.

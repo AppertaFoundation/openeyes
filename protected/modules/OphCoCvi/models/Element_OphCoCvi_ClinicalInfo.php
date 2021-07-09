@@ -2,17 +2,17 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2019
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 namespace OEModule\OphCoCvi\models;
@@ -284,6 +284,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function afterValidate()
     {
         foreach (array('left', 'right') as $side) {
+
             foreach ($this->{$side . '_cvi_disorder_assignments'} as $ass) {
                 // would prefer this to be just on the assignment validation, but having trouble
                 // with scenario specification for different contexts (i.e. validating for errors to return
@@ -322,10 +323,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 unset($data[$assignment->ophcocvi_clinicinfo_disorder_id]);
             } else {
                 if (!$assignment->delete()) {
-                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r(
-                        $assignment->getErrors(),
-                        true
-                    ));
+                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r($assignment->getErrors(),
+                            true));
                 }
             }
         }
@@ -357,18 +356,14 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 $comment_data = $data[$section_comment->ophcocvi_clinicinfo_disorder_section_id];
                 $section_comment->comments = isset($comment_data['comments']) ? $comment_data['comments'] : "";
                 if (!$section_comment->save()) {
-                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r(
-                        $section_comment->getErrors(),
-                        true
-                    ));
+                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(),
+                            true));
                 }
                 unset($data[$section_comment->ophcocvi_clinicinfo_disorder_section_id]);
             } else {
                 if (!$section_comment->delete()) {
-                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r(
-                        $section_comment->getErrors(),
-                        true
-                    ));
+                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(),
+                            true));
                 }
             }
         }
@@ -379,10 +374,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $section_comment->comments = isset($values['comments']) ? $values['comments'] : "";
             $section_comment->element_id = $this->id;
             if (!$section_comment->save()) {
-                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r(
-                    $section_comment->getErrors(),
-                    true
-                ));
+                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r($section_comment->getErrors(),
+                        true));
             }
         }
     }
@@ -392,7 +385,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      */
     public function getDisplayStatus()
     {
-        return $this->getDisplayConsideredBlind();
+        $considered_blind = $this->getDisplayConsideredBlind();
+        return $considered_blind === static::$NULL_BOOLEAN ? $considered_blind : '';
     }
 
     /**
@@ -402,7 +396,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         if ($this->is_considered_blind === null) {
             return static::$NULL_BOOLEAN;
-        } else {
+        }
+        else {
             return $this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS;
         }
     }
@@ -484,7 +479,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             // assume here that the assignment attributes have been set from the default controller.
             if ($this->isModelDirty()) {
                 $cvi_disorders = $this->getAllDisordersFromAssignments();
-            } else {
+            }
+            else {
                 $cvi_disorders = $this->cvi_disorders;
             }
 
@@ -596,10 +592,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         );
 
         for ($k = 0, $k_max = count($field_of_vision_data); $k < $k_max; $k++) {
-            $data[$k + 1] = array_merge(
-                $field_of_vision_data[$k],
-                $low_vision_data[$k]
-            );
+            $data[$k + 1] = array_merge($field_of_vision_data[$k],
+                $low_vision_data[$k]);
         }
 
         return $data;
@@ -722,10 +716,5 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function isSigned()
     {
         return $this->consultant_signature_file_id ? true : false;
-    }
-
-    public function getContainer_form_view()
-    {
-        return '//patient/element_container_form_no_bin';
     }
 }
