@@ -510,8 +510,12 @@ class BaseEventTypeElement extends BaseElement
 
         foreach ($this->getSiblingTypes() as $siblingType) {
             if ($this->event_id) {
-                if ($element = self::model($siblingType->class_name)->find('event_id = ?', array($this->event_id))) {
-                    $siblings[] = $element;
+                if (class_exists($siblingType->class_name)) {
+                    if ($element = self::model($siblingType->class_name)->find('event_id = ?', array($this->event_id))) {
+                        $siblings[] = $element;
+                    }
+                } else {
+                    Yii::log('Missing sibling element class ' . $siblingType->class_name . ' for event id ' . $this->event_id, 'Error');
                 }
             }
         }

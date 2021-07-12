@@ -62,7 +62,11 @@ $message_type_to_css_class = [
     '1' => 'urgent',
 ]; ?>
 <div class="sidebar-eventlist">
-    <?php if (is_array($ordered_episodes)) { ?>
+    <?php
+    if (is_array($ordered_episodes)) {
+        $existing_modules = array();
+        $missing_modules = array();
+        ?>
         <ul class="events" id="js-events-by-date">
             <?php foreach ($ordered_episodes as $specialty_episodes) {
                 foreach ($specialty_episodes['episodes'] as $i => $episode) {
@@ -81,6 +85,25 @@ $message_type_to_css_class = [
                         if (isset($this->event) && $this->event->id == $event->id) {
                             $highlight = true;
                             $current_subspecialty = $episode->subspecialty;
+                        }
+
+                        if (!in_array($event->eventType->class_name, $existing_modules)) {
+                            if (!in_array($event->eventType->class_name, $missing_modules)) {
+                                $test_controller = Yii::app()->createController($event->eventType->class_name);
+
+                                if ($test_controller === null) {
+                                    Yii::log('Missing default controller for ' . $event->eventType->class_name);
+
+                                    // Hide events with missing module default controllers
+                                    continue;
+                                    $missing_modules[] = $event->eventType->class_name;
+                                } else {
+                                    $existing_modules[] = $event->eventType->class_name;
+                                }
+                            } else {
+                                // Hide events with missing module default controllers
+                                continue;
+                            }
                         }
 
                         $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
