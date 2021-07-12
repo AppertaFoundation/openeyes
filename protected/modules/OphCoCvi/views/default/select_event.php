@@ -44,16 +44,11 @@
 									$manager = $this->getManager();
 								?>
 									<ul>
-									<?php foreach($current_cvis as $cvi_event) {
-									    if($cvi_event->version != $this->event_type->version) {
-                                            echo Helper::convertMySQL2NHS($cvi_event->event_date) . ': ' . $manager->getDisplayStatusForEvent($cvi_event) . " - an older version";
-                                        }
-									    else {
-									    ?>
+									<?php foreach($current_cvis as $cvi_event) { ?>
 										<li><a href='<?= $manager->getEventViewUri($cvi_event) ?>'>
 												<?= Helper::convertMySQL2NHS($cvi_event->event_date) . ': ' . $manager->getDisplayStatusForEvent($cvi_event) ?></a>
 										</li>
-									<?php }} ?>
+									<?php } ?>
 									</ul>
 								<?php } ?>
 							</div>

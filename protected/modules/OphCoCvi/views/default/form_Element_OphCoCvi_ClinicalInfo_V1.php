@@ -28,7 +28,7 @@ if (isset($element->best_corrected_right_va_list)) {
     }
 }
 $modelName = CHtml::modelName($element);
-$icon_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.img')."/icon_info.png");
+//$icon_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.img')."/icon_info.png");
 ?>
 <?php
 if ($this->checkClinicalEditAccess()) { ?>
@@ -65,7 +65,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                 <div class="column large-1 end">
                     <p style="margin-top: 6px">
                         <span id="<?=CHtml::encode($modelName)?>_clinical_info_tooltip" class="help">
-                            <img alt="" src="<?= CHtml::encode($icon_path) ?>" class="help-icon" />
+                           X
                         </span>
                     </p>
                 </div>

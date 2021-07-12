@@ -3,6 +3,8 @@
 
 namespace OEModule\OphCoCvi\models;
 
+use PatientIdentifierHelper;
+
 /**
  * Class Element_OphCoCvi_Demographics
  *
@@ -173,7 +175,8 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     public function initFromPatient(\Patient $patient)
     {
         $this->date_of_birth = $patient->dob;
-        $this->nhs_number = $patient->getNhsnum();
+        //$this->nhs_number = $patient->getNhsnum();
+        $this->nhs_number = PatientIdentifierHelper::getIdentifierValue($patient->globalIdentifier);
         $this->address = $patient->getSummaryAddress(",\n");
         
         if ($patient->contact && $patient->contact->address) {

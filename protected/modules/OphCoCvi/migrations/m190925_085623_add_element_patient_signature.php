@@ -45,12 +45,12 @@ class m190925_085623_add_element_patient_signature extends OEMigration
 
         // Deprecate old Consent signature
 
-        $this->execute("DELETE FROM element_type WHERE version = 1 AND class_name='OEModule\\OphCoCvi\\models\\Element_OphCoCvi_ConsentSignature' AND event_type_id = (SELECT id FROM event_type WHERE event_type.class_name = 'OphCoCvi')");
+        $this->execute("DELETE FROM element_type WHERE class_name='OEModule\\OphCoCvi\\models\\Element_OphCoCvi_ConsentSignature' AND event_type_id = (SELECT id FROM event_type WHERE event_type.class_name = 'OphCoCvi')");
 	}
 
 	public function down()
 	{
-        $this->execute("DELETE FROM element_type WHERE version = 1 AND class_name='OEModule\\OphCoCvi\\models\\Element_OphCoCvi_PatientSignature' AND event_type_id = (SELECT id FROM event_type WHERE event_type.class_name = 'OphCoCvi')");
+        $this->execute("DELETE FROM element_type WHERE class_name='OEModule\\OphCoCvi\\models\\Element_OphCoCvi_PatientSignature' AND event_type_id = (SELECT id FROM event_type WHERE event_type.class_name = 'OphCoCvi')");
         $this->dropForeignKey("fk_et_ophcocvi_pscca_element_id", "et_ophcocvi_patient_signature_consent_consignee_assignment");
         $this->dropForeignKey("fk_et_ophcocvi_pscca_consignee_id", "et_ophcocvi_patient_signature_consent_consignee_assignment");
         $this->dropOETable("et_ophcocvi_patient_signature_consent_consignee_assignment", true);

@@ -549,7 +549,7 @@ class OphCoCvi_Manager extends \CComponent
     public function canCreateEventForPatient(\Patient $patient)
     {
         foreach ($this->getEventsForPatient($patient) as $e) {
-            if (!$this->isIssued($e) && $e->version == $this->event_type->version) {
+            if (!$this->isIssued($e)) {
                 return false;
             }
         }

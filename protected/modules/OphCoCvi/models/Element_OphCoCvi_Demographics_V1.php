@@ -3,6 +3,8 @@
 
 namespace OEModule\OphCoCvi\models;
 
+use PatientIdentifierHelper;
+
 /**
  * Class Element_OphCoCvi_Demographics
  *
@@ -240,7 +242,8 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
     public function initFromPatient(\Patient $patient)
     {
         $this->date_of_birth = $patient->dob;
-        $this->nhs_number = $patient->getNhsnum();
+        //$this->nhs_number = $patient->getNhsnum();
+        $this->nhs_number = PatientIdentifierHelper::getIdentifierValue($patient->globalIdentifier);
         $this->address = $patient->getSummaryAddress(",\n");
         
         if ($patient->contact && $patient->contact->address) {
@@ -474,7 +477,7 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
         $criteria = new \CDbCriteria;
         $criteria->condition = "version=:version";
         $criteria->params = array(
-            ':version' => $this->event->eventType->version
+          //  ':version' => $this->event->eventType->version
         );
         $ethnics = \EthnicGroup::model()->findAll($criteria);
 

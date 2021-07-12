@@ -23,7 +23,7 @@
             </div>
         </div>
         <?php
-            $ethnicGroup = EthnicGroup::model()->findAll(array("condition" => "version =  1"));
+            $ethnicGroup = EthnicGroup::model()->findAll();
             $ethnicGroupData = array();
             foreach($ethnicGroup as $row){
                 $ethnicGroupData[$row->id] =  array('data-describe' => $row->describe_needs );
@@ -32,7 +32,7 @@
         <?php echo $form->textField($element, 'email', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->datePicker($element, 'date_of_birth', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->dropDownList($element, 'gender_id', CHtml::listData(Gender::model()->findAll(array("condition" => "version =  1")), 'id', 'name'), array('empty' => '- Please Select -'), false, array('label' => 4, 'field' => 8)) ?>
+        <?php echo $form->dropDownList($element, 'gender_id', CHtml::listData(Gender::model()->findAll(), 'id', 'name'), array('empty' => '- Please Select -'), false, array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->dropDownList($element, 'ethnic_group_id', 
                 CHtml::listData($ethnicGroup, 'id', 'name'), 
                 array(

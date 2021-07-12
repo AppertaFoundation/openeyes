@@ -57,10 +57,10 @@ class OphCoCvi_API extends \BaseAPI
      * @return \Event[]
      * @throws \Exception
      */
-    public function getEvents(Patient $patient)
-    {
-        return $this->getManager()->getEventsForPatient($patient);
-    }
+//    public function getEvents(Patient $patient)
+//    {
+//        return $this->getManager()->getEventsForPatient($patient);
+//    }
 
     /**
      * Convenience wrapper to allow template rendering.

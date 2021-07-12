@@ -10,8 +10,7 @@ class m191120_115648_make_info_elements_not_required extends CDbMigration
                             (
                             class_name LIKE '%Element_OphCoCvi_ClericalInfo_V1' OR 
                             class_name LIKE '%Element_OphCoCvi_ClinicalInfo_V1'
-                            )
-                            AND version = 1");
+                            )");
 	}
 
 	public function down()
@@ -20,7 +19,6 @@ class m191120_115648_make_info_elements_not_required extends CDbMigration
                             (
                             class_name LIKE '%Element_OphCoCvi_ClericalInfo_V1' OR 
                             class_name LIKE '%Element_OphCoCvi_ClinicalInfo_V1'
-                            )
-                            AND version = 1");
+                            )");
 	}
 }

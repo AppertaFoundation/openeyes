@@ -202,9 +202,9 @@ class DefaultController extends \BaseEventTypeController
                     $this->getApp()->user->id, array(
                         'firm' => $this->firm,
                         'event' => $this->event,
-                    ))
+                    ));
                     /* Only events of the current version are editable */
-                    && $this->event->version == $this->event->eventType->version;
+                    //&& $this->event->version == $this->event->eventType->version;
         }
     }
 
@@ -255,7 +255,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getOptionalElements()
     {
-        return null;
+        return [];
     }
 
     /**
@@ -1476,7 +1476,7 @@ class DefaultController extends \BaseEventTypeController
             $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAllByAttributes(
                 [
                     'patient_type' => $patient_type,
-                    'event_type_version' => $this->event->eventType->version
+                   // 'event_type_version' => $this->event->eventType->version
                 ]);
         } else {
             $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAllByAttributes(
@@ -1484,7 +1484,7 @@ class DefaultController extends \BaseEventTypeController
                     ($this->getGetPatientAge() < 18)
                         ? Element_OphCoCvi_ClinicalInfo_V1::CVI_TYPE_CHILD
                         : Element_OphCoCvi_ClinicalInfo_V1::CVI_TYPE_ADULT,
-                    'event_type_version' => $this->event->eventType->version
+                    //'event_type_version' => $this->event->eventType->version
                 ]);
 
             if(empty($listData)){
@@ -1613,8 +1613,6 @@ class DefaultController extends \BaseEventTypeController
     {
         return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll(
             array(
-                "condition" => '
-                event_type_version  = '.$this->event_type->version,
                 "order"     => "display_order"
         ));
     }

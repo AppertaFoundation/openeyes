@@ -850,4 +850,26 @@ class User extends BaseActiveRecordVersioned
 
         return $usernames_with_statuses;
     }
+
+    /**
+     * @return string
+     */
+    public function getFullNameAndTitleAndRole()
+    {
+        return implode(' ', array(
+                $this->title,
+                $this->first_name,
+                $this->last_name,
+            )) . ($this->role ? (', ' . $this->role) : '');
+    }
+
+    public function hasStoredSignature()
+    {
+        if(is_null($this->signature_file_id)) {
+            return false;
+        }
+
+        $signature_file = ProtectedFile::model()->findByPk($this->signature_file_id);
+        return file_exists($signature_file->getPath());
+    }
 }

@@ -145,11 +145,11 @@ class m190923_094126_add_diagnosis_columns_to_disorder_section_and_disorder exte
         $this->insertIfNotExist('ophcocvi_clinicinfo_disorder', array( 'name' => 'Disorder of optic nerve', 'disorder_id' => 77157004, 'code' => 'H47.0', 'section_id' => $optic_id, 'active' => 1, 'display_order' => 27, 'event_type_version' => 1, 'patient_type' => 1, 'main_cause_pdf_id' => 29));
 
         $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphCoCvi'))->queryRow();
-        $last_event_id = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId and version=:version', array(':name'=>'Clinical Info',':eventTypeId'=>$event_type['id'],':version'=>1))->queryRow();
+        $last_event_id = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'Clinical Info',':eventTypeId'=>$event_type['id']))->queryRow();
         if ($last_event_id) {
             $this->delete('element_type', 'id = '.$last_event_id['id']);
         }
-        $this->insertIfNotExist('element_type', array('name' => 'Clinical Info','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1', 'event_type_id' => $event_type['id'], 'version' => 1, 'display_order' => 30, 'required' => 1));
+        $this->insertIfNotExist('element_type', array('name' => 'Clinical Info','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1', 'event_type_id' => $event_type['id'], 'display_order' => 30, 'required' => 1));
         $this->addColumn('et_ophcocvi_clinicinfo', 'patient_type', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
         $this->addColumn('et_ophcocvi_clinicinfo_version', 'patient_type', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
     }
@@ -162,7 +162,7 @@ class m190923_094126_add_diagnosis_columns_to_disorder_section_and_disorder exte
 
     public function getSectionId($name, $patient_type = 1)
     {
-        $getsection = $this->dbConnection->createCommand('SELECT id FROM ophcocvi_clinicinfo_disorder_section WHERE name LIKE "%'.$name.'%" AND event_type_version = 1 AND patient_type = "'.$patient_type.'"')->queryRow();
+        $getsection = $this->dbConnection->createCommand('SELECT id FROM ophcocvi_clinicinfo_disorder_section WHERE name LIKE "%'.$name.'%" AND patient_type = "'.$patient_type.'"')->queryRow();
         return $getsection['id'];
     }
 

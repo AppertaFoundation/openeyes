@@ -1554,7 +1554,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         $criteria->addCondition("patient_type=:patient_type");
         $criteria->params = array(
             ':active' => 1,
-            ':version' => $this->event->eventType->version,
+           // ':version' => $this->event->eventType->version,
             ':patient_type' => $this->patient_type
         );
         
