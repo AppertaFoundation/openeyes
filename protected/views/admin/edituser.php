@@ -285,6 +285,7 @@ $form = $this->beginWidget(
     ?>
 </script>
 <script>
+    let defaultPasswordStatus = "current";
     $(document).ready(function () {
         $('#add-user-authentication-btn').on('click', function () {
             let $table = $('#user-authentications tbody');
@@ -295,7 +296,13 @@ $form = $this->beginWidget(
         });
 
         $('#user-auth-rows').on('change', '.js-change-inst-auth', function (e) {
+
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Warning Institution Authentication changed - password status and expiry has been reset to system defaults."
+            }).open();
+
             let $row = $(this).closest('tr');
+            $row.find('.js-password-status').val(defaultPasswordStatus);
             $row.find('.js-remove-row').hide();
             $row.find('.js-row-spinner').show();
             $.ajax({

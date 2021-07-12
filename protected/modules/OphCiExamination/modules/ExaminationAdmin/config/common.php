@@ -63,7 +63,6 @@ $config = [
                 'Visual Acuity - Fixations' => ['uri' => '/OphCiExamination/admin/VisualAcuityFixations', 'restricted' => array('admin')],
                 'Visual Acuity - Occluders' => ['uri' => '/OphCiExamination/admin/VisualAcuityOccluders', 'restricted' => array('admin')],
                 'Visual Acuity - Sources' => ['uri' => '/OphCiExamination/admin/VisualAcuitySources', 'restricted' => array('admin')],
-                'Visual Acuity - Qualifiers' => ['uri' => '/OphCiExamination/admin/VisualAcuityQualifiers', 'restricted' => array('admin')],
                 'Cover And Prism Cover - Correction' => ['uri' => '/OphCiExamination/admin/CoverAndPrismCoverCorrection', 'restricted' => array('admin')],
                 'Cover And Prism Cover - Distance' => ['uri' => '/OphCiExamination/admin/CoverAndPrismCoverDistance', 'restricted' => array('admin')],
                 'Cover And Prism Cover - Horizontal Prism' => ['uri' => '/OphCiExamination/admin/CoverAndPrismCoverHorizontalPrism', 'restricted' => array('admin')],

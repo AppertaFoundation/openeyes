@@ -308,6 +308,13 @@ class UserAuthentication extends BaseActiveRecordVersioned
     {
         $user_auth = !empty($attributes['id']) ? self::model()->findByPk($attributes['id']) : new self();
         $user_auth->setAttributes($attributes);
+        if ($user_auth->institution_authentication_id != $user_auth->originalAttributes['institution_authentication_id']) {
+            $user_auth->password_last_changed_date = date('Y-m-d H:i:s');
+            $user_auth->password_failed_tries = 0;
+            if ($user_auth->institutionAuthentication->user_authentication_method == "LDAP") {
+                $user_auth->password_status = 'current';
+            }
+        }
         return $user_auth;
     }
 

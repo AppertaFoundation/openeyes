@@ -58,9 +58,9 @@ $warnings = $this->patient->getWarnings($clinical);
           <div class="data-value flex-layout">
             <p>
                 <?php if (count($operations) > 0) : ?>
-                  Please indicate whether this operation note relates to a booking or an unbooked emergency:
+                  Please indicate whether this operation note relates to a booking, an unbooked emergency or an outpatient minor note:
                 <?php else : ?>
-                  There are no open bookings in the current episode so only an emergency operation note can be created.
+                  There are no open bookings in the current episode so only an emergency or outpatient minor operation note can be created.
                 <?php endif; ?>
             </p>
           </div>
@@ -114,6 +114,16 @@ $warnings = $this->patient->getWarnings($clinical);
                 <td></td>
                 <td>
                    <button class="booking-select" data-booking="emergency">Create default op note</button>
+                </td>
+              </tr>
+              <tr>
+                <td>N/A</td>
+                <td>
+                  Outpatient Minor Ops
+                </td>
+                <td></td>
+                <td>
+                   <button class="booking-select" data-booking="outpatient-minor-op">Create minor ops note</button>
                 </td>
               </tr>
               </tbody>

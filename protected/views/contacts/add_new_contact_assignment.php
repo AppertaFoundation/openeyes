@@ -279,7 +279,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
                         $('#contact-assignment-table').append(row);
                         autosize($('.autosize'));
-                        $('.oe-popup-wrap').remove();
+                        $('.oe-popup-wrap').not('#js-overlay').remove();
                     }
                 }
             });

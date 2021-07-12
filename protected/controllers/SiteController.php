@@ -216,11 +216,7 @@ class SiteController extends BaseController
         // collect user input data
         if (isset($_POST['LoginForm'])) {
             $model->attributes = $_POST['LoginForm'];
-            // Check if its the same user that wants to continue the session
-            if (Yii::app()->session['user']->username !== $model->username) {
-                $this->renderJSON('Username different');
-                return;
-            }
+
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
                 // Flag site for confirmation

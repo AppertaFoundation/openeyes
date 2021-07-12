@@ -31,7 +31,7 @@ if ($search_terms['first_name']) {
     $based_on[] = 'FIRST NAME';
     $search_term = $search_terms['first_name'];
 }
-if ($search_terms['dob']) {
+if (isset($search_terms['dob']) && $search_terms['dob']) {
     $based_on[] = 'DOB';
     $search_term .= ' ' . $search_terms['dob'];
 }

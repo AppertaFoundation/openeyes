@@ -185,7 +185,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
             ); ?>
 
             <?php
-            $locations = $entry->dispense_condition ? $entry->dispense_condition->getLocations() : array('');
+            $locations = $entry->dispense_condition ? $entry->dispense_condition->getLocationsForCurrentInstitution() : array('');
             $style = $entry->dispense_condition ? '' : 'display: none;';
             echo CHtml::dropDownList(
                 $field_prefix . '[dispense_location_id]',
