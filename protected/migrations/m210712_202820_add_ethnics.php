@@ -4,11 +4,11 @@ class m210712_202820_add_ethnics extends CDbMigration
 {
     public function up()
     {
-//        $this->addColumn('ethnic_group', 'id_assignment', 'INT UNSIGNED NULL');
-//        $this->addColumn('ethnic_group', 'describe_needs', 'tinyint(1) NOT NULL DEFAULT 0');
-//
-//        $this->addColumn('ethnic_group_version', 'id_assignment', 'INT UNSIGNED NULL');
-//        $this->addColumn('ethnic_group_version', 'describe_needs', 'tinyint(1) NOT NULL DEFAULT 0');
+        $this->addColumn('ethnic_group', 'id_assignment', 'INT UNSIGNED NULL');
+        $this->addColumn('ethnic_group', 'describe_needs', 'tinyint(1) NOT NULL DEFAULT 0');
+
+        $this->addColumn('ethnic_group_version', 'id_assignment', 'INT UNSIGNED NULL');
+        $this->addColumn('ethnic_group_version', 'describe_needs', 'tinyint(1) NOT NULL DEFAULT 0');
 
         $this->insert('ethnic_group', [
             'name' => 'English/Northern Irish/Scottish/Welsh/British',

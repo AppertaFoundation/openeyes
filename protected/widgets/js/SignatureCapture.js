@@ -86,7 +86,7 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
                     '</div>'+
                     '</div>',
             'containerClass' : 'modal-transparent',
-        }
+        };
 
         $('body').append(widget.transparent.popup);
     };

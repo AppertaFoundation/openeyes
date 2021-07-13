@@ -65,7 +65,24 @@ if ($this->checkClinicalEditAccess()) { ?>
                 <div class="column large-1 end">
                     <p style="margin-top: 6px">
                         <span id="<?=CHtml::encode($modelName)?>_clinical_info_tooltip" class="help">
-                           X
+                            <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="<strong>SSI - Who should be certified as severely sight impaired?</strong> <br>
+        <u>Group 1:</u> Offer to certify as severely sight impaired: people who have visual acuity worse
+        than 3/60 Snellen (or equivalent);<br>
+        <u>Group 2:</u> Offer to certify as severely sight impaired: people who are 3/60 Snellen or better
+        (or equivalent) but worse than 6/60 Snellen (or equivalent) who also have contraction of
+        their visual field;<br>
+        <u>Group 3:</u> Offer to certify as severely sight impaired: people who are 6/60 Snellen or better
+        (or equivalent) who have a clinically significant contracted field of vision which is
+        functionally impairing the person e.g. significant reduction of inferior field or bi-temporal hemianopia<br><br>
+        <strong>SI - Who should be certified as sight impaired?</strong><br>
+        People can be classified into three groups:<br>
+        <u>Group 1:</u> Offer to certify as sight impaired: people who are 3/60 to 6/60 Snellen (or
+        equivalent) with full field;<br>
+        <u>Group 2:</u> Offer to certify as sight impaired: people between 6/60 and 6/24 Snellen (or
+        equivalent) with moderate contraction of the field e.g. superior or patchy loss, media
+        opacities or aphakia;<br>
+        <u>Group 3:</u> Offer to certify as sight impaired: people who are 6/18 Snellen (or equivalent) or
+        even better if they have a marked field defect e.g. homonymous hemianopia."></i>
                         </span>
                     </p>
                 </div>

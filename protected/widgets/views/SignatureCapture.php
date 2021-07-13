@@ -3,6 +3,32 @@
 $uid = uniqid();
 ?>
 
+<style>
+    .modal-transparent {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: black;
+        background-color: transparent;
+        border: 5px solid #c90000;
+    }
+
+    .modal-transparent-content {
+        background-color: transparent;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1001;
+        position: relative;
+    }
+</style>
+
 <?php if(!$this->embedded): ?>
 <button id="signature_open_<?=$uid?>" type="button" class="button small success"><?=$buttonText?></button>
 <canvas class="canvasCopy" id="canvasCopy_<?=$uid?>"></canvas>

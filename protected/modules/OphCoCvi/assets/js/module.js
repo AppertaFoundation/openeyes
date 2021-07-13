@@ -614,14 +614,15 @@ $(document).ready(function() {
 });
 
 function attachTooltip($element, text) {
-    var tt = new OpenEyes.UI.Tooltip();
-    tt.setContent(text);
-    $element.hover(function () {
-        var pos = $(this).offset();
-        tt.show(pos.left + $(this).width() + 5, pos.top);
-    }).mouseleave(function () {
-        tt.hide();
-    });
+    // var tt = new OpenEyes.UI.Tooltip();
+    // tt.setContent(text);
+    // $element.hover(function () {
+    //     var pos = $(this).offset();
+    //     tt.show(pos.left + $(this).width() + 5, pos.top);
+    // }).mouseleave(function () {
+    //     tt.hide();
+    // });
+
 }
 
 function updateVisualAcuityDropdown(unit_id, type){
