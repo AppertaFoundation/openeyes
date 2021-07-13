@@ -202,7 +202,11 @@ class SubjectController extends BaseModuleController
             'studies' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',
-                'label' => 'Study Proposal',
+                'htmlOptions' => array(
+                    'empty' => 'Select a Study Proposal ',
+                    'searchable' => false,
+                    'label' => 'Study Proposal',
+                ),
                 'options' => CHtml::encodeArray(
                     CHtml::listData(
                         GeneticsStudy::model()->findAll(),

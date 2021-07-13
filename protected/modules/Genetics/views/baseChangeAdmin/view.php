@@ -32,7 +32,7 @@
         <?php
             $this->widget('zii.widgets.CDetailView', array(
                 'data' => $model,
-                'htmlOptions' => array('class' => 'detailview'),
+                'htmlOptions' => array('class' => 'standard'),
                 'attributes' => array('id','change')
             ));
             ?>

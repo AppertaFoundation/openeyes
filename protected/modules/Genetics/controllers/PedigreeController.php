@@ -157,15 +157,15 @@ class PedigreeController extends BaseModuleController
      */
     public function actionList()
     {
-        if (empty($_GET)) {
+        if (empty($_POST)) {
             if (($data = YiiSession::get('genetics_pedigree_searchoptions'))) {
-                $_GET = $data;
+                $_POST = $data;
             }
             Audit::add('Genetics pedigree list', 'view');
         } else {
             Audit::add('Genetics pedigree list', 'search');
 
-            YiiSession::set('genetics_pedigree_searchoptions', $_GET);
+            YiiSession::set('genetics_pedigree_searchoptions', $_POST);
         }
 
 

@@ -37,6 +37,7 @@ class GeneticsPatient extends BaseActiveRecord
     public $patient_lastname;
     public $patient_maidenname;
     public $patient_yob;
+    public $patient_hos_num;
     public $patient_disorder_id;
     public $patient_pedigree_id;
 /**
@@ -71,7 +72,7 @@ class GeneticsPatient extends BaseActiveRecord
             array('id, patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
 
             //for searching on the subject/list page
-            array('patient_dob, patient_firstname, patient_lastname,patient_maidenname, patient_pedigree_id, patient_yob, patient_disorder_id', 'safe')
+            array('patient_dob, patient_firstname, patient_lastname,patient_maidenname, patient_hos_num, patient_pedigree_id, patient_yob, patient_disorder_id', 'safe')
         );
     }
 
@@ -122,6 +123,13 @@ class GeneticsPatient extends BaseActiveRecord
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id',
                 'condition' => 'patient.deleted=0'),
             'gender' => array(self::BELONGS_TO, 'Gender', 'gender_id'),
+            'patient_identifier' => array(self::BELONGS_TO,
+                'PatientIdentifier',
+                'patient_id',
+                'condition' => '( patient_identifier_type.usage_type ="'.Yii::app()->params['display_primary_number_usage_code'].'" )' .
+                    'AND (patient_identifier_type.id = patient_identifier_not_deleted.patient_identifier_type_id )',
+                ),
+            'patient_identifier_type' => array(self::HAS_MANY, 'PatientIdentifierType', 'id'),
             'relationships' => array(self::HAS_MANY, 'GeneticsPatientRelationship', 'patient_id'),
             'studies' => array(self::MANY_MANY, 'GeneticsStudy', 'genetics_study_subject(subject_id, study_id)'),
             'previous_studies' => array(
@@ -310,9 +318,11 @@ class GeneticsPatient extends BaseActiveRecord
         $criteria->compare('is_deceased', $this->is_deceased);
         $criteria->compare('patient.dob', $this->patient_dob, true);
         $criteria->compare('patient.dob', $this->patient_yob, true);
-        $patient_search = new PatientSearch();
-        $patient_hos_num = $patient_search->getHospitalNumber($this->patient_hos_num);
-        $criteria->compare('patient.hos_num', $patient_hos_num, false);
+        if ($this->patient_hos_num) {
+            $criteria->with['patient_identifier'] = array('select' => 'patient_identifier.value', 'together' => true);
+            $criteria->with['patient_identifier_type'] = array('select' => 'patient_identifier_type.id', 'together' => true);
+            $criteria->compare('patient_identifier_not_deleted.value', $this->patient_hos_num, false);
+        }
         if ($this->patient_pedigree_id) {
             $criteria->with['genetics_patient_pedigree'] = array('select' => 'genetics_patient_pedigree.pedigree_id', 'together' => true);
             $criteria->compare('genetics_patient_pedigree.pedigree_id', $this->patient_pedigree_id, false);

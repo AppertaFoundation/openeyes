@@ -93,9 +93,9 @@ function getAvailableLetterNumberToBox( obj ){
         'dataType': 'json',
         'success': function(response) {
             if (typeof(response.letter) != "undefined"){
-                $('#dnaextraction_letter').val(response.letter);
-                $('#dnaextraction_number').val(response.number);
-                
+                $('#dnaextraction_letter').attr("placeholder", response.letter);
+                $('#dnaextraction_number').attr("placeholder", response.number);
+
                 $('#dnaextraction_letter').prop('disabled', false);
                 $('#dnaextraction_number').prop('disabled', false);
             } else {        

@@ -19,10 +19,6 @@
 <div class="element-fields full-width flex-layout flex-top col-gap">
     <div class="cols-6 data-group">
         <table class= "cols-full">
-            <colgroup>
-                <col class="cols-5">
-                <col class="cols-7">
-            </colgroup>
             <tbody>
             <tr>
                 <td>
@@ -38,17 +34,19 @@
 
                     /* now way to hide the whole row using the widget : $form->activeWidget('TextField', $element, 'other_sample_type', array('class' => 'hidden')); */
 
-                    ?>
+?>
                 </td>
             </tr>
             <tr>
                 <td>
                     <?php
                     $form->datePicker(
-                    $element,
-                    'blood_date',
-                    array('options' => array('maxDate' => 'today')
-                    ), array('style' => 'width: 100%'), array('label' => 7, 'field' => 5)); ?>
+                        $element,
+                        'blood_date',
+                        array('options' => array('maxDate' => 'today')),
+                        array('style' => 'width: 100%'),
+                        array('label' => 7, 'field' => 5)
+                    ); ?>
                 </td>
             </tr>
             <tr>
@@ -84,7 +82,8 @@
                     $form->dropDownList(
                         $element,
                         'consented_by',
-                        CHtml::listData($users, 'id', function($row){return $row->last_name.', '.$row->first_name;
+                        CHtml::listData($users, 'id', function ($row) {
+                            return $row->last_name.', '.$row->first_name;
                         }),
                         array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array('selected' => true))),
                         false,
@@ -136,7 +135,7 @@
                             null,
                             array('label' => 7, 'field' => 5)
                         );
-                    ?>
+?>
                 </td>
             </tr>
             <tr>

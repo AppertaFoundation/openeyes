@@ -50,10 +50,6 @@ $pedigree = new Pedigree();
          */?>
 
       <table class= "cols-full">
-          <colgroup>
-              <col class="cols-5">
-              <col class="cols-7">
-          </colgroup>
           <tbody>
             <tr>
                 <td>
