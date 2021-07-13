@@ -109,7 +109,8 @@ class EventImageController extends BaseController
             $generated_image_event_ids[] = array('id' => $event_image->event_id, 'modified' => $event_image->last_modified_date);
         }
 
-        $remaining_event_ids = array_diff($event_ids, $generated_image_event_ids[0]);
+        // Suppress error on when there are no generated image event ids
+        $remaining_event_ids = isset($generated_image_event_ids[0]) ? array_diff($event_ids, $generated_image_event_ids[0]) : $event_ids;
         $generated_image_urls = array();
         foreach ($generated_image_event_ids as $image) {
             $generated_image_urls[$image['id']] = $this->createUrl('view', array('id' => $image['id'], 'modified' => strtotime($image['modified'])));

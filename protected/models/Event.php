@@ -502,13 +502,60 @@ class Event extends BaseActiveRecordVersioned
     {
         $elements = array();
         if ($this->id) {
+            /*
+             * The following kludge exists to get around issues with class_exists and missing class files.
+             * Yii promotes the warnings caused by include() on missing files to errors, such that calling
+             * class_exists with autoload enabled can fail instead of merely returning false.
+             *
+             * Although class_exists can be passed a second parameter of false to disable autoload, this
+             * will make it return false even for element classes that do exist because they are not yet
+             * loaded in this context.
+             *
+             * While it is possible to use the @ suppression operator, this may cause other errors that
+             * people want to see to be suppressed too.
+             *
+             * Since there is no get_error_handler, we instead have to use the return value of
+             * set_error_handler, hence the strange setup for the closure.
+             */
+
+            // Set these up for use in the error handler closure
+            $yii_err_handler = null;
+            $element_class = null;
+
+            // Temporarily install an error handler to deal with missing files.
+            // Plese make sure the restore_error_handler below the loop is present while this exists.
+            $yii_err_handler = set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) use (&$yii_err_handler, &$element_class) {
+                /*
+                 * More kludging - we just want to look for errors where include failed to open the class file,
+                 * for missing element classes.
+                 *
+                 * Everything else is passed on to the Yii error handler to prevent them from being lost.
+                 */
+                if (strpos($errstr, 'include') !== false && strpos($errstr, 'open') !== false) {
+                    if (preg_match('/include\\((.+)\\):/', $errstr, $matches) === 1) {
+                        Yii::log("Failed to find files for class $element_class in getElements: {$matches[1]}", 'Error');
+                    }
+
+                    return false;
+                } else {
+                    return call_user_func($yii_err_handler, $errno, $errstr, $errfile, $errline, $errcontext);
+                }
+            }, error_reporting());
+
             foreach ($this->eventType->getAllElementTypes() as $element_type) {
                 $element_class = $element_type->class_name;
 
-                foreach ($element_class::model()->findAll('event_id = ?', array($this->id)) as $element) {
-                    $elements[] = $element;
+                if (class_exists($element_class)) {
+                    foreach ($element_class::model()->findAll('event_id = ?', array($this->id)) as $element) {
+                        $elements[] = $element;
+                    }
+                } else {
+                    Yii::log("Failed to find class $element_class in getElements", 'Error');
                 }
             }
+
+            // This is needed to restore the Yii error handler and is the last line of the kludge.
+            restore_error_handler();
         }
 
         return $elements;
