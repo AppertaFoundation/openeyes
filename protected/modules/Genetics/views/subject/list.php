@@ -81,7 +81,7 @@
                     $family_ids = '';
                     foreach ($data->pedigrees as $pedigrees) {
                         $family_ids .= $family_ids ? '<br>' : '';
-                        $family_ids .= CHtml::link($pedigrees->id, '/Genetics/pedigree/view/' . $pedigrees->id);
+                        $family_ids .= CHtml::link($pedigrees->id, '/Genetics/pedigree/view/' . $pedigrees->id, array('class' => 'blue hint'));
                     }
 
                     return $family_ids;

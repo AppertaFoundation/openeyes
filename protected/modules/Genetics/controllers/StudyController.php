@@ -58,7 +58,11 @@ class StudyController extends BaseAdminController
             'proposers' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',
-                'label' => 'Investigator',
+                'htmlOptions' => array(
+                    'empty' => 'Select an Investigator ',
+                    'searchable' => false,
+                    'label' => 'Investigator',
+                ),
                 'options' => CHtml::encodeArray(CHtml::listData(
                     // because of performance issues we need to list all the required roles even if they are in parent-child
                     User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'], true),

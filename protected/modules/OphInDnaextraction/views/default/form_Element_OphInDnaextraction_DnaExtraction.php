@@ -23,17 +23,19 @@
     data-element-display-order="<?php echo $element->elementType->display_order?>">
     <div class="cols-6 data-group">
         <table class= "cols-full">
-            <colgroup>
-                <col class="cols-5">
-                <col class="cols-7">
-            </colgroup>
             <tbody>
             <tr>
                 <td>
                     <?php
-                    $storage = new OphInDnaextraction_DnaExtraction_Storage();
-                    echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList($element->storage_id), 'id', 'value'),
-                        array('empty' => '- Select -'), false, array('label' => 7, 'field' => 5, 'full_dropdown' => true))?>
+                        $storage = new OphInDnaextraction_DnaExtraction_Storage();
+                        echo $form->dropDownList(
+                                $element,
+                                'storage_id',
+                                CHtml::listData($storage->getAvailableCombinedList($element->storage_id), 'id', 'value'),
+                                array('empty' => '- Select -'),
+                                false,
+                                array('label' => 7, 'field' => 5, 'full_dropdown' => true)
+                        )?>
                     <?=\CHtml::button(
                         'Add new storage',
                         array(
@@ -52,7 +54,8 @@
             <tr>
                 <td>
                     <?php
-                    echo $form->dropDownList($element, 'extracted_by_id', CHtml::listData($element->user->findAllByRoles(['Genetics Laboratory Technician', 'Genetics Admin'], true), 'id', function($row){return $row->last_name.', '.$row->first_name;
+                    echo $form->dropDownList($element, 'extracted_by_id', CHtml::listData($element->user->findAllByRoles(['Genetics Laboratory Technician', 'Genetics Admin'], true), 'id', function ($row) {
+                        return $row->last_name.', '.$row->first_name;
                     }), array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true))), false, array('label' => 7, 'field' => 5))
                     ?>
                 </td>
@@ -80,15 +83,15 @@
             <tr>
                 <td>
                     <?php
-                        if ($this->action->id == 'update') {
-                            $form->widget(
-                                'Caption',
-                                array(
-                                    'label' => 'Volume Remaining',
-                                    'value' => $this->volumeRemaining($element->event_id),
-                                )
-                            );
-                        }
+                    if ($this->action->id == 'update') {
+                        $form->widget(
+                            'Caption',
+                            array(
+                                'label' => 'Volume Remaining',
+                                'value' => $this->volumeRemaining($element->event_id),
+                            )
+                        );
+                    }
                     ?>
                 </td>
             </tr>

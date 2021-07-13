@@ -42,7 +42,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                 'label' => 'Name',
                 'type' => 'raw',
                 'value' => function () use ($model) {
-                    return CHTML::link($model->patient->getFullName(), '/patient/view/' . $model->patient->id);
+                    return CHTML::link($model->patient->getFullName(), '/patient/view/' . $model->patient->id, array('class' => 'blue hint'));
                 }
             ),
             array(
