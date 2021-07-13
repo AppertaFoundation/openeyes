@@ -18,7 +18,33 @@ $currentFirm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 $current_firm_subspecialty_id = $currentFirm->serviceSubspecialtyAssignment->subspecialty_id;
 ?>
 
-<div class="element-fields">
+<div class="element-fields full-width">
+    <table class="cols-full last-left">
+        <colgroup>
+            <col class="cols-6">
+            <col class="cols-6">
+        </colgroup>
+        <tbody>
+        <tr class="col-gap">
+            <td>
+                <?=\CHtml::activeDropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), ['class' => 'cols-full', 'empty' => '- Please Select -']);?>
+            </td>
+            <td><input class="date" placeholder="dd Mth YYYY" wtx-context="4A63EF46-CA33-471A-84A7-14C5E2D7AF68"></td>
+        </tr>
+        <tr class="col-gap">
+            <td>
+                <?php echo $form->dropDownList($element, 'consultant_in_charge_of_this_cvi_id', Firm::model()->getListWithSpecialties(false, $current_firm_subspecialty_id), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 4, 'field' => 8)) ?>
+            </td>
+
+        </tr>
+
+        </tbody>
+    </table>
+
+
+</div>
+
+<div class="element-fields" style="display:none">
     <div class="large-6 column">
         <div class="fields-row">
         <?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 4, 'field' => 8)) ?>

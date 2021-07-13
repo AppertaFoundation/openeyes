@@ -18,14 +18,15 @@
 ?>
 
 <?php
-$this->beginContent('//patient/event_container'); ?>
+    $form_id = 'create-form';
+    $this->beginContent('//patient/event_container', array('no_face' => false , 'form_id' => $form_id)); ?>
 
 <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'create-form',
+    'id' => $form_id,
     'enableAjaxValidation' => false,
     'layoutColumns' => array(
-        'label' => 2,
-        'field' => 10
+        'label' => 4,
+        'field' => 8
     )
 ));
 
