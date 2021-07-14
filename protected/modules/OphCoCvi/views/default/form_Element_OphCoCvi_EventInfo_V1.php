@@ -27,9 +27,8 @@ $current_firm_subspecialty_id = $currentFirm->serviceSubspecialtyAssignment->sub
         <tbody>
         <tr class="col-gap">
             <td>
-                <?=\CHtml::activeDropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), ['class' => 'cols-full', 'empty' => '- Please Select -']);?>
+                <?= CHtml::activeDropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), ['class' => 'cols-full', 'empty' => '- Please Select -']); ?>
             </td>
-            <td><input class="date" placeholder="dd Mth YYYY" wtx-context="4A63EF46-CA33-471A-84A7-14C5E2D7AF68"></td>
         </tr>
         <tr class="col-gap">
             <td>
@@ -47,13 +46,13 @@ $current_firm_subspecialty_id = $currentFirm->serviceSubspecialtyAssignment->sub
 <div class="element-fields" style="display:none">
     <div class="large-6 column">
         <div class="fields-row">
-        <?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 4, 'field' => 8)) ?>
-    </div>
+            <?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 4, 'field' => 8)) ?>
+        </div>
     </div>
     <div class="large-6 column">
         <div class="fields-row">
-        <?php echo $form->dropDownList($element, 'consultant_in_charge_of_this_cvi_id', Firm::model()->getListWithSpecialties(false, $current_firm_subspecialty_id), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 4, 'field' => 8)) ?>
-    </div>
+            <?php echo $form->dropDownList($element, 'consultant_in_charge_of_this_cvi_id', Firm::model()->getListWithSpecialties(false, $current_firm_subspecialty_id), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 4, 'field' => 8)) ?>
+        </div>
     </div>
 </div>
 

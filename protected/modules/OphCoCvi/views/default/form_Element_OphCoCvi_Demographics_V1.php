@@ -1,105 +1,166 @@
-<div class="element-fields row" xmlns="http://www.w3.org/1999/html">
-    <div class="large-6 column">
-        <?php echo $form->textField($element, 'title_surname', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->textField($element, 'other_names', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->textArea($element, 'address', array(), false, array('rows' => 4), array('label' => 4, 'field' => 8)) ?>
-        <div class="row field-row">
-            <div class="large-4 column">
-                <label for="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_postcode">
-                    <?php echo CHtml::encode($element->getAttributeLabel('postcode')); ?>:
-                </label>
-            </div>
-            <div class="large-4 column">
-                <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_postcode" class="row">
-                    <div class="large-12 column">
-                        <input maxlength="4" autocomplete="off" type="text" value="<?= CHtml::encode($element->postcode) ?>" name="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1[postcode]" id="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_postcode"> </div>
-                </div>
-            </div>
-            <div class="large-4 column">
-                <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_postcode_2nd" class="row">
-                    <div class="large-12 column">
-                        <input maxlength="3" autocomplete="off" type="text" value="<?= CHtml::encode($element->postcode_2nd) ?>" name="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1[postcode_2nd]" id="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_postcode_2nd"> </div>
-                </div>
-            </div>
-        </div>
-        <?php
-            $ethnicGroup = EthnicGroup::model()->findAll();
-            $ethnicGroupData = array();
-            foreach($ethnicGroup as $row){
-                $ethnicGroupData[$row->id] =  array('data-describe' => $row->describe_needs );
-            }
-        ?>
-        <?php echo $form->textField($element, 'email', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->textField($element, 'telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->datePicker($element, 'date_of_birth', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->dropDownList($element, 'gender_id', CHtml::listData(Gender::model()->findAll(), 'id', 'name'), array('empty' => '- Please Select -'), false, array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->dropDownList($element, 'ethnic_group_id', 
-                CHtml::listData($ethnicGroup, 'id', 'name'), 
-                array(
-                    'empty' => '- Please Select -', 
-                    'options' => $ethnicGroupData
-                ), 
-                false, 
-                array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->textArea($element, 'describe_ethnics',  array(), false, array('rows' => 2), array('label' => 4, 'field' => 8)) ?>
-    </div>
-    <div class="large-6 column">
-        <?php echo $form->textField($element, 'nhs_number', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->textField($element, 'gp_name', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->textArea($element, 'gp_address', array(), false, array('rows' => 4), array('label' => 4, 'field' => 8)) ?>
-        <div class="row field-row">
-            <div class="large-4 column">
-                <label for="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_gp_postcode">
-                    <?php echo CHtml::encode($element->getAttributeLabel('gp_postcode')); ?>:
-                </label>
-            </div>
-            <div class="large-4 column">
-                <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_gp_postcode" class="row">
-                    <div class="large-12 column">
-                        <input maxlength="4" autocomplete="off" type="text" value="<?= CHtml::encode($element->gp_postcode) ?>" name="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1[gp_postcode]" id="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_gp_postcode"> </div>
-                </div>
-            </div>
-            <div class="large-4 column">
-                <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_gp_postcode_2nd" class="row">
-                    <div class="large-12 column">
-                        <input maxlength="3" autocomplete="off" type="text" value="<?= CHtml::encode($element->gp_postcode_2nd) ?>" name="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1[gp_postcode_2nd]" id="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_gp_postcode_2nd"> </div>
-                </div>
-            </div>
-        </div>
+<div class="element-fields full-width">
+    <div class="flex-layout flex-top col-gap">
 
-        <?php echo $form->textField($element, 'gp_telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <hr />
-        <?php
-        $hide_search = strlen($element->la_name) > 0;
-        ?>
-        <div class="row field-row">
-            <div class="small-push-6 column-5"><a href="#" id="la-search-toggle" class="button secondary small<?= $hide_search ? '' : ' disabled' ?>">Find Local Authority Details</a></div>
-        </div>
-        <?php $this->renderPartial('localauthority_search', array('hidden' => $hide_search)); ?>
-        <?php echo $form->textField($element, 'la_name', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->textArea($element, 'la_address', array(), false, array('rows' => 4), array('label' => 4, 'field' => 8)) ?>
-        <div class="row field-row">
-            <div class="large-4 column">
-                <label for="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_postcode">
-                    <?php echo CHtml::encode($element->getAttributeLabel('la_postcode')); ?>:
-                </label>
-            </div>
-            <div class="large-4 column">
-                <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_postcode" class="row">
-                    <div class="large-12 column">
-                        <input maxlength="4" autocomplete="off" type="text" value="<?= CHtml::encode($element->la_postcode) ?>" name="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1[la_postcode]" id="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_postcode"> </div>
+        <div class="cols-6">
+
+            <table class="cols-full last-left">
+                <colgroup>
+                    <col class="cols-5">
+                    <col class="cols-7">
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td>Title and Surname</td>
+                    <td>
+                        <?= CHtml::activeTextField($element, 'title_surname', ['class' => 'cols-full']); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Other names</td>
+                    <td><?= CHtml::activeTextField($element, 'other_names', ['class' => 'cols-full']); ?></td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td><?= CHtml::activeTextArea($element, 'address', ["class" => "cols-full"]); ?></td>
+                </tr>
+                <tr>
+                    <td>Post Code</td>
+                    <td>
+                        <?= CHtml::activeTextField($element, 'postcode', ['class' => 'cols-5', "maxlength" => 4]); ?>
+                        &nbsp;
+                        <?= CHtml::activeTextField($element, 'postcode_2nd', ['class' => 'cols-5', "maxlength" => 3]); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><?= CHtml::activeEmailField($element, 'email', ['class' => 'cols-full']); ?></td>
+                </tr>
+                <tr>
+                    <td>Telephone</td>
+                    <td><?= CHtml::activeTelField($element, 'telephone', ['class' => 'cols-full']); ?></td>
+                </tr>
+                <tr>
+                    <td>Date of Birth</td>
+                    <td><?= CHtml::activeTelField($element, 'date_of_birth', ['class' => 'cols-full']); ?></td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td>
+                        <?= CHtml::activeDropDownList($element, 'gender_id', CHtml::listData(Gender::model()->findAll(), 'id', 'name'), [
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Ethnic Group</td>
+                    <td>
+                        <?= CHtml::activeDropDownList($element, 'ethnic_group_id', CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name'), [
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+                </tr>
+                <tr>
+                    <td>Describe other ethnic group</td>
+                    <td>
+                        <?= CHtml::activeTextArea($element, 'describe_ethnics', ['class' => 'cols-full']); ?>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div><!-- left -->
+
+        <div class="cols-6">
+
+            <table class="cols-full last-left">
+                <colgroup>
+                    <col class="cols-5">
+                    <col class="cols-7">
+                </colgroup>
+
+                <tbody>
+                <?php if (false): ?>
+                    <tr>
+                        <td><?= PatientIdentifierHelper::getIdentifierPrompt($this->patient->globalIdentifier); ?></td>
+                        <td><?= PatientIdentifierHelper::getIdentifierValue($this->patient->globalIdentifier) ?></td>
+                    </tr>
+                <?php endif; ?>
+                <tr>
+                    <td>NHS Number</td>
+                    <td><?= CHtml::activeTextField($element, 'nhs_number', ['class' => 'cols-full']); ?></td>
+                </tr>
+                <tr>
+                    <td>GP's Name</td>
+                    <td><?= CHtml::activeTextArea($element, 'gp_name', ["class" => "cols-full"]); ?></td>
+                </tr>
+                <tr>
+                    <td>GP's Address</td>
+                    <td><?= CHtml::activeTextArea($element, 'gp_address', ["class" => "cols-full"]); ?></td>
+                </tr>
+                <tr>
+                    <td>GP's Post Code</td>
+                    <td>
+                        <?= CHtml::activeTextField($element, 'gp_postcode', ['class' => 'cols-5', "maxlength" => 4]); ?>
+                        &nbsp;
+                        <?= CHtml::activeTextField($element, 'gp_postcode_2nd', ['class' => 'cols-5', "maxlength" => 3]); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>GP's Telephone</td>
+                    <td>
+                        <?= CHtml::activeTextField($element, 'gp_telephone', ['class' => 'cols-full']); ?>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <hr class="divider">
+            <div class="row field-row">
+                <div class="small-push-6 column-5">
+                    <a href="#" id="la-search-toggle" class="button secondary small">
+                        Find Local Authority Details
+                    </a>
                 </div>
             </div>
-            <div class="large-4 column">
-                <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_postcode_2nd" class="row">
-                    <div class="large-12 column">
-                        <input maxlength="3" autocomplete="off" type="text" value="<?= CHtml::encode($element->la_postcode_2nd) ?>" name="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1[la_postcode_2nd]" id="OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_postcode_2nd"> </div>
-                </div>
-            </div>
+            <?php $this->renderPartial('localauthority_search', array('hidden' => true)); ?>
+
+            <table class="cols-full last-left">
+                <colgroup>
+                    <col class="cols-5">
+                    <col class="cols-7">
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td>Local Authority Name:</td>
+                    <td>Local Authority Name:</td>
+                </tr>
+                <tr>
+                    <td>Local Authority Address:</td>
+                    <td>Local Authority Address</td>
+                </tr>
+                <tr>
+                    <td>Local Authority Post Code:</td>
+                    <td>
+                        <?= CHtml::activeTextField($element, 'postcode', ['class' => 'cols-5', "maxlength" => 4]); ?>
+                        &nbsp;
+                        <?= CHtml::activeTextField($element, 'postcode_2nd', ['class' => 'cols-5', "maxlength" => 3]); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Local Authority Telephone:</td>
+                    <td>
+                        Local Authority Telephone:
+                    </td>
+                </tr>
+                <tr>
+                    <td>Local Authority Email:</td>
+                    <td>
+                        Local Authority Email:
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <?php echo $form->textField($element, 'la_telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
-        <?php echo $form->textField($element, 'la_email', array(), array(), array('label' => 4, 'field' => 8)) ?>
-
-
     </div>
 </div>

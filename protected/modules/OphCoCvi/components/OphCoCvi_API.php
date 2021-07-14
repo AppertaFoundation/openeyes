@@ -219,20 +219,21 @@ class OphCoCvi_API extends \BaseAPI
      */
     public function renderAlertForVA(Patient $patient, $element, $show_create = false)
     {
-        if (!$element->cvi_alert_dismissed && !$this->hasCVI($patient)) {
-            $base_values = array();
+        $show_alert = false;
+        $base_values = array();
+        if ($element) {
+            $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);
             foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
                 $base_values[] = $reading->value;
             }
-
-            return $this->renderPartial('OphCoCvi.views.patient._va_alert', array(
-                'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
-                'visible' => $this->isVaBelowThreshold($base_values),
-                'show_create' => $show_create,
-            ));
         }
-
-        return '';
+        return $this->renderPartial('OphCoCvi.views.patient._va_alert', array(
+            'element' => $element,
+            'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
+            'visible' => $show_alert && $this->isVaBelowThreshold($base_values),
+            'has_cvi' => $this->hasCVI($patient),
+            'show_create' => $show_create,
+        ));
     }
 
     /**
