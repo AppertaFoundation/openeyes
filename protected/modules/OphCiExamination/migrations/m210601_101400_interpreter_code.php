@@ -4,12 +4,14 @@ class m210601_101400_interpreter_code extends OEMigration
 {
     public function safeUp()
     {
-        $this->addOEColumn(
-            'language',
-            'interpreter_pas_code',
-            'varchar(5) DEFAULT null',
-            true
-        );
+        if (!isset($this->dbConnection->schema->getTable('language')->columns['interpreter_pas_code'])) {
+            $this->addOEColumn(
+                'language',
+                'interpreter_pas_code',
+                'varchar(5) DEFAULT null',
+                true
+            );
+        }
 
         $this->update('language', ['interpreter_pas_code' => 'alb'], 'pas_term="alb"');
         $this->update('language', ['interpreter_pas_code' => 'ara'], 'pas_term="ara"');
