@@ -26,8 +26,8 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     SignatureCapture._defaultOptions = {
         requirePIN: false,
         openButtonSelector: "#signature_open",
-        dialogTemplate:'<div class="text-center canvas-footer">\n' +
-                '        <button id="SignatureCapture_Cancel" class="button small warning" type="button">Cancel</button>\n' +
+        dialogTemplate:'<div class="text-center canvas-footer" style="background: #FFF;padding: 10px;padding-bottom: 40px;position: fixed;bottom: 0;width: 100%;border-top: 5px solid #c90000;">' +
+            '<button id="SignatureCapture_Cancel" class="button small warning" type="button">Cancel</button>\n' +
                 '        <button id="SignatureCapture_Redo" class="button small warning" type="button">Erase</button>\n' +
                 '        <button id="SignatureCapture_Submit" class="button small" type="button">Submit</button>\n' +
                 '    </div>',

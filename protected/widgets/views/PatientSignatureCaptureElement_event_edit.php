@@ -17,6 +17,7 @@ function(data) {
 JS;
 
 ?>
+
 <div class="element-fields row">
     <div style="<?=$element->required_checkbox_visible ? "": "display:none"?>">
         <?php if($element->signatory_person == $element::SIGNATORY_PERSON_WITNESS): ?>

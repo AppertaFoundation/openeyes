@@ -39,7 +39,17 @@ function(data) {
 JS;
 
 ?>
-
+<style>
+    .canvas-footer {
+        background: #FFF;
+        padding: 10px;
+        padding-bottom: 40px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        border-top: 5px solid #c90000;
+    }
+</style>
 <canvas id="<?=$modelName?>_canvas" width="600" height="300" style="border: 4px solid black; margin-bottom: 5vw"></canvas>
 <script type="text/javascript">
   (function(){
