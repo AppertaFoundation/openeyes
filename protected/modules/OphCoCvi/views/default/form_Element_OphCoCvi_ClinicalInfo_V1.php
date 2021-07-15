@@ -33,38 +33,52 @@ $modelName = CHtml::modelName($element);
 <?php
 if ($this->checkClinicalEditAccess()) { ?>
 
-    <div class="element-fields row" id="disorder_sections">
-    <?php echo $form->datePicker(
-        $element,
-        'examination_date',
-        array('maxDate' => 'today'),
-        array('style' => 'width: 110px;')
-    ) ?>
-    <div class="indent-correct row">
-        <div class="column large-12">
-            <div class="row field-row">
-                <div class="column large-6">
-                    <label><?= CHtml::encode($element->getAttributeLabel('is_considered_blind')); ?></label>
-                </div>
-                <div class="column large-4">
-                    <?php echo $form->radioButtons(
+    <div class="element-fields full-width" id="disorder_sections">
+        <table class="cols-6 last-left">
+            <colgroup>
+                <col class="cols-5">
+                <col class="cols-7">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>Examination date</td>
+                <td><?php echo $form->datePicker(
                         $element,
-                        'is_considered_blind',
-                        array(
-                            0 => $element::$NOT_BLIND_STATUS,
-                            1 => $element::$BLIND_STATUS,
-                        ),
-                        $element->is_considered_blind,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array('nowrapper' => true)
-                    ); ?>
-                </div>
-                <div class="column large-1 end">
-                    <p style="margin-top: 6px">
-                        <span id="<?=CHtml::encode($modelName)?>_clinical_info_tooltip" class="help">
+                        'examination_date',
+                        array('maxDate' => 'today'),
+                        array('style' => 'width: 110px;', 'nowrapper' => true)
+                    ) ?></td>
+            </tr>
+            </tbody>
+        </table>
+        <hr class="divider">
+        <div class="flex-layout flex-top col-gap">
+            <div class="cols-6">
+                <table class="cols-full last-left">
+                    <colgroup>
+                        <col class="cols-5">
+                        <col class="cols-7">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td><?= CHtml::encode($element->getAttributeLabel('is_considered_blind')); ?></td>
+                        <td>
+
+                            <?php echo $form->radioButtons(
+                                $element,
+                                'is_considered_blind',
+                                array(
+                                    0 => $element::$NOT_BLIND_STATUS,
+                                    1 => $element::$BLIND_STATUS,
+                                ),
+                                $element->is_considered_blind,
+                                false,
+                                false,
+                                false,
+                                false,
+                                array('nowrapper' => true)
+                            ); ?>
+                            <span id="<?= CHtml::encode($modelName) ?>_clinical_info_tooltip" class="help">
                             <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="<strong>SSI - Who should be certified as severely sight impaired?</strong> <br>
         <u>Group 1:</u> Offer to certify as severely sight impaired: people who have visual acuity worse
         than 3/60 Snellen (or equivalent);<br>
@@ -84,190 +98,301 @@ if ($this->checkClinicalEditAccess()) { ?>
         <u>Group 3:</u> Offer to certify as sight impaired: people who are 6/18 Snellen (or equivalent) or
         even better if they have a marked field defect e.g. homonymous hemianopia."></i>
                         </span>
-                    </p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="flex-layout flex-top col-gap">
+            <div class="cols-12">
+                <table class="cols-full last-left">
+                    <colgroup>
+                        <col class="cols-6">
+                        <col class="cols-6">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td><?= CHtml::encode($element->getAttributeLabel('information_booklet')); ?></td>
+                        <td>
+                            <?php echo $form->radioButtons(
+                                $element,
+                                'information_booklet',
+                                $element->getInformationBooklets(),
+                                $element->information_booklet,
+                                false,
+                                false,
+                                false,
+                                false,
+                                array('nowrapper' => true)
+                            ); ?>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="flex-layout flex-top col-gap">
+            <div class="cols-12">
+                <table class="cols-full last-left">
+                    <colgroup>
+                        <col class="cols-6">
+                        <col class="cols-6">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td><?= CHtml::encode($element->getAttributeLabel('eclo')); ?></td>
+                        <td>
+                            <?php echo $form->radioButtons(
+                                $element,
+                                'eclo',
+                                $element->getEclo(),
+                                $element->eclo,
+                                false,
+                                false,
+                                false,
+                                false,
+                                array('nowrapper' => true)
+                            ); ?>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="indent-correct row">
+            <div class="column large-12" style="display: none">
+                <div class="row field-row">
+                    <div class="column large-6">
+                        <label><?= CHtml::encode($element->getAttributeLabel('is_considered_blind')); ?></label>
+                    </div>
+                    <div class="column large-4">
+                        <?php echo $form->radioButtons(
+                            $element,
+                            'is_considered_blind',
+                            array(
+                                0 => $element::$NOT_BLIND_STATUS,
+                                1 => $element::$BLIND_STATUS,
+                            ),
+                            $element->is_considered_blind,
+                            false,
+                            false,
+                            false,
+                            false,
+                            array('nowrapper' => true)
+                        ); ?>
+                    </div>
+                    <div class="column large-1 end">
+                        <p style="margin-top: 6px">
+                        <span id="<?= CHtml::encode($modelName) ?>_clinical_info_tooltip" class="help">
+                            <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="<strong>SSI - Who should be certified as severely sight impaired?</strong> <br>
+        <u>Group 1:</u> Offer to certify as severely sight impaired: people who have visual acuity worse
+        than 3/60 Snellen (or equivalent);<br>
+        <u>Group 2:</u> Offer to certify as severely sight impaired: people who are 3/60 Snellen or better
+        (or equivalent) but worse than 6/60 Snellen (or equivalent) who also have contraction of
+        their visual field;<br>
+        <u>Group 3:</u> Offer to certify as severely sight impaired: people who are 6/60 Snellen or better
+        (or equivalent) who have a clinically significant contracted field of vision which is
+        functionally impairing the person e.g. significant reduction of inferior field or bi-temporal hemianopia<br><br>
+        <strong>SI - Who should be certified as sight impaired?</strong><br>
+        People can be classified into three groups:<br>
+        <u>Group 1:</u> Offer to certify as sight impaired: people who are 3/60 to 6/60 Snellen (or
+        equivalent) with full field;<br>
+        <u>Group 2:</u> Offer to certify as sight impaired: people between 6/60 and 6/24 Snellen (or
+        equivalent) with moderate contraction of the field e.g. superior or patchy loss, media
+        opacities or aphakia;<br>
+        <u>Group 3:</u> Offer to certify as sight impaired: people who are 6/18 Snellen (or equivalent) or
+        even better if they have a marked field defect e.g. homonymous hemianopia."></i>
+                        </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="column large-12" style="display: none">
+                <div class="row field-row">
+                    <div class="column large-6">
+                        <label><?= CHtml::encode($element->getAttributeLabel('information_booklet')); ?></label>
+                    </div>
+                    <div class="column large-6">
+                        <?php echo $form->radioButtons(
+                            $element,
+                            'information_booklet',
+                            $element->getInformationBooklets(),
+                            $element->information_booklet,
+                            false,
+                            false,
+                            false,
+                            false,
+                            array('nowrapper' => true)
+                        ); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="column large-12" style="display:none">
+                <div class="row field-row">
+                    <div class="column large-4">
+                        <label><?= CHtml::encode($element->getAttributeLabel('eclo')); ?></label>
+                    </div>
+                    <div class="column large-8">
+                        <?php echo $form->radioButtons(
+                            $element,
+                            'eclo',
+                            $element->getEclo(),
+                            $element->eclo,
+                            false,
+                            false,
+                            false,
+                            false,
+                            array('nowrapper' => true)
+                        ); ?>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="column large-12">
-            <div class="row field-row">
-                <div class="column large-6">
-                    <label><?= CHtml::encode($element->getAttributeLabel('information_booklet')); ?></label>
-                </div>
-                <div class="column large-6">
-                    <?php echo $form->radioButtons(
+        <div class="flex-layout row">
+            <div class="priority-text">Visual Acuity</div>
+        </div>
+
+        <table class="cols-6 last-left">
+            <colgroup>
+                <col class="cols-5">
+                <col class="cols-7">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td><?= CHtml::encode($element->getAttributeLabel('best_corrected_right_va_list')); ?></td>
+                <td>
+                    <?php echo $form->dropDownList(
                         $element,
-                        'information_booklet',
-                        $element->getInformationBooklets(),
-                        $element->information_booklet,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array('nowrapper' => true)
-                    ); ?>
-                </div>
+                        'best_corrected_right_va_list',
+                        $element->getBestCorrectedVAList(),
+                        array(
+                            'empty' => '- Please select -',
+                            'nowrapper' => true,
+                            'class' => 'cols-full'
+                        ),
+                        false
+                    ) ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <hr class="divider">
+        <div class="flex-layout flex-top col-gap">
+            <div class="cols-6">
+                <table class="cols-full last-left">
+                    <colgroup>
+                        <col class="cols-5">
+                        <col class="cols-7">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td><?= CHtml::encode($element->getAttributeLabel('best_corrected_right_va')); ?></td>
+                        <td>
+                            <?php echo $form->dropDownList(
+                                $element,
+                                'best_corrected_right_va',
+                                $visual_acuity_list,
+                                array(
+                                    'empty' => '- Please select -',
+                                    'nolabel' => true,
+                                    'class' => 'cols-full'
+                                ),
+                                false
+                            ) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><?= CHtml::encode($element->getAttributeLabel('best_recorded_right_va')); ?>:</td>
+                        <td>
+                            <?= CHtml::checkBox(CHtml::modelName($element) . '[best_recorded_right_va]', $element->best_recorded_left_va); ?>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
+
+            <div class="cols-6">
+                <table class="cols-full last-left">
+                    <colgroup>
+                        <col class="cols-5">
+                        <col class="cols-7">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td><?= CHtml::encode($element->getAttributeLabel('best_corrected_left_va')); ?></td>
+                        <td>
+                            <?php echo $form->dropDownList(
+                                $element,
+                                'best_corrected_left_va',
+                                $visual_acuity_list,
+                                array(
+                                    'empty' => '- Please select -',
+                                    'nolabel' => true,
+                                    'class' => 'cols-full'
+                                ),
+                                false
+                            ) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><?= CHtml::encode($element->getAttributeLabel('best_recorded_left_va')); ?>:</td>
+                        <td>
+                            <?= CHtml::checkBox(CHtml::modelName($element) . '[best_recorded_left_va]', $element->best_recorded_left_va); ?>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
-        <div class="column large-12">
-            <div class="row field-row">
-                <div class="column large-4">
-                    <label><?= CHtml::encode($element->getAttributeLabel('eclo')); ?></label>
-                </div>
-                <div class="column large-8">
-                    <?php echo $form->radioButtons(
+        <hr class="divider">
+
+        <table class="cols-6 last-left">
+            <colgroup>
+                <col class="cols-5">
+                <col class="cols-7">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td><?= CHtml::encode($element->getAttributeLabel('best_corrected_binocular_va')); ?>:</td>
+                <td>
+                    <?php echo $form->dropDownList(
                         $element,
-                        'eclo',
-                        $element->getEclo(),
-                        $element->eclo,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array('nowrapper' => true)
-                    ); ?>
-                </div>
-            </div>
-        </div>
-    </div>
+                        'best_corrected_binocular_va',
+                        $visual_acuity_list,
+                        array(
+                            'empty' => '- Please select -',
+                            'nolabel' => true,
+                            'class' => 'cols-full'
+                        ),
+                        false
+                    ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><?= CHtml::encode($element->getAttributeLabel('best_recorded_binocular_va')); ?>:</td>
+                <td>
+                    <?= CHtml::checkBox(CHtml::modelName($element) . '[best_recorded_binocular_va]', $element->best_recorded_binocular_va); ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-    <div class="row">
-        <div class="column large-3 end">
-            <h3 class="inline-header">Visual Acuity</h3>
-        </div>
-    </div>
-    <div class="indent-correct">
-        <div class="element-eye">
-            <div class="active-form">
-                <div class="row field-row">
-                    <div class="large-4 column end">
-                        <?php echo $form->dropDownList(
-                            $element,
-                            'best_corrected_right_va_list',
-                            $element->getBestCorrectedVAList(),
-                            array('empty' => '- Please select -'),
-                            false
-                        ) ?>
-                        <input type="hidden" name="<?=CHtml::modelName($element)?>[best_corrected_left_va_list]" id="best_corrected_left_va_list">
-                        <input type="hidden" name="<?=CHtml::modelName($element)?>[best_corrected_binocular_va_list]" id="best_corrected_binocular_va_list">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="indent-correct element-eyes sub-element-fields">
-        <div class="element-eye right-eye column left side" data-side="right">
-            <div class="active-form">
-                <div class="row field-row">
-                    <div class="large-6 column">
-                        <label for="<?php echo 'best_corrected_right_va'; ?>">
-                            <?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va')); ?>:
-                        </label>
-                    </div>
-                    <div class="large-4 column end">
-                        <?php echo $form->dropDownList(
-                            $element,
-                            'best_corrected_right_va',
-                            $visual_acuity_list,
-                            array('empty' => '- Please select -', 'nolabel' => true),
-                            false
-                        ) ?>
-                    </div>
-                </div>
-            </div>
-            <div class="active-form">
-                <div class="row field-row">
-                    <div class="large-6 column">
-                        <label for="<?php echo 'best_recorded_right_va'; ?>">
-                            <?php echo CHtml::encode($element->getAttributeLabel('best_recorded_right_va')); ?>:
-                        </label>
-                    </div>
-                    <div class="column large-2 end">
-                        <?php echo CHtml::checkBox(CHtml::modelName($element).'[best_recorded_right_va]', $element->best_recorded_right_va); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="element-eye left-eye column right side" data-side="left">
-            <div class="active-form">
-                <div class="row field-row">
-                    <div class="large-4 column">
-                        <label for="<?php echo 'best_corrected_left_va'; ?>">
-                            <?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va')); ?>:
-                        </label>
-                    </div>
-                    <div class="large-4 column end">
-                        <?php echo $form->dropDownList(
-                            $element,
-                            'best_corrected_left_va',
-                            $visual_acuity_list,
-                            array('empty' => '- Please select -', 'nolabel' => true),
-                            false
-                        ) ?>
-                    </div>
-                </div>
-            </div>
-            <div class="active-form">
-                <div class="row field-row">
-                    <div class="large-4 column">
-                        <label for="<?php echo 'best_recorded_left_va'; ?>">
-                            <?php echo CHtml::encode($element->getAttributeLabel('best_recorded_left_va')); ?>:
-                        </label>
-                    </div>
-                    <div class="column large-2 end">
-                        <?php echo CHtml::checkBox(CHtml::modelName($element).'[best_recorded_left_va]', $element->best_recorded_left_va); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="indent-correct row">
-
-        <div class="right-eye column side" data-side="right">
-            <div class="active-form">
-                <div class="row field-row">
-                    <div class="large-5 column">
-                        <label for="<?php echo 'best_corrected_binocular_va'; ?>">
-                            <?php echo CHtml::encode($element->getAttributeLabel('best_corrected_binocular_va')); ?>:
-                        </label>
-                    </div>
-                    <div class="large-2 column end">
-                        <?php echo $form->dropDownList(
-                            $element,
-                            'best_corrected_binocular_va',
-                            $visual_acuity_list,
-                            array('empty' => '- Please select -', 'nolabel' => true),
-                            false
-                        ) ?>
-                    </div>
-                </div>
-            </div>
-            <div class="active-form">
-                <div class="row field-row">
-                    <div class="large-5 column">
-                        <label for="<?php echo 'best_recorded_binocular_va'; ?>">
-                            <?php echo CHtml::encode($element->getAttributeLabel('best_recorded_binocular_va')); ?>:
-                        </label>
-                    </div>
-                    <div class="column large-2 end">
-                        <?php echo CHtml::checkBox(CHtml::modelName($element).'[best_recorded_binocular_va]', $element->best_recorded_binocular_va); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <div class="column large-12">
-        <div class="active-form">
-            <div class="row field-row">
-                <div class="large-6 column">
-                    <label for="<?php echo 'field_of_vision'; ?>">
-                        <?php echo CHtml::encode($element->getAttributeLabel('field_of_vision')); ?>:
-                    </label>
-                </div>
-                <div class="column large-6 vision-column-vertical-center-form">
-                    <?php echo $form->radioButtons(
+        <table class="cols-12 last-left">
+            <colgroup>
+                <col class="cols-5">
+                <col class="cols-7">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td><?=\CHtml::encode($element->getAttributeLabel('field_of_vision')); ?>:</td>
+                <td>
+                    <?= $form->radioButtons(
                         $element,
                         'field_of_vision',
                         $element->getFieldOfVision(),
@@ -276,20 +401,27 @@ if ($this->checkClinicalEditAccess()) { ?>
                         false,
                         false,
                         false,
-                        array('nowrapper' => true)
+                        array(
+                            'empty' => '- Please select -',
+                            'nolabel' => true,
+                            'class' => 'cols-full',
+                            'nowrapper' => true
+                        )
                     ); ?>
-                </div>
-            </div>
-        </div>
-        <div class="active-form">
-            <div class="row field-row">
-                <div class="large-6 column">
-                    <label for="<?php echo 'low_vision_service'; ?>">
-                        <?php echo CHtml::encode($element->getAttributeLabel('low_vision_service')); ?>:
-                    </label>
-                </div>
-                <div class="column large-6 vision-column-vertical-center-form">
-                    <?php echo $form->radioButtons(
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="cols-12 last-left">
+            <colgroup>
+                <col class="cols-5">
+                <col class="cols-7">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td><?=$element->getAttributeLabel('low_vision_service'); ?>:</td>
+                <td>
+                    <?= $form->radioButtons(
                         $element,
                         'low_vision_service',
                         $element->getLowVisionService(),
@@ -298,28 +430,31 @@ if ($this->checkClinicalEditAccess()) { ?>
                         false,
                         false,
                         false,
-                        array('nowrapper' => true)
+                        array(
+                            'empty' => '- Please select -',
+                            'nolabel' => true,
+                            'class' => 'cols-full',
+                            'nowrapper' => true
+                        )
                     ); ?>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-
+                </td>
+            </tr>
+            </tbody>
+        </table>
     <div>
 
-        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_V1', array(
-            'element' => $element,
-            'form' => $form,
-
-        )) ?>
+    <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_V1', array(
+        'element' => $element,
+        'form' => $form,
+    )) ?>
 
         <?php if (isset($element->diagnosis_not_covered)) : ?>
             <hr>
             <div class="column large-12">
                 <div class="row">
                     <div class="column large-12 end">
-                        <h3 class="inline-header">Diagnosis not covered in any of the above, specify, including ICD 10 code if known and indicating eye or eyes</h3>
+                        <h3 class="inline-header">Diagnosis not covered in any of the above, specify, including ICD 10
+                            code if known and indicating eye or eyes</h3>
                     </div>
                 </div>
                 <div class="row">
@@ -359,41 +494,44 @@ if ($this->checkClinicalEditAccess()) { ?>
                             'htmlOptions' => array('placeholder' => 'Search'),
                         )); ?>
                         <input type="hidden" id="disorder_id" name="disorder_id">
-                        <input type="hidden" id="element_id" name="element_id" value="<?= CHtml::encode($element->id) ?>">
+                        <input type="hidden" id="element_id" name="element_id"
+                               value="<?= CHtml::encode($element->id) ?>">
                         <input type="hidden" id="disorder_type" name="disorder_type" value="2">
                     </div>
                     <div class="column large-1 text-center">
                         <?php echo CHtml::checkBox("main_cause"); ?>
                     </div>
                     <div class="column large-2  text-center">
-                        <input size="5" nowrapper="1" autocomplete="off" type="text" value="" name="icd10" id="icd10" placeholder="ICD 10">
+                        <input size="5" nowrapper="1" autocomplete="off" type="text" value="" name="icd10" id="icd10"
+                               placeholder="ICD 10">
                     </div>
                     <div class="column large-1 text-center">
                         <div class="eyes-radio-validate">
-                        <?php
-                        echo CHtml::radioButton('eyes', false, array('id' => 'left_eye', 'value' => 2))
-                        ?>
+                            <?php
+                            echo CHtml::radioButton('eyes', false, array('id' => 'left_eye', 'value' => 2))
+                            ?>
                         </div>
                     </div>
                     <div class="column large-1 text-center">
                         <div class="eyes-radio-validate">
-                        <?php
-                        echo CHtml::radioButton('eyes', false, array('id' => 'right_eye', 'value' => 1))
-                        ?>
+                            <?php
+                            echo CHtml::radioButton('eyes', false, array('id' => 'right_eye', 'value' => 1))
+                            ?>
                         </div>
                     </div>
                     <div class="column large-1 text-center">
                         <div class="eyes-radio-validate">
-                        <?php
-                        echo CHtml::radioButton('eyes', false, array('id' => 'both_eye', 'value' => 3))
-                        ?>
+                            <?php
+                            echo CHtml::radioButton('eyes', false, array('id' => 'both_eye', 'value' => 3))
+                            ?>
                         </div>
                     </div>
                     <div class="column large-1 text-center">
                         <button id="js-add-diagnosis-not-covered" class="button secondary small">Add</button>
                     </div>
                     <div class="column large-1 text-center">
-                        <button class="button button-icon small disabled" id="js-clear-diagnosis-not-covered" title="Delete Diagnosis">
+                        <button class="button button-icon small disabled" id="js-clear-diagnosis-not-covered"
+                                title="Delete Diagnosis">
                             <span class="icon-button-small-mini-cross"></span>
                             <span class="hide-offscreen">Remove element</span>
                         </button>
@@ -432,16 +570,28 @@ if ($this->checkClinicalEditAccess()) { ?>
                                     <?php echo CHtml::encode($disorder_code) ?>
                                 </td>
                                 <td>
-                                    <button class="button button-icon small js-remove-diagnosis-not-covered-element disabled" data-id="<?= CHtml::encode($diagnosis->disorder_id) ?>" title="Delete Diagnosis">
+                                    <button class="button button-icon small js-remove-diagnosis-not-covered-element disabled"
+                                            data-id="<?= CHtml::encode($diagnosis->disorder_id) ?>"
+                                            title="Delete Diagnosis">
                                         <span class="icon-button-small-mini-cross"></span>
                                         <span class="hide-offscreen">Remove element</span>
                                     </button>
                                 </td>
-                                <input type="hidden" name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][disorder_id]" value="<?= CHtml::encode($diagnosis->disorder_id) ?>">
-                                <input type="hidden" name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][main_cause]" value="<?= CHtml::encode($diagnosis->main_cause) ?>">
-                                <input type="hidden" name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][code]" value="<?= CHtml::encode($disorder_code) ?>">
-                                <input type="hidden" name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][eyes]" value="<?= CHtml::encode($diagnosis->eye_id) ?>">
-                                <input type="hidden" name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][disorder_type]" value="<?= CHtml::encode($diagnosis->disorder_type) ?>">
+                                <input type="hidden"
+                                       name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][disorder_id]"
+                                       value="<?= CHtml::encode($diagnosis->disorder_id) ?>">
+                                <input type="hidden"
+                                       name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][main_cause]"
+                                       value="<?= CHtml::encode($diagnosis->main_cause) ?>">
+                                <input type="hidden"
+                                       name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][code]"
+                                       value="<?= CHtml::encode($disorder_code) ?>">
+                                <input type="hidden"
+                                       name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][eyes]"
+                                       value="<?= CHtml::encode($diagnosis->eye_id) ?>">
+                                <input type="hidden"
+                                       name="<?= CHtml::modelName($element) ?>[diagnosis_not_covered][<?= CHtml::encode($diagnosis->disorder_id) ?>][disorder_type]"
+                                       value="<?= CHtml::encode($diagnosis->disorder_type) ?>">
                             </tr>
                         <?php } ?>
                     <?php } ?>
@@ -462,7 +612,7 @@ if ($this->checkClinicalEditAccess()) { ?>
 
             clinical_info_tooltip.setContent($icon.attr("data-tooltip-content"));
 
-            $icon.on('mouseover', function() {
+            $icon.on('mouseover', function () {
                 var offsets = $(this).offset();
                 clinical_info_tooltip.show(offsets.left + 20, offsets.top);
             }).mouseout(function (e) {

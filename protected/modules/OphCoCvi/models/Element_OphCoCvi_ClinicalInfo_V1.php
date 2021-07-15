@@ -261,7 +261,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
             'best_recorded_left_va' => 'Best recorded left VA',
             'best_recorded_binocular_va' => 'Best recorded binocular VA',
             'low_vision_service' => 'Low vision service: <br> If appropriate, has a referal for the low vision service been made?',
-            'field_of_vision' => 'Field of vision: <br> Extensive loss of peripheral visual field (including hemianopia)',
+            'field_of_vision' => 'Field of vision: Extensive loss of peripheral visual field (including hemianopia)',
            // 'low_vision_status_id' => 'Low vision status:',
             'field_of_vision_id' => 'Field of vision',
             'disorders' => 'Disorders',
