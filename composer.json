@@ -4,6 +4,7 @@
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
   "require": {
     "php": "^7.4",
+    "ext-json": "^7.4",
     "yiisoft/yii": "1.1.23",
     "rlanvin/php-rrule": "2.2.0",
     "endroid/qr-code": "^1.7",

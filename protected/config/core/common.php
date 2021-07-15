@@ -346,6 +346,9 @@ $config = array(
         'widgetFactory' => array(
             'class' => 'WidgetFactory',
         ),
+        'citoIntegration' => array(
+            "class" => "CitoIntegration"
+        ),
         'hieIntegration' => array(
             "class" => "HieIntegration"
         )
@@ -816,6 +819,14 @@ $config = array(
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
+        'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: null,
+        'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: null,
+        'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: null,
+        'cito_client_id' => trim(getenv('CITO_CLIENT_ID')) ?: null,
+        'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: null,
+        'cito_application_id' => trim(@file_get_contents("/run/secrets/CITO_APPLICATION_ID")) ?: (trim(getenv('CITO_APPLICATION_ID')) ?: ''),
+        'cito_client_secret' => trim(@file_get_contents("/run/secrets/CITO_CLIENT_SECRET")) ?: (trim(getenv('CITO_CLIENT_SECRET')) ?: ''),
+
         /** START SINGLE SIGN-ON PARAMS */
         'strict_SSO_roles_check' => $ssoMappingsCheck,
         // Settings for OneLogin PHP-SAML toolkit
