@@ -762,9 +762,9 @@ class OphCoCorrespondence_API extends BaseAPI
         $firm = $firm ? $firm : \Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(\Yii::app()->session['selected_firm_id']);
 
         if (!$consultant) {
-            // only want a consultant for medical firms
+            // only want a consultant for medical firms or support services such as orthoptics
             if ($specialty = $firm->getSpecialty()) {
-                if ($specialty->medical) {
+                if ($specialty->medical || $specialty->name === 'Support Services') {
                     $consultant = $firm->consultant;
                 }
             }
