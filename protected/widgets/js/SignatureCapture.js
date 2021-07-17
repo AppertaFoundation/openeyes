@@ -62,18 +62,40 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     SignatureCapture.prototype.getNewCanvasByCoords = function(canvas, x, y, width, height) {
         // create a temp canvas
         const newCanvas = document.createElement('canvas');
-        // set its dimensions
-        newCanvas.width = width;
-        newCanvas.height = height;
-        // draw the canvas in the new resized temp canvas
-        newCanvas.getContext('2d').drawImage(canvas, x, y, width, height, 0, 0, width, height);
+        let dx, dy;
+        if(width < height * 3) {
+            // Too narrow
+            newCanvas.width = height * 3;
+            newCanvas.height = height;
+            dx = (newCanvas.width - width) / 2;
+            dy = 0;
+        }
+        else if(width > height * 3) {
+            // Too wide
+            newCanvas.width = width;
+            newCanvas.height = width / 3;
+            dx = 0;
+            dy = (newCanvas.height - height) / 2;
+        }
+        else {
+            // Exactly 3:1
+            newCanvas.width = width;
+            newCanvas.height = height;
+            dx = 0;
+            dy = 0;
+        }
+        const ctx = newCanvas.getContext('2d');
+        ctx.fillStyle = BACKGROUND;
+        ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+        ctx.drawImage(canvas, x, y, width, height, dx, dy, width, height);
         return newCanvas;
     };
 
-    SignatureCapture.prototype.removeBlanks = function ($canvas) {
-        let imgWidth = $canvas.width;
-        let imgHeight = $canvas.height;
-        let ctx = $canvas.getContext('2d');
+    SignatureCapture.prototype.cropSignature = function(canvas)
+    {
+        let imgWidth = canvas.width;
+        let imgHeight = canvas.height;
+        let ctx = canvas.getContext('2d');
         let imageData = ctx.getImageData(0, 0, imgWidth, imgHeight),
             data = imageData.data,
             checkColor = function(x, y) {
@@ -128,7 +150,7 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
         const signWidth = (cropRight + 10) > imgWidth ? (cropRight - cropLeft) : ((cropRight - cropLeft) + 10);
         const signHeight = (cropBottom + 10) > imgHeight ? (cropBottom - cropTop) : ((cropBottom - cropTop) + 10);
 
-        return this.getNewCanvasByCoords($canvas, cropLeft, cropTop, signWidth, signHeight);
+        return this.getNewCanvasByCoords(canvas, cropLeft, cropTop, signWidth, signHeight);
     };
 
     SignatureCapture.prototype.addEventHandlers = function()
@@ -142,8 +164,8 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
 
         //Save button
         $(document).on("click", widget.options.saveButtonSelector, function () {
-            const $canvas = widget.$canvas[0];
-            const newImage = widget.removeBlanks($canvas);
+            const canvas = widget.$canvas[0];
+            const newImage = widget.cropSignature(canvas);
             widget.signatureImage = newImage.toDataURL("image/jpeg");
             widget.submitSignature();
         });
@@ -250,7 +272,7 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     SignatureCapture.prototype.exitFullScreen = function()
     {
         // Save image to tmp canvas
-        let tmpCanvas = this.removeBlanks(this.$canvas[0]);
+        let tmpCanvas = this.cropSignature(this.$canvas[0]);
 
         // Change button text
         this.swapToggleButtonText();
