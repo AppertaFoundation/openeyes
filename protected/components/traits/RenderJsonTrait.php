@@ -15,32 +15,23 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class EsignConsultantPinWidget extends EsignField
+trait RenderJsonTrait
 {
-    private const ROLE = 'consultant';
-    public $action = 'getSignatureByPin';
-    public $unique_id;
-
-    public function getLabel($consent_type)
-    {
-        $labels = array(
-            'consultant' => 'Consultant',
-        );
-
-        return $labels[$consent_type];
-    }
-
-
     /**
-     * Render the table-row
+     * Renders data as JSON, turns off any to screen logging so output isn't broken.
+     *
+     * @param $data
      */
-    public function run()
+    protected function renderJSON($data)
     {
-        $user = Yii::app()->session['user'];
-        $data = array(
-            'role' => self::ROLE,
-            'logged_user_name' => $user->getFullName(),
-        );
-        $this->render('EsignPin', $data);
+        header('Content-type: application/json');
+        echo json_encode($data);
+
+        foreach (Yii::app()->log->routes as $route) {
+            if ($route instanceof CWebLogRoute) {
+                $route->enabled = false; // disable any weblogroutes
+            }
+        }
+        Yii::app()->end();
     }
 }

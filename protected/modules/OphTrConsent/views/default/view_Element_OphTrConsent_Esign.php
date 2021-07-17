@@ -33,6 +33,19 @@
                 <?php
                     $this->widget('application.widgets.EsignConsultantPinWidget', array(
                         'element' => $element,
+                        'unique_id' => 1,
+                    ));
+                ?>
+                <?php
+                    $this->widget('application.widgets.EsignConsultantPinWidget', array(
+                        'element' => $element,
+                        'unique_id' => 2,
+                    ));
+                ?>
+                <?php
+                    $this->widget('application.widgets.EsignSecOpinionPinWidget', array(
+                        'element' => $element,
+                        'unique_id' => 3,
                     ));
                 ?>
             </tbody>

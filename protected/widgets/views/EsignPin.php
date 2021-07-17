@@ -14,9 +14,9 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-    $signature_div= "widget_".CHtml::encode($role)."_signature_div";
-    $pin_input_name= "widget_".CHtml::encode($role)."_pin";
-    $pin_button_id= "widget_".CHtml::encode($role)."_pin_button";
+    $signature_div= "widget_".CHtml::encode($role)."_signature_div_".$this->unique_id;
+    $pin_input_name= "widget_".CHtml::encode($role)."_pin_".$this->unique_id;
+    $pin_button_id= "widget_".CHtml::encode($role)."_pin_button_".$this->unique_id;
 ?>
 <?php ?>
 <tr>
@@ -51,7 +51,7 @@
                 return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
             }).join('&');
 
-            fetch(baseUrl + "/" + moduleName + "/default/getSignatureImage",{
+            fetch(baseUrl + "/" + moduleName + "/default/<?php echo $this->action ?>",{
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
                 },
@@ -62,7 +62,7 @@
                 .then(data => {
                     if(data) {
                         if( data.code !== 0){
-                            console.log(data.error);
+                            signature_div.innerHTML = '<span class="error">'+data.error+'</span>';
                         } else {
                             signature_div.innerHTML = '<img src="data:image/png;base64, '
                                 +(data.singature_image_base64)

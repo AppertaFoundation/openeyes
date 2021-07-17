@@ -78,6 +78,7 @@ $config = array(
         'application.components.actions.*',
         'application.components.worklist.*',
         'application.components.patientSearch.*',
+        'application.components.traits.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
         'application.commands.*',

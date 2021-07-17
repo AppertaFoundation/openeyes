@@ -17,17 +17,26 @@
  */
 class DefaultController extends BaseEventTypeController
 {
-
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
-        'getSignatureImage' => self::ACTION_TYPE_FORM,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
     );
 
     public $booking_event;
     public $booking_operation;
     public $unbooked = false;
+
+    public function actions() {
+        return [
+            'getSignatureByPin' => [
+                'class' => 'GetSignatureByPinAction',
+                'user' => Yii::app()->user,
+                'pin' => Yii::app()->request->getPost('signature_pin'),
+            ],
+        ];
+    }
 
     protected function beforeAction($action)
     {
@@ -387,38 +396,5 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
             }
         }
-    }
-
-    public function actionGetSignatureImage()
-    {
-        $signature_pin = Yii::app()->request->getPost('signature_pin');
-        $code = 0;
-        $error = '';
-        $decodedImage = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
-
-        if (Yii::app()->user->id && strlen($signature_pin)>4) {
-            $user = User::model()->findByPk(Yii::app()->user->id);
-            if ($user->signature_file_id) {
-                $image = $user->getDecryptedSignature(Yii::app()->getRequest()->getParam("signaturePin"));
-                if ($image) {
-                    $decodedImage = base64_encode($image);
-                } else {
-                    $code = 1;
-                    $error = 'Invalid image';
-                }
-            }
-
-            $response = array(
-                'code' => $code,
-                'error' => $error,
-                'singature_image_base64' => $decodedImage,
-            );
-        } else {
-            $response = array(
-                'code' => 1,
-                'error' => 'invalid data',
-            );
-        }
-        $this->renderJSON($response);
     }
 }

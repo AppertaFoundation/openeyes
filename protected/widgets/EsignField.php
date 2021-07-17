@@ -17,16 +17,6 @@
 
 abstract class EsignField extends BaseFieldWidget
 {
-    public function getLabel($consent_type)
-    {
-        $labels = array(
-            'consultant' => 'Consultant',
-            'second_opinion' => 'Second opinion'
-        );
-
-        return $labels[$consent_type];
-    }
-
     public function render($view, $data = null, $return = false)
     {
         if (is_array($data)) {

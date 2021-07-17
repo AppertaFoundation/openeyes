@@ -35,7 +35,7 @@ class Element_OphTrConsent_Esign extends BaseEventTypeElement
      */
     public function tableName()
     {
-        return 'et_ophtrconsent_type';
+        return 'et_ophtrconsent_esign';
     }
 
     /**

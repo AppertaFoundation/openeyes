@@ -15,21 +15,27 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class EsignConsultantPinWidget extends EsignField
+class EsignSecOpinionPinWidget extends EsignField
 {
-    private const ROLE = 'consultant';
-    public $action = 'getSignatureByPin';
+    private const ROLE = 'second_opinion';
+    private const FIELD = "consultant_id";
     public $unique_id;
+
+    public $action = 'getSignatureByPin';
 
     public function getLabel($consent_type)
     {
         $labels = array(
-            'consultant' => 'Consultant',
+            'second_opinion' => 'Second opinion',
         );
 
         return $labels[$consent_type];
     }
 
+    public function isSigned()
+    {
+        return $this->element->{self::FIELD};
+    }
 
     /**
      * Render the table-row
@@ -41,6 +47,7 @@ class EsignConsultantPinWidget extends EsignField
             'role' => self::ROLE,
             'logged_user_name' => $user->getFullName(),
         );
+        $this->isSigned();
         $this->render('EsignPin', $data);
     }
 }
