@@ -15,7 +15,44 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+/**
+ * Class SignatureCapture
+ * A generic signature capture widget that can be used throughout the Application
+ */
 class SignatureCapture extends BaseCWidget
 {
+    /** @var string an URL where the signature image will be POSTed */
+    public string $submit_url = "";
+    /** @var string JS callback to be fired after submission of signature */
+    public string $after_submit_js = "function(response, widget){}";
+    /** @var string An unique identifier of this widget */
+    protected string $uid;
 
+    /**
+     * @inheritDoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->uid = uniqid("oesignwidget");
+        $assetManager = Yii::app()->getAssetManager();
+        $assetManager->registerScriptFile('signature_pad.min.js',  'application.assets.components.signature_pad' , $this->scriptPriority);
+        $assetManager->registerScriptFile("SignatureCapture.js", "application.widgets.js", $this->scriptPriority);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function run()
+    {
+        $this->render('SignatureCapture');
+    }
+
+    /**
+     * @return string The unique identifier
+     */
+    public function getUid() : string
+    {
+        return $this->uid;
+    }
 }
