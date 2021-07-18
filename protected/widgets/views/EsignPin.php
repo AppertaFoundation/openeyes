@@ -23,16 +23,27 @@
     <td><span class="highlighter">1</span></td>
     <td><?php echo CHtml::encode($this->getLabel($role)) ?></td>
     <td><?php echo CHtml::encode($logged_user_name) ?></td>
-    <td>
-        <div class="oe-user-pin">
-            <?php echo CHtml::passwordField($pin_input_name, '', array(
-                'placeholder'=>"********",
-                'maxlength'=>"8",
-                'inputmode'=>"numeric",
-                'class'=>"user-pin-entry"
-            )); ?>
-            <button id="<?php echo CHtml::encode($pin_button_id) ?>" class="try-pin js-idg-ps-popup-btn" data-action="next">PIN sign</button>
-        </div>
+
+        <?php if($this->isSigned()){ ?>
+            <td>
+                <?php echo Helper::convertDate2NHS($element->created_date) ?>
+            </td>
+            <td>
+                <img src="empty">
+            </td>
+        <?php } else { ?>
+            <td>
+                <div class="oe-user-pin">
+                    <?php echo CHtml::passwordField($pin_input_name, '', array(
+                        'placeholder'=>"********",
+                        'maxlength'=>"8",
+                        'inputmode'=>"numeric",
+                        'class'=>"user-pin-entry"
+                    )); ?>
+                    <button id="<?php echo CHtml::encode($pin_button_id) ?>" class="try-pin js-idg-ps-popup-btn" data-action="next">PIN sign</button>
+                </div>
+            </td>
+        <?php } ?>
     </td>
     <td>
         <div id="<?php echo CHtml::encode($signature_div) ?>"></div>

@@ -18,7 +18,7 @@
 class EsignSecOpinionPinWidget extends EsignField
 {
     private const ROLE = 'second_opinion';
-    private const FIELD = "consultant_id";
+    private const FIELD = "second_opinion_id";
     public $unique_id;
 
     public $action = 'getSignatureByPin';
@@ -47,7 +47,6 @@ class EsignSecOpinionPinWidget extends EsignField
             'role' => self::ROLE,
             'logged_user_name' => $user->getFullName(),
         );
-        $this->isSigned();
         $this->render('EsignPin', $data);
     }
 }

@@ -18,8 +18,10 @@
 class EsignConsultantPinWidget extends EsignField
 {
     private const ROLE = 'consultant';
+    private const FIELD = "consultant_id";
     public $action = 'getSignatureByPin';
     public $unique_id;
+
 
     public function getLabel($consent_type)
     {
@@ -30,6 +32,10 @@ class EsignConsultantPinWidget extends EsignField
         return $labels[$consent_type];
     }
 
+    public function isSigned()
+    {
+        return $this->element->{self::FIELD};
+    }
 
     /**
      * Render the table-row

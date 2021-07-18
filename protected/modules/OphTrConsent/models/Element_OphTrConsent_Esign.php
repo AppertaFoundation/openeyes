@@ -46,11 +46,8 @@ class Element_OphTrConsent_Esign extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, type_id, draft', 'safe'),
-            array('type_id, ', 'required'),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, event_id, type_id, ', 'safe', 'on' => 'search'),
+            array('event_id, consultant_id, second_opinion_id', 'safe'),
+            array('id, event_id, consultant_id, second_opinion_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -62,12 +59,9 @@ class Element_OphTrConsent_Esign extends BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'type' => array(self::BELONGS_TO, 'OphTrConsent_Type_Type', 'type_id'),
         );
     }
 
@@ -79,7 +73,6 @@ class Element_OphTrConsent_Esign extends BaseEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'type_id' => 'Type',
         );
     }
 
@@ -97,49 +90,17 @@ class Element_OphTrConsent_Esign extends BaseEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('type_id', $this->type_id);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
     }
 
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions(Patient $patient = null)
+    public function signatories()
     {
-        if (Yii::app()->getController()->getAction()->id == 'create') {
-            // TODO: should not need this with the change to method signature
-            if (!$patient = Patient::model()->findByPk($_GET['patient_id'])) {
-                throw new Exception("Can't find patient: ".$_GET['patient_id']);
-            }
-
-            if ($patient->isChild()) {
-                $this->type_id = 2;
-            } else {
-                $this->type_id = 1;
-            }
-
-            $this->draft = 1;
-        }
-    }
-
-    public function beforeSave()
-    {
-        if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
-            if (!$this->draft) {
-                $this->print = 1;
-            } else {
-                $this->print = 0;
-            }
-        }
-
-        return parent::beforeSave();
-    }
-
-    public function isEditable()
-    {
-        return $this->draft;
+        return array(
+            'consultant' => $this->consultant_id,
+            'second_opinion' => $this->second_opinion_id
+        );
     }
 }
