@@ -72,14 +72,14 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
         if(width < height * 3) {
             // Too narrow
             dHeight = FIXED_HEIGHT;
-            dWidth = FIXED_HEIGHT * 3;
+            dWidth = width * (FIXED_HEIGHT / height);
             dx = (FIXED_WIDTH - dWidth) / 2;
             dy = 0;
         }
         else if(width > height * 3) {
             // Too wide
             dWidth = FIXED_WIDTH;
-            dHeight = FIXED_WIDTH / 3;
+            dHeight = height * (FIXED_WIDTH / width);
             dx = 0;
             dy = (FIXED_HEIGHT - dHeight) / 2;
         }
