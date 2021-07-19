@@ -24,6 +24,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     public $items;
     public $user_id;
     public $dispense_condition;
+    public $report_type;
 
     public function attributeLabels()
     {
@@ -38,7 +39,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     public function rules()
     {
         return array(
-            array('start_date, end_date, drugs, user_id, dispense_condition,institution_id', 'safe'),
+            array('start_date, end_date, drugs, user_id, dispense_condition,institution_id, report_type', 'safe'),
             array('drugs', 'requiredIfNoUser'),
         );
     }
@@ -76,6 +77,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
                 , route.term as route
                 , dc.name as dispense_condition
                 , dl.name as dispense_location
+                , IF(pgd.id IS NOT NULL, pgd.name, "N/A") as pgd_name
                 , option.name as laterality
                 , IF(preservative_free.id IS NOT NULL, 1, 0) as preservative_free
                 '
@@ -101,6 +103,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->join('contact', 'patient.contact_id = contact.id')
             ->leftJoin('address', 'contact.id = address.contact_id')
             ->leftjoin('user au', 'd.authorised_by_user = au.id')
+            ->leftJoin('ophdrpgdpsd_pgdpsd pgd', 'pgd.id = emu.pgdpsd_id')
             ->join('user lu', 'd.last_modified_user_id = lu.id')
             ->join('medication_frequency mf', 'mf.id = emu.frequency_id')
             ->join('medication_duration duration', 'duration.id = emu.duration_id')
@@ -135,6 +138,14 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
         if (is_numeric($this->dispense_condition)) {
             $command->andWhere('emu.dispense_condition_id = :dispense_condition_id', array(':dispense_condition_id' => $this->dispense_condition));
         }
+        switch ($this->report_type) {
+            case '0':
+                $command->andWhere('pgd.id IS NULL');
+                break;
+            case '1':
+                $command->andWhere('pgd.id IS NOT NULL');
+                break;
+        }
 
         $this->items = $command->queryAll();
         $this->setPatientIdentifiers();
@@ -154,13 +165,16 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
 
     public function toCSV()
     {
-        $output = $this->getPatientIdentifierPrompt() . ",  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Drug dose,  Frequency, Duration, Route, Dispense Condition, Dispense Location, Laterality, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free, " . $this->getAttributeLabel('all_ids') . "\n";
+        $output = $this->getPatientIdentifierPrompt() .
+            ",  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Drug dose,  Frequency, Duration, Route, Dispense Condition, Dispense Location, PGD Name, Laterality, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free, " .
+            $this->getAttributeLabel('all_ids') .
+            "\n";
         foreach ($this->items as $item) {
             $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
 
             $output .= $patient_identifier_value . ', ' . $item['last_name'] . ', ' . $item['first_name'] . ', ' . ($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown') . ', ' . $item['postcode'] . ', ';
             $output .= (date('j M Y', strtotime($item['created_date'])) . ' ' . (substr($item['created_date'], 11, 5))) . ', ' . $item['preferred_term'] . ', ';
-            $output .= $item['dose'].' '.$item['dose_unit'].', '.$item['frequency'].', '.$item['duration'].', '.$item['route'].', '.$item['dispense_condition'].', '.$item['dispense_location'].', '.$item['laterality'].', ';
+            $output .= $item['dose'].' '.$item['dose_unit'].', '.$item['frequency'].', '.$item['duration'].', '.$item['route'].', '.$item['dispense_condition'].', '.$item['dispense_location'].', ' . $item['pgd_name'] . ', '.$item['laterality'].', ';
             $output .= $item['user_first_name'] . ' ' . $item['user_last_name'] . ', ' . $item['role'] . ', ' . (date('j M Y', strtotime($item['event_date'])) . ' ' . (substr($item['event_date'], 11, 5))) . ', ';
             $output .= $item['preservative_free'] ? 'Yes' : 'No';
             $output .= ',"' . $item['all_ids'] . '"';
