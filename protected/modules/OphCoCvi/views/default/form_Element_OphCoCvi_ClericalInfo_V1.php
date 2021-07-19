@@ -21,54 +21,61 @@ if ($this->checkClericalEditAccess()) {
     $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1::model();
 ?>
     <div class="element-fields row">
-        <?php
-        foreach ($this->getPatientFactors() as $factor) { ?>
-            <fieldset class="row field-row ">
-                <div class="large-6 column">
-                    <label> <?php echo CHtml::encode($factor->name) ?> </label>
-                    <?php
-                    $field_base_name = CHtml::modelName($element) . "[patient_factors][{$factor->id}]";
-                    $factor_field_name = "{$field_base_name}[is_factor]";
-                    $answer = $element->getPatientFactorAnswer($factor);
-                    $value = $answer ? $answer->is_factor : null;
-                    if (!is_null($value)) {
-                        $value = (integer) $value;
-                    }
-                    $comments = $answer ? $answer->comments : null;
-                    ?>
+        <table>
+            <colgroup>
+                <col class="cols-7">
+                <col class="cols-4">
+            </colgroup>
+            <tbody>
+            <?php foreach ($this->getPatientFactors() as $factor): ?>
+                <tr>
+                    <td><?php echo CHtml::encode($factor->name) ?></td>
+                    <td>
+                        <?php
+                        $field_base_name = CHtml::modelName($element) . "[patient_factors][{$factor->id}]";
+                        $factor_field_name = "{$field_base_name}[is_factor]";
+                        $answer = $element->getPatientFactorAnswer($factor);
+                        $value = $answer ? $answer->is_factor : null;
+                        if (!is_null($value)) {
+                            $value = (integer) $value;
+                        }
+                        $comments = $answer ? $answer->comments : null;
+                        ?>
 
-                </div>
-                <?php if(!$factor->comments_only){ ?>
-                    <div class="large-6 column">
-                        <label class="inline highlight">
-                            <?php echo CHtml::radioButton($factor_field_name, ($value === 1), array('id' => $factor_field_name . '_1', 'value' => 1)) ?>
-                            Yes
-                        </label>
-                        <label class="inline highlight">
-                            <?php echo CHtml::radioButton($factor_field_name, ($value === 0), array('id' => $factor_field_name . '_0', 'value' => 0)) ?>
-                            No
-                        </label>
-                        <?php  if(!$factor->yes_no_only){ ?>
-                            <label class="inline highlight">
-                                <?php echo CHtml::radioButton($factor_field_name, ($value === 2), array('id' => $factor_field_name . '_2', 'value' => 2)) ?>
-                                Don't know
-                            </label>
+                        <?php if(!$factor->comments_only){ ?>
+                            <div class="large-6 column">
+                                <label class="inline highlight">
+                                    <?php echo CHtml::radioButton($factor_field_name, ($value === 1), array('id' => $factor_field_name . '_1', 'value' => 1)) ?>
+                                    Yes
+                                </label>
+                                <label class="inline highlight">
+                                    <?php echo CHtml::radioButton($factor_field_name, ($value === 0), array('id' => $factor_field_name . '_0', 'value' => 0)) ?>
+                                    No
+                                </label>
+                                <?php  if(!$factor->yes_no_only){ ?>
+                                    <label class="inline highlight">
+                                        <?php echo CHtml::radioButton($factor_field_name, ($value === 2), array('id' => $factor_field_name . '_2', 'value' => 2)) ?>
+                                        Don't know
+                                    </label>
+                                <?php }?>
+                            </div>
                         <?php }?>
-                    </div>
-                <?php }?>
-            </fieldset>
-            <?php if ($factor->require_comments) { ?>
-                <fieldset class="row field-row <?=$factor->code == '15v1' ? 'hide' : ''?>" id="comment_<?= CHtml::encode($factor->code) ?>">
-                    <div class="large-6 column">
-                        <label>  <?php echo CHtml::encode($factor->comments_label); ?> </label>
-                    </div>
-                    <div class="large-6 column end">
-                        <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array('rows' => 2)); ?>
-                    </div>
-                </fieldset>
-            <?php } ?>
-            <hr/><br/>
-        <?php } ?>
+                        <?php if ($factor->require_comments) { ?>
+                            <fieldset class="row field-row <?=$factor->code == '15v1' ? 'hide' : ''?>" id="comment_<?= CHtml::encode($factor->code) ?>">
+                                <div class="large-6 column">
+                                    <label>  <?php echo CHtml::encode($factor->comments_label); ?> </label>
+                                </div>
+                                <div class="large-6 column end">
+                                    <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array('rows' => 2)); ?>
+                                </div>
+                            </fieldset>
+                        <?php } ?>
+                    </td>
+                </tr>
+            <?php endforeach;?>
+
+            </tbody>
+        </table>
     </div>
 
     <div class="element-fields row">
