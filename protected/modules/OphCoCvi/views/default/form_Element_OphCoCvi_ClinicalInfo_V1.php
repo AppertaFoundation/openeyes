@@ -486,7 +486,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                         </td>
                         <td style="text-align: center">
                             <label class="inline highlight">
-                                <input class="disorder-main-cause" type="checkbox" value="1" name="main_cause">Main cause
+                                <input class="disorder-main-cause" type="checkbox" value="1" id="main_cause">Main cause
                             </label>
                         </td>
                         <td>

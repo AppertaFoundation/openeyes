@@ -281,7 +281,7 @@ $(document).ready(function() {
         
     });
     
-    $(document).on('change', '.collapse-group .js-right-eye, .collapse-group .js-left-eye',function(e) {
+    $(document).on('change', '.collapse-group .js-right-eye, .collapse-group .js-left-eye', function(e) {
         const $td = e.target.closest('td');
         var current_group_id = $td.dataset.group_id;
         var data_id = $td.dataset.disorder_id;
@@ -486,11 +486,11 @@ $(document).ready(function() {
         });
     });
     
-    $(document).on('click', '#js-add-diagnosis-not-covered',function(e) {
+    $(document).on('click', '#js-add-diagnosis-not-covered', function(e) {
         e.preventDefault();
 
         var disorder_id = $('#disorder_id').val();
-        var disorder = $('#autocomplete_disorder_id').val();
+        var disorder = $('#autocomplete_disorder_id');
         var main_cause = '';
         var main_cause_id = 0;
         var code = '';
@@ -521,21 +521,21 @@ $(document).ready(function() {
             code = ' - ' + $('#icd10').val();
         }
 
-        if ($('#dynamic_left_eye:checked')) {
-            eye_label = 'Left';
-            eye_id = 1;
-        } else if ($('#dynamic_right_eye:checked')) {
-            eye_label = 'Right';
-            eye_id = 2;
-        } else if ($('#dynamic_right_eye:checked, #dynamic_left_eye:checked').length) {
+        if ($('#dynamic_right_eye:checked, #dynamic_left_eye:checked').length === 2) {
             eye_label = 'Bilateral';
             eye_id = 3;
+        } else if ($('#dynamic_right_eye:checked').length) {
+            eye_label = 'Right';
+            eye_id = 2;
+        } else if ($('#dynamic_left_eye:checked').length) {
+            eye_label = 'Left';
+            eye_id = 1;
         }
         
         var add_row_content = '<tr id="diagnosis_not_covered_'+disorder_id+'">\n' +
-                '                        <td>'+eye_label+' '+disorder+' '+main_cause+' '+code+'</td>\n' +
+                '                        <td>'+eye_label+' '+disorder.val()+' '+main_cause+' '+code+'</td>\n' +
                 '                        <td>\n' +
-                '                            <button class="button button-icon small js-remove-diagnosis-not-covered-element disabled" data-id="'+disorder_id+'" title="Delete Diagnosis">\n' +
+                '                            <button class="button button-icon small js-remove-diagnosis-not-covered-element" data-id="'+disorder_id+'" title="Delete Diagnosis">\n' +
                 '                                <span class="icon-button-small-mini-cross"></span>\n' +
                 '                                <span class="hide-offscreen">Remove element</span>\n' +
                 '                            </button>\n' +
