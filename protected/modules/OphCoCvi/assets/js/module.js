@@ -281,11 +281,12 @@ $(document).ready(function() {
         
     });
     
-    $(document).on('change', '.affected-selector',function(e) {
-        var current_group_id = $(e.target).attr('data-group_id');
-        var data_id = $(e.target).attr('data-id');
+    $(document).on('change', '.collapse-group .js-right-eye, .collapse-group .js-left-eye',function(e) {
+        const $td = e.target.closest('td');
+        var current_group_id = $td.dataset.group_id;
+        var data_id = $td.dataset.disorder_id;
 
-        if (typeof current_group_id !== "undefined") {
+        if (current_group_id) {
             $("input[data-group_id='" +current_group_id+ "'][type='radio']").each(function () {
                 var current_data_id = $(this).attr('data-id');
                 $(this).prop({checked: false});
@@ -296,8 +297,14 @@ $(document).ready(function() {
             $(e.target).prop({checked: true});
         }
 
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_'+data_id+'_main_cause').removeAttr('disabled');
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_'+data_id+'_main_cause').attr('data-active', 1);
+        const is_active = $td.querySelectorAll('.js-right-eye:checked, .js-left-eye:checked').length;
+        const $main = document.getElementById(`OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_${data_id}_main_cause`);
+        if (!is_active) {
+            $main.checked = false;
+        }
+
+        $main.toggleAttribute('disabled', !is_active);
+        $main.toggleAttribute('data-active', !is_active);
     });
 
     $(document).on('click', '.disorder-main-cause',function(e) {
@@ -481,40 +488,48 @@ $(document).ready(function() {
     
     $(document).on('click', '#js-add-diagnosis-not-covered',function(e) {
         e.preventDefault();
-        if ($('#autocomplete_disorder_id').val() == '') {
-            $('#autocomplete_disorder_id').css('border', '1px solid red');
-            return false;
-        }
-        if ($('#disorder_id').val() == '') {
-            $('#disorder_id').css('border', '1px solid red');
-            return false;
-        }
-        if ($('input[name="eyes"]:checked').length == 0) {
-            $('.eyes-radio-validate').css('border', '1px solid red');
-            return false;
-        } else {
-            $('.eyes-radio-validate').css('border', '0px');
-        }
+
         var disorder_id = $('#disorder_id').val();
         var disorder = $('#autocomplete_disorder_id').val();
         var main_cause = '';
         var main_cause_id = 0;
-        if($('#main_cause').prop("checked") == true){
+        var code = '';
+        var eye_id = null;
+        var eye_label = '';
+
+        if (disorder === '') {
+            disorder.css('border', '1px solid red');
+            return false;
+        }
+        if (disorder_id === '') {
+            disorder.css('border', '1px solid red');
+            return false;
+        }
+        if ($('#dynamic_right_eye:checked, #dynamic_left_eye:checked').length === 0) {
+            $('#dynamic_right_eye').closest('td').css('border', '1px solid red');
+            return false;
+        } else {
+            $('#dynamic_right_eye').closest('td').css('border', '0px');
+        }
+
+        if($('#main_cause').prop("checked") === true){
             main_cause = '(main cause)';
             main_cause_id = 1;
         }
-        var code = '';
-        if ($('#icd10').val() != '') {
+
+        if ($('#icd10').val() !== '') {
             code = ' - ' + $('#icd10').val();
         }
-        var eye_id = $('input[name=eyes]:checked').val();
-        var eye_label = '';
-        if (eye_id == 1) {
+
+        if ($('#dynamic_left_eye:checked')) {
             eye_label = 'Left';
-        } else if (eye_id == 2) {
+            eye_id = 1;
+        } else if ($('#dynamic_right_eye:checked')) {
             eye_label = 'Right';
-        }else if (eye_id == 3) {
+            eye_id = 2;
+        } else if ($('#dynamic_right_eye:checked, #dynamic_left_eye:checked').length) {
             eye_label = 'Bilateral';
+            eye_id = 3;
         }
         
         var add_row_content = '<tr id="diagnosis_not_covered_'+disorder_id+'">\n' +
@@ -540,16 +555,16 @@ $(document).ready(function() {
         clearDiagnosisNotCoveredForm();
     });
     
-    function clearDiagnosisNotCoveredForm(){
+    function clearDiagnosisNotCoveredForm() {
         $('#autocomplete_disorder_id').val('');
         $('#disorder_id').val('');
         $('#main_cause').prop("checked", false);
         $('#icd10').val('');
-        $('input[name=eyes]:checked').prop("checked", false);
+        $('#dynamic_right_eye:checked, #dynamic_left_eye:checked').prop("checked", false);
     }
     
     
-    $(document).on('change', '#js-show_icd10_code',function(e) {
+    $('#js-show_icd10_code').on('change',function(e) {
         if(this.checked) {
             $('.icd10code').show();
         } else {

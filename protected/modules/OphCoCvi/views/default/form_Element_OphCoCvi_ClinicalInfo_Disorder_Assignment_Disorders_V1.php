@@ -41,8 +41,6 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
                 ); ?>
             </td>
             <td>
-
-
                 <label class="inline highlight ">
                     <input type="checkbox" name="show_icd10_code" id="js-show_icd10_code" checked> Show ICD 10 Code
                 </label>
@@ -61,14 +59,19 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
         <div class="collapse-group-content " style="display: block;">
             <!-- Unique layout: use VIEW mode layout here! -->
             <div class="element-eyes">
-                <div class="right-eye">
-
-                    <table class="cols-full">
+                <div>
+                    <table class="cols-full" style="width: 700px;">
                         <colgroup>
-                            <col>
-                            <col class="cols-6">
+                            <col class="cols-7">
+                            <col class="cols-1">
+                            <col class="cols-4">
                         </colgroup>
                         <tbody>
+                        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side_V1', array(
+                            'element' => $element,
+                            'form' => $form,
+                            'disorder_section' => $disorder_section,
+                        )) ?>
                         </tbody>
                     </table>
                 </div>
@@ -76,48 +79,4 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
         </div>
     </div>
 <?php endforeach;?>
-
-<div id="diagnosis_list">
-    <div class="row">
-        <div class="column large-4"><h3>Diagnosis</h3></div>
-        <div class="column large-2 text-center"><h3>Main cause</h3></div>
-        <div class="column large-2 text-center icd10code"><h3>ICD 10 Code</h3></div>
-        <div class="column large-1 text-center"><h3>Right eye</h3></div>
-        <div class="column large-1 text-center"><h3>Left eye</h3></div>
-        <div class="column large-1 text-center"><h3>Both eyes</h3></div>
-        <div class="column large-1"></div>
-    </div>
-    <?php
-    foreach ($this->getDisorderSections_V1($element->patient_type) as $disorder_section) {
-        $is_open = $element->hasAffectedCviDisorderInSection($disorder_section);
-        ?>
-        <hr/>
-        <section class="js-toggle-container">
-
-            <div class="row">
-                <div class="large-11 column disorder-toggle js-toggle">
-                    <h4><?= CHtml::encode($disorder_section->name); ?></h4>
-                    <a href="#" class="toggle-trigger <?= $is_open ? 'toggle-hide' : 'toggle-show' ?>">
-                        <span class="icon-showhide">
-                            Show/hide this section
-                        </span>
-                    </a>
-                </div>
-            </div>
-            <div class="js-toggle-body" style="<?= $is_open ? 'display:block' : 'display:none' ?>">
-                <?php if ($disorder_section->disorders) { ?>
-                    <div class="sub-element-fields element-eyes row">
-                        <div class="element-eye column left side" data-side="right">
-                            <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side_V1', array(
-                                'element' => $element,
-                                'form' => $form,
-                                'disorder_section' => $disorder_section,
-                            )) ?>
-                        </div>
-                    </div>
-                <?php } ?>
-
-            </div>
-        </section>
-    <?php } ?>
 </div>
