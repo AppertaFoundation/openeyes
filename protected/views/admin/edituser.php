@@ -172,7 +172,7 @@ $form = $this->beginWidget(
 
         <h2>Login Authentications</h2>
         <hr class="divider">
-        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'password', 'password_repeat', 'password_status', 'active'] ?>
+        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'pincode', 'password', 'password_repeat', 'password_status', 'active'] ?>
         <table class="standard" id="user-authentications">
             <thead>
             <tr>
@@ -194,7 +194,8 @@ $form = $this->beginWidget(
                             $invalid_existing
                         )
                     );
-                    $user_auths = array_merge($invalid_existing,
+                    $user_auths = array_merge(
+                        $invalid_existing,
                         isset($user->id) ? UserAuthentication::model()->findAll($criteria) : []
                     );
                     usort(
@@ -280,6 +281,7 @@ $form = $this->beginWidget(
             let $row = $(this).closest('tr');
             $row.find('.js-remove-row').hide();
             $row.find('.js-row-spinner').show();
+            $row.find('.js-pincode-section').attr('data-ins-auth-id', this.value);
             $.ajax({
                 'type': 'GET',
                 'url': baseUrl + '/admin/checkInstAuthType?id=' + $(this).val(),

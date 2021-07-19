@@ -256,7 +256,9 @@ class DefaultController extends BaseEventTypeController
             $criteria->addCondition('deleted_date IS NULL');
 
             //Will only fetch the locally sourced medications that are assigned for use in the current institution
-            $institution_assigned_ids = array_map(function($item) { return $item->id; }, Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
+            $institution_assigned_ids = array_map(function ($item) {
+                return $item->id;
+            }, Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
             $criteria->addCondition("source_type != 'LOCAL'");
             $criteria->addInCondition("t.id", $institution_assigned_ids, "OR");
 
@@ -645,7 +647,8 @@ class DefaultController extends BaseEventTypeController
 
     public function checkCreateAccess()
     {
-        return $this->checkAccess('OprnCreatePrescription', $this->firm, $this->episode, $this->event_type);
+        $api = Yii::app()->moduleAPI->get('OphDrPrescription');
+        return $this->checkAccess($api->createOprn, $this->firm, $this->episode, $this->event_type);
     }
 
     public function checkPrintAccess()
@@ -655,7 +658,30 @@ class DefaultController extends BaseEventTypeController
 
     public function checkEditAccess()
     {
-        return $this->checkAccess('OprnEditPrescription', $this->event);
+        $editAccess = $this->checkAccess('OprnEditPrescription', $this->event);
+        if ($editAccess) {
+            return $editAccess;
+        }
+        $px_element = null;
+        if ($this->event) {
+            $px_element = Element_OphDrPrescription_Details::model()->find('event_id=?', array($this->event->id));
+        }
+        if ($px_element) {
+            $non_pgd_entries = array_filter($px_element->getEntries(), function ($entry) {
+                return !$entry->pgd;
+            });
+            if (empty($non_pgd_entries)) {
+                $curr_user_id = \Yii::app()->user->id;
+                $editAccess = true;
+                foreach ($px_element->pgds as $pgd) {
+                    if (!in_array($curr_user_id, $pgd->getAuthedUserIDs()) || !parent::checkEditAccess()) {
+                        $editAccess = false;
+                        break;
+                    }
+                }
+            }
+        }
+        return $editAccess;
     }
 
     /**
@@ -696,6 +722,7 @@ class DefaultController extends BaseEventTypeController
             // Source is a prescription item, so we should clone it
             foreach (array(
                          'medication_id',
+                         'pgdpsd_id',
                          'duration_id',
                          'frequency_id',
                          'dose',
@@ -746,6 +773,17 @@ class DefaultController extends BaseEventTypeController
                     }
                     $item->tapers = $tapers;
                 }
+            } elseif (is_a($source, OphDrPGDPSD_PGDPSDMeds::class)) {
+                $item->pgdpsd_id = $source->pgdpsd_id;
+                $item->medication_id = $source->medication_id;
+                $item->dose = $source->dose;
+                $item->dose_unit_term = $source->dose_unit_term;
+                $item->route_id = $source->route_id;
+                $item->frequency_id = $source->frequency_id;
+                $item->duration_id = $source->duration_id;
+                $item->dispense_condition_id = $source->dispense_condition_id;
+                $item->dispense_location_id = $source->dispense_location_id;
+                $item->comments = $source->comments;
             } elseif (is_int($source) || (int) $source) {
                 // as typed, save as a new local drug - with no defaults
                 if ($source == EventMedicationUse::USER_MEDICATION_ID) {
@@ -773,7 +811,6 @@ class DefaultController extends BaseEventTypeController
             } else {
                 throw new CException('Invalid prescription item source: '.print_r($source));
             }
-
             // Populate route option from episode for Eye
             if ($episode = $this->episode) {
                 if ($principal_eye = $episode->eye) {

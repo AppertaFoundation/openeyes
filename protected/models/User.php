@@ -717,7 +717,37 @@ class User extends BaseActiveRecordVersioned
 
         return $users_with_roles;
     }
-
+    // get user permission details
+    public function getUserPermissionDetails($tooltip = false)
+    {
+        $user_roles = Yii::app()->user->getRole($this->id);
+        $can_prescribe = in_array('Prescribe', array_values($user_roles));
+        $is_med_administer = in_array('Med Administer', array_values($user_roles));
+        $ret = array(
+            'id' => $this->id,
+            'label' => $this->getFullNameAndTitle(),
+            'name' => $this->getFullNameAndTitle(),
+            'value' => $this->id,
+            'grade' => $this->grade ? $this->grade->grade : '',
+            'can_prescribe' => $can_prescribe ? 'Yes' : 'No',
+            'is_med_administer' => $is_med_administer ? 'Yes' : 'No',
+            'consultant' => $this->is_consultant ? 'Yes' : 'No',
+        );
+        if ($tooltip) {
+            $tooltip_str = "";
+            $ignore_keys = array('label', 'id', 'name', 'value', 'username');
+            foreach ($ret as $key => $val) {
+                if (in_array($key, $ignore_keys)) {
+                    continue;
+                }
+                $key = str_replace('_', ' ', $key);
+                $key = strtoupper($key);
+                $tooltip_str .= "<em>$key: </em>$val<br/>";
+            }
+            $ret = $tooltip_str;
+        }
+        return $ret;
+    }
     /// NOTE: SSO is not currently supported under the multi-tenancy model. To support it, these functions will likely
     /// need to move to UserAuthentication.
     public function setSSOUserInformation($response)

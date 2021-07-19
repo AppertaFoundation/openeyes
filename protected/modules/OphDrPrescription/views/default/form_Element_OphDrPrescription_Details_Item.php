@@ -43,6 +43,7 @@ $dispense_condition_options = array(
         <?php endif; ?>
         <span class='js-medication-display'><?= $item->getMedicationDisplay(true) ?></span>
         <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
+        <?=$item->renderPGDInfo($key);?>
         <?php if ($item->id) { ?>
             <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][id]"
                    value="<?= $item->id ?>" /><?php

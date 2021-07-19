@@ -38,6 +38,7 @@ function HistoryMedicationsController(options) {
       this.fields = [
           'medication_name',
           'medication_id',
+          'pgdpsd_id',
           'dose',
           'dose_unit_term',
           'frequency_id',
@@ -54,6 +55,7 @@ function HistoryMedicationsController(options) {
           'dispense_condition_id',
           'to_be_copied',
           'prepended_markup',
+          'pgd_info_icon',
           'set_ids',
           'locked',
           'bound_key'
@@ -74,6 +76,7 @@ HistoryMedicationsController._defaultOptions = {
     removeButtonSelector: 'i.js-remove',
     searchSource: '/medicationManagement/findRefMedications',
     drugSetFormSource: '/medicationManagement/getDrugSetForm',
+    pgdSetFormSource: '/medicationManagement/getPGDSetForm',
     routeOptionSource: '/medication/retrieveDrugRouteOptions',
     searchAsTypedPrefix: 'As typed: ',
     drugFieldSelector: 'input[name$="[drug_id]"]',
@@ -951,6 +954,33 @@ HistoryMedicationsController._defaultOptions = {
             controller.displayTableHeader();
         });
     };
+    HistoryMedicationsController.prototype.addPGD = function (pgd_id, matching_allergies_ids = []) {
+        let controller = this;
+        $.getJSON(controller.options.pgdSetFormSource, {
+            pgd_id: pgd_id,
+            allergy_ids: JSON.stringify(matching_allergies_ids),
+            key: OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key'),
+        }, function (medications) {
+            medications.forEach(function (medication) {
+                let row_data = [medication];
+                let rows = controller.createRow(row_data);
+
+                if (medication['tapers'] !== undefined) {
+                    medication['tapers'].forEach(function (taper) {
+                        row_data.push(taper);
+                    });
+                }
+
+                rows.forEach(function (row, key) {
+                    let $row = $(row);
+                    controller.addMedicationItemRow($row, row_data[key]);
+                    $row.find(".js-btn-prescribe").trigger('click');
+                });
+            });
+
+            controller.displayTableHeader();
+        });
+    };
 
     HistoryMedicationsController.prototype.getMatchingAllergies = function(medications, allergies) {
         let same_allergies = {};
@@ -996,6 +1026,30 @@ HistoryMedicationsController._defaultOptions = {
         });
     };
 
+    HistoryMedicationsController.prototype.processPGDEntries = function(pgd_id){
+        let controller = this;
+        let allergies = controller.getMergedAllergies();
+        $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/getPGDDrugs", {
+            pgd_id: pgd_id
+        }, function (medications) {
+            if (typeof allergies !== 'undefined') {
+                let matching_allergies = controller.getMatchingAllergies(medications, allergies);
+                let matching_allergies_ids = Object.keys(matching_allergies);
+                let matching_allergies_labels = Object.values(matching_allergies);
+                if (matching_allergies_ids.length > 0) {
+                    let dialog = controller.createAllergiesDialog(matching_allergies_labels);
+                    dialog.on('ok', function () {
+                        controller.addPGD(pgd_id, matching_allergies_ids);
+                    }.bind(this));
+                    dialog.open();
+                } else {
+                    controller.addPGD(pgd_id);
+                }
+            } else {
+                controller.addPGD(pgd_id);
+            }
+        });
+    }
     HistoryMedicationsController.prototype.updateTextualDisplay = function ($row) {
         let displayDoseText = "";
         if($row.find(".js-dose").val() !== '') {
@@ -1091,6 +1145,14 @@ HistoryMedicationsController._defaultOptions = {
             medication_id: data.medication_id
         }, function (info_box) {
             $row.find(".js-prepended_markup:visible").append($(info_box));
+            
+            if(data.pgdpsd_id){
+                $.get("/medicationManagement/getPGDIcon", {
+                    pgdpsd_id: data.pgdpsd_id
+                }, function (pdg_icon) {
+                    $row.find(".js-prepended_markup:visible").append($(pdg_icon));
+                });
+            }
         });
 
         this.disableRemoveButton($row);
@@ -1378,6 +1440,7 @@ HistoryMedicationsController._defaultOptions = {
         if(do_callback) {
             this.options.onAddedEntry($lastRow, this);
         }
+        this.handleCommentBox();
         return $lastRow;
     };
 
@@ -1636,6 +1699,15 @@ HistoryMedicationsController._defaultOptions = {
         let start_date = $history_second_row.find('.js-start-date').val();
         $management_row.find('input[name*="[start_date]"]').val(start_date);
     };
+
+    HistoryMedicationsController.prototype.handleCommentBox = function(){
+        $('.js-comment-field').each(function(i, field){
+            if(!field.value){
+                $(field).siblings('.js-remove-add-comments').trigger('click');
+            }
+        });
+      };
+    
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
 })(OpenEyes.OphCiExamination, OpenEyes.Util);

@@ -26,6 +26,7 @@ return array(
             ),
             'Core' => array(
                 'Users' => '/admin/users',
+                'Teams' => '/oeadmin/team/list',
                 'context_firm_labels and service_firm_labels' => '/Admin/context/index',
                 'Contacts' => '/admin/contacts',
                 'Contact labels' => ['uri' => '/admin/contactlabels', 'restricted' => array('admin')],
