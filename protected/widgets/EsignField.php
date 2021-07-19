@@ -18,7 +18,7 @@
 abstract class EsignField extends BaseCWidget
 {
     /** @var string An identifier that is unique within the element */
-    public string $unique_id;
+    public string $row_id;
 
     /** @var int|null The id of the signature file, if already added */
     public ?int $signature_file_id;
@@ -37,6 +37,6 @@ abstract class EsignField extends BaseCWidget
      */
     public function isSigned() : bool
     {
-        return !is_null($this->signature_file_id);
+        return false; //!is_null($this->signature_file_id);
     }
 }

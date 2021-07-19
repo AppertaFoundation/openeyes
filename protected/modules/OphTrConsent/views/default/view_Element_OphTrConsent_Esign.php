@@ -33,22 +33,22 @@
                 <?php
                     $this->widget('application.widgets.EsignPINField', array(
                         'element' => $element,
-                        'label' => 'Consultant 1',
-                        'unique_id' => 1,
+                        'signatory_label' => 'Consultant 1',
+                        'row_id' => '1',
                     ));
                 ?>
                 <?php
                     $this->widget('application.widgets.EsignPINField', array(
                         'element' => $element,
-                        'label' => 'Consultant 2',
-                        'unique_id' => 2,
+                        'signatory_label' => 'Consultant 2',
+                        'row_id' => 2,
                     ));
                 ?>
                 <?php
                     $this->widget('application.widgets.EsignUsernamePINField', array(
                         'element' => $element,
-                        'label' => 'Second opinion 1',
-                        'unique_id' => 3,
+                        'signatory_label' => 'Second opinion 1',
+                        'row_id' => 3,
                     ));
                 ?>
             </tbody>

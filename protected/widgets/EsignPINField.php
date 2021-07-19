@@ -33,5 +33,8 @@ class EsignPINField extends EsignField
     public function init()
     {
         $this->logged_user_name = Yii::app()->session['user']->getFullName();
+        $assetManager = Yii::app()->getAssetManager();
+        $widgetPath = $assetManager->publish('protected/widgets/js', true);
+        Yii::app()->clientScript->registerScriptFile($widgetPath . '/EsignPinWidget.js');
     }
 }

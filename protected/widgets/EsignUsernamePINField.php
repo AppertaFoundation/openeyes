@@ -17,11 +17,24 @@
 
 class EsignUsernamePINField extends EsignField
 {
+    protected string $logged_user_name;
+
     /**
      * @inheritDoc
      */
     public function getAction() : string
     {
         return 'getSignatureByUsernameAndPin';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function init()
+    {
+        $this->logged_user_name = Yii::app()->session['user']->getFullName();
+        $assetManager = Yii::app()->getAssetManager();
+        $widgetPath = $assetManager->publish('protected/widgets/js', true);
+        Yii::app()->clientScript->registerScriptFile($widgetPath . '/EsignPinWidget.js');
     }
 }
