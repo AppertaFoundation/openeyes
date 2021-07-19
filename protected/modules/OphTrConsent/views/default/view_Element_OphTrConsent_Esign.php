@@ -31,20 +31,23 @@
             </thead>
             <tbody>
                 <?php
-                    $this->widget('application.widgets.EsignConsultantPinWidget', array(
+                    $this->widget('application.widgets.EsignPINField', array(
                         'element' => $element,
+                        'label' => 'Consultant 1',
                         'unique_id' => 1,
                     ));
                 ?>
                 <?php
-                    $this->widget('application.widgets.EsignConsultantPinWidget', array(
+                    $this->widget('application.widgets.EsignPINField', array(
                         'element' => $element,
+                        'label' => 'Consultant 2',
                         'unique_id' => 2,
                     ));
                 ?>
                 <?php
-                    $this->widget('application.widgets.EsignSecOpinionPinWidget', array(
+                    $this->widget('application.widgets.EsignUsernamePINField', array(
                         'element' => $element,
+                        'label' => 'Second opinion 1',
                         'unique_id' => 3,
                     ));
                 ?>

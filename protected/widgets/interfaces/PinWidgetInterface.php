@@ -15,20 +15,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-abstract class EsignField extends BaseFieldWidget
+interface PinWidgetInterface
 {
-    public function render($view, $data = null, $return = false)
-    {
-        if (is_array($data)) {
-            $data = array_merge($data, get_object_vars($this));
-        } else {
-            $data = get_object_vars($this);
-        }
-        parent::render($view, $data, $return);
-    }
+    public function getAction();
 
-    public function isSigned():bool
-    {
-        return !is_null($this->signature_file_id);
-    }
+    public function render($view, $data = null, $return = false);
+
+    public function isSigned():bool;
+
+    public function run();
 }

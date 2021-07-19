@@ -85,6 +85,7 @@ $config = array(
         'application.commands.shell.*',
         'application.behaviors.*',
         'application.widgets.*',
+        'application.widgets.interfaces.*',
         'application.controllers.*',
         'application.helpers.*',
         'application.gii.*',

@@ -15,26 +15,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class EsignConsultantPinWidget extends EsignField
+class EsignUsernamePINField extends EsignField implements PinWidgetInterface
 {
-    private const ROLE = 'consultant';
-    private const FIELD = "consultant_id";
-    public $action = 'getSignatureByPin';
+    private const ROLE = 'second_opinion';
+    public $signature_file_id;
     public $unique_id;
+    public $label = 'Second opinion';
 
-
-    public function getLabel($consent_type)
+    public function getAction()
     {
-        $labels = array(
-            'consultant' => 'Consultant',
-        );
-
-        return $labels[$consent_type];
-    }
-
-    public function isSigned()
-    {
-        return $this->element->{self::FIELD};
+        return 'getSignatureByPin';
     }
 
     /**

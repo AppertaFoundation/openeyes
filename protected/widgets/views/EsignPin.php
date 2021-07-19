@@ -21,7 +21,7 @@
 <?php ?>
 <tr>
     <td><span class="highlighter">1</span></td>
-    <td><?php echo CHtml::encode($this->getLabel($role)) ?></td>
+    <td><?php echo CHtml::encode($this->label) ?></td>
     <td><?php echo CHtml::encode($logged_user_name) ?></td>
 
         <?php if($this->isSigned()){ ?>
