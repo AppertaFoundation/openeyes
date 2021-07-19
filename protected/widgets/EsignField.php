@@ -15,19 +15,27 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-abstract class EsignField extends BaseFieldWidget
+abstract class EsignField extends BaseCWidget
 {
-    public function render($view, $data = null, $return = false)
-    {
-        if (is_array($data)) {
-            $data = array_merge($data, get_object_vars($this));
-        } else {
-            $data = get_object_vars($this);
-        }
-        parent::render($view, $data, $return);
-    }
+    /** @var string An identifier that is unique within the element */
+    public string $unique_id;
 
-    public function isSigned():bool
+    /** @var int|null The id of the signature file, if already added */
+    public ?int $signature_file_id;
+
+    /** @var string A label displaying who is signing */
+    public string $signatory_label;
+
+    /**
+     * @return string   The action within the module's controller that will be called
+     *                  to validate user input and save the signature if passed validation
+     */
+    abstract public function getAction() : string;
+
+    /**
+     * @return bool Whether the signature has already been added
+     */
+    public function isSigned() : bool
     {
         return !is_null($this->signature_file_id);
     }

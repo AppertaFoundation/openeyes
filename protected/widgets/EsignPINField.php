@@ -15,28 +15,23 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class EsignPINField extends EsignField implements PinWidgetInterface
+class EsignPINField extends EsignField
 {
-    private const ROLE = 'consultant';
-    public $signature_file_id;
-    public $unique_id;
-    public $label = 'Consultant';
+    protected string $logged_user_name;
 
-    public function getAction()
+    /**
+     * @inheritDoc
+     */
+    public function getAction() : string
     {
         return 'getSignatureByPin';
     }
 
     /**
-     * Render the table-row
+     * @inheritDoc
      */
-    public function run()
+    public function init()
     {
-        $user = Yii::app()->session['user'];
-        $data = array(
-            'role' => self::ROLE,
-            'logged_user_name' => $user->getFullName(),
-        );
-        $this->render('EsignPin', $data);
+        $this->logged_user_name = Yii::app()->session['user']->getFullName();
     }
 }
