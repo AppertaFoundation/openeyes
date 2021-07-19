@@ -45,6 +45,7 @@ class DefaultController extends \BaseEventTypeController
         'getPostOpComplicationList' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
         'dismissCVIalert' => self::ACTION_TYPE_FORM,
+        'getDrFeatures' => self::ACTION_TYPE_FORM,
         'getOctAssessment' => self::ACTION_TYPE_FORM,
         'getAttachment' => self::ACTION_TYPE_FORM,
         'resolveSafeguardingElement' => self::ACTION_TYPE_SAFEGUARDING,
@@ -239,6 +240,24 @@ class DefaultController extends \BaseEventTypeController
         $step = $this->getCurrentStep();
 
         return $step->getNextStep();
+    }
+
+    public function actionGetDrFeatures()
+    {
+        $feature_id_list = Yii::app()->request->getQuery('feature_list');
+
+        $feature_list = models\OphCiExamination_DRGrading_Feature::model()->findAllByPk($feature_id_list);
+        $features = array();
+        foreach ($feature_list as $feature) {
+            $features[] = array(
+                'name' => $feature->name,
+                'id' => $feature->id,
+                'grade' => $feature->grade,
+            );
+        }
+
+        $this->renderJSON($features);
+        Yii::app()->end();
     }
 
     public function renderOpenElements($action, $form = null, $date = null)
@@ -1167,6 +1186,78 @@ class DefaultController extends \BaseEventTypeController
             }
             $element->{$side . '_treatments'} = $dilations;
         }
+    }
+
+    protected function setComplexAttributes_Element_OphCiExamination_DR_Retinopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left' => \Eye::LEFT,
+                     'right' => \Eye::RIGHT, ) as $side => $eye_id) {
+            $features = array();
+            $checker = 'has'.ucfirst($side);
+            if ($element->$checker()) {
+                foreach ($data[$model_name][$side.'_retinopathy_features'] as $model) {
+                    if (@$model['id']) {
+                        if (!$feature = models\RetinopathyFeature::model()->findByPk($model['id'])) {
+                            $feature = new models\RetinopathyFeature();
+                        }
+                    } else {
+                        $feature = new models\RetinopathyFeature();
+                    }
+                    $feature->attributes = $model;
+                    $feature->eye_id = $eye_id;
+                    $features[] = $feature;
+                }
+            }
+            $element->{$side . '_retinopathy_features'} = $features;
+        }
+    }
+
+    protected function setComplexAttributes_Element_OphCiExamination_DR_Maculopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left' => \Eye::LEFT,
+                     'right' => \Eye::RIGHT, ) as $side => $eye_id) {
+            $features = array();
+            $checker = 'has'.ucfirst($side);
+            if ($element->$checker()) {
+                foreach ($data[$model_name][$side.'_maculopathy_features'] as $model) {
+                    if (@$model['id']) {
+                        if (!$feature = models\MaculopathyFeature::model()->findByPk($model['id'])) {
+                            $feature = new models\MaculopathyFeature();
+                        }
+                    } else {
+                        $feature = new models\MaculopathyFeature();
+                    }
+                    $feature->attributes = $model;
+                    $feature->eye_id = $eye_id;
+                    $features[] = $feature;
+                }
+            }
+            $element->{$side . '_maculopathy_features'} = $features;
+        }
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_DR_Retinopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $element->updateFeatures(\Eye::LEFT, $element->hasLeft() ?
+            @$data[$model_name]['left_retinopathy_features'] :
+            array());
+        $element->updateFeatures(\Eye::RIGHT, $element->hasRight() ?
+            @$data[$model_name]['right_retinopathy_features'] :
+            array());
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_DR_Maculopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $element->updateFeatures(\Eye::LEFT, $element->hasLeft() ?
+            @$data[$model_name]['left_maculopathy_features'] :
+            array());
+        $element->updateFeatures(\Eye::RIGHT, $element->hasRight() ?
+            @$data[$model_name]['right_maculopathy_features'] :
+            array());
     }
 
     /**

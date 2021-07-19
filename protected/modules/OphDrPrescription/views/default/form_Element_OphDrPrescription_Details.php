@@ -74,7 +74,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
         // we need to separate the public and admin view
         if (
           is_a(Yii::app()->getController(), 'DefaultController') &&
-          $this->getPreviousPrescription($element->id)
+          $this->getPreviousPrescription($element->id) && \Yii::app()->user->checkAccess('Prescribe')
         ) : ?>
           <button type="button" class="button hint blue" id="repeat_prescription" name="repeat_prescription">
             Add repeat prescription
@@ -83,9 +83,14 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
       </div>
 
       <div>
-        <button id="add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
-        <button class="button hint green" id="add-prescription-btn" type="button"><i class="oe-i plus pro-theme"></i>
-        </button>
+        <?php if (\Yii::app()->user->checkAccess('Prescribe')) { ?>
+            <button id="add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
+            <button class="button hint green" id="add-prescription-btn" type="button">
+              <i class="oe-i plus pro-theme"></i>
+            </button>
+        <?php } else {?>
+          <button id="add-PGD-btn" class="button hint green" type="button">Add PGD Set</button>
+        <?php }?>
       </div>
     </div>
 
@@ -174,6 +179,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
       }, $element->drugSets())
   ) ?>;
 
+  let pgd_meds = <?= json_encode($element->pgds()); ?>;
   <?php if (isset($this->patient)) : ?>
     let patient_allergies = <?= CJSON::encode($this->patient->getAllergiesId()) ?>;
   <?php endif; ?>

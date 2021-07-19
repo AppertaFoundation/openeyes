@@ -25,6 +25,10 @@ class UserController extends BaseController
                 'actions' => array('testAuthenticated', 'getSecondsUntilSessionExpire'),
                 'roles' => array('User'),
             ),
+            array('allow',
+                'actions' => array('checkPincodeAvailability'),
+                'roles' => array('admin'),
+            ),
         );
     }
 
@@ -59,11 +63,7 @@ class UserController extends BaseController
             $criteria->compare('user_auth.active', true);
 
             foreach (\User::model()->findAll($criteria) as $user) {
-                $res[] = array(
-                    'id' => $user->id,
-                    'label' => $user->getFullNameAndTitle(),
-                    'value' => $user->id,
-                );
+                $res[] = $user->getUserPermissionDetails();
             }
         }
         echo \CJSON::encode($res);
@@ -98,5 +98,20 @@ class UserController extends BaseController
         $seconds_to_expire = $expire['expire'] - time();
 
         $this->renderJSON($seconds_to_expire);
+    }
+
+    public function actionCheckPincodeAvailability($pincode, $ins_auth_id, $user_id){
+        $user_auth = new UserAuthentication();
+        $user_auth->pincode = $pincode;
+        $user_auth->institution_authentication_id = $ins_auth_id;
+        $user_auth->user_id = $user_id;
+        $obj = $user_auth->checkUniqueness(null, null);
+
+        $ret = array(
+            'success' => $obj ? false : true,
+            'user' => $obj ? $obj->user->getFullName() : '',
+        );
+        $this->renderJSON($ret);
+        unset($user_auth);
     }
 }

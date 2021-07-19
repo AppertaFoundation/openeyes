@@ -25,9 +25,9 @@
     $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
     $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
-<!-- Show full patient Worklist -->
 <div class="patient-popup-worklist oe-patient-quick-overview side-panel" style="display:none;"
      data-patient-id="<?= $this->patient->id ?>">
+    <!-- Show full patient Worklist -->
     <div class="close-icon-btn">
         <i class="oe-i remove-circle medium"></i>
     </div>

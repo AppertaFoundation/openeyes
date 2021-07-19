@@ -677,7 +677,6 @@ class AdminController extends BaseAdminController
      */
     public function actionEditUser($id = null)
     {
-
         $user = User::model()->findByPk($id);
         $invalid_entries = [];
         $invalid_existing = [];
@@ -738,7 +737,6 @@ class AdminController extends BaseAdminController
                     if (!$user_auth->user_id) {
                         $user_auth->user_id = $user->id;
                     }
-
                     $special_usernames = Yii::app()->params['special_usernames'] ?? [];
                     if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
                         $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
