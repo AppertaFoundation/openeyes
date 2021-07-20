@@ -752,6 +752,7 @@ class BaseEventTypeController extends BaseModuleController
 
         if (!$this->$method()) {
             switch ($actionType) {
+                case self::ACTION_TYPE_VIEW:
                 case self::ACTION_TYPE_CREATE:
                 case self::ACTION_TYPE_EDIT:
                     $this->redirectToPatientLandingPage();
