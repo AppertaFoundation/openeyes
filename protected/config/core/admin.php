@@ -61,7 +61,8 @@ return array(
                 'Complications' => ['uri' => '/oeadmin/complication/list', 'restricted' => array('admin')],
                 'OPCS Codes' => ['uri' => '/oeadmin/opcsCode/list', 'restricted' => array('admin')],
                 'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit',
-                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list'
+                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list',
+                'Clinic Procedure Assignment' => ['uri' => '/oeadmin/ClinicProcedure/list', 'restricted' => array('admin')]
             ),
             'Drugs' => array(
                 // Hidden for now

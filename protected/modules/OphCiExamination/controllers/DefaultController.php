@@ -2332,4 +2332,46 @@ class DefaultController extends \BaseEventTypeController
             }
         }
     }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_ClinicProcedures(models\Element_OphCiExamination_ClinicProcedures $element, $data)
+    {
+        $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'] : [];
+
+        models\OphCiExamination_ClinicProcedures_Entry::model()->deleteAll('element_id = ?', array($element->id));
+
+        foreach ($entries as $entry) {
+            $procedure_entry = new models\OphCiExamination_ClinicProcedures_Entry();
+            $procedure_entry->element_id = $element->id;
+            $procedure_entry->procedure_id = $entry['procedure_id'];
+            $procedure_entry->outcome_time = $entry['outcome_time'];
+            $date = new DateTime($entry['date']);
+            $procedure_entry->date = $date->format('Y-m-d');
+            $procedure_entry->comments = (array_key_exists('comments', $entry) && !empty($entry['comments'])) ? $entry['comments'] : null;
+            $procedure_entry->subspecialty_id = $this->event->firm->serviceSubspecialtyAssignment->subspecialty->id;
+            $eye_id = 0;
+            if (array_key_exists('left_eye', $entry)) {
+                $eye_id += 1;
+            }
+            if (array_key_exists('right_eye', $entry)) {
+                $eye_id += 2;
+            }
+            $procedure_entry->eye_id = $eye_id;
+            if (!$procedure_entry->save()) {
+                throw new \Exception('Unable to save Clinic Procedure Entry: ' . print_r($procedure_entry->errors, true));
+            }
+        }
+    }
+
+    protected function getPastClinicProcedures()
+    {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        $procedure_elements = $exam_api->getElements(
+            'models\Element_OphCiExamination_ClinicProcedures',
+            $this->patient,
+            false,
+            null,
+            null
+        );
+        return $procedure_elements;
+    }
 }
