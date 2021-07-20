@@ -32,11 +32,57 @@ abstract class EsignField extends BaseCWidget
      */
     abstract public function getAction() : string;
 
+    public function init()
+    {
+        parent::init();
+        $assetManager = Yii::app()->getAssetManager();
+        $widgetPath = $assetManager->publish(__DIR__. "/js", true);
+        $scriptPath = $widgetPath . '/EsignField.js';
+        $assetManager->registerScriptFile($scriptPath, "application.widgets.EsignField", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
+    }
+
     /**
      * @return bool Whether the signature has already been added
      */
     public function isSigned() : bool
     {
-        return false; //!is_null($this->signature_file_id);
+        return !is_null($this->signature_file_id);
+    }
+
+    protected function getSignatureFile(): ProtectedFile
+    {
+        $model = ProtectedFile::model()->findByPk($this->signature_file_id);
+        if(!$model) {
+            throw new Exception("Signature file not found");
+        }
+        return $model;
+    }
+
+    /**
+     * Display signature image if signed
+     *
+     * @return void
+     */
+    public function displaySignature() : void
+    {
+        if($this->isSigned()) {
+            echo '<div class="esign-check js-has-tooltip" data-tip="{&quot;type&quot;:&quot;esign&quot;,&quot;png&quot;:&quot;'.$this->signature_file_id.'&quot;}" style="background-image: url(\'/protectedFile/view/'.$this->signature_file_id.'\')"></div>';
+        }
+    }
+
+    /**
+     * Display signature date in NHS format or "-" if not signed
+     *
+     * @return void
+     * @throws Exception If file does not exist
+     */
+    public function displaySignatureDate() : void
+    {
+        if($this->isSigned()) {
+            echo Helper::convertDate2NHS($this->getSignatureFile()->created_date);
+        }
+        else {
+            echo "-";
+        }
     }
 }

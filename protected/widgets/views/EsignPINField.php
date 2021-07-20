@@ -17,42 +17,50 @@
 ?>
 <?php
 /**  @var EsignPINField $this */
-$class_name = get_class($element);
-$row_id = $class_name.'_'.$this->row_id;
+$el_class = get_class($element);
+$widget_class = get_class($this);
+$uid = $el_class . "_" . $widget_class . "_" . $row_id;
 ?>
-
-<tr id="row_<?= $row_id ?>" data-row_id="<?= $row_id ?>">
-    <td><span class="highlighter">1</span></td>
-    <td><?= $this->signatory_label ?></td>
-    <td><?php echo $this->logged_user_name ?></td>
-
-    <?php if($this->isSigned()){ ?>
-        <td>
-            <?php echo Helper::convertDate2NHS($element->created_date) ?>
-        </td>
-        <td>
-            <img src="empty">
-        </td>
-    <?php } else { ?>
-        <td>
-            <div class="oe-user-pin">
-                <?php echo CHtml::passwordField('input_'.$row_id, '', array(
-                    'placeholder'=>"********",
-                    'maxlength'=>"8",
-                    'inputmode'=>"numeric",
-                    'class'=>"user-pin-entry"
-                )); ?>
-                <button
-                    id="<?= 'button_'.$row_id ?>"
-                    class="try-pin js-idg-ps-popup-btn"
-                    data-action="next"
-                    onclick="EsignPinWidget.getSignature('<?= $this->action ?>','<?= $row_id ?>');"
-                >PIN sign</button>
-            </div>
-        </td>
-    <?php } ?>
-
+<tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
+    <!-- Row num -->
+    <td><span class="highlighter js-row-num"></span></td>
+    <!-- Role -->
+    <td><span class="js-signatory-label"><?= $this->signatory_label ?></span></td>
+    <!-- Name -->
+    <td><span class="js-signatory-name"><?php echo $this->logged_user_name ?></span></td>
+    <!-- Date -->
     <td>
-        <div id="<?= 'div_'.$row_id ?>"></div>
+        <div class="js-signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+            <?php $this->displaySignatureDate() ?>
+        </div>
+        <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
+            <div class="oe-user-pin">
+                <?php echo CHtml::passwordField('pin_'.$uid, '', array(
+                    'placeholder' => "********",
+                    'maxlength' => 8,
+                    'inputmode' => "numeric",
+                    'class' => "user-pin-entry js-pin-input"
+                )); ?>
+                <button type="button" class="try-pin js-sign-button">PIN sign</button>
+            </div>
+        </div>
+    </td>
+    <!-- Signature -->
+    <td>
+        <div class="js-signature-wrapper" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+            <div class="esign-check js-signature">
+                <?php $this->displaySignature() ?>
+            </div>
+            <div class="esigned-at">
+                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time">07:46</span>
+            </div>
+        </div>
     </td>
 </tr>
+<script type="text/javascript">
+    $(function(){
+        new OpenEyes.UI.EsignWidget($("#<?=$uid?>"), {
+            submitAction: "<?=$this->getAction()?>"
+        })
+    });
+</script>
