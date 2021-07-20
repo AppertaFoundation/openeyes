@@ -68,6 +68,8 @@ class BaseActiveRecord extends CActiveRecord
      */
     private $save_only_if_dirty = false;
 
+    private $default_scope_disabled = false;
+
     /**
      * Set the flag to indicate that model should only save to the db if the model is dirty.
      *
@@ -857,5 +859,33 @@ class BaseActiveRecord extends CActiveRecord
         } else {
             throw new Exception($this->tableName(). ' doesn\'t have attribute \'display_order\'');
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDefaultScopeDisabled(): bool
+    {
+        return $this->default_scope_disabled;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setDefaultScopeDisabled($value)
+    {
+        $this->default_scope_disabled = $value;
+    }
+
+    /**
+     * Creates a clone and returns it with default scope disabled to avoid calling resetScope afterwards
+     * @return BaseActiveRecord
+     */
+    public function disableDefaultScope(): BaseActiveRecord
+    {
+        $object = clone $this;
+        $object->default_scope_disabled = true;
+
+        return $object;
     }
 }
