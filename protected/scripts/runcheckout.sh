@@ -405,12 +405,12 @@ for module in "${modules[@]}"; do
     remoteexists=0
     nofetch=0
     trackbranch=$branch
-    if [[ $(git ls-remote --exit-code ${basestring}/${module}.git refs/tags/"$branch") ]]; then
+    if git ls-remote --exit-code ${basestring}/${module}.git refs/tags/"$branch"; then
         echo "Found a tag named $branch."
         remoteexists=1
         trackbranch="tags/$branch"
         nomodulepull=1 # we don't need to do a pull if we're fetching a tag
-    elif [[ $(git ls-remote --exit-code ${basestring}/${module}.git refs/heads/"$branch") ]]; then
+    elif git ls-remote --exit-code ${basestring}/${module}.git refs/heads/"$branch"; then
         echo "Found a remote branch named $branch."
         remoteexists=1
         trackbranch="$branch"
@@ -430,6 +430,7 @@ for module in "${modules[@]}"; do
 
         if [ "$trackbranch" != "branch" ]; then
             echo "No branch $branch was found. Falling back to $defaultbranch"
+            git -C $MODGITROOT fetch origin $defaultbranch
         fi
 
     fi
