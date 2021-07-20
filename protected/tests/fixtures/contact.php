@@ -106,4 +106,14 @@ return array(
         'last_name' => 'Space',
         'created_institution_id' => 1,
     ),
+    'contact8' => array(
+        'id' => 8,
+        'email' => 'team2@team.com',
+        'created_institution_id' => 1,
+    ),
+    'contact9' => array(
+        'id' => 9,
+        'email' => 'team3@team.com',
+        'created_institution_id' => 2,
+    ),
 );

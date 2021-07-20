@@ -86,6 +86,7 @@ protected/modules/*
 !/protected/modules/OphTrOperationnote/
 !/protected/modules/PASAPI/
 !/protected/modules/PatientTicketing/
+!/protected/modules/OphDrPGDPSD/
 
 # Tests
 /jm_behat_report.html
@@ -100,3 +101,11 @@ build/logs
 protected/widgets/views/IndexSearch_Examination.php
 protected/scripts/sample_db.sql
 protected/scripts/sample_db.zip
+
+## OpusVL developer ignores
+# Never track php-cs-fixer stuff
+/.php-cs-fixer.*
+# Never track docker-compose related files in the project root
+/docker-compose.*
+/.env
+
