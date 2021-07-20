@@ -1,6 +1,3 @@
-OpenEyes = OpenEyes || {};
-OpenEyes.UI = OpenEyes.UI || {};
-
 (function(exports) {
     /**
      * @param {jQuery} $element
@@ -42,7 +39,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             const pin = widget.$pinInput.val();
             widget.$pinInput.val("");
             if(pin === "") {
-                let dlg = OpenEyes.UI.Dialog.Alert({
+                let dlg = new OpenEyes.UI.Dialog.Alert({
                     content: "Please enter PIN"
                 });
                 dlg.open();
