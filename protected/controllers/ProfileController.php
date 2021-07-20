@@ -322,10 +322,10 @@ class ProfileController extends BaseController
                 "message" => "Image not provided"
             ]);
         }
-        $img = str_replace('data:image/jpeg;base64,', '', $img);
+        $img = base64_decode(str_replace('data:image/jpeg;base64,', '', $img));
         $file = ProtectedFile::createForWriting("user_signature_".$user->id);
-        // Looks like something must be set here
         $file->title = "Signature";
+        $file->mimetype = "image/jpeg";
         file_put_contents($file->getPath(), $img);
         if($file->save()) {
             $user->signature_file_id = $file->id;

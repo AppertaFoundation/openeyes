@@ -600,7 +600,7 @@ class User extends BaseActiveRecordVersioned
     {
         return !is_null($this->signature_file_id) ?
             \CHtml::image(
-                "data:image/jpeg;base64,".file_get_contents($this->signature->getPath()),
+                "/protectedFile/view/".$this->signature_file_id."/?name=Signature",
                 "Signature",
                 $html_options
                 )
