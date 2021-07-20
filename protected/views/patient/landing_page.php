@@ -262,6 +262,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         </div>
 
         <div class="cols-half">
+            <?php $this->renderPartial('landing_page_da_assignments', array('patient' => $this->patient));?>
             <section class="element view full view-xxx" id="idg-ele-view-management-summaries">
                 <header class="element-header"><h3 class="element-title">Management Summaries</h3></header>
                 <div class="element-data full-width">

@@ -98,7 +98,8 @@ $config = array(
         'OETrial',
         'SSO',
         'OphOuCatprom5',
-        'OphTrOperationchecklists'
+        'OphTrOperationchecklists',
+        'OphDrPGDPSD',
     ),
 
     'params' => array(

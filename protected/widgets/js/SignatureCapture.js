@@ -5,6 +5,8 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
 
     const BACKGROUND = 'rgb(255, 255, 255)';
     const FOREGROUND = 'rgb(22, 38, 76)';
+    const FIXED_WIDTH = 900;
+    const FIXED_HEIGHT = 300;
 
     function SignatureCapture(options) {
         this.dialog = null;
@@ -62,32 +64,36 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     SignatureCapture.prototype.getNewCanvasByCoords = function(canvas, x, y, width, height) {
         // create a temp canvas
         const newCanvas = document.createElement('canvas');
-        let dx, dy;
+        let dx, dy, dWidth, dHeight;
+        // Must be exactly 900x300 px
+        newCanvas.width = FIXED_WIDTH;
+        newCanvas.height = FIXED_HEIGHT;
+        // Crop image
         if(width < height * 3) {
             // Too narrow
-            newCanvas.width = height * 3;
-            newCanvas.height = height;
-            dx = (newCanvas.width - width) / 2;
+            dHeight = FIXED_HEIGHT;
+            dWidth = width * (FIXED_HEIGHT / height);
+            dx = (FIXED_WIDTH - dWidth) / 2;
             dy = 0;
         }
         else if(width > height * 3) {
             // Too wide
-            newCanvas.width = width;
-            newCanvas.height = width / 3;
+            dWidth = FIXED_WIDTH;
+            dHeight = height * (FIXED_WIDTH / width);
             dx = 0;
-            dy = (newCanvas.height - height) / 2;
+            dy = (FIXED_HEIGHT - dHeight) / 2;
         }
         else {
             // Exactly 3:1
-            newCanvas.width = width;
-            newCanvas.height = height;
+            dWidth = FIXED_WIDTH;
+            dHeight = FIXED_HEIGHT;
             dx = 0;
             dy = 0;
         }
         const ctx = newCanvas.getContext('2d');
         ctx.fillStyle = BACKGROUND;
         ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-        ctx.drawImage(canvas, x, y, width, height, dx, dy, width, height);
+        ctx.drawImage(canvas, x, y, width, height, dx, dy, dWidth, dHeight);
         return newCanvas;
     };
 

@@ -45,6 +45,7 @@ class DefaultController extends \BaseEventTypeController
         'getPostOpComplicationList' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
         'dismissCVIalert' => self::ACTION_TYPE_FORM,
+        'getDrFeatures' => self::ACTION_TYPE_FORM,
         'getOctAssessment' => self::ACTION_TYPE_FORM,
         'getAttachment' => self::ACTION_TYPE_FORM,
         'resolveSafeguardingElement' => self::ACTION_TYPE_SAFEGUARDING,
@@ -239,6 +240,24 @@ class DefaultController extends \BaseEventTypeController
         $step = $this->getCurrentStep();
 
         return $step->getNextStep();
+    }
+
+    public function actionGetDrFeatures()
+    {
+        $feature_id_list = Yii::app()->request->getQuery('feature_list');
+
+        $feature_list = models\OphCiExamination_DRGrading_Feature::model()->findAllByPk($feature_id_list);
+        $features = array();
+        foreach ($feature_list as $feature) {
+            $features[] = array(
+                'name' => $feature->name,
+                'id' => $feature->id,
+                'grade' => $feature->grade,
+            );
+        }
+
+        $this->renderJSON($features);
+        Yii::app()->end();
     }
 
     public function renderOpenElements($action, $form = null, $date = null)
@@ -1167,6 +1186,78 @@ class DefaultController extends \BaseEventTypeController
             }
             $element->{$side . '_treatments'} = $dilations;
         }
+    }
+
+    protected function setComplexAttributes_Element_OphCiExamination_DR_Retinopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left' => \Eye::LEFT,
+                     'right' => \Eye::RIGHT, ) as $side => $eye_id) {
+            $features = array();
+            $checker = 'has'.ucfirst($side);
+            if ($element->$checker()) {
+                foreach ($data[$model_name][$side.'_retinopathy_features'] as $model) {
+                    if (@$model['id']) {
+                        if (!$feature = models\RetinopathyFeature::model()->findByPk($model['id'])) {
+                            $feature = new models\RetinopathyFeature();
+                        }
+                    } else {
+                        $feature = new models\RetinopathyFeature();
+                    }
+                    $feature->attributes = $model;
+                    $feature->eye_id = $eye_id;
+                    $features[] = $feature;
+                }
+            }
+            $element->{$side . '_retinopathy_features'} = $features;
+        }
+    }
+
+    protected function setComplexAttributes_Element_OphCiExamination_DR_Maculopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left' => \Eye::LEFT,
+                     'right' => \Eye::RIGHT, ) as $side => $eye_id) {
+            $features = array();
+            $checker = 'has'.ucfirst($side);
+            if ($element->$checker()) {
+                foreach ($data[$model_name][$side.'_maculopathy_features'] as $model) {
+                    if (@$model['id']) {
+                        if (!$feature = models\MaculopathyFeature::model()->findByPk($model['id'])) {
+                            $feature = new models\MaculopathyFeature();
+                        }
+                    } else {
+                        $feature = new models\MaculopathyFeature();
+                    }
+                    $feature->attributes = $model;
+                    $feature->eye_id = $eye_id;
+                    $features[] = $feature;
+                }
+            }
+            $element->{$side . '_maculopathy_features'} = $features;
+        }
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_DR_Retinopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $element->updateFeatures(\Eye::LEFT, $element->hasLeft() ?
+            @$data[$model_name]['left_retinopathy_features'] :
+            array());
+        $element->updateFeatures(\Eye::RIGHT, $element->hasRight() ?
+            @$data[$model_name]['right_retinopathy_features'] :
+            array());
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_DR_Maculopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $element->updateFeatures(\Eye::LEFT, $element->hasLeft() ?
+            @$data[$model_name]['left_maculopathy_features'] :
+            array());
+        $element->updateFeatures(\Eye::RIGHT, $element->hasRight() ?
+            @$data[$model_name]['right_maculopathy_features'] :
+            array());
     }
 
     /**
@@ -2240,5 +2331,47 @@ class DefaultController extends \BaseEventTypeController
                 throw new \CException('Cannot save contact');
             }
         }
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_ClinicProcedures(models\Element_OphCiExamination_ClinicProcedures $element, $data)
+    {
+        $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'] : [];
+
+        models\OphCiExamination_ClinicProcedures_Entry::model()->deleteAll('element_id = ?', array($element->id));
+
+        foreach ($entries as $entry) {
+            $procedure_entry = new models\OphCiExamination_ClinicProcedures_Entry();
+            $procedure_entry->element_id = $element->id;
+            $procedure_entry->procedure_id = $entry['procedure_id'];
+            $procedure_entry->outcome_time = $entry['outcome_time'];
+            $date = new DateTime($entry['date']);
+            $procedure_entry->date = $date->format('Y-m-d');
+            $procedure_entry->comments = (array_key_exists('comments', $entry) && !empty($entry['comments'])) ? $entry['comments'] : null;
+            $procedure_entry->subspecialty_id = $this->event->firm->serviceSubspecialtyAssignment->subspecialty->id;
+            $eye_id = 0;
+            if (array_key_exists('left_eye', $entry)) {
+                $eye_id += 1;
+            }
+            if (array_key_exists('right_eye', $entry)) {
+                $eye_id += 2;
+            }
+            $procedure_entry->eye_id = $eye_id;
+            if (!$procedure_entry->save()) {
+                throw new \Exception('Unable to save Clinic Procedure Entry: ' . print_r($procedure_entry->errors, true));
+            }
+        }
+    }
+
+    protected function getPastClinicProcedures()
+    {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        $procedure_elements = $exam_api->getElements(
+            'models\Element_OphCiExamination_ClinicProcedures',
+            $this->patient,
+            false,
+            null,
+            null
+        );
+        return $procedure_elements;
     }
 }

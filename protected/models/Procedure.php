@@ -65,7 +65,7 @@ class Procedure extends BaseActiveRecordVersioned
             array('default_duration', 'numerical', 'integerOnly' => true, 'max' => 65535),
             array('term, short_format, snomed_term', 'length', 'max' => 255),
             array('operationNotes', 'validateOpNotes'),
-            array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
+            array('id, term, short_format, default_duration, active, is_clinic_proc, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
         );
     }
 
@@ -85,6 +85,7 @@ class Procedure extends BaseActiveRecordVersioned
             'benefits' => array(self::MANY_MANY, 'Benefit', 'procedure_benefit(proc_id, benefit_id)'),
             'risks' => array(self::MANY_MANY, '\OEModule\OphCiExamination\models\OphCiExaminationRisk', 'procedure_risk(proc_id, risk_id)'),
             'complications' => array(self::MANY_MANY, 'Complication', 'procedure_complication(proc_id, complication_id)'),
+            'clinic_procedure' => array(self::HAS_ONE, '\OEModule\OphCiExamination\models\OphCiExamination_ClinicProcedure', 'proc_id'),
         );
     }
 

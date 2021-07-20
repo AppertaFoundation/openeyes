@@ -167,6 +167,18 @@ class ProfileController extends BaseController
         ));
     }
 
+    public function actionPincode()
+    {
+        $user_auth = null;
+        if (Yii::app()->session['user_auth']) {
+            $user_auth = Yii::app()->session['user_auth'];
+            $user_auth->refresh();
+        }
+        $this->render('/profile/pincode', array(
+            'user_auth' => $user_auth,
+        ));
+    }
+
     public function actionSites()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
@@ -259,6 +271,7 @@ class ProfileController extends BaseController
                 $user = User::model()->findByPk(Yii::app()->user->id);
                 if ($user->has_selected_firms) {
                     $user->has_selected_firms = 0;
+                    $user->password_hashed = true;
                     if (!$user->save()) {
                         throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                     }
@@ -302,83 +315,43 @@ class ProfileController extends BaseController
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
 
-
         $this->render('/profile/signature', array(
             'user' => $user,
+            'recapture' => filter_var(Yii::app()->request->getParam("recapture"), FILTER_VALIDATE_BOOLEAN)
         ));
     }
 
-    public function actionGetSignatureFromPortal()
+    public function actionUploadSignature()
     {
-        if (Yii::app()->user->id) {
-            // TODO: query the portal here:
-            // TODO: get current unique ID for the user
-            // TODO: query the portal with the current unique ID
-            // TODO: if successfull save the signature as a ProtectedFile
-            // from the portal we receive binary data:
-
-            $user = User::model()->findByPk(Yii::app()->user->id);
-            $portal_conn = new OptomPortalConnection();
-            if ($portal_conn) {
-                $signature_data = $portal_conn->signatureSearch(
-                    null,
-                    $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser())
-                );
-
-                if (is_array($signature_data) && isset($signature_data["image"])) {
-                    $signature_file = $portal_conn->createNewSignatureImage(
-                        $signature_data["image"],
-                        Yii::app()->user->id
-                    );
-                    if ($signature_file) {
-                        $user->signature_file_id = $signature_file->id;
-                        if ($user->save()) {
-                            echo true;
-                        }
-                    }
-                }
-            }
+        if(!$user = User::model()->findByPk(Yii::app()->user->id)) {
+            $this->renderJSON([
+                "success" => false,
+                "message" => "User not found"
+            ]);
         }
-        echo false;
-    }
-
-    public function actionShowSignature()
-    {
-        if (Yii::app()->user->id && Yii::app()->getRequest()->getParam("signaturePin")) {
-            $user = User::model()->findByPk(Yii::app()->user->id);
-            if ($user->signature_file_id) {
-                $decodedImage = $user->getDecryptedSignature(Yii::app()->getRequest()->getParam("signaturePin"));
-                if ($decodedImage) {
-                    echo base64_encode($decodedImage);
-                }
-            }
+        if(!$img = Yii::app()->request->getPost("image")) {
+            $this->renderJSON([
+                "success" => false,
+                "message" => "Image not provided"
+            ]);
         }
-        echo false;
-    }
-
-    public function actionGenerateSignatureQR()
-    {
-        if (Yii::app()->user->id) {
-            $QRSignature = new SignatureQRCodeGenerator();
-            // TODO: need to get a unique code for the user and add a key here!
-
-            $user = User::model()->findByPk(Yii::app()->user->id);
-            $user_code = $this->getUniqueCodeForUser();
-            if (!$user_code) {
-                throw new CHttpException('Could not get unique code for user - unique codes might need to be generated');
-            }
-            $finalUniqueCode = $user->generateUniqueCodeWithChecksum($user_code);
-
-            $QRimage = $QRSignature->createQRCode(
-                "@U:1@code:" . $finalUniqueCode . "@key:" . md5(Yii::app()->user->id),
-                250
-            );
-
-            // Output and free from memory
-            header('Content-Type: image/jpeg');
-
-            imagejpeg($QRimage);
-            imagedestroy($QRimage);
+        $img = base64_decode(str_replace('data:image/jpeg;base64,', '', $img));
+        $file = ProtectedFile::createForWriting("user_signature_".$user->id);
+        $file->title = "Signature";
+        $file->mimetype = "image/jpeg";
+        file_put_contents($file->getPath(), $img);
+        if($file->save()) {
+            $user->signature_file_id = $file->id;
+            $user->save(false, ["signature_file_id"]);
+            $this->renderJSON([
+                "success" => true
+            ]);
+        }
+        else {
+            $this->renderJSON([
+                "success" => false,
+                "message" => "An error occurred while saving the signature."
+            ]);
         }
     }
 
@@ -422,6 +395,48 @@ class ProfileController extends BaseController
         }
 
         return $display_theme_setting;
+    }
+    /**
+     * Changes the worklist auto synce interval of the current user
+     *
+     * @param string $sync_interval What to set the user's sync interval to
+     * @param string $key setting key
+     */
+    public function actionChangeWorklistSyncInterval($sync_interval, $key)
+    {
+        self::changeWorklistSyncInterval(Yii::app()->user->id, $sync_interval, $key);
+    }
+
+    /**
+     * Changes the display theme of the given user and returns the SettingUser object (if it exists)
+     *
+     * @param int $user_id The ID of the user to change the display theme for
+     * @param int $sync_interval What to set the user's theme to
+     * @return SettingUser The setting if the theme was set (otherwise null)
+     */
+    public static function changeWorklistSyncInterval($user_id, $sync_interval, $key)
+    {
+        $auto_sync_setting = SettingUser::model()->find(
+            "user_id = :user_id AND `key` = '$key'",
+            array('user_id' => $user_id)
+        );
+
+        if ($sync_interval) {
+            if ($auto_sync_setting === null) {
+                $auto_sync_setting = new SettingUser();
+                $auto_sync_setting->user_id = $user_id;
+                $auto_sync_setting->key = $key;
+            }
+            $auto_sync_setting->value = $sync_interval;
+            $auto_sync_setting->save();
+        } elseif ($auto_sync_setting) {
+            # If the auto sync isn't set, but the setting already exists
+            # then remove the user auto sync entirely so the global setting will take precedence
+            $auto_sync_setting->delete();
+            $auto_sync_setting = null;
+        }
+
+        return $auto_sync_setting;
     }
 
     public function actionUsersettings()

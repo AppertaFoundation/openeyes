@@ -25,14 +25,13 @@ $form_option = OphDrPrescription_DispenseCondition::model()->findByAttributes(ar
 <?php
 // Event actions
 $elementEditable = $Element->isEditableByMedication();
-$can_finalize = $this->checkAccess('OprnCreatePrescription');
-
+$editAccess = $this->checkEditAccess();
 if (!$elementEditable) {
     $this->event_actions = array_filter($this->event_actions, function ($action) {
         return $action->label !== 'Delete';
     });
 }
-if (($Element->draft) && (!$elementEditable) && $can_finalize) {
+if (($Element->draft) && (!$elementEditable) && $editAccess) {
     $this->event_actions[] = EventAction::button(
         'Save as final',
         'save',
@@ -47,7 +46,7 @@ if (($Element->draft) && (!$elementEditable) && $can_finalize) {
 }
 
 if ($this->checkPrintAccess()) {
-    if (!$Element->draft || $this->checkEditAccess()) {
+    if (!$Element->draft || $editAccess) {
         foreach ($Element->items as $item) {
             // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
             if ($item->dispense_condition->id === $form_option->id && $settings->getSetting('enable_prescription_overprint') === 'on') {
@@ -56,7 +55,7 @@ if ($this->checkPrintAccess()) {
             }
         }
     }
-    if (!$Element->draft || $this->checkEditAccess()) {
+    if (!$Element->draft || $editAccess) {
         $this->event_actions[] = EventAction::printButton();
     }
 }

@@ -15,7 +15,6 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 if (isset($entry->start_date)) {
     $start_date = $entry->start_date;
 } else {
@@ -56,12 +55,12 @@ $stop_fields_validation_error = array_intersect(
 
 ?>
 
-<tr class="divider col-gap js-first-row <?= $stopped ? 'fade' : '' ?> <?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>" data-key="<?= $row_count ?>" data-event-medication-use-id="<?php echo $entry->id; ?>" <?php if (!is_null($entry->medication_id)) {
-                                                                                                                                                                                                                                                                                                                            ?>data-allergy-ids="<?= $entry_allergy_ids ?>" <?php
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } elseif ($allergy_ids) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ?>data-allergy-ids="<?= $allergy_ids ?>" <?php
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } ?> <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
-
+<tr class="divider col-gap js-first-row <?= $stopped ? 'fade' : '' ?> <?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>" data-key="<?= $row_count ?>" data-event-medication-use-id="<?php echo $entry->id; ?>"
+<?php if (!is_null($entry->medication_id)) { ?>
+    data-allergy-ids="<?= $entry_allergy_ids ?>"
+<?php } elseif ($allergy_ids) { ?>
+    data-allergy-ids="<?= $allergy_ids ?>" 
+<?php } ?> <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
     <td id="<?= $model_name . "_entries_" . $row_count . '_duplicate_error' ?>" class="drug-details" rowspan="2">
         <div class="medication-display">
             <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay(true) ?>
@@ -71,9 +70,11 @@ $stop_fields_validation_error = array_intersect(
                         echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
                     }
                     $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+                    echo $entry->renderPGDInfo();
                 } else {
                     echo "{{& allergy_warning}}";
                     echo "{{& prepended_markup}}";
+                    echo "{{& pgd_info_icon}}";
                 } ?>
             </span>
         </div>
@@ -81,6 +82,7 @@ $stop_fields_validation_error = array_intersect(
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[copied_from_med_use_id]" value="<?= (int) $entry->copied_from_med_use_id ?>" />
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
+        <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[pgdpsd_id]" value="<?= !isset($entry->pgdpsd_id) ? "{{pgdpsd_id}}" : $entry->pgdpsd_id ?>" />
         <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]" value="<?= !isset($entry->medication_id) ? "{{medication_id}}" : $entry->medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay(true) ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
@@ -143,8 +145,8 @@ $stop_fields_validation_error = array_intersect(
     </td>
     <td>
         <div class="js-comment-container flex-layout flex-left" id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>" style="<?php if (!$entry->comments) :
-                                                                                                                                                ?>display: none;<?php
-                                                                                                                                                                                                                                                                                                                                                                                                                                    endif; ?>" data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
+            ?>display: none;<?php
+                                                                    endif; ?>" data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
             <?= CHtml::textArea($field_prefix . '[comments]', $entry->comments, [
                 'class' => 'js-comment-field autosize cols-full',
                 'rows' => '1',
@@ -154,8 +156,8 @@ $stop_fields_validation_error = array_intersect(
             <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
         </div>
         <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button" class="button js-add-comments" data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>" type="button" data-hide-method="display" style="<?php if ($entry->comments) :
-                                                                                                                                                                                                                                                                ?>display: none;<?php
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    endif; ?>">
+            ?>display: none;<?php
+                    endif; ?>">
             <i class="oe-i comments small-icon"></i>
         </button>
     </td>
@@ -164,7 +166,7 @@ $stop_fields_validation_error = array_intersect(
         <?php
         if ($entry->latest_prescribed_med_use_id) {
             echo '<i class="oe-i info small pad js-has-tooltip" data-tooltip-content= "This item was previously prescribed through OpenEyes and cannot be changed. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i></i>';
-        } else if ($removable) {
+        } elseif ($removable) {
             if (!$entry->is_copied_from_previous_event) {
                 echo '<i class="oe-i trash js-remove"></i>';
             } elseif (!$stopped) {
@@ -202,8 +204,9 @@ $end_date_display = str_replace('0000', '', $end_date_display);
                 <div class="alternative-display">
                     <div class="alternative-display-element textual">
                         <a class="js-meds-stop-btn" id="<?= $model_name . "_entries_" . $row_count . "_stopped_button" ?>" data-row_count="<?= $row_count ?>" href="javascript:void(0); " 
-                            <?php if ($entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id)) { ?> style="display: none;" <?php
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } ?>>
+                            <?php if ($entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id)) {
+                                ?> style="display: none;" <?php
+                            } ?>>
                             <?php if (!is_null($entry->end_date)) : ?>
                                 <i class="oe-i stop small pad"></i>
                                 <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
@@ -215,8 +218,8 @@ $end_date_display = str_replace('0000', '', $end_date_display);
                         </a>
                     </div>
                     <fieldset <?php if (!($entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id))) {
-                                ?> style="display: none;" <?php
-                                                                                                                                                                                                                                                                                                                                                                                                                        } ?> class="js-datepicker-wrapper js-end-date-wrapper">
+                        ?> style="display: none;" <?php
+                              } ?> class="js-datepicker-wrapper js-end-date-wrapper">
                         <i class="oe-i stop small pad"></i>
                         <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" <?= $stopped ? 'disabled="disabled"' : ''?> name="<?= $field_prefix ?>[end_date]" value="<?= $end_date_display ?>" data-default="<?= date('Y-m-d') ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
                     </fieldset>

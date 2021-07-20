@@ -54,6 +54,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.PrescriptionDialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.Util.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.QuerySearchDialog.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.MedSearch.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.InputFieldValidation.js');?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.LightningViewer.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnPopup.js')?>
