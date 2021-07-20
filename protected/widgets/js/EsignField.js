@@ -42,9 +42,10 @@ OpenEyes.UI = OpenEyes.UI || {};
             const pin = widget.$pinInput.val();
             widget.$pinInput.val("");
             if(pin === "") {
-                OpenEyes.UI.Dialog.Alert({
+                let dlg = OpenEyes.UI.Dialog.Alert({
                     content: "Please enter PIN"
-                }).open();
+                });
+                dlg.open();
                 return false;
             }
             $.post(
@@ -61,9 +62,10 @@ OpenEyes.UI = OpenEyes.UI || {};
                             response.time
                         );
                     } else {
-                        new OpenEyes.UI.Dialog.Alert({
+                        let dlg = new OpenEyes.UI.Dialog.Alert({
                             content: "There has been an error while signing: " + response.error
-                        }).open();
+                        });
+                        dlg.open();
                     }
                 }
             );
