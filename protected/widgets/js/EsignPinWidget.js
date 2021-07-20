@@ -1,3 +1,6 @@
+OpenEyes = OpenEyes || {};
+OpenEyes.UI = OpenEyes.UI || {};
+
 (function(exports) {
     /**
      * @param {jQuery} $element

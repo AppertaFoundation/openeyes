@@ -37,7 +37,7 @@ abstract class EsignField extends BaseCWidget
         parent::init();
         $assetManager = Yii::app()->getAssetManager();
         $widgetPath = $assetManager->publish(__DIR__. "/js", true);
-        $scriptPath = $widgetPath . '/EsignField.js';
+        $scriptPath = $widgetPath . '/EsignPinWidget.js';
         $assetManager->registerScriptFile($scriptPath, "application.widgets.EsignField", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
     }
 
@@ -66,7 +66,12 @@ abstract class EsignField extends BaseCWidget
     public function displaySignature() : void
     {
         if($this->isSigned()) {
-            echo '<div class="esign-check js-has-tooltip" data-tip="{&quot;type&quot;:&quot;esign&quot;,&quot;png&quot;:&quot;'.$this->signature_file_id.'&quot;}" style="background-image: url(\'/protectedFile/view/'.$this->signature_file_id.'\')"></div>';
+            /* TODO: FIX IT */
+            //echo '<div class="esign-check js-has-tooltip" data-tip="{&quot;type&quot;:&quot;esign&quot;,&quot;png&quot;:&quot;'.$this->signature_file_id.'&quot;}" style="background-image: url(\'/protectedFile/view/'.$this->signature_file_id.'\')"></div>';
+            $file = ProtectedFile::model()->findByPk($this->signature_file_id);
+            $source = file_get_contents($file->getPath());
+            $base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($source);
+            echo '<img style="width: 120px;" src="'.$base64.'">';
         }
     }
 
