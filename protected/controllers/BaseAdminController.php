@@ -171,7 +171,11 @@ class BaseAdminController extends BaseController
                         if ($id) {
                             $item = $model::model()->findByPk($id);
                             $new = false;
-                        } else {
+                        }
+
+                        // adding new record with the validation error will cause the id to keep rolling
+                        // in that case $id will not be empty but $item will be null, then cause page crash
+                        if (!$id || !$item) {
                             $item = new $model();
                             $new = true;
                         }
