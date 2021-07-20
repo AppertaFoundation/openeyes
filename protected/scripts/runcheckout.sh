@@ -430,7 +430,7 @@ for module in "${modules[@]}"; do
 
         if [ "$trackbranch" != "branch" ]; then
             echo "No branch $branch was found. Falling back to $defaultbranch"
-            git -C $MODGITROOT fetch origin $defaultbranch
+            git -C $MODGITROOT fetch --depth $moduledepth origin $defaultbranch
         fi
 
     fi
