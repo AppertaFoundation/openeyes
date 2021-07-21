@@ -1,6 +1,10 @@
 OpenEyes = OpenEyes || {};
 OpenEyes.UI = OpenEyes.UI || {};
 
+/* global baseUrl */
+/* global moduleName */
+/* global OE_print_url */
+
 (function(exports) {
     /**
      * @param {jQuery} $element
@@ -24,6 +28,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     {
         this.$pinInput = this.$element.find(".js-pin-input");
         this.$signButton = this.$element.find(".js-sign-button");
+        this.$popupSignButton = this.$element.find(".js-popup-sign-btn");
         this.$controlWrapper = this.$element.find(".js-signature-control");
         this.$date = this.$element.find(".js-signature-date");
         this.$time = this.$element.find(".js-signature-time");
@@ -70,6 +75,16 @@ OpenEyes.UI = OpenEyes.UI || {};
                     }
                 }
             );
+        });
+        this.$popupSignButton.click(function () {
+            let printUrl = OE_print_url + "?html=1&sign=1&element_id=";
+            let popup = new OpenEyes.UI.Dialog({
+                title: "e-Sign",
+                iframe: printUrl,
+                popupContentClass: "oe-popup-content max max-height",
+                width: "100%"
+            });
+            popup.open();
         });
     };
 
