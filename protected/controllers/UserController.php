@@ -25,6 +25,9 @@ class UserController extends BaseController
                 'actions' => array('testAuthenticated', 'getSecondsUntilSessionExpire'),
                 'roles' => array('User'),
             ),
+            array('allow',
+                'actions' => array('getDecryptedSignatureId', 'getName','getCurrentUser')
+            )
         );
     }
 
@@ -98,5 +101,25 @@ class UserController extends BaseController
         $seconds_to_expire = $expire['expire'] - time();
 
         $this->renderJSON($seconds_to_expire);
+    }
+
+    public function actionGetDecryptedSignatureId($id)
+    {
+        if(!$user = User::model()->findByPk($id)) {
+            throw new CHttpException(404);
+        }
+
+        $pin = Yii::app()->request->getPost("pin");
+
+        if($imageData = $user->getDecryptedSignature($pin)) {
+            $protected_file = new \ProtectedFile();
+            $protected_file = $protected_file->createForWriting('consultant_signature');
+            file_put_contents($protected_file->getPath(), $imageData);
+            $protected_file->save();
+            echo $protected_file->id;
+        }
+        else {
+            echo "0";
+        }
     }
 }

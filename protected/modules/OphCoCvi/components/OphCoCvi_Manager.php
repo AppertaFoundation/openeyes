@@ -29,7 +29,7 @@ use OEModule\OphCoCvi\models\SignatureInterface;
 use OEModule\OphCoMessaging\components\MessageCreator;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 
-require_once str_replace('index.php', 'vendor/setasign/fpdi/pdf_parser.php', \Yii::app()->getRequest()->getScriptFile());
+require_once str_replace('index.php', 'vendor/setasign/fpdi/src/PdfParser/PdfParser.php', \Yii::app()->getRequest()->getScriptFile());
 /**
  * Class OphCoCvi_Manager
  *
@@ -203,10 +203,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     protected function getElementForEvent($event, $element_class)
     {
-        $version = '';
-        if($event->version > 0){
-            $version = '_V'.$event->version;
-        }
+        $version = '_V1';
         $core_class = 'Element_OphCoCvi_EventInfo'.$version;
         $namespaced_class = '\\OEModule\OphCoCvi\\models\\' . $core_class;
 
@@ -215,14 +212,10 @@ class OphCoCvi_Manager extends \CComponent
             'Element_OphCoCvi_ClericalInfo'.$version => 'clerical_element',
             'Element_OphCoCvi_Demographics'.$version => 'demographics_element',
             'Element_OphCoCvi_ConsultantSignature'  => 'consultant_element'
-        ); 
-        
+        );
 
-        if( $event->version == 0 ){
-            $cls_rel_map['Element_OphCoCvi_ConsentSignature'] = 'consent_element';
-        } else {
-            $cls_rel_map['Element_OphCoCvi_PatientSignature'] = 'patient_signature';
-        }
+
+        $cls_rel_map['Element_OphCoCvi_PatientSignature'] = 'patient_signature';
         
         if (!isset($this->info_el_for_events[$event->id])) {
             $this->info_el_for_events[$event->id] = $namespaced_class::model()->with(array_values($cls_rel_map))->findByAttributes(array('event_id' => $event->id));
@@ -303,10 +296,6 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getEventInfoElementForEvent(\Event $event)
     {
-        if($event->version == 0){
-            return $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
-        }
-
         return $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo_V1');
     }
 
@@ -316,9 +305,6 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getClinicalElementForEvent(\Event $event)
     {
-        if($event->version == 0){
-            return $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
-        }
         return $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo_V1');
     }
 
@@ -328,9 +314,6 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getClericalElementForEvent(\Event $event)
     {
-        if($event->version == 0){
-            return $this->getElementForEvent($event, 'Element_OphCoCvi_ClericalInfo');
-        }
         return $this->getElementForEvent($event, 'Element_OphCoCvi_ClericalInfo_V1');
     }
 
@@ -340,14 +323,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getConsentSignatureElementForEvent(\Event $event)
     {
-        if($event->version == 0){
-            $element = $this->getElementForEvent($event, "Element_OphCoCvi_ConsentSignature");
-        }
-        else {
-            $element = $this->getElementForEvent($event, "Element_OphCoCvi_PatientSignature");
-        }
-        /** @var SignatureInterface $element */
-        return $element;
+        return $this->getElementForEvent($event, "Element_OphCoCvi_PatientSignature");
     }
 
     /**
@@ -356,9 +332,6 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getDemographicsElementForEvent(\Event $event)
     {
-        if($event->version == 0){
-            return $this->getElementForEvent($event, 'Element_OphCoCvi_Demographics');
-        }
         return $this->getElementForEvent($event, 'Element_OphCoCvi_Demographics_V1');
     }
 
@@ -487,7 +460,7 @@ class OphCoCvi_Manager extends \CComponent
             return false;
         }
         
-        if($event->version > 0 && $consultant_signature = $this->getElementForEvent($event, "Element_OphCoCvi_ConsultantSignature")) {
+        if($consultant_signature = $this->getElementForEvent($event, "Element_OphCoCvi_ConsultantSignature")) {
             /** @var SignatureInterface $consultant_signature */
             if(!$consultant_signature->checkSignature()) {
                 return false;
@@ -711,18 +684,16 @@ class OphCoCvi_Manager extends \CComponent
 
             $event->audit('event', 'cvi-issued', null, 'CVI Issued', array('user_id' => $user_id));
 
-            if($event->version > 0) {
-                /** @var Element_OphCoCvi_PatientSignature $consent_element */
-                $consent_element = $this->getConsentSignatureElementForEvent($event);
+            /** @var Element_OphCoCvi_PatientSignature $consent_element */
+            $consent_element = $this->getConsentSignatureElementForEvent($event);
 
-                $info_element->gp_delivery = $gp_delivery = (int)($consent_element->consented_to_gp && $consent_element::isDocmanEnabled());
-                $info_element->la_delivery = $la_delivery = (int)($consent_element->consented_to_la && $consent_element::isLADeliveryEnabled());
-                $info_element->rco_delivery = $rco_delivery = (int)($consent_element->consented_to_rcop && $consent_element::isRCOPDeliveryEnabled());
-                $info_element->gp_delivery_status = $gp_delivery === 1 ? Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING : null;
-                $info_element->la_delivery_status = $la_delivery === 1 ? Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING : null;
-                $info_element->rco_delivery_status = $rco_delivery === 1 ? Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING : null;
-                $info_element->save();
-            }
+            $info_element->gp_delivery = $gp_delivery = (int)($consent_element->consented_to_gp && $consent_element::isDocmanEnabled());
+            $info_element->la_delivery = $la_delivery = (int)($consent_element->consented_to_la && $consent_element::isLADeliveryEnabled());
+            $info_element->rco_delivery = $rco_delivery = (int)($consent_element->consented_to_rcop && $consent_element::isRCOPDeliveryEnabled());
+            $info_element->gp_delivery_status = $gp_delivery === 1 ? Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING : null;
+            $info_element->la_delivery_status = $la_delivery === 1 ? Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING : null;
+            $info_element->rco_delivery_status = $rco_delivery === 1 ? Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING : null;
+            $info_element->save();
 
             $transaction->commit();
 
@@ -781,10 +752,7 @@ class OphCoCvi_Manager extends \CComponent
             if ($clinical->validate()) {
                 $status |= self::$CLINICAL_COMPLETE;
             }
-            if ($event->version == 0 && $clinical->isSigned()) {
-                $status |= self::$CONSULTANT_SIGNED;
-            }
-            
+
             if($clinical->is_considered_blind === "0"){
                 $this->is_considered_blind = self::$SIGHT_IMPAIRED;
             }
@@ -794,7 +762,7 @@ class OphCoCvi_Manager extends \CComponent
             }
         }
               
-        if($event->version > 0 && $consultant_signature = $this->getElementForEvent($event, "Element_OphCoCvi_ConsultantSignature")) {
+        if($consultant_signature = $this->getElementForEvent($event, "Element_OphCoCvi_ConsultantSignature")) {
             /** @var SignatureInterface $consultant_signature */
             if($consultant_signature->checkSignature()) {
                 $status |= self::$CONSULTANT_SIGNED;

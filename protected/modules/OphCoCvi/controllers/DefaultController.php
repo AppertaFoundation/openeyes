@@ -126,6 +126,9 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionCreate()
     {
+//        echo '<pre>' . print_r($_POST, true) . '</pre>';
+//        die(__FILE__ . " :: " . __LINE__);
+
         $create_new_cvi = $this->request->getParam('createnewcvi', null);
         if ($create_new_cvi !== null) {
             $cancel_url = $this->episode ? '/patient/episode/' . $this->episode->id
@@ -454,7 +457,6 @@ class DefaultController extends \BaseEventTypeController
                     $is_left = isset($disorder['left_eye']) && $disorder['left_eye'] == 1;
                     $is_both = ($is_right && $is_left);
 
-                    $affected = null;
                     if ($is_both) {
                         $affected = \Eye::BOTH;
                     } else {
@@ -582,7 +584,17 @@ class DefaultController extends \BaseEventTypeController
         $disorders = array();
         if (!empty($data[$model_name]['disorders'])) {
             foreach ($data[$model_name]['disorders'] as $key => $disorder) {
-                switch ($disorder['affected']) {
+                $is_right = isset($disorder['right_eye']) && $disorder['right_eye'] == 1;
+                $is_left = isset($disorder['left_eye']) && $disorder['left_eye'] == 1;
+                $is_both = ($is_right && $is_left);
+
+                if ($is_both) {
+                    $affected = \Eye::BOTH;
+                } else {
+                    $affected = $is_right ? \Eye::RIGHT : ($is_left ? \Eye::LEFT : null);
+                }
+
+                switch ($affected) {
                     case 1:
                         $disorders['left_disorders'][$key]['affected'] = 1;
                         if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {

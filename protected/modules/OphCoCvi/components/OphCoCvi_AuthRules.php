@@ -121,7 +121,7 @@ class OphCoCvi_AuthRules
         if ($this->canCreateOphCoCvi($user_id)) {
             if (isset($view_context['firm'])) {
                 return $this->yii->getAuthManager()->executeBizRule('canEditEvent',
-                    array($view_context['firm'], $view_context['event']), null);
+                    array($view_context['event']), null);
             } else {
                 return true;
             }

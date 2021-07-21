@@ -17,16 +17,18 @@
 
 return array(
     'params' => array(
-        'admin_menu' => array(
-            'Clinical Disorder Section' => '/OphCoCvi/admin/clinicalDisorderSection',
-            'Clinical Disorder' => '/OphCoCvi/admin/clinicalDisorders',
-            'Patient Factor' => '/OphCoCvi/admin/patientFactor',
-            'Employment Status' => '/OphCoCvi/admin/employmentStatus',
-            'Contact Urgency' => '/OphCoCvi/admin/contactUrgency',
-            'Field of Vision' => '/OphCoCvi/admin/fieldOfVision',
-            'Low Vision Status' => '/OphCoCvi/admin/lowVisionStatus',
-            'Preferred Info Format' => '/OphCoCvi/admin/preferredInfoFormat',
-            'Local Authorities' => '/OphCoCvi/localAuthoritiesAdmin/list',
+        'admin_structure' => array(
+            'CVI' => array(
+                'Clinical Disorder Section' => '/OphCoCvi/admin/clinicalDisorderSection',
+                'Clinical Disorder' => '/OphCoCvi/admin/clinicalDisorders',
+                'Patient Factor' => '/OphCoCvi/admin/patientFactor',
+                'Employment Status' => '/OphCoCvi/admin/employmentStatus',
+                'Contact Urgency' => '/OphCoCvi/admin/contactUrgency',
+                'Field of Vision' => '/OphCoCvi/admin/fieldOfVision',
+                'Low Vision Status' => '/OphCoCvi/admin/lowVisionStatus',
+                'Preferred Info Format' => '/OphCoCvi/admin/preferredInfoFormat',
+                'Local Authorities' => '/OphCoCvi/localAuthoritiesAdmin/list',
+            ),
         ),
         'menu_bar_items' => array(
             'admin' => array(

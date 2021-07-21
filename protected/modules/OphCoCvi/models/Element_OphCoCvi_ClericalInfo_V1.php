@@ -227,7 +227,7 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
     {
         $factors = array();
         $element = $this::model()->findByPk($element_id);
-        $patient_factor = OphCoCvi_ClericalInfo_PatientFactor::model()->findAll('`active` = ? and event_type_version = ?', array(1, $element->event->eventType->version));
+        $patient_factor = OphCoCvi_ClericalInfo_PatientFactor::model()->findAll('`active` = 1');
         foreach ($patient_factor as $key => $factor) {
             $factors[$key]['id'] = $factor->id;
             $factors[$key]['name'] = $factor->name;

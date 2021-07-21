@@ -25,31 +25,28 @@ if ($this->checkPrintAccess()) {
     $selectOptions['et_print'] = 'Print';
 }
 
-if ($this->checkPrintAccess() && $this->event->version > 0) {
-    $this->event_actions[] = EventAction::button('Print Visually Impaired', 'visually_impaired', null, array('class' => 'small button', 'style' => 'display:none;'));
-    $selectOptions['et_visually_impaired'] = 'Print Visually Impaired';
-}
+$this->event_actions[] = EventAction::button('Print Visually Impaired', 'visually_impaired', null, array('class' => 'small button', 'style' => 'display:none;'));
+$selectOptions['et_visually_impaired'] = 'Print Visually Impaired';
+
 
 if($this->checkLabelPrintAccess()){
    $this->event_actions[] = EventAction::button('Print Labels', 'print_labels', null, array('class' => 'small button', 'style' => 'display:none;')); 
    $selectOptions['et_print_labels'] = 'Print Labels';
 }
 
-if($this->event->version > 0) {
-    $elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature'))->id;
+$elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature'))->id;
 
-    if (!$this->checkPatientSignature()) {
-        $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_out', 'data-element-id' => $this->event->getElementbyClass('OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature')->id, 'data-element-type-id' => $elementy_type_id, 'class' => 'button small', 'style' => 'display:none;'));
-        $selectOptions['et_print_out'] = 'Print Consent Page';
-    } else {
-        $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_consent', 'class' => 'button small', 'style' => 'display:none;'));
-        $selectOptions['et_print_consent'] = 'Print Consent Page';
-    }
-
-
-    $this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small', 'style' => 'display:none;'));
-    $selectOptions['et_print_info_sheet'] = 'Print Information Sheet';
+if (!$this->checkPatientSignature()) {
+    $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_out', 'data-element-id' => $this->event->getElementbyClass('OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature')->id, 'data-element-type-id' => $elementy_type_id, 'class' => 'button small', 'style' => 'display:none;'));
+    $selectOptions['et_print_out'] = 'Print Consent Page';
+} else {
+    $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_consent', 'class' => 'button small', 'style' => 'display:none;'));
+    $selectOptions['et_print_consent'] = 'Print Consent Page';
 }
+
+$this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small', 'style' => 'display:none;'));
+$selectOptions['et_print_info_sheet'] = 'Print Information Sheet';
+
 
 $this->event_actions[] = EventAction::dropdownToButton('', 'select_action', $selectOptions, null);
 
@@ -67,7 +64,7 @@ $this->beginContent('//patient/event_container');
     </div>
 <?php } ?>
 
-<?php if($this->getManager()->isIssued($this->event) && $this->event->version >= 1): ?>
+<?php if($this->getManager()->isIssued($this->event)): ?>
     <div class="alert-box success">
         <u>Delivery status:</u><br/>
         Delivery to GP: <i><?=CHtml::encode($this->getManager()->getGPDeliveryStatus($this->event))?></i><br/>
