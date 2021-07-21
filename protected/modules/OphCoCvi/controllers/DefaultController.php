@@ -448,9 +448,20 @@ class DefaultController extends \BaseEventTypeController
         $model_name = \CHtml::modelName($element);
 
         if (array_key_exists($model_name, $data)) {
-            if (!empty($data[$model_name]['disorders'])) {
-                foreach ($data[$model_name]['disorders'] as $key => $disorder) {
-                    switch ($disorder['affected']) {
+
+                foreach ($data[$model_name]['disorders'] ?? [] as $key => $disorder) {
+                    $is_right = isset($disorder['right_eye']) && $disorder['right_eye'] == 1;
+                    $is_left = isset($disorder['left_eye']) && $disorder['left_eye'] == 1;
+                    $is_both = ($is_right && $is_left);
+
+                    $affected = null;
+                    if ($is_both) {
+                        $affected = \Eye::BOTH;
+                    } else {
+                        $affected = $is_right ? \Eye::RIGHT : ($is_left ? \Eye::LEFT : null);
+                    }
+
+                    switch ($affected) {
                         case 1:
                             $disorders['left_disorders'][$key]['affected'] = 1;
                             if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
@@ -470,7 +481,7 @@ class DefaultController extends \BaseEventTypeController
                             }
                             break;
                     }
-                }
+
                 unset($data[$model_name]['disorders']);
                 $data[$model_name] = array_merge($data[$model_name], $disorders);
             }
@@ -1071,26 +1082,21 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setValidationScenarioForElement($element)
     {
-        $version = '';
-        if($this->event->version > 0){
-            $version = '_V1';
-        }
-
         if ($this->request->getPost('save', null)) {
             // form has been submitted using the save button, so full validation rules should be applied to the elements
             // TODO: validation for signature(s)
             switch (get_class($element)) {
-                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo'.$version:
+                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1':
                     if ($this->checkClinicalEditAccess()) {
                         $element->setScenario('finalise');
                     }
                     break;
-                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo'.$version:
+                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1':
                     if ($this->checkClericalEditAccess()) {
                         $element->setScenario('finalise');
                     }
                     break;
-                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics'.$version:
+                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics_V1':
                     $element->setScenario('finalise');
                     break;
             }

@@ -132,32 +132,28 @@
                 </colgroup>
                 <tbody>
                 <tr>
-                    <td>Local Authority Name:</td>
-                    <td>Local Authority Name:</td>
+                    <td><?=$element->getAttributeLabel('la_name');?></td>
+                    <td><?=\CHtml::activeTextField($element, 'la_name', ['class' => 'cols-full']);?></td>
                 </tr>
                 <tr>
-                    <td>Local Authority Address:</td>
-                    <td>Local Authority Address</td>
+                    <td><?=$element->getAttributeLabel('la_address');?></td>
+                    <td><?=\CHtml::activeTextArea($element, 'la_address', ['class' => 'cols-full', 'rows' => 5]);?></td>
                 </tr>
                 <tr>
-                    <td>Local Authority Post Code:</td>
+                    <td><?=$element->getAttributeLabel('la_postcode');?></td>
                     <td>
-                        <?= CHtml::activeTextField($element, 'postcode', ['class' => 'cols-5', "maxlength" => 4]); ?>
+                        <?= CHtml::activeTextField($element, 'la_postcode', ['class' => 'cols-5', "maxlength" => 4]); ?>
                         &nbsp;
-                        <?= CHtml::activeTextField($element, 'postcode_2nd', ['class' => 'cols-5', "maxlength" => 3]); ?>
+                        <?= CHtml::activeTextField($element, 'la_postcode_2nd', ['class' => 'cols-5', "maxlength" => 3]); ?>
                     </td>
                 </tr>
                 <tr>
-                    <td>Local Authority Telephone:</td>
-                    <td>
-                        Local Authority Telephone:
-                    </td>
+                    <td><?=$element->getAttributeLabel('la_telephone');?></td>
+                    <td><?=\CHtml::activeTelField($element, 'la_telephone', ['class' => 'cols-full']);?></td>
                 </tr>
                 <tr>
-                    <td>Local Authority Email:</td>
-                    <td>
-                        Local Authority Email:
-                    </td>
+                    <td><?=$element->getAttributeLabel('la_email');?></td>
+                    <td><?=\CHtml::activeEmailField($element, 'la_email', ['class' => 'cols-full']);?></td>
                 </tr>
                 </tbody>
             </table>

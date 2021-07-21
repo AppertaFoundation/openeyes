@@ -62,7 +62,8 @@ if ($this->checkClinicalEditAccess()) { ?>
                     <td><?= CHtml::encode($element->getAttributeLabel('is_considered_blind')); ?></td>
                     <td>
 
-                        <?php echo $form->radioButtons(
+                        <?php
+                        echo $form->radioButtons(
                             $element,
                             'is_considered_blind',
                             array(
@@ -157,98 +158,6 @@ if ($this->checkClinicalEditAccess()) { ?>
                 </tr>
                 </tbody>
             </table>
-        </div>
-    </div>
-
-    <div class="indent-correct row">
-        <div class="column large-12" style="display: none">
-            <div class="row field-row">
-                <div class="column large-6">
-                    <label><?= CHtml::encode($element->getAttributeLabel('is_considered_blind')); ?></label>
-                </div>
-                <div class="column large-4">
-                    <?php echo $form->radioButtons(
-                        $element,
-                        'is_considered_blind',
-                        array(
-                            0 => $element::$NOT_BLIND_STATUS,
-                            1 => $element::$BLIND_STATUS,
-                        ),
-                        $element->is_considered_blind,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array('nowrapper' => true)
-                    ); ?>
-                </div>
-                <div class="column large-1 end">
-                    <p style="margin-top: 6px">
-                        <span id="<?= CHtml::encode($modelName) ?>_clinical_info_tooltip" class="help">
-                            <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="<strong>SSI - Who should be certified as severely sight impaired?</strong> <br>
-        <u>Group 1:</u> Offer to certify as severely sight impaired: people who have visual acuity worse
-        than 3/60 Snellen (or equivalent);<br>
-        <u>Group 2:</u> Offer to certify as severely sight impaired: people who are 3/60 Snellen or better
-        (or equivalent) but worse than 6/60 Snellen (or equivalent) who also have contraction of
-        their visual field;<br>
-        <u>Group 3:</u> Offer to certify as severely sight impaired: people who are 6/60 Snellen or better
-        (or equivalent) who have a clinically significant contracted field of vision which is
-        functionally impairing the person e.g. significant reduction of inferior field or bi-temporal hemianopia<br><br>
-        <strong>SI - Who should be certified as sight impaired?</strong><br>
-        People can be classified into three groups:<br>
-        <u>Group 1:</u> Offer to certify as sight impaired: people who are 3/60 to 6/60 Snellen (or
-        equivalent) with full field;<br>
-        <u>Group 2:</u> Offer to certify as sight impaired: people between 6/60 and 6/24 Snellen (or
-        equivalent) with moderate contraction of the field e.g. superior or patchy loss, media
-        opacities or aphakia;<br>
-        <u>Group 3:</u> Offer to certify as sight impaired: people who are 6/18 Snellen (or equivalent) or
-        even better if they have a marked field defect e.g. homonymous hemianopia."></i>
-                        </span>
-                    </p>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="column large-12" style="display: none">
-            <div class="row field-row">
-                <div class="column large-6">
-                    <label><?= CHtml::encode($element->getAttributeLabel('information_booklet')); ?></label>
-                </div>
-                <div class="column large-6">
-                    <?php echo $form->radioButtons(
-                        $element,
-                        'information_booklet',
-                        $element->getInformationBooklets(),
-                        $element->information_booklet,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array('nowrapper' => true)
-                    ); ?>
-                </div>
-            </div>
-        </div>
-        <div class="column large-12" style="display:none">
-            <div class="row field-row">
-                <div class="column large-4">
-                    <label><?= CHtml::encode($element->getAttributeLabel('eclo')); ?></label>
-                </div>
-                <div class="column large-8">
-                    <?php echo $form->radioButtons(
-                        $element,
-                        'eclo',
-                        $element->getEclo(),
-                        $element->eclo,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array('nowrapper' => true)
-                    ); ?>
-                </div>
-            </div>
         </div>
     </div>
     <div class="flex-layout row">
