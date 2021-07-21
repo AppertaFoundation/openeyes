@@ -15,7 +15,7 @@ namespace OEModule\OphCoCvi\controllers;
  */
 class LocalAuthoritiesAdminController extends \AdminController
 {
-    public $layout = 'clerical_admin';
+    public $layout = '//layouts/admin';
 
     /**
      * @return array
@@ -61,6 +61,6 @@ class LocalAuthoritiesAdminController extends \AdminController
         $data['return_url'] = '/OphCoCvi/localAuthoritiesAdmin/list';
         $data['base_data_url'] = 'OphCoCvi/localAuthoritiesAdmin/';
 
-        $this->render('//admin/commissioning_body_services', $data);
+        $this->render('//admin/commissioning_body_services/index', $data);
     }
 }
