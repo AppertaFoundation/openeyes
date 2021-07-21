@@ -2357,13 +2357,17 @@ class AdminController extends BaseAdminController
 
     private function saveEditCommissioningBodyService($cbs, $contact, $address, $return_url)
     {
+        $errors = [];
         if (!empty($_POST)) {
             $cbs->attributes = $_POST['CommissioningBodyService'];
 
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
             }
+            $contact->scenario = 'admin_contact';
             $contact->attributes = $_POST['Contact'];
+            $contact->last_name = $cbs->name;
+
             if (!$contact->validate()) {
                 $errors = array_merge($errors, $contact->getErrors());
             }
@@ -2404,7 +2408,6 @@ class AdminController extends BaseAdminController
                     $transaction->rollback();
                     throw $e;
                 }
-
 
                 $this->redirect($return_url);
             }
