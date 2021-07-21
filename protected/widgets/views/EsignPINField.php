@@ -47,10 +47,8 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
     </td>
     <!-- Signature -->
     <td>
-        <div class="js-signature-wrapper" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
-            <div class="esign-check js-signature">
-                <?php $this->displaySignature() ?>
-            </div>
+        <div class="js-signature-wrapper flex-l" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+            <?php $this->displaySignature() ?>
             <div class="esigned-at">
                 <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time">07:46</span>
             </div>

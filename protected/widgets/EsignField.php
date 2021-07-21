@@ -66,12 +66,23 @@ abstract class EsignField extends BaseCWidget
     public function displaySignature() : void
     {
         if($this->isSigned()) {
-            /* TODO: FIX IT */
-            //echo '<div class="esign-check js-has-tooltip" data-tip="{&quot;type&quot;:&quot;esign&quot;,&quot;png&quot;:&quot;'.$this->signature_file_id.'&quot;}" style="background-image: url(\'/protectedFile/view/'.$this->signature_file_id.'\')"></div>';
             $file = ProtectedFile::model()->findByPk($this->signature_file_id);
-            $source = file_get_contents($file->getPath());
-            $base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($source);
-            echo '<img style="width: 120px;" src="'.$base64.'">';
+            $thumbnail1 = $file->getThumbnail("72x24", true);
+            $thumbnail2 = $file->getThumbnail("150x50", true);
+
+            $thumbnail1_source = file_get_contents($thumbnail1['path']);
+            $thumbnail1_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail1_source);
+
+            $thumbnail2_source = file_get_contents($thumbnail2['path']);
+            $thumbnail2_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
+
+            echo '
+                <div 
+                    class="esign-check js-has-tooltip" 
+                    data-tooltip-content="<img src=\''.($thumbnail2_base64).'\'>"
+                    style="background-image: url('.$thumbnail1_base64.');">
+                </div>
+            ';
         }
     }
 
