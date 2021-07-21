@@ -32,11 +32,73 @@ abstract class EsignField extends BaseCWidget
      */
     abstract public function getAction() : string;
 
+    public function init()
+    {
+        parent::init();
+        $assetManager = Yii::app()->getAssetManager();
+        $widgetPath = $assetManager->publish(__DIR__. "/js", true);
+        $scriptPath = $widgetPath . '/EsignPinWidget.js';
+        $assetManager->registerScriptFile($scriptPath, "application.widgets.EsignField", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
+    }
+
     /**
      * @return bool Whether the signature has already been added
      */
     public function isSigned() : bool
     {
-        return false; //!is_null($this->signature_file_id);
+        return !is_null($this->signature_file_id);
+    }
+
+    protected function getSignatureFile(): ProtectedFile
+    {
+        $model = ProtectedFile::model()->findByPk($this->signature_file_id);
+        if(!$model) {
+            throw new Exception("Signature file not found");
+        }
+        return $model;
+    }
+
+    /**
+     * Display signature image if signed
+     *
+     * @return void
+     */
+    public function displaySignature() : void
+    {
+        if($this->isSigned()) {
+            $file = ProtectedFile::model()->findByPk($this->signature_file_id);
+            $thumbnail1 = $file->getThumbnail("72x24", true);
+            $thumbnail2 = $file->getThumbnail("150x50", true);
+
+            $thumbnail1_source = file_get_contents($thumbnail1['path']);
+            $thumbnail1_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail1_source);
+
+            $thumbnail2_source = file_get_contents($thumbnail2['path']);
+            $thumbnail2_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
+
+            echo '
+                <div 
+                    class="esign-check js-has-tooltip" 
+                    data-tooltip-content="<img src=\''.($thumbnail2_base64).'\'>"
+                    style="background-image: url('.$thumbnail1_base64.');">
+                </div>
+            ';
+        }
+    }
+
+    /**
+     * Display signature date in NHS format or "-" if not signed
+     *
+     * @return void
+     * @throws Exception If file does not exist
+     */
+    public function displaySignatureDate() : void
+    {
+        if($this->isSigned()) {
+            echo Helper::convertDate2NHS($this->getSignatureFile()->created_date);
+        }
+        else {
+            echo "-";
+        }
     }
 }

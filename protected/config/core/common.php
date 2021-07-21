@@ -106,18 +106,6 @@ $config = array(
         'OEModule' => 'application.modules',
     ),
 
-    'modules' => array(
-        // Gii tool
-        'gii' => array(
-            'class' => 'system.gii.GiiModule',
-            'password' => 'openeyes',
-            'ipFilters' => array('127.0.0.1'),
-        ),
-        'oldadmin',
-        'Admin',
-        'Api'
-    ),
-
     // Application components
     'components' => array(
         'assetManager' => array(
@@ -889,4 +877,57 @@ $config = array(
     ),
 );
 
-    return $config;
+$modules = array(
+        // Gii tool
+        // 'gii' => array(
+        //     'class' => 'system.gii.GiiModule',
+        //     'password' => 'openeyes',
+        //     'ipFilters' => array('127.0.0.1'),
+        // ),
+        'oldadmin',
+        'Admin',
+        'Api',
+        'eyedraw',
+        'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
+        'OphCoCorrespondence',
+        'OphCiPhasing',
+        'OphTrIntravitrealinjection',
+        'OphCoTherapyapplication',
+        'OphDrPrescription',
+        'OphTrConsent',
+        'OphTrOperationnote',
+        'OphTrOperationbooking',
+        'OphTrLaser',
+        'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
+        'OphInVisualfields',
+        'OphInBiometry',
+        'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
+        'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
+        'OphInLabResults',
+        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
+        'Genetics',
+        'OphInDnasample',
+        'OphInDnaextraction',
+        'OphInGeneticresults',
+        'OphCoDocument',
+        'OphCiDidNotAttend',
+        'OphGeneric',
+        'OECaseSearch',
+        'OETrial',
+        'SSO',
+        'OphOuCatprom5',
+        'OphTrOperationchecklists',
+        'OphDrPGDPSD',
+);
+
+// deal with any custom modulesadded for the local deployment - which are set in /config/modules.conf (added via docker)
+// Gracefully ignores file if it is missing
+$custom_modules = trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf")));
+if (!empty($custom_modules)) {
+    $modules = array_unique(array_merge($modules, explode(" ", $custom_modules)), SORT_REGULAR);
+}
+
+$config["modules"] = $modules;
+
+
+return $config;
