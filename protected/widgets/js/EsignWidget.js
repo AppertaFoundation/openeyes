@@ -40,6 +40,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         let widget = this;
         this.$signButton.click(function () {
             const pin = widget.$pinInput.val();
+            console.log(pin);
             widget.$pinInput.val("");
             if(pin === "") {
                 let dlg = new OpenEyes.UI.Dialog.Alert({
@@ -80,9 +81,14 @@ OpenEyes.UI = OpenEyes.UI || {};
      */
     EsignWidget.prototype.displaySignature = function(signature_file_id, date, time)
     {
+        console.log((this.$signatureWrapper));
         this.$controlWrapper.hide();
-        const $image = $('<div class="esign-check js-has-tooltip" data-tip="{&quot;type&quot;:&quot;esign&quot;,&quot;png&quot;:&quot;/idg-php/imgDemo/esign/esign2.png&quot;}" style="background-image: url(\'/idg-php/imgDemo/esign/esign2.png\')"></div>');
-        $image.appendTo(this.$signature);
+        //const $image = $('<div class="esign-check js-has-tooltip" data-tip="{}" style="background-image: url(\'/idg-php/imgDemo/esign/esign2.png\')"></div>');
+
+        const $image = $("<span>Kecso</span>");
+            //$('<div class="esign-check js-has-tooltip" data-tooltip-content="<img src=\''+(signature_file_id)+'\'>" style="background-image: url('+signature_file_id+');">');
+
+        $image.appendTo(this.$signatureWrapper);
         this.$date.text(date).show();
         this.$time.text(time);
         this.$signatureWrapper.show();
