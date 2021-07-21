@@ -134,7 +134,7 @@ class EventMedicationUse extends BaseElement
         // will receive user inputs.
         return array(
             array('usage_type, medication_id', 'required'),
-            array('latest_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, stop_reason_id, 
+            array('latest_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, stop_reason_id,
 			        prescription_item_id, prescribe, hidden, is_discontinued', 'numerical', 'integerOnly' => true),
             array('dose', 'numerical'),
             array('laterality', 'validateLaterality'),
@@ -1149,6 +1149,10 @@ class EventMedicationUse extends BaseElement
                     $medication->default_dose_unit_term :
                     'unit';
             }
+        }
+
+        if ($this->laterality === "0") {
+            $this->laterality = null;
         }
 
         return parent::beforeValidate();
