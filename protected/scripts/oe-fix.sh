@@ -111,17 +111,21 @@ if [ -f "$WROOT/index.example.php" ]; then
     sudo chown www-data:www-data $WROOT/index.php
 fi
 
-if [ ! -f "$WROOT/protected/config/local/common.php" ]; then
+if [ $resetconfig -eq 1 ]; then
+    echo "
+    ************************************************************************
+    ************************************************************************
+    ********* WARNING: Restoring defualt local configuration ...   *********
+    *********                                                      *********
+    *********        Any custom modules will be disabled           *********
+    *********        You may need to reset your database           *********
+    ************************************************************************
+    ************************************************************************
+    "
+    rm -f "$WROOT/protected/config/local/common.php"
+fi
 
-    # 	************************************************************************
-    # 	************************************************************************
-    # 	********* WARNING: Restoring backed up local configuration ... *********
-    # 	*********                                                      *********
-    # 	********* Remove /etc/openeyes/backup/config/local to prevent  *********
-    # 	*********                  or use -ff flag                     *********
-    # 	************************************************************************
-    # 	************************************************************************
-    #
+if [ ! -f "$WROOT/protected/config/local/common.php" ]; then
 
     echo "WARNING: Copying sample configuration into local ..."
     sudo mkdir -p $WROOT/protected/config/local
@@ -155,7 +159,7 @@ if [ "$composer" == "1" ]; then
 
     # If we've switched from dev to live, remove dev dependencies, else, just prune
     [ "${OE_MODE^^}" == "LIVE" ] && sudo -E npm prune --production || sudo -E npm prune
-    
+
     rm package-lock.json >/dev/null 2>&1
     sudo -E npm update --no-save $npmextra
 
