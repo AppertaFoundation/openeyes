@@ -37,7 +37,7 @@ abstract class EsignField extends BaseCWidget
         parent::init();
         $assetManager = Yii::app()->getAssetManager();
         $widgetPath = $assetManager->publish(__DIR__. "/js", true);
-        $scriptPath = $widgetPath . '/EsignPinWidget.js';
+        $scriptPath = $widgetPath . '/EsignWidget.js';
         $assetManager->registerScriptFile($scriptPath, "application.widgets.EsignField", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
     }
 
@@ -67,22 +67,23 @@ abstract class EsignField extends BaseCWidget
     {
         if($this->isSigned()) {
             $file = ProtectedFile::model()->findByPk($this->signature_file_id);
-            $thumbnail1 = $file->getThumbnail("72x24", true);
-            $thumbnail2 = $file->getThumbnail("150x50", true);
+            if($file){
+                $thumbnail1 = $file->getThumbnail("72x24", true);
+                $thumbnail2 = $file->getThumbnail("150x50", true);
 
-            $thumbnail1_source = file_get_contents($thumbnail1['path']);
-            $thumbnail1_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail1_source);
+                $thumbnail1_source = file_get_contents($thumbnail1['path']);
+                $thumbnail1_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail1_source);
 
-            $thumbnail2_source = file_get_contents($thumbnail2['path']);
-            $thumbnail2_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
-
-            echo '
-                <div 
-                    class="esign-check js-has-tooltip" 
-                    data-tooltip-content="<img src=\''.($thumbnail2_base64).'\'>"
-                    style="background-image: url('.$thumbnail1_base64.');">
-                </div>
-            ';
+                $thumbnail2_source = file_get_contents($thumbnail2['path']);
+                $thumbnail2_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
+                echo '
+                    <div 
+                        class="esign-check js-has-tooltip" 
+                        data-tooltip-content="<img src=\''.($thumbnail2_base64).'\'>"
+                        style="background-image: url('.$thumbnail1_base64.');">
+                    </div>
+                ';
+            }
         }
     }
 
