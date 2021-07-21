@@ -881,4 +881,38 @@ class User extends BaseActiveRecordVersioned
 
         return $usernames_with_statuses;
     }
+
+    /**
+     * Check the patient's pin.
+     *
+     * @return boolean
+     */
+    public function checkPin($pincode, $institution_id = null, $site_id = null) : bool
+    {
+        $pin_ok = false;
+
+        $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
+        $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
+
+        $institution_authentication = InstitutionAuthentication::model()
+            ->find(
+                "(site_id=:site_id || site_id IS NULL) AND institution_id=:institution_id",
+                [":site_id"=>$site_id, ":institution_id"=>$institution_id]
+            );
+
+        if($institution_authentication){
+            $auth = UserAuthentication::model()
+                ->find(
+                    'user_id=:user_id AND institution_authentication_id=:institution_authentication_id AND pincode=:pincode',
+                    [
+                        ':user_id'=>$this->id,
+                        ':institution_authentication_id'=>$institution_authentication->id,
+                        ':pincode' => $pincode
+                    ]
+                );
+            $pin_ok = !is_null($auth);
+        }
+
+        return $pin_ok;
+    }
 }
