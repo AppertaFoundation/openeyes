@@ -25,16 +25,33 @@ class getSignatureByUsernameAndPin extends \CAction
     {
         $code = 0;
         $error = '';
-        $signature_pin = $this->pin;
-        $decodedImage = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+        $full_username = '';
+
+        $this->pin = Yii::app()->request->getPost('pin');
+        $user_id = Yii::app()->request->getPost('user_id');
+        $this->user = User::model()->findByPk($user_id);
+
+        $thumbnail1_base64 = '';
+        $thumbnail2_base64 = '';
 
         try {
-            if ($this->user->id && strlen($signature_pin)>=4) {
-                $user = User::model()->findByPk(Yii::app()->user->id);
-                if ($user->signature_file_id) {
-                    $image = $user->getDecryptedSignature($this->pin);
-                    if ($image) {
-                        $decodedImage = base64_encode($image);
+            if ($this->user && strlen($this->pin)>=4) {
+                $full_username = $this->user->getFullName();
+                if ($this->user->signature_file_id) {
+                    if(!$this->user->checkPin($this->pin,$this->user->id)){
+                        throw new Exception('Incorrect PIN.');
+                    }
+
+                    $file = ProtectedFile::model()->findByPk($this->user->signature_file_id);
+                    if ($file) {
+                        $thumbnail1 = $file->getThumbnail("72x24", true);
+                        $thumbnail2 = $file->getThumbnail("150x50", true);
+
+                        $thumbnail1_source = file_get_contents($thumbnail1['path']);
+                        $thumbnail1_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail1_source);
+
+                        $thumbnail2_source = file_get_contents($thumbnail2['path']);
+                        $thumbnail2_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
                     } else {
                         throw new Exception('Signature file not found');
                     }
@@ -52,8 +69,11 @@ class getSignatureByUsernameAndPin extends \CAction
         $response = array(
             'code' => $code,
             'error' => $error,
-            'singature_image_base64' => $decodedImage,
-            'pin' => $signature_pin
+            'singature_image1_base64' => $thumbnail1_base64,
+            'singature_image2_base64' => $thumbnail2_base64,
+            'signatory_name' => $full_username,
+            'date' => date('Y.m.d'),
+            'time' => date('H:i'),
         );
 
         $this->renderJSON($response);
