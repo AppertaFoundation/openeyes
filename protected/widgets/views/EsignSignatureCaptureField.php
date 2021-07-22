@@ -44,7 +44,7 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
         </div>
         <div class="js-signature-control">
             <button type="button" class="js-popup-sign-btn">e-Sign</button>
-            <button type="button" disabled="disabled">e-Sign using linked device</button>
+            <button type="button" class="js-device-sign-btn" disabled="disabled">e-Sign using linked device</button>
         </div>
     </td>
 </tr>
