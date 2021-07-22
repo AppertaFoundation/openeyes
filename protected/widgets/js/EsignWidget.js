@@ -58,7 +58,8 @@ OpenEyes.UI = OpenEyes.UI || {};
                 function (response) {
                     if (response.code === 0) {
                         widget.displaySignature(
-                            response.signature_file_id,
+                            response.singature_image1_base64,
+                            response.singature_image2_base64,
                             response.date,
                             response.time
                         );
@@ -79,16 +80,12 @@ OpenEyes.UI = OpenEyes.UI || {};
      * @param {string} time
      * @private
      */
-    EsignWidget.prototype.displaySignature = function(signature_file_id, date, time)
+    EsignWidget.prototype.displaySignature = function(signature_file1, signature_file2, date, time)
     {
         console.log((this.$signatureWrapper));
         this.$controlWrapper.hide();
-        //const $image = $('<div class="esign-check js-has-tooltip" data-tip="{}" style="background-image: url(\'/idg-php/imgDemo/esign/esign2.png\')"></div>');
-
-        const $image = $("<span>Kecso</span>");
-            //$('<div class="esign-check js-has-tooltip" data-tooltip-content="<img src=\''+(signature_file_id)+'\'>" style="background-image: url('+signature_file_id+');">');
-
-        $image.appendTo(this.$signatureWrapper);
+        const $image = $('<div class="esign-check js-has-tooltip" data-tooltip-content="<img src=\''+(signature_file2)+'\'>" style="background-image: url('+signature_file1+');">');
+        $image.prependTo(this.$signatureWrapper);
         this.$date.text(date).show();
         this.$time.text(time);
         this.$signatureWrapper.show();

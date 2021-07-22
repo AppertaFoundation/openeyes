@@ -26,12 +26,18 @@ class GetSignatureByPinAction extends \CAction
         $code = 0;
         $error = '';
         $this->pin = Yii::app()->request->getPost('pin');
-        $decodedImage = '';
+        $thumbnail1_base64 = '';
+        $thumbnail2_base64 = '';
 
         try {
             if ($this->user->id && strlen($this->pin)>=4) {
                 $user = User::model()->findByPk(Yii::app()->user->id);
+
                 if ($user->signature_file_id) {
+                    if(!$user->checkPin($this->pin)){
+                        throw new Exception('Incorrect PIN.');
+                    }
+
                     $file = ProtectedFile::model()->findByPk($user->signature_file_id);
                     if ($file) {
                         $thumbnail1 = $file->getThumbnail("72x24", true);
@@ -61,6 +67,8 @@ class GetSignatureByPinAction extends \CAction
             'error' => $error,
             'singature_image1_base64' => $thumbnail1_base64,
             'singature_image2_base64' => $thumbnail2_base64,
+            'date' => date('Y.m.d'),
+            'time' => date('H:i'),
         );
 
         $this->renderJSON($response);
