@@ -682,12 +682,14 @@ class AdminController extends BaseAdminController
         $invalid_existing = [];
         $errors = [];
         $user_auth_errors = [];
+        $is_new = false;
 
         if ($id && !$user) {
             throw new Exception("User not found: $id");
         } elseif (!$id) {
             $user = new User();
             $user->has_selected_firms = 0;
+            $is_new = true;
         }
 
         $request = Yii::app()->getRequest();
@@ -715,6 +717,11 @@ class AdminController extends BaseAdminController
             } elseif (empty($user_auth_errors)) {
                 if (!$user->save(false)) {
                     throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
+                }
+
+                if ($is_new) {
+                    $user->correspondence_sign_off_user_id = $user->id;
+                    $user->update(['correspondence_sign_off_user_id']);
                 }
 
                 //delete deleted auths first
