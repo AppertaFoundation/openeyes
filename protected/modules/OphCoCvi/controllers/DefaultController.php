@@ -727,25 +727,6 @@ class DefaultController extends \BaseEventTypeController
             }
         }
     }
-
-    /**
-     * @param models\Element_OphCoCvi_ClericalInfo $element
-     * @param                                      $data
-     * @param                                      $index
-     * @throws \Exception
-     */
-    public function saveComplexAttributes_Element_OphCoCvi_ClericalInfo(
-        models\Element_OphCoCvi_ClericalInfo $element,
-        $data,
-        $index
-    ) {
-        $model_name = \CHtml::modelName($element);
-        if (array_key_exists($model_name, $data)) {
-            $answer_data = array_key_exists('patient_factors', $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
-            $element->updatePatientFactorAnswers($answer_data);
-        }
-
-    }
     
     public function saveComplexAttributes_Element_OphCoCvi_ClericalInfo_V1(
         models\Element_OphCoCvi_ClericalInfo_V1 $element,
@@ -756,23 +737,11 @@ class DefaultController extends \BaseEventTypeController
         if (array_key_exists($model_name, $data)) {
             $answer_data = array_key_exists('patient_factors', $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
             $element->updatePatientFactorAnswers($answer_data);
+
             $preferred_format_datas = array_key_exists('preferred_format_ids', $data[$model_name]) ? $data[$model_name]['preferred_format_ids'] : array();
             $element->updatePreferredFormats($preferred_format_datas);
         }
 
-    }
-
-    /**
-     * Sets the default values for the element from the patient
-     *
-     * @param models\Element_OphCoCvi_Demographics $element
-     */
-    protected function setElementDefaultOptions_Element_OphCoCvi_Demographics(
-        models\Element_OphCoCvi_Demographics $element
-    ) {
-        if ($element->isNewRecord) {
-            $element->initFromPatient($this->patient);
-        }
     }
     
     /**

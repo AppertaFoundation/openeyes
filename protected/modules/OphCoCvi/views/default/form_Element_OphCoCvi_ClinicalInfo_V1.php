@@ -45,7 +45,8 @@ if ($this->checkClinicalEditAccess()) { ?>
                     'examination_date',
                     array('maxDate' => 'today'),
                     array('style' => 'width: 110px;', 'nowrapper' => true)
-                ) ?></td>
+                ) ?>
+            </td>
         </tr>
         </tbody>
     </table>
