@@ -37,6 +37,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     /**
      * @private
      */
+
     EsignWidget.prototype.bindEvents = function()
     {
         let widget = this;
@@ -45,13 +46,19 @@ OpenEyes.UI = OpenEyes.UI || {};
             const user_id  = widget.$userIdInput.val();
 
             widget.$pinInput.val("");
-            if(pin === "") {
-                let dlg = new OpenEyes.UI.Dialog.Alert({
-                    content: "Please enter PIN"
-                });
-                dlg.open();
+            if (pin === "") {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Please enter PIN."
+                }).open();
                 return false;
             }
+            if (widget.options.needUserName && user_id === "") {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Please enter the signatory name."
+                }).open();
+                return false;
+            }
+
             $.post(
                 baseUrl + "/" + moduleName + "/default/" + widget.options.submitAction,
                 {

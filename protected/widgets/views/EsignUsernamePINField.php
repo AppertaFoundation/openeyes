@@ -70,7 +70,8 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
 <script type="text/javascript">
     $(function(){
         new OpenEyes.UI.EsignWidget($("#<?=$uid?>"), {
-            submitAction: "<?=$this->getAction()?>"
+            submitAction: "<?=$this->getAction()?>",
+            needUserName: true
         });
 
         if(OpenEyes.UI.AutoCompleteSearch !== undefined){
