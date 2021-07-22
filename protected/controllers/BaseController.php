@@ -191,10 +191,10 @@ class BaseController extends Controller
 
                 $user->userLogOnAttemptsCheck();
 
-                $whitelistedRequest = ($_SERVER['REQUEST_URI']=='/profile/password')||($_SERVER['REQUEST_URI']=='/site/logout'); // get stale pw whitelisted actions
+                $whitelistedRequestCheck = $user->CheckRequestOnExpiryWhitelist($_SERVER['REQUEST_URI']);
 
                 // if user is expired, force them to change their password
-                if ((!( $user->password_status=="current" || $user->password_status=="stale")) && !$whitelistedRequest) {
+                if ((!( $user->password_status=="current" || $user->password_status=="stale")) && !$whitelistedRequestCheck) {
                     Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
                     $this->redirect(array('/profile/password'));
                 }
