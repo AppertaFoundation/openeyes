@@ -796,7 +796,7 @@ $config = array(
                 '/site/logout',
                 '/User/testAuthenticated',
                 '/Site/loginFromOverlay',
-                'User/getSecondsUntilSessionExpire',
+                '/User/getSecondsUntilSessionExpire',
                 '/site/changesiteandfirm'
             ),
         ),
