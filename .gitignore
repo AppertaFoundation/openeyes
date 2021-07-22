@@ -108,4 +108,3 @@ protected/scripts/sample_db.zip
 # Never track docker-compose related files in the project root
 /docker-compose.*
 /.env
-
