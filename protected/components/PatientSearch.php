@@ -26,7 +26,7 @@ class PatientSearch
     const HOSPITAL_NUMBER_REGEX = '/^(H|Hosnum)\s*[:;]\s*([0-9\-]+)$/i';
 
     // Patient name
-    const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]+)?([a-zA-Z-]+[ ,]?[a-zA-Z-]*)(\s\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})?$/';
+    const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]+)?([\a-zA-Z-]+[ ,]?[\a-zA-Z-]*)(\s\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})?$/';
 
     private $searchTerms = array();
 
