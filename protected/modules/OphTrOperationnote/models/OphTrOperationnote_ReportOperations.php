@@ -1,4 +1,7 @@
 <?php
+
+use OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement;
+
 /**
  * OpenEyes.
  *
@@ -392,11 +395,11 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 }
 
                 if ($this->bookingcomments) {
-                    $record['bookingcomments'] = $operationElement['comments'];
+                    $record['bookingcomments'] = $operationElement['comments'] ?? '';
                 }
 
                 if ($this->surgerydate) {
-                    $record['surgerydate'] = $operationBooking['session_date'];
+                    $record['surgerydate'] = $operationBooking['session_date'] ?? '';
                 }
             }
         }
@@ -467,7 +470,9 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             }
 
             if ($this->target_refraction) {
-                $record['target_refraction'] = $this->getTargetRefraction($preOpCriteria);
+                foreach (['left', 'right'] as $eye_side) {
+                    $record["{$eye_side}_target_refraction"] = $this->getTargetRefractionForEye($preOpCriteria, $eye_side);
+                }
             }
 
             if ($this->cataract_surgical_management) {
@@ -478,22 +483,22 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 $csm = $this->getCataractSurgicalManagement($preOpCriteria);
 
                 if ($csm) {
-                    if ($csm['correction_discussed']) {
-                        $record['Post Op Refractive Target Discussed With Patient'] = ($csm['correction_discussed'] == 1) ? 'Yes' : 'No';
+                    foreach (['left', 'right'] as $eye_side) {
+                        $txt = ucfirst($eye_side);
+                        if ($csm->{"{$eye_side}_correction_discussed"}) {
+                            $record["{$txt} Post Op Refractive Target Discussed With Patient"] = ($csm->{"{$eye_side}_correction_discussed"} == 1) ? 'Yes' : 'No';
+                        }
                     }
 
-                    if ($csm['previous_refractive_surgery']) {
-                        $record['Previous Refractive Surgery'] = ($csm['previous_refractive_surgery'] == 1) ? 'Yes' : 'No';
-                    }
-
-                    if ($csm['vitrectomised_eye']) {
-                        $record['Vitrectomised Eye'] = ($csm['vitrectomised_eye'] == 1) ? 'Yes' : 'No';
-                    }
+                    // previous_refractive_surgery is deprecated
+                    // vitrectomised_eye is deprecated
                 }
 
-                $reason = $this->getCataractPrimaryReason($preOpCriteria);
-                if ($reason != '') {
-                    $record['Primary reason for cataract surgery'] = $reason;
+                foreach (['left', 'right'] as $eye_side) {
+                    $reason = $this->getCataractPrimaryReasonForEye($preOpCriteria, $eye_side);
+                    if ($reason != '') {
+                        $record["Primary reason for cataract surgery - {$eye_side} eye"] = $reason;
+                    }
                 }
             }
 
@@ -592,43 +597,33 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         }
     }
 
-    protected function getTargetRefraction($criteria)
+    protected function getTargetRefractionForEye($criteria, $eye_side)
     {
-        $cataractManagementElement = \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event'))->find($criteria);
+        $cataractManagementElement = Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event'))->find($criteria);
 
         if ($cataractManagementElement) {
-            return $cataractManagementElement['target_postop_refraction'];
+            return $cataractManagementElement->{"{$eye_side}_target_postop_refraction"};
         }
     }
 
     protected function getCataractSurgicalManagement($criteria)
     {
-        $cataractSurgicalManagementElement = \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event'))->find($criteria);
+        $cataractSurgicalManagementElement = Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event'))->find($criteria);
         if ($cataractSurgicalManagementElement) {
             return $cataractSurgicalManagementElement;
         }
     }
 
-    protected function getCataractPrimaryReason($criteria)
+    protected function getCataractPrimaryReasonForEye($criteria, $eye_side)
     {
-        $cataractSurgicalManagementElement = \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event', 'reasonForSurgery'))->find($criteria);
+        $cataractSurgicalManagementElement = Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event', "{$eye_side}ReasonForSurgery"))->find($criteria);
 
-        $reasons = ($cataractSurgicalManagementElement['reasonForSurgery']);
-
-        $res = '';
-
-        if ($reasons) {
-            foreach ($reasons as $reason) {
-                $res .= $reason['originalAttributes']['name']."\n";
-            }
-        }
-
-        return $res;
+        return $cataractSurgicalManagementElement->{"{$eye_side}ReasonForSurgery"}->name ?? '';
     }
 
     public function getFirstEyeOrSecondEye($criteria)
     {
-        $cataractManagementElement = \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event'))->find($criteria);
+        $cataractManagementElement = Element_OphCiExamination_CataractSurgicalManagement::model()->with(array('event'))->find($criteria);
 
         if ($cataractManagementElement) {
             return $cataractManagementElement->eye['name'];
