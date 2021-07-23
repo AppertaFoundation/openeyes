@@ -27,7 +27,19 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
     <!-- Role -->
     <td><span class="js-signatory-label"><?= $this->signatory_label ?></span></td>
     <!-- Name -->
-    <td><span class="js-signatory-name"><?php echo $this->logged_user_name ?></span></td>
+    <td>
+        <span class="js-signatory-name">
+            <?php echo CHtml::hiddenField(
+                'signatory_id_'.$uid,
+                '',
+                array('class' => "user-user_id-entry js-user_id-input")
+            ) ?>
+            <?php $this->widget('application.widgets.AutoCompleteSearch',array(
+                'field_name' => 'signatory_name_'.$uid,
+                'htmlOptions' => array('placeholder' => 'Type a signatory name to search')
+            )); ?>
+        </span>
+    </td>
     <!-- Date -->
     <td>
         <div class="js-signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
@@ -50,7 +62,7 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
         <div class="js-signature-wrapper flex-l" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
             <?php $this->displaySignature() ?>
             <div class="esigned-at">
-                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time">07:46</span>
+                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time">??:??</span>
             </div>
         </div>
     </td>
@@ -58,7 +70,20 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
 <script type="text/javascript">
     $(function(){
         new OpenEyes.UI.EsignWidget($("#<?=$uid?>"), {
-            submitAction: "<?=$this->getAction()?>"
-        })
+            submitAction: "<?=$this->getAction()?>",
+            needUserName: true
+        });
+
+        if(OpenEyes.UI.AutoCompleteSearch !== undefined){
+            OpenEyes.UI.AutoCompleteSearch.init({
+                input: $('#signatory_name_<?= $uid ?>'),
+                url: '/user/autoComplete',
+                onSelect: function(){
+                    let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    $('#signatory_id_<?= $uid ?>').val(AutoCompleteResponse.id);
+                    $('#signatory_name_<?= $uid ?>').val(AutoCompleteResponse.label);
+                }
+            });
+        }
     });
 </script>

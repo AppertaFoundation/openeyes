@@ -887,12 +887,13 @@ class User extends BaseActiveRecordVersioned
      *
      * @return boolean
      */
-    public function checkPin($pincode, $institution_id = null, $site_id = null) : bool
+    public function checkPin($pincode, $user_id = null, $institution_id = null, $site_id = null) : bool
     {
         $pin_ok = false;
 
         $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
         $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
+        $user_id = $user_id ?? $this->id;
 
         $institution_authentication = InstitutionAuthentication::model()
             ->find(
@@ -905,7 +906,7 @@ class User extends BaseActiveRecordVersioned
                 ->find(
                     'user_id=:user_id AND institution_authentication_id=:institution_authentication_id AND pincode=:pincode',
                     [
-                        ':user_id'=>$this->id,
+                        ':user_id'=>$user_id,
                         ':institution_authentication_id'=>$institution_authentication->id,
                         ':pincode' => $pincode
                     ]

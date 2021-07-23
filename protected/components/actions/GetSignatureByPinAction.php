@@ -30,15 +30,18 @@ class GetSignatureByPinAction extends \CAction
         $thumbnail2_base64 = '';
 
         try {
-            if ($this->user->id && strlen($this->pin)>=4) {
-                $user = User::model()->findByPk(Yii::app()->user->id);
+            $this->user = User::model()->findByPk(Yii::app()->user->id);
+            if (!$this->user) {
+                throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
+            }
 
-                if ($user->signature_file_id) {
-                    if(!$user->checkPin($this->pin)){
-                        throw new Exception('Incorrect PIN.');
+            if (strlen($this->pin)>0) {
+                if ($this->user->signature_file_id) {
+                    if (!$this->user->checkPin($this->pin)) {
+                        throw new Exception('Incorrect PIN, please try again.');
                     }
 
-                    $file = ProtectedFile::model()->findByPk($user->signature_file_id);
+                    $file = ProtectedFile::model()->findByPk($this->user->signature_file_id);
                     if ($file) {
                         $thumbnail1 = $file->getThumbnail("72x24", true);
                         $thumbnail2 = $file->getThumbnail("150x50", true);
@@ -49,13 +52,16 @@ class GetSignatureByPinAction extends \CAction
                         $thumbnail2_source = file_get_contents($thumbnail2['path']);
                         $thumbnail2_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
                     } else {
-                        throw new Exception('Signature file not found');
+                        // Signature file not found
+                        throw new Exception("An error occurred while trying to fetch your signature. 
+                        Please contact support.");
                     }
                 } else {
-                    throw new Exception('Signature not assigned.');
+                    throw new Exception("It seems that you haven't yet captured a signature in OpenEyes. 
+                    Please go to your profile to do so.");
                 }
             } else {
-                throw new Exception('Missing user, or malformed pin.');
+                throw new Exception("Empty PIN was provided, please enter PIN and click 'PIN sign' again.");
             }
         } catch (Exception $e) {
             $code = 1;
