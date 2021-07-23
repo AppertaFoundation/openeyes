@@ -51,6 +51,7 @@ class ProfileController extends BaseController
         }
         $errors = array();
         $user = User::model()->findByPk(Yii::app()->user->id);
+        $user_auth = Yii::app()->session['user_auth'];
         $display_theme_setting = SettingUser::model()->find(
             'user_id = :user_id AND `key` = "display_theme"',
             array('user_id' => $user->id)
@@ -105,6 +106,7 @@ class ProfileController extends BaseController
 
         $this->render('/profile/info', array(
             'user' => $user,
+            'user_auth' => $user_auth,
             'errors' => $errors,
             'display_theme' => $display_theme_setting ? $display_theme_setting->value : null,
             'user_out_of_office' => $user_out_of_office,
@@ -162,6 +164,18 @@ class ProfileController extends BaseController
         $this->render('/profile/password', array(
             'user_auth' => $user_auth,
             'errors' => $errors,
+        ));
+    }
+
+    public function actionPincode()
+    {
+        $user_auth = null;
+        if (Yii::app()->session['user_auth']) {
+            $user_auth = Yii::app()->session['user_auth'];
+            $user_auth->refresh();
+        }
+        $this->render('/profile/pincode', array(
+            'user_auth' => $user_auth,
         ));
     }
 
@@ -257,6 +271,7 @@ class ProfileController extends BaseController
                 $user = User::model()->findByPk(Yii::app()->user->id);
                 if ($user->has_selected_firms) {
                     $user->has_selected_firms = 0;
+                    $user->password_hashed = true;
                     if (!$user->save()) {
                         throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                     }
@@ -420,6 +435,48 @@ class ProfileController extends BaseController
         }
 
         return $display_theme_setting;
+    }
+    /**
+     * Changes the worklist auto synce interval of the current user
+     *
+     * @param string $sync_interval What to set the user's sync interval to
+     * @param string $key setting key
+     */
+    public function actionChangeWorklistSyncInterval($sync_interval, $key)
+    {
+        self::changeWorklistSyncInterval(Yii::app()->user->id, $sync_interval, $key);
+    }
+
+    /**
+     * Changes the display theme of the given user and returns the SettingUser object (if it exists)
+     *
+     * @param int $user_id The ID of the user to change the display theme for
+     * @param int $sync_interval What to set the user's theme to
+     * @return SettingUser The setting if the theme was set (otherwise null)
+     */
+    public static function changeWorklistSyncInterval($user_id, $sync_interval, $key)
+    {
+        $auto_sync_setting = SettingUser::model()->find(
+            "user_id = :user_id AND `key` = '$key'",
+            array('user_id' => $user_id)
+        );
+
+        if ($sync_interval) {
+            if ($auto_sync_setting === null) {
+                $auto_sync_setting = new SettingUser();
+                $auto_sync_setting->user_id = $user_id;
+                $auto_sync_setting->key = $key;
+            }
+            $auto_sync_setting->value = $sync_interval;
+            $auto_sync_setting->save();
+        } elseif ($auto_sync_setting) {
+            # If the auto sync isn't set, but the setting already exists
+            # then remove the user auto sync entirely so the global setting will take precedence
+            $auto_sync_setting->delete();
+            $auto_sync_setting = null;
+        }
+
+        return $auto_sync_setting;
     }
 
     public function actionUsersettings()

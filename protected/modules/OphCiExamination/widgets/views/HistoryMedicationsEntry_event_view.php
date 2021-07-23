@@ -20,6 +20,7 @@
     <td>
         <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
         <?= $entry->getMedicationDisplay(true) ?>
+        <?= $entry->renderPGDInfo();?>
     </td>
     <td><?php $laterality = $entry->getLateralityDisplay(); ?>
         <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>

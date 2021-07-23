@@ -299,7 +299,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     row = controller.createRows(response);
                     controller.$table.append(row);
                     autosize($('.autosize'));
-                    $('.oe-popup-wrap').remove();
+                    $('.oe-popup-wrap').not('#js-overlay').remove();
                 }
             }
         });

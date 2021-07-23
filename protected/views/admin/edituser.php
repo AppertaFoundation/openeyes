@@ -144,6 +144,24 @@ $form = $this->beginWidget(
                     ['separator' => ' ']
                 ); ?></td>
             </tr>
+            <?php if (\SettingMetadata::model()->getSetting('enable_hie_link')==='on') : ?>
+                <tr>
+                    <td>Hie access level</td>
+                    <td>
+                        <?= \CHtml::activeDropDownList(
+                            $user->getHieAccessLevel(),
+                            'hie_access_level_id',
+                            CHtml::listData(
+                                HieAccessLevel::model()->findAll(
+                                    array('order' => 'display_order')
+                                ),
+                                'id',
+                                'name'
+                            ),
+                            ['class' => 'cols-full', 'empty' => '- Select Access Level -']
+                        ); ?></td>
+                </tr>
+            <?php endif; ?>
             <tr>
                 <td>Roles</td>
                 <td>
@@ -172,7 +190,7 @@ $form = $this->beginWidget(
 
         <h2>Login Authentications</h2>
         <hr class="divider">
-        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'password', 'password_repeat', 'password_status', 'active'] ?>
+        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'pincode', 'password', 'password_repeat', 'password_status', 'active'] ?>
         <table class="standard" id="user-authentications">
             <thead>
             <tr>
@@ -194,7 +212,8 @@ $form = $this->beginWidget(
                             $invalid_existing
                         )
                     );
-                    $user_auths = array_merge($invalid_existing,
+                    $user_auths = array_merge(
+                        $invalid_existing,
                         isset($user->id) ? UserAuthentication::model()->findAll($criteria) : []
                     );
                     usort(
@@ -267,6 +286,7 @@ $form = $this->beginWidget(
     ?>
 </script>
 <script>
+    let defaultPasswordStatus = "current";
     $(document).ready(function () {
         $('#add-user-authentication-btn').on('click', function () {
             let $table = $('#user-authentications tbody');
@@ -277,9 +297,16 @@ $form = $this->beginWidget(
         });
 
         $('#user-auth-rows').on('change', '.js-change-inst-auth', function (e) {
+
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Warning Institution Authentication changed - password status and expiry has been reset to system defaults."
+            }).open();
+
             let $row = $(this).closest('tr');
+            $row.find('.js-password-status').val(defaultPasswordStatus);
             $row.find('.js-remove-row').hide();
             $row.find('.js-row-spinner').show();
+            $row.find('.js-pincode-section').attr('data-ins-auth-id', this.value);
             $.ajax({
                 'type': 'GET',
                 'url': baseUrl + '/admin/checkInstAuthType?id=' + $(this).val(),

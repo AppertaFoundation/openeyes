@@ -28,7 +28,7 @@ $required_allergy_ids = array_map(function ($r) {
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <div class="cols-5 align-left" <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
+    <div class="cols-1 align-left" <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
             id="<?= $model_name ?>_no_allergies_wrapper">
         <label class="inline highlight" for="<?= $model_name ?>_no_allergies" id="<?= $model_name ?>_no_allergies_label">
             <input type="hidden" name="<?=$model_name?>[no_allergies]" value="off">
@@ -36,7 +36,7 @@ $required_allergy_ids = array_map(function ($r) {
             No allergies
         </label>
     </div>
-    <table id="<?= $model_name ?>_entry_table" class="cols-10">
+    <table id="<?= $model_name ?>_entry_table" class="cols-8">
         <colgroup>
             <col class="cols-3">
             <col class="cols-3">

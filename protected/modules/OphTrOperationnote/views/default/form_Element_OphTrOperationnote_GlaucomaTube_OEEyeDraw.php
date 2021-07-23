@@ -25,6 +25,8 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'onReadyCommandArray' => array(
         array('addDoodle', array('AntSeg')),
         array('addDoodle', array('Tube')),
+        array('addDoodle', array('Patch')),
+        array('addDoodle', array('IntraluminalStent')),
         array('deselectDoodles', array()),
     ),
     'bindingArray' => array(

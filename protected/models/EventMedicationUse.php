@@ -147,7 +147,7 @@ class EventMedicationUse extends BaseElement
             array('end_date', 'validateEndDateStopReason'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('start_date', 'default', 'value' => '0000-00-00'),
-            array('last_modified_date, created_date, event_id, comments, latest_med_use_id, stopped_in_event_id', 'safe'),
+            array('last_modified_date, created_date, event_id, comments, latest_med_use_id, stopped_in_event_id, pgdpsd_id', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('stopped_in_event_id', 'default', 'setOnEmpty' => true, 'value' => null),
@@ -260,6 +260,7 @@ class EventMedicationUse extends BaseElement
             'medicationDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
             'dispenseLocation' => array(self::BELONGS_TO, OphDrPrescription_DispenseLocation::class, 'dispense_location_id'),
             'dispenseCondition' => array(self::BELONGS_TO, OphDrPrescription_DispenseCondition::class, 'dispense_condition_id'),
+            'pgd' => array(self::BELONGS_TO, OphDrPGDPSD_PGDPSD::class, 'pgdpsd_id'),
         );
     }
 
@@ -395,13 +396,15 @@ class EventMedicationUse extends BaseElement
             }
         }
 
-        if (($this->prescribe || $this->isPrescription())) {
-            foreach ($this->tapers as $taper) {
-                foreach ($this->taper_equals_attributes as $attribute) {
-                    $result = $taper->$attribute === $medication->$attribute;
+        if (isset($this->tapers)) {
+            if ((!$this->prescribe || $this->isPrescription())) {
+                foreach ($this->tapers as $taper) {
+                    foreach ($this->taper_equals_attributes as $attribute) {
+                        $result = $taper->$attribute === $medication->$attribute;
 
-                    if (!$result) {
-                        return $result;
+                        if (!$result) {
+                            return $result;
+                        }
                     }
                 }
             }
@@ -786,6 +789,9 @@ class EventMedicationUse extends BaseElement
             $data['Comments'] = $this->comments;
         }
 
+        if ($this->pgd) {
+            $data['From PGD'] = $this->pgd->name;
+        }
         // Add a blank line if there is dose/date data
         if (sizeof($data) > 0) {
             $data[''] = "";
@@ -821,11 +827,11 @@ class EventMedicationUse extends BaseElement
     {
         if ($this->medication) {
             return count(OEModule\OphCiExamination\models\OphCiExaminationRisk::findForMedicationSetIds(array_map(
-                    function ($t) {
-                        return $t->id;
-                    },
-                    $this->medication->medicationSets
-                ))) > 0;
+                function ($t) {
+                    return $t->id;
+                },
+                $this->medication->medicationSets
+            ))) > 0;
         } else {
             return false;
         }
@@ -902,6 +908,9 @@ class EventMedicationUse extends BaseElement
         $this->updateStateProperties();
         $this->event_id = $element->event_id;
         $this->latest_med_use_id = $element->latest_med_use_id;
+        if ($element->pgdpsd_id) {
+            $this->pgdpsd_id = $element->pgdpsd_id;
+        }
         if (!$this->prescription_item_id) {
             $this->is_copied_from_previous_event = true;
             $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id : $element->event_id;
@@ -982,7 +991,7 @@ class EventMedicationUse extends BaseElement
     private function clonefromPrescriptionItem($item)
     {
         $attrs = [
-            'medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
+            'medication_id', 'pgdpsd_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
             'dose', 'dose_unit_term', 'frequency_id', 'frequency', 'comments'
         ];
 
@@ -1125,7 +1134,7 @@ class EventMedicationUse extends BaseElement
             $medication->short_term = $this->medication_name;
             $medication->source_type = self::USER_MEDICATION_SOURCE_TYPE;
             $medication->source_subtype = self::USER_MEDICATION_SOURCE_SUBTYPE;
-            $medication->preferred_code = self::USER_MEDICATION_SOURCE_SUBTYPE;
+            $medication->preferred_code = Medication::getNextUnmappedPreferredCode();
             if ($medication->save()) {
                 $medication->addDefaultSearchIndex();
                 $this->medication_id = $medication->id;
@@ -1251,5 +1260,19 @@ class EventMedicationUse extends BaseElement
         return array_filter($items, function ($item) {
             return is_null($item->latest_med_use_id);
         });
+    }
+
+    public function renderPGDInfo($key = null)
+    {
+        if (!$this->pgd) {
+            return null;
+        }
+        $tooltip = "<span class='highlighter inline js-has-tooltip' data-tooltip-content='PGD: <b>{$this->pgd->name}</b><br/>{$this->createdUser->getFullName()}'>PGD</span>";
+        $hidden_input = null;
+        if ($key !== null) {
+            $hidden_input = "<input type='hidden' name='Element_OphDrPrescription_Details[items][{$key}][pgdpsd_id]'
+            value='{$this->pgd->id}'/>";
+        }
+        return $tooltip . $hidden_input;
     }
 }

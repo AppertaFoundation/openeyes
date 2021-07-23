@@ -63,6 +63,7 @@ class WorklistPatient extends BaseActiveRecordVersioned
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id'),
             'worklist_attributes' => array(self::HAS_MANY, 'WorklistPatientAttribute', 'worklist_patient_id'),
+            'order_assignments' => array(self::HAS_MANY, 'OphDrPGDPSD_Assignment', 'visit_id')
         );
     }
 
@@ -158,9 +159,9 @@ class WorklistPatient extends BaseActiveRecordVersioned
         $criteria = new \CDbCriteria();
         $criteria->join = " JOIN worklist_attribute wa ON wa.id = t.worklist_attribute_id";
         $criteria->addCondition('t.worklist_patient_id = :worklist_patient_id');
-        $criteria->addCondition('wa.name = :attribute_name');
+        $criteria->addCondition('LOWER(wa.name) = :attribute_name');
         $criteria->addCondition('wa.worklist_id = :worklist_id');
-        $criteria->params[':attribute_name'] = $attribute_name;
+        $criteria->params[':attribute_name'] = strtolower($attribute_name);
         $criteria->params[':worklist_patient_id'] = $this->id;
         $criteria->params[':worklist_id'] = $this->worklist->id;
         $results = WorklistPatientAttribute::model()->find($criteria);

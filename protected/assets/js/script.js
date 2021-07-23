@@ -15,50 +15,52 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 let prepopulationData;
+let loginOverlayTemplate;
 
 $(document).ready(function () {
   if(window.location.pathname !== '/site/login') {
-    $(document.body).append(createLoginOverlay());
+      loginOverlayTemplate = createLoginOverlay();
+    $(document.body).append(loginOverlayTemplate);
 
-    let loginOverlay = $('#js-overlay');
-    loginOverlay.hide();
+		let loginOverlay = $('#js-overlay');
+		loginOverlay.hide();
 
-    checkLoginOverlay();
-  }
+		checkLoginOverlay();
+	}
 
-  var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapperEvents($('.openeyes-brand'));
-  $('.openeyes-brand').off('mouseenter');
-  var shortcuts = new OpenEyes.UI.NavBtnPopup('shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav')).useWrapperEvents($('#js-nav-shortcuts'));
+	var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapperEvents($('.openeyes-brand'));
+	$('.openeyes-brand').off('mouseenter');
+	var shortcuts = new OpenEyes.UI.NavBtnPopup('shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav')).useWrapperEvents($('#js-nav-shortcuts'));
 
-  // If the patient ticketing popup exists ...
-  var $patientTicketingPopup = $('#patient-alert-patientticketing');
-  var $hotlistNavButton = $('#js-nav-hotlist-btn');
-  if ($patientTicketingPopup.length > 0) {
-    // ... then set it up to use the hotlist nav button
-    var vc_nav = new OpenEyes.UI.NavBtnSidebar({'panel_selector': '#patient-alert-patientticketing'});
-    let $icon_href = $hotlistNavButton.find('use').attr('xlink:href');
-    $icon_href = $icon_href.replace('#hotlist-icon', '#hotlist-vc-icon');
-    $hotlistNavButton.find('use').attr('xlink:href', $icon_href);
-    $hotlistNavButton.find('svg').get(0).classList.add('vc');
-    $('#js-hotlist-panel').hide();
-  } else if ($('#js-hotlist-panel').length > 0) {
-    // .. otherwise set up the hotlist
-    var hotlist = new OpenEyes.UI.NavBtnPopup.HotList('hotlist', $hotlistNavButton, $('#js-hotlist-panel'), {autoHideWidthPixels: 1890});
-    hotlist.useAdvancedEvents($('.js-hotlist-panel-wrapper'));
-  }
+	// If the patient ticketing popup exists ...
+	var $patientTicketingPopup = $('#patient-alert-patientticketing');
+	var $hotlistNavButton = $('#js-nav-hotlist-btn');
+	if ($patientTicketingPopup.length > 0) {
+		// ... then set it up to use the hotlist nav button
+		var vc_nav = new OpenEyes.UI.NavBtnSidebar({ 'panel_selector': '#patient-alert-patientticketing' });
+		let $icon_href = $hotlistNavButton.find('use').attr('xlink:href');
+		$icon_href = $icon_href.replace('#hotlist-icon', '#hotlist-vc-icon');
+		$hotlistNavButton.find('use').attr('xlink:href', $icon_href);
+		$hotlistNavButton.find('svg').get(0).classList.add('vc');
+		$('#js-hotlist-panel').hide();
+	} else if ($('#js-hotlist-panel').length > 0) {
+		// .. otherwise set up the hotlist
+		var hotlist = new OpenEyes.UI.NavBtnPopup.HotList('hotlist', $hotlistNavButton, $('#js-hotlist-panel'), { autoHideWidthPixels: 1890 });
+		hotlist.useAdvancedEvents($('.js-hotlist-panel-wrapper'));
+	}
 
 	// override the behaviour for showing search results
-	$.ui.autocomplete.prototype._renderItem = function( ul, item ) {
-		var re = new RegExp( '(' + $.ui.autocomplete.escapeRegex(this.term) + ')', 'gi' );
-		var highlightedResult = item.label.replace( re, '<span class="autocomplete-match">$1</span>' );
-		return $( '<li></li>' )
-				.data( 'item.autocomplete', item )
-				.append( '<a>' + highlightedResult + '</a>' )
-				.appendTo( ul );
+	$.ui.autocomplete.prototype._renderItem = function (ul, item) {
+		var re = new RegExp('(' + $.ui.autocomplete.escapeRegex(this.term) + ')', 'gi');
+		var highlightedResult = item.label.replace(re, '<span class="autocomplete-match">$1</span>');
+		return $('<li></li>')
+			.data('item.autocomplete', item)
+			.append('<a>' + highlightedResult + '</a>')
+			.appendTo(ul);
 	};
 
 
-	$(document).on('click', '.js-toggle', function(e) {
+	$(document).on('click', '.js-toggle', function (e) {
 
 		e.preventDefault();
 
@@ -81,30 +83,29 @@ $(document).ready(function () {
 			// set state to close
 			toggleState = 0;
 			trigger
-			.removeClass('toggle-hide')
-			.addClass('toggle-show');
-			body.slideUp('fast', function() {
-                $(container).trigger('oe:toggled');
+				.removeClass('toggle-hide')
+				.addClass('toggle-show');
+			body.slideUp('fast', function () {
+				$(container).trigger('oe:toggled');
 			});
-		// open
+			// open
 		} else {
 			// set state to open
 			toggleState = 1;
 			trigger
-			.removeClass('toggle-show')
-			.addClass('toggle-hide');
-			body.slideDown('fast', function() {
+				.removeClass('toggle-show')
+				.addClass('toggle-hide');
+			body.slideDown('fast', function () {
 				body.css('overflow', 'visible');
-                $(container).trigger('oe:toggled');
+				$(container).trigger('oe:toggled');
 			});
 		}
 
 		// session cookie to save open/closed state of the box
-		$.cookie( container.attr('id') + '-state', toggleState);
+		$.cookie(container.attr('id') + '-state', toggleState);
 	});
 
-	$(document).on('hover', '.dropdown', function(e)
-	{
+	$(document).on('hover', '.dropdown', function (e) {
 		$(this).find('ul').slideToggle('medium');
 	});
 
@@ -131,10 +132,10 @@ $(document).ready(function () {
 			trigger.toggleClass('toggle-hide toggle-show');
 
 			episodeContainer
-			.find('.events-container,.events-overview')
-			.slideToggle('fast', function() {
-				$(this).css({ overflow: 'visible' });
-			});
+				.find('.events-container,.events-overview')
+				.slideToggle('fast', function () {
+					$(this).css({ overflow: 'visible' });
+				});
 
 			updateEpisode(episode_id, state);
 		}
@@ -142,7 +143,7 @@ $(document).ready(function () {
 		function updateEpisode(episode_id, state) {
 			$.ajax({
 				'type': 'GET',
-				'url': baseUrl+'/patient/' + state + 'episode?episode_id='+episode_id,
+				'url': baseUrl + '/patient/' + state + 'episode?episode_id=' + episode_id,
 			});
 		}
 	}());
@@ -160,12 +161,12 @@ $(document).ready(function () {
 		box.html(messages.html());
 		box.appendTo('body');
 
-		warning.hover(function() {
+		warning.hover(function () {
 
 			var offsetPos = $(this).offset();
 			var top = offsetPos.top + $(this).height() + 6;
-			var middle = offsetPos.left + $(this).width()/2;
-			var left = middle - box.width()/2 - 8;
+			var middle = offsetPos.left + $(this).width() / 2;
+			var left = middle - box.width() / 2 - 8;
 
 			box.css({
 				position: 'absolute',
@@ -173,51 +174,51 @@ $(document).ready(function () {
 				left: left
 			});
 			box.fadeIn('fast');
-		}, function(e){
+		}, function (e) {
 			box.hide();
 		});
 	}());
 
-  (function expandElementList() {
-    // check for view elementss
-    if ($('.element-data').length == 0) return;
+	(function expandElementList() {
+		// check for view elementss
+		if ($('.element-data').length == 0) return;
 
-    $('.js-listview-expand-btn').each(function () {
-      // id= js-listview-[data-list]-full | quick
-      let listid = $(this).data('list');
-      let listview = new ListView($(this),
-        $('#js-listview-' + listid + '-pro'),
-        $('#js-listview-' + listid + '-full'));
-    });
+		$('.js-listview-expand-btn').each(function () {
+			// id= js-listview-[data-list]-full | quick
+			let listid = $(this).data('list');
+			let listview = new ListView($(this),
+				$('#js-listview-' + listid + '-pro'),
+				$('#js-listview-' + listid + '-full'));
+		});
 
-    function ListView($iconBtn, $quick, $full) {
-      let quick = $quick.css('display') !== 'none';
+		function ListView($iconBtn, $quick, $full) {
+			let quick = $quick.css('display') !== 'none';
 
-      $iconBtn.click(function () {
-        $(this).toggleClass('collapse expand');
-        quick = !quick;
+			$iconBtn.click(function () {
+				$(this).toggleClass('collapse expand');
+				quick = !quick;
 
-        if (quick) {
-          $quick.show();
-          $full.hide();
-        } else {
-          $quick.hide();
-          $full.show();
-        }
-      });
-    }
-  })();
+				if (quick) {
+					$quick.show();
+					$full.hide();
+				} else {
+					$quick.hide();
+					$full.show();
+				}
+			});
+		}
+	})();
 
 	/**
 	 * Tab hover
 	 */
 	$('.event_tabs li').hover(
-			function() {
-				$(this).addClass('hover');
-			},
-			function() {
-				$(this).removeClass('hover');
-			}
+		function () {
+			$(this).addClass('hover');
+		},
+		function () {
+			$(this).removeClass('hover');
+		}
 	);
 
 	/**
@@ -230,8 +231,8 @@ $(document).ready(function () {
 	var submitted = false;
 
 
-  $('#patient-alerts form').on("change", function(e) {
-		window.changedTickets[$(e.target).closest('#PatientTicketing-queue-assignment').data('queue')]=true;
+	$('#patient-alerts form').on("change", function (e) {
+		window.changedTickets[$(e.target).closest('#PatientTicketing-queue-assignment').data('queue')] = true;
 		window.patientTicketChanged = true;
 	});
 
@@ -240,7 +241,7 @@ $(document).ready(function () {
 	});
 
 	//if the save button is on page
-	if($('#et_save').length){
+	if ($('#et_save').length) {
 		$(".EyeDrawWidget").on("click", function (e) {
 			window.formHasChanged = true;
 		});
@@ -256,7 +257,7 @@ $(document).ready(function () {
 		}
 	});
 
-	$(document).on('submit', 'form', function() {
+	$(document).on('submit', 'form', function () {
 		submitted = true;
 	});
 
@@ -272,7 +273,7 @@ $(document).ready(function () {
 		};
 
 		// Show the 'change firm' dialog when clicking on the 'change firm' link.
-		$(document).on('click', '#change-firm', function(e) {
+		$(document).on('click', '#change-firm', function (e) {
 
 			e.preventDefault();
 			var returnUrl = window.location.href;
@@ -288,13 +289,13 @@ $(document).ready(function () {
 		});
 	}());
 
-	$('#checkall').click(function() {
-		$('input.'+$(this).attr('class')).attr('checked',$(this).is(':checked') ? 'checked' : false);
+	$('#checkall').click(function () {
+		$('input.' + $(this).attr('class')).attr('checked', $(this).is(':checked') ? 'checked' : false);
 	});
 
-    $(this).on('click', '.alert-box .close' , function(e) {
-        $(e.srcElement).closest('.alert-box').fadeOut(500);
-    });
+	$(this).on('click', '.alert-box .close', function (e) {
+		$(e.srcElement).closest('.alert-box').fadeOut(500);
+	});
 
 
 
@@ -311,138 +312,151 @@ $(document).ready(function () {
 	let $header_print_subnav = $('#js-header-print-subnav');
 
 	$header_print_dropdown.on({
-		mouseover: function() {
+		mouseover: function () {
 			$header_print_dropdown_button.addClass('active');
 			$header_print_subnav.show();
-			},
-		mouseout: function() {
+		},
+		mouseout: function () {
 			$header_print_dropdown_button.removeClass('active');
 			$header_print_subnav.hide();
 		}
 	});
 
 	$header_print_subnav.on({
-		mouseover: function() { $(this).show(); },
-		mouseout: function() { $(this).hide();}
+		mouseover: function () { $(this).show(); },
+		mouseout: function () { $(this).hide(); }
 	});
 
-    (function elementSubgroup() {
-        let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');
-        if( $viewstate_btns.length === 0 ) {
-            return;
-        }
-        $viewstate_btns.each( function(){
-            new Viewstate( $(this) );
-        });
+	(function elementSubgroup() {
+		let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');
+		if ($viewstate_btns.length === 0) {
+			return;
+		}
+		$viewstate_btns.each(function () {
+			new Viewstate($(this));
+		});
 
-        function Viewstate( $icon ){
-            let view_state = this;
-            let $content = $('#' + $icon.data('subgroup') );
+		function Viewstate($icon) {
+			let view_state = this;
+			let $content = $('#' + $icon.data('subgroup'));
 
-            $icon.click( function( e ){
-                e.preventDefault();
-                view_state.changeState();
-            });
+			$icon.click(function (e) {
+				e.preventDefault();
+				view_state.changeState();
+			});
 
-            this.changeState = function(){
-                $content.toggle();
-                $icon.toggleClass('collapse expand');
-            }
+			this.changeState = function () {
+				$content.toggle();
+				$icon.toggleClass('collapse expand');
+			}
 
-        }
-    })();
+		}
+	})();
 
-    (function notificationBanner() {
-        if ($('#oe-admin-notifcation').length === 0) {
-            return;
-        }
-        // icon toggles Short/ Full Message
-        $('#oe-admin-notifcation .oe-i').click(toggleNotification);
-		$('#oe-admin-notifcation .oe-i').on('mouseenter' , toggleNotification);
-		$('#oe-admin-notifcation .oe-i').on('mouseout' , toggleNotification);
+	(function notificationBanner() {
+		if ($('#oe-admin-notifcation').length === 0) {
+			return;
+		}
+		// icon toggles Short/ Full Message
+		$('#oe-admin-notifcation .oe-i').click(toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseenter', toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseout', toggleNotification);
 
 
-        function toggleNotification() {
-            $('#notification-short').toggle();
-            $('#notification-full').toggle();
-        }
-    }());
+		function toggleNotification() {
+			$('#notification-short').toggle();
+			$('#notification-full').toggle();
+		}
+	}());
 });
 
-function showLoginOverlay()
-{
-    let loginOverlay = $('#js-overlay');
+function showLoginOverlay() {
+	let loginOverlay = $('#js-overlay');
 
     if (!loginOverlay.length)
     {
-        $(document.body).append(createLoginOverlay());
+        $(document.body).append(loginOverlayTemplate);
 
-        loginOverlay = $('#js-overlay');
-        loginOverlay.hide();
-    }
+		loginOverlay = $('#js-overlay');
+		loginOverlay.hide();
+	}
 
     //Do not show login overlay if we are already on the login screen
     if(window.location.pathname !== '/site/login' && !loginOverlay.is(':visible')) {
         $('#js-login-error').hide();
         loginOverlay.show();
+        $('.js-sign-in-different-account').on('click' , function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            let formDialog = new OpenEyes.UI.Dialog.Confirm({
+                title: "Warning",
+                content: "Any unsaved work for the previous user login will be lost. Are you sure you want to sign-in with a different user or location",
+                okButton: 'Proceed'
+            });
+
+            formDialog.openOnTop();
+            // suppress default ok behaviour
+            formDialog.content.off('click', '.ok');
+            // manage form submission and response
+            formDialog.content.on('click', '.ok', function () {
+                window.location.href =  document.location.origin + '/site/login';
+            }.bind(this));
+        });
     }
 }
 
-function checkLoginOverlay()
-{
-    let authenticated = pollUserAuthenticated();
+function checkLoginOverlay() {
+	let authenticated = pollUserAuthenticated();
 
-    if(authenticated)
-    {
-        queueLoginOverlay();
-    }
-    else
-    {
-        showLoginOverlay();
-    }
+	if (authenticated) {
+		queueLoginOverlay();
+	}
+	else {
+		showLoginOverlay();
+	}
 }
 
-function queueLoginOverlay()
-{
-    $.ajax({
-        url: '/User/getSecondsUntilSessionExpire',
-        async: false,
-        data: {
-            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-            "extend_session": false,
-        },
-        success: function(resp) {
-            let secondsUntilExpiry = resp + 10;
-            setTimeout(checkLoginOverlay, secondsUntilExpiry * 1000);
-        },
-        error: function (resp) {
-            new OpenEyes.UI.Dialog.Alert({
-                content: "Unable to poll user session expiry.\n\nPlease contact support for assistance."
-            }).open();
-        }
-    });
+function queueLoginOverlay() {
+	$.ajax({
+		url: '/User/getSecondsUntilSessionExpire',
+		async: false,
+		data: {
+			"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+			"extend_session": false,
+		},
+		success: function (resp) {
+			let secondsUntilExpiry = resp + 10;
+			setTimeout(checkLoginOverlay, secondsUntilExpiry * 1000);
+		},
+		error: function (resp) {
+			new OpenEyes.UI.Dialog.Alert({
+				content: "Unable to poll user session expiry.\n\nPlease contact support for assistance."
+			}).open();
+		}
+	});
 }
 
 function pollUserAuthenticated() {
-    let authSuccess = false;
-    $.ajax({
-        url: '/User/testAuthenticated',
-        async: false,
-        data: {
-            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-            "extend_session": false,
-        },
-        success: function(resp) {
-            authSuccess = (resp === "Success");
-        },
-        error: function (resp) {
-            new OpenEyes.UI.Dialog.Alert({
-                content: "Unable to poll user authentication status.\n\nPlease contact support for assistance."
-            }).open();
-        }
-    });
+	let authSuccess = false;
+	$.ajax({
+		url: '/User/testAuthenticated',
+		async: false,
+		data: {
+			"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+			"extend_session": false,
+		},
+		success: function (resp) {
+			authSuccess = (resp === "Success");
+		},
+		error: function (resp) {
+			new OpenEyes.UI.Dialog.Alert({
+				content: "Unable to poll user authentication status.\n\nPlease contact support for assistance."
+			}).open();
+		}
+	});
 
-    return authSuccess;
+	return authSuccess;
 }
 
 function createLoginOverlay() {
@@ -466,6 +480,8 @@ function createLoginOverlay() {
     overlay.id = 'js-overlay';
     overlay.classList.add('oe-popup-wrap');
     overlay.classList.add('dark');
+    //Make overlay opaque to hide patient information in the background
+    overlay.style.background = "rgb(37, 35, 35)";
 
     let timeoutDiv = document.createElement('div');
     timeoutDiv.classList.add('oe-login');
@@ -514,8 +530,9 @@ function createLoginOverlay() {
     usernameField.id = 'js-username';
     usernameField.type = 'text';
     usernameField.placeholder = 'Username';
-    if('username' in prepopulationData) {
-        usernameField.text = prepopulationData['username'];
+    if("username" in prepopulationData) {
+        usernameField.setAttribute('disabled', 'disabled');
+        usernameField.setAttribute("value", prepopulationData['username']);
     }
     userDiv.append(usernameField);
 
@@ -551,8 +568,8 @@ function createLoginOverlay() {
 
     let returnButton = document.createElement('a');
     returnButton.classList.add('button');
-    returnButton.innerText = 'Or exit to homepage';
-    returnButton.href = document.location.origin + '/site/login';
+    returnButton.classList.add('js-sign-in-different-account');
+    returnButton.innerText = 'Sign in with a different account or location';
 
     //Event handler fires before default behaviour of the element is triggered
     //The following causes the link change target to logout action and then fire the redirect if the user has a valid session
@@ -592,6 +609,9 @@ function loginWithOverlay() {
             if(resp === 'Login success'){
                 loginOverlay.hide();
                 queueLoginOverlay();
+            } else if (resp === 'Username different') {
+                errorBox.text('Username is different from previous session. Please exit to homepage to start a new session');
+                errorBox.show();
             } else {
                 errorBox.text('Invalid login.');
                 errorBox.show();
@@ -607,7 +627,7 @@ function loginWithOverlay() {
     });
 }
 
-function changeState(wb,sp) {
+function changeState(wb, sp) {
 	if (sp.hasClass('hide')) {
 		wb.children('.events').slideUp('fast');
 		sp.removeClass('hide');
@@ -627,7 +647,7 @@ function format_date(d) {
 		var m = date.match(/[a-zA-Z]+/g);
 
 		for (var i in m) {
-			date = date.replace(m[i],format_date_get_segment(d,m[i]));
+			date = date.replace(m[i], format_date_get_segment(d, m[i]));
 		}
 
 		return date;
@@ -635,15 +655,15 @@ function format_date(d) {
 }
 
 function format_pickmeup_date(d) {
-  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+	return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
 }
 
-function format_date_get_segment(d,segment) {
+function format_date_get_segment(d, segment) {
 	switch (segment) {
 		case 'j':
 			return d.getDate();
 		case 'd':
-			return (d.getDate() <10 ? '0' : '') + d.getDate();
+			return (d.getDate() < 10 ? '0' : '') + d.getDate();
 		case 'M':
 			return getMonthShortName(d.getMonth());
 		case 'Y':
@@ -652,18 +672,18 @@ function format_date_get_segment(d,segment) {
 }
 
 function getMonthShortName(i) {
-	var months = {0:'Jan',1:'Feb',2:'Mar',3:'Apr',4:'May',5:'Jun',6:'Jul',7:'Aug',8:'Sep',9:'Oct',10:'Nov',11:'Dec'};
+	var months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' };
 	return months[i];
 }
 
 
 function showhidePCR(id) {
-    var e = document.getElementById(id);
-    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+	var e = document.getElementById(id);
+	e.style.display = (e.style.display == 'block') ? 'none' : 'block';
 }
 
 function getMonthNumberByShortName(m) {
-	var months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
+	var months = { 'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11 };
 	return months[m];
 }
 
@@ -676,20 +696,20 @@ function getMonthNumberByShortName(m) {
  * @return
  */
 function selectSort(a, b) {
-		if (a.innerHTML == rootItem) {
-				return -1;
-		}
-		else if (b.innerHTML == rootItem) {
-				return 1;
-		}
-		// custom ordering
-		if ($(a).data('order')) {
-			return ($(a).data('order') > $(b).data('order')) ? 1 : -1;
-		} else if ($(a).data('display_order')) {
-			return ($(a).data('display_order') > $(b).data('display_order')) ? 1 : -1;
-		}
+	if (a.innerHTML == rootItem) {
+		return -1;
+	}
+	else if (b.innerHTML == rootItem) {
+		return 1;
+	}
+	// custom ordering
+	if ($(a).data('order')) {
+		return ($(a).data('order') > $(b).data('order')) ? 1 : -1;
+	} else if ($(a).data('display_order')) {
+		return ($(a).data('display_order') > $(b).data('display_order')) ? 1 : -1;
+	}
 
-		return (a.innerHTML > b.innerHTML) ? 1 : -1;
+	return (a.innerHTML > b.innerHTML) ? 1 : -1;
 }
 
 var rootItem = null;
@@ -703,46 +723,46 @@ function sort_selectbox(element) {
 
 function inArray(needle, haystack) {
 	var length = haystack.length;
-	for(var i = 0; i < length; i++) {
-		if(haystack[i] == needle) return true;
+	for (var i = 0; i < length; i++) {
+		if (haystack[i] == needle) return true;
 	}
 	return false;
 }
 
 function arrayIndex(needle, haystack) {
 	var length = haystack.length;
-	for(var i = 0; i < length; i++) {
-		if(haystack[i] == needle) return i;
+	for (var i = 0; i < length; i++) {
+		if (haystack[i] == needle) return i;
 	}
 	return false;
 }
 
 function addLineBreakToString(value) {
-    if (typeof value !== 'string') {
-        throw new TypeError('addLineBreakToString requires a string argument');
-    }
-    let outputString = value.trimEnd();
-    if (outputString){
-        outputString += '\n';
-    }
-    return outputString;
+	if (typeof value !== 'string') {
+		throw new TypeError('addLineBreakToString requires a string argument');
+	}
+	let outputString = value.trimEnd();
+	if (outputString) {
+		outputString += '\n';
+	}
+	return outputString;
 }
 
-function formatStringToEndWithCommaAndWhitespace(value){
-	if (typeof value !== 'string'){
+function formatStringToEndWithCommaAndWhitespace(value) {
+	if (typeof value !== 'string') {
 		throw new TypeError('formatStringToEndWithWhiteSpace requires a string argument');
 	}
 	let outputString = value.trimEnd();
-	if(outputString){
+	if (outputString) {
 		outputString += outputString.slice(-1) === ',' ? ' ' : ', ';
 	}
 	return outputString;
 }
 
-function concatenateArrayItemLabels(arrayItems){
+function concatenateArrayItemLabels(arrayItems) {
 	let outputString = '';
 	$(arrayItems).each(function (key, item) {
-		if(item['label']){
+		if (item['label']) {
 			outputString += item['label'];
 		}
 	});
@@ -778,7 +798,7 @@ function showToolTip(element) {
 	let iconCenter = iconPos.width / 2;
 
 	// check for the available space for tooltip:
-	if ( ( $( window ).width() - iconPos.left) < 100 ){
+	if (($(window).width() - iconPos.left) < 100) {
 		leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
 		toolCSS = `oe-tooltip offset-left ${is_bilateral ? 'bilateral' : ''}`;
 	} else {
@@ -792,15 +812,15 @@ function showToolTip(element) {
 		z_index = parseInt($('body > .oe-popup-wrap').css('z-index')) + 5;
 	}
 	// assign the z_index greater than the hotlist panel
-    let hotlistPanelId = '#js-hotlist-panel';
-    if ($(hotlistPanelId).length > 0) {
-        z_index = (z_index != null ? z_index : 0) + parseInt($(hotlistPanelId).css('z-index')) + 5;
-    }
+	let hotlistPanelId = '#js-hotlist-panel';
+	if ($(hotlistPanelId).length > 0) {
+		z_index = (z_index != null ? z_index : 0) + parseInt($(hotlistPanelId).css('z-index')) + 5;
+	}
 
 	// add, calculate height then show (remove 'hidden')
-	var tip = $( "<div></div>", {
+	var tip = $("<div></div>", {
 		"class": toolCSS,
-		"style":"left:"+leftPos+"px; top:0;"+(z_index !== "undefined" ? "z-index:"+z_index+";" : "")
+		"style": "left:" + leftPos + "px; top:0;" + (z_index !== "undefined" ? "z-index:" + z_index + ";" : "")
 	});
 	// add the tip (HTML as <br> could be in the string)
 	tip.html(text);
@@ -809,15 +829,15 @@ function showToolTip(element) {
 	// calc height:
 	var h = $(".oe-tooltip").height();
 	// update position and show
-    var top;
-    if(iconPos.y - iconPos.height < 50) {
-        top = iconPos.y + 25;
-        tip.addClass('inverted');
-    } else {
-        // update position and show
-        top = iconPos.y - h - 25;
-        tip.removeClass('inverted');
-    }
+	var top;
+	if (iconPos.y - iconPos.height < 50) {
+		top = iconPos.y + 25;
+		tip.addClass('inverted');
+	} else {
+		// update position and show
+		top = iconPos.y - h - 25;
+		tip.removeClass('inverted');
+	}
 
 	// is there enough space on the top ?
 	if (top < h) {
@@ -825,5 +845,5 @@ function showToolTip(element) {
 		$(".oe-tooltip").addClass('offset-left inverted');
 	}
 
-	$(".oe-tooltip").css({"top":top+"px"});
+	$(".oe-tooltip").css({ "top": top + "px" });
 }

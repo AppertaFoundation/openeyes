@@ -39,6 +39,27 @@ $db_test = array(
     'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_PASS")) ?: (getenv('DATABASE_TEST_PASS') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ?: 'openeyes'))),
 );
 
+/** START SINGLE SIGN-ON OPTIONS */
+    // The base url for single-sign-on using SAML Authentication
+    $ssoBaseurl = getenv('SSO_BASE_URL') ?: 'http://localhost';
+    $ssoEntityId = getenv('SSO_ENTITY_ID') ?: '';
+    $ssoAppEmbedLink = getenv('SSO_APP_EMBED_LINK') ?: '';
+
+    // Credentials necessary for single-sign-on using OpenID-Connect
+    $ssoProviderURL = getenv('SSO_PROVIDER_URL') ?: '';
+    $ssoClientID = getenv('SSO_CLIENT_ID') ?: '';
+    $ssoClientSecret = getenv('SSO_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/SSO_CLIENT_SECRET")) ?: '');
+    $ssoIssuerURL = getenv('SSO_ISSUER_URL') ?: null;
+    $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
+    $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
+    $ssoImplicitFLow = strtolower(getenv('SSO_IMPLICIT_FLOW')) === 'true';
+    $ssoUserAttributes = getenv('SSO_USER_ATTRIBUTES') ?: '';
+    $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
+
+    $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
+    $authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');    // OIDC, SAML, BASIC or LDAP;
+/** END SINGLE SIGN-ON SETTINGS */
+
 $config = array(
     'name' => 'OpenEyes',
 
@@ -83,18 +104,6 @@ $config = array(
         'OEModule' => 'application.modules',
     ),
 
-    'modules' => array(
-        // Gii tool
-        'gii' => array(
-            'class' => 'system.gii.GiiModule',
-            'password' => 'openeyes',
-            'ipFilters' => array('127.0.0.1'),
-        ),
-        'oldadmin',
-        'Admin',
-        'Api'
-    ),
-
     // Application components
     'components' => array(
         'assetManager' => array(
@@ -115,7 +124,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202104011656',
+            'time' => '202107191546',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -325,13 +334,19 @@ $config = array(
         'widgetFactory' => array(
             'class' => 'WidgetFactory',
         ),
+        'citoIntegration' => array(
+            "class" => "CitoIntegration"
+        ),
+        'hieIntegration' => array(
+            "class" => "HieIntegration"
+        )
     ),
 
     'params' => array(
         'utf8_decode_required' => true,
         'pseudonymise_patient_details' => false,
         'ab_testing' => false,
-        'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
+        'auth_source' => $authSource,
         // This is used in contact page
         'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
         'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
@@ -348,6 +363,14 @@ $config = array(
         'ldap_info_retry_delay' => 1,
         'ldap_update_name' => strtolower(getenv("OE_LDAP_UPDATE_NAME")) == "true" ? true : false,
         'ldap_update_email' => strtolower(getenv("OE_LDAP_UPDATE_EMAIL")) == "false" ? false : true,
+        // This is used in HIEIntegration component
+        'hie_remote_url' => trim(@file_get_contents("/run/secrets/HIE_REMOTE_URL")) ?: (trim(getenv('HIE_REMOTE_URL')) ?: null),
+        'hie_usr_org' => trim(getenv('HIE_USR_ORG')) ?: null,
+        'hie_usr_fac' => trim(getenv('HIE_USR_FAC')) ?: null,
+        'hie_external' => trim(getenv('HIE_EXTERNAL')) ?: null,
+        'hie_org_user' => trim(@file_get_contents("/run/secrets/HIE_ORG_USER")) ?: (trim(getenv('HIE_ORG_USER')) ?: ''),
+        'hie_org_pass' => trim(@file_get_contents("/run/secrets/HIE_ORG_PASS")) ?: (trim(getenv('HIE_ORG_PASS')) ?: ''),
+        'hie_aes_encryption_password' => trim(@file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) ?: (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: ''),
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
         //'watermark' => '',
         'google_analytics_account' => '',
@@ -725,7 +748,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '4.3b1',
+        'oe_version' => '5.1-nightly',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -784,7 +807,125 @@ $config = array(
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
+        'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: null,
+        'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: null,
+        'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: null,
+        'cito_client_id' => trim(getenv('CITO_CLIENT_ID')) ?: null,
+        'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: null,
+        'cito_application_id' => trim(@file_get_contents("/run/secrets/CITO_APPLICATION_ID")) ?: (trim(getenv('CITO_APPLICATION_ID')) ?: ''),
+        'cito_client_secret' => trim(@file_get_contents("/run/secrets/CITO_CLIENT_SECRET")) ?: (trim(getenv('CITO_CLIENT_SECRET')) ?: ''),
+
+        /** START SINGLE SIGN-ON PARAMS */
+        'strict_SSO_roles_check' => $ssoMappingsCheck,
+        // Settings for OneLogin PHP-SAML toolkit
+        'SAML_settings' => array(
+            // BaseURL of the view that will process the SAML message
+            'baseurl' => '',// baseurl is set to null at the moment because of the OneLogin known issue in Github(Link: https://github.com/onelogin/php-saml/issues/249).
+            // If true then all unsigned and unencrypted messages will be rejected and should also follow set standards and rules
+            'strict' => true,
+            // Debug mode to print errors
+            'debug' => false,
+            // Service Provider data - OpenEyes
+            'sp' => array(
+                'entityId' => $ssoBaseurl . '/sso/login',   // Identifier of SP (URI)
+                'assertionConsumerService' => array(
+                  'url' => $ssoBaseurl . '/sso/login',    // URL where SAMLResponse will be sent
+                  'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',  // HTTP-POST binding only
+                ),
+                'NameIDFormat' => 'emailAddress', // Constraints on name identifier to be used
+            ),
+            'idp' => array(
+                'entityId' => $ssoEntityId,    //Metadata Source
+                'singleSignOnService' => array( //SSO endpoint information
+                  'url' => $ssoAppEmbedLink, // URL Target where the IdP will send the authentication request
+                  'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                ),
+                'singleLogoutService' => array(
+                  'url' => '', //URL where the SP will send the logout request
+                  'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect', // HTTP-Redirect binding only
+                ),
+                'x509cert' => '',
+            )
+        ),
+        'OIDC_settings' => array(
+            // OpenID Party (OP) that will send the token
+            'provider_url' => $ssoProviderURL,
+            // Client ID given by the portal
+            'client_id' => $ssoClientID,
+            // CLient Secret given by the portal
+            'client_secret' => $ssoClientSecret,
+            // URL for the custom Authorization Server (Optional)
+            'issuer' => $ssoIssuerURL,
+            // Absolute URL where the OIDC token will be sent
+            'redirect_url' => $ssoRedirectURL . '/sso/login',      // Remove trailing slashes
+            // Response type - can be [code id_token token]
+            'response_type' => $ssoResponseType,
+            // Implicit flows
+            'implicit_flow' => $ssoImplicitFLow,
+            // Scopes - These are all the necessary and sufficient scopes at this stage
+            'scopes' => array('openid', 'email', 'profile'),
+            // Method used to send authorization code.
+            'authParams' => array('response_mode' => 'form_post'),
+            // Generates random encryption key for openssl
+            'encryptionKey' => $ssoClientSecret,
+            // Configure custom claims with the user attributes that the claims are for
+            'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+        ),
+        /** END SINGLE SIGN-ON PARAMS */
     ),
 );
+
+$modules = array(
+        // Gii tool
+        // 'gii' => array(
+        //     'class' => 'system.gii.GiiModule',
+        //     'password' => 'openeyes',
+        //     'ipFilters' => array('127.0.0.1'),
+        // ),
+        'oldadmin',
+        'Admin',
+        'Api',
+        'eyedraw',
+        'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
+        'OphCoCorrespondence',
+        'OphCiPhasing',
+        'OphTrIntravitrealinjection',
+        'OphCoTherapyapplication',
+        'OphDrPrescription',
+        'OphTrConsent',
+        'OphTrOperationnote',
+        'OphTrOperationbooking',
+        'OphTrLaser',
+        'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
+        'OphInVisualfields',
+        'OphInBiometry',
+        'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
+        'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
+        'OphInLabResults',
+        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
+        'Genetics',
+        'OphInDnasample',
+        'OphInDnaextraction',
+        'OphInGeneticresults',
+        'OphCoDocument',
+        'OphCiDidNotAttend',
+        'OphGeneric',
+        'OECaseSearch',
+        'OETrial',
+        'SSO',
+        'OphOuCatprom5',
+        'OphTrOperationchecklists',
+        'OphDrPGDPSD',
+);
+
+// deal with any custom modulesadded for the local deployment - which are set in /config/modules.conf (added via docker)
+// Gracefully ignores file if it is missing
+$custom_modules = trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf")));
+if (!empty($custom_modules)) {
+    $modules = array_unique(array_merge($modules, explode(" ", $custom_modules)), SORT_REGULAR);
+}
+
+$config["modules"] = $modules;
+
 
 return $config;

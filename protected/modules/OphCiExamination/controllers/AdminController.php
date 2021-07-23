@@ -1115,6 +1115,38 @@ class AdminController extends \ModuleAdminController
         echo 1;
     }
 
+    public function actionDrGradingFeatures()
+    {
+        $this->pageTitle = 'OpenEyes - DR Grading Feature Admin';
+        $extra_fields = array(
+            array(
+                'field' => 'grade',
+                'type' => 'dropdown',
+                'htmlOptions' => array(
+                    'empty' => 'Select',
+                    'nowrapper' => true,
+                ),
+                'options' => array(
+                    'R0' => 'R0',
+                    'R1' => 'R1',
+                    'R2' => 'R2',
+                    'R3a' => 'R3a',
+                    'R3s' => 'R3s',
+                    'M0' => 'M0',
+                    'M1' => 'M1',
+                )
+            )
+        );
+        $this->genericAdmin(
+            'Edit DR Grading features',
+            models\OphCiExamination_DRGrading_Feature::class,
+            array(
+                'div_wrapper_class' => 'cols-5',
+                'extra_fields' => $extra_fields,
+            )
+        );
+    }
+
     /**
      * Lists and allows editing of Allergy records.
      *
@@ -1252,5 +1284,11 @@ class AdminController extends \ModuleAdminController
                 'description' => 'Correction Types are used in multiple examination elements',
             ]
         );
+    }
+    public function actionRedFlags()
+    {
+        Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_AE_RedFlags_Options'));
+
+        $this->genericAdmin('Edit Red Flags Options', 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options', ['div_wrapper_class' => 'cols-5', 'return_url' => '/OphCiExamination/admin/redFlags'], null, true);
     }
 }

@@ -105,10 +105,13 @@ EOF;
         </Address>
     </AddressList>
     <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <MobilePhoneNumber>03040 6024378</MobilePhoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         $this->put('TEST02', $xml);
@@ -143,10 +146,13 @@ EOF;
         </Address>
     </AddressList>
     <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <MobilePhoneNumber>03040 6024378</MobilePhoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         $this->put('TESTUpdateOnly', $xml);
@@ -196,10 +202,13 @@ EOF;
         </Address>
     </AddressList>
     <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <MobilePhoneNumber>03040 6024378</MobilePhoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         $this->put('TEST03', $xml);
@@ -243,10 +252,13 @@ EOF;
         </Address>
     </AddressList>
     <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <MobilePhoneNumber>03040 6024378</MobilePhoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         $this->put('TESTUpdateOnly', $xml, array(
@@ -291,10 +303,13 @@ EOF;
         </Address>
     </AddressList>
     <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <MobilePhoneNumber>03040 6024378</MobilePhoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         // structure for expectation of values which can be merged with a new array to
@@ -458,10 +473,13 @@ EOF;
         </Address>
     </AddressList>
     <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <MobilePhoneNumber>03040 6024378</MobilePhoneNumber>
     <EthnicGroup>A</EthnicGroup>
     <DateOfDeath/>
     <PracticeCode>C82103</PracticeCode>
     <GpCode>G3258868</GpCode>
+    <LanguageCode>alb</LanguageCode>
+    <InterpreterRequired>alb</InterpreterRequired>
 </Patient>
 EOF;
         // structure for expectation of values which can be merged with a new array to
@@ -502,6 +520,7 @@ EOF;
         </Address>
     </AddressList>
     <TelephoneNumber>03040 6024378</TelephoneNumber>
+    <MobilePhoneNumber>03040 6024378</MobilePhoneNumber>
 </Patient>
 EOF;
 

@@ -386,6 +386,21 @@ class Medication extends BaseActiveRecordVersioned
                         continue;
                     }
                 }
+                $route = null;
+                $is_eye_route = false;
+                if ($item->default_route_id) {
+                    $route = "$item->defaultRoute";
+                    $is_eye_route = $item->defaultRoute->isEyeRoute();
+                } elseif ($item->medication && $item->medication->default_route_id) {
+                    $route = "{$item->medication->defaultRoute}";
+                    $is_eye_route = $item->medication->defaultRoute->isEyeRoute();
+                }
+                $duration_id = null;
+                if (isset($item->duration_id) && $item->duration_id) {
+                    $duration_id = $item->duration_id;
+                } elseif (isset($item->default_duration_id) && $item->default_duration_id) {
+                    $duration_id = $item->default_duration_id;
+                }
                 $return[] = [
                     'label' => $item->medication->getLabel(true),
                     'value' => $item->medication->getLabel(true),
@@ -396,6 +411,9 @@ class Medication extends BaseActiveRecordVersioned
                     'default_form' => $item->default_form_id ? $item->default_form_id : $item->medication->default_form_id,
                     'frequency_id' => $item->default_frequency_id,
                     'route_id' => $item->default_route_id ? $item->default_route_id : $item->medication->default_route_id,
+                    'route' => $route,
+                    'duration_id' => $duration_id,
+                    'is_eye_route' => $is_eye_route,
                     'source_subtype' => $item->medication ? $item->medication->source_subtype : "",
                     'will_copy' => $item->medication->getToBeCopiedIntoMedicationManagement(),
                     'set_ids' =>  array_map(function ($e) {
@@ -424,6 +442,14 @@ class Medication extends BaseActiveRecordVersioned
     public function listCommonSystemicMedications($raw = false, $prescribable_filter = false)
     {
         return $this->listByUsageCode("COMMON_SYSTEMIC", null, $raw, null, $prescribable_filter);
+    }
+    public function listCommonDrops($raw = false, $prescribable_filter = false)
+    {
+        return $this->listByUsageCode("COMMON_EYE_DROPS", null, $raw, null, $prescribable_filter);
+    }
+    public function listCommonOralMedications($raw = false, $prescribable_filter = false)
+    {
+        return $this->listByUsageCode("COMMON_ORAL_MEDS", null, $raw, null, $prescribable_filter);
     }
 
     public function listOphthalmicMedicationIds()
@@ -528,5 +554,30 @@ class Medication extends BaseActiveRecordVersioned
         }
 
         return $ret;
+    }
+
+    /**
+     * Returns the next preferred_code for local, unmapped medication
+     * @return string
+     */
+    public static function getNextUnmappedPreferredCode(): string
+    {
+        $unmapped_string = EventMedicationUse::USER_MEDICATION_SOURCE_SUBTYPE;
+        $unmapped_string_length = strlen($unmapped_string);
+        $start_at_position = $unmapped_string_length + 1;
+
+        $sql = "SELECT MAX(CAST(SUBSTRING(`preferred_code`, :start_at_position, LENGTH(`preferred_code`)-:unmapped_string_length) AS UNSIGNED))
+                FROM `medication`
+                WHERE preferred_code LIKE :unmapped_string";
+
+        $number = \Yii::app()->db->createCommand($sql)
+            ->bindValue(':start_at_position', $start_at_position)
+            ->bindValue(':unmapped_string_length', $unmapped_string_length)
+            ->bindValue(':unmapped_string', "%{$unmapped_string}%")
+            ->queryScalar();
+
+        $number = !$number && !is_numeric($number) ? 0 : ++$number;
+
+        return "{$unmapped_string}{$number}";
     }
 }

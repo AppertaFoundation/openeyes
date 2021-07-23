@@ -317,6 +317,13 @@ class EventType extends BaseActiveRecordVersioned
         $elements = array();
         foreach (ElementType::model()->findAll($criteria) as $element_type) {
             $element_class = $element_type->class_name;
+
+            if (!class_exists($element_class)) {
+                Yii::log('Class missing for getting default elements: ' . $element_class, 'Error');
+
+                continue;
+            }
+
             $element = new $element_class();
             if (method_exists($element, "isEnabled")) {
                 if (!$element->isEnabled()) {
@@ -488,6 +495,7 @@ class EventType extends BaseActiveRecordVersioned
             'OphTrOperationchecklists' => 'i-TrSafetyChecklist',
             'OphInKowastereo' => 'i-InStereoPair',
             'SupCoPhonelog' => 'i-CoTelephoneCall',
+            'OphDrPGDPSD'=>'i-DrDrops',
         );
 
         return array_key_exists($this->class_name, $style_mapping) ? $style_mapping[$this->class_name] : null;

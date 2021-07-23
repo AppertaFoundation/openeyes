@@ -41,9 +41,11 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
         $la_hidden = true;
     }
 }
+
+$is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatient_minor_op'];
 ?>
 
-<div class="element-fields full-width flex-layout flex-top" id="OphTrOperationnote_Anaesthetic">
+<div class="element-fields full-width flex-layout flex-top" id="OphTrOperationnote_Anaesthetic" data-outpatient-minor-op="<?= $is_outpatient_minor_op ? 'yes' : 'no' ?>">
   <div class="cols-11 flex-layout flex-top col-gap">
     <div class="cols-8">
       <table class="last-left">

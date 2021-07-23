@@ -100,6 +100,12 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 array('event_id' => 'event_id')
             ),
             'edit_reason' => array(self::BELONGS_TO, 'OphDrPrescriptionEditReasons', 'edit_reason_id'),
+            'pgds' => array(
+                self::HAS_MANY,
+                OphDrPGDPSD_PGDPSD::class,
+                array('pgdpsd_id' => 'id'),
+                'through' => 'items'
+            ),
             'printedByUser' => array(self::BELONGS_TO, 'User', 'printed_by_user'),
             'authorisedByUser' => array(self::BELONGS_TO, 'User', 'authorised_by_user'),
         );
@@ -263,6 +269,35 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             "condition" => "usage_code = 'DrugTag' AND medicationSetRules.deleted_date IS NULL",
             "order" => "name",
         )), 'id', 'name');
+    }
+
+    public function pgds($if_for_itemset = true)
+    {
+        $pgds = OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) = 'pgd'");
+        $ret = array_filter($pgds, function ($pgd) {
+            // in the authed user list or prescriber
+            return in_array(\Yii::app()->user->id, $pgd->getAuthedUserIDs()) || \Yii::app()->user->checkAccess('Prescribe');
+        });
+        // reindex array
+        $ret = array_values($ret);
+        if (!$if_for_itemset) {
+            return $ret;
+        }
+        $ret = array_map(function ($pgd) {
+            $criteria = "Description: {$pgd->description}<br/>";
+            $med_names = array_map(function ($med) {
+                return '- ' . $med->medication->getLabel(true);
+            }, $pgd->assigned_meds);
+            $med_names_string = implode('<br/>', $med_names);
+            $content = $criteria . $med_names_string;
+            $meds_info = "<i class='oe-i info small pad js-has-tooltip' data-tooltip-content='$content'></i>";
+            return [
+                'prepended_markup' => $meds_info,
+                'label' => $pgd->name,
+                'id' => $pgd->id
+            ];
+        }, $ret);
+        return $ret;
     }
 
     /*

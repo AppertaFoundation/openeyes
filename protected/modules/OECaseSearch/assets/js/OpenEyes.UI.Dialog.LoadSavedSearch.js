@@ -145,7 +145,7 @@
                         content: 'Unable to load saved search criteria.'
                     }).open();
                 },
-                complete: $('.oe-popup-wrap').remove()
+                complete:  $('.oe-popup-wrap').not('#js-overlay').remove()
             });
         });
     };

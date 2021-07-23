@@ -217,6 +217,41 @@ function processSetEntries(set_id) {
         }
     });
 }
+function processPGDEntries(pgd_id) {
+    $.get(
+        baseUrl + "/OphDrPrescription/PrescriptionCommon/getPGDDrugs", 
+        {
+            pgd_id: pgd_id
+        },
+        function (medications) {
+            if (typeof patient_allergies !== 'undefined') {
+                let allergies = [];
+                for (let i in medications) {
+                    medications[i].allergies.forEach(function (allergy_id) {
+                        if (inArray(allergy_id, patient_allergies)) {
+                            allergies.push(medications[i].label);
+                        }
+                    });
+                }
+
+                if (allergies.length !== 0) {
+                    let dialog = new OpenEyes.UI.Dialog.Confirm({
+                        content: "Patient is allergic to " +
+                            allergies.join(', ') +
+                            ". Are you sure you want to add them?"
+                    });
+                    dialog.on('ok', function () {
+                        addPGD(pgd_id);
+                    }.bind(this));
+                    dialog.open();
+                } else {
+                    addPGD(pgd_id);
+                }
+            } else {
+                addPGD(pgd_id);
+            }
+        });
+}
 
 // Add set to prescription
 function addSet(set_id) {
@@ -231,6 +266,23 @@ function addSet(set_id) {
             fpTenPrintOption();
         });
     }
+}
+function addPGD(pgd_id) {
+  // we need to call different functions for admin and public pages here
+  if (controllerName == 'DefaultController') {
+    $.get(
+        baseUrl + "/OphDrPrescription/PrescriptionCommon/PGDForm", 
+        {
+            key: getNextKey(),
+            patient_id: OE_patient_id,
+            pgd_id: pgd_id
+        },
+        function (data) {
+            $('#prescription_items').find('tbody').append(data);
+                fpTenPrintOption();
+        }
+    );
+  }
 }
 
 function addItemsWithoutAllergicDrugs(selectedItems, allergicDrugs) {
@@ -283,11 +335,12 @@ function addItems(selectedItems) {
 function addItem(label, item_id) {
     // we need to call different functions for admin and public pages here
     $.ajaxSetup({async: false});
-    if (controllerName == 'DefaultController') {
+    if (controllerName === 'DefaultController') {
         $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/ItemForm", {
             key: getNextKey(),
             patient_id: OE_patient_id,
             drug_id: item_id,
+            label: label
         }, function (data) {
             $('#prescription_items').find('tbody').append(data);
         });
@@ -295,6 +348,7 @@ function addItem(label, item_id) {
         $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/ItemFormAdmin", {
             key: getNextKey(),
             drug_id: item_id,
+            label: label
         }, function (data) {
             $('#prescription_items').find('tbody').append(data);
         });
@@ -343,6 +397,19 @@ $(function () {
             }
         }
     });
+});
+
+$(function () {
+  new OpenEyes.UI.AdderDialog({
+    openButton: $('#add-PGD-btn'),
+    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(pgd_meds,{'header': 'PGD name',})],
+    onReturn: function (adderDialog, selectedItems) {
+			$('#event-content').trigger('change');
+      for (let i = 0; i < selectedItems.length; ++i) {
+        processPGDEntries(selectedItems[i].id);
+      }
+    }
+  });
 });
 
 // Check for existing prescriptions for today - warn if creating only

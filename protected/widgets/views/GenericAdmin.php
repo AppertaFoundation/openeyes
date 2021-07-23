@@ -118,8 +118,9 @@ if (!$get_row && $filters_ready) {
                                 $structured_levels[] = ['value' => $level, 'label' => ucfirst($level_prefix)];
                             }
 
+                            $first_prefix = $model::model()->getModelSuffixForLevel($supported_levels[0]);
                             echo \CHtml::submitButton(
-                                'Add selected to current '.$level_prefix,
+                                'Add selected to current ' . $first_prefix,
                                 [
                                     'name' => 'admin-map-add',
                                     'id' => 'et_admin-map-add',
@@ -127,7 +128,7 @@ if (!$get_row && $filters_ready) {
                                     'formaction' => '/admin/addMapping',
                                 ]);
                             echo \CHtml::submitButton(
-                                'Remove selected from current '.$level_prefix,
+                                'Remove selected from current ' . $first_prefix,
                                 [
                                     'name' => 'admin-map-remove',
                                     'id' => 'et_admin-map-remove',

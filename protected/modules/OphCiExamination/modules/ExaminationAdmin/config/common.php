@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -25,6 +26,7 @@ $config = [
                 'Allergy Reactions' => ['uri' => '/OphCiExamination/admin/AllergyReactions/index', 'restricted' => array('admin')],
                 'Required Allergy Assignment' => '/OphCiExamination/admin/AllergyAssignment/index',
                 'Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalities/index',
+                'Red Flags' => '/OphCiExamination/admin/redFlags',
                 'Required Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalityAssignment/index',
                 'Risks' => '/OphCiExamination/risksAdmin/list',
                 'Required Risk Assignment' => '/OphCiExamination/admin/RisksAssignment/index',
@@ -62,7 +64,6 @@ $config = [
                 'Visual Acuity - Fixations' => ['uri' => '/OphCiExamination/admin/VisualAcuityFixations', 'restricted' => array('admin')],
                 'Visual Acuity - Occluders' => ['uri' => '/OphCiExamination/admin/VisualAcuityOccluders', 'restricted' => array('admin')],
                 'Visual Acuity - Sources' => ['uri' => '/OphCiExamination/admin/VisualAcuitySources', 'restricted' => array('admin')],
-                'Visual Acuity - Qualifiers' => ['uri' => '/OphCiExamination/admin/VisualAcuityQualifiers', 'restricted' => array('admin')],
                 'Cover And Prism Cover - Correction' => ['uri' => '/OphCiExamination/admin/CoverAndPrismCoverCorrection', 'restricted' => array('admin')],
                 'Cover And Prism Cover - Distance' => ['uri' => '/OphCiExamination/admin/CoverAndPrismCoverDistance', 'restricted' => array('admin')],
                 'Cover And Prism Cover - Horizontal Prism' => ['uri' => '/OphCiExamination/admin/CoverAndPrismCoverHorizontalPrism', 'restricted' => array('admin')],

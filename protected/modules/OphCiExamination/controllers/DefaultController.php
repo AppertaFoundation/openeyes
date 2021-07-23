@@ -45,9 +45,13 @@ class DefaultController extends \BaseEventTypeController
         'getPostOpComplicationList' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
         'dismissCVIalert' => self::ACTION_TYPE_FORM,
+        'getDrFeatures' => self::ACTION_TYPE_FORM,
         'getOctAssessment' => self::ACTION_TYPE_FORM,
-        'getAttachment' => self::ACTION_TYPE_FORM
+        'getAttachment' => self::ACTION_TYPE_FORM,
+        'resolveSafeguardingElement' => self::ACTION_TYPE_SAFEGUARDING,
     );
+
+    private const ACTION_TYPE_SAFEGUARDING = 'Safeguarding';
 
     /**
      * Set to true if the index search bar should appear in the header when creating/editing the event
@@ -236,6 +240,24 @@ class DefaultController extends \BaseEventTypeController
         $step = $this->getCurrentStep();
 
         return $step->getNextStep();
+    }
+
+    public function actionGetDrFeatures()
+    {
+        $feature_id_list = Yii::app()->request->getQuery('feature_list');
+
+        $feature_list = models\OphCiExamination_DRGrading_Feature::model()->findAllByPk($feature_id_list);
+        $features = array();
+        foreach ($feature_list as $feature) {
+            $features[] = array(
+                'name' => $feature->name,
+                'id' => $feature->id,
+                'grade' => $feature->grade,
+            );
+        }
+
+        $this->renderJSON($features);
+        Yii::app()->end();
     }
 
     public function renderOpenElements($action, $form = null, $date = null)
@@ -800,7 +822,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionStep($id)
     {
-        $this->setContext($this->event->episode->firm);
+        $this->setContext($this->event->firm);
 
         $step_id = \Yii::app()->request->getParam('step_id');
 
@@ -1166,6 +1188,78 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    protected function setComplexAttributes_Element_OphCiExamination_DR_Retinopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left' => \Eye::LEFT,
+                     'right' => \Eye::RIGHT, ) as $side => $eye_id) {
+            $features = array();
+            $checker = 'has'.ucfirst($side);
+            if ($element->$checker()) {
+                foreach ($data[$model_name][$side.'_retinopathy_features'] as $model) {
+                    if (@$model['id']) {
+                        if (!$feature = models\RetinopathyFeature::model()->findByPk($model['id'])) {
+                            $feature = new models\RetinopathyFeature();
+                        }
+                    } else {
+                        $feature = new models\RetinopathyFeature();
+                    }
+                    $feature->attributes = $model;
+                    $feature->eye_id = $eye_id;
+                    $features[] = $feature;
+                }
+            }
+            $element->{$side . '_retinopathy_features'} = $features;
+        }
+    }
+
+    protected function setComplexAttributes_Element_OphCiExamination_DR_Maculopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        foreach (array('left' => \Eye::LEFT,
+                     'right' => \Eye::RIGHT, ) as $side => $eye_id) {
+            $features = array();
+            $checker = 'has'.ucfirst($side);
+            if ($element->$checker()) {
+                foreach ($data[$model_name][$side.'_maculopathy_features'] as $model) {
+                    if (@$model['id']) {
+                        if (!$feature = models\MaculopathyFeature::model()->findByPk($model['id'])) {
+                            $feature = new models\MaculopathyFeature();
+                        }
+                    } else {
+                        $feature = new models\MaculopathyFeature();
+                    }
+                    $feature->attributes = $model;
+                    $feature->eye_id = $eye_id;
+                    $features[] = $feature;
+                }
+            }
+            $element->{$side . '_maculopathy_features'} = $features;
+        }
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_DR_Retinopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $element->updateFeatures(\Eye::LEFT, $element->hasLeft() ?
+            @$data[$model_name]['left_retinopathy_features'] :
+            array());
+        $element->updateFeatures(\Eye::RIGHT, $element->hasRight() ?
+            @$data[$model_name]['right_retinopathy_features'] :
+            array());
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_DR_Maculopathy($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $element->updateFeatures(\Eye::LEFT, $element->hasLeft() ?
+            @$data[$model_name]['left_maculopathy_features'] :
+            array());
+        $element->updateFeatures(\Eye::RIGHT, $element->hasRight() ?
+            @$data[$model_name]['right_maculopathy_features'] :
+            array());
+    }
+
     /**
      * Save question answers and risks.
      *
@@ -1200,6 +1294,43 @@ class DefaultController extends \BaseEventTypeController
                 $data[$model_name]['right_risks'] :
                 array()
         );
+    }
+
+    /**
+     * Save pain score.
+     *
+     * @param $element
+     * @param $data
+     * @param $index
+     */
+    protected function saveComplexAttributes_Element_OphCiExamination_Pain($element, $data, $index)
+    {
+        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Pain']['entries'];
+
+        foreach ($entries as $entry) {
+            if (isset($entry['id'])) {
+                $entry_object = \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry::model()->findByPk($entry['id']);
+            } else {
+                $entry_object = new \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry();
+            }
+
+            $entry_object->element_id = $element->id;
+            $entry_object->pain_score = $entry['pain_score'];
+            $entry_object->comment = $entry['comment'];
+            $entry_object->datetime = $entry['datetime'];
+
+            $entry_object->save();
+        }
+
+        $ids_to_delete = json_decode($data['pain_ids_to_delete']);
+        foreach ($ids_to_delete as $id) {
+            $object_to_delete = \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry::model()->findByPk($id);
+            if ($object_to_delete->element_id === $element->id) {
+                $object_to_delete->delete();
+            } else {
+                throw new \Exception("Tried to delete pain entry from another element!");
+            }
+        }
     }
 
     /**
@@ -1502,6 +1633,92 @@ class DefaultController extends \BaseEventTypeController
             }
             $prescription->event->audit('event', 'update', serialize(array_merge($prescription->attributes, ['prescription_edit_reason' => $audit_prescription_edit_reason])), null, array('module' => 'Prescription', 'model' => 'Element_OphDrPrescription_Details'));
         }
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_Safeguarding($element, $data, $index)
+    {
+        $element_data = $data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())];
+
+        $element->no_concerns = $element_data['no_concerns'];
+
+        if (isset($data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())]['entries'])) {
+            $entries = $data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())]['entries'];
+
+            foreach ($entries as $entry) {
+                if (isset($entry['id'])) {
+                    $entry_object = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findByPk($entry['id']);
+                } else {
+                    $entry_object = new \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry();
+                }
+
+                $entry_object->element_id = $element->id;
+                $entry_object->concern_id = $entry['concern_id'];
+                if (isset($entry['comment']) && !empty($entry['comment'])) {
+                    $entry_object->comment = $entry['comment'];
+                }
+
+                $entry_object->save();
+            }
+        }
+
+        $ids_to_delete = json_decode($data['safeguarding_ids_to_delete']);
+        foreach ($ids_to_delete as $id) {
+            $object_to_delete = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findByPk($id);
+            if ($object_to_delete->element_id === $element->id) {
+                $object_to_delete->delete();
+            } else {
+                throw new \Exception("Tried to delete safeguarding entry from another element!");
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkSafeguardingAccess()
+    {
+        return $this->checkAccess('Safeguarding', Yii::app()->session['user']);
+    }
+
+    public function actionResolveSafeguardingElement()
+    {
+        $element = \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model()->findByPk($_POST['element_id']);
+
+        $element->outcome_id = $_POST['outcome_id'];
+        $element->outcome_comments = $_POST['outcome_comments'];
+
+        // Using == instead of === as the POST request values are stringified
+        if ($element->outcome_id == \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::CONFIRM_SAFEGUARDING_CONCERNS) {
+            $risk_entry = new \OEModule\OphCiExamination\models\HistoryRisksEntry();
+
+            $risk_entry->risk_id = \OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findByAttributes(array('name' => 'Safeguarding'))->id;
+            $risk_entry->comments = $element->outcome_comments;
+            $risk_entry->has_risk = 1;
+
+            $risks_element =
+                $element->event->getElementByClass(\OEModule\OphCiExamination\models\HistoryRisks::class) ?:
+                    new \OEModule\OphCiExamination\models\HistoryRisks();
+
+            $existing_entries = $risks_element->entries;
+
+            $risks_element->event_id = $element->event_id;
+
+            $existing_entries[] = $risk_entry;
+
+            $risks_element->entries = $existing_entries;
+
+            if (!$risks_element->save()) {
+                echo \CJSON::encode(array("success" => false, "errors" => $risks_element->getErrors()));
+                return;
+            }
+        }
+
+        if (!$element->save()) {
+            echo \CJSON::encode(array("success" => false, "errors" => $element->getErrors()));
+            return;
+        }
+
+        echo \CJSON::encode(array("success" => true));
     }
 
     /**
@@ -2114,5 +2331,47 @@ class DefaultController extends \BaseEventTypeController
                 throw new \CException('Cannot save contact');
             }
         }
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_ClinicProcedures(models\Element_OphCiExamination_ClinicProcedures $element, $data)
+    {
+        $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'] : [];
+
+        models\OphCiExamination_ClinicProcedures_Entry::model()->deleteAll('element_id = ?', array($element->id));
+
+        foreach ($entries as $entry) {
+            $procedure_entry = new models\OphCiExamination_ClinicProcedures_Entry();
+            $procedure_entry->element_id = $element->id;
+            $procedure_entry->procedure_id = $entry['procedure_id'];
+            $procedure_entry->outcome_time = $entry['outcome_time'];
+            $date = new DateTime($entry['date']);
+            $procedure_entry->date = $date->format('Y-m-d');
+            $procedure_entry->comments = (array_key_exists('comments', $entry) && !empty($entry['comments'])) ? $entry['comments'] : null;
+            $procedure_entry->subspecialty_id = $this->event->firm->serviceSubspecialtyAssignment->subspecialty->id;
+            $eye_id = 0;
+            if (array_key_exists('left_eye', $entry)) {
+                $eye_id += 1;
+            }
+            if (array_key_exists('right_eye', $entry)) {
+                $eye_id += 2;
+            }
+            $procedure_entry->eye_id = $eye_id;
+            if (!$procedure_entry->save()) {
+                throw new \Exception('Unable to save Clinic Procedure Entry: ' . print_r($procedure_entry->errors, true));
+            }
+        }
+    }
+
+    protected function getPastClinicProcedures()
+    {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        $procedure_elements = $exam_api->getElements(
+            'models\Element_OphCiExamination_ClinicProcedures',
+            $this->patient,
+            false,
+            null,
+            null
+        );
+        return $procedure_elements;
     }
 }

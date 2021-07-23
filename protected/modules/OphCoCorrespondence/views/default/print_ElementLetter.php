@@ -120,6 +120,9 @@ if (!@$no_header) { ?>
                 array('parent_event_id' => $element->event->id),
                 array('order' => 't.display_order asc')
             );
+        $associated_content = array_filter($associated_content, function ($ac) {
+            return $ac->associated_protected_file_id;
+        });
 
         if ($associated_content) { ?>
             <br>

@@ -64,8 +64,8 @@ class SystemicSurgery extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        if (array_key_exists('no_systemicsurgery', $data) && $data['no_systemicsurgery'] === '1' && !$element->no_systemicsurgery_date) {
-            $element->no_systemicsurgery_date = date('Y-m-d H:i:s');
+        if (array_key_exists('no_systemicsurgery', $data) && $data['no_systemicsurgery'] === '1') {
+            $element->no_systemicsurgery_date = $element->no_systemicsurgery_date ? : date('Y-m-d H:i:s');
         } elseif ($element->no_systemicsurgery_date) {
             $element->no_systemicsurgery_date = null;
         }

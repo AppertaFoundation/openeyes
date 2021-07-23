@@ -118,6 +118,15 @@ $fpten_dispense_condition_id = OphDrPrescription_DispenseCondition::model()->fin
             $fpten_dispense_condition_id => array('label' => "Print to $fpten_setting")
             )))?>
       </td>
+      <td>Report Type</td>
+      <td>
+        <input id="report_type_non_pgd" type="radio" name="OphDrPrescription_ReportPrescribedDrugs[report_type]" value="0">
+        <label for="report_type_non_pgd">Non-PGD</label>
+        <input id="report_type_pgd" type="radio" name="OphDrPrescription_ReportPrescribedDrugs[report_type]" value="1"> 
+        <label for="report_type_pgd">PGD Only</label>
+        <input id="report_type_all" type="radio" name="OphDrPrescription_ReportPrescribedDrugs[report_type]" value="2" checked>
+        <label for="report_type_all">All</label>
+      </td>
     </tr>
     </tbody>
   </table>

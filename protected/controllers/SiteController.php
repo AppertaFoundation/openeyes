@@ -216,6 +216,7 @@ class SiteController extends BaseController
         // collect user input data
         if (isset($_POST['LoginForm'])) {
             $model->attributes = $_POST['LoginForm'];
+
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
                 // Flag site for confirmation

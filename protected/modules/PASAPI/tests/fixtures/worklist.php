@@ -35,4 +35,28 @@ return array(
         'scheduled' => true,
         'worklist_definition_id' => 2,
     ),
+    'worklist3' => array(
+        'id' => 3,
+        'name' => 'test worklist 3',
+        'start' => date_format(new Datetime(), 'Y-m-d 09:00:00'),
+        'end' => date_format(new Datetime(), 'Y-m-d 17:00:00'),
+        'scheduled' => true,
+        'worklist_definition_id' => 3,
+    ),
+    'worklist4' => array(
+        'id' => 4,
+        'name' => 'test worklist 4',
+        'start' => date_format(new Datetime(), 'Y-m-d 09:00:00'),
+        'end' => date_format(new Datetime(), 'Y-m-d 17:00:00'),
+        'scheduled' => true,
+        'worklist_definition_id' => 4,
+    ),
+    'worklist5' => array(
+        'id' => 5,
+        'name' => 'test future worklist 4',
+        'start' => date_format(new Datetime("+7 days"), 'Y-m-d 09:00:00'),
+        'end' => date_format(new Datetime("+7 days"), 'Y-m-d 17:00:00'),
+        'scheduled' => true,
+        'worklist_definition_id' => 5,
+    ),
 );

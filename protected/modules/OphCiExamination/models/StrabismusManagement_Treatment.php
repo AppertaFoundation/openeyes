@@ -56,6 +56,17 @@ class StrabismusManagement_Treatment extends \BaseActiveRecord
         ];
     }
 
+    public function beforeValidate()
+    {
+        foreach (['column1_multiselect', 'column2_multiselect', 'reason_required'] as $attribute) {
+            if (is_null($this->$attribute)) {
+                unset($this->$attribute);
+            }
+        }
+
+        return parent::beforeValidate();
+    }
+
     /**
      * Returns a list of options by zero-indexed column key
      * @return mixed|null
