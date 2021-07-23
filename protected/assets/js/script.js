@@ -439,170 +439,170 @@ function pollUserAuthenticated() {
 }
 
 function createLoginOverlay() {
-	$.ajax({
-		url: '/Site/getOverlayPrepopulationData',
-		async: false,
-		data: {
-			"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-		},
-		success: function (resp) {
-			prepopulationData = resp;
-		},
-		error: function (resp) {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Unable to request existing user session information.\n\nPlease contact support for assistance."
-			}).open();
-		}
-	});
+    $.ajax({
+        url: '/Site/getOverlayPrepopulationData',
+        async: false,
+        data: {
+            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+        },
+        success: function(resp) {
+            prepopulationData = resp;
+        },
+        error: function (resp) {
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Unable to request existing user session information.\n\nPlease contact support for assistance."
+            }).open();
+        }
+    });
 
-	let overlay = document.createElement('div');
-	overlay.id = 'js-overlay';
-	overlay.classList.add('oe-popup-wrap');
-	overlay.classList.add('dark');
-	//Make overlay opaque to hide patient information in the background
-	overlay.style.background = "rgb(37, 35, 35)";
+    let overlay = document.createElement('div');
+    overlay.id = 'js-overlay';
+    overlay.classList.add('oe-popup-wrap');
+    overlay.classList.add('dark');
+    //Make overlay opaque to hide patient information in the background
+    overlay.style.background = "rgb(37, 35, 35)";
 
-	let timeoutDiv = document.createElement('div');
-	timeoutDiv.classList.add('oe-login');
-	timeoutDiv.classList.add('timeout');
-	overlay.append(timeoutDiv);
+    let timeoutDiv = document.createElement('div');
+    timeoutDiv.classList.add('oe-login');
+    timeoutDiv.classList.add('timeout');
+    overlay.append(timeoutDiv);
 
-	let loginDiv = document.createElement('div');
-	loginDiv.classList.add('login');
-	timeoutDiv.append(loginDiv);
+    let loginDiv = document.createElement('div');
+    loginDiv.classList.add('login');
+    timeoutDiv.append(loginDiv);
 
-	let timeoutHeader = document.createElement('h1');
-	timeoutHeader.innerText = 'Timed out';
-	loginDiv.append(timeoutHeader);
+    let timeoutHeader = document.createElement('h1');
+    timeoutHeader.innerText = 'Timed out';
+    loginDiv.append(timeoutHeader);
 
-	let errorDiv = document.createElement('div');
-	errorDiv.id = 'js-login-error';
-	errorDiv.classList.add('alert-box');
-	errorDiv.classList.add('error');
-	loginDiv.append(errorDiv);
+    let errorDiv = document.createElement('div');
+    errorDiv.id = 'js-login-error';
+    errorDiv.classList.add('alert-box');
+    errorDiv.classList.add('error');
+    loginDiv.append(errorDiv);
 
-	let detailsDiv = document.createElement('div');
-	detailsDiv.classList.add('login-details');
-	loginDiv.append(detailsDiv);
+    let detailsDiv = document.createElement('div');
+    detailsDiv.classList.add('login-details');
+    loginDiv.append(detailsDiv);
 
-	let detailsList = document.createElement('ul');
-	detailsList.classList.add('row-list');
-	detailsDiv.append(detailsList);
+    let detailsList = document.createElement('ul');
+    detailsList.classList.add('row-list');
+    detailsDiv.append(detailsList);
 
-	let institutionListItem = document.createElement('li');
-	institutionListItem.id = 'js-institution';
-	institutionListItem.classList.add('login-institution');
-	institutionListItem.innerText = prepopulationData['institution']['name'];
-	detailsList.append(institutionListItem);
+    let institutionListItem = document.createElement('li');
+    institutionListItem.id = 'js-institution';
+    institutionListItem.classList.add('login-institution');
+    institutionListItem.innerText = prepopulationData['institution']['name'];
+    detailsList.append(institutionListItem);
 
-	let siteListItem = document.createElement('li');
-	siteListItem.id = 'js-site';
-	siteListItem.classList.add('login-site');
-	siteListItem.innerText = prepopulationData['site']['name'];
-	detailsList.append(siteListItem);
+    let siteListItem = document.createElement('li');
+    siteListItem.id = 'js-site';
+    siteListItem.classList.add('login-site');
+    siteListItem.innerText = prepopulationData['site']['name'];
+    detailsList.append(siteListItem);
 
-	let userDiv = document.createElement('div');
-	userDiv.classList.add('user');
-	loginDiv.append(userDiv);
+    let userDiv = document.createElement('div');
+    userDiv.classList.add('user');
+    loginDiv.append(userDiv);
 
-	let usernameField = document.createElement('input');
-	usernameField.id = 'js-username';
-	usernameField.type = 'text';
-	usernameField.placeholder = 'Username';
-	if ('username' in prepopulationData) {
-		usernameField.text = prepopulationData['username'];
-	}
-	userDiv.append(usernameField);
+    let usernameField = document.createElement('input');
+    usernameField.id = 'js-username';
+    usernameField.type = 'text';
+    usernameField.placeholder = 'Username';
+    if('username' in prepopulationData) {
+        usernameField.text = prepopulationData['username'];
+    }
+    userDiv.append(usernameField);
 
-	let passwordField = document.createElement('input');
-	passwordField.id = 'js-password';
-	passwordField.type = 'password';
-	passwordField.placeholder = 'Password';
-	$(passwordField).keyup(
-		function (e) {
-			if (e.which === 13) {
-				loginWithOverlay();
-			}
-		}
-	);
-	userDiv.append(passwordField);
+    let passwordField = document.createElement('input');
+    passwordField.id = 'js-password';
+    passwordField.type = 'password';
+    passwordField.placeholder = 'Password';
+    $(passwordField).keyup(
+        function(e) {
+            if(e.which === 13){
+                loginWithOverlay();
+            }
+        }
+    );
+    userDiv.append(passwordField);
 
-	let loginButton = document.createElement('button');
-	loginButton.id = 'js-login';
-	loginButton.classList.add('green');
-	loginButton.classList.add('hint');
-	loginButton.innerText = 'Login';
-	$(loginButton).click(loginWithOverlay);
-	userDiv.append(loginButton);
+    let loginButton = document.createElement('button');
+    loginButton.id = 'js-login';
+    loginButton.classList.add('green');
+    loginButton.classList.add('hint');
+    loginButton.innerText = 'Login';
+    $(loginButton).click(loginWithOverlay);
+    userDiv.append(loginButton);
 
-	let infoDiv = document.createElement('div');
-	infoDiv.classList.add('info');
-	infoDiv.innerText = 'For security reasons you have been logged out. Please login again';
-	loginDiv.append(infoDiv);
+    let infoDiv = document.createElement('div');
+    infoDiv.classList.add('info');
+    infoDiv.innerText = 'For security reasons you have been logged out. Please login again';
+    loginDiv.append(infoDiv);
 
-	let returnDiv = document.createElement('div');
-	returnDiv.classList.add('flex-c');
-	loginDiv.append(returnDiv);
+    let returnDiv = document.createElement('div');
+    returnDiv.classList.add('flex-c');
+    loginDiv.append(returnDiv);
 
-	let returnButton = document.createElement('a');
-	returnButton.classList.add('button');
-	returnButton.innerText = 'Or exit to homepage';
-	returnButton.href = document.location.origin + '/site/login';
+    let returnButton = document.createElement('a');
+    returnButton.classList.add('button');
+    returnButton.innerText = 'Or exit to homepage';
+    returnButton.href = document.location.origin + '/site/login';
 
-	//Event handler fires before default behaviour of the element is triggered
-	//The following causes the link change target to logout action and then fire the redirect if the user has a valid session
-	//This could occur if the user logs in again using a seperate tab
-	returnButton.onclick = function () {
-		if (pollUserAuthenticated()) {
-			returnButton.href = document.location.origin + '/site/logout';
-		}
-	}
+    //Event handler fires before default behaviour of the element is triggered
+    //The following causes the link change target to logout action and then fire the redirect if the user has a valid session
+    //This could occur if the user logs in again using a seperate tab
+    returnButton.onclick = function () {
+        if (pollUserAuthenticated()) {
+            returnButton.href = document.location.origin + '/site/logout';
+        }
+    }
 
-	returnDiv.append(returnButton);
+    returnDiv.append(returnButton);
 
-	return overlay;
+    return overlay;
 }
 
 function loginWithOverlay() {
-	let loginOverlay = $('#js-overlay');
-	let errorBox = $('#js-login-error');
-	errorBox.hide();
+    let loginOverlay = $('#js-overlay');
+    let errorBox = $('#js-login-error');
+    errorBox.hide();
 
-	let loginInformation = {
-		"username": $('#js-username').val(),
-		"password": $('#js-password').val(),
-		"site_id": prepopulationData['site']['id'],
-		"institution_id": prepopulationData['institution']['id'],
-	};
+    let loginInformation = {
+        "username": $('#js-username').val(),
+        "password": $('#js-password').val(),
+        "site_id": prepopulationData['site']['id'],
+        "institution_id": prepopulationData['institution']['id'],
+    };
 
-	$.ajax({
-		type: 'POST',
-		url: '/Site/loginFromOverlay',
-		async: false,
-		data: {
-			"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-			"LoginForm": loginInformation,
-		},
-		success: function (resp) {
-			if (resp === 'Login success') {
-				loginOverlay.hide();
-				queueLoginOverlay();
-			} else if (resp === 'Username different') {
-				errorBox.text('Username is different from previous session. Please exit to homepage to start a new session');
-				errorBox.show();
-			} else {
-				errorBox.text('Invalid login.');
-				errorBox.show();
-			}
-		},
-		error: function (resp) {
-			loginOverlay.hide();
+    $.ajax({
+        type: 'POST',
+        url: '/Site/loginFromOverlay',
+        async: false,
+        data: {
+            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+            "LoginForm": loginInformation,
+        },
+        success: function(resp) {
+            if(resp === 'Login success'){
+                loginOverlay.hide();
+                queueLoginOverlay();
+            } else if (resp === 'Username different') {
+                errorBox.text('Username is different from previous session. Please exit to homepage to start a new session');
+                errorBox.show();
+            } else {
+                errorBox.text('Invalid login.');
+                errorBox.show();
+            }
+        },
+        error: function (resp) {
+            loginOverlay.hide();
 
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Unable to login.\n\nPlease contact support for assistance.",
-			}).open();
-		}
-	});
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Unable to login.\n\nPlease contact support for assistance.",
+            }).open();
+        }
+    });
 }
 
 function changeState(wb, sp) {
