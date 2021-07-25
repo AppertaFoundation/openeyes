@@ -95,8 +95,8 @@ class Element_OphTrConsent_BenefitsAndRisks extends BaseEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'benefits' => 'Benefits',
-            'risks' => 'Risks',
+            'benefits' => ' Intended benefits ',
+            'risks' => 'Significant, unavoidable or frequently occurring material risks ',
         );
     }
 
