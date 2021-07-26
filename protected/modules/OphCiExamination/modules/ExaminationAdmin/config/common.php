@@ -60,7 +60,6 @@ $config = [
             'Visual Acuity - Fixations' => '/OphCiExamination/admin/VisualAcuityFixations',
             'Visual Acuity - Occluders' => '/OphCiExamination/admin/VisualAcuityOccluders',
             'Visual Acuity - Sources' => '/OphCiExamination/admin/VisualAcuitySources',
-            'Cover And Prism Cover - Correction' => '/OphCiExamination/admin/CoverAndPrismCoverCorrection',
             'Cover And Prism Cover - Distance' => '/OphCiExamination/admin/CoverAndPrismCoverDistance',
             'Cover And Prism Cover - Horizontal Prism' => '/OphCiExamination/admin/CoverAndPrismCoverHorizontalPrism',
             'Cover And Prism Cover - Vertical Prism' => '/OphCiExamination/admin/CoverAndPrismCoverVerticalPrism',
