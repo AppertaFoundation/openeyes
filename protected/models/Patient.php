@@ -482,7 +482,7 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']), false);
         }
         if ($params['dob']) {
-            $criteria->compare('t.dob', date('Y-m-d', strtotime($params['dob'])));
+            $criteria->compare('t.dob', $params['dob']);
         }
 
         $nhs_num_length = SettingMetadata::model()->getSetting('nhs_num_length');

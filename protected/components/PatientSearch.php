@@ -26,7 +26,7 @@ class PatientSearch
     const HOSPITAL_NUMBER_REGEX = '/^(H|Hosnum)\s*[:;]\s*([0-9\-]+)$/i';
 
     // Patient name
-    const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]+)?([\a-zA-Z-]+[ ,]?[\a-zA-Z-]*)(\s\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})?$/';
+    const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]+)?([\D]+[ ,]?[\D]*)(\s\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})?$/';
 
     private $searchTerms = array();
 
@@ -233,6 +233,15 @@ class PatientSearch
 
             $result['first_name'] = trim($firstname);
             $result['last_name'] = trim($surname);
+            if($dob){
+                // normalize dob input for DateTime::createFromFormat
+                $normalized_dob = trim(preg_replace('/[-\/]+/', ' ', $dob));
+                // specify day month year for the date string
+                $formated_dob = DateTime::createFromFormat('d m Y', $normalized_dob);
+                if($formated_dob){
+                    $dob = $formated_dob->format('Y-m-d');
+                }
+            }
             $result['dob'] = trim($dob);
         }
 
