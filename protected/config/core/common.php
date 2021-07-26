@@ -479,6 +479,12 @@ $config = array(
                 'requires_setting' => array('setting_key' => 'enable_patient_import', 'required_value' => 'on'),
                 'restricted' => array('admin'),
             ),
+            'virus_scan' => array(
+                'title' => 'Scan Uploaded Files',
+                'uri' => '/VirusScan/index',
+                'position' => 90,
+                'requires_setting' => array('setting_key' => 'enable_virus_scanning', 'required_value' => 'on'),
+            ),
             /*
                  //TODO: not yet implemented
                  'worklist' => array(

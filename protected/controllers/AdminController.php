@@ -1247,24 +1247,44 @@ class AdminController extends BaseAdminController
                 $address->attributes = $request->getPost('Address', []);
 
                 if (!$address->validate()) {
-                    $errors = array_merge($errors, $address->getErrors());
+                    $errors = array_merge(@$errors, $address->getErrors());
                 }
                 if (isset($_FILES['SiteLogo'])) {
                     if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
-                        $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
-
+                        $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
+                        $pl_file = file_get_contents($primary_logo->getTempName());
+                        if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                            try {
+                                $file_clean = VirusScanController::stringIsClean($pl_file);
+                                if (!$file_clean) {
+                                    $errors[] = ['primary_logo' => 'Primary logo contains potentially malicious data and cannot be uploaded'];
+                                }
+                            } catch (Exception $e) {
+                                $errors[] = ['primary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                            }
+                        }
                         // if no error uploading use uploaded image
-                        if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
-                            $pl_file = file_get_contents($primary_logo);
+                        if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
                             $logo->primary_logo = $pl_file;
                         }
                     }
                     if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
-                        $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-
+                        $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
+                        $sl_file=file_get_contents($secondary_logo->getTempName());
+                        if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                            try {
+                                $file_clean = VirusScanController::stringIsClean($sl_file);
+                                if (!$file_clean) {
+                                    $errors[] = ['secondary_logo' => 'Secondary logo contains potentially malicious data and cannot be uploaded'];
+                                }
+                            } catch (Exception $e) {
+                                $errors[] = ['secondary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                            }
+                        }
                         // if no error uploading use uploaded image
+
                         if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                            $sl_file = file_get_contents($secondary_logo);
+                            $sl_file = file_get_contents($secondary_logo->getTempName());
                             $logo->secondary_logo = $sl_file;
                         }
                     }
@@ -1659,19 +1679,39 @@ class AdminController extends BaseAdminController
             if (isset($_FILES['SiteLogo'])) {
                 if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
                     $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
-
+                    $pl_file = file_get_contents($primary_logo->getTempName());
+                    if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                        try {
+                            $file_clean = VirusScanController::stringIsClean($pl_file);
+                            if (!$file_clean) {
+                                $errors[] = ['primary_logo' => 'Primary logo contains potentially malicious data and cannot be uploaded'];
+                            }
+                        } catch (Exception $e) {
+                            $errors[] = ['primary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                        }
+                    }
                     // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
-                        $pl_file = file_get_contents($primary_logo);
+                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
                         $logo->primary_logo = $pl_file;
                     }
                 }
                 if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                     $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-
+                    $sl_file=file_get_contents($secondary_logo->getTempName());
+                    if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                        try {
+                            $file_clean = VirusScanController::stringIsClean($sl_file);
+                            if (!$file_clean) {
+                                $errors[] = ['secondary_logo' => 'Secondary logo contains potentially malicious data and cannot be uploaded'];
+                            }
+                        } catch (Exception $e) {
+                            $errors[] = ['secondary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                        }
+                    }
                     // if no error uploading use uploaded image
+
                     if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                        $sl_file = file_get_contents($secondary_logo);
+                        $sl_file = file_get_contents($secondary_logo->getTempName());
                         $logo->secondary_logo = $sl_file;
                     }
                 }
@@ -1757,20 +1797,39 @@ class AdminController extends BaseAdminController
 
         if (isset($_FILES['SiteLogo'])) {
             if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
-                $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
-
+                $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
+                $pl_file = file_get_contents($primary_logo->getTempName());
+                if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                    try {
+                        $file_clean = VirusScanController::stringIsClean($pl_file);
+                        if (!$file_clean) {
+                            $errors[] = ['primary_logo' => 'Primary logo contains potentially malicious data and cannot be uploaded'];
+                        }
+                    } catch (Exception $e) {
+                        $errors[] = ['primary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                    }
+                }
                 // if no error uploading use uploaded image
-                if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
-                    $pl_file = file_get_contents($primary_logo);
+                if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
                     $logo->primary_logo = $pl_file;
                 }
             }
             if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
-                $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-
+                $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
+                $sl_file=file_get_contents($secondary_logo->getTempName());
+                if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                    try {
+                        $file_clean = VirusScanController::stringIsClean($sl_file);
+                        if (!$file_clean) {
+                            $errors[] = ['secondary_logo' => 'Secondary logo contains potentially malicious data and cannot be uploaded'];
+                        }
+                    } catch (Exception $e) {
+                        $errors[] = ['secondary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                    }
+                }
                 // if no error uploading use uploaded image
                 if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                    $sl_file = file_get_contents($secondary_logo);
+                    $sl_file = file_get_contents($secondary_logo->getTempName());
                     $logo->secondary_logo = $sl_file;
                 }
             }
