@@ -166,4 +166,15 @@ class OphCoCorrespondence_Signature extends BaseSignature
         }
         return parent::isSigned();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPrintout() : string
+    {
+        if ((int)$this->type === self::TYPE_SECRETARY) {
+            return "ELECTRONIC VERIFIED, NOT SIGNED TO AVOID DELAYS";
+        }
+        return parent::getPrintout();
+    }
 }

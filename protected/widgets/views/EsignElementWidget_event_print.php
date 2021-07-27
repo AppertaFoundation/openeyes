@@ -19,4 +19,7 @@
 <?php /** @var EsignElementWidget $this */ ?>
 <?php if (count($this->element->signatures) > 0): ?>
     <p><b>E-signature<?= count($this->element->signatures) > 1 ? "s" :""?>:</b></p>
+    <?php foreach ($this->element->signatures as $signature): ?>
+        <?php echo $signature->getPrintout(); ?>
+    <?php endforeach; ?>
 <?php endif; ?>

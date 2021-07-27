@@ -111,4 +111,12 @@ abstract class BaseSignature extends BaseActiveRecordVersioned
     {
         return $this->type === self::TYPE_PATIENT;
     }
+
+    /**
+     * Get signature output to the printout
+     */
+    public function getPrintout() : string
+    {
+        return "sigi sig";
+    }
 }
