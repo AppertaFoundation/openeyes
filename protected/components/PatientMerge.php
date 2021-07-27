@@ -271,35 +271,59 @@ class PatientMerge
                 $secondary_patient_identifiers = PatientIdentifier::model()->findAllBySql($sql, [$this->secondary_patient->id]);
                 foreach ($secondary_patient_identifiers as $row_id => $secondary_patient_identifier_row) {
 
-                    $new_patient_identifier_row = new PatientIdentifier();
-                    $new_patient_identifier_row->patient_id = $this->primary_patient->id;
-                    $new_patient_identifier_row->patient_identifier_type_id = $secondary_patient_identifier_row->patient_identifier_type_id;
-                    $new_patient_identifier_row->value = $secondary_patient_identifier_row->value;
-                    $new_patient_identifier_row->deleted = $secondary_patient_identifier_row->deleted;
-                    $new_patient_identifier_row->source_info = ($secondary_patient_identifier_row->source_info !== 'ACTIVE' ? $secondary_patient_identifier_row->source_info . ', ' : '');
-                    if (in_array(
-                            $secondary_patient_identifier_row->patient_identifier_type_id,
-                            array_column($this->primary_patient->identifiers, 'patient_identifier_type_id')
-                        ) || $secondary_patient_identifier_row->deleted == "1") {
-                        $new_patient_identifier_row->source_info .= "DEL ID=(" . $this->merge_id . ")";
-                        $new_patient_identifier_row->deleted = '1';
-                    } else {
+                    $criteria = new CDbCriteria();
+                    $criteria->addCondition('patient_id = :patient_id');
+                    $criteria->addCondition('value = :value');
+                    $criteria->addCondition('patient_identifier_type_id = :patient_identifier_type_id');
+                    $criteria->params[':patient_id'] = $this->primary_patient->id;
+                    $criteria->params[':value'] = $secondary_patient_identifier_row->value;
+                    $criteria->params[':patient_identifier_type_id'] = $secondary_patient_identifier_row->patient_identifier_type_id;
 
-                        $new_patient_identifier_row->source_info .= "MERG ID =(" . $this->merge_id . ")";
+                    $duplicate_patient_identifier = PatientIdentifier::model()->disableDefaultScope()->find($criteria);
+
+                    $duplicate_patient_identifier_found = !is_null($duplicate_patient_identifier);
+
+                    if (!$duplicate_patient_identifier_found) {
+                        $new_patient_identifier_row = new PatientIdentifier();
+                        $new_patient_identifier_row->patient_id = $this->primary_patient->id;
+                        $new_patient_identifier_row->patient_identifier_type_id = $secondary_patient_identifier_row->patient_identifier_type_id;
+                        $new_patient_identifier_row->value = $secondary_patient_identifier_row->value;
+                        $new_patient_identifier_row->deleted = $secondary_patient_identifier_row->deleted;
+                        $new_patient_identifier_row->source_info = ($secondary_patient_identifier_row->source_info !== 'ACTIVE' ? $secondary_patient_identifier_row->source_info . ', ' : '');
+                        if (in_array(
+                                $secondary_patient_identifier_row->patient_identifier_type_id,
+                                array_column($this->primary_patient->identifiers, 'patient_identifier_type_id')
+                            ) || $secondary_patient_identifier_row->deleted == "1") {
+                            $new_patient_identifier_row->source_info .= "DEL ID=(" . $this->merge_id . ")";
+                            $new_patient_identifier_row->deleted = '1';
+                        } else {
+
+                            $new_patient_identifier_row->source_info .= "MERG ID =(" . $this->merge_id . ")";
+                        }
+                        $new_patient_identifier_row->last_modified_user_id = Yii::app()->user->id;
+                        $new_patient_identifier_row->last_modified_date = date("Y-m-d H:i:s");
+                        $new_patient_identifier_row->created_user_id = Yii::app()->user->id;
+                        $new_patient_identifier_row->created_date = date("Y-m-d H:i:s");
                     }
-                    $new_patient_identifier_row->last_modified_user_id = Yii::app()->user->id;
-                    $new_patient_identifier_row->last_modified_date = date("Y-m-d H:i:s");
-                    $new_patient_identifier_row->created_user_id = Yii::app()->user->id;
-                    $new_patient_identifier_row->created_date = date("Y-m-d H:i:s");
 
                     $secondary_patient_identifier_row->deleted = '1';
-                    if (!$secondary_patient_identifier_row->save()) {
+                    $secondary_patient_identifier_row->source_info = "DEL ID=(" . $this->merge_id . ")" . "[" . time() . "]";
+                    if (!$secondary_patient_identifier_row->update(['deleted','source_info'])) {
                         $errors[] = $secondary_patient_identifier_row->getErrors();
                         throw new Exception('Failed to update : ' . print_r($errors, true));
                     }
-                    if (!$new_patient_identifier_row->save()) {
-                        $errors[] = $new_patient_identifier_row->getErrors();
-                        throw new Exception('Failed to insert : ' . print_r($errors, true));
+
+                    if (!$duplicate_patient_identifier_found) {
+                        if (!$new_patient_identifier_row->save()) {
+                            $errors[] = $new_patient_identifier_row->getErrors();
+                            throw new Exception('Failed to insert : ' . print_r($errors, true));
+                        }
+                    }
+
+                    if ($duplicate_patient_identifier_found && $duplicate_patient_identifier->deleted == 1) {
+                        $duplicate_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_ACTIVE_SOURCE_INFO;
+                        $duplicate_patient_identifier->deleted = 0;
+                        $duplicate_patient_identifier->update(['source_info', 'deleted']);
                     }
                 }
 

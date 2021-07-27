@@ -14,6 +14,9 @@
  */
 ?>
 
+<?php
+Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('/js/oeadmin/OpenEyes.HTMLSettingEditorController.js'), \CClientScript::POS_HEAD);
+?>
 <div class="cols-5">
 
     <h2>Edit Procedure</h2>
@@ -24,7 +27,7 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <colgroup>
-                <col class="cols-1">
+                <col class="cols-3">
                 <col class="cols-4">
             </colgroup>
             <tbody>
@@ -55,6 +58,12 @@
                 <td>Active</td>
                 <td>
                     <?=\CHtml::activeCheckBox($procedure, 'active'); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Clinic / Outpatient procedure?</td>
+                <td>
+                    <?= CHtml::activeCheckBox($procedure, 'is_clinic_proc') ?>
                 </td>
             </tr>
             <tr>
@@ -159,7 +168,19 @@
                 ]);
                 ?>
             </tr>
-
+            <tr>
+                <td>Low Complexity Criteria</td>
+                <td>
+                    <?=\CHtml::activeTextField(
+                        $procedure,
+                        'low_complexity_criteria',
+                        [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]
+                    ); ?>
+                </td>
+            </tr>
             </tbody>
             <tfoot>
             <tr>
@@ -187,3 +208,13 @@
         </table>
     </form>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        let html_editor_controller =
+            new OpenEyes.HTMLSettingEditorController(
+                "Procedure_low_complexity_criteria",
+                <?= json_encode(\Yii::app()->params['tinymce_default_options'])?>,
+            );
+    });
+</script>

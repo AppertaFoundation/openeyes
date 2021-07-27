@@ -35,9 +35,11 @@
         <?= \CHtml::activeDropDownList(
             $user_authentication,
             "[{$key}]institution_authentication_id",
-            CHtml::listData(InstitutionAuthentication::model()->findAll($criteria),
+            CHtml::listData(
+                InstitutionAuthentication::model()->findAll($criteria),
                 'id',
-                'fullyQualifiedDescription'),
+                'fullyQualifiedDescription'
+            ),
             [
                 'class' => 'cols-full js-change-inst-auth',
                 'prompt' => 'Select an Institution Authentication'
@@ -53,6 +55,19 @@
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
             ]
         ); ?>
+    </td>
+    <td>
+        <span class="js-pincode-display" data-origin-pincode="<?=$user_authentication->pincode;?>"><?=$user_authentication->pincode ? : 'No Pincode';?></span>
+        <?=\CHtml::activeHiddenField(
+            $user_authentication,
+            "[{$key}]pincode",
+            [
+                'class' => 'js-user-pincode-val',
+            ]
+        );?>
+        <div class="js-pincode-section" data-input-name="<?=get_class($user_authentication)?>[<?=$key?>][pincode]" data-ins-auth-id="<?=$user_authentication->institution_authentication_id?>" data-user-id="<?=$user->id?>">
+            <button class="js-set-pincode-btn">Set Pincode</button>
+        </div>
     </td>
     <td>
         <?= \CHtml::activePasswordField(

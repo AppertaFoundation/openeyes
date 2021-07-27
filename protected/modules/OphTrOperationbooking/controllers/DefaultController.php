@@ -23,7 +23,8 @@ class DefaultController extends OphTrOperationbookingEventController
         'admissionForm' => self::ACTION_TYPE_PRINT,
         'verifyProcedures' => self::ACTION_TYPE_CREATE,
         'putOnHold' => self::ACTION_TYPE_EDIT,
-        'putOffHold' => self::ACTION_TYPE_EDIT
+        'putOffHold' => self::ACTION_TYPE_EDIT,
+        'getHighFlowCriteriaPopupContent' => self::ACTION_TYPE_FORM,
     );
 
     public $eventIssueCreate = 'Operation requires scheduling';
@@ -866,5 +867,31 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->operation->on_hold_comment = null;
         $this->operation->save();
         return $this->redirect(array('default/view/' . $this->event->id));
+    }
+
+    public function actionGetHighFlowCriteriaPopupContent()
+    {
+
+        $procedure_ids = array_map('intval', explode(',', Yii::app()->request->getParam('id')));
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('low_complexity_criteria IS NOT NULL');
+        $criteria->addInCondition("id", $procedure_ids);
+
+        $procedures = Procedure::model()->findAll($criteria);
+        if (count($procedures)===0) {
+            $response = null;
+        } else {
+            $response = [
+                'html' => $this->renderPartial(
+                    '_meh_high_flow',
+                    array(
+                        'procedures' => $procedures,
+                    ),
+                    true
+                ),
+            ];
+        }
+
+        $this->renderJSON($response);
     }
 }

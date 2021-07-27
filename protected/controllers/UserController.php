@@ -27,7 +27,12 @@ class UserController extends BaseController
             ),
             array('allow',
                 'actions' => array('getDecryptedSignatureId', 'getName','getCurrentUser')
-            )
+            ),
+
+            array('allow',
+                'actions' => array('checkPincodeAvailability'),
+                'roles' => array('admin'),
+            ),
         );
     }
 
@@ -62,11 +67,7 @@ class UserController extends BaseController
             $criteria->compare('user_auth.active', true);
 
             foreach (\User::model()->findAll($criteria) as $user) {
-                $res[] = array(
-                    'id' => $user->id,
-                    'label' => $user->getFullNameAndTitle(),
-                    'value' => $user->id,
-                );
+                $res[] = $user->getUserPermissionDetails();
             }
         }
         echo \CJSON::encode($res);
@@ -103,6 +104,7 @@ class UserController extends BaseController
         $this->renderJSON($seconds_to_expire);
     }
 
+<<<<<<< HEAD
     public function actionGetDecryptedSignatureId($id)
     {
         if(!$user = User::model()->findByPk($id)) {
@@ -121,5 +123,20 @@ class UserController extends BaseController
         else {
             echo "0";
         }
+=======
+    public function actionCheckPincodeAvailability($pincode, $ins_auth_id, $user_id){
+        $user_auth = new UserAuthentication();
+        $user_auth->pincode = $pincode;
+        $user_auth->institution_authentication_id = $ins_auth_id;
+        $user_auth->user_id = $user_id;
+        $obj = $user_auth->checkUniqueness(null, null);
+
+        $ret = array(
+            'success' => $obj ? false : true,
+            'user' => $obj ? $obj->user->getFullName() : '',
+        );
+        $this->renderJSON($ret);
+        unset($user_auth);
+>>>>>>> develop
     }
 }

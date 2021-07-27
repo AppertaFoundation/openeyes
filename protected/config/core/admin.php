@@ -26,6 +26,7 @@ return array(
             ),
             'Core' => array(
                 'Users' => '/admin/users',
+                'Teams' => '/oeadmin/team/list',
                 'context_firm_labels and service_firm_labels' => '/Admin/context/index',
                 'Contacts' => '/admin/contacts',
                 'Contact labels' => ['uri' => '/admin/contactlabels', 'restricted' => array('admin')],
@@ -60,7 +61,8 @@ return array(
                 'Complications' => ['uri' => '/oeadmin/complication/list', 'restricted' => array('admin')],
                 'OPCS Codes' => ['uri' => '/oeadmin/opcsCode/list', 'restricted' => array('admin')],
                 'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit',
-                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list'
+                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list',
+                'Clinic Procedure Assignment' => ['uri' => '/oeadmin/ClinicProcedure/list', 'restricted' => array('admin')]
             ),
             'Drugs' => array(
                 // Hidden for now

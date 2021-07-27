@@ -58,13 +58,14 @@
         <table class="cols-full">
             <colgroup>
                 <col class="cols-icon">
-                <col style="width:440px;">
+                <col style="width:470px;">
                 <col class="cols-1"><!-- crying icon -->
             </colgroup>
             <tbody>
             <tr>
                 <td>
-                    <i class="oe-i happy medium no-click"></i></td>
+                    <i class="oe-i happy medium no-click"></i>
+                </td>
                 <td class="center">
                     <fieldset id="pain-score-radio-group">
                         <label class="highlight inline"><input value="0" name="pain-score" type="radio"> 0</label>
@@ -175,7 +176,9 @@
         $('button#add-new-pain-row-btn').click(function() {
             let selected_pain_radio = $('fieldset#pain-score-radio-group > label > input:radio:checked');
 
-            if (selected_pain_radio.length === 1) {
+            timeVal = $('input#pain-time-field').val();
+
+            if (selected_pain_radio.length === 1 && timeVal) {
                 let pain_score = selected_pain_radio.val();
 
                 let $pain_table_body = $('table#pain-entries-table > tbody');

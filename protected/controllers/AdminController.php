@@ -677,18 +677,19 @@ class AdminController extends BaseAdminController
      */
     public function actionEditUser($id = null)
     {
-
         $user = User::model()->findByPk($id);
         $invalid_entries = [];
         $invalid_existing = [];
         $errors = [];
         $user_auth_errors = [];
+        $is_new = false;
 
         if ($id && !$user) {
             throw new Exception("User not found: $id");
         } elseif (!$id) {
             $user = new User();
             $user->has_selected_firms = 0;
+            $is_new = true;
         }
 
         $request = Yii::app()->getRequest();
@@ -718,6 +719,11 @@ class AdminController extends BaseAdminController
                     throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
                 }
 
+                if ($is_new) {
+                    $user->correspondence_sign_off_user_id = $user->id;
+                    $user->update(['correspondence_sign_off_user_id']);
+                }
+
                 //delete deleted auths first
                 $ids = array_filter(
                     array_column($user_auths_attributes, 'id'),
@@ -738,7 +744,6 @@ class AdminController extends BaseAdminController
                     if (!$user_auth->user_id) {
                         $user_auth->user_id = $user->id;
                     }
-
                     $special_usernames = Yii::app()->params['special_usernames'] ?? [];
                     if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
                         $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());

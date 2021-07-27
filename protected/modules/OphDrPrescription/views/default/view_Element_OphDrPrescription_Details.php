@@ -43,6 +43,7 @@
                             <?php endif; ?>
                             <?php echo $item->getMedicationDisplay(true); ?>
                             <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
+                            <?=$item->renderPGDInfo();?>
                         </td>
                             
                         <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>

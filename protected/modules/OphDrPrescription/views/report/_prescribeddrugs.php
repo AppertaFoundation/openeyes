@@ -30,6 +30,7 @@
             <th>Drug Route</th>
             <th>Dispense condition</th>
             <th>Dispense location</th>
+            <th>PGD Name</th>
             <th>Laterality</th>
             <th>Prescribed Clinician’s name</th>
             <th>Prescribed Clinician’s Job-role</th>
@@ -59,6 +60,7 @@
                     <td><?= $drug['route']?></td>
                     <td><?= $drug['dispense_condition']?></td>
                     <td><?= $drug['dispense_location']?></td>
+                    <td><?= $drug['pgd_name']?></td>
                     <td><?= $drug['laterality']?></td>
                     <td><?= $drug['user_first_name'].' '.$drug['user_last_name']; ?></td>
                     <td><?= $drug['role']; ?></td>

@@ -89,7 +89,7 @@ $current_flags = $element->getMyCurrentFlagOptionIDs();
             },
         });
         $('.js-AE-RedFlags-nrf-check').change(function() {
-            if (this.checked != true) {
+            if (this.checked == true) {
                 $('#add-ae-redflags-popup').hide();
                 $('#red-flag-assignment').empty();
             } else {

@@ -139,25 +139,29 @@ class m210623_092225_add_safeguarding_tables extends OEMigration
                 array('id' => 1, 'term' => 'No safeguarding concern'),
                 array('id' => 2, 'term' => 'Confirm safeguarding concerns'),
                 array('id' => 3, 'term' => 'Follow up required'),
-            ),
-        );
-
-        $this->insert(
-            'authitem',
-            array(
-                'name' => 'Safeguarding',
-                'type' => 2,
-                'description' => 'Role for safeguarding team'
             )
         );
 
-        $this->insert(
-            'ophciexamination_risk',
-            array(
-                'name' => 'Safeguarding',
-                'active' => 1,
-            )
-        );
+        if (!$connection->createCommand("SELECT name FROM authitem WHERE name = 'Safeguarding'")->queryScalar()) {
+            $this->insert(
+                'authitem',
+                array(
+                    'name' => 'Safeguarding',
+                    'type' => 2,
+                    'description' => 'Role for safeguarding team'
+                )
+            );
+        }
+
+        if (!$connection->createCommand("SELECT name FROM ophciexamination_risk WHERE name = 'Safeguarding'")->queryScalar()) {
+            $this->insert(
+                'ophciexamination_risk',
+                array(
+                    'name' => 'Safeguarding',
+                    'active' => 1,
+                )
+            );
+        }
     }
 
     public function down()

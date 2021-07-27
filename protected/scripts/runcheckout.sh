@@ -403,27 +403,26 @@ for module in "${modules[@]}"; do
     ############################################
     echo "testing for existence of remote tag/branch..."
     remoteexists=0
-    remoteref=$(git ls-remote --exit-code ${basestring}/${module}.git refs/**/$branch)
     nofetch=0
     trackbranch=$branch
-    if [[ $remoteref == *"/tags/"* ]]; then
+    if git ls-remote --exit-code ${basestring}/${module}.git refs/tags/"$branch"; then
         echo "Found a tag named $branch."
         remoteexists=1
         trackbranch="tags/$branch"
         nomodulepull=1 # we don't need to do a pull if we're fetching a tag
-    elif [[ $remoteref == *"/heads/"* ]]; then
+    elif git ls-remote --exit-code ${basestring}/${module}.git refs/heads/"$branch"; then
         echo "Found a remote branch named $branch."
         remoteexists=1
         trackbranch="$branch"
         # check if branch exists locally - if so then we should not attempt to fetch it
-        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/$branch; then
+        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$branch"; then
             nofetch=1
         fi
 
     else
         nomodulepull=1 # No point pulling if there is no remote to pull from
         # check if branch exists locally - if not, fallback to defaultbranch
-        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/$branch; then
+        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$branch"; then
             trackbranch="$branch"
         else
             trackbranch="$defaultbranch"
@@ -431,6 +430,10 @@ for module in "${modules[@]}"; do
 
         if [ "$trackbranch" != "branch" ]; then
             echo "No branch $branch was found. Falling back to $defaultbranch"
+            # check if default branch exists locally - if not fetch it
+            if git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$trackbranch"; then
+                git -C $MODGITROOT fetch --depth $moduledepth origin $trackbranch
+            fi
         fi
 
     fi

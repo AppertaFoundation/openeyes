@@ -52,6 +52,7 @@ class m210511_160600_insert_language_and_interpreter_required_columns_to_et_ophc
                         'created_date' => date('Y-m-d H:i:s'),
                         'event_date' => date('Y-m-d H:i:s'),
                         'institution_id' => 1,
+                        'created_user_id' => 1 //admin
                     ));
 
                     $event_id = $this->dbConnection->getLastInsertID();

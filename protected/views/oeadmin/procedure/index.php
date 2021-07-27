@@ -81,6 +81,7 @@
             <th>Has Benefits</th>
             <th>Has Complications</th>
             <th>Whiteboard Risks</th>
+            <th>Clinic Procedure</th>
             <th>Active</th>
         </tr>
         </thead>
@@ -114,6 +115,11 @@
                 <td><?php echo implode(", ", array_map(function ($risk) {
                         return $risk->name;
                     }, $procedure->risks)); ?>
+                </td>
+                <td>
+                    <?php echo ($procedure->is_clinic_proc) ?
+                        ('<i class="oe-i tick small"></i>') :
+                        ('<i class="oe-i remove small"></i>'); ?>
                 </td>
                 <td>
                     <?php echo ($procedure->active) ?

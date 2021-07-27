@@ -70,11 +70,13 @@ class UserAuthentication extends BaseActiveRecordVersioned
         return [
             ['institution_authentication_id, user_id, username', 'required'],
             ['username', 'length', 'max' => 40],
+            ['pincode', 'length', 'max' => 6, 'min' => 6],
+            ['pincode', 'checkUniqueness'],
             ['username', 'checkWhetherUserNameIsTaken'],
             ['last_modified_user_id, created_user_id', 'length', 'max' => 10],
-            ['active, password_status, institution_authentication_id, password_softlocked_until, last_modified_date, created_date', 'safe'],
+            ['active, password_status, institution_authentication_id, password_softlocked_until, last_modified_date, created_date, pincode', 'safe'],
             // The following rule is used by search().
-            ['id, user_id, username, last_modified_user_id, last_modified_date, created_user_id, created_date, active', 'safe', 'on'=>'search'],
+            ['id, user_id, username, last_modified_user_id, last_modified_date, created_user_id, created_date, active, pincode', 'safe', 'on'=>'search'],
 
             // conditional rules only for local authentications:
             [
@@ -149,7 +151,24 @@ class UserAuthentication extends BaseActiveRecordVersioned
             }
         }
     }
-
+    public function checkUniqueness($attribute, $params)
+    {
+        if (!$this->pincode || !$this->institution_authentication_id) {
+            return null;
+        }
+        $criteria = new CDbCriteria();
+        $criteria->compare('institution.id', $this->institutionAuthentication->institution->id);
+        $criteria->compare('t.pincode', $this->pincode);
+        if ($this->user_id) {
+            $criteria->addCondition('t.user_id != :user_id');
+            $criteria->params[':user_id'] = $this->user_id;
+        }
+        $existing_pincode = self::model()->with('institutionAuthentication', 'institutionAuthentication.institution')->find($criteria);
+        if ($existing_pincode) {
+            $this->addError($attribute, "Duplicated Pincode found in authentication: '{$this->institutionAuthentication->description}'");
+        }
+        return $existing_pincode;
+    }
     /**
      * @return array relational rules.
      */
@@ -173,6 +192,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
             'institution_authentication_id' => 'Institution Authentication',
             'user_id' => 'User',
             'username' => 'Login ID',
+            'pincode' => 'Pincode',
             'password_status' => 'Status',
             'password' => 'Password',
             'password_repeat' => 'Confirm Password',
@@ -308,10 +328,10 @@ class UserAuthentication extends BaseActiveRecordVersioned
     {
         $user_auth = !empty($attributes['id']) ? self::model()->findByPk($attributes['id']) : new self();
         $user_auth->setAttributes($attributes);
-        if ($user_auth->institution_authentication_id != $user_auth->originalAttributes['institution_authentication_id']) {
+        if (isset($user_auth->originalAttributes['institution_authentication_id']) && $user_auth->institution_authentication_id != $user_auth->originalAttributes['institution_authentication_id']) {
             $user_auth->password_last_changed_date = date('Y-m-d H:i:s');
             $user_auth->password_failed_tries = 0;
-            if ($user_auth->institutionAuthentication->user_authentication_method == "LDAP") {
+            if (isset($user_auth->institutionAuthentication) && $user_auth->institutionAuthentication->user_authentication_method == "LDAP") {
                 $user_auth->password_status = 'current';
             }
         }
@@ -328,7 +348,8 @@ class UserAuthentication extends BaseActiveRecordVersioned
                 },
                 self::model()->findAllByAttributes(['username' => $username, 'active' => 0])
             );
-            $error = (!empty($inactive_user_auths) &&
+            $error = (
+                !empty($inactive_user_auths) &&
                 array_reduce($inactive_user_auths,
                     function ($total, $match) {
                         return $total | $match;

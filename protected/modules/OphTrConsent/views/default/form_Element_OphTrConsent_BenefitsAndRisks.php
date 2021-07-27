@@ -49,3 +49,27 @@
     </tbody>
   </table>
 </div>
+ 
+<script>
+tinymce.init({
+    mode: "textareas",
+    menubar: false,
+    statusbar: true,
+    plugins: ' advlist lists',
+    toolbar: 'undo redo | bold italic |  alignleft aligncenter alignright | numlist bullist ',
+    selector: "textarea#Element_OphTrConsent_BenefitsAndRisks_benefits"
+
+});
+tinymce.init({
+    mode: "textareas",
+    menubar: false,
+    statusbar: true,
+    plugins: ' advlist lists',
+    toolbar: 'undo redo | bold italic |  alignleft aligncenter alignright | numlist bullist ',
+    selector: "textarea#Element_OphTrConsent_BenefitsAndRisks_risks"
+
+});
+//set the content formatting into bullet listing
+tinymce.DOM.setHTML('Element_OphTrConsent_BenefitsAndRisks_benefits', '<ul><li><br></li></ul>');
+tinymce.DOM.setHTML('Element_OphTrConsent_BenefitsAndRisks_risks', '<ul><li><br></li></ul>');
+</script>

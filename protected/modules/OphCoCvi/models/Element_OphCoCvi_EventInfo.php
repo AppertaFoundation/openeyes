@@ -53,7 +53,6 @@ namespace OEModule\OphCoCvi\models;
 
 class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 {
-    private $defaultScopeDisabled = false;
     /**
      * Returns the static model of the specified AR class.
      * @return the static model class
@@ -78,8 +77,8 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
      */
     public function defaultScope()
     {
-        if ($this->defaultScopeDisabled) {
-            return array();
+        if ($this->getDefaultScopeDisabled()) {
+            return [];
         }
 
         return array(
@@ -89,18 +88,6 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
                 )
             )
         );
-    }
-
-    /**
-     * Turn off the default scope
-     *
-     * @return $this
-     */
-    public function disableDefaultScope()
-    {
-        $this->defaultScopeDisabled = true;
-
-        return $this;
     }
 
     /**

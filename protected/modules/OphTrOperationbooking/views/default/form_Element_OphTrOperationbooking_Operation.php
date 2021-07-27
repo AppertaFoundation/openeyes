@@ -373,6 +373,7 @@ $procedure_readonly = $this->procedure_readonly;
                 </table>
             </div>
         </div>
+
         <table class="cols-11">
             <tbody>
             <tr>

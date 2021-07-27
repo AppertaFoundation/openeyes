@@ -49,7 +49,7 @@ class PatientController extends BaseController
             ),
             array(
                 'allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients', 'getCitoUrl'),
                 'users' => array('@'),
             ),
             array(
@@ -236,6 +236,19 @@ class PatientController extends BaseController
 
     public function actionSummary($id)
     {
+        if (strlen(Yii::app()->params['cito_access_token_url']) !== 0) {
+            $cito_to_menu =
+                [
+                    'cito' => [
+                        'title' => 'Open in CITO',
+                        'position' => 46,
+                        'uri' => '#',
+                        'options' => ['id' => 'js-get-cito-url', 'class' => 'hidden'],
+                    ]
+                ];
+            Yii::app()->params['menu_bar_items'] = array_merge(Yii::app()->params['menu_bar_items'], $cito_to_menu);
+        }
+
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($id, false);
 
@@ -245,32 +258,41 @@ class PatientController extends BaseController
             // using redirect to correct the url and to avoid issues from creating events
             $this->redirect("$link");
         }
-        $this->pageTitle = "Patient Overview";
-        $this->patient->audit('patient', 'view-summary');
 
-        $episodes = $this->patient->episodes;
-        $legacy_episodes = $this->patient->legacyepisodes;
-        $support_service_episodes = $this->patient->supportserviceepisodes;
+            $this->layout = '//layouts/events_and_episodes';
+            $this->patient = $this->loadModel($id, false);
+        // if the ids are different, it means the $id belongs to a merged patient
+        if ($id !== $this->patient->id) {
+            $link = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
+            // using redirect to correct the url and to avoid issues from creating events
+            $this->redirect("$link");
+        }
+            $this->pageTitle = "Patient Overview";
+            $this->patient->audit('patient', 'view-summary');
 
-        $criteria = new \CDbCriteria();
-        $criteria->with = ['episode', 'episode.patient'];
-        $criteria->addCondition('patient.id=:patient_id');
-        $criteria->params['patient_id'] = $this->patient->id;
-        $criteria->order = 't.last_modified_date desc';
-        $criteria->limit = 3;
-        $events = Event::model()->findAll($criteria);
+            $episodes = $this->patient->episodes;
+            $legacy_episodes = $this->patient->legacyepisodes;
+            $support_service_episodes = $this->patient->supportserviceepisodes;
 
-        $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+            $criteria = new \CDbCriteria();
+            $criteria->with = ['episode', 'episode.patient'];
+            $criteria->addCondition('patient.id=:patient_id');
+            $criteria->params['patient_id'] = $this->patient->id;
+            $criteria->order = 't.last_modified_date desc';
+            $criteria->limit = 3;
+            $events = Event::model()->findAll($criteria);
+
+            $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
 
         if ($no_episodes) {
             $this->layout = '//layouts/events_and_episodes_no_header';
         }
 
-        $this->render('landing_page', array(
+            $this->render('landing_page', array(
             'events' => $events,
             'patient' => $this->patient,
             'no_episodes' => $no_episodes,
-        ));
+            ));
     }
 
     /**
@@ -2998,5 +3020,25 @@ class PatientController extends BaseController
         $this->renderJSON(array(
             'past_worklist_tbody' => $this->renderPartial('/default/appointment_entry_tbody', array('worklist_patients' => $past_worklist_patients), true),
         ));
+    }
+
+    /**
+     * Get CITO url
+     * @return string
+     * @throws Exception
+     */
+    public function actionGetCitoUrl($hos_num)
+    {
+        $citoIntegration = \Yii::app()->citoIntegration;
+
+        try {
+            $username = \Yii::app()->user->name;
+            $cito_url = $citoIntegration->generateCitoUrl($hos_num, $username);
+            $this->renderJSON(array('success' => true, 'url' => $cito_url));
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            \OELog::log($message);
+            $this->renderJSON(array('success' => false, 'message' => 'Something went wrong trying to contact CITO. If this issue persists, please contact support.'));
+        }
     }
 }
