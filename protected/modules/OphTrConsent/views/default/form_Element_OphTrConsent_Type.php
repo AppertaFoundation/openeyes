@@ -18,5 +18,22 @@
 ?>
 <div class="element-fields">
     <?= $form->hiddenField($element, 'draft') ?>
-    <?= $form->dropDownList($element, 'type_id', 'OphTrConsent_Type_Type', ['nowrapper' => true], false, []) ?>
+    <?php
+    $patient_age = (int)$this->patient->getAge();
+    $criteria = new CDbCriteria();
+    if ($patient_age < 16) {
+        $criteria->compare('id', 2);
+    } elseif ($patient_age > 16) {
+        $criteria->addCondition('id != 2');
+    }
+
+    echo $form->dropDownList(
+        $element,
+        'type_id',
+        CHtml::listData(OphTrConsent_Type_Type::model()->findAll($criteria), 'id', 'name'),
+        ['nowrapper' => true],
+        false,
+        []
+    );
+    ?>
 </div>
