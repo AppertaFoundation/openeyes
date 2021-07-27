@@ -7,77 +7,66 @@
                 <tbody>
                 <tr>
                     <td>
-                        <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('title_surname')) ?></div>
+                        <div class="data-label">Full name</div>
                     </td>
                     <td>
-                        <div class="data-value"><?= CHtml::encode($element->title_surname) ?></div>
+                        <div class="data-value"><?= CHtml::encode($this->patient->fullName) ?></div>
                     </td>
                 </tr><tr>
-                    <td>
-                        <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('other_names')) ?></div>
-                    </td>
-                    <td>
-                        <div class="data-value"><?= CHtml::encode($element->other_names) ?></div>
-                    </td>
-                </tr><tr>
-
                     <td>
                         <div class="data-label">Born</div>
                     </td>
                     <td>
-                        <div class="data-value">17 Nov 1940</div>
+                        <div class="data-value"><?= CHtml::encode(($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown') ?></div>
                     </td>
                 </tr><tr>
                     <td>
-                        <div class="data-label">NHS Number</div>
+                        <div class="data-label"><?= PatientIdentifierHelper::getIdentifierPrompt($this->patient->globalIdentifier); ?></div>
                     </td>
                     <td>
-                        <div class="data-value">385 999 8817</div>
+                        <div class="data-value"><?= PatientIdentifierHelper::getIdentifierValue($this->patient->globalIdentifier) ?></div>
                     </td>
                 </tr><tr>
                     <td>
-                        <div class="data-label">Address (incl. Post Code)</div>
+                        <div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('address')) ?></div>
                     </td>
                     <td>
-                        <div class="data-value">53 Appleby Crescent,<br>
-                            Brighouse Bay,<br>
-                            Cheshire,<br>
-                            FA39 4WZ</div>
+                        <div class="data-value"><?= nl2br(CHtml::encode($element->address)) ?></div>
                     </td>
                 </tr><tr>
                     <td>
                         <div class="data-label">Post Code (1st half)</div>
                     </td>
                     <td>
-                        <div class="data-value">FA39</div>
+                        <div class="data-value"><?= substr(\CHtml::encode($element->postcode),0, 4) ?></div>
                     </td>
                 </tr><tr>
                     <td>
-                        <div class="data-label">Email:</div>
+                        <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('email'))?></div>
                     </td>
                     <td>
-                        <div class="data-value">Pauline.Conant@hotmail.com</div>
-                    </td>
-                </tr><tr>
-                    <td>
-                        <div class="data-label">Telephone</div>
-                    </td>
-                    <td>
-                        <div class="data-value">01234567890</div>
+                        <div class="data-value"><?= \CHtml::encode($element->email); ?></div>
                     </td>
                 </tr><tr>
                     <td>
-                        <div class="data-label">Gender</div>
+                        <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('telephone')); ?></div>
                     </td>
                     <td>
-                        <div class="data-value">Male</div>
+                        <div class="data-value"><?=\CHtml::encode($element->telephone); ?></div>
                     </td>
                 </tr><tr>
                     <td>
-                        <div class="data-label">Ethnic Group</div>
+                        <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('gender')); ?></div>
                     </td>
                     <td>
-                        <div class="data-value">White – Any other background</div>
+                        <div class="data-value"><?= CHtml::encode($element->gender->name ?? '') ?></div>
+                    </td>
+                </tr><tr>
+                    <td>
+                        <div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('ethnic_group')) ?></div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?= \CHtml::encode($element->ethnic_group->name ?? '') ?></div>
                     </td>
                 </tr>
                 </tbody>
@@ -91,204 +80,56 @@
                 <tbody>
                 <tr>
                     <td>
-                        <div class="data-label">GP's Name</div>
+                        <div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('gp_name')) ?></div>
                     </td>
                     <td>
-                        <div class="data-value">Dr James Kildare</div>
-                    </td>
-                </tr><tr>
-                    <td>
-                        <div class="data-label">GP's Address</div>
-                    </td>
-                    <td>
-                        <div class="data-value">Elm Practice,<br>
-                            1a Fountayne Road,<br>
-                            London,<br>
-                            UB1 2TU</div>
+                        <div class="data-value"><?= \CHtml::encode($element->gp_name) ?></div>
                     </td>
                 </tr><tr>
                     <td>
-                        <div class="data-label">GP's Telephone</div>
+                        <div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('gp_address')) ?></div>
                     </td>
                     <td>
-                        <div class="data-value">020 722620000</div>
+                        <div class="data-value"><?= nl2br(\CHtml::encode($element->gp_address)) ?></div>
+                    </td>
+                </tr><tr>
+                    <td>
+                        <div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('gp_postcode')) ?></div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?= CHtml::encode($element->gp_postcode) ?> <?= CHtml::encode($element->gp_postcode_2nd) ?></div>
+                    </td>
+                </tr><tr>
+                    <td>
+                        <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('gp_telephone')) ?></div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?= CHtml::encode($element->gp_telephone) ?></div>
                     </td>
                 </tr>
                 </tbody>
             </table>
-
-        </div> <!-- cols -->
-
-    </div><!-- .flex -->
-    <?php echo '<pre>' . print_r($element->attributes, true) . '</pre>'; ?>
-</div>
-
-<div class="element-data" style="display:none">
-    <div class="large-6 column">
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label">:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label">:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('date_of_birth')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->NHSDate('date_of_birth')) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('nhs_number')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->nhs_number) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('address')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= nl2br(CHtml::encode($element->address)) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('postcode')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->postcode) ?> <?= CHtml::encode($element->postcode_2nd) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('email')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->email) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('telephone')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->telephone) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('gender')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->gender ? $element->gender->name : '') ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('ethnic_group')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->ethnic_group ? $element->ethnic_group->name : '') ?></div>
-            </div>
-        </div>
-        <?php if($element->describe_ethnics) { ?>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('describe_ethnics')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->describe_ethnics ? $element->describe_ethnics : '') ?></div>
-            </div>
-        </div>
-        <?php } ?>
-        
-    </div>
-    <div class="large-6 column">
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('gp_name')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->gp_name) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('gp_address')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= nl2br(CHtml::encode($element->gp_address)) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('gp_postcode')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->gp_postcode) ?> <?= CHtml::encode($element->gp_postcode_2nd) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('gp_telephone')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->gp_telephone) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('la_name')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->la_name) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('la_address')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= nl2br(CHtml::encode($element->la_address)) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('la_postcode')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->la_postcode) ?> <?= CHtml::encode($element->la_postcode_2nd) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('la_telephone')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->la_telephone) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-4 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('la_email')) ?>:</div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value"><?= CHtml::encode($element->la_email) ?></div>
-            </div>
+            <hr class="divider">
+            <table class="label-value">
+                <tbody>
+                    <tr>
+                        <td><div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('la_name')) ?></div></td>
+                        <td><div class="data-value"><?= \CHtml::encode($element->la_name) ?></div></td>
+                    </tr><tr>
+                        <td><div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('la_address')) ?></div></td>
+                        <td><div class="data-value"><?= \CHtml::encode($element->la_address) ?></div></td>
+                    </tr><tr>
+                        <td><div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('la_postcode')) ?></div></td>
+                        <td><div class="data-value"><?= CHtml::encode($element->la_postcode) ?> <?= CHtml::encode($element->la_postcode_2nd) ?></div></td>
+                    </tr><tr>
+                        <td><div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('la_telephone')) ?></div></td>
+                        <td><div class="data-value"><?= \CHtml::encode($element->la_telephone) ?></div></td>
+                    </tr><tr>
+                        <td><div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('la_email')) ?></div></td>
+                        <td><div class="data-value"><?= \CHtml::encode($element->la_email) ?></div></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
