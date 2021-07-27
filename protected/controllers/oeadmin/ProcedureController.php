@@ -120,6 +120,8 @@ class ProcedureController extends BaseAdminController
             $procedure->aliases = $user_data['aliases'];
             $procedure->unbooked = $user_data['unbooked'];
             $procedure->active = $user_data['active'];
+
+            $procedure->low_complexity_criteria = $user_data['low_complexity_criteria'];
             $procedure->is_clinic_proc = $user_data['is_clinic_proc'];
 
             // set notes
