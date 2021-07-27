@@ -24,6 +24,10 @@ class GetSecretarySignatureByPinAction extends GetSignatureByPinAction
 
     protected function checkPIN(): void
     {
+        if(!Yii::app()->user->checkAccess('SignEvent')) {
+            throw new Exception("We're sorry, you are not authorized to sign events. Please contact support.");
+        }
+
         if(strlen($this->pin) === 0) {
             throw new Exception("Empty PIN was provided, please enter PIN and click 'PIN sign' again.");
         }
