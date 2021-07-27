@@ -17,12 +17,25 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     }
 
     EsignElementWidget._defaultOptions = {
-
+        // One of "edit", "view" or "print"
+        "mode" : "edit"
     };
 
     EsignElementWidget.prototype.create = function ()
     {
+        this.bindEvents();
         this.renumber();
+    };
+
+    EsignElementWidget.prototype.bindEvents = function ()
+    {
+        let widget = this;
+        this.$element.on("signatureAdded", function () {
+            if(widget.options.mode === "view") {
+                window.formHasChanged = false;
+                window.location.reload();
+            }
+        });
     };
 
     EsignElementWidget.prototype.renumber = function ()

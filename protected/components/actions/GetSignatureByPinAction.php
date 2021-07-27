@@ -25,7 +25,7 @@ class GetSignatureByPinAction extends \CAction
     protected string $signature_proof;
     protected string $thumbnail_src1;
     protected string $thumbnail_src2;
-    protected ?int $signature_file_id;
+    protected ?int $signature_file_id = null;
 
     protected function getUser() : void
     {
@@ -88,10 +88,10 @@ class GetSignatureByPinAction extends \CAction
         $this->date_time = new DateTime();
         $this->signature_proof = $this->getSignatureProof($this->signature_file_id);
 
-        if(!is_null(Yii::app()->request->getPost('element_id'))) {
+        if(strlen(Yii::app()->request->getPost('element_id')) > 0) {
             $this->updateElement(
-                Yii::app()->request->getPost('element_id'),
-                Yii::app()->request->getPost('signature_type')
+                (int)Yii::app()->request->getPost('element_id'),
+                (int)Yii::app()->request->getPost('signature_type')
             );
         }
         $this->successResponse();

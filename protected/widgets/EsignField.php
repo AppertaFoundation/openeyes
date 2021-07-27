@@ -43,7 +43,7 @@ abstract class EsignField extends BaseCWidget
      */
     public function isSigned() : bool
     {
-        return !is_null($this->signature->signature_file_id);
+        return $this->signature->isSigned();
     }
 
     protected function getSignatureFile(): ProtectedFile

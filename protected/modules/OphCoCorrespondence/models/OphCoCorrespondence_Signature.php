@@ -161,7 +161,7 @@ class OphCoCorrespondence_Signature extends BaseSignature
     public function isSigned(): bool
     {
         // Secretaries don't have a signature file, so rather check timestamp
-        if($this->type === self::TYPE_SECRETARY) {
+        if((int)$this->type === self::TYPE_SECRETARY) {
             return $this->timestamp > 0;
         }
         return parent::isSigned();

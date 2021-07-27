@@ -40,6 +40,9 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.$signatoryRole = this.$element.find(".js-signatory_role-field");
         this.$signatureWrapper = this.$element.find(".js-signature-wrapper");
         this.$signature = this.$element.find(".js-signature");
+        this.events = [];
+
+        this.createEvents();
         this.bindEvents();
 
         let widget = this;
@@ -56,6 +59,15 @@ OpenEyes.UI = OpenEyes.UI || {};
                 }
             });
         }
+    };
+
+    /**
+     * @private
+     */
+    EsignWidget.prototype.createEvents = function()
+    {
+        this.events.onSignatureAdded = document.createEvent('Event');
+        this.events.onSignatureAdded.initEvent('signatureAdded', true, true);
     };
 
     /**
@@ -104,6 +116,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                             response.signatory_name || null
                         );
                         widget.setDataInput(response.signature_proof);
+                        widget.$element.closest("section.element").trigger(widget.events.onSignatureAdded);
                     } else {
                         let dlg = new OpenEyes.UI.Dialog.Alert({
                             content: response.error

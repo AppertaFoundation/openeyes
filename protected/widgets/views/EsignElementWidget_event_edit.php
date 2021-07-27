@@ -60,6 +60,11 @@
 </div>
 <script type="text/javascript">
     $(function(){
-        new OpenEyes.UI.EsignElementWidget($(".<?= \CHtml::modelName($this->element) ?>"));
+        new OpenEyes.UI.EsignElementWidget(
+            $(".<?= \CHtml::modelName($this->element) ?>"),
+            {
+                mode : "<?= $this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit' ?>"
+            }
+        );
     });
 </script>
