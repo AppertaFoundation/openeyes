@@ -17,27 +17,34 @@
 ?>
 <?php
 /**  @var EsignPINField $this */
-$el_class = get_class($element);
+/** @var string $row_id */
+$el_class = get_class($this->element);
 $widget_class = get_class($this);
 $uid = $el_class . "_" . $widget_class . "_" . $row_id;
 ?>
 <tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
+    <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>
     <!-- Role -->
-    <td><span class="js-signatory-label"><?= $this->signatory_label ?></span></td>
+    <td><span class="js-signatory-label"><?= $this->signature->signatory_role ?></span></td>
     <!-- Name -->
     <td>
         <span class="js-signatory-name">
-            <?php echo CHtml::hiddenField(
-                'signatory_id_'.$uid,
-                '',
-                array('class' => "user-user_id-entry js-user_id-input")
-            ) ?>
-            <?php $this->widget('application.widgets.AutoCompleteSearch',array(
-                'field_name' => 'signatory_name_'.$uid,
-                'htmlOptions' => array('placeholder' => 'Type a signatory name to search')
-            )); ?>
+            <?php if($this->isSigned()) {
+                echo $this->signature->signatory_name;
+            }
+            else {
+                echo CHtml::hiddenField(
+                    'signatory_id_'.$uid,
+                    '',
+                    array('class' => "user-user_id-entry js-user_id-input")
+                );
+                $this->widget('application.widgets.AutoCompleteSearch',array(
+                    'field_name' => 'signatory_name_'.$uid,
+                    'htmlOptions' => array('class' => 'js-user-autocomplete', 'placeholder' => 'Type a name to search')
+                ));
+            } ?>
         </span>
     </td>
     <!-- Date -->
@@ -62,7 +69,7 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
         <div class="js-signature-wrapper flex-l" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
             <?php $this->displaySignature() ?>
             <div class="esigned-at">
-                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time">??:??</span>
+                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time"><?php $this->displaySignatureTime() ?></span>
             </div>
         </div>
     </td>
@@ -71,19 +78,9 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
     $(function(){
         new OpenEyes.UI.EsignWidget($("#<?=$uid?>"), {
             submitAction: "<?=$this->getAction()?>",
-            needUserName: true
+            needUserName: true,
+            signature_type: <?= $this->signature->type ?>,
+            element_id: <?= $this->element->id ?? "null" ?>
         });
-
-        if(OpenEyes.UI.AutoCompleteSearch !== undefined){
-            OpenEyes.UI.AutoCompleteSearch.init({
-                input: $('#signatory_name_<?= $uid ?>'),
-                url: '/user/autoComplete',
-                onSelect: function(){
-                    let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-                    $('#signatory_id_<?= $uid ?>').val(AutoCompleteResponse.id);
-                    $('#signatory_name_<?= $uid ?>').val(AutoCompleteResponse.label);
-                }
-            });
-        }
     });
 </script>

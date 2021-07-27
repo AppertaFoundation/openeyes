@@ -16,18 +16,20 @@
  */
 ?>
 <?php
-/**  @var EsignPINField $this */
-$el_class = get_class($element);
+/** @var EsignPINField $this */
+/** @var string $row_id */
+$el_class = get_class($this->element);
 $widget_class = get_class($this);
 $uid = $el_class . "_" . $widget_class . "_" . $row_id;
 ?>
 <tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
+    <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>
     <!-- Role -->
-    <td><span class="js-signatory-label"><?= $this->signatory_label ?></span></td>
+    <td><span class="js-signatory-label"><?= $this->signature->signatory_role ?></span></td>
     <!-- Name -->
-    <td><span class="js-signatory-name"><?php echo $this->logged_user_name ?></span></td>
+    <td><span class="js-signatory-name"><?= $this->signature->signatory_name ?></span></td>
     <!-- Date -->
     <td>
         <div class="js-signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
@@ -50,7 +52,7 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
         <div class="js-signature-wrapper flex-l" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
             <?php $this->displaySignature() ?>
             <div class="esigned-at">
-                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time">07:46</span>
+                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time"><?php $this->displaySignatureTime() ?></span>
             </div>
         </div>
     </td>
@@ -58,7 +60,9 @@ $uid = $el_class . "_" . $widget_class . "_" . $row_id;
 <script type="text/javascript">
     $(function(){
         new OpenEyes.UI.EsignWidget($("#<?=$uid?>"), {
-            submitAction: "<?=$this->getAction()?>"
+            submitAction: "<?=$this->getAction()?>",
+            signature_type: <?= $this->signature->type ?>,
+            element_id: <?= $this->element->id ?? "null" ?>
         })
     });
 </script>

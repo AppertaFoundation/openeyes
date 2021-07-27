@@ -15,25 +15,32 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class EsignPINField extends EsignField
+class GetSecretarySignatureByPinAction extends GetSignatureByPinAction
 {
-    /**
-     * @inheritDoc
-     */
-    public function getAction() : string
+    protected function getSignatureFile(): void
     {
-        return 'getSignatureByPin';
+        // This method is intentionally left empty
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function init()
+    protected function checkPIN(): void
     {
-        parent::init();
-        if($this->signature->isNewRecord) {
-            $this->signature->signed_user_id = Yii::app()->session['user']->id;
-            $this->signature->signatory_name = Yii::app()->session['user']->getFullName();
+        if(strlen($this->pin) === 0) {
+            throw new Exception("Empty PIN was provided, please enter PIN and click 'PIN sign' again.");
         }
+        // TODO implement required logic once it is discussed
+        if($this->pin !== "456789") {
+            throw new Exception("Incorrect PIN");
+        }
+    }
+
+    protected function successResponse()
+    {
+        $this->renderJSON([
+            "code" => 0,
+            "error" => "",
+            "signature_proof" => $this->signature_proof,
+            'date' => $this->date_time->format(Helper::NHS_DATE_FORMAT),
+            'time' => $this->date_time->format("H:i"),
+        ]);
     }
 }

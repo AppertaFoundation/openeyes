@@ -20,11 +20,8 @@ abstract class EsignField extends BaseCWidget
     /** @var string An identifier that is unique within the element */
     public string $row_id;
 
-    /** @var int|null The id of the signature file, if already added */
-    public ?int $signature_file_id;
-
-    /** @var string A label displaying who is signing */
-    public string $signatory_label;
+    /** @var BaseSignature The model that holds all information of the signature */
+    public BaseSignature $signature;
 
     /**
      * @return string   The action within the module's controller that will be called
@@ -46,12 +43,12 @@ abstract class EsignField extends BaseCWidget
      */
     public function isSigned() : bool
     {
-        return !is_null($this->signature_file_id);
+        return !is_null($this->signature->signature_file_id);
     }
 
     protected function getSignatureFile(): ProtectedFile
     {
-        $model = ProtectedFile::model()->findByPk($this->signature_file_id);
+        $model = $this->signature->signatureFile;
         if(!$model) {
             throw new Exception("Signature file not found");
         }
@@ -66,7 +63,7 @@ abstract class EsignField extends BaseCWidget
     public function displaySignature() : void
     {
         if($this->isSigned()) {
-            $file = ProtectedFile::model()->findByPk($this->signature_file_id);
+            $file = $this->getSignatureFile();
             if($file){
                 $thumbnail1 = $file->getThumbnail("72x24", true);
                 $thumbnail2 = $file->getThumbnail("150x50", true);
@@ -91,15 +88,33 @@ abstract class EsignField extends BaseCWidget
      * Display signature date in NHS format or "-" if not signed
      *
      * @return void
-     * @throws Exception If file does not exist
      */
     public function displaySignatureDate() : void
     {
-        if($this->isSigned()) {
-            echo Helper::convertDate2NHS($this->getSignatureFile()->created_date);
-        }
-        else {
-            echo "-";
+        echo $this->signature->getSignedDate();
+    }
+
+    /**
+     * Display signature time in HH:MM format or "-" if not signed
+     *
+     * @return void
+     */
+    public function displaySignatureTime() : void
+    {
+        echo $this->signature->getSignedTime();
+    }
+
+    /**
+     * Render hidden fields into form
+     */
+    public function renderHiddenFields() : void
+    {
+        foreach(["id", "type", "proof", "signatory_role", "signatory_name"] as $field) {
+            echo \CHtml::hiddenField(
+                \CHtml::modelName($this->element)."[signatures][{$this->row_id}][$field]",
+                $this->signature->$field,
+                ["class" => "js-{$field}-field"],
+            );
         }
     }
 }

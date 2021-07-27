@@ -15,14 +15,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class EsignPINField extends EsignField
+class EsignSecretaryPINField extends EsignField
 {
     /**
      * @inheritDoc
      */
     public function getAction() : string
     {
-        return 'getSignatureByPin';
+        return 'getSecretarySignatureByPin';
     }
 
     /**
@@ -35,5 +35,13 @@ class EsignPINField extends EsignField
             $this->signature->signed_user_id = Yii::app()->session['user']->id;
             $this->signature->signatory_name = Yii::app()->session['user']->getFullName();
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function displaySignature() : void
+    {
+        echo "ELECTRONIC VERIFIED, NOT SIGNED TO AVOID DELAYS";
     }
 }

@@ -17,8 +17,6 @@
 
 class EsignUsernamePINField extends EsignField
 {
-    protected string $logged_user_name;
-
     /**
      * @inheritDoc
      */
@@ -33,6 +31,9 @@ class EsignUsernamePINField extends EsignField
     public function init()
     {
         parent::init();
-        $this->logged_user_name = Yii::app()->session['user']->getFullName();
+        $assetManager = Yii::app()->getAssetManager();
+        $widgetPath = $assetManager->publish(__DIR__. "/js", true);
+        $scriptPath = $widgetPath . '/AutoCompleteSearch.js';
+        $assetManager->registerScriptFile($scriptPath, "application.widgets.AutoCompleteSearch", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
     }
 }

@@ -15,25 +15,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class EsignPINField extends EsignField
+class GetSignatureByUsernameAndPinAction extends GetSignatureByPinAction
 {
-    /**
-     * @inheritDoc
-     */
-    public function getAction() : string
+    protected function getUser(): void
     {
-        return 'getSignatureByPin';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function init()
-    {
-        parent::init();
-        if($this->signature->isNewRecord) {
-            $this->signature->signed_user_id = Yii::app()->session['user']->id;
-            $this->signature->signatory_name = Yii::app()->session['user']->getFullName();
+        $user_id = Yii::app()->request->getPost('user_id');
+        $this->user = User::model()->findByPk($user_id);
+        if (!$this->user) {
+            throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
         }
     }
 }
