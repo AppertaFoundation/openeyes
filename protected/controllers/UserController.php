@@ -104,26 +104,13 @@ class UserController extends BaseController
         $this->renderJSON($seconds_to_expire);
     }
 
-<<<<<<< HEAD
-    public function actionGetDecryptedSignatureId($id)
-    {
-        if(!$user = User::model()->findByPk($id)) {
-            throw new CHttpException(404);
-        }
-
-        $pin = Yii::app()->request->getPost("pin");
-
-        if($imageData = $user->getDecryptedSignature($pin)) {
-            $protected_file = new \ProtectedFile();
-            $protected_file = $protected_file->createForWriting('consultant_signature');
-            file_put_contents($protected_file->getPath(), $imageData);
-            $protected_file->save();
-            echo $protected_file->id;
-        }
-        else {
-            echo "0";
-        }
-=======
+    /**
+     * Check if pincode is available
+     *
+     * @param $pincode
+     * @param $ins_auth_id
+     * @param $user_id
+     */
     public function actionCheckPincodeAvailability($pincode, $ins_auth_id, $user_id){
         $user_auth = new UserAuthentication();
         $user_auth->pincode = $pincode;
@@ -137,6 +124,5 @@ class UserController extends BaseController
         );
         $this->renderJSON($ret);
         unset($user_auth);
->>>>>>> develop
     }
 }

@@ -17,16 +17,32 @@
  */
 class DefaultController extends BaseEventTypeController
 {
-
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
     );
 
     public $booking_event;
     public $booking_operation;
     public $unbooked = false;
+
+    public function actions() {
+        return [
+            'getSignatureByPin' => [
+                'class' => 'GetSignatureByPinAction',
+                'user' => Yii::app()->user,
+                'pin' => Yii::app()->request->getPost('signature_pin'),
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => 'GetSignatureByUsernameAndPin',
+                'user' => Yii::app()->user,
+                'pin' => Yii::app()->request->getPost('signature_pin'),
+            ],
+        ];
+    }
 
     protected function beforeAction($action)
     {

@@ -15,37 +15,36 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class EncryptionDecryptionHelperTest extends CTestCase
+class GetSecretarySignatureByPinAction extends GetSignatureByPinAction
 {
-    private function generateKey() : string
+    protected function getSignatureFile(): void
     {
-        return sodium_crypto_secretbox_keygen();
+        // This method is intentionally left empty
     }
 
-    private function getMockedHelper() : EncryptionDecryptionHelper
+    protected function checkPIN(): void
     {
-        $mock = $this->getMockBuilder(EncryptionDecryptionHelper::class)
-                    ->setMethods(["getCryptoKey"])->getMock();
-        $mock->method("getCryptoKey")->willReturn($this->generateKey());
-        return $mock;
+        if(!Yii::app()->user->checkAccess('SignEvent')) {
+            throw new Exception("We're sorry, you are not authorized to sign events. Please contact support.");
+        }
+
+        if(strlen($this->pin) === 0) {
+            throw new Exception("Empty PIN was provided, please enter PIN and click 'PIN sign' again.");
+        }
+        // TODO implement required logic once it is discussed
+        if($this->pin !== "456789") {
+            throw new Exception("Incorrect PIN");
+        }
     }
 
-    public function testEncryptData()
+    protected function successResponse()
     {
-        $input = "Hello World";
-        $helper = $this->getMockedHelper();
-        $encrypted = $helper->encryptData($input);
-        $this->assertIsString($encrypted);
-        $this->assertNotEquals($input, $encrypted);
-    }
-
-    public function testDecryptData()
-    {
-        $input = "Hello World";
-        $helper = $this->getMockedHelper();
-        $encrypted = $helper->encryptData($input);
-        $decrypted = $helper->decryptData($encrypted);
-        $this->assertEquals($decrypted, $input);
+        $this->renderJSON([
+            "code" => 0,
+            "error" => "",
+            "signature_proof" => $this->signature_proof,
+            'date' => $this->date_time->format(Helper::NHS_DATE_FORMAT),
+            'time' => $this->date_time->format("H:i"),
+        ]);
     }
 }
-

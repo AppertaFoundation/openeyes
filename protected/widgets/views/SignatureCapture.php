@@ -1,88 +1,50 @@
 <?php
-/** @var SignatureCapture $this */
-$uid = uniqid();
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2021
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 ?>
-
-<style>
-    .modal-transparent {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background-color: black;
-        background-color: transparent;
-        border: 5px solid #c90000;
-    }
-
-    .modal-transparent-content {
-        background-color: transparent;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1001;
-        position: relative;
-    }
-</style>
-
-<?php if(!$this->embedded): ?>
-<button id="signature_open_<?=$uid?>" type="button" class="button small success"><?=$buttonText?></button>
-<canvas class="canvasCopy" id="canvasCopy_<?=$uid?>"></canvas>
-    <?php if ($element) :?>
-        <button data-event-id="<?=$element->event_id?>"
-                data-element-id="<?=$element->id?>"
-                data-element-type-id="<?=$element->elementType->id?>"
-                type="button"
-                class="button small success js-print-out-sign-form">Print out</button>
-
-        <?php
-        $client_script = Yii::app()->clientScript;
-        $q = http_build_query([
-            'event_id' => $element->event_id,
-            'element_id' => $element->id,
-            'element_type_id' => $element->elementType->id,
-        ]);
-        $client_script->registerScript('printSignForm', '
-                $(document).ready(function() {
-                    $(".js-print-out-sign-form").on("click", function(e) {
-                        e.preventDefault();
-                        disableButtons();
-                        $frame = $("<iframe>", {
-                            style: "display: none", 
-                            src: "/" + moduleName + "/default/printQRSignature?' . $q . '"});
-                        $frame.appendTo($("body"));
-                        $frame.get(0).contentWindow.print();
-                        setTimeout(enableButtons, 2000);
-                        
-                    });
-                });
-            ', CClientScript::POS_END);?>
-    <?php endif; ?>
-<?php endif; ?>
-<?php if($this->showMessage): ?>
-<div id="signature_message"></div>
-<?php endif; ?>
+<?php
+/** @var SignatureCapture $this */
+// TODO remove incline css once styling is done
+?>
+<div style="background:rgb(200,200,200); padding:40px 0; text-align: center">
+    <p>Please sign here</p>
+    <div style="margin-bottom: 15px">
+        <canvas id="SignatureCapture_<?=$this->uid?>_canvas" width="600" height="200" style="border: 4px dotted black; touch-action: none; background: white; "></canvas>
+    </div>
+    <div class="js-signature-buttons-container">
+        <button id="SignatureCapture_<?=$this->uid?>_gofull" class="button hint blue" type="button" data-toggle-text="Back to embedded view">Use signature pen tablet</button>
+        <button id="SignatureCapture_<?=$this->uid?>_erase" class="button hint red" type="button">Erase signature</button>
+        <button id="SignatureCapture_<?=$this->uid?>_save" class="button hint green" type="button">Save signature</button>
+    </div>
+</div>
 <script type="text/javascript">
-      if(typeof window.sc_<?=$uid?> === "undefined") {
-        window.sc_<?=$uid?> = new OpenEyes.UI.SignatureCapture({
-          requirePIN: <?php echo $this->pinSecured ? "true" : "false" ?>,
-          unique_identifier: "<?=$this->uniqueCode?>",
-          cryptKey: "<?=$this->key?>",
-          submitURL: "<?=$this->submitURL?>",
-          messageContainer: <?= $this->showMessage ? '$("#signature_message")' : '$([])' ?>,
-          csrf: {
-            name: "<?=Yii::app()->request->csrfTokenName?>",
-            token: "<?=Yii::app()->request->csrfToken?>"
-          },
-          onSubmit: <?=$this->onSubmit?>,
-          openButtonSelector: "#signature_open_<?=$uid?>",
-          widgetid: "<?=$uid?>",
-          embedded: <?=$this->embedded ? "true" : "false" ?>,
-          embedded_canvas_selector: "<?=$this->embedded_canvas_selector?>"
+    if (typeof window.sc_<?=$this->uid?> === "undefined") {
+        window.sc_<?=$this->uid?> = new OpenEyes.UI.SignatureCapture({
+            canvasSelector: "#SignatureCapture_<?=$this->uid?>_canvas",
+            submitURL: "<?=$this->submit_url?>",
+            csrf: {
+                name: "<?=Yii::app()->request->csrfTokenName?>",
+                token: "<?=Yii::app()->request->csrfToken?>"
+            },
+            afterSubmit: <?=$this->after_submit_js?>,
+            openButtonSelector: "#signature_open_<?=$this->uid?>",
+            widgetId: "<?=$this->uid?>",
+            eraseButtonSelector: "#SignatureCapture_<?=$this->uid?>_erase",
+            saveButtonSelector: "#SignatureCapture_<?=$this->uid?>_save",
+            toggleFullScreenButtonSelector: "#SignatureCapture_<?=$this->uid?>_gofull"
         });
-      }
+    }
 </script>

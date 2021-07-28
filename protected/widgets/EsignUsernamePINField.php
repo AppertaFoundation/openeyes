@@ -15,37 +15,25 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class EncryptionDecryptionHelperTest extends CTestCase
+class EsignUsernamePINField extends EsignField
 {
-    private function generateKey() : string
+    /**
+     * @inheritDoc
+     */
+    public function getAction() : string
     {
-        return sodium_crypto_secretbox_keygen();
+        return 'getSignatureByUsernameAndPin';
     }
 
-    private function getMockedHelper() : EncryptionDecryptionHelper
+    /**
+     * @inheritDoc
+     */
+    public function init()
     {
-        $mock = $this->getMockBuilder(EncryptionDecryptionHelper::class)
-                    ->setMethods(["getCryptoKey"])->getMock();
-        $mock->method("getCryptoKey")->willReturn($this->generateKey());
-        return $mock;
-    }
-
-    public function testEncryptData()
-    {
-        $input = "Hello World";
-        $helper = $this->getMockedHelper();
-        $encrypted = $helper->encryptData($input);
-        $this->assertIsString($encrypted);
-        $this->assertNotEquals($input, $encrypted);
-    }
-
-    public function testDecryptData()
-    {
-        $input = "Hello World";
-        $helper = $this->getMockedHelper();
-        $encrypted = $helper->encryptData($input);
-        $decrypted = $helper->decryptData($encrypted);
-        $this->assertEquals($decrypted, $input);
+        parent::init();
+        $assetManager = Yii::app()->getAssetManager();
+        $widgetPath = $assetManager->publish(__DIR__. "/js", true);
+        $scriptPath = $widgetPath . '/AutoCompleteSearch.js';
+        $assetManager->registerScriptFile($scriptPath, "application.widgets.AutoCompleteSearch", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
     }
 }
-

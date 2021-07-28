@@ -591,20 +591,21 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * @param $text
-     * @param $key
-     * @return string|null
+     * Returns a standalone img tag with a base64-encoded image of the user's signature
+     *
+     * @param array $html_options   Additional HTML options, @see \CHtml::img()
+     * @return string|null  The image or null if the user does not have a saved signature
      */
-    protected function decryptSignature($text, $key)
+    public function getSignatureImage(array $html_options = []) : ?string
     {
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $decrypt = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
-        if (Yii::app()->params['no_md5_verify']) {
-            return $decrypt;
-        }
-
-        return Helper::md5Verified($decrypt);
+        return !is_null($this->signature_file_id) ?
+            \CHtml::image(
+                "/protectedFile/view/".$this->signature_file_id."/?name=Signature",
+                "Signature",
+                $html_options
+                )
+            :
+            null;
     }
 
     /**
@@ -900,11 +901,51 @@ class User extends BaseActiveRecordVersioned
 
     public function hasStoredSignature()
     {
-        if(is_null($this->signature_file_id)) {
+        if (is_null($this->signature_file_id)) {
             return false;
         }
 
         $signature_file = ProtectedFile::model()->findByPk($this->signature_file_id);
         return file_exists($signature_file->getPath());
+    }
+
+    /**
+     * Check the patient's pin.
+     *
+     * @param $pincode
+     * @param null $user_id
+     * @param null $institution_id
+     * @param null $site_id
+     * @return bool
+     * @throws Exception
+     */
+    public function checkPin($pincode, $user_id = null, $institution_id = null, $site_id = null) : bool
+    {
+        $pin_ok = false;
+
+        $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
+        $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
+        $user_id = $user_id ?? $this->id;
+
+        $institution_authentication = InstitutionAuthentication::model()
+            ->find(
+                "(site_id=:site_id || site_id IS NULL) AND institution_id=:institution_id",
+                [":site_id"=>$site_id, ":institution_id"=>$institution_id]
+            );
+
+        if ($institution_authentication) {
+            $auth = UserAuthentication::model()
+                ->find(
+                    'user_id=:user_id AND institution_authentication_id=:institution_authentication_id AND pincode=:pincode',
+                    [
+                        ':user_id'=>$user_id,
+                        ':institution_authentication_id'=>$institution_authentication->id,
+                        ':pincode' => $pincode
+                    ]
+                );
+            $pin_ok = !is_null($auth);
+        }
+
+        return $pin_ok;
     }
 }
