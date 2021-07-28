@@ -44,6 +44,7 @@ $config = [
                 'Follow-up Statuses' => '/OphCiExamination/admin/manageClinicOutcomesStatus',
                 'Follow-up Roles' =>  '/OphCiExamination/admin/ClinicOutcomeRoles/index',
                 'Follow-up Risk Status' =>  '/OphCiExamination/admin/ClinicOutcomeRiskStatus/edit',
+                'Freehand draw templates' =>  '/OphCiExamination/admin/FreehandDraw/index',
                 'Cataract surgery reasons' => ['uri' => '/OphCiExamination/admin/primaryReasonForSurgery', 'restricted' => array('admin')],
                 'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
                 'Medication Stop Reasons' => ['uri' => '/OphCiExamination/admin/MedicationStopReason/index', 'restricted' => array('admin')],
@@ -89,6 +90,14 @@ $config = [
                 'position' => 9,
                 'uri' => '/OphCiExamination/OptomFeedback/list',
                 'restricted' => [ ['Optom co-ordinator', 'user_id'] ],
+            ]
+        ],
+
+        'allowed_file_types' => [
+            'DrawingTemplate' => [
+                'jpg'   => 'image/jpeg',
+                'jpeg'  => 'image/jpeg',
+                'png'   => 'image/png',
             ]
         ],
     ],

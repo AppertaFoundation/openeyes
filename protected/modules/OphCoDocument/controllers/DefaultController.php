@@ -627,7 +627,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setComplexAttributes_Element_OphCoDocument_Document($element, $data, $index)
     {
-        $model_name = \CHtml::modelName($element);
         if ($data['upload_mode'] === 'single') {
             if (!empty($data['ProtectedFile']['single_file_content']) && $data['single_file_canvas_modified'] === '1') {
                 $name = ProtectedFile::model()->findByPk($element->single_document_id)->name;
