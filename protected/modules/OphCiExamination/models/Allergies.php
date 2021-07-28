@@ -187,7 +187,13 @@ class Allergies extends \BaseEventTypeElement
             // add the entries from the DB
             foreach ($element->entries as $entry) {
                 $new_entry = new AllergyEntry();
-                $new_entry->loadFromExisting($entry);
+
+                $new_entry->allergy_id = $entry->allergy_id;
+                $new_entry->reactions = $entry->reactions;
+                $new_entry->other = $entry->other;
+                $new_entry->comments = $entry->comments;
+                $new_entry->has_allergy = $entry->has_allergy;
+
                 $entries[] = $new_entry;
             }
         }

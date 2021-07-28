@@ -105,7 +105,18 @@
                                     <?php if (isset($entries[(string)AllergyEntry::$PRESENT][$i])) {?>
                                         <tr>
                                             <td><?= $entries[(string)AllergyEntry::$PRESENT][$i]->getDisplayAllergy(); ?></td>
-                                            <td><?= ($entries[(string)AllergyEntry::$PRESENT][$i]['comments'] !== "" ? $entries[(string)AllergyEntry::$PRESENT][$i]['comments'] : '<span class="none">None</span>'); ?></td>
+                                            <td><?= $entries[(string)AllergyEntry::$PRESENT][$i]->getReactionString(); ?></td>
+                                            <td>
+                                                <?php
+                                                if ($entries[(string)AllergyEntry::$PRESENT][$i]['comments'] !== "") {
+                                                    $user_name = User::model()->findByPk($entries[(string)AllergyEntry::$PRESENT][$i]->created_user_id)->getFullName();
+                                                    echo "<i class=\"oe-i comments-who small pad-right js-has-tooltip\" data-tooltip-content=\"<?='<small>User comment by </small><br/>$user_name\"></i>";
+                                                    echo $entries[(string)AllergyEntry::$PRESENT][$i]['comments'];
+                                                } else {
+                                                    echo '<span class="none">None</span>';
+                                                }
+                                                ?>
+                                            </td>
                                         </tr>
                                     <?php } ?>
                                 <?php endfor; ?>
