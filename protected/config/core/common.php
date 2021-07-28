@@ -76,6 +76,7 @@ $config = array(
         'application.components.*',
         'application.components.reports.*',
         'application.components.actions.*',
+        'application.components.traits.*',
         'application.components.worklist.*',
         'application.components.patientSearch.*',
         'application.components.traits.*',
