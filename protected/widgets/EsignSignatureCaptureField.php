@@ -17,8 +17,6 @@
 
 class EsignSignatureCaptureField extends EsignField
 {
-    /** @var string The person signing */
-    public string $signatory_name = "";
     /**
      * @inheritDoc
      */
@@ -26,5 +24,17 @@ class EsignSignatureCaptureField extends EsignField
     {
         // No need to return anything as there's no submit button in this case
         return "";
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function getHiddenFields() : array
+    {
+        $fields = ["id", "type", "proof"];
+        if(!$this->signature->getRoleOptions()) {
+            $fields[] = "signatory_role";
+        }
+        return $fields;
     }
 }

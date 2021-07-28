@@ -102,6 +102,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                     "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
                     "signature_type" : widget.options.signature_type,
                     "element_id" : widget.options.element_id,
+                    "element_type_id" : widget.$element.closest("section.element").attr("data-element-type-id"),
                     "event_id" : OE_event_id,
                     "signatory_role" : widget.$signatoryRole.val(),
                     "signatory_name" : widget.$signatoryName.val()

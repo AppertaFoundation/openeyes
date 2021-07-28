@@ -119,4 +119,12 @@ abstract class BaseSignature extends BaseActiveRecordVersioned
     {
         return "sigi sig";
     }
+
+    /**
+     * @return string[] If not empty, the user is allowed to select a signatory role from this list
+     */
+    public function getRoleOptions() : array
+    {
+        return [];
+    }
 }

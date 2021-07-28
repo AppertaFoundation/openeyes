@@ -20,14 +20,29 @@
 $el_class = get_class($element);
 $widget_class = get_class($this);
 $uid = $el_class . "_" . $widget_class . "_" . $row_id;
+$name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]";
 ?>
 <tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
+    <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>
     <!-- Role -->
-    <td><span class="js-signatory-label"><?= $this->signatory_label ?></span></td>
+    <td><span class="js-signatory-label">
+            <?php if(!empty($roles = $this->signature->getRoleOptions())): ?>
+                <?= CHtml::dropDownList($name_prefix."[signatory_role]", $this->signature->signatory_role, array_combine($roles, $roles), ["readonly" => $this->isSigned()]) ?>
+            <?php else: ?>
+                <?= $this->signature->signatory_role ?></span></td>
+            <?php endif; ?>
     <!-- Name -->
-    <td><span class="js-signatory-name"><?php echo $this->signatory_name ?></span></td>
+    <td>
+        <span class="js-signatory-name">
+            <?= \CHtml::textField(
+                    $name_prefix."[signatory_name]",
+                    $this->signature->signatory_name,
+                    ["readonly" => $this->isSigned(), "placeholder" => "Please enter name"]
+            ) ?>
+        </span>
+    </td>
     <!-- Date -->
     <td>
         <div class="js-signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>

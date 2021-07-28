@@ -95,4 +95,24 @@ abstract class BaseEsignElement extends BaseEventTypeElement
         }
         parent::afterSave();
     }
+
+    /** @return array Informational messages to display */
+    public function getInfoMessages(): array
+    {
+        return [];
+    }
+
+    /** @return array Warning messages to display */
+    public function getWarningMessages(): array
+    {
+        return [];
+    }
+
+
+    protected function getSignaturesByType(int $type)
+    {
+        return array_filter($this->signatures, function($signature) use ($type) {
+            return (int)$signature->type === $type;
+        });
+    }
 }

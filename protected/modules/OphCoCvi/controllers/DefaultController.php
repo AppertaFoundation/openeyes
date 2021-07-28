@@ -45,7 +45,20 @@ class DefaultController extends \BaseEventTypeController
         'signCVI' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST,
         'LabelPDFprint' => self::ACTION_TYPE_VIEW,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
     );
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'getSignatureByPin' => [
+                'class' => \GetSignatureByPinAction::class
+            ],
+        ];
+    }
 
     /** @var string label used in session storage for the list filter values */
     protected static $FILTER_LIST_KEY = 'OphCoCvi_list_filter';

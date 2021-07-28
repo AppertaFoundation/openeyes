@@ -32,8 +32,8 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
         let widget = this;
         this.$element.on("signatureAdded", function () {
             if(widget.options.mode === "view") {
-                window.formHasChanged = false;
-                window.location.reload();
+                //window.formHasChanged = false;
+                //window.location.reload();
             }
         });
     };

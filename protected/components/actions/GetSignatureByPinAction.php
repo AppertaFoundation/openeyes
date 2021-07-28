@@ -91,6 +91,7 @@ class GetSignatureByPinAction extends \CAction
         if(strlen(Yii::app()->request->getPost('element_id')) > 0) {
             $this->updateElement(
                 (int)Yii::app()->request->getPost('element_id'),
+                (int)Yii::app()->request->getPost('element_type_id'),
                 (int)Yii::app()->request->getPost('signature_type')
             );
         }
@@ -132,14 +133,14 @@ class GetSignatureByPinAction extends \CAction
      * Updates the element. This is required when signing in view mode
      * @return void
      */
-    protected function updateElement(int $element_id, int $signature_type) : void
+    protected function updateElement(int $element_id, int $element_type_id, int $signature_type) : void
     {
         /** @var Event $event */
         if($event = Event::model()->findByPk(Yii::app()->request->getPost("event_id"))) {
             $els = array_filter(
                 $event->getElements(),
-                function ($e) use ($element_id) {
-                    return (int)$e->id === $element_id;
+                function ($e) use ($element_id, $element_type_id) {
+                    return (int)$e->id === $element_id && (int)$e->getElementType()->id === $element_type_id;
                 }
             );
             if($els) {
