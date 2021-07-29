@@ -1,8 +1,0 @@
-{
-  "name": "openeyes/oph-tr-laser",
-  "description": "Laser Event module for OpenEyes, designed to record laser surgery events for patients.",
-  "type": "openeyes-module",
-  "require": {
-    "openeyes/module-installer": "*"
-  }
-}

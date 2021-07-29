@@ -42,7 +42,11 @@ $this->event_actions[] = EventAction::button(
     array('level' => 'secondary'),
     array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id)
 );
-
+if ($cocoa_api = \Yii::app()->moduleAPI->get("OphInCocoa")) {
+    if ($event_button =  $cocoa_api->prescriptionEventAction($form_id)) {
+        $this->event_actions[] = $event_button;
+    }
+}
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button(
         'Save and print',

@@ -23,7 +23,8 @@
     "league/oauth2-client": "^2.4",
     "jumbojett/openid-connect-php": "0.9.*",
     "ext-openssl": "*",
-    "ext-soap": "*"
+    "ext-soap": "*",
+    "wikimedia/composer-merge-plugin": "^2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "7.5.20",
@@ -50,5 +51,19 @@
     "classmap": [
       "features/bootstrap/Pages/OpenEyesPage.php"
     ]
+  },
+  "extra": {
+    "merge-plugin": {
+      "include": [
+        "protected/modules/*/composer.json"
+      ],
+      "recurse": true,
+      "replace": false,
+      "ignore-duplicates": false,
+      "merge-dev": true,
+      "merge-extra": false,
+      "merge-extra-deep": false,
+      "merge-scripts": false
+    }
   }
 }
