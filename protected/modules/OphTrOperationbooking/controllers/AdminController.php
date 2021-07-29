@@ -1998,4 +1998,31 @@ class AdminController extends ModuleAdminController
 
         return parent::beforeAction($action);
     }
+
+    public function actionPreassessmentType()
+    {
+        $this->genericAdmin('Pre-assessment Types', 'OphTrOperationbooking_PreAssessment_Type', array(
+            'extra_fields' => array(
+                array(
+                    'field' => 'use_location',
+                    'type' => 'boolean',
+                )
+            ),
+            'div_wrapper_class' => 'cols-5',
+        ));
+    }
+
+    public function actionPreassessmentLocation()
+    {
+        $this->genericAdmin('Pre-assessment Locations', 'OphTrOperationbooking_PreAssessment_Location', array(
+            'extra_fields' => array(
+                array(
+                    'field' => 'site_id',
+                    'type' => 'lookup',
+                    'model' => 'Site',
+                )
+            ),
+            'div_wrapper_class' => 'cols-5',
+        ));
+    }
 }

@@ -196,7 +196,6 @@
             });
         }
 
-
         complexityRadios = document.getElementsByName('Element_OphTrOperationbooking_Operation[complexity]');
         high_flow_low_option = complexityRadios[1];
         dialog = new OpenEyes.UI.Dialog();

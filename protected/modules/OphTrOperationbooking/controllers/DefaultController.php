@@ -532,9 +532,9 @@ class DefaultController extends OphTrOperationbookingEventController
         foreach ($this->open_elements as $element) {
             if (get_class($element) == 'Element_OphTrOperationbooking_Operation') {
                 $operation_element = $element;
-                break;
             }
         }
+
         if ($operation_element && $operation_element->booking) {
             $anaesthetic_type_ids = isset($data['AnaestheticType']) ? $data['AnaestheticType'] : [];
             foreach ($anaesthetic_type_ids as $anaesthetic_type_id) {
@@ -867,6 +867,41 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->operation->on_hold_comment = null;
         $this->operation->save();
         return $this->redirect(array('default/view/' . $this->event->id));
+    }
+
+
+    protected function getEventElements()
+    {
+        if ($this->action->id == 'view') {
+            return parent::getEventElements();
+        }
+
+        $elements = parent::getEventElements();
+        foreach ($elements as $key => $element) {
+            if (get_class($element) == 'Element_OphTrOperationbooking_PreAssessment') {
+                if (!$element->hasTypes()) {
+                    unset($elements[$key]);
+                }
+            }
+        }
+        return $elements;
+    }
+
+    /**
+     * Get all the available element types for the event
+     *
+     * @return array
+     */
+    public function getAllElementTypes()
+    {
+        $preassessment_element = new Element_OphTrOperationbooking_PreAssessment();
+        $remove = !$preassessment_element->hasTypes() ? ['Element_OphTrOperationbooking_PreAssessment'] : [];
+        return array_filter(
+            parent::getAllElementTypes(),
+            function ($et) use ($remove) {
+                return !in_array($et->class_name, $remove);
+            }
+        );
     }
 
     public function actionGetHighFlowCriteriaPopupContent()

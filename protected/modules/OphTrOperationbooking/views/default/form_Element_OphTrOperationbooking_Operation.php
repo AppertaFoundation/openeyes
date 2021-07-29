@@ -333,14 +333,6 @@ $procedure_readonly = $this->procedure_readonly;
                     </tr>
                     <tr>
                         <td>
-                            Pre-assessment booking required
-                        </td>
-                        <td>
-                            <?php echo $form->radioBoolean($element, 'preassessment_booking_required', array('nowrapper' => true)); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
                             Overnight Stay required
                         </td>
                         <td>

@@ -18,7 +18,6 @@
 class WaitingListController extends BaseModuleController
 {
     public $renderPatientPanel = false;
-    public $pac_api;
 
     public function accessRules()
     {
@@ -195,31 +194,6 @@ class WaitingListController extends BaseModuleController
                     'order' => 'decision_date asc',
                 ));
         Yii::app()->event->dispatch('end_batch_mode');
-
-        if (($this->pac_api = Yii::app()->moduleAPI->get('OphInMehPac'))) {
-            $searchoptions = $_POST;
-            $event_id_condition = $this->pac_api->getWaitingListConditionByPAC($operations, $searchoptions);
-            if ($event_id_condition) {
-                $operations = Element_OphTrOperationbooking_Operation::model()
-                    ->with(array(
-                        'event.episode.firm.serviceSubspecialtyAssignment.subspecialty',
-                        'event.episode.patient.contact',
-                        'event.episode.patient.practice',
-                        'event.episode.patient.identifiers',
-                        'event.episode.patient.contact.correspondAddress',
-                        'site',
-                        'eye',
-                        'priority',
-                        'status',
-                        'date_letter_sent',
-                        'procedures',
-                    ))->findAll(array(
-                        'condition' => $event_id_condition . ' AND episode.end_date IS NULL' . $where_sql,
-                        'params' => $where_params,
-                        'order' => 'decision_date asc',
-                    ));
-            }
-        }
 
         return $operations;
     }
