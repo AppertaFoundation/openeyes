@@ -17,54 +17,63 @@
 
 class EncryptionDecryptionHelper
 {
-    public function encryptData($plainText) {
-        try {
-            // Decrypt the data first, to check if the data is already encrypted or not.
-            $this->decryptData($plainText);
-            return $plainText;
-        } catch (Exception $e) {
-            try {
-                if ( file_exists(Yii::app()->params['sodium_crypto_key_path']) ) {
-                    $key = sodium_hex2bin(rtrim(file_get_contents(Yii::app()->params['sodium_crypto_key_path'])));
-                    $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-                    $ciphertext = sodium_crypto_secretbox($plainText, $nonce, $key);
+    /**
+     * Encrypts a plain text using the cryptography key that's stored in the
+     * location specified by application parameter "sodium_crypto_key_path".
+     *
+     * @param string $plainText
+     * @return string The encrypted text
+     * @throws SodiumException|Exception
+     */
+    public function encryptData(string $plainText) : string
+    {
+        $key = $this->getCryptoKey();
+        $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+        $ciphertext = sodium_crypto_secretbox($plainText, $nonce, $key);
 
-                    // cleanup
-                    sodium_memzero($plainText);
-                    sodium_memzero($key);
+        // cleanup
+        sodium_memzero($plainText);
+        sodium_memzero($key);
 
-                    $encoded = base64_encode($nonce . $ciphertext);
-                    return $encoded;
-                }
-            } catch (Exception $e) {
-                throw new \Exception($e);
-            }
-        }
+        return base64_encode($nonce . $ciphertext);
     }
 
-    public function decryptData($text) {
-        try {
-            if (file_exists(Yii::app()->params['sodium_crypto_key_path'])) {
-                $key = sodium_hex2bin(rtrim(file_get_contents(Yii::app()->params['sodium_crypto_key_path'])));
-                $decoded = base64_decode($text);
-
-                // check for general failures
-                if ($decoded === false) {
-                    throw new \Exception('The encoding failed');
-                }
-
-                $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
-                $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
-                $plaintext = sodium_crypto_secretbox_open($ciphertext, $nonce, $key);
-
-                // cleanup
-                sodium_memzero($ciphertext);
-                sodium_memzero($key);
-
-                return $plaintext;
-            }
-        } catch (Exception $e) {
-            throw new \Exception($e);
+    /**
+     * Decrypts an encrypted text using the cryptography key that's stored in the
+     * location specified by application parameter "sodium_crypto_key_path".
+     *
+     * @param string $text
+     * @return string The decrypted text
+     * @throws SodiumException|Exception
+     */
+    public function decryptData(string $text) : string
+    {
+        $key = $this->getCryptoKey();
+        $decoded = base64_decode($text, true);
+        if ($decoded === false) {
+            throw new Exception('Failed to decode encrypted text');
         }
+        $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+        $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+        $plaintext = sodium_crypto_secretbox_open($ciphertext, $nonce, $key);
+
+        // cleanup
+        sodium_memzero($ciphertext);
+        sodium_memzero($key);
+
+        return $plaintext;
+    }
+
+    protected function getCryptoKey() : string
+    {
+        $key_path = Yii::app()->params['sodium_crypto_key_path'];
+        if(is_null($key_path)) {
+            throw new Exception("Application parameter 'sodium_crypto_key_path' must be set");
+        }
+        if(!file_exists($key_path) || !is_file($key_path)) {
+            throw new Exception("Key file not found in $key_path");
+        }
+
+        return sodium_hex2bin(rtrim(file_get_contents($key_path)));
     }
 }

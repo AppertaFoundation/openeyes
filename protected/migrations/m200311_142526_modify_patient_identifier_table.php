@@ -139,6 +139,11 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
             'db' => $this->dbConnection,
         ]);
         $current_page = 0;
+
+        // not to flood the logs
+        echo "\n> insert into patient_identifier ... ";
+        ob_start();
+
         while ($current_page < $pagination->getPageCount()) {
             $pagination->setCurrentPage($current_page);
             $dataProvider->setPagination($pagination);
@@ -155,9 +160,16 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                     }
                 }
             }
-            $this->insertMultiple('patient_identifier', $rows);
+
+            if ($rows) {
+                $this->insertMultiple('patient_identifier', $rows);
+            }
+
             $current_page++;
         }
+
+        ob_get_clean();
+        echo "done\n";
     }
 
     public function safeDown()

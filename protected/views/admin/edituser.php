@@ -297,12 +297,14 @@ $form = $this->beginWidget(
         });
 
         $('#user-auth-rows').on('change', '.js-change-inst-auth', function (e) {
-
-            new OpenEyes.UI.Dialog.Alert({
-                content: "Warning Institution Authentication changed - password status and expiry has been reset to system defaults."
-            }).open();
-
             let $row = $(this).closest('tr');
+
+            if ($row.find('.js-id').val() !== '') {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Warning Institution Authentication changed - password status and expiry has been reset to system defaults."
+                }).open();
+            }
+
             $row.find('.js-password-status').val(defaultPasswordStatus);
             $row.find('.js-remove-row').hide();
             $row.find('.js-row-spinner').show();

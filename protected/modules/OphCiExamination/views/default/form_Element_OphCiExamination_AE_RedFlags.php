@@ -46,7 +46,7 @@ $current_flags = $element->getMyCurrentFlagOptionIDs();
             </tbody>
         </table>
     </div>
-    <div class="add-data-actions flex-item-bottom" id="add-ae-redflags-popup" <?= 'style="display: none;"' ?>>
+    <div class="add-data-actions flex-item-bottom" id="add-ae-redflags-popup" <?= $element->nrf_check?'style="display: none;"':'' ?>>
         <button id="show-add-rf-popup" class="button hint green js-add-select-search" type="button">
             <i class="oe-i plus pro-theme"></i>
         </button>

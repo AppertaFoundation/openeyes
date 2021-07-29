@@ -61,11 +61,11 @@ class Procedure extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('term, short_format, default_duration', 'required'),
+            array('term, short_format, default_duration, snomed_code, snomed_term, aliases', 'required'),
             array('default_duration', 'numerical', 'integerOnly' => true, 'max' => 65535),
             array('term, short_format, snomed_term', 'length', 'max' => 255),
             array('operationNotes', 'validateOpNotes'),
-            array('id, term, short_format, default_duration, active, is_clinic_proc, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
+            array('id, term, short_format, default_duration, active, is_clinic_proc, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes, low_complexity_criteria', 'safe'),
         );
     }
 
@@ -100,6 +100,7 @@ class Procedure extends BaseActiveRecordVersioned
             'short_format' => 'Short Format',
             'default_duration' => 'Default Duration',
             'opcsCodes.name' => 'OPCS Code',
+            'low_complexity_criteria' => 'Low Complexity Criteria',
         );
     }
 

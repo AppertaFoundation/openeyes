@@ -14,6 +14,9 @@
  */
 ?>
 
+<?php
+Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('/js/oeadmin/OpenEyes.HTMLSettingEditorController.js'), \CClientScript::POS_HEAD);
+?>
 <div class="cols-5">
 
     <h2>Edit Procedure</h2>
@@ -165,7 +168,19 @@
                 ]);
                 ?>
             </tr>
-
+            <tr>
+                <td>Low Complexity Criteria</td>
+                <td>
+                    <?=\CHtml::activeTextField(
+                        $procedure,
+                        'low_complexity_criteria',
+                        [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]
+                    ); ?>
+                </td>
+            </tr>
             </tbody>
             <tfoot>
             <tr>
@@ -193,3 +208,13 @@
         </table>
     </form>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        let html_editor_controller =
+            new OpenEyes.HTMLSettingEditorController(
+                "Procedure_low_complexity_criteria",
+                <?= json_encode(\Yii::app()->params['tinymce_default_options'])?>,
+            );
+    });
+</script>

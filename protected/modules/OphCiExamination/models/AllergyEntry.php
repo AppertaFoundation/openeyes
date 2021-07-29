@@ -33,7 +33,7 @@ namespace OEModule\OphCiExamination\models;
  * @property Allergies $element
  * @property array $reactions
  */
-class AllergyEntry extends \BaseElement
+class AllergyEntry extends \BaseActiveRecordVersioned
 {
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;

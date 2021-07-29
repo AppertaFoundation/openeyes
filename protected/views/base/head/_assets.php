@@ -44,6 +44,8 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.Util.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.Util.EventEmitter.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.DOM.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.ImageAnnotator.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Sidebar.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.StickyElement.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Tooltip.js')?>

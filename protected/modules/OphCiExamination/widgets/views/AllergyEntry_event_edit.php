@@ -58,7 +58,7 @@ $other_text_field_classes = $entry->hasErrors('other') ? 'highlighted-error erro
                     'id',
                     'name'
                 ),
-                ['class' => 'cols-full', 'empty' => 'Select reaction']
+                ['class' => 'cols-10', 'empty' => 'Select reaction']
             );
             ?>
         <ul id="<?=$field_prefix?>[reactions]" class="oe-multi-select inline">

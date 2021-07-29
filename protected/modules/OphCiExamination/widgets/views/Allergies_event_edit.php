@@ -36,13 +36,12 @@ $required_allergy_ids = array_map(function ($r) {
             No allergies
         </label>
     </div>
-    <table id="<?= $model_name ?>_entry_table" class="cols-8">
+    <table id="<?= $model_name ?>_entry_table" class="cols-full">
         <colgroup>
-            <col class="cols-3">
-            <col class="cols-3">
+            <col class="cols-2">
             <col class="cols-4">
             <col class="cols-3">
-            <col class="cols-2">
+            <col class="cols-3">
         </colgroup>
         <tbody>
         <?php

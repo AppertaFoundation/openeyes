@@ -593,7 +593,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function getSortedElements()
     {
-        $set = $this->set ? $this->set : $this->getSetFromEpisode($this->episode);
+        $set = $this->set ?: $this->getSetFromEpisode($this->episode);
         $sortable_elements = [];
 
         foreach ($this->event->getElements() as $element) {
