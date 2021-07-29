@@ -46,6 +46,7 @@ class DefaultController extends \BaseEventTypeController
         'list' => self::ACTION_TYPE_LIST,
         'LabelPDFprint' => self::ACTION_TYPE_VIEW,
         'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'saveCapturedSignature' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -57,6 +58,9 @@ class DefaultController extends \BaseEventTypeController
             'getSignatureByPin' => [
                 'class' => \GetSignatureByPinAction::class
             ],
+            'saveCapturedSignature' => [
+                "class" => \SaveCapturedSignatureAction::class
+            ]
         ];
     }
 

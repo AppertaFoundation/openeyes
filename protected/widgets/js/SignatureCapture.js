@@ -48,7 +48,7 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
             console.error("Canvas with id " + this.options.canvasSelector + "not found");
         }
         // Adjust canvas to its container
-        let width = this.$canvas.closest("div").innerWidth() - 8;
+        let width = this.$canvas.closest("div").innerWidth() - 40;
         this.$canvas.attr("width", width);
         this.$canvas.attr("height", width / 3);
 
@@ -201,22 +201,28 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     SignatureCapture.prototype.submitSignature = function()
     {
         let widget = this;
+        let waitDlg = null;
         if(this.isFullScreen) {
             this.exitFullScreen();
         }
-        let waitDlg = new OpenEyes.UI.Dialog({
-            title: "Processing...",
-            content: "<p>We're securing and saving your signature. Please wait.</p>",
-            width: "auto"
-        });
-        waitDlg.open();
+        // No UI in print mode
+        if(typeof OpenEyes.UI.Dialog !== "undefined") {
+            waitDlg = new OpenEyes.UI.Dialog({
+                title: "Processing...",
+                content: "<p>We're securing and saving your signature. Please wait.</p>",
+                width: "auto"
+            });
+            waitDlg.open();
+        }
 
         let postData = {};
         postData.image = widget.signatureImage;
         postData[widget.options.csrf.name] = widget.options.csrf.token;
 
         $.post(widget.options.submitURL, postData, function(data) {
-            waitDlg.close();
+            if(waitDlg !== null) {
+                waitDlg.close();
+            }
             widget.signaturePad.off();
             widget.options.afterSubmit(data, widget);
         });

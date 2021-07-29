@@ -128,7 +128,11 @@ OpenEyes.UI = OpenEyes.UI || {};
             );
         });
         this.$popupSignButton.click(function () {
-            let printUrl =  baseUrl + "/" + moduleName + "/default/print/" + OE_event_id + "?html=1&auto_print=0&sign=1&element_id=";
+            let printUrl =  baseUrl + "/" + moduleName +
+                "/default/print/" + OE_event_id +
+                "?html=1&auto_print=0&sign=1&element_id=" + widget.options.element_id +
+                "&element_type_id=" + widget.$element.closest("section.element").attr("data-element-type-id") +
+                "&signature_type=" + widget.options.signature_type;
             let popup = new OpenEyes.UI.Dialog({
                 title: "e-Sign",
                 iframe: printUrl,

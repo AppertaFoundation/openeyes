@@ -28,7 +28,7 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
     <td><span class="highlighter js-row-num"></span></td>
     <!-- Role -->
     <td><span class="js-signatory-label">
-            <?php if(!empty($roles = $this->signature->getRoleOptions())): ?>
+            <?php if(!$this->isSigned() && !empty($roles = $this->signature->getRoleOptions())): ?>
                 <?= CHtml::dropDownList($name_prefix."[signatory_role]", $this->signature->signatory_role, array_combine($roles, $roles), ["readonly" => $this->isSigned()]) ?>
             <?php else: ?>
                 <?= $this->signature->signatory_role ?></span></td>
@@ -36,7 +36,7 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
     <!-- Name -->
     <td>
         <span class="js-signatory-name">
-            <?= \CHtml::textField(
+            <?= $this->isSigned() ? $this->signature->signatory_name : \CHtml::textField(
                     $name_prefix."[signatory_name]",
                     $this->signature->signatory_name,
                     ["readonly" => $this->isSigned(), "placeholder" => "Please enter name"]
@@ -54,10 +54,11 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
         <div class="js-signature-wrapper flex-l" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
             <?php $this->displaySignature() ?>
             <div class="esigned-at">
-                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time">07:46</span>
+                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time">
+                    <?php $this->displaySignatureTime() ?></span>
             </div>
         </div>
-        <div class="js-signature-control">
+        <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
             <button type="button" class="js-popup-sign-btn">e-Sign</button>
             <button type="button" class="js-device-sign-btn" disabled="disabled">e-Sign using linked device</button>
         </div>

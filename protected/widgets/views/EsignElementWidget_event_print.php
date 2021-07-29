@@ -17,9 +17,26 @@
  */
 ?>
 <?php /** @var EsignElementWidget $this */ ?>
-<?php if (count($this->element->signatures) > 0): ?>
-    <p><b>E-signature<?= count($this->element->signatures) > 1 ? "s" :""?>:</b></p>
-    <?php foreach ($this->element->signatures as $signature): ?>
-        <?php echo $signature->getPrintout(); ?>
+<?php $signatures = $this->element->getSignatures(); ?>
+<?php if (count($signatures) > 0): ?>
+    <p><b>E-signature<?= count($signatures) > 1 ? "s" :""?>:</b></p>
+    <?php foreach ($signatures as $signature): ?>
+        <?php if($this->isBeingSigned($signature)) {
+            $this->widget(SignatureCapture::class, [
+                "submit_url" => Yii::app()->createUrl(
+                        $this->controller->module->id."/".$this->controller->id."/saveCapturedSignature",
+                        [
+                            "element_id" => $this->element->id,
+                            "element_type_id" => $this->element->getElementType()->id,
+                            "signature_type" => $signature->type,
+                        ]
+                ),
+                "after_submit_js" => "function(response, widget){window.parent.location.reload();}",
+            ]);
+        }
+        else if($signature->isSigned()){
+            echo $signature->getPrintout();
+        }
+        ?>
     <?php endforeach; ?>
 <?php endif; ?>
