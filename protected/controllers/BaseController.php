@@ -279,6 +279,7 @@ class BaseController extends Controller
         $this->jsVars['OE_GP_Setting'] = \SettingMetadata::model()->getSetting('gp_label');
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
         $this->jsVars['popupMode'] = SettingMetadata::model()->getSetting('patient_overview_popup_mode');
+        $this->jsVars['auth_source'] = Yii::app()->params['auth_source'];
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);

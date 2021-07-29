@@ -104,7 +104,6 @@ $config = array(
     'params' => array(
         //'pseudonymise_patient_details' => false,
         //'ab_testing' => false,
-        'auth_source' => $authSource,
         'local_users' => array('admin','api','docman_user','payload_processor'),
         //'log_events' => true,
         //'default_site_code' => '',

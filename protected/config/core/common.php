@@ -56,8 +56,11 @@ if (file_exists('/etc/openeyes/db.conf')) {
     $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
-    $authSource = getenv('AUTH_SOURCE') ?: 'BASIC';
+    $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
 /** END SINGLE SIGN-ON SETTINGS */
+
+// Select from SAML, OIDC, LDAP or BASIC
+$authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');
 
 $config = array(
     'name' => 'OpenEyes',
@@ -296,7 +299,6 @@ $config = array(
             'connectionID' => 'db',
             'sessionTableName' => 'user_session',
             'autoCreateSessionTable' => false,
-            //'timeout' => getenv('OE_SESSION_TIMEOUT') ?: '21600',
             /*'cookieParams' => array(
                 'lifetime' => 300,
             ),*/
@@ -349,7 +351,7 @@ $config = array(
         'utf8_decode_required' => true,
         'pseudonymise_patient_details' => false,
         'ab_testing' => false,
-        'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
+        'auth_source' => $authSource,
         // This is used in contact page
         'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
         'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
@@ -862,6 +864,8 @@ $config = array(
             'encryptionKey' => $ssoClientSecret,
             // Configure custom claims with the user attributes that the claims are for
             'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+            // URL to redirect users to SSO portal to login again after session timeout
+            'portal_login_url' => $ssoLoginURL,
         ),
         /** END SINGLE SIGN-ON PARAMS */
     ),
