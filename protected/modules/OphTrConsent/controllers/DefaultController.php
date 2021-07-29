@@ -15,9 +15,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+
 class DefaultController extends BaseEventTypeController
 {
-
+    private $elementFilterList = [ 'Element_OphTrConsent_Other' ];
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -387,5 +389,34 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
             }
         }
+    }
+
+    /**
+     * Filter oprional elements
+     * remove retired element(s)
+     *
+     * @return array
+     */
+    public function getOptionalElements()
+    {
+        $elements = parent::getOptionalElements();
+        return $this->filterElements($elements);
+    }
+
+    /**
+     * Filters elements based on coded dependencies.
+     *
+     * @param \BaseEventTypeElement[] $elements
+     * @return \BaseEventTypeElement[]
+     */
+    protected function filterElements($elements)
+    {
+        $final = array();
+        foreach ($elements as $el) {
+            if (!in_array(get_class($el), $this->elementFilterList)) {
+                $final[] = $el;
+            }
+        }
+        return $final;
     }
 }
