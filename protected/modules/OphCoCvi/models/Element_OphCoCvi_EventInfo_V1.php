@@ -101,7 +101,7 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
      *
      * @return $this
      */
-    public function disableDefaultScope()
+    public function disableDefaultScope(): \BaseActiveRecord
     {
         $this->defaultScopeDisabled = true;
 
