@@ -109,12 +109,20 @@ abstract class EsignField extends BaseCWidget
      */
     public function renderHiddenFields() : void
     {
-        foreach(["id", "type", "proof", "signatory_role", "signatory_name"] as $field) {
+        foreach($this->getHiddenFields() as $field) {
             echo \CHtml::hiddenField(
                 \CHtml::modelName($this->element)."[signatures][{$this->row_id}][$field]",
                 $this->signature->$field,
                 ["class" => "js-{$field}-field"],
             );
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function getHiddenFields() : array
+    {
+        return ["id", "type", "proof", "signatory_role", "signatory_name"];
     }
 }

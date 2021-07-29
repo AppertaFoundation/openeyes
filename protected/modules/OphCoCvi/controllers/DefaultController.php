@@ -54,66 +54,23 @@ class DefaultController extends \BaseEventTypeController
         'list' => self::ACTION_TYPE_LIST,
         'export' => self::ACTION_TYPE_LIST,
         'LabelPDFprint' => self::ACTION_TYPE_VIEW,
-        'signConsultantSignatureElement' => self::ACTION_TYPE_VIEW,
-        'printEmptyConsent' => self::ACTION_TYPE_VIEW,
-        'printConsent' => self::ACTION_TYPE_VIEW,
-        'printInfoSheet' => self::ACTION_TYPE_VIEW,
-        'printVisualyImpaired' => self::ACTION_TYPE_VIEW,
-        'printQRSignature' => self::ACTION_TYPE_FORM,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'saveCapturedSignature' => self::ACTION_TYPE_FORM,
     );
 
-    public function actionPrintQRSignature($event_id, $element_id, $element_type_id)
+    /**
+     * @inheritDoc
+     */
+    public function actions()
     {
-        $this->initWithEventId($event_id);
-
-        $this->layout = '//layouts/print';
-
-        $auto_print = \Yii::app()->request->getParam('auto_print', true);
-        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
-
-        /**
-         * we could use \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event);
-         * but on API side we don't know the event type.
-         * In API event and event_type is determinated from the uniqe code : $uniq_code->eventFromUniqueCode($code);
-         * Solution would be to pass the event id or event_type as well.
-         * But keep in mind, we need to keep the QR code data sort to make sure the JS QR reader can read out the data
-         */
-        $unique_code = \Patient::model()->getUniqueCodeForEvent($event_id);
-
-        $qr_code_data =
-            "@code:" . $unique_code .
-            "@key:" . "1" .
-            "@x_i:" . json_encode(['e_id' => $element_id, 'e_t_id' => $element_type_id]);
-
-        //$html = $this->renderPartial("application.modules.OphTrConsent.views.default.print_PatientConsentShareInformation", [
-        $html = $this->renderPartial("print_Element_OphCoCvi_ConsentSignature", [
-            'qr_code_data' => $qr_code_data,
-            'event' => $this->event,
-            'patient' => $this->patient,
-            'qr_code_data' => $qr_code_data
-        ],
-            true
-        );
-
-        $wk = new \WKHtmlToPDF();
-        $wk->setCanvasImagePath($this->event->imageDirectory);
-        $wk->setPatient($this->event->episode->patient);
-        $wk->setBarcode('');
-        $wk->setDocref('');
-
-        $wk->setCssUrl($this->assetPath,'print.css');
-        $wk->setMarginLeft('10mm');
-        $wk->setMarginRight('10mm');
-        $wk->setMarginBottom('35mm');
-
-        $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $html, (boolean) @$_GET['html'], $inject_autoprint_js, null, null, false);
-        $pdf = $this->event->getPDF($this->pdf_print_suffix);
-
-        header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf));
-
-        readfile($pdf);
-        unlink($pdf);
+        return [
+            'getSignatureByPin' => [
+                'class' => \GetSignatureByPinAction::class
+            ],
+            'saveCapturedSignature' => [
+                "class" => \SaveCapturedSignatureAction::class
+            ]
+        ];
     }
 
     /** @var string label used in session storage for the list filter values */
@@ -126,9 +83,6 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionCreate()
     {
-//        echo '<pre>' . print_r($_POST, true) . '</pre>';
-//        die(__FILE__ . " :: " . __LINE__);
-
         $create_new_cvi = $this->request->getParam('createnewcvi', null);
         if ($create_new_cvi !== null) {
             $cancel_url = $this->episode ? '/patient/episode/' . $this->episode->id

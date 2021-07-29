@@ -17,34 +17,43 @@
 ?>
 <?php
 /** @var SignatureCapture $this */
-// TODO remove incline css once styling is done
 ?>
-<div style="background:rgb(200,200,200); padding:40px 0; text-align: center">
-    <p>Please sign here</p>
-    <div style="margin-bottom: 15px">
-        <canvas id="SignatureCapture_<?=$this->uid?>_canvas" width="600" height="200" style="border: 4px dotted black; touch-action: none; background: white; "></canvas>
-    </div>
-    <div class="js-signature-buttons-container">
+<div class="esign-capture">
+    <div class="flag-esign">Please sign here</div>
+    <!-- set up canvas using a 3:1 ratio, then use the JS to resize to fill area -->
+    <canvas id="SignatureCapture_<?=$this->uid?>_canvas" width="1192" height="397" style="touch-action: none;"></canvas>
+    <div class="js-signature-buttons-container esign-actions">
         <button id="SignatureCapture_<?=$this->uid?>_gofull" class="button hint blue" type="button" data-toggle-text="Back to embedded view">Use signature pen tablet</button>
         <button id="SignatureCapture_<?=$this->uid?>_erase" class="button hint red" type="button">Erase signature</button>
-        <button id="SignatureCapture_<?=$this->uid?>_save" class="button hint green" type="button">Save signature</button>
+        <button id="SignatureCapture_<?=$this->uid?>_save" class="button hint green" type="button">Capture signature</button>
     </div>
 </div>
 <script type="text/javascript">
-    if (typeof window.sc_<?=$this->uid?> === "undefined") {
-        window.sc_<?=$this->uid?> = new OpenEyes.UI.SignatureCapture({
-            canvasSelector: "#SignatureCapture_<?=$this->uid?>_canvas",
-            submitURL: "<?=$this->submit_url?>",
-            csrf: {
-                name: "<?=Yii::app()->request->csrfTokenName?>",
-                token: "<?=Yii::app()->request->csrfToken?>"
-            },
-            afterSubmit: <?=$this->after_submit_js?>,
-            openButtonSelector: "#signature_open_<?=$this->uid?>",
-            widgetId: "<?=$this->uid?>",
-            eraseButtonSelector: "#SignatureCapture_<?=$this->uid?>_erase",
-            saveButtonSelector: "#SignatureCapture_<?=$this->uid?>_save",
-            toggleFullScreenButtonSelector: "#SignatureCapture_<?=$this->uid?>_gofull"
-        });
-    }
+    (function(){
+        function initWidget() {
+            if (typeof window.sc_<?=$this->uid?> === "undefined") {
+                window.sc_<?=$this->uid?> = new OpenEyes.UI.SignatureCapture({
+                    canvasSelector: "#SignatureCapture_<?=$this->uid?>_canvas",
+                    submitURL: "<?=$this->submit_url?>",
+                    csrf: {
+                        name: "<?=Yii::app()->request->csrfTokenName?>",
+                        token: "<?=Yii::app()->request->csrfToken?>"
+                    },
+                    afterSubmit: <?=$this->after_submit_js?>,
+                    openButtonSelector: "#signature_open_<?=$this->uid?>",
+                    widgetId: "<?=$this->uid?>",
+                    eraseButtonSelector: "#SignatureCapture_<?=$this->uid?>_erase",
+                    saveButtonSelector: "#SignatureCapture_<?=$this->uid?>_save",
+                    toggleFullScreenButtonSelector: "#SignatureCapture_<?=$this->uid?>_gofull"
+                });
+            }
+        }
+        if(self !== top) {
+            // in an iframe
+            $(window.frameElement).load(initWidget);
+        }
+        else {
+            $(document).ready(initWidget);
+        }
+    })();
 </script>

@@ -14,7 +14,14 @@ OpenEyes.UI = OpenEyes.UI || {};
     function EsignWidget($element, options) {
         this.$element = $element;
         this.options = $.extend(true, {}, EsignWidget._defaultOptions, options);
-        this.create();
+
+        console.log("--------------------------");
+        console.log(this.$element);
+
+        setTimeout(() => {
+            this.create();
+        }, 1000);
+
     }
 
     EsignWidget._defaultOptions = {
@@ -75,10 +82,14 @@ OpenEyes.UI = OpenEyes.UI || {};
      */
     EsignWidget.prototype.bindEvents = function()
     {
+        console.log("BIND");
+
         let widget = this;
         this.$signButton.click(function () {
             const pin = widget.$pinInput.val();
             const user_id  = widget.$userIdInput.val();
+
+            console.log("CLICK");
 
             widget.$pinInput.val("");
             if (pin === "") {
@@ -102,6 +113,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                     "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
                     "signature_type" : widget.options.signature_type,
                     "element_id" : widget.options.element_id,
+                    "element_type_id" : widget.$element.closest("section.element").attr("data-element-type-id"),
                     "event_id" : OE_event_id,
                     "signatory_role" : widget.$signatoryRole.val(),
                     "signatory_name" : widget.$signatoryName.val()
@@ -127,7 +139,11 @@ OpenEyes.UI = OpenEyes.UI || {};
             );
         });
         this.$popupSignButton.click(function () {
-            let printUrl =  baseUrl + "/" + moduleName + "/default/print/" + OE_event_id + "?html=1&auto_print=0&sign=1&element_id=";
+            let printUrl =  baseUrl + "/" + moduleName +
+                "/default/print/" + OE_event_id +
+                "?html=1&auto_print=0&sign=1&element_id=" + widget.options.element_id +
+                "&element_type_id=" + widget.$element.closest("section.element").attr("data-element-type-id") +
+                "&signature_type=" + widget.options.signature_type;
             let popup = new OpenEyes.UI.Dialog({
                 title: "e-Sign",
                 iframe: printUrl,

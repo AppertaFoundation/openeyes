@@ -20,7 +20,7 @@
 /** @var string $row_id */
 $el_class = get_class($this->element);
 $widget_class = get_class($this);
-$uid = $el_class . "_" . $widget_class . "_" . $row_id;
+$uid = str_replace("\\", "", $el_class) . "_" . $widget_class . "_" . $row_id;
 ?>
 <tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
     <?php $this->renderHiddenFields(); ?>

@@ -28,10 +28,10 @@ class EsignElementWidget extends BaseEventElementWidget
     public function init()
     {
         parent::init();
-        $assetManager = Yii::app()->getAssetManager();
-        $widgetPath = $assetManager->publish(__DIR__. "/js", true);
-        $scriptPath = $widgetPath . '/EsignElementWidget.js';
-        $assetManager->registerScriptFile($scriptPath, "application.widgets.EsignelementWidget", 9, AssetManager::OUTPUT_ALL, true, true);
+        $asset_manager = Yii::app()->getAssetManager();
+        $widget_path = $asset_manager->publish(__DIR__. "/js", true);
+        $script_path = $widget_path . '/EsignElementWidget.js';
+        $asset_manager->registerScriptFile($script_path, "application.widgets.EsignelementWidget", 9, AssetManager::OUTPUT_ALL, true, true);
     }
     /**
      * @return string[]
@@ -78,11 +78,12 @@ class EsignElementWidget extends BaseEventElementWidget
      */
     protected function getView()
     {
+        $prefix = get_class($this);
         if($this->mode === self::$EVENT_PRINT_MODE) {
-            return get_class($this)."_event_print";
+            return $prefix."_event_print";
         }
         // View is the same in edit mode and view mode
-        return get_class($this)."_event_edit";
+        return $prefix."_event_edit";
     }
 
     /**
@@ -113,5 +114,17 @@ class EsignElementWidget extends BaseEventElementWidget
             }
             $element->signatures = $models;
         }
+    }
+
+    /**
+     * @return bool True if the signature is the one being signed in print mode
+     */
+    protected function isBeingSigned(BaseSignature $signature) : bool
+    {
+        $req = Yii::app()->request;
+        return (int)$req->getParam("sign") > 0
+            && (int)$this->element->getElementType()->id === (int)$req->getParam("element_type_id")
+            && (int)$this->element->id === (int)$req->getParam("element_id")
+            && (int)$signature->type === (int)$req->getParam("signature_type");
     }
 }

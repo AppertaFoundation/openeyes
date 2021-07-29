@@ -19,6 +19,9 @@
 <?php /** @var EsignElementWidget $this */ ?>
 <div class="element-fields">
     <div class="element-data full-width">
+        <?php foreach ($this->element->getInfoMessages() as $msg): ?>
+            <div class="alert-box info"><?=CHtml::encode($msg)?></div>
+        <?php endforeach; ?>
         <?php if(!$this->isSigningAllowed()): ?>
             <div class="alert-box warning">E-signing of this event will be available at a later stage.</div>
         <?php else: ?>

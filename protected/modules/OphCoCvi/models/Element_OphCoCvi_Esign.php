@@ -1,8 +1,5 @@
 <?php
-
 namespace OEModule\OphCoCvi\models;
-
-use OEModule\OphCoCvi\widgets\PatientSignatureCaptureElement;
 
 /**
  * This is the model class for table "et_ophcocvi_patient_signature"
@@ -56,10 +53,10 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'event' => array(self::BELONGS_TO, Event::class, 'event_id'),
-            'user' => array(self::BELONGS_TO, User::class, 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
-            'signatures' => array(self::HAS_MANY, OphCoCorrespondence_Signature::class, 'element_id'),
+            'event' => array(self::BELONGS_TO, \Event::class, 'event_id'),
+            'user' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
+            'signatures' => array(self::HAS_MANY, OphCoCvi_Signature_Entry::class, 'element_id'),
         );
     }
 
@@ -95,38 +92,49 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
     }
 
     /**
-     * @return OphCoCorrespondence_Signature[]
+     * @return OphCoCvi_Signature[]
      */
     public function getSignatures(): array
     {
+        $signatures = $this->signatures;
+        $existing_types = array_map(function($e){ return $e->type; }, $signatures);
 
-        $consultant = new OphCoCvi_Signature_Entry();
-        $consultant->signatory_role = "Consultant";
-        $consultant->type = \BaseSignature::TYPE_OTHER_USER;
+        if(!in_array(\BaseSignature::TYPE_LOGGEDIN_USER, $existing_types)) {
+            $consultant = new OphCoCvi_Signature_Entry();
+            $consultant->signatory_role = "Consultant";
+            $consultant->type = \BaseSignature::TYPE_LOGGEDIN_USER;
+            $signatures[] = $consultant;
+        }
 
-        $secretary = new OphCoCvi_Signature_Entry();
-        $secretary->signatory_role = "Secretary";
-        $secretary->type = \BaseSignature::TYPE_SECRETARY;
+        if(!in_array(\BaseSignature::TYPE_PATIENT, $existing_types)) {
+            if($this->event && !$this->event->isNewRecord) {
+                $patient = new OphCoCvi_Signature_Entry();
+                $patient->signatory_role = "Patient";
+                if(isset(\Yii::app()->getController()->patient)) {
+                    $patient->signatory_name = Yii::app()->getController()->patient->getFullName();
+                }
+                $patient->type = \BaseSignature::TYPE_PATIENT;
+                $signatures[] = $patient;
+            }
+        }
 
-        return !empty($this->signatures) ? $this->signatures : [$consultant, $secretary];
+        return $signatures;
     }
 
     /**
-     * A correspondence is signed if at least one of the signatures
-     * (consultant or secretary) is done
+     * A CVI is signed if all of the signatures
+     * (consultant and patient) is done
      *
      * @return bool
      */
     public function isSigned() : bool
     {
-        return !empty(
-        array_filter(
-            $this->signatures,
-            function($signature) {
-                return $signature->isSigned();
+        foreach ($this->signatures as $signature) {
+            if(!$signature->isSigned()) {
+                return false;
             }
-        )
-        );
+        }
+        return true;
     }
 
     /**
@@ -134,14 +142,14 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
      */
     public function getUnsignedMessage(): string
     {
-        return "This CVI must be signed by either a Consultant or a Secretary before it can be sent.";
+        return "Please note the CVI is only valid if signed by a Consultant and the Patient as well.";
     }
 
     /**
      * @param array $elements
      */
     public function eventScopeValidation(array $elements)
-    {
+    { // TODO
         $elements = array_filter(
             $elements,
             function ($element) {
@@ -158,5 +166,19 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
                 );
             }
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getInfoMessages() : array
+    {
+        if(
+            !$this->getSignaturesByType(\BaseSignature::TYPE_PATIENT)
+            && (!$this->event || $this->event->isNewRecord)
+        ) {
+            return ["Patient's E-Sign will be available once the CVI is saved."];
+        }
+        return [];
     }
 }
