@@ -3,7 +3,7 @@
 class m210728_084842_add_esign_element extends OEMigration
 {
     private const ELEMENT_TBL = 'et_ophcocvi_esign';
-    private const ITEM_TBL = 'ophcocvi_signature';
+    private const ITEM_TBL = 'ophcocvi_signature_entry';
     private const RETIRED_ET_CLASS = 'OEModule\\OphCoCvi\\models\\Element_OphCoCvi_ConsentSignature';
 
     public function safeUp()
@@ -41,7 +41,7 @@ class m210728_084842_add_esign_element extends OEMigration
         $this->addForeignKey('fk_ophcocvi_signature_suser_id', self::ITEM_TBL, 'signed_user_id', 'user', 'id');
 
         $this->createElementType('OphCoCvi', 'E-Sign', array(
-            'class_name' => 'Element_OphCoCvi_Esign',
+            'class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign',
             'display_order' => 60,
             'parent_class' => null,
             "default" => 1,

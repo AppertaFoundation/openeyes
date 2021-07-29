@@ -14,14 +14,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     function EsignWidget($element, options) {
         this.$element = $element;
         this.options = $.extend(true, {}, EsignWidget._defaultOptions, options);
-
-        console.log("--------------------------");
-        console.log(this.$element);
-
-        setTimeout(() => {
-            this.create();
-        }, 1000);
-
+        this.create();
     }
 
     EsignWidget._defaultOptions = {
@@ -82,14 +75,10 @@ OpenEyes.UI = OpenEyes.UI || {};
      */
     EsignWidget.prototype.bindEvents = function()
     {
-        console.log("BIND");
-
         let widget = this;
         this.$signButton.click(function () {
             const pin = widget.$pinInput.val();
             const user_id  = widget.$userIdInput.val();
-
-            console.log("CLICK");
 
             widget.$pinInput.val("");
             if (pin === "") {
