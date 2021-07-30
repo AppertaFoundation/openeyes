@@ -194,4 +194,15 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         TicketQueueAssignment::model()->deleteAllByAttributes(array('ticket_id' => $ticket->id));
         $ticket->delete();
     }
+
+    public function checkIfTicketEntryExists($status_id)
+    {
+        foreach ($this->entries as $entry) {
+            if ($entry->isPatientTicket() && $entry->status_id === $status_id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
