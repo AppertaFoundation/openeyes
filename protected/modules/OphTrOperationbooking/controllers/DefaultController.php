@@ -869,7 +869,6 @@ class DefaultController extends OphTrOperationbookingEventController
         return $this->redirect(array('default/view/' . $this->event->id));
     }
 
-
     protected function getEventElements()
     {
         if ($this->action->id == 'view') {
@@ -906,7 +905,6 @@ class DefaultController extends OphTrOperationbookingEventController
 
     public function actionGetHighFlowCriteriaPopupContent()
     {
-
         $procedure_ids = array_map('intval', explode(',', Yii::app()->request->getParam('id')));
         $criteria = new \CDbCriteria();
         $criteria->addCondition('low_complexity_criteria IS NOT NULL');

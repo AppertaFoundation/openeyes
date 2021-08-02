@@ -16,7 +16,6 @@
  */
 ?>
 
-
 <?php
 if (!isset($this->patient->contact->mobile_phone) || $this->patient->contact->mobile_phone == '') : ?>
     <div class="alert-box alert">Patient has no mobile phone number</div>

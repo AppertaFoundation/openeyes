@@ -4,7 +4,6 @@ class m210511_142900_add_preassessment_element extends OEMigration
 {
     public function up()
     {
-
         $this->createElementType('OphTrOperationbooking', 'Pre-Assessment', array(
             'class_name' => 'Element_OphTrOperationbooking_PreAssessment',
             'display_order' => 50,
@@ -26,15 +25,15 @@ class m210511_142900_add_preassessment_element extends OEMigration
         $operation_table = $this->dbConnection->schema->getTable('et_ophtroperationbooking_operation', true);
         if (isset($operation_table->columns['preassessment_booking_required'])) {
             $this->execute("
-                INSERT INTO et_ophtroperationbooking_preassessment (event_id, type_id) 
-                SELECT 
-                    event_id, 
+                INSERT INTO et_ophtroperationbooking_preassessment (event_id, type_id)
+                SELECT
+                    event_id,
                     CASE preassessment_booking_required
-                    WHEN 0 THEN (SELECT id FROM ophtroperationbooking_preassessment_type WHERE name = 'None') 
-                    ELSE (SELECT id FROM ophtroperationbooking_preassessment_type WHERE name = 'Face-to-face') 
+                    WHEN 0 THEN (SELECT id FROM ophtroperationbooking_preassessment_type WHERE name = 'None')
+                    ELSE (SELECT id FROM ophtroperationbooking_preassessment_type WHERE name = 'Face-to-face')
                 END as type_id
                 FROM et_ophtroperationbooking_operation
-                
+
             ");
             $this->dropOEColumn('et_ophtroperationbooking_operation', 'preassessment_booking_required', true);
         }
@@ -51,7 +50,7 @@ class m210511_142900_add_preassessment_element extends OEMigration
                 UPDATE et_ophtroperationbooking_operation as op
                 lEFT JOIN et_ophtroperationbooking_preassessment as pa ON op.event_id = pa.event_id
                 SET preassessment_booking_required = (
-                    CASE 
+                    CASE
                         WHEN pa.type_id = $none_pre_assessment_type_id then 0 ELSE 1
                     END
                 )
