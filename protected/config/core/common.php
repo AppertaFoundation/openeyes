@@ -808,6 +808,7 @@ $config = array(
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
+        'cito_base_url ' => trim(getenv('CITO_BASE_URL')) ?: null,
         'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: null,
         'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: null,
         'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: null,
