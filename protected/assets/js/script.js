@@ -384,6 +384,7 @@ function showLoginOverlay() {
     //Do not show login overlay if we are already on the login screen
     if(window.location.pathname !== '/site/login' && !loginOverlay.is(':visible')) {
         $('#js-login-error').hide();
+        loginOverlay.find('#js-password').val('');
         loginOverlay.show();
         $('.js-sign-in-different-account').on('click' , function (event) {
             event.preventDefault();
@@ -608,6 +609,7 @@ function loginWithOverlay() {
         success: function(resp) {
             if(resp === 'Login success'){
                 loginOverlay.hide();
+                loginOverlay.find('#js-password').val('');
                 queueLoginOverlay();
             } else if (resp === 'Username different') {
                 errorBox.text('Username is different from previous session. Please exit to homepage to start a new session');
