@@ -22,5 +22,7 @@
             </tr>
         <?php
     }?>
+    <tr><td colspan="10">
+            <hr class="divider"></td></tr>
     </tbody>
 </table>

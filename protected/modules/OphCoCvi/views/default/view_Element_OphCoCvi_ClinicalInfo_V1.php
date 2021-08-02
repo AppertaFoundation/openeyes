@@ -17,122 +17,92 @@
 use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
 ?>
 
-<div class="element-data">
-    <div class="large-12 column">
-        <!--
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?>:</div>
-            </div>
-            <div class="large-6 column end">
-                <div class="data-value"><?php echo $element->consultant ? CHtml::encode($element->consultant->last_name) : 'None' ?></div>
-            </div>
-        </div>
-        -->
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('examination_date')) ?>:</div>
-            </div>
-            <div class="large-6 column end">
-                <div class="data-value"><?php echo CHtml::encode($element->NHSDate('examination_date')) ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_considered_blind')) ?>:
-                </div>
-            </div>
-            <div class="large-6 column">
-                <div class="data-value"><?php echo is_null($element->is_considered_blind) ? 'Not recorded' : CHtml::encode($element->displayconsideredblind); ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('information_booklet')) ?>:</div>
-            </div>
-            <div class="large-6 column end vision-column-vertical-center-view">
-                <div class="data-value"><?php echo (is_null($element->information_booklet) ? 'Not recorded' : ($element->information_booklet == 1 ? 'Yes' : 'No')); ?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('eclo')) ?>:</div>
-            </div>
-            <div class="large-6 column end">
-                <div class="data-value"><?php echo is_null($element->eclo) ? 'Not recorded' : CHtml::encode($element->displayeclo); ?></div>
-            </div>
-        </div>
-    </div>
+<div class="element-data full-width">
+        <div class="flex-layout flex-top col-gap">
+            <div class="cols-full">
+                <table class="label-value">
+                    <tbody>
 
-    <div class="large-12 column">
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va')) ?>:</div>
-            </div>
-            <div class="large-6 column end">
-                <div class="data-value"><?php echo CHtml::encode($element->displaybestcorrectedrightvaList); ?> <?php echo !is_null($element->best_corrected_right_va) ? CHtml::encode($element->displaybestcorrectedrightva) : ''?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_recorded_right_va')) ?>:</div>
-            </div>
-            <div class="large-6 column end">
-                <div class="data-value"><?php echo (is_null($element->best_recorded_right_va) ? 'Not recorded' : ($element->best_recorded_right_va == 1 ? 'Yes' : 'No')); ?></div>
+                    <?php $rows = [
+                        $element->getAttributeLabel('consultant_id') => ($element->consultant->last_name ?? 'None'),
+                        $element->getAttributeLabel('examination_date') => $element->NHSDate('examination_date'),
+                        $element->getAttributeLabel('is_considered_blind') => is_null($element->is_considered_blind) ? 'Not recorded' : $element->displayconsideredblind,
+                        $element->getAttributeLabel('information_booklet') => (is_null($element->information_booklet) ? 'Not recorded' : ($element->information_booklet == 1 ? 'Yes' : 'No')),
+                        $element->getAttributeLabel('eclo') => is_null($element->eclo) ? 'Not recorded' : $element->displayeclo,
+                    ];?>
+                    <?php foreach ($rows as $label => $value):?>
+                        <tr>
+                            <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
+                            <td><div class="data-value"><?= \CHtml::encode($value);?></div></td>
+                        </tr>
+                    <?php endforeach;?>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va')) ?>:</div>
+        <div class="flex-layout flex-top col-gap">
+            <div class="cols-half">
+                <table class="label-value">
+                    <tbody>
+                    <?php $rows = [
+                        $element->getAttributeLabel('best_corrected_right_va') =>
+                            $element->displaybestcorrectedrightvaList . " " . !is_null($element->best_corrected_right_va) ? $element->displaybestcorrectedrightva : '',
+                        $element->getAttributeLabel('best_recorded_right_va') => (is_null($element->best_recorded_right_va) ? 'Not recorded' : ($element->best_recorded_right_va == 1 ? 'Yes' : 'No')),
+
+
+                    ];?>
+                    <?php foreach ($rows as $label => $value):?>
+                        <tr>
+                            <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
+                            <td><div class="data-value"><?= \CHtml::encode($value);?></div></td>
+                        </tr>
+                    <?php endforeach;?>
+                    </tbody>
+                </table>
             </div>
-            <div class="large-6 column end">
-                <div class="data-value"><?php echo CHtml::encode($element->displaybestcorrectedleftvaList); ?> <?php echo !is_null($element->best_corrected_left_va) ? CHtml::encode($element->displaybestcorrectedleftva) : ''?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_recorded_left_va')) ?>:</div>
-            </div>
-            <div class="large-6 column end">
-                <div class="data-value"><?php echo (is_null($element->best_recorded_left_va) ? 'Not recorded' : ($element->best_recorded_left_va == 1 ? 'Yes' : 'No')); ?></div>
+            <div class="cols-half">
+                <table class="label-value">
+                    <tbody>
+
+                    <?php $rows = [
+                        $element->getAttributeLabel('best_corrected_left_va') =>
+                            $element->displaybestcorrectedrightvaList . " " . !is_null($element->best_corrected_left_va) ? $element->displaybestcorrectedleftva : '',
+                        $element->getAttributeLabel('best_recorded_left_va') => (is_null($element->best_recorded_left_va) ? 'Not recorded' : ($element->best_recorded_left_va == 1 ? 'Yes' : 'No')),
+                    ];?>
+                    <?php foreach ($rows as $label => $value):?>
+                        <tr>
+                            <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
+                            <td><div class="data-value"><?= \CHtml::encode($value);?></div></td>
+                        </tr>
+                    <?php endforeach;?>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_binocular_va')) ?>:</div>
-            </div>
-            <div class="large-6 column end">
-                <div class="data-value"><?php echo CHtml::encode($element->displaybestcorrectedbinocularvaList); ?> <?php echo !is_null($element->best_corrected_binocular_va) ? CHtml::encode($element->displaybestcorrectedbinocularva) : ''?></div>
-            </div>
-        </div>
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_recorded_binocular_va')) ?>:</div>
-            </div>
-            <div class="large-6 column end">
-                <div class="data-value"><?php echo (is_null($element->best_recorded_binocular_va) ? 'Not recorded' : ($element->best_recorded_binocular_va == 1 ? 'Yes' : 'No')); ?></div>
-            </div>
-        </div>
+        <div class="flex-layout flex-top col-gap">
+            <div class="cols-full">
+                <table class="label-value">
+                    <tbody>
 
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('field_of_vision'))?>:</div>
-            </div>
-            <div class="large-6 column end vision-column-vertical-center-view">
-                <div class="data-value"><?php echo (is_null($element->field_of_vision) || $element->field_of_vision == 0 ? 'Not recorded' : ($element->field_of_vision == 1 ? 'Yes' : 'No')); ?></div>
+                    <?php $rows = [
+                        $element->getAttributeLabel('best_corrected_binocular_va') =>
+                            $element->displaybestcorrectedbinocularvaList . ' ' . !is_null($element->best_corrected_binocular_va) ? CHtml::encode($element->displaybestcorrectedbinocularva) : '',
+                        $element->getAttributeLabel('best_recorded_binocular_va') => (is_null($element->best_recorded_binocular_va) ? 'Not recorded' : ($element->best_recorded_binocular_va == 1 ? 'Yes' : 'No')),
+                        $element->getAttributeLabel('field_of_vision') => (is_null($element->field_of_vision) || $element->field_of_vision == 0 ? 'Not recorded' : ($element->field_of_vision == 1 ? 'Yes' : 'No')),
+                        $element->getAttributeLabel('low_vision_service') => (is_null($element->low_vision_service) || $element->low_vision_service == 0 ? 'Not recorded' : CHtml::encode($element->displaylowvisionservice)),
+                    ];?>
+                    <?php foreach ($rows as $label => $value):?>
+                        <tr>
+                            <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
+                            <td><div class="data-value"><?= \CHtml::encode($value);?></div></td>
+                        </tr>
+                    <?php endforeach;?>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="row data-row">
-            <div class="large-6 column">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('low_vision_service'))?>:</div>
-            </div>
-            <div class="large-6 column end vision-column-vertical-center-view">
-                <div class="data-value"><?php echo (is_null($element->low_vision_service) || $element->low_vision_service == 0 ? 'Not recorded' : CHtml::encode($element->displaylowvisionservice)); ?></div>
-            </div>
-        </div>
-    </div>
 
     <div class="row data-row">
         <div class="large-2 column">

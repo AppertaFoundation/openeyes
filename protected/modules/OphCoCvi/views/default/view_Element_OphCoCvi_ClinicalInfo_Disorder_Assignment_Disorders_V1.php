@@ -1,11 +1,7 @@
 <?php
 foreach ($this->getDisorderSections_V1($element->patient_type) as $disorder_section) {
         ?>
-        <fieldset class="row field-row">
-            <legend class="large-12 column">
-                <?php echo CHtml::encode($disorder_section->name); ?>
-            </legend>
-        </fieldset>
+        <div class="collapse-data-header-icon collapse"><h3><?php echo \CHtml::encode($disorder_section->name); ?></h3></div>
         <div class="row data-row">
             <div class="large-12 column end">
                 <div class="row">
