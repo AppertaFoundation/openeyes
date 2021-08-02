@@ -1,7 +1,6 @@
 <?php
 
 use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo_V1;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature;
 
 class CviDeliveryCommand extends BaseDocmanDeliveryCommand
 {

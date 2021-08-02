@@ -87,10 +87,10 @@ class OphCoCvi_Signature_Entry extends \BaseSignature
 		// class name for the relations automatically generated below.
 		return array(
 			'element' => array(self::BELONGS_TO, Element_OphCoCvi_Esign::class, 'element_id'),
-			'signatureFile' => array(self::BELONGS_TO, ProtectedFile::class, 'signature_file_id'),
-			'signedUser' => array(self::BELONGS_TO, User::class, 'signed_user_id'),
-			'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
-			'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+			'signatureFile' => array(self::BELONGS_TO, \ProtectedFile::class, 'signature_file_id'),
+			'signedUser' => array(self::BELONGS_TO, \User::class, 'signed_user_id'),
+			'createdUser' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
+			'lastModifiedUser' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
 		);
 	}
 

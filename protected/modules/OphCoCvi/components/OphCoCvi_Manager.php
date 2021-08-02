@@ -213,9 +213,6 @@ class OphCoCvi_Manager extends \CComponent
             'Element_OphCoCvi_Demographics'.$version => 'demographics_element',
             'Element_OphCoCvi_ConsultantSignature'  => 'consultant_element'
         );
-
-
-        $cls_rel_map['Element_OphCoCvi_PatientSignature'] = 'patient_signature';
         
         if (!isset($this->info_el_for_events[$event->id])) {
             $this->info_el_for_events[$event->id] = $namespaced_class::model()->with(array_values($cls_rel_map))->findByAttributes(array('event_id' => $event->id));

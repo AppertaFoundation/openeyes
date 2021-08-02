@@ -111,7 +111,7 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
                 $patient = new OphCoCvi_Signature_Entry();
                 $patient->signatory_role = "Patient";
                 if(isset(\Yii::app()->getController()->patient)) {
-                    $patient->signatory_name = Yii::app()->getController()->patient->getFullName();
+                    $patient->signatory_name = \Yii::app()->getController()->patient->getFullName();
                 }
                 $patient->type = \BaseSignature::TYPE_PATIENT;
                 $signatures[] = $patient;

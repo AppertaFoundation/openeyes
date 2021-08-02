@@ -46,7 +46,7 @@ abstract class EsignField extends BaseCWidget
         return $this->signature->isSigned();
     }
 
-    protected function getSignatureFile(): ProtectedFile
+    protected function getSignatureFile(): \ProtectedFile
     {
         $model = $this->signature->signatureFile;
         if(!$model) {

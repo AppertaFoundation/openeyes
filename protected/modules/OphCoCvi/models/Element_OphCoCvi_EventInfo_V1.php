@@ -153,13 +153,7 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
                 'through' => 'clerical_event'
             ),
             'consent_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            //For version 1
-            'patient_signature' => array(
-                self::HAS_ONE,
-                'OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature',
-                array('id' => 'event_id'),
-                'through' => 'consent_event'
-            ),
+
             'demographics_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'demographics_element' => array(
                 self::HAS_ONE,

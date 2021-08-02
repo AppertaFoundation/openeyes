@@ -4,7 +4,8 @@ class m210728_084842_add_esign_element extends OEMigration
 {
     private const ELEMENT_TBL = 'et_ophcocvi_esign';
     private const ITEM_TBL = 'ophcocvi_signature_entry';
-    private const RETIRED_ET_CLASS = 'OEModule\\OphCoCvi\\models\\Element_OphCoCvi_ConsentSignature';
+    private const RETIRED_ET_CONSENT_CLASS = 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature';
+    private const RETIRED_ET_CONSULTANT_CLASS = 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsultantSignature';
 
     public function safeUp()
     {
@@ -48,7 +49,8 @@ class m210728_084842_add_esign_element extends OEMigration
             "required" => 1,
         ));
 
-        $this->deleteElementType('OphCoCvi', self::RETIRED_ET_CLASS);
+        $this->deleteElementType('OphCoCvi', self::RETIRED_ET_CONSENT_CLASS);
+        $this->deleteElementType('OphCoCvi', self::RETIRED_ET_CONSULTANT_CLASS);
     }
 
     public function safeDown()

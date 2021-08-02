@@ -34,15 +34,15 @@ if($this->checkLabelPrintAccess()){
    $selectOptions['et_print_labels'] = 'Print Labels';
 }
 
-$elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature'))->id;
-
-if (!$this->checkPatientSignature()) {
-    $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_out', 'data-element-id' => $this->event->getElementbyClass('OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature')->id, 'data-element-type-id' => $elementy_type_id, 'class' => 'button small', 'style' => 'display:none;'));
-    $selectOptions['et_print_out'] = 'Print Consent Page';
-} else {
-    $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_consent', 'class' => 'button small', 'style' => 'display:none;'));
-    $selectOptions['et_print_consent'] = 'Print Consent Page';
-}
+//$elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature'))->id;
+//
+//if (!$this->checkPatientSignature()) {
+//    $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_out', 'data-element-id' => $this->event->getElementbyClass('OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature')->id, 'data-element-type-id' => $elementy_type_id, 'class' => 'button small', 'style' => 'display:none;'));
+//    $selectOptions['et_print_out'] = 'Print Consent Page';
+//} else {
+//    $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_consent', 'class' => 'button small', 'style' => 'display:none;'));
+//    $selectOptions['et_print_consent'] = 'Print Consent Page';
+//}
 
 $this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small', 'style' => 'display:none;'));
 $selectOptions['et_print_info_sheet'] = 'Print Information Sheet';
