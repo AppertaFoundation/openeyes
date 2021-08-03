@@ -1563,6 +1563,8 @@ class DefaultController extends \BaseEventTypeController
 
     public function checkPatientSignature()
     {
+        return false;
+        // Element_OphCoCvi_PatientSignature deprecated
         $patient_signature =  $this->event->getElementByClass(\OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature::class);
         return !is_null($patient_signature) && $patient_signature->isSigned();
     }

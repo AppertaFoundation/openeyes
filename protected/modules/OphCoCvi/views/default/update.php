@@ -29,12 +29,12 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'field' => 10
     )
 ));
-$elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature'))->id;
+$elementy_type_id = null;
 
 if ($this->checkPatientSignature()) {
     $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_consent', 'class' => 'button small',));
 } else {
-    $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_out', 'data-element-id' => $this->event->getElementbyClass('OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature')->id, 'data-element-type-id' => $elementy_type_id, 'class' => 'button small'));
+    $this->event_actions[] = EventAction::button('Print Consent Page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_out', 'data-element-id' => null, 'data-element-type-id' => $elementy_type_id, 'class' => 'button small'));
 }
 
 // Event actions
