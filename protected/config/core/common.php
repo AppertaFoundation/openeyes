@@ -878,6 +878,8 @@ $config = array(
             'portal_login_url' => $ssoLoginURL,
         ),
         /** END SINGLE SIGN-ON PARAMS */
+        'training_hub_text' => !empty(trim(getenv('OE_TRAINING_HUB_TEXT'))) ? getenv('OE_TRAINING_HUB_TEXT') : null,
+        'training_hub_url' => !empty(trim(getenv('OE_TRAINING_HUB_URL'))) ? getenv('OE_TRAINING_HUB_URL') : null,
     ),
 );
 
