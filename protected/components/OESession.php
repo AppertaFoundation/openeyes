@@ -37,6 +37,14 @@ class OESession extends CDbHttpSession
         }
     }
 
+    // This overrides the Yii getTimeout() function to end the user session 10 seconds before
+    // PHP times out and calls garbage collection function to clean-up sessions
+    // Defaults to 14400 seconds or 4 hours
+    public function getTimeout()
+    {
+        return ((int)ini_get('session.gc_maxlifetime') - 10 );
+    }
+
     //Needed to patch Yii for desired functionality.
     //The main change is that on a session update, the expire field will not be updated
     //THIS WILL NEED TO BE CHANGED IF UPDATING TO YII 2

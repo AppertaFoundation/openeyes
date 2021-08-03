@@ -481,29 +481,30 @@ function createLoginOverlay() {
     errorDiv.classList.add('error');
     loginDiv.append(errorDiv);
 
-    let detailsDiv = document.createElement('div');
-    detailsDiv.classList.add('login-details');
-    loginDiv.append(detailsDiv);
+    if (auth_source === 'BASIC' || auth_source === 'LDAP') {
+        let detailsDiv = document.createElement('div');
+        detailsDiv.classList.add('login-details');
+        loginDiv.append(detailsDiv);
 
-    let detailsList = document.createElement('ul');
-    detailsList.classList.add('row-list');
-    detailsDiv.append(detailsList);
+        let detailsList = document.createElement('ul');
+        detailsList.classList.add('row-list');
+        detailsDiv.append(detailsList);
 
-    let institutionListItem = document.createElement('li');
-    institutionListItem.id = 'js-institution';
-    institutionListItem.classList.add('login-institution');
-    institutionListItem.innerText = prepopulationData['institution']['name'];
-    detailsList.append(institutionListItem);
+        let institutionListItem = document.createElement('li');
+        institutionListItem.id = 'js-institution';
+        institutionListItem.classList.add('login-institution');
+        institutionListItem.innerText = prepopulationData['institution']['name'];
+        detailsList.append(institutionListItem);
 
-    let siteListItem = document.createElement('li');
-    siteListItem.id = 'js-site';
-    siteListItem.classList.add('login-site');
-    siteListItem.innerText = prepopulationData['site']['name'];
-    detailsList.append(siteListItem);
+        let siteListItem = document.createElement('li');
+        siteListItem.id = 'js-site';
+        siteListItem.classList.add('login-site');
+        siteListItem.innerText = prepopulationData['site']['name'];
+        detailsList.append(siteListItem);
 
-    let userDiv = document.createElement('div');
-    userDiv.classList.add('user');
-    loginDiv.append(userDiv);
+        let userDiv = document.createElement('div');
+        userDiv.classList.add('user');
+        loginDiv.append(userDiv);
 
     let usernameField = document.createElement('input');
     usernameField.id = 'js-username';
@@ -514,53 +515,120 @@ function createLoginOverlay() {
     }
     userDiv.append(usernameField);
 
-    let passwordField = document.createElement('input');
-    passwordField.id = 'js-password';
-    passwordField.type = 'password';
-    passwordField.placeholder = 'Password';
-    $(passwordField).keyup(
-        function(e) {
-            if(e.which === 13){
-                loginWithOverlay();
+        let passwordField = document.createElement('input');
+        passwordField.id = 'js-password';
+        passwordField.type = 'password';
+        passwordField.placeholder = 'Password';
+        $(passwordField).keyup(
+            function (e) {
+                if (e.which === 13) {
+                    loginWithOverlay();
+                }
             }
-        }
-    );
-    userDiv.append(passwordField);
+        );
+        userDiv.append(passwordField);
 
-    let loginButton = document.createElement('button');
-    loginButton.id = 'js-login';
-    loginButton.classList.add('green');
-    loginButton.classList.add('hint');
-    loginButton.innerText = 'Login';
-    $(loginButton).click(loginWithOverlay);
-    userDiv.append(loginButton);
+        let loginButton = document.createElement('button');
+        loginButton.id = 'js-login';
+        loginButton.classList.add('green');
+        loginButton.classList.add('hint');
+        loginButton.innerText = 'Login';
+        $(loginButton).click(loginWithOverlay);
+        userDiv.append(loginButton);
 
-    let infoDiv = document.createElement('div');
-    infoDiv.classList.add('info');
-    infoDiv.innerText = 'For security reasons you have been logged out. Please login again';
-    loginDiv.append(infoDiv);
+        let infoDiv = document.createElement('div');
+        infoDiv.classList.add('info');
+        infoDiv.innerText = 'For security reasons you have been logged out. Please login again';
+        loginDiv.append(infoDiv);
 
-    let returnDiv = document.createElement('div');
-    returnDiv.classList.add('flex-c');
-    loginDiv.append(returnDiv);
+        let returnDiv = document.createElement('div');
+        returnDiv.classList.add('flex-c');
+        loginDiv.append(returnDiv);
 
     let returnButton = document.createElement('a');
     returnButton.classList.add('button');
     returnButton.innerText = 'Or exit to homepage';
     returnButton.href = document.location.origin + '/site/login';
 
-    //Event handler fires before default behaviour of the element is triggered
-    //The following causes the link change target to logout action and then fire the redirect if the user has a valid session
-    //This could occur if the user logs in again using a seperate tab
-    returnButton.onclick = function () {
-        if (pollUserAuthenticated()) {
-            returnButton.href = document.location.origin + '/site/logout';
+        //Event handler fires before default behaviour of the element is triggered
+        //The following causes the link change target to logout action and then fire the redirect if the user has a valid session
+        //This could occur if the user logs in again using a seperate tab
+        returnButton.onclick = function () {
+            if (pollUserAuthenticated()) {
+                returnButton.href = document.location.origin + '/site/logout';
+            }
         }
+
+        returnDiv.append(returnButton);
     }
 
-    returnDiv.append(returnButton);
+    if (auth_source === 'OIDC' || auth_source === 'SAML') {
+        let infoDiv = document.createElement('div');
+        infoDiv.classList.add('login-details');
+        infoDiv.innerText = 'For security reasons you have been logged out. Please login again';
+        loginDiv.append(infoDiv);
+
+        let userDiv = document.createElement('div');
+        userDiv.classList.add('user');
+        loginDiv.append(userDiv);
+
+        let loginButton = document.createElement('button');
+        loginButton.id = 'js-login';
+        loginButton.classList.add(...['hint', 'green']);
+        loginButton.innerText = 'Login through SSO Portal';
+        $(loginButton).click(redirectToSSOWithOverlay);
+        userDiv.append(loginButton);
+    }
 
     return overlay;
+}
+
+function redirectToSSOWithOverlay() {
+    let loginOverlay = $('#js-overlay');
+    let errorBox = $('#js-login-error');
+    errorBox.hide();
+
+    $.ajax({
+        type: 'POST',
+        url: '/Sso/redirectToSSOPortal',
+        data: {
+            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+        },
+        async: false,
+        success: function (resp) {
+            if (resp) {
+                window.open(resp, '_blank');
+                // The user has been redirected to SSO Portal so check every 15 seconds to see if user has authenticated
+                // This is to avoid data from previous session from being lost due to SSO sign-in
+                let authSuccess = false;
+                let testAuthenticated = setInterval(function () {
+                    authSuccess = pollUserAuthenticated()
+                }, 15000);
+                if (authSuccess) {
+                    // The user has authenticated, remove the login overlay
+                    loginOverlay.hide();
+                    clearInterval(testAuthenticated);
+                    queueLoginOverlay();
+                }
+                // Clear interval and show error if the user is not authenticated in 10 minutes after redirect
+                setTimeout(function () {
+                    clearInterval(testAuthenticated);
+                    errorBox.text('No user authenticated. All unsaved data in this session will be lost');
+                    errorBox.show();
+                }, 600000);
+            } else {
+                errorBox.text('Single Sign-On Portal not found. Please contact your provider for assistance.');
+                errorBox.show();
+            }
+        },
+        error: function () {
+            loginOverlay.hide();
+
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Unable to login.\n\nPlease contact support for assistance.",
+            }).open();
+        }
+    });
 }
 
 function loginWithOverlay() {
