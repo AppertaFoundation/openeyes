@@ -375,6 +375,8 @@ $config = array(
         'hie_org_pass' => trim(@file_get_contents("/run/secrets/HIE_ORG_PASS")) ?: (trim(getenv('HIE_ORG_PASS')) ?: ''),
         'hie_aes_encryption_password' => trim(@file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) ?: (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: ''),
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
+        'csd_api_url' => getenv('OE_CSD_API_URL') ?: '',
+        'csd_api_key' => getenv('OE_CSD_API_KEY') ?: (rtrim(@file_get_contents("/run/secrets/OE_CSD_API_KEY")) ?: ''),
         //'watermark' => '',
         'google_analytics_account' => '',
         'local_users' => array(),
@@ -924,6 +926,7 @@ $modules = array(
         'OphOuCatprom5',
         'OphTrOperationchecklists',
         'OphDrPGDPSD',
+        'mehstaffdb'
 );
 
 // deal with any custom modulesadded for the local deployment - which are set in /config/modules.conf (added via docker)

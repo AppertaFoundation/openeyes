@@ -839,7 +839,7 @@ class AdminController extends BaseAdminController
 
     public function actionLookupUser()
     {
-        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
+        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username'], 'institution_authentication_id' => $_GET['institution_authentication_id']));
 
         $user_auth = UserAuthentication::model()->find('username=?', array($_GET['username']));
         if ($user_auth) {
