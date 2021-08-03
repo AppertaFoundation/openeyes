@@ -45,7 +45,7 @@ if (!Yii::app()->user->isGuest) {
     }
 
     $user = Yii::app()->session['user'];
-    if (\SettingMetadata::model()->getSetting('enable_hie_link') === 'on' && isset($this->patient)) {
+    if (!empty(\SettingMetadata::model()->getSetting('hie_remote_url')) && isset($this->patient)) {
         $hie_to_menu = [
             'hie' => [
                 'title' => 'View HIE Record (Only to be used for Direct Clinical Care)',

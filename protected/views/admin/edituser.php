@@ -144,24 +144,6 @@ $form = $this->beginWidget(
                     ['separator' => ' ']
                 ); ?></td>
             </tr>
-            <?php if (\SettingMetadata::model()->getSetting('enable_hie_link')==='on') : ?>
-                <tr>
-                    <td>Hie access level</td>
-                    <td>
-                        <?= \CHtml::activeDropDownList(
-                            $user->getHieAccessLevel(),
-                            'hie_access_level_id',
-                            CHtml::listData(
-                                HieAccessLevel::model()->findAll(
-                                    array('order' => 'display_order')
-                                ),
-                                'id',
-                                'name'
-                            ),
-                            ['class' => 'cols-full', 'empty' => '- Select Access Level -']
-                        ); ?></td>
-                </tr>
-            <?php endif; ?>
             <tr>
                 <td>Roles</td>
                 <td>

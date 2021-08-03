@@ -30,8 +30,6 @@
  */
 class User extends BaseActiveRecordVersioned
 {
-    const DEFAULT_HIE_ACCESS_LEVEL = 1;
-
     /**
      * Returns the static model of the specified AR class.
      *
@@ -124,7 +122,6 @@ class User extends BaseActiveRecordVersioned
             'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
             'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-            'hieAccessLevelAssignment' => array(self::HAS_ONE, 'UserHieAccessLevelAssignment', 'user_id'),
             'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
             'firmSelections' => array(
                 self::MANY_MANY,
@@ -167,12 +164,21 @@ class User extends BaseActiveRecordVersioned
 
     public function getHieAccessLevel()
     {
-        if (is_null($this->hieAccessLevelAssignment)) {
-            $this->hieAccessLevelAssignment = new UserHieAccessLevelAssignment();
-            $this->hieAccessLevelAssignment->hie_access_level_id = self::DEFAULT_HIE_ACCESS_LEVEL;
+        $hie_roles = [
+            'HIE - Extended' => 'Level 4 - Extended',
+            'HIE - Summary' => 'Level 3 - Summary',
+            'HIE - Admin' => 'Level 2 - Admin',
+            'HIE - View' => 'Level 1 - Default View'
+        ];
+
+        foreach ($hie_roles as $key => $value) {
+            if (Yii::app()->authManager->checkAccess($key, Yii::app()->user->id)) {
+                $highest_role = $value;
+                break;
+            }
         }
 
-        return $this->hieAccessLevelAssignment;
+        return $highest_role;
     }
 
     public function changeFirm($firm_id)

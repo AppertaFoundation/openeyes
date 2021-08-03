@@ -182,8 +182,8 @@ class PatientController extends BaseController
         try {
             $this->patient = Patient::model()->findByPk($id);
 
-            if (\SettingMetadata::model()->getSetting('enable_hie_link') !== 'on') {
-                throw new Exception("'Enabled HIE link' value is 'off'.");
+            if (strlen(\SettingMetadata::model()->getSetting('hie_remote_url')) === 0) {
+                throw new Exception("HIE remote url not exists.");
             }
 
             if (is_null($this->patient)) {

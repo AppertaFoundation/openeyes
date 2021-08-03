@@ -59,10 +59,6 @@ class HieIntegrationTest extends CTestCase
 
         $this->user = new User;
         $this->user->setAttributes($user_data);
-        $this->user->hieAccessLevelAssignment = new UserHieAccessLevelAssignment();
-        $this->user->hieAccessLevelAssignment->hie_access_level_id = 1;
-        $this->user->hieAccessLevelAssignment->hieAccessLevel = new HieAccessLevel();
-        $this->user->hieAccessLevelAssignment->hieAccessLevel->name = $this->test_data['USR_POSITION'];
 
         $this->patient = new Patient;
         $this->patient->setAttributes($patient_data);
@@ -117,6 +113,7 @@ class HieIntegrationTest extends CTestCase
         $nhs_number = $this->test_data['PAT_CMRN'];
         $this->callMethod($this->instance, "generateDataToEncryptedUrl", [$this->patient,$this->user,$nhs_number]);
         $data = $this->instance->getData();
+        $data['USR_POSITION'] = 'Level 1 - Default View';
 
         unset($data['EXPIRATION']);
         unset($this->test_data['AES_ENCRYPTION_PASSWORD']);
