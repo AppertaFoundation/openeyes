@@ -265,56 +265,6 @@ class DefaultController extends \BaseEventTypeController
      * @param models\Element_OphCoCvi_ClinicalInfo $element
      * @param                                      $action
      */
-    protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo(
-        models\Element_OphCoCvi_ClinicalInfo $element,
-        $action
-    )
-    {
-        // only populate values into the new element if a clinical user
-        if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
-            if ($exam_api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
-                if ($latest_exam = $exam_api->getMostRecentVAElementForPatient($this->patient)) {
-                    // $element->examination_date = $latest_exam['event_date'];
-                    // $element->best_corrected_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
-                    //    'aided', $latest_exam['element']);
-                    // $element->best_corrected_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left',
-                    //    'aided', $latest_exam['element']);
-                    // $element->unaided_right_va = $exam_api->getMostRecentVAForPatient($this->patient, 'right',
-                    //    'unaided',
-                    //    $latest_exam['element']);
-                    // $element->unaided_left_va = $exam_api->getMostRecentVAForPatient($this->patient, 'left', 'unaided',
-                    //    $latest_exam['element']);
-                }
-            }
-            $cvi_disorders = models\OphCoCvi_ClinicalInfo_Disorder::model()->active()->findAll();
-            $cvi_ids_by_disorder_id = array();
-            foreach ($cvi_disorders as $cvid) {
-                if ($disorder_id = $cvid->disorder_id) {
-                    $cvi_ids_by_disorder_id[$disorder_id] = $cvid->id;
-                }
-            }
-
-            if (count($cvi_ids_by_disorder_id)) {
-                foreach (array('left' => \Eye::LEFT, 'right' => \Eye::RIGHT) as $side => $eye_id) {
-                    $assignments = array();
-                    foreach ($this->patient->getAllDisorders($eye_id) as $patient_disorder) {
-                        if (array_key_exists($patient_disorder->id, $cvi_ids_by_disorder_id)) {
-                            $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
-                            $cvi_ass->ophcocvi_clinicinfo_disorder_id = $cvi_ids_by_disorder_id[$patient_disorder->id];
-                            $cvi_ass->affected = true;
-                            $assignments[] = $cvi_ass;
-                        }
-                    }
-                    $element->{$side . '_cvi_disorder_assignments'} = $assignments;
-                }
-            }
-        }
-    }
-
-    /**
-     * @param models\Element_OphCoCvi_ClinicalInfo $element
-     * @param                                      $action
-     */
     protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo_V1(
         models\Element_OphCoCvi_ClinicalInfo_V1 $element,
         $action

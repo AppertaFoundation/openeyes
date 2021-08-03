@@ -762,13 +762,13 @@ function generateTable(){
 
 function openIfOtherEthnicity() {
     
-    var selected = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_ethnic_group_id').find(":selected");
-    var dataAttr = selected.data('describe');
+    const selected = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_ethnic_group_id').find(":selected");
+    const dataAttr = selected.data('describe');
+    const $describe_ethnics = $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_describe_ethnics');
     
-    if(dataAttr === 1){
-        $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_describe_ethnics').show(); 
+    if(dataAttr === 1) {
+        $describe_ethnics.show();
     } else {
-        $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_describe_ethnics').hide();
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_describe_ethnics').val('');
+        $describe_ethnics.hide().find('textarea').val('');
     }
 }

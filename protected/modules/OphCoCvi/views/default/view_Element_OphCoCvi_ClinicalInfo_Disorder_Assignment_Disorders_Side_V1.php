@@ -1,11 +1,19 @@
-<table>
+<table class="standard">
+    <colgroup>
+        <col class="cols-3">
+        <col class="cols-2">
+        <col class="cols-2">
+        <col class="cols-2">
+        <col class="cols-2">
+        <col class="cols-2">
+    </colgroup>
     <thead>
-        <td>Diagnosis</td>
-        <td>Main Cause</td>
-        <td>ICD 10 Code</td>
-        <td>Right Eye</td>
-        <td>Left Eye</td>
-        <td>Both Eyes</td>
+        <th>Diagnosis</th>
+        <th>Main Cause</th>
+        <th>ICD 10 Code</th>
+        <th>Right Eye</th>
+        <th>Left Eye</th>
+        <th>Both Eyes</th>
     </thead>
     <tbody>
     <?php

@@ -94,7 +94,7 @@ class LocalAuthorityController extends \BaseModuleController
                     'telephone' => $body->contact->primary_phone,
                     'postcode_1' => array_key_exists(0, $postcode) ? $postcode[0] : null,
                     'postcode_2' => array_key_exists(1, $postcode) ? $postcode[1] : null,
-                    'email' => isset($body->contact->address) ? $body->contact->address->email : "",
+                    'email' => $body->contact->email,
                 ),
             );
 
@@ -123,7 +123,7 @@ class LocalAuthorityController extends \BaseModuleController
                     'telephone' => $body->contact->primary_phone,
                     'postcode_1' => $postcode[0],
                     'postcode_2' => $postcode[1],
-                    'email' => isset($body->contact->address) ? $body->contact->address->email : "",
+                    'email' => isset($body->contact->address) ? $body->contact->email : "",
                 ),
             );
         }

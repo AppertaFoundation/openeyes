@@ -102,6 +102,16 @@
                 ); ?>
             </td>
         </tr>
+        <tr>
+            <td>Country</td>
+            <td>
+                <?= \CHtml::activeEmailField(
+                    $cb->contact,
+                    'email',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
         </tbody>
 
         <tfoot>

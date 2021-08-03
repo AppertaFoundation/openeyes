@@ -1,3 +1,24 @@
+<?php
+/**
+ * (C) Apperta Foundation, 2020
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2020, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+?>
+<?php
+    if ($element->isNewRecord) {
+        $element->nhs_number = \PatientIdentifierHelper::getIdentifierValue($this->patient->globalIdentifier);
+    }
+?>
+
 <div class="element-fields full-width">
     <div class="flex-layout flex-top col-gap">
 
@@ -54,14 +75,23 @@
                 <tr>
                     <td>Ethnic Group</td>
                     <td>
-                        <?= CHtml::activeDropDownList($element, 'ethnic_group_id', CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name'), [
-                            'class' => 'cols-full'
+                        <?php
+                            $options = EthnicGroup::model()->findAll();
+                            echo \CHtml::activeDropDownList($element, 'ethnic_group_id', \CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name'), [
+                            'class' => 'cols-full',
+                            'options' => (function(array $options) {
+                                $result = [];
+                                foreach ($options as $model) {
+                                    $result[$model->id] = ['data-describe' => $model->describe_needs];
+                                }
+                                return $result;
+                            })($options)
                         ]); ?>
                     </td>
                 </tr>
                 </tr>
-                <tr>
-                    <td>Describe other ethnic group</td>
+                <tr style="display:none" id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_describe_ethnics">
+                    <td><?=$element->getAttributeLabel('describe_ethnics');?></td>
                     <td>
                         <?= CHtml::activeTextArea($element, 'describe_ethnics', ['class' => 'cols-full']); ?>
                     </td>
@@ -78,16 +108,9 @@
                     <col class="cols-5">
                     <col class="cols-7">
                 </colgroup>
-
                 <tbody>
-                <?php if (false): ?>
-                    <tr>
-                        <td><?= PatientIdentifierHelper::getIdentifierPrompt($this->patient->globalIdentifier); ?></td>
-                        <td><?= PatientIdentifierHelper::getIdentifierValue($this->patient->globalIdentifier) ?></td>
-                    </tr>
-                <?php endif; ?>
                 <tr>
-                    <td>NHS Number</td>
+                    <td><?= PatientIdentifierHelper::getIdentifierPrompt($this->patient->globalIdentifier); ?></td>
                     <td><?= CHtml::activeTextField($element, 'nhs_number', ['class' => 'cols-full']); ?></td>
                 </tr>
                 <tr>
@@ -96,7 +119,7 @@
                 </tr>
                 <tr>
                     <td>GP's Address</td>
-                    <td><?= CHtml::activeTextArea($element, 'gp_address', ["class" => "cols-full"]); ?></td>
+                    <td><?= CHtml::activeTextArea($element, 'gp_address', ["class" => "cols-full", "rows" => 5]); ?></td>
                 </tr>
                 <tr>
                     <td>GP's Post Code</td>
