@@ -21,7 +21,7 @@ class SiteController extends BaseController
         return array(
             // Allow unauthenticated users to view certain pages
             array('allow',
-                'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo'),
+                'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo', 'listSites'),
             ),
             array('allow',
                 'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout'),
@@ -439,6 +439,28 @@ class SiteController extends BaseController
             // if the last check is within 7 days, skip the check.
             return false;
         }
+    }
+
+    public function actionListSites($term)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->addSearchCondition('LOWER(name)', strtolower($term), true, 'OR');
+        $criteria->addCondition('institution_id != :institution_id');
+        $criteria->params[':institution_id'] = \Yii::app()->session['selected_institution_id'];
+
+        $sites = Site::model()->findAll($criteria);
+
+        $output = [];
+
+        foreach ($sites as $site) {
+            $output[] = [
+                'label' => $site->name,
+                'value' => $site->id,
+            ];
+        }
+
+        $this->renderJSON($output);
+        Yii::app()->end();
     }
 
 //    Advanced search is not integrated at the moment, but we leave the code here for later

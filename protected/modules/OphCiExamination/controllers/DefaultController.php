@@ -2374,4 +2374,32 @@ class DefaultController extends \BaseEventTypeController
         );
         return $procedure_elements;
     }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_Triage(models\Element_OphCiExamination_Triage $element, $data)
+    {
+        $triage_data = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Triage']['triage'];
+        $triage = $element->triage ?: new models\OphCiExamination_Triage();
+        $triage->element_id = $element->id;
+        $triage->attributes = $triage_data;
+        if (!$triage->save()) {
+            throw new \Exception('Unable to save Clinic Procedure Entry: ' . print_r($triage->errors, true));
+        }
+    }
+
+    protected function getTriageTreatAsField($element)
+    {
+        $model_name = \CHtml::modelName($element);
+        $age = $this->patient->getAge();
+        if ($age < 13) {
+            return '<label class="highlight inline"><input value="0" name="'.$model_name.'[triage][treat_as_adult]" type="hidden">Paediatric</label>';
+        } elseif ($age < 16) {
+            return '<label class="highlight inline"><input value="0" name="'.$model_name.'[triage][treat_as_adult]" type="radio" checked>Paediatric</label>
+                    <label class="highlight inline"><input value="1" name="'.$model_name.'[triage][treat_as_adult]" type="radio">Adult</label>';
+        } elseif ($age < 18) {
+            return '<label class="highlight inline"><input value="0" name="'.$model_name.'[triage][treat_as_adult]" type="radio">Paediatric</label>
+                    <label class="highlight inline"><input value="1" name="'.$model_name.'[triage][treat_as_adult]" type="radio" checked>Adult</label>';
+        } else {
+            return '<label class="highlight inline"><input value="1" name="'.$model_name.'[triage][treat_as_adult]" type="hidden">Adult</label>';
+        }
+    }
 }
