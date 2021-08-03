@@ -23,7 +23,7 @@ class UserController extends BaseController
             ),
             array('allow',
                 'actions' => array('testAuthenticated', 'getSecondsUntilSessionExpire'),
-                'roles' => array('@'),
+                'roles' => array('User'),
             ),
             array('allow',
                 'actions' => array('checkPincodeAvailability'),
