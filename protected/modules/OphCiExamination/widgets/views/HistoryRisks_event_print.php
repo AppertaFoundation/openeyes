@@ -56,7 +56,7 @@
                                                     <?php } ?>
                                                     <br>
                                                 <?php } ?>
-                                        <?php } else if ($attribute === $history_risks_entry_keys[HistoryRisksEntry::$NOT_CHECKED] && count($not_checked_required_risks) > 0) { ?>
+                                        <?php } elseif ($attribute === $history_risks_entry_keys[HistoryRisksEntry::$NOT_CHECKED] && count($not_checked_required_risks) > 0) { ?>
                                                 <?php foreach ($not_checked_required_risks as $entry) { ?>
                                                     <?= $entry ?>
                                                     <br>

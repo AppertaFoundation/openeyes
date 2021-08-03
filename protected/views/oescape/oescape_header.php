@@ -75,7 +75,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
                            array(
                                'subspecialty_id' => $subspecialty->id,
                                'patient_id' => $this->patient->id)
-                       ) ?>"
+                             ) ?>"
                     >
                         <?= $subspecialty->ref_spec ?>
                     </a>

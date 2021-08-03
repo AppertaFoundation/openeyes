@@ -9,7 +9,7 @@ class m180412_084547_last_pulse_sc extends CDbMigration
             ->from('event_type')
             ->where('class_name=:class_name', array(':class_name' => 'OphCiExamination'))
             ->queryScalar();
-        
+
         $this->insert('patient_shortcode', array(
             'event_type_id' => $event_type_id,
             'default_code' => 'lpu',

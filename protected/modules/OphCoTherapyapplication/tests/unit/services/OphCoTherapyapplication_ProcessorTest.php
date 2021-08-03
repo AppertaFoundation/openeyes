@@ -215,9 +215,9 @@ class OphCoTherapyapplication_ProcessorTest extends CTestCase
 
         $exam_api->expects($this->any())->method('getInjectionManagementComplexInEpisodeForDisorder')
              ->will($this->returnCallback(
-                 function ($patient, $episode, $side) use ($injLeft, $injRight) {
-                     return ($side == 'left' && $injLeft) || ($side == 'right' && $injRight);
-                 }
+                    function ($patient, $episode, $side) use ($injLeft, $injRight) {
+                        return ($side == 'left' && $injLeft) || ($side == 'right' && $injRight);
+                    }
              ));
 
         $exam_api->expects($this->any())

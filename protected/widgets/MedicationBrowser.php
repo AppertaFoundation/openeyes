@@ -19,15 +19,15 @@
      * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
      */
 
-    class MedicationBrowser extends \BaseCWidget
-    {
-        public $id;
-        public $fnOnSelected;
-        public $usage_code;
+class MedicationBrowser extends \BaseCWidget
+{
+    public $id;
+    public $fnOnSelected;
+    public $usage_code;
 
-        public function init()
-        {
-            $this->id = 'widget_MedicationBrowser_'.uniqid();
-            parent::init();
-        }
+    public function init()
+    {
+        $this->id = 'widget_MedicationBrowser_'.uniqid();
+        parent::init();
     }
+}

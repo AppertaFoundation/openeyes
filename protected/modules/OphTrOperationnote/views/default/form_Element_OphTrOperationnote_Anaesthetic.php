@@ -24,20 +24,20 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
     if (count($element->anaesthetic_type) == 0) {
         $la_hidden = true;
         $sed_hidden = true;
-    } else if (count($element->anaesthetic_type) == 1 && ($element->anaesthetic_type[0]->code == 'GA' || $element->anaesthetic_type[0]->code == 'NoA')) {
+    } elseif (count($element->anaesthetic_type) == 1 && ($element->anaesthetic_type[0]->code == 'GA' || $element->anaesthetic_type[0]->code == 'NoA')) {
         $la_hidden = true;
         $sed_hidden = true;
-    } else if (count($element->anaesthetic_type) == 1 && $element->anaesthetic_type[0]->code === 'Sed') {
+    } elseif (count($element->anaesthetic_type) == 1 && $element->anaesthetic_type[0]->code === 'Sed') {
         $la_hidden = true;
     }
 } else {
     if (count($element->anaesthetic_type_assignments) == 0) {
         $la_hidden = true;
         $sed_hidden = true;
-    } else if (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
+    } elseif (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
         $la_hidden = true;
         $sed_hidden = true;
-    } else if (count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type->code === 'Sed') {
+    } elseif (count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type->code === 'Sed') {
         $la_hidden = true;
     }
 }
@@ -261,7 +261,7 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                 return ['label' => $item->name,
                     'id' => $item->id];
             },
-            $complications) 
+            $complications)
         ) ?>, {'header':'Complications', 'id':'OphTrOperationnote_AnaestheticComplications', 'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {

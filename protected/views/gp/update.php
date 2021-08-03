@@ -74,7 +74,7 @@ $this->pageTitle = 'Update Practitioner';
                                 </td>
                                 <td>
                                     <?php echo $form->error($model, 'contact_label_id'); ?>
-                                    <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_contact_label_id']); ?>
+                                    <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'autocomplete_contact_label_id']); ?>
                                 </td>
                             </tr>
                             <tr id="selected_contact_label_wrapper" style="display: <?php echo $model->label ? '' : 'none' ?>">
@@ -84,8 +84,8 @@ $this->pageTitle = 'Update Practitioner';
                                         <span class="js-name">
                                             <?php echo isset($model->label) ? $model->label->name : ''; ?>
                                         </span>
-                                        <?php echo CHtml::hiddenField('Contact[contact_label_id]'
-                                            , $model->contact_label_id, array('class' => 'hidden_id')); ?>
+                                        <?php echo CHtml::hiddenField('Contact[contact_label_id]',
+                                             $model->contact_label_id, array('class' => 'hidden_id')); ?>
                                     </div>
                                 </td>
                                 <td>
@@ -104,13 +104,13 @@ $this->pageTitle = 'Update Practitioner';
                                 <td>Active</td>
                                 <td>
                                   <?=
-                                  \CHtml::activeRadioButtonList(
+                                    \CHtml::activeRadioButtonList(
                                       $gp,
                                       'is_active',
                                       [1 => 'Yes', 0 => 'No'],
                                       ['separator' => ' ']
-                                  );
-                                  ?>
+                                    );
+?>
                                 </td>
                             </tr>
                             <tr>
@@ -122,7 +122,7 @@ $this->pageTitle = 'Update Practitioner';
                             </tr>
                         </tbody>
                     </table>
-                    <?php if($cpas): ?>
+                    <?php if ($cpas) : ?>
                         <div>
                             <h3 class="box-title">Associated Practices</h3>
                             <br />
@@ -140,12 +140,12 @@ $this->pageTitle = 'Update Practitioner';
                                     </thead>
                                     <tbody>
                                         <?php $i=0; ?>
-                                        <?php foreach ($cpas as $cpa): ?>
+                                        <?php foreach ($cpas as $cpa) : ?>
                                             <tr id="r<?php echo $cpa->id; ?>">
                                                 <?php echo CHtml::hiddenField('ContactPracticeAssociate['.$i.'][id]', $cpa->id, array('class' => 'hidden_id')); ?>
                                                 <td>
                                                     <?php
-                                                        echo $form->textField($cpa,'provider_no',array(
+                                                        echo $form->textField($cpa, 'provider_no', array(
                                                         'placeholder' => 'Enter provider number',
                                                         'maxlength' => 255,
                                                         'name' => 'ContactPracticeAssociate['.$i.'][provider_no]',
@@ -160,7 +160,7 @@ $this->pageTitle = 'Update Practitioner';
                                                 <td><?php echo CHtml::encode($cpa->practice->phone); ?></td>
                                                 <td/>
                                             </tr>
-                                        <?php $i++; ?>
+                                            <?php $i++; ?>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>

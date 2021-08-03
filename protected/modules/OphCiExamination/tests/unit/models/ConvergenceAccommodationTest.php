@@ -114,6 +114,5 @@ class ConvergenceAccommodationTest extends \ModelTestCase
         $instance->setAttributes($attrs);
 
         $this->assertEquals($expected, $instance->letter_string);
-
     }
 }

@@ -52,8 +52,8 @@ trait HasCorrectionType
      */
     protected function getCorrectionTypeRelations(): array
     {
-        return array_map(function($attribute) {
-            return substr($attribute, 0,-3);
+        return array_map(function ($attribute) {
+            return substr($attribute, 0, -3);
         }, $this->getCorrectionTypeAttributes());
     }
 
@@ -92,5 +92,4 @@ trait HasCorrectionType
 
         return $definitions;
     }
-
 }

@@ -13,20 +13,20 @@ class OphDrPrescription_ItemTaperTest extends ActiveRecordTestCase
         'frequencys' => MedicationFrequency::class,
         'routes' => MedicationRoute::class,
     );
-        
+
     private $instance;
 
     public function getModel()
     {
         return $this->instance;
     }
-        
+
     public function setUp()
     {
         parent::setUp();
         $this->instance = $this->item_tapers('prescription_item_taper1');
     }
-        
+
     public function tearDown()
     {
         parent::tearDown();

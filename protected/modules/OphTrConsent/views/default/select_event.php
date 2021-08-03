@@ -64,7 +64,7 @@ $this->moduleNameCssClass .= ' edit';
                                 <td>
                                     <?php if ($operation->booking) {
                                         echo $operation->booking->session->NHSDate('date');
-                                    } else if ($operation->operation_cancellation_date) {
+                                    } elseif ($operation->operation_cancellation_date) {
                                         echo 'CANCELLED';
                                     } else {
                                         echo 'UNSCHEDULED';

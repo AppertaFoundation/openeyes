@@ -153,24 +153,24 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                                         </select>
                                     </td>
                                 </div>
-                                <?php else :
-                                    if ($element->{'left_diabetic'} == 'Y' OR $element->{'left_diabetic'} == 'N') {
-                                        $element->{'right_diabetic'} = $element->{'left_diabetic'};
-                                    } elseif ($element->{'right_diabetic'} == 'Y' OR $element->{'right_diabetic'} == 'N') {
-                                        $element->{'left_diabetic'} = $element->{'right_diabetic'};
-                                    }
-                                    if ($element->{'left_alpha_receptor_blocker'} == 'Y' OR $element->{'left_alpha_receptor_blocker'} == 'N') {
-                                        $element->{'right_alpha_receptor_blocker'} = $element->{'left_alpha_receptor_blocker'};
-                                    } elseif ($element->{'right_alpha_receptor_blocker'} == 'Y' OR $element->{'right_alpha_receptor_blocker'} == 'N') {
-                                        $element->{'left_alpha_receptor_blocker'} = $element->{'right_alpha_receptor_blocker'};
-                                    } ?>
+                            <?php else :
+                                if ($element->{'left_diabetic'} == 'Y' or $element->{'left_diabetic'} == 'N') {
+                                    $element->{'right_diabetic'} = $element->{'left_diabetic'};
+                                } elseif ($element->{'right_diabetic'} == 'Y' or $element->{'right_diabetic'} == 'N') {
+                                    $element->{'left_diabetic'} = $element->{'right_diabetic'};
+                                }
+                                if ($element->{'left_alpha_receptor_blocker'} == 'Y' or $element->{'left_alpha_receptor_blocker'} == 'N') {
+                                    $element->{'right_alpha_receptor_blocker'} = $element->{'left_alpha_receptor_blocker'};
+                                } elseif ($element->{'right_alpha_receptor_blocker'} == 'Y' or $element->{'right_alpha_receptor_blocker'} == 'N') {
+                                    $element->{'left_alpha_receptor_blocker'} = $element->{'right_alpha_receptor_blocker'};
+                                } ?>
                                     <td>
                                         <?= $element->getAttributeLabel($side . '_' . $key) ?>
                                     </td>
                                     <td>
                                         <?= CHtml::activeDropDownList($element, $side . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
                                     </td>
-                                <?php endif; ?>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
