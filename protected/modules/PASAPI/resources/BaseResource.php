@@ -46,6 +46,12 @@ abstract class BaseResource
     public $update_only = false;
 
     /**
+     * If TRUE, an existing resource will not be updated but a non-existing one will be created
+     * @var bool
+     */
+    public bool $create_only = false;
+
+    /**
      * Flag that will force all errors on the resource to be mapped to warnings.
      *
      * @var bool
@@ -275,6 +281,13 @@ abstract class BaseResource
             if (in_array(strtolower($update_only), array('1', 'true'))) {
                 $this->update_only = true;
             }
+        }
+
+        if ($root->hasAttribute("createOnly")) {
+            $this->create_only = filter_var(
+                $root->getAttribute("createOnly"),
+                FILTER_VALIDATE_BOOLEAN
+            );
         }
 
         foreach ($root->childNodes as $child) {

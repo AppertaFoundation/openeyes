@@ -74,11 +74,11 @@ class Patient extends BaseResource
 
         $transaction = $this->startTransaction();
 
-        try {
-            if ($this->isNewResource && $this->update_only) {
-                return false;
-            }
+        if (($this->isNewResource && $this->update_only) || (!$this->isNewResource && $this->create_only)) {
+            return false;
+        }
 
+        try {
             if ($this->saveModel($model)) {
                 $assignment->internal_id = $model->id;
                 $assignment->save();
@@ -101,7 +101,7 @@ class Patient extends BaseResource
 
             throw $e;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -229,8 +229,7 @@ class Patient extends BaseResource
     private function mapLanguageCodeAndInterpreterRequired(\Patient $patient)
     {
         if (property_exists($this, 'LanguageCode') || property_exists($this, 'InterpreterRequired')) {
-            $episode = new \Episode();
-            $change_episode = $episode->getChangeEpisode($patient);
+            $change_episode = \Episode::getChangeEpisode($patient);
             $change_episode->save();
 
             $event = $this->createExamination($change_episode);

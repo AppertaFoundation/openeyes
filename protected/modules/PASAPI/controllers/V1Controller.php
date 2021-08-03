@@ -19,14 +19,16 @@ namespace OEModule\PASAPI\controllers;
  */
 
 use OEModule\PASAPI\models\PasApiAssignment;
+use OEModule\PASAPI\resources\BaseResource;
 use OEModule\PASAPI\resources\Patient;
 use OEModule\PASAPI\resources\PatientAppointment;
+use OEModule\PASAPI\resources\PatientMerge;
 use PatientIdentifier;
 use UserIdentity;
 
 class V1Controller extends \CController
 {
-    protected static $resources = array('Patient', 'PatientAppointment');
+    protected static $resources = array('Patient', 'PatientAppointment', 'PatientMerge');
     protected static $version = 'V1';
     protected static $supported_formats = array('xml');
 
@@ -102,6 +104,7 @@ class V1Controller extends \CController
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
             $this->sendResponse(401);
         }
+
         $identity = new UserIdentity($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], null, null);
         if (!$identity->authenticate()) {
             $this->sendResponse(401);
@@ -183,7 +186,6 @@ class V1Controller extends \CController
      */
     public function actionUpdate($resource_type, $id, $identifier_type)
     {
-        $patient_identifier_type = null;
         if (!in_array($resource_type, static::$resources)) {
             $this->sendErrorResponse(404, "Unrecognised Resource type {$resource_type}");
         }
@@ -195,10 +197,10 @@ class V1Controller extends \CController
         $resource_model = $this->getResourceModel($resource_type);
 
         $body = \Yii::app()->request->rawBody;
-
         $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_str' => $identifier_type]);
 
         try {
+            /** @var BaseResource $resource */
             $resource = $resource_model::fromXml(static::$version, $body, array(
                 'update_only' => $this->getUpdateOnly(),
                 'partial_record' => $this->getPartialRecord(),
@@ -206,12 +208,22 @@ class V1Controller extends \CController
 
             $resource->id = $id; // LOCAL number
 
-            if ($resource instanceof Patient) { // this is \PASAPI\resources\Patient
-                $this->validatePatientResource($resource, $id, $identifier_type);
-            }
+            switch ($resource_type) {
+                case "Patient":
+                    /** @var Patient $resource */
+                    $this->validatePatientResource($resource, $id, $identifier_type);
+                    break;
 
-            if ($resource instanceof PatientAppointment) {
-                $resource->setPatientIdentifierType($patient_identifier_type);
+                case "PatientAppointment":
+                    /** @var PatientAppointment $resource */
+                    $resource->setPatientIdentifierType($patient_identifier_type);
+                    break;
+
+                case "PatientMerge":
+                    /** @var PatientMerge $resource */
+                    $resource->setPatientIdentifierType($patient_identifier_type)
+                             ->setAndValidatePatients();
+                    break;
             }
 
             if ($resource->errors) {
@@ -333,7 +345,7 @@ class V1Controller extends \CController
 
             $this->sendSuccessResponse($status_code, $response);
         } catch (\Exception $e) {
-            $errors = $resource->errors;
+            $errors = isset($resource) ? $resource->errors : [];
             $errors[] = $e->getMessage();
             $errors[] = $e->getTraceAsString();
 
