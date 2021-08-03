@@ -797,13 +797,21 @@ class User extends BaseActiveRecordVersioned
         $user = self::model()->find('username = :username', array(':username' => $this->username));
         //If the user is logging into the OE for the first time, assign default roles and firms
         if ($user === null) {
-            $this->save();
+            if (!$this->save()) {
+                $this->audit('login', 'login-failed', "Cannot create user: $this->username", true);
+                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+            }
             $this->id = self::model()->find('username = :username', array(':username' => $this->username))->id;
 
             $this->setdefaultSSOFirms();
             $this->setdefaultSSORoles();
         } else {
             $this->id = $user->id;
+            // Update user information for returning users
+            if (Yii::app()->params['auth_source'] === 'OIDC') {
+                $this->setIsNewRecord(false);
+                $this->update();
+            }
         }
         // Roles from the token need to be assigned to the user after every login
         if (!$defaultRights['default_enabled']) {

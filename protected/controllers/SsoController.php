@@ -25,7 +25,7 @@ class SsoController extends BaseAdminController
         return array(
             // Allow unauthenticated users to view certain pages
             array('allow',
-                'actions' => array('login'),
+                'actions' => array('login', 'redirectToSSOPortal'),
             ),
             array('allow',
                 'actions' => array('defaultSSOPermissions','SSORolesAuthAssignment', 'editSSORoles', 'addSSORoles','deleteSSORoles'),
@@ -126,6 +126,16 @@ class SsoController extends BaseAdminController
             throw new Exception('The user cannot be logged in');
         }
         throw new Exception('User Authentication failed');
+    }
+
+    public function actionredirectToSSOPortal()
+    {
+        $portalURL = Yii::app()->params['OIDC_settings']['portal_login_url'];
+        if ($portalURL !== null) {
+            $this->renderJSON($portalURL);
+            return true;
+        }
+        return false;
     }
 
     public function actiondefaultSSOPermissions()

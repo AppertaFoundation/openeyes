@@ -57,6 +57,8 @@ $db_test = array(
     $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
+    $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
+
     $authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');    // OIDC, SAML, BASIC or LDAP;
 /** END SINGLE SIGN-ON SETTINGS */
 
@@ -872,6 +874,8 @@ $config = array(
             'encryptionKey' => $ssoClientSecret,
             // Configure custom claims with the user attributes that the claims are for
             'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+            // URL to redirect users to SSO portal to login again after session timeout
+            'portal_login_url' => $ssoLoginURL,
         ),
         /** END SINGLE SIGN-ON PARAMS */
     ),
