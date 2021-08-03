@@ -39,4 +39,4 @@ $this->renderPartial('event_actions', array('form_id' => $form_id));
 
 <?php $this->endWidget() ?>
 
-<?php $this->endContent() ?>
+<?php $this->endContent();
