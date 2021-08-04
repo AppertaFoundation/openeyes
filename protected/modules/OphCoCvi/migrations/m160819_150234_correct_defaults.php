@@ -15,15 +15,4 @@ class m160819_150234_correct_defaults extends CDbMigration
 		$this->alterColumn('et_ophcocvi_clinicinfo', 'is_considered_blind', 'tinyint(1) unsigned DEFAULT 0 NOT NULL');
 		$this->alterColumn('et_ophcocvi_clinicinfo', 'sight_varies_by_light_levels', 'tinyint(1) unsigned DEFAULT 0 NOT NULL');
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }
