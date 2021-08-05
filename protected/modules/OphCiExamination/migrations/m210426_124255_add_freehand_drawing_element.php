@@ -19,7 +19,8 @@ class m210426_124255_add_freehand_drawing_element extends \OEMigration
         $this->createOETable('ophciexamination_freehand_draw_entry', array(
             'id' => 'pk',
             'element_id' => 'int(11) NOT NULL',
-            'protected_file_id' => 'INT(11) UNSIGNED NOT NULL',
+            'protected_file_id' => 'INT(11) UNSIGNED DEFAULT NULL',
+            'comments' => 'TEXT'
         ), true);
 
         $this->addForeignKey(

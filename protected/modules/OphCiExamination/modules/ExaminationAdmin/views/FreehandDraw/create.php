@@ -32,10 +32,12 @@
     ]);
 
     $this->renderPartial(
-        '/FreehandDraw/_form', [
+        '/FreehandDraw/_form',
+        [
             'model' => $model,
             'form' => $form,
         ]
     );
 
     $this->endWidget();
+

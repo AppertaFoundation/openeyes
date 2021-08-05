@@ -18,6 +18,5 @@
 
 <?php foreach ($element->entries as $entry) :?>
     <img style="width:100%; border: 1px solid black;" src="<?=$entry->protected_file->getDownloadURL()?>"?>
-
 <?php endforeach;?>
 
