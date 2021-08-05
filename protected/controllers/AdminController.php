@@ -1507,7 +1507,9 @@ class AdminController extends BaseAdminController
                     $contact = $cb->contact;
                     if (!$contact) {
                         $contact = new Contact();
-                        if (!$contact->save()) {
+                        $contact->first_name = '';
+                        $contact->last_name = '';
+                        if (!$contact->save(false)) {
                             $errors = array_merge($errors, $contact->getErrors());
                         }
                     }
