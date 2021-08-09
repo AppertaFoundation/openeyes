@@ -1968,7 +1968,9 @@ class BaseEventTypeController extends BaseModuleController
             $this->pdf_print_suffix,
             $html,
             $inject_autoprint_js,
-            $print_footer
+            $print_footer,
+            true,
+            $this->event->id
         );
 
         return $this->pdf_print_suffix;

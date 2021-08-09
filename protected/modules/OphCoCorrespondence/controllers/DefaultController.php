@@ -1058,7 +1058,8 @@ class DefaultController extends BaseEventTypeController
         return $letter->markDocumentRelationTreeDeleted();
     }
 
-    private function afterCreateorUpdateElements($event) {
+    private function afterCreateorUpdateElements($event)
+    {
         $data = array();
         $letter = null;
         foreach ($this->open_elements as $element) {
@@ -1335,6 +1336,7 @@ class DefaultController extends BaseEventTypeController
 
             // We use localhost without any port info because Puppeteer is running locally.
             $html_letter = "http://localhost/{$this->getModule()->name}/{$this->id}/printForRecipient/{$event->id}?recipient_address={$recipient_query}&target_id={$target_id}&is_view=" . Yii::app()->request->getParam('is_view');
+
             $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
 
             $recipient_pdf_path = $event->imageDirectory . '/event_' . $pdf_letter . '.pdf';

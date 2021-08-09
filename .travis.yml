@@ -5,7 +5,7 @@ dist: bionic
 before_script:
     - export TZ=Europe/London
     - date
-    - sudo ntpdate ntp.ubuntu.com
+    # - sudo ntpdate ntp.ubuntu.com
     - '[ ! -z "$DOCKER_PASS" ] && { echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin; } || :'
 
 services:

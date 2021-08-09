@@ -287,13 +287,30 @@ EOH;
 
             curl_close($ch);
 
+            $filename = $this->getFileName($output_id)['filename'];
+
+            $content_rtf = null;
+            if (isset(Yii::app()->modules['RTFGeneration'])) {
+                $html_url = "http://localhost/OphCoCorrespondence/default/printForRecipient/" . $event->id;
+
+                $footer = Yii::app()->db->createCommand()->select('footer')->from('document_instance')->where('correspondence_event_id=:event_id', array(':event_id'=>$event_id))->queryRow()['footer'];
+
+                require("/var/www/openeyes/protected/modules/RTFGeneration/RTFGenerationModule.php");
+                $content_rtf = \RTFGenerationModule::generateRTF($html_url, $footer);
+
+                $rtf_generated = (file_put_contents($this->path . "/" . $filename . ".rtf", $content_rtf) !== false);
+
+                if (!$rtf_generated) {
+                    echo 'Generating Docman file' . $filename . '.rtf failsed' . PHP_EOL;
+                    return false;
+                }
+            }
+
             if (substr($content, 0, 4) !== "%PDF") {
                 echo 'File is not a PDF for event id: '.$this->event->id."\n";
                 $this->updateFailedDelivery($output_id);
                 return false;
             }
-
-            $filename = $this->getFileName($output_id)['filename'];
 
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
             if ($this->generate_xml) {
