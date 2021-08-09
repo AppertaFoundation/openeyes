@@ -313,6 +313,16 @@ class User extends BaseActiveRecordVersioned
         return implode(' ', array($this->title, $this->last_name, $this->first_name));
     }
 
+    public function getUsersFromCurrentInstitution()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = "join user_authentication ua on ua.user_id = t.id";
+        $criteria->compare('ua.institution_authentication_id', \Yii::app()->session['selected_institution_id']);
+        $criteria->order = 't.last_name,t.first_name asc';
+
+        return self::model()->findAll($criteria);
+    }
+
     /**
      * Returns the users that are eligible to be considered surgeons.
      *
