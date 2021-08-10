@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -25,7 +24,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
 <main class="print-main">
     <?php $this->renderPartial('_consent_header') ?>
     <h1 class="print-title">
-        Consent form 2<br />
+        Consent form 2<br/>
         Parental agreement to investigation or treatment for a child or young person
     </h1>
     <h3>Patient details (or pre-printed label)</h3>
@@ -59,7 +58,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
             <td><?= $this->patient->genderString ?></td>
         </tr>
         <tr>
-            <th>&nbsp;<br />Special requirements</th>
+            <th>&nbsp;<br/>Special requirements</th>
             <td>&nbsp;<div class="dotted-write"></div>
             </td>
         </tr>
@@ -99,14 +98,8 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
                 } ?>
             </td>
         </tr>
-        <?php if ($elements['Element_OphTrConsent_AdvancedDecision']->description) { ?>
-            <tr>
-                <th>Advanced Decision</th>
-                <td><?= $elements['Element_OphTrConsent_AdvancedDecision']->description ?></td>
-            </tr>
-        <?php } ?>
         <tr>
-            <th>&nbsp;<br />Consent date</th>
+            <th>&nbsp;<br/>Consent date</th>
             <td>&nbsp;<div class="dotted-write"></div>
             </td>
         </tr>
@@ -122,15 +115,15 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
     </p>
     <p>
         <strong>I agree</strong> to the procedure or course of treatment described on this form and I confirm that I
-        have 'parental responsibility' for this child.<br />
+        have 'parental responsibility' for this child.<br/>
         <strong>I understand</strong> that you cannot give me a guarantee that a particular person will perform the
-        procedure. The person will, however, have appropriate experience.<br />
+        procedure. The person will, however, have appropriate experience.<br/>
         <strong>I understand</strong> that my child and I will have the opportunity to discuss the details of
         anaesthesia with an anaesthetist before the procedure, unless the urgency of the situation prevents this. (This
-        only applies to children having general or regional anaesthesia.)<br />
+        only applies to children having general or regional anaesthesia.)<br/>
         <strong>I understand that any</strong> procedure in addition to those described on this form will only be
         carried out if it is necessary to save the life of my child or to prevent serious harm to his or her
-        health.<br />
+        health.<br/>
         <strong>I have been told about</strong> additional procedures which may become necessary during my child's
         treatment. I have listed below any procedures which I do not wish to be carried out without further discussion:
     <div class="dotted-write"></div>
@@ -167,7 +160,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
     </p>
     <p>
         <strong>The intended benefits:</strong>
-        <br><?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->benefits) ?><br />
+        <br><?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->benefits) ?><br/>
         <strong>Serious, frequently occurring or unavoidable risks:</strong>
         <br><?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->risks) ?>
     </p>
@@ -182,10 +175,10 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
     </p>
     <?php if ($elements['Element_OphTrConsent_Leaflets']->leaflets) { ?>
         <div class="group flex-layout">
-            <span class="nowrap">
-                <span class="checkbox <?= $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
-                <?= $this->renderPartial('view_Element_OphTrConsent_Leaflets', ['element' => $elements['Element_OphTrConsent_Leaflets']]) ?>
-            </span>
+                <span class="nowrap">
+                    <span class="checkbox <?= $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
+                    <?= $this->renderPartial('view_Element_OphTrConsent_Leaflets', ['element' => $elements['Element_OphTrConsent_Leaflets']]) ?>
+                </span>
         </div>
     <?php } ?>
     <?php if ($elements['Element_OphTrConsent_Other']->anaesthetic_leaflet) { ?>
@@ -199,11 +192,11 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
         local anaesthesia&nbsp;&nbsp;<span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('Sedation') ? 'checked' : '' ?>"></span> sedation
     </div>
     <?= $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
-    <br />
+    <br/>
     <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
         <h3>Statement of interpreter</h3>
         <span>I have interpreted the information above to the child and <?= $this->patient->pos ?> parents to the best of my ability and in a way in which I believe they can understand.</span>
-        <br /><br />
+        <br/><br/>
         <?= $this->renderPartial('signature_table3', array('vi' => ($css_class == 'impaired'), 'name' => $elements['Element_OphTrConsent_Other']->interpreter_name)) ?>
     <?php } ?>
 

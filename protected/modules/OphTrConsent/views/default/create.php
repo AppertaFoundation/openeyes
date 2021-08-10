@@ -24,7 +24,6 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
     'id' => $form_id,
     'enableAjaxValidation' => false,
 ]);
-
 $this->event_actions[] = EventAction::button('Save draft', 'savedraft', ['level' => 'secondary'], ['id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id]);
 $this->event_actions[] = EventAction::button('Save and print', 'saveprint', ['level' => 'secondary'], ['id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id]);
 $this->displayErrors($errors);
