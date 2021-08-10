@@ -30,7 +30,7 @@
             </thead>
 
             <tbody>
-            <?php foreach (OphTrOperationnote_PostopDrug::model()->findAll(array('order' => 'display_order asc')) as $i => $drug) { ?>
+            <?php foreach (OphTrOperationnote_PostopDrug::model()->findAll(array('order' => 'active DESC, name')) as $i => $drug) { ?>
                 <tr class="clickable" data-id="<?php echo $drug->id ?>"
                     data-uri="OphTrOperationnote/admin/editPostOpDrug/<?php echo $drug->id ?>">
                     <td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id ?>"/></td>
