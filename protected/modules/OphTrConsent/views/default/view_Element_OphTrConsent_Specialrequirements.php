@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -10,25 +9,22 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @see http://www.openeyes.org.uk
+ * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php
-$form_id = 'clinical-create';
-$this->beginContent('//patient/event_container', ['no_face' => true, 'form_id' => $form_id]);
-$form = $this->beginWidget('BaseEventTypeCActiveForm', [
-    'id' => $form_id,
-    'enableAjaxValidation' => false,
-]);
-$this->event_actions[] = EventAction::button('Save draft', 'savedraft', ['level' => 'secondary'], ['id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id]);
-$this->event_actions[] = EventAction::button('Save and print', 'saveprint', ['level' => 'secondary'], ['id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id]);
-$this->displayErrors($errors);
-$this->renderOpenElements($this->action->id, $form);
-$this->renderOptionalElements($this->action->id, $form);
-$this->displayErrors($errors, true);
-$this->endWidget();
-$this->endContent();
+<div class="element-data full-width flex-layout flex-top col-gap">
+ 
+  <div class="cols-12">
+    <div class="data-label large-text">
+        <?=\CHtml::encode($element->getAttributeLabel('specialreq')) ?>:
+    </div>
+    <span class="large-text">
+        <?=nl2br(\CHtml::encode($element->specialreq)) ?>
+    </span>
+  </div>
+ 
+</div>

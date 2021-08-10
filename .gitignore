@@ -103,9 +103,12 @@ protected/widgets/views/IndexSearch_Examination.php
 protected/scripts/sample_db.sql
 protected/scripts/sample_db.zip
 
-## OpusVL developer ignores
+# Never tracker docker-compose overrides or .env's
+/docker-compose.override.yml
+/.env
+
 # Never track php-cs-fixer stuff
 /.php-cs-fixer.*
-# Never track docker-compose related files in the project root
-/docker-compose.*
-/.env
+
+# Allow local git ignores for dynamic changes we do not want to commit or track
+.local_gitignore
