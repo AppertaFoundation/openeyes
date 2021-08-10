@@ -47,7 +47,7 @@
         <?php echo $form->checkBoxes(
             $element,
             'AnaestheticType',
-            array_map(function($element){
+            array_map(function ($element) {
                 return $element['id'];
             }, $element->anaesthetic_type),
             'Anaesthetic Type',
