@@ -519,7 +519,7 @@ for module in "${modules[@]}"; do
                 echo "Attempting shallow pull to depth: $moduledepth"
             fi
             git -C $MODGITROOT pull $pullparams
-            git -C $MODGITROOT submodule update --init --force
+            git -C $MODGITROOT submodule update --init --force --depth 1
         fi
 
         ## Attempt to merge in an upstream branch (except for sample db)
