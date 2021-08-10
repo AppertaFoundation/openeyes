@@ -1136,6 +1136,9 @@ class BaseEventTypeController extends BaseModuleController
             'htmlOptions' => array('class' => 'sliding'),
         ));
 
+        if(!$this->set){
+            $this->set = $this->getSetFromEpisode($this->episode);
+        }
         $this->renderElement($element, 'create', $form, null, array(
             'previous_parent_id' => $previous_id,
         ), false, true);
