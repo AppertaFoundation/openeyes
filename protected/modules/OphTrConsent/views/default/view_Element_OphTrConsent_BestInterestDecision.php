@@ -12,11 +12,11 @@
             </div>
             <div class="row">
                 <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->lastModifiedUser->first_name . ' ' . $element->lastModifiedUser->last_name ?>"  data-tip='{"type":"basic","tip":"<small>User comment by </small><br /><?php echo $element->lastModifiedUser->first_name . ' ' . $element->lastModifiedUser->last_name ?>"}'></i>
-                <span class="user-comment"><?php echo nl2br(CHtml::encode($element->reason_for_procedure ?: "-"))?></span>          
+                <span class="user-comment"><?php echo nl2br(CHtml::encode($element->reason_for_procedure ?: "-"))?></span>
             </div>
         </div>
         <div class="cols-5">
-            <?php if ($element->treatment_cannot_wait_reason) : ?>
+            <?php if($element->treatment_cannot_wait_reason): ?>
                 <div class="row">
                     <?= CHtml::encode($element->getAttributeLabel("treatment_cannot_wait_reason_view")).':'?>
                 </div>
@@ -35,6 +35,6 @@
                 </div>
             <?php endif; ?>
         </div>
-            
+
     <?php endif; ?>
 </div>

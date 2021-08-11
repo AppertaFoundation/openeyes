@@ -61,6 +61,7 @@ class Element_OphTrConsent_BestInterestDecision extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('patient_has_not_refused', 'validatePatientHasNotRefused'),
+            array('reason_for_procedure', 'validateReasonForProcedure'),
             array('event_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('patient_has_not_refused, reason_for_procedure, treatment_cannot_wait, treatment_cannot_wait_reason, wishes, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
@@ -71,8 +72,15 @@ class Element_OphTrConsent_BestInterestDecision extends \BaseEventTypeElement
 
     public function validatePatientHasNotRefused()
     {
+        if (!$this->patient_has_not_refused) {
+            $this->addError("patient_has_not_refused", "Consent form 4 cannot be completed if the patient has refused this procedure in a valid advance directive");
+        }
+    }
+
+    public function validateReasonForProcedure()
+    {
         if ($this->patient_has_not_refused && $this->reason_for_procedure == '') {
-            $this->addError("patient_has_not_refused", "You must give a reason for procedure");
+            $this->addError("reason_for_procedure", "You must give a reason for procedure");
         }
     }
 
