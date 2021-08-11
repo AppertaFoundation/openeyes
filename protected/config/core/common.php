@@ -377,6 +377,7 @@ $config = array(
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
         'csd_api_url' => getenv('OE_CSD_API_URL') ?: '',
         'csd_api_key' => getenv('OE_CSD_API_KEY') ?: (rtrim(@file_get_contents("/run/secrets/OE_CSD_API_KEY")) ?: ''),
+        'csd_api_timeout' => getenv('OE_CSD_API_TIMEOUT') ?: 3,
         //'watermark' => '',
         'google_analytics_account' => '',
         'local_users' => array(),
