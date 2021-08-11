@@ -217,10 +217,11 @@ class BaseAdminController extends BaseController
 
                             if ($new || $item->getAttributes() != $attributes) {
                                 if (!$item->save()) {
-                                    $errors = $item->getErrors();
-                                    foreach ($errors as $error) {
-                                        $errors[$i] = $error[0];
+                                    $item_errors = $item->getErrors();
+                                    foreach ($item_errors as $error) {
+                                        $errors[$i][] = $error[0];
                                     }
+                                    $errors[$i] = implode(' ', $errors[$i]);
                                 }
                                 Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
                                     'module' => (is_object($this->module)) ? $this->module->id : 'core',

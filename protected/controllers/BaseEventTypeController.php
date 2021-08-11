@@ -1136,6 +1136,9 @@ class BaseEventTypeController extends BaseModuleController
             'htmlOptions' => array('class' => 'sliding'),
         ));
 
+        if(!$this->set){
+            $this->set = $this->getSetFromEpisode($this->episode);
+        }
         $this->renderElement($element, 'create', $form, null, array(
             'previous_parent_id' => $previous_id,
         ), false, true);
@@ -1968,7 +1971,9 @@ class BaseEventTypeController extends BaseModuleController
             $this->pdf_print_suffix,
             $html,
             $inject_autoprint_js,
-            $print_footer
+            $print_footer,
+            true,
+            $this->event->id
         );
 
         return $this->pdf_print_suffix;

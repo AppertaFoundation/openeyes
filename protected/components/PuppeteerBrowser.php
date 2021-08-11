@@ -307,7 +307,8 @@ class PuppeteerBrowser extends CApplicationComponent
         $html,
         $inject_autoprint_js = true,
         $print_footer = true,
-        $use_cookies = true
+        $use_cookies = true,
+        $event_id = null
     ) {
         $footer = null;
 
@@ -377,6 +378,7 @@ class PuppeteerBrowser extends CApplicationComponent
         $footerPage->goto('file://' . $footer_file);
         $footerPage->evaluate(JsFunction::createWithBody('subst();'));
         $options['footerTemplate'] = $footerPage->content();
+
         $footerPage->close();
 
         // Save the page to PDF.
@@ -399,6 +401,10 @@ class PuppeteerBrowser extends CApplicationComponent
 
             $pdf->disablePrintScaling();
             $pdf->write();
+        }
+
+        if (isset(Yii::app()->modules['RTFGeneration'])) {
+            Yii::app()->db->createCommand()->update('document_instance', array('footer'=>$options['footerTemplate']), 'correspondence_event_id=:event_id', [':event_id'=>$event_id]);
         }
 
         return true;

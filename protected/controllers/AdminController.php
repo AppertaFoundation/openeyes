@@ -1507,7 +1507,9 @@ class AdminController extends BaseAdminController
                     $contact = $cb->contact;
                     if (!$contact) {
                         $contact = new Contact();
-                        if (!$contact->save()) {
+                        $contact->first_name = '';
+                        $contact->last_name = '';
+                        if (!$contact->save(false)) {
                             $errors = array_merge($errors, $contact->getErrors());
                         }
                     }
@@ -1732,11 +1734,10 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $errors = array();
 
         $return_url = Yii::app()->request->getQuery('return_url', '/admin/commissioning_body_services');
 
-        $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
+        $errors = $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
 
         $this->render('//admin/commissioning_body_services/edit', array(
             'commissioning_bt' => $commissioning_bt,
@@ -1750,8 +1751,10 @@ class AdminController extends BaseAdminController
 
     private function saveEditCommissioningBodyService($cbs, $contact, $address, $return_url)
     {
+        $errors = [];
         if (!empty($_POST)) {
             $cbs->attributes = $_POST['CommissioningBodyService'];
+
 
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
@@ -1802,6 +1805,8 @@ class AdminController extends BaseAdminController
                 $this->redirect($return_url);
             }
         }
+
+        return $errors;
     }
 
     public function actionAddCommissioningBodyService()
