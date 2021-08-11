@@ -57,5 +57,8 @@
   },
   "InterpreterRequired": {
     "type": "string"
+  },
+  "Email": {
+    "type": "string"
   }
 }
