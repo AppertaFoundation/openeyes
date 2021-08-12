@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -24,8 +23,8 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
 <main class="print-main">
     <?php $this->renderPartial('_consent_header') ?>
     <h1 class="print-title">
-        Consent form 3<br />
-        <?= $this->patient->fullName . ', ' . PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?>
+        Consent form 3<br/>
+        <?= $this->patient->fullName.', '. PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) .': '. PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?>
     </h1>
     <h3>Patient/parental agreement to investigation or treatment (procedures where consciousness not impaired)</h3>
     <p>
@@ -44,7 +43,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
     </p>
     <p>
         <strong>I have explained the procedure to the patient/parent. In particular, I have explained:</strong>
-        <br />
+        <br/>
     </p>
     <p>
         <strong>The intended benefits:</strong>
@@ -59,22 +58,16 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
         <p>Any extra procedures which may become necessary during the procedure(s):</p>
         <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->additional_procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective)) ?>
     <?php } ?>
-    <?php if ($elements['Element_OphTrConsent_AdvancedDecision']->description) { ?>
-        <tr>
-            <th>Advanced Decision</th>
-            <td><?= $elements['Element_OphTrConsent_AdvancedDecision']->description ?></td>
-        </tr>
-    <?php } ?>
     <p>
         I have also discussed what the procedure is likely to involve, the benefits and risks of any available
         alternative treatments (including no treatment) and any particular concerns of those involved.
     </p>
     <?php if ($elements['Element_OphTrConsent_Leaflets']->leaflets) { ?>
         <div class="group flex-layout">
-            <span class="nowrap">
-                <span class="checkbox <?= $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
-                <?= $this->renderPartial('view_Element_OphTrConsent_Leaflets', ['element' => $elements['Element_OphTrConsent_Leaflets']]) ?>
-            </span>
+                <span class="nowrap">
+                    <span class="checkbox <?= $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
+                    <?= $this->renderPartial('view_Element_OphTrConsent_Leaflets', ['element' => $elements['Element_OphTrConsent_Leaflets']]) ?>
+                </span>
         </div>
     <?php } ?>
     <?= $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
