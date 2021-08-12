@@ -1,6 +1,6 @@
 <?php
 
-class m210629_122947_add_missing_interpreter_codes extends CDbMigration
+class m210629_122947_add_missing_interpreter_codes extends OEMigration
 {
     private array $codes = [
         "A" => "LARGE FONT APPT LETTER ONLY",
@@ -40,6 +40,9 @@ class m210629_122947_add_missing_interpreter_codes extends CDbMigration
             }
         }
         if (!empty($inserts)) {
+            // Need to invalidate cache first because CCommandBuilder will ignore
+            // the field `interpreter_pas_code` otherwise
+            Yii::app()->db->schema->getTable('language', true);
             $this->insertMultiple("language", $inserts);
         }
     }
