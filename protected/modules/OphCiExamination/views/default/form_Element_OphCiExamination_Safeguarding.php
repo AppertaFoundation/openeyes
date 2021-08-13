@@ -98,30 +98,20 @@
             $object.click(function() {
                 let $row = $(this).parent().parent();
                 trashSafeguardingEntryRow($row);
+                refreshNoConcernsVisibility();
             });
         }
 
-        function updateNoConcerns($no_concerns_checkbox) {
-            if ($no_concerns_checkbox.checked) {
-                $("#safeguarding-entries-table").hide();
-                $("#safeguarding-adder-button").hide();
-                $("#safeguarding-divider").hide();
-                $("#safeguarding-entries-table tr").each(function() {
-                    trashSafeguardingEntryRow($(this));
-                });
-            } else {
-                $("#safeguarding-entries-table").show();
-                $("#safeguarding-adder-button").show();
-                $("#safeguarding-divider").show();
+        function refreshNoConcernsVisibility() {
+            if ($("#safeguarding-entries-table > tbody > tr").length > 0) {
+                $("#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns").parent().hide();
+            }else{
+                $("#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns").parent().show();
             }
         }
 
         $(document).ready(function () {
-            let $no_concerns_checkbox = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns");
-            $no_concerns_checkbox.change(function() {
-                updateNoConcerns(this);
-            });
-            updateNoConcerns($no_concerns_checkbox[0]);
+            refreshNoConcernsVisibility();
 
             attachSafeguardingTrashEvents($('i.safeguarding-trash'));
 
@@ -154,6 +144,7 @@
 
                         let $last_safeguarding_row = $safeguarding_table_body.children('tr').last();
                         attachSafeguardingTrashEvents($last_safeguarding_row.find('i.safeguarding-trash'));
+                        refreshNoConcernsVisibility();
                     });
                     return true;
                 }
