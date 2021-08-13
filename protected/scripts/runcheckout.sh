@@ -431,6 +431,11 @@ for module in "${modules[@]}"; do
 
         if [ "$trackbranch" != "branch" ]; then
             echo "No branch $branch was found. Falling back to $defaultbranch"
+            trackbranch=$defaultbranch
+            # check if default branch exists locally - if not fetch it
+            if ! git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$trackbranch"; then
+                git -C $MODGITROOT fetch --depth $moduledepth origin $trackbranch:$trackbranch
+            fi
         fi
 
     fi
