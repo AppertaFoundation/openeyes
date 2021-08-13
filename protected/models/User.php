@@ -171,6 +171,8 @@ class User extends BaseActiveRecordVersioned
             'HIE - View' => 'Level 1 - Default View'
         ];
 
+        $highest_role = null;
+
         foreach ($hie_roles as $key => $value) {
             if (Yii::app()->authManager->checkAccess($key, Yii::app()->user->id)) {
                 $highest_role = $value;

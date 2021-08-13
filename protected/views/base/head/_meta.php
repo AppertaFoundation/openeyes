@@ -23,7 +23,7 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
 <?php }?>
 
 <?php
-    $hie_url = SettingMetadata::model()->getSetting('hie_remote_url');
+    $hie_url = \SettingMetadata::model()->getSetting('hie_remote_url');
 if (strlen($hie_url) > 0 && filter_var($hie_url, FILTER_VALIDATE_URL)) {
     $iframePolicy = "frame-src {$hie_url} localhost:*;";
 } else {

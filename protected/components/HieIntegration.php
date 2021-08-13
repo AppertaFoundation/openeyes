@@ -74,10 +74,9 @@ class HieIntegration extends \CApplicationComponent
      */
     private $data = [];
 
-    public function getConfigValue($value)
+    public function getConfigValue($key)
     {
-        $app = Yii::app();
-        return $app->params[$value];
+        return \SettingMetadata::model()->getSetting($key);
     }
 
     /**

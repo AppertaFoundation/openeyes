@@ -13,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 Yii::import('application.controllers.*');
 
 /**
@@ -172,7 +173,7 @@ class PatientController extends BaseController
     }
 
     /**
-     * @param $id
+     * @param $id Patient ID
      */
     public function actionGetHieSource($id)
     {
@@ -182,7 +183,7 @@ class PatientController extends BaseController
         try {
             $this->patient = Patient::model()->findByPk($id);
 
-            if (strlen(\SettingMetadata::model()->getSetting('hie_remote_url')) === 0) {
+            if (\SettingMetadata::model()->checkSetting('hie_remote_url', '')) {
                 throw new Exception("HIE remote url not exists.");
             }
 
@@ -191,7 +192,7 @@ class PatientController extends BaseController
             }
 
             $nhs_number = $this->patient->getNhs();
-            if (strlen($nhs_number)===0) {
+            if (strlen($nhs_number) === 0) {
                 throw new Exception("NHS number is missing.");
             }
 
@@ -199,7 +200,7 @@ class PatientController extends BaseController
                 $url = $component->generateHieUrl($this->patient, $nhs_number);
             }
 
-            if ($url==='') {
+            if ($url === '') {
                 throw new Exception("Empty Url.");
             }
 
@@ -504,11 +505,19 @@ class PatientController extends BaseController
                     ];
                 }
 
-                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-                    $patient->id, $institution_id, $site_id);
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                    Yii::app()->params['display_primary_number_usage_code'],
+                    $patient->id,
+                    $institution_id,
+                    $site_id
+                );
 
-                $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'],
-                    $patient->id, $institution_id, $site_id);
+                $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                    Yii::app()->params['display_secondary_number_usage_code'],
+                    $patient->id,
+                    $institution_id,
+                    $site_id
+                );
 
                 $result[] = array(
                     'id' => $patient->id,
@@ -2247,13 +2256,15 @@ class PatientController extends BaseController
                 $this->redirect($redirect);
             } else {
                 //Get all the validation errors
-                foreach ([
+                foreach (
+                    [
                              'patient',
                              'contact',
                              'address',
                              'patient_user_referral',
                              'patient_user_referral',
-                         ] as $model) {
+                         ] as $model
+                ) {
                     if (isset(${$model})) {
                         if (is_array(${$model})) {
                             foreach (${$model} as $item) {
@@ -2655,7 +2666,7 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $patient->deleted = 1;
         if ($patient->save()) {
-            $message = 'Patient "<strong>'.$patient->getFullName().'</strong>" was deleted';
+            $message = 'Patient "<strong>' . $patient->getFullName() . '</strong>" was deleted';
             Audit::add('patient', 'delete', $message, null);
             $message .= ' successfully';
             Yii::app()->user->setFlash('success', $message);
@@ -2669,7 +2680,7 @@ class PatientController extends BaseController
 
     public function actionGpList($term)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->addSearchCondition('first_name', '', true, 'OR');
         $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
         $criteria->addSearchCondition('last_name', '', true, 'OR');
@@ -2740,7 +2751,7 @@ class PatientController extends BaseController
      */
     public function actionGpListRp($term)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->addSearchCondition('first_name', '', true, 'OR');
         $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
         $criteria->addSearchCondition('last_name', '', true, 'OR');
@@ -2796,7 +2807,7 @@ class PatientController extends BaseController
     {
         $term = strtolower($term);
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->join = 'JOIN contact on t.contact_id = contact.id';
         $criteria->join .= '  JOIN address on contact.id = address.contact_id';
         $criteria->addCondition('( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))');

@@ -523,6 +523,14 @@ $config = array(
                 'position' => 92,
                 'options' => ['target' => '_blank'],
             ),
+            'hie_integration' => array(
+                'title' => 'View HIE Record',
+                'uri' => '',
+                'requires_setting' => array('setting_key' => 'hie_remote_url', 'required_value' => 'not-empty'),
+                'position' => 92,
+                'restricted' => array('HIE - Admin', 'HIE - Extended', 'HIE - View', 'HIE - Summary'),
+                'options' => ['requires_patient' => true],
+            )
         ),
         'admin_menu' => array(),
         'dashboard_items' => array(),

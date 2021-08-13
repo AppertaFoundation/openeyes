@@ -71,21 +71,15 @@ class HieIntegrationTest extends CTestCase
         $app->session['user'] = $this->user;
 
         // Because of the exceptions
-        $app->params['hie_usr_org'] = ' ';
-        $app->params['hie_usr_fac'] = ' ';
-        $app->params['hie_external'] = ' ';
-        $app->params['hie_org_user'] = ' ';
-        $app->params['hie_org_pass'] = ' ';
+        $app->params['hie_usr_org'] = $this->test_data['USR_ORG'];
+        $app->params['hie_usr_fac'] = $this->test_data['USR_FAC'];
+        $app->params['hie_external'] = $this->test_data['EXTERNAL'];
+        $app->params['hie_org_user'] = $this->test_data['ORG_USER'];
+        $app->params['hie_org_pass'] = $this->test_data['ORG_PASS'];
         $app->params['hie_remote_url'] = ' ';
         $app->params['hie_aes_encryption_password'] = ' ';
 
         $this->instance = Yii::app()->hieIntegration;
-
-        $this->instance->hie_usr_org = $this->test_data['USR_ORG'];
-        $this->instance->hie_usr_fac = $this->test_data['USR_FAC'];
-        $this->instance->hie_external = $this->test_data['EXTERNAL'];
-        $this->instance->hie_org_user = $this->test_data['ORG_USER'];
-        $this->instance->hie_org_pass = $this->test_data['ORG_PASS'];
     }
 
     protected function callMethod($object, string $method, array $parameters = [])
