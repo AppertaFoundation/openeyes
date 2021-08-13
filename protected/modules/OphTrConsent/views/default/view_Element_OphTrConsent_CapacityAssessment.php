@@ -35,31 +35,38 @@
         <div class="row">
             <div class="fade">Further details</div>
             <ul class="row-list">
+                <?php if (isset($element->patient_impairment)) { ?>
+                <li>
+                    <div class="small-row"><small class="fade"><?php echo CHtml::encode($element->getAttributeLabel('how_judgement_was_made'))?>:</small></div>
+                    <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->usermodified->getFullName() ?>" data-tip='{"type":"basic","tip":"<small>User comment by </small><br /><?=$element->usermodified->getFullName()?>"}'></i>
+                    <span class="user-comment"><?php echo nl2br(CHtml::encode($element->patient_impairment ?: "-")) ?></span>
+                </li>
+                <?php } ?>
                 <?php if ($element->how_judgement_was_made) { ?>
                 <li>
                     <div class="small-row"><small class="fade"><?php echo CHtml::encode($element->getAttributeLabel('how_judgement_was_made'))?>:</small></div>
-                    <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->usermodified->first_name . ' ' . $element->usermodified->last_name ?>" data-tip='{"type":"basic","tip":"<small>User comment by </small><br />Michael Morgan"}'></i>
+                    <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->usermodified->getFullName() ?>" data-tip='{"type":"basic","tip":"<small>User comment by </small><br /><?=$element->usermodified->getFullName()?>"}'></i>
                     <span class="user-comment"><?php echo nl2br(CHtml::encode($element->how_judgement_was_made ?: "-")) ?></span>
                 </li>
                 <?php } ?>
                 <?php if ($element->evidence) { ?>
                 <li>
                     <div class="small-row"><small class="fade"><?php echo CHtml::encode($element->getAttributeLabel('evidence'))?>:</small></div>
-                    <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->usermodified->first_name . ' ' . $element->usermodified->last_name ?>" data-tooltip-content="<small>User comment by </small><br />Michael Morgan" data-tip='{"type":"basic","tip":"<small>User comment by </small><br />Michael Morgan"}'></i>
+                    <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->usermodified->getFullName() ?>" data-tooltip-content="<small>User comment by </small><br />Michael Morgan" data-tip='{"type":"basic","tip":"<small>User comment by </small><br />Michael Morgan"}'></i>
                     <span class="user-comment"><?php echo nl2br(CHtml::encode($element->evidence ?: "-"))?></span>
                 </li>
                 <?php } ?>
                 <?php if ($element->attempts_to_assist) { ?>
                 <li>
                     <div class="small-row"><small class="fade"><?php echo CHtml::encode($element->getAttributeLabel('attempts_to_assist'))?>:</small></div>
-                    <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->usermodified->first_name . ' ' . $element->usermodified->last_name ?>" data-tooltip-content="<small>User comment by </small><br />Michael Morgan" data-tip='{"type":"basic","tip":"<small>User comment by </small><br />Michael Morgan"}'></i>
+                    <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->usermodified->getFullName() ?>" data-tooltip-content="<small>User comment by </small><br />Michael Morgan" data-tip='{"type":"basic","tip":"<small>User comment by </small><br />Michael Morgan"}'></i>
                     <span class="user-comment"><?php echo nl2br(CHtml::encode($element->attempts_to_assist ?: "-"))?></span>
                 </li>
                 <?php } ?>
                 <?php if ($element->basis_of_decision) { ?>
                 <li>
                     <div class="small-row"><small class="fade"><?php echo CHtml::encode($element->getAttributeLabel('basis_of_decision'))?>:</small></div>
-                    <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->usermodified->first_name . ' ' . $element->usermodified->last_name ?>" data-tooltip-content="<small>User comment by </small><br />Michael Morgan" data-tip='{"type":"basic","tip":"<small>User comment by </small><br />Michael Morgan"}'></i>
+                    <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br /><?php echo $element->usermodified->getFullName() ?>" data-tooltip-content="<small>User comment by </small><br />Michael Morgan" data-tip='{"type":"basic","tip":"<small>User comment by </small><br />Michael Morgan"}'></i>
                     <span class="user-comment"><?php echo nl2br(CHtml::encode($element->basis_of_decision ?: "-"))?></span>
                 </li>
                 <?php } ?>

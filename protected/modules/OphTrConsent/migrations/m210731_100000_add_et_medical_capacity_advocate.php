@@ -13,16 +13,13 @@ class m210731_100000_add_et_medical_capacity_advocate extends OEMigration
             ), true);
 
             $this->addForeignKey("fk_et_ophtrconsent_medical_capacity_advocate_event", "et_ophtrconsent_medical_capacity_advocate", "event_id", "event", "id");
+            $this->addForeignKey("fk_et_ophtrconsent_medical_capacity_advocate_instructed", "et_ophtrconsent_medical_capacity_advocate", "instructed_id", "ophtrconsent_medical_capacity_advocate_instructed", "id");
         }
-
-
-        $this->addForeignKey("fk_et_ophtrconsent_medical_capacity_advocate_instructed", "et_ophtrconsent_medical_capacity_advocate", "instructed_id", "ophtrconsent_medical_capacity_advocate_instructed", "id");
     }
 
     public function down()
     {
-        $this->dropForeignKey("fk_et_ophtrconsent_medical_capacity_advocate_instructed", "et_ophtrconsent_medical_capacity_advocate");
-        $this->dropForeignKey("fk_et_ophtrconsent_medical_capacity_advocate_event", "et_ophtrconsent_medical_capacity_advocate");
-        $this->dropOETable("et_ophtrconsent_medical_capacity_advocate", true);
+        echo "m210731_100000_add_et_medical_capacity_advocate does not support migration down.\n";
+        return false;
     }
 }

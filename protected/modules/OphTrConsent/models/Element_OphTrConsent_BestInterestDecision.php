@@ -64,6 +64,8 @@ class Element_OphTrConsent_BestInterestDecision extends \BaseEventTypeElement
             array('reason_for_procedure', 'validateReasonForProcedure'),
             array('event_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('patient_has_not_refused, reason_for_procedure, treatment_cannot_wait, treatment_cannot_wait_reason, wishes, last_modified_date, created_date', 'safe'),
+            // These fields are defined for backwards compatibility with 1.19 databases where corresponding columns exist. Do not remove.
+            array('deputy_granted, circumstances, imca_view, options_less_restrictive, views_of_colleagues, decision, protected_file_id', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, event_id, patient_has_not_refused, reason_for_procedure, treatment_cannot_wait, treatment_cannot_wait_reason, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),

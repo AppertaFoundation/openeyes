@@ -45,6 +45,8 @@ class Element_OphTrConsent_CapacityAssessment extends \BaseEventTypeElement
     {
         return array(
             array("event_id, how_judgement_was_made, evidence, attempts_to_assist, basis_of_decision, lackOfCapacityReasonIds", "safe"),
+            // These fields are defined for backwards compatibility with 1.19 databases where corresponding columns exist. Do not remove.
+            array('patient_impairment', 'safe'),
         );
     }
 
