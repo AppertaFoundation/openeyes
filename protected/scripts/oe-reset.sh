@@ -149,8 +149,8 @@ while [[ $# -gt 0 ]]; do
         ;;
     --no-post)
         nopost=1
-        echo "Local post-demo scripts will not be run"
-        ## do not run local post reset scripts
+        echo "post-migraton demo scripts will not be run"
+        ## do not run post reset scripts
         ;;
     --no-pre)
         nopre=1
@@ -257,7 +257,7 @@ if [ $showhelp = 1 ]; then
     echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
     echo "	--ignore-warnings	: Ignore warnings during migration"
     echo "	--no-fix		: do not run oe-fix routines after reset"
-    echo "  --no-post       : do not run local post reset scripts"
+    echo "  --no-post       : do not run post-migration reset scripts"
     echo "	--custom-file"
     echo "			| -f:	: Use a custom .sql file to restore instead of default. e.g; "
     echo "					  'oe-reset -f <filename>.sql' "
@@ -415,22 +415,21 @@ if [ $migrate == "1" ]; then
     grep applied "$WROOT"/protected/runtime/migrate.log
 fi
 
-# Run demo scripts
+# Run post-migration demo scripts
 # Actual scripts are in sample module, for greater flexibility
-if [ $demo == "1" ]; then
+if [[ $demo == "1" && $nopost == "0" ]]; then
 
-    echo "RUNNING DEMO SCRIPTS..."
+    echo "RUNNING POST-MIGRATION DEMO SCRIPTS..."
 
     basefolder="$MODULEROOT/sample/sql/demo"
 
-    shopt -s nullglob
-    for f in $(ls "$basefolder" | sort -V); do
+    find "$basefolder" "$basefolder"/post-migrate/ "$basefolder"/local-post -maxdepth 1 -type f -printf '%f\0%p\n' | sort -t '\0' -V | awk -F '\0' '{print $2}' | while read f; do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
+            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $f"
         elif [[ $f == *.sh ]]; then
             echo "running $f"
-            bash -l "$basefolder/$f"
+            bash -l "$f"
         fi
     done
 
@@ -441,16 +440,18 @@ if [ $demo == "1" ]; then
 
         basefolder="$MODULEROOT/sample/sql/demo/genetics"
 
-        shopt -s nullglob
-        for f in $(ls "$basefolder" | sort -V); do
-            if [[ $f == *.sql ]]; then
-                echo "importing $f"
-                eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
-            elif [[ $f == *.sh ]]; then
-                echo "running $f"
-                bash -l "$basefolder/$f"
-            fi
-        done
+        if [ -d "$basefolder" ]; then
+            shopt -s nullglob
+            for f in $(ls "$basefolder" | sort -V); do
+                if [[ $f == *.sql ]]; then
+                    echo "importing $f"
+                    eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
+                elif [[ $f == *.sh ]]; then
+                    echo "running $f"
+                    bash -l "$basefolder/$f"
+                fi
+            done
+        fi
 
     fi
 
@@ -473,25 +474,6 @@ if [ -n "$dmdimport" ]; then
         echo "DMD IMPORT FAILD. Aborting..."
         exit 1
     fi
-fi
-
-# Run local post-migaration demo scripts
-if [[ $demo == "1" && $nopost == "0" ]]; then
-
-    echo "RUNNING POST RESET SCRIPTS..."
-
-    basefolder="$MODULEROOT/sample/sql/demo/local-post"
-
-    shopt -s nullglob
-    for f in $(ls "$postpath" | sort -V); do
-        if [[ $f == *.sql ]]; then
-            echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $postpath/$f"
-        elif [[ $f == *.sh ]]; then
-            echo "running $f"
-            bash -l "$postpath/$f"
-        fi
-    done
 fi
 
 if [ $nofix -eq 0 ]; then
