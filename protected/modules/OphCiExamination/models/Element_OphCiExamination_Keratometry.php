@@ -236,6 +236,16 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             parent::afterValidate();
     }
 
+    public function beforeValidate()
+    {
+        foreach (['left', 'right'] as $side) {
+            if ($this->{$side . '_ba_index_value'} === '') {
+                $this->{$side . '_ba_index_value'} = null;
+            }
+        }
+        return parent::beforeValidate();
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *

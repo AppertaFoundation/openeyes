@@ -136,6 +136,20 @@ class DefaultController extends BaseEventTypeController
                 return $message;
         }
 
+        $file_contents = file_get_contents($files['Document']['tmp_name'][$index]);
+
+        if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+            try {
+                if (!VirusScanController::stringIsClean($file_contents)) {
+                    $message = 'File contains potentially malicious data and cannot be saved.';
+                    return $message;
+                }
+            } catch (\Throwable $e) {
+                $message = 'Cannot connect to virus scanner. Please contact a system administrator.';
+                return $message;
+            }
+        }
+
         $finfo = new finfo(FILEINFO_MIME_TYPE);
 
         $file_mime = strtolower($finfo->file($files['Document']['tmp_name'][$index]));
@@ -170,8 +184,7 @@ class DefaultController extends BaseEventTypeController
             unlink($tmp_name);
             return $p_file->id;
         } else {
-            unlink($tmp_name);
-            return false;
+            $errors = $p_file->getErrors();
         }
     }
 

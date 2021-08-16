@@ -15,23 +15,12 @@
 
 namespace OEModule\OphCiExamination\controllers\traits;
 
-use OEModule\OphCiExamination\models\CoverAndPrismCover_Correction;
 use OEModule\OphCiExamination\models\CoverAndPrismCover_Distance;
 use OEModule\OphCiExamination\models\CoverAndPrismCover_HorizontalPrism;
 use OEModule\OphCiExamination\models\CoverAndPrismCover_VerticalPrism;
 
 trait AdminForCoverAndPrismCover
 {
-    public function actionCoverAndPrismCoverCorrection()
-    {
-        $this->genericAdmin('Cover and Prism Cover - Correction',
-            CoverAndPrismCover_Correction::class,
-            [
-                'description' => 'Correction Types for Cover and Prism Cover',
-            ]
-        );
-    }
-
     public function actionCoverAndPrismCoverDistance()
     {
         $this->genericAdmin('Cover and Prism Cover - Distance',

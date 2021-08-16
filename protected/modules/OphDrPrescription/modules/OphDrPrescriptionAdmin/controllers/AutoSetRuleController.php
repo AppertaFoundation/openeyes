@@ -304,6 +304,10 @@ class AutoSetRuleController extends BaseAdminController
             'criteria' => $criteria,
         ]);
 
+        if (!empty($set->medicationSetAutoRuleMedications)) {
+            $data_provider->setData($set->medicationSetAutoRuleMedications);
+        }
+
         $pagination = new CPagination($data_provider->totalItemCount);
         $pagination->pageSize = 20;
         $pagination->applyLimit($criteria);

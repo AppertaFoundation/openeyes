@@ -198,10 +198,10 @@ class BaseController extends Controller
                     $user_authentication->audit('login', 'user-soft-unlock', null, "User: {$user_authentication->username} has finished their softlock period ");
                 }
 
-                $whitelistedRequest = ($_SERVER['REQUEST_URI']=='/profile/password')||($_SERVER['REQUEST_URI']=='/site/logout'); // get stale pw whitelisted actions
+                $whitelistedRequestCheck = $user->CheckRequestOnExpiryWhitelist($_SERVER['REQUEST_URI']);
 
                 // if user is expired, force them to change their password
-                if (PasswordUtils::testStatus('expired', $user_authentication) && !$whitelistedRequest) {
+                if (PasswordUtils::testStatus('expired', $user_authentication) && !$whitelistedRequestCheck) {
                     Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
                     $this->redirect(array('/profile/password'));
                 }

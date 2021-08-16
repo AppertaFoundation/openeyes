@@ -511,23 +511,23 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
         });
 
         <?php
-        $common_systemic = Medication::model()->listCommonSystemicMedications(true, true);
-        foreach ($common_systemic as &$medication) {
-            $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
-        }
-
         $firm_id = $this->getApp()->session->get('selected_firm_id');
         $site_id = $this->getApp()->session->get('selected_site_id');
         if ($firm_id) {
             /** @var Firm $firm */
             $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
             $subspecialty_id = $firm->getSubspecialtyID();
+            $common_systemic = Medication::model()->listCommonSystemicMedications(true, $subspecialty_id, $site_id, true);
+            foreach ($common_systemic as &$medication) {
+                $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+            }
             $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id, true);
             foreach ($common_ophthalmic as &$medication) {
                 $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
             }
         } else {
-            $common_ophthalmic = array();
+            $common_ophthalmic = [];
+            $common_systemic = [];
         }
 
         ?>

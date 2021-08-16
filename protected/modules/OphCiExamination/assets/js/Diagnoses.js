@@ -234,8 +234,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             pickmeup(datepicker_name, {
                 format: 'Y-m-d',
                 hide_on_select: true,
-                default_date: new Date()
+                default_date: false
             });
+
+            $(datepicker_name).val($.datepicker.formatDate('yy-mm-dd', new Date()));
         }
     };
 

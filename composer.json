@@ -24,7 +24,8 @@
     "league/oauth2-client": "^2.4",
     "jumbojett/openid-connect-php": "0.9.*",
     "ext-openssl": "*",
-    "ext-soap": "*"
+    "ext-soap": "*",
+    "xenolope/quahog": "2.*"
   },
   "require-dev": {
     "phpunit/phpunit": "7.5.20",
