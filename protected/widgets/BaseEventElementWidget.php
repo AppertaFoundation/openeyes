@@ -23,6 +23,7 @@ class BaseEventElementWidget extends CWidget
     public static $EVENT_VIEW_MODE = 4;
     public static $EVENT_PRINT_MODE = 8;
     public static $EVENT_EDIT_MODE = 16;
+
     public static $EPISODE_SUMMARY_MODE = 32;
     public static $DATA_MODE = 64;
     public static $PATIENT_LANDING_PAGE_MODE = 128;

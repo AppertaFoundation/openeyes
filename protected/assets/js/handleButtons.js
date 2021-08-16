@@ -141,26 +141,6 @@ $(document).ready(function(){
     });
   });
 
-  handleButton($('#lookup_user'), function (e) {
-    e.preventDefault();
-
-    $.ajax({
-      'type': 'GET',
-      'url': baseUrl + '/admin/lookupUser?username=' + $('#User_username').val(),
-      'success': function (resp) {
-        var m = resp.match(/[0-9]+/);
-        if (m) {
-          window.location.href = baseUrl + '/admin/editUser/' + m[0];
-        } else {
-          enableButtons();
-          new OpenEyes.UI.Dialog.Alert({
-            content: "User not found"
-          }).open();
-        }
-      }
-    });
-  });
-
   handleButton($('#et_add_label'), function (e) {
     e.preventDefault();
     /* TODO */

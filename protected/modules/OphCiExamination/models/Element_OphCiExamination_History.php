@@ -102,7 +102,6 @@ class Element_OphCiExamination_History extends \BaseEventTypeElement
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
-        
     }
 
     /**

@@ -56,5 +56,4 @@ class CorrectionTypeTest extends \ModelTestCase
         $instance = $this->getElementInstance();
         $this->assertContains(\LookupTable::class, $instance->behaviors());
     }
-
 }

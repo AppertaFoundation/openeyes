@@ -1,8 +1,0 @@
-{
-  "name": "openeyes/oph-dr-prescription",
-  "description": "Module for generating prescriptions in OpenEyes",
-  "type": "openeyes-module",
-  "require": {
-    "openeyes/module-installer": "*"
-  }
-}

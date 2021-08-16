@@ -260,7 +260,7 @@ class BookingController extends OphTrOperationbookingEventController
             } else {
                 $comment = isset($_POST['cancellation_comment']) ? $_POST['cancellation_comment'] : null;
 
-                $is_cancelled = $operation->cancel($_POST['cancellation_reason'], $comment)['result'];
+                $is_cancelled = $operation->cancel($_POST['cancellation_reason'], $comment, false, true)['result'];
 
                 if ($is_cancelled) {
                     $operation->setStatus('Requires rescheduling');

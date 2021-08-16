@@ -1,4 +1,6 @@
 <?php
+$pas_enabled = isset(\Yii::app()->params['pasapi']['enabled']) && \Yii::app()->params['pasapi']['enabled'] === true;
+
 /**
  * @var $callback string
  */
@@ -21,7 +23,10 @@ if ($context == "sidebar") { ?>
                 'class' => 'search cols-full',
                 'placeholder' => 'Search',
             ]); ?>
-            <button type="submit" id="js-find-patient" class="blue hint row cols-full">Find Patient</button>
+            <button type="submit" id="js-find-patient" class="blue hint"><?= $pas_enabled ? "Find Patient in PAS" : "Find Patient" ?></button>
+            <?php if($pas_enabled): ?>
+                <button name="nopas" value="1" type="submit" id="js-find-patient-nopas" class="green hint">Find local Patient</button>
+            <?php endif; ?>
             <i class="spinner" style="display: none;" title="Loading..."></i>
         </div>
     </div>
@@ -34,7 +39,10 @@ if ($context == "sidebar") { ?>
                 'class' => 'search',
                 'placeholder' => 'Search',
           ]); ?>
-        <button type="submit" id="js-find-patient" class="blue hint">Find Patient</button>
+        <button type="submit" id="js-find-patient" class="blue hint"><?= $pas_enabled ? "Find Patient in PAS" : "Find Patient" ?></button>
+        <?php if($pas_enabled): ?>
+            <button name="nopas" value="1" type="submit" id="js-find-patient-nopas" class="green hint">Find local Patient</button>
+        <?php endif; ?>
         <div class="find-by">Search by <?php echo (\SettingMetadata::model()->getSetting('hos_num_label')) . ', ' . (\SettingMetadata::model()->getSetting('nhs_num_label'))?>, Firstname Surname or Surname, Firstname.</div>
       <i class="spinner" style="display: none;" title="Loading..."></i>
     </div>

@@ -32,10 +32,10 @@ class PrescriptionCreator extends \EventCreator
         foreach ($set->medicationSetItems as $medication_set_item) {
             $item = new \OphDrPrescription_Item();
 
-            $item->dose = $medication_set_item->default_dose;
-            $item->dose_unit_term = $medication_set_item->default_dose_unit_term;
+            $item->dose = $medication_set_item->default_dose ?: $medication_set_item->medication->default_dose;
+            $item->dose_unit_term = $medication_set_item->default_dose_unit_term ?: $medication_set_item->medication->default_dose_unit_term;
             $item->frequency_id = $medication_set_item->default_frequency_id;
-            $item->route_id = $medication_set_item->default_route_id;
+            $item->route_id = $medication_set_item->default_route_id ?: $medication_set_item->medication->default_route_id;
             $item->medication_id = $medication_set_item->medication_id;
             $item->duration_id = $medication_set_item->default_duration_id;
             $item->dispense_condition_id = $medication_set_item->default_dispense_condition_id;

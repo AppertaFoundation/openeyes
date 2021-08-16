@@ -277,5 +277,4 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
     {
         return 'print_'.$this->getDefaultView();
     }
-    
 }

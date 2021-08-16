@@ -165,7 +165,7 @@ class PasswordUtils
           return true;
         }
 
-        $expiry_statuses = ['locked' => '45 days', 'expired' => '30 days', 'stale' => '15 days'];
+        $expiry_statuses = ['lock' => '45 days', 'expire' => '30 days', 'stale' => '15 days'];
 
         $last_changed_date = $user_authentication->password_last_changed_date ?? date("Y-m-d H:i:s");
         if (!$last_changed_date) {
@@ -187,7 +187,7 @@ class PasswordUtils
     public static function getDaysLeft($user_authentication)
     {
         //same excepti
-        $expiry_statuses = ['locked' => '45 days', 'expired' => '30 days', 'stale' => '15 days'];
+        $expiry_statuses = ['lock' => '45 days', 'expire' => '30 days', 'stale' => '15 days'];
 
         $last_changed_date = $user_authentication->password_last_changed_date ?? date("Y-m-d H:i:s");
         if (!$last_changed_date) {

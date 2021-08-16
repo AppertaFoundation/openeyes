@@ -405,7 +405,7 @@ $(document).ready(function() {
       $(glaucoma_dialog.content).find('.glaucoma-risk-descriptions').show();
       $(glaucoma_dialog.content).on('click', '.status-box a', function (e) {
         var value = $(this).attr('data-risk-id');
-        $('.oe-popup-wrap').hide();
+          $('.oe-popup-wrap').not('#js-overlay').remove();
         $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_risk_id').val(value).trigger('change');
       });
     });
@@ -1437,7 +1437,7 @@ function OphCiExamination_DRGrading_init() {
       $(dialog.content).find('.grade-info-all').show();
       $(dialog.content).on('click', '.status-box a', function (e) {
         var value = $(this).attr('data-id');
-        $('.oe-popup-wrap').hide();
+          $('.oe-popup-wrap').not('#js-overlay').hide();
         $('#'+$(this).data('select-id')).val(value).trigger('change');
       });
         // remove hovering:

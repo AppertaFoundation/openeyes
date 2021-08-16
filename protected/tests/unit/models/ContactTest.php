@@ -77,9 +77,10 @@ class ContactTest extends ActiveRecordTestCase
         $expected = array(
              'id' => 'ID',
              'nick_name' => 'Nickname',
-             'primary_phone' => 'Phone number',
-             'title' => 'Title',
-             'first_name' => 'First name',
+            'primary_phone' => 'Phone number',
+            'mobile_phone' => 'Mobile number',
+            'title' => 'Title',
+            'first_name' => 'First name',
              'last_name' => 'Last name',
              'qualifications' => 'Qualifications',
              'contact_label_id' => 'Label',

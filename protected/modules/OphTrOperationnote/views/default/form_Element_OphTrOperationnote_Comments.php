@@ -15,9 +15,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatient_minor_op'];
 ?>
 
-<div class="element-fields full-width flex-layout">
+<div class="element-fields full-width flex-layout" id="OphTrOperationnote_Comments" data-outpatient-minor-op="<?= $is_outpatient_minor_op ? 'yes' : 'no' ?>">
   <div class="data-group cols-10">
     <div>
         <?php echo $form->textArea(
@@ -48,9 +50,12 @@
 </div>
 
 <?php
+$is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatient_minor_op'];
+
 if ($this->action->id == 'create') {
     $this->widget('EventAutoGenerateCheckboxesWidget', [
-        'suffix' => strtolower($this->event->eventType->class_name)
+        'suffix' => strtolower($this->event->eventType->class_name),
+        'disable_auto_generate_for' => $is_outpatient_minor_op ? ['prescription', 'gp_letter', 'optom'] : ['optom'],
     ]);
 }
 
@@ -67,8 +72,8 @@ $instru_list = $element->postop_instructions_list;
           array_map(function ($key, $item) {
               return ['label' => $item, 'id' => $key,];
           },
-          array_keys($instru_list),
-          $instru_list)
+            array_keys($instru_list),
+            $instru_list)
       ) ?>, {'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {

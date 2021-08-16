@@ -60,7 +60,7 @@ class Element_OphInLabResults_Details extends BaseEventTypeElement
             'result_type_id' => 'Type',
         );
     }
-    
+
     public function getPrint_view()
     {
         return 'print_'.$this->getDefaultView();

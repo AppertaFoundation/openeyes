@@ -20,5 +20,3 @@ if (!isset($currentValue) || $currentValue == null) {
 }
       echo CHtml::textArea($metadata->key, $currentValue, array('rows' => 6, 'cols' => 50));
       echo CHtml::hiddenField('hidden_'.$metadata->key, 1);
-
-?>

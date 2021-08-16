@@ -112,6 +112,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
+            'user' => [self::BELONGS_TO, 'User', 'created_user_id'],
         );
     }
 

@@ -80,7 +80,7 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseActiveRecord
             'criteria' => $criteria,
         ));
     }
-    
+
     public function boxMaxValues($boxID)
     {
         $boxMaxValues = Yii::app()->db->createCommand()
@@ -88,10 +88,10 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseActiveRecord
             ->from('ophindnaextraction_dnaextraction_box')
             ->where('id =:id', array(':id' => $boxID))
             ->queryRow();
-        
+
         return $boxMaxValues;
     }
-    
+
     public function attributeLabels()
     {
         return array(
@@ -100,5 +100,4 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseActiveRecord
             'maxnumber'  => 'Max number',
         );
     }
-    
 }

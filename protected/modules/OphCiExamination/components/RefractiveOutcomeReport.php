@@ -227,7 +227,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             $diff = round($diff * 2) / 2;
             // there was some -0 value, the following line is just in case
             $diff = (float)$diff === (float)-0 ? 0 : $diff;
-            
+
             $ret_ind = array_search($diff, array_column($ret, 'text'));
 
             if ($ret_ind === false) {
@@ -276,7 +276,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
                 if ($tickText < -0.5 || $tickText > 0.5) {
                     $plusOrMinusHalf += (int) $dataRow['rowTotal'];
                 }
-    
+
                 if ($tickText < -1 || $tickText > 1) {
                     $plusOrMinusOne += (int) $dataRow['rowTotal'];
                 }
@@ -284,7 +284,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             if ($plusOrMinusOne > 0) {
                 $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '');
             }
-    
+
             if ($plusOrMinusHalf > 0) {
                 $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100), 1, '.', '');
             }

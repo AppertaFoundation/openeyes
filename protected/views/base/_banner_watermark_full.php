@@ -20,7 +20,7 @@
     <div id="oe-admin-notifcation">
         <span id="notification-full"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
     </div>
-<?php } else if (Yii::app()->params['watermark_short']) { ?>
+<?php } elseif (Yii::app()->params['watermark_short']) { ?>
 <div id="oe-admin-notifcation">
         <span id="notification-full"><?=\CHtml::encode(Yii::app()->params['watermark_short']);?></span>
     </div>

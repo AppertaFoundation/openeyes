@@ -33,6 +33,8 @@ class DefaultController extends BaseEventTypeController
     protected $unbooked = false;
     /* @var Proc[] - cache of bookings for the booking operation */
     protected $booking_procedures;
+    /* @var boolean - indicates if this note is a outpatient minor op or not when creating */
+    protected $outpatient_minor_op = false;
 
     /**
      * @inheritDoc
@@ -75,7 +77,9 @@ class DefaultController extends BaseEventTypeController
             if (preg_match('/^booking([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
                 $this->redirect(array('/OphTrOperationnote/Default/create?patient_id=' . $this->patient->id . '&booking_event_id=' . $m[1]));
             } elseif (@$_POST['SelectBooking'] == 'emergency') {
-                $this->redirect(array('/OphTrOperationnote/Default/create?patient_id=' . $this->patient->id . '&unbooked=1'));
+                $this->redirect(array('/OphTrOperationnote/Default/create?patient_id=' . $this->patient->id . '&unbooked=1&unbooked_type=emergency'));
+            } elseif (@$_POST['SelectBooking'] == 'outpatient-minor-op') {
+                $this->redirect(array('/OphTrOperationnote/Default/create?patient_id=' . $this->patient->id . '&unbooked=1&unbooked_type=outpatient_minor_op'));
             }
 
             $errors = array('Operation' => array('Please select a booked operation'));
@@ -208,6 +212,7 @@ class DefaultController extends BaseEventTypeController
 
         $this->render('create', array(
             'errors' => @$errors,
+            'outpatient_minor_op' => $this->outpatient_minor_op,
         ));
     }
 
@@ -999,6 +1004,10 @@ class DefaultController extends BaseEventTypeController
             }
         } elseif (isset($_GET['unbooked'])) {
             $this->unbooked = true;
+
+            if (isset($_GET['unbooked_type']) && $_GET['unbooked_type'] === 'outpatient_minor_op') {
+                $this->outpatient_minor_op = true;
+            }
         }
 
         $this->initEdit();
@@ -1307,6 +1316,23 @@ class DefaultController extends BaseEventTypeController
             'success' => $success,
             'errors' => $errors
         ];
+    }
+
+    /**
+     * We set the validation scenario for the models based on whether the user is creating a minor outpatient operation
+     * note or not.
+     *
+     * @param $element
+     */
+    protected function setValidationScenarioForElement($element)
+    {
+        if ($this->outpatient_minor_op) {
+            switch (get_class($element)) {
+                case 'Element_OphTrOperationnote_SiteTheatre':
+                    $element->setScenario('outpatient_minor_operation');
+                    break;
+            }
+        }
     }
 
     /**

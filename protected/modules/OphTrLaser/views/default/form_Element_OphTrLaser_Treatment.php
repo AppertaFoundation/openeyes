@@ -83,8 +83,8 @@ $layoutColumns = array(
                         array_map(function ($procedure) {
                             return ['label' => $procedure->term, 'id' => $procedure->id];
                         },
-                        $procs) 
-                    ) ?> ,{'multiSelect': true}),
+                        $procs)
+                                                                   ) ?> ,{'multiSelect': true}),
                     ],
                     onOpen: function (adderDialog) {
                         adderDialog.popup.find('li').each(function() {

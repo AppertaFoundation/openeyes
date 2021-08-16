@@ -39,7 +39,7 @@ class PedigreeController extends BaseModuleController
     public function beforeAction($action)
     {
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.Genetics.assets.js'), true);
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/gene_validation.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/gene_validation.js');
 
 
         return parent::beforeAction($action);
@@ -145,7 +145,7 @@ class PedigreeController extends BaseModuleController
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Family Saved");
 
-                $this->redirect('/Genetics/pedigree/view/'.$admin->getModel()->id);
+                $this->redirect('/Genetics/pedigree/view/' . $admin->getModel()->id);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
@@ -157,15 +157,15 @@ class PedigreeController extends BaseModuleController
      */
     public function actionList()
     {
-        if (empty($_GET)) {
+        if (empty($_POST)) {
             if (($data = YiiSession::get('genetics_pedigree_searchoptions'))) {
-                $_GET = $data;
+                $_POST = $data;
             }
             Audit::add('Genetics pedigree list', 'view');
         } else {
             Audit::add('Genetics pedigree list', 'search');
 
-            YiiSession::set('genetics_pedigree_searchoptions', $_GET);
+            YiiSession::set('genetics_pedigree_searchoptions', $_POST);
         }
 
 
@@ -202,7 +202,7 @@ class PedigreeController extends BaseModuleController
         $display_buttons = $this->checkAccess('OprnEditPedigree');
         $admin->listModel($display_buttons);
     }
-    
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -228,7 +228,7 @@ class PedigreeController extends BaseModuleController
 
         $pedigree_id = Yii::app()->request->getQuery('term', null);
 
-        if ( strlen($pedigree_id) > 2) {
+        if (strlen($pedigree_id) > 2) {
             $criteria = new CDbCriteria();
             $criteria->addSearchCondition('t.id', $pedigree_id, true);
 
@@ -285,5 +285,4 @@ class PedigreeController extends BaseModuleController
 
         echo $response;
     }
-
 }

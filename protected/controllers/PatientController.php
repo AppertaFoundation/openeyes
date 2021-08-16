@@ -13,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 Yii::import('application.controllers.*');
 
 /**
@@ -49,7 +50,7 @@ class PatientController extends BaseController
             ),
             array(
                 'allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients', 'getCitoUrl'),
                 'users' => array('@'),
             ),
             array(
@@ -115,12 +116,16 @@ class PatientController extends BaseController
             ),
             array(
                 'allow',
+                'actions' => array('getHieSource'),
+                'roles' => array('View clinical'),
+            ),
+            array(
+                'allow',
                 'actions' => array('delete'),
                 'roles' => array('OprnDeletePatient')
             )
         );
     }
-
 
     public function behaviors()
     {
@@ -167,42 +172,128 @@ class PatientController extends BaseController
         $this->redirect(array('summary', 'id' => $id));
     }
 
+    /**
+     * @param $id Patient ID
+     */
+    public function actionGetHieSource($id)
+    {
+        $errors = [];
+        $url = '';
+
+        try {
+            $this->patient = Patient::model()->findByPk($id);
+
+            if (\SettingMetadata::model()->checkSetting('hie_remote_url', '')) {
+                throw new Exception("HIE remote url not exists.");
+            }
+
+            if (is_null($this->patient)) {
+                throw new Exception("Patient not found: $id");
+            }
+
+            $nhs_number = $this->patient->getNhs();
+            if (strlen($nhs_number) === 0) {
+                throw new Exception("NHS number is missing.");
+            }
+
+            if ($component = $this->getApp()->getComponent('hieIntegration')) {
+                $url = $component->generateHieUrl($this->patient, $nhs_number);
+            }
+
+            if ($url === '') {
+                throw new Exception("Empty Url.");
+            }
+
+            $data = $component->getData();
+            \Audit::add(
+                'search',
+                'search',
+                json_encode(array_merge($data, ['patient_id' => $this->patient->id])),
+                $log_message = 'HIE search: patinet id = ' . $this->patient->id,
+            );
+        } catch (Exception $exception) {
+            \Yii::log($exception);
+            $errors[] = $exception->getMessage();
+        }
+
+        $episodes = $this->patient->episodes;
+        $support_service_episodes = $this->patient->supportserviceepisodes;
+        $events = $this->patient->getEvents();
+        $legacy_episodes = $this->patient->legacyepisodes;
+        $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+
+        if ($no_episodes) {
+            $this->layout = '//layouts/events_and_episodes_no_header';
+        } else {
+            $this->layout = '//layouts/events_and_episodes';
+        }
+
+        $this->render('hie_view', array(
+            'encrypted_url' => $url,
+            'patient' => $this->patient,
+            'errors' => $errors
+        ));
+    }
+
     public function actionSummary($id)
     {
+        if (strlen(Yii::app()->params['cito_access_token_url']) !== 0) {
+            $cito_to_menu =
+                [
+                    'cito' => [
+                        'title' => 'Open in CITO',
+                        'position' => 46,
+                        'uri' => '#',
+                        'options' => ['id' => 'js-get-cito-url', 'class' => 'hidden'],
+                    ]
+                ];
+            Yii::app()->params['menu_bar_items'] = array_merge(Yii::app()->params['menu_bar_items'], $cito_to_menu);
+        }
+
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($id, false);
+
         // if the ids are different, it means the $id belongs to a merged patient
         if ($id !== $this->patient->id) {
             $link = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             // using redirect to correct the url and to avoid issues from creating events
             $this->redirect("$link");
         }
-        $this->pageTitle = "Patient Overview";
-        $this->patient->audit('patient', 'view-summary');
 
-        $episodes = $this->patient->episodes;
-        $legacy_episodes = $this->patient->legacyepisodes;
-        $support_service_episodes = $this->patient->supportserviceepisodes;
+            $this->layout = '//layouts/events_and_episodes';
+            $this->patient = $this->loadModel($id, false);
+        // if the ids are different, it means the $id belongs to a merged patient
+        if ($id !== $this->patient->id) {
+            $link = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
+            // using redirect to correct the url and to avoid issues from creating events
+            $this->redirect("$link");
+        }
+            $this->pageTitle = "Patient Overview";
+            $this->patient->audit('patient', 'view-summary');
 
-        $criteria = new \CDbCriteria();
-        $criteria->with = ['episode', 'episode.patient'];
-        $criteria->addCondition('patient.id=:patient_id');
-        $criteria->params['patient_id'] = $this->patient->id;
-        $criteria->order = 't.last_modified_date desc';
-        $criteria->limit = 3;
-        $events = Event::model()->findAll($criteria);
+            $episodes = $this->patient->episodes;
+            $legacy_episodes = $this->patient->legacyepisodes;
+            $support_service_episodes = $this->patient->supportserviceepisodes;
 
-        $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+            $criteria = new \CDbCriteria();
+            $criteria->with = ['episode', 'episode.patient'];
+            $criteria->addCondition('patient.id=:patient_id');
+            $criteria->params['patient_id'] = $this->patient->id;
+            $criteria->order = 't.last_modified_date desc';
+            $criteria->limit = 3;
+            $events = Event::model()->findAll($criteria);
+
+            $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
 
         if ($no_episodes) {
             $this->layout = '//layouts/events_and_episodes_no_header';
         }
 
-        $this->render('landing_page', array(
+            $this->render('landing_page', array(
             'events' => $events,
             'patient' => $this->patient,
             'no_episodes' => $no_episodes,
-        ));
+            ));
     }
 
     /**
@@ -317,7 +408,7 @@ class PatientController extends BaseController
         $term = \Yii::app()->request->getParam('term', '');
         $patient_identifier_type_id = \Yii::app()->request->getParam('patient_identifier_type_id');
 
-        $patient_search = new PatientSearch(true);
+        $patient_search = new PatientSearch(\Yii::app()->request->getParam("nopas") !== "1");
 
         if ($patient_identifier_type_id) {
             // if set we import/save Patient from this PAS - no update -
@@ -414,11 +505,19 @@ class PatientController extends BaseController
                     ];
                 }
 
-                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-                    $patient->id, $institution_id, $site_id);
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                    Yii::app()->params['display_primary_number_usage_code'],
+                    $patient->id,
+                    $institution_id,
+                    $site_id
+                );
 
-                $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'],
-                    $patient->id, $institution_id, $site_id);
+                $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                    Yii::app()->params['display_secondary_number_usage_code'],
+                    $patient->id,
+                    $institution_id,
+                    $site_id
+                );
 
                 $result[] = array(
                     'id' => $patient->id,
@@ -525,7 +624,7 @@ class PatientController extends BaseController
      */
     public function loadModel($id, $allow_deleted = true)
     {
-        $model = Patient::model()->findByPk((int) $id);
+        $model = Patient::model()->findByPk((int)$id);
         // cannot find any patient by id, throw exception
         if ($model === null) {
             throw new CHttpException(404, 'The requested page does not exist.');
@@ -806,14 +905,14 @@ class PatientController extends BaseController
 
         foreach ($eventTypeMap as $eventType => $events) {
             switch ($eventType) {
-                    // Document events should be ignored, as they have already been broken down by document sub type
+                // Document events should be ignored, as they have already been broken down by document sub type
                 case 'Document':
                     continue 2;
-                    // Biometry events and report documents should be in the same bucket
+                // Biometry events and report documents should be in the same bucket
                 case 'Biometry':
                     $groupType = 'BiometryReport';
                     break;
-                    // Correspondence events should go in th 'Letters' bucket
+                // Correspondence events should go in th 'Letters' bucket
                 case 'Correspondence':
                     $groupType = 'Letters';
                     break;
@@ -1528,7 +1627,7 @@ class PatientController extends BaseController
                     ':patient_identifier_type_id' => Yii::app()->params['oelauncher_patient_identifier_type']]
             );
             $this->jsVars['OE_patient_id'] = $this->patient->id;
-            $this->jsVars['OE_patient_hosnum'] = $patient_identifier->value?? null;
+            $this->jsVars['OE_patient_hosnum'] = $patient_identifier->value ?? null;
         }
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
@@ -2128,6 +2227,7 @@ class PatientController extends BaseController
     ) {
 
         $patientScenario = $patient->getScenario();
+        $isNewPatient = $patient->isNewRecord ? true : false;
         $transaction = Yii::app()->db->beginTransaction();
         try {
             $success =
@@ -2144,7 +2244,7 @@ class PatientController extends BaseController
                 if (
                     isset(Yii::app()->modules["Genetics"])
                     && Yii::app()->user->checkAccess('Genetics Clinical')
-                    && $patient->isNewRecord
+                    && $isNewPatient
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
                 } elseif ($prevUrl !== '') {
@@ -2156,13 +2256,15 @@ class PatientController extends BaseController
                 $this->redirect($redirect);
             } else {
                 //Get all the validation errors
-                foreach ([
-                    'patient',
-                    'contact',
-                    'address',
-                    'patient_user_referral',
+                foreach (
+                    [
+                             'patient',
+                             'contact',
+                             'address',
                              'patient_user_referral',
-                ] as $model) {
+                             'patient_user_referral',
+                         ] as $model
+                ) {
                     if (isset(${$model})) {
                         if (is_array(${$model})) {
                             foreach (${$model} as $item) {
@@ -2306,7 +2408,7 @@ class PatientController extends BaseController
                 $patient_identifier_to_delete = PatientIdentifier::model()->findByAttributes([
                     'patient_id' => $patient->id,
                     'patient_identifier_type_id' => $patient_identifier->patient_identifier_type_id,
-                    ]);
+                ]);
                 if ($patient_identifier_to_delete && !$patient_identifier_to_delete->delete()) {
                     $success = false;
                 }
@@ -2451,7 +2553,7 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $referral = isset($patient->referral) ? $patient->referral : new PatientReferral();
         $this->pageTitle = 'Update Patient' . ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ?
-            ' - ' . $patient->last_name . ', ' . $patient->first_name : '');
+                ' - ' . $patient->last_name . ', ' . $patient->first_name : '');
         $gpcontact = isset($patient->gp) ? $patient->gp->contact : new Contact();
         $practice = isset($patient->practice) ? $patient->practice : new Practice();
         $practicecontact = isset($patient->practice) ? $patient->practice->contact : new Contact();
@@ -2564,7 +2666,7 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $patient->deleted = 1;
         if ($patient->save()) {
-            $message = 'Patient "<strong>'.$patient->getFullName().'</strong>" was deleted';
+            $message = 'Patient "<strong>' . $patient->getFullName() . '</strong>" was deleted';
             Audit::add('patient', 'delete', $message, null);
             $message .= ' successfully';
             Yii::app()->user->setFlash('success', $message);
@@ -2578,7 +2680,7 @@ class PatientController extends BaseController
 
     public function actionGpList($term)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->addSearchCondition('first_name', '', true, 'OR');
         $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
         $criteria->addSearchCondition('last_name', '', true, 'OR');
@@ -2649,7 +2751,7 @@ class PatientController extends BaseController
      */
     public function actionGpListRp($term)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->addSearchCondition('first_name', '', true, 'OR');
         $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
         $criteria->addSearchCondition('last_name', '', true, 'OR');
@@ -2705,7 +2807,7 @@ class PatientController extends BaseController
     {
         $term = strtolower($term);
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->join = 'JOIN contact on t.contact_id = contact.id';
         $criteria->join .= '  JOIN address on contact.id = address.contact_id';
         $criteria->addCondition('( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))');
@@ -2929,5 +3031,25 @@ class PatientController extends BaseController
         $this->renderJSON(array(
             'past_worklist_tbody' => $this->renderPartial('/default/appointment_entry_tbody', array('worklist_patients' => $past_worklist_patients), true),
         ));
+    }
+
+    /**
+     * Get CITO url
+     * @return string
+     * @throws Exception
+     */
+    public function actionGetCitoUrl($hos_num)
+    {
+        $citoIntegration = \Yii::app()->citoIntegration;
+
+        try {
+            $username = \Yii::app()->user->name;
+            $cito_url = $citoIntegration->generateCitoUrl($hos_num, $username);
+            $this->renderJSON(array('success' => true, 'url' => $cito_url));
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            \OELog::log($message);
+            $this->renderJSON(array('success' => false, 'message' => 'Something went wrong trying to contact CITO. If this issue persists, please contact support.'));
+        }
     }
 }

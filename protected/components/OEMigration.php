@@ -381,7 +381,7 @@ class OEMigration extends CDbMigration
 
         $row = array(
             'name' => $name,
-            'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_" . str_replace(' ',
+            'class_name' => $params['class_name'] ?? "Element_{$event_type}_" . str_replace(' ',
                     '', $name),
             'event_type_id' => $event_type_id,
             'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,

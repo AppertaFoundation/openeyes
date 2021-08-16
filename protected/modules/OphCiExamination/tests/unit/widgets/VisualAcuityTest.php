@@ -202,5 +202,4 @@ class VisualAcuityTest extends \OEDbTestCase
 
         $this->mockedApp->setComponent('moduleAPI', $component);
     }
-
 }

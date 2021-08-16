@@ -162,7 +162,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                     );
 
                        //When option GA is selected, set delivery method to (only) Other, set given by to Anaesthetist
-                } else if ($element->anaesthetic_type_id == $anaesthetic_GA_id) {
+                } elseif ($element->anaesthetic_type_id == $anaesthetic_GA_id) {
                     $original_anaesthetist_name = $this->dbConnection->createCommand()->select('name')->from('anaesthetist')->where('id=:id', array(':id' => $element->anaesthetist_id))->queryScalar();
                     $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticType', array(
                         'et_ophtroperationnote_anaesthetic_id' => $element->id,

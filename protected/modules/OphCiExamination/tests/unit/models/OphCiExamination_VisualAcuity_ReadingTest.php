@@ -78,7 +78,7 @@ class OphCiExamination_VisualAcuity_ReadingTest extends BaseVisualAcuityReadingT
     public function source_options_are_filtered_to_not_near()
     {
         $instance = $this->getElementInstance();
-        $expected_pks = array_map(function($related_obj) {
+        $expected_pks = array_map(function ($related_obj) {
             return $related_obj->getPrimaryKey();
         }, OphCiExamination_VisualAcuitySource::model()->active()->findAll([
             'condition' => 'is_near = 0'

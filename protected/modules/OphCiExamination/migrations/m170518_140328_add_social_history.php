@@ -51,7 +51,7 @@ class m170518_140328_add_social_history extends OEMigration
                     array('name' => 'varchar(128)',
                     'display_order' => 'tinyint(3)'),
                     $extra_cols
-                ) 
+                )
             );
             if (in_array('deleted', array_keys($extra_cols))) {
                 $this->update('ophciexamination_' . $table_name, array('active' => 0), 'deleted = :deleted', array(':deleted' => true));

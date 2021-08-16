@@ -54,7 +54,11 @@ class Allergies extends \BaseEventElementWidget
                 if ($id && array_key_exists($id, $entries_by_id)) {
                     $allergy_entry = $entries_by_id[$id];
                 }
+
                 $allergy_entry->allergy_id = $entry['allergy_id'];
+                if (array_key_exists('reactions', $entry)) {
+                    $allergy_entry->reaction_ids = $entry['reactions'];
+                }
                 $allergy_entry->other = $entry['other'];
                 $allergy_entry->comments = $entry['comments'];
                 $allergy_entry->has_allergy = array_key_exists('has_allergy', $entry) ? $entry['has_allergy'] : null;
@@ -114,7 +118,8 @@ class Allergies extends \BaseEventElementWidget
             == AllergyEntry::$NOT_CHECKED;
     }
 
-    public function renderAllergies(){
+    public function renderAllergies()
+    {
         $this->render('Allergies_patient_mode', $this->getViewData());
     }
 }

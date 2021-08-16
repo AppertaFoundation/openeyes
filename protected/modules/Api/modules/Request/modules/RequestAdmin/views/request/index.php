@@ -88,7 +88,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/Attachment.js');
                     <col class="cols-2">
                     <?php if ($attachmentData->text_data) { ?>
                         <col class="cols-8">
-                    <?php } else if ($attachmentData->blob_data) { ?>
+                    <?php } elseif ($attachmentData->blob_data) { ?>
                         <col class="cols-1">
                         <col class="cols-3">
                     <?php } ?>

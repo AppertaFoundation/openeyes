@@ -470,4 +470,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         return $this->items;
     }
+
+    public function setDefaultOptions(\Patient $patient = null)
+    {
+        if ($api = \Yii::app()->moduleAPI->get("OphInCocoa")) {
+            $this->comments = $api->setDefaultPrescriptionComment($patient);
+        }
+    }
 }

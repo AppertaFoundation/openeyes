@@ -288,22 +288,21 @@
                 }
             });
 
-
             //resize the injection bars after xaxis rangeslider changed
-            document.body.onmouseup = function (e) {
-                var chart_MR = $('.rangeslider-container').first().parents('.plotly-MR')[0];
-
-                var date_range = (new Date(chart_MR.layout.xaxis.range[1]).getTime() - new Date(chart_MR.layout.xaxis.range[0]).getTime()) / oneday_time;
-                var shapes = chart_MR.layout.shapes;
-                var new_width = oneday_time * flag_width / 600 * date_range;
-                for (var i in shapes) {
+            currentPlot.addEventListener('chartRangeChanged', function(event) {
+                const chart_MR = event.target;
+                const date_range = (new Date(chart_MR.layout.xaxis.range[1]).getTime() - new Date(chart_MR.layout.xaxis.range[0]).getTime()) / oneday_time;
+                const shapes = chart_MR.layout.shapes;
+                const new_width = oneday_time * flag_width / 600 * date_range;
+                for (let i in shapes) {
                     if (shapes[i].layer !== "below") {
                         shapes[i].x1 = new Date(shapes[i].x0).getTime() + new_width;
                     }
                 }
 
                 Plotly.redraw(chart_MR);
-            }
+            });
+            currentPlot.dispatchEvent(chartRangeChangedEvent);
         }
 
         document.body.onmousemove = function (data) {

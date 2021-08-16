@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,129 +16,120 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <section class="sub-element">
-    <header class="sub-element-header">
+    <header class="sub-element-header flex-layout cols-2">
         <h3 class="sub-element-title">
             <?php echo $element->elementType->name ?>
         </h3>
         &nbsp;&nbsp;
-        <?=\CHtml::link('edit', Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/update/'.$element->event_id))?>&nbsp;&nbsp;
-        <?=\CHtml::link('delete', Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/delete/'.$element->event_id))?>
+        <?=\CHtml::link('edit', Yii::app()->createUrl('/' . $element->elementType->eventType->class_name . '/default/update/' . $element->event_id))?>&nbsp;&nbsp;
+        <?=\CHtml::link('delete', Yii::app()->createUrl('/' . $element->elementType->eventType->class_name . '/default/delete/' . $element->event_id))?>
     </header>
-    <div class="sub-element-data">
-        <div class="data-group">
-            <div class="cols-3 column">
-        <div class="data-label"><?php echo $element->getAttributeLabel('storage_id')?>:</div>
-            </div>
-            <div class="cols-9 column">
-                <div class="data-value">
-            <?php
-            if (isset($element->storage->box->value)) {
-                echo CHtml::encode($element->storage->box->value.' - '.$element->storage->letter.' - '.$element->storage->number);
-            } else {
-                echo 'Not set';
-            } ?>
-        </div>
-            </div>
-        </div>
-    </div>
-    <div class="element-data">
-        <div class="data-group">
-            <div class="cols-3 column">
-                <div class="data-label"><?php echo $element->getAttributeLabel('extracted_date')?>:</div>
-            </div>
-            <div class="cols-9 column">
-                <div class="data-value"><?php echo $element->extracted_date ? $element->NHSDate('extracted_date') : 'None'?></div>
-            </div>
-        </div>
-    </div>
-    <div class="element-data">
-        <div class="data-group">
-            <div class="cols-3 column">
-                <div class="data-label"><?php echo $element->getAttributeLabel('extracted_by')?>:</div>
-            </div>
-            <div class="cols-9 column">
-                <div class="data-value">
-            <?php if (isset($element->extracted_by)) {
-                echo CHtml::encode($element->extracted_by->first_name . ' ' . $element->extracted_by->last_name);
-            } else {
-                echo 'Not set';
-            } ?>
-        </div>
-            </div>
-        </div>
-    </div>
-    <div class="element-data">
-        <div class="data-group">
-            <div class="cols-3 column">
-                <div class="data-label"><?php echo $element->getAttributeLabel('comments')?>:</div>
-            </div>
-            <div class="cols-9 column">
-                <div class="data-value"><?=\CHtml::encode($element->comments)?></div>
-            </div>
-        </div>
-    </div>
-    <div class="element-data">
-        <div class="data-group">
-            <div class="cols-3 column">
-                <div class="data-label"><?php echo $element->getAttributeLabel('dna_concentration')?>:</div>
-            </div>
-            <div class="cols-9 column">
-                <div class="data-value"><?=\CHtml::encode($element->dna_concentration)?></div>
-            </div>
-        </div>
-    </div>
-    <div class="element-data">
-        <div class="data-group">
-            <div class="cols-3 column">
-                <div class="data-label"><?php echo $element->getAttributeLabel('volume')?>:</div>
-            </div>
-            <div class="cols-9 column">
-                <div class="data-value"><?=\CHtml::encode($element->volume)?></div>
-            </div>
-        </div>
-    </div>
-    <div class="element-data">
-        <div class="data-group">
-            <div class="cols-3 column">
-                <div class="data-label">
-                    <?=\CHtml::encode($element->getAttributeLabel('dna_quality'))?>:
-                </div>
-            </div>
-            <div class="cols-9 column end">
-                <div class="data-value">
-                    <?=\CHtml::encode($element->dna_quality)?>
-                </div>
-            </div>
-        </div>
-    </div>    
-    <div class="element-data">
-        <div class="data-group">
-            <div class="cols-3 column">
-                <div class="data-label">
-                    <?=\CHtml::encode($element->getAttributeLabel('dna_quantity'))?>:
-                </div>
-            </div>
-            <div class="cols-9 column end">
-                <div class="data-value">
-                    <?=\CHtml::encode($element->dna_quantity)?>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="element-data">
-        <div class="data-group">
-            <div class="cols-3 column">
-                <div class="data-label">
-                    Volume Remaining:
-                </div>
-            </div>
-            <div class="cols-9 column end">
-                <div class="volume data-value" data-volume="<?php echo $this->volumeRemaining($element->event_id); ?>">
-                    <?=\CHtml::encode($this->volumeRemaining($element->event_id))?>
-                </div>
-            </div>
+    <div class="sub-element-data element-fields full-width flex-layout flex-top col-gap">
+        <div class="cols-7 data-group">
+            <table class= "cols-full">
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('storage_id')?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?php
+                            if (isset($element->storage->box->value)) {
+                                echo CHtml::encode($element->storage->box->value . ' - ' . $element->storage->letter . ' - ' . $element->storage->number);
+                            } else {
+                                echo 'Not set';
+                            } ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('extracted_date')?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?php echo $element->extracted_date ? $element->NHSDate('extracted_date') : 'None'?></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('extracted_by')?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?php if (isset($element->extracted_by)) {
+                                echo CHtml::encode($element->extracted_by->first_name . ' ' . $element->extracted_by->last_name);
+                            } else {
+                                echo 'Not set';
+                            } ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('comments')?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?=\CHtml::encode($element->comments)?></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('dna_concentration')?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?=\CHtml::encode($element->dna_concentration)?></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('volume')?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?=\CHtml::encode($element->volume)?></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label">
+                            <?=\CHtml::encode($element->getAttributeLabel('dna_quality'))?>:
+                        </div>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?=\CHtml::encode($element->dna_quality)?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label">
+                            <?=\CHtml::encode($element->getAttributeLabel('dna_quantity'))?>:
+                        </div>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?=\CHtml::encode($element->dna_quantity)?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label">
+                            Volume Remaining:
+                        </div>
+                    </td>
+                    <td>
+                        <div class="volume data-value" data-volume="<?php echo $this->volumeRemaining($element->event_id); ?>">
+                            <?=\CHtml::encode($this->volumeRemaining($element->event_id))?>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </section>

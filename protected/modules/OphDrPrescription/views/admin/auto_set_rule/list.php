@@ -104,15 +104,15 @@ if (!isset($uniqueid)) {
                                             else :
                                                 ?><i class="oe-i remove small"></i><?php
                                             endif;
-                                            elseif (gettype($attr_val) === 'array') :
+                                        elseif (gettype($attr_val) === 'array') :
                                                 echo implode(',', $admin->attributeValue($row, $listItem));
                                         elseif ($listItem === 'display_order') :
-                                                ?>
+                                            ?>
                                             &uarr;&darr;<input type="hidden"
                                                                name="<?php echo $admin->getModelName(); ?>[display_order][]"
                                                                value="<?php echo $row->id ?>">
                                                 <?php
-                                            else :
+                                        else :
                                                 echo $attr_val;
                                         endif
                                         ?>

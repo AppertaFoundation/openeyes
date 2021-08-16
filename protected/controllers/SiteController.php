@@ -21,7 +21,7 @@ class SiteController extends BaseController
         return array(
             // Allow unauthenticated users to view certain pages
             array('allow',
-                'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo'),
+                'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo', 'listSites'),
             ),
             array('allow',
                 'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout'),
@@ -68,10 +68,20 @@ class SiteController extends BaseController
                 } else {
                     $patientSearch = new PatientSearch();
 
-                    if ($patientSearch->getValidSearchTerm($query)) {
+                    if ($terms = $patientSearch->getValidSearchTerm($query)) {
+                        if(\Yii::app()->request->getParam("nopas") !== "1") {
+                            $search_terms = $patientSearch->parseTerm($terms[0]);
+                            if(array_key_exists("is_name_search", $search_terms) && $search_terms["is_name_search"]) {
+                                Yii::app()->user->setFlash('warning.search_error', "Searching in PAS by Patient name is not supported. Please try local search instead or provide Patient identifier.");
+                                $this->redirect(Yii::app()->request->urlReferrer);
+                            }
+                        }
                         $redirect_array = ['patient/search', 'term' => $query];
                         $type_id = \Yii::app()->request->getParam('patient_identifier_type_id');
                         $redirect_array = $type_id ? array_merge($redirect_array, ['patient_identifier_type_id' => $type_id]) : $redirect_array;
+                        if(\Yii::app()->request->getParam("nopas") === "1") {
+                            $redirect_array["nopas"] = "1";
+                        }
                         $this->redirect($redirect_array);
                     } else {
                         // not a valid search
@@ -216,11 +226,7 @@ class SiteController extends BaseController
         // collect user input data
         if (isset($_POST['LoginForm'])) {
             $model->attributes = $_POST['LoginForm'];
-            // Check if its the same user that wants to continue the session
-            if (Yii::app()->session['user']->username !== $model->username) {
-                $this->renderJSON('Username different');
-                return;
-            }
+
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
                 // Flag site for confirmation
@@ -443,6 +449,28 @@ class SiteController extends BaseController
             // if the last check is within 7 days, skip the check.
             return false;
         }
+    }
+
+    public function actionListSites($term)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->addSearchCondition('LOWER(name)', strtolower($term), true, 'OR');
+        $criteria->addCondition('institution_id != :institution_id');
+        $criteria->params[':institution_id'] = \Yii::app()->session['selected_institution_id'];
+
+        $sites = Site::model()->findAll($criteria);
+
+        $output = [];
+
+        foreach ($sites as $site) {
+            $output[] = [
+                'label' => $site->name,
+                'value' => $site->id,
+            ];
+        }
+
+        $this->renderJSON($output);
+        Yii::app()->end();
     }
 
 //    Advanced search is not integrated at the moment, but we leave the code here for later

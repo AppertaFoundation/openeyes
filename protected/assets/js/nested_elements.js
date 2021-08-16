@@ -240,7 +240,7 @@ $(document).ready(function () {
             $(element).addClass('clicked');
             $(element).find('> .element-fields').css('opacity', '0.5');
             $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
-            $('.oe-popup-wrap').remove();
+            $('.oe-popup-wrap').not('#js-overlay').remove();
             addElement(element, false, element_id);
         }.bind(undefined, dialog, element));
         e.preventDefault();

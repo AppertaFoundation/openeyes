@@ -25,4 +25,3 @@
         'title' => 'Select a new Site and/or ' . Firm::contextLabel(),
         'mode' => (isset($mode) ? $mode : 'popup') // 'static' or 'popup'
     ));
-    ?>

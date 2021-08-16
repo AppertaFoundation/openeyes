@@ -1,8 +1,0 @@
-{
-  "name" : "openeyes/oph-in-biometry",
-  "description": "Biometry module for OpenEyes",
-  "type": "openeyes-module",
-  "require": {
-    "openeyes/module-installer": "*"
-  }
-}

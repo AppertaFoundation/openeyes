@@ -38,7 +38,7 @@ class PatientAppointment extends BaseResource
     public $id;
 
     /**
-     * @var WorklistManager
+     * @var \WorklistManager
      */
     protected $worklist_manager;
 
@@ -89,18 +89,18 @@ class PatientAppointment extends BaseResource
     public function save()
     {
         $assignment = $this->getAssignment();
+        /** @var \WorklistPatient $model */
         $model = $assignment->getInternal(true);
         // track whether we are creating or updating
         $this->isNewResource = $model->isNewRecord;
 
         if ($this->isNewResource && $this->partial_record) {
             $this->addError('Cannot perform partial update on a new record');
-
-            return;
+            return false;
         }
 
         if (!$this->validate()) {
-            return;
+            return false;
         }
 
         $transaction = $this->startTransaction();
@@ -111,7 +111,7 @@ class PatientAppointment extends BaseResource
                 $assignment->save();
                 $assignment->unlock();
 
-                $this->audit($this->isNewResource ? 'create' : 'update', null, null, null);
+                $this->audit($this->isNewResource ? 'create' : 'update');
 
                 if ($transaction) {
                     $transaction->commit();
@@ -119,11 +119,13 @@ class PatientAppointment extends BaseResource
 
                 return $model->id;
             }
+            else {
+                return false;
+            }
         } catch (\Exception $e) {
             if ($transaction) {
                 $transaction->rollback();
             }
-
             throw $e;
         }
     }

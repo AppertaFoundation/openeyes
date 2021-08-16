@@ -78,6 +78,7 @@ $config = array(
         'application.components.*',
         'application.components.reports.*',
         'application.components.actions.*',
+        'application.components.traits.*',
         'application.components.worklist.*',
         'application.components.patientSearch.*',
         'application.extensions.tcpdf.*',
@@ -106,18 +107,6 @@ $config = array(
         'OEModule' => 'application.modules',
     ),
 
-    'modules' => array(
-        // Gii tool
-        'gii' => array(
-            'class' => 'system.gii.GiiModule',
-            'password' => 'openeyes',
-            'ipFilters' => array('127.0.0.1'),
-        ),
-        'oldadmin',
-        'Admin',
-        'Api'
-    ),
-
     // Application components
     'components' => array(
         'assetManager' => array(
@@ -138,7 +127,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202104011656',
+            'time' => '202107191546',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -347,6 +336,12 @@ $config = array(
         'widgetFactory' => array(
             'class' => 'WidgetFactory',
         ),
+        'citoIntegration' => array(
+            "class" => "CitoIntegration"
+        ),
+        'hieIntegration' => array(
+            "class" => "HieIntegration"
+        )
     ),
 
     'params' => array(
@@ -370,7 +365,18 @@ $config = array(
         'ldap_info_retry_delay' => 1,
         'ldap_update_name' => strtolower(getenv("OE_LDAP_UPDATE_NAME")) == "true" ? true : false,
         'ldap_update_email' => strtolower(getenv("OE_LDAP_UPDATE_EMAIL")) == "false" ? false : true,
+        // This is used in HIEIntegration component
+        'hie_remote_url' => trim(@file_get_contents("/run/secrets/HIE_REMOTE_URL")) ?: (trim(getenv('HIE_REMOTE_URL')) ?: null),
+        'hie_usr_org' => trim(getenv('HIE_USR_ORG')) ?: null,
+        'hie_usr_fac' => trim(getenv('HIE_USR_FAC')) ?: null,
+        'hie_external' => trim(getenv('HIE_EXTERNAL')) ?: null,
+        'hie_org_user' => trim(@file_get_contents("/run/secrets/HIE_ORG_USER")) ?: (trim(getenv('HIE_ORG_USER')) ?: ''),
+        'hie_org_pass' => trim(@file_get_contents("/run/secrets/HIE_ORG_PASS")) ?: (trim(getenv('HIE_ORG_PASS')) ?: ''),
+        'hie_aes_encryption_password' => trim(@file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) ?: (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: ''),
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
+        'csd_api_url' => getenv('OE_CSD_API_URL') ?: '',
+        'csd_api_key' => getenv('OE_CSD_API_KEY') ?: (rtrim(@file_get_contents("/run/secrets/OE_CSD_API_KEY")) ?: ''),
+        'csd_api_timeout' => getenv('OE_CSD_API_TIMEOUT') ?: 3,
         //'watermark' => '',
         'google_analytics_account' => '',
         'local_users' => array(),
@@ -522,6 +528,14 @@ $config = array(
                 'position' => 92,
                 'options' => ['target' => '_blank'],
             ),
+            'hie_integration' => array(
+                'title' => 'View HIE Record',
+                'uri' => '',
+                'requires_setting' => array('setting_key' => 'hie_remote_url', 'required_value' => 'not-empty'),
+                'position' => 92,
+                'restricted' => array('HIE - Admin', 'HIE - Extended', 'HIE - View', 'HIE - Summary'),
+                'options' => ['requires_patient' => true],
+            )
         ),
         'admin_menu' => array(),
         'dashboard_items' => array(),
@@ -753,7 +767,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '5.0b1',
+        'oe_version' => '5.1-nightly',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -820,6 +834,7 @@ $config = array(
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
+        'cito_base_url ' => trim(getenv('CITO_BASE_URL')) ?: null,
         'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: null,
         'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: null,
         'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: null,
@@ -887,7 +902,63 @@ $config = array(
             'portal_login_url' => $ssoLoginURL,
         ),
         /** END SINGLE SIGN-ON PARAMS */
+        'training_hub_text' => !empty(trim(getenv('OE_TRAINING_HUB_TEXT'))) ? getenv('OE_TRAINING_HUB_TEXT') : null,
+        'training_hub_url' => !empty(trim(getenv('OE_TRAINING_HUB_URL'))) ? getenv('OE_TRAINING_HUB_URL') : null,
     ),
 );
+
+$modules = array(
+        // Gii tool
+        // 'gii' => array(
+        //     'class' => 'system.gii.GiiModule',
+        //     'password' => 'openeyes',
+        //     'ipFilters' => array('127.0.0.1'),
+        // ),
+        'oldadmin',
+        'Admin',
+        'Api',
+        'eyedraw',
+        'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
+        'OphCoCorrespondence',
+        'OphCiPhasing',
+        'OphTrIntravitrealinjection',
+        'OphCoTherapyapplication',
+        'OphDrPrescription',
+        'OphTrConsent',
+        'OphTrOperationnote',
+        'OphTrOperationbooking',
+        'OphTrLaser',
+        'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
+        'OphInVisualfields',
+        'OphInBiometry',
+        'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
+        'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
+        'OphInLabResults',
+        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
+        'Genetics',
+        'OphInDnasample',
+        'OphInDnaextraction',
+        'OphInGeneticresults',
+        'OphCoDocument',
+        'OphCiDidNotAttend',
+        'OphGeneric',
+        'OECaseSearch',
+        'OETrial',
+        'SSO',
+        'OphOuCatprom5',
+        'OphTrOperationchecklists',
+        'OphDrPGDPSD',
+        'mehstaffdb'
+);
+
+// deal with any custom modulesadded for the local deployment - which are set in /config/modules.conf (added via docker)
+// Gracefully ignores file if it is missing
+$custom_modules = trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf")));
+if (!empty($custom_modules)) {
+    $modules = array_unique(array_merge($modules, explode(" ", $custom_modules)), SORT_REGULAR);
+}
+
+$config["modules"] = $modules;
+
 
 return $config;

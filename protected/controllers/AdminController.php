@@ -603,7 +603,10 @@ class AdminController extends BaseAdminController
         if (!empty($_GET['search'])) {
             $criteria->compare('LOWER(first_name)', strtolower($_GET['search']), true, 'OR');
             $criteria->compare('LOWER(last_name)', strtolower($_GET['search']), true, 'OR');
-            $criteria->compare('LOWER(id)', $_GET['search'], false, 'OR');
+            $criteria->compare('LOWER(t.id)', $_GET['search'], false, 'OR');
+            $criteria->with = 'authentications';
+            $criteria->together = true;
+            $criteria->compare('LOWER(authentications.username)', $_GET['search'], true, 'OR');
         }
 
         if (!$this->checkAccess('admin')) {
@@ -826,7 +829,7 @@ class AdminController extends BaseAdminController
 
     public function actionLookupUser()
     {
-        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
+        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username'], 'institution_authentication_id' => $_GET['institution_authentication_id']));
 
         $user_auth = UserAuthentication::model()->find('username=?', array($_GET['username']));
         if ($user_auth) {

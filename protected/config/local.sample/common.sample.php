@@ -67,42 +67,6 @@ $config = array(
         */
     ),
 
-    'modules' => array(
-        'eyedraw',
-        'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
-        'OphCoCorrespondence',
-        'OphCiPhasing',
-        'OphTrIntravitrealinjection',
-        'OphCoTherapyapplication',
-        'OphDrPrescription',
-        'OphTrConsent',
-        'OphTrOperationnote',
-        'OphTrOperationbooking',
-        'OphTrLaser',
-        'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
-        'OphInVisualfields',
-        'OphInBiometry',
-        'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
-        'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
-        'OphInLabResults',
-        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-        // Uncomment next section if you want to use the genetics module
-        /*'Genetics',
-        'OphInDnasample',
-        'OphInDnaextraction',
-        'OphInGeneticresults',*/
-        'OphCoDocument',
-        'OphCiDidNotAttend',
-        'OphGeneric',
-        'OECaseSearch',
-        'OETrial',
-        'SSO',
-        'OphOuCatprom5',
-        'OphTrOperationchecklists',
-        'OphDrPGDPSD',
-        //'RTFGeneration',
-    ),
-
     'params' => array(
         //'pseudonymise_patient_details' => false,
         //'ab_testing' => false,

@@ -61,8 +61,9 @@
                         </td>
                     </tr>
 
-            <?php endforeach;
-            } ?>
+                <?php endforeach;
+            }
+            ?>
 
             <?php
             if (isset($_POST[$class]['total_duration_' . $identifier])) {
@@ -445,21 +446,21 @@
                 openButton: $('#add-procedure-list-btn-<?= $identifier ?>'),
                 itemSets: [
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                                                            array_map(
-                                                                function ($key, $item) {
-                                                                    return ['label' => $item, 'id' => $key, 'source' => 'subsections'];
-                                                                },
-                                                                array_keys($subsections),
-                                                                $subsections
-                                                            )
-                                                        ) ?>, {
+                        array_map(
+                            function ($key, $item) {
+                                return ['label' => $item, 'id' => $key, 'source' => 'subsections'];
+                            },
+                            array_keys($subsections),
+                            $subsections
+                        )
+                    ) ?>, {
                         'id': 'subsections'
                     }),
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                                                            array_map(function ($key, $item) {
+                        array_map(function ($key, $item) {
                                                                 return ['label' => $item, 'id' => $key];
-                                                            }, array_keys($procedures), $procedures)
-                                                        ) ?>, {
+                        }, array_keys($procedures), $procedures)
+                    ) ?>, {
                         'id': 'select',
                         'multiSelect': true,
                         'liClass': ' restrict-width extended'
