@@ -30,6 +30,7 @@
  * @property string $postcode
  * @property string $fax
  * @property string $telephone
+ * @property int $institution_id
  *
  * The followings are the available model relations:
  * @property Institution $institution
@@ -81,7 +82,9 @@ class Site extends BaseActiveRecordVersioned
         return array(
             array('name, short_name, remote_id, telephone', 'required'),
             array('name', 'length', 'max' => 255),
+            array('remote_id', 'length', 'max' => 10),
             array('institution_id, name, remote_id, short_name, location_code, fax, telephone, contact_id, replyto_contact_id, source_id, active, logo_id', 'safe'),
+            array('location', 'default', 'value' => ''),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
@@ -216,6 +219,18 @@ class Site extends BaseActiveRecordVersioned
         return array($this->institution->name, $this->name);
     }
 
+    public function getListForAllInstitutions()
+    {
+        $result = array();
+        $sites = $this->findAll();
+
+        foreach ($sites as $site) {
+            $result['list'][$site->id] = $site->short_name;
+            $result['options'][$site->id] = array('institution' => $site->institution_id, 'class' => 'hidden');
+        }
+        return $result;
+    }
+
     public function getShortname()
     {
         return $this->short_name ? $this->short_name : $this->name;
@@ -228,5 +243,33 @@ class Site extends BaseActiveRecordVersioned
 
             return $this->getLetterAddress($params);
         }
+    }
+
+    /**
+     * @return Site
+     * @throws Exception
+     */
+    public function getCurrent(): Site
+    {
+        if (!isset(Yii::app()->session['selected_site_id'])) {
+            throw new Exception('Site id is not set');
+        }
+
+        $site = $this->findByPk(Yii::app()->session['selected_site_id']);
+        if (!$site) {
+            throw new Exception("Site with id '".Yii::app()->session['selected_site_id']."' not found");
+        }
+
+        return $site;
+    }
+
+    /**
+     * Returns the short_name of the site
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return $this->short_name;
     }
 }

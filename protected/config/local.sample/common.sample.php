@@ -99,6 +99,7 @@ $config = array(
         'SSO',
         'OphOuCatprom5',
         'OphTrOperationchecklists',
+        'OphDrPGDPSD',
         //'RTFGeneration',
     ),
 
@@ -131,8 +132,6 @@ $config = array(
         // 'worklist_allow_duplicate_patients' => bool
         //// any appointments sent in before this date will not trigger errors when sent in
         // 'worklist_ignore_date => 'Y-m-d',
-        // Set it to true if unidentified roles from SSO token should NOT be ignored
-
         'correspondence_export_url' => 'localhost',
     ),
 );

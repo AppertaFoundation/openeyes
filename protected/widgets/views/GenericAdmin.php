@@ -30,7 +30,7 @@
                             $filter_field['value'],
                             $filter_field['choices'] ?? SelectionHelper::listData($filter_field['model']),
                             array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
-                        );
+                                                   );
                                                     ?></div>
                 </div>
             <?php } ?>
@@ -44,11 +44,12 @@
                 <tr>
                     <?php if ($display_order) { ?>
                         <th>Order</th>
+                        <th><?= CHtml::checkBox("select-all")?></th>
                         <?php
                     }
                     if (!$label_extra_field) : ?>
                         <th><?= $model::model()->getAttributeLabel($label_field) ?></th>
-                                <?php endif;?>
+                    <?php endif;?>
                     <?php foreach ($extra_fields as $field) {?>
                         <th>
                             <?=\CHtml::hiddenField('_extra_fields[]', $field['field'])?>
@@ -62,7 +63,14 @@
                     <?php }
                     if ($model::model()->hasAttribute('default')) {?>
                         <th>Default</th>
-                    <?php }?>
+                    <?php }
+                    if ($is_mapping) {
+                        foreach ($model::model()->enumerateSupportedLevels() as $level) {?>
+                        <th>
+                            Assigned to current <?= $model::model()->getModelSuffixForLevel($level) ?>
+                        </th>
+                        <?php }
+                    } ?>
                 </tr>
             </thead>
             <tbody>
@@ -100,6 +108,39 @@ if (!$get_row && $filters_ready) {
                         <?php if (!$this->cannot_save) {
                             echo \CHtml::submitButton('Save', ['name' => 'admin-save', 'id' => 'et_admin-save', 'class' => 'generic-admin-save button large']);
                         }?>&nbsp;
+                        <?php if ($is_mapping) {
+                            echo \CHtml::hiddenField('return_url', $this->return_url);
+                            echo \CHtml::hiddenField('model', $this->model);
+                            $supported_levels = $model::model()->enumerateSupportedLevels();
+                            $structured_levels = array();
+                            foreach ($supported_levels as $level) {
+                                $level_prefix = $model::model()->getModelSuffixForLevel($level);
+                                $structured_levels[] = ['value' => $level, 'label' => ucfirst($level_prefix)];
+                            }
+
+                            echo \CHtml::submitButton(
+                                'Add selected to current '.$level_prefix,
+                                [
+                                    'name' => 'admin-map-add',
+                                    'id' => 'et_admin-map-add',
+                                    'class' => 'generic-admin-save button large',
+                                    'formaction' => '/admin/addMapping',
+                                ]);
+                            echo \CHtml::submitButton(
+                                'Remove selected from current '.$level_prefix,
+                                [
+                                    'name' => 'admin-map-remove',
+                                    'id' => 'et_admin-map-remove',
+                                    'class' => 'generic-admin-save button large',
+                                    'formaction' => '/admin/removeMapping',
+                                ]);
+
+                            if (count($supported_levels) > 1) {
+                                echo CHtml::dropDownList('mapping_level', '', CHtml::listData($structured_levels, 'value', 'label'));
+                            } else {
+                                echo CHtml::hiddenField('mapping_level', $supported_levels[0]);
+                            }
+                        }?>
                     </td>
                 </tr>
                 </tfoot>
@@ -109,4 +150,14 @@ if (!$get_row && $filters_ready) {
         </div>
     <?= CHtml::endForm() ?>
 <?php } ?>
+    <script>
+        $( document ).ready(function(){
+            $('#mapping_level').change(
+                function(val) {
+                    let displayString = $('#mapping_level option:selected').text();
+                    $('#et_admin-map-add').val("Add selected to current " + displayString);
+                    $('#et_admin-map-remove').val("Remove selected from current " + displayString);
+                });
+        });
+    </script>
 </div>

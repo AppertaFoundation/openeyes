@@ -30,7 +30,8 @@ class FirmController extends BaseController
      */
     public function actionGetFirmsBySubspecialty($subspecialty_id = null, $runtime_selectable = null)
     {
-        $firms = \Firm::model()->getList($subspecialty_id, null, $runtime_selectable);
+        $institution_id = Yii::app()->session['selected_institution_id'];
+        $firms = \Firm::model()->getList($institution_id, $subspecialty_id, null, $runtime_selectable);
         echo \CJSON::encode($firms);
 
         \Yii::app()->end();

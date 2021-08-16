@@ -16,7 +16,7 @@
  * @copyright Copyright 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  *
- * Passed in parameters, via the return array from Yii::app()->session['user']->getUserDaysLeft();
+ * Passed in parameters, via the return array from PasswordUtils::getDaysLeft
  * @var string $DaysExpire the number of days before the user's password is expired
  * @var string $DaysLock the number of days before the user's password is locked
  * @var string $DaysStale the number of days before the user's password is stale, is also passed in but not used

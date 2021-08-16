@@ -24,6 +24,8 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property OphCiExamination_Attribute $attribute
  * @property ElementType $element_type
+ * @property Institution $institution
+ *
  * @property OphCiExamination_AttributeOption[] $options
  */
 class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
@@ -76,6 +78,7 @@ class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
             'attribute.label' => 'Attribute Label',
             'element_type.name' => 'Element Mapping',
             'attribute_elements.name' => 'Element Mapping',
+            'institution' => 'Institution Mapping',
         );
     }
 }

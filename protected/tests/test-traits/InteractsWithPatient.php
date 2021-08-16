@@ -76,7 +76,8 @@ trait InteractsWithPatient
             'title' => $this->faker->title,
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
-            'primary_phone' => $this->faker->phoneNumber
+            'primary_phone' => $this->faker->phoneNumber,
+            'created_institution_id' => 1
         ];
     }
 

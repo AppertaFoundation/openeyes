@@ -305,7 +305,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                         preg_replace(
                             '/(H|Hosnum)\s*[:;]\s*/',
                             '',
-                            $this->event->episode->patient->hos_num
+                            $this->event->episode->patient->getHos()
                         ),
                         6,
                         '0',
@@ -447,11 +447,33 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function getStringGroups()
     {
-        return LetterStringGroup::model()->findAll(array('order' => 'display_order'));
+        return LetterStringGroup::model()->findAll([
+            'condition' => 'institution_id = :institution_id',
+            'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+            'order' => 'display_order']);
     }
 
-    public function calculateRe($patient)
+    public function calculateRe(Patient $patient = null)
     {
+        if ($this->event && $this->event->institution) {
+            $institution_id = $this->event->institution->id;
+            $site_id = isset($this->event->site) ? $this->event->site->id : null;
+            $patient = $patient ?? $this->event->getPatient();
+        } else {
+            $institution_id = Institution::model()->getCurrent()->id;
+            $site_id = Yii::app()->session['selected_site_id'];
+        }
+        if (!$patient) {
+            throw new \Exception('Patient not found.');
+        }
+        $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+            Yii::app()->params['display_primary_number_usage_code'],
+            $patient->id, $institution_id, $site_id
+        );
+        $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+            Yii::app()->params['display_secondary_number_usage_code'],
+            $patient->id, $institution_id, $site_id
+        );
         $re = $patient->first_name . ' ' . $patient->last_name;
 
         foreach (array('address1', 'address2', 'city', 'postcode') as $field) {
@@ -459,10 +481,10 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $re .= ', ' . $patient->contact->address->{$field};
             }
         }
-        if (Yii::app()->params['nhs_num_private'] === true) {
-            return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . \SettingMetadata::model()->getSetting('hos_num_label') . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num;
+        if (Yii::app()->params['nhs_num_private'] == true || !$secondary_identifier) {
+            return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier);
         }
-        return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . \SettingMetadata::model()->getSetting('hos_num_label') . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num . ', ' . \SettingMetadata::model()->getSetting('nhs_num_label') . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->nhsnum;
+        return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier) . ', ' . PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($secondary_identifier);
     }
 
     /**
@@ -486,38 +508,28 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $this->introduction = $patient->gp->getLetterIntroduction();
             }
 
-            $this->re = $patient->first_name . ' ' . $patient->last_name;
-
-            foreach (array('address1', 'address2', 'city', 'postcode') as $field) {
-                if ($patient->contact->address && $patient->contact->address->{$field}) {
-                    $this->re .= ', ' . $patient->contact->address->{$field};
-                }
-            }
-
-            if (Yii::app()->params['nhs_num_private'] == true) {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . \SettingMetadata::model()->getSetting('hos_num_label') . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num;
-            } else {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . \SettingMetadata::model()->getSetting('hos_num_label') . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num . ', ' . \SettingMetadata::model()->getSetting('nhs_num_label') . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->nhsnum;
-            }
+            $this->re = $this->calculateRe($patient);
 
             $user = Yii::app()->session['user'];
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
             $contact = $user->contact;
             if ($contact) {
-                $this->footer = $api->getFooterText();
-                $ssa = $firm->serviceSubspecialtyAssignment;
+                // if no correspondence_sign_off_user_id set in the user's profile than the sign is blank
+                $this->footer = $user->signOffUser ? $api->getFooterText($user->signOffUser) : '';
             }
 
             // Look for a macro based on the episode_status
             $episode = $patient->getEpisodeForCurrentSubspecialty();
             if ($episode) {
-                $this->macro = LetterMacro::model()->find('firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
+                $this->macro = LetterMacro::model()->with('firms')->find('firms_firms.firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
                 if (!$this->macro && $firm->service_subspecialty_assignment_id) {
                     $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-                    $this->macro = LetterMacro::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
+                    $this->macro = LetterMacro::model()->with('subspecialties')->find('subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
                     if (!$this->macro) {
-                        $this->macro = LetterMacro::model()->find('site_id=? and episode_status_id=?', array(Yii::app()->session['selected_site_id'], $episode->episode_status_id));
+                        $this->macro = LetterMacro::model()->with('sites', 'institutions')->find([
+                            'condition' => '(institutions_institutions.institution_id=? OR sites_sites.site_id=?) AND episode_status_id=?',
+                            'params' => array(Yii::app()->session['selected_institution_id'], Yii::app()->session['selected_site_id'], $episode->episode_status_id)]);
                     }
                 }
             }
@@ -619,6 +631,10 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         }
     }
 
+    /**
+     * @return array
+     * @throws Exception
+     */
     public function getLetter_macros()
     {
         $macros = array();
@@ -627,12 +643,17 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
         $criteria = new CDbCriteria();
-        $criteria->condition = 'firm_id = :firm_id OR site_id = :site_id';
-        $criteria->params = [':firm_id' => $firm->id, ':site_id' => Yii::app()->session['selected_site_id']];
+        $criteria->with = ['institutions', 'sites', 'firms', 'subspecialties'];
+        $criteria->condition = '(firms_firms.firm_id = :firm_id OR sites_sites.site_id = :site_id  OR institutions_institutions.institution_id = :institution_id';
+        $criteria->params = [':firm_id' => $firm->id, ':site_id' => Yii::app()->session['selected_site_id'], ':institution_id' => Yii::app()->session['selected_institution_id']];
         if ($firm->service_subspecialty_assignment_id) {
-            $criteria->condition .= ' OR subspecialty_id = :subspecialty_id';
-            $criteria->params = array_merge($criteria->params, [':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id]);
+            $criteria->condition .= ' OR subspecialties_subspecialties.subspecialty_id = :subspecialty_id';
+            $criteria->params[':subspecialty_id'] = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         }
+        // Ensure that only installation-level macros
+        // and macros applicable only to the current institution are returned.
+        $criteria->condition .= ')';/* AND (institution_id IS NULL OR institution_id = :institution_id)';
+        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];*/
         $criteria->order = 'display_order asc';
 
         foreach (LetterMacro::model()->findAll($criteria) as $macro) {

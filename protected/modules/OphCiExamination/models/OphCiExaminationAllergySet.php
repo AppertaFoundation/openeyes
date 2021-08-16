@@ -24,6 +24,7 @@ namespace OEModule\OphCiExamination\models;
  * The followings are the available columns in table 'ophciexamination_allergy_set':
  * @property integer $id
  * @property string $name
+ * @property string $institution_id
  * @property integer $firm_id
  * @property integer $subspecialty_id
  * @property string $last_modified_user_id
@@ -33,6 +34,7 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available model relations:
  * @property OphCiExaminationAllergySetEntry[] $entries
+ * @property Institution $institution
  * @property Firm $firm
  * @property \User $createdUser
  * @property \User $lastModifiedUser
@@ -59,11 +61,11 @@ class OphCiExaminationAllergySet extends \BaseActiveRecordVersioned
         return array(
             array('name', 'length', 'max'=>255),
             array('name', 'required'),
-            array('firm_id, subspecialty_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('institution_id, firm_id, subspecialty_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, name, firm_id, subspecialty_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array('id, name, institution_id, firm_id, subspecialty_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
         );
     }
 
@@ -80,6 +82,7 @@ class OphCiExaminationAllergySet extends \BaseActiveRecordVersioned
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'entries' => array(self::HAS_MANY, OphCiExaminationAllergySetEntry::class, 'set_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -100,6 +103,7 @@ class OphCiExaminationAllergySet extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'institution_id' => 'Institution',
             'firm_id' => 'Firm',
             'subspecialty_id' => 'Subspecialty',
             'last_modified_user_id' => 'Last Modified User',
@@ -121,7 +125,7 @@ class OphCiExaminationAllergySet extends \BaseActiveRecordVersioned
      * @return CActiveDataProvider the data provider that can return the models
      * based on the search/filter conditions.
      */
-    public function search()
+    public function search($current_institution_only = false)
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
@@ -129,12 +133,18 @@ class OphCiExaminationAllergySet extends \BaseActiveRecordVersioned
 
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
         $criteria->compare('firm_id', $this->firm_id, true);
         $criteria->compare('subspecialty_id', $this->subspecialty_id, true);
         $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
         $criteria->compare('last_modified_date', $this->last_modified_date, true);
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
+
+        if ($current_institution_only) {
+            $criteria->addCondition('institution_id = :institution_id');
+            $criteria->params[':institution_id'] = \Yii::app()->session['selected_institution_id'];
+        }
 
         return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,

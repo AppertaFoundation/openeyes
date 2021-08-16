@@ -1,8 +1,9 @@
 <?php
-/* @var $this CaseSearchController */
-/* @var $id int */
-/* @var $model CaseSearchParameter */
-/* @var $form CActiveForm */
+/* @var $this CaseSearchController
+ * @var $id int
+ * @var $model CaseSearchParameter
+ * @var $form CActiveForm
+ */
 
 $operation_display = null;
 
@@ -36,7 +37,7 @@ switch ($model->operation) {
         break;
 }
 ?>
-<tr class="parameter" id="<?= $id ?>">
+<tr class="parameter<?= $readonly ? ' auto-parameter' : '' ?>" data-id="<?= $id ?>">
     <td>
         <?= $model->label ?>
         <?= !$readonly ? CHtml::hiddenField(CHtml::modelName($model) . "[$id][type]", CHtml::modelName($model)) : '' ?>
@@ -53,18 +54,19 @@ switch ($model->operation) {
             echo !$readonly ? CHtml::activeHiddenField($model, "[$id]value") : '';
         }
         foreach ($model->attributeNames() as $attribute) {
-            if (strpos('operation, id, name, value', $attribute) === false) { ?>
+            // Only output the attributes for the parameter that haven't yet been output.
+            if (strpos('operation, id, name, value, isSaved', $attribute) === false) { ?>
                 <br/>
                 <?= $model->getValueForAttribute($attribute) ?>
                 <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]$attribute") : '' ?>
             <?php }
         }?>
     </td>
-    <?php if (!$readonly) : ?>
     <td>
-        <i id="<?= $id ?>-remove" class="oe-i remove-circle small"></i>
+        <?php if (!$readonly) : ?>
+            <i id="<?= $id ?>-remove" class="oe-i remove-circle small"></i>
+        <?php endif; ?>
     </td>
-    <?php endif; ?>
 </tr>
 
 

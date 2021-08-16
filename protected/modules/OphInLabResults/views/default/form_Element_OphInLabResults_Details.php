@@ -27,7 +27,7 @@
                         id="Element_OphInLabResults_Details_result_type_id"
                 <?= (isset($element->result_type_id) ? "disabled=disabled" : "") ?> >
                     <option>Select</option>
-                    <?php foreach (OphInLabResults_Type::model()->findAll() as $type) : ?>
+                    <?php foreach ((new OphInLabResults_API())->getLabResultTypesForCurrentInstitution() as $type) : ?>
                         <option
                                 data-element-id="<?= $type->result_element_id ?>"
                                 data-type-id="<?= $type->id ?>"

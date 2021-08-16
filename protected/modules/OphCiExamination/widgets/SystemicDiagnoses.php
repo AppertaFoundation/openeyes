@@ -113,12 +113,12 @@ class SystemicDiagnoses extends \BaseEventElementWidget
 
         $ret[] = implode(" // ", $present);
         if (!empty($required_checked)) {
-            $ret[] = implode(" // ", array_map(function($e){
+            $ret[] = implode(" // ", array_map(function ($e) {
                 return '<strong>Not present: </strong>'. $e->disorder->term;
             }, $required_checked));
         }
         if (!empty($required_not_checked)) {
-            $ret[] = implode(" // ", array_map(function($e){
+            $ret[] = implode(" // ", array_map(function ($e) {
                 return '<strong>Not checked: </strong>'. $e->disorder->term;
             }, $required_not_checked));
         }

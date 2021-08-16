@@ -33,4 +33,8 @@ $(document).ready(function() {
 			}
 		});
 	});
+	handleButton($('#user-settings-save'),function(e) {
+		e.preventDefault();
+		$('#user-settings-form').submit();
+	});
 });

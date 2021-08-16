@@ -16,11 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+$institution_id = Institution::model()->getCurrent()->id;
+$site_id = Yii::app()->session['selected_site_id'];
+?>
 <div id="diaryTemplate">
-    <div id="d_title">TCIs in date range <?=\CHtml::encode($_POST['date-start'])?> to <?=\CHtml::encode($_POST['date-end'])?></div>
+    <div id="d_title">TCIs in date range <?= \CHtml::encode($_POST['date-start']) ?>
+        to <?= \CHtml::encode($_POST['date-end']) ?></div>
     <table>
         <tr>
-            <th>Patient no</th>
+            <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></th>
             <th>Patient name</th>
             <th>D.O.B.</th>
             <th>Age</th>
@@ -33,15 +38,17 @@
         <?php foreach ($bookings as $booking) {
             if ($booking->operation->event) { ?>
                 <tr>
-                    <td><?php echo $booking->operation->event->episode->patient->hos_num?></td>
-                    <td><strong><?php echo strtoupper($booking->operation->event->episode->patient->last_name) ?></strong>, <?php echo $booking->operation->event->episode->patient->first_name?></td>
-                    <td><?php echo $booking->operation->event->episode->patient->NHSDate('dob')?></td>
-                    <td><?php echo $booking->operation->event->episode->patient->age?></td>
-                    <td><?php echo $booking->operation->event->episode->patient->gender?></td>
-                    <td><?php echo $booking->NHSDate('session_date')?></td>
-                    <td><?php echo $booking->ward ? $booking->ward->name : 'None'?></td>
-                    <td><?php echo $booking->session->firm->pas_code?></td>
-                    <td><?php echo $booking->session->firm->serviceSubspecialtyAssignment->subspecialty->name?></td>
+                    <td><?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $booking->operation->event->episode->patient->id, $institution_id, $site_id)) ?></td>
+                    <td>
+                        <strong><?= strtoupper($booking->operation->event->episode->patient->last_name) ?></strong>, <?= $booking->operation->event->episode->patient->first_name ?>
+                    </td>
+                    <td><?= $booking->operation->event->episode->patient->NHSDate('dob') ?></td>
+                    <td><?= $booking->operation->event->episode->patient->age ?></td>
+                    <td><?= $booking->operation->event->episode->patient->gender ?></td>
+                    <td><?= $booking->NHSDate('session_date') ?></td>
+                    <td><?= $booking->ward ? $booking->ward->name : 'None' ?></td>
+                    <td><?= $booking->session->firm->pas_code ?></td>
+                    <td><?= $booking->session->firm->serviceSubspecialtyAssignment->subspecialty->name ?></td>
                 </tr>
             <?php }
         } ?>

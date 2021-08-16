@@ -1,5 +1,6 @@
 <?php
 /**
+ *
  * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -15,6 +16,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
+
+$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution->id, $selected_site_id);
+
 ?>
     <div class="admin box">
     <div class="data-group">
@@ -33,14 +40,14 @@
             array(
                 'label' => 'Name',
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
                     return CHTML::link($model->patient->getFullName(), '/patient/view/' . $model->patient->id);
                 }
             ),
             array(
                 'label' => 'Maiden Name',
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
                     return $model->patient->contact->maiden_name;
                 }
             ),
@@ -48,7 +55,7 @@
             array(
                 'label' => $model->patient->getAttributeLabel('dob'),
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
                     if ($model->patient->dob) {
                         $date = new DateTime($model->patient->dob);
                         return $date->format('d M Y');
@@ -56,7 +63,18 @@
                     return null;
                 }
             ),
-            'patient.hos_num',
+            array(
+                'id' => 'hos_num',
+                'label' => $primary_identifier_prompt,
+                'value' => function ($data) {
+                    $institution = Institution::model()->getCurrent();
+                    $selected_site_id = Yii::app()->session['selected_site_id'];
+                    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $data->patient->id, $institution->id, $selected_site_id);
+                    $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers', ['patient' => $data->patient, 'show_all' => true, 'tooltip_size' => 'small'], true);
+                    return PatientIdentifierHelper::getIdentifierValue($primary_identifier) . $patient_identifier_widget;
+                },
+                'type' => 'raw'
+            ),
             array(
                 'label' => $model->getAttributeLabel('gender_id'),
                 'value' => isset($model->gender->name) ? $model->gender->name : 'Not set',
@@ -71,7 +89,7 @@
             array(
                 'label' => 'Relationship',
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
                     $html = '<ul>';
                     foreach ($model->relationships as $relationship) {
                         $html .= '<li>';
@@ -85,7 +103,7 @@
              array(
                 'label' => $model->getAttributeLabel('diagnoses'),
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
                     $html = '<ul>';
                     foreach ($model->diagnoses as $diagnosis) {
                         $html .= '<li>' . $diagnosis->term;
@@ -98,7 +116,7 @@
             array(
                 'label' => 'Pedigree',
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
                     if ($model->pedigrees) {
                         $html = '<ul>';
                         foreach ($model->pedigrees as $pedigree) {
@@ -117,7 +135,7 @@
             array(
                 'label' => 'Previous Studies',
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
                     if ($model->previous_studies) {
                         $html = '<ul>';
                         foreach ($model->previous_studies as $previous_study) {
@@ -138,11 +156,11 @@
                     return $html;
                 }
             ),
-            
+
             array(
                 'label' => 'Rejected Studies',
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
                     if ($model->rejected_studies) {
                         $html = '<ul>';
                         foreach ($model->rejected_studies as $rejected_study) {
@@ -157,11 +175,11 @@
                     return $html;
                 }
             ),
-            
+
             array(
                 'label' => 'Current Studies',
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
                     if ($model->current_studies) {
                         $html = '<ul>';
                         foreach ($model->current_studies as $current_study) {
@@ -175,7 +193,7 @@
                     }
                     return $html;
                 }
-                    
+
             ),
     ),
 )); ?>

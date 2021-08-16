@@ -25,15 +25,17 @@
  * @property int $service_subspecialty_assignment_id
  * @property string $pas_code
  * @property string $cost_code
+ * @property int $institution_id
  * @property string $name
  * @property string $service_email
  * @property string $context_email
- * @property boolean $can_own_an_episode
+ * @property bool $can_own_an_episode
  *
  * The followings are the available model relations:
  * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
  * @property FirmUserAssignment[] $firmUserAssignments
  * @property User[] $members
+ * @property Institution $institution
  * @property User $consultant
  */
 class Firm extends BaseActiveRecordVersioned
@@ -68,7 +70,7 @@ class Firm extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, subspecialty_id', 'required'),
+            array('name, subspecialty_id, institution_id', 'required'),
             array('service_subspecialty_assignment_id', 'length', 'max' => 10),
             array('pas_code', 'length', 'max' => 20),
             array('cost_code', 'length', 'max' => 5),
@@ -99,6 +101,7 @@ class Firm extends BaseActiveRecordVersioned
             'userFirmRights' => array(self::HAS_MANY, 'UserFirmRights', 'firm_id'),
             'members' => array(self::MANY_MANY, 'User', 'firm_user_assignment(firm_id, user_id)'),
             'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -195,6 +198,11 @@ class Firm extends BaseActiveRecordVersioned
         return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty->name : 'Support services';
     }
 
+    public static function getFirmsForInstitution($institution_id)
+    {
+        return self::model()->findAll('institution_id = :institution_id', [':institution_id' => $institution_id]);
+    }
+
     /**
      * Fetch an array of firm IDs and names.
      * @param null $subspecialty_id
@@ -202,9 +210,14 @@ class Firm extends BaseActiveRecordVersioned
      * @param null $runtime_selectable
      * @param null $can_own_an_episode
      * @return array
+     * @throws CException
      */
-    public function getList($subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null)
+    public function getList($institution_id = null, $subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null)
     {
+        $bindValues = array();
+        /**
+         * @var CDbCommand $cmd
+         */
         $cmd = Yii::app()->db->createCommand()
             ->select('f.id, f.name')
             ->from('firm f')
@@ -213,14 +226,23 @@ class Firm extends BaseActiveRecordVersioned
                 ($can_own_an_episode ? 'and f.can_own_an_episode = 1' : '') .
                 ($include_id ? ' or f.id = :include_id' : ''));
 
+        if ($institution_id) {
+            $cmd = $cmd->andWhere('f.institution_id = :institution_id');
+            $bindValues[':institution_id'] = $institution_id;
+        }
+
         if ($subspecialty_id) {
-            $cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-                ->andWhere('ssa.subspecialty_id = :subspecialty_id')
-                ->bindValue(':subspecialty_id', $subspecialty_id);
+            $cmd = $cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+                ->andWhere('ssa.subspecialty_id = :subspecialty_id');
+            $bindValues[':subspecialty_id'] = $subspecialty_id;
         }
 
         if ($include_id) {
-            $cmd->bindValue(':include_id', $include_id);
+            $bindValues[':include_id'] = $include_id;
+        }
+
+        if (!empty($bindValues)) {
+            $cmd = $cmd->bindValues($bindValues);
         }
 
         $result = array();
@@ -239,7 +261,7 @@ class Firm extends BaseActiveRecordVersioned
      *
      * @return array
      */
-    public function getListWithSpecialties($include_non_subspecialty = false, $subspecialty_id = null)
+    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null)
     {
 
         $join_method = $include_non_subspecialty ? 'leftJoin' : 'join';
@@ -253,6 +275,10 @@ class Firm extends BaseActiveRecordVersioned
 
         if ($subspecialty_id) {
             $command->andWhere('s.id = :id', array(':id' => $subspecialty_id));
+        }
+
+        if ($institution_id) {
+            $command->andWhere('f.institution_id = :institution_id', array(':institution_id' => $institution_id));
         }
 
         $firms = $command->order('f.name, s.name')->queryAll();
@@ -273,10 +299,10 @@ class Firm extends BaseActiveRecordVersioned
     /**
      * @return array
      */
-    public function getListWithSpecialtiesAndEmergency()
+    public function getListWithSpecialtiesAndEmergency($institution_id = null)
     {
         $list = array('NULL' => 'Emergency');
-        foreach ($this->getListWithSpecialties() as $firm_id => $name) {
+        foreach ($this->getListWithSpecialties($institution_id) as $firm_id => $name) {
             $list[$firm_id] = $name;
         }
 
@@ -310,9 +336,9 @@ class Firm extends BaseActiveRecordVersioned
     {
         if ($this->serviceSubspecialtyAssignment) {
             return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->name . ')';
-        } else {
-            return $this->name;
         }
+
+        return $this->name;
     }
 
     /**
@@ -322,9 +348,9 @@ class Firm extends BaseActiveRecordVersioned
     {
         if ($this->serviceSubspecialtyAssignment) {
             return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->ref_spec . ')';
-        } else {
-            return $this->name;
         }
+
+        return $this->name;
     }
 
     /**
@@ -343,10 +369,10 @@ class Firm extends BaseActiveRecordVersioned
             ->queryRow();
 
         if (empty($result)) {
-            return;
-        } else {
-            return Specialty::model()->findByPk($result['id']);
+            return null;
         }
+
+        return Specialty::model()->findByPk($result['id']);
     }
 
     /**

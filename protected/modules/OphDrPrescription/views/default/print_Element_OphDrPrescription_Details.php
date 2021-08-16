@@ -1,43 +1,43 @@
 <?php
-    /**
-     * OpenEyes.
-     *
-     * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
-     * (C) OpenEyes Foundation, 2011-2013
-     * This file is part of OpenEyes.
-     * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-     * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
-     * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
-     *
-     * @link http://www.openeyes.org.uk
-     *
-     * @author OpenEyes <info@openeyes.org.uk>
-     * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
-     * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
-     */
+/**
+ * OpenEyes.
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 ?>
 <?php
-    /**
-     * @var Element_OphDrPrescription_Details $element
-     */
+/**
+ * @var Element_OphDrPrescription_Details $element
+ */
 
-    $copy = $data['copy'];
+$copy = $data['copy'];
 
-    $header_text = null;
-    $footer_text = null;
+$header_text = null;
+$footer_text = null;
 
-    $settings = new SettingMetadata();
-    $print_mode = $settings->getSetting('prescription_form_format');
+$settings = new SettingMetadata();
+$print_mode = $settings->getSetting('prescription_form_format');
 
-    $allowed_tags = '<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup>
+$allowed_tags = '<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup>
 <u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
 
-    $header_param = Yii::app()->params['prescription_boilerplate_header'];
+$header_param = Yii::app()->params['prescription_boilerplate_header'];
 if ($header_param !== null) {
     $header_text = strip_tags($header_param, $allowed_tags);
 }
 
-    $footer_param = Yii::app()->params['prescription_boilerplate_footer'];
+$footer_param = Yii::app()->params['prescription_boilerplate_footer'];
 if ($footer_param !== null) {
     $footer_text = strip_tags($footer_param, $allowed_tags);
 }
@@ -58,23 +58,28 @@ if (isset($element->authorisedByUser)) {
 }
 ?>
 
-<?php if (!isset($data['print_mode']) || ($data['print_mode'] !== 'WP10' && $data['print_mode'] !== 'FP10')) : ?>
-    <?php if ($header_text !== null) : ?>
+<?php if (!isset($data['print_mode']) || ($data['print_mode'] !== 'WP10' && $data['print_mode'] !== 'FP10')) {
+    $institution_id = Institution::model()->getCurrent()->id;
+    $site_id = Yii::app()->session['selected_site_id'];
+    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+    $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+
+    if ($header_text !== null) { ?>
         <div class="clearfix"><?= $header_text ?></div>
-    <?php endif; ?>
+    <?php } ?>
 
     <table class="borders prescription_header" style="margin-bottom:0px">
         <tr>
             <th>Patient Name</th>
             <td><?= $this->patient->fullname ?> (<?= $this->patient->gender ?>)</td>
-            <th>Hospital Number</th>
-            <td><?= $this->patient->hos_num ?></td>
+            <th><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?></th>
+            <td><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></td>
         </tr>
         <tr>
             <th>Date of Birth</th>
             <td><?= $this->patient->NHSDate('dob') ?> (<?= $this->patient->age ?>)</td>
-            <th><?= \SettingMetadata::model()->getSetting('nhs_num_label') ?> Number</th>
-            <td><?= $this->patient->getNhsnum() ?></td>
+            <th><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?></th>
+            <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
         </tr>
         <tr>
             <th>Consultant</th>
@@ -111,8 +116,8 @@ if (isset($element->authorisedByUser)) {
     foreach ($items_data as $group => $items) { ?>
         <b>
             <?php
-                $group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
-                echo str_replace('{form_type}', $print_mode, $group_name); ?>
+            $group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
+            echo str_replace('{form_type}', $print_mode, $group_name); ?>
         </b>
         <table class="borders prescription_items">
             <thead>
@@ -132,7 +137,7 @@ if (isset($element->authorisedByUser)) {
             <?php
             foreach ($items as $item) {
                 ?>
-            <tr class="prescriptionItem<?=$this->patient->hasDrugAllergy($item->medication_id) ? ' allergyWarning' : '';?> ">
+                <tr class="prescriptionItem<?= $this->patient->hasDrugAllergy($item->medication_id) ? ' allergyWarning' : ''; ?> ">
                 <td class="prescriptionLabel"><?=$item->medication->getLabel(true); ?></td>
                 <td><?=is_numeric($item->dose) ? ($item->dose . " " . $item->dose_unit_term) : $item->dose ?></td>
                 <td><?=$item->route->term ?><?php if ($item->laterality) {
@@ -277,10 +282,10 @@ if (isset($element->authorisedByUser)) {
         </tr>
     </table>
 
-    <?php if ($footer_text !== null) : ?>
+    <?php if ($footer_text !== null) { ?>
         <div><?= $footer_text ?></div>
-    <?php endif; ?>
-<?php else :
+    <?php } ?>
+<?php } else {
     $this->widget('PrescriptionFormPrinter', array(
         'patient' => $this->patient,
         'site' => $this->site,
@@ -288,4 +293,4 @@ if (isset($element->authorisedByUser)) {
         'firm' => $this->firm,
         'items' => $element->items,
     ));
-endif; ?>
+} ?>

@@ -1,6 +1,5 @@
 <?php
 
-use OEModule\OphCiExamination\models\interfaces\SidedData;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit as VisualAcuityUnit;
 
 class AnalyticsController extends BaseController
@@ -399,6 +398,7 @@ class AnalyticsController extends BaseController
     public function actionGetDrillDown($specialty = null)
     {
         $ret = null;
+        $headers = null;
         $patient_list = null;
         if (Yii::app()->request->getParam('drill')) {
             $specialty = Yii::app()->request->getParam('specialty');
@@ -406,7 +406,10 @@ class AnalyticsController extends BaseController
             if (isset($params['ids'])) {
                 if ($specialty === 'Cataract') {
                     $event_list = $this->queryCataractEventList($params);
+                    $institution_id = Institution::model()->getCurrent()->id;
+                    $event_list = $this->getPatientsIdentifiers($event_list, $institution_id, true);
                     $ret['event_list'] = $event_list;
+                    $headers = array_keys($event_list[0]);
                 } else {
                     $patient_list = $this->getPatientList($params);
                 }
@@ -415,6 +418,7 @@ class AnalyticsController extends BaseController
             }
             if ($patient_list) {
                 $ret['patient_list'] = $patient_list;
+                $headers = array_keys($patient_list['res'][0]);
             }
             $data = isset($event_list) ? count($event_list) : count($patient_list);
             if ($data > 0) {
@@ -422,13 +426,15 @@ class AnalyticsController extends BaseController
                     '/analytics/analytics_drill_down_list',
                     array(
                         'data' => $ret,
+                        'headers' => $headers,
                     ),
                     true
                 );
                 $this->renderJSON(
                     array(
                         'dom' => $dom,
-                        'count' => $data
+                        'count' => $data,
+                        'headers' => $headers
                     )
                 );
                 Yii::app()->end();
@@ -682,8 +688,6 @@ class AnalyticsController extends BaseController
             ->select(
                 "p.id AS id,
                 CONCAT(c.first_name, ' ', c.last_name) AS name,
-                p.hos_num,
-                p.nhs_num,
                 IF(vf.eye_id = :eye_left, 'L', IF(vf.eye_id = :eye_right, 'R', NULL)) eye_side,
                 e.event_date,
                 vf.mean_deviation md,
@@ -1117,13 +1121,12 @@ class AnalyticsController extends BaseController
             $patient_list_command->where('p.id IN (' . implode(', ', $params['ids']) . ')');
         }
 
-        return $patient_list_command
+        $res = $patient_list_command
             ->select(
                 "
-                p.hos_num as hos_num,
-                p.nhs_num as nhs_num,
                 p.id AS patient_id,
-                CONCAT(c.first_name, ' ', c.last_name) AS name,
+                c.first_name AS 'first name',
+                c.last_name AS 'last name',
                 p.dob as dob,
                 IF(p.date_of_death IS NOT NULL,
                 YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0),
@@ -1136,6 +1139,30 @@ class AnalyticsController extends BaseController
             )
             ->group('p.id')
             ->queryAll();
+
+        $institution_id = Institution::model()->getCurrent()->id;
+        $res = $this->getPatientsIdentifiers($res, $institution_id);
+        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $this->selectedSiteId);
+        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $institution_id, $this->selectedSiteId);
+        $id_headers = $primary_identifier_prompt . ', ' . $secondary_identifier_prompt;
+        return ['id_headers' => $id_headers, 'res' => $res];
+    }
+
+    private function getPatientsIdentifiers($data, $institution_id, $use_prompt_as_index = false)
+    {
+        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $this->selectedSiteId);
+        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $institution_id, $this->selectedSiteId);
+
+        $primary_identifier_index = $use_prompt_as_index ? $primary_identifier_prompt : 'primary identifier';
+        $secondary_identifier_index = $use_prompt_as_index ? $secondary_identifier_prompt : 'secondary identifier';
+        $result = [];
+        foreach ($data as $patient) {
+            $primary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient['patient_id'], $institution_id, $this->selectedSiteId));
+            $secondary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $patient['patient_id'], $institution_id, $this->selectedSiteId));
+            $result[] = [$primary_identifier_index => $primary_identifier, $secondary_identifier_index => $secondary_identifier, ] + $patient + ['all ids' => PatientIdentifierHelper::getAllPatientIdentifiersForReports($patient['patient_id'])];
+        }
+
+        return $result;
     }
 
     /**
@@ -1867,8 +1894,6 @@ class AnalyticsController extends BaseController
         $command = Yii::app()->db->createCommand()
             ->select(
                 '
-                p.hos_num as hos_num,
-                p.nhs_num as nhs_num,
                 eoc.event_id as event_id,
                 e.event_date as event_date,
                 eye.name as eye_side,
@@ -1913,9 +1938,11 @@ class AnalyticsController extends BaseController
             )
             ->group('p.id, e.id, eye.name')
             ->order('name, e.event_date DESC');
-        if (isset($params['ids']) && count($params['ids']) > 0) {
+        if (isset($params['ids'])) {
             $params['ids'] = json_decode($params['ids']);
-            $command->where('e.id IN (' . implode(', ', $params['ids']) . ')');
+            if (count($params['ids']) > 0) {
+                $command->where('e.id IN (' . implode(', ', $params['ids']) . ')');
+            }
         }
         return $command->queryAll();
     }
@@ -1926,7 +1953,6 @@ class AnalyticsController extends BaseController
             $this->custom_csv_data[$current_patient->id] = array(
                 'first_name' => $current_patient->getFirst_name(),
                 'last_name' => $current_patient->getLast_name(),
-                'hos_num' => $current_patient->hos_num,
                 'dob' => $current_patient->dob,
                 'age' => $current_patient->getAge(),
                 'diagnoses' => $current_patient->getDiagnosesTermsArray(),

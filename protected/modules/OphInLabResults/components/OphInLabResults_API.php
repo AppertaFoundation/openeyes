@@ -26,6 +26,25 @@ class OphInLabResults_API extends BaseAPI
     }
 
     /**
+     * @return array|array[]|null[]|OphInLabResults_Type[]
+     * @throws Exception
+     */
+    public function getLabResultTypesForCurrentInstitution()
+    {
+        $institution = Institution::model()->getCurrent();
+
+        return array_map(
+            static function ($entry) {
+                return $entry->type;
+            },
+            OphInLabResults_Type_Institution::model()->with('OphInLabResults_Type')->findAll(
+                'institution_id IS NULL OR institution_id = :institution_id',
+                array(':institution_id' => $institution->id)
+            )
+        );
+    }
+
+    /**
      * @return mixed
      * @throws Exception
      */

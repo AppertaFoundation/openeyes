@@ -21,8 +21,10 @@ $data->hasAllergyStatus();
             'layout' => 'list',
             'trial' => $this->trialContext,
             'list_mode' => true,
+            'selected_site_id' => $this->selectedSiteId,
         )
     );
     $patientPanel->render('PatientPanel');
     ?>
+        ?>
 </tr>

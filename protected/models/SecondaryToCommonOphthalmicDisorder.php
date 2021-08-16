@@ -35,8 +35,20 @@
  */
 class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
-    const SELECTION_LABEL_FIELD = 'disorder_id';
+    use MappedReferenceData;
 
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return $this->tableName().'_id';
+    }
+
+
+    const SELECTION_LABEL_FIELD = 'disorder_id';
     /**
      * Returns the static model of the specified AR class.
      *
@@ -70,7 +82,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
         return array(
                 array('parent_id', 'required'),
                 array('disorder_id, finding_id, parent_id', 'length', 'max' => 10),
-                array('disorder_id, finding_id, parent_id, letter_macro_text', 'safe'),
+                array('id, disorder_id, finding_id, parent_id, letter_macro_text, created_date, created_user_id, last_modified_date, last_modified_user_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
                 array('id, disorder_id, finding_id', 'safe', 'on' => 'search'),
@@ -88,9 +100,9 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
                 'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
                 'finding' => array(self::BELONGS_TO, 'Finding', 'finding_id', 'condition' => 'finding.active = 1'),
                 'parent' => array(self::BELONGS_TO, 'CommonOphthalmicDisorder', 'parent_id'),
+                'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
         );
     }
-
     /**
      * @return array customized attribute labels (name=>label)
      */

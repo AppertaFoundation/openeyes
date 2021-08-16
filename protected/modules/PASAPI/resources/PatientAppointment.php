@@ -293,4 +293,10 @@ class PatientAppointment extends BaseResource
 
         return $model;
     }
+
+    public function setPatientIdentifierType(\PatientIdentifierType $patientIdentifierType) {
+        if(isset($this->worklist_manager)) {
+            $this->worklist_manager->patient_identifier_type = $patientIdentifierType;
+        }
+    }
 }

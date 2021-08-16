@@ -125,6 +125,7 @@ $message_type_to_css_class = [
                             data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
                             data-event-date-display="<?= $event->NHSDate('event_date') ?>"
                             data-event-type="<?= $event_name ?>"
+                            data-institution="<?= $event->institution->name ?>"
                             data-subspecialty="<?= $subspecialty_name ?>"
                             data-event-icon='<?= $event->getEventIcon('medium') ?>'
                             <?php if ($event_image !== null && $event_image->status->name === 'CREATED') { ?>
@@ -197,6 +198,8 @@ $message_type_to_css_class = [
                                         <?= $event_issue_text ?>
                                     </div>
                                 <?php } ?>
+                                <div class="event-name">Institution: <strong><?=$event->institution ?? '-';?></strong></div>
+                                <div class="event-name">Site: <strong><?=$event->site ?? '-';?></strong></div>
                             </div>
 
                             <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
@@ -265,7 +268,7 @@ if ($this->editable) {
         'episodes' => $active_episodes,
         'context_firm' => $this->firm,
         'patient_id' => $this->patient->id,
-        'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps($this->event->episode->status->id),
+        'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps($this->event->institution->id, $this->event->episode->status->id),
         'currentStep' => (isset($this->event->eventType->class_name) && $this->event->eventType->class_name == 'OphCiExamination' ? $this->getCurrentStep() : ''),
         'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""'),
         // for some strange reason '' doesn't reslove to an empty str

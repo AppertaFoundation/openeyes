@@ -263,7 +263,7 @@ class DisorderController extends BaseController
     {
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
-        if ($cd = CommonOphthalmicDisorder::model()->find('disorder_id=? and subspecialty_id=?', array($id, $firm->serviceSubspecialtyAssignment->subspecialty_id))) {
+        if ($cd = CommonOphthalmicDisorder::model()->find('disorder_id=? and subspecialty_id=? and institution_id=?', array($id, $firm->serviceSubspecialtyAssignment->subspecialty_id, Institution::model()->getCurrent()))) {
             echo "<option value=\"$cd->disorder_id\" data-order=\"{$cd->display_order}\">".$cd->disorder->term.'</option>';
         }
     }
@@ -298,7 +298,7 @@ class DisorderController extends BaseController
 
     public function actionEditCommonOphthalmicDisorder()
     {
-        $models = CommonOphthalmicDisorderGroup::model()->findAll();
+        $models = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
         $data = array_map(function ($model) {
             return $model->getAttributes(array("id", "name"));
         }, $models);
@@ -350,7 +350,7 @@ class DisorderController extends BaseController
 
                 $criteria->compare('subspecialty_id', $subspecialty_id);
 
-                $to_delete = CommonOphthalmicDisorder::model()->findAll($criteria);
+                $to_delete = CommonOphthalmicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
                 foreach ($to_delete as $item) {
                     if (!$item->delete()) {
                         throw new Exception("Unable to delete CommonOphthalmicDisorder:{$item->primaryKey}");
@@ -442,7 +442,8 @@ class DisorderController extends BaseController
 
                 $criteria->compare('parent_id', $parent_id);
 
-                $to_delete = SecondaryToCommonOphthalmicDisorder::model()->findAll($criteria);
+                $to_delete = SecondaryToCommonOphthalmicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
+
                 foreach ($to_delete as $item) {
                     if (!$item->delete()) {
                         throw new Exception("Unable to delete SecondaryToCommonOphthalmicDisorder:{$item->primaryKey}");

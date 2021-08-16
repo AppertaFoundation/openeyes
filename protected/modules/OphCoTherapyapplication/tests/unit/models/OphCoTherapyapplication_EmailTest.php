@@ -17,6 +17,7 @@ class OphCoTherapyapplication_EmailTest extends ActiveRecordTestCase
     public static function setupBeforeClass()
     {
         Yii::app()->getModule('OphCoTherapyapplication');
+        Yii::app()->session['selected_institution_id'] = 1;
     }
 
     public $fixtures = array(
@@ -35,6 +36,11 @@ class OphCoTherapyapplication_EmailTest extends ActiveRecordTestCase
     protected array $columns_to_skip = [
         'eye_id'
     ];
+
+    public static function tearDownAfterClass()
+    {
+        unset(Yii::app()->session['selected_institution_id']);
+    }
 
     public function setUp()
     {
@@ -128,6 +134,7 @@ class OphCoTherapyapplication_EmailTest extends ActiveRecordTestCase
         $event = new Event();
         $event->episode_id = $this->ep('episode1')->id;
         $event->event_type_id = $this->event_type->id;
+        $event->institution_id = 1;
         $event->delete_pending = 0;
         $event->save();
 

@@ -6,20 +6,24 @@
 class PatientDiagnosisParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var int $firm_id
+     * @var int|null $firm_id
      */
-    public $firm_id;
+    public ?int $firm_id = null;
 
     /**
      * @var bool $only_last_event
      */
-    public $only_latest_event;
+    public bool $only_latest_event = false;
 
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'string_search',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '='),
+            array('label' => 'IS NOT', 'id' => '!='),
+        )
     );
 
-    protected $label_ = 'Diagnosis';
+    protected string $label_ = 'Diagnosis';
 
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -51,13 +55,18 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
                 'id' => 'latest-event',
                 'field' => 'only_latest_event',
                 'options' => array(
-                    array('id' => 1, 'label' => 'Only latest event')
+                    array('id' => true, 'label' => 'Only latest event')
                 ),
             ),
         );
     }
 
-    public function getValueForAttribute($attribute)
+    /**
+     * @param string $attribute
+     * @return mixed|void
+     * @throws CException
+     */
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
@@ -78,7 +87,6 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
     }
 
     /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
     public function rules()
@@ -96,7 +104,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @return string The constructed query string.
      */
-    public function query()
+    public function query(): string
     {
         $query = "
 SELECT episode.patient_id
@@ -114,7 +122,8 @@ AND (:p_d_only_latest_event_$this->id = 0 OR
     JOIN event later_event ON later_event.id = later_diagnoses.event_id
     JOIN episode later_episode ON later_episode.id = later_event.episode_id
     WHERE later_episode.patient_id = episode.patient_id
-    AND later_event.event_date > event.event_date OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
+       AND later_event.event_date > event.event_date
+       OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
   )
 )
 
@@ -135,10 +144,11 @@ AND (:p_d_only_latest_event_$this->id = 0 OR
     JOIN event later_event ON later_event.id = later_diagnoses.event_id
     JOIN episode later_episode ON later_episode.id = later_event.episode_id
     WHERE later_episode.patient_id = episode.patient_id
-    AND later_event.event_date > event.event_date OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
+       AND later_event.event_date > event.event_date
+       OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
   )
 )";
-        if (($this->firm_id === '' || $this->firm_id === null) && $this->only_latest_event === 0) {
+        if (($this->firm_id === '' || $this->firm_id === null) && !$this->only_latest_event) {
             $query .= ' UNION ';
             $query .= "SELECT p3.id
 FROM patient p3 
@@ -163,7 +173,7 @@ WHERE p1.id NOT IN (
         return $query;
     }
 
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term) : array
     {
         $disorders = Disorder::model()->findAllBySql(
             'SELECT * FROM disorder
@@ -173,22 +183,23 @@ WHERE LOWER(term) LIKE LOWER(:term)
 ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
             array('term' => "$term%")
         );
-        $values = array();
-        foreach ($disorders as $disorder) {
-            $values[] = array('id' => $disorder->id, 'label' => $disorder->term);
-        }
-        return $values;
+        return array_map(
+            static function ($disorder) {
+                return array('id' => $disorder->id, 'label' => $disorder->term);
+            },
+            $disorders
+        );
     }
 
     /**
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         return array(
             "p_d_value_$this->id" => $this->value,
-            "p_d_only_latest_event_$this->id" => $this->only_latest_event,
+            "p_d_only_latest_event_$this->id" => (int)$this->only_latest_event,
             "p_d_firm_$this->id" => $this->firm_id ?: null,
         );
     }
@@ -196,7 +207,7 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $op = '=';
         $result = null;
@@ -207,7 +218,9 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
 
         if ($this->firm_id !== '' && $this->firm_id !== null) {
             $firm = Firm::model()->findByPk($this->firm_id);
-            $result .= " diagnosed by {$firm->getNameAndSubspecialty()}";
+            if ($firm) {
+                $result .= " diagnosed by {$firm->getNameAndSubspecialty()}";
+            }
         }
 
         if ($this->only_latest_event) {
@@ -217,7 +230,7 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
         return $result;
     }
 
-    public function saveSearch()
+    public function saveSearch() : array
     {
         return array_merge(
             parent::saveSearch(),

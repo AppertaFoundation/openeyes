@@ -21,6 +21,10 @@
 
 
         <?php
+        $institution = Institution::model()->getCurrent();
+        $selected_site_id = Yii::app()->session['selected_site_id'];
+        $primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
+
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
           'id' => 'searchform',
           'enableAjaxValidation' => false,
@@ -196,7 +200,18 @@
             <tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGeneticresults/default/view/' . $test->event_id) ?>">
                   <td><?php echo $test->NHSDate('result_date') ?></td>
 <!--                  <td>--><?php //echo CHtml::link($test->event->episode->patient->geneticsPatient->id, '/Genetics/subject/view/id/' . $test->event->episode->patient->geneticsPatient->id ); ?><!--</td>-->
-                  <td><?php echo $test->event->episode->patient->hos_num ?></td>
+                  <td>
+                      <?php $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
+                          $test->event->episode->patient->id, $institution->id, $selected_site_id); ?>
+                      <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?>
+                      <?php $this->widget(
+                          'application.widgets.PatientIdentifiers',
+                          [
+                              'patient' => $test->event->episode->patient,
+                              'show_all' => true,
+                              'tooltip_size' => 'small'
+                          ]); ?>
+                  </td>
                 <td>
                     <?php foreach ($test->event->episode->patient->geneticsPatient->pedigrees as $i => $pedigrees) : ?>
                         <?php if ($i > 0) {

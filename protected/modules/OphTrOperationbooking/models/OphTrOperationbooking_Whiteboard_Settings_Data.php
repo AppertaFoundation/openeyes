@@ -51,6 +51,7 @@ class OphTrOperationbooking_Whiteboard_Settings_Data extends \CActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'element_type' => array(self::BELONGS_TO, 'ElementType', 'element_type_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 

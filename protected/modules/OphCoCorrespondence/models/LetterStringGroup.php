@@ -21,6 +21,7 @@
  *
  * @property string $id
  * @property int $event_id
+ * @property int $institution_id
  *
  * The followings are the available model relations:
  * @property Event $event
@@ -56,11 +57,11 @@ class LetterStringGroup extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, display_order', 'safe'),
+            array('name, display_order, institution_id', 'safe'),
             array('name', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('name, display_order', 'safe', 'on' => 'search'),
+            array('name, display_order, institution_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -74,9 +75,12 @@ class LetterStringGroup extends BaseEventTypeElement
         return array(
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'letterStrings' => array(self::HAS_MANY, 'LetterString', 'letter_string_group_id'),
             'firmLetterStrings' => array(self::HAS_MANY, 'FirmLetterString', 'letter_string_group_id'),
             'subspecialtyLetterStrings' => array(self::HAS_MANY, 'SubspecialtyLetterString', 'letter_string_group_id'),
-            'siteLetterStrings' => array(self::HAS_MANY, 'LetterString', 'letter_string_group_id'),
+            'siteLetterStrings' => array(self::HAS_MANY, 'LetterString_Site', 'letter_string_group_id', 'through' => 'letterStrings'),
+            'institutionLetterStrings' => array(self::HAS_MANY, 'LetterString_Institution', 'letter_string_group_id', 'through' => 'letterStrings'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -86,6 +90,7 @@ class LetterStringGroup extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
+            'institution.name' => 'Institution',
         );
     }
 
@@ -103,6 +108,7 @@ class LetterStringGroup extends BaseEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
@@ -140,10 +146,10 @@ class LetterStringGroup extends BaseEventTypeElement
             }
         }
 
-        foreach ($this->siteLetterStrings as $slm) {
-            if (!in_array($slm->name, $string_names)) {
-                if ($slm->shouldShow($patient, $event_types)) {
-                    $strings['site'.$slm->id] = $string_names[] = $slm->name;
+        foreach ($this->letterStrings as $lm) {
+            if (!in_array($lm->name, $string_names)) {
+                if ($lm->shouldShow($patient, $event_types)) {
+                    $strings[$lm->id] = $string_names[] = $lm->name;
                 }
             }
         }

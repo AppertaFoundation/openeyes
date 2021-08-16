@@ -2148,6 +2148,80 @@ class OphCiExamination_API extends \BaseAPI
         return $str;
     }
 
+    public function getLatestOutcomeRiskStatus(\Patient $patient, $worklist, $use_context = false)
+    {
+        $ret = "<i class='oe-i triangle-grey js-has-tooltip' data-tooltip-content='No Risk Status Recorded'></i>";
+
+        $discharge_elements_criteria = new \CDbCriteria();
+        $discharge_elements_criteria->join = "JOIN ophciexamination_clinicoutcome_entry oce ON oce.element_id = t.id";
+        $discharge_elements_criteria->join .= " JOIN ophciexamination_clinicoutcome_status ocs ON oce.status_id = ocs.id";
+        $discharge_elements_criteria->addCondition("LOWER(ocs.name) = 'discharge'");
+        $discharge_elements = $this->getElements(
+            'models\Element_OphCiExamination_ClinicOutcome',
+            $patient,
+            $use_context,
+            null,
+            $discharge_elements_criteria,
+        );
+
+        $episode_latest_discharges = array();
+        foreach ($discharge_elements as $discharge_element) {
+            $episode_id = $discharge_element->event->episode->id;
+            if (!isset($episode_latest_discharges[$episode_id])) {
+                $episode_latest_discharges[$episode_id] = $discharge_element->getLatestEntry('discharge');
+            }
+        }
+
+        $elements = array();
+        // find the latest follow up element with risk status entry for each none discharged episode
+        foreach ($patient->episodes as $episode) {
+            // get discharged episode status object
+            $discharge_status = \EpisodeStatus::model()->find('`key` = :key', array(':key' => 'discharged'));
+            $latest_risk_status_entry_criteria = new \CDbCriteria();
+            $latest_risk_status_entry_criteria->join = "JOIN ophciexamination_clinicoutcome_entry oce ON oce.element_id = t.id";
+            $latest_risk_status_entry_criteria->addCondition("oce.risk_status_id IS NOT NULL");
+            $latest_risk_status_entry_criteria->compare('episode.id', $episode->id);
+            if ($discharge_status) {
+                $latest_risk_status_entry_criteria->addCondition("episode.episode_status_id != :ep_status_id");
+                $latest_risk_status_entry_criteria->params[':ep_status_id'] = $discharge_status->id;
+            }
+            if (isset($episode_latest_discharges[$episode->id])) {
+                $latest_risk_status_entry_criteria->addCondition("oce.created_date > :discharge_date");
+                $latest_risk_status_entry_criteria->params[':discharge_date'] = $episode_latest_discharges[$episode->id]->created_date;
+            }
+            $latest_risk_status_entry_criteria->limit = 1;
+            // get all follow up elements with risk status entry in none discharged episodes
+            $risk_status_element = $this->getElements(
+                'models\Element_OphCiExamination_ClinicOutcome',
+                $patient,
+                $use_context,
+                null,
+                $latest_risk_status_entry_criteria,
+            );
+            if (count($risk_status_element)) {
+                $elements[] = $risk_status_element[0];
+            }
+        }
+
+        $entries = array();
+        foreach ($elements as $element) {
+            $ele_entries = array_filter($element->entries, function ($entry) {
+                if ($entry->risk_status) {
+                    return $entry;
+                }
+            });
+            $entries = array_merge($entries, $ele_entries);
+        }
+
+        if (count($entries) > 1) {
+            $ret = models\Element_OphCiExamination_ClinicOutcome::getRiskStatuses($entries);
+        } elseif (count($entries) === 1) {
+            $entry = $entries[0];
+            $ret = $entry->getRiskStatusLabel(true)['icon'];
+        }
+        return $ret;
+    }
+
     /**
      * Letter string for the latest Cataract Surgical Management element.
      * Limited to the current data context by default.

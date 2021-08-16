@@ -24,12 +24,18 @@ if (!empty($macros)) {
             </td>
             <td><?php echo $macro->id?></td>
             <td>
-                <?php if ($macro->site) {
-                    echo 'Site: '.$macro->site->name;
-                } elseif ($macro->subspecialty) {
-                    echo 'Subspecialty: '.$macro->subspecialty->name;
-                } else if ($macro->firm) {
-                    echo Firm::contextLabel() . ': '.$macro->firm->getNameAndSubspecialty();
+                <?php if ($macro->subspecialties) {
+                    $subspecialties = CHtml::listData($macro->subspecialties, 'id', 'name');
+                    echo 'Subspecialties: '.implode(",", $subspecialties);
+                } elseif ($macro->firms) {
+                    $firms = CHtml::listData($macro->firms, 'id', 'name');
+                    echo Firm::contextLabel() . ': '.implode(",", $firms);
+                } elseif ($macro->sites) {
+                    $sites = CHtml::listData($macro->sites, 'id', 'name');
+                    echo 'Sites: '.implode(",", $sites);
+                } elseif ($macro->institutions) {
+                    $institutions = CHtml::listData($macro->institutions, 'id', 'name');
+                    echo 'Institutions: '.implode(",", $institutions);
                 } else {
                     echo 'No owner was specified for this macro.';
                 }?>

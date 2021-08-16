@@ -19,6 +19,12 @@
 <?php
 $pagination = $sequences['pagination'];
 $sequences = $sequences['data'];
+
+if ($this->checkAccess('admin')) {
+    $theatres = OphTrOperationbooking_Operation_Theatre::model()->active()->findAll();
+} else {
+    $theatres = OphTrOperationbooking_Operation_Theatre::getTheatresForCurrentInstitution();
+}
 ?>
 <div class="box admin">
     <h2>Filters</h2>
@@ -35,7 +41,7 @@ $sequences = $sequences['data'];
             <tbody>
             <tr>
                 <td><?=\CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialtiesAndEmergency(), array('empty' => '- ' . Firm::contextLabel() . ' -', 'class'=>'cols-full'))?></td>
-                <td><?=\CHtml::dropDownList('theatre_id', @$_GET['theatre_id'], CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Theatre -', 'class'=>'cols-full'))?></td>
+                <td><?=\CHtml::dropDownList('theatre_id', @$_GET['theatre_id'], CHtml::listData($theatres, 'id', 'name'), array('empty' => '- Theatre -', 'class'=>'cols-full'))?></td>
                 <td>From</td>
                 <td>
                     <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(

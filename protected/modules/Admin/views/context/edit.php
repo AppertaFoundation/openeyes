@@ -46,27 +46,46 @@
         <tbody>
         <tr>
             <td>PAS Code</td>
-            <td> <?=\CHtml::activeTextField($firm, 'pas_code', ['class' => 'cols-full']); ?> </td>
+            <td> <?=\CHtml::activeTextField($firm, 'pas_code', ['class' => 'cols-full']) ?> </td>
         </tr>
         <tr>
             <td>Name</td>
-            <td> <?=\CHtml::activeTextField($firm, 'name', ['class' => 'cols-full']); ?> </td>
+            <td> <?=\CHtml::activeTextField($firm, 'name', ['class' => 'cols-full']) ?> </td>
+        </tr>
+
+        <tr>
+            <td>Institution</td>
+            <?php if ($this->checkAccess('admin')) { ?>
+                <td><?=\CHtml::activeDropDownList($firm, 'institution_id', Institution::model()->getList(), ['class' => 'cols-full']) ?></td>
+            <?php } elseif ($firm->institution_id) { ?>
+                <td>
+                    <?= $firm->institution->name ?>
+                    <?= CHtml::activeHiddenField($firm, 'institution_id') ?>
+                </td>
+                <td><i class='oe-i info small pad js-has-tooltip' data-tooltip-content="Only OpenEyes Administrators can change a firm's institution."></i></td>
+            <?php } else { ?>
+                <td>
+                    <?= Institution::model()->getCurrent()->name ?>
+                    <?= CHtml::activeHiddenField($firm, 'institution_id', array('value' => Institution::model()->getCurrent()->id)) ?>
+                </td>
+                <td><i class='oe-i info small pad js-has-tooltip' data-tooltip-content="Only OpenEyes Administrators can change a firm's institution."></td>
+            <?php } ?>
         </tr>
         <tr>
             <td>Subspecialty</td>
             <td>
-                <?=\CHtml::activeDropDownList($firm, 'subspecialty_id', $subspecialties_list_data, ['class' => 'cols-full', 'empty' => '- None -']); ?>
+                <?=\CHtml::activeDropDownList($firm, 'subspecialty_id', $subspecialties_list_data, ['class' => 'cols-full', 'empty' => '- None -']) ?>
             </td>
         </tr>
         <tr>
             <td>Consultant</td>
             <td>
-                <?=\CHtml::activeDropDownList($firm, 'consultant_id', $consultant_list_data, ['class' => 'cols-full', 'empty' => '- None -']); ?>
+                <?=\CHtml::activeDropDownList($firm, 'consultant_id', $consultant_list_data, ['class' => 'cols-full', 'empty' => '- None -']) ?>
             </td>
         </tr>
         <tr>
             <td><?=$firm->getAttributeLabel('cost_code');?></td>
-            <td> <?=\CHtml::activeTextField($firm, 'cost_code', ['class' => 'cols-full', ]);?></td>
+            <td> <?=\CHtml::activeTextField($firm, 'cost_code', ['class' => 'cols-full', ])?></td>
         </tr>
 
         <tr class="col-gap">
@@ -103,7 +122,7 @@
                         'name' => 'save',
                         'id' => 'et_save'
                     ]
-                ); ?>
+                ) ?>
                 <?=\CHtml::submitButton(
                     'Cancel',
                     [
@@ -112,7 +131,7 @@
                         'name' => 'cancel',
                         'id' => 'et_cancel'
                     ]
-                ); ?>
+                ) ?>
             </td>
         </tr>
         </tfoot>

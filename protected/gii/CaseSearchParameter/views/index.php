@@ -25,6 +25,23 @@
     </div>
         <?php echo $form->error($model, 'name'); ?>
   </div>
+    <div class="row">
+        <?= $form->labelEx($model, 'type') ?>
+        <?= $form->dropDownList(
+                $model,
+                'type',
+                array(
+                    'number' => 'Number',
+                    'string' => 'Text',
+                    'string_search' => 'Search Field',
+                    'multi_select' => 'Multi Select'
+                )
+        ) ?>
+        <div class="tooltip">
+            This value is used to specify the type of parameter used in the UI.
+        </div>
+        <?= $form->error($model, 'type') ?>
+    </div>
 
   <div class="row">
         <?php echo $form->labelEx($model, 'alias'); ?>

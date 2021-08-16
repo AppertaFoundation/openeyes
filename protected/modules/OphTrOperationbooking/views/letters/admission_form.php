@@ -19,48 +19,50 @@
 <div class="booking-admission-form">
 <?php
 $logo_helper = new LogoHelper();
-
+$institution_id = Institution::model()->getCurrent()->id;
+$site_id = Yii::app()->session['selected_site_id'];
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient->id, $institution_id, $site_id);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $patient->id, $institution_id, $site_id);
 ?>
     <div class="banner clearfix">
         <?= $logo_helper->render() ?>
-    
     </div>
     <h1>Admission Form</h1>
 
     <table>
         <tr>
             <th>
-                Hospital Number
+                <?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?>
             </th>
             <td>
-                <?php echo $patient->hos_num?>
+                <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?>
             </td>
             <th>
                 Patient Name
             </th>
             <td>
-                <?php echo $patient->fullname?>
+                <?= $patient->fullname?>
             </td>
         </tr>
 
         <tr>
             <th>
-                <?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> Number
+                <?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?>
             </th>
             <td>
-                <?php echo $patient->nhsnum?>
+                <?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?>
             </td>
             <th rowspan="2">
                 Address
             </th>
             <td rowspan="2">
-                <?php echo $patient->getLetterAddress(array('delimiter' => '<br/>'))?>
+                <?= $patient->getLetterAddress(array('delimiter' => '<br/>'))?>
             </td>
         </tr>
 
         <tr>
             <th>DOB</th>
-            <td><?php echo $patient->NHSDate('dob')?></td>
+            <td><?= $patient->NHSDate('dob')?></td>
         </tr>
         <?php if (isset($contact_details) && $contact_details) : ?>
         <tr>
@@ -68,13 +70,13 @@ $logo_helper = new LogoHelper();
                 Person collecting:
             </th>
             <td>
-                <?php echo $contact_details->collector_name; ?> - <?php echo $contact_details->collector_contact_number; ?>
+                <?= $contact_details->collector_name; ?> - <?= $contact_details->collector_contact_number; ?>
             </td>
             <th>
                 Patient telephone number:
             </th>
             <td>
-                <?php echo $contact_details->patient_booking_contact_number; ?>
+                <?= $contact_details->patient_booking_contact_number; ?>
             </td>
         </tr>
         <?php endif; ?>
@@ -102,7 +104,7 @@ $logo_helper = new LogoHelper();
                 Decision to admit (or today's) date:
             </th>
             <td>
-                <?php echo $operation->NHSDate('decision_date')?>
+                <?= $operation->NHSDate('decision_date')?>
             </td>
         </tr>
 
@@ -118,10 +120,10 @@ $logo_helper = new LogoHelper();
             <td><?=\CHtml::encode($site->name)?></td>
             <?php if ($operation->booking) {?>
                 <th>Person organising operation:</th>
-                <td><?php echo $operation->booking->user->getFullName()?></td>
+                <td><?= $operation->booking->user->getFullName()?></td>
             <?php } else {?>
                 <th>Person organising admission:</th>
-                <td><?php echo $operation->event->user->getFullName()?></td>
+                <td><?= $operation->event->user->getFullName()?></td>
             <?php }?>
         </tr>
     </table>
@@ -132,9 +134,9 @@ $logo_helper = new LogoHelper();
 
         <tr>
             <th>Priority:</th>
-            <td><?php echo $operation->priority->name?></td>
+            <td><?= $operation->priority->name?></td>
             <th>Admission category:</th>
-            <td><?php echo ($operation->overnight_stay) ? 'an overnight stay' : 'day case'?></td>
+            <td><?= ($operation->overnight_stay) ? 'an overnight stay' : 'day case'?></td>
         </tr>
 
         <tr>
@@ -153,7 +155,7 @@ $logo_helper = new LogoHelper();
 
         <tr>
             <th>Any other doctor to do:</th>
-            <td><?php echo (empty($operation->any_grade_of_doctor)) ? 'No' : 'Yes'?></td>
+            <td><?= (empty($operation->any_grade_of_doctor)) ? 'No' : 'Yes'?></td>
             <th></th>
             <td></td>
         </tr>
@@ -163,7 +165,7 @@ $logo_helper = new LogoHelper();
             <td><?=\CHtml::encode($operation->proceduresCommaSeparated)?></td>
             <?php if ($operation->booking) {?>
                 <th>Operation date:</th>
-                <td><?php echo $operation->booking->session->NHSDate('date')?></td>
+                <td><?= $operation->booking->session->NHSDate('date')?></td>
             <?php } else {?>
                 <th colspan="2" rowspan="4">Patient Added to partial bookings waiting List, admission Date to be arranged</th>
             <?php }?>
@@ -171,36 +173,36 @@ $logo_helper = new LogoHelper();
 
         <tr>
             <th>Eye:</th>
-            <td><?php echo $operation->eye->name?></td>
+            <td><?= $operation->eye->name?></td>
             <?php if ($operation->booking) {?>
                 <th>Theatre session:</th>
-                <td><?php echo substr($operation->booking->session->start_time, 0, 5).' - '.substr($operation->booking->session->end_time, 0, 5)?></td>
+                <td><?= substr($operation->booking->session->start_time, 0, 5).' - '.substr($operation->booking->session->end_time, 0, 5)?></td>
             </tr>
             <tr>
                 <th>Theatre:</th>
-                <td><?php echo $operation->booking->session->TheatreName?></td>
+                <td><?= $operation->booking->session->TheatreName?></td>
                 <th>Ward:</th>
-                <td><?php echo $operation->booking->ward ? $operation->booking->ward->name : 'None'?></td>
+                <td><?= $operation->booking->ward ? $operation->booking->ward->name : 'None'?></td>
             <?php }?>
         </tr>
 
         <tr>
             <th>Diagnosis:</th>
             <td>
-                <?php echo $operation->diagnosis->eye->adjective.' '.CHtml::encode($operation->diagnosis->disorder->term)?>
+                <?= $operation->diagnosis->eye->adjective.' '.CHtml::encode($operation->diagnosis->disorder->term)?>
             </td>
             <?php if ($operation->booking) {?>
                 <th>Admission time:</th>
-                <td><?php echo date('H:i', strtotime($operation->booking->admission_time))?></td>
+                <td><?= date('H:i', strtotime($operation->booking->admission_time))?></td>
             <?php }?>
         </tr>
 
         <tr>
             <th>Anaesthesia:</th>
-            <td><?php echo $operation->getAnaestheticTypeDisplay() ?></td>
+            <td><?= $operation->getAnaestheticTypeDisplay() ?></td>
             <?php if ($operation->booking) {?>
                 <th>Proposed admission date:</th>
-                <td><?php echo $operation->booking->session->NHSDate('date')?></td>
+                <td><?= $operation->booking->session->NHSDate('date')?></td>
             <?php }?>
         </tr>
     </table>
@@ -208,7 +210,7 @@ $logo_helper = new LogoHelper();
     <h2>Comments</h2>
     <table class="borders">
         <tr>
-            <td height="50"><?php echo nl2br(CHtml::encode($operation->comments))?></td>
+            <td height="50"><?= nl2br(CHtml::encode($operation->comments))?></td>
         </tr>
     </table>
 

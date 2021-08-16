@@ -14,12 +14,29 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+/**
+ * @var $institution_id int
+ */
+
+$is_admin = $this->checkAccess('admin');
 ?>
 
 <div class="cols-7">
     <div class="alert-box info">
         <b>Info</b> Settings added here will be overridden by any settings in local config files. eg common or
         core.php
+    </div>
+    <div>
+        <?php if ($is_admin) {
+            echo 'Institution: ' . CHtml::dropDownList(
+                'institution_id',
+                $institution_id,
+                CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
+                array('empty' => 'All institutions', 'id' => 'js-institution-setting-filter')
+            );
+        } elseif ($institution_id !== null) {
+            echo 'Institution: ' . Institution::model()->findByPk($institution_id)->name;
+        }?>
     </div>
 
     <table class="standard">
@@ -32,9 +49,13 @@
         </thead>
         <tbody>
             <?php
+            $purifier = new CHtmlPurifier();
             foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) {
                 // Setting pulled from database
-                $metadata_value = (string)$metadata->getSettingName($metadata->key, ['SettingInstallation']);
+                $metadata_value = (string)$metadata->getSettingName($metadata->key, ['SettingInstallation', 'SettingInstitution']);
+
+                //data-uri
+                $data_uri = "admin/editSystemSetting?key=" . $metadata->key . ($metadata->lowest_setting_level === 'INSTITUTION' ? '&class=SettingInstitution': '&class=SettingInstallation');
 
                 // Check to see if the param is being set in a config file
                 if (array_key_exists($metadata->key, OEConfig::getMergedConfig('main')['params'])) {
@@ -42,18 +63,18 @@
                 }
 
                 // If it isn't set, use the database value
-                if (isset($param_value) && $param_value) {
+                if (isset($param_value)) {
                     // Transform the param if need be
                     if (is_array($param_value)) {
                         // If it's an array, implode it to display as a string
                         $param_value = implode(",", $param_value);
                     } elseif ($data = @unserialize($metadata->data)) {
-                        // If it's an option for a serialised array get the value.
-                        if (array_key_exists($param_value, $data)) {
+                        // If it's an option for a serialised array get the value
+                        if (gettype($param_value) != "boolean" && array_key_exists($param_value, $data)) {
                             $param_value = $data[$param_value];
-                        } elseif ($param_value === 1) {
+                        } elseif ($param_value === 1 || $param_value === true) {
                             $param_value = $data['on'];
-                        } elseif ($param_value === 0) {
+                        } elseif ($param_value === 0 || $param_value === false) {
                             $param_value = $data['off'];
                         }
                     }
@@ -64,16 +85,26 @@
                         <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter is being overridden by a config file and cannot be modified."></i></td>
                     </tr>
 
-                    <?php
-                } else {
-                    ?>
-                    <tr class="clickable" data-uri="admin/editInstallationSetting?key=<?= $metadata->key; ?>">
+                <?php } elseif ($institution_id && !$is_admin && $metadata->lowest_setting_level === 'INSTALLATION') { ?>
+                    <tr class="disabled">
+                        <td><span class="fade"><?php echo $metadata->name ?></span></td>
+                        <td><span class="fade"><?= $metadata_value ?> </span></td>
+                        <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter can only be modified by a system administrator."></i></td>
+                    </tr>
+                <?php } elseif ($institution_id && $metadata->lowest_setting_level !== 'INSTALLATION') { ?>
+                    <tr class="clickable" data-uri="<?= $data_uri ?>">
                         <td><?php echo $metadata->name ?></td>
-                        <td><?php
-                                $purifier = new CHtmlPurifier();
-                                echo $purifier->purify($metadata_value);
-                        ?>
+                        <td><?= $metadata_value ?></td>
+                        <td>
+                        <?php if ($is_admin) { ?>
+                            <i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter value is specific to the currently selected institution."></i>
+                        <?php } ?>
                         </td>
+                    </tr>
+                <?php } else { ?>
+                    <tr class="clickable" data-uri="<?= $data_uri ?>">
+                        <td><?php echo $metadata->name ?></td>
+                        <td><?= $purifier->purify($metadata_value);?></td>
                         <td></td>
                     </tr>
                     <?php
@@ -83,4 +114,11 @@
             } ?>
         </tbody>
     </table>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#js-institution-setting-filter').change(function(e) {
+                window.location.href = 'settings?institution_id=' + e.target.value;
+            });
+        })
+    </script>
 </div>

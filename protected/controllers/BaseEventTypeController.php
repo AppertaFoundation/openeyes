@@ -159,6 +159,18 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected $show_manage_elements = false;
 
+    /**
+     * Additional errors outside of the scope of the Elements
+     * An example usage of this is for CreateEventsAfterEventSavedBehavior
+     * where we need to validate inputs not belonging to any elements
+     * and there would be no point to add validation to every Controller we want to use.
+     * At the time of writing $external_errors is only used in OpNote DefaultController actionCreate
+     * and added in this controllers actionCreate
+     *
+     * @var array
+     */
+    public array $external_errors = [];
+
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
@@ -449,6 +461,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
+        $this->setInstitutionFromSession();
         $this->setFirmFromSession();
 
         if (!isset($this->firm)) {
@@ -846,6 +859,9 @@ class BaseEventTypeController extends BaseModuleController
 
             // set and validate
             $errors = $this->setAndValidateElementsFromData($_POST);
+            if ($this->external_errors) {
+                $errors = array_merge($errors, $this->external_errors);
+            }
 
             // creation
             if (empty($errors)) {
@@ -869,6 +885,12 @@ class BaseEventTypeController extends BaseModuleController
                         Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 
                         $transaction->commit();
+
+                        /*
+                         * After event saved and transaction is commited
+                         * here we can generate additional events with their own transactions
+                         */
+                        $this->afterCreateEvent($this->event);
 
                         if ($this->event->parent_id) {
                             $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
@@ -1944,6 +1966,10 @@ class BaseEventTypeController extends BaseModuleController
         Yii::app()->puppeteer->setDocref($this->event->docref);
         Yii::app()->puppeteer->setPatient($this->event->episode->patient);
         Yii::app()->puppeteer->setBarcode($this->event->barcodeSVG);
+        Yii::app()->puppeteer->setInstitutionAndSite(
+            isset($this->event->institution) ? $this->event->institution->id : null,
+            isset($this->event->site) ? $this->event->site->id : null
+        );
 
         foreach (array('left', 'middle', 'right') as $section) {
             if (isset(Yii::app()->params['puppeteer_footer_' . $section . '_' . $this->event_type->class_name])) {
@@ -2201,6 +2227,14 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * Called after the event is saved, transaction is commited
+     * useful for creating additional events automatically with their own transactions
+     *
+     * @param \Event $event
+     */
+    protected function afterCreateEvent($event) {}
+
+    /**
      * Called after event (and elements) has been updated.
      *
      * @param Event $event
@@ -2249,8 +2283,13 @@ class BaseEventTypeController extends BaseModuleController
     public function processJsVars()
     {
         if ($this->patient) {
+            $patient_identifier = PatientIdentifier::model()->find(
+                'patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id',
+                [':patient_id' => $this->patient->id,
+                    ':patient_identifier_type_id' => Yii::app()->params['oelauncher_patient_identifier_type']]
+            );
             $this->jsVars['OE_patient_id'] = $this->patient->id;
-            $this->jsVars['OE_patient_hosnum'] = $this->patient->hos_num;
+            $this->jsVars['OE_patient_hosnum'] = $patient_identifier->value?? null;
         }
         if ($this->event) {
             $this->jsVars['OE_event_id'] = $this->event->id;

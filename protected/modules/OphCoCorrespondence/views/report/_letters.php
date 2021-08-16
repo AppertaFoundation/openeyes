@@ -19,7 +19,7 @@
 <table class="standard">
     <thead>
         <tr>
-            <th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
+            <th><?= $report->getPatientIdentifierPrompt() ?></th>
             <th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
             <th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
             <th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
@@ -29,6 +29,7 @@
             <th>Date</th>
             <th>Type</th>
             <th>Status</th>
+            <th>Patient IDs</th>
             <th>Link</th>
         </tr>
     <tbody>
@@ -41,17 +42,18 @@
         <?php } else {?>
             <?php foreach ($report->letters as $letter) {?>
                 <tr>
-                    <td><?php echo $letter['hos_num']?></td>
-                    <td><?php echo $letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown'?></td>
-                    <td><?php echo $letter['first_name']?></td>
-                    <td><?php echo $letter['last_name']?></td>
-                    <td><?php echo $letter['gender']?></td>
-                    <td><?php echo isset($letter['name']) ? $letter['name'] : 'N/A'; ?></td>
-                    <td><?php echo $letter['cons_first_name'] ." ". $letter['cons_last_name']; ?></td>
-                    <td><?php echo date('j M Y', strtotime($letter['created_date']))?> <?php echo substr($letter['created_date'], 11, 5)?></td>
-                    <td><?php echo $letter['type']?></td>
-                    <td><?php echo ucfirst($letter['status']);?></td>
-                    <td><a href="<?php echo $letter['link']?>">view</a></td>
+                    <td><?= $letter['identifier']?></td>
+                    <td><?= $letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown'?></td>
+                    <td><?= $letter['first_name']?></td>
+                    <td><?= $letter['last_name']?></td>
+                    <td><?= $letter['gender']?></td>
+                    <td><?= isset($letter['name']) ? $letter['name'] : 'N/A'; ?></td>
+                    <td><?= $letter['cons_first_name'] ." ". $letter['cons_last_name']; ?></td>
+                    <td><?= date('j M Y', strtotime($letter['created_date']))?> <?php echo substr($letter['created_date'], 11, 5)?></td>
+                    <td><?= $letter['type']?></td>
+                    <td><?= ucfirst($letter['status']);?></td>
+                    <td><?= $letter['all_ids'] ?></td>
+                    <td><a href="<?= $letter['link']?>">view</a></td>
                 </tr>
             <?php }?>
         <?php }?>

@@ -9,6 +9,15 @@ trait InteractsWithEventTypeElements
         return EventType::model()->find("class_name = :cls_name", [':cls_name' => 'OphCiExamination'])->getPrimaryKey();
     }
 
+    protected function getPatientWithEpisodesAndWithOperationNoteEvent()
+    {
+        $patient = null;
+        do {
+            $patient = $this->getPatientWithEpisodes();
+        } while (\Yii::app()->moduleAPI->get('OphTrOperationnote')->getLatestEvent($patient) === null);
+        return $patient;
+    }
+
     protected function getPatientWithEpisodes()
     {
         $sql = <<<EOSQL
@@ -39,6 +48,8 @@ EOSQL;
         $event->setAttributes($attrs);
         $event->episode_id = $episode->getPrimaryKey();
         $event->event_type_id = $this->getEventTypeId();
+        $event->institution_id = 1;
+        $event->site_id = 1;
 
         $event->save();
         return $event;

@@ -16,7 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $model_name = CHtml::modelName($model); ?>
+
+<script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/pdfjs-dist/build/pdf.min.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/pdfjs-dist/build/pdf.worker.min.js')?>"></script>
+<?php
+/**
+ * @var $model OphCoDocument_Sub_Types
+ */
+
+$model_name = CHtml::modelName($model);
+?>
 <div class="cols-11">
     <table class="standard cols-full">
         <colgroup>
@@ -83,6 +92,38 @@
                 </fieldset>
             </td>
         </tr>
+        <tr>
+            <td>Template</td>
+            <td>
+                <div>
+                    <span>
+                        <?= CHtml::activeFileField($model, 'image', array('style' => 'width: 90%', 'accept' => implode(', ', $model->getAllowedFileMimeTypes()))); ?>
+                        <i id="file-remove" class="oe-i remove-circle medium pro-theme pad js-close-hotlist-item"></i>
+                    </span>
+                </div>
+                <div class="data-group fade">
+                    The following file types are accepted: <?php echo implode(', ', $model->getAllowedFileTypes()); ?> (Maximum
+                    size: <?= $model->getMaxDocumentSize(); ?> MB)
+                </div>
+            </td>
+        </tr>
+        <?php
+        if ($model->templateImage) {
+            $showTemplate = true;
+        }
+        ?>
+        <tr id="ophco-template-row" <?= isset($showTemplate) ? '' : 'style="display: none;"';?>>
+            <td colspan="2">
+                <div id="ophco-template-container">
+                    <img id="ophco-template" src="<?= isset($model->templateImage->id) && ($model->templateImage->mimetype !== 'application/pdf') ? '/file/view/'. $model->templateImage->id . '/image'. strrchr($model->templateImage->name, '.') : '' ?>"
+                         border="0" style="max-width: 100%">
+                    <div id="ophco-template-pdf" style="<?= (isset($model->templateImage) && ($model->templateImage->mimetype !== 'application/pdf') ?  'display:none;' : '') ?>" >
+                        <iframe id="pdf-js-viewer" src="<?= isset($model->templateImage->id) && ($model->templateImage->mimetype === 'application/pdf') ? Yii::app()->assetManager->createUrl('components/pdfjs/web/viewer.html?file=/file/view/'. $model->templateImage->id . '/image'. strrchr($model->templateImage->name, '.') . '#zoom=70') : ''?>"
+                                title="webviewer" style="width: 70%" height="800px" type="application/pdf"></iframe>
+                    </div>
+                </div>
+            </td>
+        </tr>
         </tbody>
         <tfoot>
         <tr>
@@ -109,3 +150,58 @@
         </tfoot>
     </table>
 </div>
+
+<script>
+    let elementIds = {
+        previewContainer: 'ophco-template-row',
+        templateContainer: 'ophco-template-container',
+        image: 'ophco-template',
+        pdfContainer: 'ophco-template-pdf',
+    };
+
+    $("#OphCoDocument_Sub_Types_image").on("change", function(e){
+        displayPreview(e);
+    });
+
+    function displayPreview(event) {
+        let $previewContainerElement = $('#' + elementIds.previewContainer);
+        let file = event.target.files[0];
+        if (file) {
+            let fileReader = new FileReader();
+            $previewContainerElement.hide();
+            // Only show the previews for jpg, png and pdf's.
+            if (file.type === "application/pdf"){
+                let url = URL.createObjectURL(file);
+                document.getElementById('pdf-js-viewer').src = `${OE_core_asset_path}/components/pdfjs/web/viewer.html?file=${url}`;
+                let $pdfContainer = $('#' + elementIds.pdfContainer);
+                let $imageElement = $('#' + elementIds.image);
+                $pdfContainer.show();
+                $previewContainerElement.show();
+                $imageElement.hide();
+            }
+            if ((file.type === 'image/jpeg') || (file.type === 'image/png')) {
+                displayImage(file, fileReader);
+            }
+        }
+    }
+
+    function displayImage(file, fileReader) {
+        let $previewContainerElement = $('#' + elementIds.previewContainer);
+        let $pdfContainer = $('#' + elementIds.pdfContainer);
+        let $imageElement = $('#' + elementIds.image);
+        fileReader.onload = function(e) {
+            // hide the canvas before showing the image.
+            $pdfContainer.hide();
+            $previewContainerElement.show();
+            $imageElement.show();
+            $imageElement.attr('src', e.target.result);
+        }
+        fileReader.readAsDataURL(file); // convert to base64 string
+    }
+
+    document.getElementById('file-remove').addEventListener('click', function() {
+        document.getElementById('OphCoDocument_Sub_Types_image').value = null;
+        document.getElementById('ophco-template').removeAttribute('src');
+        document.getElementById('ophco-template-row').style.display = 'none';
+    });
+</script>

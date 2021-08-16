@@ -13,7 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class SubspecialtySubsectionAssignmentController extends BaseAdminController {
+class SubspecialtySubsectionAssignmentController extends BaseAdminController
+{
     public $layout = 'admin';
     public $group = 'Procedure Management';
 
@@ -21,21 +22,35 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
     {
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
         $subsection_id = Yii::app()->request->getParam('subsection_id');
+        if ($this->checkAccess('admin')) {
+            $institution_id = Yii::app()->request->getParam('institution_id');
+        } else {
+            $institution_id = Institution::model()->getCurrent()->id;
+        }
 
         $this->render('/oeadmin/subspecialty_subsection_assignment/index', [
             'subspecialty_id' => $subspecialty_id,
-            'subsection_id' => $subsection_id
+            'subsection_id' => $subsection_id,
+            'institution_id' => $institution_id
         ]);
     }
 
+    /**
+     * @throws Exception
+     */
     public function actionAdd()
     {
+        /**
+         * @var $request HttpRequest
+         */
         $request = Yii::app()->request;
         $model = new ProcedureSubspecialtySubsectionAssignment();
         $subspecialty_id = $request->getParam('subspecialty_id');
+        $institution_id = $request->getParam('institution_id');
         $attributes = [
             'subspecialty_subsection_id' => $request->getParam('subsection_id'),
-            'proc_id' => $request->getParam('procedure_id')
+            'proc_id' => $request->getParam('procedure_id'),
+            'institution_id' => $institution_id ?? Institution::model()->getCurrent()->id,
         ];
 
         $model->setAttributes($attributes);
@@ -50,12 +65,14 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
             );
             Yii::app()->user->setFlash('success', 'Assignment added');
             $this->redirect(['list?subspecialty_id=' . $subspecialty_id .
-                '&subsection_id=' . $attributes['subspecialty_subsection_id']]);
+                '&subsection_id=' . $attributes['subspecialty_subsection_id'] .
+                '&institution_id=' . $attributes['institution_id']]);
         } else {
             $this->render('/oeadmin/subspecialty_subsection_assignment/index', [
                 'model' => $model,
                 'subspecialty_id' => $subspecialty_id,
-                'subsection_id' => $attributes['subspecialty_subsection_id']
+                'subsection_id' => $attributes['subspecialty_subsection_id'],
+                'institution_id' => $institution_id
             ]);
         }
     }
@@ -73,13 +90,13 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
                     if (!$assignment->delete()) {
                         $success = false;
                         break;
-                    } else {
-                        Audit::add('admin-procedureSubspecialtySubsectionAssignment', 'delete', serialize($assignment));
                     }
+
+                    Audit::add('admin-procedureSubspecialtySubsectionAssignment', 'delete', serialize($assignment));
                 }
             }
-        } catch (Excpetion $e) {
-            \OELog::log($e->getMessage());
+        } catch (Exception $e) {
+            OELog::log($e->getMessage());
             $success = false;
         }
 

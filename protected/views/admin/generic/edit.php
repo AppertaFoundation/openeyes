@@ -76,7 +76,7 @@ $assetManager = Yii::app()->getAssetManager();
 
                             case 'MultiSelectList':
                                 ?>
-                                <div class="data-group furtherfindings-multi-select">
+                                <div class="data-group multi-select multi-select-list align-left">
                                     <?php
                                     $through = array();
                                     $link = '';
@@ -86,6 +86,15 @@ $assetManager = Yii::app()->getAssetManager();
                                     if (array_key_exists('link', $type) && $type['link']) {
                                         $link = $type['link'];
                                     }
+                                    if (array_key_exists('htmlOptions', $type) && is_array($type['htmlOptions'])) {
+                                        $htmlOptions = $type['htmlOptions'];
+                                    } else {
+                                        $htmlOptions = [
+                                            'empty' => '',
+                                            'label' => $type['label'],
+                                            'searchable' => true,
+                                        ];
+                                    }
                                     echo $form->multiSelectList(
                                         $admin->getModel(),
                                         $admin->getModelName() . '[' . $field . ']',
@@ -93,11 +102,7 @@ $assetManager = Yii::app()->getAssetManager();
                                         $type['relation_field_id'],
                                         $type['options'],
                                         array(),
-                                        array(
-                                            'empty' => '',
-                                            'label' => $type['label'],
-                                            'searchable' => true,
-                                        ),
+                                        $htmlOptions,
                                         false,
                                         true,
                                         null,
@@ -237,6 +242,9 @@ $assetManager = Yii::app()->getAssetManager();
                                 break;
                             case 'text':
                                 echo $form->textField($admin->getModel(), $field, $type['htmlOptions']);
+                                break;
+                            case 'checkbox':
+                                echo $form->checkBox($admin->getModel(), $field, $type['htmlOptions']);
                                 break;
                         }
                     } else {

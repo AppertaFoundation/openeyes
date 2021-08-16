@@ -1,7 +1,8 @@
 <?php
+
 class IOPVariable extends CaseSearchVariable implements DBProviderInterface
 {
-    public function __construct($id_list)
+    public function __construct(?array $id_list)
     {
         parent::__construct($id_list);
         $this->field_name = 'iop';
@@ -10,12 +11,17 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         $this->eye_cardinality = true;
     }
 
-    public function getPrimaryDataPointName()
+    /**
+     * This function is overridden to ensure that iop is always returned rather
+     * than the actual field name which is either iop_first or iop_last.
+     * @return string
+     */
+    public function getPrimaryDataPointName() : string
     {
         return 'iop';
     }
 
-    public function query()
+    public function query(): string
     {
         $mode = $this->query_flags[0];
         $date_predicate = null;
@@ -41,10 +47,15 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         AND (:end_date IS NULL OR event_date < :end_date)
         GROUP BY 10 * FLOOR(value/10)
         ORDER BY 1";
-                break;
             case 'ADVANCED':
                 return "
-        SELECT p.nhs_num, iop.value iop, iop.side, iop.event_date, iop.reading_time
+        SELECT (
+            SELECT pi.value
+            FROM patient_identifier pi
+                JOIN patient_identifier_type pit ON pit.id = pi.patient_identifier_type_id
+            WHERE pi.patient_id = p.id
+            AND pit.usage_type = 'GLOBAL'
+            ) nhs_num, iop.value iop, iop.side, iop.event_date, iop.reading_time
         FROM v_patient_iop iop
         JOIN patient p ON p.id = iop.patient_id
         WHERE iop.patient_id IN (" . implode(', ', $this->id_list) . ")
@@ -53,7 +64,6 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
         ORDER BY 1, 2, 3, 4, 5";
-                break;
             default:
                 return "
         SELECT 10 * FLOOR(value/10) iop, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
@@ -65,11 +75,10 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         AND (:end_date IS NULL OR event_date < :end_date)
         GROUP BY 10 * FLOOR(value/10)
         ORDER BY 1";
-                break;
         }
     }
 
-    public function bindValues()
+    public function bindValues(): array
     {
         return array();
     }

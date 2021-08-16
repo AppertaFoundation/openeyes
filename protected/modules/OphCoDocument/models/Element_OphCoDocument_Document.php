@@ -1,6 +1,33 @@
 <?php
 
-
+/**
+ * This is the model class for table "et_ophcodocument_document".
+ *
+ * The followings are the available columns in table:
+ *
+ * @property int $id
+ * @property int $event_id
+ * @property int $single_document_id
+ * @property int $last_modified_user_id
+ * @property DateTime $last_modified_date
+ * @property int $created_user_id
+ * @property DateTime $created_date
+ * @property int $left_document_id
+ * @property int $right_document_id
+ * @property int $event_sub_type
+ * @property string $single_comment
+ * @property string $left_comment
+ * @property string $right_comment
+ *
+ * The followings are the available model relations:
+ * @property Event $event
+ * @property User $user
+ * @property User $userModified
+ * @property ProtectedFile $single_document
+ * @property ProtectedFile $left_document
+ * @property ProtectedFile $right_document
+ * @property OphCoDocument_Sub_Types $sub_type
+ */
 class Element_OphCoDocument_Document extends BaseEventTypeElement
 {
     /**
@@ -19,7 +46,8 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, single_document_id, left_document_id, right_document_id, event_sub_type, comment', 'safe'),
+            array('event_id, single_document_id, left_document_id, right_document_id, event_sub_type, 
+                single_comment, left_comment, right_comment', 'safe'),
             array('single_document_id', 'documentRequired'),
         );
     }
@@ -50,13 +78,21 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         return array(
             'id' => 'ID',
             'document_id' => 'Document',
-            'comment' => 'Comments'
+            'single_comment' => 'Comments',
+            'left_comment' => 'Left comments',
+            'right_comment' => 'Right comments'
         );
     }
 
     public function documentRequired($attribute, $params) {
-        if ($this->getScenario() != "fileDeleted" && !$this->single_document && (!$this->left_document && !$this->right_document)) {
-            $this->addError($attribute, 'at least one document is required.');
+        if (\SettingMetadata::model()->getSetting('document_file_upload_mandatory') === 'on') {
+            if (!$this->single_document && (!$this->left_document && !$this->right_document)) {
+                $this->addError($attribute, 'at least one document is required.');
+            }
+        } else {
+            if (!$this->single_document && !$this->single_comment && !$this->left_document && !$this->left_comment && !$this->right_document && !$this->right_comment) {
+                $this->addError($attribute, 'at least one document or comment is required.');
+            }
         }
     }
 
@@ -113,5 +149,19 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         imagejpeg($rotated, $file_name);
 
         return $file_name;
+    }
+
+    /**
+     * Check if element has side comment or document
+     * @param $condition
+     * @return bool
+     */
+    public function hasSidedAttributesSet($condition): bool
+    {
+        if ($condition === 'OR') {
+            return ($this->left_document_id || $this->left_comment || $this->right_document_id || $this->right_comment);
+        } elseif ($condition === 'AND') {
+            return ($this->right_document_id && $this->right_comment && $this->left_document_id && $this->left_comment);
+        }
     }
 }

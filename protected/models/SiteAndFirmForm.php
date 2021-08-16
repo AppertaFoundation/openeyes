@@ -22,9 +22,34 @@ class SiteAndFirmForm extends CFormModel
 
     public function rules()
     {
-        return array(
-            array('firm_id, site_id', 'required'),
+        return [
+            ['firm_id, site_id', 'required'],
+            ['site_id', 'isAccessible']
+        ];
+    }
+
+    public function isAccessible($attribute, $params)
+    {
+        $user_auth = Yii::app()->session['user_auth'];
+        $user = $user_auth->user;
+        $inst_auth = $user_auth->institutionAuthentication;
+
+        $filtered_sites = array_map(
+            function ($site) { return $site->id; },
+            array_filter(
+                Institution::model()->getCurrent()->sites,
+                function ($site) use ($user) { return !UserAuthentication::userHasExactMatch($user, $site->institution_id, $site->id); }
+            )
         );
+
+        $selected_site = Site::model()->findByPk($this->site_id);
+        if ($inst_auth->institution_id == $selected_site->institution_id && $inst_auth->site_id == $this->site_id) {
+            return true;
+        } else if (!in_array($this->site_id, $filtered_sites)) {
+            $this->addError('site_id', "This user cannot access this site with current credentials.");
+            throw new CHttpException(403, 'Unable to change to selected site, user not authorized');
+        }
+        return false;
     }
 
     public function attributeLabels()

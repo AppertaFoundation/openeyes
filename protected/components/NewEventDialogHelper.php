@@ -41,7 +41,7 @@ class NewEventDialogHelper
         if ($subspecialty = $episode->getSubspecialty()) {
             $structured_subspecialty = static::structureSubspecialty($subspecialty);
             $firm = static::structureFirm(\Firm::model()->findByPk($episode->firm_id));
-            foreach (Firm::model()->findAll('can_own_an_episode=1 AND id<>:firm_id AND service_subspecialty_assignment_id=:ssaid', [':firm_id' => $episode->firm_id, 'ssaid' => $episode->firm->service_subspecialty_assignment_id]) as $service) {
+            foreach (Firm::model()->findAll('can_own_an_episode=1 AND id<>:firm_id AND service_subspecialty_assignment_id=:ssaid AND institution_id = :institution_id', [':firm_id' => $episode->firm_id, 'ssaid' => $episode->firm->service_subspecialty_assignment_id, 'institution_id' => Yii::app()->session['selected_institution_id']]) as $service) {
                 array_push($services_available, static::structureFirm($service));
             }
         } else {
@@ -101,6 +101,7 @@ class NewEventDialogHelper
     public static function structureAllSubspecialties()
     {
         $subspecialties = Yii::app()->cache->get('new-event-subspecialties');
+        $current_institution = Yii::app()->session['selected_institution_id'];
         if ($subspecialties === false) {
             $subspecialties = array();
             foreach (Subspecialty::model()->findAll() as $subspecialty) {
@@ -108,8 +109,8 @@ class NewEventDialogHelper
                     ->active()
                     ->with('serviceSubspecialtyAssignment')
                     ->findAll(array(
-                        'condition' => 'serviceSubspecialtyAssignment.subspecialty_id = :ssid',
-                        'params' => array(':ssid' => $subspecialty->id),
+                        'condition' => 'serviceSubspecialtyAssignment.subspecialty_id = :ssid AND institution_id = :institution_id',
+                        'params' => array(':ssid' => $subspecialty->id, 'institution_id' => $current_institution),
                         'order' => 't.name asc'
                     ));
                 if (count($related_firms)) {
@@ -130,7 +131,10 @@ class NewEventDialogHelper
                 }
             }
             // create Support Services subspecialty if there are the relevant firms
-            if ($support_service_firms = Firm::model()->findAll('service_subspecialty_assignment_id is null')) {
+            if ($support_service_firms = Firm::model()->findAll(
+                'service_subspecialty_assignment_id is null AND institution_id = :institution_id',
+                array(':institution_id' => $current_institution)
+            )) {
                 $structure = static::$support_services_subspecialty;
                 $structure['services'] = array();
                 $structure['contexts'] = array();

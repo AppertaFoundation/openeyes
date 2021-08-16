@@ -86,6 +86,7 @@ protected/modules/*
 !/protected/modules/OphTrOperationnote/
 !/protected/modules/PASAPI/
 !/protected/modules/PatientTicketing/
+!/protected/modules/OphDrPGDPSD/
 
 # Tests
 /jm_behat_report.html

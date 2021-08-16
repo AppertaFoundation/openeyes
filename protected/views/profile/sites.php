@@ -19,22 +19,22 @@
 <h2>Sites you work at</h2>
 <form id="profile_sites" method="post" action="/profile/sites">
   <table class="standard">
-    <thead>
-    <tr>
-      <th><input type="checkbox" id="checkall" /></th>
-      <th>Name</th>
-      <th>Address</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($user->siteSelections as $i => $site) {?>
-      <tr data-attr-id="<?php echo $site->id?>">
-        <td><input type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></td>
-        <td><?php echo $site->name?></td>
-        <td><?php echo $site->getLetterAddress(array('delimiter' => ', '))?>&nbsp;</td>
-      </tr>
-    <?php }?>
-    </tbody>
+        <thead>
+            <tr>
+              <th><input type="checkbox" id="checkall" /></th>
+              <th>Name</th>
+              <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($user->siteSelections as $i => $site) {?>
+          <tr data-attr-id="<?php echo $site->id?>">
+            <td><input type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></td>
+            <td><?php echo $site->name?></td>
+            <td><?php echo $site->getLetterAddress(array('delimiter' => ', '))?>&nbsp;</td>
+          </tr>
+        <?php }?>
+        </tbody>
   </table>
 </form>
 <div class="data-group">

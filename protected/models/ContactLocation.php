@@ -164,7 +164,6 @@ class ContactLocation extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->join = 'join patient_contact_assignment on patient_contact_assignment.patient_id = `t`.id';
         $criteria->compare('location_id', $this->id);
-        $criteria->order = 'hos_num asc';
 
         return Patient::model()->findAll($criteria);
     }

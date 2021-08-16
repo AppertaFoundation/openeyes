@@ -110,6 +110,7 @@ class GpController extends BaseController
 
         if (isset($_POST['Contact'])) {
             $contact->attributes = $_POST['Contact'];
+            $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
             $gp->is_active = $_POST['Gp']['is_active'];
             $this->performAjaxValidation($contact);
             list($contact, $gp) = $this->performGpSave($contact, $gp);

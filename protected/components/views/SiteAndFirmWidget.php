@@ -57,10 +57,33 @@ if ($errors = $form->errorSummary($model)) {
   <tbody>
   <tr>
     <td>
+        Institution
+        <i class="oe-i info small js-has-tooltip" data-tooltip-content="Please logout to change Institution"></i>
+    </td>
+    <td> 
+        <?= \CHtml::dropDownList('',
+          Yii::app()->session['selected_institution_id'],
+          \CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
+          [
+              'class' => 'cols-full',
+              'disabled' => 'disabled',
+          ]);
+        ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
         <?= $model->getAttributeLabel('site_id') ?>
+        <?php if ($disable_site) { ?>
+            <i class="oe-i info small js-has-tooltip" data-tooltip-content="Please logout to change Site"></i>
+            <?=$form->hiddenField($model, 'site_id', ['value' => Yii::app()->session['selected_site_id']]) ?>
+        <?php } ?>
     </td>
     <td>
-        <?php echo $form->dropDownList($model, 'site_id', $sites, array('class' => 'cols-full')); ?>
+        <?php echo $form->dropDownList($model, 'site_id', $sites, [
+            'class' => 'cols-full',
+            'disabled' => $disable_site,
+        ]); ?>
     </td>
   </tr>
   <tr>

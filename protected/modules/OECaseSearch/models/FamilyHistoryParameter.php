@@ -3,6 +3,7 @@
 /**
  * Class FamilyHistoryParameter
  */
+
 use OEModule\OphCiExamination\models\FamilyHistoryCondition;
 use OEModule\OphCiExamination\models\FamilyHistoryRelative;
 use OEModule\OphCiExamination\models\FamilyHistorySide;
@@ -10,23 +11,23 @@ use OEModule\OphCiExamination\models\FamilyHistorySide;
 class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var int $relative
+     * @var int|null $relative
      */
-    public $relative;
+    public ?int $relative = null;
 
     /**
-     * @var int $side
+     * @var int|null $side
      */
-    public $side;
+    public ?int $side = null;
 
     /**
-     * @var int $condition
+     * @var int|null $condition
      */
-    public $condition;
+    public ?int $condition = null;
 
-    protected $label_ = 'Family History';
+    protected string $label_ = 'Family History';
 
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'multi_select',
     );
 
@@ -53,7 +54,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'side',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any', 'selected' => true,)
+                        array('id' => null, 'label' => 'Any', 'selected' => true,)
                     ),
                     array_map(
                         static function ($item) {
@@ -68,7 +69,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'relative',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any', 'selected' => true,)
+                        array('id' => null, 'label' => 'Any', 'selected' => true,)
                     ),
                     array_map(
                         static function ($item) {
@@ -83,7 +84,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'condition',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any', 'selected' => true,)
+                        array('id' => null, 'label' => 'Any', 'selected' => true,)
                     ),
                     array_map(
                         static function ($item) {
@@ -96,19 +97,22 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         );
     }
 
-    public function getValueForAttribute($attribute)
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
                 case 'relative':
-                    return FamilyHistoryRelative::model()->findByPk($this->$attribute) ? FamilyHistoryRelative::model()->findByPk($this->$attribute)->name : 'Any relative';
-                    break;
+                    return $this->$attribute
+                        ? (FamilyHistoryRelative::model()->findByPk($this->$attribute))->name
+                        : 'Any relative';
                 case 'side':
-                    return FamilyHistorySide::model()->findByPk($this->$attribute) ? FamilyHistorySide::model()->findByPk($this->$attribute)->name : 'Any side of family';
-                    break;
+                    return $this->$attribute
+                        ? (FamilyHistorySide::model()->findByPk($this->$attribute))->name
+                        : 'Any side of family';
                 case 'condition':
-                    return FamilyHistoryCondition::model()->findByPk($this->$attribute) ? 'has ' . FamilyHistoryCondition::model()->findByPk($this->$attribute)->name : 'Any condition';
-                    break;
+                    return $this->$attribute
+                        ? 'has ' . (FamilyHistoryCondition::model()->findByPk($this->$attribute))->name
+                        : 'Any condition';
                 default:
                     return parent::getValueForAttribute($attribute);
             }
@@ -117,7 +121,8 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
     }
 
     /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
+     * Override this function if the parameter subclass has extra validation rules.
+     * If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
     public function rules()
@@ -134,7 +139,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @return string The constructed query string.
      */
-    public function query()
+    public function query(): string
     {
         $query_side = '';
         $query_relative = '';
@@ -159,16 +164,15 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
 
         if ($this->operation === 'IN') {
             return $baseQuery;
-        } else {
-            return "SELECT id FROM patient p WHERE id NOT IN ({$baseQuery})";
         }
+        return "SELECT id FROM patient p WHERE id NOT IN ({$baseQuery})";
     }
 
     /**
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         // Matched bind parameter numbers to those on the query - CERA-538
@@ -188,7 +192,7 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $side = $this->side ?: 'Any side';
         $relative = $this->relative ?: 'any relative';
@@ -203,7 +207,7 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
         return "$this->name: $side $relative $op \"$condition\"";
     }
 
-    public function saveSearch()
+    public function saveSearch() : array
     {
         return array_merge(
             parent::saveSearch(),

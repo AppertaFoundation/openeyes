@@ -52,7 +52,9 @@ class OptomFeedbackController extends \BaseEventTypeController
             array(
                 'list_filter'   => $filter,
                 'model'         => $examinationLog,
-                'dp'            => $dp
+                'dp'            => $dp,
+                'institution_id'=> \Institution::model()->getCurrent()->id,
+                'site_id'       => $this->selectedSiteId
             )
         );
     }

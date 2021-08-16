@@ -41,6 +41,14 @@
         ],
         'name',
         [
+            'header' => 'Institution',
+            'name' => 'institution_id',
+            'type' => 'raw',
+            'value' => function ($data, $row) {
+                return $data->institution ? $data->institution->name : null;
+            },
+        ],
+        [
             'header' => 'Subspecialty',
             'name' => 'subspecialty_id',
             'type' => 'raw',
@@ -58,7 +66,7 @@
         ],
     ];
 
-    $dataProvider = $model->search();
+    $dataProvider = $model->search(true);
     $dataProvider->pagination = false;
 
     ?>

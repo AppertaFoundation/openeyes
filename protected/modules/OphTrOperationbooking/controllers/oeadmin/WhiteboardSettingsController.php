@@ -25,8 +25,11 @@ class WhiteboardSettingsController extends ModuleAdminController
 
     public function actionSettings()
     {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
         $this->render('/admin/whiteboard/settings', array(
-            'settings' => OphTrOperationbooking_Whiteboard_Settings::model()->findAll()
+            'settings' => OphTrOperationbooking_Whiteboard_Settings::model()->findAll($criteria)
         ));
     }
 
@@ -45,6 +48,7 @@ class WhiteboardSettingsController extends ModuleAdminController
                     if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
                         $setting = new OphTrOperationbooking_Whiteboard_Settings_Data();
                         $setting->key = $metadata->key;
+                        $setting->institution_id = $this->selectedInstitutionId;
                     }
                     $setting->value = @$_POST[$metadata->key];
                     if (!$setting->save()) {

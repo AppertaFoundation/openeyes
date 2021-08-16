@@ -61,4 +61,58 @@ class LocalDrugsAdminController extends RefMedicationAdminController
             ),
         );
     }
+
+    public function actionListLocalDrugInstitutionMappings()
+    {
+        //This explodes the entire machine. be careful.
+        $this->render('application.modules.OphDrPrescription.views.admin.medication.edit_local_drug_institution_mappings', array(
+            'dataProvider' => new CActiveDataProvider('Medication', array(
+                'criteria' => array(
+                    'condition'=>'source_type="LOCAL"',
+                    'order'=>'preferred_term ASC',
+                ),
+                'countCriteria'=>array(
+                    'condition'=>'source_type="LOCAL"',
+                ),
+                'pagination' => array('pagesize' => 20),
+            )),
+        ));
+    }
+
+    public function actionEditLocalDrugInstitutionMappings()
+    {
+        $level = ReferenceData::LEVEL_INSTITUTION;
+        $institution_id = Institution::model()->getCurrent()->id;
+
+        $row_ids = Yii::app()->request->getPost('id');
+        $selected = Yii::app()->request->getPost('selected');
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = array();
+        try {
+            foreach ($row_ids as $row => $id) {
+                $record = Medication::model()->findByPk($id);
+
+                $needs_mapping = isset($selected[$row]) && $selected[$row] == 1;
+
+                if ($record->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                    if (!$needs_mapping) {
+                        $record->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                    }
+                } else {
+                    if ($needs_mapping) {
+                        $record->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if (!empty($errors)) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+        $this->redirect('/OphDrPrescription/OphDrPrescriptionAdmin/localDrugsAdmin/ListLocalDrugInstitutionMappings');
+    }
 }

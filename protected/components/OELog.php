@@ -22,8 +22,8 @@ class OELog
     {
         if (Yii::app()->params['log_events']) {
             if (!$username) {
-                if (Yii::app()->session['user']) {
-                    $username = Yii::app()->session['user']->username;
+                if (Yii::app()->session['user_auth']) {
+                    $username = Yii::app()->session['user_auth']->username;
                 }
             }
 

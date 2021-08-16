@@ -26,6 +26,7 @@
                 <th>Name</th>
                 <th>Type</th>
                 <th>Wavelength</th>
+                <th>Institution</th>
                 <th>Site</th>
                 <th>Active</th>
                 <th>Edit</th>
@@ -39,6 +40,7 @@
                     <td><?php echo $model->name ?></td>
                     <td><?php echo $model->type->name ?></td>
                     <td><?php echo $model->wavelength ?></td>
+                    <td><?php echo $model->institution ? $model->institution->name : 'N/A' ?></td>
                     <td><?php echo $model->site->name ?></td>
                     <td><i class="oe-i <?=($model->active ? 'tick' : 'remove');?> small"></i></td>
                     <td>

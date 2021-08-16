@@ -18,8 +18,24 @@
 
 namespace OEModule\PatientTicketing\models;
 
-class ClinicLocation extends \BaseActiveRecordVersioned
+use BaseActiveRecordVersioned;
+use Institution;
+use MappedReferenceData;
+use ReferenceData;
+
+class ClinicLocation extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'queueset_id';
+    }
     public function tableName()
     {
         return 'patientticketing_clinic_location';
@@ -29,6 +45,14 @@ class ClinicLocation extends \BaseActiveRecordVersioned
     {
         return array(
             array('name', 'required'),
+        );
+    }
+
+    public function relations()
+    {
+        return array(
+            'clinic_location_institutions' => array(self::HAS_MANY, ClinicLocation_Institution::class, 'clinic_location_id'),
+            'institutions' => array(self::MANY_MANY, Institution::class, 'patientticketing_clinic_location_institution(clinic_location_id, institution_id)')
         );
     }
 }

@@ -297,7 +297,7 @@ fi
 
 # Test to see if the restore file exists before continuing (note that '-' is a special case for when piping stdin)
 [[ ! -f "$restorefile" && "$restorefile" != "-" ]] && {
-    echo "Restore file was found at: $restorefile. 
+    echo "Restore file was found at: $restorefile.
     Please use --custom-file to specify a valid restore file"
     exit 1
 } || :
@@ -366,6 +366,10 @@ fi
 # Force default institution code to match common.php (note that white-space is important in the common.php file)
 # First checks OE_INSTITUTION_CODE environment variable. Otherwise uses value from common.php
 [ -n "$OE_INSTITUTION_CODE" ] && icode="$OE_INSTITUTION_CODE" || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=institution_code. => \!empty\(trim\(getenv\(\'OE_INSTITUTION_CODE\'\)\)\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" "$WROOT"/protected/config/local/common.php)
+if [ -z $icode ]; then
+    icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=institution_code. => \!empty\(trim\(getenv\(\'OE_INSTITUTION_CODE\'\)\)\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" "$WROOT"/protected/config/core/common.php)
+fi
+
 if [ -n "$icode" ]; then
     checkicodecmd="SELECT id FROM institution WHERE remote_id = '$icode';"
 
@@ -382,6 +386,8 @@ if [ -n "$icode" ]; then
 
         eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$updateicodecmd\""
     fi
+else
+    echo -e "\nCOULD NOT FIND INSTITUTION CODE\n"
 fi
 
 # Run pre-migration demo scripts
@@ -510,7 +516,7 @@ if [ $droparchive -eq 1 ]; then
         SET FOREIGN_KEY_CHECKS = 0;
         set @s = (SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' ) FROM information_schema.tables WHERE table_schema = '${DATABASE_NAME:-openeyes}' AND table_name LIKE 'archive_%');
         PREPARE stmt FROM @s;
-        EXECUTE stmt; 
+        EXECUTE stmt;
         SET FOREIGN_KEY_CHECKS = 1;
     END IF;
 

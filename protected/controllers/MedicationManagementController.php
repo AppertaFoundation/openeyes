@@ -49,6 +49,52 @@ class MedicationManagementController extends BaseController
             throw new \CHttpException(404, 'Could not find medication set.');
         }
     }
+    public function actionGetPGDSetForm($pgd_id, $allergy_ids, $key)
+    {
+        $allergy_ids = CJSON::decode($allergy_ids);
+        $pgd_set = \OphDrPGDPSD_PGDPSD::model()->findByPk($pgd_id);
+        $user_id = \Yii::app()->user->id;
+        $user = User::model()->findByPk($user_id);
+        if ($pgd_set) {
+            $items = $pgd_set->assigned_meds;
+            if ($items) {
+                $pgd_items = array();
+                foreach ($items as $item) {
+                    $temp = array();
+                    $info_box = new MedicationInfoBox();
+                    $info_box->medication_id = $item->medication_id;
+                    $info_box->init();
+                    $tooltip = $info_box->getHTML();
+                    $temp['medication_id'] = $item->medication_id;
+                    $temp['medication_name'] = $item->medication->preferred_term;
+                    $temp['source_subtype'] = $item->medication->source_subtype;
+                    $temp['pgdpsd_id'] = $item->pgdpsd_id;
+                    $temp['dose'] = $item->dose;
+                    $temp['dose_unit_term'] = $item->dose_unit_term;
+                    $temp['route_id'] = $item->route_id;
+                    $temp['frequency_id'] = $item->frequency_id;
+                    $temp['duration_id'] = $item->duration_id;
+                    $temp['dispense_condition_id'] = $item->dispense_condition_id;
+                    $temp['dispense_location_id'] = $item->dispense_location_id;
+                    $temp['comments'] = $item->comments;
+                    $temp['to_be_copied'] = true;
+                    $temp['will_copy'] = true;
+                    $temp['prepended_markup'] = $tooltip;
+                    $temp['pgd_info_icon'] = "<span class='highlighter inline js-has-tooltip' data-tooltip-content='PGD: <b>{$pgd_set->name}</b><br/>{$user->getFullName()}'>PGD</span>";
+                    $temp['pgdpsd_id'] = $pgd_set->id;
+                    $temp['allergy_ids'] =  array_map(function ($allergy) use ($allergy_ids) {
+                        if (in_array($allergy->id, $allergy_ids)) {
+                            return $allergy->id;
+                        }
+                    }, $item->medication->allergies);
+                    $pgd_items[] = $temp;
+                }
+                echo CJSON::encode($pgd_items);
+            }
+        } else {
+            throw new \CHttpException(404, 'Could not find medication set.');
+        }
+    }
 
     private function extractEntryFromSet($set_item, $allergy_ids)
     {
@@ -92,6 +138,13 @@ class MedicationManagementController extends BaseController
     {
         $ret_data = [];
         $criteria = new \CDbCriteria();
+
+        //Will only fetch the locally sourced medications that are assigned for use in the current institution
+        $institution_assigned_ids = array_map(function ($item) {
+            return $item->id;
+        }, Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
+        $criteria->addCondition("source_type != 'LOCAL'");
+        $criteria->addInCondition("t.id", $institution_assigned_ids, "OR");
 
         if ($term !== '') {
             $criteria->addCondition("preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term");
@@ -140,6 +193,8 @@ class MedicationManagementController extends BaseController
                     'default_form' => $defaults->form_id,
                     'frequency_id' => $defaults->frequency_id,
                     'route_id' => $defaults->route_id,
+                    'route' => "$defaults->route",
+                    'is_eye_route' => $defaults->route ? $defaults->route->isEyeRoute() : false,
                     'tabsize' => null,
                     'will_copy' => $med->getToBeCopiedIntoMedicationManagement(),
                     'prepended_markup' => $tooltip,
@@ -175,12 +230,14 @@ class MedicationManagementController extends BaseController
             $r->dose = $defaults->default_dose ? $defaults->default_dose : $medication->default_dose;
             $r->dose_unit_term = $defaults->default_dose_unit_term ? $defaults->default_dose_unit_term : $medication->default_dose_unit_term;
             $r->form_id = $defaults->default_form_id ? $defaults->default_form_id : $medication->default_form_id;
+            $r->route = $defaults->default_route_id ? $defaults->defaultRoute : $medication->defaultRoute;
         } else {
             $r->frequency_id = null;
             $r->route_id = $medication->default_route_id;
             $r->dose = $medication->default_dose;
             $r->dose_unit_term = $medication->default_dose_unit_term;
             $r->form_id = $medication->default_form_id;
+            $r->route = $medication->defaultRoute;
         }
 
         return $r;
@@ -210,5 +267,14 @@ class MedicationManagementController extends BaseController
         $info_box->medication_id = $medication_id;
         $info_box->init();
         $info_box->run();
+    }
+    public function actionGetPGDIcon($pgdpsd_id)
+    {
+        $pgd = \OphDrPGDPSD_PGDPSD::model()->findByPk($pgdpsd_id);
+        if ($pgd) {
+            echo "<i class='oe-i info small pad js-has-tooltip' data-tooltip-content='From PGD {$pgd->id}: {$pgd->name}'></i>";
+            return;
+        }
+        echo null;
     }
 }

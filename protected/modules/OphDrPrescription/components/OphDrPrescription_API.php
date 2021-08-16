@@ -19,6 +19,26 @@ class OphDrPrescription_API extends BaseAPI
 {
     public $createOprn = 'OprnCreatePrescription';
 
+    protected function isUserInPGD()
+    {
+        $pgds = OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) = 'pgd'");
+        $curr_user_id = $this->yii->user->id;
+        foreach ($pgds as $pgd) {
+            if (in_array($curr_user_id, $pgd->getAuthedUserIDs())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function __construct(CApplication $yii = null, DataContext $context = null)
+    {
+        parent::__construct($yii, $context);
+        $has_prescribe_perm = $this->yii->user->checkAccess($this->createOprn);
+        if (!$has_prescribe_perm && $this->isUserInPGD()) {
+            $this->createOprn = 'OprnCreateEvent';
+        }
+    }
     /**
      * get the prescription letter text for the latest prescription in the episode for the patient.
      *
@@ -67,9 +87,12 @@ class OphDrPrescription_API extends BaseAPI
 
     public function canUpdate($event_id)
     {
-        $details = Element_OphDrPrescription_Details::model()->find('event_id=?', array($event_id));
+        if ($event_id) {
+            $details = Element_OphDrPrescription_Details::model()->find('event_id=?', array($event_id));
 
-        return $details->isEditable();
+            return $details->isEditable();
+        }
+        return false;
     }
 
     /**

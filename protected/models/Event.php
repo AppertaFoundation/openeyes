@@ -37,9 +37,10 @@
  * @property int $firm_id
  *
  * The followings are the available model relations:
- * @property Episode   $episode
- * @property User      $user
+ * @property Episode $episode
+ * @property User $user
  * @property EventType $eventType
+ * @property Institution $institution
  */
 class Event extends BaseActiveRecordVersioned
 {
@@ -98,15 +99,15 @@ class Event extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_type_id, event_date', 'required'),
-            array('parent_id, worklist_patient_id', 'safe'),
+            array('event_type_id, event_date, institution_id', 'required'),
+            array('parent_id, worklist_patient_id, institution_id, site_id', 'safe'),
             array('episode_id, event_type_id', 'length', 'max' => 10),
             array('worklist_patient_id', 'length', 'max' => 40),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, episode_id, event_type_id, created_date, event_date, parent_id, worklist_patient_id', 'safe', 'on' => 'search'),
             array('event_date', 'OEDateValidatorNotFuture', 'except' => 'allowFutureEvent'),
-            array('event_date','eventDateValidator'),
+            array('event_date', 'eventDateValidator'),
         );
     }
 
@@ -129,7 +130,9 @@ class Event extends BaseActiveRecordVersioned
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
             'eventSubtypeItems' => array(self::HAS_MANY, 'EventSubTypeItem', 'event_id'),
             'firstEventSubtypeItem' => [self::HAS_ONE, 'EventSubTypeItem', 'event_id', 'order' => 'display_order'],
-            'eventAttachmentGroups' => [self::HAS_MANY, 'EventAttachmentGroup', 'event_id']
+            'eventAttachmentGroups' => [self::HAS_MANY, 'EventAttachmentGroup', 'event_id'],
+            'institution' => [self::BELONGS_TO, 'Institution', 'institution_id'],
+            'site' => [self::BELONGS_TO, 'Site', 'site_id'],
         );
     }
 
@@ -139,6 +142,17 @@ class Event extends BaseActiveRecordVersioned
     protected function afterConstruct()
     {
         $this->event_date = date('Y-m-d H:i:s');
+
+        // set default values here so we can use site/institution right after the object is ready
+        // specially useful in event create page
+        if ($this->isNewRecord) {
+            $selected_institution_id = Yii::app()->session->get('selected_institution_id');
+            if (isset($selected_institution_id)) {
+                $this->institution_id = $selected_institution_id;
+                $this->site_id = Yii::app()->session->get('selected_site_id');
+            }
+        }
+
         parent::afterConstruct();
     }
 
@@ -480,8 +494,8 @@ class Event extends BaseActiveRecordVersioned
      *
      * @param       $target
      * @param       $action
-     * @param null  $data
-     * @param bool  $log
+     * @param null $data
+     * @param bool $log
      * @param array $properties
      */
     public function audit($target, $action, $data = null, $log = false, $properties = array())
@@ -685,10 +699,10 @@ class Event extends BaseActiveRecordVersioned
         if ($this->is_automated && $this->automated_source) {
             // TODO: this really should be in the module API with some kind of default text here
             if (property_exists($this->automated_source, 'goc_number')) {
-                $result .= 'Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')'. "<br>";
+                $result .= 'Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')' . "<br>";
             }
             if (property_exists($this->automated_source, 'address')) {
-                $result .= 'Optometrist Address: '.$this->automated_source->address;
+                $result .= 'Optometrist Address: ' . $this->automated_source->address;
             }
 
             return $result;
@@ -697,7 +711,7 @@ class Event extends BaseActiveRecordVersioned
 
     /**
      * @param EventType $event_type
-     * @param Patient   $patient
+     * @param Patient $patient
      *
      * @return Event[]
      */
@@ -759,6 +773,7 @@ class Event extends BaseActiveRecordVersioned
             return $this->episode->patient;
         }
     }
+
     /**
      * Validate the event date.
      */
@@ -769,9 +784,9 @@ class Event extends BaseActiveRecordVersioned
             $episode = $this->episode;
             if (isset($episode->patient)) {
                 $patient = $episode->patient;
-                $event_date_limitation = Helper::mysqlDate2JsTimestamp($patient->dob) - (Helper::EPOCHMONTH*9);
+                $event_date_limitation = Helper::mysqlDate2JsTimestamp($patient->dob) - (Helper::EPOCHMONTH * 9);
                 if ($event_date < $event_date_limitation) {
-                    $this->addError($attribute, 'The event date cannot be earlier than '.date('Y-m-d', ($event_date_limitation/1000)).'.');
+                    $this->addError($attribute, 'The event date cannot be earlier than ' . date('Y-m-d', ($event_date_limitation / 1000)) . '.');
                 }
             }
         }

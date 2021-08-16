@@ -22,11 +22,9 @@ class PendingApplications
      *
      * @return mixed
      */
-    protected function getPendingApplications()
+    protected function getPendingApplications($institution_id)
     {
-        $command = Yii::app()->db->createCommand();
-
-        return $command->select('patient.hos_num as HosNum,
+        $command = Yii::app()->db->createCommand()->select('patient.id as pid,
                             event.id as EventID,
                             firm.name as FirmName,
                             CONCAT_WS(" ", user.first_name, user.last_name) as Username,
@@ -39,8 +37,15 @@ class PendingApplications
             ->join('user', 'event.created_user_id = user.id')
             ->join('event_type', 'event.event_type_id = event_type.id AND event_type.name = "Therapy Application"')
             ->leftJoin('ophcotherapya_email', 'event.id = ophcotherapya_email.event_id')
-            ->where('ophcotherapya_email.event_id IS NULL')
-            ->queryAll();
+            ->where('ophcotherapya_email.event_id IS NULL');
+
+        $params = [];
+        if ($institution_id) {
+            $command->andWhere('e.institution_id = :institution_id');
+            $params[':institution_id'] = $institution_id;
+        }
+
+        return $command->queryAll(true, $params);
     }
 
     /**
@@ -48,12 +53,15 @@ class PendingApplications
      *
      * @return string
      */
-    protected function pendingApplicationsCSV()
+    protected function pendingApplicationsCSV($institution_id)
     {
-        $lines = $this->getPendingApplications();
+        $lines = $this->getPendingApplications($institution_id);
         if (!count($lines)) {
             return '';
         }
+
+        $lines = $this->setPatientIdentifiers($lines);
+
         $handle = fopen('php://memory', 'w');
         $header = false;
 
@@ -77,12 +85,12 @@ class PendingApplications
      *
      * @return array|string array of recipients or ; delimited list
      */
-    public function emailCsvFile($recipients)
+    public function emailCsvFile($recipients, $institution_id = null)
     {
         if (!is_array($recipients)) {
             $recipients = explode(';', $recipients);
         }
-        $csv = $this->pendingApplicationsCSV();
+        $csv = $this->pendingApplicationsCSV($institution_id);
 
         $message = Yii::app()->mailer->newMessage();
         $message->setFrom(array('noreply@openeyes.org.uk' => 'OpenEyes Reports'));
@@ -106,5 +114,26 @@ class PendingApplications
         header('Pragma: no-cache');
         header('Expires: 0');
         echo $csv;
+    }
+
+    private function setPatientIdentifiers($data)
+    {
+        $institution_id = Institution::model()->getCurrent()->id;
+        $site_id = Yii::app()->session['selected_site_id'];
+        $extended_data = [];
+        $primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+        $patient_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution($primary_number_usage_code, $institution_id, $site_id);
+
+        foreach ($data as $row) {
+            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient($primary_number_usage_code, $row['pid'], $institution_id, $site_id));
+            $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['pid']);
+
+            $row = [$patient_identifier_prompt => $patient_identifier] + $row;
+            $row['Patient IDs'] = $patient_identifiers;
+            unset($row['pid']);
+            $extended_data[] = $row;
+        }
+
+        return $extended_data;
     }
 }

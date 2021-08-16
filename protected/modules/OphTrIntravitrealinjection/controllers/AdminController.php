@@ -128,7 +128,6 @@ class AdminController extends ModuleAdminController
         $user_ids = CHtml::listData($injection_users, 'id', 'user.id');
 
         $criteria = new CDbCriteria();
-        $criteria->addCondition('active=1');
         $criteria->order = 'first_name asc, last_name asc';
 
         if (!empty($user_ids)) {

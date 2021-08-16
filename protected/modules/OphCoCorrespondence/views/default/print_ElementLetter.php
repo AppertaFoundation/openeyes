@@ -70,10 +70,20 @@ if (!@$no_header) { ?>
             <?php if ($toAddressContactType !== "PATIENT" && $element->re) {
                 echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->re));
             } elseif ($contact_type === "PATIENT") {
-                if (Yii::app()->params['nhs_num_private'] == true) {
-                    echo \SettingMetadata::model()->getSetting('hos_num_label') . ': ' . $element->event->episode->patient->hos_num;
+                $institution_id = isset($element->event->institution) ? $element->event->institution->id : null;
+                $site_id = isset($element->event->site) ? $element->event->site->id : null;
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                    Yii::app()->params['display_primary_number_usage_code'],
+                    $element->event->episode->patient->id, $institution_id, $site_id
+                );
+                $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                    Yii::app()->params['display_secondary_number_usage_code'],
+                    $element->event->episode->patient->id, $institution_id, $site_id
+                );
+                if (Yii::app()->params['nhs_num_private'] == true || !$secondary_identifier) {
+                    echo PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier);
                 } else {
-                    echo \SettingMetadata::model()->getSetting('hos_num_label') . ': ' . $element->event->episode->patient->hos_num . ', ' . \SettingMetadata::model()->getSetting('nhs_num_label') . ': ' . $element->event->episode->patient->nhsnum;
+                    echo PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier) . ', ' . PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($secondary_identifier);
                 }
             } else {
                 echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->calculateRe($this->patient)));

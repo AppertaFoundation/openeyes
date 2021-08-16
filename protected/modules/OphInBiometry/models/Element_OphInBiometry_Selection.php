@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -37,11 +38,12 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
 {
     public $service;
 
-    
+
     /**
      * set defaults
      */
-    public function init(){
+    public function init()
+    {
         $this->iol_power_left = null;
         $this->iol_power_right = null;
         $this->predicted_refraction_left = null;
@@ -102,11 +104,12 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
     public function checkSelectedLensFormula($attribute, $params)
     {
         if (count(OphInBiometry_Imported_Events::model()->findAllByAttributes(array('event_id' => $this->event_id))) > 0) {
-            $lensCount = count(Element_OphInBiometry_IolRefValues::model()->findAll(array('select' => 'lens_id', 'condition' => 'event_id='.$this->event_id, 'distinct' => 'true')));
-            $formulaCount = count(Element_OphInBiometry_IolRefValues::model()->findAll(array('select' => 'formula_id', 'condition' => 'event_id='.$this->event_id, 'distinct' => 'true')));
+            $lensCount = count(Element_OphInBiometry_IolRefValues::model()->findAll(array('select' => 'lens_id', 'condition' => 'event_id=' . $this->event_id, 'distinct' => 'true')));
+            $formulaCount = count(Element_OphInBiometry_IolRefValues::model()->findAll(array('select' => 'formula_id', 'condition' => 'event_id=' . $this->event_id, 'distinct' => 'true')));
 
             if ($params['selectData'] == 'left_lens' && $formulaCount > 1 && $lensCount > 1) {
-                if (((empty($this->formula_id_left)) && ((!empty($this->lens_id_left))))
+                if (
+                    ((empty($this->formula_id_left)) && ((!empty($this->lens_id_left))))
                     || ((!empty($this->formula_id_left)) && ((empty($this->lens_id_left))))
                 ) {
                     if (empty($this->lens_id_left)) {
@@ -114,7 +117,8 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
                     }
                 }
             } elseif ($params['selectData'] == 'left_formula' && $lensCount > 1 &&  $formulaCount > 1) {
-                if (((empty($this->formula_id_left)) && ((!empty($this->lens_id_left))))
+                if (
+                    ((empty($this->formula_id_left)) && ((!empty($this->lens_id_left))))
                     || ((!empty($this->formula_id_left)) && ((empty($this->lens_id_left))))
                 ) {
                     if (empty($this->formula_id_left) && !$this->manually_overriden_left) {
@@ -122,7 +126,8 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
                     }
                 }
             } elseif ($params['selectData'] == 'right_lens' && $formulaCount > 1 && $lensCount > 1) {
-                if (((empty($this->formula_id_right)) && ((!empty($this->lens_id_right))))
+                if (
+                    ((empty($this->formula_id_right)) && ((!empty($this->lens_id_right))))
                     || ((!empty($this->formula_id_right)) && ((empty($this->lens_id_right))))
                 ) {
                     if (empty($this->lens_id_right)) {
@@ -130,7 +135,8 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
                     }
                 }
             } elseif ($params['selectData'] == 'right_formula' && $lensCount > 1 &&  $formulaCount > 1) {
-                if (((empty($this->formula_id_right)) && ((!empty($this->lens_id_right))))
+                if (
+                    ((empty($this->formula_id_right)) && ((!empty($this->lens_id_right))))
                     || ((!empty($this->formula_id_right)) && ((empty($this->lens_id_right))))
                 ) {
                     if (empty($this->formula_id_right)  && !$this->manually_overriden_right) {
@@ -143,8 +149,10 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
 
     public function requiredIfLensSelected($attribute, $params)
     {
-        if (!(isset($this->$attribute) && $this->$attribute) &&
-            isset($this->{'lens_id_' . $params['side']}) && $this->{'lens_id_' . $params['side']}) {
+        if (
+            !(isset($this->$attribute) && $this->$attribute) &&
+            isset($this->{'lens_id_' . $params['side']}) && $this->{'lens_id_' . $params['side']}
+        ) {
             $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be blank (' . $params['side'] . ' side).');
         }
     }
@@ -157,7 +165,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
