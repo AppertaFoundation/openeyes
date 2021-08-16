@@ -86,21 +86,27 @@
         <h3>Select New Event</h3>
         <ul id="event-type-list" class="event-type-list">
             <?php foreach ($event_types as $eventType) {
-                $args = $this->getCreateArgsForEventTypeOprn($eventType, array('episode'));
-                if (call_user_func_array(array($this, 'checkAccess'), $args)) {
-                    ?>
+                try {
+                    $args = $this->getCreateArgsForEventTypeOprn($eventType, array('episode'));
+                    if (call_user_func_array(array($this, 'checkAccess'), $args)) {
+                        ?>
                   <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3"
                       data-eventType-id="<?= $eventType->id ?>"
                       data-support-services="<?= $eventType->support_services ?>">
-                    <?= $eventType->getEventIcon() ?><?= $eventType->name ?>
+                        <?= $eventType->getEventIcon() ?><?= $eventType->name ?>
                   </li>
-                <?php } else { ?>
+                    <?php } else { ?>
                   <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3 add_event_disabled"
                       title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
-                      <?= $eventType->getEventIcon() ?><?= $eventType->name ?>
+                        <?= $eventType->getEventIcon() ?><?= $eventType->name ?>
                   </li>
-                <?php } ?>
-            <?php } ?>
+                    <?php } ?>
+                    <?php
+                } catch (Exception $e) {
+                    Yii::log("Caught in event_types loop: " . $e, 'Error');
+                }
+            }
+            ?>
         </ul>
 
         <div class="back-date-event" style="display: none;">

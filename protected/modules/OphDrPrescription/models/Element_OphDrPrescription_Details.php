@@ -231,10 +231,10 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         $criteria = new CDbCriteria();
         $criteria->join .= " JOIN medication_set_rule msr ON msr.medication_set_id = t.id " ;
         $criteria->join .= " JOIN medication_usage_code muc ON muc.id = msr.usage_code_id";
-        $criteria->addCondition("(msr.subspecialty_id = :subspecialty_id OR msr.subspecialty_id IS NULL) AND" .
+        $criteria->addCondition("t.hidden = :hidden AND (msr.subspecialty_id = :subspecialty_id OR msr.subspecialty_id IS NULL) AND" .
                                 "(msr.site_id = :site_id OR msr.site_id IS NULL) AND muc.usage_code = :usage_code AND msr.deleted_date IS NULL");
         $criteria->order = "name";
-        $criteria->params = array(':subspecialty_id' => $subspecialty_id, ':site_id' => $site_id, ':usage_code' => 'PRESCRIPTION_SET');
+        $criteria->params = array(':subspecialty_id' => $subspecialty_id, ':site_id' => $site_id, ':usage_code' => 'PRESCRIPTION_SET', ':hidden' => 0);
 
         return MedicationSet::model()->findAll($criteria);
     }

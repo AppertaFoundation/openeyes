@@ -155,6 +155,36 @@
             </td>
         </tr>
 
+        <tr>
+            <td>First Name</td>
+            <td>
+                <?php
+                echo CHtml::activeTextField(
+                    $cbs->contact,
+                    'first_name',
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                    ]
+                ); ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Last Name</td>
+            <td>
+                <?php
+                echo CHtml::activeTextField(
+                    $cbs->contact,
+                    'last_name',
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                    ]
+                ); ?>
+            </td>
+        </tr>
+
         <?php
         $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
         foreach ($address_fields as $field) : ?>

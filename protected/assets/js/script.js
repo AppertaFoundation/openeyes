@@ -506,14 +506,14 @@ function createLoginOverlay() {
         userDiv.classList.add('user');
         loginDiv.append(userDiv);
 
-    let usernameField = document.createElement('input');
-    usernameField.id = 'js-username';
-    usernameField.type = 'text';
-    usernameField.placeholder = 'Username';
-    if('username' in prepopulationData) {
-        usernameField.text = prepopulationData['username'];
-    }
-    userDiv.append(usernameField);
+        let usernameField = document.createElement('input');
+        usernameField.id = 'js-username';
+        usernameField.type = 'text';
+        usernameField.placeholder = 'Username';
+        if('username' in prepopulationData) {
+            usernameField.text = prepopulationData['username'];
+        }
+        userDiv.append(usernameField);
 
         let passwordField = document.createElement('input');
         passwordField.id = 'js-password';
@@ -545,10 +545,10 @@ function createLoginOverlay() {
         returnDiv.classList.add('flex-c');
         loginDiv.append(returnDiv);
 
-    let returnButton = document.createElement('a');
-    returnButton.classList.add('button');
-    returnButton.innerText = 'Or exit to homepage';
-    returnButton.href = document.location.origin + '/site/login';
+        let returnButton = document.createElement('a');
+        returnButton.classList.add('button');
+        returnButton.innerText = 'Or exit to homepage';
+        returnButton.href = document.location.origin + '/site/login';
 
         //Event handler fires before default behaviour of the element is triggered
         //The following causes the link change target to logout action and then fire the redirect if the user has a valid session

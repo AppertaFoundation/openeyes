@@ -65,6 +65,7 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
         return array(
             array('name, site_id, code, ward_id', 'safe'),
             array('name, site_id, code', 'required'),
+            array('code', 'length', 'max' => 4),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name, site_id, code', 'safe', 'on' => 'search'),

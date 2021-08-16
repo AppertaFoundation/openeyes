@@ -871,4 +871,22 @@ class User extends BaseActiveRecordVersioned
         }
         $this->saveRoles($assignedRoles);
     }
+
+    /**
+     * Get whitelisted actions from password expiry redirects
+     * @param string $user
+     * @return string Name of status
+     */
+    public function CheckRequestOnExpiryWhitelist($request)
+    {
+        $whitelist = !empty(Yii::app()->params['pw_status_checks']['pw_expired_whitelist']) ? Yii::app()->params['pw_status_checks']['pw_expired_whitelist'] : ['/profile/password', '/site/logout', '/User/testAuthenticated', '/Site/loginFromOverlay', 'User/getSecondsUntilSessionExpire', '/site/changesiteandfirm'];
+
+        foreach ($whitelist as $URL) {
+            // check to see if the request starts with this whitelisted url
+            if (strpos($request, $URL)===0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

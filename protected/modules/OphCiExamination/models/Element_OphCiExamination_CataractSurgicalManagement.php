@@ -102,7 +102,7 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
 
     public function sidedFields()
     {
-        return ['target_postop_refraction', 'guarded_prognosis', 'correction_discussed', 'reason_for_surgery_id', 'refraction_category'];
+        return ['target_postop_refraction', 'correction_discussed', 'reason_for_surgery_id', 'refraction_category'];
     }
 
     /**
