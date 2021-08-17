@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,82 +18,68 @@
  */
 ?>
 <table class="cols-full last-left">
-  <tbody>
-    <?php echo $form->hiddenField($element, 'booking_event_id')?>
-  <tr>
-    <td>
-        <?=\CHtml::encode($element->getAttributeLabel('eye_id')); ?>
-    </td>
-    <td>
-        <?php echo $form->radioButtons(
-            $element,
-            'eye_id',
-            CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-            null,
-            false,
-            false,
-            false,
-            false,
-            array('nowrapper' => true),
-            array()
-        )?>
-    </td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>
-        <?=\CHtml::encode($element->getAttributeLabel('Anaesthetic Type')); ?>
-    </td>
-    <td>
-        <?php echo $form->checkBoxes(
-            $element,
-            'AnaestheticType',
-            array_map(function ($element) {
-                return $element['id'];
-            }, $element->anaesthetic_type),
-            'Anaesthetic Type',
-            false,
-            false,
-            false,
-            false,
-            array(
-                'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
-                'nowrapper' => true
-            )
-        ); ?>
-    </td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Procedures</td>
-    <td>
-        <?php $form->widget(
-            'application.widgets.ProcedureSelection',
-            array(
-                'element' => $element,
-                'durations' => false,
-                'identifier' => 'procedures',
-                'read_only' => (bool)$element->booking_event_id ,
-                'restrict' => 'unbooked',
-                'restrict_common' => 'unbooked',
-                'label' => ''
-            )
-        ) ?>
-    </td>
-  </tr>
-  <tr>
-    <td>Additional procedures</td>
-    <td>
-        <?php $form->widget('application.widgets.ProcedureSelection', array(
-            'element' => $element,
-            'durations' => false,
-            'relation' => 'additional_procedures',
-            'identifier' => 'additional',
-            'label' => '',
-            'headertext' => 'Any extra procedures which may become necessary during the procedure.',
-        ))?>
-    </td>
-    <td></td>
-  </tr>
-  </tbody>
+    <tbody>
+        <?= $form->hiddenField($element, 'booking_event_id') ?>
+        <tr>
+            <td>
+                <?= \CHtml::encode($element->getAttributeLabel('eye_id')); ?>
+            </td>
+            <td>
+                <?= $form->radioButtons(
+                    $element,
+                    'eye_id',
+                    CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+                    null,
+                    false,
+                    false,
+                    false,
+                    false,
+                    array('nowrapper' => true),
+                    array()
+                ) ?>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <?= \CHtml::encode($element->getAttributeLabel('Anaesthetic Type')); ?>
+            </td>
+            <td>
+                <?= $form->checkBoxes(
+                    $element,
+                    'AnaestheticType',
+                    array_map(function ($element) {
+                        return $element['id'];
+                    }, $element->anaesthetic_type),
+                    'Anaesthetic Type',
+                    false,
+                    false,
+                    false,
+                    false,
+                    array(
+                        'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
+                        'nowrapper' => true
+                    )
+                ); ?>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Procedures</td>
+            <td>
+                <?php $form->widget(
+                    'application.widgets.ProcedureSelection',
+                    array(
+                        'element' => $element,
+                        'durations' => false,
+                        'identifier' => 'procedures',
+                        'read_only' => (bool)$element->booking_event_id,
+                        'restrict' => 'unbooked',
+                        'restrict_common' => 'unbooked',
+                        'label' => ''
+                    )
+                ) ?>
+            </td>
+        </tr>
+    </tbody>
 </table>

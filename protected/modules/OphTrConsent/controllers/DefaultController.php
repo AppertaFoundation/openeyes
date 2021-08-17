@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -189,7 +190,6 @@ class DefaultController extends BaseEventTypeController
     public function actionCreate()
     {
         $errors = array();
-
         if (!empty($_POST)) {
             // Save and print clicked, stash print flag
             if (isset($_POST['saveprint'])) {
@@ -361,6 +361,7 @@ class DefaultController extends BaseEventTypeController
     protected function saveComplexAttributes_Element_OphTrConsent_Procedure($element, $data, $index)
     {
         $curr_by_id = array();
+
         foreach ($element->anaesthetic_type as $type) {
             $curr_by_id[$type->id] = OphTrConsent_Procedure_AnaestheticType::model()->findByAttributes(array(
                 'et_ophtrconsent_procedure_id' => $element->id,

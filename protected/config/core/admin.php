@@ -57,6 +57,7 @@ return array(
             ),
             'Procedure Management' => array(
                 'Procedures' => ['uri' => '/oeadmin/procedure/list', 'restricted' => array('admin')],
+                'Extra Procedures' => '/oeadmin/ProcedureExtra/list',
                 'Benefits' => ['uri' => '/oeadmin/benefit/list', 'restricted' => array('admin')],
                 'Complications' => ['uri' => '/oeadmin/complication/list', 'restricted' => array('admin')],
                 'OPCS Codes' => ['uri' => '/oeadmin/opcsCode/list', 'restricted' => array('admin')],
