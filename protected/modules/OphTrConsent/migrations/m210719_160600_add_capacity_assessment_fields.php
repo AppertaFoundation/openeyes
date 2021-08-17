@@ -19,8 +19,11 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
             $this->dropForeignKey("fk_et_ophtrconsent_calcar_etid", $this->pivot_table);
             $this->dropForeignKey("fk_et_ophtrconsent_calcar_rid", $this->pivot_table);
             $this->truncateTable($this->clr_table);
+            if ($this->dbConnection->schema->getTable($this->pivot_table, true) !== null) {
+                $this->truncateTable($this->pivot_table);
+                $this->addForeignKey("fk_et_ophtrconsent_calcar_rid", $this->pivot_table, "lack_of_capacity_reason_id", $this->clr_table, "id");
+            }
             $this->addForeignKey("fk_et_ophtrconsent_calcar_etid", $this->pivot_table, "element_id", $this->table, "id");
-            $this->addForeignKey("fk_et_ophtrconsent_calcar_rid", $this->pivot_table, "lack_of_capacity_reason_id", $this->clr_table, "id");
         }
 
         $this->insertMultiple(
