@@ -180,9 +180,8 @@
                 $.ajax({
                     'type': 'GET',
                     'url': baseUrl + '/PatientTicketing/default/getFirmsForSubspecialty?subspecialty_id=' + subspecialty_id,
-                    'success': function (html) {
-                        $firm_id.replaceWith(html);
-                        $firm_id.addClass('cols-full');
+                    'success': function (data) {
+
                     }
                 });
             }

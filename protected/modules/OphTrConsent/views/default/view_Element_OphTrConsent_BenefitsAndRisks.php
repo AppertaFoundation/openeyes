@@ -15,6 +15,9 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+    $purifier = new CHtmlPurifier();
+$purifier->setOptions(array('HTML.Trusted' => true));
 ?>
 <div class="element-data full-width flex-layout flex-top col-gap">
   <div class="cols-6">
@@ -22,7 +25,7 @@
         <?=\CHtml::encode($element->getAttributeLabel('benefits')) ?>:
     </div>
     <span class="large-text">
-        <?=nl2br(\CHtml::encode($element->benefits)) ?>
+        <?= $purifier->purify($element->benefits) ?>
     </span>
   </div>
 
@@ -30,6 +33,6 @@
     <div class="data-label">
         <?=\CHtml::encode($element->getAttributeLabel('risks')) ?>:
     </div>
-        <?=nl2br(\CHtml::encode($element->risks)) ?>
+        <?= $purifier->purify($element->risks) ?>
   </div>
 </div>

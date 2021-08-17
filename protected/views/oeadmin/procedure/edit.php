@@ -94,6 +94,8 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                 $this->widget('application.widgets.MultiSelectDropDownList', [
                     'options' => [
                         'label' => 'benefit',
+                        'sas' => 1,
+                        'wrapperSelector' => 'teszt',
                         'dropDown' => [
                             'name' => null,
                             'id' => '$benefits',
