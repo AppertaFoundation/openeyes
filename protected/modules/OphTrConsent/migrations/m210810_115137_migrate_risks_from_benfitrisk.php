@@ -8,6 +8,8 @@ class m210810_115137_migrate_risks_from_benfitrisk extends OEMigration
             return true;
         }
 
+        $this->alterOEColumn('et_ophtrconsent_benfitrisk','risks','mediumtext',true);
+
         $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
             'class_name = :class_name',
             array(':class_name' => 'OphTrConsent')
