@@ -23,11 +23,20 @@
  *
  * @property string $id
  * @property string $name
+ * @property bool $deleted
+ * @property string $description
+ * @property int $position_id
+ * @property string $comments
+ * @property double $acon
+ * @property float $sf
+ * @property float $pACD
+ * @property float $a0
+ * @property float $a1
+ * @property float $a2
+ * @property bool $active
+ * @property string $display_name
  *
  * The followings are the available model relations:
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
  * @property User $user
  * @property User $usermodified
  */
@@ -38,7 +47,7 @@ class OphInBiometry_LensType_Lens extends BaseActiveRecordVersionedSoftDelete
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphInBiometry_LensType_Lens static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -62,7 +71,7 @@ class OphInBiometry_LensType_Lens extends BaseActiveRecordVersionedSoftDelete
         // will receive user inputs.
         return array(
             array('name, display_name, description, comments, position_id, acon, sf, pACD, a0, a1, a2, active', 'safe'),
-            array('name, display_name, description, acon', 'required'),
+            array('name, display_name, description, acon, position_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name, active', 'safe', 'on' => 'search'),
@@ -86,9 +95,6 @@ class OphInBiometry_LensType_Lens extends BaseActiveRecordVersionedSoftDelete
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'position' => array(self::BELONGS_TO, 'OphInBiometry_Lens_Position', 'position_id'),
@@ -130,7 +136,7 @@ class OphInBiometry_LensType_Lens extends BaseActiveRecordVersionedSoftDelete
         $criteria->compare('name', $this->name, true);
 
         return new CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
-            ));
+            'criteria' => $criteria,
+        ));
     }
 }

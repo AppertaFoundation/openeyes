@@ -16,43 +16,6 @@
  */
 
 $(document).ready(function() {
-	/*
-	* 2017-03-17: Maybe unused code part, because this file was not included to admin view
-	*
-	$('.lensAdmin #et_cancel').die('click').live('click',function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/OphInBiometry/admin/lensTypes';
-	});
-
-	$('#et_add_lens_type').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/OphInBiometry/admin/addLensType';
-	});
-
-	$('#et_delete_lens_type').unbind('click').click(function(e) {
-		e.preventDefault();
-
-		if ($('input[name="lens_types[]"]:checked').length == 0) {
-			alert("Please select one or more lens types to delete.");
-			return;
-		}
-
-		var lens_types = {'lens_type_id':[]};
-
-		$('input[name="lens_types[]"]:checked').map(function() {
-			lens_types['lens_type_id'].push($(this).val());
-		});
-
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/OphInBiometry/admin/deleteLensTypes',
-			'data': $.param(lens_types) + '&YII_CSRF_TOKEN=' + YII_CSRF_TOKEN,
-			'success': function(html) {
-				window.location.reload();
-			}
-		});
-	});
-	*/
 	$('#OphInBiometry_LensType_Lens_name').bind('focusout blur',function(){
 		$('#OphInBiometry_LensType_Lens_display_name').val( $(this).val());
         
