@@ -15,13 +15,13 @@
 ?>
 
 <div class="row divider">
-    <h2><?php echo $lensType_lens->id ? 'Edit' : 'Add' ?> Lens type</h2>
+    <h2><?= $lensType_lens->id ? 'Edit' : 'Add' ?> Lens type</h2>
 </div>
 
-<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
+<?= $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
 
 <div class="cols-5">
-    <form method = "POST">
+    <form method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <colgroup>
@@ -31,19 +31,26 @@
             <tbody>
 
             <?php
-            $htmlOptions = [ 'class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete']];
+            $htmlOptions = ['class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete']];
 
-            foreach (['name', 'display_name', 'description', 'comments', 'acon'] as $field) : ?>
-                <tr>
-                    <td><?php echo $lensType_lens->getAttributeLabel($field); ?></td>
-                    <td><?=\CHtml::activeTextField($lensType_lens, $field, $htmlOptions); ?></td>
-                </tr>
-            <?php endforeach; ?>
+            foreach (['name', 'display_name', 'description', 'position_id', 'comments', 'acon', 'sf', 'pACD', 'a0', 'a1', 'a2'] as $field) {
+                if ($field === "position_id") { ?>
+                    <tr>
+                        <td><?= $lensType_lens->getAttributeLabel($field); ?></td>
+                        <td><?= \CHtml::activeDropDownList($lensType_lens, $field, CHtml::listData(OphInBiometry_Lens_Position::model()->findAll(array('order' => 'display_order')), 'id', 'name'), ['class' => 'cols-full', 'empty' => '- Select Grade -']) ?></td>
+                    </tr>
+                <?php } else { ?>
+                    <tr>
+                        <td><?= $lensType_lens->getAttributeLabel($field); ?></td>
+                        <td><?= \CHtml::activeTextField($lensType_lens, $field, $htmlOptions); ?></td>
+                    </tr>
+                <?php }
+            } ?>
 
             <tr>
                 <td>Active</td>
                 <td>
-                    <?=\CHtml::activeCheckBox($lensType_lens, 'active'); ?>
+                    <?= \CHtml::activeCheckBox($lensType_lens, 'active'); ?>
                 </td>
             </tr>
 
@@ -51,7 +58,7 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?=\CHtml::submitButton(
+                    <?= \CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button small button',
@@ -59,7 +66,7 @@
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?=\CHtml::submitButton(
+                    <?= \CHtml::submitButton(
                         'Cancel',
                         [
                             'class' => 'warning button small',

@@ -71,17 +71,9 @@ class LensTypeAdminController extends BaseAdminController
         }
 
         if (Yii::app()->request->isPostRequest) {
-            // get data from POST
             $user_data = \Yii::app()->request->getPost('OphInBiometry_LensType_Lens');
+            $lensType_object->attributes = $user_data;
 
-            $lensType_object->name = $user_data['name'];
-            $lensType_object->display_name = $user_data['display_name'];
-            $lensType_object->description = $user_data['description'];
-            $lensType_object->comments = $user_data['comments'];
-            $lensType_object->acon = $user_data['acon'];
-            $lensType_object->active = $user_data['active'];
-
-            // try saving the data
             if (!$lensType_object->save()) {
                 $errors = $lensType_object->getErrors();
             } else {

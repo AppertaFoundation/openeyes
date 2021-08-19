@@ -16,7 +16,7 @@
  */
 ?>
 
-<div id="local_authority_search_wrapper" class="<?= $hidden ? ' hidden':''?>">
+<div id="local_authority_search_wrapper">
     <div class="large-push-2 end">
     <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
     </div>
