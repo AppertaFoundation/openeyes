@@ -229,9 +229,6 @@ if [ $noperms = 0 ]; then
 
         done
 
-        touch $WROOT/protected/runtime/testme
-        touch $WROOT/protected/files/testme
-
         if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
             echo "setting sticky bit for protected/runtime"
             sudo chmod -R g+s $WROOT/protected/runtime
@@ -242,7 +239,7 @@ if [ $noperms = 0 ]; then
             sudo chmod -R g+s $WROOT/protected/files
         fi
 
-        # re-own composer and npm config folders in user home directory (sots issues caused if sudo was used to composer/npm update previously)
+        # re-own composer and npm config folders in user home directory (sorts issues caused if sudo was used to composer/npm update previously)
         sudo chown -R $curuser ~/.config 2>/dev/null || :
         sudo chown -R $curuser ~/.composer 2>/dev/null || :
     fi
