@@ -76,7 +76,7 @@ class LocalAuthorityController extends \BaseModuleController
             $found_bodies[] = $body->id;
             $results[] = array(
                 'id' => 'service' . $cbs->id,
-                'value' => $cbs->name . " ({$body->name})",
+                'label' => $cbs->name . " ({$body->name})",
                 'service' => array(
                     'id' => $cbs->id,
                     'name' => $cbs->name,
@@ -105,7 +105,7 @@ class LocalAuthorityController extends \BaseModuleController
         foreach (\CommissioningBody::model()->findAll($body_crit) as $body) {
             $results[] = array(
                 'id' => 'body' . $body->id,
-                'value' => $body->name,
+                'label' => $body->name,
                 'body' => array(
                     'id' => $body->id,
                     'name' => $body->name,
