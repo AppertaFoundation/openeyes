@@ -39,7 +39,7 @@ class Element_DrugAdministration_record extends \EventMedicationUse
             parent::relations(),
             array(
                 'event' => array(self::BELONGS_TO, 'Event', 'event_id', 'on' => 'event.deleted = 0'),
-                'drug_admin' => array(self::BELONGS_TO, 'Element_DrugAdministration', array('event_id' => 'event_id')),
+                'element' => array(self::BELONGS_TO, 'Element_DrugAdministration', array('event_id' => 'event_id')),
             )
         );
     }
