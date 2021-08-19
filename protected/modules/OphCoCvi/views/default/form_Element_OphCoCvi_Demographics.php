@@ -157,14 +157,11 @@
           </td>
         </tr>
         <tr>
-            <?php $hide_search = strlen($element->la_name) > 0; ?>
           <td>
-            <div class="small-push-6">
-              <a href="#" id="la-search-toggle" class=" <?= $hide_search ? '': ' disabled'?>">Find Local Authority Details</a>
-            </div>
+              Find Local Authority Details
           </td>
           <td>
-                <?php $this->renderPartial('localauthority_search', array('hidden' => $hide_search, 'class'=>'cols-full')); ?>
+                <?php $this->renderPartial('localauthority_search', array('class'=>'cols-full')); ?>
           </td>
         </tr>
         <tr>
