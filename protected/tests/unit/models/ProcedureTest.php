@@ -69,6 +69,8 @@ class ProcedureTest extends ActiveRecordTestCase
             'default_duration' => 'Default Duration',
             'opcsCodes.name' => 'OPCS Code',
             'low_complexity_criteria' => 'Low Complexity Criteria',
+            'ecds_code' => 'ECDS Code',
+            'ecds_term' => 'ECDS Term'
         );
         $this->assertEquals($expected, $this->model->attributeLabels());
     }

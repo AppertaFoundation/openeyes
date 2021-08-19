@@ -318,8 +318,9 @@ class User extends BaseActiveRecordVersioned
     public function getUsersFromCurrentInstitution()
     {
         $criteria = new CDbCriteria();
-        $criteria->join = "join user_authentication ua on ua.user_id = t.id";
-        $criteria->compare('ua.institution_authentication_id', \Yii::app()->session['selected_institution_id']);
+        $criteria->join .= "join user_authentication ua on ua.user_id = t.id";
+        $criteria->join .= " join institution_authentication ia on ua.institution_authentication_id = ia.id";
+        $criteria->compare('ia.institution_id', \Yii::app()->session['selected_institution_id']);
         $criteria->order = 't.last_name,t.first_name asc';
 
         return self::model()->findAll($criteria);
