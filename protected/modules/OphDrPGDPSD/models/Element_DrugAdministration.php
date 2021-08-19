@@ -226,7 +226,6 @@ class Element_DrugAdministration extends BaseMedicationElement
                     $med->administered_time = null;
                     $med->administered_by = null;
                     $med->save();
-                    $event_entry->delete();
                 }
             }
         }

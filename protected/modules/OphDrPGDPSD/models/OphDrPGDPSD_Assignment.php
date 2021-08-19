@@ -309,16 +309,13 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     {
         $entries = $this->assigned_meds;
         $administered_count = 0;
-        $to_be_deleted_entries = array();
         $status = $this->status;
         foreach ($this->assigned_meds as $med) {
-            if ($med->event_entry && !$med->event_entry->event) {
-                $event_entry = $med->event_entry;
+            if ($med->event_entry && (!$med->event_entry->event || !$med->event_entry->element)) {
                 $med->administered_id = null;
                 $med->administered = 0;
                 $med->administered_time = null;
                 $med->administered_by = null;
-                $to_be_deleted_entries[] = $event_entry;
             }
             if ($med->administered) {
                 $administered_count++;
@@ -334,9 +331,6 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $this->status = strval($status);
         if ($this->isModelDirty()) {
             $this->save();
-        }
-        foreach ($to_be_deleted_entries as $entry) {
-            $entry->delete();
         }
     }
 
