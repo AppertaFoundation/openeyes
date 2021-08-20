@@ -100,3 +100,4 @@ build/logs
 protected/widgets/views/IndexSearch_Examination.php
 protected/scripts/sample_db.sql
 protected/scripts/sample_db.zip
+**/0-a-restore.sql

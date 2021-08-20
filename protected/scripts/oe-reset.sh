@@ -304,7 +304,12 @@ fi
 
 echo "Clearing current database..."
 
-dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%' identified by '$pass'; flush privileges;"
+dbresetsql="DROP DATABASE IF EXISTS openeyes; 
+DROP USER IF EXISTS '$dbuser';
+CREATE USER '$dbuser' IDENTIFIED BY '$pass'; 
+CREATE DATABASE ${DATABASE_NAME:-openeyes}; 
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%';
+FLUSH PRIVILEGES;"
 
 echo ""
 ## write-out command to console (helps with debugging)
@@ -327,34 +332,46 @@ fi
 
 if [ $cleanbase = "0" ]; then
 
+    echo "extracting $restorefile..."
+
     if [[ $restorefile =~ \.zip$ ]]; then
-        restorefilesize=$(numfmt --to=iec-i --suffix=B $(gzip -dc "$restorefile" | wc -c))
-        echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
+        # restorefilesize=$(numfmt --to=iec-i --suffix=B $(gzip -dc "$restorefile" | wc -c))
         # If pv is installed then use it to show progress
         [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
-        eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-            exit 1
-        }
+        eval "$importcmd >0-a-restore.sql"
     elif [[ $restorefile =~ \.sql$ ]]; then
-        restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "$restorefile" | cut -f1))
-        echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
-        # If pv is installed then use it to show progress
-        [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
-        eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-            exit 1
-        }
+        cp "$restorefile" 0-a-restore.sql
     elif [[ $restorefile == '-' ]]; then
         # pipe stdin straight through
-        eval "cat - | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+        eval "cat - >0-a-restore.sql " || {
+            echo -e "\n\nCOULD NOT IMPORT from stdin. Quiting...\n\n"
             exit 1
         }
     else
         echo -e "\n\nCOULD NOT IMPORT $restorefile. Unrecognised file extension (Only .zip or .sql files are supported). Quiting...\n\n"
         exit 1
     fi
+
+    # run cleanup on exports to maximise compatibility with different mysql/mariadb versions
+    echo "cleaning restore file for compatability..."
+    sed 's/NO_AUTO_CREATE_USER,\?//g' 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    sed "s|CREATE.\+DEFINER.\+ TRIGGER|CREATE TRIGGER|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    sed "s|CREATE.\+DEFINER.\+ FUNCTION|CREATE FUNCTION|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    sed "s|CREATE.\+DEFINER.\+ PROCEDURE|CREATE PROCEDURE|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    sed "s|\/\*\![0-9]\+ DEFINER.\+SQL SECURITY DEFINER.\?\*\/| |g" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+
+    # import the cleaned file
+    restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "0-a-restore.sql" | cut -f1))
+    echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
+    # If pv is installed then use it to show progress
+    [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv 0-a-restore.sql" || importcmd="cat 0-a-restore.sql"
+    eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+        echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+        exit 1
+    }
+
+    # remove temp file
+    rm 0-a-restore.sql 2>/dev/null
 
     ## belt and braces reset to the correct user password, in case the PW was altered by the imported sql
     pwresetsql="ALTER USER '$dbuser'@'%' IDENTIFIED BY '$pass';"
