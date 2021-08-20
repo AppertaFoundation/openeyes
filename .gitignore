@@ -112,3 +112,4 @@ protected/scripts/sample_db.zip
 
 # Allow local git ignores for dynamic changes we do not want to commit or track
 .local_gitignore
+**/0-a-restore.sql
