@@ -948,7 +948,6 @@ $modules = array(
         'OphOuCatprom5',
         'OphTrOperationchecklists',
         'OphDrPGDPSD',
-        'mehstaffdb'
 );
 
 // deal with any custom modulesadded for the local deployment - which are set in /config/modules.conf (added via docker)

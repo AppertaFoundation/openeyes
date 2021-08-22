@@ -66,7 +66,6 @@ $config = array(
         ),
         */
     ),
-
     'params' => array(
         //'pseudonymise_patient_details' => false,
         //'ab_testing' => false,
