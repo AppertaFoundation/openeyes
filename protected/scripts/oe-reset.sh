@@ -363,9 +363,10 @@ if [ $cleanbase = "0" ]; then
     # import the cleaned file
     restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "0-a-restore.sql" | cut -f1))
     echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
-    # If pv is installed then use it to show progress
+
+    # If pv is installed then use it to show progress - if not, use cat to pipe in the restore file
     [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv 0-a-restore.sql" || importcmd="cat 0-a-restore.sql"
-    eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+    eval "$importcmd | $dbconnectionstring --init-command='SET SESSION FOREIGN_KEY_CHECKS=0' -D ${DATABASE_NAME:-'openeyes'}" || {
         echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
         exit 1
     }
