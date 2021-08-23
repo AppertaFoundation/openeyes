@@ -65,6 +65,12 @@ class m210720_030613_create_triage_element extends OEMigration
             ['id' => 6, 'description' => 'Photophobia', 'snomed_code' => '409668002'],
             ['id' => 7, 'description' => 'Eye injury', 'snomed_code' => '282752000'],
             ['id' => 8, 'description' => 'Eye review', 'snomed_code' => '170720001'],
+            ['id' => 9, 'description' => 'Acute Visual Disturbance', 'snomed_code' => '63102001'],
+            ['id' => 10, 'description' => 'Chronic Visual Disturbance	', 'snomed_code' => '63102001'],
+            ['id' => 11, 'description' => 'Lid Lump', 'snomed_code' => '248515009'],
+            ['id' => 12, 'description' => 'Lid Swelling', 'snomed_code' => '193967004'],
+            ['id' => 13, 'description' => 'Flashes', 'snomed_code' => '162277006'],
+            ['id' => 14, 'description' => 'Floaters', 'snomed_code' => '162278001'],
         ]);
 
         $this->createOETable(
