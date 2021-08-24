@@ -120,12 +120,6 @@ while [[ $# -gt 0 ]]; do
         echo "Protected files will not be reset"
         nofiles=1
         ;;
-    --genetics-enable)
-        bash "$SCRIPTDIR"/add-genetics.sh
-        ;;
-    --genetics-disable)
-        bash "$SCRIPTDIR"/add-genetics.sh -r
-        ;;
     -p) # set dbpassword and move on to next param
         dbpassword="$2"
         shift
@@ -227,7 +221,7 @@ if [ $showhelp = 1 ]; then
     echo "DESCRIPTION:"
     echo "Resets database to latest 'sample' database"
     echo ""
-    echo "usage: $0 [--branch | b branchname] [--help] [--no-migrate | -nm ] [--banner \"banner text\"] [--develop | -d] [ --no-banner | -nb ] [-p dbpassword] [--genetics-enable] [--genetics-disable]"
+    echo "usage: $0 [--branch | b branchname] [--help] [--no-migrate | -nm ] [--banner \"banner text\"] [--develop | -d] [ --no-banner | -nb ] [-p dbpassword]"
     echo ""
     echo "COMMAND OPTIONS:"
     echo "	--help         : Display this help text"
@@ -250,10 +244,6 @@ if [ $showhelp = 1 ]; then
     echo "	-p			   : specify root dbpassword for mysql (default is \"dbpassword\")"
     echo "	-u             : specify username for connecting to database (default is 'root')"
     echo "	--demo         : Install additional scripts to set up openeyes for demo"
-    echo "	--genetics-enable"
-    echo "                  : enable genetics modules (if currently diabled)"
-    echo "	--genetics-disable"
-    echo "                  : disable genetics modules (if currently enabled)"
     echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
     echo "	--ignore-warnings	: Ignore warnings during migration"
     echo "	--no-fix		: do not run oe-fix routines after reset"
@@ -450,28 +440,6 @@ if [[ $demo == "1" && $nopost == "0" ]]; then
             bash -l "$f"
         fi
     done
-
-    # Run genetics scripts if genetics is enabled
-    if grep -q "'Genetics'," "$WROOT"/protected/config/local/common.php && ! grep -q "/\*'Genetics'," "$WROOT"/protected/config/local/common.php; then
-
-        echo "RUNNING Genetics files..."
-
-        basefolder="$MODULEROOT/sample/sql/demo/genetics"
-
-        if [ -d "$basefolder" ]; then
-            shopt -s nullglob
-            for f in $(ls "$basefolder" | sort -V); do
-                if [[ $f == *.sql ]]; then
-                    echo "importing $f"
-                    eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
-                elif [[ $f == *.sh ]]; then
-                    echo "running $f"
-                    bash -l "$basefolder/$f"
-                fi
-            done
-        fi
-
-    fi
 
 fi
 
