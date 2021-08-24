@@ -1,5 +1,20 @@
 #!/bin/bash -l
 
+abort() {
+    echo >&2 '
+****************************
+*** ABORTED DUE TO ERROR ***
+****************************
+'
+    date
+    echo "An error occurred. Exiting..." >&2
+    exit 1
+}
+
+trap 'abort' 0
+
+set -e
+
 ## If the OE_NO_DB build parameter is set, then this script will not be run
 if [ "$OE_NO_DB" == "true" ]; then
     echo "
@@ -407,10 +422,10 @@ if [[ $demo == "1" && $nopre == "0" ]]; then
     for f in $(ls "$MODULEROOT"/sample/sql/demo/pre-migrate | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f"
+            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/\"$f\""
         elif [[ $f == *.sh ]]; then
             echo "running $f"
-            bash -l "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
+            bash -l "$MODULEROOT/sample/sql/demo/pre-migrate"/"$f"
         fi
     done
 fi
@@ -421,26 +436,26 @@ if [ $migrate == "1" ]; then
     bash "$SCRIPTDIR"/oe-migrate.sh "$migrateparams"
     echo "The following migrations were applied..."
     grep applied "$WROOT"/protected/runtime/migrate.log
-fi
 
-# Run post-migration demo scripts
-# Actual scripts are in sample module, for greater flexibility
-if [[ $demo == "1" && $nopost == "0" ]]; then
+    # Run post-migration demo scripts
+    # Actual scripts are in sample module, for greater flexibility
+    if [[ $demo == "1" && $nopost == "0" ]]; then
 
-    echo "RUNNING POST-MIGRATION DEMO SCRIPTS..."
+        echo "RUNNING POST-MIGRATION DEMO SCRIPTS..."
 
-    basefolder="$MODULEROOT/sample/sql/demo"
+        basefolder="$MODULEROOT/sample/sql/demo"
 
-    find "$basefolder" "$basefolder"/post-migrate/ "$basefolder"/local-post -maxdepth 1 -type f -printf '%f\0%p\n' | sort -t '\0' -V | awk -F '\0' '{print $2}' | while read f; do
-        if [[ $f == *.sql ]]; then
-            echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $f"
-        elif [[ $f == *.sh ]]; then
-            echo "running $f"
-            bash -l "$f"
-        fi
-    done
+        find "$basefolder" "$basefolder"/post-migrate/ "$basefolder"/local-post -maxdepth 1 -type f -printf '%f\0%p\n' | sort -t '\0' -V | awk -F '\0' '{print $2}' | while read f; do
+            if [[ $f == *.sql ]]; then
+                echo "importing $f"
+                eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $f"
+            elif [[ $f == *.sh ]]; then
+                echo "running $f"
+                bash -l "$f"
+            fi
+        done
 
+    fi
 fi
 
 # Set banner to confirm reset
@@ -534,3 +549,5 @@ printf "\e[42m\e[97m  RESET COMPLETE  \e[0m \n"
 echo ""
 
 bash "$SCRIPTDIR"/oe-which.sh
+
+trap : 0
