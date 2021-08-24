@@ -7,7 +7,7 @@
  * @var Episode[] $specialty_episodes
  **/
 
-$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
+$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
 
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
 // which is expected to be opthalmology.
@@ -63,7 +63,7 @@ if (is_array($ordered_episodes)) { ?>
 
         $subspecialties = Subspecialty::model()->findAllByAttributes(
             [
-            'name'=> [
+            'name' => [
               'Cataract',
               'Glaucoma',
               'Medical Retina',
@@ -75,7 +75,7 @@ if (is_array($ordered_episodes)) { ?>
         foreach ($subspecialties as $subspecialty) { ?>
             <li class="icon-btn"
                 data-subspecialty-id="<?= $subspecialty->id ?>">
-                <a class="<?= in_array($subspecialty->id, array_keys($episodes_list))?'active':'inactive' ?>"
+                <a class="<?= in_array($subspecialty->id, array_keys($episodes_list)) ? 'active' : 'inactive' ?>"
                    href="<?= Yii::app()->createUrl(
                        '/patient/oescape/',
                        [

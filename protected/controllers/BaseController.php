@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -123,7 +124,7 @@ class BaseController extends Controller
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
         if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])) {
             $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true).'/css/style_oe3_print.min.css';
+            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_print.3.css';
             $newparams =
                 array_merge_recursive(
                     Yii::app()->getParams()->toArray(),
@@ -233,7 +234,7 @@ class BaseController extends Controller
         }
 
         $execution_time = CJavaScript::encode(round(Yii::getLogger()->executionTime, 3));
-        $memory_usage = round(Yii::getLogger()->memoryUsage/1024/1024, 3)." MB";
+        $memory_usage = round(Yii::getLogger()->memoryUsage / 1024 / 1024, 3) . " MB";
         Yii::app()->getClientScript()->registerScript('scr_' . "execution_time", "execution_time = $execution_time;", CClientScript::POS_HEAD);
         Yii::app()->getClientScript()->registerScript('scr_' . "memory_usage", "memory_usage = '$memory_usage';", CClientScript::POS_HEAD);
     }
@@ -277,7 +278,7 @@ class BaseController extends Controller
             $user_auth = Yii::app()->session['user_auth'];
             $user = $user_auth->user;
             $this->jsVars['user_id'] = $user->id;
-            $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
+            $this->jsVars['user_full_name'] = $user->first_name . " " . $user->last_name;
             $this->jsVars['user_email'] = $user->email;
             $this->jsVars['user_username'] = $user_auth->username;
             $institution = Institution::model()->getCurrent();

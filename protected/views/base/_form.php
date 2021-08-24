@@ -16,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $uri = preg_replace('/^\//', '', preg_replace('/\/$/', '', $_SERVER['REQUEST_URI']));
@@ -29,8 +30,10 @@ if (!Yii::app()->user->isGuest) {
         }
 
         $user_auth = Yii::app()->params['user_auth'];
-        if ($user_auth && $user_auth->institutionAuthentication->user_authentication_method == "LOCAL"
-            && PasswordUtils::testStatus('stale', $user_auth) && empty(Yii::app()->session['shown_pw_reminder'])) {
+        if (
+            $user_auth && $user_auth->institutionAuthentication->user_authentication_method == "LOCAL"
+            && PasswordUtils::testStatus('stale', $user_auth) && empty(Yii::app()->session['shown_pw_reminder'])
+        ) {
             Yii::app()->session['shown_pw_reminder'] = true;
             $this->widget('PasswordStaleWidgetReminder');
         }
@@ -45,7 +48,7 @@ if (!Yii::app()->user->isGuest) {
     }
     $user = Yii::app()->session['user'];
     $menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
-    $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
+    $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
     ?>
 
     <div class="oe-user-banner">

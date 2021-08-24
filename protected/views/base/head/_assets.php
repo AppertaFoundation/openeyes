@@ -1,21 +1,20 @@
 <?php $assetManager = Yii::app()->getAssetManager();?>
 <?php
-if(isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_generation']) {
+if (isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_generation']) {
     $display_theme = 'dark';
-}
-else {
-    $user_theme = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"', array(":user_id"=>Yii::app()->user->id));
-    $display_theme = $user_theme ? SettingMetadata::model()->getSetting('display_theme'): Yii::app()->params['image_generation'];
+} else {
+    $user_theme = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"', array(":user_id" => Yii::app()->user->id));
+    $display_theme = $user_theme ? SettingMetadata::model()->getSetting('display_theme') : Yii::app()->params['image_generation'];
 }
 $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
 $basic_assets_path = Yii::getPathOfAlias('application.assets');
-Yii::app()->clientScript->registerLinkTag('icon', 'image/png', $assetManager->getPublishedUrl($newblue_path, true) . '/img/eyedraw-draw-icons-32x32.png');
-Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path, true) . '/css/eyedraw_draw_icons.min.css');
+Yii::app()->clientScript->registerLinkTag('icon', 'image/png', $assetManager->getPublishedUrl($newblue_path, true) . '/dist/img/eyedraw-draw-icons-32x32.png');
+Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_eyedraw_doodles.css');
 ?>
 <link rel="stylesheet" type="text/css" data-theme="dark"
-      href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/css/style_oe3_dark.min.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
+      href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_dark.3.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
 <link rel="stylesheet" type="text/css" data-theme="light"
-      href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/css/style_oe3_light.min.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
+      href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_light.3.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
 
 <link rel="stylesheet" type="text/css" data-theme="dark"
       href="<?= $assetManager->getPublishedUrl($basic_assets_path, true) . '/css/patient_panel.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
@@ -79,4 +78,3 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('../../node_modules/pickmeup/js/pickmeup.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('../../node_modules/tinymce/tinymce.js');?>
 <?php $assetManager->registerScriptFile('../../node_modules/lodash/lodash.min.js');?>
-

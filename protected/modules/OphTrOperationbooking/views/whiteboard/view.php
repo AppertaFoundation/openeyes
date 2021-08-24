@@ -268,4 +268,4 @@ $other_card_list = array(
     </footer>
 </main>
 
-<script src="<?= Yii::app()->assetManager->createUrl('/newblue/whiteboardJS/wb_procedure_name.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('/newblue/dist/js/whiteboardJS/wb_procedure_name.js')?>"></script>
