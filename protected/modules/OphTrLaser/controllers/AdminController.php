@@ -265,7 +265,6 @@ class AdminController extends ModuleAdminController
             ->select('ol.id, ol.procedure_id, p.term')
             ->from('ophtrlaser_laserprocedure ol')
             ->join('proc p', 'p.id = ol.procedure_id')
-            ->group('p.id, p.term')
             ->order('p.term')
             ->queryAll();
         $all_procs = Yii::app()->db->createCommand()
