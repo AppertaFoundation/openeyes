@@ -1,7 +1,18 @@
 <?php
-    $model_name = \CHtml::modelName($element);
-    $concerns = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Concern::model()->findAll();
-    $editable = !isset($element->outcome_id);
+use OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Concern;
+use OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry;
+
+$model_name = \CHtml::modelName($element);
+$concerns = OphCiExamination_Safeguarding_Concern::model()->findAll();
+$editable = !isset($element->outcome_id);
+
+if (isset($element->event)) {
+    $patient = $element->event->getPatient();
+} else {
+    $patient = Patient::model()->findByPk(\Yii::app()->request->getQuery('patient_id'));
+}
+
+$patient_is_minor = $patient->isChild();
 ?>
 <div id="<?= $model_name . '_element'?>" class="element-fields full-width">
     <div class="cols-11">
@@ -19,9 +30,75 @@
             <colgroup><col class="cols-4"></colgroup>
             <tbody>
                 <?php
-                    $entries = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
+                if ($patient_is_minor) {
+                    $protection_plan_label = 'Child is on a child protection plan';
+                    $protection_plan_id = OphCiExamination_Safeguarding_Concern::model()->findByAttributes(array('term' => $protection_plan_label))->id;
 
-                    $row_count = 0;
+                    echo CHtml::hiddenField(
+                        'child_protection_concern_data',
+                        json_encode(
+                            array(
+                                'id' => $protection_plan_id,
+                                'label' => $protection_plan_label
+                            )
+                        )
+                    );
+                    ?>
+                <tr class="parental-responsibility-row">
+                    <td>Does the child have a social worker?</td>
+                    <td>
+                        <fieldset>
+                            <label class="highlight inline">
+                                <?= \CHTML::activeRadioButton($element, 'has_social_worker', array('value'=>'1', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
+                                Yes, (add social worker as a contact)
+                            </label>
+                            <label class="highlight inline">
+                                <?= \CHTML::activeRadioButton($element, 'has_social_worker', array('value'=>'0', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
+                                No
+                            </label>
+                        </fieldset> 
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr class="parental-responsibility-row">
+                    <td>Is the child under a child protection plan?</td>
+                    <td>
+                        <fieldset>
+                            <label class="highlight inline">
+                                <?= \CHTML::activeRadioButton($element, 'under_protection_plan', array('value'=>'1', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
+                                Yes
+                            </label>
+                            <label class="highlight inline">
+                                <?= \CHTML::activeRadioButton($element, 'under_protection_plan', array('value'=>'0', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
+                                No
+                            </label>
+                        </fieldset> 
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr class="parental-responsibility-row">
+                    <td>Who is accompanying the child and their relationship?</td>
+                    <td>
+                        <?= \CHTML::activeTextField($element, 'accompanying_person_name', array('class' => 'cols-full', 'placeholder' => 'Full name and relationship of person accompanying the child')); ?>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr class="parental-responsibility-row">
+                    <td>Who has parental responsibility for the child?</td>
+                    <td>
+                        <?= \CHTML::activeTextField($element, 'responsible_parent_name', array('class' => 'cols-full', 'placeholder' => 'Full name of parent responsible for child')); ?>
+                    <td>
+                    </td>
+                </tr>
+                    <?php
+                }
+
+                $entries = OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
+
+                $row_count = 0;
 
                 foreach ($entries as $entry) {
                     $this->renderPartial('form_Element_OphCiExamination_Safeguarding_Entry', array('element' => $element, 'entry' => $entry, 'row_count' => $row_count++, 'editable' => $editable));
@@ -46,7 +123,7 @@
             $template_comment_container_id = "safeguarding-entry-comment-container-{{row_count}}";
             $template_comment_button_id = "safeguarding-entry-comment-button-{{row_count}}";
         ?>
-        <tr>
+        <tr class="js-entry-row">
                 <?= CHtml::hiddenField($template_model_name . '[concern_id]', '{{concern_id}}') ?>
             <td>{{concern_term}}</td>
             <td>
@@ -103,48 +180,62 @@
         }
 
         function refreshNoConcernsVisibility() {
-            if ($("#safeguarding-entries-table > tbody > tr").length > 0) {
+            if ($("#safeguarding-entries-table > tbody > tr.js-entry-row").length > 0) {
                 $("#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns").parent().hide();
             }else{
                 $("#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns").parent().show();
             }
         }
 
+        function addSafeguardingRow(item) {
+            let $safeguarding_table_body = $('table#safeguarding-entries-table > tbody');
+
+            let row_count = $safeguarding_table_body.children('tr').length;
+            $safeguarding_table_body.append(function() {
+                let data = {
+                    'concern_id': item.id,
+                    'concern_term': item.label,
+                    'row_count': row_count,
+                };
+                return Mustache.render($('#add-new-safeguarding-row-template').text(), data);
+            });
+
+            let $last_safeguarding_row = $safeguarding_table_body.children('tr').last();
+            attachSafeguardingTrashEvents($last_safeguarding_row.find('i.safeguarding-trash'));
+            refreshNoConcernsVisibility();
+        }
+
         $(document).ready(function () {
+            let child_protection_json = $('input#child_protection_concern_data').val();
+            if (child_protection_json !== undefined) {
+                let child_protection_concern_data = JSON.parse(child_protection_json);
+
+                $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_under_protection_plan').change(function() {
+                    if($(`tr > input[value=${child_protection_concern_data.id}]`).length === 0) {
+                        $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns').prop("checked", false);
+                        addSafeguardingRow(child_protection_concern_data);
+                    }
+                });
+            }
+
             refreshNoConcernsVisibility();
 
             attachSafeguardingTrashEvents($('i.safeguarding-trash'));
-
             new OpenEyes.UI.AdderDialog({
                 openButton: $('#safeguarding-adder-button'),
                 deselectOnReturn: true,
-                // source: 'sidebar',
                 parentContainer: 'body',
                 itemSets:[
                     new OpenEyes.UI.AdderDialog.ItemSet(
-                        <?= CJSON::encode(array_map(function ($item) {
-    return ['label' => $item->term, 'id' => $item->id];
+                        <?= json_encode(array_map(function ($item) {
+                            return ['label' => $item->term, 'id' => $item->id];
                         }, $concerns)) ?>,
                         {'header':'Safeguarding Concern', 'id':'concern_ids', 'multiSelect': true}
                     ),
                 ],
                 onReturn: function(adderDialog, selectedItems, selectedAdditions){
-                    let $safeguarding_table_body = $('table#safeguarding-entries-table > tbody');
-
                     selectedItems.forEach(function(selectedItem) {
-                        let row_count = $safeguarding_table_body.children('tr').length;
-                        $safeguarding_table_body.append(function() {
-                            let data = {
-                                'concern_id': selectedItem.id,
-                                'concern_term': selectedItem.label,
-                                'row_count': row_count,
-                            };
-                            return Mustache.render($('#add-new-safeguarding-row-template').text(), data);
-                        });
-
-                        let $last_safeguarding_row = $safeguarding_table_body.children('tr').last();
-                        attachSafeguardingTrashEvents($last_safeguarding_row.find('i.safeguarding-trash'));
-                        refreshNoConcernsVisibility();
+                        addSafeguardingRow(selectedItem);
                     });
                     return true;
                 }

@@ -1639,7 +1639,14 @@ class DefaultController extends \BaseEventTypeController
     {
         $element_data = $data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())];
 
-        $element->no_concerns = $element_data['no_concerns'];
+        if(array_key_exists('accompanying_person_name', $element_data)) {
+            $element->accompanying_person_name = $element_data['accompanying_person_name'];
+        }
+        if(array_key_exists('responsible_parent_name', $element_data)) {
+            $element->responsible_parent_name = $element_data['responsible_parent_name'];
+        }
+
+        $element->save();
 
         if (isset($data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())]['entries'])) {
             $entries = $data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())]['entries'];
