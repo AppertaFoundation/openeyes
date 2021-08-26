@@ -103,9 +103,21 @@
             </table>
         <?php }?>
         </form>
-    <?php } else {?>
-        <div class="alert-box info">No mapping items have been defined for this Worklist Definition. You may add one by clicking the button above ...</div>
-    <?php } ?>
+    <?php } else { ?>
+        <?php if ($this->manager->canUpdateWorklistDefinition($definition)) { ?>
+            <div class="alert-box info">
+                No mapping items have been defined for this Worklist Definition.
+                You may add one by clicking the button above ...
+            </div>
+        <?php } else { ?>
+            <div class="alert-box info">
+                No mapping items have been defined for this Worklist Definition.
+                Your system does not allow definitions to be edited after generating instances.
+                If you want to add some mappings please delete instances first
+                and then delete and recreate the Worklist Definition.
+            </div>
+        <?php }
+    } ?>
 </div>
 
 <script type="text/javascript">
