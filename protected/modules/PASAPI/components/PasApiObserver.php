@@ -2,7 +2,6 @@
 
 namespace OEModule\PASAPI\components;
 
-use OEModule\PASAPI\resources\BaseResource;
 use OEModule\PASAPI\resources\Patient;
 
 /**
@@ -75,13 +74,13 @@ class PasApiObserver
             $request_data = [
                 // this can be hos_num, nhs_num, or any patient number (value)
                 // based on $type (in DefaultPas.php) we will determinate what we need to send (hos_num or nhs_num)
-                'patient_identifier_value' => $terms_with_type['term'],
+                'patient_identifier_value' => $terms_with_type['term'] ?? '',
                 'patient_identifier_type_id' => $type->id,
 
                 // if name is set we will search by that - btw, in theory patient_identifier_value and name can't be set
                 // at the same time
-                'last_name' => $data['lastname'] ?? '',
-                'first_name' => $data['first_name'] ?? '',
+                'last_name' => $data['params']['last_name'] ?? '',
+                'first_name' => $data['params']['first_name'] ?? '',
                 'dob' => $data['dob'] ?? '',
 
                 // we return error message via patient model
