@@ -29,7 +29,7 @@
     </thead>
     <tbody>
     <?php
-    foreach ($user->user_authentications as $i => $user_authentication) {
+    foreach ($user->authentications as $i => $user_authentication) {
         $active = false;
         if ($user_authentication->institutionAuthentication->institution->id === Institution::model()->getCurrent()->id) {
             $active = true;
