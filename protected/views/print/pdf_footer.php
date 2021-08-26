@@ -1,7 +1,8 @@
 <style>
     #footer {
         font-size: 5.2pt;
-        padding: 0;
+        /*Padding below has been commented as part of OE-11253, if it causes issues, try setting padding-bottom to a suitable value.*/
+        /*padding: 0;*/
         margin-right: {{MARGIN_RIGHT}};
         margin-left: {{MARGIN_LEFT}};
         width: calc(100% - {{MARGIN_LEFT}} - {{MARGIN_RIGHT}};
