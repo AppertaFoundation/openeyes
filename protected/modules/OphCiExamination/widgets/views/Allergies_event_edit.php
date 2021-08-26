@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -28,15 +29,17 @@ $required_allergy_ids = array_map(function ($r) {
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <div class="cols-1 align-left" <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
-            id="<?= $model_name ?>_no_allergies_wrapper">
-        <label class="inline highlight" for="<?= $model_name ?>_no_allergies" id="<?= $model_name ?>_no_allergies_label">
+    <div class="cols-11 align-left" >
+            <div class="cols-full" id="<?= $model_name ?>_no_allergies_wrapper" <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>>
+        <label class="inline highlight"  for="<?= $model_name ?>_no_allergies" id="<?= $model_name ?>_no_allergies_label">
             <input type="hidden" name="<?=$model_name?>[no_allergies]" value="off">
             <?=\CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
             No allergies
         </label>
-    </div>
-    <table id="<?= $model_name ?>_entry_table" class="cols-8">
+        
+</div>
+    <div class="cols-full">
+    <table id="<?= $model_name ?>_entry_table" class="cols-full">
         <colgroup>
             <col class="cols-3">
             <col class="cols-3">
@@ -84,7 +87,8 @@ $required_allergy_ids = array_map(function ($r) {
         ?>
             </tbody>
         </table>
-
+    </div>
+</div>
     <div class="add-data-actions flex-item-bottom" id="history-allergy-popup">
         <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
                     class="oe-i plus pro-theme"></i></button>
