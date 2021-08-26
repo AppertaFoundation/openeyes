@@ -25,9 +25,9 @@
                     <th class="center">9</th>
                     <th class="center">10</th>
                     <th></th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Comments</th>
+                    <th class="center">Date</th>
+                    <th class="center">Time</th>
+                    <th class="center">Comments</th>
                     <th><!--trash, edit only --></th>
                 </tr>
             </thead>

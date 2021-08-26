@@ -25,9 +25,9 @@
                     <th class="center">9</th>
                     <th class="center">10</th>
                     <th></th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Comments</th>
+                    <th class="center">Date</th>
+                    <th class="center">Time</th>
+                    <th class="center">Comments</th>
                     <th><!--trash, edit only --></th>
                 </tr>
             </thead>
@@ -82,8 +82,8 @@
                     </fieldset>
                 </td>
                 <td><i class="oe-i crying medium no-click"></i></td>
-                <td><input id="pain-date-field" class="date"></td>
-                <td><input id="pain-time-field" type="time" class="fixed-width-medium"></td>
+                <td style="float: left;"><input id="pain-date-field" class="date"></td>
+                <td style="float: left;"><input id="pain-time-field" type="time" class="fixed-width-medium"></td>
                 <td>
                     <div class="cols-full">
                         <button id="pain-show-comment-button" class="button js-add-comments" type="button" data-comment-container="#pain-comment-container">
@@ -92,7 +92,7 @@
                         <div class="cols-full comment-container" style="display: block;">
                             <!-- comment-group, textarea + icon -->
                             <div id="pain-comment-container"  class="flex-layout flex-left js-comment-container" style="display: none;" data-comment-button="#pain-show-comment-button">
-                                <textarea id="pain-comment-field" placeholder="Comments" autocomplete="off" rows="1" class="js-comment-field cols-full" style=""></textarea>
+                                <textarea id="pain-comment-field" placeholder="Comments" autocomplete="off" rows="1" cols="10" class="js-comment-field cols-full"></textarea>
                                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                             </div>
                         </div>
