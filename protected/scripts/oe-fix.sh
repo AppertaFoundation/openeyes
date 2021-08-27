@@ -16,6 +16,9 @@ WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 
 curuser="${LOGNAME:-root}"
 
+# disable log to browser during fix, otherwise it causes extraneous trace output on the CLI
+export LOG_TO_BROWSER=""
+
 # process commandline parameters
 clearcahes=1
 buildassests=1
