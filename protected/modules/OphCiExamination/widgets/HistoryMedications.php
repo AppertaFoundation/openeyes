@@ -272,7 +272,7 @@ class HistoryMedications extends BaseMedicationWidget
      */
     public function getViewData()
     {
-        if (in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE))) {
+        if (in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE, static::$PATIENT_SUMMARY_MODE_OUTPUT))) {
             return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();
@@ -330,5 +330,9 @@ class HistoryMedications extends BaseMedicationWidget
     protected function getNewElement()
     {
         return new HistoryMedicationsElement();
+    }
+
+    public function sortEntriesByDate($entries, bool $current = true) : array {
+        return parent::sortEntriesByDate($entries, $current);
     }
 }

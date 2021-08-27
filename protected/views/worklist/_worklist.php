@@ -69,9 +69,9 @@ $is_printing = isset($is_printing) && ($is_printing === true);
             <?php if (isset($is_prescriber) && $is_prescriber) {?>
             <th>
                 <label class="inline highlight ">
-                    <input 
-                        value="All" 
-                        class="work-ls-patient-all" 
+                    <input
+                        value="All"
+                        class="work-ls-patient-all"
                         type="checkbox"
                         data-table-id="<?=$worklist->id?>"
                     > All
@@ -124,7 +124,7 @@ $is_printing = isset($is_printing) && ($is_printing === true);
                         ); ?>
                     </td>
                     <td id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $wl_patient->patient->id ?>">
-                        <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn"></i>
+                        <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn" onmouseenter="onMouseEnterPatientQuickOverview(this)" onmouseleave="hidePatientQuickOverview()" onclick="onClickPatientQuickOverview(this)"></i>
                     </td>
                     <td>
                         <?= $exam_api->getLatestOutcomeRiskStatus($wl_patient->patient, $wl_patient->worklist); ?>
@@ -176,18 +176,8 @@ $is_printing = isset($is_printing) && ($is_printing === true);
     $(document).ready(function () {
         let col_num = $('#js-worklist-<?=$worklist->id?> thead th').length;
         $('#js-worklist-<?=$worklist->id?> tfoot td').attr('colspan', col_num);
-        $.ajax({
-            type: "POST",
-            url: "/worklist/renderPopups",
-            data: {
-                "worklistId" : (<?= $worklist->id?>),
-                YII_CSRF_TOKEN: YII_CSRF_TOKEN
-            },
-            success: function (resp) {
-                $("body.open-eyes.oe-grid").append(resp);
-            }
-        })
-    })
+    });
+
     $('body').on('click', '.collapse-data-header-icon', function () {
         $(this).toggleClass('collapse expand');
         $(this).next('div').toggle();
