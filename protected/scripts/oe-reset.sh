@@ -36,6 +36,9 @@ SCRIPTDIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 MODULEROOT=$WROOT/protected/modules
 
+# disable log to browser during reset, otherwise it causes extraneous trace output on the CLI
+export LOG_TO_BROWSER=""
+
 ## default DB connection variables
 # If database user / pass are empty then set from environment variables of from docker secrets (secrets are the recommended approach)
 # Note that this script ignores the old db.conf method. If you are still using this deprecated
