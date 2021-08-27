@@ -229,6 +229,9 @@
                         'comment_icon_display': comment_icon_display,
                     };
 
+                    let currentTime = new Date();
+                    $('#pain-time-field').val(`${currentTime.getHours()}:${currentTime.getMinutes()}`);
+
                     return Mustache.render($('#add-new-pain-row-template').text(), data);
                 });
 
