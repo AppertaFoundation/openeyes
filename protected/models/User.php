@@ -610,20 +610,21 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * @param $text
-     * @param $key
-     * @return string|null
+     * Returns a standalone img tag with a base64-encoded image of the user's signature
+     *
+     * @param array $html_options   Additional HTML options, @see \CHtml::img()
+     * @return string|null  The image or null if the user does not have a saved signature
      */
-    protected function decryptSignature($text, $key)
+    public function getSignatureImage(array $html_options = []) : ?string
     {
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $decrypt = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
-        if (Yii::app()->params['no_md5_verify']) {
-            return $decrypt;
-        }
-
-        return Helper::md5Verified($decrypt);
+        return !is_null($this->signature_file_id) ?
+            \CHtml::image(
+                "/protectedFile/view/".$this->signature_file_id."/?name=Signature",
+                "Signature",
+                $html_options
+                )
+            :
+            null;
     }
 
     /**
