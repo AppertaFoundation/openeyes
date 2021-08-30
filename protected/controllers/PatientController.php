@@ -192,6 +192,9 @@ class PatientController extends BaseController
         $criteria->limit = 3;
         $events = Event::model()->findAll($criteria);
 
+        $criteria->compare('t.deleted', 0);
+        $active_events = Event::model()->findAll($criteria);
+
         $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
 
         if ($no_episodes) {
@@ -200,6 +203,7 @@ class PatientController extends BaseController
 
         $this->render('landing_page', array(
             'events' => $events,
+            'active_events' => $active_events,
             'patient' => $this->patient,
             'no_episodes' => $no_episodes,
         ));

@@ -451,26 +451,26 @@
 
 <?php
 $whiteboard_display_mode = SettingMetadata::model()->getSetting('opbooking_whiteboard_display_mode');
-
+$disabled = $this->action->id === 'removed' ? 'disabled' : null;
 if ($whiteboard_display_mode === 'CURRENT') {
     $this->event_actions[] = EventAction::link(
         'Whiteboard',
         '#',
         null,
-        array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->event_id)
+        array('class' => 'small button' . " $disabled", 'id' => 'js-display-whiteboard', 'data-id' => $element->event_id)
     );
     $this->event_actions[] = EventAction::link(
         'Close Whiteboard',
         '#',
         null,
-        array('class' => 'small button', 'id' => 'js-close-whiteboard', 'data-id' => $element->event_id)
+        array('class' => 'small button' . " $disabled", 'id' => 'js-close-whiteboard', 'data-id' => $element->event_id)
     );
 } else {
     $this->event_actions[] = EventAction::link(
         'Whiteboard',
         Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/whiteboard/view/' . $element->event_id),
         null,
-        array('class' => 'small button', 'target' => '_blank')
+        array('class' => 'small button' . " $disabled", 'target' => '_blank')
     );
 }
 

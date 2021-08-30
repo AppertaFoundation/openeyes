@@ -477,7 +477,8 @@ class UserIdentity extends CUserIdentity
         reset($firms);
 
         $institution_name = Institution::model()->findByPk($this->institution_id)->name;
-        $site_name = Site::model()->findByPk($this->site_id)->name;
+        $site = Site::model()->findByPk($this->site_id);
+        $site_name = $site->name;
 
         $user->audit('login',
             'login-successful', null,

@@ -89,7 +89,7 @@
           <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
         <span class="js-has-tooltip" data-tooltip-content="Change Event date">
             <i class="oe-i history large pad-left js-change-event-date"
-               style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
+               style="display:<?= in_array($this->action->id, array('view', 'removed')) ? 'none' : 'block' ?>"></i>
         </span>
         <?php } ?>
         </div>

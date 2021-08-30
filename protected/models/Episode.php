@@ -58,12 +58,29 @@ class Episode extends BaseActiveRecordVersioned
     }
 
     /**
+     * Return the AR model
+     *
+     * @return Episode the AR model
+     */
+    protected function instantiate($attributes)
+    {
+        $deleted = !empty($attributes) ? intval($attributes['deleted']) : 0;
+        if ($deleted) {
+            $class = 'DeletedEpisode';
+        } else {
+            $class = get_class($this);
+        }
+        $model = new $class(null);
+        return $model;
+    }
+    /**
      * Sets default scope for events such that we never pull back any rows that have deleted set to 1.
      *
      * @return array of mandatory conditions
      */
     public function defaultScope()
     {
+        $this->displayDeletedEvents();
         if ($this->defaultScopeDisabled) {
             return array();
         }
@@ -458,6 +475,7 @@ class Episode extends BaseActiveRecordVersioned
                 'date_columns' => [],
                 'fuzzy_date_field' => 'disorder_date',
             ),
+            'DisplayDeletedEventsBehavior' => 'DisplayDeletedEventsBehavior',
         );
     }
 

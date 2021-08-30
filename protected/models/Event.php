@@ -45,6 +45,7 @@
 class Event extends BaseActiveRecordVersioned
 {
     private $defaultScopeDisabled = false;
+    protected $event_view_path = '/default/view';
 
     /**
      * Returns the static model of the specified AR class.
@@ -58,6 +59,24 @@ class Event extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 
+    public function behaviors()
+    {
+        return array(
+            'DisplayDeletedEventsBehavior' => 'DisplayDeletedEventsBehavior',
+        );
+    }
+
+    protected function instantiate($attributes)
+    {
+        $deleted = !empty($attributes) ? intval($attributes['deleted']) : 0;
+        if ($deleted) {
+            $class = 'DeletedEvent';
+        } else {
+            $class = get_class($this);
+        }
+        $model = new $class(null);
+        return $model;
+    }
     /**
      * @return string the associated database table name
      */
@@ -73,6 +92,7 @@ class Event extends BaseActiveRecordVersioned
      */
     public function defaultScope()
     {
+        $this->displayDeletedEvents();
         if ($this->defaultScopeDisabled) {
             return array();
         }
@@ -720,6 +740,7 @@ class Event extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria;
         $criteria->compare('patient_id', $patient->id);
         $criteria->compare('event_type_id', $event_type->id);
+        $criteria->addCondition('t.deleted = 0');
         $criteria->order = 'event_date asc';
 
         return Event::model()->with('episode')->findAll($criteria);
@@ -790,5 +811,152 @@ class Event extends BaseActiveRecordVersioned
                 }
             }
         }
+    }
+
+    /**
+     * Return event path
+     *
+     * @return string
+     */
+    public function getEventViewPath()
+    {
+        return Yii::app()->createUrl($this->eventType->class_name . $this->event_view_path) . '/' . $this->id ;
+    }
+
+    /**
+     * Return processed event date
+     *
+     * @return string
+     */
+    public function getEventDate()
+    {
+        return $this->event_date ? $this->NHSDateAsHTML('event_date') : $this->NHSDateAsHTML('created_date');
+    }
+
+    /**
+     * Return a list of event li css
+     *
+     * @return array
+     */
+    public function getEventLiCss()
+    {
+        return array('event');
+    }
+
+    /**
+     * Return event details
+     *
+     * @return array
+     */
+    public function getEventListDetails()
+    {
+        $criteria_event_image = new CDbCriteria();
+        $criteria_event_image->with = ['status'];
+        $criteria_event_image->compare('t.event_id', $this->id);
+        $criteria_event_image->compare('status.name', 'CREATED');
+        $criteria_event_image->order = 't.last_modified_date desc';
+        return array(
+            'event_path' => $this->getEventViewPath(),
+            'event_name' => $this->getEventName(),
+            'event_image' => EventImage::model()->find($criteria_event_image),
+            'event_date' => $this->getEventDate(),
+            'event_li_css' => $this->getEventLiCss(),
+        );
+    }
+
+    /**
+     * Setup special event icon, issue text and class
+     * (Moved from _single_episode_sidebar view)
+     *
+     * @return array
+     */
+    public function getDetailedIssueText($event_icon_class, $event_issue_text, $event_issue_class)
+    {
+        $event_type = $this->eventType->class_name;
+        $text = $event_issue_text;
+        $class = $event_issue_class;
+        switch ($event_type) {
+            case 'OphTrOperationbooking':
+                $operation_status_to_css_class = [
+                    'Requires scheduling' => 'alert',
+                    'Scheduled' => 'scheduled',
+                    'Requires rescheduling' => 'alert',
+                    'Rescheduled' => 'scheduled ',
+                    'Cancelled' => 'cancelled',
+                    'Completed' => 'done',
+                    'On-Hold' => 'pause'
+                    // extend this list with new statuses, e.g.:
+                    // 'Reserved ... ' => 'flag', for OE-7194
+                ];
+                $operation = $this->getElementByClass('Element_OphTrOperationbooking_Operation');
+                if ($operation) {
+                    $status_name = $operation->status->name;
+                    $css_class = $operation_status_to_css_class[$status_name];
+                    $event_icon_class .= ' ' . $css_class;
+                    if (!$this->hasIssue('Operation requires scheduling')) {
+                        // this needs to be checked to avoid issue duplication, because the issue
+                        // 'Operation requires scheduling' is saved to the database
+                        // as an event issue, while the others are not
+                        $class .= ' ' . $css_class;
+                        $text .= 'Operation ' . $status_name . "\n";
+                    }
+                }
+                break;
+            case 'OphCoCorrespondence':
+                $correspondence_email_status_to_css_class = [
+                    'Sending' => 'scheduled',
+                    'Complete' => 'done',
+                    'Failed' => 'cancelled',
+                    'Pending' => 'scheduled',
+                ];
+                $eventStatus = null;
+                $emails = ElementLetter::model()->find(
+                    'event_id = ?',
+                    array($this->id)
+                )->getOutputByType(['Email', 'Email (Delayed)']);
+                // If there is a document output that has one of the two email delivery methods, only then proceed.
+                if (count($emails) > 0) {
+                    foreach ($emails as $email) {
+                        if ($email->output_status === 'SENDING' || $email->output_status === 'PENDING') {
+                            $eventStatus = "Pending";
+                            continue;
+                        }
+                        if ($email->output_status === 'FAILED') {
+                            $eventStatus = "Failed";
+                            continue;
+                        }
+                    }
+                    if (!isset($eventStatus)) {
+                        $eventStatus = "Complete";
+                    }
+                    $css_class = $correspondence_email_status_to_css_class[$eventStatus];
+                    $event_icon_class .= ' ' . $css_class;
+
+                    $event_issue_class .= ' ' . $correspondence_email_status_to_css_class[$eventStatus];
+                    $event_issue_text = $eventStatus;
+                }
+                break;
+            case 'OphCoMessaging':
+                $message_type_to_css_class = [
+                    '0' => '',
+                    '1' => 'urgent',
+                ];
+                $message = $this->getElementByClass('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message');
+                if ($message) {
+                    $urgent_status = $message->urgent;
+                    $css_class = $message_type_to_css_class[$urgent_status];
+                    $event_icon_class .= ' ' . $css_class;
+                    if ($urgent_status) {
+                        $event_issue_class .= ' ' . $css_class;
+                        $event_issue_text .= $message->message_type->name . "\n";
+                    }
+                }
+                break;
+        }
+        return array(
+            'event_icon_class' => $event_icon_class,
+            'event_issue_class' => $class,
+            'event_issue_text' => $text,
+        );
     }
 }

@@ -63,7 +63,7 @@ class WorklistPatient extends BaseActiveRecordVersioned
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id'),
             'worklist_attributes' => array(self::HAS_MANY, 'WorklistPatientAttribute', 'worklist_patient_id'),
-            'order_assignments' => array(self::HAS_MANY, 'OphDrPGDPSD_Assignment', 'visit_id')
+            'order_assignments' => array(self::HAS_MANY, 'OphDrPGDPSD_Assignment', 'visit_id', 'on' => 'order_assignments.active = 1')
         );
     }
 

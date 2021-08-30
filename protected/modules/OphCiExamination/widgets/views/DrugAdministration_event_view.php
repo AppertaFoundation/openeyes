@@ -1,5 +1,6 @@
 <div class="element-data full-width">
     <?php
+    $last = end($assigned_psds);
     foreach ($assigned_psds as $key => $assigned_psd) {
             $appointment_details = $assigned_psd->getAppointmentDetails();
             $assignment_type_name = $assigned_psd->getAssignmentTypeAndName();
@@ -87,7 +88,9 @@
                 </div>
             </div>
         </div>
-        <hr class="divider">
+        <?php if($last !== $assigned_psd) {?>
+            <hr class="divider">
+        <?php }?>
     </div>
     <?php } ?>
 </div>

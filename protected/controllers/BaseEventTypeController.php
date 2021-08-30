@@ -81,6 +81,7 @@ class BaseEventTypeController extends BaseModuleController
         'createImage' => self::ACTION_TYPE_VIEW,
         'EDTagSearch' => self::ACTION_TYPE_FORM,
         'renderEventImage' => self::ACTION_TYPE_VIEW,
+        'removed' => self::ACTION_TYPE_VIEW,
     );
 
     /**
@@ -484,6 +485,12 @@ class BaseEventTypeController extends BaseModuleController
         $this->initAction($action->id);
 
         $this->verifyActionAccess($action);
+
+        // prevent the user try to perform any actions to the deleted events other than removed action
+        if($this->event && $this->event->deleted && $action->id !== 'removed'){
+            $url = $this->event->getEventViewPath();
+            $this->redirect($url);
+        }
 
         return parent::beforeAction($action);
     }
@@ -2861,5 +2868,49 @@ class BaseEventTypeController extends BaseModuleController
 
             $user->audit('user', 'change-firm', $user->last_firm_id);
             $this->getApp()->session['selected_firm_id'] = $context->id;
+    }
+
+    /**
+     * prevent the user accessing non-deleted event with the view for removed
+     * if the user has no permission or the setting is off, the view for revmoed event is not accessible
+     * @throws CHttpException
+     */
+    protected function initActionRemoved(){
+        $this->initWithEventId(@$_GET['id']);
+        if(!$this->event->deleted){
+            $this->redirect($this->event->getEventViewPath());
+        }
+    }
+
+    /**
+     * View the removed event specified by $id.
+     * @param id event_id
+     * 
+     * @throws CHttpException
+     */
+    public function actionRemoved($id){
+        $this->setOpenElementsFromCurrentEvent('view');
+        $this->editable = false;
+        $this->event->audit('event', 'view removed');
+        $this->event_tabs = array(
+            array(
+                'label' => 'Deleted Event - do not use',
+                'class' => 'highlighter warning',
+                'active' => true,
+                'type' => 'span',
+            ),
+        );
+
+        $criteria = new CDbCriteria();
+        $criteria->compare('delete_pending', 1);
+        $event_previous_version = $this->event->getPreviousVersionWithCriteria($criteria);
+        
+        $viewData = array_merge(array(
+            'elements' => $this->open_elements,
+            'eventId' => $id,
+            'event_previous_version' => $event_previous_version
+        ), $this->extraViewProperties);
+        $this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
+        $this->render('//deleted_events/removed', $viewData);
     }
 }

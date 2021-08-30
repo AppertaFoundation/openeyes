@@ -186,7 +186,6 @@ class EventType extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->distinct = true;
-        $criteria->select = 'event_type_id';
 
         $event_type_ids = array();
         foreach (Event::model()->findAll($criteria) as $event) {

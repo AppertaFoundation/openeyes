@@ -2,6 +2,7 @@
     $criteria = new CDbCriteria();
     $criteria->compare('t.patient_id', $patient->id);
     $criteria->addCondition('t.visit_id IS NOT NULL');
+    $criteria->compare('t.active', 1);
     $criteria->compare("DATE_FORMAT(worklist_patient.`when`, '%Y-%m-%d')", date('Y-m-d'));
     $assignments = \OphDrPGDPSD_Assignment::model()->with('pgdpsd')->with('worklist_patient')->findAll($criteria);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.PathStep.js'), ClientScript::POS_END);
