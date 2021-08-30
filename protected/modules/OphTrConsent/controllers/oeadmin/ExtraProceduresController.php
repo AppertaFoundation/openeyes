@@ -1,45 +1,29 @@
 <?php
 
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
- * Class ProcedureExtraController.
+ * Class ExtraProcedures.
  */
 
-class ProcedureExtraController extends BaseAdminController
+class ExtraProceduresController extends BaseAdminController
 {
 
-    /**
-     * @var holds the Admin() object as the generic admin view refers $this->admin
-     */
-    public $admin;
-
-    /**
-     * @var string
-     */
-    public $layout = 'admin';
-
-    /**
-     * @var int
-     */
-    public $itemsPerPage = 30;
-
-    public $group = 'Procedure Management';
+    public $group = 'Consent form';
 
     /**
      * Lists Extra procedures.
@@ -76,9 +60,9 @@ class ProcedureExtraController extends BaseAdminController
                 $criteria->addCondition('t.active != 1');
             }
         }
-        $procedure = ProcedureExtra::model(); //model for extra procedure
+        $procedure = OphTrConsent_Extra_Procedure::model(); //model for extra procedure
 
-        $this->render('/oeadmin/procedureextra/index', [
+        $this->render('/oeadmin/ExtraProcedures/index', [
             'pagination' => $this->initPagination($procedure, $criteria),
             'procedures' => $procedure->findAll($criteria),
             'search' => $search,
@@ -99,16 +83,16 @@ class ProcedureExtraController extends BaseAdminController
         $criteria->with = ['opcsCodes', 'benefits', 'complications', 'risks'];
         $criteria->together = true;
 
-        $procedure = ProcedureExtra::model()->findByPk($id, $criteria);
+        $procedure = OphTrConsent_Extra_Procedure::model()->findByPk($id, $criteria);
 
         if (!$procedure) {
-            $procedure = new ProcedureExtra();
+            $procedure = new OphTrConsent_Extra_Procedure();
         }
 
         if (Yii::app()->request->isPostRequest) {
             // get data from POST
 
-            $user_data = \Yii::app()->request->getPost('ProcedureExtra');
+            $user_data = \Yii::app()->request->getPost('OphTrConsent_Extra_Procedure');
             $user_opcs_cods = \Yii::app()->request->getPost('opcs_codes', []);
             $user_benefits = \Yii::app()->request->getPost('benefits');
             $user_complications = \Yii::app()->request->getPost('complications');
@@ -176,11 +160,11 @@ class ProcedureExtraController extends BaseAdminController
             if (!$procedure->save()) {
                 $errors = $procedure->getErrors();
             } else {
-                $this->redirect('/oeadmin/ProcedureExtra/list/index/');
+                $this->redirect('/OphTrConsent/oeadmin/ExtraProcedures/list/index/');
             }
         }
 
-        $this->render('/oeadmin/procedureextra/edit', array(
+        $this->render('/oeadmin/ExtraProcedures/edit', array(
             'procedure' => $procedure,
             'opcs_code' => OPCSCode::model()->findAll(),
             'benefits' => Benefit::model()->findAll(),
@@ -196,7 +180,7 @@ class ProcedureExtraController extends BaseAdminController
      * @param Procedure $procedure - procedure to look for dependencies
      * @return bool|int - true if there are no tables depending on the given procedure
      */
-    protected function isProcedureDeletable(ProcedureExtra $procedure)
+    protected function isProcedureDeletable(OphTrConsent_Extra_Procedure $procedure)
     {
         $check_dependencies = 1;
 
@@ -220,7 +204,7 @@ class ProcedureExtraController extends BaseAdminController
         print_r($procedures);
         exit();
         foreach ($procedures as $procedure_id) {
-            $procedure = ProcedureExtra::model()->findByPk($procedure_id);
+            $procedure = OphTrConsent_Extra_Procedure::model()->findByPk($procedure_id);
 
             if ($procedure && $this->isProcedureDeletable($procedure)) {
                 $procedure->specialties = [];

@@ -1,36 +1,35 @@
 <?php
 
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @link http://www.openeyess.org.uk
- *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
- * This is the model class for table "procedure_extra".
+ * This is the model class for table "ophtrconsent_procedure_extra".
  *
- * The followings are the available columns in table 'procedure_extra':
+ * The followings are the available columns in table 'ophtrconsent_procedure_extra':
  *
  * @property int $id
  * @property string $name
  */
-class ProcedureExtra extends BaseActiveRecordVersioned
+class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ProcedureExtra the static model class
+     * @return OphTrConsent_Extra_Procedure the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -42,7 +41,7 @@ class ProcedureExtra extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'procedure_extra';
+        return 'ophtrconsent_procedure_extra';
     }
 
     /**
@@ -73,7 +72,7 @@ class ProcedureExtra extends BaseActiveRecordVersioned
             'specialties' => array(self::MANY_MANY, 'Subspecialty', 'proc_subspecialty_assignment(proc_id, subspecialty_id)'),
             'subspecialtySubsections' => array(self::MANY_MANY, 'SubspecialtySubsection', 'proc_subspecialty_subsection_assignment(proc_id, subspecialty_subsection_id)'),
             'opcsCodes' => array(self::MANY_MANY, 'OPCSCode', 'proc_opcs_assignment(proc_id, opcs_code_id)'),
-            'extra' => array(self::MANY_MANY, 'Procedure', 'procedure_extra(proc_id, proc_extra_id)'),
+            'extra' => array(self::MANY_MANY, 'Procedure', 'ophtrconsent_procedure_extra(proc_id, proc_extra_id)'),
             'benefits' => array(self::MANY_MANY, 'Benefit', 'procedure_benefit(proc_id, benefit_id)'),
             'risks' => array(self::MANY_MANY, '\OEModule\OphCiExamination\models\OphCiExaminationRisk', 'procedure_risk(proc_id, risk_id)'),
             'complications' => array(self::MANY_MANY, 'Complication', 'procedure_complication(proc_id, complication_id)'),
@@ -147,11 +146,11 @@ class ProcedureExtra extends BaseActiveRecordVersioned
             $where .= ' and unbooked = 0';
         }
 
-        $where .= ' and procedure_extra.active = 1';
+        $where .= ' and ophtrconsent_procedure_extra.active = 1';
 
         return Yii::app()->db->createCommand()
-            ->select('procedure_extra.term as label,proc.id')
-            ->from('procedure_extra')
+            ->select('ophtrconsent_procedure_extra.term as label,proc.id')
+            ->from('ophtrconsent_procedure_extra')
             ->where($where, array(
                 ':term' => $term,
                 ':search' => $search,
@@ -214,9 +213,9 @@ class ProcedureExtra extends BaseActiveRecordVersioned
             $where = ' and unbooked = 0';
         }
         $procedures = Yii::app()->db->createCommand()
-            ->select('procedure_extra.id, procedure_extra.term')
-            ->from('procedure_extra')
-            ->join('proc_subspecialty_assignment psa', 'psa.procedure_extra_id = procedure_extra.id')
+            ->select('ophtrconsent_procedure_extra.id, ophtrconsent_procedure_extra.term')
+            ->from('ophtrconsent_procedure_extra')
+            ->join('proc_subspecialty_assignment psa', 'psa.ophtrconsent_procedure_extra_id = ophtrconsent_procedure_extra.id')
             ->where('psa.subspecialty_id = :id and proc.active = 1' . $where, array(':id' => $subspecialtyId))
             ->order('display_order, proc.term ASC')
             ->queryAll();
@@ -262,11 +261,11 @@ class ProcedureExtra extends BaseActiveRecordVersioned
         $data = array();
         if (isset($this->operationNotes)) {
             $procedures = Yii::app()->db->createCommand()
-                ->select('procedure_extra.id, procedure_extra.term')
-                ->from('procedure_extra')
-                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = procedure_extra.id')
+                ->select('ophtrconsent_procedure_extra.id, ophtrconsent_procedure_extra.term')
+                ->from('ophtrconsent_procedure_extra')
+                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = ophtrconsent_procedure_extra.id')
                 ->where('opnote.element_type_id = :id and proc.active = 1', array(':id' => $opNoteElementId))
-                ->order('display_order, procedure_extra.term ASC')
+                ->order('display_order, ophtrconsent_procedure_extra.term ASC')
                 ->queryAll();
 
             foreach ($procedures as $procedure) {

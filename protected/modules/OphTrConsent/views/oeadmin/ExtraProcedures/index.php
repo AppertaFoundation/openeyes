@@ -88,7 +88,7 @@
 
             foreach ($procedures as $key => $procedure) { ?>
             <tr id="$key" class="clickable" data-id="<?= $procedure->id ?>"
-                data-uri="oeadmin/procedureExtra/edit/<?= $procedure->id ?>?returnUri=">
+                data-uri="oeadmin/ExtraProcedures/edit/<?= $procedure->id ?>?returnUri=">
                 <td>
                         <?php if ($this->isProcedureDeletable($procedure)) : ?>
                     <input type="checkbox" name="select[]" value="<?= $procedure->id ?>"
@@ -131,7 +131,7 @@
                         'Add',
                         [
                         'class' => 'button large',
-                        'data-uri' => '/oeadmin/procedureExtra/edit',
+                        'data-uri' => '/oeadmin/ExtraProcedures/edit',
                         'name' => 'add',
                         'id' => 'et_add',
                         ]
@@ -140,7 +140,7 @@
                         'Delete',
                         [
                         'class' => 'button large disabled',
-                        'data-uri' => '/oeadmin/procedureExtra/delete',
+                        'data-uri' => '/oeadmin/ExtraProcedures/delete',
                         'name' => 'delete',
                         'data-object' => 'procedures',
                         'id' => 'et_delete',

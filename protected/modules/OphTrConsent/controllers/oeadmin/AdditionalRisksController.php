@@ -18,7 +18,7 @@
 
 class AdditionalRisksController extends BaseAdminController
 {
-    public $group = 'Consent';
+    public $group = 'Consent form';
 
     /**
      * @throws Exception
