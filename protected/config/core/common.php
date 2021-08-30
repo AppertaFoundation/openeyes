@@ -81,12 +81,14 @@ $config = array(
         'application.components.traits.*',
         'application.components.worklist.*',
         'application.components.patientSearch.*',
+        'application.components.traits.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
         'application.commands.*',
         'application.commands.shell.*',
         'application.behaviors.*',
         'application.widgets.*',
+        'application.widgets.interfaces.*',
         'application.controllers.*',
         'application.helpers.*',
         'application.gii.*',
@@ -843,7 +845,7 @@ $config = array(
         'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: null,
         'cito_application_id' => trim(@file_get_contents("/run/secrets/CITO_APPLICATION_ID")) ?: (trim(getenv('CITO_APPLICATION_ID')) ?: ''),
         'cito_client_secret' => trim(@file_get_contents("/run/secrets/CITO_CLIENT_SECRET")) ?: (trim(getenv('CITO_CLIENT_SECRET')) ?: ''),
-
+        'secretary_pin' => trim(getenv('SECRETARY_PIN')) ?: "123456",
         /** START SINGLE SIGN-ON PARAMS */
         'strict_SSO_roles_check' => $ssoMappingsCheck,
         // Settings for OneLogin PHP-SAML toolkit

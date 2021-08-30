@@ -40,7 +40,20 @@ class DefaultController extends BaseEventTypeController
         'getInternalReferralOutputType' => self::ACTION_TYPE_FORM,
         'getDraftPrintRecipients' => self::ACTION_TYPE_PRINT,
         'export' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
     );
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'getSignatureByUsernameAndPin' => [
+                'class' => GetSignatureByUsernameAndPinAction::class
+            ],
+        ];
+    }
 
     protected $pdf_output;
 

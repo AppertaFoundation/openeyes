@@ -99,7 +99,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
-            array('date, introduction, body, footer', 'requiredIfNotDraft'),
+            array('date, introduction, body', 'requiredIfNotDraft'),
             array('use_nickname , site_id', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
@@ -512,12 +512,10 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
             $user = Yii::app()->session['user'];
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
-
             $contact = $user->contact;
-            if ($contact) {
-                // if no correspondence_sign_off_user_id set in the user's profile than the sign is blank
-                $this->footer = $user->signOffUser ? $api->getFooterText($user->signOffUser) : '';
-            }
+
+            // Footer will be built after signatures are recorded
+            $this->footer = "";
 
             // Look for a macro based on the episode_status
             $episode = $patient->getEpisodeForCurrentSubspecialty();
@@ -900,7 +898,23 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function renderFooter()
     {
-        return str_replace("\n", '<br/>', CHtml::encode($this->footer));
+        if(strlen($this->footer) > 0) {
+            // This is a legacy footer without the electronic signatures
+            return str_replace("\n", '<br/>', CHtml::encode($this->footer));
+        }
+        else {
+            if($esign_element = $this->event->getElementByClass(Element_OphCoCorrespondence_Esign::class)) {
+                /** @var Element_OphCoCorrespondence_Esign $esign_element*/
+                return "<div class=\"flex\">".implode(
+                    "\n",
+                    array_map(function($signature) {
+                        return "<div>".$signature->getPrintout()."</div>";
+                    }, $esign_element->signatures)
+                )."</div>";
+            }
+        }
+
+        return "";
     }
 
     /**

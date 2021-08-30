@@ -925,4 +925,44 @@ class User extends BaseActiveRecordVersioned
 
         return $usernames_with_statuses;
     }
+
+    /**
+     * Check if provided PIN matches that of User's
+     *
+     * @param string $pincode
+     * @param int|null $user_id
+     * @param int|null $institution_id
+     * @param int|null $site_id
+     * @param UserAuthentication|null $user_authentication will contain a reference to the UserAuthentication if matched
+     * @return boolean
+     */
+    public function checkPin($pincode, $user_id = null, $institution_id = null, $site_id = null, &$user_authentication = null) : bool
+    {
+        $pin_ok = false;
+
+        $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
+        $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
+        $user_id = $user_id ?? $this->id;
+
+        $institution_authentication = InstitutionAuthentication::model()
+            ->find(
+                "(site_id=:site_id || site_id IS NULL) AND institution_id=:institution_id",
+                [":site_id"=>$site_id, ":institution_id"=>$institution_id]
+            );
+
+        if($institution_authentication){
+            $user_authentication = UserAuthentication::model()
+                ->find(
+                    'user_id=:user_id AND institution_authentication_id=:institution_authentication_id AND pincode=:pincode',
+                    [
+                        ':user_id'=>$user_id,
+                        ':institution_authentication_id'=>$institution_authentication->id,
+                        ':pincode' => $pincode
+                    ]
+                );
+            $pin_ok = !is_null($user_authentication);
+        }
+
+        return $pin_ok;
+    }
 }

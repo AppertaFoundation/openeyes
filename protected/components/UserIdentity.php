@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -30,6 +30,7 @@ class UserIdentity extends CUserIdentity
     private $available_authentications;
     private $available_auth_error;
     private $is_special = false;
+    private $user_id;
 
     /*
      * New error code for users with active set to 0
@@ -43,14 +44,18 @@ class UserIdentity extends CUserIdentity
      * @param int $institution_id institution id
      * @param int $site_id site id
      */
-    public function __construct($username,$password,$institution_id,$site_id)
+    public function __construct($username,$password,$institution_id = null,$site_id = null,$user_pin = null)
     {
-      $this->institution_id=$institution_id;
-      $this->site_id=$site_id;
-      $available_auth_result = UserAuthentication::findAvailableAuthentications($username, $institution_id, $site_id);
-      $this->available_authentications = $available_auth_result[0];
-      $this->available_auth_error = $available_auth_result[1];
-      parent::__construct($username,$password);
+            $this->institution_id = $institution_id;
+            $this->site_id = $site_id;
+            $available_auth_result = UserAuthentication::findAvailableAuthentications($username, $institution_id, $site_id);
+            $this->available_authentications = $available_auth_result[0];
+            $this->available_auth_error = $available_auth_result[1];
+        if (is_null($user_pin)) {
+            parent::__construct($username, $password);
+        } else {
+            $this->username = $username;
+        }
     }
 
     public function authenticate()
@@ -71,6 +76,7 @@ class UserIdentity extends CUserIdentity
                 return $result;
             }
         }
+
         return [false, "Invalid login."];
     }
 
@@ -96,7 +102,7 @@ class UserIdentity extends CUserIdentity
             if ($auth_result[0]) {
                 $user_authentication->noVersion();
                 $user_authentication->last_successful_login_date = date('Y-m-d H:i:s');
-                if (!$user_authentication->saveAttributes(['last_successful_login_date'])) { 
+                if (!$user_authentication->saveAttributes(['last_successful_login_date'])) {
                     $user_authentication->user->audit('login', 'set-last-successful-login-failed', "User Auth id: $user_authentication->id, errors:" . var_export($user_authentication->getErrors(), true));
                 }
                 return [true, ""];
@@ -312,7 +318,7 @@ class UserIdentity extends CUserIdentity
      * the openeyes DB. LDAP uses whichever LDAP is specified in the params.php
      * config file.
      *
-     * @return bool whether authentication succeeds.
+     * @return array [0 => bool success, 1 => string message]
      *
      * @throws
      */
@@ -413,6 +419,67 @@ class UserIdentity extends CUserIdentity
             throw new SystemException('Unknown auth_source: '.$inst_auth->user_authentication_method);
         }
 
+        $this->setSessionDataForUser($user, $user_authentication);
+
+        if (!$this->is_special) {
+            $institution_name = Institution::model()->findByPk($this->institution_id)->name;
+            $site_name = Site::model()->findByPk($this->site_id)->name;
+
+            $user->audit('login',
+                'login-successful', null,
+                'User ' . strtoupper($this->username) . ' logged in to Institution: ' . strtoupper($institution_name) . ', Site: ' . strtoupper($site_name)
+            );
+        }
+
+        return [true, ""];
+    }
+
+    public function firmString($firm)
+    {
+        if ($firm->serviceSubspecialtyAssignment) {
+            return "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
+        }
+
+        return $firm->name;
+    }
+
+    public function getId()
+    {
+        return $this->_id;
+    }
+
+    public function getLdap($options)
+    {
+        return new Zend_Ldap($options);
+    }
+
+    /**
+     * Logs the user in case a PIN code was used for login
+     * IMPORTANT!! PIN must be verified beforehand as this method
+     * does not check PIN.
+     *
+     * @param User $user
+     * @param UserAuthentication $user_authentication
+     * @return bool
+     */
+    public function authenticateWithPIN(User $user, UserAuthentication $user_authentication) : bool
+    {
+        // PIN already validated at this point
+        $this->_id = $user->id;
+        $this->errorCode = self::ERROR_NONE;
+        try {
+            $this->setSessionDataForUser($user, $user_authentication);
+        }
+        catch (Exception $e) {
+            Yii::log($e->getMessage(), CLogger::LEVEL_ERROR);
+            return false;
+        }
+        $user->audit('login', 'login-successful', null, 'User '.strtoupper($this->username).' logged in');
+        return true;
+    }
+
+    private function setSessionDataForUser(User $user, UserAuthentication $user_authentication) : void
+    {
         $app = Yii::app();
         $this->_id = $user->id;
         $this->username = $user_authentication->username;
@@ -426,8 +493,7 @@ class UserIdentity extends CUserIdentity
                 'login-successful', null,
                 'Special User '.strtoupper($this->username).' logged in.'
             );
-
-            return [true, ""];
+            return;
         }
 
         // Get all the user's firms and put them in a session
@@ -475,34 +541,6 @@ class UserIdentity extends CUserIdentity
         $app->session['selected_institution_id'] = $this->institution_id;
 
         reset($firms);
-
-        $institution_name = Institution::model()->findByPk($this->institution_id)->name;
-        $site_name = Site::model()->findByPk($this->site_id)->name;
-
-        $user->audit('login',
-            'login-successful', null,
-            'User '.strtoupper($this->username).' logged in to Institution: ' . strtoupper($institution_name) . ', Site: ' . strtoupper($site_name)
-        );
-
-        return [true, ""];
     }
 
-    public function firmString($firm)
-    {
-        if ($firm->serviceSubspecialtyAssignment) {
-            return "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
-        }
-
-        return $firm->name;
-    }
-
-    public function getId()
-    {
-        return $this->_id;
-    }
-
-    public function getLdap($options)
-    {
-        return new Zend_Ldap($options);
-    }
 }

@@ -23,7 +23,7 @@
  */
 class BaseController extends Controller
 {
-
+    use RenderJsonTrait;
     public $renderPatientPanel = false;
     public bool $fixedHotlist = true;
     public $selectedFirmId;
@@ -340,25 +340,6 @@ class BaseController extends Controller
         }
 
         return $model;
-    }
-
-    /**
-     * Renders data as JSON, turns off any to screen logging so output isn't broken.
-     *
-     * @param $data
-     */
-    protected function renderJSON($data)
-    {
-        header('Content-type: application/json', true);
-        header('Cache-Control: no-store');
-        echo json_encode($data);
-
-        foreach (Yii::app()->log->routes as $route) {
-            if ($route instanceof CWebLogRoute) {
-                $route->enabled = false; // disable any weblogroutes
-            }
-        }
-        Yii::app()->end();
     }
 
     /**

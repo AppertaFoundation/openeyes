@@ -7,7 +7,7 @@
     "ext-json": "^7.4",
     "yiisoft/yii": "1.1.23",
     "rlanvin/php-rrule": "2.2.0",
-    "endroid/qr-code": "^1.7",
+    "endroid/qr-code": "^4.2",
     "setasign/fpdf": "1.8.*",
     "setasign/fpdi": "^2.0",
     "xthiago/pdf-version-converter": "dev-master",
