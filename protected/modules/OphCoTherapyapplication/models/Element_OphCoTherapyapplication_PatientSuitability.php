@@ -71,8 +71,8 @@ class Element_OphCoTherapyapplication_PatientSuitability extends SplitEventTypeE
         // will receive user inputs.
         return array(
             array('event_id, eye_id, left_treatment_id, left_angiogram_baseline_date, left_nice_compliance, right_treatment_id, right_angiogram_baseline_date, right_nice_compliance,', 'safe'),
-            array('left_treatment_id, left_angiogram_baseline_date, left_nice_compliance', 'requiredIfSide', 'side' => 'left'),
-            array('right_treatment_id, right_angiogram_baseline_date, right_nice_compliance', 'requiredIfSide', 'side' => 'right'),
+            array('left_treatment_id, left_nice_compliance', 'requiredIfSide', 'side' => 'left'),
+            array('right_treatment_id, right_nice_compliance', 'requiredIfSide', 'side' => 'right'),
             array('left_angiogram_baseline_date, right_angiogram_baseline_date', 'date', 'format' => 'yyyy-MM-dd', 'allowEmpty' => 'true'),
             array('left_angiogram_baseline_date, right_angiogram_baseline_date', 'validateDateNotInFuture'),
             // The following rule is used by search().
@@ -383,5 +383,15 @@ class Element_OphCoTherapyapplication_PatientSuitability extends SplitEventTypeE
     public function getContainer_form_view()
     {
         return '//patient/element_container_form_no_bin';
+    }
+
+    public function beforeSave()
+    {
+        foreach(['left','right'] as $side) {
+            if($this->{$side . '_angiogram_baseline_date'} === '') {
+                $this->{$side . '_angiogram_baseline_date'} = null;
+            }
+        }
+        return parent::beforeSave();
     }
 }
