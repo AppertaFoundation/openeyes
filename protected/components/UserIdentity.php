@@ -533,11 +533,8 @@ class UserIdentity extends CUserIdentity
             throw new CException('Cannot find default site');
         }
 
-        natcasesort($firms);
-
         $app->session['user'] = $user;
         $app->session['user_auth'] = $user_authentication;
-        $app->session['firms'] = $firms;
         $app->session['selected_institution_id'] = $this->institution_id;
 
         reset($firms);

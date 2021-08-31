@@ -209,8 +209,7 @@ class BaseController extends Controller
             }
         }
 
-        if (isset($app->session['firms']) && count($app->session['firms'])) {
-            $this->firms = $app->session['firms'];
+        if (!empty($app->session['selected_firm_id'])) {
             $this->selectedFirmId = $app->session['selected_firm_id'];
         }
 
@@ -250,8 +249,7 @@ class BaseController extends Controller
     {
         $app = Yii::app();
 
-        if (!empty($app->session['firms'])) {
-            $this->firms = $app->session['firms'];
+        if (!empty($app->session['selected_firm_id'])) {
             $this->selectedFirmId = $app->session['selected_firm_id'];
         }
     }
