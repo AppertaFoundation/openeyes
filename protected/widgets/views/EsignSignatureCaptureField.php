@@ -29,9 +29,17 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
     <!-- Role -->
     <td><span class="js-signatory-label">
             <?php if(!$this->isSigned() && !empty($roles = $this->signature->getRoleOptions())): ?>
-                <?= CHtml::dropDownList($name_prefix."[signatory_role]", $this->signature->signatory_role, array_combine($roles, $roles), ["readonly" => $this->isSigned()]) ?>
+                <?= CHtml::dropDownList(
+                        $name_prefix."[signatory_role]",
+                        $this->signature->signatory_role,
+                        array_combine($roles, $roles),
+                        [
+                            "readonly" => $this->isSigned(),
+                            "class" => "js-signatory_role-field",
+                        ]
+                ) ?>
             <?php else: ?>
-                <?= $this->signature->signatory_role ?></span></td>
+                <?= CHtml::encode($this->signature->signatory_role) ?></span></td>
             <?php endif; ?>
     <!-- Name -->
     <td>
@@ -39,7 +47,11 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
             <?= $this->isSigned() ? $this->signature->signatory_name : \CHtml::textField(
                     $name_prefix."[signatory_name]",
                     $this->signature->signatory_name,
-                    ["readonly" => $this->isSigned(), "placeholder" => "Please enter name"]
+                    [
+                        "readonly" => $this->isSigned(),
+                        "placeholder" => "Please enter name",
+                        "class" => "js-signatory_name-field",
+                    ]
             ) ?>
         </span>
     </td>

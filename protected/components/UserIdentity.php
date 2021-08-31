@@ -44,13 +44,13 @@ class UserIdentity extends CUserIdentity
      * @param int $institution_id institution id
      * @param int $site_id site id
      */
-    public function __construct($username,$password,$institution_id = null,$site_id = null,$user_pin = null)
+    public function __construct($username, $password, $institution_id = null, $site_id = null, $user_pin = null)
     {
-            $this->institution_id = $institution_id;
-            $this->site_id = $site_id;
-            $available_auth_result = UserAuthentication::findAvailableAuthentications($username, $institution_id, $site_id);
-            $this->available_authentications = $available_auth_result[0];
-            $this->available_auth_error = $available_auth_result[1];
+        $this->institution_id = $institution_id;
+        $this->site_id = $site_id;
+        $available_auth_result = UserAuthentication::findAvailableAuthentications($username, $institution_id, $site_id);
+        $this->available_authentications = $available_auth_result[0];
+        $this->available_auth_error = $available_auth_result[1];
         if (is_null($user_pin)) {
             parent::__construct($username, $password);
         } else {

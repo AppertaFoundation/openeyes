@@ -26,5 +26,4 @@
     <div style="height:40vh; max-height: 406px;">
         <img src="<?= $qr->getDataUri(); ?>" width="auto" height="100%">
     </div>
-
 </div>

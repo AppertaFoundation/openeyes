@@ -13,9 +13,6 @@ class m210728_084842_add_esign_element extends OEMigration
             [
                 'id' => 'pk',
                 'event_id' => 'INT(10) UNSIGNED NOT NULL',
-                'signature_file_id' => 'INT(10) UNSIGNED NULL',
-                'date_signed' => 'DATETIME NULL',
-                'signed_user_id' => 'INT(10) UNSIGNED NULL'
             ],
             true
         );

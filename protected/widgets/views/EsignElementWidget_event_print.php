@@ -29,9 +29,11 @@
                             "element_id" => $this->element->id,
                             "element_type_id" => $this->element->getElementType()->id,
                             "signature_type" => $signature->type,
+                            "signatory_role" => Yii::app()->request->getParam("signatory_role"),
+                            "signatory_name" => Yii::app()->request->getParam("signatory_name"),
                         ]
                 ),
-                "after_submit_js" => "function(response, widget){window.parent.location.reload();}",
+                "after_submit_js" => 'function(response, widget) {window.parent.formHasChanged=false;window.parent.location.reload();}'
             ]);
         } elseif ($signature->isSigned()) {
             echo $signature->getPrintout();

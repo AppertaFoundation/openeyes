@@ -107,20 +107,22 @@ class Element_OphCoCvi_Esign extends BaseEsignElement
     public function getSignatures(): array
     {
         $signatures = $this->signatures;
-        $existing_types = array_map(function($e){ return $e->type; }, $signatures);
+        $existing_types = array_map(function ($e) {
+            return $e->type;
+        }, $signatures);
 
-        if(!in_array(BaseSignature::TYPE_LOGGEDIN_USER, $existing_types)) {
+        if (!in_array(BaseSignature::TYPE_LOGGEDIN_USER, $existing_types)) {
             $consultant = new OphCoCvi_Signature();
             $consultant->signatory_role = "Consultant";
             $consultant->type = BaseSignature::TYPE_LOGGEDIN_USER;
             $signatures[] = $consultant;
         }
 
-        if(!in_array(BaseSignature::TYPE_PATIENT, $existing_types)) {
-            if($this->event && !$this->event->isNewRecord) {
+        if (!in_array(BaseSignature::TYPE_PATIENT, $existing_types)) {
+            if ($this->event && !$this->event->isNewRecord) {
                 $patient = new OphCoCvi_Signature();
                 $patient->signatory_role = "Patient";
-                if(isset(Yii::app()->getController()->patient)) {
+                if (isset(Yii::app()->getController()->patient)) {
                     $patient->signatory_name = Yii::app()->getController()->patient->getFullName();
                 }
                 $patient->type = BaseSignature::TYPE_PATIENT;
@@ -139,8 +141,8 @@ class Element_OphCoCvi_Esign extends BaseEsignElement
      */
     public function isSigned() : bool
     {
-        foreach ($this->signatures as $signature) {
-            if(!$signature->isSigned()) {
+        foreach ($this->getSignatures() as $signature) {
+            if (!$signature->isSigned()) {
                 return false;
             }
         }
@@ -159,7 +161,7 @@ class Element_OphCoCvi_Esign extends BaseEsignElement
      * @param array $elements
      */
     public function eventScopeValidation(array $elements)
-    { // TODO
+    {
         $elements = array_filter(
             $elements,
             function ($element) {
@@ -183,7 +185,7 @@ class Element_OphCoCvi_Esign extends BaseEsignElement
      */
     public function getInfoMessages() : array
     {
-        if(
+        if (
             !$this->getSignaturesByType(BaseSignature::TYPE_PATIENT)
             && (!$this->event || $this->event->isNewRecord)
         ) {

@@ -105,8 +105,9 @@ class EsignElementWidget extends BaseEventElementWidget
                 } else {
                     $model = new $signature_class;
                 }
-                $model->setAttributes($signature_data);
                 $model->proof = $signature_data["proof"];
+                unset($signature_data["proof"]);
+                $model->setAttributes($signature_data);
                 $model->setDataFromProof();
                 array_push($models, $model);
             }
