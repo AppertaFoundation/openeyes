@@ -155,6 +155,7 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
 
     public function getTileSize($action)
     {
-        return $action === 'view' || $action === 'createImage' ? 1 : null;
+        $action_list = array('view', 'createImage', 'removed');
+        return in_array($action, $action_list) ? 1 : null;
     }
 }

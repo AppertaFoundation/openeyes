@@ -30,6 +30,9 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.element = $(element);
         this.sendImageUrlAjaxRequest = true;
         this.options = $.extend(true, {}, EpisodeSidebar._defaultOptions, options);
+        if(this.options.deleted_event_category){
+            groupings.push({id: 'deleted', label: 'Deleted events'});
+        }
         this.create();
     }
 
@@ -49,6 +52,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         event_button_selector: '#add-event',
         subspecialty_labels: {},
         event_list_selector: '.events li',
+        deleted_event_list_selector: '.events li.deleted',
         grouping_picker_class: 'grouping-picker',
         default_sort: 'desc',
         scroll_selector: 'div.oe-scroll-wrapper'
@@ -432,14 +436,26 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.element.find('.collapse-group').remove();
         this.orderEvents();
         this.element.find(this.options.event_list_selector).parent().show();
+        // in case the active events were hidden by clicking the deleted events group
+        this.element.find(this.options.event_list_selector).show();
+        // if the setting is on, hide the deleted events
+        if(this.options.deleted_event_category){
+            this.element.find(this.options.deleted_event_list_selector).hide();
+        }
     };
-
+    EpisodeSidebar.prototype.showDeletedEvents = function(){
+        this.element.find(this.options.event_list_selector).hide();
+        this.element.find(this.options.deleted_event_list_selector).show();
+    }
     EpisodeSidebar.prototype.updateGrouping = function () {
         const self = this;
         self.resetGrouping();
         if (self.grouping.id === 'none')
             return;
-
+        if (self.grouping.id === 'deleted'){
+            self.showDeletedEvents();
+            return;
+        }
         let itemsByGrouping = {};
         let groupingVals = [];
         self.element.find(self.options.event_list_selector).each(function () {

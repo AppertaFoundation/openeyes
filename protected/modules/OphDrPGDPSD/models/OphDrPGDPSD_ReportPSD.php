@@ -56,6 +56,7 @@ class OphDrPGDPSD_ReportPSD extends BaseReport
         $pi_value = preg_replace('/\s+/', '', trim($this->pi_value));
         $psd_criteria = new CDbCriteria();
         $psd_criteria->addCondition("LOWER(pgdpsd.type) = 'psd' OR LOWER(pgdpsd.type) IS NULL");
+        $psd_criteria->compare('t.active', 1);
         if ($pi_value) {
             $psd_criteria->with = ['patient', 'patient.identifiers', 'patient.identifiers.patientIdentifierType'];
             $selected_institution_id = Yii::app()->session->get('selected_institution_id');

@@ -48,6 +48,7 @@ class OphCoTherapyapplication_API extends BaseAPI
             $criteria = new CDbCriteria();
             $criteria->compare('event.event_type_id', $event_type->id);
             $criteria->compare('event.episode_id', $episode->id);
+            $criteria->compare('event.deleted', 0);
             $criteria->order = 't.created_date desc';
             $criteria->limit = 1;
 

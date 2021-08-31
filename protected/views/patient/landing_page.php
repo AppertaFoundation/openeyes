@@ -23,7 +23,6 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 // Removing the unnecessary canViewSummary parameter from the localisation, this needs to be implemented properly by creating a new role - CERA590
 $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
-
 ?>
 
 <?php if ($no_episodes && $allow_clinical) { ?>
@@ -160,9 +159,12 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         </div>
 
         <div class="patient-overview">
+            <?php if(!$active_events) {?>
+                <div class="nil-recorded">No Active Event</div>
+            <?php }?>
             <table class="standard">
                 <tbody>
-                <?php foreach ($events as $event) :
+                <?php foreach ($active_events as $event) :
                     $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
                     <tr>
                         <td>

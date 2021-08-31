@@ -37,7 +37,8 @@ class PendingApplications
             ->join('user', 'event.created_user_id = user.id')
             ->join('event_type', 'event.event_type_id = event_type.id AND event_type.name = "Therapy Application"')
             ->leftJoin('ophcotherapya_email', 'event.id = ophcotherapya_email.event_id')
-            ->where('ophcotherapya_email.event_id IS NULL');
+            ->where('ophcotherapya_email.event_id IS NULL')
+            ->andWhere('event.deleted = 0');
 
         $params = [];
         if ($institution_id) {

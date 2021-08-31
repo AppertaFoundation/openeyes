@@ -44,16 +44,7 @@ class Element_DrugAdministration extends BaseMedicationElement
             )
         );
     }
-    public function defaultScope()
-    {
-        return array(
-            'with' => array(
-                'event' => array(
-                    'condition' => 'event.deleted = false',
-                ),
-            )
-        );
-    }
+
     public function getContainer_form_view()
     {
         return false;
@@ -247,6 +238,34 @@ class Element_DrugAdministration extends BaseMedicationElement
     public function loadFromExisting($element)
     {
         return;
+    }
+
+    public function softDelete()
+    {
+        $new_assignments = array();
+        foreach($this->assignments as $assignment){
+            $duplicate = new OphDrPGDPSD_Assignment();
+            $assignment_attrs = $assignment->attributes;
+            unset($assignment_attrs['id']);
+            unset($assignment_attrs['comment_id']);
+            $duplicate->attributes = $assignment_attrs;
+            $duplicate->assigned_meds = array_map(function($med){
+                $med_attrs = $med->attributes;
+                unset($med_attrs['id']);
+                return $med_attrs;
+            }, $assignment->assigned_meds);
+            $duplicate->setConfirmed(true);
+            $duplicate->active = 0;
+            $duplicate->save();
+            if($assignment->comment){
+                $duplicate_comment = new OphDrPGDPSD_Assignment_Comment();
+                $duplicate_comment->attributes = $assignment->comment->attributes;
+                $duplicate->saveComment($duplicate_comment);
+            }
+            $new_assignments[] = $duplicate;
+        }
+        $this->assignments = $new_assignments;
+        $this->save();
     }
 
     // in the function setAndValidateElementsFromData in BaseEventTypeController

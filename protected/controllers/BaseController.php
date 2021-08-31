@@ -218,6 +218,7 @@ class BaseController extends Controller
             $this->selectedSiteId = $app->session['selected_site_id'];
         }
 
+        $this->attachBehavior('DisplayDeletedEventsBehavior', array('class' => 'DisplayDeletedEventsBehavior'));
         return parent::beforeAction($action);
     }
 
