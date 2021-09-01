@@ -4,11 +4,15 @@
 
 <div class="element-fields full-width">
     <!-- Chronologically sorted pain recordings -->
-    <div class="cols-11">
+    <div class="cols-16">
         <table id="pain-entries-table" class="cols-full">
             <colgroup>
-                <col class="cols-icon" span="12">
-                <col class="cols-1"><!-- crying icon -->
+                <col class="cols-icon">
+                <col class="cols-icon" span="11">
+                <col class="cols-icon">
+                <col class="cols-2">
+                <col class="cols-2">
+                <col class="cols-2">
             </colgroup>
             <thead>
                 <tr>
@@ -25,9 +29,9 @@
                     <th class="center">9</th>
                     <th class="center">10</th>
                     <th></th>
-                    <th class="center">Date</th>
-                    <th class="center">Time</th>
-                    <th class="center">Comments</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Comments</th>
                     <th><!--trash, edit only --></th>
                 </tr>
             </thead>

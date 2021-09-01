@@ -4,11 +4,16 @@
 
 <div class="element-fields full-width">
     <!-- Chronologically sorted pain recordings -->
-    <div class="cols-11">
+    <div class="cols-17">
         <table id="pain-entries-table" class="cols-full">
             <colgroup>
-                <col class="cols-icon" span="12">
-                <col class="cols-1"><!-- crying icon -->
+                <col class="cols-icon">
+                <col class="cols-icon" span="11">
+                <col class="cols-icon">
+                <col class="cols-2">
+                <col class="cols-2">
+                <col class="cols-2">
+                <col class="cols-icon">
             </colgroup>
             <thead>
                 <tr>
@@ -25,9 +30,9 @@
                     <th class="center">9</th>
                     <th class="center">10</th>
                     <th></th>
-                    <th class="center">Date</th>
-                    <th class="center">Time</th>
-                    <th class="center">Comments</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Comments</th>
                     <th><!--trash, edit only --></th>
                 </tr>
             </thead>
@@ -54,36 +59,36 @@
     </div>
     <hr class="divider" style="clear: both"></hr>
     <!-- add a pain scale reading -->
-    <div class="cols-11 flex">
+    <div class="cols-17">
         <table class="cols-full">
             <colgroup>
                 <col class="cols-icon">
-                <col style="width:470px;">
-                <col class="cols-1"><!-- crying icon -->
+                <col class="cols-icon" span="11">
+                <col class="cols-icon">
+                <col class="cols-2">
+                <col class="cols-2">
+                <col class="cols-2">
+                <col class="cols-icon">
             </colgroup>
             <tbody>
             <tr>
                 <td>
                     <i class="oe-i happy medium no-click"></i>
                 </td>
-                <td class="center">
-                    <fieldset id="pain-score-radio-group">
-                        <label class="highlight inline"><input value="0" name="pain-score" type="radio"> 0</label>
-                        <label class="highlight inline"><input value="1" name="pain-score" type="radio"> 1</label>
-                        <label class="highlight inline"><input value="2" name="pain-score" type="radio"> 2</label>
-                        <label class="highlight inline"><input value="3" name="pain-score" type="radio"> 3</label>
-                        <label class="highlight inline"><input value="4" name="pain-score" type="radio"> 4</label>
-                        <label class="highlight inline"><input value="5" name="pain-score" type="radio"> 5</label>
-                        <label class="highlight inline"><input value="6" name="pain-score" type="radio"> 6</label>
-                        <label class="highlight inline"><input value="7" name="pain-score" type="radio"> 7</label>
-                        <label class="highlight inline"><input value="8" name="pain-score" type="radio"> 8</label>
-                        <label class="highlight inline"><input value="9" name="pain-score" type="radio"> 9</label>
-                        <label class="highlight inline"><input value="10" name="pain-score" type="radio"> 10</label>
-                    </fieldset>
-                </td>
+                <td><label class="highlight inline"><input id="pain-radio" value="0" name="pain-score" type="radio"> 0</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="1" name="pain-score" type="radio"> 1</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="2" name="pain-score" type="radio"> 2</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="3" name="pain-score" type="radio"> 3</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="4" name="pain-score" type="radio"> 4</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="5" name="pain-score" type="radio"> 5</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="6" name="pain-score" type="radio"> 6</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="7" name="pain-score" type="radio"> 7</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="8" name="pain-score" type="radio"> 8</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="9" name="pain-score" type="radio"> 9</label></td>
+                <td><label class="highlight inline"><input id="pain-radio" value="10" name="pain-score" type="radio"> 10</label></td>
                 <td><i class="oe-i crying medium no-click"></i></td>
-                <td style="float: left;"><input id="pain-date-field" class="date"></td>
-                <td style="float: left;"><input id="pain-time-field" type="time" class="fixed-width-medium"></td>
+                <td><input id="pain-date-field" class="date"></td>
+                <td><input id="pain-time-field" type="time" class="fixed-width-medium"></td>
                 <td>
                     <div class="cols-full">
                         <button id="pain-show-comment-button" class="button js-add-comments" type="button" data-comment-container="#pain-comment-container">
@@ -174,7 +179,7 @@
         attachTrashEvents($('i.pain-trash'));
 
         $('button#add-new-pain-row-btn').click(function() {
-            let selected_pain_radio = $('fieldset#pain-score-radio-group > label > input:radio:checked');
+            let selected_pain_radio = $('input#pain-radio:checked');
 
             timeVal = $('input#pain-time-field').val();
 
