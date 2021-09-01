@@ -33,6 +33,7 @@ class EsignElementWidget extends BaseEventElementWidget
         $script_path = $widget_path . '/EsignElementWidget.js';
         $asset_manager->registerScriptFile($script_path, "application.widgets.EsignelementWidget", 9, AssetManager::OUTPUT_ALL, true, true);
     }
+
     /**
      * @return string[]
      */

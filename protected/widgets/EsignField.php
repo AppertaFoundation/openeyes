@@ -113,7 +113,6 @@ abstract class EsignField extends BaseCWidget
      */
     public function renderHiddenFields() : void
     {
-
         foreach ($this->getHiddenFields() as $field) {
             echo \CHtml::hiddenField(
                 \CHtml::modelName($this->element)."[signatures][{$this->row_id}][$field]",
