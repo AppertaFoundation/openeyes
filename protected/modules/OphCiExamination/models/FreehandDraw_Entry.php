@@ -57,9 +57,10 @@ class FreehandDraw_Entry extends \BaseEventTypeElement
         return [
             ['id, element_id, protected_file_id', 'safe'],
             ['element_id, protected_file_id', 'required'],
+            ['comments','filter','filter'=>[new \CHtmlPurifier(),'purify']],
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            ['id, element_id, protected_file_id', 'safe', 'on' => 'search'],
+            ['id, element_id, protected_file_id, comments', 'safe', 'on' => 'search'],
         ];
     }
 
@@ -71,10 +72,7 @@ class FreehandDraw_Entry extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'element' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_PastSurgery', 'element_id'],
-            'relative' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\FamilyHistoryRelative', 'relative_id'],
-            'side' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\FamilyHistorySide', 'side_id'],
-            'condition' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\FamilyHistoryCondition', 'condition_id'],
+            'element' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\FreehandDraw', 'element_id'],
             'protected_file' => [self::BELONGS_TO, 'ProtectedFile', 'protected_file_id'],
         ];
     }
@@ -105,6 +103,7 @@ class FreehandDraw_Entry extends \BaseEventTypeElement
         $criteria->compare('id', $this->id);
         $criteria->compare('element_id', $this->element_id);
         $criteria->compare('protected_file_id', $this->protected_file_id);
+        $criteria->compare('comments', $this->comments);
 
         return new \CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,

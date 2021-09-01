@@ -59,7 +59,7 @@ $model_name = CHtml::modelName($element);
                 'date-template-url' => $item->protected_file->getDownloadURL(),
                 'filename' => explode('.', $item->protected_file->name)[0],
                 'full_name' => $item->protected_file->user->fullName,
-                'created_date' => Helper::convertMySQL2NHS($item->created_date)
+                'created_date' => Helper::convertMySQL2NHS($item->created_date),
             ];
         }, DrawingTemplate::model()->active()->findAll())
     ) ?>;
@@ -95,7 +95,8 @@ $model_name = CHtml::modelName($element);
                     'filename' => '{{filename}}',
                     'full_name' => '{{full_name}}',
                     'is_edited' => 1,
-                    'date' => '{{date}}'
+                    'date' => '{{date}}',
+                    'comments' => ''
                 ),
             )
         );

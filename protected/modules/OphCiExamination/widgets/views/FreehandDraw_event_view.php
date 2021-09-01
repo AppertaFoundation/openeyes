@@ -15,8 +15,44 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<div class="element-data full-width">
+    <!-- Group in Annotation mode, when adding a template this the default state -->
+    <?php foreach ($element->entries as $k => $entry) : ?>
+        <div class="freedraw-group">
+            <div class="flex-t col-gap">
 
-<?php foreach ($element->entries as $entry) :?>
-    <img style="width:100%; border: 1px solid black;" src="<?=$entry->protected_file->getDownloadURL()?>"?>
-<?php endforeach;?>
+                <div class="cols-6">
+                    <img src="<?= $entry->protected_file->getDownloadURL() ?>" width="100%">
+                </div>
 
+
+                <div class="cols-6">
+                    <table class="cols-full last-left">
+                        <tbody>
+                        <tr>
+                            <td><?= $entry->protected_file->name ?></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <?php if ($entry->comments): ?>
+                                <i class="oe-i comments-who small pad-right js-has-tooltip"
+                                   data-tooltip-content="User comment"
+                                ></i><span
+                                        class="user-comment"><?= \CHtml::encode($entry->comments); ?></span>
+
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><?= $entry->element->user->fullName; ?>, <?= \Helper::convertMySQL2NHS($entry->last_modified_date); ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <?php if(count($element->entries) > ($k+1)):?>
+            <hr class="divider">
+        <?php endif;?>
+    <?php endforeach; ?>
+</div>
