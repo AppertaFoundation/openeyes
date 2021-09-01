@@ -27,6 +27,7 @@ return array(
                 'Leaflet Subspecialty context_firm_label Assignment' => array('uri' => '/OphTrConsent/oeadmin/LeafletSubspecialtyFirm/list'),
                 'Additional Risks' => array('uri' => '/OphTrConsent/oeadmin/AdditionalRisks/list'),
                 'Extra Procedures Assignment' => array('uri' => '/OphTrConsent/oeadmin/ExtraProcedures/list'),
+                'Template' => array('uri' => '/OphTrConsent/oeadmin/Template/list'),
             ),
         ),
     ),
