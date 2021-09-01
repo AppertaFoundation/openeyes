@@ -79,6 +79,14 @@ return array(
                 'Findings' => ['uri' => '/admin/managefindings', 'restricted' => array('admin')],
                 'Disorders' => ['uri' => '/Admin/disorder/list', 'restricted' => array('admin')],
             ),
+            'Investigation Management' => array(
+                'Investigations' => ['uri' => '/oeadmin/investigation/list', 'restricted' => array('admin')]
+            ),
+            'Consent' => array(
+                'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),
+                'Leaflet Subspecialty context_firm_label Assignment' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/LeafletSubspecialtyFirm/list'),
+                'Additional Risks' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/AdditionalRisks/list'),
+            ),
         ),
     ),
 );
