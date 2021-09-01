@@ -171,13 +171,13 @@ $widgetOptionsJson = json_encode(array(
                           '#\[(.*)\]#',
                           '[${1}_through]',
                           $field
-                      ) ?>[<?= $id ?>][<?= $through['field'] ?>]">
+                                    ) ?>[<?= $id ?>][<?= $through['field'] ?>]">
                               <?php foreach ($through['options'] as $option_id => $option) { ?>
                             <option
                                 value="<?= $option_id ?>" <?php if ($currentField && $currentField == $option_id) :
                                     ?> selected <?php
                                        endif; ?>><?= $option ?></option>
-                                <?php } ?>
+                              <?php } ?>
                       </select>
                         <?php } ?>
                 </li>

@@ -34,7 +34,6 @@ class m200211_124300_fix_old_medication_views extends CDbMigration
         WHERE meds_entry.usage_type = 'OphCiExamination'
             AND meds_entry.usage_subtype = 'History';
         ");
-        
     }
 
     public function down()

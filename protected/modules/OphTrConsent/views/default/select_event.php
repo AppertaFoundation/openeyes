@@ -59,12 +59,18 @@ $this->moduleNameCssClass .= ' edit';
                     <?php
                     if ($bookings) {
                         foreach ($bookings as $operation) { ?>
-                            <?php $has_consent = Element_OphTrConsent_Procedure::model()->find('booking_event_id=?', [$operation->event_id]) ?>
+                            <?php
+                                $existing_cosnent_criteria = new CDbCriteria();
+                                $existing_cosnent_criteria->with = ['event'];
+                                $existing_cosnent_criteria->compare('event.deleted', 0);
+                                $existing_cosnent_criteria->compare('t.booking_event_id', $operation->event_id);
+                                $has_consent = Element_OphTrConsent_Procedure::model()->find($existing_cosnent_criteria);
+                            ?>
                             <tr>
                                 <td>
                                     <?php if ($operation->booking) {
                                         echo $operation->booking->session->NHSDate('date');
-                                    } else if ($operation->operation_cancellation_date) {
+                                    } elseif ($operation->operation_cancellation_date) {
                                         echo 'CANCELLED';
                                     } else {
                                         echo 'UNSCHEDULED';

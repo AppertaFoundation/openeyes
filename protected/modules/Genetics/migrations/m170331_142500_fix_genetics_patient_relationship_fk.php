@@ -13,5 +13,4 @@ class m170331_142500_fix_genetics_patient_relationship_fk extends OEMigration
     public function safeDown()
     {
     }
-	
 }

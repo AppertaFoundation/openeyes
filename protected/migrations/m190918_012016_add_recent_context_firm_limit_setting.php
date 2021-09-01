@@ -2,7 +2,7 @@
 
 class m190918_012016_add_recent_context_firm_limit_setting extends OEMigration
 {
-    
+
     // Use safeUp/safeDown to do migration with transaction
     public function safeUp()
     {
@@ -14,7 +14,7 @@ class m190918_012016_add_recent_context_firm_limit_setting extends OEMigration
                     'default_value' => '6',
                     'data' => ''
                 ]);
-    
+
         //Add the setting row itself that contains the live value data
             $this->insert('setting_installation', ['key' => 'recent_context_firm_limit', 'value' => '6']);
     }
@@ -25,6 +25,5 @@ class m190918_012016_add_recent_context_firm_limit_setting extends OEMigration
         $this->delete('setting_metadata', '`key` = ?', ["recent_context_firm_limit"]);
         //delete the value row
         $this->delete('setting_installation', '`key` = ?', ["recent_context_firm_limit"]);
-
     }
 }

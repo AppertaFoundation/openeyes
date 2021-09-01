@@ -30,7 +30,7 @@ use OEModule\OphCiExamination\models\StereoAcuity_Entry;
                     'data-adder-id' => "{$field_prefix}_inconclusive",
                     'data-adder-requires-item-set' => "{$field_prefix}_method_id",
                 ]);
-        ?>
+?>
         <?= \CHtml::textField("{$field_prefix}[result]", $entry->result, [
             'placeholder' => 'Result',
             'id' => "{$field_prefix}_result_{$row_count}",

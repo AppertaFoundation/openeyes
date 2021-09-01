@@ -109,17 +109,17 @@ class MedicationRoute extends BaseActiveRecordVersioned
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('term',$this->term,true);
-        $criteria->compare('code',$this->code,true);
-        $criteria->compare('source_type',$this->source_type,true);
-        $criteria->compare('source_subtype',$this->source_subtype,true);
-        $criteria->compare('deleted_date',$this->deleted_date,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
-        $criteria->compare('has_lateralty',$this->has_laterality,false);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('term', $this->term, true);
+        $criteria->compare('code', $this->code, true);
+        $criteria->compare('source_type', $this->source_type, true);
+        $criteria->compare('source_subtype', $this->source_subtype, true);
+        $criteria->compare('deleted_date', $this->deleted_date, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
+        $criteria->compare('has_lateralty', $this->has_laterality, false);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -132,7 +132,7 @@ class MedicationRoute extends BaseActiveRecordVersioned
      * @param string $className active record class name.
      * @return MedicationRoute the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

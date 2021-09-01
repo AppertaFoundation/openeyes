@@ -62,6 +62,4 @@ class PostOpDiplopiaRiskTest extends \ModelTestCase
             $this->assertArrayHasKey($attr, $instance->attributeLabels());
         }
     }
-
-
 }

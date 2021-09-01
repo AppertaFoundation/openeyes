@@ -1,5 +1,6 @@
 <?php
-class ReportController extends BaseReportController{
+class ReportController extends BaseReportController
+{
     public function accessRules()
     {
         return array(
@@ -36,4 +37,3 @@ class ReportController extends BaseReportController{
         ));
     }
 }
-?>

@@ -97,6 +97,11 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
         } else {
             $criteria->addCondition('subspecialty_id IS NULL');
         }
+
+        // avoid introducing the element attributes from other institutions
+        $criteria->addCondition('attribute.institution_id IS NULL OR attribute.institution_id = :institution_id');
+        $criteria->params[':institution_id'] = \Yii::app()->session['selected_institution_id'];
+
         $criteria->join = 'JOIN ophciexamination_attribute_element attribute_element ON attribute_element.id = t.attribute_element_id
 							JOIN ophciexamination_attribute attribute ON attribute_element.attribute_id = attribute.id';
         $criteria->order = 'attribute.display_order,attribute_element.attribute_id,t.display_order,t.id';

@@ -7,13 +7,13 @@ set -o pipefail
 # Find fuill folder path where this script is located, then find root folder
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-  SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+	DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+	SOURCE="$(readlink "$SOURCE")"
+	[[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 # Determine root folder for site - all relative paths will be built from here
-SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
+SCRIPTDIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 
 ## Process command parameters
 quiet=0
@@ -21,67 +21,74 @@ showhelp=0
 ignorewarnings=0
 connectionstring="--connectionID=db"
 
-while [[ $# -gt 0 ]]
-do
-    p="$1"
+while [[ $# -gt 0 ]]; do
+	p="$1"
 
-    case $p in
-	--quiet|-q) quiet=1
-	;;
-        --help) showhelp=1
-        ;;
-	--ignore-warnings) ignorewarnings=1
-	  ;;
-	--connectionID) connectionstring="--connectionID=$2"
-	  shift;
-	;;
-	*)  echo "Unknown command line: $p"
-        ;;
-    esac
-    shift # move to next parameter
+	case $p in
+	--quiet | -q)
+		quiet=1
+		;;
+	--help)
+		showhelp=1
+		;;
+	--ignore-warnings)
+		ignorewarnings=1
+		;;
+	--connectionID)
+		connectionstring="--connectionID=$2"
+		shift
+		;;
+	*)
+		echo "Unknown command line: $p"
+		;;
+	esac
+	shift # move to next parameter
 done
 
 # Show help text
 if [ $showhelp = 1 ]; then
-    echo ""
-    echo "DESCRIPTION:"
-    echo "Migrates database to latest schema"
-    echo ""
-    echo "usage: $0 [--help] [--quiet | -q] [--connectionID conn]"
-    echo ""
-    echo "COMMAND OPTIONS:"
+	echo ""
+	echo "DESCRIPTION:"
+	echo "Migrates database to latest schema"
+	echo ""
+	echo "usage: $0 [--help] [--quiet | -q] [--connectionID conn]"
+	echo ""
+	echo "COMMAND OPTIONS:"
 	echo ""
 	echo "  --help           : Show this help"
-  echo "  --quiet | -q     : Do not show console output"
-  echo "  --connectionID   : Apply migrations to a secondary configured database"
+	echo "  --quiet | -q     : Do not show console output"
+	echo "  --connectionID   : Apply migrations to a secondary configured database"
 	echo "  --ignore-warnings: Don't break on warnings"
 	echo ""
-    exit 1
+	exit 1
 fi
 
 touch $WROOT/protected/runtime/migrate.log
+
+# disable log to browser during migrate, otherwise it can cause extraneous trace output on the CLI
+export LOG_TO_BROWSER=""
 
 if [ $quiet = 0 ]; then
 	# Show output on screen AND write to log
 	if php $WROOT/protected/yiic migrate --interactive=0 2>&1 | tee $WROOT/protected/runtime/migrate.log; then
 		# don't bother trying to migrate modules if the core failed
-	    php $WROOT/protected/yiic migratemodules --interactive=0 2>&1 | tee -a $WROOT/protected/runtime/migrate.log
+		php $WROOT/protected/yiic migratemodules --interactive=0 2>&1 | tee -a $WROOT/protected/runtime/migrate.log
 	fi
 else
 	# Write output to log only (do not show on screen)
-	if php $WROOT/protected/yiic migrate --interactive=0 > $WROOT/protected/runtime/migrate.log; then
+	if php $WROOT/protected/yiic migrate --interactive=0 >$WROOT/protected/runtime/migrate.log; then
 		# don't bother trying to migrate modules if the core failed
-		php $WROOT/protected/yiic migratemodules --interactive=0 >> $WROOT/protected/runtime/migrate.log
+		php $WROOT/protected/yiic migratemodules --interactive=0 >>$WROOT/protected/runtime/migrate.log
 	fi
 fi
 
 founderrors=0
 if [ $ignorewarnings = "0" ]; then
-	if grep -i 'error\|exception.[^al]\|warning\*' $WROOT/protected/runtime/migrate.log ; then
+	if grep -i 'error\|exception.[^al]\|warning\*' $WROOT/protected/runtime/migrate.log; then
 		founderrors=1
 	fi
 else
-	if grep -i 'error\|exception.[^al]' $WROOT/protected/runtime/migrate.log ; then
+	if grep -i 'error\|exception.[^al]' $WROOT/protected/runtime/migrate.log; then
 		founderrors=1
 	fi
 fi
@@ -93,24 +100,31 @@ if [ $founderrors = 1 ]; then
 	printf "\n\nTo continue with the reset of the script, select option 1"
 	echo "To exit, select option 2"
 
-	printf "\e[41m\e[97m  MIGRATE ERRORS ENCOUNTERED  \e[0m \n";
+	printf "\e[41m\e[97m  MIGRATE ERRORS ENCOUNTERED  \e[0m \n"
 	echo ""
 
 	select yn in "Continue" "Exit"; do
 		case $yn in
-			Continue ) echo "
+		Continue)
+			echo "
 
 Continuing. System is in unknown state and further errors may be encountered...
 
-			"; break;;
-			Exit ) echo "
+			"
+			break
+			;;
+		Exit)
+			echo "
 Exiting. Please fix errors and try again...
-			"; exit 1;;
+			"
+			exit 1
+			;;
 		esac
 	done
 
-
-elif grep -q "applied" $WROOT/protected/runtime/migrate.log >/dev/null ; then
+elif
+	grep -q "applied" $WROOT/protected/runtime/migrate.log >/dev/null
+then
 	echo "Migrations applied - see $WROOT/protected/runtime/migrate.log for more details"
 else
 	echo "No new migrations to apply - see $WROOT/protected/runtime/migrate.log for more details"

@@ -61,6 +61,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     $row.appendChild($is_edited);
                 }
             }
+
+            // Copy comments textarea content from the un-annotated view
+            const $table = $button.closest('table');
+            const comment = $table.querySelector('textarea').value;
+            document.getElementById(`annote-comments-field-${index}`).value = comment;
         });
 
         OpenEyes.UI.DOM.addEventListener(this.$wrapper, 'click', '.js-save-annotation', (e) => {
@@ -106,6 +111,31 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             if (annotator_index > -1) {
                 this.imageAnnotators.splice(index, 1);
             }
+        });
+
+        this.initialiseCommentTriggers();
+    };
+
+    FreehandDraw.prototype.initialiseCommentTriggers = function () {
+
+        const $section = document.querySelector('section.OEModule_OphCiExamination_models_FreehandDraw');
+        OpenEyes.UI.DOM.addEventListener($section, 'click', '.js-add-comments', function(e) {
+            e.preventDefault();
+            const button = this;
+            const tr = button.closest('tr');
+
+            tr.querySelector('.user-comment').style.display = 'none';
+            tr.querySelector('.comments-who').style.display = 'none';
+            tr.querySelector('.js-input-comments-wrapper').style.display = 'block';
+        });
+
+        OpenEyes.UI.DOM.addEventListener($section, 'click', '.js-remove-add-comments', function(e) {
+            e.preventDefault();
+            const button = this;
+            const tr = button.closest('tr');
+            tr.querySelector('.js-input-comments-wrapper').style.display = 'none';
+            tr.querySelector('.js-input-comments').value = null;
+            tr.querySelector('.js-add-comments').style.display = 'inline-flex';
         });
     };
 
@@ -186,6 +216,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         const index = '' + this.imageAnnotators.length;
         this.imageAnnotators.push(imageAnnotator);
         $annotate.dataset.imageAnnotatorId = index;
+
+        const $textarea = document.getElementById(`annote-comments-field-${row_count}`);
+
+        OpenEyes.UI.DOM.addEventListener($textarea, 'keyup', '', function(e) {
+            const $main_comment = document.getElementById(`comments-field-${row_count}`);
+            const $span = document.getElementById(`user-comment-${row_count}`);
+            $main_comment.value = this.value;
+            $span.innerHTML = this.value;
+        });
 
         return imageAnnotator;
     };

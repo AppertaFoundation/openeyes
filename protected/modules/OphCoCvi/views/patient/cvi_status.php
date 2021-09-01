@@ -31,7 +31,7 @@
             <td><?php echo $info['status']; ?></td>
             <td><?php if (isset($info['event_url'])) {?>
                     <a href="<?=$info['event_url']?>">View</a>
-                <?php } else if ($this->checkAccess('OprnEditOphInfo')) {
+                <?php } elseif ($this->checkAccess('OprnEditOphInfo')) {
                     ?>
                     <button id="btn-edit_oph_info" class="secondary small">
                         Edit

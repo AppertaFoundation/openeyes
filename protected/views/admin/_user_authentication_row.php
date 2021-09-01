@@ -57,6 +57,17 @@
         ); ?>
     </td>
     <td>
+        <?=\CHtml::button(
+            'Lookup User',
+            [
+                'class' => 'button large',
+                'id' => $key.'lookup_user',
+                'href' => '#',
+                'onclick' => 'lookupUser("'.$key.'")',
+            ]
+        ); ?>
+    </td>
+    <td>
         <span class="js-pincode-display" data-origin-pincode="<?=$user_authentication->pincode;?>"><?=$user_authentication->pincode ? : 'No Pincode';?></span>
         <?=\CHtml::activeHiddenField(
             $user_authentication,

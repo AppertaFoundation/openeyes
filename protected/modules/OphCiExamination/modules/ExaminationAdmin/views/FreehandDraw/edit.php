@@ -16,26 +16,28 @@
  */
 ?>
 
-<h2>Edit Freehand draw template</h2>
-
+    <h2>Edit Freehand draw template</h2>
 <?php
-    echo $this->renderPartial('/FreehandDraw/_error', ['model' => $model]);
+echo $this->renderPartial('/FreehandDraw/_error', ['model' => $model]);
 
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', [
-        'id' => 'subtypeform',
-        'enableAjaxValidation' => false,
-        'focus' => '#username',
-        'layoutColumns' => [
-            'label' => 2,
-            'field' => 5,
-        ],
-        'htmlOptions' => ['enctype' => 'multipart/form-data'],
-    ]);
+$form = $this->beginWidget('BaseEventTypeCActiveForm', [
+    'id' => 'subtypeform',
+    'enableAjaxValidation' => false,
+    'focus' => '#username',
+    'layoutColumns' => [
+        'label' => 2,
+        'field' => 5,
+    ],
+    'htmlOptions' => ['enctype' => 'multipart/form-data'],
+]);
 
-    $this->renderPartial(
-        '/FreehandDraw/_form', [
+$this->renderPartial(
+    '/FreehandDraw/_form',
+    [
         'model' => $model,
         'form' => $form,
-        ]);
+    ]
+);
 
-    $this->endWidget();
+$this->endWidget();
+

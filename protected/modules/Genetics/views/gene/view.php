@@ -41,6 +41,6 @@
             'description',
             'details',
             'refs',
-            
+
         ),
         ));

@@ -17,6 +17,8 @@
  */
 class OphCoCorrespondence_API extends BaseAPI
 {
+    public const ESIGN_PLACEHOLDER = "{electronic_signature}";
+
     /**
      * @param int $event_id
      *
@@ -781,17 +783,7 @@ class OphCoCorrespondence_API extends BaseAPI
             }
 
             $full_name = trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications);
-
-            $empty_lines = "\n";
-            $meta_data = OphCoCorrespondenceLetterSettingValue::model()->find('`key`=?', array('letter_footer_blank_line_count'));
-
-            $count = $meta_data ? $meta_data->value : 0;
-            if (is_numeric($count)) {
-                for ($x = 0; $x < $count; $x++) {
-                    $empty_lines .= "\n";
-                }
-            }
-            return "Yours sincerely" . $empty_lines . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Head of " . $service_name . ": " . $consultant_name : '');
+            return "Yours sincerely\n" . self::ESIGN_PLACEHOLDER . "\n" . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Head of " . $service_name . ": " . $consultant_name : '');
         }
 
         return null;

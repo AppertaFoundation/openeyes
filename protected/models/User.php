@@ -30,8 +30,6 @@
  */
 class User extends BaseActiveRecordVersioned
 {
-    const DEFAULT_HIE_ACCESS_LEVEL = 1;
-
     /**
      * Returns the static model of the specified AR class.
      *
@@ -124,7 +122,6 @@ class User extends BaseActiveRecordVersioned
             'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
             'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-            'hieAccessLevelAssignment' => array(self::HAS_ONE, 'UserHieAccessLevelAssignment', 'user_id'),
             'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
             'firmSelections' => array(
                 self::MANY_MANY,
@@ -167,12 +164,23 @@ class User extends BaseActiveRecordVersioned
 
     public function getHieAccessLevel()
     {
-        if (is_null($this->hieAccessLevelAssignment)) {
-            $this->hieAccessLevelAssignment = new UserHieAccessLevelAssignment();
-            $this->hieAccessLevelAssignment->hie_access_level_id = self::DEFAULT_HIE_ACCESS_LEVEL;
+        $hie_roles = [
+            'HIE - Extended' => 'Level 4 - Extended',
+            'HIE - Summary' => 'Level 3 - Summary',
+            'HIE - Admin' => 'Level 2 - Admin',
+            'HIE - View' => 'Level 1 - Default View'
+        ];
+
+        $highest_role = null;
+
+        foreach ($hie_roles as $key => $value) {
+            if (Yii::app()->authManager->checkAccess($key, Yii::app()->user->id)) {
+                $highest_role = $value;
+                break;
+            }
         }
 
-        return $this->hieAccessLevelAssignment;
+        return $highest_role;
     }
 
     public function changeFirm($firm_id)
@@ -305,6 +313,17 @@ class User extends BaseActiveRecordVersioned
     public function getReversedFullNameAndTitle()
     {
         return implode(' ', array($this->title, $this->last_name, $this->first_name));
+    }
+
+    public function getUsersFromCurrentInstitution()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join .= "join user_authentication ua on ua.user_id = t.id";
+        $criteria->join .= " join institution_authentication ia on ua.institution_authentication_id = ia.id";
+        $criteria->compare('ia.institution_id', \Yii::app()->session['selected_institution_id']);
+        $criteria->order = 't.last_name,t.first_name asc';
+
+        return self::model()->findAll($criteria);
     }
 
     /**
@@ -591,20 +610,21 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * @param $text
-     * @param $key
-     * @return string|null
+     * Returns a standalone img tag with a base64-encoded image of the user's signature
+     *
+     * @param array $html_options   Additional HTML options, @see \CHtml::img()
+     * @return string|null  The image or null if the user does not have a saved signature
      */
-    protected function decryptSignature($text, $key)
+    public function getSignatureImage(array $html_options = []) : ?string
     {
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $decrypt = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
-        if (Yii::app()->params['no_md5_verify']) {
-            return $decrypt;
-        }
-
-        return Helper::md5Verified($decrypt);
+        return !is_null($this->signature_file_id) ?
+            \CHtml::image(
+                "/protectedFile/view/".$this->signature_file_id."/?name=Signature",
+                "Signature",
+                $html_options
+                )
+            :
+            null;
     }
 
     /**
@@ -797,13 +817,21 @@ class User extends BaseActiveRecordVersioned
         $user = self::model()->find('username = :username', array(':username' => $this->username));
         //If the user is logging into the OE for the first time, assign default roles and firms
         if ($user === null) {
-            $this->save();
+            if (!$this->save()) {
+                $this->audit('login', 'login-failed', "Cannot create user: $this->username", true);
+                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+            }
             $this->id = self::model()->find('username = :username', array(':username' => $this->username))->id;
 
             $this->setdefaultSSOFirms();
             $this->setdefaultSSORoles();
         } else {
             $this->id = $user->id;
+            // Update user information for returning users
+            if (Yii::app()->params['auth_source'] === 'OIDC') {
+                $this->setIsNewRecord(false);
+                $this->update();
+            }
         }
         // Roles from the token need to be assigned to the user after every login
         if (!$defaultRights['default_enabled']) {
@@ -867,6 +895,23 @@ class User extends BaseActiveRecordVersioned
         $this->saveRoles($assignedRoles);
     }
 
+    /**
+     * Get whitelisted actions from password expiry redirects
+     * @param string $user
+     * @return string Name of status
+     */
+    public function CheckRequestOnExpiryWhitelist($request)
+    {
+        $whitelist = !empty(Yii::app()->params['pw_status_checks']['pw_expired_whitelist']) ? Yii::app()->params['pw_status_checks']['pw_expired_whitelist'] : ['/profile/password', '/site/logout', '/User/testAuthenticated', '/Site/loginFromOverlay', 'User/getSecondsUntilSessionExpire', '/site/changesiteandfirm'];
+
+        foreach ($whitelist as $URL) {
+            // check to see if the request starts with this whitelisted url
+            if (strpos($request, $URL)===0) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function getUserNamesWithStatuses()
     {
@@ -879,5 +924,45 @@ class User extends BaseActiveRecordVersioned
         }
 
         return $usernames_with_statuses;
+    }
+
+    /**
+     * Check if provided PIN matches that of User's
+     *
+     * @param string $pincode
+     * @param int|null $user_id
+     * @param int|null $institution_id
+     * @param int|null $site_id
+     * @param UserAuthentication|null $user_authentication will contain a reference to the UserAuthentication if matched
+     * @return boolean
+     */
+    public function checkPin($pincode, $user_id = null, $institution_id = null, $site_id = null, &$user_authentication = null) : bool
+    {
+        $pin_ok = false;
+
+        $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
+        $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
+        $user_id = $user_id ?? $this->id;
+
+        $institution_authentication = InstitutionAuthentication::model()
+            ->find(
+                "(site_id=:site_id || site_id IS NULL) AND institution_id=:institution_id",
+                [":site_id"=>$site_id, ":institution_id"=>$institution_id]
+            );
+
+        if($institution_authentication){
+            $user_authentication = UserAuthentication::model()
+                ->find(
+                    'user_id=:user_id AND institution_authentication_id=:institution_authentication_id AND pincode=:pincode',
+                    [
+                        ':user_id'=>$user_id,
+                        ':institution_authentication_id'=>$institution_authentication->id,
+                        ':pincode' => $pincode
+                    ]
+                );
+            $pin_ok = !is_null($user_authentication);
+        }
+
+        return $pin_ok;
     }
 }

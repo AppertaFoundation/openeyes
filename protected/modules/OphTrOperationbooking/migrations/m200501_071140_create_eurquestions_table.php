@@ -39,5 +39,4 @@ class m200501_071140_create_eurquestions_table extends OEMigration
     {
         $this->dropOEtable('eur_questions', true);
     }
-
 }

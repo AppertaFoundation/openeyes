@@ -72,8 +72,8 @@ $instru_list = $element->postop_instructions_list;
           array_map(function ($key, $item) {
               return ['label' => $item, 'id' => $key,];
           },
-          array_keys($instru_list),
-          $instru_list)
+            array_keys($instru_list),
+            $instru_list)
       ) ?>, {'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {

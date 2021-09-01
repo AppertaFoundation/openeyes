@@ -114,7 +114,7 @@
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_drill_down.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_init.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/enhancedPopupFixed.js')?>"></script>
-    <script src="<?= Yii::app()->assetManager->createUrl('newblue/plotlyJS/oePlotly_v1.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('newblue/dist/js/plotlyJS/oePlotly_v1.js')?>"></script>
     <script>
         analytics_init();
     </script>

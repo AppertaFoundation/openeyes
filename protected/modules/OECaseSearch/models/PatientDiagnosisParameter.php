@@ -6,9 +6,9 @@
 class PatientDiagnosisParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var int|null $firm_id
+     * @var int|string|null $firm_id
      */
-    public ?int $firm_id = null;
+    public $firm_id;
 
     /**
      * @var bool $only_last_event
@@ -95,6 +95,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
             parent::rules(),
             array(
                 array('value', 'required'),
+                array('firm_id', 'default', 'setOnEmpty' => true, 'value' => null),
                 array('firm_id, only_latest_event', 'safe'),
             )
         );

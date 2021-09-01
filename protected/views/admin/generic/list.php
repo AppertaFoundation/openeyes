@@ -34,9 +34,9 @@ if (!isset($uniqueid)) {
     if ($admin->isSubList()) : ?>
     <div id="generic-admin-sublist">
 
-        <?php if ($admin->isForceFormDisplay()): ?>
+        <?php if ($admin->isForceFormDisplay()) : ?>
         <form id="generic-admin-list">
-            <?php endif; ?>
+        <?php endif; ?>
 
         <?php
         if ($admin->getSubListParent() && is_array($admin->getSubListParent())) :
@@ -69,7 +69,7 @@ if (!isset($uniqueid)) {
                                     $listItem,
                                     $displayOrder,
                                     Yii::app()->request->getQueryString()
-                                ) ?>">
+                                          ) ?>">
                                 <?php endif;
                                 ?>
                                     <?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
@@ -107,14 +107,14 @@ if (!isset($uniqueid)) {
                                         else :
                                             ?><i class="oe-i remove small"></i><?php
                                         endif;
-                                        elseif (gettype($attr_val) === 'array') :
+                                    elseif (gettype($attr_val) === 'array') :
                                             echo implode(',', $admin->attributeValue($row, $listItem));
                                     elseif ($listItem === 'display_order') :
                                         ?>
                                         &uarr;&darr;<input type="hidden" name="<?php echo $admin->getModelName(); ?>[display_order][]" value="<?php echo $row->id ?>">
-                                        <?php
+                                            <?php
                                     else :
-                                        echo $attr_val;
+                                            echo $attr_val;
                                     endif
                                     ?>
                                 </td>

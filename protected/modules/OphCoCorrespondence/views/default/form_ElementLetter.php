@@ -458,22 +458,26 @@ $creating = $creating ?? false;
             <col>
           </colgroup>
           <tbody>
+            <?php if (strlen($element->footer) > 0) : ?>
             <tr>
               <td>From</td>
               <td>
-                <?php $this->widget(
-                    'application.widgets.AutoCompleteSearch',
-                    ['htmlOptions' => ['placeholder' => 'Search for users full title and details']]
-                ); ?>
                 <?php echo $form->textArea(
                     $element,
                     'footer',
                     array('label' => false, 'nowrapper' => true),
                     false,
-                    array('class' => 'correspondence-letter-text autosize', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 54px;')
+                    array(
+                        'readonly' => true,
+                        'class' => 'correspondence-letter-text autosize',
+                        'style' => 'overflow: hidden; overflow-wrap: break-word; height: 54px;'
+                    )
                 ) ?>
               </td>
             </tr>
+            <?php else : ?>
+                <?= $form->hiddenField($element, "footer") ?>
+            <?php endif; ?>
             <tr>
                 <td>
                     Enclosures

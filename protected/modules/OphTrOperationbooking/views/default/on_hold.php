@@ -57,7 +57,7 @@
             $('.js-other-reason-box').toggle( $(this).val() === "Other");
         });
 
-        $('#js-put-on-hold').click(function (event) {
+        $('#js-put-on-hold, #js-put-on-hold_footer').click(function (event) {
             event.preventDefault();
             $('#on_hold_errors').text("");
             $('#js-put-operation-on-hold').css('display', 'flex');

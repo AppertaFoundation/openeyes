@@ -197,6 +197,15 @@
         }
 
 
+        $('.js-preassessment_type_dropdown-tr input').click(function(e) {
+            let use_location = $(this).attr('data-use-location');
+            if (use_location === "1") {
+                $('.js-preassessment_location_dropdown-tr').removeClass('hidden');
+            } else {
+                $('.js-preassessment_location_dropdown-tr').addClass('hidden');
+            }
+        });
+
         complexityRadios = document.getElementsByName('Element_OphTrOperationbooking_Operation[complexity]');
         high_flow_low_option = complexityRadios[1];
         dialog = new OpenEyes.UI.Dialog();

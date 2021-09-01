@@ -39,4 +39,5 @@ $this->beginContent('//patient/event_container', array('no_face'=>false , 'form_
 <?php $this->endWidget() ?>
 <?php $this->endContent(); ?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/VisualAcuity.js", CClientScript::POS_HEAD); ?>
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/ExaminationSaveHandler.js", CClientScript::POS_HEAD); ?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/ElementFormJSONConverter.js", CClientScript::POS_HEAD);

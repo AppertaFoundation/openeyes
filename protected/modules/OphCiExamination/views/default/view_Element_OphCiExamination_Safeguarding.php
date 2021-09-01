@@ -1,5 +1,6 @@
 <?php
     $outcome_actionable = Yii::app()->user->checkAccess('Safeguarding');
+    $patient_is_minor = $element->event->getPatient()->isChild();
 ?>
 <div class="cols-11">
     <?php if ($element->no_concerns) { ?>
@@ -8,7 +9,26 @@
         <table class="cols-full last-left">
             <colgroup><col class="cols-4"></colgroup>
             <tbody>
-                <?php
+                <?php if ($patient_is_minor) { ?>
+                <tr>
+                    <td>Does the child have a social worker?</td>
+                    <td><?= $element->has_social_worker ? 'Yes' : 'No' ?></td>
+                </tr>
+                <tr>
+                    <td>Is the child under a child protection plan?</td>
+                    <td><?= $element->under_protection_plan ? 'Yes' : 'No' ?></td>
+                </tr>
+                <tr>
+                    <td>Who is accompanying the child and their relationship?</td>
+                    <td><?= $element->accompanying_person_name ?></td>
+                </tr>
+                <tr>
+                    <td>Who has parental responsibility for the child?</td>
+                    <td><?= $element->responsible_parent_name ?></td>
+                </tr>
+                    <?php
+                }
+
                     $entries = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
 
                     $row_count = 0;

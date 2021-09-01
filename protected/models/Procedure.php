@@ -63,9 +63,9 @@ class Procedure extends BaseActiveRecordVersioned
         return array(
             array('term, short_format, default_duration, snomed_code, snomed_term, aliases', 'required'),
             array('default_duration', 'numerical', 'integerOnly' => true, 'max' => 65535),
-            array('term, short_format, snomed_term', 'length', 'max' => 255),
+            array('term, short_format, snomed_term, ecds_term', 'length', 'max' => 255),
             array('operationNotes', 'validateOpNotes'),
-            array('id, term, short_format, default_duration, active, is_clinic_proc, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes, low_complexity_criteria', 'safe'),
+            array('id, term, short_format, default_duration, active, is_clinic_proc, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes, low_complexity_criteria, ecds_code, ecds_term', 'safe'),
         );
     }
 
@@ -101,6 +101,8 @@ class Procedure extends BaseActiveRecordVersioned
             'default_duration' => 'Default Duration',
             'opcsCodes.name' => 'OPCS Code',
             'low_complexity_criteria' => 'Low Complexity Criteria',
+            'ecds_code' => 'ECDS Code',
+            'ecds_term' => 'ECDS Term'
         );
     }
 

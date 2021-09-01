@@ -33,6 +33,7 @@ class OphDrPGDPSD_API extends \BaseAPI
             $criteria = new CDbCriteria();
             $criteria->compare('event.event_type_id', $da_event_type_id);
             $criteria->compare('event.episode_id', $episode->id);
+            $criteria->compare('event.deleted', 0);
             $criteria->compare('event.worklist_patient_id', $worklist_patient_id);
             $selected_institution_id = Yii::app()->session->get('selected_institution_id');
             if ($selected_institution_id) {

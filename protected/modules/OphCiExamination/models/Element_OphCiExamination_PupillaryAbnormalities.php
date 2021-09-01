@@ -166,7 +166,7 @@ class Element_OphCiExamination_PupillaryAbnormalities extends \SplitEventTypeEle
     {
         return true;
     }
-    
+
     public function getPrint_view()
     {
         return 'print_'.$this->getDefaultView();

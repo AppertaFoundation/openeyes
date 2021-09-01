@@ -141,14 +141,14 @@ $key = 0;
             },
             array_keys($values),
             $values)
-        )?>, {'header':'Value', 'id':'reading_val'}),
+                                                       )?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                 return ['label' => $method, 'id' => $key];
               },
-              array_keys($methods),
-              $methods)
-          )?>, {'header':'Method', 'id':'method'})
+                array_keys($methods),
+                $methods)
+                                              )?>, {'header':'Method', 'id':'method'})
          ],
         onReturn: function (adderDialog, selectedItems) {
           var tableSelector = $('.<?= $eye_side ?>-eye .near-va-readings');

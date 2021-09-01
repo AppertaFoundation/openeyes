@@ -234,7 +234,6 @@ class PatientSearch
                 $types = $search_helper->getTypes();
                 foreach ($types as $type) {
                     $patient_criteria['terms_with_types'][] = [
-                        'term' => $this->search_terms['term'],
                         // $type is stdClass so we fetch the actual PatientIdentifierType object
                         'patient_identifier_type' => PatientIdentifierType::model()->findByPk($type->id)
                     ];

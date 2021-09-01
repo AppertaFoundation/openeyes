@@ -5,14 +5,6 @@ class m210420_071025_addHIEconfigToDatabase extends OEMigration
     private $config = array(
         array(
             'element_type_id' => null,
-            'field_type_id' => 'radio',
-            'key' => 'enable_hie_link',
-            'name' => 'enable hie link',
-            'data' => array('on' => 'on', 'off' => 'off'),
-            'default_value' => 'off',
-        ),
-        array(
-            'element_type_id' => null,
             'field_type_id' => 'string',
             'key' => 'hie_remote_url',
             'name' => 'hie remote url',
@@ -73,7 +65,6 @@ class m210420_071025_addHIEconfigToDatabase extends OEMigration
             $exists_meta_data = $this->dbConnection->createCommand()->select('id')->from('setting_metadata')->where('`key` = :setting_key', array(':setting_key' => $item['key']))->queryRow();
             if (!$exists_meta_data) {
                 $this->insert('setting_metadata', $item);
-                $this->insert('setting_installation', ['key' => $item['key'], 'value' => $item['default_value']]);
             }
         }
     }

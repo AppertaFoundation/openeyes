@@ -23,7 +23,6 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 // Removing the unnecessary canViewSummary parameter from the localisation, this needs to be implemented properly by creating a new role - CERA590
 $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
-
 ?>
 
 <?php if ($no_episodes && $allow_clinical) { ?>
@@ -47,7 +46,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         'patient_id' => $this->patient->id,
         'event_types' => EventType::model()->getEventTypeModules(),
     ));?>
-<?php } else if ($allow_clinical) { ?>
+<?php } elseif ($allow_clinical) { ?>
     <nav class="event-header no-face">
         <i class="oe-i-e large i-Patient"></i>
         <h2 class="event-header-title">Patient Overview</h2>
@@ -160,9 +159,12 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         </div>
 
         <div class="patient-overview">
+            <?php if(!$active_events) {?>
+                <div class="nil-recorded">No Active Event</div>
+            <?php }?>
             <table class="standard">
                 <tbody>
-                <?php foreach ($events as $event) :
+                <?php foreach ($active_events as $event) :
                     $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
                     <tr>
                         <td>
@@ -284,7 +286,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                                             <td><i class="oe-i info small pro-left js-has-tooltip"
                                                          data-tooltip-content="<?= $summary->user ?>"></i></td>
                                         </tr>
-                                    <?php }
+                            <?php }
                         } ?>
                                 </tbody>
                             </table>

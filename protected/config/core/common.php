@@ -57,6 +57,8 @@ $db_test = array(
     $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
+    $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
+
     $authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');    // OIDC, SAML, BASIC or LDAP;
 /** END SINGLE SIGN-ON SETTINGS */
 
@@ -79,12 +81,14 @@ $config = array(
         'application.components.traits.*',
         'application.components.worklist.*',
         'application.components.patientSearch.*',
+        'application.components.traits.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
         'application.commands.*',
         'application.commands.shell.*',
         'application.behaviors.*',
         'application.widgets.*',
+        'application.widgets.interfaces.*',
         'application.controllers.*',
         'application.helpers.*',
         'application.gii.*',
@@ -125,7 +129,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202107191546',
+            'time' => '202108311638',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -237,6 +241,7 @@ $config = array(
                     'categories' => 'application.*',
                     'logFile' => 'debug.log',
                     'maxLogFiles' => 30,
+                    'enabled' => YII_DEBUG,
                 ),
             ),
         ),
@@ -288,7 +293,6 @@ $config = array(
             'connectionID' => 'db',
             'sessionTableName' => 'user_session',
             'autoCreateSessionTable' => false,
-            //'timeout' => getenv('OE_SESSION_TIMEOUT') ?: '21600',
             /*'cookieParams' => array(
                 'lifetime' => 300,
             ),*/
@@ -373,6 +377,9 @@ $config = array(
         'hie_org_pass' => trim(@file_get_contents("/run/secrets/HIE_ORG_PASS")) ?: (trim(getenv('HIE_ORG_PASS')) ?: ''),
         'hie_aes_encryption_password' => trim(@file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) ?: (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: ''),
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
+        'csd_api_url' => getenv('OE_CSD_API_URL') ?: '',
+        'csd_api_key' => getenv('OE_CSD_API_KEY') ?: (rtrim(@file_get_contents("/run/secrets/OE_CSD_API_KEY")) ?: ''),
+        'csd_api_timeout' => getenv('OE_CSD_API_TIMEOUT') ?: 3,
         //'watermark' => '',
         'google_analytics_account' => '',
         'local_users' => array(),
@@ -381,7 +388,7 @@ $config = array(
         'institution_code' => !empty(trim(getenv('OE_INSTITUTION_CODE'))) ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'institution_specialty' => 130,
         'erod_lead_time_weeks' => 3,
-        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : '',
+        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : 'localhost',
         // In most instances the location URL is derived from the WSDL provided above,
         // but for local testing using SoapUI this will need to be manually specified.
         'correspondence_export_location_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_URL")) : null,
@@ -503,6 +510,12 @@ $config = array(
                 'requires_setting' => array('setting_key' => 'enable_patient_import', 'required_value' => 'on'),
                 'restricted' => array('admin'),
             ),
+            'virus_scan' => array(
+                'title' => 'Scan Uploaded Files',
+                'uri' => '/VirusScan/index',
+                'position' => 90,
+                'requires_setting' => array('setting_key' => 'enable_virus_scanning', 'required_value' => 'on'),
+            ),
             /*
                  //TODO: not yet implemented
                  'worklist' => array(
@@ -518,6 +531,14 @@ $config = array(
                 'position' => 92,
                 'options' => ['target' => '_blank'],
             ),
+            'hie_integration' => array(
+                'title' => 'View HIE Record',
+                'uri' => '',
+                'requires_setting' => array('setting_key' => 'hie_remote_url', 'required_value' => 'not-empty'),
+                'position' => 92,
+                'restricted' => array('HIE - Admin', 'HIE - Extended', 'HIE - View', 'HIE - Summary'),
+                'options' => ['requires_patient' => true],
+            )
         ),
         'admin_menu' => array(),
         'dashboard_items' => array(),
@@ -800,6 +821,14 @@ $config = array(
             'pw_days_expire' => false !== getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
             'pw_days_lock' => false !== getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
             'pw_admin_pw_change' => false !== getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
+            'pw_expired_whitelist' => array( //List of URL's accecible when user's status is expired (these are required for OE to allow a user to change thier password)
+                '/profile/password',
+                '/site/logout',
+                '/User/testAuthenticated',
+                '/Site/loginFromOverlay',
+                '/User/getSecondsUntilSessionExpire',
+                '/site/changesiteandfirm'
+            ),
         ),
         'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? strtolower(getenv('OE_TRAINING_MODE')) : null,
         'watermark_short' => getenv('OE_USER_BANNER_SHORT') ?: null,
@@ -808,6 +837,7 @@ $config = array(
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
+        'cito_base_url ' => trim(getenv('CITO_BASE_URL')) ?: null,
         'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: null,
         'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: null,
         'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: null,
@@ -815,7 +845,7 @@ $config = array(
         'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: null,
         'cito_application_id' => trim(@file_get_contents("/run/secrets/CITO_APPLICATION_ID")) ?: (trim(getenv('CITO_APPLICATION_ID')) ?: ''),
         'cito_client_secret' => trim(@file_get_contents("/run/secrets/CITO_CLIENT_SECRET")) ?: (trim(getenv('CITO_CLIENT_SECRET')) ?: ''),
-
+        'secretary_pin' => trim(getenv('SECRETARY_PIN')) ?: "123456",
         /** START SINGLE SIGN-ON PARAMS */
         'strict_SSO_roles_check' => $ssoMappingsCheck,
         // Settings for OneLogin PHP-SAML toolkit
@@ -871,10 +901,27 @@ $config = array(
             'encryptionKey' => $ssoClientSecret,
             // Configure custom claims with the user attributes that the claims are for
             'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+            // URL to redirect users to SSO portal to login again after session timeout
+            'portal_login_url' => $ssoLoginURL,
         ),
         /** END SINGLE SIGN-ON PARAMS */
+        'training_hub_text' => !empty(trim(getenv('OE_TRAINING_HUB_TEXT'))) ? getenv('OE_TRAINING_HUB_TEXT') : null,
+        'training_hub_url' => !empty(trim(getenv('OE_TRAINING_HUB_URL'))) ? getenv('OE_TRAINING_HUB_URL') : null,
     ),
 );
+
+// Enable logging of php errors to brwser console
+// Can be either "true", or can provide the error levels to output (e.g, one or more of trace, error, warning, info, notice)
+if (!empty(getenv('LOG_TO_BROWSER'))) {
+    $browserlog = array(
+                    'browser' => array(
+                        'class' => 'CWebLogRoute',
+                        'levels' => strtolower(trim(getenv('LOG_TO_BROWSER'))) == "true" ? 'error, warning, notice' : trim(getenv('LOG_TO_BROWSER')),
+                        'showInFireBug' => true,
+                    ),
+    );
+    $config['components']['log']['routes'] = array_merge_recursive($config['components']['log']['routes'], $browserlog);
+}
 
 $modules = array(
         // Gii tool

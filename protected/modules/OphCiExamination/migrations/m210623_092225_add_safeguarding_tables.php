@@ -26,6 +26,8 @@ class m210623_092225_add_safeguarding_tables extends OEMigration
             'Carer behaviour is cause for safeguarding concern',
             'Child at risk',
             'Child is cause for safeguarding concern',
+            'Child is on a child protection plan',
+            'Child has a social worker',
             'Delay in seeking medical advice',
             'Disclosure of being subjected to abuse',
             'Domestic abuse victim in household',

@@ -1,5 +1,5 @@
 [submodule "protected/assets/newblue"]
-	path = protected/assets/newblue
-	url = https://github.com/openeyes/newblue.git
-    ignore = dirty
-
+path = protected/assets/newblue
+url = https://github.com/openeyes/newblue.git
+ignore = dirty
+shallow = true

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,9 +16,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+
 class DefaultController extends BaseEventTypeController
 {
-
+    private $elementFilterList = [ 'Element_OphTrConsent_Other' ];
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -187,7 +190,6 @@ class DefaultController extends BaseEventTypeController
     public function actionCreate()
     {
         $errors = array();
-
         if (!empty($_POST)) {
             // Save and print clicked, stash print flag
             if (isset($_POST['saveprint'])) {
@@ -359,6 +361,7 @@ class DefaultController extends BaseEventTypeController
     protected function saveComplexAttributes_Element_OphTrConsent_Procedure($element, $data, $index)
     {
         $curr_by_id = array();
+
         foreach ($element->anaesthetic_type as $type) {
             $curr_by_id[$type->id] = OphTrConsent_Procedure_AnaestheticType::model()->findByAttributes(array(
                 'et_ophtrconsent_procedure_id' => $element->id,
@@ -387,5 +390,34 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
             }
         }
+    }
+
+    /**
+     * Filter oprional elements
+     * remove retired element(s)
+     *
+     * @return array
+     */
+    public function getOptionalElements()
+    {
+        $elements = parent::getOptionalElements();
+        return $this->filterElements($elements);
+    }
+
+    /**
+     * Filters elements based on coded dependencies.
+     *
+     * @param \BaseEventTypeElement[] $elements
+     * @return \BaseEventTypeElement[]
+     */
+    protected function filterElements($elements)
+    {
+        $final = array();
+        foreach ($elements as $el) {
+            if (!in_array(get_class($el), $this->elementFilterList)) {
+                $final[] = $el;
+            }
+        }
+        return $final;
     }
 }

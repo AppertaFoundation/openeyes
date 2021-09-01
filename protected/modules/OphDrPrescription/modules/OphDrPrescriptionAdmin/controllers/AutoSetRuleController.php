@@ -304,6 +304,10 @@ class AutoSetRuleController extends BaseAdminController
             'criteria' => $criteria,
         ]);
 
+        if (!empty($set->medicationSetAutoRuleMedications)) {
+            $data_provider->setData($set->medicationSetAutoRuleMedications);
+        }
+
         $pagination = new CPagination($data_provider->totalItemCount);
         $pagination->pageSize = 20;
         $pagination->applyLimit($criteria);
@@ -433,14 +437,14 @@ class AutoSetRuleController extends BaseAdminController
                     $set_m[$row] = MedicationSetAutoRuleAttribute::model()->findByPk($med_attr['id']) ?? new MedicationSetAutoRuleAttribute;
                     $set_m[$row]->medication_attribute_option_id = $med_attr['medication_attribute_option_id'];
                 }
-            break;
-            
+                break;
+
             case 'sets':
                 foreach ($tmp_set as $row => $med_set) {
                     $set_m[$row] = MedicationSetAutoRuleSetMembership::model()->findByPk($med_set['id']) ?? new MedicationSetAutoRuleSetMembership();
                     $set_m[$row]->attributes =  $med_set;
                 }
-            break;
+                break;
 
             case 'meds':
                 foreach ($tmp_set as $row => $med_meds) {
@@ -464,14 +468,14 @@ class AutoSetRuleController extends BaseAdminController
                         $set_m[$row]->tapers = $new_tapers;
                     }
                 }
-            break;
+                break;
 
             case 'rules':
                 foreach ($tmp_set as $row => $med_rules) {
                     $set_m[$row] = MedicationSetRule::model()->findByPk($med_rules['id']) ?? new MedicationSetRule();
                     $set_m[$row]->attributes =  $med_rules;
                 }
-            break;
+                break;
         }
 
         return $set_m;

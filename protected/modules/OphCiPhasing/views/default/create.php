@@ -36,4 +36,4 @@ $this->beginContent('//patient/event_container', array('no_face'=>false , 'form_
         <?php $this->displayErrors($errors, true)?>
 
     <?php $this->endWidget()?>
-<?php $this->endContent();?>
+<?php $this->endContent();

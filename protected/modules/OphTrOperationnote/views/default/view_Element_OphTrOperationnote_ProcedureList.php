@@ -17,7 +17,7 @@
  */
 if ($element->booking_event_id) {
     $whiteboard_display_mode = SettingMetadata::model()->getSetting('opnote_whiteboard_display_mode');
-
+    $disabled = $this->action->id === 'removed' ? 'disabled' : null;
     if ($whiteboard_display_mode === 'CURRENT') {
         array_unshift(
             $this->event_actions,
@@ -25,13 +25,13 @@ if ($element->booking_event_id) {
                 'Display Whiteboard',
                 '#',
                 null,
-                array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->booking_event_id)
+                array('class' => 'small button' . " $disabled", 'id' => 'js-display-whiteboard', 'data-id' => $element->booking_event_id)
             ),
             EventAction::link(
                 'Close Whiteboard',
                 '#',
                 null,
-                array('class' => 'small button', 'id' => 'js-close-whiteboard', 'data-id' => $element->booking_event_id)
+                array('class' => 'small button' . " $disabled", 'id' => 'js-close-whiteboard', 'data-id' => $element->booking_event_id)
             )
         );
     } else {
@@ -41,7 +41,7 @@ if ($element->booking_event_id) {
                 'Display Whiteboard',
                 $this->createUrl('default/whiteboard/' . $element->booking_event_id),
                 null,
-                array('class' => 'small button', 'target' => '_blank')
+                array('class' => 'small button' . " $disabled", 'target' => '_blank')
             )
         );
     }

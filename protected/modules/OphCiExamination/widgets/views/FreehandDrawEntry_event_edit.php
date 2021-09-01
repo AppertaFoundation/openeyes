@@ -22,7 +22,8 @@ if (!isset($values)) {
         'template_url' => $entry->protected_file->getDownloadURL(),
         'filename' => $entry->protected_file->name,
         'full_name' => $entry->protected_file->user->fullName,
-        'date' => Helper::convertMySQL2NHS($entry->last_modified_date)
+        'date' => \Helper::convertMySQL2NHS($entry->last_modified_date),
+        'comments' => $entry->comments,
     );
 }
 ?>
@@ -37,6 +38,36 @@ if (!isset($values)) {
             <tr>
                 <td><?= $values['filename']; ?></td>
                 <td><i class="oe-i trash"></i></td>
+            </tr>
+            <tr>
+                <td>
+                    <i class="oe-i comments-who user-comment-<?=$row_count;?> small pad-right js-has-tooltip"
+                       data-tooltip-content="User comment"
+                       style="display:<?=(!$values['comments'] ? 'none' : 'inline-flex')?>"
+                    ></i>
+                    <span id="user-comment-<?=$row_count;?>" class="user-comment">
+                        <?=$values['comments'];?>
+                    </span>
+                    <div class="js-input-comments-wrapper cols-full" style="display: none;">
+                        <div class=" flex-layout flex-left">
+                            <textarea
+                                    placeholder="Comments"
+                                    autocomplete="off"
+                                    rows="1"
+                                    class="cols-full js-input-comments"
+                                    name="<?= $field_prefix ?>[comments]"
+                                    id="comments-field-<?=$row_count;?>"><?=\CHtml::encode($values['comments']);?></textarea>
+                            <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <button class="button js-add-comments"
+                    data-comment-container="#comments-field-<?=$row_count;?>"
+                    >
+                        <i class="oe-i comments small-icon"></i>
+                    </button>
+                </td>
             </tr>
             <tr>
                 <td><?= $values['full_name']; ?> <?= $values['date']; ?></td>
@@ -54,7 +85,21 @@ if (!isset($values)) {
         <table class="cols-full">
             <tbody>
             <tr>
-                <td><?= $values['filename']; ?></td><td><i class="oe-i trash"></i>
+                <td><?= $values['filename']; ?></td>
+                <td><i class="oe-i trash"></i></td>
+            </tr>
+            <tr>
+                <td>Comments</td>
+                <td>
+                    <?php /* textarea value will be copied to the other <textarea> and that one will be POSTed */ ?>
+                    <textarea
+                            placeholder="Comments"
+                            autocomplete="off"
+                            rows="1"
+                            class="cols-full js-annotate-input-comments"
+                            id="annote-comments-field-<?=$row_count;?>"
+                            key="<?=$row_count;?>"
+                    ></textarea>
                 </td>
             </tr>
             <tr>

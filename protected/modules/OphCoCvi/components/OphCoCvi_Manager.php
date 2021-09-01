@@ -655,8 +655,16 @@ class OphCoCvi_Manager extends \CComponent
             if ($clinical->validate()) {
                 $status |= self::$CLINICAL_COMPLETE;
             }
-            if ($clinical->isSigned()) {
-                $status |= self::$CONSULTANT_SIGNED;
+        }
+
+        if ($esign_element = $event->getElementByClass(\Element_OphCoCvi_Esign::class)) {
+            /** @var \Element_OphCoCvi_Esign $esign_element */
+            foreach ($esign_element->signatures as $signature) {
+                if ((int)$signature->type === \BaseSignature::TYPE_PATIENT && $signature->isSigned()) {
+                    $status |= self::$CONSENTED;
+                } elseif ((int)$signature->type === \BaseSignature::TYPE_LOGGEDIN_USER && $signature->isSigned()) {
+                    $status |= self::$CONSULTANT_SIGNED;
+                }
             }
         }
 
@@ -664,12 +672,6 @@ class OphCoCvi_Manager extends \CComponent
             $demographics->setScenario('finalise');
             if ($demographics->validate()) {
                 $status |= self::$DEMOGRAPHICS_COMPLETE;
-            }
-        }
-
-        if ($signature = $this->getConsentSignatureElementForEvent($event)) {
-            if ($signature->checkSignature()) {
-                $status |= self::$CONSENTED;
             }
         }
 

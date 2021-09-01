@@ -20,6 +20,7 @@ namespace OEModule\OphCiExamination\controllers;
 
 use Audit;
 use CDbCriteria;
+use OELog;
 use OEModule\OphCiExamination\components\ExaminationHelper;
 use OEModule\OphCiExamination\controllers\traits\AdminForColourVision;
 use OEModule\OphCiExamination\controllers\traits\AdminForContrastSensitivity;
@@ -769,7 +770,7 @@ class AdminController extends \ModuleAdminController
 
         $this->render('list_OphCiExamination_Workflow_Rules', array(
                 'model_class' => 'OphCiExamination_Workflow_Rule',
-                'model_list' => models\OphCiExamination_Workflow_Rule::model()->findAll(array('condition' => 'institution_id = :institution_id', 'order' => 'id asc',  'params' => [':institution_id' => Yii::app()->session['selected_institution_id']])),
+                'model_list' => models\OphCiExamination_Workflow_Rule::model()->with('firm')->findAll(array('condition' => 'institution_id = :institution_id', 'order' => 't.id asc',  'params' => [':institution_id' => Yii::app()->session['selected_institution_id']])),
                 'title' => 'Workflow rules',
         ));
     }

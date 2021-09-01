@@ -54,22 +54,22 @@
                         </td>
               <td><?php echo $item->frequency ? $item->frequency->term : '' ?></td>
               <td><?php echo $item->duration_id ? $item->medicationDuration->name : '' ?></td>
-                <?php if ($item->dispense_condition->name === 'Print to {form_type}') : ?>
+                    <?php if ($item->dispense_condition->name === 'Print to {form_type}') : ?>
                 <td>
-                    <?php echo str_replace(
+                        <?php echo str_replace(
                         '{form_type}',
                         $data['form_setting'],
                         $item->dispense_condition->name
-                    ) . " / {$item->dispense_location->name}" ?>
+                        ) . " / {$item->dispense_location->name}" ?>
                 </td>
-                <?php else : ?>
+                    <?php else : ?>
                         <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
-                <?php endif; ?>
+                    <?php endif; ?>
 
                         <td class="prescription-label">
                     <?php if ($item->comments !== null) : ?>
                                 <i><?= \CHtml::encode($item->comments); ?></i>
-                            <?php endif; ?>
+                    <?php endif; ?>
                         </td>
                     </tr>
                     <?php foreach ($item->tapers as $taper) { ?>
@@ -107,4 +107,4 @@
             <span class="large-text"><?php echo $element->textWithLineBreaks('comments') ?></span>
         </div>
     </div>
-    <?php } ?>
+<?php } ?>

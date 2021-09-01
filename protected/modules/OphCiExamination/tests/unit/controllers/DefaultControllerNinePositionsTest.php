@@ -52,7 +52,7 @@ class DefaultControllerNinePositionsTest extends BaseDefaultControllerTest
         $saved_reading = $saved_element->readings[0];
         $direct_attrs = array_filter(
             array_keys($reading_data),
-            function($k) {
+            function ($k) {
                 return !in_array($k, ['alignments', 'movements']);
             }
         );

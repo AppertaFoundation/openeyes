@@ -74,10 +74,9 @@ class HieIntegration extends \CApplicationComponent
      */
     private $data = [];
 
-    public function getConfigValue($value)
+    public function getConfigValue($key)
     {
-        $app = Yii::app();
-        return $app->params[$value];
+        return \SettingMetadata::model()->getSetting($key);
     }
 
     /**
@@ -123,7 +122,7 @@ class HieIntegration extends \CApplicationComponent
 
         $usr_name = $user->first_name . ' ' . $user->last_name;
         $usr_dsplynm = $user->first_name . ', ' . $user->last_name;
-        $usr_position = $user->getHieAccessLevel()->hieAccessLevel->name;
+        $usr_position = $user->getHieAccessLevel();
 
         $permission = 'Yes';
         $emerg_reason = '';

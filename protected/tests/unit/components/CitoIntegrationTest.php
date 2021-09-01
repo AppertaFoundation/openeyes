@@ -30,7 +30,9 @@ class CitoIntegrationTest extends CTestCase
         $this->citoIntegration =  $this->getMockBuilder(CitoIntegration::class)
             ->setMethods(["getSetting"])
             ->getMock();
+
         $ret_map = [
+            ["cito_base_url", $url],
             ["cito_otp_url", $url],
             ["cito_sign_url", $url],
             ["cito_access_token_url", $url],
@@ -41,7 +43,7 @@ class CitoIntegrationTest extends CTestCase
         ];
         $this->citoIntegration->method("getSetting")->will($this->returnValueMap($ret_map));
         $instance = $this->citoIntegration;
-        $instance->cito_sign_url = $url;
+        $instance->cito_base_url = $url;
         $instance->cito_application_id = $appId;
 
         $this->assertEquals($expected, $this->callMethod($instance, "getUrl", ["hos_num" => $hosNum, "username" => $userName, "otp" => $otp]));

@@ -104,7 +104,7 @@ $default_urls = $logo_helper->getLogoURLs();
                 } else {
                     echo "<div class='alert-box info'>No default primary logo</div>";
                 }
-                    
+
                 ?>
             </td>
         </tr>

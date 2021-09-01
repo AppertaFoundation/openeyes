@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -57,12 +58,29 @@ class Episode extends BaseActiveRecordVersioned
     }
 
     /**
+     * Return the AR model
+     *
+     * @return Episode the AR model
+     */
+    protected function instantiate($attributes)
+    {
+        $deleted = !empty($attributes) ? intval($attributes['deleted']) : 0;
+        if ($deleted) {
+            $class = 'DeletedEpisode';
+        } else {
+            $class = get_class($this);
+        }
+        $model = new $class(null);
+        return $model;
+    }
+    /**
      * Sets default scope for events such that we never pull back any rows that have deleted set to 1.
      *
      * @return array of mandatory conditions
      */
     public function defaultScope()
     {
+        $this->displayDeletedEvents();
         if ($this->getDefaultScopeDisabled()) {
             return [];
         }
@@ -70,7 +88,7 @@ class Episode extends BaseActiveRecordVersioned
         $table_alias = $this->getTableAlias(false, false);
 
         return array(
-            'condition' => $table_alias.'.deleted = 0',
+            'condition' => $table_alias . '.deleted = 0',
         );
     }
 
@@ -238,7 +256,7 @@ class Episode extends BaseActiveRecordVersioned
                 ->from('episode e')
                 ->join('firm f', 'e.firm_id = f.id')
                 ->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-                ->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
+                ->where('e.deleted = false' . $where . ' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
                     ':patient_id' => $patient_id,
                     ':subspecialty_id' => $subspecialty_id,
                 ))
@@ -247,7 +265,7 @@ class Episode extends BaseActiveRecordVersioned
             $episode = Yii::app()->db->createCommand()
                 ->select('e.id AS eid')
                 ->from('episode e')
-                ->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
+                ->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE ' . $where . ' AND e.patient_id = :patient_id', array(
                     ':patient_id' => $patient_id,
                 ))
                 ->queryRow();
@@ -450,6 +468,7 @@ class Episode extends BaseActiveRecordVersioned
                 'date_columns' => [],
                 'fuzzy_date_field' => 'disorder_date',
             ),
+            'DisplayDeletedEventsBehavior' => 'DisplayDeletedEventsBehavior',
         );
     }
 
@@ -474,7 +493,7 @@ class Episode extends BaseActiveRecordVersioned
         $this->eye_id = $eye_id;
         $this->disorder_date = $disorder_date;
         if (!$this->save()) {
-            throw new Exception('Unable to set episode principal diagnosis/eye: '.print_r($this->getErrors(), true));
+            throw new Exception('Unable to set episode principal diagnosis/eye: ' . print_r($this->getErrors(), true));
         }
 
         $this->audit('episode', 'set-principal-diagnosis');

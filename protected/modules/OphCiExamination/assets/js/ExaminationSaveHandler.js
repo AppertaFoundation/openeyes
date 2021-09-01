@@ -40,10 +40,8 @@ $(document).ready(() => {
         };
 
         if (status !== "stop") {
-            let form = document.getElementById('examination-create');
-            if (!form) {
-                form = document.getElementById('examination-update');
-            }
+            // get the first form under event-content
+            let form = document.querySelector('#event-content form');
             $(form).submit(); // Non JQuery method causes odd behaviour so left for now.
         }
     }

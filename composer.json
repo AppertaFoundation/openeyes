@@ -7,7 +7,7 @@
     "ext-json": "^7.4",
     "yiisoft/yii": "1.1.23",
     "rlanvin/php-rrule": "2.2.0",
-    "endroid/qr-code": "^1.7",
+    "endroid/qr-code": "^4.2",
     "setasign/fpdf": "1.8.*",
     "setasign/fpdi": "^2.0",
     "xthiago/pdf-version-converter": "dev-master",
@@ -19,11 +19,13 @@
     "nesk/rialto": "1.3.*",
     "nesk/puphpeteer": "1.6.*",
     "symfony/polyfill-ctype": "@stable",
+    "wikimedia/composer-merge-plugin": "^2.0",
     "onelogin/php-saml": "^3.4",
     "league/oauth2-client": "^2.4",
     "jumbojett/openid-connect-php": "0.9.*",
     "ext-openssl": "*",
-    "ext-soap": "*"
+    "ext-soap": "*",
+    "xenolope/quahog": "2.*"
   },
   "require-dev": {
     "phpunit/phpunit": "7.5.20",
@@ -50,5 +52,19 @@
     "classmap": [
       "features/bootstrap/Pages/OpenEyesPage.php"
     ]
+  },
+  "extra": {
+    "merge-plugin": {
+      "include": [
+        "protected/modules/*/composer.json"
+      ],
+      "recurse": true,
+      "replace": false,
+      "ignore-duplicates": false,
+      "merge-dev": true,
+      "merge-extra": false,
+      "merge-extra-deep": false,
+      "merge-scripts": false
+    }
   }
 }

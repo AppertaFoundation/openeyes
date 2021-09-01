@@ -184,4 +184,50 @@ class Element_OphTrConsent_BenefitsAndRisks extends BaseEventTypeElement
             }
         }
     }
+
+    /**
+     * Retrieves a list of Risks.
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getAdditionalRiskSet()
+    {
+        $items = [];
+
+        $currentFirm =  Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $subspecialty_id = $currentFirm->serviceSubspecialtyAssignment->subspecialty_id;
+
+        if ($this->isNewRecord) {
+            $institution_id = Institution::model()->getCurrent()->id;
+        } else {
+            $institution_id = $this->event->institution_id;
+        }
+
+        $risks = \OphTrConsent_AdditionalRisk::model()
+            ->with('subspecialties')
+            ->findAll(
+                'active = 1 AND
+                institution_id=:institution_id AND 
+                (
+                    subspecialties.subspecialty_id=:subspecialty_id OR subspecialties.subspecialty_id IS NULL
+                )
+                ',
+                [":institution_id" => $institution_id, ":subspecialty_id" => $subspecialty_id]
+            );
+
+        foreach ($risks as $risk) {
+            $items[] = ['label' => (string)$risk->name];
+        }
+
+        if (count($items)===0) {
+            return [];
+        }
+
+        $itemSets[] = ['items' => $items ,
+            'header' => 'Additional risks' ,
+            'multiSelect' => true
+        ];
+        return $itemSets;
+    }
 }
