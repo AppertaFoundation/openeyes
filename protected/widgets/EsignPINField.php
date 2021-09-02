@@ -31,7 +31,7 @@ class EsignPINField extends EsignField
     public function init()
     {
         parent::init();
-        if($this->signature->isNewRecord) {
+        if ($this->signature->isNewRecord) {
             $this->signature->signed_user_id = Yii::app()->session['user']->id;
             $this->signature->signatory_name = Yii::app()->session['user']->getFullName();
         }

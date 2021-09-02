@@ -16,23 +16,23 @@
  */
 ?>
 <?php
-/**  @var EsignPINField $this */
+/**  @var EsignUsernamePINField $this */
 /** @var string $row_id */
 $el_class = get_class($this->element);
 $widget_class = get_class($this);
-$uid = str_replace("\\", "", $el_class) . "_" . $widget_class . "_" . $row_id;
+$uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
 ?>
 <tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>
     <!-- Role -->
-    <td><span class="js-signatory-label"><?= $this->signature->signatory_role ?></span></td>
+    <td><span class="js-signatory-label"><?= CHtml::encode($this->signature->signatory_role) ?></span></td>
     <!-- Name -->
     <td>
         <span class="js-signatory-name">
             <?php if($this->isSigned()) {
-                echo $this->signature->signatory_name;
+                echo CHtml::encode($this->signature->signatory_name);
             }
             else {
                 echo CHtml::hiddenField(

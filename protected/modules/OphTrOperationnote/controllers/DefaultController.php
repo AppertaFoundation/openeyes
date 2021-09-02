@@ -244,6 +244,7 @@ class DefaultController extends BaseEventTypeController
             $prescription_creator = new PrescriptionCreator($this->event->episode);
             $prescription_creator->patient = $this->patient;
             $prescription_creator->addMedicationSet($set->id, $procedure_list->eye_id);
+            $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = !Yii::app()->user->checkAccess('OprnCreatePrescription');
             $prescription_creator->save();
 
             $success = !$prescription_creator->hasErrors();
@@ -1300,16 +1301,7 @@ class DefaultController extends BaseEventTypeController
         $success = false;
 
         if ($macro) {
-            $name = addcslashes($this->event->episode->status->name, '%_'); // escape LIKE's special characters
-            $criteria = new CDbCriteria(array(
-                'condition' => "name LIKE :name",
-                'params'    => array(':name' => "$name%")
-            ));
-
-            $letter_type = LetterType::model()->find($criteria);
-            $letter_type_id = $letter_type ? $letter_type->id : null;
-
-            $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
+            $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $macro->letter_type_id);
             $correspondence_creator->save();
 
             $success = !$correspondence_creator->hasErrors();

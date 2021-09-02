@@ -52,10 +52,10 @@ $is_admin = $this->checkAccess('admin');
             $purifier = new CHtmlPurifier();
             foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) {
                 // Setting pulled from database
-                $metadata_value = (string)$metadata->getSettingName($metadata->key, ['SettingInstallation', 'SettingInstitution']);
+                $metadata_value = $metadata->getSettingName($metadata->key, ['SettingInstallation', 'SettingInstitution']);
 
                 //data-uri
-                $data_uri = "admin/editSystemSetting?key=" . $metadata->key . ($metadata->lowest_setting_level === 'INSTITUTION' ? '&class=SettingInstitution': '&class=SettingInstallation');
+                $data_uri = "admin/editSystemSetting?key=" . $metadata->key . ($metadata->lowest_setting_level === 'INSTITUTION' ? '&class=SettingInstitution' : '&class=SettingInstallation');
 
                 // Check to see if the param is being set in a config file
                 if (array_key_exists($metadata->key, OEConfig::getMergedConfig('main')['params'])) {

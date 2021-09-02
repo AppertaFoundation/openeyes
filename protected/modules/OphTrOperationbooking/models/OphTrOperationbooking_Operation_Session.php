@@ -45,7 +45,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 {
     public static $DEFAULT_UNAVAILABLE_REASON = 'This session is unavailable at this time';
     public static $TOO_MANY_PROCEDURES_REASON = 'This operation has too many procedures for this session';
-    public $pac_api;
 
     /**
      * Returns the static model of the specified AR class.
@@ -167,14 +166,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             $criteria['params'][':ward_id'] = (int)$ward_id;
         }
 
-        $active_bookings = $this->activeBookings($criteria);
-
-        if (($this->pac_api = Yii::app()->moduleAPI->get('OphInMehPac'))) {
-            $criteria = $this->pac_api->getActiveBookingsCriteriaByPAC($criteria, $active_bookings, $ward_id, Yii::app()->session['theatre_searchoptions']);
-            return $this->activeBookings($criteria);
-        }
-
-        return $active_bookings;
+        return $this->activeBookings($criteria);
     }
 
     /**

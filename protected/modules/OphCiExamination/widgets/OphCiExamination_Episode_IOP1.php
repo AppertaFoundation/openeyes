@@ -18,7 +18,7 @@ class OphCiExamination_Episode_IOP1 extends \EpisodeSummaryWidget
 {
     public function run()
     {
-        
+
         $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         if ($iop = $exam_api->getElements(
             'OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure',

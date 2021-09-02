@@ -14,7 +14,6 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 /**
  * This is the model class for table "ophcocvi_signature".
  *
@@ -41,17 +40,6 @@
 class OphCoCvi_Signature extends BaseSignature
 {
     /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return OphCoCvi_Signature the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -68,13 +56,13 @@ class OphCoCvi_Signature extends BaseSignature
         // will receive user inputs.
         return array(
             array('element_id, type', 'required'),
-            array('element_id, id, type', 'numerical', 'integerOnly' => true),
+            array('element_id, id, type', 'numerical', 'integerOnly'=>true),
             array('signature_file_id', 'validateSignatureFile'),
-            array('signatory_role, signatory_name', 'length', 'max' => 64),
+            array('signatory_role, signatory_name', 'length', 'max'=>64),
             array('last_modified_date, created_date, date, time, type, signature_file_id', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
+            array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
         );
     }
 
@@ -157,9 +145,20 @@ class OphCoCvi_Signature extends BaseSignature
     }
 
     /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return OphCoCvi_Signature the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
      * @inheritDoc
      */
-    public function getRoleOptions(): array
+    public function getRoleOptions() : array
     {
         return ["Patient", "Patient's representative", "Parent/Guardian"];
     }
@@ -170,9 +169,9 @@ class OphCoCvi_Signature extends BaseSignature
     public function afterSave()
     {
         parent::afterSave();
-        Yii::log("afterSave now fired", CLogger::LEVEL_ERROR);
         if (isset($this->element->event)) {
             (new OEModule\OphCoCvi\components\OphCoCvi_Manager())->updateEventInfo($this->element->event);
         }
     }
 }
+

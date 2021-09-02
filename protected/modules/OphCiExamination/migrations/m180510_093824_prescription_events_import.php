@@ -12,7 +12,7 @@ class m180510_093824_prescription_events_import extends OEMigration
     public function safeUp()
     {
         echo "> This migration may take a several seconds!\n";
-  
+
         $this->dropTapersFK();
         $this->runPrescriptionImport();
         $this->applyTapersFK();

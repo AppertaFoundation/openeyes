@@ -13,7 +13,7 @@ class m161217_091226_et_ophindnasample_sample_NewFields extends CDbMigration
         return false;
     }
 */
-    
+
     // Use safeUp/safeDown to do migration with transaction
     public function safeUp()
     {
@@ -76,5 +76,4 @@ class m161217_091226_et_ophindnasample_sample_NewFields extends CDbMigration
         $this->dropColumn('et_ophindnasample_sample', 'is_local');
         $this->dropColumn('et_ophindnasample_sample', 'destination');
     }
-    
 }

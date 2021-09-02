@@ -122,7 +122,8 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
 
     public function getTileSize($action)
     {
-        return $action === 'view' || $action === 'createImage' ? 1 : null;
+        $action_list = array('view', 'createImage', 'removed');
+        return in_array($action, $action_list) ? 1 : null;
     }
 
     public function getFormTItle()

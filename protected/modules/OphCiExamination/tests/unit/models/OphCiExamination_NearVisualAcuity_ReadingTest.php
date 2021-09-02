@@ -61,7 +61,7 @@ class OphCiExamination_NearVisualAcuity_ReadingTest extends BaseVisualAcuityRead
     {
         $instance = $this->getElementInstance();
 
-        $expected_pks = array_map(function($related_obj) {
+        $expected_pks = array_map(function ($related_obj) {
             return $related_obj->getPrimaryKey();
         }, OphCiExamination_VisualAcuitySource::model()->active()->findAll([
             'condition' => 'is_near = 1'

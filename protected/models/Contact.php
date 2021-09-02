@@ -83,7 +83,7 @@ class Contact extends BaseActiveRecordVersioned
             array('first_name, last_name, created_institution_id', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
             array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
             array('first_name, last_name', 'parenthesisValidator', 'except' => 'team_contact'),
-            array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
+            array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req', 'pasapi_import')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message' => 'Please select a Role.'),
             array('primary_phone', 'requiredValidator'),
             array('id, nick_name, primary_phone, mobile_phone, title, first_name, last_name, qualifications, email', 'safe', 'on' => 'search'),
@@ -100,7 +100,7 @@ class Contact extends BaseActiveRecordVersioned
     public function parenthesisValidator($attribute, $params)
     {
         $scenario = $this->getScenario();
-        if ($scenario === 'hscic_import') {
+        if (in_array($scenario, ['hscic_import', 'pasapi_import'])) {
             return;
         }
         if ($scenario === 'admin_contact') {

@@ -1,4 +1,6 @@
-<?php $annotateToolsIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-annotate-tools.svg'; ?>
+<?php
+
+$annotateToolsIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-annotate-tools.svg'; ?>
 
 <div class="toolbox">
     <button name="manipulate" class="tool-manipulate js-tool-btn">

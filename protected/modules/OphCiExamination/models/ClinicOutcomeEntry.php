@@ -164,10 +164,11 @@ class ClinicOutcomeEntry extends \BaseElement
     public function afterDelete()
     {
         $ticket = $this->element->getPatientTicket();
-        $patient_ticket_ids = OphCiExamination_ClinicOutcome_Status::model()->getPatientTicketIds();
-
-        if (array_search($this->status_id, $patient_ticket_ids) !== false && $ticket) {
-            $this->element->deleteRelatedTicket($ticket);
+        if ($this->isPatientTicket() && $ticket) {
+            //this is necessary if the element or the entry is deleted in error and re-added
+            if (!$this->element->checkIfTicketEntryExists($this->status_id)) {
+                $this->element->deleteRelatedTicket($ticket);
+            }
         }
 
         parent::afterDelete();

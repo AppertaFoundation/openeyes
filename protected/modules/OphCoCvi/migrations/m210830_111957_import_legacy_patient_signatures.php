@@ -43,4 +43,3 @@ class m210830_111957_import_legacy_patient_signatures extends OEMigration
         $this->execute("DELETE FROM ".self::ET_TABLE." WHERE 1 = 1");
     }
 }
-

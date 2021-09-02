@@ -36,13 +36,16 @@ class OphTrOperationbooking_ReportEUR extends BaseReport
             * call a function to get the required data, and put the data into $eurs
             * in _eur loop through $this->eurs
         */
-        $eurs = EUREventResults::model()->with('event')->findAll('result = 1');
+        $eurs = EUREventResults::model()->with('event')->findAll('t.result = 1 AND event.deleted = 0');
         $this->eurs = array();
         foreach ($eurs as $eur) {
             if (!$eur->event) {
                 continue;
             }
-            $booking = Element_OphTrOperationbooking_Operation::model()->with('event')->find('event_id = ' . @$eur->event->id);
+            $booking_criteria = new CDbCriteria();
+            $booking_criteria->compare('t.event_id', $eur->event->id);
+            $booking_criteria->addCondition('event.deleted = 0');
+            $booking = Element_OphTrOperationbooking_Operation::model()->with('event')->find($booking_criteria);
             $event_date = strtotime($eur->event->event_date);
             if ($this->date_from && $event_date < strtotime($this->date_from)) {
                 continue;
@@ -64,7 +67,7 @@ class OphTrOperationbooking_ReportEUR extends BaseReport
             $row['1st/2nd Eye'] = $eur->eye_num == 1 ? '1st Eye' : '2nd Eye';
             $row['EUR'] = ($eur->result == 1 ? 'PASSED' : 'FAILED') . ' -- ' . $deciding_question->question->question;
             $row['Date Submitted'] = date("d/m/Y", $event_date);
-            $consultant = $booking->consultant ? $booking->consultant->first_name . ' ' . $booking->consultant->last_name : 'Not Selected';
+            $consultant = $booking && $booking->consultant ? $booking->consultant->first_name . ' ' . $booking->consultant->last_name : 'Not Selected';
             $row['Responsible Consultant'] = $consultant;
             $row['Requesting Doctor'] = $eur->event->user->first_name . ' ' . $eur->event->user->last_name;
             $this->eurs[] = $row;

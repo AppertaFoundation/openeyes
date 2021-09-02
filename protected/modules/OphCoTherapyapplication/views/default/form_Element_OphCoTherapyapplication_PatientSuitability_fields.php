@@ -47,7 +47,7 @@ foreach ($treatments as $treatment) {
     $element,
     $side . '_angiogram_baseline_date',
     array('maxDate' => 'today'),
-    array(),
+        array('null' => true),
     array_merge($layoutColumns, array('field' => 3))
 ) ?>
 
@@ -65,8 +65,8 @@ foreach ($treatments as $treatment) {
                 'form' => $form,
                 'side' => $side,
             ),
-            false,
-            false
+                   false,
+                   false
         ) ?>
     </div>
   </div>

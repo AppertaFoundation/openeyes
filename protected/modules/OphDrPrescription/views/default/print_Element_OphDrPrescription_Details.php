@@ -142,7 +142,7 @@ if (isset($element->authorisedByUser)) {
                 <td><?=is_numeric($item->dose) ? ($item->dose . " " . $item->dose_unit_term) : $item->dose ?></td>
                 <td><?=$item->route->term ?><?php if ($item->laterality) {
                         echo ' (' . $item->medicationLaterality->name . ')';
-                            } ?></td>
+                    } ?></td>
                 <td><?=$item->frequency->term; ?></td>
                 <td><?=$item->medicationDuration->name ?></td>
                         <?php if (strpos($group_name, 'Hospital') !== false) { ?>
@@ -281,7 +281,7 @@ if (isset($element->authorisedByUser)) {
             </td>
         </tr>
     </table>
-
+    <div class="clearfix"></div>
     <?php if ($footer_text !== null) { ?>
         <div><?= $footer_text ?></div>
     <?php } ?>

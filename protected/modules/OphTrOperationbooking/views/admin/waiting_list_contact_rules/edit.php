@@ -71,7 +71,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     $attr,
                     $data,
                     ['empty' => '- Not set -', 'class' => 'cols-full']
-                ); ?>
+                    ); ?>
                 </td>
             </tr>
         <?php endforeach; ?>

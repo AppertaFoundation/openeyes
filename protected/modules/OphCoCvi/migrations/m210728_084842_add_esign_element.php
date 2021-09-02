@@ -24,7 +24,7 @@ class m210728_084842_add_esign_element extends OEMigration
                 'element_id' => 'INT(11) NOT NULL',
                 'type' => 'TINYINT UNSIGNED',
                 'signature_file_id' => 'INT(10) UNSIGNED NULL',
-                'signed_user_id' => 'INT(10) UNSIGNED NULL DEFAULT NULL',
+                'signed_user_id' => 'INT(10) UNSIGNED NULL',
                 'signatory_role' => 'VARCHAR(64) NOT NULL',
                 'signatory_name' => 'VARCHAR(64) NOT NULL',
                 'timestamp' => 'INT(11) NOT NULL',

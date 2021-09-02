@@ -122,7 +122,7 @@ class Element_OphCoCvi_Esign extends BaseEsignElement
             if ($this->event && !$this->event->isNewRecord) {
                 $patient = new OphCoCvi_Signature();
                 $patient->signatory_role = "Patient";
-                if(isset(Yii::app()->getController()->patient)) {
+                if (isset(Yii::app()->getController()->patient)) {
                     $patient->signatory_name = Yii::app()->getController()->patient->getFullName();
                 }
                 $patient->type = BaseSignature::TYPE_PATIENT;
@@ -134,7 +134,7 @@ class Element_OphCoCvi_Esign extends BaseEsignElement
     }
 
     /**
-     * A CVI is signed if all the signatures
+     * A CVI is signed if all of the signatures
      * (consultant and patient) is done
      *
      * @return bool
@@ -142,7 +142,7 @@ class Element_OphCoCvi_Esign extends BaseEsignElement
     public function isSigned() : bool
     {
         foreach ($this->getSignatures() as $signature) {
-            if(!$signature->isSigned()) {
+            if (!$signature->isSigned()) {
                 return false;
             }
         }
@@ -155,6 +155,29 @@ class Element_OphCoCvi_Esign extends BaseEsignElement
     public function getUnsignedMessage(): string
     {
         return "Please note the CVI is only valid if signed by a Consultant and the Patient as well.";
+    }
+
+    /**
+     * @param array $elements
+     */
+    public function eventScopeValidation(array $elements)
+    {
+        $elements = array_filter(
+            $elements,
+            function ($element) {
+                return $element instanceof ElementLetter;
+            }
+        );
+        if(!empty($elements)) {
+            $element_letter = $elements[0];
+            /** @var ElementLetter $element_letter */
+            if(!$this->isSigned() && !$element_letter->draft) {
+                $this->addError(
+                    "id",
+                    "At least one signature must be provided to finalize this Correspondence."
+                );
+            }
+        }
     }
 
     /**

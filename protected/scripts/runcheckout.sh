@@ -430,9 +430,10 @@ for module in "${modules[@]}"; do
 
         if [ "$trackbranch" != "branch" ]; then
             echo "No branch $branch was found. Falling back to $defaultbranch"
+            trackbranch=$defaultbranch
             # check if default branch exists locally - if not fetch it
-            if git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$trackbranch"; then
-                git -C $MODGITROOT fetch --depth $moduledepth origin $trackbranch
+            if ! git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$trackbranch"; then
+                git -C $MODGITROOT fetch --depth $moduledepth origin $trackbranch:$trackbranch
             fi
         fi
 
@@ -519,7 +520,7 @@ for module in "${modules[@]}"; do
                 echo "Attempting shallow pull to depth: $moduledepth"
             fi
             git -C $MODGITROOT pull $pullparams
-            git -C $MODGITROOT submodule update --init --force
+            git -C $MODGITROOT submodule update --init --force --depth 1
         fi
 
         ## Attempt to merge in an upstream branch (except for sample db)

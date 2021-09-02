@@ -1,6 +1,8 @@
 this.OpenEyes = this.OpenEyes || {};
 this.OpenEyes.UI = this.OpenEyes.UI || {};
 
+/* global moduleName */
+
 (function(exports) {
     /**
      * @param {jQuery} $element
@@ -18,11 +20,13 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
 
     EsignElementWidget._defaultOptions = {
         // One of "edit", "view" or "print"
-        "mode" : "edit"
+        "mode" : "edit",
+        "element_id" : null
     };
 
     EsignElementWidget.prototype.create = function ()
     {
+        this.$connectDeviceBtn = this.$element.find(".js-connect-device");
         this.bindEvents();
         this.renumber();
     };
@@ -32,9 +36,16 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
         let widget = this;
         this.$element.on("signatureAdded", function () {
             if(widget.options.mode === "view") {
-                //window.formHasChanged = false;
-                //window.location.reload();
+                window.formHasChanged = false;
+                window.location.reload();
             }
+        });
+        this.$connectDeviceBtn.click(function () {
+            const dlg = new OpenEyes.UI.Dialog({
+                title: "e-Sign - link to device",
+                url: "/" + moduleName + "/default/esignDevicePopup",
+            });
+            dlg.open();
         });
     };
 

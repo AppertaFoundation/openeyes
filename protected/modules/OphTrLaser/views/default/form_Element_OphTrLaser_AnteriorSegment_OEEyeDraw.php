@@ -34,4 +34,3 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'attribute' => $side.'_eyedraw',
 ));
-?>

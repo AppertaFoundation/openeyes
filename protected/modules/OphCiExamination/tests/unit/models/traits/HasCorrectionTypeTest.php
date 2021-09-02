@@ -31,7 +31,7 @@ use OEModule\OphCiExamination\models\traits\HasCorrectionType;
 class HasCorrectionTypeTest extends ModelTestCase
 {
     protected $element_cls = HasCorrectionTypeTest_TestClass::class;
-    
+
     public function setUp()
     {
         parent::setUp();
@@ -69,7 +69,6 @@ class HasCorrectionTypeTest extends ModelTestCase
 
         $this->assertEquals($valid->getPrimaryKey(), $instance->correctiontype->getPrimaryKey());
     }
-
 }
 
 class HasCorrectionTypeTest_TestClass extends \BaseActiveRecord

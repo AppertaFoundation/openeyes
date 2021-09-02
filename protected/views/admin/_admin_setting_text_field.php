@@ -19,4 +19,4 @@ if (!isset($currentValue) || $currentValue == null) {
       $currentValue = '';
 }
       echo CHtml::textField($metadata->key, $currentValue);
-      echo CHtml::hiddenField('hidden_'.$metadata->key, 1);  ?>
+      echo CHtml::hiddenField('hidden_'.$metadata->key, 1);

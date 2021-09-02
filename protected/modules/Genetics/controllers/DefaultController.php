@@ -64,18 +64,16 @@ class DefaultController extends BaseEventTypeController
             ),
         );
     }
-    
+
     /*
      * Save pedigree on the patient summary page
      */
     public function actionSavePedigree()
     {
-        
+
         $geneticsPatient = new GeneticsPatient();
         $geneticsPatient->patient_id = $_POST['patient_id'];
         $geneticsPatient->pedigree_id = $_POST['pedigree_id'];
         $geneticsPatient->save();
     }
-    
-   
 }

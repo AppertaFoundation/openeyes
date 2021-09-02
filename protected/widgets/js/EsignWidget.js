@@ -50,7 +50,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         if(this.options.needUserName) {
             OpenEyes.UI.AutoCompleteSearch.init({
                 input: widget.$element.find(".autocompletesearch"),
-                url: '/user/autoComplete',
+                url: '/user/autoComplete?consultant_only=1',
                 onSelect: function() {
                     let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
                     $("#signatory_name_" + widget.$element.attr("id")).val(response.label);
@@ -114,8 +114,12 @@ OpenEyes.UI = OpenEyes.UI || {};
                             response.singature_image2_base64,
                             response.date,
                             response.time,
-                            response.signatory_name || null
+                            response.signatory_name || null,
+                            !!response.signed_by_secretary
                         );
+                        if(typeof response.signed_by_secretary !== "undefined") {
+                            widget.$element.find(".js-secretary-field").val(response.signed_by_secretary ? "1" :"0");
+                        }
                         widget.setDataInput(response.signature_proof);
                         widget.$element.closest("section.element").trigger(widget.events.onSignatureAdded);
                     } else {
@@ -146,11 +150,37 @@ OpenEyes.UI = OpenEyes.UI || {};
             });
             popup.open();
         });
-        this.$element.on("signatureDeviceAttached", function(e) {
-            widget.$deviceSignButton.prop("disabled", false);
-        });
-        this.$element.on("signatureDeviceDetached", function(e) {
-            widget.$deviceSignButton.prop("disabled", true);
+        this.$deviceSignButton.click(function () {
+            const element_type_id = widget.$element.closest(".element").attr("data-element-type-id");
+            const signature_type = widget.$element.find(".js-type-field").val();
+            let signatory_role =  widget.$signatoryRole.val();
+            let signatory_name =  widget.$signatoryName.val();
+            const confirm_dlg = new OpenEyes.UI.Dialog.Confirm({
+                content: "Once you capture the signature, signatory role and name can't be changed. Are you sure you want to proceed?"
+            });
+            confirm_dlg.on("ok", function () {
+                $.post("/" + moduleName + "/default/postSignRequest",
+                    {
+                        "YII_CSRF_TOKEN" : YII_CSRF_TOKEN,
+                        "event_id" : OE_event_id,
+                        "element_type_id" : element_type_id,
+                        "signature_type" : signature_type,
+                        "signatory_role" : signatory_role,
+                        "signatory_name" : signatory_name,
+                    },
+                    function (response) {
+                        if(response.success) {
+                            const waitingDlg = new OpenEyes.UI.Dialog({
+                                title: "Signature request sent",
+                                content: "Waiting for signature to be captured on linked device..."
+                            });
+                            waitingDlg.open();
+                            widget.startPolling(element_type_id, signature_type, waitingDlg);
+                        }
+                    }
+                );
+            });
+            confirm_dlg.open();
         });
     };
 
@@ -159,20 +189,27 @@ OpenEyes.UI = OpenEyes.UI || {};
      * @param {string} signature_file2
      * @param {string} date
      * @param {string} time
+     * @param {string} signatory_name
+     * @param {bool} is_secretary
      * @private
      */
-    EsignWidget.prototype.displaySignature = function(signature_file1, signature_file2, date, time, signatory_name)
+    EsignWidget.prototype.displaySignature = function(signature_file1, signature_file2, date, time, signatory_name, is_secretary)
     {
         this.$controlWrapper.hide();
         if(typeof signature_file1 !== "undefined") {
             const $image = $('<div class="esign-check js-has-tooltip" data-tooltip-content="<img src=\''+(signature_file2)+'\'>" style="background-image: url('+signature_file1+');">');
             $image.prependTo(this.$signatureWrapper);
         }
+        else if(is_secretary) {
+            const $txt = $("<span>ELECTRONIC VERIFIED, NOT SIGNED TO AVOID DELAYS</span>");
+            $txt.prependTo(this.$signatureWrapper);
+        }
+
         this.$date.text(date).show();
         this.$time.text(time);
         this.$signatureWrapper.show();
 
-        if(signatory_name){
+        if(signatory_name) {
             this.$signatoryName.html(signatory_name);
         }
 
@@ -186,6 +223,42 @@ OpenEyes.UI = OpenEyes.UI || {};
     EsignWidget.prototype.setDataInput = function(proof)
     {
         this.$element.find(".js-proof-field").val(proof);
+    };
+
+    /**
+     * @param {int} element_type_id
+     * @param {int} signature_type
+     * @param {OpenEyes.UI.Dialog} waitingDlg
+     * @private
+     */
+    EsignWidget.prototype.startPolling = function (element_type_id, signature_type, waitingDlg)
+    {
+        let widget = this;
+        async function subscribe() {
+            let response = await fetch(
+                "/site/pollCompletedSignature?event_id=" + OE_event_id +
+                "&element_type_id=" + element_type_id +
+                "&signature_type=" + signature_type
+            );
+            if (response.status === 502) {
+                // Connection timeout error, reconnect
+                await subscribe();
+            }
+            else if (response.status === 200) {
+                waitingDlg.close();
+                let message = await response.text();
+                let data = JSON.parse(message);
+                widget.displaySignature(
+                    data.signature_image1_base64,
+                    data.signature_image2_base64,
+                    data.date,
+                    data.time,
+                    "",
+                    false
+                );
+            }
+        }
+        subscribe();
     };
 
     exports.EsignWidget = EsignWidget;

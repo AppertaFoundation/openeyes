@@ -108,6 +108,7 @@ class GetSignatureByPinAction extends \CAction
             'singature_image2_base64' => $this->thumbnail_src2,
             'date' => $this->date_time->format(Helper::NHS_DATE_FORMAT),
             'time' => $this->date_time->format("H:i"),
+            'signed_by_secretary' => false,
         ]);
     }
 
@@ -158,6 +159,9 @@ class GetSignatureByPinAction extends \CAction
                     "signatory_role" => Yii::app()->request->getPost("signatory_role"),
                     "signatory_name" => Yii::app()->request->getPost("signatory_name"),
                 ], false);
+                if($signature->hasAttribute("secretary") && property_exists($this, "is_secretary_signing")) {
+                    $signature->secretary = $this->is_secretary_signing;
+                }
                 $signature->save(false);
             }
         }

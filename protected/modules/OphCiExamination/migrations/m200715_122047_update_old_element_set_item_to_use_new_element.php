@@ -23,8 +23,6 @@ class m200715_122047_update_old_element_set_item_to_use_new_element extends CDbM
             'element_type_id = :old_element_type_id',
             [':old_element_type_id' => $archive_cataract_surgical_management_id]
         );
-
-
     }
 
     public function safeDown()

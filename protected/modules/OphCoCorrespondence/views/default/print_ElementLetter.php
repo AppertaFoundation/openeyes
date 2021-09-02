@@ -98,17 +98,6 @@ if (!@$no_header) { ?>
         <?php echo $element->renderFooter() ?>
     </p>
     <br/>
-    <p class="accessible" nobr="true">
-        <?php
-            if($esign_element = $element->event->getElementByClass(Element_OphCoCorrespondence_Esign::class)) {
-                $this->widget("application.widgets.EsignElementWidget", [
-                    "element" => $esign_element,
-                    "mode" => BaseEventElementWidget::$EVENT_PRINT_MODE
-                ]);
-            }
-        ?>
-    </p>
-
     <div class="spacer"></div>
     <h5>
         <?php

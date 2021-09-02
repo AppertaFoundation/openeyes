@@ -32,7 +32,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             </colgroup>
             <tbody>
             <?php
-            $personal_fields = ['term', 'short_format', 'default_duration', 'snomed_code', 'snomed_term', 'aliases'];
+            $personal_fields = ['term', 'short_format', 'default_duration', 'snomed_code', 'snomed_term', 'ecds_code', 'ecds_term', 'aliases'];
             foreach ($personal_fields as $field) : ?>
                 <tr>
                     <td><?php echo $procedure->getAttributeLabel($field); ?></td>
@@ -94,6 +94,8 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                 $this->widget('application.widgets.MultiSelectDropDownList', [
                     'options' => [
                         'label' => 'benefit',
+                        'sas' => 1,
+                        'wrapperSelector' => 'teszt',
                         'dropDown' => [
                             'name' => null,
                             'id' => '$benefits',

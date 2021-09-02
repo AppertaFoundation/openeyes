@@ -11,7 +11,7 @@
           <th colspan="4">
               <?php if ($side == 'right') { ?>
                     <?php echo $element->getAttributeLabel($side . 'Eye') ?>
-                <?php } ?>
+              <?php } ?>
                 <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                 <?php if ($side == 'left') { ?>
                     <?php echo $element->getAttributeLabel($side . 'Eye') ?>
@@ -25,7 +25,7 @@
             <td>
                 <?php
                 if ($this->is_auto) {
-                    echo '<span class="readonly-box">'.$element->{"axial_length_$side"}.'</span><span class="field-info">&nbsp;mm</span>';
+                    echo '<span class="readonly-box">' . $element->{"axial_length_$side"} . '</span><span class="field-info">&nbsp;mm</span>';
                 } else {
                     ?>
                     <input type="text" id="Element_OphInBiometry_Measurement_axial_length_<?php echo $side; ?>"
@@ -72,7 +72,7 @@
             <td>
                 <?php
                 if ($this->is_auto) {
-                    echo '<span class="readonly-box">'.$element->{"k1_$side"}.'</span><span class="field-info">D</span>';
+                    echo '<span class="readonly-box">' . $element->{"k1_$side"} . '</span><span class="field-info">D</span>';
                 } else {
                     ?>
                     <input type="text" id="Element_OphInBiometry_Measurement_k1_<?php echo $side; ?>"
@@ -235,6 +235,62 @@
             <td></td>
             <td></td>
         </tr>
+        </tbody>
+    </table>
+</div>
+<div class="data-group">
+    <table class="large-12 column">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-3">
+            <col class="cols-3">
+            <col class="cols-3">
+            <col class="cols-2">
+        </colgroup>
+        <tbody>
+            <td>
+                LVC:
+            </td>
+            <td>
+            <?php
+            if ($this->is_auto) {
+                if ($element->{"lvc_$side"} != "") {
+                    $lvc = $element->{"lvc_$side"};
+                } else {
+                    $lvc = "&nbsp;";
+                }
+                echo '<div class="readonly-box">' . CHtml::encode($lvc) . '</div>';
+            } else {
+                ?>
+                    <input type="text" id="Element_OphInBiometry_Measurement_lvc_<?php echo CHtml::encode($side); ?>" 
+                            name="Element_OphInBiometry_Measurement[lvc_<?php echo CHtml::encode($side); ?>]" 
+                            value="<?php echo CHtml::encode($element->{"lvc_$side"})?>">
+                <?php
+            }
+            ?>
+            </td>
+            <td>
+                LVC Mode:
+            </td>
+            <td>
+            <?php
+            if ($this->is_auto) {
+                if ($element->{"lvc_mode_$side"} != "") {
+                    $lvc_mode = $element->{"lvc_mode_$side"};
+                } else {
+                    $lvc_mode = "&nbsp;";
+                }
+                echo '<div class="readonly-box">' . CHtml::encode($lvc_mode) . '</div>';
+            } else {
+                ?>
+                    <input type="text" id="Element_OphInBiometry_Measurement_lvc_mode_<?php echo CHtml::encode($side); ?>" 
+                            name="Element_OphInBiometry_Measurement[lvc_mode_<?php echo CHtml::encode($side); ?>]" 
+                            value="<?php echo CHtml::encode($element->{"lvc_mode_$side"})?>">
+                <?php
+            }
+            ?>
+            </td>
+            <td></td>
         </tbody>
     </table>
 </div>

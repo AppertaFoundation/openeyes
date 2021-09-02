@@ -62,7 +62,7 @@ abstract class BaseEsignElement extends BaseEventTypeElement
     public function usesEsignDevice() : bool
     {
         return !empty(
-            array_filter($this->signatures, function($signature) {
+            array_filter($this->getSignatures(), function ($signature) {
                 return $signature->usesEsignDevice();
             })
         );
@@ -108,11 +108,14 @@ abstract class BaseEsignElement extends BaseEventTypeElement
         return [];
     }
 
-
-    protected function getSignaturesByType(int $type)
+    /**
+     * @param int $type
+     * @return BaseSignature[] All captured signatures of the given type
+     */
+    public function getSignaturesByType(int $type, bool $include_signed = true)
     {
-        return array_filter($this->signatures, function($signature) use ($type) {
-            return (int)$signature->type === $type;
+        return array_filter($this->signatures, function ($signature) use ($type, $include_signed) {
+            return (int)$signature->type === $type && ($include_signed || !$signature->isSigned());
         });
     }
 }

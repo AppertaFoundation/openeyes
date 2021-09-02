@@ -87,13 +87,13 @@ class Disorder extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('fully_specified_name, term', 'required'),
+            array('id, fully_specified_name, term', 'required'),
             array('id', 'length', 'max' => 20),
             array('id', 'checkDisorderExists'),
-            array('fully_specified_name, term , aliases , specialty_id', 'length', 'max' => 255),
+            array('fully_specified_name, term , aliases , specialty_id, ecds_term', 'length', 'max' => 255),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, fully_specified_name, term, systemic , aliases', 'safe', 'on' => 'search'),
+            array('id, fully_specified_name, term, systemic , aliases, ecds_code, ecds_term', 'safe', 'on' => 'search'),
         );
     }
 

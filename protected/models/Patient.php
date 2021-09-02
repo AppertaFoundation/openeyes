@@ -1935,6 +1935,7 @@ class Patient extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->addCondition('episode.patient_id = :pid');
+        $criteria->addCondition('t.deleted = 0');
         $criteria->params = array(':pid' => $this->id);
 
         return Event::model()->with('episode')->findAll($criteria);
@@ -1943,6 +1944,7 @@ class Patient extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->addCondition('episode.patient_id = :pid');
+        $criteria->addCondition('t.deleted = 0');
         $criteria->params = array(':pid' => $this->id);
         $criteria->order = 't.event_date DESC, t.created_date DESC';
         $criteria->limit = 1;
@@ -1957,6 +1959,7 @@ class Patient extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->addCondition('episode.patient_id = :pid');
         $criteria->addCondition('event_type_id = :etypeid');
+        $criteria->addCondition('t.deleted = 0');
         $criteria->params = array(':pid' => $this->id, ':etypeid' => $event_type->id);
 
         $criteria->order = 't.event_date DESC, t.created_date DESC';

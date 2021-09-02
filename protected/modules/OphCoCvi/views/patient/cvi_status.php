@@ -30,10 +30,9 @@
             <td><?php echo Helper::formatFuzzyDate($info['date']); ?></td>
             <td><?php echo CHtml::encode($info['status']); ?></td>
             <td><?php if (isset($info['event_url'])) {?>
-                    <a href="<?=CHtml::encode($info['event_url'])?>">View</a>
-                <?php }
-                else if ($this->checkAccess('OprnEditOphInfo')) {
-                ?>
+                    <a href="<?=$info['event_url']?>">View</a>
+                <?php } elseif ($this->checkAccess('OprnEditOphInfo')) {
+                    ?>
                     <button id="btn-edit_oph_info" class="secondary small">
                         Edit
                     </button>

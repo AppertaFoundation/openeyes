@@ -75,7 +75,8 @@ class DefaultController extends BaseAdminController
         $this->genericAdmin(
             'Edit prescription editing options',
             'OphDrPrescriptionEditReasons',
-            ['div_wrapper_class' => 'cols-5',
+            ['div_wrapper_class' => 'cols-full',
+            'input_class' => 'cols-full',
             'return_url'=>'../OphDrPrescription/admin/default/PrescriptionEditOptions'],
             null,
             true,

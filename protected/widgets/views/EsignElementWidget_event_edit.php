@@ -24,11 +24,11 @@
         <?php endforeach; ?>
         <?php if(!$this->isSigningAllowed()): ?>
             <div class="alert-box warning">E-signing of this event will be available at a later stage.</div>
-        <?php else: ?>
-            <?php if(!$this->element->isSigned()): ?>
+        <?php else : ?>
+            <?php if (!$this->element->isSigned()) : ?>
                 <div class="alert-box issue"><?= $this->element->getUnsignedMessage() ?>
-                    <?php if($this->element->usesEsignDevice()): ?>
-                        <a href="#" onclick="bluejay.demoSignatureDeviceLink();">Connect your e-Sign device</a>
+                    <?php if ($this->element->usesEsignDevice()) : ?>
+                        <a class="js-connect-device" href="javascript:void(0);">Connect your e-Sign device</a>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
@@ -45,16 +45,16 @@
                 <tbody>
                 <?php
                     $row = 0;
-                    foreach ($this->element->getSignatures() as $signature) {
-                        $this->widget(
-                            $this->getWidgetClassByType($signature->type),
-                            [
-                                "row_id" => $row++,
-                                "element" => $this->element,
-                                "signature" => $signature,
-                            ]
-                        );
-                    }
+                foreach ($this->element->getSignatures() as $signature) {
+                    $this->widget(
+                        $this->getWidgetClassByType($signature->type),
+                        [
+                            "row_id" => $row++,
+                            "element" => $this->element,
+                            "signature" => $signature,
+                        ]
+                    );
+                }
                 ?>
                 </tbody>
             </table>
@@ -66,7 +66,8 @@
         new OpenEyes.UI.EsignElementWidget(
             $(".<?= \CHtml::modelName($this->element) ?>"),
             {
-                mode : "<?= $this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit' ?>"
+                mode : "<?= $this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit' ?>",
+                element_id : <?= json_encode($this->element->id) ?>
             }
         );
     });

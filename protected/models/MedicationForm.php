@@ -104,18 +104,18 @@ class MedicationForm extends BaseActiveRecordVersioned
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('term',$this->term,true);
-        $criteria->compare('code',$this->code,true);
-        $criteria->compare('unit_term',$this->unit_term,true);
-        $criteria->compare('default_dose_unit_term',$this->default_dose_unit_term,true);
-        $criteria->compare('source_type',$this->source_type,true);
-        $criteria->compare('source_subtype',$this->source_subtype,true);
-        $criteria->compare('deleted_date',$this->deleted_date,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('term', $this->term, true);
+        $criteria->compare('code', $this->code, true);
+        $criteria->compare('unit_term', $this->unit_term, true);
+        $criteria->compare('default_dose_unit_term', $this->default_dose_unit_term, true);
+        $criteria->compare('source_type', $this->source_type, true);
+        $criteria->compare('source_subtype', $this->source_subtype, true);
+        $criteria->compare('deleted_date', $this->deleted_date, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -128,7 +128,7 @@ class MedicationForm extends BaseActiveRecordVersioned
      * @param string $className active record class name.
      * @return MedicationForm the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

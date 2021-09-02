@@ -26,6 +26,9 @@
  */
 class Element_OphCoCorrespondence_Esign extends BaseEsignElement
 {
+    private const PRIMARY_ROLE = "Consultant";
+    private const SECONDARY_ROLE = "Secondary Consultant";
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -106,20 +109,33 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
      */
     public function getSignatures(): array
     {
-        $consultant = new OphCoCorrespondence_Signature();
-        $consultant->signatory_role = "Consultant";
-        $consultant->type = BaseSignature::TYPE_OTHER_USER;
+        $signatures = $this->signatures;
+        foreach ([self::PRIMARY_ROLE, self::SECONDARY_ROLE] as $role) {
+            $signature = $this->getSignatureByRole($role);
+            if (is_null($signature)) {
+                $signature = new OphCoCorrespondence_Signature();
+                $signature->type = BaseSignature::TYPE_OTHER_USER;
+                $signature->signatory_role = $role;
+                $signatures[] = $signature;
+            }
+        }
 
-        $secretary = new OphCoCorrespondence_Signature();
-        $secretary->signatory_role = "Secretary";
-        $secretary->type = BaseSignature::TYPE_SECRETARY;
+        return $signatures;
+    }
 
-        return !empty($this->signatures) ? $this->signatures : [$consultant, $secretary];
+    private function getSignatureByRole(string $role_name) : ?OphCoCorrespondence_Signature
+    {
+        $sign_arr = array_filter(
+            $this->signatures,
+            function ($signature) use ($role_name) {
+                return $signature->signatory_role === $role_name;
+            }
+        );
+        return empty($sign_arr) ? null : array_pop($sign_arr);
     }
 
     /**
-     * A correspondence is signed if at least one of the signatures
-     * (consultant or secretary) is done
+     * A correspondence is signed if at least one of the signatures is done
      *
      * @return bool
      */
@@ -128,7 +144,7 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
         return !empty(
             array_filter(
                 $this->signatures,
-                function($signature) {
+                function ($signature) {
                     return $signature->isSigned();
                 }
             )
@@ -154,10 +170,10 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
                 return $element instanceof ElementLetter;
             }
         );
-        if(!empty($elements)) {
+        if (!empty($elements)) {
             $element_letter = $elements[0];
             /** @var ElementLetter $element_letter */
-            if(!$this->isSigned() && !$element_letter->draft) {
+            if (!$this->isSigned() && !$element_letter->draft) {
                 $this->addError(
                     "id",
                     "At least one signature must be provided to finalize this Correspondence."

@@ -26,7 +26,5 @@
         <?php echo $form->textField($element, 'la_name', array(), array(), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textArea($element, 'la_address', array(), false, array('rows' => 4), array('label' => 4, 'field' => 8)) ?>
         <?php echo $form->textField($element, 'la_telephone', array(), array(), array('label' => 4, 'field' => 8)) ?>
-
-
     </div>
 </div>

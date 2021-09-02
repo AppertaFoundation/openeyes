@@ -55,9 +55,9 @@
             </thead>
             <tbody>
                 <?php
-                    foreach ($data_provider->getData() as $set) {
-                        $this->renderPartial('/AutoSetRule/_row', ['set' => $set]);
-                    }
+                foreach ($data_provider->getData() as $set) {
+                    $this->renderPartial('/AutoSetRule/_row', ['set' => $set]);
+                }
                 ?>
             </tbody>
             <tfoot class="pagination-container">

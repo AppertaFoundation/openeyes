@@ -28,6 +28,10 @@ class CitoIntegration extends \CApplicationComponent
     /**
      * @var string
      */
+    public $cito_base_url;
+    /**
+     * @var string
+     */
     public $cito_sign_url;
     /**
      * @var string
@@ -59,7 +63,7 @@ class CitoIntegration extends \CApplicationComponent
      */
     public function init()
     {
-        foreach (['cito_otp_url', 'cito_sign_url', 'cito_access_token_url', 'cito_application_id', 'cito_grant_type', 'cito_client_id', 'cito_client_secret'] as $key => $value) {
+        foreach (['cito_base_url','cito_otp_url', 'cito_sign_url', 'cito_access_token_url', 'cito_application_id', 'cito_grant_type', 'cito_client_id', 'cito_client_secret'] as $key => $value) {
             if ($this->getSetting($value)) {
                 $this->{$value} = $this->getSetting($value);
             } else {
@@ -112,7 +116,7 @@ class CitoIntegration extends \CApplicationComponent
             'client_id' => $this->cito_client_id,
             'client_secret' => $this->cito_client_secret
         ];
-        $curl = $this->setCurl($this->cito_access_token_url, $params);
+        $curl = $this->setCurl($this->cito_base_url.$this->cito_access_token_url, $params);
         $curl_result = curl_exec($curl);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
@@ -149,7 +153,7 @@ class CitoIntegration extends \CApplicationComponent
             'Content-Type: application/json-patch+json',
             'Authorization: Bearer ' . $accessToken,
         ];
-        $curl = $this->setCurl($this->cito_otp_url, json_encode($params), $headers);
+        $curl = $this->setCurl($this->cito_base_url.$this->cito_otp_url, json_encode($params), $headers);
         $curl_result = curl_exec($curl);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
@@ -184,7 +188,7 @@ class CitoIntegration extends \CApplicationComponent
             throw new \Exception("OTP is empty");
         }
 
-        return $this->cito_sign_url . "?identifier=" . $hosNum . "&display=cito-icm-record&otp=" . urlencode($otp) . "&user=" . $username . "&domain=" .$this->cito_application_id . "";
+        return $this->cito_base_url.$this->cito_sign_url . "?identifier=" . $hosNum . "&display=cito-icm-record&otp=" . urlencode($otp) . "&user=" . $username . "&domain=" .$this->cito_application_id . "";
     }
 
     /**

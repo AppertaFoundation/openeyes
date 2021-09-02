@@ -16,7 +16,7 @@
  */
 
 /**
- * Class Signature
+ * Class BaseSignature
  * This class holds common functionality for active records that represent
  * a single e-signature (consultant's, patient's, etc)
  *
@@ -29,6 +29,7 @@
  * @property int $timestamp
  *
  * @property ProtectedFile $signatureFile
+ * @property BaseEsignElement $element
  */
 abstract class BaseSignature extends BaseActiveRecordVersioned
 {
@@ -49,7 +50,7 @@ abstract class BaseSignature extends BaseActiveRecordVersioned
      */
     public function setDataFromProof() : void
     {
-        if($this->proof !== "") {
+        if ($this->proof !== "") {
             $decrypted = unserialize((new EncryptionDecryptionHelper())->decryptData($this->proof));
             $this->signature_file_id = $decrypted["signature_file_id"];
             $this->timestamp = $decrypted["timestamp"];
@@ -62,7 +63,7 @@ abstract class BaseSignature extends BaseActiveRecordVersioned
      */
     public function getSignedDate() : string
     {
-        if(is_null($this->timestamp)) {
+        if (is_null($this->timestamp)) {
             return "-";
         }
         return (new DateTime())
@@ -75,7 +76,7 @@ abstract class BaseSignature extends BaseActiveRecordVersioned
      */
     public function getSignedTime() : string
     {
-        if(is_null($this->timestamp)) {
+        if (is_null($this->timestamp)) {
             return "-";
         }
         return (new DateTime())
@@ -105,6 +106,29 @@ abstract class BaseSignature extends BaseActiveRecordVersioned
     }
 
     /**
+     * Update any signature requests that are waiting for this signature
+     */
+    public function afterSave()
+    {
+        SignatureRequest::model()->updateAll(
+            [
+                "signature_date" => (new DateTime())->setTimestamp($this->timestamp)->format("Y-m-d H:i:s")
+            ],
+            "signature_date IS NULL
+              AND event_id =:event_id
+              AND element_type_id=:element_type_id
+              AND signature_type=:signature_type",
+            [
+                ":event_id" => $this->element->event_id,
+                ":element_type_id" => $this->element->getElementType()->id,
+                ":signature_type" => $this->type,
+            ]
+        );
+
+        parent::afterSave();
+    }
+
+    /**
      * @return bool Whether an E-sign device can be used to capture the signature
      */
     public function usesEsignDevice() : bool
@@ -117,7 +141,8 @@ abstract class BaseSignature extends BaseActiveRecordVersioned
      */
     public function getPrintout() : string
     {
-        return "sigi sig";
+        // To be implemented in another task
+        return "";
     }
 
     /**

@@ -85,16 +85,16 @@ class WhiteboardController extends BaseDashboardController
         $before = parent::beforeAction($action);
         //core scripts
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), true, -1);
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/components/dialog-polyfill/dialog-polyfill.js');
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/components/mustache/mustache.js');
-        Yii::app()->clientScript->registerCssFile($assetPath.'/newblue/css/style_oe3_light.min.css');
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/components/dialog-polyfill/dialog-polyfill.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/components/mustache/mustache.js');
+        Yii::app()->clientScript->registerCssFile($assetPath . '/newblue/dist/css/style_oe_light.3.css');
 
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.UI.js');
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/components/eventemitter2/lib/eventemitter2.js');
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.UI.Tooltip.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/js/OpenEyes.UI.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/components/eventemitter2/lib/eventemitter2.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/js/OpenEyes.UI.Tooltip.js');
 
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/OpenEyes.Dialog.js');
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/whiteboard.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/js/dashboard/OpenEyes.Dialog.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath . '/js/dashboard/whiteboard.js');
 
         return $before;
     }
@@ -140,7 +140,7 @@ class WhiteboardController extends BaseDashboardController
         $diff = $op_booking_date->diff($now);
         $hours = $diff->h;
         //well, many parts of the world a year has one 23-hour day and one 25-hour day
-        $hours = $hours + ($diff->days*24);
+        $hours = $hours + ($diff->days * 24);
 
         return $hours <= $window;
     }
@@ -222,16 +222,16 @@ class WhiteboardController extends BaseDashboardController
     {
         $whiteboard = $this->getWhiteboard();
         if (!$whiteboard) {
-            throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
+            throw new CHttpException(400, 'No whiteboard found for reload with id ' . $id);
         }
 
         if (!$whiteboard->booking->isEditable() && !$this->isRefreshable()) {
-            throw new CHttpException(400, 'Whiteboard is not editable '.$id);
+            throw new CHttpException(400, 'Whiteboard is not editable ' . $id);
         }
 
         $whiteboard->loadData($id);
 
-        $this->redirect('/OphTrOperationbooking/whiteboard/view/'.$id);
+        $this->redirect('/OphTrOperationbooking/whiteboard/view/' . $id);
     }
 
     /**
@@ -245,17 +245,17 @@ class WhiteboardController extends BaseDashboardController
     {
         $whiteboard = $this->getWhiteboard();
         if (!$whiteboard) {
-            throw new CHttpException(400, 'No whiteboard found for save with id '.$id);
+            throw new CHttpException(400, 'No whiteboard found for save with id ' . $id);
         }
 
         if (!$whiteboard->booking->isEditable()) {
-            throw new CHttpException(400, 'Whiteboard is not editable '.$id);
+            throw new CHttpException(400, 'Whiteboard is not editable ' . $id);
         }
 
         $whiteboard->is_confirmed = 1;
         $whiteboard->save();
 
-        $this->redirect('/OphTrOperationbooking/whiteboard/view/'.$id);
+        $this->redirect('/OphTrOperationbooking/whiteboard/view/' . $id);
     }
 
     /**
@@ -268,11 +268,11 @@ class WhiteboardController extends BaseDashboardController
     {
         $whiteboard = $this->getWhiteboard();
         if (!$whiteboard) {
-            throw new CHttpException(400, 'No whiteboard found for comment save with id '.$id);
+            throw new CHttpException(400, 'No whiteboard found for comment save with id ' . $id);
         }
 
         if (!$whiteboard->booking->isEditable()) {
-            throw new CHttpException(400, 'Whiteboard is not editable '.$id);
+            throw new CHttpException(400, 'Whiteboard is not editable ' . $id);
         }
 
         $savable = array('comments', 'predicted_additional_equipment');
@@ -287,12 +287,13 @@ class WhiteboardController extends BaseDashboardController
         if (Yii::app()->request->isAjaxRequest) {
             $this->renderJSON(array('success' => true));
         } else {
-            $this->redirect('/OphTrOperationbooking/whiteboard/view/'.$id);
+            $this->redirect('/OphTrOperationbooking/whiteboard/view/' . $id);
         }
     }
 
-    public function getWhiteboardImages($event_id){
-        Yii::app()->runController('/eventImage/getImageUrl/return_value/1/event_id/' .$event_id );
+    public function getWhiteboardImages($event_id)
+    {
+        Yii::app()->runController('/eventImage/getImageUrl/return_value/1/event_id/' . $event_id);
         return EventImage::model()->findAll('event_id = ? AND document_number IS NOT NULL', [$event_id]);
     }
 }

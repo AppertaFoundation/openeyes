@@ -33,6 +33,7 @@ class EsignElementWidget extends BaseEventElementWidget
         $script_path = $widget_path . '/EsignElementWidget.js';
         $asset_manager->registerScriptFile($script_path, "application.widgets.EsignelementWidget", 9, AssetManager::OUTPUT_ALL, true, true);
     }
+
     /**
      * @return string[]
      */
@@ -55,7 +56,7 @@ class EsignElementWidget extends BaseEventElementWidget
     public function getWidgetClassByType(int $type) : string
     {
         $field_types = self::getFieldTypes();
-        if(array_key_exists($type, $field_types)) {
+        if (array_key_exists($type, $field_types)) {
             return $field_types[$type];
         }
 
@@ -78,7 +79,7 @@ class EsignElementWidget extends BaseEventElementWidget
     protected function getView()
     {
         $prefix = get_class($this);
-        if($this->mode === self::$EVENT_PRINT_MODE) {
+        if ($this->mode === self::$EVENT_PRINT_MODE) {
             return $prefix."_event_print";
         }
         // View is the same in edit mode and view mode
@@ -93,17 +94,16 @@ class EsignElementWidget extends BaseEventElementWidget
         /** @var BaseEsignElement $element */
         parent::updateElementFromData($element, $data);
         $rels = $element->relations();
-        if(!array_key_exists("signatures", $rels)) {
+        if (!array_key_exists("signatures", $rels)) {
             throw new Exception("Relation with key 'signatures' must be is set up in ".get_class($element));
         }
         $signature_class = $rels["signatures"][1];
-        if(array_key_exists("signatures", $data)) {
+        if (array_key_exists("signatures", $data)) {
             $models = [];
             foreach ($data["signatures"] as $signature_data) {
-                if((int)$signature_data["id"] > 0) {
+                if ((int)$signature_data["id"] > 0) {
                     $model = $signature_class::model()->findByPk($signature_data["id"]);
-                }
-                else {
+                } else {
                     $model = new $signature_class;
                 }
                 $model->proof = $signature_data["proof"];

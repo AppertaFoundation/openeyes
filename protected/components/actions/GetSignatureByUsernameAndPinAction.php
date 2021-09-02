@@ -17,12 +17,54 @@
 
 class GetSignatureByUsernameAndPinAction extends GetSignatureByPinAction
 {
+    protected bool $is_secretary_signing = false;
+
     protected function getUser(): void
     {
         $user_id = Yii::app()->request->getPost('user_id');
         $this->user = User::model()->findByPk($user_id);
         if (!$this->user) {
             throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
+        }
+    }
+
+    protected function checkPIN(): void
+    {
+        if ($this->pin === Yii::app()->params["secretary_pin"]) {
+            $this->is_secretary_signing = true;
+            $this->checkSecretaryPIN();
+        } else {
+            parent::checkPIN();
+        }
+    }
+
+    private function checkSecretaryPIN()
+    {
+        if (!Yii::app()->user->checkAccess('SignEvent')) {
+            throw new Exception("We're sorry, you are not authorized to sign events. Please contact support.");
+        }
+    }
+
+    protected function getSignatureFile(): void
+    {
+        if(!$this->is_secretary_signing) {
+            parent::getSignatureFile();
+        }
+    }
+
+    protected function successResponse()
+    {
+        if ($this->is_secretary_signing) {
+            $this->renderJSON([
+                "code" => 0,
+                "error" => "",
+                "signature_proof" => $this->signature_proof,
+                'date' => $this->date_time->format(Helper::NHS_DATE_FORMAT),
+                'time' => $this->date_time->format("H:i"),
+                'signed_by_secretary' => true,
+            ]);
+        } else {
+            parent::successResponse();
         }
     }
 }

@@ -40,7 +40,7 @@
                     'name' => 'delete',
                     'class' => 'button large',
                     'id' => 'et_delete',
-                    'data-uri' => $buttonOptions['delete-uri'] ? $buttonOptions['delete-uri'] : ''
+                    'data-uri' => $buttonOptions['delete-uri'] ?? ''
                 ]);
         } ?>
         <?php

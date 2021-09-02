@@ -93,7 +93,6 @@ if ($this->checkClinicalEditAccess()) { ?>
                     </div>
                 </div>
             </div>
-
             <div class="element-eye left-eye column right side" data-side="left">
                 <div class="active-form">
                     <div class="row field-row">

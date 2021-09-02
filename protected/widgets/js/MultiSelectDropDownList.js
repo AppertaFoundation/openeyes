@@ -26,7 +26,6 @@ $(document).ready(function(){
 
     function MultiSelectDropDownListController(options) {
         this.options = $.extend(true, {}, MultiSelectDropDownListController._defaultOptions, options);
-
         this.init();
     }
 

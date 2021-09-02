@@ -717,8 +717,8 @@ class MedicationManagement extends BaseMedicationElement
     }
 
     /**
-     * @param array $elements
-     */
+    * @param array $elements
+    */
     public function eventScopeValidation(array $elements)
     {
         $elements = array_filter(

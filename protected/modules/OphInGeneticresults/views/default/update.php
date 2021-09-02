@@ -47,4 +47,4 @@ $this->event_actions[] = EventAction::button(
 <?php $this->renderOptionalElements($this->action->id, $form) ?>
 <?php $this->displayErrors($errors, true) ?>
 <?php $this->endWidget() ?>
-<?php $this->endContent() ?>
+<?php $this->endContent();

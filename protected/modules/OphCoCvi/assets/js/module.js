@@ -243,13 +243,13 @@ $(document).ready(function() {
         });
         
     });
-    
+
     handleButton($('#la-search-toggle'), function(e) {
         e.preventDefault();
         $('#local_authority_search_wrapper').show();
         setTimeout(function() {$(e.target).blur(); enableButtons(); $(e.target).addClass('disabled'); }, 100);
     });
-    
+
     $('select.populate_textarea').unbind('change').change(function() {
         if ($(this).val() != '') {
             var cLass = $(this).parent().parent().parent().attr('class').match(/Element.*/);

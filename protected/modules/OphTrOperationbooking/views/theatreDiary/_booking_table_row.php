@@ -122,13 +122,6 @@
                 Op-Booking
             </a>
 
-            <?php if ($pac_api && $pac_api->pac_booking_result) : ?>
-                <?php
-                if (isset($pac_api->pac_booking_result->{$operation->event->id})) : ?>
-                    <span class="pac-state-icon <?=$pac_api->getOutcomeStatusByPac($pac_api->pac_booking_result->{$operation->event->id}->pre_assessment_outcome)['icon']?> js-has-tooltip" data-tooltip-content="PAC<br/><?=$pac_api->pac_booking_result->{$operation->event->id}->pre_assessment_outcome?>">PAC</span>
-                <?php endif; ?>
-            <?php endif; ?>
-
             <?php if ($biometry) :?>
                 <?php
                     $biometry_event = Event::model()->findByPk($biometry->event_id);

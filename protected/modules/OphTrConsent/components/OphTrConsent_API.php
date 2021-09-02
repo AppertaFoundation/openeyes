@@ -42,6 +42,7 @@ class OphTrConsent_API extends BaseAPI
             $criteria = new CDbCriteria();
             $criteria->addCondition('event.event_type_id = :eventtype_id');
             $criteria->addCondition('event.episode_id = :episode_id');
+            $criteria->addCondition('event.deleted = 0');
             $criteria->addCondition('procedures.id = :proc_id OR additional_procedures.id = :proc_id');
             $criteria->params = array(
                 ':eventtype_id' => $event_type->id,

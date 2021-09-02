@@ -43,5 +43,5 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
 ));
 ?>
 
-<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/MedicalLids.js", CClientScript::POS_HEAD); ?>
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/MedicalLids.js", CClientScript::POS_HEAD);
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,8 +16,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+
 class DefaultController extends BaseEventTypeController
 {
+    private $elementFilterList = [ 'Element_OphTrConsent_Other' ];
+
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -203,7 +208,6 @@ class DefaultController extends BaseEventTypeController
     public function actionCreate()
     {
         $errors = array();
-
         if (!empty($_POST)) {
             // Save and print clicked, stash print flag
             if (isset($_POST['saveprint'])) {
@@ -375,6 +379,7 @@ class DefaultController extends BaseEventTypeController
     protected function saveComplexAttributes_Element_OphTrConsent_Procedure($element, $data, $index)
     {
         $curr_by_id = array();
+
         foreach ($element->anaesthetic_type as $type) {
             $curr_by_id[$type->id] = OphTrConsent_Procedure_AnaestheticType::model()->findByAttributes(array(
                 'et_ophtrconsent_procedure_id' => $element->id,
@@ -403,5 +408,85 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
             }
         }
+    }
+
+    protected function saveComplexAttributes_Element_OphTrConsent_PatientAttorneyDeputy($element, $data, $index)
+    {
+        $patient = \Patient::model()->findByPk($this->patient->id);
+
+        if (
+            isset($data['OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy']) &&
+            isset($data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['contact_id'])
+        ) {
+            $contact_ids = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['contact_id'];
+            $entries = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['entries'];
+        } else {
+            $contact_ids = [];
+        }
+        $criteria = new \CDbCriteria();
+        $gp = $this->patient->gp;
+        $criteria->addCondition('t.patient_id = ' . $patient->id);
+        $criteria->addCondition('t.event_id = ' . $element->event_id);
+        $patientContactAssignments = \PatientAttorneyDeputyContact::model()->findAll($criteria);
+
+        foreach ($contact_ids as $key => $contact_id) {
+            $foundExistingAssignment = false;
+            foreach ($patientContactAssignments as $patientContactAssignment) {
+                if ($patientContactAssignment->contact_id == $contact_id) {
+                    $patientContactAssignment->authorised_decision_id = $entries[$key]['authorised_decision_id'];
+                    $patientContactAssignment->considered_decision_id = $entries[$key]['considered_decision_id'];
+                    $patientContactAssignment->event_id = $this->event->id;
+                    $patientContactAssignment->save();
+                    $foundExistingAssignment = true;
+                    break;
+                }
+            }
+            if (!$foundExistingAssignment) {
+                $patientContactAssignment = new \PatientAttorneyDeputyContact;
+                $patientContactAssignment->patient_id = $patient->id;
+                $patientContactAssignment->contact_id = $contact_id;
+                $patientContactAssignment->authorised_decision_id = isset($entries[$key]['authorised_decision_id']) ? $entries[$key]['authorised_decision_id'] : null;
+                $patientContactAssignment->considered_decision_id = isset($entries[$key]['considered_decision_id']) ? $entries[$key]['considered_decision_id'] : null;
+                $patientContactAssignment->event_id = $this->event->id;
+                $patientContactAssignment->save();
+            }
+        }
+
+        $patientContactAssignments = array_filter($patientContactAssignments, function ($assignment) use ($contact_ids) {
+            return !in_array($assignment->contact_id, $contact_ids);
+        });
+
+        foreach ($patientContactAssignments as $patientContactAssignment) {
+            $patientContactAssignment->delete();
+        }
+    }
+
+    /**
+     * Filter oprional elements
+     * remove retired element(s)
+     *
+     * @return array
+     */
+    public function getOptionalElements()
+    {
+        $elements = parent::getOptionalElements();
+        return $this->filterElements($elements);
+    }
+
+    /**
+     * Filters elements based on coded dependencies.
+     *
+     * @param \BaseEventTypeElement[] $elements
+     * @return \BaseEventTypeElement[]
+     */
+    protected function filterElements($elements)
+    {
+        $final = array();
+        foreach ($elements as $el) {
+            if (!in_array(get_class($el), $this->elementFilterList)) {
+                $final[] = $el;
+            }
+        }
+        return $final;
     }
 }

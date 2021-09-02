@@ -49,7 +49,7 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
     public $box_id;
     public $letter;
     public $number;
-    
+
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
@@ -150,7 +150,7 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
         $criteria->compare('comments', $this->comments);
         $criteria->compare('dna_concentration', $this->dna_concentration);
         $criteria->compare('volume', $this->volume);
-        
+
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
@@ -160,5 +160,4 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
     {
         return parent::beforeValidate();
     }
-
 }

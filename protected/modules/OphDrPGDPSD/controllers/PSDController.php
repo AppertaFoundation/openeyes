@@ -147,6 +147,10 @@ class PSDController extends DefaultController
             $latest_element = $pgdpsd_api->getPatientLatestDAelement($assignment->patient, $worklist_patient_id, $this->event_type);
         } else {
             foreach ($assignment->elements as $element) {
+                $element_event = $element->event;
+                if(!$element_event || ($element_event && $element_event->deleted)){
+                    continue;
+                }
                 $element_firm_id = $element->event->episode->firm->getSubspecialtyID();
                 $event_date = date('Y-m-d', strtotime($element->event->event_date));
                 if (intval($element_firm_id) === intval($firm->getSubspecialtyID()) && $event_date === date('Y-m-d')) {

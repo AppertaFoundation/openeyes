@@ -144,24 +144,6 @@ $form = $this->beginWidget(
                     ['separator' => ' ']
                 ); ?></td>
             </tr>
-            <?php if (\SettingMetadata::model()->getSetting('enable_hie_link')==='on') : ?>
-                <tr>
-                    <td>Hie access level</td>
-                    <td>
-                        <?= \CHtml::activeDropDownList(
-                            $user->getHieAccessLevel(),
-                            'hie_access_level_id',
-                            CHtml::listData(
-                                HieAccessLevel::model()->findAll(
-                                    array('order' => 'display_order')
-                                ),
-                                'id',
-                                'name'
-                            ),
-                            ['class' => 'cols-full', 'empty' => '- Select Access Level -']
-                        ); ?></td>
-                </tr>
-            <?php endif; ?>
             <tr>
                 <td>Roles</td>
                 <td>
@@ -190,7 +172,7 @@ $form = $this->beginWidget(
 
         <h2>Login Authentications</h2>
         <hr class="divider">
-        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'pincode', 'password', 'password_repeat', 'password_status', 'active'] ?>
+        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'lookup_user', 'pincode', 'password', 'password_repeat', 'password_status', 'active'] ?>
         <table class="standard" id="user-authentications">
             <thead>
             <tr>
@@ -297,12 +279,14 @@ $form = $this->beginWidget(
         });
 
         $('#user-auth-rows').on('change', '.js-change-inst-auth', function (e) {
-
-            new OpenEyes.UI.Dialog.Alert({
-                content: "Warning Institution Authentication changed - password status and expiry has been reset to system defaults."
-            }).open();
-
             let $row = $(this).closest('tr');
+
+            if ($row.find('.js-id').val() !== '') {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Warning Institution Authentication changed - password status and expiry has been reset to system defaults."
+                }).open();
+            }
+
             $row.find('.js-password-status').val(defaultPasswordStatus);
             $row.find('.js-remove-row').hide();
             $row.find('.js-row-spinner').show();
@@ -326,4 +310,26 @@ $form = $this->beginWidget(
             $(this).closest('tr').remove();
         });
     });
+
+    function lookupUser(key) {
+        if($('#UserAuthentication_'+key+'_username').val()) {
+            $.ajax({
+                'type': 'GET',
+                'url': baseUrl + '/admin/lookupUser?username=' + $('#UserAuthentication_'+key+'_username').val() + '&institution_authentication_id=' + $('#UserAuthentication_'+key+'_institution_authentication_id').val(),
+                'success': function (resp) {
+                    var m = resp.match(/[0-9]+/);
+                    if (m) {
+                        window.location.href = baseUrl + '/admin/editUser/' + m[0];
+                    } else {
+                        enableButtons();
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: "User not found"
+                        }).open();
+                    }
+                }
+            });
+        }
+    };
+
+    
 </script>

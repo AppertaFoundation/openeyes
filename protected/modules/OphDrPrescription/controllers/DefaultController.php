@@ -28,6 +28,8 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
         'finalize' => self::ACTION_TYPE_FORM,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM
     );
 
     private function userIsAdmin()
@@ -39,6 +41,21 @@ class DefaultController extends BaseEventTypeController
         }
 
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'getSignatureByPin' => [
+                'class' => GetSignatureByPinAction::class
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => GetSignatureByUsernameAndPinAction::class
+            ]
+        ];
     }
 
     public function actionView($id)
@@ -113,6 +130,12 @@ class DefaultController extends BaseEventTypeController
             // Save and print clicked, stash print flag
             Yii::app()->session['print_prescription'] = true;
         }
+
+        if ($api = \Yii::app()->moduleAPI->get("OphInCocoa")) {
+            /** @var \OEModule\OphInCocoa\components\OphInCocoa_API $api */
+            $api->displayPrescriptionWarning(\Yii::app()->session['selected_site_id']);
+        }
+
         return true;
     }
 
@@ -955,6 +978,34 @@ class DefaultController extends BaseEventTypeController
         return $item_group;
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function afterUpdateElements($event)
+    {
+        $this->sendEmail($event);
+        parent::afterUpdateElements($event);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function afterCreateElements($event)
+    {
+        $this->sendEmail($event);
+        parent::afterCreateElements($event);
+    }
+
+    private function sendEmail(\Event $event): void
+    {
+        if (($api = \Yii::app()->moduleAPI->get("OphInCocoa")) && isset($_POST["saveandpost"])) {
+            /** @var \OEModule\OphInCocoa\components\OphInCocoa_API $api */
+            $api->sendPrescription($this->patient, $event, $this, \Yii::app()->session['selected_site_id']);
+            // PDF printing messed up the HTTP header so reset the defaults
+            header('Content-Type: text/html');
+            header_remove('Content-Length');
+        }
+    }
 
     public function getSiteAndTheatreForLatestEvent()
     {

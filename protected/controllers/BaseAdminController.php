@@ -172,7 +172,11 @@ class BaseAdminController extends BaseController
                         if ($id) {
                             $item = $model::model()->findByPk($id);
                             $new = false;
-                        } else {
+                        }
+
+                        // adding new record with the validation error will cause the id to keep rolling
+                        // in that case $id will not be empty but $item will be null, then cause page crash
+                        if (!$id || !$item) {
                             $item = new $model();
                             $new = true;
                         }
@@ -214,10 +218,11 @@ class BaseAdminController extends BaseController
 
                             if ($new || $item->getAttributes() != $attributes) {
                                 if (!$item->save()) {
-                                    $errors = $item->getErrors();
-                                    foreach ($errors as $error) {
-                                        $errors[$i] = $error[0];
+                                    $item_errors = $item->getErrors();
+                                    foreach ($item_errors as $error) {
+                                        $errors[$i][] = $error[0];
                                     }
+                                    $errors[$i] = implode(' ', $errors[$i]);
                                 }
                                 Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
                                     'module' => (is_object($this->module)) ? $this->module->id : 'core',

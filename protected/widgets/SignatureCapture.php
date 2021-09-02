@@ -36,7 +36,7 @@ class SignatureCapture extends BaseCWidget
         parent::init();
         $this->uid = uniqid("oesignwidget");
         $assetManager = Yii::app()->getAssetManager();
-        $assetManager->registerScriptFile('signature_pad.min.js',  'application.assets.components.signature_pad' , $this->scriptPriority);
+        $assetManager->registerScriptFile('signature_pad.umd.min.js', 'webroot.node_modules.signature_pad.dist', $this->scriptPriority);
         $assetManager->registerScriptFile("SignatureCapture.js", "application.widgets.js", $this->scriptPriority);
     }
 

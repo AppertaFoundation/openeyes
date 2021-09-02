@@ -6,7 +6,7 @@ class DefaultController extends BaseEventTypeController
     var $box_id;
     var $letter;
     var $number;
-    
+
     protected static $action_types = array(
         'addTransaction' => self::ACTION_TYPE_FORM,
         'GetNewStorageFields' => self::ACTION_TYPE_FORM,
@@ -164,13 +164,13 @@ class DefaultController extends BaseEventTypeController
     {
         return true;
     }
-    
+
     public function actionGetNewStorageFields()
     {
         $element = new Element_OphInDnaextraction_DnaExtraction();
         $this->renderPartial('newStoragePopup', array('element'=> $element), false, true);
     }
-    
+
     public function actionGetAvailableLetterNumberToBox()
     {
         $result = array();
@@ -231,7 +231,7 @@ class DefaultController extends BaseEventTypeController
 
         $this->renderJSON($result);
     }
-    
+
     public function actionRefreshStorageSelect()
     {
         $element = new Element_OphInDnaextraction_DnaExtraction();

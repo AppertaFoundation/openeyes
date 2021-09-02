@@ -20,6 +20,6 @@
   },
   "Type": {
     "type": "choice",
-    "choices": ["HOME", "CORR"]
+    "choices": ["HOME", "H", "P", "CORR", "M"]
   }
 }

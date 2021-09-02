@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -123,7 +124,7 @@ class BaseController extends Controller
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
         if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])) {
             $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true).'/css/style_oe3_print.min.css';
+            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_print.3.css';
             $newparams =
                 array_merge_recursive(
                     Yii::app()->getParams()->toArray(),
@@ -198,18 +199,17 @@ class BaseController extends Controller
                     $user_authentication->audit('login', 'user-soft-unlock', null, "User: {$user_authentication->username} has finished their softlock period ");
                 }
 
-                $whitelistedRequest = ($_SERVER['REQUEST_URI']=='/profile/password')||($_SERVER['REQUEST_URI']=='/site/logout'); // get stale pw whitelisted actions
+                $whitelistedRequestCheck = $user->CheckRequestOnExpiryWhitelist($_SERVER['REQUEST_URI']);
 
                 // if user is expired, force them to change their password
-                if (PasswordUtils::testStatus('expired', $user_authentication) && !$whitelistedRequest) {
+                if (PasswordUtils::testStatus('expired', $user_authentication) && !$whitelistedRequestCheck) {
                     Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
                     $this->redirect(array('/profile/password'));
                 }
             }
         }
 
-        if (isset($app->session['firms']) && count($app->session['firms'])) {
-            $this->firms = $app->session['firms'];
+        if (!empty($app->session['selected_firm_id'])) {
             $this->selectedFirmId = $app->session['selected_firm_id'];
         }
 
@@ -218,6 +218,7 @@ class BaseController extends Controller
             $this->selectedSiteId = $app->session['selected_site_id'];
         }
 
+        $this->attachBehavior('DisplayDeletedEventsBehavior', array('class' => 'DisplayDeletedEventsBehavior'));
         return parent::beforeAction($action);
     }
 
@@ -233,7 +234,7 @@ class BaseController extends Controller
         }
 
         $execution_time = CJavaScript::encode(round(Yii::getLogger()->executionTime, 3));
-        $memory_usage = round(Yii::getLogger()->memoryUsage/1024/1024, 3)." MB";
+        $memory_usage = round(Yii::getLogger()->memoryUsage / 1024 / 1024, 3) . " MB";
         Yii::app()->getClientScript()->registerScript('scr_' . "execution_time", "execution_time = $execution_time;", CClientScript::POS_HEAD);
         Yii::app()->getClientScript()->registerScript('scr_' . "memory_usage", "memory_usage = '$memory_usage';", CClientScript::POS_HEAD);
     }
@@ -249,8 +250,7 @@ class BaseController extends Controller
     {
         $app = Yii::app();
 
-        if (!empty($app->session['firms'])) {
-            $this->firms = $app->session['firms'];
+        if (!empty($app->session['selected_firm_id'])) {
             $this->selectedFirmId = $app->session['selected_firm_id'];
         }
     }
@@ -277,7 +277,7 @@ class BaseController extends Controller
             $user_auth = Yii::app()->session['user_auth'];
             $user = $user_auth->user;
             $this->jsVars['user_id'] = $user->id;
-            $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
+            $this->jsVars['user_full_name'] = $user->first_name . " " . $user->last_name;
             $this->jsVars['user_email'] = $user->email;
             $this->jsVars['user_username'] = $user_auth->username;
             $institution = Institution::model()->getCurrent();
@@ -293,6 +293,7 @@ class BaseController extends Controller
         $this->jsVars['OE_GP_Setting'] = \SettingMetadata::model()->getSetting('gp_label');
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
         $this->jsVars['popupMode'] = SettingMetadata::model()->getSetting('patient_overview_popup_mode');
+        $this->jsVars['auth_source'] = Yii::app()->params['auth_source'];
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);

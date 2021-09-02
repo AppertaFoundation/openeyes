@@ -28,6 +28,27 @@ class DrugAdministration extends BaseMedicationWidget
         $medication_options = array();
         $available_appointments = array();
         $presets = array();
+        if(in_array($this->controller->action->id, array('removed', 'renderEventImage', 'view', 'print'))){
+            return array_merge(
+                parent::getViewData(),
+                array(
+                    'model_name' => $model_name,
+                    'element_id' => "{$model_name}_element",
+                    'class_name' => $class_name,
+                    'user' => array(
+                        'name' => $current_user->getFullName(),
+                        'id' => $current_user->id,
+                    ),
+                    'user_obj' => $current_user,
+                    'assigned_psds' => $this->element->assignments,
+                    'available_appointments' => $available_appointments,
+                    'presets' => json_encode($presets),
+                    'medication_options' => $medication_options,
+                    'is_prescriber' => $is_prescriber,
+                    'is_med_admin' => $is_med_admin,
+                )
+            );
+        }
         if ($is_prescriber) {
             $now_timestamp = strtotime(date('Y-m-d'));
             $available_appointments = \WorklistPatient::model()->findAll('patient_id = :patient_id AND UNIX_TIMESTAMP(`when`) >= :now', array(':patient_id' => $this->patient->id, ':now' => $now_timestamp));

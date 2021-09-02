@@ -16,6 +16,9 @@ WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 
 curuser="${LOGNAME:-root}"
 
+# disable log to browser during fix, otherwise it causes extraneous trace output on the CLI
+export LOG_TO_BROWSER=""
+
 # process commandline parameters
 clearcahes=1
 buildassests=1
@@ -194,7 +197,7 @@ fi
 # import eyedraw config
 if [ "$eyedraw" = "1" ]; then
     printf "\n\nImporting eyedraw configuration...\n\n"
-    php $WROOT/protected/yiic eyedrawconfigload --filename=$WROOT/protected/config/core/OE_ED_CONFIG.xml 2>/dev/null
+    php $WROOT/protected/yiic eyedrawconfigload --filename=$WROOT/protected/config/core/OE_ED_CONFIG.xml
 fi
 
 # Clear caches
@@ -229,9 +232,6 @@ if [ $noperms = 0 ]; then
 
         done
 
-        touch $WROOT/protected/runtime/testme
-        touch $WROOT/protected/files/testme
-
         if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
             echo "setting sticky bit for protected/runtime"
             sudo chmod -R g+s $WROOT/protected/runtime
@@ -242,7 +242,7 @@ if [ $noperms = 0 ]; then
             sudo chmod -R g+s $WROOT/protected/files
         fi
 
-        # re-own composer and npm config folders in user home directory (sots issues caused if sudo was used to composer/npm update previously)
+        # re-own composer and npm config folders in user home directory (sorts issues caused if sudo was used to composer/npm update previously)
         sudo chown -R $curuser ~/.config 2>/dev/null || :
         sudo chown -R $curuser ~/.composer 2>/dev/null || :
     fi

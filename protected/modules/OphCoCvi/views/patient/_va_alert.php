@@ -15,6 +15,30 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<div class="cvi-alert alert-box issue flex-layout"
+     data-alert="CVI may be applicable"
+     data-threshold="<?= $threshold ?>"
+     data-hascvi="<?= $has_cvi ?>"
+     style="<?php if (!$visible) :
+            ?>display: none;<?php
+            endif; ?>">
+  <div>
+    This patient may be eligible for a CVI
+        <?php if ($show_create) : ?>
+        <a class="button create-cvi hint green"
+           href="<?php echo Yii::app()->createUrl(
+               '/OphCoCvi/Default/create',
+               array('patient_id' => $this->patient->id)
+                 ); ?>">
+          Create CVI
+        </a>
+        <?php else : ?>
+        <i class="oe-i info pad-left small js-has-tooltip"
+           data-tooltip-content="You'll be able to create a CVI after saving this Examination"></i>
+        <?php endif; ?>
+  </div>
+  <i class="oe-i remove-circle small dismiss_cva_alert dismiss"></i>
+</div>
 
 <br clear="all" class="<?= $visible ? '' : 'hidden'?>"/>
 <div class="cvi-alert alert-box warning round <?= $visible ? '': ' hidden' ?>" data-alert="CVI may be applicable" data-threshold="<?= $threshold ?>">

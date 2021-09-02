@@ -139,7 +139,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     public function todoAndActive($patient_id, $event_date, $is_prescriber)
     {
         $condition = array(
-            'condition' => '(t.status = :todo OR t.status = :active) AND t.patient_id = :patient_id',
+            'condition' => '(t.status = :todo OR t.status = :active) AND t.patient_id = :patient_id AND t.active = 1',
             'params' => array(
                 ':todo' => self::STATUS_TODO,
                 ':active' => self::STATUS_PART_DONE,
@@ -309,16 +309,16 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     {
         $entries = $this->assigned_meds;
         $administered_count = 0;
-        $to_be_deleted_entries = array();
         $status = $this->status;
         foreach ($this->assigned_meds as $med) {
-            if ($med->event_entry && !$med->event_entry->event) {
-                $event_entry = $med->event_entry;
+            $event_entry = $med->event_entry;
+            if ($event_entry && (!$event_entry->event || ($event_entry->event && $event_entry->event->deleted) || !$event_entry->element)) {
+                // assignment med has corresponding event medication use but event is deleted
                 $med->administered_id = null;
                 $med->administered = 0;
                 $med->administered_time = null;
                 $med->administered_by = null;
-                $to_be_deleted_entries[] = $event_entry;
+                $med->save();
             }
             if ($med->administered) {
                 $administered_count++;
@@ -334,9 +334,6 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $this->status = strval($status);
         if ($this->isModelDirty()) {
             $this->save();
-        }
-        foreach ($to_be_deleted_entries as $entry) {
-            $entry->delete();
         }
     }
 
@@ -428,7 +425,9 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     protected function afterFind()
     {
         parent::afterFind();
-        $this->updateStatus();
+        if($this->active){
+            $this->updateStatus();
+        }
     }
 
     // for arry_unique in DrugAdministration widget

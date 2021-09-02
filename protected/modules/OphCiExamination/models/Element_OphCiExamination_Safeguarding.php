@@ -9,6 +9,10 @@ namespace OEModule\OphCiExamination\models;
  * @property integer $no_concerns
  * @property integer $outcome_id
  * @property string $outcome_comments
+ * @property bool $has_social_worker
+ * @property bool $under_protection_plan
+ * @property string $accompanying_person_name
+ * @property string $responsible_parent_name
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
@@ -43,10 +47,10 @@ class Element_OphCiExamination_Safeguarding extends \BaseEventTypeElement
         return array(
             array('event_id, no_concerns', 'numerical', 'integerOnly'=>true),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
-            array('no_concerns, outcome_id, last_modified_date, created_date', 'safe'),
+            array('no_concerns, outcome_id, has_social_worker, under_protection_plan, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, event_id, no_concerns, outcome_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array('id, event_id, no_concerns, outcome_id, has_social_worker, under_protection_plan, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
         );
     }
 
@@ -77,6 +81,10 @@ class Element_OphCiExamination_Safeguarding extends \BaseEventTypeElement
             'no_concerns' => 'No Concerns',
             'outcome_id' => 'Outcome',
             'outcome_comments' => 'Outcome Comments',
+            'has_social_worker' => 'Has Social Worker',
+            'under_protection_plan' => 'Under Protection Plan',
+            'accompanying_person_name' => 'Accompanying Person',
+            'responsible_parent_name' => 'Guardian',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',
@@ -130,8 +138,6 @@ class Element_OphCiExamination_Safeguarding extends \BaseEventTypeElement
 
     public function afterValidate()
     {
-        \OELog::log(print_r($_POST, true));
-
         if (!$this->no_concerns && !$this->entries && !isset($_POST[\CHtml::modelName($this)]['entries'])) {
             $this->addError('no_concerns', 'Please confirm patient has no safeguarding concerns');
         }

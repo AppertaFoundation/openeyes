@@ -68,7 +68,8 @@ class FreehandDrawController extends \ModuleAdminController
         $model = DrawingTemplate::model();
 
         $this->render(
-            '/FreehandDraw/index', [
+            '/FreehandDraw/index',
+            [
                 'templates' => $model->findAll(['order' => 'display_order']),
                 'pagination' => $this->initPagination($model),
             ]

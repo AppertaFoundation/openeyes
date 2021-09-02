@@ -26,12 +26,12 @@
         </colgroup>
         <tbody>
         <tr>
-            <td class="cols=full">
+            <td class="cols-full">
                 <div id="div_Term" class="data-group flex-layout cols-full">
-                    <div class="cols-1">
+                    <div class="cols-full">
                         <label for="Term">Procedure Term</label>
                     </div>
-                    <div class="cols-8">
+                    <div class="cols-full">
                         <?php if (isset($model->procedure)) {
                             echo $model->procedure->term;
                         } else {
@@ -42,12 +42,12 @@
             </td>
         </tr>
         <tr>
-            <td class="cols=full">
+            <td class="cols-full">
                 <div id="div_DefaultText" class="data-group flex-layout cols-full">
-                    <div class="cols-1">
+                    <div class="cols-full">
                         <label for="DefaultText">Default Text</label>
                     </div>
-                    <div class="cols-8">
+                    <div class="cols-full">
                         <?= \CHtml::activeTextArea(
                             $model,
                             'default_text',

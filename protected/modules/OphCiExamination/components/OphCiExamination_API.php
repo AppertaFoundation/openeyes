@@ -2948,6 +2948,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getEventMedicationUseItemsForPatient(Patient $patient, $exclude_ids = array(), $exclude_medication_management_entries = false) : array
     {
         $criteria = new \CDbCriteria(array('order' => 'event_date DESC'));
+        $criteria->compare('event.deleted', 0);
         $criteria->addCondition('episode.patient_id = :id');
         $criteria->addNotInCondition('t.id', $exclude_ids);
         if ($exclude_medication_management_entries) {

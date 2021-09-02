@@ -320,3 +320,4 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     exports.SignatureCapture = SignatureCapture;
 
 }(OpenEyes.UI));
+

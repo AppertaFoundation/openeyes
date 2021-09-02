@@ -31,8 +31,8 @@
         <div id="PFR-comments" class="cols-full js-comment-container"
              data-comment-button="#add-prismreflex-popup .js-add-comments"
              style="display: <?php if (!$element->comments) {
-                 echo 'none';
-             }?>">
+                    echo 'none';
+                             }?>">
             <!-- comment-group, textarea + icon -->
             <div class="comment-group flex-layout flex-left">
                 <textarea id="<?= $model_name ?>_comments"

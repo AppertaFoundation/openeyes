@@ -49,8 +49,8 @@ class AdminController extends BaseAdminController
         $this->genericAdmin(
             'Common Ophthalmic Disorder Groups',
             'CommonOphthalmicDisorderGroup',
-            ['div_wrapper_class' => 'cols-5',
-                'return_url' => 'editcommonophthalmicdisordergroups'],
+            ['input_class' => 'cols-full',
+            'return_url' => 'editcommonophthalmicdisordergroups'],
             null,
             true,
         );
@@ -763,16 +763,6 @@ class AdminController extends BaseAdminController
                     }
                 }
 
-                if (!is_null($hieAccessLevelData = $request->getPost('UserHieAccessLevelAssignment'))) {
-                    $hieAccessLevelAssignment = $user->hieAccessLevelAssignment;
-                    if (!$hieAccessLevelAssignment) {
-                        $hieAccessLevelAssignment = new UserHieAccessLevelAssignment();
-                        $hieAccessLevelAssignment->user_id = $user->id;
-                    }
-                    $hieAccessLevelAssignment->hie_access_level_id = $hieAccessLevelData['hie_access_level_id'];
-                    $hieAccessLevelAssignment->save();
-                }
-
                 $contact = $user->contact;
                 if (!$contact) {
                     $contact = new Contact();
@@ -839,7 +829,7 @@ class AdminController extends BaseAdminController
 
     public function actionLookupUser()
     {
-        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
+        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username'], 'institution_authentication_id' => $_GET['institution_authentication_id']));
 
         $user_auth = UserAuthentication::model()->find('username=?', array($_GET['username']));
         if ($user_auth) {
@@ -1260,24 +1250,44 @@ class AdminController extends BaseAdminController
                 $address->attributes = $request->getPost('Address', []);
 
                 if (!$address->validate()) {
-                    $errors = array_merge($errors, $address->getErrors());
+                    $errors = array_merge(@$errors, $address->getErrors());
                 }
                 if (isset($_FILES['SiteLogo'])) {
                     if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
-                        $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
-
+                        $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
+                        $pl_file = file_get_contents($primary_logo->getTempName());
+                        if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                            try {
+                                $file_clean = VirusScanController::stringIsClean($pl_file);
+                                if (!$file_clean) {
+                                    $errors[] = ['primary_logo' => 'Primary logo contains potentially malicious data and cannot be uploaded'];
+                                }
+                            } catch (Exception $e) {
+                                $errors[] = ['primary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                            }
+                        }
                         // if no error uploading use uploaded image
-                        if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
-                            $pl_file = file_get_contents($primary_logo);
+                        if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
                             $logo->primary_logo = $pl_file;
                         }
                     }
                     if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
-                        $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-
+                        $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
+                        $sl_file=file_get_contents($secondary_logo->getTempName());
+                        if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                            try {
+                                $file_clean = VirusScanController::stringIsClean($sl_file);
+                                if (!$file_clean) {
+                                    $errors[] = ['secondary_logo' => 'Secondary logo contains potentially malicious data and cannot be uploaded'];
+                                }
+                            } catch (Exception $e) {
+                                $errors[] = ['secondary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                            }
+                        }
                         // if no error uploading use uploaded image
+
                         if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                            $sl_file = file_get_contents($secondary_logo);
+                            $sl_file = file_get_contents($secondary_logo->getTempName());
                             $logo->secondary_logo = $sl_file;
                         }
                     }
@@ -1672,19 +1682,39 @@ class AdminController extends BaseAdminController
             if (isset($_FILES['SiteLogo'])) {
                 if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
                     $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
-
+                    $pl_file = file_get_contents($primary_logo->getTempName());
+                    if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                        try {
+                            $file_clean = VirusScanController::stringIsClean($pl_file);
+                            if (!$file_clean) {
+                                $errors[] = ['primary_logo' => 'Primary logo contains potentially malicious data and cannot be uploaded'];
+                            }
+                        } catch (Exception $e) {
+                            $errors[] = ['primary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                        }
+                    }
                     // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
-                        $pl_file = file_get_contents($primary_logo);
+                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
                         $logo->primary_logo = $pl_file;
                     }
                 }
                 if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                     $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-
+                    $sl_file=file_get_contents($secondary_logo->getTempName());
+                    if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                        try {
+                            $file_clean = VirusScanController::stringIsClean($sl_file);
+                            if (!$file_clean) {
+                                $errors[] = ['secondary_logo' => 'Secondary logo contains potentially malicious data and cannot be uploaded'];
+                            }
+                        } catch (Exception $e) {
+                            $errors[] = ['secondary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                        }
+                    }
                     // if no error uploading use uploaded image
+
                     if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                        $sl_file = file_get_contents($secondary_logo);
+                        $sl_file = file_get_contents($secondary_logo->getTempName());
                         $logo->secondary_logo = $sl_file;
                     }
                 }
@@ -1770,20 +1800,39 @@ class AdminController extends BaseAdminController
 
         if (isset($_FILES['SiteLogo'])) {
             if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
-                $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
-
+                $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
+                $pl_file = file_get_contents($primary_logo->getTempName());
+                if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                    try {
+                        $file_clean = VirusScanController::stringIsClean($pl_file);
+                        if (!$file_clean) {
+                            $errors[] = ['primary_logo' => 'Primary logo contains potentially malicious data and cannot be uploaded'];
+                        }
+                    } catch (Exception $e) {
+                        $errors[] = ['primary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                    }
+                }
                 // if no error uploading use uploaded image
-                if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
-                    $pl_file = file_get_contents($primary_logo);
+                if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
                     $logo->primary_logo = $pl_file;
                 }
             }
             if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
-                $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-
+                $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
+                $sl_file=file_get_contents($secondary_logo->getTempName());
+                if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+                    try {
+                        $file_clean = VirusScanController::stringIsClean($sl_file);
+                        if (!$file_clean) {
+                            $errors[] = ['secondary_logo' => 'Secondary logo contains potentially malicious data and cannot be uploaded'];
+                        }
+                    } catch (Exception $e) {
+                        $errors[] = ['secondary_logo' => 'There was an issue scanning the file. Please contact a system administrator.'];
+                    }
+                }
                 // if no error uploading use uploaded image
                 if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                    $sl_file = file_get_contents($secondary_logo);
+                    $sl_file = file_get_contents($secondary_logo->getTempName());
                     $logo->secondary_logo = $sl_file;
                 }
             }
@@ -2118,13 +2167,12 @@ class AdminController extends BaseAdminController
                     $contact = $cb->contact;
                     if (!$contact || $cb->contact->isNewRecord) {
                         $contact = new Contact();
-                    }
-                    $contact->scenario = 'admin_contact';
-                    $contact->last_name = $cb->name;
-                    $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
-                    $contact->email = $_POST['Contact']['email'] ?? null;
-                    if (!$contact->save()) {
-                        $errors = array_merge($errors, $contact->getErrors());
+                        $contact->first_name = '';
+                        $contact->last_name = '';
+                        $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
+                        if (!$contact->save(false)) {
+                            $errors = array_merge($errors, $contact->getErrors());
+                        }
                     }
 
                     $cb->contact_id = $contact->id;
@@ -2348,11 +2396,10 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $errors = array();
 
         $return_url = Yii::app()->request->getQuery('return_url', '/admin/commissioning_body_services');
 
-        $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
+        $errors = $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
 
         $this->render('//admin/commissioning_body_services/edit', array(
             'commissioning_bt' => $commissioning_bt,
@@ -2369,6 +2416,7 @@ class AdminController extends BaseAdminController
         $errors = [];
         if (!empty($_POST)) {
             $cbs->attributes = $_POST['CommissioningBodyService'];
+
 
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
@@ -2421,6 +2469,8 @@ class AdminController extends BaseAdminController
                 $this->redirect($return_url);
             }
         }
+
+        return $errors;
     }
 
     public function actionAddCommissioningBodyService()

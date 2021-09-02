@@ -749,17 +749,9 @@ class OphCoCvi_Manager extends \CComponent
             if ($clinical->validate()) {
                 $status |= self::$CLINICAL_COMPLETE;
             }
-
-            if($clinical->is_considered_blind === "0"){
-                $this->is_considered_blind = self::$SIGHT_IMPAIRED;
-            }
-            
-            if($clinical->is_considered_blind === "1"){
-                $this->is_considered_blind = self::$SEVERELY_SIGHT_IMPAIRED;
-            }
         }
 
-        if($esign_element = $event->getElementByClass(\Element_OphCoCvi_Esign::class)) {
+        if ($esign_element = $event->getElementByClass(\Element_OphCoCvi_Esign::class)) {
             /** @var \Element_OphCoCvi_Esign $esign_element */
             foreach ($esign_element->signatures as $signature) {
                 if ((int)$signature->type === \BaseSignature::TYPE_PATIENT && $signature->isSigned()) {
@@ -767,13 +759,6 @@ class OphCoCvi_Manager extends \CComponent
                 } elseif ((int)$signature->type === \BaseSignature::TYPE_LOGGEDIN_USER && $signature->isSigned()) {
                     $status |= self::$CONSULTANT_SIGNED;
                 }
-            }
-        }
-              
-        if($consultant_signature = $this->getElementForEvent($event, "Element_OphCoCvi_ConsultantSignature")) {
-            /** @var SignatureInterface $consultant_signature */
-            if($consultant_signature->checkSignature()) {
-                $status |= self::$CONSULTANT_SIGNED;
             }
         }
 

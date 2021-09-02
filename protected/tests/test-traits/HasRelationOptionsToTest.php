@@ -18,7 +18,7 @@ trait HasRelationOptionsToTest
     public function assertOptionsAreRetrievable($instance, $relation, $expected_cls, $expected_pks = null)
     {
         if ($expected_pks === null) {
-            $expected_pks = array_map(function($related_obj) {
+            $expected_pks = array_map(function ($related_obj) {
                 return $related_obj->getPrimaryKey();
             }, $expected_cls::model()->active()->findAll());
         }
@@ -32,7 +32,7 @@ trait HasRelationOptionsToTest
         $this->assertCount(count($expected_pks), $options);
         $this->assertInstanceOf($expected_cls, $options[0]);
 
-        $option_pks = array_map(function($option) {
+        $option_pks = array_map(function ($option) {
             return $option->getPrimaryKey();
         }, $options);
 

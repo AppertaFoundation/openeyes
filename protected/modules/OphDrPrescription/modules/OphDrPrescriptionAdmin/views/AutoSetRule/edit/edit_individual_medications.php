@@ -43,7 +43,8 @@
                            value="<?= $assignment->id ?>"/>
                     <input type="hidden" name="MedicationSetAutoRuleMedication[<?= $row_key; ?>][medication_id]"
                            value="<?= $assignment->medication_id ?>"/>
-                    <?php $this->widget('MedicationInfoBox', array('medication_id' => $assignment->medication_id));; ?><?php echo $assignment->medication->preferred_term; ?>
+                    <?php $this->widget('MedicationInfoBox', array('medication_id' => $assignment->medication_id));
+                    ; ?><?php echo $assignment->medication->preferred_term; ?>
                 </td>
                 <td align="center">
                     <input type="hidden" name="MedicationSetAutoRuleMedication[<?= $row_key; ?>][include_parent]"

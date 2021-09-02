@@ -64,6 +64,8 @@ return array(
                 'Patient unavailable reasons' => '/OphTrOperationbooking/admin/viewPatientUnavailableReasons',
                 'Session unavailable reasons' => array('uri'=>'/OphTrOperationbooking/admin/viewSessionUnavailableReasons', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
                 'Whiteboard' => '/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings',
+                'Pre-assessment Types' => '/OphTrOperationbooking/admin/preassessmentType',
+                'Pre-assessment Locations' => '/OphTrOperationbooking/admin/preassessmentLocation',
             ]
         ),
         // Default anaesthetic settings

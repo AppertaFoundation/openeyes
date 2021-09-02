@@ -24,4 +24,4 @@ $this->beginContent('//patient/event_container', array('no_face'=>true))?>
 <?php $this->renderOpenElements($this->action->id); ?>
 <?php $this->renderOptionalElements($this->action->id); ?>
 <?php $this->renderPartial('//default/delete');?>
-<?php $this->endContent()?>
+<?php $this->endContent();

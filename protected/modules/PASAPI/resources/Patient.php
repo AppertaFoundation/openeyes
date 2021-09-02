@@ -74,11 +74,11 @@ class Patient extends BaseResource
 
         $transaction = $this->startTransaction();
 
-        try {
-            if ($this->isNewResource && $this->update_only) {
-                return false;
-            }
+        if (($this->isNewResource && $this->update_only) || (!$this->isNewResource && $this->create_only)) {
+            return false;
+        }
 
+        try {
             if ($this->saveModel($model)) {
                 $assignment->internal_id = $model->id;
                 $assignment->save();
@@ -101,7 +101,7 @@ class Patient extends BaseResource
 
             throw $e;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -141,6 +141,7 @@ class Patient extends BaseResource
         // Set the contact details
         // ContactBehavior.php creates a contact automatically before save
         $contact = $patient->contact;
+        $contact->scenario = "pasapi_import";
         $contact->source = "PASAPI";
 
         $this->assignProperty($contact, 'title', 'Title');
@@ -148,6 +149,7 @@ class Patient extends BaseResource
         $this->assignProperty($contact, 'last_name', 'Surname');
         $this->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
         $this->assignProperty($contact, 'mobile_phone', 'MobilePhoneNumber');
+        $this->assignProperty($contact, 'email', 'Email');
 
         if (!$contact->validate()) {
             $this->addModelErrors($contact->getErrors());
@@ -229,8 +231,7 @@ class Patient extends BaseResource
     private function mapLanguageCodeAndInterpreterRequired(\Patient $patient)
     {
         if (property_exists($this, 'LanguageCode') || property_exists($this, 'InterpreterRequired')) {
-            $episode = new \Episode();
-            $change_episode = $episode->getChangeEpisode($patient);
+            $change_episode = \Episode::getChangeEpisode($patient);
             $change_episode->save();
 
             $event = $this->createExamination($change_episode);

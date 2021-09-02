@@ -23,7 +23,7 @@ class UserController extends BaseController
             ),
             array('allow',
                 'actions' => array('testAuthenticated', 'getSecondsUntilSessionExpire'),
-                'roles' => array('User'),
+                'users' => array('@'),
             ),
             array('allow',
                 'actions' => array('getDecryptedSignatureId', 'getName','getCurrentUser')

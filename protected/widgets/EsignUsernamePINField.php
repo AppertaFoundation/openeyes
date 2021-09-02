@@ -37,3 +37,4 @@ class EsignUsernamePINField extends EsignField
         $assetManager->registerScriptFile($scriptPath, "application.widgets.AutoCompleteSearch", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
     }
 }
+

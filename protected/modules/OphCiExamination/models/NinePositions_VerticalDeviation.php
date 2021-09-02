@@ -57,7 +57,7 @@ class NinePositions_VerticalDeviation extends \BaseActiveRecordVersioned
     {
         return [
             ['name, abbreviation, display_order', 'required'],
-            ['name', 'length', 'max' => 63, 'min' => 2],
+            ['name', 'length', 'max' => 31, 'min' => 2],
             ['abbreviation', 'length', 'max' => 7, 'min' => 1],
             ['active', 'boolean'],
             ['display_order', 'numerical', 'integerOnly' => true],

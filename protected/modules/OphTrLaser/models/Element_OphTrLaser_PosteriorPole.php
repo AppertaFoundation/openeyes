@@ -64,7 +64,7 @@ class Element_OphTrLaser_PosteriorPole extends SplitEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, eye_id, left_eyedraw, right_eyedraw, ', 'safe'),
-            array('eye_id, left_eyedraw, right_eyedraw, ', 'required'),
+            array('eye_id,', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, eye_id, left_eyedraw, right_eyedraw, ', 'safe', 'on' => 'search'),

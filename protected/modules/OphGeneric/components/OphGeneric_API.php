@@ -56,9 +56,9 @@ class OphGeneric_API extends BaseAPI
         $eye_name = null;
         if ($left_eye && $right_eye) {
             $eye_name = 'Both';
-        } else if ($left_eye) {
+        } elseif ($left_eye) {
             $eye_name = 'Left';
-        } else if ($right_eye) {
+        } elseif ($right_eye) {
             $eye_name = 'Right';
         }
 

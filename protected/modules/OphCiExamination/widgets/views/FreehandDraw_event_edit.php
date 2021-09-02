@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -15,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-$annotate_tools_icon_url = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-annotate-tools.svg';
+$annotate_tools_icon_url = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-annotate-tools.svg';
 $model_name = CHtml::modelName($element);
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('FreehandDraw.js') ?>"></script>
@@ -58,7 +59,7 @@ $model_name = CHtml::modelName($element);
                 'date-template-url' => $item->protected_file->getDownloadURL(),
                 'filename' => explode('.', $item->protected_file->name)[0],
                 'full_name' => $item->protected_file->user->fullName,
-                'created_date' => Helper::convertMySQL2NHS($item->created_date)
+                'created_date' => Helper::convertMySQL2NHS($item->created_date),
             ];
         }, DrawingTemplate::model()->active()->findAll())
     ) ?>;
@@ -94,7 +95,8 @@ $model_name = CHtml::modelName($element);
                     'filename' => '{{filename}}',
                     'full_name' => '{{full_name}}',
                     'is_edited' => 1,
-                    'date' => '{{date}}'
+                    'date' => '{{date}}',
+                    'comments' => ''
                 ),
             )
         );

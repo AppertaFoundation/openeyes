@@ -48,4 +48,3 @@ class EncryptionDecryptionHelperTest extends CTestCase
         $this->assertEquals($decrypted, $input);
     }
 }
-

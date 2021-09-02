@@ -31,10 +31,6 @@ class EsignSignatureCaptureField extends EsignField
      */
     protected function getHiddenFields() : array
     {
-        $fields = ["id", "type", "proof"];
-        if(!$this->signature->getRoleOptions()) {
-            $fields[] = "signatory_role";
-        }
-        return $fields;
+        return ["id", "type", "proof"];
     }
 }

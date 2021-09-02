@@ -60,6 +60,7 @@ class FreehandDraw extends \BaseEventElementWidget
                 if ($id && array_key_exists($id, $entries_by_id)) {
                     $entry = $entries_by_id[$id];
                 }
+                $entry->comments = $drawing_entry['comments'];
 
                 $file_content = $image_data[$i]['data'];
                 $name = $image_data[$i]['name'];

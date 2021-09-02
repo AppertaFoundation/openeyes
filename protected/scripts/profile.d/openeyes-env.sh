@@ -132,3 +132,7 @@
 # export OE_USER_BANNER_LONG=""
 # export OE_ADMIN_BANNER_SHORT=""
 # export OE_ADMIN_BANNER_LONG=""
+
+## Training hub variables
+# export OE_TRAINING_HUB_TEXT=""
+# export OE_TRAINING_HUB_URL=""

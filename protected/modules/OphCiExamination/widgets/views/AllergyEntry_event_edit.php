@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -51,14 +52,14 @@ $other_text_field_classes = $entry->hasErrors('other') ? 'highlighted-error erro
     <td class="reaction-selection">
         <?php
             echo CHtml::dropDownList(
-                $row_count.'_reaction_selection',
+                $row_count . '_reaction_selection',
                 null,
                 CHtml::listData(
                     OphCiExaminationAllergyReaction::model()->bydisplayorder()->findAllByAttributes(array('active' => '1')),
                     'id',
                     'name'
                 ),
-                ['class' => 'cols-10', 'empty' => 'Select reaction']
+                ['class' => 'cols-10', 'empty' => 'Add reaction']
             );
             ?>
         <ul id="<?=$field_prefix?>[reactions]" class="oe-multi-select inline">
@@ -157,7 +158,6 @@ $other_text_field_classes = $entry->hasErrors('other') ? 'highlighted-error erro
       <td><i class="oe-i trash"></i></td>
     <?php else : ?>
         <td>
-            Read only
             <i class="js-has-tooltip oe-i info small pad right"
                data-tooltip-content="<?= $values['allergy_display'] . " is mandatory to collect."; ?>"></i>
         </td>

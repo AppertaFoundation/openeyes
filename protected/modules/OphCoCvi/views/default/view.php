@@ -76,7 +76,7 @@ $this->beginContent('//patient/event_container');
 <?php $this->renderOpenElements($this->action->id) ?>
 
 <?php $this->endContent() ?>
-<script type="text/javascript">
+<script>
 $(document).ready(function(){
     $('#et_select_action').on('change', function(){
         $('.event-header').find('button').hide();

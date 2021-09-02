@@ -25,4 +25,4 @@
 ) ?>
 <?php echo $form->radioBoolean($element, 'drain_haem') ?>
 <?php echo $form->radioBoolean($element, 'deep_suture') ?>
-<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60)) ?>
+<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60));

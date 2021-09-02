@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,14 +15,15 @@
  * @copyright Copyright (c) 2011-2018, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<?php if (Yii::app()->params['watermark']) {?>
+<?php if (SettingMetadata::model()->getSetting('watermark')) {?>
     <div id="oe-admin-notifcation">
-        <span id="notification-full"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
+        <span id="notification-full"><?=\CHtml::encode(SettingMetadata::model()->getSetting('watermark'));?></span>
     </div>
-<?php } else if (Yii::app()->params['watermark_short']) { ?>
+<?php } elseif (SettingMetadata::model()->getSetting('watermark_short')) { ?>
 <div id="oe-admin-notifcation">
-        <span id="notification-full"><?=\CHtml::encode(Yii::app()->params['watermark_short']);?></span>
+        <span id="notification-full"><?=\CHtml::encode(SettingMetadata::model()->getSetting('watermark_short'));?></span>
     </div>
 <?php } ?>

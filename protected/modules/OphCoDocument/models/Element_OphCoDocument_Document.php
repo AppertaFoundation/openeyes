@@ -84,7 +84,8 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         );
     }
 
-    public function documentRequired($attribute, $params) {
+    public function documentRequired($attribute, $params)
+    {
         if (\SettingMetadata::model()->getSetting('document_file_upload_mandatory') === 'on') {
             if (!$this->single_document && (!$this->left_document && !$this->right_document)) {
                 $this->addError($attribute, 'at least one document is required.');
@@ -99,11 +100,12 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
     /**
      * @return string
      */
-    public function logoPostfix() {
+    public function logoPostfix()
+    {
         if ($this->sub_type) {
             if ($this->sub_type->name == 'OCT') {
                 return 'OCT';
-            } else if ($this->sub_type->name == 'Photograph') {
+            } elseif ($this->sub_type->name == 'Photograph') {
                 return 'Photograph';
             }
         }
@@ -111,7 +113,8 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
     }
 
 
-    protected function getImageFileNameForRotation($image_id){
+    protected function getImageFileNameForRotation($image_id)
+    {
         $protected = ProtectedFile::model()->findByPk($image_id);
         if ($protected) {
             $file_name = $protected->getFilePath().'/'.$protected->uid;
@@ -123,7 +126,8 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         }
     }
 
-    public function rotate($file_name, $rotate = null) {
+    public function rotate($file_name, $rotate = null)
+    {
         $original = imagecreatefromjpeg($file_name);
 
         if (empty($rotate)) {

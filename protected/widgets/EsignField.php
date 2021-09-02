@@ -46,10 +46,10 @@ abstract class EsignField extends BaseCWidget
         return $this->signature->isSigned();
     }
 
-    protected function getSignatureFile(): \ProtectedFile
+    protected function getSignatureFile(): ProtectedFile
     {
         $model = $this->signature->signatureFile;
-        if(!$model) {
+        if (!$model) {
             throw new Exception("Signature file not found");
         }
         return $model;
@@ -62,9 +62,13 @@ abstract class EsignField extends BaseCWidget
      */
     public function displaySignature() : void
     {
-        if($this->isSigned()) {
+        if ($this->isSigned()) {
+            if ($this->signature->hasAttribute("secretary") && $this->signature->secretary) {
+                echo "<span>ELECTRONIC VERIFIED, NOT SIGNED TO AVOID DELAYS</span>";
+                return;
+            }
             $file = $this->getSignatureFile();
-            if($file){
+            if ($file) {
                 $thumbnail1 = $file->getThumbnail("72x24", true);
                 $thumbnail2 = $file->getThumbnail("150x50", true);
 
@@ -109,7 +113,7 @@ abstract class EsignField extends BaseCWidget
      */
     public function renderHiddenFields() : void
     {
-        foreach($this->getHiddenFields() as $field) {
+        foreach ($this->getHiddenFields() as $field) {
             echo \CHtml::hiddenField(
                 \CHtml::modelName($this->element)."[signatures][{$this->row_id}][$field]",
                 $this->signature->$field,
@@ -123,6 +127,10 @@ abstract class EsignField extends BaseCWidget
      */
     protected function getHiddenFields() : array
     {
-        return ["id", "type", "proof", "signatory_role", "signatory_name"];
+        $fields = ["id", "type", "proof", "signatory_name", "signatory_role"];
+        if ($this->signature->hasAttribute("secretary")) {
+            $fields[] = "secretary";
+        }
+        return $fields;
     }
 }

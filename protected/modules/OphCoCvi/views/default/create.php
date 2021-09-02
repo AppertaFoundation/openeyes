@@ -47,4 +47,4 @@ if (!isset($this->patient->practice) || !isset($this->patient->practice->contact
 
 <?php $this->endWidget() ?>
 
-<?php $this->endContent() ?>
+<?php $this->endContent();

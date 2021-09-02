@@ -94,13 +94,13 @@ class MedicationAttributeAssignment extends BaseActiveRecordVersioned
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('medication_id',$this->medication_id);
-        $criteria->compare('medication_attribute_option_id',$this->medication_attribute_option_id);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('medication_id', $this->medication_id);
+        $criteria->compare('medication_attribute_option_id', $this->medication_attribute_option_id);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -113,7 +113,7 @@ class MedicationAttributeAssignment extends BaseActiveRecordVersioned
      * @param string $className active record class name.
      * @return MedicationAttributeAssignment the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

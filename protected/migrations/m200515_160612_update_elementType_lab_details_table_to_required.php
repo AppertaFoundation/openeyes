@@ -11,6 +11,4 @@ class m200515_160612_update_elementType_lab_details_table_to_required extends OE
     {
         $this->update('element_type', array('required' => 1), "class_name = 'Element_OphInLabResults_Details'");
     }
-
-
 }

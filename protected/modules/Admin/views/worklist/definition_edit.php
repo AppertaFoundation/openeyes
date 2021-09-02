@@ -119,7 +119,7 @@
                         [
                             'empty' => 'Select',
                             'class' => 'cols-6',
-                        ]
+                            ]
                     ); ?>
                 </td>
             </tr>
