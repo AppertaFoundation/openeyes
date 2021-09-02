@@ -281,7 +281,7 @@ if (isset($element->authorisedByUser)) {
             </td>
         </tr>
     </table>
-
+    <div class="clearfix"></div>
     <?php if ($footer_text !== null) { ?>
         <div><?= $footer_text ?></div>
     <?php } ?>

@@ -45,7 +45,7 @@
                             <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
                             <?=$item->renderPGDInfo();?>
                         </td>
-                            
+
                         <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
                         <td><?php echo $item->route->term ?>
                             <?php if ($item->laterality) {
@@ -106,5 +106,28 @@
         <div class="data-value">
             <span class="large-text"><?php echo $element->textWithLineBreaks('comments') ?></span>
         </div>
+    </div>
+<?php } ?>
+
+<?php if ($signatures = $element->isSignedByMedication()) {?>
+    <div class="element-data full-width">
+        <?php
+        $row = 0;
+        foreach ($signatures->getSignatures(true) as $signature) {
+            ?>
+        <div class="js-signature-wrapper flex-r">
+            <div class="large-text">
+                <small class="fade"><?= $signature->signatory_role ?></small> <?= $signature->signatory_name ?>
+                <span class="tabspace"></span>
+            </div>
+            <div class="flex-l">
+                <?= $signature->displaySignature() ?>
+                <div class="esigned-at">
+                    <i class="oe-i tick-green small pad-right"></i>
+                    Signed <small>at</small> <span class="js-signature-time"><?= $signature->getSignedTime(); ?></span>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
     </div>
 <?php } ?>

@@ -77,7 +77,6 @@ class PrescriptionCreator extends \EventCreator
         foreach ($this->elements as $element) {
             if ($element instanceof Element_OphDrPrescription_Details) {
                 $element->event_id = $event_id;
-                $element->draft = !Yii::app()->user->checkAccess('OprnCreatePrescription');
                 if (!$element->save()) {
                     $this->addErrors($element->getErrors());
                     \OELog::log("Element_OphDrPrescription_Details:" . print_r($element->getErrors(), true));

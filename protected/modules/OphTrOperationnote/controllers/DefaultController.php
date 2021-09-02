@@ -244,6 +244,7 @@ class DefaultController extends BaseEventTypeController
             $prescription_creator = new PrescriptionCreator($this->event->episode);
             $prescription_creator->patient = $this->patient;
             $prescription_creator->addMedicationSet($set->id, $procedure_list->eye_id);
+            $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = !Yii::app()->user->checkAccess('OprnCreatePrescription');
             $prescription_creator->save();
 
             $success = !$prescription_creator->hasErrors();

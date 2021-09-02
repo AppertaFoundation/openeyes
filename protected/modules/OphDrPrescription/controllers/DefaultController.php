@@ -28,6 +28,8 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
         'finalize' => self::ACTION_TYPE_FORM,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM
     );
 
     private function userIsAdmin()
@@ -39,6 +41,21 @@ class DefaultController extends BaseEventTypeController
         }
 
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'getSignatureByPin' => [
+                'class' => GetSignatureByPinAction::class
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => GetSignatureByUsernameAndPinAction::class
+            ]
+        ];
     }
 
     public function actionView($id)

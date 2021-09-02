@@ -1145,7 +1145,7 @@ HistoryMedicationsController._defaultOptions = {
             medication_id: data.medication_id
         }, function (info_box) {
             $row.find(".js-prepended_markup:visible").append($(info_box));
-            
+
             if(data.pgdpsd_id){
                 $.get("/medicationManagement/getPGDIcon", {
                     pgdpsd_id: data.pgdpsd_id
@@ -1707,7 +1707,6 @@ HistoryMedicationsController._defaultOptions = {
             }
         });
       };
-    
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
 })(OpenEyes.OphCiExamination, OpenEyes.Util);
