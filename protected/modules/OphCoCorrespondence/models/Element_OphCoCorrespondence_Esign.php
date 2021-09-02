@@ -109,19 +109,13 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
      */
     public function getSignatures(): array
     {
-        $secondary_consultant_signature = new OphCoCorrespondence_Signature();
-        $secondary_consultant_signature->type = BaseSignature::TYPE_OTHER_USER;
-        $secondary_consultant_signature->signatory_role = self::SECONDARY_ROLE;
-
-        $signatures = [];
+        $signatures = $this->signatures;
         foreach ([self::PRIMARY_ROLE, self::SECONDARY_ROLE] as $role) {
             $signature = $this->getSignatureByRole($role);
             if (is_null($signature)) {
                 $signature = new OphCoCorrespondence_Signature();
                 $signature->type = BaseSignature::TYPE_OTHER_USER;
                 $signature->signatory_role = $role;
-                $signatures[] = $signature;
-            } else {
                 $signatures[] = $signature;
             }
         }
