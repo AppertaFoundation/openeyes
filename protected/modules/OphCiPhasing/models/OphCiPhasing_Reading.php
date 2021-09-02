@@ -56,6 +56,7 @@ class OphCiPhasing_Reading extends BaseActiveRecordVersioned
         return array(
                 array('side, value, measurement_timestamp', 'required'),
                 array('value', 'numerical'),
+                array('value', 'compare', 'compareValue' => 0, 'operator' => '>='),
                 array('id, element_id, side, value, measurement_timestamp', 'safe', 'on' => 'search'),
         );
     }
