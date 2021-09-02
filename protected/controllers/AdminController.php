@@ -49,8 +49,8 @@ class AdminController extends BaseAdminController
         $this->genericAdmin(
             'Common Ophthalmic Disorder Groups',
             'CommonOphthalmicDisorderGroup',
-            ['div_wrapper_class' => 'cols-5',
-                'return_url' => 'editcommonophthalmicdisordergroups'],
+            ['input_class' => 'cols-full',
+            'return_url' => 'editcommonophthalmicdisordergroups'],
             null,
             true,
         );
