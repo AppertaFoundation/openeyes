@@ -17,7 +17,7 @@
                 <?php foreach ($sync_interval_options as $key => $option) {?>
                     <li>
                         <button data-value="<?=$key === 'off' ? 'Sync OFF' : $option?>" data-value-key="<?=$key?>" class="header-tab">
-                            <?=($key === 'off' ? '': 'Sync: ') . $option?>
+                            <?=($key === 'off' ? '' : 'Sync: ') . $option?>
                         </button>
                     </li>
                 <?php }?>
@@ -41,7 +41,7 @@
         <div class="flex-layout">
             <input id="worklist-date-from" class="cols-4" placeholder="from" type="text" value="<?= Yii::app()->request->getParam('date_from', '') ?>">
             <input id="worklist-date-to" class="cols-4" placeholder="to" type="text" value="<?= Yii::app()->request->getParam('date_to', '') ?>">
-            <a href="#" class="selected js-clear-dates" id ="sidebar-clear-date-ranges">Today</a>
+            <a href="#" class="selected js-clear-dates" id="sidebar-clear-date-ranges">Today</a>
         </div>
 
         <h3>Select list</h3>
@@ -110,7 +110,7 @@
                                 {{/valueDisplaySuffix}}
                                 </br>
                             {{/patientIdentifiers}}
-	                        {{#patientDeletedIdentifiers}}
+                            {{#patientDeletedIdentifiers}}
                                 <hr>
                                     Previous Numbers
                                 <br>
@@ -136,7 +136,7 @@
                         {{/patientPrimaryIdentifierStatus}}
                     </div>
                 </div>
-			{{/displayPrimaryNumberUsageCode}}
+            {{/displayPrimaryNumberUsageCode}}
             {{#displaySecondaryNumberUsageCode}}
                 <div class="nhs-number">
                     <span>{{ nhsNumberPrompt }}</span>
@@ -150,7 +150,7 @@
                 <em>Gender</em>
                 {{ gender }}
             </div>
-			<div class="patient-{{#deceased}}died{{/deceased}}{{^deceased}}age{{/deceased}}">
+            <div class="patient-{{#deceased}}died{{/deceased}}{{^deceased}}age{{/deceased}}">
                 {{#deceased}}
                     <em>Died</em> {{dateOfDeath}}
                 {{/deceased}}

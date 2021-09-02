@@ -2425,6 +2425,9 @@ class AdminController extends BaseAdminController
 
             $address->attributes = $_POST['Address'];
 
+            if (!$cbs->contact_id) {
+                $cbs->contact = $contact;
+            }
             if (empty($errors)) {
                 $transaction = Yii::app()->db->beginInternalTransaction();
                 try {
