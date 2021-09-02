@@ -103,7 +103,7 @@
             </td>
         </tr>
         <tr>
-            <td>Country</td>
+            <td><?=$cb->contact->getAttributeLabel('email');?></td>
             <td>
                 <?= \CHtml::activeEmailField(
                     $cb->contact,

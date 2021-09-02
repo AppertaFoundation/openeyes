@@ -758,6 +758,17 @@ class OphCoCvi_Manager extends \CComponent
                 $this->is_considered_blind = self::$SEVERELY_SIGHT_IMPAIRED;
             }
         }
+
+        if($esign_element = $event->getElementByClass(\Element_OphCoCvi_Esign::class)) {
+            /** @var \Element_OphCoCvi_Esign $esign_element */
+            foreach ($esign_element->signatures as $signature) {
+                if ((int)$signature->type === \BaseSignature::TYPE_PATIENT && $signature->isSigned()) {
+                    $status |= self::$CONSENTED;
+                } elseif ((int)$signature->type === \BaseSignature::TYPE_LOGGEDIN_USER && $signature->isSigned()) {
+                    $status |= self::$CONSULTANT_SIGNED;
+                }
+            }
+        }
               
         if($consultant_signature = $this->getElementForEvent($event, "Element_OphCoCvi_ConsultantSignature")) {
             /** @var SignatureInterface $consultant_signature */
@@ -771,12 +782,6 @@ class OphCoCvi_Manager extends \CComponent
            
             if ($demographics->validate()) {
                 $status |= self::$DEMOGRAPHICS_COMPLETE;
-            }
-        }
-
-        if ($signature = $this->getConsentSignatureElementForEvent($event)) {
-            if ($signature->checkSignature()) {
-                $status |= self::$CONSENTED;
             }
         }
 

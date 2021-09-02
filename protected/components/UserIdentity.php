@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -24,17 +24,17 @@
  */
 class UserIdentity extends CUserIdentity
 {
+    const ERROR_USER_INACTIVE = 3;
     private $_id;
     private $institution_id;
     private $site_id;
     private $available_authentications;
     private $available_auth_error;
-    private $is_special = false;
 
     /*
      * New error code for users with active set to 0
      */
-    const ERROR_USER_INACTIVE = 3;
+    private $is_special = false;
 
     /**
      * Constructor.
@@ -43,14 +43,14 @@ class UserIdentity extends CUserIdentity
      * @param int $institution_id institution id
      * @param int $site_id site id
      */
-    public function __construct($username,$password,$institution_id,$site_id)
+    public function __construct($username, $password, $institution_id, $site_id)
     {
-      $this->institution_id=$institution_id;
-      $this->site_id=$site_id;
-      $available_auth_result = UserAuthentication::findAvailableAuthentications($username, $institution_id, $site_id);
-      $this->available_authentications = $available_auth_result[0];
-      $this->available_auth_error = $available_auth_result[1];
-      parent::__construct($username,$password);
+        $this->institution_id = $institution_id;
+        $this->site_id = $site_id;
+        $available_auth_result = UserAuthentication::findAvailableAuthentications($username, $institution_id, $site_id);
+        $this->available_authentications = $available_auth_result[0];
+        $this->available_auth_error = $available_auth_result[1];
+        parent::__construct($username, $password);
     }
 
     public function authenticate()
@@ -65,7 +65,7 @@ class UserIdentity extends CUserIdentity
             return [false, $this->available_auth_error];
         }
 
-        foreach([InstitutionAuthentication::EXACT_MATCH, InstitutionAuthentication::PERMISSIVE_MATCH] as $match_type) {
+        foreach ([InstitutionAuthentication::EXACT_MATCH, InstitutionAuthentication::PERMISSIVE_MATCH] as $match_type) {
             $result = $this->authenticateUserAuthenticationType($match_type);
             if (isset($result)) {
                 return $result;
@@ -96,7 +96,7 @@ class UserIdentity extends CUserIdentity
             if ($auth_result[0]) {
                 $user_authentication->noVersion();
                 $user_authentication->last_successful_login_date = date('Y-m-d H:i:s');
-                if (!$user_authentication->saveAttributes(['last_successful_login_date'])) { 
+                if (!$user_authentication->saveAttributes(['last_successful_login_date'])) {
                     $user_authentication->user->audit('login', 'set-last-successful-login-failed', "User Auth id: $user_authentication->id, errors:" . var_export($user_authentication->getErrors(), true));
                 }
                 return [true, ""];
@@ -105,204 +105,6 @@ class UserIdentity extends CUserIdentity
             }
         }
         return null;
-    }
-
-    private function authenticateZendLDAP($user_authentication)
-    {
-        $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
-        $user = $user_authentication->user;
-
-        Yii::import('application.vendors.*');
-        require_once 'Zend/Ldap.php';
-
-        /*
-         * Check with LDAP for authentication
-         */
-        $options = array(
-            'host' => $ldap_config->ldap_server,
-            'port' => $ldap_config->ldap_port,
-            'username' => $ldap_config->ldap_admin_dn,
-            'password' => $ldap_config->ldap_admin_password,
-            'baseDn' => $ldap_config->ldap_admin_dn,
-            'useStartTls' => false,
-        );
-
-        $ldap = $this->getLdap($options);
-
-        /*
-         * Try and bind to the login details provided. This indicates if
-         * the user is in LDAP.
-         */
-
-        try {
-            $ldap->bind(
-                'cn='.$this->username.','.$ldap_config->ldap_dn,
-                $this->password
-            );
-        } catch (Exception $e) {
-            /*
-             * User not authenticated via LDAP
-             */
-            $audit = new Audit();
-            $audit->action = 'login-failed';
-            $audit->target_type = 'login';
-            $audit->user_id = $user->id;
-            $audit->data = "Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage().': '.$this->username;
-            $audit->save();
-            OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage(), $this->username);
-
-            $this->errorCode = self::ERROR_USERNAME_INVALID;
-
-            return [false, "Invalid login."];
-        }
-
-        /*
-         * User is in LDAP, get their details.
-         */
-        return [true,
-            $ldap->getEntry(
-                'cn='.$this->username.','.$ldap_config->ldap_dn,
-                array('givenname', 'sn', 'mail')
-            )
-        ];
-    }
-
-    private function authenticateNativeLDAP($user_authentication)
-    {
-        $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
-        $user = $user_authentication->user;
-
-        if (preg_match('~ldaps?://~', $ldap_config->ldap_server)) {
-            if (!$link = ldap_connect($ldap_config->ldap_server)) {
-                OELog::log('Unable to connect to LDAP server: '.$ldap_config->ldap_server);
-                return [false, "Invalid login."];
-            }
-        } else {
-            if (!$link = ldap_connect($ldap_config->ldap_server, $ldap_config->ldap_port)) {
-                throw new Exception();
-                OELog::log('Unable to connect to LDAP server: '.$ldap_config->ldap_server.' '.$ldap_config->ldap_port);
-                return [false, "Invalid login."];
-            }
-        }
-
-        ldap_set_option($link, LDAP_OPT_REFERRALS, 0);
-        if ($ldap_config->getLDAPParam('ldap_protocol_version') !== null) {
-            ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, $ldap_config->getLDAPParam('ldap_protocol_version'));
-        }
-        ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, $ldap_config->getLDAPParam('ldap_native_timeout'));
-
-        // Bind as the LDAP admin user. Set parameters ldap_admin_dn and ldap_password in local config for this.
-        if (!@ldap_bind($link, $ldap_config->ldap_admin_dn, $ldap_config->ldap_admin_password)) {
-            $audit = new Audit();
-            $audit->action = 'login-failed';
-            $audit->target_type = 'login';
-            $audit->user_id = $user->id;
-            $audit->data = "Login failed for user {$this->username}: LDAP admin bind failed: ".ldap_error($link);
-            $audit->save();
-            OELog::log("Login failed for user {$this->username}: LDAP admin bind failed: ".ldap_error($link));
-
-            $this->errorCode = self::ERROR_USERNAME_INVALID;
-
-            return [false, "Invalid login."];
-        }
-
-        // Perform an LDAP search for the username in order to retrieve their DN. Set the base DN in parameter ldap_dn in local config for this.
-
-        $ldapSearchFilter = '(sAMAccountName='.$this->username.')';
-
-        $ldapSearchResult = ldap_search($link, $ldap_config->ldap_dn, $ldapSearchFilter);
-
-        $ldapSearchEntries = ldap_get_entries($link, $ldapSearchResult);
-
-        if ($ldapSearchEntries['count'] != 1) {
-            $audit = new Audit();
-            $audit->action = 'login-failed';
-            $audit->target_type = 'login';
-            $audit->user_id = $user->id;
-            $audit->data = "Login failed for user {$this->username}: LDAP search did not return exactly 1 result: ".$ldapSearchEntries['count'];
-            $audit->save();
-            OELog::log("Login failed for user {$this->username}: LDAP search did not return exactly 1 result: ".$ldapSearchEntries['count']);
-
-            $this->errorCode = self::ERROR_USERNAME_INVALID;
-
-            return [false, "Invalid login."];
-        }
-
-        $info = $ldapSearchEntries[0];
-
-        // Now attempt to bind to the user's DN with their entered password.
-
-        if (!@ldap_bind($link, $info['distinguishedname'][0], $this->password)) {
-            $audit = new Audit();
-            $audit->action = 'login-failed';
-            $audit->target_type = 'login';
-            $audit->user_id = $user->id;
-            $audit->data = "Login failed for user {$this->username}: LDAP authentication failed: ".ldap_error($link);
-            $audit->save();
-            OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".ldap_error($link));
-
-            $this->errorCode = self::ERROR_USERNAME_INVALID;
-
-            return [false, "Invalid login."];
-        }
-        return [true, $info];
-    }
-
-    private function authenticateOtherLDAP($user_authentication)
-    {
-        $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
-        $user = $user_authentication->user;
-
-        if ($fp = @fsockopen($ldap_config->ldap_server, 389, $errno, $errstr, 5)) {
-            if (!$link = ldap_connect($ldap_config->ldap_server)) {
-                OELog::log('Unable to connect to LDAP server: '.$ldap_config->ldap_server);
-                return [false, "Invalid login."];
-            }
-        } else {
-            throw new Exception('Unable to reach ldap server: '.$ldap_config->ldap_server.': '.$errstr);
-            OELog::log('Unable to reach ldap server: '.$ldap_config->ldap_server.': '.$errstr);
-            return [false, "Invalid login."];
-        }
-
-        ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, $ldap_config->getLDAPParam('ldap_native_timeout'));
-        if ($ldap_config->getLDAPParam('ldap_protocol_version') !== null) {
-            ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, $ldap_config->getLDAPParam('ldap_protocol_version'));
-        }
-        $ldap_user_prefix = $ldap_config->getLDAPParam('ldap_username_prefix') ?: 'cn';
-
-        if (!@ldap_bind($link, "$ldap_user_prefix=$this->username,".$ldap_config->ldap_dn, $this->password)) {
-            $audit = new Audit();
-            $audit->action = 'login-failed';
-            $audit->target_type = 'login';
-            $audit->user_id = $user->id;
-            $audit->data = "Login failed for user {$this->username}: LDAP authentication failed: ".ldap_error($link);
-            $audit->save();
-            OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".ldap_error($link));
-
-            $this->errorCode = self::ERROR_USERNAME_INVALID;
-
-            return [false, "Invalid login."];
-        }
-
-        $attempts = $ldap_config->getLDAPParam('ldap_info_retries') ?? 1;
-
-        for ($i = 0; $i < $attempts; ++$i) {
-            if ($i > 0 && $ldap_config->getLDAPParam('ldap_info_retry_delay')) {
-                sleep($ldap_config->getLDAPParam('ldap_info_retry_delay'));
-            }
-            $sr = ldap_search($link, $ldap_config->ldap_dn, "$ldap_user_prefix=$this->username");
-            $info = ldap_get_entries($link, $sr);
-
-            if (isset($info[0])) {
-                break;
-            }
-        }
-
-        if (!isset($info[0])) {
-            OELog::log("Failed to retrieve ldap info for user $this->username: ".ldap_error($link).' ['.print_r($info, true).']');
-            return [false, "Invalid login."];
-        }
-        return [true, $info[0]];
     }
 
     /**
@@ -318,8 +120,8 @@ class UserIdentity extends CUserIdentity
      */
     public function authenticateUser($user_authentication, $force = false)
     {
-       // if (!in_array(Yii::app()->params['ldap_method'], array('native', 'zend', 'native-search'))) {
-       //     throw new Exception('Unsupported LDAP authentication method: '.Yii::app()->params['ldap_method'].', please use native or zend.');
+        // if (!in_array(Yii::app()->params['ldap_method'], array('native', 'zend', 'native-search'))) {
+        //     throw new Exception('Unsupported LDAP authentication method: '.Yii::app()->params['ldap_method'].', please use native or zend.');
         // }
 
         $inst_auth = $user_authentication->institutionAuthentication;
@@ -346,14 +148,14 @@ class UserIdentity extends CUserIdentity
 
             $auth_result = [false, "Invalid login."];
             switch ($ldap_config->ldap_method) {
-            case 'zend':
-                $auth_result = $this->authenticateZendLDAP($user_authentication);
-                break;
-            case 'native-search':
-                $auth_result = $this->authenticateNativeLDAP($user_authentication);
-                break;
-            default:
-                $auth_result = $this->authenticateOtherLDAP($user_authentication);
+                case 'zend':
+                    $auth_result = $this->authenticateZendLDAP($user_authentication);
+                    break;
+                case 'native-search':
+                    $auth_result = $this->authenticateNativeLDAP($user_authentication);
+                    break;
+                default:
+                    $auth_result = $this->authenticateOtherLDAP($user_authentication);
             }
 
             if (!$auth_result[0]) {
@@ -381,24 +183,24 @@ class UserIdentity extends CUserIdentity
 
             if ($user->isModelDirty()) {
                 if (!$user->save()) {
-                    $message = "Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors()) . " First name: [". $user->first_name . "] length: " .
-                        strlen($user->first_name)." Last name :[" . $user->last_name . "] length: " . strlen($user->last_name);
-                    $user->audit('login', 'login-failed',$message , $message);
-                    throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors() , true) .  $message);
+                    $message = "Login failed for user {$this->username}: unable to update user with details from LDAP: " . print_r($user->getErrors()) . " First name: [" . $user->first_name . "] length: " .
+                        strlen($user->first_name) . " Last name :[" . $user->last_name . "] length: " . strlen($user->last_name);
+                    $user->audit('login', 'login-failed', $message, $message);
+                    throw new SystemException('Unable to update user with details from LDAP: ' . print_r($user->getErrors(), true) . $message);
                 }
             }
         } elseif ($this->is_special || $inst_auth->user_authentication_method == 'LOCAL') {
             $validPw = $user_authentication->verifyPassword($this->password);
 
-            $is_softlocked =  PasswordUtils::testStatus('softlocked', $user_authentication, $this->is_special) && $user_authentication->password_softlocked_until > date("Y-m-d H:i:s");
+            $is_softlocked = PasswordUtils::testStatus('softlocked', $user_authentication, $this->is_special) && $user_authentication->password_softlocked_until > date("Y-m-d H:i:s");
             $pwActive = $this->is_special ? true : !(PasswordUtils::testStatus('locked', $user_authentication) || $is_softlocked);
 
             if (!($validPw && $pwActive)) { //if failed logon or locked
-                if(!$this->is_special && (!$validPw || $is_softlocked) && !empty(Yii::app()->params['pw_status_checks']['pw_tries'])){ // if the password was not correct and we check the number of tries
+                if (!$this->is_special && (!$validPw || $is_softlocked) && !empty(Yii::app()->params['pw_status_checks']['pw_tries'])) { // if the password was not correct and we check the number of tries
                     PasswordUtils::incrementFailedTries($user_authentication);
                 }
                 $this->errorCode = self::ERROR_PASSWORD_INVALID;
-                $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: ". ($validPw?'valid password, user auth inactive':'invalid password'));
+                $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: " . ($validPw ? 'valid password, user auth inactive' : 'invalid password'));
 
                 return [false, $validPw ? ($is_softlocked ? "User locked, retry in 10 minutes" : "User locked, please contact an admin.") : "Invalid login."];
             }
@@ -409,8 +211,8 @@ class UserIdentity extends CUserIdentity
             /*
              * Unknown auth_source, error
              */
-            $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: unknown auth source: ".Yii::app()->params['auth_source']);
-            throw new SystemException('Unknown auth_source: '.$inst_auth->user_authentication_method);
+            $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: unknown auth source: " . Yii::app()->params['auth_source']);
+            throw new SystemException('Unknown auth_source: ' . $inst_auth->user_authentication_method);
         }
 
         $app = Yii::app();
@@ -424,7 +226,7 @@ class UserIdentity extends CUserIdentity
 
             $user->audit('login',
                 'login-successful', null,
-                'Special User '.strtoupper($this->username).' logged in.'
+                'Special User ' . strtoupper($this->username) . ' logged in.'
             );
 
             return [true, ""];
@@ -481,10 +283,213 @@ class UserIdentity extends CUserIdentity
 
         $user->audit('login',
             'login-successful', null,
-            'User '.strtoupper($this->username).' logged in to Institution: ' . strtoupper($institution_name) . ', Site: ' . strtoupper($site_name)
+            'User ' . strtoupper($this->username) . ' logged in to Institution: ' . strtoupper($institution_name) . ', Site: ' . strtoupper($site_name)
         );
 
         return [true, ""];
+    }
+
+    private function authenticateZendLDAP($user_authentication)
+    {
+        $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
+        $user = $user_authentication->user;
+
+        Yii::import('application.vendors.*');
+        require_once 'Zend/Ldap.php';
+
+        /*
+         * Check with LDAP for authentication
+         */
+        $options = array(
+            'host' => $ldap_config->ldap_server,
+            'port' => $ldap_config->ldap_port,
+            'username' => $ldap_config->ldap_admin_dn,
+            'password' => $ldap_config->ldap_admin_password,
+            'baseDn' => $ldap_config->ldap_admin_dn,
+            'useStartTls' => false,
+        );
+
+        $ldap = $this->getLdap($options);
+
+        /*
+         * Try and bind to the login details provided. This indicates if
+         * the user is in LDAP.
+         */
+
+        try {
+            $ldap->bind(
+                'cn=' . $this->username . ',' . $ldap_config->ldap_dn,
+                $this->password
+            );
+        } catch (Exception $e) {
+            /*
+             * User not authenticated via LDAP
+             */
+            $audit = new Audit();
+            $audit->action = 'login-failed';
+            $audit->target_type = 'login';
+            $audit->user_id = $user->id;
+            $audit->data = "Login failed for user {$this->username}: LDAP authentication failed: " . $e->getMessage() . ': ' . $this->username;
+            $audit->save();
+            OELog::log("Login failed for user {$this->username}: LDAP authentication failed: " . $e->getMessage(), $this->username);
+
+            $this->errorCode = self::ERROR_USERNAME_INVALID;
+
+            return [false, "Invalid login."];
+        }
+
+        /*
+         * User is in LDAP, get their details.
+         */
+        return [true,
+            $ldap->getEntry(
+                'cn=' . $this->username . ',' . $ldap_config->ldap_dn,
+                array('givenname', 'sn', 'mail')
+            )
+        ];
+    }
+
+    public function getLdap($options)
+    {
+        return new Zend_Ldap($options);
+    }
+
+    private function authenticateNativeLDAP($user_authentication)
+    {
+        $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
+        $user = $user_authentication->user;
+
+        if (preg_match('~ldaps?://~', $ldap_config->ldap_server)) {
+            if (!$link = ldap_connect($ldap_config->ldap_server)) {
+                OELog::log('Unable to connect to LDAP server: ' . $ldap_config->ldap_server);
+                return [false, "Invalid login."];
+            }
+        } else {
+            if (!$link = ldap_connect($ldap_config->ldap_server, $ldap_config->ldap_port)) {
+                throw new Exception();
+                OELog::log('Unable to connect to LDAP server: ' . $ldap_config->ldap_server . ' ' . $ldap_config->ldap_port);
+                return [false, "Invalid login."];
+            }
+        }
+
+        ldap_set_option($link, LDAP_OPT_REFERRALS, 0);
+        if ($ldap_config->getLDAPParam('ldap_protocol_version') !== null) {
+            ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, $ldap_config->getLDAPParam('ldap_protocol_version'));
+        }
+        ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, $ldap_config->getLDAPParam('ldap_native_timeout'));
+
+        // Bind as the LDAP admin user. Set parameters ldap_admin_dn and ldap_password in local config for this.
+        if (!@ldap_bind($link, $ldap_config->ldap_admin_dn, $ldap_config->ldap_admin_password)) {
+            $audit = new Audit();
+            $audit->action = 'login-failed';
+            $audit->target_type = 'login';
+            $audit->user_id = $user->id;
+            $audit->data = "Login failed for user {$this->username}: LDAP admin bind failed: " . ldap_error($link);
+            $audit->save();
+            OELog::log("Login failed for user {$this->username}: LDAP admin bind failed: " . ldap_error($link));
+
+            $this->errorCode = self::ERROR_USERNAME_INVALID;
+
+            return [false, "Invalid login."];
+        }
+
+        // Perform an LDAP search for the username in order to retrieve their DN. Set the base DN in parameter ldap_dn in local config for this.
+
+        $ldapSearchFilter = '(sAMAccountName=' . $this->username . ')';
+
+        $ldapSearchResult = ldap_search($link, $ldap_config->ldap_dn, $ldapSearchFilter);
+
+        $ldapSearchEntries = ldap_get_entries($link, $ldapSearchResult);
+
+        if ($ldapSearchEntries['count'] != 1) {
+            $audit = new Audit();
+            $audit->action = 'login-failed';
+            $audit->target_type = 'login';
+            $audit->user_id = $user->id;
+            $audit->data = "Login failed for user {$this->username}: LDAP search did not return exactly 1 result: " . $ldapSearchEntries['count'];
+            $audit->save();
+            OELog::log("Login failed for user {$this->username}: LDAP search did not return exactly 1 result: " . $ldapSearchEntries['count']);
+
+            $this->errorCode = self::ERROR_USERNAME_INVALID;
+
+            return [false, "Invalid login."];
+        }
+
+        $info = $ldapSearchEntries[0];
+
+        // Now attempt to bind to the user's DN with their entered password.
+
+        if (!@ldap_bind($link, $info['distinguishedname'][0], $this->password)) {
+            $audit = new Audit();
+            $audit->action = 'login-failed';
+            $audit->target_type = 'login';
+            $audit->user_id = $user->id;
+            $audit->data = "Login failed for user {$this->username}: LDAP authentication failed: " . ldap_error($link);
+            $audit->save();
+            OELog::log("Login failed for user {$this->username}: LDAP authentication failed: " . ldap_error($link));
+
+            $this->errorCode = self::ERROR_USERNAME_INVALID;
+
+            return [false, "Invalid login."];
+        }
+        return [true, $info];
+    }
+
+    private function authenticateOtherLDAP($user_authentication)
+    {
+        $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
+        $user = $user_authentication->user;
+
+        if ($fp = @fsockopen($ldap_config->ldap_server, 389, $errno, $errstr, 5)) {
+            if (!$link = ldap_connect($ldap_config->ldap_server)) {
+                OELog::log('Unable to connect to LDAP server: ' . $ldap_config->ldap_server);
+                return [false, "Invalid login."];
+            }
+        } else {
+            throw new Exception('Unable to reach ldap server: ' . $ldap_config->ldap_server . ': ' . $errstr);
+            OELog::log('Unable to reach ldap server: ' . $ldap_config->ldap_server . ': ' . $errstr);
+            return [false, "Invalid login."];
+        }
+
+        ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, $ldap_config->getLDAPParam('ldap_native_timeout'));
+        if ($ldap_config->getLDAPParam('ldap_protocol_version') !== null) {
+            ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, $ldap_config->getLDAPParam('ldap_protocol_version'));
+        }
+        $ldap_user_prefix = $ldap_config->getLDAPParam('ldap_username_prefix') ?: 'cn';
+
+        if (!@ldap_bind($link, "$ldap_user_prefix=$this->username," . $ldap_config->ldap_dn, $this->password)) {
+            $audit = new Audit();
+            $audit->action = 'login-failed';
+            $audit->target_type = 'login';
+            $audit->user_id = $user->id;
+            $audit->data = "Login failed for user {$this->username}: LDAP authentication failed: " . ldap_error($link);
+            $audit->save();
+            OELog::log("Login failed for user {$this->username}: LDAP authentication failed: " . ldap_error($link));
+
+            $this->errorCode = self::ERROR_USERNAME_INVALID;
+
+            return [false, "Invalid login."];
+        }
+
+        $attempts = $ldap_config->getLDAPParam('ldap_info_retries') ?? 1;
+
+        for ($i = 0; $i < $attempts; ++$i) {
+            if ($i > 0 && $ldap_config->getLDAPParam('ldap_info_retry_delay')) {
+                sleep($ldap_config->getLDAPParam('ldap_info_retry_delay'));
+            }
+            $sr = ldap_search($link, $ldap_config->ldap_dn, "$ldap_user_prefix=$this->username");
+            $info = ldap_get_entries($link, $sr);
+
+            if (isset($info[0])) {
+                break;
+            }
+        }
+
+        if (!isset($info[0])) {
+            OELog::log("Failed to retrieve ldap info for user $this->username: " . ldap_error($link) . ' [' . print_r($info, true) . ']');
+            return [false, "Invalid login."];
+        }
+        return [true, $info[0]];
     }
 
     public function firmString($firm)
@@ -499,10 +504,5 @@ class UserIdentity extends CUserIdentity
     public function getId()
     {
         return $this->_id;
-    }
-
-    public function getLdap($options)
-    {
-        return new Zend_Ldap($options);
     }
 }

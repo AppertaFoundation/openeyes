@@ -61,8 +61,8 @@ class SaveCapturedSignatureAction extends CAction
                     "signature_file_id" => $signature_file_id,
                     "signed_user_id" => null,
                     "type" => Yii::app()->request->getParam("signature_type"),
-                    "signatory_role" => "TODO",// Yii::app()->request->getPost("signatory_role"),
-                    "signatory_name" => "TODO",//Yii::app()->request->getPost("signatory_name"),
+                    "signatory_role" => Yii::app()->request->getParam("signatory_role"),
+                    "signatory_name" => Yii::app()->request->getParam("signatory_name"),
                 ], false);
 
                 return $signature->save(false);

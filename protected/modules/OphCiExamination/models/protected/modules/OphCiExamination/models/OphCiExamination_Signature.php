@@ -15,10 +15,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\MedicationManagement;
 /**
- * This is the model class for table "ophcocvi_signature".
+ * This is the model class for table "ophciexamination_signature".
  *
- * The followings are the available columns in table 'ophcocvi_signature':
+ * The followings are the available columns in table 'ophciexamination_signature':
  * @property integer $id
  * @property integer $element_id
  * @property integer $type
@@ -32,31 +33,21 @@
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property Element_OphCoCvi_Esign $element
+ * @property MedicationManagement $element
  * @property ProtectedFile $signatureFile
  * @property User $signedUser
  * @property User $createdUser
  * @property User $lastModifiedUser
  */
-class OphCoCvi_Signature extends BaseSignature
-{
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return OphCoCvi_Signature the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
 
+class OphCiExamination_Signature extends \BaseSignature
+{
     /**
      * @return string the associated database table name
      */
     public function tableName()
     {
-        return 'ophcocvi_signature';
+        return 'ophciexamination_signature';
     }
 
     /**
@@ -68,13 +59,13 @@ class OphCoCvi_Signature extends BaseSignature
         // will receive user inputs.
         return array(
             array('element_id, type', 'required'),
-            array('element_id, id, type', 'numerical', 'integerOnly' => true),
+            array('element_id, id, type', 'numerical', 'integerOnly'=>true),
             array('signature_file_id', 'validateSignatureFile'),
-            array('signatory_role, signatory_name', 'length', 'max' => 64),
+            array('signatory_role, signatory_name', 'length', 'max'=>64),
             array('last_modified_date, created_date, date, time, type, signature_file_id', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
+            array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
         );
     }
 
@@ -83,7 +74,7 @@ class OphCoCvi_Signature extends BaseSignature
      */
     public function validateSignatureFile($attribute, $params)
     {
-        if (is_null($this->signature_file_id)) {
+        if ($this->type !== self::TYPE_LOGGEDIN_USER && is_null($this->signature_file_id)) {
             $this->addError("signature_file_id", "Signature file must not be empty");
         }
     }
@@ -96,7 +87,7 @@ class OphCoCvi_Signature extends BaseSignature
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element' => array(self::BELONGS_TO, Element_OphCoCvi_Esign::class, 'element_id'),
+            'element' => array(self::BELONGS_TO, MedicationManagement::class, 'element_id'),
             'signatureFile' => array(self::BELONGS_TO, ProtectedFile::class, 'signature_file_id'),
             'signedUser' => array(self::BELONGS_TO, User::class, 'signed_user_id'),
             'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
@@ -139,7 +130,7 @@ class OphCoCvi_Signature extends BaseSignature
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria=new CDbCriteria;
 
         $criteria->compare('element_id', $this->element_id);
         $criteria->compare('signature_file_id', $this->signature_file_id, true);
@@ -152,27 +143,112 @@ class OphCoCvi_Signature extends BaseSignature
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria' => $criteria,
+            'criteria'=>$criteria,
         ));
     }
 
     /**
-     * @inheritDoc
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return OphCiExamination_Signature the static model class
      */
-    public function getRoleOptions(): array
+    public static function model($className = __CLASS__)
     {
-        return ["Patient", "Patient's representative", "Parent/Guardian"];
+        return parent::model($className);
     }
 
     /**
      * @inheritDoc
      */
-    public function afterSave()
+    public function isSigned(): bool
     {
-        parent::afterSave();
-        Yii::log("afterSave now fired", CLogger::LEVEL_ERROR);
-        if (isset($this->element->event)) {
-            (new OEModule\OphCoCvi\components\OphCoCvi_Manager())->updateEventInfo($this->element->event);
+        // Secretaries don't have a signature file, so rather check timestamp
+        if ($this->type === self::TYPE_LOGGEDIN_MED_USER ) {
+            return $this->timestamp > 0;
+        }
+        return parent::isSigned();
+    }
+
+    public function beforeSave()
+    {
+        $this->deletePrevSignature();
+        return parent::beforeSave();
+    }
+
+    public function deletePrevSignature($element_id = null)
+    {
+        if ($element_id === null) {
+            $element_id = $this->element_id;
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('element_id = :element_id');
+        $criteria->params = array(':element_id' => $element_id);
+        $criteria->limit = 1;
+        $criteria->order = 'id DESC';
+
+        $previous_sign = $this->find($criteria);
+        if ($previous_sign) {
+            $this->deleteByPk($previous_sign->id);
+        }
+    }
+
+    protected function getSignatureFile(): ProtectedFile
+    {
+        $model = $this->signatureFile;
+        if (!$model) {
+            throw new Exception("Signature file not found");
+        }
+        return $model;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPrintout(): string
+    {
+        return $this->getSignatureImage();
+    }
+
+    private function getSignatureImage(): string
+    {
+        if ($thumb = $this->signatureFile->getThumbnail("150x50")) {
+            $data = file_get_contents($thumb["path"]);
+            if ($data !== false) {
+                $img = base64_encode($data);
+                return "<img alt=\"Signature\" class=\"signature\" src=\"data:{$this->signatureFile->mimetype};base64,$img\"/>";
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Display signature image if signed
+     *
+     * @return void
+     */
+    public function displaySignature(): void
+    {
+        if ($this->isSigned()) {
+            $file = $this->getSignatureFile();
+            if ($file) {
+                $thumbnail1 = $file->getThumbnail("72x24", true);
+                $thumbnail2 = $file->getThumbnail("150x50", true);
+
+                $thumbnail1_source = file_get_contents($thumbnail1['path']);
+                $thumbnail1_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail1_source);
+
+                $thumbnail2_source = file_get_contents($thumbnail2['path']);
+                $thumbnail2_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
+                echo '
+                    <div
+                        class="esign-check js-has-tooltip"
+                        data-tooltip-content="<img src=\'' . ($thumbnail2_base64) . '\'>"
+                        style="background-image: url(' . $thumbnail1_base64 . ');">
+                    </div>
+                ';
+            }
         }
     }
 }

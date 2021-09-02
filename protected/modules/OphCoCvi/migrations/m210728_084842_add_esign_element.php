@@ -3,9 +3,8 @@
 class m210728_084842_add_esign_element extends OEMigration
 {
     private const ELEMENT_TBL = 'et_ophcocvi_esign';
-    private const ITEM_TBL = 'ophcocvi_signature_entry';
-    private const RETIRED_ET_CONSENT_CLASS = 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature';
-    private const RETIRED_ET_CONSULTANT_CLASS = 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsultantSignature';
+    private const ITEM_TBL = 'ophcocvi_signature';
+    private const RETIRED_ET_CLASS = 'OEModule\\OphCoCvi\\models\\Element_OphCoCvi_ConsentSignature';
 
     public function safeUp()
     {
@@ -14,9 +13,6 @@ class m210728_084842_add_esign_element extends OEMigration
             [
                 'id' => 'pk',
                 'event_id' => 'INT(10) UNSIGNED NOT NULL',
-                'signature_file_id' => 'INT(10) UNSIGNED NULL',
-                'date_signed' => 'DATETIME NULL',
-                'signed_user_id' => 'INT(10) UNSIGNED NULL'
             ],
             true
         );
@@ -28,7 +24,7 @@ class m210728_084842_add_esign_element extends OEMigration
                 'element_id' => 'INT(11) NOT NULL',
                 'type' => 'TINYINT UNSIGNED',
                 'signature_file_id' => 'INT(10) UNSIGNED NULL',
-                'signed_user_id' => 'INT(10) UNSIGNED NULL',
+                'signed_user_id' => 'INT(10) UNSIGNED NULL DEFAULT NULL',
                 'signatory_role' => 'VARCHAR(64) NOT NULL',
                 'signatory_name' => 'VARCHAR(64) NOT NULL',
                 'timestamp' => 'INT(11) NOT NULL',
@@ -42,15 +38,14 @@ class m210728_084842_add_esign_element extends OEMigration
         $this->addForeignKey('fk_ophcocvi_signature_suser_id', self::ITEM_TBL, 'signed_user_id', 'user', 'id');
 
         $this->createElementType('OphCoCvi', 'E-Sign', array(
-            'class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign',
+            'class_name' => 'Element_OphCoCvi_Esign',
             'display_order' => 60,
             'parent_class' => null,
             "default" => 1,
             "required" => 1,
         ));
 
-        $this->deleteElementType('OphCoCvi', self::RETIRED_ET_CONSENT_CLASS);
-        $this->deleteElementType('OphCoCvi', self::RETIRED_ET_CONSULTANT_CLASS);
+        $this->deleteElementType('OphCoCvi', self::RETIRED_ET_CLASS);
     }
 
     public function safeDown()

@@ -68,7 +68,7 @@ class DefaultController extends \BaseEventTypeController
                 'class' => \GetSignatureByPinAction::class
             ],
             'saveCapturedSignature' => [
-                "class" => \SaveCapturedSignatureAction::class
+                'class' => \SaveCapturedSignatureAction::class
             ]
         ];
     }

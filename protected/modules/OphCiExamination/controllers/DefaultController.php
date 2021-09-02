@@ -49,6 +49,8 @@ class DefaultController extends \BaseEventTypeController
         'getOctAssessment' => self::ACTION_TYPE_FORM,
         'getAttachment' => self::ACTION_TYPE_FORM,
         'resolveSafeguardingElement' => self::ACTION_TYPE_SAFEGUARDING,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM
     );
 
     private const ACTION_TYPE_SAFEGUARDING = 'Safeguarding';
@@ -70,6 +72,21 @@ class DefaultController extends \BaseEventTypeController
     protected $allergies = array();
     protected $deletedAllergies = array();
     private $step = false;
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'getSignatureByPin' => [
+                'class' => \GetSignatureByPinAction::class
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => \GetSignatureByUsernameAndPinAction::class
+            ]
+        ];
+    }
 
     public function getTitle()
     {
