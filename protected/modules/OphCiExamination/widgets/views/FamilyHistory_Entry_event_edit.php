@@ -85,7 +85,7 @@ if (!isset($values)) {
                             data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
                             type="button"
                             style="<?php if ($values['comments']) :
-                                ?>visibility: hidden;<?php
+                                ?>display: none;<?php
                                    endif; ?>"
             >
                 <i class="oe-i comments small-icon"></i>
