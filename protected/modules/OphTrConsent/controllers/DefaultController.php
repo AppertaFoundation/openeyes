@@ -392,6 +392,57 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    protected function saveComplexAttributes_Element_OphTrConsent_PatientAttorneyDeputy($element, $data, $index)
+    {
+        $patient = \Patient::model()->findByPk($this->patient->id);
+
+        if (
+            isset($data['OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy']) &&
+            isset($data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['contact_id'])
+        ) {
+            $contact_ids = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['contact_id'];
+            $entries = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['entries'];
+        } else {
+            $contact_ids = [];
+        }
+        $criteria = new \CDbCriteria();
+        $gp = $this->patient->gp;
+        $criteria->addCondition('t.patient_id = ' . $patient->id);
+        $criteria->addCondition('t.event_id = ' . $element->event_id);
+        $patientContactAssignments = \PatientAttorneyDeputyContact::model()->findAll($criteria);
+
+        foreach ($contact_ids as $key => $contact_id) {
+            $foundExistingAssignment = false;
+            foreach ($patientContactAssignments as $patientContactAssignment) {
+                if ($patientContactAssignment->contact_id == $contact_id) {
+                    $patientContactAssignment->authorised_decision_id = $entries[$key]['authorised_decision_id'];
+                    $patientContactAssignment->considered_decision_id = $entries[$key]['considered_decision_id'];
+                    $patientContactAssignment->event_id = $this->event->id;
+                    $patientContactAssignment->save();
+                    $foundExistingAssignment = true;
+                    break;
+                }
+            }
+            if (!$foundExistingAssignment) {
+                $patientContactAssignment = new \PatientAttorneyDeputyContact;
+                $patientContactAssignment->patient_id = $patient->id;
+                $patientContactAssignment->contact_id = $contact_id;
+                $patientContactAssignment->authorised_decision_id = isset($entries[$key]['authorised_decision_id']) ? $entries[$key]['authorised_decision_id'] : null;
+                $patientContactAssignment->considered_decision_id = isset($entries[$key]['considered_decision_id']) ? $entries[$key]['considered_decision_id'] : null;
+                $patientContactAssignment->event_id = $this->event->id;
+                $patientContactAssignment->save();
+            }
+        }
+
+        $patientContactAssignments = array_filter($patientContactAssignments, function ($assignment) use ($contact_ids) {
+            return !in_array($assignment->contact_id, $contact_ids);
+        });
+
+        foreach ($patientContactAssignments as $patientContactAssignment) {
+            $patientContactAssignment->delete();
+        }
+    }
+
     /**
      * Filter oprional elements
      * remove retired element(s)
