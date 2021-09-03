@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -66,6 +67,7 @@ class Procedure extends BaseActiveRecordVersioned
             array('term, short_format, snomed_term, ecds_term', 'length', 'max' => 255),
             array('operationNotes', 'validateOpNotes'),
             array('id, term, short_format, default_duration, active, is_clinic_proc, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes, low_complexity_criteria, ecds_code, ecds_term', 'safe'),
+            array('term', 'unique'),
         );
     }
 
@@ -222,7 +224,7 @@ class Procedure extends BaseActiveRecordVersioned
             ->select('proc.id, proc.term')
             ->from('proc')
             ->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
-            ->where('psa.subspecialty_id = :id and proc.active = 1'.$where, array(':id' => $subspecialtyId))
+            ->where('psa.subspecialty_id = :id and proc.active = 1' . $where, array(':id' => $subspecialtyId))
             ->order('display_order, proc.term ASC')
             ->queryAll();
 
@@ -286,7 +288,7 @@ class Procedure extends BaseActiveRecordVersioned
      */
     public function __get($prop)
     {
-        $method = 'get_'.$prop;
+        $method = 'get_' . $prop;
         if (method_exists($this, $method)) {
             return $this->$method();
         }
@@ -301,7 +303,7 @@ class Procedure extends BaseActiveRecordVersioned
      */
     public function __isset($prop)
     {
-        $method = 'get_'.$prop;
+        $method = 'get_' . $prop;
         if (method_exists($this, $method)) {
             return true;
         }
