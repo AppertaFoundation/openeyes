@@ -1,7 +1,16 @@
 <?php
 
+use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
+use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
+
 /**
  * Class PatientDiagnosisParameterTest
+ * @method Patient patient($fixtureId)
+ * @method OphCiExamination_Diagnosis ophciexamination_diagnosis($fixtureId)
+ * @method Element_OphCiExamination_Diagnoses et_ophciexamination_diagnoses($fixtureId)
+ * @method Disorder disorder($fixtureId)
+ * @method Episode episode($fixtureId)
+ * @method Event event($fixtureId)
  */
 class PatientDiagnosisParameterTest extends CDbTestCase
 {
@@ -10,15 +19,10 @@ class PatientDiagnosisParameterTest extends CDbTestCase
      */
     protected $parameter;
 
-    /**
-     * @var DBProvider $searchProvider
-     */
-    protected $searchProvider;
-
     protected $fixtures = array(
         'disorder' => 'Disorder',
-        'ophciexamination_diagnosis' => '\OEModule\OphCiExamination\models\OphCiExamination_Diagnosis',
-        'et_ophciexamination_diagnoses' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses',
+        'ophciexamination_diagnosis' => OphCiExamination_Diagnosis::class,
+        'et_ophciexamination_diagnoses' => Element_OphCiExamination_Diagnoses::class,
         'event' => 'Event',
         'patient' => 'Patient',
         'episode' => 'Episode',
@@ -28,25 +32,27 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     {
         parent::setUp();
         $this->parameter = new PatientDiagnosisParameter();
-        $this->searchProvider = new DBProvider('mysql');
         $this->parameter->id = 0;
+    }
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        Yii::app()->getModule('OECaseSearch');
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->parameter, $this->searchProvider);
+        unset($this->parameter);
     }
 
-    /**
-     * @covers PatientDiagnosisParameter::bindValues()
-     */
     public function testBindValues()
     {
-        $this->parameter->term = 'Diabetes';
+        $this->parameter->value = 'Diabetes';
         $this->parameter->firm_id = 1;
         $expected = array(
-            'p_d_value_0' => '%' . $this->parameter->term . '%',
+            'p_d_value_0' => $this->parameter->value,
             'p_d_firm_0' => $this->parameter->firm_id,
             'p_d_only_latest_event_0' => $this->parameter->only_latest_event,
         );
@@ -57,7 +63,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->firm_id = '';
 
         $expected = array(
-            'p_d_value_0' => '%' . $this->parameter->term . '%',
+            'p_d_value_0' => $this->parameter->value,
             'p_d_firm_0' => null,
             'p_d_only_latest_event_0' => $this->parameter->only_latest_event,
         );
@@ -65,70 +71,157 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->assertEquals($expected, $this->parameter->bindValues());
     }
 
-    /**
-     * @covers PatientDiagnosisParameter::query()
-     */
-    public function testSearchLike()
+    public function attributeValueTestList()
     {
-        $expected = array();
-        foreach (array(1, 2, 3, 7) as $patientNum) {
-            $expected[] = $this->patient("patient$patientNum");
-        }
-
-        $this->parameter->operation = 'LIKE';
-        $this->parameter->term = 'Myopia';
-        $this->parameter->firm_id = '';
-
-        $results = $this->searchProvider->search(array($this->parameter));
-
-        $ids = array();
-        foreach ($results as $result) {
-            $ids[] = $result['id'];
-        }
-
-        $patients = Patient::model()->findAllByPk($ids);
-
-        $this->assertEquals($expected, $patients);
-    }
-
-    public function testFirmEqualitySearch()
-    {
-        $expected = array();
-        /*foreach (array(3) as $patientNum) {
-            $expected[] = $this->patient("patient$patientNum");
-        }*/
-
-        $this->parameter->operation = 'LIKE';
-        $this->parameter->term = 'Myopia';
-        $this->parameter->firm_id = 2;
-
-        $results = $this->searchProvider->search(array($this->parameter));
-
-        $ids = array();
-        foreach ($results as $result) {
-            $ids[] = $result['id'];
-        }
-
-        $patients = Patient::model()->findAllByPk($ids);
-
-        $this->assertEquals($expected, $patients);
+        return array(
+            'Operation' => array(
+                'attribute' => 'operation',
+                'expected' => '=',
+            ),
+            'Value' => array(
+                'attribute' => 'value',
+                'expected' => 'Myopia',
+            ),
+            'Firm' => array(
+                'attribute' => 'firm_id',
+                'expected' => 'Aylward Firm',
+            ),
+            'Only latest event' => array(
+                'attribute' => 'only_latest_event',
+                'expected' => 'Only patient\'s latest event',
+            ),
+            'Invalid attribute' => array(
+                'attribute' => 'invalid',
+                'expected' => 'null',
+                'exception' => 'CException',
+            ),
+        );
     }
 
     /**
-     * @covers PatientDiagnosisParameter::query()
+     * @dataProvider attributeValueTestList
+     * @param $attribute
+     * @param $expected
+     * @param null|string $exception
+     * @throws CException
      */
-    public function testSearchNotLike()
+    public function testGetValueForAttribute($attribute, $expected, $exception = null)
+    {
+        $this->parameter->operation = '=';
+        $this->parameter->value = 1;
+        $this->parameter->firm_id = 1;
+        $this->parameter->only_latest_event = true;
+        if ($exception) {
+            $this->expectException($exception);
+            $this->parameter->getValueForAttribute($attribute);
+        } else {
+            $this->assertEquals($expected, $this->parameter->getValueForAttribute($attribute));
+        }
+    }
+
+    /**
+     * @covers CaseSearchParameter
+     */
+    public function testGetOptions()
+    {
+        $options = array(
+            'value_type' => 'string_search',
+        );
+        $options['operations'][0] = array('label' => 'INCLUDES', 'id' => 'IN');
+        $options['operations'][1] = array('label' => 'DOES NOT INCLUDE', 'id' => 'NOT IN');
+
+        $firms = Firm::model()->getListWithSpecialties();
+        $options['option_data'] = array(
+            array(
+                'id' => 'firm',
+                'field' => 'firm_id',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $firms,
+                    array_keys($firms)
+                ),
+            ),
+            array(
+                'id' => 'latest-event',
+                'field' => 'only_latest_event',
+                'options' => array(
+                    array('id' => 1, 'label' => 'Only latest event')
+                ),
+            ),
+        );
+        $this->assertEquals($options, $this->parameter->getOptions());
+    }
+
+    /**
+     * @covers PatientDiagnosisParameter
+     * @covers CaseSearchParameter
+     */
+    public function testGetCommonItemsForTerm()
+    {
+        // Full match
+        $this->assertCount(1, PatientDiagnosisParameter::getCommonItemsForTerm('Myopia'));
+        $this->assertEquals('Myopia', PatientDiagnosisParameter::getCommonItemsForTerm('Myopia')[0]['label']);
+        $this->assertEquals(1, PatientDiagnosisParameter::getCommonItemsForTerm('Myopia')[0]['id']);
+
+        // Partial match
+        $this->assertCount(2, PatientDiagnosisParameter::getCommonItemsForTerm('m'));
+    }
+
+    public function getSearchData()
+    {
+        return array(
+            'Exact match, no firm' => array(
+                'op' => 'IN',
+                'value' => 1,
+                'firm_id' => '',
+                'expected_ids' => array(1, 2, 3, 7),
+            ),
+            'Exact match with firm' => array(
+                'op' => 'IN',
+                'value' => 1,
+                'firm_id' => 2,
+                'expected_ids' => array(),
+            ),
+            'Does not match, no firm' => array(
+                'op' => 'NOT IN',
+                'value' => 1,
+                'firm_id' => '',
+                'expected_ids' => array(4, 5, 6, 8, 9, 10),
+            ),
+            'Does not match, including firm' => array(
+                'op' => 'NOT IN',
+                'value' => 1,
+                'firm_id' => 2,
+                'expected_ids' => array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+            ),
+        );
+    }
+
+    /**
+     * @covers PatientDiagnosisParameter
+     * @dataProvider getSearchData
+     * @param $op
+     * @param $value
+     * @param $firm_id
+     * @param $expected_ids
+     */
+    public function testSearch($op, $value, $firm_id, $expected_ids)
     {
         $expected = array();
-        foreach (array(4, 5, 6, 8, 9) as $patientNum) {
+        foreach ($expected_ids as $patientNum) {
             $expected[] = $this->patient("patient$patientNum");
         }
 
-        $this->parameter->operation = 'NOT LIKE';
-        $this->parameter->term = 'Myopia';
-        $this->parameter->firm_id = '';
+        $this->parameter->operation = $op;
+        $this->parameter->value = $value;
+        $this->parameter->firm_id = $firm_id;
+        $this->parameter->only_latest_event = 0;
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $this->assertTrue($this->parameter->validate());
+
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         $ids = array();
         foreach ($results as $result) {
@@ -140,25 +233,82 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->assertEquals($expected, $patients);
     }
 
-    public function testSearchFirmInequality()
+    /**
+     * @dataProvider getSearchData
+     * @param $op
+     * @param $value
+     * @param $firm_id
+     */
+    public function testSaveSearch($op, $value, $firm_id)
     {
-        $expected = array();
-        foreach (array(1, 2, 3, 4, 5, 6, 7, 8, 9) as $patientNum) {
-            $expected[] = $this->patient("patient$patientNum");
+        $this->parameter->operation = $op;
+        $this->parameter->value = $value;
+        $this->parameter->firm_id = $firm_id;
+        $this->parameter->only_latest_event = 0;
+
+        $actual = $this->parameter->saveSearch();
+
+        $this->assertEquals($op, $actual['operation']);
+        $this->assertEquals($value, $actual['value']);
+        $this->assertEquals($firm_id, $actual['firm_id']);
+        $this->assertEquals(0, $actual['only_latest_event']);
+    }
+
+    public function getAuditParams()
+    {
+        return array(
+            'All params' => array(
+                'operator' => 'IN',
+                'value' => 1,
+                'firm_id' => 1,
+                'only_latest_event' => true
+            ),
+            'Null firm_id, only latest event' => array(
+                'operator' => 'IN',
+                'value' => 1,
+                'firm_id' => null,
+                'only_latest_event' => true
+            ),
+            'Null firm_id, all events, not equal' => array(
+                'operator' => 'NOT IN',
+                'value' => 1,
+                'firm_id' => null,
+                'only_latest_event' => false
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider getAuditParams
+     * @covers PatientDiagnosisParameter
+     * @param $operator
+     * @param $value
+     * @param $firm_id
+     * @param $only_latest_event
+     */
+    public function testGetAuditData($operator, $value, $firm_id, $only_latest_event)
+    {
+        $op = '=';
+        if ($operator !== 'IN') {
+            $op = '!=';
         }
 
-        $this->parameter->operation = 'NOT LIKE';
-        $this->parameter->term = 'Myopia';
-        $this->parameter->firm_id = 2;
+        $expected = "diagnosis: $op \"$value\"";
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $this->parameter->operation = $operator;
+        $this->parameter->value = $value;
+        $this->parameter->firm_id = $firm_id;
+        $this->parameter->only_latest_event = $only_latest_event;
 
-        $ids = array();
-        foreach ($results as $result) {
-            $ids[] = $result['id'];
+        if ($firm_id !== '' && $firm_id !== null) {
+            $firm = Firm::model()->findByPk($firm_id);
+            $expected .= " diagnosed by {$firm->getNameAndSubspecialty()}";
         }
-        $patients = Patient::model()->findAllByPk($ids);
 
-        $this->assertEquals($expected, $patients);
+        if ($only_latest_event) {
+            $expected .= ' with only the latest event';
+        }
+
+        $this->assertEquals($expected, $this->parameter->getAuditData());
     }
 }

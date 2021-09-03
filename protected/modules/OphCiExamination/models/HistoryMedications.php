@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 namespace OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\widgets\HistoryMedications as HistoryMedicationsWidget;
 use CHtml;
 use Event;
 use EventMedicationUse;
@@ -23,6 +24,7 @@ use Yii;
 
 /**
  * Class HistoryMedications
+ *
  * @package OEModule\OphCiExamination\models
  *
  * @property Event $event
@@ -39,7 +41,7 @@ class HistoryMedications extends BaseMedicationElement
     protected $default_view_order = 25;
     protected $auto_validate_relations = true;
 
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryMedications';
+    protected $widgetClass = HistoryMedicationsWidget::class;
     public $new_entries = array();
     public function tableName()
     {
@@ -157,7 +159,7 @@ class HistoryMedications extends BaseMedicationElement
             ' Stopped: ' . implode(' <br /> ', $this->stoppedOrderedEntries);
     }
 
-  
+
     public function getTileSize($action)
     {
         return $action === 'view' ? 2 : null;

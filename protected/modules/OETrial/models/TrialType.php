@@ -4,7 +4,7 @@
  * This is the model class for table "trial_type".
  *
  * The followings are the available columns in table 'trial_type':
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $code
  * @property string $last_modified_user_id
@@ -50,7 +50,6 @@ class TrialType extends BaseActiveRecordVersioned
             array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
-            // @todo Please remove those attributes that should not be searched.
             array(
                 'id, name, code, last_modified_user_id, last_modified_date, created_user_id, created_date',
                 'safe',
@@ -95,7 +94,7 @@ class TrialType extends BaseActiveRecordVersioned
      */
     public static function getOptions()
     {
-        return CHtml::listData(self::model()->findALl(), 'id', 'name');
+        return CHtml::listData(self::model()->findAll(), 'id', 'name');
     }
 
     /**

@@ -25,6 +25,7 @@
      * @name OpenEyes.UI.AdderDialog#_defaultOptions
      * @property {OpenEyes.UI.AdderDialog.ItemSet[]} [itemSets=null] - The lists of items that the user can select from
      * @property {object} [openButton=null] - The DOM handle for the button used to open the popup
+     * @property {popupAnchor} - The DOM handle for positioning the popup (defaults to openButton)
      * @property {Function} [onOpen=null] - A callback to be called when the popup is opened
      * @property {Function} [onClose=null] - A callback to be called when the popup is closed
      * @property {Function} [onSelect=null] - A callback to be called when an item is selected
@@ -39,6 +40,7 @@
     AdderDialog._defaultOptions = {
         itemSets: [],
         openButton: null,
+        popupAnchor: null,
         onOpen: null,
         onClose: null,
         onSelect: null,
@@ -46,6 +48,7 @@
         returnOnSelect: false,
         deselectOnReturn: true,
         id: null,
+        parentContainer: null,
         popupClass: 'oe-add-select-search auto-width',
         liClass: 'auto-width',
         searchOptions: null,
@@ -87,11 +90,19 @@
 
         content.append($addButton);
 
-        this.setOpenButton(this.options.openButton);
+        if (this.options.openButton) {
+            this.setOpenButton(this.options.openButton);
+        }
         this.setCloseButton($(content).find('.close-icon-btn'));
         this.setAddButton($addButton);
 
-        content.insertAfter(this.options.openButton);
+        if (this.options.parentContainer) {
+            content.appendTo($(this.options.parentContainer));
+        } else {
+            const anchor = this.options.popupAnchor ? this.options.popupAnchor : this.options.openButton;
+            content.insertAfter($(anchor));
+        }
+
         this.popup = content;
         this.generateContent();
 
@@ -105,6 +116,11 @@
             this.popup.on('click', 'li', this.options.onSelect);
         }
 
+        // This is happening in the wrong order for when a selection is made
+        // ideally we'd have a series of events, but we ain't there. Can either
+        // inherit this and clean it up, or we can tack on a new event after the
+        // dialog is created based on the item sets ... maybe find the dependent columns
+        // and create a dynamic callback on the event there ...
         if (this.options.returnOnSelect) {
             this.popup.on('click', 'li', function () {
                 dialog.return();
@@ -127,6 +143,10 @@
                 if(dialog.options.listFilter) {
                     if ($(this).closest('ul').data('id') === dialog.options.filterListId) {
                         let filterValue = $(this).data('filter-value');
+                        // FIXME: deal with weird inconsistency on data attributes
+                        if (filterValue === undefined) {
+                            filterValue = $(this).data('filter_value');
+                        }
                         let listToFilter = dialog.popup.find('ul[data-id="' + dialog.options.listForFilterId + '"]');
                         if (!$(this).hasClass('selected')) {
                             listToFilter.find('li:not(".js-already-used")').show();
@@ -134,8 +154,15 @@
                             listToFilter.find('li').hide().removeClass('selected');
                             listToFilter.find('li[data-filter_value="' + filterValue +'"]:not(".js-already-used")').show();
                         }
+                        // default item selection for list filtering
+                        let defaultItem = $(listToFilter).find('li[data-set-default="true"]:visible').get(0);
+                        if (defaultItem) {
+                            defaultItem.scrollIntoView();
+                        }
                     }
                 }
+                // native event
+                $(this).closest('ul')[0].dispatchEvent(new Event('adder-change'));
             });
         }
         this.addConditionalLogicListener();
@@ -179,19 +206,28 @@
             $(this.options.itemSets).each(function (index, itemSet) {
                 let header = (itemSet.options.header) ? itemSet.options.header : '';
                 $('<th style="'+ itemSet.options.style + '" data-id="'+itemSet.options.id + '"/>').text(header).appendTo(dialog.headers);
-                let $td = $('<td />', {style: itemSet.options.style}).appendTo(dialog.$tr);
+                let $td = $('<td data-adder-id="'+itemSet.options.id + '" />', {style: itemSet.options.style}).appendTo(dialog.$tr);
                 let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left', id: itemSet.options.id}).appendTo($td);
+
                 if (itemSet.options.supportSigns) {
                     dialog.generateSigns(itemSet).appendTo($listContainer);
                 }
-                var $list = dialog.generateItemList(itemSet);
-                let $listDiv = $('<div />').appendTo($listContainer);
-                $list.appendTo($listDiv);
+                if (itemSet.items && itemSet.items.length) {
+                    let $list = dialog.generateItemList(itemSet);
+                    let $listDiv = $('<div />').appendTo($listContainer);
+                    $list.appendTo($listDiv);
+                }
                 if (itemSet.options.splitIntegerNumberColumns) {
-                    dialog.generateIntegerColumns(itemSet).appendTo($list);
+                    dialog.generateIntegerColumns(itemSet).appendTo($listContainer);
+                }
+                if (itemSet.options.generateFloatNumberColumns) {
+                    dialog.generateFloatColumns(itemSet).appendTo($listContainer);
                 }
                 if (itemSet.options.supportDecimalValues) {
                     dialog.generateDecimalValues(itemSet).appendTo($listContainer);
+                }
+                if (itemSet.options.showInfo) {
+                    dialog.generateInfoDisplay(itemSet).appendTo($listContainer);
                 }
             });
             $(this.options.itemSets).each(function (index, itemSet) {
@@ -298,6 +334,40 @@
     };
 
     /**
+     * Retrieve values directly from a specific ItemSet
+     *
+     * @param itemSet
+     * @return {string|Filtered}
+     */
+    AdderDialog.prototype.getSelectedItemsForItemSet = function (itemSet) {
+        if (itemSet.options.generateFloatNumberColumns) {
+            return this._parseNumberFromSelection(itemSet)[1];
+        }
+        return this.getSelectedItems().filter(function(item) {
+            return item.itemSet && item.itemSet === itemSet;
+        }).map(function(item) {
+            return item.id;
+        });
+    };
+
+    AdderDialog.prototype.setSelectedItemsForItemSet = function (itemSet, value) {
+        this.clearSelectionForItemSet(itemSet);
+        if (itemSet.options.generateFloatNumberColumns) {
+            this._setNumberSelection(itemSet, value);
+        } else {
+            if (!Array.isArray(value)) {
+                value = [value];
+            }
+            let $ul = this.popup.find('ul[data-id="' + itemSet.options.id + '"]');
+            value.forEach(function (itemValue) {
+                $ul.find('li[data-id="' + itemValue + '"]').addClass('selected').data('selected');
+            });
+            $ul[0].dispatchEvent(new Event('adder-change'));
+        }
+
+    };
+
+    /**
      * Generates the item lists for an item set and returns that list
      * @param {OpenEyes.UI.AdderDialog.ItemSet} itemSet The set of items to generate the list for
      * @returns {jQuery|HTMLElement} The generated HTML list
@@ -351,7 +421,7 @@
         let dialog = this;
         let $signContainer = $('<div />');
         let $list = $('<ul />', {
-          class: 'add-options single' + (itemSet.options.supportDeselectingNumberColumns ? '' : ' required'),
+          class: 'add-options single signs',
         }).appendTo($signContainer);
 
         Object.entries(itemSet.options.signs).forEach(([term, sign]) => {
@@ -386,12 +456,40 @@
     };
 
     /**
+     * Abstraction for generating picker list of digits
+     *
+     * @param min
+     * @param max
+     * @param position
+     * @param itemSetId
+     * @return {*|jQuery|HTMLElement}
+     * @private
+     */
+    AdderDialog.prototype._generateDigitList = function(min, max, position, itemSetId, beforeDecimalPt) {
+        if (beforeDecimalPt == undefined) {
+            beforeDecimalPt = true;
+        }
+        let listClass = 'add-options number ' + (beforeDecimalPt ? 'whole' : 'fraction');
+        let $divList = $('<div />', {class: "list-wrap"});
+        let $list = $('<ul />', {class: listClass, id: itemSetId + '-number-digit-' + position, 'data-id': itemSetId}).appendTo($divList);
+        for (let digit = min; digit <= max; digit++) {
+            let $listItem = $('<li data-value="'+digit+'"/>');
+            $listItem.append(digit);
+            $listItem.appendTo($list);
+        }
+
+        return $divList;
+    };
+
+    /**
      * Generate an integer with itemSet.options.splitIntegerNumberColumns digits
+     *
      * @param itemSet
      * @returns {jQuery|HTMLElement}
      */
     AdderDialog.prototype.generateIntegerColumns = function (itemSet) {
         let $integerColumnsContainer = $('<div class="lists-layout"/>');
+
         for (let i = 0; i < itemSet.options.splitIntegerNumberColumns.length; i++) {
             let type = itemSet.options.splitIntegerNumberColumns.length === itemSet.options.splitIntegerNumberColumns.length ? 'data-type="'+itemSet.options.splitIntegerNumberColumnsTypes[i]+'"' : '';
             let $divList = $('<div />', {class: "list-wrap"}).appendTo($integerColumnsContainer);
@@ -408,6 +506,191 @@
     };
 
     /**
+     * Generate columns of numbers to enter a float as per requirements in itemSet.options.generateFloatNumberColumns
+     *
+     * @param itemSet
+     * @return {*|jQuery|HTMLElement}
+     */
+    AdderDialog.prototype.generateFloatColumns = function (itemSet) {
+        let $floatColumnsContainer = $('<div class="lists-layout number-lists"/>');
+        let minValue = parseFloat(itemSet.options.generateFloatNumberColumns.minValue);
+        if (isNaN(minValue)) {
+            minValue = 0;
+        }
+        let integerMax = Math.floor(itemSet.options.generateFloatNumberColumns.maxValue);
+        let numberOfDigits = integerMax.toString().length;
+        let firstMaxDigit = integerMax.toString()[0];
+
+        for (let i = 1; i <= numberOfDigits; i++) {
+            let min = (i > 1 || numberOfDigits === 1) ? 0 : 1;
+            let max = (i === 1) ? firstMaxDigit : 9;
+
+            this._generateDigitList(min, max, i, itemSet.options.id, true)
+                .appendTo($floatColumnsContainer);
+        }
+
+        let decimalPlaces = itemSet.options.generateFloatNumberColumns.decimalPlaces || 0;
+
+        if (decimalPlaces > 0) {
+            $floatColumnsContainer.append($('<div class="decimal-point ignore">.</div>'));
+            for (let i = 1; i <= decimalPlaces; i++) {
+                this._generateDigitList(0, 9, i+numberOfDigits, itemSet.options.id, false)
+                    .appendTo($floatColumnsContainer);
+            }
+        }
+
+        return $floatColumnsContainer;
+    };
+
+    AdderDialog.prototype._parseNumberFromSelection = function(itemSet)
+    {
+        let integerPartSelected = false;
+        let fractionalPartNotSelected = false;
+        let decimalPtParsed = false;
+        let valid = true;
+        let numberString = '';
+        this.popup.find('[data-adder-id="' + itemSet.options.id + '"]')
+            .find('.number-lists')
+            .find('div')
+            .each(function(index) {
+                if ($(this).hasClass('decimal-point')) {
+                    decimalPtParsed = true;
+                    numberString += '.';
+                    return true;
+                }
+
+                let selected = $(this).find('li.selected');
+                if (selected.length > 0) {
+                    numberString += $(selected[0]).data('value');
+
+                    if (decimalPtParsed) {
+                        if (fractionalPartNotSelected) {
+                            valid = false;
+                        }
+                    } else {
+                        integerPartSelected = true;
+                    }
+                } else {
+                    if (decimalPtParsed) {
+                        fractionalPartNotSelected = true;
+                    } else {
+                        if (integerPartSelected) {
+                            valid = false;
+                        }
+                    }
+                }
+                return valid;
+            });
+
+        if (!decimalPtParsed && itemSet.options.supportDecimalValues) {
+            // check for fixed decimal selection
+            let selectedDecimal = this.popup.find('[data-adder-id="' + itemSet.options.id + '"] [data-type="' + itemSet.options.decimalValuesType + '"].selected');
+            if (selectedDecimal !== undefined) {
+                numberString += selectedDecimal.data('addition');
+                decimalPtParsed = true;
+            }
+        }
+
+        const number = decimalPtParsed ? parseFloat(numberString) : parseInt(numberString);
+
+        let signFactor = 1;
+        if (itemSet.options.supportSigns) {
+            const selectedSign = this.popup.find('[data-adder-id="' + itemSet.options.id + '"]')
+                .find('.selected[data-type="sign"]');
+            if (selectedSign && selectedSign.data('addition') === '-') {
+                signFactor = -1;
+            }
+        }
+
+        return [valid, isNaN(number) ? undefined : signFactor * number];
+    };
+
+    AdderDialog.prototype._setNumberSelection = function(itemSet, value)
+    {
+        if (value === undefined || value === null) {
+            return;
+        }
+
+        let whole, fraction;
+        [whole, fraction] = value.split(".");
+        this._setWholeNumberSelection(itemSet, whole);
+        this._setFractionNumberSelection(itemSet, fraction);
+        this._setSignSelection(itemSet, value);
+    };
+
+    AdderDialog.prototype._setWholeNumberSelection = function(itemSet, whole)
+    {
+        whole = whole.split('').reverse();
+        $(this.popup.find('[data-adder-id="' + itemSet.options.id + '"]')
+            .find('.whole')
+            .get()
+            .reverse()
+        ).each(function(index, numberList) {
+                if (whole[index] !== undefined) {
+                    $(numberList).find("[data-value='" + whole[index] + "']").addClass('selected');
+                }
+            });
+    };
+
+    AdderDialog.prototype._setFractionNumberSelection = function(itemSet, fraction)
+    {
+        if (!fraction) {
+            return;
+        }
+
+        if (itemSet.options.generateFloatNumberColumns) {
+            fraction = fraction.split('');
+            this.popup.find('[data-adder-id="' + itemSet.options.id + '"]')
+                .find('.fraction')
+                .each(function (index, numberList) {
+                    if (fraction[index] !== undefined) {
+                        $(numberList).find("[data-value='" + fraction[index] + "']").addClass('selected');
+                    }
+                });
+        }
+
+        if (itemSet.options.supportDecimalValues) {
+            this.popup.find('[data-adder-id="' + itemSet.options.id + '"]')
+                .find('li[data-type="decimalValue"]').removeClass('selected');
+            this.popup.find('[data-adder-id="' + itemSet.options.id + '"]')
+                .find('li[data-addition=".' + fraction + '"][data-type="decimalValue"]')
+                .addClass('selected');
+        }
+    };
+
+    AdderDialog.prototype._setSignSelection = function(itemSet, value)
+    {
+        if (!itemSet.options.supportSigns) {
+            return;
+        }
+        const sign = parseFloat(value) >= 0 ? '+' : '-';
+        const itemsList = this.popup
+            .find('[data-adder-id="' + itemSet.options.id + '"]')
+            .find('.add-options.signs');
+        itemsList.not('li[data-addition="' + sign + '"]').removeClass('selected');
+        itemsList.find('li[data-addition="' + sign + '"]').addClass('selected');
+    };
+
+    AdderDialog.prototype.validateNumberSelection = function(itemSet)
+    {
+        let parsedNumber = this._parseNumberFromSelection(itemSet);
+        return parsedNumber[0];
+    };
+
+    AdderDialog.prototype.getNumberSelection = function(itemSet)
+    {
+        let parsedNumber = this._parseNumberFromSelection(itemSet);
+        return parsedNumber[1];
+    };
+
+    AdderDialog.prototype.generateInfoDisplay = function(itemSet)
+    {
+        let $container = $('<div class="lists-layout"/>');
+        $container.append('<div class="optional-placeholder">' + itemSet.options.showInfo + '</div>');
+        return $container;
+    };
+
+    /**
      * Positions the popup relative to the given anchor
      * @param {jQuery, HTMLElement} $anchorElement The element to anchor the popup to
      */
@@ -420,19 +703,36 @@
         let h = document.documentElement.clientHeight;
         let right = (w - btnPos.right);
         let bottom = (h - btnPos.bottom);
+        let left = btnPos.left;
+        let position = 'right';
+        if (w - right < 620) {
+            right = w - 645;
+        }
 
         if (h - bottom < 310) {
             bottom = h - 335;
         }
-
+        // if the adder popup is fired from a sidebar, change the positioning
+        if(this.options.source === 'sidebar'){
+            position = 'left';
+        }
+        let position_dict = {
+            'right': right,
+            'left': left,
+        }
+        let position_css = {
+            bottom: bottom
+        }
+        position_css[position] = position_dict[position];
         // set CSS Fixed position
-        this.popup.css({
-            bottom: bottom,
-            right: right
-        });
+        this.popup.css(position_css);
 
         if (this.popup.offset().top < 0) {
             this.popup.css({"bottom": Math.floor(bottom + this.popup.offset().top)});
+        }
+
+        if (this.popup.offset().left < 0) {
+            this.popup.css({"right": Math.floor(right + this.popup.offset().left)});
         }
 
         /*
@@ -465,11 +765,12 @@
             }
         });
 
-        this.positionFixedPopup(this.options.openButton);
+        const positionAnchor = this.options.popupAnchor ? this.options.popupAnchor : this.options.openButton;
+        this.positionFixedPopup(positionAnchor);
         if (this.options.createBlackoutDiv) {
             this.createBlackoutBox();
         }
-        this.positionFixedPopup(this.options.openButton);
+        this.positionFixedPopup(positionAnchor);
         if (this.options.onOpen) {
             this.options.onOpen(this);
         }
@@ -510,6 +811,7 @@
      */
     AdderDialog.prototype.setOpenButton = function (openButton) {
         let dialog = this;
+        openButton.addClass('openeyes-ui-adderdialog-open-btn');
         openButton.click(function () {
             dialog.open();
             return false;
@@ -551,12 +853,39 @@
         let dialog = this;
 
         for (let item of this.options.itemSets) {
+
             let optionCount = $('.add-options[data-id="' + item.options.id + '"]').find('li.selected').length;
             if (item.options.mandatory && optionCount === 0) {
                 shouldClose = false;
                 new OpenEyes.UI.Dialog.Alert({
                     content: item.options.header + " must have an option selected."
                 }).open();
+            }
+            if (item.options.generateFloatNumberColumns) {
+                if (!dialog.validateNumberSelection(item)) {
+                    shouldClose = false;
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: item.options.header + " must be a valid number."
+                    }).open();
+                } else {
+                    let value = dialog.getNumberSelection(item);
+                    if (value === "" || value === null) {
+                        continue;
+                    }
+
+                    if (item.options.generateFloatNumberColumns.minValue && item.options.generateFloatNumberColumns.minValue > value) {
+                        shouldClose = false;
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: item.options.header + " is too small."
+                        }).open();
+                    }
+                    if (item.options.generateFloatNumberColumns.maxValue && item.options.generateFloatNumberColumns.maxValue < value) {
+                        shouldClose = false;
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: item.options.header + " is too large."
+                        }).open();
+                    }
+                }
             }
         }
 
@@ -606,6 +935,8 @@
                 this.runItemSearch('');
             }
 
+            dialog.popup[0].dispatchEvent(new Event('adder-reset'));
+
             this.close();
         }
     };
@@ -623,6 +954,10 @@
         ids.forEach(function (id) {
             popup.find('[data-id="'+id+'"] .selected').removeClass('selected');
         });
+    };
+
+    AdderDialog.prototype.clearSelectionForItemSet = function(itemSet) {
+        this.popup.find('[data-adder-id="' + itemSet.options.id +'"] .selected').removeClass('selected');
     };
 
     /**
@@ -726,6 +1061,14 @@
         this.blackoutDiv.on('click', function () {
             dialog.close();
         });
+    };
+
+    AdderDialog.prototype.remove = function () {
+        this.close();
+        if (this.blackoutDiv) {
+            this.blackoutDiv.remove();
+        }
+        this.popup.remove();
     };
 
     exports.AdderDialog = AdderDialog;

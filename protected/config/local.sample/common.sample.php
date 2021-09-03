@@ -59,6 +59,7 @@ $config = array(
                     'class' => 'CWebLogRoute',
                     // 'enabled' => YII_DEBUG,
                     // 'levels' => 'error, warning, trace, notice',
+                    'levels' => 'error, warning, notice',
                     // 'categories' => 'application',
                     'showInFireBug' => true,
                 ),
@@ -66,40 +67,6 @@ $config = array(
         ),
         */
     ),
-
-    'modules' => array(
-        'eyedraw',
-        'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
-        'OphCoCorrespondence',
-        'OphCiPhasing',
-        'OphTrIntravitrealinjection',
-        'OphCoTherapyapplication',
-        'OphDrPrescription',
-        'OphTrConsent',
-        'OphTrOperationnote',
-        'OphTrOperationbooking',
-        'OphTrLaser',
-        'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
-        'OphInVisualfields',
-        'OphInBiometry',
-        'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
-        'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
-        'OphInLabResults',
-        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-        // Uncomment next section if you want to use the genetics module
-        /*'Genetics',
-        'OphInDnasample',
-        'OphInDnaextraction',
-        'OphInGeneticresults',*/
-        'OphCoDocument',
-        'OphCiDidNotAttend',
-        'OphGeneric',
-        'OECaseSearch',
-        'OETrial',
-        'OphOuCatprom5',
-        'OphTrOperationchecklists'
-    ),
-
     'params' => array(
         //'pseudonymise_patient_details' => false,
         //'ab_testing' => false,
@@ -129,6 +96,7 @@ $config = array(
         // 'worklist_allow_duplicate_patients' => bool
         //// any appointments sent in before this date will not trigger errors when sent in
         // 'worklist_ignore_date => 'Y-m-d',
+        'correspondence_export_url' => 'localhost',
     ),
 );
 

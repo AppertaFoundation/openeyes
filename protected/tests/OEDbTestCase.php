@@ -8,6 +8,8 @@ class OEDbTestCase extends CDbTestCase
     protected $tear_down_callbacks = [];
     protected $can_create_tables = true;
 
+    private static $traits_have_setup = [];
+
     public function setUp()
     {
         parent::setUp();
@@ -18,13 +20,8 @@ class OEDbTestCase extends CDbTestCase
     {
         $uses = array_flip(static::classUsesRecursive(static::class));
 
-        if (isset($uses[WithFaker::class])) {
-            $this->setUpFaker();
-        }
-
-        if (isset($uses[WithTransactions::class])) {
-            $this->can_create_tables = false;
-            $this->beginDatabaseTransaction();
+        foreach ($uses as $traitInUse) {
+            $this->runTraitSetup($traitInUse);
         }
     }
 
@@ -122,6 +119,7 @@ class OEDbTestCase extends CDbTestCase
         $connection->createCommand($connection->schema->addForeignKey($table.'_lmui_fk', $table, 'last_modified_user_id', 'user', 'id'))->execute();
 
         $this->test_tables[] = $table;
+
     }
 
     protected function dropTable($table)
@@ -139,11 +137,15 @@ class OEDbTestCase extends CDbTestCase
      *
      * @param $cls
      * @param int $count
+     * @param CDbCriteria|null $criteria
      * @return mixed
      */
-    protected function getRandomLookup($cls, $count = 1)
+    protected function getRandomLookup($cls, $count = 1, ?CDbCriteria $criteria = null)
     {
-        $criteria = new \CDbCriteria();
+        if ($criteria === null) {
+            $criteria = new \CDbCriteria();
+        }
+
         $criteria->limit = 5 * $count;
         $all = $cls::model()->findAll($criteria);
 
@@ -157,5 +159,19 @@ class OEDbTestCase extends CDbTestCase
         }
 
         return $result;
+    }
+
+    private function runTraitSetup($trait)
+    {
+        if (!array_key_exists($trait, static::$traits_have_setup)) {
+            $short_name = Helper::getNSShortname($trait);
+            static::$traits_have_setup[$trait] = method_exists($this, "setUp" . $short_name)
+                ? "setUp" . $short_name
+                : null;
+        }
+
+        if (static::$traits_have_setup[$trait]) {
+            $this->{static::$traits_have_setup[$trait]}();
+        };
     }
 }

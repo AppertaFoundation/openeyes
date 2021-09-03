@@ -32,6 +32,7 @@ class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers OEBaseDateValidator
      * @dataProvider dateProvider
      */
     public function test_date_parsing($value, $expected_result)
@@ -56,6 +57,7 @@ class OEBaseDateValidatorTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers OEBaseDateValidator
      * @dataProvider datetimeProvider
      */
     public function test_datetime_parsing($value, $expected_result)

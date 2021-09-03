@@ -78,7 +78,8 @@ class Contact extends BaseActiveRecordVersioned
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
             array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
-            array('title, first_name, last_name, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
+            array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
+            array('first_name, last_name', 'parenthesisValidator'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message'=>'Please select a Role.'),
             array('primary_phone', 'requiredValidator'),
@@ -92,6 +93,32 @@ class Contact extends BaseActiveRecordVersioned
         );
     }
 
+    public function parenthesisValidator($attribute, $params)
+    {
+        $scenario = $this->getScenario();
+        if ($scenario === 'hscic_import') {
+            return;
+        }
+        if ($scenario === 'admin_contact') {
+            // One of first name and last name needs to be entered
+            if (!$this->first_name && !$this->last_name) {
+                // to avoid duplicated warning messages
+                if (!$this->getErrors('Empty Names')) {
+                    $this->addError('Empty Names', "First Name and Last Name cannot be both blank");
+                }
+            } else {
+                // if the first name and last name are from admin contact, allow alphabets, parenthesis, and dash (-)
+                if ($this->$attribute && !preg_match("/^[a-zA-Z \(\)-]+$/", $this->$attribute)) {
+                    $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered.");
+                }
+            }
+        } else {
+            // use the conventional regex for any other scenario
+            if (!preg_match('/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', $this->$attribute)) {
+                $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered.");
+            }
+        }
+    }
     public function requiredValidator($attribute, $params)
     {
         $scenario = $this->getScenario();
@@ -289,7 +316,7 @@ class Contact extends BaseActiveRecordVersioned
     }
 
     protected function performAjaxValidation($model)
-        {
+    {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();

@@ -3,6 +3,9 @@
     right: 20px;
   }
 </style>
+<div class="flex-layout">
+    <h3><?= $report->getReportTitle() ?></h3>
+</div>
 <div id="<?=$report->graphId();?>_container" class="report-container">
   <?php if (method_exists($report, 'renderSearch')) :?>
         <?= $report->renderSearch(true); ?>
@@ -16,36 +19,43 @@
 </div>
 <script>
     var data =  <?= $report->tracesJson();?>;
-    var layout = JSON.parse('<?= $report->plotlyConfig();?>');
+    let theme = ($('link[data-theme="light"]').prop('media') === 'none') ? 'dark' : 'light';
+    let layout = JSON.parse('<?= $report->plotlyConfig();?>');
     const plotly_min_width = 800;
     const plotly_min_height = 650;
-    var page_height = $('.oe-analytics').height()-50;
-    var layout_height = plotly_min_height > page_height? plotly_min_height : page_height;
 
-    var page_width = $('.analytics-charts').width();
-    var layout_width = plotly_min_width > page_width? plotly_min_width : page_width;
-    layout['font'] = {
-            color: '#fff'
-        };
-    layout['paper_bgcolor'] = '#101925';
-    layout['plot_bgcolor'] = '#101925';
     layout['width'] = layout_width;
     layout['height'] = layout_height;
-    layout['xaxis']['mirror'] = true;
-    layout['xaxis']['rangemode'] = 'tozero';
-    layout['xaxis']['linecolor'] = '#fff';
-    layout['yaxis']['linecolor'] = '#fff';
-    layout['yaxis']['automargin'] = true;
-    layout['yaxis']['mirror'] = true;
-    if (layout['yaxis']['showgrid']){
-        layout['yaxis']['gridcolor'] = '#aaa';
+    // If layout for themeable plots exists in the object
+    if ("oePlotly" in layout) {
+        let oePlotlyLayout = oePlotly_v1.getLayout({
+            theme: theme,
+            ...layout['oePlotly']
+        });
+        layout = {...layout, ...oePlotlyLayout}
+    } else {
+        // Create a layout for non-themeable plots
+        layout['font'] = {
+                color: '#fff'
+            };
+        layout['paper_bgcolor'] = '#101925';
+        layout['plot_bgcolor'] = '#101925';
+        layout['xaxis']['mirror'] = true;
+        layout['xaxis']['rangemode'] = 'tozero';
+        layout['xaxis']['linecolor'] = '#fff';
+        layout['yaxis']['linecolor'] = '#fff';
+        layout['yaxis']['automargin'] = true;
+        layout['yaxis']['mirror'] = true;
+        if (layout['yaxis']['showgrid']){
+            layout['yaxis']['gridcolor'] = '#aaa';
+        }
+        if (layout['xaxis']['showgrid']){
+            layout['xaxis']['gridcolor'] = '#aaa';
+        }
+        <?php if (($report->graphId() === 'PcrRiskReport')) {?>
+            layout['shapes'][0]['line']['color'] = '#fff';
+        <?php }?>
     }
-    if (layout['xaxis']['showgrid']){
-        layout['xaxis']['gridcolor'] = '#aaa';
-    }
-    <?php if (($report->graphId() === 'PcrRiskReport')) {?>
-        layout['shapes'][0]['line']['color'] = '#fff';
-    <?php }?>
     Plotly.newPlot('<?=$report->graphId();?>',
         data,
         layout,

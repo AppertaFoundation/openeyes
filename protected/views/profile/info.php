@@ -72,6 +72,16 @@
     </td>
   </tr>
   <tr>
+      <td>
+         <?php echo $form->textField(
+             $user,
+             'username',
+             array('autocomplete' => Yii::app()->params['html_autocomplete'],
+                'readonly' => true, 'style' => 'opacity:0.5')
+         );?>
+      </td>
+  </tr>
+  <tr>
     <td>
         <?php echo $form->textField(
             $user,
@@ -105,6 +115,65 @@
       </div>
     </td>
   </tr>
+  <tr>
+      <td>
+          <div class="data-group flex-layout cols-full">
+              <div class="cols-2">
+                  <label for="user_out_of_office">Out of office:</label>
+              </div>
+            <div class="cols-5 left-align">
+                <label class="inline highlight">
+                    <?= $form->checkBox($user_out_of_office, 'enabled', array(
+                        'nowrapper' => true,
+                        'no-label' => true,
+                        'checked' => $user_out_of_office->enabled ? true : false,
+                        'style' =>'width:20px;')).'Yes' ?>
+                </label>
+            </div>
+          </div>
+      </td>
+  </tr>
+  <tr id="duration_row" style="<?php echo $user_out_of_office->enabled ? '' : 'display: none' ?>">
+      <td>
+          <div class="data-group flex-layout cols-full">
+              <div class="cols-2">
+                  <label>Out of office duration:</label>
+              </div>
+              <div class="cols-5">
+                  <div class="cols-9 flex-layout ">
+                      <input type="text" style="width: 45%"
+                             id="UserOutOfOffice_from_date"
+                             name="UserOutOfOffice[from_date]"
+                             value="<?= $user_out_of_office->from_date ? date('d M Y', strtotime($user_out_of_office->from_date)) : '' ?>"
+                             placeholder="from" autocomplete="off">
+                      <input type="text" style="width: 45%"
+                             id="UserOutOfOffice_to_date"
+                             name="UserOutOfOffice[to_date]"
+                             value="<?= $user_out_of_office->to_date ? date('d M Y', strtotime($user_out_of_office->to_date)) : '' ?>"
+                             placeholder="to" autocomplete="off">
+                  </div>
+              </div>
+          </div>
+      </td>
+  </tr>
+  <tr id="alternate_user_row" style="<?php echo $user_out_of_office->enabled ? '' : 'display: none' ?>">
+      <td>
+          <div class="data-group flex-layout cols-full">
+              <div class="cols-2">
+                  <label for="alternate_user">Alternate User:</label>
+              </div>
+              <div class="cols-5">
+                  <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'alternate_user']); ?>
+                  <span id="alternate_user_display">
+                      <?php if ($user_out_of_office->alternate_user) { ?>
+                          <ul class="oe-multi-select inline"><li> <?= $user_out_of_office->alternate_user->getFullnameAndTitle() ?> <i class="oe-i remove-circle small-icon pad-left"></i></li></ul>
+                      <?php } ?>
+                  </span>
+                  <?php echo $form->hiddenField($user_out_of_office, 'alternate_user_id') ?>
+              </div>
+          </div>
+      </td>
+  </tr>
   </tbody>
 </table>
 <?php if (Yii::app()->params['profile_user_can_edit']) {?>
@@ -114,6 +183,53 @@
       </div>
 <?php }?>
 
-    <?php $this->endWidget()?>
+<?php $this->endWidget()?>
 
+<script>
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#alternate_user'),
+        url: '/user/autocomplete',
+        onSelect: function () {
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            $('#alternate_user_display').html('<ul class="oe-multi-select inline"><li>' +
+                AutoCompleteResponse.label +
+                '<i class="oe-i remove-circle small-icon pad-left"></i></li></ul>');
+            $('#UserOutOfOffice_alternate_user_id').val(AutoCompleteResponse.id);
+            return false;
+        }
+    });
+
+    $(document).ready(function() {
+
+        pickmeup('#UserOutOfOffice_from_date', {
+            format: 'd b Y',
+            hide_on_select: true,
+            date: $('#UserOutOfOffice_from_date').val(),
+            default_date: false,
+        });
+        pickmeup('#UserOutOfOffice_to_date', {
+            format: 'd b Y',
+            hide_on_select: true,
+            date: $('#UserOutOfOffice_to_date').val(),
+            default_date: false,
+        });
+
+        $('#UserOutOfOffice_enabled').on('click', function () {
+            if ($(this).prop("checked")) {
+                $('#alternate_user_row').show();
+                $('#duration_row').show();
+            } else {
+                $('#alternate_user_row').hide();
+                $('#duration_row').hide();
+            }
+        });
+
+        $(this).on('click', '.oe-i.remove-circle.small-icon.pad-left', function (e) {
+            e.preventDefault();
+            $(this).closest('ul').remove();
+            $('#UserOutOfOffice_alternate_user_id').val('');
+        });
+
+    });
+</script>
 

@@ -29,7 +29,8 @@ class AnaestheticComplication extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return AnaestheticComplication the static model class
+     * @param string $className
+     * @return AnaestheticComplication|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {

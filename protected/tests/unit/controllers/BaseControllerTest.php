@@ -29,6 +29,9 @@ class BaseControllerTest extends CDbTestCase
         'user' => 'User',
     );
 
+    /**
+     * @throws ReflectionException
+     */
     public function setUp()
     {
         parent::setUp();
@@ -36,6 +39,9 @@ class BaseControllerTest extends CDbTestCase
         $this->controller = $this->getMockForAbstractClass('BaseController', array('BaseControllerTest'));
     }
 
+    /**
+     * @covers BaseController
+     */
     public function testFetchModelSuccess()
     {
         $this->assertEquals(
@@ -45,23 +51,28 @@ class BaseControllerTest extends CDbTestCase
     }
 
     /**
-     * @expectedException CHttpException
-     * @expectedExceptionMessage User with PK 'foo' not found
+     * @covers BaseController
      */
     public function testFetchModelNotFound()
     {
+        $this->expectException('CHttpException');
+        $this->expectExceptionMessage('User with PK \'foo\' not found');
         $this->controller->fetchModel('User', 'foo');
     }
 
     /**
-     * @expectedException CHttpException
-     * @expectedExceptionMessage User with PK '' not found
+     * @covers BaseController
      */
     public function testFetchModelEmptyPkDontCreate()
     {
+        $this->expectException('CHttpException');
+        $this->expectExceptionMessage('User with PK \'\' not found');
         $this->controller->fetchModel('User', null);
     }
 
+    /**
+     * @covers BaseController
+     */
     public function testFetchModelEmptyPkCreate()
     {
         $user = $this->controller->fetchModel('User', null, true);

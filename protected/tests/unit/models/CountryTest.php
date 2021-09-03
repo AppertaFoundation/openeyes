@@ -51,7 +51,7 @@ class CountryTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Country::model
+     * @covers Country
      */
     public function testModel()
     {
@@ -59,7 +59,7 @@ class CountryTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Country::tableName
+     * @covers Country
      */
     public function testTableName()
     {
@@ -67,7 +67,7 @@ class CountryTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Country::rules
+     * @covers Country
      * @throws CException
      */
     public function testRules()
@@ -78,7 +78,7 @@ class CountryTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Country::attributeLabels
+     * @covers Country
      */
     public function testAttributeLabels()
     {
@@ -92,7 +92,11 @@ class CountryTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers Country
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {

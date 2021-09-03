@@ -23,7 +23,7 @@ class OphCiExamination_Et_PostOpComplications extends \BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphCiExamination_VisualAcuity_Reading the static model class
+     * @return OphCiExamination_Et_PostOpComplications the static model class
      */
     public static function model($className = __CLASS__)
     {

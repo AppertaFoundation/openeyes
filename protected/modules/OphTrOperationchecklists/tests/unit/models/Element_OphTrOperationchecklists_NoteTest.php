@@ -73,7 +73,7 @@ class Element_OphTrOperationchecklists_NoteTest extends ActiveRecordTestCase
         $element->saveNote('Test1');
         $element->saveNote('Test2');
 
-        $case_notes = OphTrOperationchecklists_Notes::model()->findAll('element_id = ?', array($element->id));
+        $case_notes = OphTrOperationchecklists_Notes::model()->findAll('element_id = :element_id', array(':element_id' => $element->id));
 
         // check the table contains a single row with the correct data.
         $this->assertCount(2, $case_notes);
@@ -82,7 +82,7 @@ class Element_OphTrOperationchecklists_NoteTest extends ActiveRecordTestCase
     public function tearDown()
     {
         foreach ($this->elementIds as $id) {
-            foreach (OphTrOperationchecklists_Notes::model()->findAll('element_id = ?', array($id)) as $t) {
+            foreach (OphTrOperationchecklists_Notes::model()->findAll('element_id = :element_id', array(':element_id' => $id)) as $t) {
                 $t->noVersion()->delete();
             }
             Element_OphTrOperationchecklists_Note::model()->noVersion()->deleteByPk($id);

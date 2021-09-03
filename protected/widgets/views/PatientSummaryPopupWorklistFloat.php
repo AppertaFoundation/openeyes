@@ -1,31 +1,31 @@
 <?php
-    /**
-     * OpenEyes.
-     *
-     * (C) OpenEyes Foundation, 2019
-     * This file is part of OpenEyes.
-     * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-     * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
-     * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
-     *
-     * @link http://www.openeyes.org.uk
-     *
-     * @author OpenEyes <info@openeyes.org.uk>
-     * @copyright Copyright (c) 2019, OpenEyes Foundation
-     * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
-     */
+/**
+ * OpenEyes.
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
-    /**
-     * @var PatientSummaryPopup $this
-     * @var \OEModule\OphCiExamination\components\OphCiExamination_API $exam_api
-     * @var OphCoCorrespondence_API $correspondence_api
-     * @var \OEModule\OphCoCvi\components\OphCoCvi_API $co_cvi_api
-     */
+/**
+ * @var PatientSummaryPopup $this
+ * @var \OEModule\OphCiExamination\components\OphCiExamination_API $exam_api
+ * @var OphCoCorrespondence_API $correspondence_api
+ * @var \OEModule\OphCoCvi\components\OphCoCvi_API $co_cvi_api
+ */
 
 
-    $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-    $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-    $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+$exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+$correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+$co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Worklist -->
 <div class="patient-popup-worklist oe-patient-quick-overview" style="display:none;"
@@ -35,7 +35,7 @@
     </div>
     <!-- To reuse the code of PatientMeta -->
     <?php
-        $this->render('application.widgets.views.PatientMeta');
+    $this->render('application.widgets.views.PatientMeta');
     ?>
     <div class="quick-overview-content">
         <!-- insert the data -->
@@ -68,15 +68,15 @@
         <!-- Warnings: Allergies -->
         <div class="data-group">
             <?php $this->widget(\OEModule\OphCiExamination\widgets\Allergies::class, array(
-              'patient' => $this->patient,
-              'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                'patient' => $this->patient,
+                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
             )); ?>
         </div><!-- .data-group -->
         <!-- Warnings: Risks -->
         <div class="data-group">
             <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryRisks::class, array(
-              'patient' => $this->patient,
-              'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                'patient' => $this->patient,
+                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
             )); ?>
         </div><!-- .data-group -->
         <!-- Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
@@ -84,74 +84,46 @@
             <div class="quicklook-data-groups">
                 <div class="group">
                     <?php
-                        $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
-                        $visualAcuityLeft = $exam_api->getLetterVisualAcuityLeft($patient);
-                    if ($visualAcuityLeft || $visualAcuityRight) {
-                        $lDate = $exam_api->getLetterVisualAcuityDate($patient, 'left');
-                        $rDate = $exam_api->getLetterVisualAcuityDate($patient, 'right');
-                        ?>
-                            <div class="group">
-                            <?php if ($lDate == $rDate) { ?>
-                                    <span class="data">R <?= $visualAcuityRight ?: 'NA'; ?>
-                                    </span>
-                                    <span class="data"
-                                          style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
-                                      <?= $exam_api->getLetterVAMethodName($patient, 'right') ?>
-                                    </span>
-                                    <span class="data">
-                                        L <?= $visualAcuityLeft ?: 'NA' ?>
-                                    </span>
-                                    <span class="data"
-                                          style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
-                                      <?= $exam_api->getLetterVAMethodName($patient, 'left') ?>
-                                    </span>
-                                    <span class="oe-date"
-                                          style="text-align: left;">
-                                      <?= Helper::convertDate2NHS($rDate); ?>
-                                    </span>
-                            <?php } else { ?>
-                                    <span class="data">
-                                        R <?= $visualAcuityRight ?: 'NA'; ?>
-                                    </span>
-                                    <span class="data"
-                                          style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
-                                      <?= $exam_api->getLetterVAMethodName($patient, 'right') ?>
-                                    </span>
-                                    <span class="oe-date"
-                                          style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
-                                      <?= Helper::convertDate2NHS($rDate); ?>
-                                    </span>
-                                    <span class="data">
-                                        L <?= $visualAcuityLeft ?: 'NA' ?>
-                                    </span>
-                                    <span class="data"
-                                          style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
-                                      <?= $exam_api->getLetterVAMethodName($patient, 'left') ?>
-                                    </span>
-                                    <span class="oe-date"
-                                          style="text-align: left; display : <?= $visualAcuityLeft ? '' : 'none' ?>">
-                                      <?= Helper::convertDate2NHS($lDate); ?>
-                                    </span>
+                    $vaData = $exam_api->getMostRecentVADataStandardised($patient);
+
+
+                    if ($vaData) { ?>
+                        <div class="group">
+                            <?php if ($vaData['has_beo']) { ?>
+                                <span class="data">BEO <?= $vaData['beo_result'] ?></span>
+                                <span class="data"><?= $vaData['beo_method_abbr'] ?></span>
                             <?php } ?>
-                            </div>
+                            <span class="data">R <?= $vaData['has_right'] ? $vaData['right_result'] : 'NA'; ?></span>
+                            <?php if ($vaData['has_right']) { ?>
+                                <span class="data"><?= $vaData['right_method_abbr'] ?></span>
+                            <?php } ?>
+                            <span class="data"> L <?= $vaData['has_left'] ? $vaData['left_result'] : 'NA' ?></span>
+                            <?php if ($vaData['has_left']) { ?>
+                                <span class="data"><?= $vaData['left_method_abbr'] ?></span>
+                            <?php } ?>
+                            <span class="oe-date"
+                                  style="text-align: left;">
+                              <?= Helper::convertDate2NHS($vaData['event_date']); ?>
+                            </span>
+
+                        </div>
                     <?php } else { ?>
-                            <div class="group">
-                                <span class="data-value not-available">VA: NA</span>
-                            </div>
+                        <div class="group">
+                            <span class="data-value not-available">VA: NA</span>
+                        </div>
                     <?php } ?>
                 </div>
 
                 <div class="group">
                     <?php
-                        $leftRefraction = $correspondence_api->getLastRefraction($patient, 'left');
-                        $rightRefraction = $correspondence_api->getLastRefraction($patient, 'right');
-                    if ($leftRefraction !== null || $rightRefraction !== null) { ?>
-                            <span class="data">R <?= $rightRefraction ?: 'NA' ?></span>
-                            <span class="data">L <?= $leftRefraction ?: 'NA' ?></span>
-                            <span class="oe-date"
-                                  style="text-align: left"><?= Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient)) ?></span>
+                    $refractionData = $exam_api->getLatestRefractionReadingFromAnyElementType($patient);
+                    if ($refractionData) { ?>
+                        <span class="data">R <?= $refractionData['right'] ?: 'NA' ?></span>
+                        <span class="data">L <?= $refractionData['left'] ?: 'NA' ?></span>
+                        <span class="oe-date"
+                              style="text-align: left"><?= Helper::convertDate2NHS($refractionData['event_date']) ?></span>
                     <?php } else { ?>
-                            <span class="data">Refraction: NA</span>
+                        <span class="data">Refraction: NA</span>
                     <?php } ?>
                 </div>
 
@@ -162,7 +134,8 @@
                     if ($leftCCT !== null || $rightCCT !== null) { ?>
                         <span class="data">R <?= $rightCCT ?: 'NA' ?> </span>
                         <span class="data">L <?= $leftCCT ?: 'NA' ?> </span>
-                        <span class="oe-date" style="text-align: left"><?= \Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
+                        <span class="oe-date"
+                              style="text-align: left"><?= \Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
                     <?php } else { ?>
                         <span class="data">CCT: NA</span>
                     <?php } ?>
@@ -183,13 +156,13 @@
                         <table>
                             <tbody>
                             <?php
-                                $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
+                            $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
                             if (count($ophthalmic_diagnoses) === 0) { ?>
-                                    <tr>
-                                        <td>
-                                            <div class="nil-recorded">Nil recorded</div>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>
+                                        <div class="nil-recorded">Nil recorded</div>
+                                    </td>
+                                </tr>
                             <?php } ?>
                             <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
                                 list($side, $name, $date) = explode('~', $ophthalmic_diagnosis); ?>
@@ -240,8 +213,8 @@
                         <?php $this->widget(
                             \OEModule\OphCiExamination\widgets\PastSurgery::class,
                             [
-                            'patient' => $this->patient,
-                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                                'patient' => $this->patient,
+                                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
                             ]
                         ); ?>
                     </div>
@@ -250,8 +223,8 @@
                 <?php $this->widget(
                     \OEModule\OphCiExamination\widgets\HistoryMedications::class,
                     [
-                    'patient' => $this->patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                        'patient' => $this->patient,
+                        'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
                     ]
                 ); ?>
 
@@ -261,8 +234,8 @@
                         <?php $this->widget(
                             \OEModule\OphCiExamination\widgets\FamilyHistory::class,
                             [
-                            'patient' => $this->patient,
-                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                                'patient' => $this->patient,
+                                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
                             ]
                         ); ?>
                     </div>
@@ -274,8 +247,8 @@
                         <?php $this->widget(
                             \OEModule\OphCiExamination\widgets\SocialHistory::class,
                             [
-                            'patient' => $this->patient,
-                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                                'patient' => $this->patient,
+                                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
                             ]
                         ); ?>
                     </div>
@@ -290,19 +263,19 @@
                 <?php $summaries = $exam_api->getManagementSummaries($patient);
                 if (sizeof($summaries) != 0) {
                     foreach ($summaries as $summary) { ?>
-                            <tr>
-                                <td><?= $summary->service ?></td>
-                                <td><?= $summary->comments ?></td>
-                                <td class="fade">
+                        <tr>
+                            <td><?= $summary->service ?></td>
+                            <td><?= $summary->comments ?></td>
+                            <td class="fade">
                                 <span class="oe-date">
                                     <span class="day"><?= $summary->date[0] ?></span>
                                     <span class="month"><?= $summary->date[1] ?></span>
                                     <span class="year"><?= $summary->date[2] ?></span>
                                 </span>
-                                </td>
-                                <td><i class="oe-i info small pro-theme js-has-tooltip"
-                                       data-tooltip-content="<?= $summary->user ?>"></i></td>
-                            </tr>
+                            </td>
+                            <td><i class="oe-i info small pro-theme js-has-tooltip"
+                                   data-tooltip-content="<?= $summary->user ?>"></i></td>
+                        </tr>
                     <?php }
                 } ?>
                 </tbody>
@@ -311,12 +284,15 @@
         <div class="data-group">
             <h3>Appointments</h3>
             <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]) ?>
-            <?php $this->widget('application.widgets.PlansProblemsWidget', ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true]); ?>
+            <?php $this->widget('application.widgets.PlansProblemsWidget', [
+                'patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme',
+                'is_popup' => true, 'allow_save' => false
+            ]); ?>
         </div>
         <?php if (Yii::app()->getModule('OETrial')) { ?>
             <?php
             $this->widget('application.modules.OETrial.widgets.PatientTrialSummary', array(
-              'patient' => $this->patient,
+                'patient' => $this->patient,
             ));
             ?>
         <?php } ?>

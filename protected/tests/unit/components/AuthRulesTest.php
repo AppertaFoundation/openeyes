@@ -30,89 +30,140 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         Yii::app()->setComponent('user', null);
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEpisode_SupportServicesFirm_SupportServicesEpisode()
     {
         $this->assertTrue($this->rules->canEditEpisode($this->getSupportServicesEpisode()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEpisode_SupportServicesFirm_LegacyEpisode()
     {
         $this->assertFalse($this->rules->canEditEpisode($this->getLegacyEpisode()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEpisode_NormalFirm_LegacyEpisode()
     {
         $this->assertFalse($this->rules->canEditEpisode($this->getLegacyEpisode()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEpisode_NormalFirm_NormalEpisode_MatchingSubspecialty()
     {
         $this->assertTrue($this->rules->canEditEpisode($this->getNormalEpisode(42)));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanCreateEvent_Disabled()
     {
         $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $this->getDisabledEventType()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanCreateEvent_SupportServicesFirm_NonSupportServiceEventType()
     {
         $this->assertFalse($this->rules->canCreateEvent($this->getSupportServicesFirm(), $this->getNormalEpisode(), $this->getNonSupportServicesEventType()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanCreateEvent_SupportServicesFirm_SupportServiceEventType()
     {
         $this->assertTrue($this->rules->canCreateEvent($this->getSupportServicesFirm(), $this->getSupportServicesEpisode(), $this->getSupportServicesEventType()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanCreateEvent_NormalFirm_NonSupportServiceEventType()
     {
         $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $this->getNonSupportServicesEventType()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanCreateEvent_NormalFirm_SupportServiceEventType()
     {
         $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $this->getSupportServicesEventType()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanCreateEvent_LegacyEpisode()
     {
         $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getLegacyEpisode(), $this->getNonSupportServicesEventType()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanCreateEvent_NoData()
     {
         $this->assertTrue($this->rules->canCreateEvent());
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanCreateEvent_NoEventType()
     {
         $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanCreateEvent_NoEventType_LegacyEpisode()
     {
         $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getLegacyEpisode()));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEvent_DeletePending()
     {
         $event = $this->getEvent(array('delete_pending' => true));
         $this->assertFalse($this->rules->canEditEvent($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEvent_CorrectSubspecialty()
     {
         $event = $this->getEvent(array('episode' => $this->getNormalEpisode(42)));
         $this->assertTrue($this->rules->canEditEvent($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEvent_LegacyEpisode()
     {
         $event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
         $this->assertFalse($this->rules->canEditEvent($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEvent_EventLockingDisabled()
     {
         Yii::app()->params['event_lock_disable'] = true;
@@ -120,6 +171,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->rules->canEditEvent($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEvent_Admin()
     {
         $this->becomeAdminUser();
@@ -127,6 +181,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->rules->canEditEvent($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEvent_ModuleAllows()
     {
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
@@ -134,6 +191,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->rules->canEditEvent($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEvent_ModuleDisallows()
     {
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
@@ -141,31 +201,45 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canEditEvent($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEvent_TimeLocked()
     {
         $event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('2 days ago'))));
         $this->assertFalse($this->rules->canEditEvent($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEvent_NotTimeLocked()
     {
         $event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('yesterday'))));
         $this->assertTrue($this->rules->canEditEvent($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanDeleteEvent_WrongUser()
     {
         $event = $this->getEvent(array('created_user_id' => 1, 'created_date' => date('Y-m-d H:i:s')));
         $this->assertFalse($this->rules->canDeleteEvent($this->getUser(2), $event));
     }
 
-
+    /**
+     * @covers AuthRules
+     */
     public function testCanDeleteEvent_LegacyEpisode()
     {
         $event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
         $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanDeleteEvent_EventLockingDisabled()
     {
         Yii::app()->params['event_lock_disable'] = true;
@@ -173,6 +247,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanDeleteEvent_Admin()
     {
         $this->becomeAdminUser();
@@ -180,6 +257,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->rules->canDeleteEvent($this->getUser(2), $event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanDeleteEvent_ModuleAllows()
     {
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
@@ -187,6 +267,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanDeleteEvent_ModuleDisallows()
     {
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
@@ -194,24 +277,36 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanDeleteEvent_TimeLocked()
     {
         $event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('2 days ago'))));
         $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanDeleteEvent_NotTimeLocked()
     {
         $event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('yesterday'))));
         $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanRequestEventDeletion_DeletePending()
     {
         $event = $this->getEvent(array('delete_pending' => true));
         $this->assertFalse($this->rules->canRequestEventDeletion($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanRequestEventDeletion_ModuleDisallows()
     {
         $event = $this->getEvent();
@@ -219,18 +314,27 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canRequestEventDeletion($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanRequestEventDeletion_CorrectSubspecialty()
     {
         $event = $this->getEvent(array('episode' => $this->getNormalEpisode(42)));
         $this->assertTrue($this->rules->canRequestEventDeletion($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanRequestEventDeletion_LegacyEpisode()
     {
         $event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
         $this->assertFalse($this->rules->canRequestEventDeletion($event));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testDefaultCanCreateEventWithNoSuffix()
     {
         $this->becomeNormalUserWithCreatePermission();
@@ -241,6 +345,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCanEditEventEventTypeSuffix()
     {
         $this->becomeTestUserWithCreatePermission();
@@ -251,6 +358,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCantCreateEventEventTypeSuffix()
     {
         $this->becomeTestUserWithNoCreatePermission();
@@ -261,6 +371,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
 
+    /**
+     * @covers AuthRules
+     */
     public function testCantEditEventEventTypeSuffix()
     {
         $this->becomeTestUserWithNoCreatePermission();
@@ -286,6 +399,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
         return $firm;
     }
+
 
     private function getEpisode(array $props = array())
     {

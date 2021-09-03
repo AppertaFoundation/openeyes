@@ -1,10 +1,10 @@
 const plotly_min_width = 800;
 const plotly_min_height = 650;
-var page_width = $('.analytics-charts').width();
-var page_height = $('.oe-analytics').height()-50;
-var layout_width = plotly_min_width > page_width? plotly_min_width : page_width;
-var layout_height = plotly_min_height > page_height? plotly_min_height : page_height;
-var analytics_layout = {
+const page_width = $('#plot').width();
+const page_height = $('main').height() - 50;
+const layout_width = plotly_min_width > page_width ? plotly_min_width : page_width;
+const layout_height = plotly_min_height > page_height ? plotly_min_height : page_height;
+const analytics_layout = {
     title: '',
     width: layout_width,
     height: layout_height,
@@ -12,19 +12,19 @@ var analytics_layout = {
         color: '#fff',
     },
     autosize: false,
-    margin:{
-        l:50,
-        t:100,
+    margin: {
+        l: 50,
+        t: 100,
         b: 50,
-        pad:4,
+        pad: 4,
     },
-    hovermode:'closest',
+    hovermode: 'closest',
     paper_bgcolor: '#101925',
     plot_bgcolor: '#101925',
     /* legend settings */
     showlegend: true,
     legend: {
-        x: 0 ,
+        x: 0,
         y: 1.05,
         traceorder: 'normal',
         font: {
@@ -54,7 +54,7 @@ var analytics_layout = {
         showticksuffix: 'last',
         mirror: true
     },
-    yaxis:{
+    yaxis: {
         titlefont: {
             family: 'sans-serif',
             size: 12,
@@ -75,7 +75,7 @@ var analytics_layout = {
     },
 };
 
-var analytics_options = {
+const analytics_options = {
     displayLogo: false,
     displayModeBar: false,
 };

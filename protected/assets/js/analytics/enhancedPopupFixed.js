@@ -5,67 +5,34 @@ Enhance Popup Fixed.
 3) Open popup and position (as it's Fixed)
 IDG demo, it assumes a DOM structure of:
 <wrap>
-	<btn />
-	<popup /> // Fixed position
+    <btn />
+    <popup /> // Fixed position
 </wrap>
 ... and that there is an 'active' class on button ;)
 */
-var enhancedPopupFixed = function($wrap,$btn,$popup){
-    var popupShow = false;
-    var css;
-
-    // handles touch
-    $btn.click( changePopup );
-
-    // enchance with mouseevents through DOM wrapper
-    $wrap
-        .mouseenter( showPopup )
-        .mouseleave( hidePopup );
-
-    // controller
-    function changePopup(){
-        if(!popupShow){
-            showPopup();
-        } else {
-            hidePopup();
-        }
-    }
-
-    function showPopup(){
-        setClasses();
-        setCSSposition();
-        $popup.show();
-        $btn.addClass('active');
-        popupShow = true;
-    }
-
-    function hidePopup(){
-        $popup.hide();
-        $btn.removeClass('active');
-        popupShow = false;
-        resetCSS();
-    }
+const enhancedPopupFixed = function ($wrap, $btn, $popup) {
+    let popupShow = false;
+    let css;
 
     // each time it opens
     // work out where it is and apply
     // CSS and positioning.
-
-    function setClasses(){
+    function setClasses() {
         // position popup based on screen location
         // options: top-left, top-right, bottom-left, bottom-right
         // updates the look of the popup
-        var offset = $wrap.offset();
+        const offset = $wrap.offset();
 
-        var w = window.innerWidth;
-        var h = window.innerHeight;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
 
-        if( offset.top < ( h / 2 ) ){
+        if (offset.top < (h / 2)) {
             css = "top-";
         } else {
             css = "bottom-";
         }
 
-        if(offset.left < ( w / 2 ) ){
+        if (offset.left < (w / 2)) {
             css += "left";
         } else {
             css += "right";
@@ -74,7 +41,7 @@ var enhancedPopupFixed = function($wrap,$btn,$popup){
         $popup.addClass(css);
     }
 
-    function resetCSS(){
+    function resetCSS() {
         $popup.removeClass(css);
         $popup.css("top", "");
         $popup.css("bottom", "");
@@ -83,18 +50,18 @@ var enhancedPopupFixed = function($wrap,$btn,$popup){
     }
 
 
-    function setCSSposition(){
+    function setCSSposition() {
         /*
       Popup is FIXED positioned
       work out offset position
       setup events to close it on resize or scroll.
       */
         // js vanilla:
-        var wrapPos = $wrap[ 0 ].getBoundingClientRect();
-        var w = document.documentElement.clientWidth;
-        var h = document.documentElement.clientHeight;
+        const wrapPos = $wrap[0].getBoundingClientRect();
+        const w = document.documentElement.clientWidth;
+        const h = document.documentElement.clientHeight;
 
-        switch(css){
+        switch (css) {
             case "top-left":
                 // set CSS Fixed position
                 $popup.css({
@@ -106,7 +73,8 @@ var enhancedPopupFixed = function($wrap,$btn,$popup){
                 // set CSS Fixed position
                 $popup.css({
                     "top": wrapPos.y,
-                    "right": (w - wrapPos.right) });
+                    "right": (w - wrapPos.right)
+                });
                 break;
             case "bottom-left":
                 // set CSS Fixed position
@@ -123,12 +91,42 @@ var enhancedPopupFixed = function($wrap,$btn,$popup){
                 });
                 break;
         }
-
     }
 
+    // controller
+    function showPopup() {
+        setClasses();
+        setCSSposition();
+        $popup.show();
+        $btn.addClass('active');
+        popupShow = true;
+    }
+
+    function hidePopup() {
+        $popup.hide();
+        $btn.removeClass('active');
+        popupShow = false;
+        resetCSS();
+    }
+
+    function changePopup() {
+        if (!popupShow) {
+            showPopup();
+        } else {
+            hidePopup();
+        }
+    }
+
+    // handles touch
+    $btn.click(changePopup);
+
+    // enchance with mouseevents through DOM wrapper
+    $wrap
+        .mouseenter(showPopup)
+        .mouseleave(hidePopup);
 
 
     // should be a close icon button in the popup
-    var $closeBtn = $popup.find('.close-icon-btn');
-    $closeBtn.click( hidePopup );
-}
+    const $closeBtn = $popup.find('.close-icon-btn');
+    $closeBtn.click(hidePopup);
+};

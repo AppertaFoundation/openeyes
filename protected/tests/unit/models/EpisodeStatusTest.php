@@ -41,7 +41,7 @@ class EpisodeStatusTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers EpisodeStatus::model
+     * @covers EpisodeStatus
      */
     public function testModel()
     {
@@ -49,7 +49,7 @@ class EpisodeStatusTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers EpisodeStatus::tableName
+     * @covers EpisodeStatus
      */
     public function testTableName()
     {
@@ -57,7 +57,7 @@ class EpisodeStatusTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers EpisodeStatus::rules
+     * @covers EpisodeStatus
      * @throws CException
      */
     public function testRules()
@@ -68,7 +68,7 @@ class EpisodeStatusTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers EpisodeStatus::attributeLabels
+     * @covers EpisodeStatus
      */
     public function testAttributeLabels()
     {
@@ -82,7 +82,7 @@ class EpisodeStatusTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers EpisodeStatus::search
+     * @covers EpisodeStatus
      */
     public function testSearch()
     {
@@ -103,7 +103,7 @@ class EpisodeStatusTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers EpisodeStatus::getList
+     * @covers EpisodeStatus
      */
     public function testGetList()
     {

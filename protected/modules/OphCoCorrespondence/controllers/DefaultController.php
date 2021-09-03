@@ -39,6 +39,7 @@ class DefaultController extends BaseEventTypeController
         'printForRecipient' => self::ACTION_TYPE_PRINT,
         'getInternalReferralOutputType' => self::ACTION_TYPE_FORM,
         'getDraftPrintRecipients' => self::ACTION_TYPE_PRINT,
+        'export' => self::ACTION_TYPE_FORM,
     );
 
     protected $pdf_output;
@@ -78,6 +79,23 @@ class DefaultController extends BaseEventTypeController
         }
 
         parent::actionUpdate($id);
+    }
+
+    /**
+     * @param $id
+     * @throws Exception
+     */
+    public function actionExport($id)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        if (!$letter) {
+            throw new CHttpException(404, 'Correspondence event could not be found.');
+        }
+        $this->event = $letter->event;
+        $url = $this->generatePDF($letter->event, true);
+        $response = $letter->export($url);
+        unlink($url);
+        $this->renderJSON($response->ReceiveFileByCrnResult);
     }
 
     /**
@@ -415,11 +433,14 @@ class DefaultController extends BaseEventTypeController
      * @param $letter ElementLetter
      * @param $recipient_address string
      * @param $contact_type
+     * @param $letter_header
+     * @return string
      */
-    private function renderOneRecipient($letter, $recipient_address, $contact_type)
+    private function renderOneRecipient($letter, $recipient_address, $contact_type, $letter_header)
     {
         $this->render('print', array(
             'element' => $letter,
+            'letter_header' => $letter_header,
             'letter_address' => $recipient_address,
             'contact_type' => $contact_type
         ));
@@ -550,9 +571,51 @@ class DefaultController extends BaseEventTypeController
 
         Yii::log('Printing recipient');
 
+        $letter_header_raw = SettingMetadata::model()->getSetting('letter_header');
+
+        $parent_event = Event::model()->findByPk($id);
+        $parent_episode = $parent_event->episode;
+        $parent_patient = $parent_episode->patient;
+
+        $parent_contact = $parent_patient->contact;
+        $parent_address = $parent_contact->address;
+
+        $substitutions = array_merge(
+            SettingMetadata::getSessionSubstitutions(),
+            SettingMetadata::getPatientSubstitutions($parent_patient),
+            SettingMetadata::getRecipientAddressSubstitution($recipient_address)
+        );
+
+        $letter_header_html = SettingMetadata::performSubstitutions($letter_header_raw, $substitutions);
+
+        $letter_header_html = self::hideTableBorders($letter_header_html);
+
         $this->printInit($id);
         $this->layout = '//layouts/print';
-        $this->renderOneRecipient($letter, $recipient_address, $contact_type);
+        $this->renderOneRecipient($letter, $recipient_address, $contact_type, $letter_header_html);
+    }
+
+    private static function hideTableBorders($html)
+    {
+        $dom = new DOMDocument();
+        @$dom->loadHTML($html, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $xpath = new DOMXPath($dom);
+        $nodes = $xpath->query('//table');
+
+        foreach ($nodes as $node) {
+            $style = $node->getAttribute('style');
+
+            if (!empty($style)) {
+                $style = $style . ' ';
+            }
+
+            $style = $style . "border-style: hidden;";
+
+            $node->setAttribute('border', '0');
+            $node->setAttribute('style', $style);
+        }
+
+        return $dom->saveHTML();
     }
 
     /**
@@ -827,48 +890,45 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetInitMethodDataById()
     {
-        if (Yii::app()->request->isAjaxRequest) {
-            if (!isset($_POST['id'])) {
-                $result = array(
-                    'success' => 0,
-                    'message' => 'No ID provided',
-                );
-                echo $this->renderJSON($result);
-            }
-
-            if (!$event = Event::model()->findByPk($_POST['id'])) {
-                $result = array(
-                    'success' => 0,
-                    'message' => "Method not found: " . $_POST['id']
-                );
-
-                echo $this->renderJSON($result);
-            }
-
-            if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
-                $result = array(
-                    'success' => 0,
-                    'message' => 'Patient not found: ' . @$_POST['patient_id']
-                );
-
-                echo $this->renderJSON($result);
-            }
-
-            $content = $this->renderPartial('init_method_row', array(
-                'event' => $event,
-                'patient' => $patient,
-            ), true);
-
-
+        if (!isset($_POST['id'])) {
             $result = array(
-                'success' => 1,
-                'content' => $content,
-                'module' => $event->eventType->class_name
+                'success' => 0,
+                'message' => 'No ID provided',
+            );
+            echo $this->renderJSON($result);
+        }
+
+        if (!$event = Event::model()->findByPk($_POST['id'])) {
+            $result = array(
+                'success' => 0,
+                'message' => "Method not found: " . $_POST['id']
             );
 
-            $this->renderJSON($result);
+            echo $this->renderJSON($result);
         }
-        throw new CHttpException(400, 'Invalid method');
+
+        if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+            $result = array(
+                'success' => 0,
+                'message' => 'Patient not found: ' . @$_POST['patient_id']
+            );
+
+            echo $this->renderJSON($result);
+        }
+
+        $content = $this->renderPartial('init_method_row', array(
+            'event' => $event,
+            'patient' => $patient,
+        ), true);
+
+
+        $result = array(
+            'success' => 1,
+            'content' => $content,
+            'module' => $event->eventType->class_name
+        );
+
+        $this->renderJSON($result);
     }
 
     /**
@@ -998,7 +1058,8 @@ class DefaultController extends BaseEventTypeController
         return $letter->markDocumentRelationTreeDeleted();
     }
 
-    private function afterCreateorUpdateElements($event) {
+    private function afterCreateorUpdateElements($event)
+    {
         $data = array();
         $letter = null;
         foreach ($this->open_elements as $element) {
@@ -1275,6 +1336,7 @@ class DefaultController extends BaseEventTypeController
 
             // We use localhost without any port info because Puppeteer is running locally.
             $html_letter = "http://localhost/{$this->getModule()->name}/{$this->id}/printForRecipient/{$event->id}?recipient_address={$recipient_query}&target_id={$target_id}&is_view=" . Yii::app()->request->getParam('is_view');
+
             $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
 
             $recipient_pdf_path = $event->imageDirectory . '/event_' . $pdf_letter . '.pdf';

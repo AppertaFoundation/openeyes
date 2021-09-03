@@ -14,6 +14,7 @@ class LogoHelper
      * @param $template
      *
      * @return mixed
+     * @throws CException
      */
     public function render($template = '//base/_logo', $size = 100, $site_id = null, $get_base_64 = false, $logo_id = null)
     {

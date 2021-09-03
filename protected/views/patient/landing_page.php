@@ -63,56 +63,29 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
 
     <div class="flex-layout flex-top">
         <div class="patient-overview">
-            <?php
-            $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
-            $visualAcuityLeft = $exam_api->getLetterVisualAcuityLeft($patient); ?>
+            <?php $vaData = $exam_api->getMostRecentVADataStandardised($patient); ?>
 
             <table class="standard last-right">
                 <tbody>
 
-                <?php if ($visualAcuityLeft || $visualAcuityRight) {
-                    $lDate = $exam_api->getLetterVisualAcuityDate($patient, 'left');
-                    $rDate = $exam_api->getLetterVisualAcuityDate($patient, 'right');
-
-                    if ($lDate == $rDate) { ?>
-                        <tr>
-                            <td>
-                                <ul class="inline-list">
-                                    <li>R <?= $visualAcuityRight ?: 'NA'; ?>
-                                        <?= $visualAcuityRight ? $exam_api->getLetterVAMethodName($patient, 'right') : '' ?></li>
-                                    <li>L <?= $visualAcuityLeft ?: 'NA' ?>
-                                        <?= $visualAcuityLeft ? $exam_api->getLetterVAMethodName($patient, 'left') : '' ?></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <small class="fade"><span class="oe-date"><?= Helper::convertDate2NHS($rDate); ?></span>
-                                </small>
-                            </td>
-                        </tr>
-                    <?php } else { ?>
-                        <tr>
-                            <td>
-                                R <?= $visualAcuityRight ?: 'NA'; ?>
-                                <?= $visualAcuityRight ? $exam_api->getLetterVAMethodName($patient, 'right') : '' ?>
-                            </td>
-                            <td>
-                                <small class="fade"><span
-                                            class="oe-date"><?= $visualAcuityRight ? Helper::convertDate2NHS($rDate) : '' ?></span>
-                                </small>
-                            </td>
-                        <tr>
-                            <td>
-                                L <?= $visualAcuityLeft ?: 'NA' ?>
-                                <?= $visualAcuityLeft ? $exam_api->getLetterVAMethodName($patient, 'left') : '' ?>
-                            </td>
-                            <td>
-                                <small class="fade"><span
-                                            class="oe-date"><?= $visualAcuityLeft ? Helper::convertDate2NHS($lDate) : '' ?></span>
-                                </small>
-                            </td>
-                        </tr>
-                    <?php }
-                } else { ?>
+                <?php if ($vaData) { ?>
+                    <tr>
+                        <td>
+                            <ul class="inline-list">
+                                <?php if ($vaData['has_beo']) { ?>
+                                    <li>BEO <?= $vaData['beo_result'] . " " . $vaData['beo_method_abbr'] ?></li>
+                                <?php } ?>
+                                <li>R <?= $vaData['has_right'] ? $vaData['right_result'] : 'NA'; ?>
+                                    <?= $vaData['has_right'] ? $vaData['right_method_abbr'] : '' ?></li>
+                                <li>L <?= $vaData['has_left'] ? $vaData['left_result'] : 'NA' ?>
+                                    <?= $vaData['has_left'] ? $vaData['left_method_abbr'] : '' ?></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <small class="fade"><span class="oe-date"><?= Helper::convertDate2NHS($vaData['event_date']); ?></span></small>
+                        </td>
+                    </tr>
+                <?php } else { ?>
                     <tr>
                         <td>VA:</td>
                         <td>
@@ -123,18 +96,18 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
 
                 <tr>
                     <?php
-                    $leftRefraction = $correspondence_api->getLastRefraction($patient, 'left');
-                    $rightRefraction = $correspondence_api->getLastRefraction($patient, 'right');
-                    if ($leftRefraction !== null || $rightRefraction !== null) { ?>
+                    $refractionData = $exam_api->getLatestRefractionReadingFromAnyElementType($patient);
+
+                    if ($refractionData) { ?>
                         <td>
                             <ul class="inline-list">
-                                <li>R <?= $rightRefraction ?: 'NA' ?></li>
-                                <li>L <?= $leftRefraction ?: 'NA' ?></li>
+                                <li>R <?= $refractionData['right'] ?: 'NA' ?></li>
+                                <li>L <?= $refractionData['left'] ?: 'NA' ?></li>
                             </ul>
                         </td>
                         <td>
                             <small class="fade"><span
-                                        class="oe-date"><?= Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient)) ?></span>
+                                        class="oe-date"><?= Helper::convertDate2NHS($refractionData['event_date']) ?></span>
                             </small>
                         </td>
                     <?php } else { ?>

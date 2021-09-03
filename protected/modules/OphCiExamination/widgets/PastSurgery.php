@@ -67,11 +67,15 @@ class PastSurgery extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        if (array_key_exists('no_pastsurgery', $data) && $data['no_pastsurgery'] === '1') {
-            if (!$element->no_pastsurgery_date) {
-                $element->no_pastsurgery_date = date('Y-m-d H:i:s');
+        if (array_key_exists('no_pastsurgery', $data)) {
+            if ($data['no_pastsurgery'] === '1') {
+                if (!$element->no_pastsurgery_date) {
+                    $element->no_pastsurgery_date = date('Y-m-d H:i:s');
+                }
+            } else {
+                $element->no_pastsurgery_date = null;
             }
-        } else {
+        } elseif ($element->no_pastsurgery_date) {
             $element->no_pastsurgery_date = null;
         }
 
@@ -134,7 +138,7 @@ class PastSurgery extends \BaseEventElementWidget
         $res = array_map(
             function ($op) {
                 return array_key_exists('object', $op) ?
-                    $op['object']->getDisplayDate() . ' ' .$op['object']->getDisplayOperation(false) :
+                    $op['object']->getDisplayDate() . ' ' . $op['object']->getDisplayOperation(false) :
                     $this->formatExternalOperation($op);
             },
             $this->getMergedOperations()
@@ -180,9 +184,9 @@ class PastSurgery extends \BaseEventElementWidget
 
         foreach ($this->element->operations as $i => $op) {
             if (in_array($op->operation, $required_operation_list)) {
-                $operations[] = ['op' => $op, 'required' => true, ];
+                $operations[] = ['op' => $op, 'required' => true,];
             } else {
-                $required[] = ['op' => $op, 'required' => false, ];
+                $required[] = ['op' => $op, 'required' => false,];
             }
         }
 
@@ -207,9 +211,9 @@ class PastSurgery extends \BaseEventElementWidget
     public function postedNotChecked($row)
     {
         return \Helper::elementFinder(
-            \CHtml::modelName($this->element) . ".operation.$row.had_operation",
-            $_POST
-        )
+                \CHtml::modelName($this->element) . ".operation.$row.had_operation",
+                $_POST
+            )
             == PastSurgery_Operation::$NOT_CHECKED;
     }
 }

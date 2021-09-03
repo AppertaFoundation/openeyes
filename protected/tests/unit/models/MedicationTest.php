@@ -14,12 +14,17 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * Class MedicationTest
+ * @method drugs($fixture_id)
+ */
 class MedicationTest extends ActiveRecordTestCase
 {
     /**
      *  @var Medication
      */
-    protected $model;
+    protected Medication $model;
     public $fixtures = array(
         'drugs' => 'Medication',
         'medication_use' => EventMedicationUse::class,
@@ -41,7 +46,7 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     *  @covers Medication::model
+     *  @covers Medication
      *
      */
     public function testModel()
@@ -50,9 +55,8 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     *  @covers MedicationForm::tableName
+     *  @covers Medication
      *
-     *  @todo Implement testTableName().
      */
     public function testTableName()
     {
@@ -60,10 +64,9 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers MedicationForm::rules
+     * @covers Medication
      *
      * @throws CException
-     * @todo Implement testRules().
      */
     public function testRules()
     {
@@ -74,7 +77,7 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     *  @covers Medication::attributeLabels
+     *  @covers Medication
      */
     public function testAttributeLabels()
     {
@@ -100,15 +103,15 @@ class MedicationTest extends ActiveRecordTestCase
             'default_form_id' => 'Default form',
             'default_dose' => 'Default dose',
             'default_dose_unit_term' => 'Default dose unit',
+            'default_dose' => 'Default dose'
         );
 
         $this->assertEquals($expected, $this->model->attributeLabels());
     }
 
     /**
-     * @covers Medication::getLabel
+     * @covers Medication
      *
-     * @todo Implement testGetLabel().
      */
     public function testGetLabel()
     {

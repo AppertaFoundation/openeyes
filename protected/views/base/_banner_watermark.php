@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,24 +16,25 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<?php if (Yii::app()->user->checkAccess('admin') && ( Yii::app()->params['watermark_admin_short'] || Yii::app()->params['watermark_admin'] )) {?>
+<?php if (Yii::app()->user->checkAccess('admin') && ( SettingMetadata::model()->getSetting('watermark_admin_short') || SettingMetadata::model()->getSetting('watermark_admin'))) {?>
     <div id="oe-admin-notifcation">
-        <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_admin_short']);?></span>
-        <?php if ( Yii::app()->params['watermark_admin'] ) { ?>
-        <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
+        <span id="notification-short"><?=\CHtml::encode(SettingMetadata::model()->getSetting('watermark_admin_short'));?></span>
+        <?php if (SettingMetadata::model()->getSetting('watermark_admin')) { ?>
+        <span id="notification-full" class="hidden"><?=\CHtml::encode(SettingMetadata::model()->getSetting('watermark_admin'));?></span>
         <i class="oe-i info pro-theme small pad-left"></i>
-        <?php } elseif (Yii::app()->params['watermark']) { ?>
-        <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
+        <?php } elseif (SettingMetadata::model()->getSetting('watermark')) { ?>
+        <span id="notification-full" class="hidden"><?=\CHtml::encode(SettingMetadata::model()->getSetting('watermark'));?></span>
         <i class="oe-i info pro-theme small pad-left"></i>
         <?php } ?>
     </div>
-<?php } elseif (Yii::app()->params['watermark_short'] || Yii::app()->params['watermark'] ) {?>
+<?php } elseif (SettingMetadata::model()->getSetting('watermark_short') || SettingMetadata::model()->getSetting('watermark')) {?>
     <div id="oe-admin-notifcation">
-        <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_short']);?></span>
-        <?php if (Yii::app()->params['watermark']) { ?>
-        <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
+        <span id="notification-short"><?=\CHtml::encode(SettingMetadata::model()->getSetting('watermark_short'));?></span>
+        <?php if (SettingMetadata::model()->getSetting('watermark')) { ?>
+        <span id="notification-full" class="hidden"><?=\CHtml::encode(SettingMetadata::model()->getSetting('watermark'));?></span>
         <i class="oe-i info pro-theme small pad-left "></i>
         <?php } ?>
     </div>

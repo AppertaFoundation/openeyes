@@ -74,7 +74,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             if (search_term.length < 2) {
                 timeout_id = setTimeout(function () {
                     if (search_term.length === 1) {
-                        inputbox.parent().find('.min-chars').removeClass('hidden');
+                        inputbox.parent().find('.js-min-chars').removeClass('hidden');
                     }
                     hideMe();
                     return false;
@@ -111,7 +111,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                             if (response.length > 0) {
                                 successResponse(response);
                             } else {
-                                inputbox.parent().find('.no-result').removeClass('hidden');
+                                inputbox.parent().find('.js-no-result').removeClass('hidden');
                             }
                             searching = false;
                             current_focus = -1;

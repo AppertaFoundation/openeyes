@@ -31,4 +31,11 @@ return array(
         'left_comments' => 'Some comment left 2',
         'right_comments' => 'Some comment right 2',
     ),
+    'et_iop3' => array(
+        'id' => 3,
+        'event_id' => 15,
+        'eye_id' => 2,
+        'left_comments' => 'Some comment left 2',
+        'right_comments' => 'Some comment right 2',
+    ),
 );

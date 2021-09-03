@@ -1,21 +1,9 @@
 {
   "license": "AGPL-3.0-only",
-  "scripts": {
-    "test": "grunt test"
-  },
   "devDependencies": {
     "decomment": "^0.8.6",
     "glob": "~7.0.3",
-    "grunt": "^1.0.3",
-    "grunt-compare-size": "~0.4.0",
-    "grunt-contrib-compass": "^1.1.1",
-    "grunt-contrib-concat": "~1.0.1",
-    "grunt-contrib-uglify": "~1.0.2",
-    "grunt-contrib-uglify-es": "^3.3.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-jsdoc": "^2.3.0",
     "gzip-js": "0.3.2",
-    "load-grunt-tasks": "~3.5.0",
     "shellcheck": "*"
   },
   "dependencies": {

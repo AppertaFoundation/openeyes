@@ -4,10 +4,10 @@
  * This is the model class for table "trial_patient_status".
  *
  * The followings are the available columns in table 'trial_patient_status':
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $code
- * @property integer $display_order
+ * @property int $display_order
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id

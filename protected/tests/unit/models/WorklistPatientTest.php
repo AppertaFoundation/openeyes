@@ -22,6 +22,10 @@ class WorklistPatientTest extends ActiveRecordTestCase
         return WorklistPatient::model();
     }
 
+    /**
+     * @covers WorklistPatient
+     * @throws ReflectionException
+     */
     public function test_afterValidate_for_scheduled_worklist()
     {
         $wl = ComponentStubGenerator::generate('Worklist', array('scheduled' => true));
@@ -35,6 +39,10 @@ class WorklistPatientTest extends ActiveRecordTestCase
         $this->assertArrayHasKey('when', $wp->getErrors());
     }
 
+    /**
+     * @covers WorklistPatient
+     * @throws ReflectionException
+     */
     public function test_afterValidate_for_unscheduled_worklist()
     {
         $wl = ComponentStubGenerator::generate('Worklist', array('scheduled' => false));
@@ -79,11 +87,13 @@ class WorklistPatientTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers WorklistPatient
      * @dataProvider getWorklistAttributeValueProvider
      *
      * @param $wp_attrs
      * @param $attr
      * @param $expected
+     * @throws ReflectionException
      */
     public function test_getWorklistAttributeValue($wp_attrs, $attr, $expected)
     {
@@ -112,9 +122,11 @@ class WorklistPatientTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers WorklistPatient
      * @dataProvider getCurrentAttributesByIdProvider
      *
      * @param $wp_attrs
+     * @throws ReflectionException
      */
     public function test_getCurrentAttributesById($wp_attrs)
     {

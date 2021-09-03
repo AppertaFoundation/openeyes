@@ -65,6 +65,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private $pcu;
     private $countryId;
     private $cbtId;
+    const SCENARIO = 'hscic_import';
 
     /**
      * Base URL for file retrieval (pre-pended to URLs in the file config below
@@ -671,7 +672,8 @@ EOH;
         }
 
         $isNewRecord = $contact->isNewRecord;
-
+        // setup the scenario to skip some of the validation to ensure all the data is imported
+        $contact->setScenario(self::SCENARIO);
         if ($contact->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
                 Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' ' . \SettingMetadata::model()->getSetting('gp_label') . '-Contact');
@@ -682,8 +684,16 @@ EOH;
             $address = new Address();
             $address->contact_id = $contact->id;
         }
-
-        $this->importAddress($address, array($data['addr1'], $data['addr2'], $data['addr3'], $data['addr4'], $data['addr5']));
+        $this->importAddress(
+            $address,
+            array(
+                'addr1' => $data['addr1'],
+                'addr2' => $data['addr2'],
+                'addr3' => $data['addr3'],
+                'addr4' => $data['addr4'],
+                'addr5' => $data['addr5']
+            )
+        );
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
 
@@ -728,7 +738,8 @@ EOH;
         $contact->primary_phone = $practice->phone;
 
         $isNewRecord = $contact->isNewRecord;
-
+        // setup the scenario to skip some of the validation to ensure all the data is imported
+        $contact->setScenario(self::SCENARIO);
         if ($contact->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
                 Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Contact');
@@ -742,8 +753,17 @@ EOH;
             $address->contact_id = $contact->id;
         }
         $isNewRecord = $address->isNewRecord;
-
-        $this->importAddress($address, array($data['name'], $data['addr1'], $data['addr2'], $data['addr3'], $data['addr4'], $data['addr5']));
+        $this->importAddress(
+            $address,
+            array(
+                'name' => $data['name'],
+                'addr1' => $data['addr1'],
+                'addr2' => $data['addr2'],
+                'addr3' => $data['addr3'],
+                'addr4' => $data['addr4'],
+                'addr5' => $data['addr5']
+            )
+        );
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
 
@@ -785,7 +805,16 @@ EOH;
             $address->contact_id = $contact->id;
         }
         $isNewRecord = $address->isNewRecord;
-        $this->importAddress($address, array($data['addr1'], $data['addr2'], $data['addr3'], $data['addr4'], $data['addr5']));
+        $this->importAddress(
+            $address,
+            array(
+                'addr1' => $data['addr1'],
+                'addr2' => $data['addr2'],
+                'addr3' => $data['addr3'],
+                'addr4' => $data['addr4'],
+                'addr5' => $data['addr5']
+            )
+        );
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
 
@@ -849,19 +878,34 @@ EOH;
      */
     private function importAddress(Address $address, array $lines)
     {
-        $lines = array_unique(array_filter(array_map(array($this, 'tidy'), $lines)));
-        if ($lines) {
-            $address->address1 = array_shift($lines);
+        // capitalised each item, but not removing empty item
+        $lines = array_map(array($this, 'tidy'), $lines);
+        // if the lines['addr1'] started with alphabets, assign it to address->address1
+        // otherwise check if there is any name available
+        if (preg_match('/^[A-Za-z]+/i', $lines['addr1'])) {
+            $address1 = $lines['addr1'];
+            $address2 = "{$lines['addr2']}\n{$lines['addr3']}";
+        } else {
+            $address1 = $lines['addr1'];
+            $address2 = "{$lines['addr2']}\n{$lines['addr3']}";
+            if (isset($lines['name']) && strpos(strtolower($lines['addr1']), strtolower($lines['name'])) === false) {
+                $address1 = $lines['name'];
+                $address2 = "{$lines['addr1']}\n{$lines['addr2']}\n{$lines['addr3']}";
+            }
         }
-        if ($lines) {
-            $address->county = array_pop($lines);
+
+        $address->address1 = $address1;
+        $address->county = $lines['addr5'];
+
+        // sometimes the addr4 contains numbers, which will fail the validation
+        // if addr4 contains number, append to address2
+        // otherwise assign it to city field
+        if (preg_match('~[0-9]~', $lines['addr4'])) {
+            $address2 .= "\n{$lines['addr4']}";
+        } else {
+            $address->city = $lines['addr4'];
         }
-        if ($lines) {
-            $address->city = array_pop($lines);
-        }
-        if ($lines) {
-            $address->address2 = implode("\n", $lines);
-        }
+        $address->address2 = $address2;
 
         $lines = null;
     }

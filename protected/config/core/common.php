@@ -38,6 +38,30 @@ if (file_exists('/etc/openeyes/db.conf')) {
     );
 }
 
+/** START SINGLE SIGN-ON OPTIONS */
+    // The base url for single-sign-on using SAML Authentication
+    $ssoBaseurl = getenv('SSO_BASE_URL') ?: 'http://localhost';
+    $ssoEntityId = getenv('SSO_ENTITY_ID') ?: '';
+    $ssoAppEmbedLink = getenv('SSO_APP_EMBED_LINK') ?: '';
+
+    // Credentials necessary for single-sign-on using OpenID-Connect
+    $ssoProviderURL = getenv('SSO_PROVIDER_URL') ?: '';
+    $ssoClientID = getenv('SSO_CLIENT_ID') ?: '';
+    $ssoClientSecret = getenv('SSO_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/SSO_CLIENT_SECRET")) ?: '');
+    $ssoIssuerURL = getenv('SSO_ISSUER_URL') ?: null;
+    $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
+    $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
+    $ssoImplicitFLow = strtolower(getenv('SSO_IMPLICIT_FLOW')) === 'true';
+    $ssoUserAttributes = getenv('SSO_USER_ATTRIBUTES') ?: '';
+    $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
+
+    $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
+    $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
+/** END SINGLE SIGN-ON SETTINGS */
+
+// Select from SAML, OIDC, LDAP or BASIC
+$authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');
+
 $config = array(
     'name' => 'OpenEyes',
 
@@ -78,18 +102,6 @@ $config = array(
     'aliases' => array(
         'services' => 'application.services',
         'OEModule' => 'application.modules',
-    ),
-
-    'modules' => array(
-        // Gii tool
-        'gii' => array(
-            'class' => 'system.gii.GiiModule',
-            'password' => 'openeyes',
-            'ipFilters' => array('127.0.0.1'),
-        ),
-        'oldadmin',
-        'Admin',
-        'Api'
     ),
 
     // Application components
@@ -224,6 +236,7 @@ $config = array(
                     'categories' => 'application.*',
                     'logFile' => 'debug.log',
                     'maxLogFiles' => 30,
+                    'enabled' => YII_DEBUG,
                 ),
             ),
         ),
@@ -258,6 +271,7 @@ $config = array(
                 'OphCoDocument/Default/create',
                 'OphCoDocument/Default/update',
                 'OphCoDocument/Default/fileUpload',
+                'sso',
             ),
         ),
         'service' => array(
@@ -274,7 +288,6 @@ $config = array(
             'connectionID' => 'db',
             'sessionTableName' => 'user_session',
             'autoCreateSessionTable' => false,
-            //'timeout' => getenv('OE_SESSION_TIMEOUT') ?: '21600',
             /*'cookieParams' => array(
                 'lifetime' => 300,
             ),*/
@@ -327,7 +340,7 @@ $config = array(
         'utf8_decode_required' => true,
         'pseudonymise_patient_details' => false,
         'ab_testing' => false,
-        'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
+        'auth_source' => $authSource,
         // This is used in contact page
         'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
         'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
@@ -353,6 +366,10 @@ $config = array(
         'institution_code' => !empty(trim(getenv('OE_INSTITUTION_CODE'))) ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'institution_specialty' => 130,
         'erod_lead_time_weeks' => 3,
+        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : '',
+        // In most instances the location URL is derived from the WSDL provided above,
+        // but for local testing using SoapUI this will need to be manually specified.
+        'correspondence_export_location_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_URL")) : null,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(130),
         // specifies the order in which different specialties are laid out (use specialty codes)
@@ -372,7 +389,7 @@ $config = array(
             'branding' => false,
             'visual' => false,
             'min_height' => 400,
-            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | inputcheckbox | pagebreak code",
+            'toolbar' => "undo redo | fontselect fontsizeselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | inputcheckbox | pagebreak code",
             'valid_children' => '+body[style]',
             'custom_undo_redo_levels' => 10,
             'object_resizing' => false,
@@ -380,6 +397,8 @@ $config = array(
             'paste_as_text' => true,
             'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
             'browser_spellcheck' => true,
+            'font_formats' => "Arial=arial,helvetica,sans-serif;Bookman=bookman;Courier New=courier new,courier,monospace;Georgia=georgia,palatino;Helvetica=helvetica;Roboto=roboto;Sans Serif=sans-serif;Tahoma=tahoma;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;",
+            'convert_fonts_to_spans' => true,
             'extended_valid_elements' => 'i[*]',
             'valid_elements' => '*[*]',
             'pagebreak_separator' => '<div class="pageBreak" />',
@@ -579,6 +598,12 @@ $config = array(
         ),
 
         /**
+         * Limit the number of users that can be copied to in the
+         * Message Event
+         */
+        'OphCoMessaging_copyto_user_limit' => 5,
+
+        /**
          *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
          */
         "auto_schedule_operation" => false,
@@ -706,7 +731,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '4.0.2',
+        'oe_version' => '4.1 rc1',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -757,13 +782,148 @@ $config = array(
             'pw_days_expire' => false !== getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
             'pw_days_lock' => false !== getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
             'pw_admin_pw_change' => false !== getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
+            'pw_expired_whitelist' => array( //List of URL's accecible when user's status is expired (these are required for OE to allow a user to change thier password)
+                '/profile/password',
+                '/site/logout',
+                '/User/testAuthenticated',
+                '/Site/loginFromOverlay',
+                '/User/getSecondsUntilSessionExpire',
+                '/site/changesiteandfirm'
+            ),
         ),
         'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? strtolower(getenv('OE_TRAINING_MODE')) : null,
         'watermark_short' => getenv('OE_USER_BANNER_SHORT') ?: null,
         'watermark' => getenv('OE_USER_BANNER_LONG') ?: null,
         'watermark_admin_short' => getenv('OE_ADMIN_BANNER_SHORT') ?: null,
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
+        'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
+        'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
+        /** START SINGLE SIGN-ON PARAMS */
+        'strict_SSO_roles_check' => $ssoMappingsCheck,
+        // Settings for OneLogin PHP-SAML toolkit
+        'SAML_settings' => array(
+            // BaseURL of the view that will process the SAML message
+            'baseurl' => '',// baseurl is set to null at the moment because of the OneLogin known issue in Github(Link: https://github.com/onelogin/php-saml/issues/249).
+            // If true then all unsigned and unencrypted messages will be rejected and should also follow set standards and rules
+            'strict' => true,
+            // Debug mode to print errors
+            'debug' => false,
+            // Service Provider data - OpenEyes
+            'sp' => array(
+                'entityId' => $ssoBaseurl . '/sso/login',   // Identifier of SP (URI)
+                'assertionConsumerService' => array(
+                  'url' => $ssoBaseurl . '/sso/login',    // URL where SAMLResponse will be sent
+                  'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',  // HTTP-POST binding only
+                ),
+                'NameIDFormat' => 'emailAddress', // Constraints on name identifier to be used
+            ),
+            'idp' => array(
+                'entityId' => $ssoEntityId,    //Metadata Source
+                'singleSignOnService' => array( //SSO endpoint information
+                  'url' => $ssoAppEmbedLink, // URL Target where the IdP will send the authentication request
+                  'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                ),
+                'singleLogoutService' => array(
+                  'url' => '', //URL where the SP will send the logout request
+                  'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect', // HTTP-Redirect binding only
+                ),
+                'x509cert' => '',
+            )
+        ),
+        'OIDC_settings' => array(
+            // OpenID Party (OP) that will send the token
+            'provider_url' => $ssoProviderURL,
+            // Client ID given by the portal
+            'client_id' => $ssoClientID,
+            // CLient Secret given by the portal
+            'client_secret' => $ssoClientSecret,
+            // URL for the custom Authorization Server (Optional)
+            'issuer' => $ssoIssuerURL,
+            // Absolute URL where the OIDC token will be sent
+            'redirect_url' => $ssoRedirectURL . '/sso/login',      // Remove trailing slashes
+            // Response type - can be [code id_token token]
+            'response_type' => $ssoResponseType,
+            // Implicit flows
+            'implicit_flow' => $ssoImplicitFLow,
+            // Scopes - These are all the necessary and sufficient scopes at this stage
+            'scopes' => array('openid', 'email', 'profile'),
+            // Method used to send authorization code.
+            'authParams' => array('response_mode' => 'form_post'),
+            // Generates random encryption key for openssl
+            'encryptionKey' => $ssoClientSecret,
+            // Configure custom claims with the user attributes that the claims are for
+            'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+            // URL to redirect users to SSO portal to login again after session timeout
+            'portal_login_url' => $ssoLoginURL,
+        ),
+        /** END SINGLE SIGN-ON PARAMS */
     ),
 );
+
+// Enable logging of php errors to brwser console
+// Can be either "true", or can provide the error levels to output (e.g, one or more of trace, error, warning, info, notice)
+if (!empty(getenv('LOG_TO_BROWSER'))) {
+    $browserlog = array(
+                    'browser' => array(
+                        'class' => 'CWebLogRoute',
+                        'levels' => strtolower(trim(getenv('LOG_TO_BROWSER'))) == "true" ? 'error, warning, notice' : trim(getenv('LOG_TO_BROWSER')),
+                        'showInFireBug' => true,
+                    ),
+    );
+    $config['components']['log']['routes'] = array_merge_recursive($config['components']['log']['routes'], $browserlog);
+}
+
+$modules = array(
+        // Gii tool
+        // 'gii' => array(
+        //     'class' => 'system.gii.GiiModule',
+        //     'password' => 'openeyes',
+        //     'ipFilters' => array('127.0.0.1'),
+        // ),
+        'oldadmin',
+        'Admin',
+        'Api',
+        'eyedraw',
+        'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
+        'OphCoCorrespondence',
+        'OphCiPhasing',
+        'OphTrIntravitrealinjection',
+        'OphCoTherapyapplication',
+        'OphDrPrescription',
+        'OphTrConsent',
+        'OphTrOperationnote',
+        'OphTrOperationbooking',
+        'OphTrLaser',
+        'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
+        'OphInVisualfields',
+        'OphInBiometry',
+        'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
+        'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
+        'OphInLabResults',
+        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
+        'Genetics',
+        'OphInDnasample',
+        'OphInDnaextraction',
+        'OphInGeneticresults',
+        'OphCoDocument',
+        'OphCiDidNotAttend',
+        'OphGeneric',
+        'OECaseSearch',
+        'OETrial',
+        'SSO',
+        'OphOuCatprom5',
+        'OphTrOperationchecklists',
+        'OphDrPGDPSD',
+);
+
+// deal with any custom modulesadded for the local deployment - which are set in /config/modules.conf (added via docker)
+// Gracefully ignores file if it is missing
+$custom_modules = trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf")));
+if (!empty($custom_modules)) {
+    $modules = array_unique(array_merge($modules, explode(" ", $custom_modules)), SORT_REGULAR);
+}
+
+$config["modules"] = $modules;
+
 
 return $config;

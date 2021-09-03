@@ -16,6 +16,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+/**
+ * @var \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity $element
+ */
+
 list($values, $val_options) = $element->getUnitValuesForForm(null, false);
 //Reverse the unit values to ensure bigger value display first.
 $values = array_reverse($values, true);
@@ -47,6 +51,15 @@ if (isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_por
 
 
 ?>
+
+<?php $this->beginClip('element-header-additional');?>
+    <button class="va-change-complexity change-complexity"
+        data-element-type-class="<?= \CHtml::modelName($element) ?>"
+        data-record-mode="<?= $element::RECORD_MODE_COMPLEX ?>"
+        data-eye-id="<?= $element::BEO | $element::LEFT | $element::RIGHT ?>"
+    >Complex inputs</button>
+<?php $this->endClip('element-header-additional');?>
+
 <div class="element-both-eyes">
   <div>
         <?php if ($element->isNewRecord) { ?>
@@ -60,7 +73,7 @@ if (isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_por
                     'id',
                     'name'
                 ),
-                array('class' => 'inline')
+                array('class' => 'inline visualacuity_unit_selector', 'data-record-mode' => $element::RECORD_MODE_SIMPLE)
             );
             if ($element->unit->information) { ?>
             <span class="js-has-tooltip fa oe-i info small"
@@ -133,9 +146,11 @@ if ($cvi_api) {
                   ) ?>
               </div>
             </div>
-              <div id="visualacuity-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
-                   style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#visualacuity-<?= $eye_side ?>-comment-button">
-                  <?=\CHtml::activeTextArea(
+              <div id="visualacuity-<?= $eye_side ?>-comments"
+                   class="flex-layout flex-left comment-group js-comment-container"
+                   style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>"
+                   data-comment-button="#visualacuity-<?= $eye_side ?>-comment-button">
+                  <?= \CHtml::activeTextArea(
                       $element,
                       $eye_side . '_notes',
                       array(
@@ -155,7 +170,7 @@ if ($cvi_api) {
                   <i class="oe-i comments small-icon"></i>
               </button>
             <button class="button hint green addReading" id="add-VisualAcuity-reading-btn-<?= $eye_side?>"
-                    style="<?= !$element->eyeAssesable($eye_side)? 'display: none;': '' ?>"
+                    style="<?= !$element->eyeCanHaveReadings($eye_side)? 'display: none;': '' ?>"
                     type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
@@ -231,6 +246,7 @@ if ($cvi_api) {
         'methods' => $methods,
         'asset_path' => $this->getAssetPathForElement($element),
         'selected_data' => array(
+            'reading_unit_id' => $element->unit_id,
             'reading_value' => '{{reading_value}}',
             'reading_display' => '{{reading_display}}',
             'method_id' => '{{method_id}}',
@@ -243,9 +259,6 @@ if ($cvi_api) {
 <?php
 $assetManager = Yii::app()->getAssetManager();
 $baseAssetsPath = Yii::getPathOfAlias('application.assets');
-$assetManager->publish($baseAssetsPath . '/components/chosen/', true);
-
-Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath . '/components/chosen/') . '/chosen.jquery.min.js', true);
 ?>
 <script type="text/javascript">
   $(document).ready(function () {

@@ -14,6 +14,10 @@
  */
 class OEPDFOptionsTest extends CTestCase
 {
+    /**
+     * @covers OEPDFOptions
+     * @throws Exception
+     */
     public function testInject_Catalog_OneLine_WithoutNames()
     {
         $tmp_dir = sys_get_temp_dir();
@@ -110,6 +114,10 @@ startxref
 ", $output);
     }
 
+    /**
+     * @covers OEPDFOptions
+     * @throws Exception
+     */
     public function testInject_Catalog_OneLine_WithNames()
     {
         $tmp_dir = sys_get_temp_dir();
@@ -206,6 +214,10 @@ startxref
 ", $output);
     }
 
+    /**
+     * @covers OEPDFOptions
+     * @throws Exception
+     */
     public function testInject_Catalog_MultiLine_WithoutNames()
     {
         $tmp_dir = sys_get_temp_dir();
@@ -317,6 +329,10 @@ startxref
 ", $output);
     }
 
+    /**
+     * @covers OEPDFOptions
+     * @throws Exception
+     */
     public function testInject_Catalog_MultiLine_WithNames()
     {
         $tmp_dir = sys_get_temp_dir();
@@ -429,6 +445,10 @@ startxref
 ", $output);
     }
 
+    /**
+     * @covers OEPDFOptions
+     * @throws Exception
+     */
     public function testDisablePrintScalingtest_Catalog_OneLine()
     {
         $tmp_dir = sys_get_temp_dir();
@@ -517,6 +537,10 @@ startxref
 ", $output);
     }
 
+    /**
+     * @covers OEPDFOptions
+     * @throws Exception
+     */
     public function testDisablePrintScaling_Catalog_MultiLine_WithoutNames()
     {
         $tmp_dir = sys_get_temp_dir();

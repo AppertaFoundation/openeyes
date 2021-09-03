@@ -28,5 +28,13 @@ return array(
                 'position' => 5,
             ),
         ),
-    ),
+        'admin_structure' => array(
+            'Message' => array(
+                'Message sub type settings' => array(
+                    'module' => 'OphCoMessaging',
+                    'uri' => '/OphCoMessaging/MessageSubTypesSettings',
+                ),
+            ),
+        ),
+    )
 );

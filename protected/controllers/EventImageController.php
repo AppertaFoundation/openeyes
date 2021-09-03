@@ -66,7 +66,7 @@ class EventImageController extends BaseController
             array($event_id, $created_image_status_id)
         )) {
             // THen return that url
-            $url = $this->createUrl('view', array('id' => $event_id));
+            $url = $this->createUrl('view', array('id' => $event_id, 'modified' => !empty($event->last_modified_date) ? strtotime($event->last_modified_date) : ''));
             if ($return_value) {
                 return $url;
             } else {
@@ -92,7 +92,7 @@ class EventImageController extends BaseController
         $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
 
         $criteria = new CDbCriteria();
-        $criteria->select = 't.event_id';
+        $criteria->select = 't.event_id, t.last_modified_date';
         $criteria->compare('status_id', $created_image_status_id);
         $criteria->addInCondition('event_id', $event_ids);
         $criteria->compare('t.last_modified_date', '>= e.last_modified_date');
@@ -106,13 +106,14 @@ class EventImageController extends BaseController
         $event_images = EventImage::model()->findAll($criteria);
 
         foreach ($event_images as $event_image) {
-            $generated_image_event_ids[] = $event_image->event_id;
+            $generated_image_event_ids[] = array('id' => $event_image->event_id, 'modified' => $event_image->last_modified_date);
         }
 
-        $remaining_event_ids = array_diff($event_ids, $generated_image_event_ids);
+        // Suppress error on when there are no generated image event ids
+        $remaining_event_ids = isset($generated_image_event_ids[0]) ? array_diff($event_ids, $generated_image_event_ids[0]) : $event_ids;
         $generated_image_urls = array();
-        foreach ($generated_image_event_ids as $id) {
-            $generated_image_urls[$id] = $this->createUrl('view', array('id' => $id));
+        foreach ($generated_image_event_ids as $image) {
+            $generated_image_urls[$image['id']] = $this->createUrl('view', array('id' => $image['id'], 'modified' => strtotime($image['modified'])));
         }
 
         echo \CJSON::encode(
@@ -194,7 +195,7 @@ class EventImageController extends BaseController
             $headers = $this->getRequestHeaders();
 
             header('Content-type: image/jpeg');
-            header('Cache-Control: private');
+            header('Cache-Control: private, immutable, max-age=31536000');
             // Check if the client is validating his cache and if it is current.
             if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $file_mod_time)) {
                 // Client's cache IS current, so we just respond '304 Not Modified'.

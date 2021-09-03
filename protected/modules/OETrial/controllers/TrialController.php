@@ -9,7 +9,7 @@ class TrialController extends BaseModuleController
 {
     public $model;
 
-    public $fixedHotlist = true;
+    public bool $fixedHotlist = true;
 
     /**
      * @return array action filters
@@ -131,10 +131,11 @@ class TrialController extends BaseModuleController
     /**
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     * @throws Exception
      */
     public function actionCreate()
     {
-        $this->model = new Trial;
+        $this->model = new Trial();
         $this->model->setScenario('manual');
         $this->model->is_open = 1;
         $this->model->trial_type_id = TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id;
@@ -160,6 +161,7 @@ class TrialController extends BaseModuleController
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id the ID of the model to be updated
      * @throws CHttpException Thrown if the model cannot be loaded
+     * @throws Exception
      */
     public function actionUpdate($id)
     {
@@ -190,9 +192,6 @@ class TrialController extends BaseModuleController
         // Default to sorting by status
         $sortBy = Yii::app()->request->getParam('sort_by', -1);
         switch ($sortBy) {
-            case 0:
-                $sortBy = 'LOWER(t.name)';
-                break;
             case 1:
                 $sortBy = 't.started_date';
                 break;
@@ -337,6 +336,11 @@ class TrialController extends BaseModuleController
         }
     }
 
+    /**
+     * @param $id
+     * @throws CHttpException
+     * @throws Exception
+     */
     public function actionClose($id)
     {
         $trial = $this->loadModel($id);
@@ -344,6 +348,11 @@ class TrialController extends BaseModuleController
         $this->redirect($this->createUrl('view', array('id' => $trial->id)));
     }
 
+    /**
+     * @param $id
+     * @throws CHttpException
+     * @throws Exception
+     */
     public function actionReopen($id)
     {
         $trial = $this->loadModel($id);
@@ -351,7 +360,10 @@ class TrialController extends BaseModuleController
         $this->redirect($this->createUrl('view', array('id' => $trial->id)));
     }
 
-
+    /**
+     * @throws CDbException
+     * @throws CHttpException
+     */
     public function actionDelete()
     {
         $trial = $this->loadModel($_POST['id']);
@@ -393,16 +405,16 @@ class TrialController extends BaseModuleController
         $res = array();
         $term = strtolower($term);
 
-        $criteria = new \CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->compare('LOWER(username)', $term, true, 'OR');
         $criteria->compare('LOWER(first_name)', $term, true, 'OR');
         $criteria->compare('LOWER(last_name)', $term, true, 'OR');
         $words = explode(' ', $term);
         if (count($words) > 1) {
-            $first_criteria = new \CDbCriteria();
+            $first_criteria = new CDbCriteria();
             $first_criteria->compare('LOWER(first_name)', $words[0], true);
             $first_criteria->compare('LOWER(last_name)', implode(' ', array_slice($words, 1, count($words) - 1)), true);
-            $last_criteria = new \CDbCriteria();
+            $last_criteria = new CDbCriteria();
             $last_criteria->compare('LOWER(first_name)', $words[count($words) - 1], true);
             $last_criteria->compare('LOWER(last_name)', implode(' ', array_slice($words, 0, count($words) - 2)), true);
             $first_criteria->mergeWith($last_criteria, 'OR');
@@ -434,9 +446,9 @@ class TrialController extends BaseModuleController
     }
 
     /**
-     * Change user pisition to the new value in POST
+     * Change user position to the new value in POST
      *
-     * @throws CHttpException Thrown if the change cannot be saved
+     * @throws Exception Thrown if the change cannot be saved
      */
 
     public function actionChangeTrialUserPosition()

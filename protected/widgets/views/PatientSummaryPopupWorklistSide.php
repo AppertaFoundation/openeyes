@@ -81,57 +81,39 @@
             <div class="quicklook-data-groups">
                 <div class="group">
                     <?php
-                        $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
-                        $visualAcuityLeft = $exam_api->getLetterVisualAcuityLeft($patient);
-                    if ($visualAcuityLeft || $visualAcuityRight) {
-                        $lDate = $exam_api->getLetterVisualAcuityDate($patient, 'left');
-                        $rDate = $exam_api->getLetterVisualAcuityDate($patient, 'right'); ?>
-                            <?php if ($lDate == $rDate) { ?>
-                                <span class="data"> R <?= $visualAcuityRight ?: 'NA'; ?></span>
-                                <span class="data" style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
-                                    <?= $exam_api->getLetterVAMethodName($patient, 'right') ?>
-                                </span>
-                                <span class="data"> L <?= $visualAcuityLeft ?: 'NA' ?></span>
-                                <span class="data" style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
-                                    <?= $exam_api->getLetterVAMethodName($patient, 'left') ?>
-                                </span>
-                                <span class="oe-date" style="text-align: left;">
-                                    <?= Helper::convertDate2NHS($rDate); ?>
-                                </span>
-                            <?php } else { ?>
-                                <span class="data"> R <?= $visualAcuityRight ?: 'NA'; ?></span>
-                                <span class="data" style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
-                                    <?= $exam_api->getLetterVAMethodName($patient, 'right') ?>
-                                </span>
-                                <span class="oe-date"
-                                      style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
-                                    <?= Helper::convertDate2NHS($rDate); ?>
-                                </span>
-                                <span class="data"> L <?= $visualAcuityLeft ?: 'NA' ?> </span>
-                                <span class="data" style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
-                                    <?= $exam_api->getLetterVAMethodName($patient, 'left') ?>
-                                </span>
-                                <span class="oe-date"
-                                      style="text-align: left; display : <?= $visualAcuityLeft ? '' : 'none' ?>">
-                                      <?= Helper::convertDate2NHS($lDate); ?>
-                                </span>
-                            <?php } ?>
+                    $vaData = $exam_api->getMostRecentVADataStandardised($patient);
+
+                    if ($vaData) { ?>
+                        <?php if ($vaData['has_beo']) { ?>
+                            <span class="data">BEO <?= $vaData['beo_result'] ?></span>
+                            <span class="data"><?= $vaData['beo_method_abbr'] ?></span>
+                        <?php } ?>
+                        <span class="data">R <?= $vaData['has_right'] ? $vaData['right_result'] : 'NA'; ?></span>
+                        <?php if ($vaData['has_right']) { ?>
+                            <span class="data"><?= $vaData['right_method_abbr'] ?></span>
+                        <?php } ?>
+                        <span class="data"> L <?= $vaData['has_left'] ? $vaData['left_result'] : 'NA' ?></span>
+                        <?php if ($vaData['has_left']) { ?>
+                            <span class="data"><?= $vaData['left_method_abbr'] ?></span>
+                        <?php } ?>
+                        <span class="oe-date" style="text-align: left;">
+                            <?= Helper::convertDate2NHS($vaData['event_date']); ?>
+                        </span>
                     <?php } else { ?>
-                            <span class="data-value not-available">VA: NA</span>
+                        <span class="data-value not-available">VA: NA</span>
                     <?php } ?>
                 </div>
 
                 <div class="group">
                     <?php
-                        $leftRefraction = $correspondence_api->getLastRefraction($patient, 'left');
-                        $rightRefraction = $correspondence_api->getLastRefraction($patient, 'right');
-                    if ($leftRefraction !== null || $rightRefraction !== null) { ?>
-                            <span class="data">R <?= $rightRefraction ?: 'NA' ?></span>
-                            <span class="data">L <?= $leftRefraction ?: 'NA' ?></span>
-                            <span class="oe-date"
-                                  style="text-align: left"><?= Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient)) ?></span>
+                    $refractionData = $exam_api->getLatestRefractionReadingFromAnyElementType($patient);
+                    if ($refractionData) { ?>
+                        <span class="data">R <?= $refractionData['right'] ?: 'NA' ?></span>
+                        <span class="data">L <?= $refractionData['left'] ?: 'NA' ?></span>
+                        <span class="oe-date"
+                              style="text-align: left"><?= Helper::convertDate2NHS($refractionData['event_date']) ?></span>
                     <?php } else { ?>
-                            <span class="data">Refraction: NA</span>
+                        <span class="data">Refraction: NA</span>
                     <?php } ?>
                 </div>
 
@@ -299,7 +281,7 @@
             <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]) ?>
             <?php $this->widget(
                 'application.widgets.PlansProblemsWidget',
-                ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true]
+                ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true, 'allow_save' => false]
             ); ?>
         </div>
         <?php if (Yii::app()->getModule('OETrial')) {

@@ -36,7 +36,7 @@
             <tbody>
             <tr class="col-gap">
                 <td>
-                    <?=\CHtml::textField(
+                    <?= \CHtml::textField(
                         'search[query]',
                         $search['query'],
                         [
@@ -78,27 +78,39 @@
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Display name</th>
+                <th>Display Name</th>
                 <th>Description</th>
+                <th>Position</th>
+                <th>Comments</th>
                 <th>A constant</th>
-                <th>Active</th>
+                <th>SF/pACD</th>
+                <th>a0</th>
+                <th>a1</th>
+                <th>a2</th>
             </tr>
             </thead>
             <tbody>
             <?php
             foreach ($lensType_lens as $key => $lens) { ?>
-                <tr id="$key" class="clickable" data-id="<?=$lens->id ?>"
-                    data-uri="OphInBiometry/lensTypeAdmin/edit/<?php echo $lens->id ?>?returnUri=">
+                <tr id="$key" class="clickable" data-id="<?= $lens->id ?>"
+                    data-uri="OphInBiometry/lensTypeAdmin/edit/<?= $lens->id ?>?returnUri=">
                     <td>
-                        <input type="checkbox" name="select[]" value="<?php echo $lens->id ?>" id="select[<?=$lens->id ?>]"/>
+                        <input type="checkbox" name="select[]" value="<?= $lens->id ?>"
+                               id="select[<?= $lens->id ?>]"/>
                     </td>
-                    <td><?php echo $lens->id ?></td>
-                    <td><?php echo $lens->name ?></td>
-                    <td><?php echo $lens->display_name ?></td>
-                    <td><?php echo $lens->description ?></td>
-                    <td><?php echo $lens->acon ?></td>
+                    <td><?= $lens->id ?></td>
+                    <td><?= $lens->name ?></td>
+                    <td><?= $lens->display_name ?></td>
+                    <td><?= $lens->description ?></td>
+                    <td><?= $lens->position->name ?? '' ?></td>
+                    <td><?= $lens->comments ?></td>
+                    <td><?= $lens->acon ?></td>
+                    <td><?= $lens->sf ? $lens->sf : $lens->pACD ?></td>
+                    <td><?= $lens->a0 ?></td>
+                    <td><?= $lens->a1 ?></td>
+                    <td><?= $lens->a2 ?></td>
                     <td>
-                        <?php echo ($lens->active) ?
+                        <?= ($lens->active) ?
                             ('<i class="oe-i tick small"></i>') :
                             ('<i class="oe-i remove small"></i>'); ?>
                     </td>
@@ -108,7 +120,7 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="4">
-                    <?=\CHtml::submitButton(
+                    <?= \CHtml::submitButton(
                         'Add',
                         [
                             'class' => 'button large',
@@ -118,7 +130,7 @@
                         ]
                     ); ?>
                     <!-- Does not delete the lens type: sets it as INACTIVE -->
-                    <?=\CHtml::submitButton(
+                    <?= \CHtml::submitButton(
                         'Deactivate Lens Type',
                         [
                             'class' => 'button large',

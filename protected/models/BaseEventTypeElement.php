@@ -28,7 +28,6 @@ class BaseEventTypeElement extends BaseElement
     public $userId;
     public $patientId;
     public $useContainerView = true;
-    public $widgetClass = null;
     // allow us to store a widget on the element so that it doesn't have to widgetised twice
     public $widget = null;
     public $is_initialized = false;
@@ -40,6 +39,12 @@ class BaseEventTypeElement extends BaseElement
 
     // array of audit messages
     protected $audit = array();
+
+    /**
+     * @var BaseEventElementWidget Defines the widget class to manage the element
+     * @see getWidgetClass
+     */
+    protected $widgetClass = null;
 
     protected $_element_type;
     protected $frontEndErrors = array();
@@ -446,6 +451,16 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * If the element should be managed with a widget, returns the class of the widget
+     *
+     * @return BaseEventElementWidget|null
+     */
+    public function getWidgetClass()
+    {
+        return $this->widgetClass;
+    }
+
+    /**
      * @inheritdoc
      * @return bool
      */
@@ -495,8 +510,12 @@ class BaseEventTypeElement extends BaseElement
 
         foreach ($this->getSiblingTypes() as $siblingType) {
             if ($this->event_id) {
-                if ($element = self::model($siblingType->class_name)->find('event_id = ?', array($this->event_id))) {
-                    $siblings[] = $element;
+                if (class_exists($siblingType->class_name)) {
+                    if ($element = self::model($siblingType->class_name)->find('event_id = ?', array($this->event_id))) {
+                        $siblings[] = $element;
+                    }
+                } else {
+                    Yii::log('Missing sibling element class ' . $siblingType->class_name . ' for event id ' . $this->event_id, 'Error');
                 }
             }
         }

@@ -18,28 +18,15 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\models\traits\HasRelationOptions;
+
 class OphCiExamination_NearVisualAcuity_Reading extends OphCiExamination_VisualAcuity_Reading
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_VisualAcuity_Reading the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    protected static $complex_relations = ["source", "occluder"];
 
     public function tableName()
     {
         return 'ophciexamination_nearvisualacuity_reading';
-    }
-
-    public function init()
-    {
-        if (($default_value = Element_OphCiExamination_VisualAcuity::model()->getSetting('default_value'))) {
-            $this->value = $default_value;
-        }
     }
 
     /**
@@ -47,9 +34,35 @@ class OphCiExamination_NearVisualAcuity_Reading extends OphCiExamination_VisualA
      */
     public function relations()
     {
-        return array(
-            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity', 'element_id'),
-            'method' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method', 'method_id'),
+        return [
+            'element' => [self::BELONGS_TO, Element_OphCiExamination_NearVisualAcuity::class, 'element_id'],
+            'method' => [self::BELONGS_TO, OphCiExamination_VisualAcuity_Method::class, 'method_id'],
+            'unit' => [self::BELONGS_TO, OphCiExamination_VisualAcuityUnit::class, 'unit_id'],
+            'source' => [self::BELONGS_TO, OphCiExamination_VisualAcuitySource::class, 'source_id'],
+            'occluder' => [self::BELONGS_TO, OphCiExamination_VisualAcuityOccluder::class, 'occluder_id']
+        ];
+    }
+
+    public function sourceOptions()
+    {
+        $current_pks = $this->source_id ? [$this->source_id] : [];
+        $cache_key = "near-" . self::getRelationOptionsCacheKey(
+            OphCiExamination_VisualAcuitySource::class,
+            $current_pks
+        );
+
+        return self::getAndSetRelationOptionsCache(
+            $cache_key,
+            function () use ($current_pks) {
+                return OphCiExamination_VisualAcuitySource::model()
+                    ->activeOrPk($current_pks)
+                    ->findAll(
+                        [
+                            'condition' => 'is_near = 1',
+                            'order' => 'display_order asc'
+                        ]
+                    );
+            }
         );
     }
 }

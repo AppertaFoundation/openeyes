@@ -18,6 +18,10 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\OphCiExamination\models\interfaces\SidedData;
+use OEModule\OphCiExamination\models\traits\HasSidedData;
+use OEModule\OphCiExamination\widgets\Refraction;
+
 /**
  * This is the model class for table "et_ophciexamination_refraction".
  *
@@ -26,33 +30,28 @@ namespace OEModule\OphCiExamination\models;
  * @property string $id
  * @property int $event_id
  * @property int $eye_id
- * @property decimal $left_sphere
- * @property decimal $left_cylinder
- * @property int $left_axis
- * @property string $left_axis_eyedraw
- * @property string $left_type_id
- * @property string $left_type_other
- * @property decimal $right_sphere
- * @property decimal $right_cylinder
- * @property int $right_axis
- * @property string $right_axis_eyedraw
- * @property string $right_type_id
- * @property string $right_type_other
+ * @property array $right_readings
+ * @property array $left_readings
+ * @property OphCiExamination_Refraction_Reading|null $right_priority_reading
+ * @property OphCiExamination_Refraction_Reading|null $left_priority_reading
  */
-class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
+class Element_OphCiExamination_Refraction extends \BaseEventTypeElement implements SidedData
 {
     use traits\CustomOrdering;
-    public $service;
+    use HasSidedData;
 
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+    protected $relation_defaults = array(
+        'left_readings' => array(
+            'eye_id' => SidedData::LEFT,
+        ),
+        'right_readings' => array(
+            'eye_id' => SidedData::RIGHT,
+        ),
+    );
+
+    public $widgetClass = Refraction::class;
 
     /**
      * @return string the associated database table name
@@ -67,43 +66,20 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
      */
     public function rules()
     {
-        return array(
-            array('left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, left_type_other, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, right_type_other, eye_id, left_notes, right_notes', 'safe'),
-            array('left_sphere', 'requiredIfSide', 'side' => 'left'),
-            array('left_sphere', 'numerical'),
-            array('left_cylinder', 'requiredIfSide', 'side' => 'left'),
-            array('left_cylinder', 'numerical'),
-            array('left_axis', 'requiredIfSide', 'side' => 'left'),
-            array('left_axis', 'numerical','min' => -180, 'max'=>180, 'integerOnly' => true),
-            array('left_type_other', 'requiredIfRefractionTypeOther', 'side' => 'left'),
-            array('right_sphere', 'requiredIfSide', 'side' => 'right'),
-            array('right_sphere', 'numerical'),
-            array('right_cylinder', 'requiredIfSide', 'side' => 'right'),
-            array('right_cylinder', 'numerical'),
-            array('right_axis', 'requiredIfSide', 'side' => 'right'),
-            array('right_axis', 'numerical', 'min' => -180, 'max'=>180, 'integerOnly' => true),
-            array('right_type_other', 'requiredIfRefractionTypeOther', 'side' => 'right'),
-            array('id, event_id, left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, eye_id', 'safe', 'on' => 'search'),
-        );
+        return [
+            ['event_id, eye_id, right_readings, right_notes, left_readings, left_notes', 'safe'],
+            ['id, event_id, eye_id', 'safe', 'on' => 'search'],
+        ];
     }
 
-    public function requiredIfRefractionTypeOther($attribute, $params)
+    public function sidedFields(?string $side = null): array
     {
-        if (($params['side'] === 'left' && $this->left_type_id === '' && $this->hasLeft()) || ($params['side'] === 'right' && $this->right_type_id === '' && $this->hasRight())) {
-            if (empty($this->{$params['side'].'_type_other'})) {
-                $this->addError($attribute, ucfirst($params['side']).' Other cannot be blank. Please specify a valid refraction.');
-            }
-        }
+        return [];
     }
 
-    public function sidedFields()
+    public function sidedDefaults(): array
     {
-        return array('sphere', 'cylinder', 'axis', 'axis_eyedraw', 'type_id', 'type_other');
-    }
-
-    public function sidedDefaults()
-    {
-        return array('axis' => 0, 'type_id' => 1);
+        return [];
     }
 
     public function canCopy()
@@ -111,28 +87,46 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         return true;
     }
 
-    public function setDefaultOptions(\Patient $patient = null)
-    {
-        $this->left_axis = 0;
-        $this->right_axis = 0;
-    }
-
     /**
      * @return array relational rules.
      */
     public function relations()
     {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'left_type' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type', 'left_type_id'),
-            'right_type' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type', 'right_type_id'),
-        );
+        return [
+            'eventType' => [self::BELONGS_TO, 'EventType', 'event_type_id'],
+            'event' => [self::BELONGS_TO, 'Event', 'event_id'],
+            'eye' => [self::BELONGS_TO, 'Eye', 'eye_id'],
+            'user' => [self::BELONGS_TO, 'User', 'created_user_id'],
+            'usermodified' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
+            'right_readings' => [
+                self::HAS_MANY,
+                OphCiExamination_Refraction_Reading::class,
+                'element_id',
+                'on' => 'right_readings.eye_id = ' . SidedData::RIGHT
+            ],
+            'left_readings' => [
+                self::HAS_MANY,
+                OphCiExamination_Refraction_Reading::class,
+                'element_id',
+                'on' => 'left_readings.eye_id = ' . SidedData::LEFT
+            ],
+            'right_priority_reading' => [
+                self::HAS_ONE,
+                OphCiExamination_Refraction_Reading::class,
+                'element_id',
+                'on' => 'right_priority_reading.eye_id = ' . SidedData::RIGHT,
+                'with' => ['type'],
+                'order' => '-type.priority desc limit 1'
+            ],
+            'left_priority_reading' => [
+                self::HAS_ONE,
+                OphCiExamination_Refraction_Reading::class,
+                'element_id',
+                'on' => 'left_priority_reading.eye_id = ' . SidedData::LEFT,
+                'with' => ['type'],
+                'order' => '-type.priority desc limit 1'
+            ]
+        ];
     }
 
     /**
@@ -143,82 +137,126 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'left_sphere' => 'Sphere',
-            'left_cylinder' => 'Cylinder',
-            'left_axis' => 'Axis',
-            'left_type_id' => 'Type',
-            'left_type_other' => 'Other Type',
             'left_notes' => 'Comments',
-            'right_sphere' => 'Sphere',
-            'right_cylinder' => 'Cylinder',
-            'right_axis' => 'Axis',
-            'right_type_id' => 'Type',
-            'right_type_other' => 'Other Type',
             'right_notes' => 'Comments'
         );
     }
 
-    public function getCombined($side)
+    /**
+     * Returns a string representation of the
+     * @param $side
+     * @return string
+     */
+    public function getPriorityReadingCombined($side)
     {
-        return ($this->{$side . '_sphere'} > 0 ? '+' : '') .
-            $this->{$side . '_sphere'} . '/' .
-            ($this->{$side . '_cylinder'} > 0 ? '+' : '') .
-            $this->{$side . '_cylinder'} . ' X ' .
-            $this->{$side . '_axis'} . '° ';
+        $reading = $this->{"{$side}_priority_reading"};
+
+        return $reading ? $reading->refraction_display : "";
     }
 
-    public function getSplit($side)
+    /**
+     * @param $side
+     * @return array
+     */
+    public function getPriorityReadingDataAttributes($side)
     {
-        return array('sphere' => $this->{$side.'_sphere'}, 'cylinder' => $this->{$side.'_cylinder'}, 'axis' => $this->{$side.'_axis'}.'° ', 'type' => $this->getType($side));
-    }
+        $reading = $this->{"{$side}_priority_reading"};
 
-    public function getType($side)
-    {
-        if ($this->{$side.'_type_id'}) {
-            return $this->{$side.'_type'}->name;
-        } else {
-            return $this->{$side.'_type_other'};
-        }
+        return [
+            'sphere' => $reading ? $reading->sphere : null,
+            'cylinder' => $reading ? $reading->cylinder : null,
+            'axis' => $reading ? $reading->axis : null,
+            'type' => $reading ? $reading->type_display : null
+        ];
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider
      */
     public function search()
     {
-        // Warning: Please modify the following code to remove attributes that
-        // should not be searched.
-
         $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
 
-        $criteria->compare('left_sphere', $this->left_sphere);
-        $criteria->compare('left_cylinder', $this->left_cylinder);
-        $criteria->compare('left_axis', $this->left_axis);
-        $criteria->compare('left_type_id', $this->left_type_id);
-        $criteria->compare('left_type_other', $this->left_type_other);
-        $criteria->compare('right_sphere', $this->right_sphere);
-        $criteria->compare('right_cylinder', $this->right_cylinder);
-        $criteria->compare('right_axis', $this->right_axis);
-        $criteria->compare('right_type_id', $this->right_type_id);
-        $criteria->compare('right_type_other', $this->right_type_other);
-
-        return new \CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
-        ));
+        ]);
     }
 
+    /**
+     * @return string
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
     public function getLetter_string()
     {
-        return "Refraction:\nright: ".$this->getCombined('right')."\nleft: ".$this->getCombined('left')."\n";
+        return sprintf("Refraction: R: %s, L: %s",
+            $this->getCombinedString('right'),
+            $this->getCombinedString('left'));
     }
-    
+
+    /**
+     * @return string
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+     */
     public function getPrint_view()
     {
-        return 'print_'.$this->getDefaultView();
+        return 'print_' . $this->getDefaultView();
+    }
+
+    protected function afterValidate()
+    {
+        foreach (['right', 'left'] as $side) {
+            if (!$this->hasEye($side)) {
+                continue;
+            }
+
+            $this->validateReadingsForSide($side);
+        }
+        parent::afterValidate();
+    }
+
+    protected function validateReadingsForSide($side)
+    {
+        $readings_attr = "{$side}_readings";
+        $readings = $this->$readings_attr;
+
+        if (!is_array($readings) || count($readings) === 0) {
+            $this->addError($readings_attr, "cannot be blank.");
+        } elseif (!$this->hasUniqueReadingTypesForSide($side)) {
+            $this->addError("{$side}_readings", "Each reading type can only be recorded once for $side");
+        }
+    }
+
+    protected function hasUniqueReadingTypesForSide($side)
+    {
+        $readings = $this->{"{$side}_readings"} ?? [];
+        $types = array_map(function ($reading) {
+            // get the type id, or the entered string for other type
+            return $reading->type_id ?? $reading->type_other;
+        }, $readings);
+
+        return array_unique($types) === $types;
+    }
+
+    protected function getCombinedString($side)
+    {
+        $readings = $this->{"{$side}_readings"};
+        if (!count($readings)) {
+            return "NR";
+        }
+
+        return implode(
+            ", ",
+            array_map(
+                function ($reading) {
+                    return (string)$reading;
+                },
+                $readings
+            )
+        );
     }
 }

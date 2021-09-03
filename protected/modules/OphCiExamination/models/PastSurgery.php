@@ -19,6 +19,8 @@
 namespace OEModule\OphCiExamination\models;
 
 
+use OEModule\OphCiExamination\widgets\PastSurgery as PastSurgeryWidget;
+
 /**
  * Class PastSurgery
  *
@@ -41,7 +43,7 @@ class PastSurgery extends \BaseEventTypeElement
     protected $default_view_order = 10;
 
     protected $auto_update_relations = true;
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\PastSurgery';
+    protected $widgetClass = PastSurgeryWidget::class;
     protected $default_from_previous = true;
 
     /**

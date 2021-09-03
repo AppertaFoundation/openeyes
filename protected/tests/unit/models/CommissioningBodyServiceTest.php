@@ -22,7 +22,7 @@ class CommissioningBodyServiceTest extends PHPUnit_Framework_TestCase
         return CommissioningBodyService::model();
     }
     /**
-     * @covers CommissioningBodyService::getCorrespondenceName()
+     * @covers CommissioningBodyService
      */
     public function testgetCorrespondenceAddress_nostatic()
     {
@@ -38,7 +38,7 @@ class CommissioningBodyServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers CommissioningBodyService::getCorrespondenceName()
+     * @covers CommissioningBodyService
      */
     public function testgetCorrespondenceAddress_withstatic()
     {

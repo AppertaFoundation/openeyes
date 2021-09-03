@@ -1,86 +1,49 @@
-var analytics_custom = (function () {
-	var init = function () {
+const analytics_custom = (function () {
+    return function () {
         // get plot layout settings
-        var custom_layout = JSON.parse(JSON.stringify(analytics_layout));
+        let custom_layout = JSON.parse(JSON.stringify(analytics_layout));
         // get custome data
-		var data = analytics_dataCenter.custom.getCustomData();
-		var custom_data = data['custom_data'];
-        var va = data['va_final_ticks'];
-        
-		var specialty = analytics_toolbox.getCurrentSpecialty();
-		custom_layout['xaxis']['title'] = "Time post procedure (weeks)";
-		custom_layout['xaxis']['rangeslider'] = {};
-		custom_layout['yaxis']['title'] = analytics_toolbox.getVATitle();
+        const data = analytics_dataCenter.custom.getCustomData();
+        const custom_data = data['custom_data'];
+        const va = data['va_final_ticks'];
 
-		//Set VA unit tick labels
-		var va_mode = $('#js-chart-filter-plot');
-		if (va_mode.html().includes('absolute')) {
-			custom_layout['yaxis']['tickmode'] = 'array';
-			custom_layout['yaxis']['tickvals'] = va['tick_position'];
-			custom_layout['yaxis']['ticktext'] = va['tick_labels'];
-		} else {
-			custom_layout['yaxis']['tickmode'] = 'auto';
-		}
+        const specialty = analytics_toolbox.getCurrentSpecialty();
+        $('.custom-filters > tbody > tr').hide();
+        $('table.custom-filters tr.custom-filter').show()
 
-		custom_layout['yaxis2'] = {
-			title: specialty === 'Glaucoma' ? "IOP (mm Hg)" : "CRT &mu;m",
-			titlefont: {
-				family: 'sans-serif',
-				size: 12,
-				color: '#fff',
-			},
-			side: 'right',
-			overlaying: 'y',
-			linecolor: '#fff',
-			tickcolor: '#fff',
-			tickfont: {
-				color: '#fff',
-			},
-		};
-		plot(true, custom_layout, custom_data[1]);
-		plot(false, custom_layout, custom_data[0])
-		$('#js-btn-selected-eye').click(function (e) {
-			$('#js-chart-filter-eye-side').trigger("changeEyeSide");
-		});
-		$('#js-chart-filter-eye-side').bind("changeEyeSide", function () {
-			var side = $('#js-chart-filter-eye-side').text().toLowerCase();
-			var opposite_side = side == 'left' ? 'right' : 'left';
-			$('#js-hs-chart-analytics-clinical-others-' + side).show();
-			$('#js-hs-chart-analytics-clinical-others-' + opposite_side).hide();
-		});
+        function plot(side, custom_layout, custom_data) {
+            const id = 'js-hs-chart-analytics-clinical-others-' + side;
+            const custom_plot = document.getElementById(id);
+            $('#' + id).css('display', 'block');
+            custom_layout['title']['text'] = document.querySelector('td[data-name="analytics_procedure"] span').dataset.label + ": " + side;
+            custom_layout['yaxis2'] = analytics_toolbox.setYaxisRange(custom_data[1], custom_layout['yaxis2']);
+            Plotly.newPlot(
+                id, custom_data, custom_layout, analytics_options
+            );
 
-		$('#js-chart-filter-age').on('DOMSubtreeModified', function () {
-			if ($('#js-chart-filter-age').html() == "Range") {
-				$('#js-chart-filter-age-all').hide();
-				$('#js-chart-filter-age-min').addClass('js-hs-filters');
-				$('#js-chart-filter-age-max').addClass('js-hs-filters');
-				$('#js-chart-filter-age-range').show();
-			} else {
-				$('#js-chart-filter-age-range').hide();
-				$('#js-chart-filter-age-min').removeClass('js-hs-filters');
-				$('#js-chart-filter-age-max').removeClass('js-hs-filters');
-				$('#js-chart-filter-age-all').show();
-			}
-		});
+            analytics_drill_down(custom_plot, custom_data);
+        }
+        custom_layout = analytics_toolbox.setCustomLayout(specialty, va);
+        plot('right', custom_layout, custom_data[1]);
+        plot('left', custom_layout, custom_data[0]);
+        $('#js-hs-chart-analytics-clinical-others-left').hide();
+        $('.custom-filter input[name$="outcome-eye"]').off('change').on("change", function (e) {
+            const $checked_eye_filter = $('.custom-filter input[name$="outcome-eye"]:checked');
+            if($checked_eye_filter.length === 0){
+                $(this).prop('checked', true);
+                return;
+            }
+            const side = $(this).data('side');
+            const current_plot_id = '#js-hs-chart-analytics-clinical-others-' + side;
 
-		function plot(right, custom_layout, custom_data) {
-			var id;
-			if (right) {
-				id = 'js-hs-chart-analytics-clinical-others-right';
-				custom_layout['title'] = "Clinical Section (Right Eye)";
-			} else {
-				id = 'js-hs-chart-analytics-clinical-others-left';
-				custom_layout['title'] = "Clinical Section (Left Eye)";
-			}
+            if ($(this).attr('checked')) {
+                custom_layout['title']['text'] = document.querySelector('td[data-name="analytics_procedure"] span').dataset.label + ": " + side;
+                $(current_plot_id).css('display', 'block');
+            } else {
+                $(current_plot_id).css('display', 'none');
+            }
 
-			var custom_plot = document.getElementById(id);
-			Plotly.newPlot(
-				id, custom_data, custom_layout, analytics_options
-			);
-
-			analytics_drill_down(custom_plot, custom_data);
-		}
-	}
-
-	return init;
-})()
+        });
+        $('.custom-filter input[name$="outcome-eye"]').trigger('change');
+    }
+})();

@@ -1,5 +1,4 @@
 <?php
-$counter = 0;
 echo '<?php'; ?>
 
 /**
@@ -14,31 +13,23 @@ class <?php echo $this->className; ?>ParameterTest extends CDbTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->searchProviders = array();
         $this->parameter = new <?php echo $this->className; ?>Parameter();
-<?php foreach (explode(',', $this->searchProviders) as $provider) :?>
-        $this->searchProviders[] = new <?php echo $provider; ?>('provider<?php echo $counter++;?>')
-<?php endforeach;?>
         $this->parameter->id = 0;
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->parameter, $this->searchProviders);
+        unset($this->parameter);
     }
 
-    /**
-     * @covers DBProvider::search()
-     * @covers DBProvider::executeSearch()
-     */
     public function testSearch()
     {
         // TODO: Use fixtures to populate the relevant database tables with dummy data.
         $parameters = array();
 
         // TODO: Populate the case search parameter attributes here.
-        $results = $this->searchProviders[0]->search($parameters);
+        $results = Yii::app()->searchProvider->search($parameters);
 
         $this->markTestIncomplete('TODO');
     }

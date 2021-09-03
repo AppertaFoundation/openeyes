@@ -1,6 +1,9 @@
 <?php
 namespace OEModule\PASAPI\components;
 
+use DOMDocument;
+use XMLReader;
+
 /**
  * OpenEyes
  *
@@ -22,7 +25,7 @@ class XmlHelper
 {
     private $_xml;
 
-    private $_xml_reader = null;
+    private $_xml_reader;
 
     public $errors = array();
 
@@ -30,7 +33,7 @@ class XmlHelper
     {
         libxml_use_internal_errors(true);
 
-        $this->_xml_reader = new \XMLReader();
+        $this->_xml_reader = new XMLReader();
 
         if ($xml){
             $this->xml($xml);
@@ -74,7 +77,7 @@ class XmlHelper
             return false;
         }
 
-        $doc = new \DOMDocument($version, $encoding);
+        $doc = new DOMDocument($version, $encoding);
         $doc->loadXML($xml_content);
 
         foreach (libxml_get_errors() as $error) {
@@ -88,7 +91,7 @@ class XmlHelper
 
     /**
      * Returns XMLReader object
-     * @return null|XMLReader
+     * @return XMLReader
      */
     public function getHandler()
     {
@@ -108,7 +111,7 @@ class XmlHelper
             return $count;
         }
 
-        $reader = new \XMLReader();
+        $reader = new XMLReader();
         $reader->xml( $this->_xml );
 
         // move to the first <patient /> node

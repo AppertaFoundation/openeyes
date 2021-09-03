@@ -467,7 +467,7 @@ class PatientMergeRequestController extends BaseController
                     'genderletter' => $patient->gender,
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     'hos_num' => $patient->hos_num,
-                    'nhsnum' => $patient->nhsnum,
+                    'nhsnum' => $patient->nhs_num,
                     'is_local' => $patient->is_local ? 1 : 0,
                     'all-episodes' => $this->getEpisodesHTML($patient),
                     'warning' => $warning,
@@ -527,5 +527,4 @@ class PatientMergeRequestController extends BaseController
 
         return $html;
     }
-
 }

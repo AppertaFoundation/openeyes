@@ -14,7 +14,8 @@
  */
 
 use OEModule\OphCiExamination\models\PupillaryAbnormalityEntry;
-
+/** @var PupillaryAbnormalityEntry $entry */
+/** @var string $field_prefix */
 ?>
 
 <?php
@@ -59,8 +60,11 @@ if (!isset($values)) {
             <label class="inline highlight">
                 <?= \CHtml::radioButton(
                     $field_prefix . '[has_abnormality]',
-                    $posted_not_checked,
-                    array('value' => PupillaryAbnormalityEntry::$NOT_CHECKED)
+                    $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$NOT_CHECKED,
+                    [
+                        'value' => $entry::$NOT_CHECKED,
+                        'id' => "{$field_prefix}_has_abnormality_{$entry::$NOT_CHECKED}"
+                    ]
                 ); ?>
                 Not checked
             </label>
@@ -68,15 +72,20 @@ if (!isset($values)) {
                 <?= \CHtml::radioButton(
                     $field_prefix . '[has_abnormality]',
                     $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$PRESENT,
-                    array('value' => PupillaryAbnormalityEntry::$PRESENT)
+                    [
+                        'value' => PupillaryAbnormalityEntry::$PRESENT,
+                        'id' => "{$field_prefix}_has_abnormality_{$entry::$PRESENT}"]
                 ); ?>
                 yes
             </label>
             <label class="inline highlight">
                 <?= \CHtml::radioButton(
                     $field_prefix . '[has_abnormality]',
-                    $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$NOT_PRESENT,
-                    array('value' => PupillaryAbnormalityEntry::$NOT_PRESENT)
+                    $values['has_abnormality'] === (string)$entry::$NOT_PRESENT,
+                    [
+                        'value' => $entry::$NOT_PRESENT,
+                        'id' => "{$field_prefix}_has_abnormality_{$entry::$NOT_PRESENT}"
+                    ]
                 ); ?>
                 no
             </label>

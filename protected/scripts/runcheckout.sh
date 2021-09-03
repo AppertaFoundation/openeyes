@@ -138,6 +138,9 @@ while [[ $# -gt 0 ]]; do
     --sample)
         sample=1
         ;;
+    --no-sample)
+        sample=-1
+        ;;
     --sample-only)
         # if in sample only mode, we want only the sample module and nothing else
         modules=(sample)
@@ -226,10 +229,10 @@ fi
 #######################################################################################
 # first expression checks that sample module is not already in the sample list
 if [[ $(printf '%s\n' "${modules[@]}" | grep -P '^sample$' >/dev/null 2>&1)$? -eq 1 ]]; then
-    # If sample is not already in the modules list, then ad it if either the sample folder exists or if sample=1 is explicitly set
-    if [[ -d "$MODULEROOT/sample"  || $sample -eq 1 ]]; then 
+    # If sample is not already in the modules list, then add it if either the sample folder exists or if sample=1 is explicitly set
+    if [[ (-d "$MODULEROOT/sample" && $sample -eq 0) || ($sample -eq 1) ]]; then
         echo -e "\nAdding sample module..."
-        modules=("${modules[@]}" sample);
+        modules=("${modules[@]}" sample)
     fi
 fi
 
@@ -386,7 +389,7 @@ for module in "${modules[@]}"; do
 
     processgit=1
     moduledepth=$depth # allows override of the depth for specific modules (e.g, sample)
-    nomodulepull=0 # can override nopull for this module only (used when dealing with tags)
+    nomodulepull=0     # can override nopull for this module only (used when dealing with tags)
 
     # override depth for sample module, to save downloading gigs of data,
     # can be overiden by specifying --unshallow-sample
@@ -414,20 +417,25 @@ for module in "${modules[@]}"; do
         trackbranch="$branch"
         # check if branch exists locally - if so then we should not attempt to fetch it
         if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/$branch; then
-                nofetch=1
+            nofetch=1
         fi
-        
+
     else
         nomodulepull=1 # No point pulling if there is no remote to pull from
         # check if branch exists locally - if not, fallback to defaultbranch
-        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/$branch; then 
+        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/$branch; then
             trackbranch="$branch"
         else
             trackbranch="$defaultbranch"
         fi
 
-        if [ "$trackbranch" != "branch" ]; then 
+        if [ "$trackbranch" != "branch" ]; then
             echo "No branch $branch was found. Falling back to $defaultbranch"
+            trackbranch=$defaultbranch
+            # check if default branch exists locally - if not fetch it
+            if ! git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$trackbranch"; then
+                git -C $MODGITROOT fetch --depth $moduledepth origin $trackbranch:$trackbranch
+            fi
         fi
 
     fi
@@ -479,15 +487,15 @@ for module in "${modules[@]}"; do
         #####################################################################
 
         if [ $remoteexists -eq 1 ] && [ $nofetch -eq 0 ]; then
-            
+
             # Add depth if specified
             if [[ -n "$moduledepth" ]]; then
                 fetchparams+=" --depth=$moduledepth"
                 echo "Attempting shallow fetch of depth: $moduledepth"
             fi
-           
+
             # Now we know the branch exists, we can try to shallow fetch it
-            if [ "$(git -C $MODGITROOT branch --show-current)" != "$branch" ]; then 
+            if [ "$(git -C $MODGITROOT branch --show-current)" != "$branch" ]; then
                 if ! git -C $MODGITROOT fetch origin $trackbranch:$trackbranch $fetchparams; then
                     # if something goes wrong with the shallow clone, then fall back to a full fetch
                     echo "Could not do a shallow fetch. Fetching full tree instead..."
@@ -498,15 +506,15 @@ for module in "${modules[@]}"; do
 
         # Try to checkout the branch/tag
         if ! git -C $MODGITROOT checkout $trackbranch 2>/dev/null; then
-                echo "Unable to checkout a branch named $trackbranch. It does not exist. Exiting..."
-                exit 1
+            echo "Unable to checkout a branch named $trackbranch. It does not exist. Exiting..."
+            exit 1
         fi
 
         ## fast forward to latest head
         if [[ $nopull -eq 0 && $nomodulepull -eq 0 ]]; then
             echo "Pulling latest changes: "
             git -C $MODGITROOT branch --set-upstream-to=origin/$trackbranch
-            
+
             pullparams=""
             if [ -n "$moduledepth" ]; then
                 pullparams="$pullparams --depth=$moduledepth origin $trackbranch"

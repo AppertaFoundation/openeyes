@@ -16,6 +16,9 @@ WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 
 curuser="${LOGNAME:-root}"
 
+# disable log to browser during fix, otherwise it causes extraneous trace output on the CLI
+export LOG_TO_BROWSER=""
+
 # process commandline parameters
 clearcahes=1
 buildassests=1
@@ -111,17 +114,21 @@ if [ -f "$WROOT/index.example.php" ]; then
     sudo chown www-data:www-data $WROOT/index.php
 fi
 
-if [ ! -f "$WROOT/protected/config/local/common.php" ]; then
+if [ $resetconfig -eq 1 ]; then
+    echo "
+    ************************************************************************
+    ************************************************************************
+    ********* WARNING: Restoring defualt local configuration ...   *********
+    *********                                                      *********
+    *********        Any custom modules will be disabled           *********
+    *********        You may need to reset your database           *********
+    ************************************************************************
+    ************************************************************************
+    "
+    rm -f "$WROOT/protected/config/local/common.php"
+fi
 
-    # 	************************************************************************
-    # 	************************************************************************
-    # 	********* WARNING: Restoring backed up local configuration ... *********
-    # 	*********                                                      *********
-    # 	********* Remove /etc/openeyes/backup/config/local to prevent  *********
-    # 	*********                  or use -ff flag                     *********
-    # 	************************************************************************
-    # 	************************************************************************
-    #
+if [ ! -f "$WROOT/protected/config/local/common.php" ]; then
 
     echo "WARNING: Copying sample configuration into local ..."
     sudo mkdir -p $WROOT/protected/config/local
@@ -149,16 +156,20 @@ if [ "$composer" == "1" ]; then
     sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --no-interaction $composerexta
 
     echo "Installing/updating npm dependencies"
+
+    # have to cd, as not all npm commands support setting a working directory
     cd "$WROOT" || exit 1
+
+    # If we've switched from dev to live, remove dev dependencies, else, just prune
+    [ "${OE_MODE^^}" == "LIVE" ] && sudo -E npm prune --production || sudo -E npm prune
+
     rm package-lock.json >/dev/null 2>&1
     sudo -E npm update --no-save $npmextra
-
-    # If we've switched from dev to live, remove dev dependencies
-    [ "${OE_MODE^^}" == "LIVE" ] && sudo -E npm prune --production
 
     # List current modules (will show any issues if above commands have been blocked by firewall).
     npm list --depth=0
 
+    # return to original directory
     cd - >/dev/null 2>&1
 
     # Refresh git submodules
@@ -186,7 +197,7 @@ fi
 # import eyedraw config
 if [ "$eyedraw" = "1" ]; then
     printf "\n\nImporting eyedraw configuration...\n\n"
-    php $WROOT/protected/yiic eyedrawconfigload --filename=$WROOT/protected/config/core/OE_ED_CONFIG.xml 2>/dev/null
+    php $WROOT/protected/yiic eyedrawconfigload --filename=$WROOT/protected/config/core/OE_ED_CONFIG.xml
 fi
 
 # Clear caches
@@ -196,8 +207,6 @@ if [ $clearcahes = 1 ]; then
     sudo mkdir -p $WROOT/protected/runtime/cache/events 2>/dev/null || :
     sudo chown www-data $WROOT/protected/runtime/cache/events 2>/dev/null
     sudo rm -rf $WROOT/assets/* 2>/dev/null || :
-    # Cache-Control, etc should have been set in .htaccess in the protected assets folder - copy this to the generated assets
-    cp "$WROOT"/protected/assets/.htaccess "$WROOT"/assets/.htaccess
     echo ""
 fi
 

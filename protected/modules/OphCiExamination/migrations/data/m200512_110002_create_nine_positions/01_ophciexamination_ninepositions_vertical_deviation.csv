@@ -1,0 +1,9 @@
+name,abbreviation,display_order,active
+right hyperphoria,RH,1,1
+right hypophoria,RHo,2,1
+right hypertropia,RHT,3,1
+right hypotropia,RHoT,4,1
+left hyperphoria,LH,5,1
+left hypophoria,LHo,6,1
+left hypertropia,LHT,7,1
+left hypotropia,LHoT,8,1

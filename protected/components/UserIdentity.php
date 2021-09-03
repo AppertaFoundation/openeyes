@@ -53,7 +53,7 @@ class UserIdentity extends CUserIdentity
         /*
          * Usernames are case sensitive
          */
-        $user = User::model()->find('username = ?', array($this->username));
+        $user = User::model()->find('username = :username', array('username' => $this->username));
         if ($user === null) {
             Audit::add('login', 'login-failed', null, "User not found in local database: $this->username");
             $this->errorCode = self::ERROR_USERNAME_INVALID;
@@ -300,6 +300,9 @@ class UserIdentity extends CUserIdentity
 
                 return false;
             }
+        } elseif (Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC') {
+            // The user is already authenticated from the portal so directly register the username for the session
+            $user->username = $this->username;
         } else {
             /*
              * Unknown auth_source, error

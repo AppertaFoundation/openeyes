@@ -27,7 +27,7 @@
 $LR_readings = array();
 $left = $left ?: array();
 $right = $right ?: array();
-$va_unit = $va_unit?:'';
+$va_unit = $va_unit ? "({$va_unit})" : '';
 foreach ($left as $method => $value) {
     $LR_readings[$method] = array('left' => $value);
 }
@@ -47,29 +47,17 @@ if (empty($LR_readings)) {
 <table>
   <thead>
   <tr>
-    <th>
-      Visual Acuity (<?= $va_unit?>)
-    </th>
-    <th>
-      Right Eye
-    </th>
-    <th>
-      Left Eye
-    </th>
+    <th><?= $title ?> <?= $va_unit ?></th>
+    <th>Right Eye</th>
+    <th>Left Eye</th>
   </tr>
   </thead>
   <tbody>
     <?php foreach ($LR_readings as $method => $readings) : ?>
     <tr>
-      <td>
-          <?= $method ?>
-      </td>
-      <td>
-          <?= array_key_exists('right', $readings) ? $readings['right'] : ' - ' ?>
-      </td>
-      <td>
-          <?= array_key_exists('left', $readings) ? $readings['left'] : ' - ' ?>
-      </td>
+      <td><?= $method ?></td>
+      <td><?= array_key_exists('right', $readings) ? $readings['right'] : ' - ' ?></td>
+      <td><?= array_key_exists('left', $readings) ? $readings['left'] : ' - ' ?></td>
     </tr>
     <?php endforeach; ?>
   </tbody>

@@ -16,6 +16,7 @@
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
 <div id="js-hs-chart-VA" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-VA.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-VFI.js')?>"></script>
   <form id="va-history-form" action="#OphCiExamination_Episode_VisualAcuityHistory" style="margin-left: 70px">
     <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
     <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
@@ -37,6 +38,7 @@
   $(document).ready(function () {
     $('#va_history_unit_id').change(function () { this.form.submit(); });
     var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
+    var vfi_ticks = <?= CJavaScript::encode($this->getVfiTicks()); ?>;
     OEScape.full_va_ticks = va_ticks;
     var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
@@ -48,45 +50,91 @@
 
     //Plotly
     var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
+    var vfi_plotly = <?= CJavaScript::encode($this->getPlotlyVfiData()) ?>;
 
     var va_plotly_ticks = pruneYTicks(va_ticks, height, 25);
+    var vfi_plotly_ticks = pruneYTicks(vfi_ticks, height, 25);
 
+    let coloursForSide = {
+        'right': '#9fec6d',
+        'left': '#fe6767',
+        'beo': '#e8b131'
+    }
+
+    function generateVAPlotlySeriesForSide(side)
+    {
+        return {
+            name: 'VA('+side+')',
+            x: va_plotly[side]['x'].map(function (item) {
+                return new Date(item);
+            }),
+            y: va_plotly[side]['y'],
+            line: {
+                color: coloursForSide[side],
+            },
+            text: va_plotly[side]['x'].map(function (item, index) {
+                var d = new Date(item);
+                return OEScape.toolTipFormatters_plotly.VA( d, va_plotly[side]['y'][index], 'VA('+side+')');
+            }),
+            hoverinfo: 'text',
+            hoverlabel: trace_hoverlabel,
+            type: 'line',
+            mode: 'lines+markers',
+            marker: {
+                symbol: 'circle',
+                size: 10,
+            },
+        };
+    }
+
+    function generateVFIPlotlySeriesForSide(side) {
+        return {
+            name: 'VFI('+side+')',
+            x: vfi_plotly[side]['x'].map(function (item) {
+                return new Date(item);
+            }),
+            y: vfi_plotly[side]['y'],
+            yaxis: 'y2',
+            line: {
+                color: coloursForSide[side],
+                dash: 'dot',
+            },
+            text: vfi_plotly[side]['x'].map(function (item, index) {
+                var d = new Date(item);
+                return OEScape.toolTipFormatters_plotly.VFI(d, vfi_plotly[side]['y'][index], side);
+            }),
+            hoverinfo: 'text',
+            hoverlabel: trace_hoverlabel,
+            type: 'line',
+            mode: 'lines+markers',
+            marker: {
+                symbol: 'circle',
+                size: 7,
+            },
+        };
+    }
 
     for (var side of sides){
       var layout_VA = JSON.parse(JSON.stringify(layout_plotly));
       layout_VA['shapes'] = [];
       layout_VA['annotations'] = [];
-      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
-      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 150);
+      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, opnote_marking, side, -35, 140);
+      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, laser_marking, side, -35, 140);
 
-      var data =[{
-        name: 'VA('+side+')',
-        x: va_plotly[side]['x'].map(function (item) {
-          return new Date(item);
-        }),
-        y: va_plotly[side]['y'],
-        line: {
-          color: (side=='right')?'#9fec6d':'#fe6767',
-        },
-        text: va_plotly[side]['x'].map(function (item, index) {
-          var d = new Date(item);
-          return OEScape.toolTipFormatters_plotly.VA( d, va_plotly[side]['y'][index], 'VA('+side+')');
-        }),
-        hoverinfo: 'text',
-        hoverlabel: trace_hoverlabel,
-        type: 'line',
-        mode: 'lines+markers',
-        marker: {
-          symbol: 'circle',
-          size: 10,
-        },
-      }];
+      var data =[generateVAPlotlySeriesForSide(side), generateVAPlotlySeriesForSide('beo'), generateVFIPlotlySeriesForSide(side)];
+
       var yaxis_options = {
-        range: [-15, 150],
+        range: [-35, 150],
         tickvals: va_plotly_ticks['tick_position'],
         ticktext: va_plotly_ticks['tick_labels'],
       };
+      var yaxis2_options = {
+          range: [-45, 10],
+          tickvals: vfi_plotly_ticks['tick_position'],
+          ticktext: vfi_plotly_ticks['tick_labels'],
+      }
       layout_VA['yaxis'] = setYAxis_VA(yaxis_options);
+      layout_VA['yaxis2'] = setYAxis_VFI(yaxis2_options);
       layout_VA['height'] = height;
       layout_VA['xaxis']['rangeslider'] = {};
 

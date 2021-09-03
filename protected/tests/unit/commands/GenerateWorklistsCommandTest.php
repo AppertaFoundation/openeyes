@@ -32,6 +32,9 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
             ->getMock();
     }
 
+    /**
+     * @covers GenerateWorklistsCommand
+     */
     public function test_actionGenerate()
     {
         $horizon = '3 months';
@@ -58,6 +61,9 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
         $cmd->actionGenerate(null, $horizon);
     }
 
+    /**
+     * @covers GenerateWorklistsCommand
+     */
     public function test_actionGenerate_errors()
     {
         $horizon = '3 months';
@@ -106,6 +112,7 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getDateLimitProvider
+     * @covers GenerateWorklistsCommand
      *
      * @param $horizon
      * @param $expected

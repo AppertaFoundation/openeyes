@@ -132,10 +132,10 @@ class OphTrIntravitrealinjection_API extends BaseAPI
                 'event.deleted = 0',
                 'patient.id = :patient_id',
             ));
-
+        // event date is datetime data type, so the since date needs to be in the same format
         $criteria->params = array(
             'eye_id' => $eye_id,
-            'since' => $sinceDate->format('Y-m-d'),
+            'since' => $sinceDate->format('Y-m-d H:i:s'),
             'patient_id' => $patient->id,
         );
 

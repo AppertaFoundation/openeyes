@@ -17,20 +17,35 @@
  */
 ?>
 <?php
+/**
+ * @var $search_terms array
+ */
 
 $based_on = array();
 $search_term = "";
-if ($search_terms['last_name']) {
-    $based_on[] = 'LAST NAME';
-    $search_term = $search_terms['last_name'];
-}
 if ($search_terms['first_name']) {
     $based_on[] = 'FIRST NAME';
     $search_term = $search_terms['first_name'];
 }
+if ($search_terms['last_name']) {
+    $based_on[] = 'LAST NAME';
+    if ($search_terms['first_name']) {
+        $search_term .= ' ' . $search_terms['last_name'];
+    } else {
+        $search_term = $search_terms['last_name'];
+    }
+}
+if ($search_terms['dob']) {
+    $based_on[] = 'DOB';
+    $search_term .= ' ' . $search_terms['dob'];
+}
 if ($search_terms['hos_num']) {
     $based_on[] = 'HOSPITAL NUMBER';
     $search_term = $search_terms['hos_num'];
+}
+if ($search_terms['nhs_num']) {
+    $based_on[] = Yii::app()->params['nhs_num_label'] . ' NUMBER';
+    $search_term = $search_terms['nhs_num'];
 }
 $core_api = new CoreAPI();
 

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -10,7 +11,8 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @link http://www.openeyes.org.uk
+ * @link http://www.open
+ * eyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright 2017, OpenEyes Foundation
@@ -24,7 +26,7 @@ class PatientSearch
     const HOSPITAL_NUMBER_REGEX = '/^(H|Hosnum)\s*[:;]\s*([0-9\-]+)$/i';
 
     // Patient name
-    const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]+)?([\a-zA-Z-]+[ ,]?[\a-zA-Z-]*)$/';
+    const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]+)?([\D]+[ ,]?[\D]*)(\s\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})?$/';
 
     private $searchTerms = array();
 
@@ -33,7 +35,7 @@ class PatientSearch
     /**
      * Suppress PAS integration.
      *
-     * @return Patient
+     * @return PatientSearch
      */
     public function noPas()
     {
@@ -57,6 +59,7 @@ class PatientSearch
         $search_terms = array(
             'hos_num' => null,
             'nhs_num' => null,
+            'dob' => null,
             'first_name' => null,
             'last_name' => null,
         );
@@ -77,6 +80,7 @@ class PatientSearch
         if (!$nhs && !$hos_num && $name) {
             $search_terms['first_name'] = trim($name['first_name']);
             $search_terms['last_name'] = trim($name['last_name']);
+            $search_terms['dob'] = trim($name['dob']);
         }
 
         $this->searchTerms = CHtml::encodeArray($search_terms);
@@ -86,8 +90,9 @@ class PatientSearch
 
     /**
      * Searching for patients.
-     * 
+     *
      * @param string $term search term
+     * @return CActiveDataProvider
      */
     public function search($term)
     {
@@ -108,29 +113,29 @@ class PatientSearch
 
         $sortBy = Yii::app()->request->getParam('sort_by');
         switch ($sortBy) {
-                case 0:
-                        $sortBy = 'hos_num*1';
-                        break;
-                case 1:
-                        $sortBy = 'title';
-                        break;
-                case 2:
-                        $sortBy = 'first_name';
-                        break;
-                case 3:
-                        $sortBy = 'last_name';
-                        break;
-                case 4:
-                        $sortBy = 'dob';
-                        break;
-                case 5:
-                        $sortBy = 'gender';
-                        break;
-                case 6:
-                        $sortBy = 'nhs_num*1';
-                        break;
-                default:
-                        $sortBy = 'hos_num*1';
+            case 0:
+                $sortBy = 'hos_num*1';
+                break;
+            case 1:
+                $sortBy = 'title';
+                break;
+            case 2:
+                $sortBy = 'first_name';
+                break;
+            case 3:
+                $sortBy = 'last_name';
+                break;
+            case 4:
+                $sortBy = 'dob';
+                break;
+            case 5:
+                $sortBy = 'gender';
+                break;
+            case 6:
+                $sortBy = 'nhs_num*1';
+                break;
+            default:
+                $sortBy = 'hos_num*1';
         }
 
         $patientCriteria = array(
@@ -140,15 +145,14 @@ class PatientSearch
             'currentPage' => $currentPage,
             'first_name' => CHtml::decode($search_terms['first_name']),
             'last_name' => CHtml::decode($search_terms['last_name']),
+            'dob' => CHtml::decode($search_terms['dob']),
         );
 
         if ( $this->use_pas == false ){
             $patient->use_pas = false;
         }
 
-        $dataProvider = $patient->search($patientCriteria);
-
-        return $dataProvider;
+        return $patient->search($patientCriteria);
     }
 
     public function getSearchTerms()
@@ -159,17 +163,20 @@ class PatientSearch
     /**
      * Tries to fetch NHS Number from the search term.
      *
-     * @param array|null $result
+     * @param $term
+     * @return string|null
      */
     public function getNHSnumber($term)
     {
         // NHS number (assume 10 digit number is an NHS number)
         $NHS_NUMBER_REGEX_1 = '/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i';
-        $NHS_NUMBER_REGEX_2 = isset(Yii::app()->params['nhs_num_length'])  ? '/^([0-9]{'.Yii::app()->params['nhs_num_length'].'})$/i' : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
+        $NHS_NUMBER_REGEX_2 = isset(Yii::app()->params['nhs_num_length'])
+            ? '/^([0-9]{' . Yii::app()->params['nhs_num_length'] . '})$/i'
+            : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
 
         $result = null;
         if (preg_match($NHS_NUMBER_REGEX_1, $term, $matches) || preg_match($NHS_NUMBER_REGEX_2, $term, $matches)) {
-            $nhs = (isset($matches[2])) ? $matches[2] : $matches[1];
+            $nhs = $matches[2] ?? $matches[1];
             $nhs = str_replace(array('-', ' '), '', $nhs);
             $result = $nhs;
         }
@@ -180,16 +187,21 @@ class PatientSearch
     /**
      * Tries to fetch Hospital Number from the search term.
      *
-     * @param array|null $result
+     * @param $term
+     * @return string|null
      */
     public function getHospitalNumber($term)
     {
         $result = null;
 
-        $unprefixed_term = strtoupper(preg_replace('/'.self::HOSPITAL_NUMBER_SEARCH_PREFIX.'/i', '', $term));
+        $unprefixed_term = strtoupper(preg_replace('/' . self::HOSPITAL_NUMBER_SEARCH_PREFIX . '/i', '', $term));
 
-        if (preg_match(self::HOSPITAL_NUMBER_REGEX, $term, $matches) || preg_match(Yii::app()->params['hos_num_regex'], $unprefixed_term, $matches)) {
-            $hosnum = (isset($matches[2])) ? $matches[2] : $matches[1];
+        if (preg_match(self::HOSPITAL_NUMBER_REGEX, $term, $matches) || preg_match(
+                Yii::app()->params['hos_num_regex'],
+                $unprefixed_term,
+                $matches
+            )) {
+            $hosnum = $matches[2] ?? $matches[1];
             $result = sprintf(Yii::app()->params['pad_hos_num'], $hosnum);
         }
 
@@ -199,25 +211,38 @@ class PatientSearch
     /**
      * Tries to fetch Patient name from the search term.
      *
-     * @param array|null $result
+     * @param string $term
+     * @return string[]|null
      */
-    public function getPatientName($term)
+    public function getPatientName(string $term)
     {
         $result = null;
         if (preg_match(self::PATIENT_NAME_REGEX, $term, $m)) {
             $name = $m[1];
+            $name = trim(preg_replace('/\s?\d[\/\-]\d[\/\-]\d/', '', $name));
 
             if (strpos($name, ',') !== false) {
-                list($surname, $firstname) = explode(',', $name, 2);
+                [$surname, $firstname] = explode(',', $name, 2);
             } elseif (strpos($name, ' ')) {
-                list($firstname, $surname) = explode(' ', $name, 2);
+                [$firstname, $surname] = explode(' ', $name, 2);
             } else {
                 $surname = $name;
                 $firstname = '';
             }
+            $dob = $m[2] ?? '';
 
             $result['first_name'] = trim($firstname);
             $result['last_name'] = trim($surname);
+            if($dob){
+                // normalize dob input for DateTime::createFromFormat
+                $normalized_dob = trim(preg_replace('/[-\/]+/', ' ', $dob));
+                // specify day month year for the date string
+                $formated_dob = DateTime::createFromFormat('d m Y', $normalized_dob);
+                if($formated_dob){
+                    $dob = $formated_dob->format('Y-m-d');
+                }
+            }
+            $result['dob'] = trim($dob);
         }
 
         return $result;
@@ -232,10 +257,6 @@ class PatientSearch
      */
     public function isValidSearchTerm($term)
     {
-        if ($this->getNHSnumber($term) || $this->getHospitalNumber($term) || $this->getPatientName($term)) {
-            return true;
-        }
-
-        return false;
+        return $this->getNHSnumber($term) || $this->getHospitalNumber($term) || $this->getPatientName($term);
     }
 }

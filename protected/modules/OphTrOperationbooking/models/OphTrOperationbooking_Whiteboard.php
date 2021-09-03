@@ -19,7 +19,6 @@ use OEModule\OphCiExamination\models\OphCiExaminationRisk;
  */
 class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 {
-    private $procedure_short_format_threshold = 64;
     /**
      * Returns the static model of the specified AR class.
      * @param $className string
@@ -48,7 +47,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 'Element_OphCoDocument_Document',
                 'biometry_report_id',
             ),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id')
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'procedures' => array(self::MANY_MANY, 'Procedure', 'ophtroperationbooking_whiteboard_proc_assignment(whiteboard_id, proc_id)', 'order' => 'display_order ASC'),
+            'procedure_assignments' => array(self::HAS_MANY,
+                'OphTrOperationBooking_Whiteboard_ProcAssignment', 'whiteboard_id', 'order' => 'display_order ASC'),
         );
     }
 
@@ -88,19 +90,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $blockers = $this->alphaBlockerStatusAndDate($patient);
         $anticoag = $this->anticoagsStatusAndDate($patient);
 
-        $operation = $this->operation($id);
-        $procedures_text = implode(', ', array_column($operation, 'term'));
-        if (strlen($procedures_text) > $this->procedure_short_format_threshold) {
-            $procedures_text = [];
-            foreach ($operation as $procedure) {
-                if (!empty($procedure['short_term'])) {
-                    $procedures_text[] = $procedure['short_term'];
-                } else {
-                    $procedures_text[] = $procedure['term'];
-                }
-            }
-            $procedures_text = implode(', ', $procedures_text);
-        }
+        $operationIds = $this->operation($id);
         $allergyString = $this->allergyString($episode);
 
         $this->event_id = $id;
@@ -110,7 +100,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
-        $this->procedure = $procedures_text;
         $this->allergies = $allergyString;
         $this->complexity = $booking->complexity;
 
@@ -127,16 +116,16 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->axis = 0.0;
 
         if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, EYE::BOTH])) {
-                $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
-                $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
-                $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
-                $this->acd = $biometry->attributes["acd_$eyeLabel"];
-                $this->predicted_refractive_outcome = $biometry->attributes["predicted_refraction_$eyeLabel"];
-                $this->formula = $biometry->attributes["formula_$eyeLabel"];
-                $this->aconst = $biometry->attributes["lens_acon_$eyeLabel"];
-                $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"];
-                $this->flat_k = $biometry->attributes["k1_$eyeLabel"];
-                $this->steep_k = $biometry->attributes["k2_$eyeLabel"];
+            $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
+            $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
+            $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
+            $this->acd = $biometry->attributes["acd_$eyeLabel"];
+            $this->predicted_refractive_outcome = $biometry->attributes["predicted_refraction_$eyeLabel"];
+            $this->formula = $biometry->attributes["formula_$eyeLabel"];
+            $this->aconst = $biometry->attributes["lens_acon_$eyeLabel"];
+            $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"];
+            $this->flat_k = $biometry->attributes["k1_$eyeLabel"];
+            $this->steep_k = $biometry->attributes["k2_$eyeLabel"];
         }
 
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
@@ -152,7 +141,27 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $this->comments = '';
         }
 
-        $this->save();
+        if ($this->save()) {
+            // get the whiteboard procedure assignments
+            $criteria = new CDbCriteria();
+            $criteria->addCondition("whiteboard_id = " . $this->id);
+            $procAssignments = OphTrOperationBooking_Whiteboard_ProcAssignment::model()->findAll($criteria);
+
+            // check if the procedure assignments exist, no need to update the procedure assignments because they
+            // cannot be updated/modified on editing the operation booking.
+            if (!$procAssignments) {
+                $display_order = 1;
+                foreach ($operationIds as $i => $proc_id) {
+                    $procedure_assignment = new OphTrOperationBooking_Whiteboard_ProcAssignment();
+                    $procedure_assignment->whiteboard_id = $this->id;
+                    $procedure_assignment->proc_id = $proc_id['id'];
+                    $procedure_assignment->display_order = $display_order++;
+                    if (!$procedure_assignment->save()) {
+                        throw new Exception('Unable to save procedure assignment');
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -236,7 +245,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     protected function operation($id)
     {
         $operation = Yii::app()->db->createCommand()
-            ->select('proc.term as term, proc.short_format as short_term')
+            ->select('proc.id as id')
             ->from('et_ophtroperationbooking_operation op')
             ->leftJoin('ophtroperationbooking_operation_procedures_procedures opp', 'opp.element_id = op.id')
             ->leftJoin('proc', 'opp.proc_id = proc.id')
@@ -488,10 +497,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             }
         }
 
-        if (!$patient->no_risks_date
+        if (
+            !$patient->no_risks_date
             && !$risks
             && empty($anticoag)
-            && $this->anticoagulant_name !== 'No Anticoagulants') {
+            && $this->anticoagulant_name !== 'No Anticoagulants'
+        ) {
             $total_risks = 0;
             $display .= '<div class="alert-box info">Status unknown</div>';
         }

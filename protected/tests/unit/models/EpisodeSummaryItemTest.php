@@ -26,6 +26,9 @@ class EpisodeSummaryItemTest extends ActiveRecordTestCase
         return EpisodeSummaryItem::model();
     }
 
+    /**
+     * @covers EpisodeSummaryItem
+     */
     public function testEnabled_Default()
     {
         $this->assertEquals(
@@ -34,6 +37,9 @@ class EpisodeSummaryItemTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @covers EpisodeSummaryItem
+     */
     public function testEnabled_Subspecialty()
     {
         $this->assertEquals(
@@ -42,6 +48,9 @@ class EpisodeSummaryItemTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @covers EpisodeSummaryItem
+     */
     public function testAvailable_Default()
     {
         $this->assertEquals(
@@ -50,6 +59,9 @@ class EpisodeSummaryItemTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @covers EpisodeSummaryItem
+     */
     public function testAvailable_Subspecialty()
     {
         $this->assertEquals(
@@ -58,6 +70,9 @@ class EpisodeSummaryItemTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @covers EpisodeSummaryItem
+     */
     public function testAssign_Default()
     {
         EpisodeSummaryItem::model()->assign(array(3));
@@ -67,6 +82,9 @@ class EpisodeSummaryItemTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @covers EpisodeSummaryItem
+     */
     public function testAssign_Subspecialty()
     {
         EpisodeSummaryItem::model()->assign(array(1, 2), $this->subspecialty('subspecialty1')->id);
@@ -76,6 +94,9 @@ class EpisodeSummaryItemTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @covers EpisodeSummaryItem
+     */
     public function testAssign_Default_Empty()
     {
         EpisodeSummaryItem::model()->assign(array());
@@ -85,6 +106,9 @@ class EpisodeSummaryItemTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @covers EpisodeSummaryItem
+     */
     public function testAssign_Subspecialty_Empty()
     {
         EpisodeSummaryItem::model()->assign(array(), 1);
@@ -94,6 +118,9 @@ class EpisodeSummaryItemTest extends ActiveRecordTestCase
         );
     }
 
+    /**
+     * @covers EpisodeSummaryItem
+     */
     public function testGetClassName()
     {
         $this->assertEquals(

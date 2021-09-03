@@ -17,6 +17,7 @@
  */
 
 use OEModule\OphCiExamination\components\OphCiExamination_API;
+use OEModule\OphCiExamination\models\SocialHistory;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 
 /**
@@ -51,6 +52,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
  * @property Episode[] $episodes
  * @property Address[] $addresses
  * @property Address $address Primary address
+ * @property Contact $contact
  * @property Contact[] $contactAssignments
  * @property Gp $gp
  * @property Gp $patient_referral
@@ -205,8 +207,9 @@ class Patient extends BaseActiveRecordVersioned
     public function hosNumValidator($attribute, $params)
     {
         // This condition does not work for CERA but leaving the code here as the functionality might break for UK. NEEDS TESTING before removal
-            // Use the PatientSearch to sanitise and validate the hospital number
-            $hos_num = (new PatientSearch())->getHospitalNumber($this->hos_num);
+        // Use the PatientSearch to sanitise and validate the hospital number
+        $hos_num_term = 'H: ' . $this->hos_num;
+        $hos_num = (new PatientSearch())->getHospitalNumber($hos_num_term);
         if ($hos_num) {
             // Add an error if another patient with the same hos_num exists
             $item_count = Patient::model()->count(
@@ -284,18 +287,21 @@ class Patient extends BaseActiveRecordVersioned
     //    Generates an auto incremented Hospital Number
     public function autoCompleteHosNum()
     {
-                    $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
-                    $command = Yii::app()->db->createCommand($query);
-                    $command->prepare();
-                    $result = $command->queryColumn();
-                    $default_hos_num = $result;
-//            Checks the admin setting for the starting number for auto increment
-        if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
-            $default_hos_num[0] = Yii::app()->params['hos_num_start'];
-            return $default_hos_num[0];
-        } else {
-            return ($default_hos_num[0] + 1);
+        if (Yii::app()->params['set_auto_increment'] == 'on') {
+            $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
+            $command = Yii::app()->db->createCommand($query);
+            $command->prepare();
+            $result = $command->queryColumn();
+            $default_hos_num = $result;
+//          Checks the admin setting for the starting number for auto increment
+            if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
+                $default_hos_num[0] = Yii::app()->params['hos_num_start'];
+                return $default_hos_num[0];
+            } else {
+                return ($default_hos_num[0] + 1);
+            }
         }
+        return null;
     }
 
     /**
@@ -405,7 +411,6 @@ class Patient extends BaseActiveRecordVersioned
 
     /**
      * Returns the errors of the PAS error array.
-     * @param $attribute
      * @return mixed|null
      */
     public function getPasErrors()
@@ -467,14 +472,17 @@ class Patient extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->compare('t.id', $this->id);
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
-        if (isset($params['first_name'])) {
+        if ($params['first_name']) {
             $criteria->addSearchCondition('LOWER(contact.first_name)', strtolower($params['first_name']) . '%', false);
         }
-        if (isset($params['last_name'])) {
+        if ($params['last_name']) {
             $criteria->addSearchCondition('contact.last_name', $params['last_name'] . '%', false);
         }
-        if (isset($params['maiden_name'])) {
+        if (isset($params['maiden_name']) && $params['maiden_name']) {
             $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']), false);
+        }
+        if ($params['dob']) {
+            $criteria->compare('t.dob', $params['dob']);
         }
 
         $nhs_num_length = SettingMetadata::model()->getSetting('nhs_num_length');
@@ -490,6 +498,8 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->addCondition("hos_num = :hos_num OR nhs_num = :nhs_num");
             $criteria->params[':nhs_num'] = $this->nhs_num;
             $criteria->params[':hos_num'] = $this->hos_num;
+        } elseif (strlen($this->nhs_num) === (int)$nhs_num_length) {
+            $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
             if (strlen($this->nhs_num) === (int)$nhs_num_length) {
                 $criteria->compare('nhs_num', $this->nhs_num, false);
@@ -734,9 +744,9 @@ class Patient extends BaseActiveRecordVersioned
     /**
      * Get Allergies in a separated format.
      *
-     * @param $patient
-     * @param $separator
-     *
+     * @param string $prefix
+     * @param string $separator
+     * @param bool $lastSeparatorNeeded
      * @return string|null
      */
     public function getAllergiesSeparatedString($prefix = '', $separator = ',', $lastSeparatorNeeded = false)
@@ -1005,6 +1015,7 @@ class Patient extends BaseActiveRecordVersioned
     /**
      * get the Patient name according to HSCIC guidelines.
      *
+     * @param bool $bold
      * @return string
      */
     public function getHSCICName($bold = false)
@@ -1029,12 +1040,14 @@ class Patient extends BaseActiveRecordVersioned
         if ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) {
             return $api->getPrescriptionItemsForPatient($this, $exclude);
         }
+        return null;
     }
 
     /**
      * Get the episode for the subspecialty of the firm (or no subspecialty when the firm doesn't have one).
      *
      * @return Episode
+     * @throws Exception
      */
     public function getEpisodeForCurrentSubspecialty()
     {
@@ -1051,6 +1064,7 @@ class Patient extends BaseActiveRecordVersioned
      * @param bool $include_closed
      *
      * @return CActiveRecord|Episode|null
+     * @throws Exception
      */
     public function getOrCreateEpisodeForFirm($firm, $include_closed = false)
     {
@@ -1264,14 +1278,13 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function addAllergy(Allergy $allergy, $other = null, $comments = null, $startTransaction = true)
     {
+        $transaction = null;
         if ($allergy->name == 'Other') {
             if (!$other) {
                 throw new Exception("No 'other' allergy specified");
             }
-        } else {
-            if (PatientAllergyAssignment::model()->exists('patient_id=? and allergy_id=?', array($this->id, $allergy->id))) {
-                throw new Exception("Patient is already assigned allergy '{$allergy->name}'");
-            }
+        } elseif (PatientAllergyAssignment::model()->exists('patient_id=? and allergy_id=?', array($this->id, $allergy->id))) {
+            throw new Exception("Patient is already assigned allergy '{$allergy->name}'");
         }
 
         if ($startTransaction) {
@@ -1295,11 +1308,11 @@ class Patient extends BaseActiveRecordVersioned
                 }
             }
             $this->audit('patient', 'remove-noallergydate');
-            if ($startTransaction) {
+            if ($startTransaction && $transaction) {
                 $transaction->commit();
             }
         } catch (Exception $e) {
-            if ($startTransaction) {
+            if ($startTransaction && $transaction) {
                 $transaction->rollback();
             }
             throw $e;
@@ -1369,6 +1382,7 @@ class Patient extends BaseActiveRecordVersioned
      * @param Risk $risk
      * @param string $other
      *
+     * @param null $comments
      * @throws Exception
      */
     public function addRisk(Risk $risk, $other = null, $comments = null)
@@ -1377,10 +1391,8 @@ class Patient extends BaseActiveRecordVersioned
             if (!$other) {
                 throw new Exception("No 'other' risk specified");
             }
-        } else {
-            if (PatientRiskAssignment::model()->exists('patient_id=? and risk_id=?', array($this->id, $risk->id))) {
-                throw new Exception("Patient is already assigned risk '{$risk->name}'");
-            }
+        } elseif (PatientRiskAssignment::model()->exists('patient_id=? and risk_id=?', array($this->id, $risk->id))) {
+            throw new Exception("Patient is already assigned risk '{$risk->name}'");
         }
 
         $transaction = Yii::app()->db->beginTransaction();
@@ -1489,7 +1501,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function setNoFamilyHistory()
     {
-        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECRATED);
+        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECATED);
 
         if (!empty($this->familyHistory)) {
             throw new Exception('Unable to set no family history date as patient still has family history assigned');
@@ -1555,8 +1567,7 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->compare('specialty.code', 130);
 
         $criteria->order = 'date desc';
-        $result = SecondaryDiagnosis::model()->findAll($criteria);
-        return $result;
+        return SecondaryDiagnosis::model()->findAll($criteria);
     }
 
     public function getSpecialtyCodes()
@@ -1618,6 +1629,11 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
+    /**
+     * @param $diagnosis_id
+     * @throws CDbException
+     * @throws Exception
+     */
     public function removeDiagnosis($diagnosis_id)
     {
         if (!$sd = SecondaryDiagnosis::model()->findByPk($diagnosis_id)) {
@@ -1650,6 +1666,7 @@ class Patient extends BaseActiveRecordVersioned
      * @param string $cvi_status_date - fuzzy date string of the format yyyy-mm-dd
      *
      * @return true|array True or array of errors
+     * @throws Exception
      */
     public function editOphInfo($cvi_status, $cvi_status_date)
     {
@@ -1697,10 +1714,8 @@ class Patient extends BaseActiveRecordVersioned
             if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=? and ' . $location_type . '_id=?', array($this->id, $contact_id, $location_id))) {
                 return $pca->address;
             }
-        } else {
-            if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?', array($this->id, $contact_id))) {
-                return $pca->address;
-            }
+        } elseif ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?', array($this->id, $contact_id))) {
+            return $pca->address;
         }
 
         return false;
@@ -1724,6 +1739,7 @@ class Patient extends BaseActiveRecordVersioned
         if ($api = Yii::app()->moduleAPI->get('OphLeEpatientletter')) {
             return $this->patientHasLegacyLetters($this->hos_num);
         }
+        return false;
     }
 
     /**
@@ -1861,7 +1877,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function addFamilyHistory($relative_id, $other_relative, $side_id, $condition_id, $other_condition, $comments)
     {
-        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECRATED);
+        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECATED);
 
         $check_sql = 'patient_id=? and relative_id=? and side_id=? and condition_id=?';
         $params = array($this->id, $relative_id, $side_id, $condition_id);
@@ -1990,6 +2006,7 @@ class Patient extends BaseActiveRecordVersioned
         if ($api = $this->getApp()->moduleAPI->get('OphTrOperationnote')) {
             return $api->getLatestEventUniqueCode($this);
         }
+        return null;
     }
 
     /**
@@ -2048,6 +2065,7 @@ class Patient extends BaseActiveRecordVersioned
                 }
             }
         }
+        return null;
     }
 
     // storage of warning data
@@ -2351,7 +2369,7 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return Array
+     * @return array
      */
     public function getCviSummary()
     {
@@ -2454,14 +2472,12 @@ class Patient extends BaseActiveRecordVersioned
                         $episode->eye_id = null;
                         $episode->disorder_id = null;
                         $episode->disorder_date = null;
+                    } elseif ((int)$episode->eye_id === Eye::BOTH) {
+                        $episode->eye_id = (int)$eye->id === Eye::LEFT ? Eye::RIGHT : Eye::LEFT;
                     } else {
-                        if (intval($episode->eye_id) === Eye::BOTH) {
-                            $episode->eye_id = intval($eye->id) == Eye::LEFT ? Eye::RIGHT : Eye::LEFT;
-                        } else {
-                            $episode->eye_id = null;
-                            $episode->disorder_id = null;
-                            $episode->disorder_date = null;
-                        }
+                        $episode->eye_id = null;
+                        $episode->disorder_id = null;
+                        $episode->disorder_date = null;
                     }
                 }
                 $episode->save();

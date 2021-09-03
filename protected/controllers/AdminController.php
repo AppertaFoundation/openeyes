@@ -61,6 +61,7 @@ class AdminController extends BaseAdminController
         $errors = array();
         foreach (($_POST['EventType'] ?? []) as $event_type_form) {
             $event_type = EventType::model()->findByPk($event_type_form['id']);
+            unset($event_type_form['id']);
             $event_type->attributes = $event_type_form;
             $event_type->save();
             $errors = array_merge($errors, $event_type->getErrors());
@@ -743,6 +744,7 @@ class AdminController extends BaseAdminController
         }
 
         $contact = Contact::model()->findByPk($id);
+        $contact->setScenario('admin_contact');
         if (!$contact) {
             throw new CHttpException(404, 'Contact not found: ' . $id);
         }
@@ -897,7 +899,7 @@ class AdminController extends BaseAdminController
             $address = new Address();
             $logo = new SiteLogo();
             $contact = new Contact();
-            
+
             /*
             * Set default blank contact to fulfill the current relationship with a site
             */
@@ -911,7 +913,7 @@ class AdminController extends BaseAdminController
             if (!$institution) {
                 throw new CHttpException(404, 'Institution not found: ' . @$_GET['institution_id']);
             }
-            
+
             $contact = $institution->contact;
             $address = $institution->contact->address;
             if (!$address) {
@@ -931,8 +933,8 @@ class AdminController extends BaseAdminController
                 $errors = $institution->getErrors();
             }
             if ($new) {
-                $contact->save();
-                
+                $contact->save(false);
+
                 $institution->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
             }
@@ -960,7 +962,7 @@ class AdminController extends BaseAdminController
                     }
                 }
             }
-            
+
             if (empty($errors)) {
                 // Save the logo, and if sucsessful, add the logo ID to the institution, so that the relation is established.
                 if (!$logo->save()) {
@@ -980,19 +982,19 @@ class AdminController extends BaseAdminController
                     throw new CHttpException(500, 'Unable to save institution address: ' . print_r($address->getErrors(), true));
                 }
                 if ($new) {
-                    if (!$institution->contact->save()) {
+                    if (!$institution->contact->save(false)) {
                         throw new CHttpException(500, 'Institution contact could not be saved: ' . print_r(
                             $institution->contact->getErrors(),
                             true
                         ));
                     }
-                    
+
                     Audit::add('admin-Institution', 'add', $institution->id);
-                    
+
                     $this->redirect(array('/admin/editInstitution?institution_id=' . $institution->id));
                 } else {
                     Audit::add('admin-Institution', 'edit', $institution->id);
-                    
+
                     $this->redirect('/admin/institutions/index');
                 }
             }
@@ -1070,8 +1072,8 @@ class AdminController extends BaseAdminController
                 $errors = $site->getErrors();
             }
             if ($new) {
-                $contact->save();
-                
+                $contact->save(false);
+
                 $site->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
             }
@@ -1196,12 +1198,12 @@ class AdminController extends BaseAdminController
             'errors' => $errors,
         ));
     }
-    
+
     public function actionDeleteLogo()
     {
         $site_id = @$_POST['site_id'];
         $institution_id = @$_POST['institution_id'];
-        
+
         $deletePrimaryLogo = @$_POST['deletePrimaryLogo'];
         $deleteSecondaryLogo = @$_POST['deleteSecondaryLogo'];
 
@@ -1217,9 +1219,9 @@ class AdminController extends BaseAdminController
             $logo = SiteLogo::model()->findByPk(1);
         }
          //  We should now have our logos to delete from
- 
+
         $msg = 'Successfully deleted ';
-      
+
         if ($deletePrimaryLogo) {
             $logo->primary_logo = null;
             $msg .= "primary logo ";
@@ -1253,7 +1255,7 @@ class AdminController extends BaseAdminController
 
     public function actionAddContact()
     {
-        $contact = new Contact();
+        $contact = new Contact('admin_contact');
 
         if (!empty($_POST)) {
             $contact->attributes = $_POST['Contact'];
@@ -1505,7 +1507,9 @@ class AdminController extends BaseAdminController
                     $contact = $cb->contact;
                     if (!$contact) {
                         $contact = new Contact();
-                        if (!$contact->save()) {
+                        $contact->first_name = '';
+                        $contact->last_name = '';
+                        if (!$contact->save(false)) {
                             $errors = array_merge($errors, $contact->getErrors());
                         }
                     }
@@ -1730,11 +1734,10 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $errors = array();
 
         $return_url = Yii::app()->request->getQuery('return_url', '/admin/commissioning_body_services');
 
-        $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
+        $errors = $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
 
         $this->render('//admin/commissioning_body_services/edit', array(
             'commissioning_bt' => $commissioning_bt,
@@ -1748,8 +1751,10 @@ class AdminController extends BaseAdminController
 
     private function saveEditCommissioningBodyService($cbs, $contact, $address, $return_url)
     {
+        $errors = [];
         if (!empty($_POST)) {
             $cbs->attributes = $_POST['CommissioningBodyService'];
+
 
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
@@ -1761,6 +1766,9 @@ class AdminController extends BaseAdminController
 
             $address->attributes = $_POST['Address'];
 
+            if (!$cbs->contact_id) {
+                $cbs->contact = $contact;
+            }
             if (empty($errors)) {
                 $transaction = Yii::app()->db->beginInternalTransaction();
                 try {
@@ -1800,6 +1808,8 @@ class AdminController extends BaseAdminController
                 $this->redirect($return_url);
             }
         }
+
+        return $errors;
     }
 
     public function actionAddCommissioningBodyService()
@@ -2019,7 +2029,7 @@ class AdminController extends BaseAdminController
                         $setting = new SettingInstallation();
                         $setting->key = $metadata->key;
                     }
-                    $setting->value = @$_POST[$metadata->key];
+                    $metadata->setSettingValue($setting, $metadata, @$_POST[$metadata->key]);
                     if (!$setting->save()) {
                         $errors = $setting->errors;
                     } else {
@@ -2028,7 +2038,7 @@ class AdminController extends BaseAdminController
                 }
             }
         }
-        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'context' => $context, 'errors' => $errors));
     }
 
     public function actionEditInstallationSetting()
@@ -2050,7 +2060,7 @@ class AdminController extends BaseAdminController
                 $setting_installation->key = $key;
             }
             $value = \Yii::app()->request->getPost($key);
-            $setting_installation->value = $value;
+            $metadata->setSettingValue($setting_installation, $metadata, $value);
             if (!$setting_installation->save()) {
                 $errors = $setting_installation->errors;
             } else {
@@ -2179,5 +2189,20 @@ class AdminController extends BaseAdminController
         $this->render('/admin/attachments/index', array(
             'event_types' => EventType::model()->findAll(),
         ));
+    }
+
+    public function actionChangeVersionCheck()
+    {
+        $value = $_POST['value'] ?? null;
+        if (Yii::app()->request->isPostRequest) {
+            $setting_installation = SettingInstallation::model()->findByAttributes(['key' => "auto_version_check"]);
+            $setting_installation->value = $value;
+            if (!$setting_installation->save()) {
+                $errors = $setting_installation->errors;
+                return $errors;
+            } else {
+                return "The version check is disabled.";
+            }
+        }
     }
 }

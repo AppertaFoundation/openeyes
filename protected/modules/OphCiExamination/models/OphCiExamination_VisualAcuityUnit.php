@@ -23,6 +23,8 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property int $id
  * @property string $name
+ * @property OphCiExamination_VisualAcuityUnitValue[] $values
+ * @property OphCiExamination_VisualAcuityUnitValue[] $selectableValues
  */
 class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
 {
@@ -93,7 +95,12 @@ class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
                 'criteria' => $criteria,
         ));
     }
-    
+
+    public function __toString()
+    {
+        return $this->name ?? parent::__toString();
+    }
+
     /**
      * Moves the values for CF, HM, PL, NPL for better graphing
      * @param $val float|int value of Visual Acuity to be adjusted
@@ -103,41 +110,41 @@ class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
     {
         return $val > 4 ? $val : ($val-2) * 10;
     }
-    
+
     public function getVAUnit($unit_id){
         $va_unit_id = isset($unit_id)? $unit_id: Element_OphCiExamination_VisualAcuity::model()->getSetting('unit_id');
         $va_unit = $this->findByPk($va_unit_id);
-        
+
         return $va_unit;
     }
-    
+
     public function getInitVaTicks($va_unit){
         foreach ($va_unit->selectableValues as $value) {
             $va_ticks[] = array($this->getAdjustedVA($value->base_value), $value->value);
         }
-        
+
         if ($va_ticks[0][1] !== 'NPL') {
             array_unshift($va_ticks, [$this->getAdjustedVA(4), 'CF']);
             array_unshift($va_ticks, [$this->getAdjustedVA(3), 'HM']);
             array_unshift($va_ticks, [$this->getAdjustedVA(2), 'PL']);
             array_unshift($va_ticks, [$this->getAdjustedVA(1), 'NPL']);
         }
-        
+
         return $va_ticks;
     }
-    
-    
+
+
     public function sliceVATicks($va_ticks, $gap) {
         $va_len = sizeof($va_ticks);
         $step = $va_len/$gap;
         $no_numeric_val_count = 4;   //keep the 4 no number labels: CF, HM, PL, NPL
-        
+
         $new_ticks = array_slice($va_ticks, 0, $no_numeric_val_count);
-        
+
         for ($i = $no_numeric_val_count+1; $i<=$va_len-$step; $i+=$step) {
             array_push($new_ticks, $va_ticks[$i]);
         }
-        
+
         $tick_data = array('tick_position'=> array(), 'tick_labels'=> array());
         foreach ($new_ticks as $tick) {
             array_push($tick_data['tick_position'], (float)$tick[0]);

@@ -958,7 +958,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
         <label>Event type short name: </label> <?=\CHtml::textField('EventTypeModuleCode[moduleShortSuffix]', $event_type_short_name, array('size' => 65, 'id' => 'moduleShortSuffix'));
         ?><br />
         <?php
-
     }
 
     public static function dump_table_fields($table, $selected = false)

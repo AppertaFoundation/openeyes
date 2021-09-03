@@ -9,7 +9,7 @@ function setYAxis_VA(options) {
             },
     range: options['range'],
     /* Grid line settings of yaxis */
-    showgrid: true,
+    showgrid: false, // Show only VFI grids for now
     gridwidth: 0.25,
     gridcolor: '#444',
 

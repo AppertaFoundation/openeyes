@@ -49,18 +49,24 @@ class OphCiExamination_Refraction_Type extends \BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-                array('name', 'required'),
-                array('id, name', 'safe', 'on' => 'search'),
-        );
+        return [
+            ['id, name, active, display_order, prority', 'safe'],
+            ['name, display_order, priority', 'required'],
+            ['priority', 'unique'],
+            ['id, name, active, display_order', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
-     * @return array relational rules.
+     * Use standard Lookup behaviour
+     *
+     * @return array
      */
-    public function relations()
+    public function behaviors()
     {
-        return array();
+        return [
+            'LookupTable' => \LookupTable::class,
+        ];
     }
 
     /**
@@ -84,5 +90,10 @@ class OphCiExamination_Refraction_Type extends \BaseActiveRecordVersioned
         $options = $this->findAll(array('order' => 'display_order'));
 
         return \CHtml::listData($options, 'id', 'name') + array('' => 'Other');
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

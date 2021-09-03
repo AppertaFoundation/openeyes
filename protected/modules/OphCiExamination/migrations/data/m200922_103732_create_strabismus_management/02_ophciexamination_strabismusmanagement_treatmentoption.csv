@@ -1,0 +1,94 @@
+treatment_id => ophciexamination_strabismusmanagement_treatment.name,name,column_number,display_order
+Glasses: Issued,Fulltime wear,1,1
+Fresnel Prism,1,1,1
+Fresnel Prism,2,1,2
+Fresnel Prism,3,1,3
+Fresnel Prism,4,1,4
+Fresnel Prism,5,1,5
+Fresnel Prism,6,1,6
+Fresnel Prism,7,1,7
+Fresnel Prism,8,1,8
+Fresnel Prism,9,1,9
+Fresnel Prism,10,1,10
+Fresnel Prism,11,1,11
+Fresnel Prism,12,1,12
+Fresnel Prism,13,1,13
+Fresnel Prism,14,1,14
+Fresnel Prism,15,1,15
+Fresnel Prism,16,1,16
+Fresnel Prism,17,1,17
+Fresnel Prism,18,1,18
+Fresnel Prism,19,1,19
+Fresnel Prism,20,1,20
+Fresnel Prism,21,1,21
+Fresnel Prism,22,1,22
+Fresnel Prism,23,1,23
+Fresnel Prism,24,1,24
+Fresnel Prism,25,1,25
+Fresnel Prism,26,1,26
+Fresnel Prism,27,1,27
+Fresnel Prism,28,1,28
+Fresnel Prism,29,1,29
+Fresnel Prism,30,1,30
+Fresnel Prism,BO,2,1
+Fresnel Prism,BI,2,2
+Fresnel Prism,BURE,2,3
+Fresnel Prism,BULE,2,4
+Fresnel Prism,BDRE,2,5
+Fresnel Prism,BDLE,2,6
+Incorporated Prism,1,1,1
+Incorporated Prism,2,1,2
+Incorporated Prism,3,1,3
+Incorporated Prism,4,1,4
+Incorporated Prism,5,1,5
+Incorporated Prism,6,1,6
+Incorporated Prism,7,1,7
+Incorporated Prism,8,1,8
+Incorporated Prism,9,1,9
+Incorporated Prism,10,1,10
+Incorporated Prism,11,1,11
+Incorporated Prism,12,1,12
+Incorporated Prism,13,1,13
+Incorporated Prism,14,1,14
+Incorporated Prism,15,1,15
+Incorporated Prism,16,1,16
+Incorporated Prism,17,1,17
+Incorporated Prism,18,1,18
+Incorporated Prism,19,1,19
+Incorporated Prism,20,1,20
+Incorporated Prism,21,1,21
+Incorporated Prism,22,1,22
+Incorporated Prism,23,1,23
+Incorporated Prism,24,1,24
+Incorporated Prism,25,1,25
+Incorporated Prism,26,1,26
+Incorporated Prism,27,1,27
+Incorporated Prism,28,1,28
+Incorporated Prism,29,1,29
+Incorporated Prism,30,1,30
+Incorporated Prism,BO,2,1
+Incorporated Prism,BI,2,2
+Incorporated Prism,BURE,2,3
+Incorporated Prism,BULE,2,4
+Incorporated Prism,BDRE,2,5
+Incorporated Prism,BDLE,2,6
+Atropine,twice a week,1,1
+Atropine,once a week,1,2
+Atropine,with glasses penalisation,2,1
+Atropine,without glasses penalisation,2,2
+Patching,2 hrs,1,1
+Patching,4 hrs,1,2
+Patching,6 hrs,1,3
+Patching,fulltime,1,4
+Surgery,Medial Rectus,1,1
+Surgery,Lateral Rectus,1,2
+Surgery,Inferior Rectus,1,3
+Surgery,Superior Rectus,1,4
+Surgery,Inferior Oblique,1,5
+Surgery,Superior Oblique,1,6
+Botulinum Toxin,Medial Rectus,1,1
+Botulinum Toxin,Lateral Rectus,1,2
+Botulinum Toxin,Inferior Rectus,1,3
+Botulinum Toxin,Superior Rectus,1,4
+Botulinum Toxin,Inferior Oblique,1,5
+Botulinum Toxin,Superior Oblique,1,6

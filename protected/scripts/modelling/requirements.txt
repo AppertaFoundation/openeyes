@@ -1,0 +1,4 @@
+sklearn
+numpy
+pandas
+mysql-connector-python

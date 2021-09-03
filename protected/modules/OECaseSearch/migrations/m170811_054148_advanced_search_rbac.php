@@ -7,7 +7,6 @@ class m170811_054148_advanced_search_rbac extends OEMigration
 
     public function safeUp()
     {
-
         $this->insert('authitem', array('name' => self::ADVANCED_SEARCH_ROLE, 'type' => 2));
         $this->insert('authitem', array('name' => self::ADVANCED_SEARCH_TASK, 'type' => 1));
         $this->insert(

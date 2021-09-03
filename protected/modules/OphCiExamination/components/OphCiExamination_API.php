@@ -27,6 +27,8 @@ use Patient;
 
 class OphCiExamination_API extends \BaseAPI
 {
+    use traits\VisualAcuity_API;
+    use traits\Refraction_API;
 
     const LEFT = 1;
     const RIGHT = 0;
@@ -610,26 +612,6 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Simple abstraction to support generic calls to functions based on the
-     * principal eye from the current context (methods will be called with
-     * the given $use_context value).
-     *
-     * @param $prefix
-     * @param $patient
-     * @param bool $use_context defaults to false
-     * @return mixed
-     * @throws \CException
-     */
-    protected function getMethodForPrincipalEye($prefix, $patient, $use_context = false)
-    {
-        $method = $this->getEyeMethod($prefix, $this->getPrincipalEye($patient, true));
-
-        if ($method) {
-            return $this->{$method}($patient, $use_context);
-        }
-    }
-
-    /**
      * Return the posterior pole description for the given eye. This is from the most recent
      * examination that has a posterior pole element.
      *
@@ -698,470 +680,18 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * @param $eventid
-     */
-    public function getRefractionValues($eventid)
-    {
-        $unit = models\Element_OphCiExamination_Refraction::model()->find('event_id = ' . $eventid);
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    /**
-     * @param \Event $event
-     * @return string
-     */
-    public function getRefractionTextFromEvent(\Event $event)
-    {
-        $refract_element = models\Element_OphCiExamination_Refraction::model()->findByAttributes(array('event_id' => $event->id));
-        if ($refract_element) {
-            $right_spherical = number_format($refract_element->{'right_sphere'} + 0.5 * $refract_element->{'right_cylinder'}, 2);
-            $left_spherical = number_format($refract_element->{'left_sphere'} + 0.5 * $refract_element->{'left_cylinder'}, 2);
-            return '<table class="VA-tbl">
-                        <thead>
-                        <tr>
-                           <th class="VA-tbl-head">Right Eye</th>
-                           <th class="VA-tbl-head">Left Eye</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                              <td class="VA-tbl-td">' . $right_spherical . '</td>
-                              <td class="VA-tbl-td">' . $left_spherical . '</td>
-                            </tr>
-                        </tbody>
-                    </table>';
-        }
-    }
-
-    public function getMostRecentVA($eventid)
-    {
-        $vaevents = models\Element_OphCiExamination_VisualAcuity::model()->findAll('event_id = ' . $eventid);
-        if ($vaevents) {
-            for ($i = 0; $i < count($vaevents); ++$i) {
-                if ($vaevents) {
-                    return $vaevents[$i];
-                }
-            }
-        }
-    }
-
-    public function getMostRecentVAData($id)
-    {
-        $unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $id);
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    public function getMostRecentNearVA($eventid)
-    {
-        $vaevents = models\Element_OphCiExamination_NearVisualAcuity::model()->findAll('event_id = ' . $eventid);
-        if ($vaevents) {
-            for ($i = 0; $i < count($vaevents); ++$i) {
-                return $vaevents[$i];
-            }
-        }
-    }
-
-    public function getMostRecentNearVAData($id)
-    {
-        // Then findAll data from va_reading for that element_id. Most recent.
-        $unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $id);
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    /**
-     * @param \Event $event
-     * @return string
-     */
-    public function getBestVisualAcuityFromEvent(\Event $event)
-    {
-        $va = models\Element_OphCiExamination_VisualAcuity::model()->findByAttributes(array('event_id' => $event->id));
-        if ($va) {
-            return $va->getBest('right') . ' Right Eye ' . $va->getBest('left') . ' Left Eye';
-        }
-    }
-
-    /**
-     * @param $vareading
-     * @param $unitId
-     */
-    public function getVAvalue($vareading, $unitId)
-    {
-        $unit = models\OphCiExamination_VisualAcuityUnitValue::model()->find('base_value = ' . $vareading . ' AND unit_id = ' . $unitId);
-        if ($unit) {
-            return $unit->value;
-        }
-    }
-
-    public function getVARight($vaid)
-    {
-        $unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = '
-            . $vaid . ' AND side = ' . self::RIGHT);
-
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    public function getVALeft($vaid)
-    {
-        $unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = '
-            . $vaid . ' AND side = ' . self::LEFT);
-
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    public function getNearVARight($vaid)
-    {
-        $unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = '
-            . $vaid . ' AND side = ' . self::RIGHT);
-
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    public function getNearVALeft($vaid)
-    {
-        $unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = '
-            . $vaid . ' AND side = ' . self::LEFT);
-
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    public function getMethodIdRight($vaid)
-    {
-        $unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = '
-            . $vaid . ' AND side = ' . self::RIGHT);
-
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    public function getMethodIdNearRight($vaid)
-    {
-        $unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $vaid
-            . ' AND side = ' . self::RIGHT);
-
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    public function getMethodIdLeft($vaid)
-    {
-        $unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $vaid
-            . ' AND side = ' . self::LEFT);
-
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    public function getMethodIdNearLeft($vaid)
-    {
-        $unit = models\OphCiExamination_NearVisualAcuity_Reading::model()->findAll('element_id = ' . $vaid
-            . ' AND side = ' . self::LEFT);
-
-        if ($unit) {
-            return $unit;
-        }
-    }
-
-    public function getUnitId($vaid, $episode)
-    {
-        $unit = models\Element_OphCiExamination_VisualAcuity::model()->find('id = ?', array($vaid));
-
-        if ($unit) {
-            return $unit->unit_id;
-        }
-    }
-
-    public function getNearUnitId($vaid, $episode)
-    {
-        $unit = models\Element_OphCiExamination_NearVisualAcuity::model()->find('id = ?', array($vaid));
-        if ($unit) {
-            return $unit->unit_id;
-        }
-    }
-
-    public function getUnitName($unitId)
-    {
-        $unit = models\OphCiExamination_VisualAcuityUnit::model()->find('id = ?', array($unitId));
-        if ($unit) {
-            return $unit->name;
-        }
-    }
-
-    /**
-     * Returns single (best) VA reading from most recent examination event
-     * containing a VA element for the left eye.
-     *
-     * @param $patient
-     * @param bool $use_context
-     * @return null|string
-     */
-    public function getLetterVisualAcuityLeft($patient, $use_context = false)
-    {
-        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
-    }
-
-    /**
-     * Returns the best visual acuity for the specified side in the given
-     * episode for the patient. This is from the most recent  examination
-     * that has a visual acuity element. And will be empty if the specified
-     * side was not recorded.
-     *
-     * @param Patient $patient
-     * @param string $side
-     * @param boolean $use_context
-     * @return models\OphCiExamination_VisualAcuity_Reading
-     */
-    public function getBestVisualAcuity($patient, $side, $use_context = false)
-    {
-        $va = $this->getLatestElement(
-            'models\Element_OphCiExamination_VisualAcuity',
-            $patient,
-            $use_context
-        );
-        if ($va) {
-            return $va->getBestReading($side);
-        }
-    }
-
-    /**
-     * gets the id for the Snellen Metre unit type for VA.
-     *
-     * @return int|null
-     */
-    protected function getSnellenUnitId()
-    {
-        $unit = models\OphCiExamination_VisualAcuityUnit::model()->find('name = ?', array('Snellen Metre'));
-
-        if ($unit) {
-            return $unit->id;
-        }
-    }
-
-    public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
-    {
-        $best = $this->getBestVisualAcuity($patient, $side, $use_context);
-        return ($best ? $best->element->event->event_date : 'NA');
-    }
-
-    public function getLetterVisualAcuityRight($patient, $use_context = false)
-    {
-        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
-    }
-
-    public function getLetterVAMethodName($patient, $side, $use_context = false)
-    {
-        $best = $this->getBestVisualAcuity($patient, $side, $use_context);
-        $method_name = $best ? $this->getMethodName($best->method_id) : null;
-        if ($method_name == 'Unaided') {
-            return 'ua';
-        } elseif ($method_name == 'Pinhole') {
-            return 'ph';
-        } else {
-            return 'rx';
-        }
-    }
-
-    public function getMethodName($methodId)
-    {
-        $unit = models\OphCiExamination_VisualAcuity_Method::model()->find('id = ?', array($methodId));
-        if ($unit) {
-            return $unit->name;
-        }
-    }
-
-    /**
-     * @param $patient
-     * @param bool $use_context
-     * @return string
-     */
-    public function getLetterVisualAcuityBoth($patient, $use_context = false)
-    {
-        $left = $this->getBestVisualAcuity($patient, 'left', $use_context);
-        $right = $this->getBestVisualAcuity($patient, 'right', $use_context);
-
-        return ($right ? $right->convertTo(
-            $right->value,
-            $this->getSnellenUnitId()
-        ) : 'not recorded') . ' on the right and ' . ($left ? $left->convertTo(
-            $left->value,
-            $this->getSnellenUnitId()
-        ) : 'not recorded') . ' on the left';
-    }
-
-    /**
-     * Get the latest VA for both eyes from examination event, if the VA is not recorded,
-     * take the value from the latest available event within a period of 6 weeks.
-     *
-     * @param $patient
-     * @param bool $use_context
-     * @return string - 6/24 (at 7 Jun 2017)
-     */
-    public function getLetterVisualAcuityBothLast6weeks($patient, $use_context = false)
-    {
-        $left = null;
-        $right = null;
-
-        $right = $this->getLetterVisualAcuityRightLast6weeks($patient, $use_context) ?: 'not recorded';
-        $left = $this->getLetterVisualAcuityLeftLast6weeks($patient, $use_context) ?: 'not recorded';
-        return $right . ' on the right and ' . $left . ' on the left';
-    }
-
-    /**
-     * Get the latest VA for the Right eye form examination event,
-     * if the VA is not recorded, take the value from the latest available event within a period of 6 weeks.
-     *
-     * @param $patient
-     * @param bool $use_context
-     * @return string - 6/24 (recorded on 7 Jun 2017)
-     */
-    public function getLetterVisualAcuityRightLast6weeks($patient, $use_context = false)
-    {
-        foreach ($this->getVisualAcuityLast6Weeks($patient, $use_context) as $element) {
-            $best_reading = $element->getBestReading('right');
-            if ($best_reading) {
-                return $best_reading->convertTo($best_reading->value, $this->getSnellenUnitId()) . " (recorded on " . \Helper::convertMySQL2NHS($element->event->event_date) . ")";
-            }
-        }
-    }
-
-    /**
-     * Abstraction for getting VA from last 6 weeks used for several letter string methods
-     *
-     * @param $patient
-     * @param $use_context
-     * @return \BaseEventTypeElement[]
-     */
-    protected function getVisualAcuityLast6Weeks($patient, $use_context)
-    {
-        $after = date('Y-m-d 00:00:00', strtotime('-6 weeks'));
-        $criteria = new \CDbCriteria();
-        $criteria->compare('event.event_date', '>=' . $after);
-
-        return $this->getElements(
-            'models\Element_OphCiExamination_VisualAcuity',
-            $patient,
-            $use_context,
-            null,
-            $criteria
-        );
-    }
-
-    /**
-     * Get the latest VA for the Left eye form examination event,
-     * if the VA is not recorded, take the value from the latest available event within a period of 6 weeks.
-     *
-     * @param $patient
-     * @param bool $use_context
-     * @return string
-     */
-    public function getLetterVisualAcuityLeftLast6weeks($patient, $use_context = false)
-    {
-        foreach ($this->getVisualAcuityLast6Weeks($patient, $use_context) as $element) {
-            $best_reading = $element->getBestReading('left');
-            if ($best_reading) {
-                return $best_reading->convertTo($best_reading->value, $this->getSnellenUnitId()) . " (recorded on " . \Helper::convertMySQL2NHS($element->event->event_date) . ")";
-            }
-        }
-    }
-
-    /**
-     * Gets VA for the principal eye in the current context.
-     *
-     * @param $patient
-     * @param bool $use_context
-     * @return mixed
-     */
-    public function getLetterVisualAcuityPrincipal($patient, $use_context = true)
-    {
-        return $this->getMethodForPrincipalEye('getLetterVisualAcuity', $patient, $use_context);
-    }
-
-    /**
-     * Get the latest VA for Principal eye form examination event,
-     * if the VA is not recorded, take the value from the latest available event within a period of 6 weeks.
-     * @param $patient
-     * @param bool $use_context
-     * @return string - 6/24 (at 7 Jun 2017)
-     * @throws \CException
-     */
-    public function getLetterVisualAcuityPrincipalLast6weeks($patient, $use_context = false)
-    {
-        $principal_eye = $this->getPrincipalEye($patient, true);
-        if ($principal_eye) {
-            $method = 'getLetterVisualAcuity' . $principal_eye->name . 'Last6weeks';
-            return $this->{$method}($patient, $use_context);
-        }
-    }
-
-    /**
-     * Get a combined string of the different readings. If a unit_id is given, the readings will
-     * be converted to unit type of that id.
-     *
-     * @param string $side
-     * @param null $unit_id
-     *
-     * @return string
-     */
-    public function getCombined($side, $unit_id = null)
-    {
-        $combined = array();
-        foreach ($this->{$side . '_readings'} as $reading) {
-            $combined[] = $reading->convertTo($reading->value, $unit_id) . ' ' . $reading->method->name;
-        }
-
-        return implode(', ', $combined);
-    }
-
-    /**
-     * Get the default findings string from VA in te latest examination event (if it exists).
-     *
-     * @param $patient
-     * @param $use_context
-     * @return string|null
-     */
-    public function getLetterVisualAcuityFindings($patient, $use_context = false)
-    {
-        $va = $this->getLatestElement(
-            'models\Element_OphCiExamination_VisualAcuity',
-            $patient,
-            $use_context
-        );
-
-        if ($va) {
-            return $va->getLetter_string();
-        }
-    }
-
-    /**
      * Get the VA string for both sides.
      *
      * @param $episode
      * @param bool $include_nr_values flag to indicate whether NR flag values should be used for the text
      *
      * @return string
+     * @deprecated since v4.0 use getSnellenVisualAcuityForBoth instead
      */
     public function getLetterVisualAcuityForEpisodeBoth($episode, $include_nr_values = false)
     {
-        $left = $this->getLetterVisualAcuityForEpisodeLeft($episode->patient, $include_nr_values);
-        $right = $this->getLetterVisualAcuityForEpisodeRight($episode->patient, $include_nr_values);
-
-        return ($right ? $right : 'not recorded') . ' on the right and ' . ($left ? $left : 'not recorded') . ' on the left';
+        trigger_error("getLetterVisualAcuityForEpisodeBoth is deprecated, use getSnellenVisualAcuityForBoth", E_USER_DEPRECATED);
+        return $this->getSnellenVisualAcuityForBoth($episode->patient, $include_nr_values);
     }
 
     /**
@@ -1171,6 +701,7 @@ class OphCiExamination_API extends \BaseAPI
      * @param string $before_date
      * @param bool $use_context
      * @return OphCiExamination_VisualAcuity_Reading
+     * @deprecated since v4.0 use getSnellenVisualAcuityForLeft instead
      */
     public function getLetterVisualAcuityForEpisodeLeft(
         $patient,
@@ -1178,7 +709,8 @@ class OphCiExamination_API extends \BaseAPI
         $before_date = null,
         $use_context = false
     ) {
-        return $this->getLetterVisualAcuityForEpisodeSide($patient, 'left', $include_nr_values, $before_date, $use_context);
+        trigger_error("getLetterVisualAcuityForEpisodeLeft is deprecated, use getSnellenVisualAcuityForLeft", E_USER_DEPRECATED);
+        return $this->getSnellenVisualAcuityForLeft($patient, $include_nr_values, $before_date, $use_context);
     }
 
     /**
@@ -1188,6 +720,7 @@ class OphCiExamination_API extends \BaseAPI
      * @param string $before_date
      * @param bool $use_context
      * @return OphCiExamination_VisualAcuity_Reading
+     * @deprecated since v4.0 use getSnellenVisualAcuityForRight instead
      */
     public function getLetterVisualAcuityForEpisodeRight(
         $patient,
@@ -1195,65 +728,8 @@ class OphCiExamination_API extends \BaseAPI
         $before_date = null,
         $use_context = false
     ) {
-        return $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
-    }
-
-    /**
-     * get the va from the given episode for the right side of the episode patient.
-     * @param Patient $patient
-     * @param string $side
-     * @param bool $include_nr_values
-     * @param string $before_date
-     * @param bool $use_context
-     * @return models\OphCiExamination_VisualAcuity_Reading
-     * @var models\Element_OphCiExamination_VisualAcuity $va
-     */
-    public function getLetterVisualAcuityForEpisodeSide(
-        $patient,
-        $side = 'left',
-        $include_nr_values = false,
-        $before_date = null,
-        $use_context = false
-    ) {
-        $va = $this->getLatestElement(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
-            $patient,
-            $use_context,
-            $before_date
-        );
-
-        if ($va) {
-            if ($va->hasEye($side)) {
-                $best = $va->getBestReading($side);
-                if ($best) {
-                    return $best->convertTo($best->value, $this->getSnellenUnitId());
-                }
-                if ($include_nr_values) {
-                    return $va->getTextForSide($side);
-                }
-            }
-        }
-    }
-
-    /**
-     * get the list of possible unit values for Visual Acuity.
-     *
-     * currently operates on the assumption there is always Snellen Metre available as a VA unit, and provides this
-     * exclusively.
-     */
-    public function getVAList()
-    {
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('name = :nm');
-        $criteria->params = array(':nm' => 'Snellen Metre');
-
-        $unit = models\OphCiExamination_VisualAcuityUnit::model()->find($criteria);
-        $res = array();
-        foreach ($unit->selectableValues as $uv) {
-            $res[$uv->base_value] = $uv->value;
-        }
-
-        return $res;
+        trigger_error("getLetterVisualAcuityForEpisodeRight is deprecated, use getSnellenVisualAcuityForRight", E_USER_DEPRECATED);
+        return $this->getSnellenVisualAcuityForRight($patient, $include_nr_values, $before_date, $use_context);
     }
 
     /**
@@ -2578,33 +2054,6 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * To get the most recent VA element for the Patient
-     *
-     * @param \Patient $patient
-     * @return array|bool
-     */
-    public function getMostRecentVAElementForPatient(\Patient $patient)
-    {
-        $event_type = $this->getEventType();
-        $criteria = new \CDbCriteria;
-        $criteria->select = '*';
-        $criteria->join = 'join episode on t.episode_id = episode.id and patient_id = :patient_id and event_type_id = :event_type_id';
-        $criteria->order = 't.event_date desc';
-        $criteria->condition = 't.deleted != 1';
-        $criteria->params = array(':patient_id' => $patient->id, ':event_type_id' => $event_type->id);
-        foreach (\Event::model()->findAll($criteria) as $event) {
-            $result_element = models\Element_OphCiExamination_VisualAcuity::model()
-                ->with('event')
-                ->find('event_id=?', array($event->id));
-            if ($result_element !== null) {
-                return (array('element' => $result_element, 'event_date' => date($event->created_date)));
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * To get the visual acuity from the element based on the all episodes for the patient
      * @param \Patient $patient
      * @param $side
@@ -3456,7 +2905,7 @@ class OphCiExamination_API extends \BaseAPI
                     'table_class' => 'drugs-stopped-today'
                 );
 
-                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams, true);
             }
         }
 
@@ -3482,7 +2931,7 @@ class OphCiExamination_API extends \BaseAPI
                     'table_class' => 'drugs-stopped-today'
                 );
 
-                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams, true);
             }
         }
 
@@ -3508,7 +2957,7 @@ class OphCiExamination_API extends \BaseAPI
                     'table_class' => 'drugs-continued-today'
                 );
 
-                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams, true);
             }
         }
 
@@ -3534,7 +2983,7 @@ class OphCiExamination_API extends \BaseAPI
                     'table_class' => 'drugs-continued-today'
                 );
 
-                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams, true);
             }
         }
 
@@ -3561,7 +3010,7 @@ class OphCiExamination_API extends \BaseAPI
                 'table_class' => 'medication-management-summary'
             );
 
-            return \Yii::app()->controller->renderPartial("_druglist_all", $viewparams);
+            return \Yii::app()->controller->renderPartial("_druglist_all", $viewparams, true);
         }
 
         return "(medication management summary not available)";
@@ -3743,7 +3192,7 @@ class OphCiExamination_API extends \BaseAPI
                             <?=$entry->getLateralityDisplay(true)?>
                         </td>
                         <td><?= $entry->frequency ? $entry->frequency : ''; ?></td>
-                        <td><?= $stop_display_date ?: 'Ongoing' ?></td>                        
+                        <td><?= $stop_display_date ?: 'Ongoing' ?></td>
                     </tr>
                     <?php if ($tapers) {
                         $taper_date = $stop_date;

@@ -52,7 +52,7 @@ class ContactLabelTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLabel::model
+     * @covers ContactLabel
      */
     public function testModel()
     {
@@ -60,7 +60,7 @@ class ContactLabelTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLabel::tableName
+     * @covers ContactLabel
      */
     public function testTableName()
     {
@@ -68,7 +68,7 @@ class ContactLabelTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLabel::rules
+     * @covers ContactLabel
      * @throws CException
      */
     public function testRules()
@@ -79,7 +79,7 @@ class ContactLabelTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLabel::attributeLabels
+     * @covers ContactLabel
      */
     public function testAttributeLabels()
     {
@@ -94,7 +94,11 @@ class ContactLabelTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers ContactLabel
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {
@@ -114,7 +118,7 @@ class ContactLabelTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLabel::staffType
+     * @covers ContactLabel
      */
     public function testStaffType()
     {

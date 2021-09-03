@@ -56,6 +56,7 @@ if ($queue) { ?>
                               <?php
                               //may need to expand this beyond textarea and select in the future.
                                 $notes = @$form_data[$fld['form_name']]; ?>
+                              <label for="<?= $fld['form_name'] ?>"><?= $fld['label'] ?>:</label>
                               <textarea id="<?= $fld['form_name'] ?>"
                                         name="<?= $fld['form_name'] ?>"
                                         class="cols-full"

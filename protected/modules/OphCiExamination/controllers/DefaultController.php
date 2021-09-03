@@ -34,6 +34,8 @@ use Yii;
 
 class DefaultController extends \BaseEventTypeController
 {
+    use traits\DefaultForVisualAcuity;
+
     protected static $action_types = array(
         'step' => self::ACTION_TYPE_EDIT,
         'getDisorder' => self::ACTION_TYPE_FORM,
@@ -167,18 +169,6 @@ class DefaultController extends \BaseEventTypeController
             $this->jsVars['OphCiExamination_loadQuestions_url'] = $this->createURL('loadInjectionQuestions');
         }
 
-        $this->jsVars['Element_OphCiExamination_Refraction_sphere'] = array();
-
-        foreach (models\OphCiExamination_Refraction_Sphere_Integer::model()->findAll(array('order' => 'display_order asc')) as $si) {
-            $this->jsVars['Element_OphCiExamination_Refraction_sphere'][$si->sign_id][] = $si->value;
-        }
-
-        $this->jsVars['Element_OphCiExamination_Refraction_cylinder'] = array();
-
-        foreach (models\OphCiExamination_Refraction_Cylinder_Integer::model()->findAll(array('order' => 'display_order asc')) as $si) {
-            $this->jsVars['Element_OphCiExamination_Refraction_cylinder'][$si->sign_id][] = $si->value;
-        }
-
         Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/core.js", \CClientScript::POS_HEAD);
 
         $assetManager = \Yii::app()->getAssetManager();
@@ -265,16 +255,17 @@ class DefaultController extends \BaseEventTypeController
 
         /* @var \OEModule\OphCoCvi\components\OphCoCvi_API $cvi_api */
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
-        /* @var models\Element_OphCiExamination_VisualAcuity $element */
 
-        $visual_acuities = array_filter($elements, function ($element) {
-            return get_class($element) === models\Element_OphCiExamination_VisualAcuity::class;
-        });
-        $visualAcuity = array_shift($visual_acuities);
-
-        // Render the CVI alert above all thr other elements
+        // Render the CVI alert above all the other elements
         if ($cvi_api) {
-            echo $cvi_api->renderAlertForVA($this->patient, $visualAcuity, $action === 'view');
+            $visual_acuities = array_filter($elements, function ($element) {
+                return get_class($element) === models\Element_OphCiExamination_VisualAcuity::class;
+            });
+            echo $cvi_api->renderAlertForVA(
+                $this->patient,
+                $visual_acuities[0] ?? null,
+                $action === 'view'
+            );
         }
 
         if ($action !== 'view' && $action !== 'createImage') {
@@ -1174,61 +1165,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Set the colour vision readings against the Element_OphCiExamination_ColourVision element.
-     *
-     * @param Element_OphCiExamination_ColourVision $element
-     * @param $data
-     * @param $index
-     */
-    protected function setComplexAttributes_Element_OphCiExamination_ColourVision($element, $data, $index)
-    {
-        $model_name = \CHtml::modelName($element);
-
-        foreach (array(
-            'left' => \Eye::LEFT,
-            'right' => \Eye::RIGHT,
-        ) as $side => $eye_id) {
-            $readings = array();
-            $checker = 'has' . ucfirst($side);
-            if ($element->$checker()) {
-                if (isset($data[$model_name][$side . '_readings'])) {
-                    foreach ($data[$model_name][$side . '_readings'] as $p_read) {
-                        if (@$p_read['id']) {
-                            if (!$reading = models\OphCiExamination_ColourVision_Reading::model()->findByPk($p_read['id'])) {
-                                $reading = new models\OphCiExamination_ColourVision_Reading();
-                            }
-                        } else {
-                            $reading = new models\OphCiExamination_ColourVision_Reading();
-                        }
-                        $reading->attributes = $p_read;
-                        $reading->eye_id = $eye_id;
-                        $readings[] = $reading;
-                    }
-                }
-            }
-            $element->{$side . '_readings'} = $readings;
-        }
-    }
-
-    /**
-     * Save Colour Vision readings.
-     *
-     * @param Element_OphCiExamination_ColourVision $element
-     * @param $data
-     * @param $index
-     */
-    protected function saveComplexAttributes_Element_OphCiExamination_ColourVision($element, $data, $index)
-    {
-        $model_name = \CHtml::modelName($element);
-        $element->updateReadings(\Eye::LEFT, $element->hasLeft() ?
-            @$data[$model_name]['left_readings'] :
-            array());
-        $element->updateReadings(\Eye::RIGHT, $element->hasRight() ?
-            @$data[$model_name]['right_readings'] :
-            array());
-    }
-
-    /**
      * Save question answers and risks.
      *
      * @param $element
@@ -1421,14 +1357,6 @@ class DefaultController extends \BaseEventTypeController
                     $element->$key = $value;
                 }
             }
-        }
-    }
-
-    protected function setElementDefaultOptions_Element_OphCiExamination_Refraction(models\Element_OphCiExamination_Refraction $element, $action)
-    {
-        if ($action == 'create') {
-            $element->right_type_id = 1;
-            $element->left_type_id = 1;
         }
     }
 

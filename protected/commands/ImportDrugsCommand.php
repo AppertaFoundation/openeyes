@@ -43,7 +43,7 @@ class ImportDrugsCommand extends CConsoleCommand
         'SUPPCD' => 'SUPPLIER.CD',
         'UNIT_DOSE_UOMCD' => 'UNIT_DOSE_UNIT_OF_MEASURE.CD'
     ];
-    
+
     private $uom_to_forms_mapping = [
         'drop' => [
             'Drops', 'Modified-release drops', 'Homeopathic drops',

@@ -21,6 +21,9 @@ SCRIPTDIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 MODULEROOT=$WROOT/protected/modules
 
+# disable log to browser during reset, otherwise it causes extraneous trace output on the CLI
+export LOG_TO_BROWSER=""
+
 ## default DB connection variables
 # If database user / pass are empty then set from environment variables of from docker secrets (secrets are the recommended approach)
 # Note that this script ignores the old db.conf method. If you are still using this deprecated
@@ -149,8 +152,8 @@ while [[ $# -gt 0 ]]; do
         ;;
     --no-post)
         nopost=1
-        echo "Local post-demo scripts will not be run"
-        ## do not run local post reset scripts
+        echo "post-migraton demo scripts will not be run"
+        ## do not run post reset scripts
         ;;
     --no-pre)
         nopre=1
@@ -257,7 +260,7 @@ if [ $showhelp = 1 ]; then
     echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
     echo "	--ignore-warnings	: Ignore warnings during migration"
     echo "	--no-fix		: do not run oe-fix routines after reset"
-    echo "  --no-post       : do not run local post reset scripts"
+    echo "  --no-post       : do not run post-migration reset scripts"
     echo "	--custom-file"
     echo "			| -f:	: Use a custom .sql file to restore instead of default. e.g; "
     echo "					  'oe-reset -f <filename>.sql' "
@@ -297,14 +300,19 @@ fi
 
 # Test to see if the restore file exists before continuing (note that '-' is a special case for when piping stdin)
 [[ ! -f "$restorefile" && "$restorefile" != "-" ]] && {
-    echo "Restore file was found at: $restorefile. 
+    echo "Restore file was found at: $restorefile.
     Please use --custom-file to specify a valid restore file"
     exit 1
 } || :
 
 echo "Clearing current database..."
 
-dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%' identified by '$pass'; flush privileges;"
+dbresetsql="DROP DATABASE IF EXISTS openeyes; 
+DROP USER IF EXISTS '$dbuser';
+CREATE USER '$dbuser' IDENTIFIED BY '$pass'; 
+CREATE DATABASE ${DATABASE_NAME:-openeyes}; 
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%';
+FLUSH PRIVILEGES;"
 
 echo ""
 ## write-out command to console (helps with debugging)
@@ -327,34 +335,47 @@ fi
 
 if [ $cleanbase = "0" ]; then
 
+    echo "extracting $restorefile..."
+
     if [[ $restorefile =~ \.zip$ ]]; then
-        restorefilesize=$(numfmt --to=iec-i --suffix=B $(gzip -dc "$restorefile" | wc -c))
-        echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
+        # restorefilesize=$(numfmt --to=iec-i --suffix=B $(gzip -dc "$restorefile" | wc -c))
         # If pv is installed then use it to show progress
         [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
-        eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-            exit 1
-        }
+        eval "$importcmd >0-a-restore.sql"
     elif [[ $restorefile =~ \.sql$ ]]; then
-        restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "$restorefile" | cut -f1))
-        echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
-        # If pv is installed then use it to show progress
-        [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
-        eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-            exit 1
-        }
+        cp "$restorefile" 0-a-restore.sql
     elif [[ $restorefile == '-' ]]; then
         # pipe stdin straight through
-        eval "cat - | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+        eval "cat - >0-a-restore.sql " || {
+            echo -e "\n\nCOULD NOT IMPORT from stdin. Quiting...\n\n"
             exit 1
         }
     else
         echo -e "\n\nCOULD NOT IMPORT $restorefile. Unrecognised file extension (Only .zip or .sql files are supported). Quiting...\n\n"
         exit 1
     fi
+
+    # run cleanup on exports to maximise compatibility with different mysql/mariadb versions
+    echo "cleaning restore file for compatability..."
+    sed 's/NO_AUTO_CREATE_USER,\?//g' 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    sed "s|CREATE.\+DEFINER.\+ TRIGGER|CREATE TRIGGER|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    sed "s|CREATE.\+DEFINER.\+ FUNCTION|CREATE FUNCTION|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    sed "s|CREATE.\+DEFINER.\+ PROCEDURE|CREATE PROCEDURE|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    sed "s|\/\*\![0-9]\+ DEFINER.\+SQL SECURITY DEFINER.\?\*\/| |g" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+
+    # import the cleaned file
+    restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "0-a-restore.sql" | cut -f1))
+    echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
+
+    # If pv is installed then use it to show progress - if not, use cat to pipe in the restore file
+    [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv 0-a-restore.sql" || importcmd="cat 0-a-restore.sql"
+    eval "$importcmd | $dbconnectionstring --init-command='SET SESSION FOREIGN_KEY_CHECKS=0' -D ${DATABASE_NAME:-'openeyes'}" || {
+        echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+        exit 1
+    }
+
+    # remove temp file
+    rm 0-a-restore.sql 2>/dev/null
 
     ## belt and braces reset to the correct user password, in case the PW was altered by the imported sql
     pwresetsql="ALTER USER '$dbuser'@'%' IDENTIFIED BY '$pass';"
@@ -409,43 +430,45 @@ if [ $migrate == "1" ]; then
     grep applied "$WROOT"/protected/runtime/migrate.log
 fi
 
-# Run demo scripts
+# Run post-migration demo scripts
 # Actual scripts are in sample module, for greater flexibility
-if [ $demo == "1" ]; then
+if [[ $demo == "1" && $nopost == "0" ]]; then
 
-    echo "RUNNING DEMO SCRIPTS..."
+    echo "RUNNING POST-MIGRATION DEMO SCRIPTS..."
 
     basefolder="$MODULEROOT/sample/sql/demo"
 
-    shopt -s nullglob
-    for f in $(ls "$basefolder" | sort -V); do
+    find "$basefolder" "$basefolder"/post-migrate/ "$basefolder"/local-post -maxdepth 1 -type f -printf '%f\0%p\n' | sort -t '\0' -V | awk -F '\0' '{print $2}' | while read f; do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
+            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $f"
         elif [[ $f == *.sh ]]; then
             echo "running $f"
-            bash -l "$basefolder/$f"
+            bash -l "$f"
         fi
     done
-fi
 
-# Run genetics scripts if genetics is enabled
-if grep -q "'Genetics'," "$WROOT"/protected/config/local/common.php && ! grep -q "/\*'Genetics'," "$WROOT"/protected/config/local/common.php; then
+    # Run genetics scripts if genetics is enabled
+    if grep -q "'Genetics'," "$WROOT"/protected/config/local/common.php && ! grep -q "/\*'Genetics'," "$WROOT"/protected/config/local/common.php; then
 
-    echo "RUNNING Genetics files..."
+        echo "RUNNING Genetics files..."
 
-    basefolder="$MODULEROOT/sample/sql/demo/genetics"
+        basefolder="$MODULEROOT/sample/sql/demo/genetics"
 
-    shopt -s nullglob
-    for f in $(ls "$basefolder" | sort -V); do
-        if [[ $f == *.sql ]]; then
-            echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
-        elif [[ $f == *.sh ]]; then
-            echo "running $f"
-            bash -l "$basefolder/$f"
+        if [ -d "$basefolder" ]; then
+            shopt -s nullglob
+            for f in $(ls "$basefolder" | sort -V); do
+                if [[ $f == *.sql ]]; then
+                    echo "importing $f"
+                    eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
+                elif [[ $f == *.sh ]]; then
+                    echo "running $f"
+                    bash -l "$basefolder/$f"
+                fi
+            done
         fi
-    done
+
+    fi
 
 fi
 
@@ -466,25 +489,6 @@ if [ -n "$dmdimport" ]; then
         echo "DMD IMPORT FAILD. Aborting..."
         exit 1
     fi
-fi
-
-# Run local post-migaration demo scripts
-if [[ $demo == "1" && $nopost == "0" ]]; then
-
-    echo "RUNNING POST RESET SCRIPTS..."
-
-    basefolder="$MODULEROOT/sample/sql/demo/local-post"
-
-    shopt -s nullglob
-    for f in $(ls "$postpath" | sort -V); do
-        if [[ $f == *.sql ]]; then
-            echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $postpath/$f"
-        elif [[ $f == *.sh ]]; then
-            echo "running $f"
-            bash -l "$postpath/$f"
-        fi
-    done
 fi
 
 if [ $nofix -eq 0 ]; then
@@ -509,7 +513,7 @@ if [ $droparchive -eq 1 ]; then
         SET FOREIGN_KEY_CHECKS = 0;
         set @s = (SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' ) FROM information_schema.tables WHERE table_schema = '${DATABASE_NAME:-openeyes}' AND table_name LIKE 'archive_%');
         PREPARE stmt FROM @s;
-        EXECUTE stmt; 
+        EXECUTE stmt;
         SET FOREIGN_KEY_CHECKS = 1;
     END IF;
 

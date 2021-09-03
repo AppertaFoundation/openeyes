@@ -153,6 +153,16 @@ class User extends BaseActiveRecordVersioned
                     array('password_repeat', 'safe'),
                 )
             );
+        } elseif (Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC') {
+            return array_merge(
+                $commonRules,
+                array(
+                    array('username, first_name, last_name, email, active', 'required'),
+                    array('username', 'length', 'max' => 40),
+                    array('email', 'length', 'max' => 40),
+                    array('password_repeat', 'safe'),
+                )
+            );
         } else {
             throw new SystemException('Unknown auth_source: ' . Yii::app()->params['auth_source']);
         }
@@ -509,8 +519,12 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
-  
+
         if ($this->isNewRecord && \Yii::app()->params['auth_source'] === 'LDAP' && !$this->is_local) {
+            $password = $this->generateRandomPassword();
+            $this->password = $password;
+            $this->password_repeat = $password;
+        } elseif ($this->isNewRecord && (\Yii::app()->params['auth_source'] === 'SAML' || \Yii::app()->params['auth_source'] === 'OIDC')) {
             $password = $this->generateRandomPassword();
             $this->password = $password;
             $this->password_repeat = $password;
@@ -1035,7 +1049,6 @@ class User extends BaseActiveRecordVersioned
         $threshold = isset(Yii::app()->params['pw_status_checks']['pw_tries'])?Yii::app()->params['pw_status_checks']['pw_tries']:3;
         if ($threshold) { //only check pw tries if we have a threshold to check against
             $pwTriesFailed = Yii::app()->params['pw_status_checks']['pw_tries_failed']?? 'locked';
-            
             if ($pwTriesFailed === 'softlocked' && $user->password_status === 'softlocked' ) {
                 if ( $user->password_softlocked_until < date("Y-m-d H:i:s")) {
                     $user->password_failed_tries = 0;
@@ -1156,5 +1169,136 @@ class User extends BaseActiveRecordVersioned
             }
         }
         return $daysLeft;
+    }
+
+    public function setSSOUserInformation($response)
+    {
+        // Set user credentials that login through SAML authentication
+        if (Yii::app()->params['auth_source'] === 'SAML') {
+            $this->username = $response['username'][0];
+            $this->first_name = $response['FirstName'][0];
+            $this->last_name = $response['LastName'][0];
+            $this->email = $response['username'][0];   // For SAML users, email would be their username
+            $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
+            $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'][0] : '';
+            $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
+        }
+        // Set the user credentials that login through OIDC suthentication
+        elseif (Yii::app()->params['auth_source'] === 'OIDC') {
+            $this->username = $response['email'];       // OIDC users set emails as their usernames
+            $this->first_name = $response['given_name'];
+            $this->last_name = $response['family_name'];
+            $this->email = $response['email'];
+            $this->title = array_key_exists('title', $response) ? $response['title'] : '';
+            $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'] : '';
+            $this->role = array_key_exists('position', $response) ? $response['position'] : '';
+            $this->doctor_grade_id = array_key_exists('doctor_grade', $response) ? DoctorGrade::model()->find("grade = :grade", [':grade' => $response['doctor_grade']])->id : '';
+            $this->registration_code = array_key_exists('registration_code', $response) ? $response['registration_code'] : '';
+            $this->is_consultant = array_key_exists('consultant', $response) && strtolower($response['consultant']) === 'yes' ? 1 : 0;
+            $this->is_surgeon = array_key_exists('surgeon', $response) && strtolower($response['surgeon']) === 'yes' ? 1 : 0;
+        }
+
+        // Set the user active regardless
+        $this->active = true;
+        $this->setdefaultSSORights();
+
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
+        $user = self::model()->find('username = :username', array(':username' => $this->username));
+        //If the user is logging into the OE for the first time, assign default roles and firms
+        if ($user === null) {
+            if (!$this->save()) {
+                $this->audit('login', 'login-failed', "Cannot create user: $this->username", true);
+                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+            }
+            $this->id = self::model()->find('username = :username', array(':username' => $this->username))->id;
+
+            $this->setdefaultSSOFirms();
+            $this->setdefaultSSORoles();
+        } else {
+            $this->id = $user->id;
+            // Update user information for returning users
+            if (Yii::app()->params['auth_source'] === 'OIDC') {
+                $this->setIsNewRecord(false);
+                $this->update();
+            }
+        }
+        // Roles from the token need to be assigned to the user after every login
+        if (!$defaultRights['default_enabled']) {
+            // Pass the array of roles from the token
+            $this->setRolesFromSSOToken($response['roles']);
+        }
+
+        return array(
+            'username' => $this->username,
+            'password' => $this->password
+        );
+    }
+
+    public function setdefaultSSORights()
+    {
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
+        $this->global_firm_rights = $defaultRights['global_firm_rights'];
+        // If global firm rights have been provided then no need to select firms and vice versa
+        $this->has_selected_firms = !$this->global_firm_rights;
+    }
+
+    public function setdefaultSSOFirms()
+    {
+        $ssoFirms = SsoDefaultFirms::model()->findAll();
+        $defaultFirms = array();
+        foreach ($ssoFirms as $ssoFirm) {
+            $defaultFirms[] = $ssoFirm['firm_id'];
+        }
+        $this->saveFirms($defaultFirms);
+    }
+
+    public function setdefaultSSORoles()
+    {
+        $ssoRoles = SsoDefaultRoles::model()->findAll();
+        $defaultRoles = array();
+        foreach ($ssoRoles as $ssoRole) {
+            $defaultRoles[] = $ssoRole['roles'];
+        }
+        $this->saveRoles($defaultRoles);
+    }
+
+    public function setRolesFromSSOToken($roles)
+    {
+        $assignedRoles = array();
+        foreach ($roles as $role) {
+            $userRoles = SsoRoles::model()->find("name = :role", [':role' => $role]);
+            if (!$userRoles) {
+                $this->audit('SsoRoles', 'assign-role', 'SSO Role "' . $role . '" not found for user ' . $this->username);
+                if (Yii::app()->params['strict_SSO_roles_check']) {
+                    $this->audit('SsoRoles', 'login-failed', "SSO Role not found so cannot login: $this->username", true);
+                    throw new Exception('The role "' . $role . '" was not found in OpenEyes');
+                }
+            } else {
+                foreach ($userRoles->sso_roles_assignment as $userRole) {
+                    if (!in_array($userRole->authitem_role, $assignedRoles, true)) {
+                        $assignedRoles[] = $userRole->authitem_role;
+                    }
+                }
+            }
+        }
+        $this->saveRoles($assignedRoles);
+    }
+
+    /**
+     * Get whitelisted actions from password expiry redirects
+     * @param string $user
+     * @return string Name of status
+     */
+    public function CheckRequestOnExpiryWhitelist($request)
+    {
+        $whitelist = !empty(Yii::app()->params['pw_status_checks']['pw_expired_whitelist']) ? Yii::app()->params['pw_status_checks']['pw_expired_whitelist'] : ['/profile/password', '/site/logout', '/User/testAuthenticated', '/Site/loginFromOverlay', 'User/getSecondsUntilSessionExpire', '/site/changesiteandfirm'];
+
+        foreach ($whitelist as $URL) {
+            // check to see if the request starts with this whitelisted url
+            if (strpos($request, $URL)===0) {
+                return true;
+            }
+        }
+        return false;
     }
 }

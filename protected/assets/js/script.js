@@ -16,6 +16,12 @@
  */
 
 $(document).ready(function () {
+  $(document.body).append(createLoginOverlay());
+
+  let loginOverlay = $('#js-overlay');
+  loginOverlay.hide();
+
+  checkLoginOverlay();
 
   var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapperEvents($('.openeyes-brand'));
   $('.openeyes-brand').off('mouseenter');
@@ -359,6 +365,260 @@ $(document).ready(function () {
         }
     }());
 });
+
+function showLoginOverlay()
+{
+    let loginOverlay = $('#js-overlay');
+
+    if (!loginOverlay.length)
+    {
+        $(document.body).append(createLoginOverlay());
+
+        loginOverlay = $('#js-overlay');
+        loginOverlay.hide();
+    }
+
+    //Do not show login overlay if we are already on the login screen
+    if(window.location.pathname !== '/site/login' && !loginOverlay.is(':visible')) {
+        $('#js-login-error').hide();
+        loginOverlay.show();
+    }
+}
+
+function checkLoginOverlay()
+{
+    let authenticated = pollUserAuthenticated();
+
+    if(authenticated)
+    {
+        queueLoginOverlay();
+    }
+    else
+    {
+        showLoginOverlay();
+    }
+}
+
+function queueLoginOverlay()
+{
+    $.ajax({
+        url: '/User/getSecondsUntilSessionExpire',
+        async: false,
+        data: {
+            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+            "extend_session": false,
+        },
+        success: function(resp) {
+            let secondsUntilExpiry = resp + 10;
+            setTimeout(checkLoginOverlay, secondsUntilExpiry * 1000);
+        },
+        error: function (resp) {
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Unable to poll user session expiry.\n\nPlease contact support for assistance."
+            }).open();
+        }
+    });
+}
+
+function pollUserAuthenticated() {
+    let authSuccess = false;
+    $.ajax({
+        url: '/User/testAuthenticated',
+        async: false,
+        data: {
+            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+            "extend_session": false,
+        },
+        success: function(resp) {
+            authSuccess = (resp === "Success");
+        },
+        error: function (resp) {
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Unable to poll user authentication status.\n\nPlease contact support for assistance."
+            }).open();
+        }
+    });
+
+    return authSuccess;
+}
+
+function createLoginOverlay() {
+    let overlay = document.createElement('div');
+    overlay.id = 'js-overlay';
+    overlay.classList.add('oe-popup-wrap');
+    overlay.classList.add('dark');
+    //Make overlay opaque to hide patient information in the background
+    overlay.style.background = "rgb(37, 35, 35)";
+
+    let timeoutDiv = document.createElement('div');
+    timeoutDiv.classList.add('oe-login');
+    timeoutDiv.classList.add('timeout');
+    overlay.append(timeoutDiv);
+
+    let loginDiv = document.createElement('div');
+    loginDiv.classList.add('login');
+    timeoutDiv.append(loginDiv);
+
+    let timeoutHeader = document.createElement('h1');
+    timeoutHeader.innerText = 'Timed out';
+    loginDiv.append(timeoutHeader);
+
+    let errorDiv = document.createElement('div');
+    errorDiv.id = 'js-login-error';
+    errorDiv.classList.add('alert-box');
+    errorDiv.classList.add('error');
+    loginDiv.append(errorDiv);
+
+    if (auth_source === 'BASIC' || auth_source === 'LDAP') {
+        let userDiv = document.createElement('div');
+        userDiv.classList.add('user');
+        loginDiv.append(userDiv);
+
+        let usernameField = document.createElement('input');
+        usernameField.id = 'js-username';
+        usernameField.type = 'text';
+        usernameField.placeholder = 'Username';
+        userDiv.append(usernameField);
+
+        let passwordField = document.createElement('input');
+        passwordField.id = 'js-password';
+        passwordField.type = 'password';
+        passwordField.placeholder = 'Password';
+        userDiv.append(passwordField);
+
+        let loginButton = document.createElement('button');
+        loginButton.id = 'js-login';
+        loginButton.classList.add('green');
+        loginButton.classList.add('hint');
+        loginButton.innerText = 'Login';
+        $(loginButton).click(loginWithOverlay);
+        userDiv.append(loginButton);
+
+        let infoDiv = document.createElement('div');
+        infoDiv.classList.add('info');
+        infoDiv.innerText = 'For security reasons you have been logged out. Please login again';
+        loginDiv.append(infoDiv);
+
+        let returnDiv = document.createElement('div');
+        returnDiv.classList.add('flex-c');
+        loginDiv.append(returnDiv);
+
+        let returnButton = document.createElement('a');
+        returnButton.classList.add('button');
+        returnButton.innerText = 'Or exit to homepage';
+        returnButton.href = document.location.origin + '/site/login';
+
+        returnDiv.append(returnButton);
+    }
+
+    if (auth_source === 'OIDC' || auth_source === 'SAML') {
+        let infoDiv = document.createElement('div');
+        infoDiv.classList.add('login-details');
+        infoDiv.innerText = 'For security reasons you have been logged out. Please login again';
+        loginDiv.append(infoDiv);
+
+        let userDiv = document.createElement('div');
+        userDiv.classList.add('user');
+        loginDiv.append(userDiv);
+
+        let loginButton = document.createElement('button');
+        loginButton.id = 'js-login';
+        loginButton.classList.add(...['hint', 'green']);
+        loginButton.innerText = 'Login through SSO Portal';
+        $(loginButton).click(redirectToSSOWithOverlay);
+        userDiv.append(loginButton);
+    }
+
+    return overlay;
+}
+
+function redirectToSSOWithOverlay() {
+    let loginOverlay = $('#js-overlay');
+    let errorBox = $('#js-login-error');
+    errorBox.hide();
+
+    $.ajax({
+        type: 'POST',
+        url: '/Sso/redirectToSSOPortal',
+        data: {
+            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+        },
+        async: false,
+        success: function (resp) {
+            if (resp) {
+                window.open(resp, '_blank');
+                // The user has been redirected to SSO Portal so check every 15 seconds to see if user has authenticated
+                // This is to avoid data from previous session from being lost due to SSO sign-in
+                let authSuccess = false;
+                let testAuthenticated = setInterval(function () {
+                    authSuccess = pollUserAuthenticated()
+                }, 15000);
+                if (authSuccess) {
+                    // The user has authenticated, remove the login overlay
+                    loginOverlay.hide();
+                    clearInterval(testAuthenticated);
+                    queueLoginOverlay();
+                }
+                // Clear interval and show error if the user is not authenticated in 10 minutes after redirect
+                setTimeout(function () {
+                    clearInterval(testAuthenticated);
+                    errorBox.text('No user authenticated. All unsaved data in this session will be lost');
+                    errorBox.show();
+                }, 600000);
+            } else {
+                errorBox.text('Single Sign-On Portal not found. Please contact your provider for assistance.');
+                errorBox.show();
+            }
+        },
+        error: function () {
+            loginOverlay.hide();
+
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Unable to login.\n\nPlease contact support for assistance.",
+            }).open();
+        }
+    });
+}
+
+function loginWithOverlay() {
+    let loginOverlay = $('#js-overlay');
+    let errorBox = $('#js-login-error');
+    errorBox.hide();
+
+    $.ajax({
+        type: 'POST',
+        url: '/Site/loginFromOverlay',
+        async: false,
+        data: {
+            "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+            "LoginForm": {
+                "username": $('#js-username').val(),
+                "password": $('#js-password').val(),
+            },
+        },
+        success: function(resp) {
+            // TODO We should check that the newly logged-in user is the same that was originally logged in
+
+            if(resp === 'Login success'){
+                loginOverlay.hide();
+                queueLoginOverlay();
+            } else if (resp === 'Username different') {
+                errorBox.text('Username is different from previous session. Please exit to homepage to start a new session');
+                errorBox.show();
+            } else {
+                errorBox.text('Invalid login.');
+                errorBox.show();
+            }
+        },
+        error: function (resp) {
+            loginOverlay.hide();
+
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Unable to login.\n\nPlease contact support for assistance.",
+            }).open();
+        }
+    });
+}
 
 function changeState(wb,sp) {
 	if (sp.hasClass('hide')) {

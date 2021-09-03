@@ -14,7 +14,7 @@
  */
 class AuthManagerTest extends PHPUnit_Framework_TestCase
 {
-    private $authManager;
+    private AuthManager $authManager;
 
     public function setUp()
     {
@@ -24,54 +24,71 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Unknown ruleset 'foo' for business rule 'foo.bar'
+     * @covers AuthManager
      */
     public function testUnknownRuleset()
     {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Unknown ruleset \'foo\' for business rule \'foo.bar\'');
         $this->authManager->executeBizRule('foo.bar', array(), null);
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Undefined business rule: 'foo'
+     * @covers AuthManager
      */
     public function testUndefinedCoreRule()
     {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Undefined business rule: \'foo\'');
         $this->authManager->executeBizRule('foo', array(), null);
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Undefined business rule: 'foo.bar'
+     * @covers AuthManager
      */
     public function testUndefinedModuleRule()
     {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Undefined business rule: \'foo.bar\'');
         $this->authManager->registerRuleset('foo', $this);
         $this->authManager->executeBizRule('foo.bar', array(), null);
     }
 
+    /**
+     * @covers AuthManager
+     * @throws Exception
+     */
     public function testCoreRule()
     {
         $this->assertTrue($this->authManager->executeBizRule('rule0', array(), null));
     }
 
+    /**
+     * @covers AuthManager
+     * @throws Exception
+     */
     public function testModuleRule()
     {
         $this->authManager->registerRuleset('foo', $this);
         $this->assertTrue($this->authManager->executeBizRule('foo.rule0', array(), null));
     }
 
+    /**
+     * @covers AuthManager
+     * @throws Exception
+     */
     public function testUserIdRemoved()
     {
         $this->assertTrue($this->authManager->executeBizRule('rule0', array('userId' => 1), null));
     }
 
     /**
-     * @expectedException ArgumentCountError
+     * @covers AuthManager
+     * @throws Exception
      */
     public function testNotEnoughArgs()
     {
+        $this->expectException('ArgumentCountError');
         if (phpversion() > '7.1') {
             $this->authManager->executeBizRule('rule1', array(), null);
         } else {
@@ -81,16 +98,28 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
         
     }
 
+    /**
+     * @covers AuthManager
+     * @throws Exception
+     */
     public function testDataScalar()
     {
         $this->assertTrue($this->authManager->executeBizRule('rule1', array(), 'foo'));
     }
 
+    /**
+     * @covers AuthManager
+     * @throws Exception
+     */
     public function testDataArray()
     {
         $this->assertTrue($this->authManager->executeBizRule('rule2', array(), array('foo', 'bar')));
     }
 
+    /**
+     * @covers AuthManager
+     * @throws Exception
+     */
     public function testDataAndParam()
     {
         $this->assertTrue($this->authManager->executeBizRule('rule2', array('bar'), 'foo'));
@@ -101,11 +130,20 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
         return func_num_args() == 0;
     }
 
+    /**
+     * @param $foo
+     * @return bool
+     */
     public function rule1($foo)
     {
         return $foo === 'foo';
     }
 
+    /**
+     * @param $foo
+     * @param $bar
+     * @return bool
+     */
     public function rule2($foo, $bar)
     {
         return $foo === 'foo' && $bar === 'bar';

@@ -56,9 +56,17 @@ $correspondence_email_status_to_css_class = [
     'Complete' => 'done',
     'Failed' => 'cancelled',
     'Pending' => 'scheduled',
+];
+$message_type_to_css_class = [
+    '0' => '',
+    '1' => 'urgent',
 ]; ?>
 <div class="sidebar-eventlist">
-    <?php if (is_array($ordered_episodes)) { ?>
+    <?php
+    if (is_array($ordered_episodes)) {
+        $existing_modules = array();
+        $missing_modules = array();
+        ?>
         <ul class="events" id="js-events-by-date">
             <?php foreach ($ordered_episodes as $specialty_episodes) {
                 foreach ($specialty_episodes['episodes'] as $i => $episode) {
@@ -77,6 +85,25 @@ $correspondence_email_status_to_css_class = [
                         if (isset($this->event) && $this->event->id == $event->id) {
                             $highlight = true;
                             $current_subspecialty = $episode->subspecialty;
+                        }
+
+                        if (!in_array($event->eventType->class_name, $existing_modules)) {
+                            if (!in_array($event->eventType->class_name, $missing_modules)) {
+                                $test_controller = Yii::app()->createController($event->eventType->class_name);
+
+                                if ($test_controller === null) {
+                                    Yii::log('Missing default controller for ' . $event->eventType->class_name);
+
+                                    // Hide events with missing module default controllers
+                                    continue;
+                                    $missing_modules[] = $event->eventType->class_name;
+                                } else {
+                                    $existing_modules[] = $event->eventType->class_name;
+                                }
+                            } else {
+                                // Hide events with missing module default controllers
+                                continue;
+                            }
                         }
 
                         $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
@@ -155,7 +182,16 @@ $correspondence_email_status_to_css_class = [
                                         $event_issue_text = $eventStatus;
                                     }
                                 }
-
+                                $message = $event->getElementByClass('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message');
+                                if ($message) {
+                                    $urgent_status = $message->urgent;
+                                    $css_class = $message_type_to_css_class[$urgent_status];
+                                    $event_icon_class .= ' ' . $css_class;
+                                    if ($urgent_status) {
+                                        $event_issue_class .= ' ' . $css_class;
+                                        $event_issue_text .= $message->message_type->name . "\n";
+                                    }
+                                }
                                 if (!empty($event_issue_text)) { ?>
                                     <div class="<?= $event_issue_class ?>">
                                         <?= $event_issue_text ?>
@@ -168,7 +204,7 @@ $correspondence_email_status_to_css_class = [
                                 if ($event->hasIssue()) {
                                     if ($event->hasIssue('ready')) {
                                         $event_icon_class .= ' ready';
-                                    } else if ($eur = EUREventResults::model()->find('event_id=?', array($event->id)) && $event->hasIssue('EUR Failed')) {
+                                    } elseif ($eur = EUREventResults::model()->find('event_id=?', array($event->id)) && $event->hasIssue('EUR Failed')) {
                                         $event_icon_class .= ' cancelled';
                                     } else {
                                         $event_icon_class .= ' alert';

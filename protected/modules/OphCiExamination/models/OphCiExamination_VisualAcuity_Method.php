@@ -54,6 +54,18 @@ class OphCiExamination_VisualAcuity_Method extends \BaseActiveRecordVersioned
     }
 
     /**
+     * Use standard Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => \LookupTable::class,
+        );
+    }
+
+    /**
      * @return array validation rules for model visualacuity_methods.
      */
     public function rules()
@@ -64,13 +76,9 @@ class OphCiExamination_VisualAcuity_Method extends \BaseActiveRecordVersioned
         );
     }
 
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
+    public function __toString()
     {
-        return array(
-        );
+        return $this->name ?? parent::__toString();
     }
 
     /**

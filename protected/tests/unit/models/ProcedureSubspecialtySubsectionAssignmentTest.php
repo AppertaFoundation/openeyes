@@ -50,9 +50,8 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ProcedureSubspecialtySubsectionAssignment::model
+     * @covers ProcedureSubspecialtySubsectionAssignment
      *
-     * @todo   Implement testModel().
      */
     public function testModel()
     {
@@ -60,20 +59,17 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ProcedureSubspecialtySubsectionAssignment::tableName
+     * @covers ProcedureSubspecialtySubsectionAssignment
      *
-     * @todo   Implement testTableName().
      */
     public function testTableName()
     {
         $this->assertEquals('proc_subspecialty_subsection_assignment', $this->model->tableName());
     }
 
-
     /**
-     * @covers ProcedureSubspecialtySubsectionAssignment::attributeLabels
+     * @covers ProcedureSubspecialtySubsectionAssignment
      *
-     * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
     {
@@ -88,6 +84,7 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
 
 
     /**
+     * @covers ProcedureSubspecialtySubsectionAssignment
      * @dataProvider dataProvider_Search
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)

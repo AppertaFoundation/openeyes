@@ -47,7 +47,7 @@ class SplitEventTypeElementTest extends CDbTestCase
     }
 
     /**
-     * @covers SplitEventTypeElement::hasLeft
+     * @covers SplitEventTypeElement
      */
     public function testHasLeft()
     {
@@ -56,7 +56,7 @@ class SplitEventTypeElementTest extends CDbTestCase
     }
 
     /**
-     * @covers SplitEventTypeElement::hasRight
+     * @covers SplitEventTypeElement
      */
     public function testHasRight()
     {
@@ -65,7 +65,7 @@ class SplitEventTypeElementTest extends CDbTestCase
     }
 
     /**
-     * @covers SplitEventTypeElement::setDefaultOptions
+     * @covers SplitEventTypeElement
      */
     public function testSetDefaultOptions()
     {
@@ -79,9 +79,8 @@ class SplitEventTypeElementTest extends CDbTestCase
     }
 
     /**
-     * @covers SplitEventTypeElement::setUpdateOptions
+     * @covers SplitEventTypeElement
      *
-     * @todo   Implement testSetUpdateOptions().
      */
     public function testSetUpdateOptions()
     {

@@ -24,7 +24,7 @@
         <div class="flex-layout">
             <input id="worklist-date-from" class="cols-4" placeholder="from" type="text" value="<?= Yii::app()->request->getParam('date_from', '') ?>">
             <input id="worklist-date-to" class="cols-4" placeholder="to" type="text" value="<?= Yii::app()->request->getParam('date_to', '') ?>">
-            <a href="#" class="selected js-clear-dates" id="sidebar-clear-date-ranges">All dates</a>
+            <a href="#" class="selected js-clear-dates" id="sidebar-clear-date-ranges">Today</a>
         </div>
 
         <h3>Select list</h3>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -19,26 +20,24 @@
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
-      <div
-          class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) {
-                ?> inactive<?php
-                                } ?>" data-side="<?= $eye_side ?>">
-        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-            <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
-              'form' => $form,
-              'side' => $eye_side,
-              'element' => $element,
-            )) ?>
+        <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) {
+                                                                                    ?> inactive<?php
+                                                                                        } ?>" data-side="<?= $eye_side ?>">
+            <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+                <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+                <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
+                    'form' => $form,
+                    'side' => $eye_side,
+                    'element' => $element,
+                )) ?>
+            </div>
+            <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+                <div class="add-side">
+                    <a href="#">
+                        Add <?= $eye_side ?> side <span class="icon-add-side"></span>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-          <div class="add-side">
-            <a href="#">
-              Add <?= $eye_side ?> side <span class="icon-add-side"></span>
-            </a>
-          </div>
-        </div>
-      </div>
     <?php endforeach; ?>
 </div>
-

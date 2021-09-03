@@ -29,21 +29,28 @@ namespace OEModule\OphCiExamination\models;
 class OphCiExamination_ColourVision_Method extends \BaseActiveRecordVersioned
 {
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Dilation_Drugs the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
     {
         return 'ophciexamination_colourvision_method';
+    }
+
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+
+    /**
+     * Use standard Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => \LookupTable::class,
+        );
     }
 
     /**
@@ -52,7 +59,7 @@ class OphCiExamination_ColourVision_Method extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('name', 'required'),
+                array('name, display_order', 'required'),
                 array('id, name, active, display_order', 'safe', 'on' => 'search'),
         );
     }
@@ -81,5 +88,9 @@ class OphCiExamination_ColourVision_Method extends \BaseActiveRecordVersioned
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    public function __toString() {
+        return $this->name;
     }
 }

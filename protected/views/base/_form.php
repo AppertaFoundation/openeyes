@@ -32,6 +32,11 @@ if (!Yii::app()->user->isGuest) {
             Yii::app()->session['shown_pw_reminder'] = true;
             $this->widget('PasswordStaleWidgetReminder');
         }
+
+        if (empty(Yii::app()->session['shown_version_reminder']) && Yii::app()->user->checkAccess('admin')) {
+            Yii::app()->session['shown_version_reminder'] = true;
+            $this->widget('VersionCheckWidgetReminder');
+        }
     }
     if (empty(Yii::app()->session['user'])) {
         Yii::app()->session['user'] = User::model()->findByPk(Yii::app()->user->id);
@@ -39,7 +44,7 @@ if (!Yii::app()->user->isGuest) {
     $user = Yii::app()->session['user'];
     $menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
     $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
-?>
+    ?>
 
     <div class="oe-user-banner">
         <?php $this->renderPartial('//base/_banner_watermark'); ?>
