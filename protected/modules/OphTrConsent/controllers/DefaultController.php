@@ -25,6 +25,7 @@ class DefaultController extends BaseEventTypeController
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
+        'createEventImages' => self::ACTION_TYPE_PRINT,
         'saveCapturedSignature' => self::ACTION_TYPE_FORM,
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
         'postSignRequest' => self::ACTION_TYPE_FORM,
@@ -294,6 +295,30 @@ class DefaultController extends BaseEventTypeController
         }
 
         return parent::actionPDFPrint($id);
+    }
+
+    /**
+     * Create images for "print" version of consent event
+     *
+     * @param int $id event id
+     * @return void
+     */
+    public function actionCreateEventImages($id)
+    {
+        $procedure = Element_OphTrConsent_Procedure::model()->find('booking_event_id=?', [$id]);
+
+        // Generate a pdf file for the event
+        $pdf_route = $this->setPDFprintData($procedure->event_id, false);
+
+        $pf = ProtectedFile::createFromFile($procedure->event->imageDirectory . '/event_' . $pdf_route . '.pdf');
+        $pf->title = 'event_'.$pdf_route.'.pdf';
+
+        if ($pf->save()) {
+            // Create preview images of generated pdf file
+            $this->createPdfPreviewImages($pf->getPath());
+            // Delete pdf file after creating images
+            $pf->delete();
+        }
     }
 
     /**
