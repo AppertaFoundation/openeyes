@@ -161,46 +161,52 @@ function OphTrConsent_inArray(needle, haystack) {
 	}
 	return false;
 }
+function handleTinyMCEInput(target, data){
+	// get the tinymce object
+	const tinyMCE = tinymce.get(target);
+	// get the tinymce current content, and convert into jquery 
+	const tinyMCE_content = $(tinyMCE.getContent());
+	const tinyMCE_content_items = tinyMCE_content.find('li');
+	let existing_items = [];
+	tinyMCE_content_items.each(function(i, ele){
+		let existing_item = ele.innerText.trim();
+		if(existing_item){
+			existing_items.push(OphTrConsent_ucfirst(existing_item));
+		}
+	});
+	data = data.map(function(item){
+		return OphTrConsent_ucfirst(item);
+	});
+	let final_items = existing_items.concat(data);
 
-function callbackAddProcedure(procedure_id) {
-	$('.Element_OphTrConsent_BenefitsAndRisks textarea').trigger('oninput'); // adjust the size of the box before repopulating
+	final_items = final_items.filter((item,index)=>{
+		return (final_items.indexOf(item) == index)
+	});
+
+	final_items = final_items.map(function(item, i){
+		return `<li>${item}</li>`;
+	});
+	tinyMCE.setContent(`<ul>${final_items.join('')}</ul>`);
+}
+
+function callbackAddProcedure(procedure_id, is_extra) {
+	let benefits_url = is_extra ? '/OphTrConsent/default/benefits/'+procedure_id : baseUrl+'/procedure/benefits/'+procedure_id;
+	let complications_url = is_extra ? '/OphTrConsent/default/complications/'+procedure_id : baseUrl+'/procedure/complications/'+procedure_id;
 	$.ajax({
-		'url': baseUrl+'/procedure/benefits/'+procedure_id,
+		'url': benefits_url,
 		'type': 'GET',
 		'dataType': 'json',
 		'success': function(data) {
-			var benefits = $('#Element_OphTrConsent_BenefitsAndRisks_benefits').val().split(/,\s*/);
-			for (var i in benefits) {
-				if (benefits[i].length <1) {
-					benefits.splice(i,1);
-				}
-			}
-			for (var i in data) {
-				if (!OphTrConsent_inArray(data[i], benefits)) {
-					benefits.push(data[i]);
-				}
-			}
-			$('#Element_OphTrConsent_BenefitsAndRisks_benefits').val(OphTrConsent_ucfirst(benefits.join(", "))).trigger('oninput');
+			handleTinyMCEInput('Element_OphTrConsent_BenefitsAndRisks_benefits', data);
 		}
 	});
 
 	$.ajax({
-		'url': baseUrl+'/procedure/complications/'+procedure_id,
+		'url': complications_url,
 		'type': 'GET',
 		'dataType': 'json',
 		'success': function(data) {
-			var complications = $('#Element_OphTrConsent_BenefitsAndRisks_risks').val().split(/,\s*/);
-			for (var i in complications) {
-				if (complications[i].length <1) {
-					complications.splice(i,1);
-				}
-			}
-			for (var i in data) {
-				if (!OphTrConsent_inArray(data[i], complications)) {
-					complications.push(data[i]);
-				}
-			}
-			$('#Element_OphTrConsent_BenefitsAndRisks_risks').val(OphTrConsent_ucfirst(complications.join(", "))).trigger('oninput');
+			handleTinyMCEInput('Element_OphTrConsent_BenefitsAndRisks_risks', data);
 		}
 	});
 }
@@ -212,9 +218,16 @@ function OphTrConsent_ucfirst(str) {
 }
 
 function callbackRemoveProcedure(procedure_id) {
-	$('textarea[name^=Element_OphTrConsent_BenefitsAndRisks]').val('')
-	$.each($('input[name^=Procedures_]'),function() {
-		callbackAddProcedure($(this).val());
+	const benefit_tinyMCE = tinymce.get('Element_OphTrConsent_BenefitsAndRisks_benefits');
+	const risk_tinyMCE = tinymce.get('Element_OphTrConsent_BenefitsAndRisks_risks');
+	benefit_tinyMCE.setContent('');
+	risk_tinyMCE.setContent('');
+	
+	$.each($('.Element_OphTrConsent_ExtraProcedures input[name$="[proc_id]"]'),function() {
+		callbackAddProcedure($(this).val(), true);
+	});
+	$.each($('.Element_OphTrConsent_Procedure input[name$="[proc_id]"]'),function() {
+		callbackAddProcedure($(this).val(), false);
 	});
 }
 

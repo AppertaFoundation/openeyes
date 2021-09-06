@@ -110,6 +110,10 @@ class DefaultController extends \BaseEventTypeController
 
         $assignment = $this->getElementSetAssignment($event);
 
+        if (isset(Yii::app()->session['active_step_state_data']['workflow_step_id']) && Yii::app()->session['active_step_state_data']['workflow_step_id']) {
+            return models\OphCiExamination_ElementSet::model()->findByPk(Yii::app()->session['active_step_state_data']['workflow_step_id']);
+        }
+
         return $assignment ? $assignment->step : $this->getFirstStep();
     }
 
@@ -141,9 +145,10 @@ class DefaultController extends \BaseEventTypeController
         $institution_id = $this->institution->id;
         $firm_id = $this->firm->id;
         $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
+
         $workflow = new models\OphCiExamination_Workflow_Rule();
 
-        return $workflow->findWorkflowCascading($institution_id, $firm_id, $status_id)->getFirstStep();
+        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
     }
 
     /**
@@ -227,21 +232,37 @@ class DefaultController extends \BaseEventTypeController
     protected function setCurrentSet()
     {
         $element_assignment = $this->getElementSetAssignment();
-        if (!$this->set) {
-            /*@TODO: probably the getNextStep() should be able to recognize if there were no steps completed before and return the first step
-              Note: getCurrentStep() will return firstStep if there were no steps before */
-            $this->set = $element_assignment && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
+        if (isset(Yii::app()->session['active_step_state_data']['workflow_step_id']) && Yii::app()->session['active_step_state_data']['workflow_step_id']) {
+            if (!$this->set) {
+                // getCurrentStep, when the workflow step ID is specified as above,
+                // will return the specified workflow element set. Otherwise it returns the current (or first) step.
+                $this->set = $this->getCurrentStep();
 
-            //if $this->set is null than no workflow rule to apply
-            $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
-        }
+                //if $this->set is null than no workflow rule to apply
+                $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
+            }
 
-        if (!$element_assignment && $this->event) {
-            \OELog::log("Assignment not found for event id: {$this->event->id}");
-        }
+            if (!$element_assignment && $this->event) {
+                \OELog::log("Assignment not found for event id: {$this->event->id}");
+            }
 
-        if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
+        } else {
+            if (!$this->set) {
+                // Note: getCurrentStep() will return firstStep if there were no steps before
+                $this->set = $element_assignment && $this->action->id !== 'update' ? $this->getNextStep() : $this->getCurrentStep();
+
+                //if $this->set is null than no workflow rule to apply
+                $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
+            }
+
+            if (!$element_assignment && $this->event) {
+                \OELog::log("Assignment not found for event id: {$this->event->id}");
+            }
+
+            if ($this->action->id === 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
+                $this->step = $this->getCurrentStep();
+            }
         }
     }
 
@@ -1003,7 +1024,7 @@ class DefaultController extends \BaseEventTypeController
         $firm_id = $this->firm->id;
         $status_id = ($episode) ? $episode->episode_status_id : 1;
         $workflow = new models\OphCiExamination_Workflow_Rule();
-        return $workflow->findWorkflowCascading($institution_id, $firm_id, $status_id)->getFirstStep();
+        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
     }
 
     /**

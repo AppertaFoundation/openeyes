@@ -15,6 +15,7 @@
  * @property User $lastModifiedUser
  * @property OphDrPGDPSD_PGDPSD $pgdpsd
  * @property Patient $patient
+ * @property WorklistPatient $worklist_patient
  */
 class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 {
@@ -237,37 +238,32 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $this->comment_id = $comment_obj->id;
     }
 
-    public function getStatusDetails($get_dict = false)
+    /**
+     * @param bool|false $get_dict
+     * @param PathwayStep|null $step
+     * @return false|string|string[]
+     */
+    public function getStatusDetails(bool $get_dict = false, PathwayStep $step = null)
     {
-        $todo_next = null;
-        $arrival_status_name = \SettingMetadata::model()->getSetting('pas_appt_patient_arrival_status_name') ? : 'status';
-        $arrival_status_text = \SettingMetadata::model()->getSetting('pas_appt_patient_arrival_status_text') ? : 'arrived';
-        if ($this->worklist_patient) {
-            $wl_patient_status = $this->worklist_patient->getWorklistPatientAttribute($arrival_status_name);
-            if ($wl_patient_status) {
-                $attr_value = strtolower($wl_patient_status->attribute_value);
-                $arrival_status_text = strtolower($arrival_status_text);
-                if ($attr_value === $arrival_status_text) {
-                    $todo_next = 'todo-next';
-                }
-            }
-        }
+        $todo_next = $this->worklist_patient->pathway->start_time ? 'todo-next' : null;
         $status_dict = array(
-            $this::STATUS_TODO => array(
+            PathwayStep::STEP_REQUESTED => array(
                 'text' => "Waiting to be done",
-                'css' => $todo_next ? : 'todo'
+                'css' => $todo_next ?? 'todo'
             ),
-            $this::STATUS_PART_DONE => array(
+            PathwayStep::STEP_STARTED => array(
                 'text' => "Currently active",
                 'css' => 'active'
             ),
-            $this::STATUS_COMPLETE => array(
+            PathwayStep::STEP_COMPLETED => array(
                 'text' => "Completed",
                 'css' => 'done'
             ),
         );
 
-        return $get_dict ? json_encode(array_values($status_dict)) : $status_dict[$this->status];
+        return $get_dict
+            ? json_encode(array_values($status_dict))
+            : $status_dict[($step->status ?? PathwayStep::STEP_REQUESTED)];
     }
 
     public function getAssignedMeds()
@@ -331,7 +327,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         } else {
             $status = $this::STATUS_TODO;
         }
-        $this->status = strval($status);
+        $this->status = (string)$status;
         if ($this->isModelDirty()) {
             $this->save();
         }

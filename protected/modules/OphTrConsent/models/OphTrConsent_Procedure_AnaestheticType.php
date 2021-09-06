@@ -57,6 +57,7 @@ class OphTrConsent_Procedure_AnaestheticType extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'element' => array(self::BELONGS_TO, 'Element_OphTrConsent_Procedure', 'et_ophtrconsent_procedure_id'),
+            'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
         );
     }
 

@@ -45,7 +45,9 @@ $user = Yii::app()->session['user'];
     function onSuccess(msg) {
         const response = JSON.parse(msg);
         if (response.status && response.event_id) {
-            window.location.href = `/${response.module_id}/default/sign/${response.event_id}?element_type_id=${response.element_type_id}`;
+            let url = `/${response.module_id}/default/sign/${response.event_id}?`;
+            delete(response["module_id"], response["event_id"]);
+            window.location.href = url + $.param(response)
         }
     }
 

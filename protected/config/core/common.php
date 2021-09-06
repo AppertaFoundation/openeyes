@@ -73,6 +73,7 @@ $config = array(
         'application.vendors.*',
         'application.modules.*',
         'application.models.*',
+        'application.models.stepactions.*',
         'application.models.traits.*',
         'application.models.elements.*',
         'application.components.*',
@@ -211,7 +212,32 @@ $config = array(
         ),
         'event' => array(
             'class' => 'OEEventManager',
-            'observers' => array(),
+            'observers' => array(
+                'event_created' => [
+                    'complete_step' => [
+                        'class' => 'PathstepObserver',
+                        'method' => 'completeStep'
+                    ]
+                ],
+                'event_updated' => [
+                    'complete_step' => [
+                        'class' => 'PathstepObserver',
+                        'method' => 'completeStep'
+                    ]
+                ],
+                'psd_created' => [
+                    'new_step' => [
+                        'class' => 'PathstepObserver',
+                        'method' => 'createExternalStep'
+                    ]
+                ],
+                'step_started' => [
+                    'new_event' => [
+                        'class' => 'EventStepObserver',
+                        'method' => 'createEvent'
+                    ]
+                ],
+            ),
         ),
         'fhirClient' => array('class' => 'FhirClient'),
         'fhirMarshal' => array('class' => 'FhirMarshal'),

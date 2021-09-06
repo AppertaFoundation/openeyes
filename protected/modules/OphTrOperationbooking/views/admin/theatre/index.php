@@ -37,7 +37,7 @@
             <?php
             $criteria = new CDbCriteria();
             $criteria->order = 'display_order asc';
-            if (!$this->chechAccess('admin')) {
+            if (!$this->checkAccess('admin')) {
                 $criteria->with = 'site';
                 $criteria->addCondition('site.institution_id = :institution_id');
                 $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;

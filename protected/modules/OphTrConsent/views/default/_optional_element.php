@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2019
+ * (C) Apperta Foundation 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,13 +11,14 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (c) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<li data-element-type-class="<?=\CHtml::modelName($element) ?>"
-    data-element-type-id="<?=$element->elementType->id ?>"
-    data-element-type-name="<?=$element->elementType->name ?>"
-    data-element-display-order="<?=$element->display_order ?>">
-    <a href="#"><?=$element->elementType->name?></a>
+<li data-element-type-class="<?php echo get_class($element) ?>"
+    data-element-type-id="<?php echo $element->elementType->id ?>"
+    data-element-type-name="<?php echo $element->elementType->name ?>"
+    data-element-display-order="<?php echo $element->elementType->display_order ?>"
+    class="cols-1">
+    <a href="#"><?php echo $element->elementType->name?></a>
 </li>

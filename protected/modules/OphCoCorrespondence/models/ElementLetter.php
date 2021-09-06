@@ -499,7 +499,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
             if (!$patient) {
                 // determine if there are any circumstances where this is necessary. Almost certainly very redundant
-                if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
+                if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))
+                    ->findByPk(@$_GET['patient_id'])) {
                     throw new Exception('Patient not found: ' . @$_GET['patient_id']);
                 }
             }
@@ -511,23 +512,46 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             $this->re = $this->calculateRe($patient);
 
             $user = Yii::app()->session['user'];
-            $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
+            $firm = Firm::model()
+                ->with('serviceSubspecialtyAssignment')
+                ->findByPk(Yii::app()->session['selected_firm_id']);
+
             $contact = $user->contact;
 
             // Footer will be built after signatures are recorded
             $this->footer = "";
 
+            // If the event is being created from a worklist step, assign the default macro if one has been specified.
+            if (isset(Yii::app()->session['active_step_state_data']['macro_id'])) {
+                $this->macro = LetterMacro::model()
+                    ->findByPk(Yii::app()->session['active_step_state_data']['macro_id']);
+            }
+
             // Look for a macro based on the episode_status
             $episode = $patient->getEpisodeForCurrentSubspecialty();
-            if ($episode) {
-                $this->macro = LetterMacro::model()->with('firms')->find('firms_firms.firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
+            if ($episode && !$this->macro) {
+                $this->macro = LetterMacro::model()
+                    ->with('firms')
+                    ->find(
+                        'firms_firms.firm_id=? and episode_status_id=?',
+                        array($firm->id, $episode->episode_status_id)
+                    );
                 if (!$this->macro && $firm->service_subspecialty_assignment_id) {
                     $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-                    $this->macro = LetterMacro::model()->with('subspecialties')->find('subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
+                    $this->macro = LetterMacro::model()
+                        ->with('subspecialties')
+                        ->find(
+                            'subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?',
+                            array($subspecialty_id, $episode->episode_status_id)
+                        );
                     if (!$this->macro) {
                         $this->macro = LetterMacro::model()->with('sites', 'institutions')->find([
                             'condition' => '(institutions_institutions.institution_id=? OR sites_sites.site_id=?) AND episode_status_id=?',
-                            'params' => array(Yii::app()->session['selected_institution_id'], Yii::app()->session['selected_site_id'], $episode->episode_status_id)]);
+                            'params' => array(
+                                Yii::app()->session['selected_institution_id'],
+                                Yii::app()->session['selected_site_id'],
+                                $episode->episode_status_id
+                            )]);
                     }
                 }
             }

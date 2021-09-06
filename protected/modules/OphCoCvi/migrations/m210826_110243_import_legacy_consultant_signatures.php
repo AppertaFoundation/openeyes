@@ -21,6 +21,7 @@ class m210826_110243_import_legacy_consultant_signatures extends OEMigration
                     LEFT JOIN event ON event.id = a.event_id
                     WHERE event.event_type_id = $evt_type_id
                     AND a.protected_file_id IS NOT NULL
+                    AND a.event_id NOT IN (SELECT x.event_id FROM ".self::ET_TABLE." AS x)
                 ");
             $this->execute("INSERT INTO ".self::ITEM_TABLE."
                     (element_id, type, signature_file_id, signatory_role, signatory_name, `timestamp`,

@@ -54,6 +54,12 @@ return array(
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
+                'Clinical Pathway Presets' => '/Admin/worklist/presetPathways',
+                'Worklist Wait Times' => ['uri' => '/Admin/worklist/waitTimes', 'restricted' => array('admin')],
+                'Worklist custom path steps' => ['uri' => '/Admin/worklist/customPathSteps', 'restricted' => ['admin']],
+                'Visual Field Test Types' => ['uri' => '/Admin/worklist/visualFieldTestTypes', 'restricted' => ['admin']],
+                'Visual Field Test Options' => ['uri' => '/Admin/worklist/visualFieldTestOptions', 'restricted' => ['admin']],
+                'Visual Field Test Presets' => '/Admin/worklist/visualFieldTestPresets',
             ),
             'Procedure Management' => array(
                 'Procedures' => ['uri' => '/oeadmin/procedure/list', 'restricted' => array('admin')],
@@ -81,11 +87,6 @@ return array(
             ),
             'Investigation Management' => array(
                 'Investigations' => ['uri' => '/oeadmin/investigation/list', 'restricted' => array('admin')]
-            ),
-            'Consent' => array(
-                'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),
-                'Leaflet Subspecialty context_firm_label Assignment' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/LeafletSubspecialtyFirm/list'),
-                'Additional Risks' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/AdditionalRisks/list'),
             ),
         ),
     ),

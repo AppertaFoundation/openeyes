@@ -26,6 +26,7 @@
  */
 class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
 {
+    protected $auto_update_relations = true;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -52,11 +53,9 @@ class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('term, short_format, default_duration', 'required'),
-            array('default_duration', 'numerical', 'integerOnly' => true, 'max' => 65535),
+            array('term, short_format', 'required'),
             array('term, short_format, snomed_term', 'length', 'max' => 255),
-            array('operationNotes', 'validateOpNotes'),
-            array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
+            array('id, term, short_format, active, benefits, risks, complications, snomed_code, snomed_term, aliases', 'safe'),
         );
     }
 
@@ -68,14 +67,8 @@ class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            //'operations' => array(self::MANY_MANY, 'ElementOperation', 'operation_procedure_assignment(proc_id, operation_id)'),
-            'specialties' => array(self::MANY_MANY, 'Subspecialty', 'proc_subspecialty_assignment(proc_id, subspecialty_id)'),
-            'subspecialtySubsections' => array(self::MANY_MANY, 'SubspecialtySubsection', 'proc_subspecialty_subsection_assignment(proc_id, subspecialty_subsection_id)'),
-            'opcsCodes' => array(self::MANY_MANY, 'OPCSCode', 'proc_opcs_assignment(proc_id, opcs_code_id)'),
-            'extra' => array(self::MANY_MANY, 'Procedure', 'ophtrconsent_procedure_extra(proc_id, proc_extra_id)'),
-            'benefits' => array(self::MANY_MANY, 'Benefit', 'procedure_benefit(proc_id, benefit_id)'),
-            'risks' => array(self::MANY_MANY, '\OEModule\OphCiExamination\models\OphCiExaminationRisk', 'procedure_risk(proc_id, risk_id)'),
-            'complications' => array(self::MANY_MANY, 'Complication', 'procedure_complication(proc_id, complication_id)'),
+            'benefits' => array(self::MANY_MANY, 'Benefit', 'extra_procedure_benefit(extra_proc_id, benefit_id)'),
+            'complications' => array(self::MANY_MANY, 'Complication', 'extra_procedure_complication(extra_proc_id, complication_id)'),
         );
     }
 
@@ -88,8 +81,6 @@ class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
             'id' => 'ID',
             'term' => 'Term',
             'short_format' => 'Short Format',
-            'default_duration' => 'Default Duration',
-            'opcsCodes.name' => 'OPCS Code',
         );
     }
 
@@ -117,8 +108,6 @@ class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
         $criteria->compare('id', $this->id, true);
         $criteria->compare('term', $this->term, true);
         $criteria->compare('short_format', $this->short_format, true);
-        $criteria->compare('default_duration', $this->default_duration);
-
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
@@ -135,9 +124,6 @@ class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
     public static function getList($term, $restrict = null)
     {
         $search = "%{$term}%";
-
-        $select = 'term, short_format, id, default_duration';
-
         $where = '(term like :search or short_format like :search or snomed_term like :search or snomed_code = :term or aliases like :search)';
 
         if ($restrict == 'unbooked') {
@@ -158,45 +144,6 @@ class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
             ->order('term')
             ->queryAll();
     }
-
-
-    /**
-     * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists.
-     */
-    protected function afterConstruct()
-    {
-        $this->addOpNoteElementRelation();
-
-        parent::afterConstruct();
-    }
-
-
-
-    /**
-     * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists.
-     */
-    protected function afterFind()
-    {
-        $this->addOpNoteElementRelation();
-
-        parent::afterFind();
-    }
-
-    protected function addOpNoteElementRelation()
-    {
-        if (isset(Yii::app()->modules['OphTrOperationnote']) && Yii::app()->db->schema->getTable('ophtroperationnote_procedure_element')) {
-            $this->metaData->addRelation(
-                'operationNotes',
-                array(
-                    self::MANY_MANY,
-                    'ElementType',
-                    'ophtroperationnote_procedure_element(procedure_id, element_type_id)',
-                )
-            );
-        }
-    }
-
-
 
     /**
      * @param $subspecialtyId
@@ -228,87 +175,6 @@ class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
 
         return $data;
     }
-
-
-
-    public function validateOpNotes($attribute, $params)
-    {
-        $is_cataract = false;
-        $is_biometry = false;
-
-        $count = count($this->$attribute);
-        if ($count > 1) {
-            //At this moment, only Cataract and Biometry can be saved together
-            foreach ($this->$attribute as $attr) {
-                $is_cataract =  $attr->class_name === 'Element_OphTrOperationnote_Cataract' ? true : $is_cataract;
-                $is_biometry =  $attr->class_name === 'Element_OphTrOperationnote_Biometry' ? true : $is_biometry;
-            }
-
-            if ($count != 2 || !$is_cataract || !$is_biometry) {
-                $this->addError($attribute, 'Only one Operation Note element (or Cataract and Biometry) per Procedure');
-            }
-        }
-    }
-
-
-    /**
-     * @param $opNoteElementId
-     *
-     * @return array
-     */
-    public function getProceduresByOpNote($opNoteElementId)
-    {
-        $data = array();
-        if (isset($this->operationNotes)) {
-            $procedures = Yii::app()->db->createCommand()
-                ->select('ophtrconsent_procedure_extra.id, ophtrconsent_procedure_extra.term')
-                ->from('ophtrconsent_procedure_extra')
-                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = ophtrconsent_procedure_extra.id')
-                ->where('opnote.element_type_id = :id and proc.active = 1', array(':id' => $opNoteElementId))
-                ->order('display_order, ophtrconsent_procedure_extra.term ASC')
-                ->queryAll();
-
-            foreach ($procedures as $procedure) {
-                $data[$procedure['id']] = $procedure['term'];
-            }
-        }
-
-        return $data;
-    }
-
-
-    /**
-     * @param string $prop
-     *
-     * @return mixed|null
-     */
-    public function __get($prop)
-    {
-        $method = 'get_' . $prop;
-        if (method_exists($this, $method)) {
-            return $this->$method();
-        }
-
-        return parent::__get($prop);
-    }
-
-
-    /**
-     * @param string $prop
-     *
-     * @return bool
-     */
-    public function __isset($prop)
-    {
-        $method = 'get_' . $prop;
-        if (method_exists($this, $method)) {
-            return true;
-        }
-
-        return parent::__isset($prop);
-    }
-
-
 
     /**
      * @return bool

@@ -22,6 +22,9 @@
  */
 abstract class BaseEsignElement extends BaseEventTypeElement
 {
+    /** @var int Dummy property to allow saving without any fields filled in */
+    public $dummy;
+
     protected $widgetClass = EsignElementWidget::class;
 
     /**

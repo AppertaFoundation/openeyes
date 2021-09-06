@@ -90,13 +90,12 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
         <tr>
             <th>Procedure(s)</th>
             <td>
-                <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
-                <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
-                    if ($i > 0) {
-                        echo ', ';
-                    }
-                    echo \CHtml::encode($procedure->term);
-                } ?>
+            <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedure_assignments as $i => $procedure) {
+                if ($i > 0) {
+                    echo ', ';
+                }
+                echo \CHtml::encode($procedure->eye->adjective) . ' - ' . \CHtml::encode($procedure->proc->term);
+            } ?>
             </td>
         </tr>
         <?php if ($elements['Element_OphTrConsent_AdvancedDecision']->description) { ?>
@@ -117,7 +116,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
     <h3>All sections to be completed by health professional proposing the procedure</h3>
     <div class="spacer"></div>
     <h3>A. Details of procedure or course of treatment proposed</h3>
-    <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective)) ?>
+    <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedure_assignments)) ?>
     <p>
         (NB see guidance to health professionals overleaf for details of situations where court approval must first be sought)
     </p>

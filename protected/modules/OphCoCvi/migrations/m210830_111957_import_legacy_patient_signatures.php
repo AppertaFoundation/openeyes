@@ -15,7 +15,7 @@ class m210830_111957_import_legacy_patient_signatures extends OEMigration
                     event_id, last_modified_user_id, last_modified_date, created_user_id, created_date
                     FROM ".self::LEGACY_ET_TABLE."
                     WHERE protected_file_id IS NOT NULL
-                    AND event_id NOT IN (SELECT x.event_id FROM ".self::LEGACY_ET_TABLE." AS x)
+                    AND event_id NOT IN (SELECT x.event_id FROM ".self::ET_TABLE." AS x)
                 ");
             $this->execute("INSERT INTO ".self::ITEM_TABLE."
                     (element_id, type, signature_file_id, signatory_role, signatory_name, `timestamp`,

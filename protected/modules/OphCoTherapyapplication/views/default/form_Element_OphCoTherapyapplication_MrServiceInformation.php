@@ -25,7 +25,7 @@
         Firm::model()->getList(Yii::app()->session['selected_institution_id'], $subspecialty->id, $element->consultant_id),
         array('empty' => 'Select'),
         false,
-        array('field' => 3)
+        array('field' => 9)
     );
     echo $form->dropDownList(
         $element,
@@ -33,18 +33,18 @@
         Site::model()->getListForCurrentInstitution(),
         array('empty' => 'Select'),
         false,
-        array('field' => 3)
+        array('field' => 9)
     );
     ?>
-  <fieldset id="Element_OphCoTherapyapplication_MrServiceInformation_patient_sharedata_consent" class="data-group">
-    <legend class="cols-2 column">
+  <fieldset id="Element_OphCoTherapyapplication_MrServiceInformation_patient_sharedata_consent" class="data-group cols-full flex-layout">
+    <div class="cols-2 column" style="display: inline-block;">
       Patient consents to share data:
-    </legend>
-    <input type="hidden" value=""
-           name="Element_OphCoTherapyapplication_MrServiceInformation[patient_sharedata_consent]">
-    <div class="cols-10 column end">
+    </div>
+    <div class="cols-9 column" style="display: inline-block;">
       <label class="inline highlight">
             <?php echo $form->radioButton($element, 'patient_sharedata_consent'); ?> Yes
     </div>
+    <input type="hidden" value=""
+           name="Element_OphCoTherapyapplication_MrServiceInformation[patient_sharedata_consent]">
   </fieldset>
 </div>

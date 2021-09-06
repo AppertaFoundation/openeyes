@@ -647,21 +647,30 @@ class WorklistManager extends CComponent
         return $worklists;
     }
 
-    public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null)
+    public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null, $filter = null)
     {
         $worklists = [];
 
         if (!$user) {
             $user = $this->getCurrentUser();
         }
+
         $institution = $this->getCurrentInstitution();
-        $site = $this->getCurrentSite();
-        $firm = $this->getCurrentFirm();
+
+        if ($filter) {
+            $site = $this->getModelForClass('Site')->findByPk($filter->getSiteId());
+
+            $firm = $filter->coversAllContexts()
+                  ? $this->getCurrentFirm()
+                  : $this->getModelForClass('Firm')->findByPk($filter->getContextId());
+        } else {
+            $site = $this->getCurrentSite();
+            $firm = $this->getCurrentFirm();
+        }
 
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
+
         foreach ($days as $when) {
-
-
             foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
@@ -672,10 +681,22 @@ class WorklistManager extends CComponent
 
         $unique_ids = array();
         $unique_worklists = array();
-        foreach ($worklists as $wl) {
-            if(!in_array($wl->id, $unique_ids)) {
-                $unique_worklists[] = $wl;
-                $unique_ids[] = $wl->id;
+
+        if (!$filter || $filter->coversAllWorklists()){
+            foreach ($worklists as $wl) {
+                if(!in_array($wl->id, $unique_ids)) {
+                    $unique_worklists[] = $wl;
+                    $unique_ids[] = $wl->id;
+                }
+            }
+        } else {
+            $selected_ids = $filter->getWorklists();
+
+            foreach ($worklists as $wl) {
+                if(in_array($wl->id, $selected_ids) && !in_array($wl->id, $unique_ids)) {
+                    $unique_worklists[] = $wl;
+                    $unique_ids[] = $wl->id;
+                }
             }
         }
 
@@ -1041,6 +1062,18 @@ class WorklistManager extends CComponent
                 'pageSize' => $this->getWorklistPageSize(),
             ),
         ));
+    }
+
+    /**
+     * @TODO: test me
+     *
+     * @param $worklist
+     *
+     * @return CSqlDataProvider
+     */
+    public function getPatientsForWorklistSQL($worklist, $filter)
+    {
+        return $filter->getWorklistPatientsProvider($this->getWorklistPageSize(), $worklist);
     }
 
     /**

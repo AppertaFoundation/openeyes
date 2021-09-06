@@ -30,12 +30,11 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
     <h3>Patient/parental agreement to investigation or treatment (procedures where consciousness not impaired)</h3>
     <p>
         <strong>Procedure(s):</strong>
-        <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
-        <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
+        <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedure_assignments as $i => $procedure) {
             if ($i > 0) {
                 echo ', ';
             }
-            echo \CHtml::encode($procedure->term);
+            echo \CHtml::encode($procedure->eye->adjective) . ' - ' . \CHtml::encode($procedure->proc->term);
         } ?>
     </p>
     <p>
@@ -55,9 +54,9 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
         <strong>Serious, frequently occurring or unavoidable risks:</strong>
         <br><?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->risks) ?>
     </p>
-    <?php if (!empty($elements['Element_OphTrConsent_Procedure']->additional_procedures)) { ?>
-        <p>Any extra procedures which may become necessary during the procedure(s):</p>
-        <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->additional_procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective)) ?>
+    <?php if (!empty($elements['Element_OphTrConsent_Procedure']->additionalprocedure_assignments)) { ?>
+        <p>Any extra procedures which may become necessary during the procedure(s)</p>
+        <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->additionalprocedure_assignments)) ?>
     <?php } ?>
     <?php if ($elements['Element_OphTrConsent_AdvancedDecision']->description) { ?>
         <tr>
