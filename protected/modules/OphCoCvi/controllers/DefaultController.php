@@ -56,6 +56,7 @@ class DefaultController extends \BaseEventTypeController
         'LabelPDFprint' => self::ACTION_TYPE_VIEW,
         'getSignatureByPin' => self::ACTION_TYPE_FORM,
         'saveCapturedSignature' => self::ACTION_TYPE_FORM,
+        'eSign' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -71,6 +72,26 @@ class DefaultController extends \BaseEventTypeController
                 'class' => \SaveCapturedSignatureAction::class
             ]
         ];
+    }
+
+    public function getElements($action = 'edit')
+    {
+        $elements = array();
+        if (is_array($this->open_elements)) {
+            foreach ($this->open_elements as $element) {
+
+                // we only need to render one element when patient sign the saved CVI
+                if(\Yii::app()->request->getParam('sign') && get_class($element) === 'Element_OphCoCvi_Esign') {
+                    return [$element];
+                }
+
+                if ($element->getElementType()) {
+                    $elements[] = $element;
+                }
+            }
+        }
+
+        return $elements;
     }
 
     /** @var string label used in session storage for the list filter values */
@@ -181,7 +202,13 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkPrintAccess()
     {
-        if (!$this->getManager()->isIssued($this->event)) {
+        // we allow print action if the patient signs - probably we need to separate the e-sign and print
+        // but that would be a later refactor when this works development works
+        if (\Yii::app()->request->getParam('sign')) {
+            return true;
+        }
+
+        if (is_a($this->event, 'Event') && !$this->getManager()->isIssued($this->event)) {
             return false;
         }
 
@@ -1137,6 +1164,16 @@ class DefaultController extends \BaseEventTypeController
      *
      * @throws \CHttpException
      */
+    public function initActionPrint()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
+     * Ensure the event is setup on the controller
+     *
+     * @throws \CHttpException
+     */
     public function initActionPDFPrint()
     {
         $this->initWithEventId($this->request->getParam('id'));
@@ -1187,7 +1224,7 @@ class DefaultController extends \BaseEventTypeController
         \Yii::app()->end();
     }
     
-    public function actionPrintVisualyImpaired( $event_id )
+    public function actionPrintVisualyImpaired($event_id)
     {
         $this->initWithEventId($event_id);
        

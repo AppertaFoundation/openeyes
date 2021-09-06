@@ -210,8 +210,7 @@ class OphCoCvi_Manager extends \CComponent
         $cls_rel_map = array(
             'Element_OphCoCvi_ClinicalInfo'.$version => 'clinical_element',
             'Element_OphCoCvi_ClericalInfo'.$version => 'clerical_element',
-            'Element_OphCoCvi_Demographics'.$version => 'demographics_element',
-            'Element_OphCoCvi_ConsultantSignature'  => 'consultant_element'
+            'Element_OphCoCvi_Demographics'.$version => 'demographics_element'
         );
         
         if (!isset($this->info_el_for_events[$event->id])) {

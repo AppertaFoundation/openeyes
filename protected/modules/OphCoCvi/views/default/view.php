@@ -21,8 +21,7 @@
 
 $selectOptions = [];
 if ($this->checkPrintAccess()) {
-    $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small button', 'style' => 'display:none;'));
-    $selectOptions['et_print'] = 'Print';
+    $this->event_actions[] = EventAction::printButton();
 }
 
 $this->event_actions[] = EventAction::button('Print Visually Impaired', 'visually_impaired', null, array('class' => 'small button', 'style' => 'display:none;'));

@@ -33,7 +33,7 @@ class WorklistController extends BaseController
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
         if ($action->getId() === "print") {
             $newblue_path = 'application.assets.newblue';
-            Yii::app()->assetManager->registerCssFile('css/style_oe3_print.min.css', $newblue_path, null);
+            Yii::app()->assetManager->registerCssFile('dist/css/style_oe_print.3.css', $newblue_path, null);
         }
 
         $this->manager = new WorklistManager();

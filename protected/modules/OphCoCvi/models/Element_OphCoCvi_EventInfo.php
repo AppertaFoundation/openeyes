@@ -150,12 +150,6 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
             ),
             'consultantInChargeOfThisCvi' => array(self::BELONGS_TO, 'Firm', 'consultant_in_charge_of_this_cvi_id'),
             'consultant_event'  => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'consultant_element' => array(
-                self::HAS_ONE,
-                'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsultantSignature',
-                array('id' => 'event_id'),
-                'through' => 'consultant_event'
-            ),
         );
     }
 

@@ -46,7 +46,7 @@ class OphCoCvi_Signature_Entry extends \BaseSignature
 	 */
 	public function tableName()
 	{
-		return 'ophcocvi_signature_entry';
+		return 'ophcocvi_signature';
 	}
 
 	/**

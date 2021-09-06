@@ -17,7 +17,18 @@
 
 ?>
 
-<?php $this->renderPartial('//print/event', array(
-    'hide_modified' => @$hide_modified,
-    'hide_created' => @$hide_created
-));
+<?php
+    $institution_id = Institution::model()->getCurrent()->id;
+    $site_id = Yii::app()->session['selected_site_id'];
+    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+    $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+?>
+
+<?php $this->renderPartial('_e-sign', [
+    'patient' => $this->patient,
+    'primary_identifier' => $primary_identifier->value,
+    'secondary_identifier' => $secondary_identifier->value,
+]); ?>
+<?php $this->renderOpenElements('print'); ?>
+
+

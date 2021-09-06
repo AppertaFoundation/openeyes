@@ -1800,6 +1800,7 @@ class BaseEventTypeController extends BaseModuleController
         if ($action === 'renderEventImage') {
             $action = 'view';
         }
+
         $this->renderTiledElements($this->getElements($action), $action, $form, $data);
     }
 
