@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,9 +18,9 @@
 ?>
 
 <?php if (!$procedures) : ?>
-<div class="row divider">
-    <div class="alert-box issue"><b>No results found</b></div>
-</div>
+    <div class="row divider">
+        <div class="alert-box issue"><b>No results found</b></div>
+    </div>
 <?php endif; ?>
 
 <div class="row divider cols-full">
@@ -34,12 +35,12 @@
             <tbody>
                 <tr class="col-gap">
                     <td>
-                        <?=\CHtml::textField(
+                        <?= \CHtml::textField(
                             'search[query]',
                             $search['query'],
                             [
-                            'class' => 'cols-full',
-                            'placeholder' => "Term, Snomed Code, OPCS Code, Default Duration, Aliases"
+                                'class' => 'cols-full',
+                                'placeholder' => "Term, Snomed Code, OPCS Code, Default Duration, Aliases"
                             ]
                         ); ?>
                     </td>
@@ -48,8 +49,8 @@
                             'search[active]',
                             $search['active'],
                             [
-                            1 => 'Only Active',
-                            0 => 'Exclude Active',
+                                1 => 'Only Active',
+                                0 => 'Exclude Active',
                             ],
                             ['empty' => 'All']
                         ); ?>
@@ -74,77 +75,58 @@
                 <th><input type="checkbox" name="selectall" id="selectall" /></th>
                 <th>Term</th>
                 <th>Snomed Code</th>
-                <th>OPCS Code</th>
-                <th>Default Duration</th>
                 <th>Aliases</th>
                 <th>Has Benefits</th>
                 <th>Has Complications</th>
-                <th>Whiteboard Risks</th>
-                <th>Active</th>
             </tr>
         </thead>
         <tbody>
             <?php
 
             foreach ($procedures as $key => $procedure) { ?>
-            <tr id="$key" class="clickable" data-id="<?= $procedure->id ?>"
-                data-uri="oeadmin/ExtraProcedures/edit/<?= $procedure->id ?>?returnUri=">
-                <td>
+                <tr id="$key" class="clickable" data-id="<?= $procedure->id ?>" data-uri="OphTrConsent/oeadmin/ExtraProcedures/edit/<?= $procedure->id ?>?returnUri=">
+                    <td>
                         <?php if ($this->isProcedureDeletable($procedure)) : ?>
-                    <input type="checkbox" name="select[]" value="<?= $procedure->id ?>"
-                        id="select[<?=$procedure->id ?>]" />
+                            <input type="checkbox" name="select[]" value="<?= $procedure->id ?>" id="select[<?= $procedure->id ?>]" />
                         <?php endif; ?>
-                </td>
-                <td><?= $procedure->term ?></td>
-                <td><?= $procedure->snomed_code ?></td>
-                <td><?= implode(", ", array_map(function ($code) {
-                        return $code->name;
-                    }, $procedure->opcsCodes)); ?>
-                </td>
-                <td><?= $procedure->default_duration ?></td>
-                <td><?= $procedure->aliases ?></td>
-                <td><?= implode(", ", array_map(function ($benefit) {
-                        return $benefit->name;
-                    }, $procedure->benefits)); ?>
-                </td>
-                <td><?= implode(", ", array_map(function ($complication) {
-                        return $complication->name;
-                    }, $procedure->complications)); ?>
-                </td>
-                <td><?= implode(", ", array_map(function ($risk) {
-                        return $risk->name;
-                    }, $procedure->risks)); ?>
-                </td>
-                <td>
-                        <?= ($procedure->active) ?
-                        ('<i class="oe-i tick small"></i>') :
-                        ('<i class="oe-i remove small"></i>'); ?>
-                </td>
-            </tr>
+                    </td>
+                    <td><?= $procedure->term ?></td>
+
+                    <td><?= $procedure->snomed_code?></td>
+                    <td><?= $procedure->aliases ?></td>
+                    <td><?= implode(", ", array_map(function ($benefit) {
+                            return $benefit->name;
+                        }, $procedure->benefits)); ?>
+                    </td>
+                    <td><?= implode(", ", array_map(function ($complication) {
+                            return $complication->name;
+                        }, $procedure->complications)); ?>
+                    </td>
+                </tr>
             <?php } ?>
         </tbody>
 
         <tfoot class="pagination-container">
             <tr>
                 <td colspan="4">
-                    <?=\CHtml::button(
+                    <?= \CHtml::button(
                         'Add',
                         [
-                        'class' => 'button large',
-                        'data-uri' => '/oeadmin/ExtraProcedures/edit',
-                        'name' => 'add',
-                        'id' => 'et_add',
+                            'class' => 'button large',
+                            'data-uri' => '/OphTrConsent/oeadmin/ExtraProcedures/edit',
+                            'name' => 'add',
+                            'id' => 'et_add',
                         ]
                     ); ?>
-                    <?=\CHtml::submitButton(
+                    <?= \CHtml::submitButton(
                         'Delete',
                         [
-                        'class' => 'button large disabled',
-                        'data-uri' => '/oeadmin/ExtraProcedures/delete',
-                        'name' => 'delete',
-                        'data-object' => 'procedures',
-                        'id' => 'et_delete',
-                        'disabled' => true,
+                            'class' => 'button large disabled',
+                            'data-uri' => '/OphTrConsent/oeadmin/ExtraProcedures/delete',
+                            'name' => 'delete',
+                            'data-object' => 'procedures',
+                            'id' => 'et_delete',
+                            'disabled' => true,
                         ]
                     ); ?>
                 </td>
@@ -160,20 +142,20 @@
 </form>
 
 <script>
-$(document).ready(function() {
+    $(document).ready(function() {
 
-    /**
-     * Deactivate button when no checkbox is selected.
-     */
-    $(this).on('change', $('input[type="checkbox"]'), function(e) {
-        var checked_boxes = $('#admin_procedures').find(
-            'table.standard tbody input[type="checkbox"]:checked');
+        /**
+         * Deactivate button when no checkbox is selected.
+         */
+        $(this).on('change', $('input[type="checkbox"]'), function(e) {
+            var checked_boxes = $('#admin_procedures').find(
+                'table.standard tbody input[type="checkbox"]:checked');
 
-        if (checked_boxes.length <= 0) {
-            $('#et_delete').attr('disabled', true).addClass('disabled');
-        } else {
-            $('#et_delete').attr('disabled', false).removeClass('disabled');
-        }
+            if (checked_boxes.length <= 0) {
+                $('#et_delete').attr('disabled', true).addClass('disabled');
+            } else {
+                $('#et_delete').attr('disabled', false).removeClass('disabled');
+            }
+        });
     });
-});
 </script>

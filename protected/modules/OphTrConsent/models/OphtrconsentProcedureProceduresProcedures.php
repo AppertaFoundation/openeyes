@@ -17,7 +17,7 @@
  */
 
 /**
- * This is the model class for table "ophtrconsent_procedure_add_procs_add_procs".
+ * This is the model class for table "ophtrconsent_procedure_procedures_procedures".
  *
  * The followings are the available columns in table:
  *
@@ -31,7 +31,7 @@
  * @property User $user
  * @property User $usermodified
  */
-class EtOphtrconsentProcedureAddProcsAddProcs extends BaseActiveRecordVersioned
+class OphtrconsentProcedureProceduresProcedures extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -48,7 +48,7 @@ class EtOphtrconsentProcedureAddProcsAddProcs extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'ophtrconsent_procedure_add_procs_add_procs';
+        return 'ophtrconsent_procedure_procedures_procedures';
     }
 
     /**
@@ -59,11 +59,11 @@ class EtOphtrconsentProcedureAddProcsAddProcs extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, proc_id', 'safe'),
-            array('element_id, proc_id', 'required'),
+            array('element_id, proc_id, eye_id', 'safe'),
+            array('element_id, proc_id, eye_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, element_id, proc_id', 'safe', 'on' => 'search'),
+            array('id, element_id, proc_id, eye_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -79,6 +79,7 @@ class EtOphtrconsentProcedureAddProcsAddProcs extends BaseActiveRecordVersioned
             'proc' => array(self::BELONGS_TO, 'Procedure', 'proc_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
         );
     }
 

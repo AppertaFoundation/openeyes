@@ -170,19 +170,21 @@ class Element_OphTrConsent_BenefitsAndRisks extends BaseEventTypeElement
 
         foreach ($benefits as $i => $benefit) {
             if ($i == 0) {
-                $this->benefits = ucfirst($benefit->name);
+                $this->benefits = '<ul><li>' . ucfirst($benefit->name) . '</li>';
             } else {
-                $this->benefits .= ', '.$benefit->name;
+                $this->benefits .= '<li>' . $benefit->name . '</li>';
             }
         }
+        $this->benefits .= '</ul>';
 
         foreach ($complications as $i => $complication) {
             if ($i == 0) {
-                $this->risks = ucfirst($complication->name);
+                $this->risks = '<ul><li>' . ucfirst($complication->name) . '</li>';
             } else {
-                $this->risks .= ', '.$complication->name;
+                $this->risks .= '<li>' . $complication->name . '</li>';
             }
         }
+        $this->risks .= '</ul>';
     }
 
     /**

@@ -40,17 +40,10 @@ class ExtraProceduresController extends BaseAdminController
             if ($search['query']) {
                 $criteria->params[':query'] = $query;
 
-                $criteria->with = array(
-                    'opcsCodes' => array(
-                        'select' => false,
-                    )
-                );
                 $criteria->together = true;
 
                 $criteria->addSearchCondition('term', $query, true, 'OR');
                 $criteria->addSearchCondition('snomed_code', $query, true, 'OR');
-                $criteria->addSearchCondition('opcsCodes.name', $query, true, 'OR');
-                $criteria->addCondition('default_duration != 0 AND default_duration  = :query', 'OR');
                 $criteria->addSearchCondition('aliases', $query, true, 'OR');
             }
 
@@ -80,7 +73,7 @@ class ExtraProceduresController extends BaseAdminController
     {
         $errors = [];
         $criteria = new CDbCriteria();
-        $criteria->with = ['opcsCodes', 'benefits', 'complications', 'risks'];
+        $criteria->with = ['benefits', 'complications'];
         $criteria->together = true;
 
         $procedure = OphTrConsent_Extra_Procedure::model()->findByPk($id, $criteria);
@@ -92,69 +85,34 @@ class ExtraProceduresController extends BaseAdminController
         if (Yii::app()->request->isPostRequest) {
             // get data from POST
 
-            $user_data = \Yii::app()->request->getPost('OphTrConsent_Extra_Procedure');
-            $user_opcs_cods = \Yii::app()->request->getPost('opcs_codes', []);
-            $user_benefits = \Yii::app()->request->getPost('benefits');
-            $user_complications = \Yii::app()->request->getPost('complications');
-            $user_notes = \Yii::app()->request->getPost('notes', []);
-            $user_risks = \Yii::app()->request->getPost('risks', []);
+            $extra_proc_data = \Yii::app()->request->getPost('OphTrConsent_Extra_Procedure');
+            $extra_proc_benefits = \Yii::app()->request->getPost('benefits');
+            $extra_proc_complications = \Yii::app()->request->getPost('complications');
 
-            // set user data
-            $procedure->term = $user_data['term'];
-            $procedure->short_format = $user_data['short_format'];
-            $procedure->default_duration = $user_data['default_duration'];
-            $procedure->snomed_code = $user_data['snomed_code'];
-            $procedure->snomed_term = $user_data['snomed_term'];
-            $procedure->aliases = $user_data['aliases'];
-            $procedure->unbooked = $user_data['unbooked'];
-            $procedure->active = $user_data['active'];
-            $procedure->institution_id = \Yii::app()->request->getPost('Institutions');
-            $procedure->proc_id = \Yii::app()->request->getPost('Procedure');
-
-
-            // set notes
-            $notes = [];
-            if (isset($user_notes)) {
-                $criteria = new \CDbCriteria();
-                $criteria->addInCondition('id', array_values($user_notes));
-                $notes = ElementType::model()->findAll($criteria);
-            }
-            $procedure->operationNotes = $notes;
-
-            // set opcs_cods
-            $opcsCodes = [];
-            if (isset($user_opcs_cods)) {
-                $criteria = new \CDbCriteria();
-                $criteria->addInCondition('id', array_values($user_opcs_cods));
-                $opcsCodes = OPCSCode::model()->findAll($criteria);
-            }
-            $procedure->opcsCodes = $opcsCodes;
-
+            // set extra proc data
+            $procedure->term = $extra_proc_data['term'];
+            $procedure->short_format = $extra_proc_data['short_format'];
+            $procedure->snomed_code = $extra_proc_data['snomed_code'];
+            $procedure->snomed_term = $extra_proc_data['snomed_term'];
+            $procedure->aliases = $extra_proc_data['aliases'];
             // set benefits
             $benefits = [];
-            if (isset($user_benefits)) {
+            if (isset($extra_proc_benefits)) {
                 $criteria = new \CDbCriteria();
-                $criteria->addInCondition('id', array_values($user_benefits));
+                $criteria->addInCondition('id', array_values($extra_proc_benefits));
                 $benefits = Benefit::model()->findAll($criteria);
+                \Yii::log(\CVarDumper::dumpAsString($benefits));
             }
             $procedure->benefits = $benefits;
 
             // set complications
             $complications = [];
-            if (isset($user_complications)) {
+            if (isset($extra_proc_complications)) {
                 $criteria = new \CDbCriteria();
-                $criteria->addInCondition('id', array_values($user_complications));
+                $criteria->addInCondition('id', array_values($extra_proc_complications));
                 $complications = Complication::model()->findAll($criteria);
             }
             $procedure->complications = $complications;
-
-            $risks = [];
-            if (isset($user_risks)) {
-                $criteria = new \CDbCriteria();
-                $criteria->addInCondition('id', array_values($user_risks));
-                $risks = \OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll($criteria);
-            }
-            $procedure->risks = $risks;
 
             // try saving the data
             if (!$procedure->save()) {
@@ -166,12 +124,8 @@ class ExtraProceduresController extends BaseAdminController
 
         $this->render('/oeadmin/ExtraProcedures/edit', array(
             'procedure' => $procedure,
-            'opcs_code' => OPCSCode::model()->findAll(),
             'benefits' => Benefit::model()->findAll(),
-            'procedurelist' => Procedure::model()->findAll(),
             'complications' => Complication::model()->findAll(),
-            'risks' => \OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll(),
-            'notes' => ElementType::model()->findAll('event_type_id=?', array(EventType::model()->find('class_name=?', array('OphTrOperationnote'))->id)),
             'errors' => $errors,
         ));
     }
@@ -185,12 +139,8 @@ class ExtraProceduresController extends BaseAdminController
         $check_dependencies = 1;
 
         $options = [':id' => $procedure->id];
-        $check_dependencies &= !Element_OphTrOperationnote_GenericProcedure::model()->count('proc_id = :id', $options);
-        $check_dependencies &= !EtOphtrconsentProcedureProceduresProcedures::model()->count('proc_id = :id', $options);
-        $check_dependencies &= !EtOphtrconsentProcedureAddProcsAddProcs::model()->count('proc_id = :id', $options);
-        $check_dependencies &= !OphTrOperationbooking_Operation_Procedures::model()->count('proc_id = :id', $options);
-        $check_dependencies &= !OphTrLaser_LaserProcedure::model()->count('procedure_id = :id', $options);
-        $check_dependencies &= !OphTrLaser_LaserProcedureAssignment::model()->count('procedure_id = :id', $options);
+        $check_dependencies &= !OphTrConsent_Extra_Procedure_subspecialty_assignment::model()->count('extra_proc_id = :id', $options);
+        $check_dependencies &= !OphTrConsent_Procedure_Extra_Assignment::model()->count('extra_proc_id = :id', $options);
 
         return $check_dependencies;
     }
@@ -208,8 +158,6 @@ class ExtraProceduresController extends BaseAdminController
 
             if ($procedure && $this->isProcedureDeletable($procedure)) {
                 $procedure->specialties = [];
-                $procedure->subspecialtySubsections = [];
-                $procedure->opcsCodes = [];
                 $procedure->additional = [];
                 $procedure->benefits = [];
                 $procedure->complications = [];
@@ -227,5 +175,138 @@ class ExtraProceduresController extends BaseAdminController
             }
         }
         echo 1;
+    }
+
+    public function actionEditSubspecialty()
+    {
+        $procedures = OphTrConsent_Extra_Procedure::model()->findAll(['order' => 'term']);
+        $procedure_options = array_map(
+            function ($procedure) {
+                return $procedure->getAttributes(["id", "term"]);
+            },
+            $procedures
+        );
+        $this->jsVars['procedure_options'] = $procedure_options;
+
+        if ($this->checkAccess('admin')) {
+            $institutions = Institution::model()->findAll();
+            $institution_options = array_map(
+                static function ($institution) {
+                    return $institution->getAttributes(["id", "name"]);
+                },
+                $institutions
+            );
+        } else {
+            $institution = Institution::model()->getCurrent();
+            $institution_options = [$institution->getAttributes(["id", "name"])];
+        }
+
+        $this->jsVars['institution_options'] = $institution_options;
+
+        $subspecialty_id = Yii::app()->getRequest()->getParam('subspecialty_id', null);
+
+        if (Yii::app()->request->isPostRequest) {
+            $transaction = Yii::app()->db->beginTransaction();
+            try {
+                $display_orders = Yii::app()->request->getParam('display_order', []);
+                $assignments = Yii::app()->request->getParam('OphTrConsent_Extra_Procedure_subspecialty_assignment', []);
+
+                $ids = [];
+                foreach ($assignments as $key => $assignment) {
+                    $procedureSubspecialtyAssignment = OphTrConsent_Extra_Procedure_subspecialty_assignment::model()->findByPk($assignment['id']);
+                    if (!$procedureSubspecialtyAssignment) {
+                        $procedureSubspecialtyAssignment = new OphTrConsent_Extra_Procedure_subspecialty_assignment();
+                        $procedureSubspecialtyAssignment['id'] = null;
+                    }
+
+                    $procedureSubspecialtyAssignment->extra_proc_id = $assignment['extra_proc_id'];
+                    $procedureSubspecialtyAssignment->display_order = $display_orders[$key];
+                    $procedureSubspecialtyAssignment->subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
+
+                    if ($this->checkAccess('admin')) {
+                        $procedureSubspecialtyAssignment->institution_id = $assignment['institution_id'];
+                    } else {
+                        $procedureSubspecialtyAssignment->institution_id = Institution::model()->getCurrent()->id;
+                    }
+                    if (!$procedureSubspecialtyAssignment->save()) {
+                        $errors[] = $procedureSubspecialtyAssignment->getErrors();
+                    }
+
+                    $ids[] = $procedureSubspecialtyAssignment->id;
+                }
+
+                // Delete items
+                $criteria = new CDbCriteria();
+
+                if ($ids) {
+                    $criteria->addNotInCondition('id', $ids);
+                }
+
+                $criteria->compare('subspecialty_id', $subspecialty_id);
+
+                if (!$this->checkAccess('admin')) {
+                    $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
+                }
+                $to_delete = OphTrConsent_Extra_Procedure_subspecialty_assignment::model()->findAll($criteria);
+
+                foreach ($to_delete as $item) {
+                    if (!$item->delete()) {
+                        $errorMessage = "Model ProcedureSubspecialtyAssignment could not be deleted";
+                        $errors[] = ['id' => [$errorMessage]];
+                        \OELog::log($errorMessage . " (ID = $item->id )");
+                    } else {
+                        Audit::add('admin', 'delete', $item->primaryKey, null, [
+                            'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                            'model' => OphTrConsent_Extra_Procedure_subspecialty_assignment::getShortModelName(),
+                        ]);
+                    }
+                }
+            } catch (Exception $e) {
+                $errorMessage = $e->getMessage();
+                \OELog::log($errorMessage);
+                $errors[] = ['id' => [$errorMessage]];
+            }
+
+            if (empty($errors)) {
+                $transaction->commit();
+                Yii::app()->user->setFlash('success', 'List updated.');
+            } else {
+                $transaction->rollback();
+                foreach ($errors as $error) {
+                    foreach ($error as $attribute => $error_array) {
+                        $display_errors = '<strong>' . $procedureSubspecialtyAssignment->getAttributeLabel($attribute) .
+                            ':</strong> ' . implode(', ', $error_array);
+                        Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
+                    }
+                }
+            }
+            $this->redirect(Yii::app()->request->url);
+        }
+
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
+        Yii::app()->getClientScript()->registerScriptFile($generic_admin);
+
+        $criteria = new CDbCriteria();
+        $criteria->order = 'display_order';
+        $criteria->compare('subspecialty_id', $subspecialty_id);
+        if (!$this->checkAccess('admin')) {
+            $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
+        }
+
+        if ((int)OphTrConsent_Extra_Procedure_subspecialty_assignment::model()->count($criteria) === 0) {
+            $criteria->condition = '';
+            $criteria->params = array();
+            $criteria->compare('subspecialty_id', $subspecialty_id);
+        }
+        $this->render('/oeadmin/ExtraProcedures/edit_ExtraProcedureSubspecialtyAssignment', [
+            'dataProvider' => new CActiveDataProvider('OphTrConsent_Extra_Procedure_subspecialty_assignment', [
+                'criteria' => $criteria,
+                'pagination' => false,
+            ]),
+            'subspecialty_id' => $subspecialty_id,
+            'subspecialities' => Subspecialty::model()->findAll(),
+            'procedure_list' => $procedures,
+            'field_name' => 'OphTrConsent_Extra_Procedure_subspecialty_assignment'
+        ]);
     }
 }

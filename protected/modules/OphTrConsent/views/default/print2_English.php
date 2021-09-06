@@ -90,12 +90,11 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
         <tr>
             <th>Procedure(s)</th>
             <td>
-                <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
-                <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
+                <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedure_assignments as $i => $procedure) {
                     if ($i > 0) {
                         echo ', ';
                     }
-                    echo \CHtml::encode($procedure->term);
+                    echo \CHtml::encode($procedure->eye->adjective) . ' - ' . \CHtml::encode($procedure->proc->term);
                 } ?>
             </td>
         </tr>
@@ -159,7 +158,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
     </p>
     <div class="break"></div>
     <h3>Name of proposed procedure or course of treatment</h3>
-    <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective)) ?>
+    <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedure_assignments)) ?>
     <h3>Statement of health professional <span class="noth3">(to be filled in by a health professional with appropriate knowledge of the proposed procedure(s), as specified in the consent policy)</span>
     </h3>
     <p>
@@ -171,10 +170,10 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
         <strong>Serious, frequently occurring or unavoidable risks:</strong>
         <br><?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->risks) ?>
     </p>
-    <?php if (!empty($elements['Element_OphTrConsent_Procedure']->additional_procedures)) { ?>
-        <p>Any extra procedures which may become necessary during the procedure(s)</p>
-        <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->additional_procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective)) ?>
-    <?php } ?>
+    <?php if (!empty($elements['Element_OphTrConsent_Procedure']->additionalprocedure_assignments)) { ?>
+            <p>Any extra procedures which may become necessary during the procedure(s)</p>
+            <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->additionalprocedure_assignments)) ?>
+        <?php } ?>
     <p>
         I have also discussed what the procedure is likely to involve, the benefits and risks of any available
         alternative treatments (including no treatment) and any particular concerns of this patient

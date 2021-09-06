@@ -87,10 +87,10 @@ $risks = $element->getAdditionalRiskSet();
 
     //set the content formatting into bullet listing
     if($('textarea#Element_OphTrConsent_BenefitsAndRisks_benefits').val()==='') {
-        tinymce.DOM.setHTML('Element_OphTrConsent_BenefitsAndRisks_benefits', '<ul><li><br></li></ul>');
+        tinymce.DOM.setHTML('Element_OphTrConsent_BenefitsAndRisks_benefits', '<ul><li></li></ul>');
     }
     if($('textarea#Element_OphTrConsent_BenefitsAndRisks_risks').val()===''){
-        tinymce.DOM.setHTML('Element_OphTrConsent_BenefitsAndRisks_risks', '<ul><li><br></li></ul>');
+        tinymce.DOM.setHTML('Element_OphTrConsent_BenefitsAndRisks_risks', '<ul><li></li></ul>');
     }
 </script>
 

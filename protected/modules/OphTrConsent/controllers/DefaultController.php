@@ -25,6 +25,8 @@ class DefaultController extends BaseEventTypeController
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
+        'benefits' => self::ACTION_TYPE_FORM,
+        'complications' => self::ACTION_TYPE_FORM,
         'createEventImages' => self::ACTION_TYPE_PRINT,
         'saveCapturedSignature' => self::ACTION_TYPE_FORM,
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
@@ -36,7 +38,8 @@ class DefaultController extends BaseEventTypeController
     public $booking_operation;
     public $unbooked = false;
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'saveCapturedSignature' => [
                 'class' => \SaveCapturedSignatureAction::class,
@@ -75,8 +78,7 @@ class DefaultController extends BaseEventTypeController
         if ($action == 'create' && $this->booking_event) {
             $element->booking_event_id = $this->booking_event->id;
             if ($this->booking_operation) {
-                $element->eye_id = $this->booking_operation->eye_id;
-
+                $eye_id = $this->booking_operation->eye_id ?? null;
                 $type_assessments_by_id = array();
                 foreach ($element->anaesthetic_type_assignments as $type_assignments) {
                     $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
@@ -102,19 +104,21 @@ class DefaultController extends BaseEventTypeController
                     $element->anaesthetic_type_assignments = $type_assessments;
                     $element->anaesthetic_type = $anaesthetic_types;
                 }
-
-                $element->procedures = $this->booking_operation->procedures;
-                $additional = array();
-                $additional_ids = array();
-                foreach ($element->procedures as $proc) {
-                    foreach ($proc->additional as $add) {
-                        if (!in_array($add->id, $additional_ids)) {
-                            $additional[] = $add;
-                            $additional_ids[] = $add->id;
-                        }
+                $assigned_procedures = array();
+                foreach ($this->booking_operation->procedureItems as $booked_proc) {
+                    $assigned_proc = new OphtrconsentProcedureProceduresProcedures();
+                    $assigned_proc->proc_id = $booked_proc->proc_id;
+                    $assigned_proc->eye_id = $booked_proc->eye_id ?? $eye_id;
+                    $assigned_procedures[] = $assigned_proc;
+                    // regard the additional proc as normal one
+                    foreach ($booked_proc->procedure->additional as $additional_proc) {
+                        $add_proc = new OphtrconsentProcedureProceduresProcedures();
+                        $add_proc->proc_id = $additional_proc->id;
+                        $add_proc->eye_id = $booked_proc->eye_id ?? $eye_id;
+                        $assigned_procedures[] = $add_proc;
                     }
                 }
-                $element->additional_procedures = $additional;
+                $element->procedure_assignments = $assigned_procedures;
             }
         }
     }
@@ -401,38 +405,40 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-    protected function saveComplexAttributes_Element_OphTrConsent_Procedure($element, $data, $index)
+    protected function setComplexAttributes_Element_OphTrConsent_Procedure($element, $data, $index)
     {
-        $curr_by_id = array();
-
-        foreach ($element->anaesthetic_type as $type) {
-            $curr_by_id[$type->id] = OphTrConsent_Procedure_AnaestheticType::model()->findByAttributes(array(
-                'et_ophtrconsent_procedure_id' => $element->id,
-                'anaesthetic_type_id' => $type->id
-            ));
+        $model_name = \CHtml::modelName($element);
+        $element_data = $data[$model_name] ?? array();
+        $anaesthetic_data = $data['AnaestheticType'] ?? array();
+        $procedures_data = $element_data['procedure_assignments'] ?? array();
+        $assigned_anaesthetic_types = array();
+        $procedure_assignments = array();
+        foreach ($anaesthetic_data as $type_id) {
+            $type = AnaestheticType::model()->findByPk($type_id);
+            $assigned_anaesthetic_types[] = $type;
         }
-
-        if (isset($data['AnaestheticType']) && !empty($data['AnaestheticType'])) {
-            foreach ($data['AnaestheticType'] as $type_id) {
-                if (!isset($curr_by_id[$type_id])) {
-                    $type = new OphTrConsent_Procedure_AnaestheticType();
-                    $type->et_ophtrconsent_procedure_id = $element->id;
-                    $type->anaesthetic_type_id = $type_id;
-
-                    if (!$type->save()) {
-                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($type->getErrors(), true));
-                    }
-                } else {
-                    unset($curr_by_id[$type_id]);
-                }
-            }
+        foreach ($procedures_data as $proc) {
+            $procedure = new OphtrconsentProcedureProceduresProcedures();
+            $procedure->eye_id = $proc['eye_id'];
+            $procedure->proc_id = $proc['proc_id'];
+            $procedure_assignments[] = $procedure;
         }
+        $element->anaesthetic_type = $assigned_anaesthetic_types;
+        $element->procedure_assignments = $procedure_assignments;
+    }
 
-        foreach ($curr_by_id as $type) {
-            if (!$type->delete()) {
-                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
-            }
+    protected function setComplexAttributes_Element_OphTrConsent_ExtraProcedures($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $element_data = $data[$model_name] ?? array();
+        $procedures_data = $element_data['extra_procedure_assignments'] ?? array();
+        $procedure_assignments = array();
+        foreach ($procedures_data as $proc) {
+            $procedure = new OphTrConsent_Procedure_Extra_Assignment();
+            $procedure->extra_proc_id = $proc['proc_id'];
+            $procedure_assignments[] = $procedure;
         }
+        $element->extra_procedure_assignments = $procedure_assignments;
     }
 
     protected function saveComplexAttributes_Element_OphTrConsent_PatientAttorneyDeputy($element, $data, $index)
@@ -513,6 +519,32 @@ class DefaultController extends BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    public function actionBenefits($id)
+    {
+        $extra_proc = OphTrConsent_Extra_Procedure::model()->findByPk($id);
+        if (!$extra_proc) {
+            throw new Exception("Unknown procedure: $id");
+        }
+
+        $benefits = array_map(function ($benefit) {
+            return $benefit->name;
+        }, $extra_proc->benefits);
+        $this->renderJSON($benefits);
+    }
+
+    public function actionComplications($id)
+    {
+        $extra_proc = OphTrConsent_Extra_Procedure::model()->findByPk($id);
+        if (!$extra_proc) {
+            throw new Exception("Unknown procedure: $id");
+        }
+
+        $complications = array_map(function ($complication) {
+            return $complication->name;
+        }, $extra_proc->complications);
+        $this->renderJSON($complications);
     }
 
     public function initActionSign()
