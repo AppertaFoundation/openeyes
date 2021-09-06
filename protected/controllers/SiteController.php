@@ -506,7 +506,12 @@ class SiteController extends BaseController
                     'status' => true,
                     'event_id' => $result->event_id,
                     'module_id' => $result->event->eventType->class_name,
-                    'element_type_id' => $result->element_type_id
+                    'element_type_id' => $result->element_type_id,
+                    'signature_type' => $result->signature_type,
+                    'signatory_role' => $result->signatory_role,
+                    'signatory_name' => $result->signatory_name,
+                    'initiator_element_type_id' => $result->initiator_element_type_id,
+                    'initiator_row_id' => $result->initiator_row_id,
                 ]);
             }
 

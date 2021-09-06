@@ -38,7 +38,6 @@ class SaveCapturedSignatureAction extends CAction
                     "success" => true
                 ]);
             }
-            echo "no eventsave"; exit;
         }
 
         $this->renderJSON([
@@ -64,7 +63,11 @@ class SaveCapturedSignatureAction extends CAction
                     "signatory_role" => Yii::app()->request->getParam("signatory_role"),
                     "signatory_name" => Yii::app()->request->getParam("signatory_name"),
                 ], false);
-
+                foreach (["initiator_element_type_id", "initiator_row_id"] as $attr) {
+                    if($signature->hasAttribute($attr)) {
+                        $signature->$attr = Yii::app()->request->getParam($attr);
+                    }
+                }
                 return $signature->save(false);
             }
         }

@@ -25,11 +25,29 @@ class DefaultController extends BaseEventTypeController
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
+        'saveCapturedSignature' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
+        'postSignRequest' => self::ACTION_TYPE_FORM,
+        'sign' => self::ACTION_TYPE_EDIT,
     );
 
     public $booking_event;
     public $booking_operation;
     public $unbooked = false;
+
+    public function actions() {
+        return [
+            'saveCapturedSignature' => [
+                'class' => \SaveCapturedSignatureAction::class,
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => \GetSignatureByUsernameAndPinAction::class,
+            ],
+            'postSignRequest' => [
+                'class' => PostSignRequestAction::class,
+            ],
+        ];
+    }
 
     protected function beforeAction($action)
     {
@@ -470,5 +488,29 @@ class DefaultController extends BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    public function initActionSign()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    public function actionSign($id)
+    {
+        if (!$element_type = \ElementType::model()->findByPk(\Yii::app()->request->getParam("element_type_id"))) {
+            throw new \CHttpException(500, "Element type not found");
+        }
+        if (!$element = $this->event->getElementByClass($element_type->class_name)) {
+            throw new \CHttpException(500, "Element not found");
+        }
+        $this->redirect("/OphCoCvi/default/print/$id?html=1&auto_print=0&sign=1".
+            "&element_type_id=".\Yii::app()->request->getParam("element_type_id").
+            "&signature_type=".\Yii::app()->request->getParam("signature_type").
+            "&signatory_role=".\Yii::app()->request->getParam("signatory_role").
+            "&signature_name=".\Yii::app()->request->getParam("signatory_name").
+            "&element_id=".$element->id.
+            "&initiator_element_type_id=".\Yii::app()->request->getParam("initiator_element_type_id").
+            "&initiator_row_id=".\Yii::app()->request->getParam("initiator_row_id")
+        );
     }
 }

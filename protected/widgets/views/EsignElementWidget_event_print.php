@@ -31,6 +31,8 @@
                             "signature_type" => $signature->type,
                             "signatory_role" => Yii::app()->request->getParam("signatory_role"),
                             "signatory_name" => Yii::app()->request->getParam("signatory_name"),
+                            "initiator_element_type_id" => Yii::app()->request->getParam("initiator_element_type_id"),
+                            "initiator_row_id" => Yii::app()->request->getParam("initiator_row_id"),
                         ]
                 ),
                 "after_submit_js" => 'function(response, widget) {window.parent.formHasChanged=false;window.parent.location.reload();}'

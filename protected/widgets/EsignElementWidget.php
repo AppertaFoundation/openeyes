@@ -37,7 +37,7 @@ class EsignElementWidget extends BaseEventElementWidget
     /**
      * @return string[]
      */
-    private static function getFieldTypes() : array
+    protected static function getFieldTypes() : array
     {
         return [
             BaseSignature::TYPE_LOGGEDIN_USER => EsignPINField::class,
@@ -55,7 +55,7 @@ class EsignElementWidget extends BaseEventElementWidget
      */
     public function getWidgetClassByType(int $type) : string
     {
-        $field_types = self::getFieldTypes();
+        $field_types = static::getFieldTypes();
         if (array_key_exists($type, $field_types)) {
             return $field_types[$type];
         }
