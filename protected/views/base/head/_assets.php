@@ -80,3 +80,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('../../node_modules/pickmeup/js/pickmeup.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('../../node_modules/tinymce/tinymce.js');?>
 <?php $assetManager->registerScriptFile('../../node_modules/lodash/lodash.min.js');?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.PathwayStepPicker.js'); ?>
+<?php $assetManager->registerScriptFile('js/worklist/OpenEyes.UI.Dialog.PathwayStepOptions.js'); ?>
+<?php $assetManager->registerScriptFile('js/worklist/OpenEyes.UI.Dialog.NewPathwayStep.js'); ?>
+

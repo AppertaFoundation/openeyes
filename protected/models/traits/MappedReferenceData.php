@@ -111,8 +111,6 @@ trait MappedReferenceData
         $merged_criteria = new CDbCriteria();
         $merged_criteria->addInCondition('t.id', $ids);
 
-        OELog::log(print_r($criteria, true));
-
         if (isset($criteria)) {
             $merged_criteria->mergeWith($criteria);
         }

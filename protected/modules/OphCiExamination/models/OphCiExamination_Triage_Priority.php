@@ -34,7 +34,7 @@ class OphCiExamination_Triage_Priority extends \BaseActiveRecord
     public function rules()
     {
         return [
-            ['id, description, snomed_code', 'safe']
+            ['id, description, label_colour, snomed_code', 'safe']
         ];
     }
 

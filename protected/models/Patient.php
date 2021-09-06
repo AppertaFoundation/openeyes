@@ -385,6 +385,16 @@ class Patient extends BaseActiveRecordVersioned
         return 'None';
     }
 
+    public function getClinicPathwayInProgress()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = 'JOIN worklist_patient wp ON wp.id = t.worklist_patient_id';
+        $criteria->addCondition('wp.patient_id = :patient_id');
+        $criteria->params = [':patient_id' => $this->id];
+        $criteria->addInCondition('t.status', Pathway::inProgressStatuses());
+        return Pathway::model()->find($criteria);
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *

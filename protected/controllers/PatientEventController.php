@@ -166,6 +166,21 @@ class PatientEventController extends BaseController
         $app = $this->getApp();
         $request = $app->getRequest();
 
+        if ($request->getQuery('step_id')) {
+            Yii::app()->session['active_worklist_patient_id'] = $request->getQuery('worklist_patient_id');
+            Yii::app()->session['active_step_id'] = $request->getQuery('step_id');
+            $step = PathwayStep::model()->findByPk($request->getQuery('step_id'));
+            if (!$step) {
+                throw new CHttpException(404, 'Unable to retrieve associated worklist step.');
+            }
+            Yii::app()->session['active_step_state_data'] = json_decode(
+                $step->state_data,
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+        }
+
         $patient = $this->resolvePatient($request);
         $context = $this->resolveContext($request);
         $event_type = $this->resolveEventType($request);
@@ -176,6 +191,8 @@ class PatientEventController extends BaseController
         }
         $this->setContext($context);
 
-        $this->redirect($app->createUrl($event_type->class_name . '/Default/create') . '?patient_id=' . $patient->id);
+        $this->redirect(
+            $app->createUrl($event_type->class_name . '/Default/create') . '?patient_id=' . $patient->id
+        );
     }
 }

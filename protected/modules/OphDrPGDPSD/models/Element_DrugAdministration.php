@@ -101,6 +101,9 @@ class Element_DrugAdministration extends BaseMedicationElement
         );
     }
 
+    /**
+     * @throws JsonException
+     */
     public function save($runValidation = true, $attributes = null, $allow_overriding = false)
     {
         $original = $this->assignments;
@@ -115,6 +118,14 @@ class Element_DrugAdministration extends BaseMedicationElement
                 $wl_manager = new \WorklistManager();
                 $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new \DateTime());
                 $assignment->visit_id = $worklist_patient->id;
+                Yii::app()->event->dispatch('psd_created', array(
+                    'step_type' => PathwayStepType::model()->find('short_name = \'drug admin\''),
+                    'worklist_patient_id' => $worklist_patient->id,
+                    'initial_state' => [
+                        'preset_id' => $assignment->pgdpsd ? $assignment->pgdpsd->id : null,
+                        'assignment_id' => $assignment->id,
+                    ]
+                ));
             }
             $assignment->save();
             if (!$assignment->isrelevant && count($this->assignments) > 1) {

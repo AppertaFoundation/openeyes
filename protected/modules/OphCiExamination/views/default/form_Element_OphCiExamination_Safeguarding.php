@@ -238,6 +238,7 @@ $patient_is_minor = $patient->isChild();
             refreshNoConcernsVisibility();
 
             attachSafeguardingTrashEvents($('i.safeguarding-trash'));
+
             new OpenEyes.UI.AdderDialog({
                 openButton: $('#safeguarding-adder-button'),
                 deselectOnReturn: true,

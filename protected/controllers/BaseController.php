@@ -449,4 +449,22 @@ class BaseController extends Controller
         }
         return $input;
     }
+
+    /**
+     * Get active Clinic Pathway for the patient
+     * @return array|CActiveRecord|mixed|Pathway|null
+     */
+    public function getClinicPathwayInProgress()
+    {
+        $pathway = null;
+        if ($this->patient && $this->checkAccess('OprnWorklist')) {
+            $criteria = new CDbCriteria();
+            $criteria->join = 'JOIN worklist_patient wp ON wp.id = t.worklist_patient_id';
+            $criteria->addCondition('wp.patient_id = :patient_id');
+            $criteria->params = [':patient_id' => $this->patient->id];
+            $criteria->addInCondition('t.status', Pathway::inProgressStatuses());
+            $pathway = Pathway::model()->find($criteria);
+        }
+        return $pathway;
+    }
 }

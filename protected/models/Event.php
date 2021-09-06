@@ -36,6 +36,7 @@
  * @property string $last_modified_date
  * @property string $worklist_patient_id
  * @property int $firm_id
+ * @property int $step_id
  *
  * The followings are the available model relations:
  * @property Episode $episode
@@ -113,7 +114,7 @@ class Event extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('event_type_id, event_date, institution_id', 'required'),
-            array('parent_id, worklist_patient_id, institution_id, site_id', 'safe'),
+            array('parent_id, worklist_patient_id, institution_id, site_id, step_id', 'safe'),
             array('episode_id, event_type_id', 'length', 'max' => 10),
             array('worklist_patient_id', 'length', 'max' => 40),
             // The following rule is used by search().

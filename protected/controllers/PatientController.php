@@ -50,7 +50,7 @@ class PatientController extends BaseController
             ),
             array(
                 'allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients', 'getCitoUrl'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients', 'getCitoUrl', 'showCurrentPathway'),
                 'users' => array('@'),
             ),
             array(
@@ -3041,6 +3041,16 @@ class PatientController extends BaseController
         $this->renderJSON(array(
             'past_worklist_tbody' => $this->renderPartial('/default/appointment_entry_tbody', array('worklist_patients' => $past_worklist_patients), true),
         ));
+    }
+
+    public function actionShowCurrentPathway()
+    {
+        $pathway = Pathway::model()->findByPk($_POST['pathway_id']);
+        $this->renderJSON($this->renderPartial('//patient/_patient_clinic_pathway', [
+            'pathway' => $pathway,
+            'display_wait_duration' => true,
+            'editable' => true,
+        ], true));
     }
 
     /**

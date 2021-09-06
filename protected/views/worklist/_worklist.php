@@ -16,9 +16,15 @@
  */
 ?>
 <?php
+/**
+ * @var $worklist Worklist|Array
+ */
+if (empty($filter)) {
+     $filter = new WorklistFilterQuery();
+}
 
-$data_provider = $this->manager->getPatientsForWorklist($worklist);
-$data_provider->pagination->pageVar = 'page' . $worklist->id;
+$data_provider = $this->manager->getPatientsForWorklistSQL($worklist, $filter);
+$data_provider->pagination->pageVar = $filter->getCombineWorklistsStatus() ? 'page' : 'page' . $worklist->id;
 // Get data so that pagination  works
 $data_provider->getData();
 $core_api = new CoreAPI();
@@ -26,6 +32,7 @@ $wl_attrs = array();
 
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
+
 $display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
 
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
@@ -38,133 +45,168 @@ $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.TableController.js'), ClientScript::POS_END);
 
 $is_printing = isset($is_printing) && ($is_printing === true);
-?>
-
-<div class="worklist-group js-filter-group" id="js-worklist-<?= $worklist->id ?>-wrapper">
-    <div class="worklist-summary flex-layout">
-        <h2 id="worklist_<?= $worklist->id ?>"><?= $worklist->name ?> : <?= $worklist->getDisplayDate() ?></h2>
-    </div>
-
-    <?php if ($data_provider->totalItemCount <= 0) : ?>
-        <div class="alert-box info">
-            No patients in this worklist.
-        </div>
-    <?php else : ?>
-    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows js-table-controller <?=$is_printing?"allow-page-break":""?>">
-        <colgroup>
-            <?php if (isset($is_prescriber) && $is_prescriber) {?>
-            <col class="cols-icon"><!--checkbox-->
-            <?php }?>
-            <col><!--Time-->
-            <col class="cols-1"><!--Hos Num-->
-            <col class="cols-icon"><!--All in one icon-->
-            <col class="cols-1"><!--Risk status-->
-            <col class="cols-3"><!--Name-->
-            <col class="cols-2"><!-- Pathstep for psd -->
-            <col class="cols-1"><!--Gender-->
-            <col class="cols-2"><!--DOB-->
-        </colgroup>
+if (!isset($coreapi)) {
+    $coreapi = new CoreAPI();
+} ?>
+<?php if ($filter->getCombineWorklistsStatus()): ?>
+<section class="oec-group" id="js-worklist-combined" data-title="Combined Worklists">
+    <header>
+        <h3><?= 'Combined worklists : ' . date('d M Y') ?></h3>
+    </header>
+<?php else: ?>
+<section class="oec-group" id="js-worklist-<?= $worklist->id ?>" data-id="<?= $worklist->id ?>" data-title="<?= $worklist->name ?>">
+    <header>
+        <h3><?= $worklist->name . ' : ' . date('d M Y') ?></h3>
+    </header>
+<?php endif; ?>
+    <table class="oec-patients">
         <thead>
         <tr>
-            <?php if (isset($is_prescriber) && $is_prescriber) {?>
+            <th>Time</th>
+            <th>Clinic</th>
+            <th>Patient</th>
+            <th><!-- quicklook --></th>
+            <th>Pathway</th>
             <th>
-                <label class="inline highlight ">
-                    <input
-                        value="All"
-                        class="work-ls-patient-all"
-                        type="checkbox"
-                        data-table-id="<?=$worklist->id?>"
-                    > All
+                <!-- Select all patients in worklist -->
+                <label class="patient-checkbox">
+                    <input class="js-check-patient" value="all" type="checkbox"/>
+                    <div class="checkbox-btn"></div>
                 </label>
             </th>
-            <?php }?>
-            <th>Time</th>
-            <th class="nowrap">Hospital No.</th>
-            <th></th><!--all in one icon-->
-            <th>R1-3</th>
-            <th>Name</th>
-            <th></th><!-- Pathstep for psd -->
-            <th>Gender</th>
-            <th>DoB</th>
-            <?php foreach ($worklist->displayed_mapping_attributes as $attr) : ?>
-                <?php $wl_attrs[strtolower($attr->name)] = $attr;?>
-                <th><?=$attr->name;?></th>
-            <?php endforeach; ?>
-            <th></th>
+            <th>
+                <!-- Assignee -->
+                <i class="oe-i person no-click small"></i>
+            </th>
+            <th>
+                <!-- Priority/Risk -->
+                <?php if ($filter->priorityIsUsed()) { ?>
+                    <i class="oe-i circle-grey no-click small"></i>
+                <?php } else { ?>
+                    <i class="oe-i triangle-grey no-click small"></i>
+                <?php } ?>
+            </th>
+            <th>
+                <!-- Comments -->
+                <i class="oe-i comments no-click small"></i>
+            </th>
+            <th>Total duration</th>
+            <th>
+                <!-- Pathway completion action icon -->
+            </th>
         </tr>
         </thead>
         <tbody>
-            <?php foreach ($data_provider->getData() as $wl_patient) : ?>
-                <?php $link = $core_api->generatePatientLandingPageLink($wl_patient->patient, ['worklist_patient_id' => $wl_patient->id]);?>
-                <tr data-url="<?=$link;?>" style="cursor:pointer">
-                    <?php if (isset($is_prescriber) && $is_prescriber) {?>
-                    <td>
-                        <label class="highlight inline">
-                            <input class="js-select-patient-for-psd"
-                                value="<?=$wl_patient->patient->id;?>"
-                                data-name="<?=$wl_patient->patient->getHSCICName();?>"
-                                data-visit_id="<?=$wl_patient->id;?>"
-                                data-table-id="<?=$worklist->id?>"
-                                name="worklist_patient[]" type="checkbox">
-                        </label>
-                    </td>
-                    <?php }?>
-                    <td><?=$wl_patient->scheduledtime;?></td>
-                    <td class="nowrap">
-                        <?php $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $wl_patient->patient->id, $institution->id, $selected_site_id); ?>
+        <?php foreach ($data_provider->getData() as $wl_patient_data) :
+            $wl_patient = WorklistPatient::model()->findByPk($wl_patient_data['id']);
 
-                        <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier);
-                        $this->widget(
-                            'application.widgets.PatientIdentifiers',
-                            [
-                                'patient' => $wl_patient->patient,
-                                'show_all' => true,
-                                'tooltip_size' => 'small'
-                            ]
-                        ); ?>
-                    </td>
-                    <td id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $wl_patient->patient->id ?>">
-                        <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn" onmouseenter="onMouseEnterPatientQuickOverview(this)" onmouseleave="hidePatientQuickOverview()" onclick="onClickPatientQuickOverview(this)"></i>
-                    </td>
-                    <td>
-                        <?= $exam_api->getLatestOutcomeRiskStatus($wl_patient->patient, $wl_patient->worklist); ?>
-                    </td>
-                    <td>
-                        <?php if (!$is_printing) :
-                            ?><a href="<?= $link; ?>"><?php
-                        endif; ?>
-                            <?= $wl_patient->patient->getHSCICName(); ?>
-                            <?php if (!$is_printing) :
-                                ?></a><?php
-                            endif; ?>
-                    </td>
-                    <td>
-                        <?php foreach ($wl_patient->order_assignments as $assignment) {?>
-                            <span data-worklist-id="<?=$wl_patient->id?>" data-patient-id="<?=$wl_patient->patient_id?>" data-pathstep-id="<?=$assignment->id?>" class="oe-pathstep-btn <?=$assignment->getStatusDetails()['css']?> process" data-pathstep-name="<?=$assignment->getAssignmentTypeAndName()['name']?>">
-                                <span class="step i-drug-admin"></span>
-                            </span>
-                        <?php } ?>
-                    </td>
-                    <td><?=$wl_patient->patient->genderString?></td>
-                    <td><?='<span class="oe-date">' . Helper::convertDate2Html(Helper::convertMySQL2NHS($wl_patient->patient->dob)) . '</span>'?></td>
+            $num_visits = Yii::app()->db->createCommand()
+                ->select('COUNT(*)')
+                ->from('worklist_patient')
+                ->where('patient_id = :patient_id AND worklist_id = :worklist_id')
+                ->bindValues([':patient_id' => $wl_patient->patient_id, ':worklist_id' => $wl_patient->worklist_id])
+                ->queryScalar();
+            /** @var $wl_patient WorklistPatient */
+            $hide_add_step_btn = (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? 'style="display:none;"' : null;
+            ?>
+            <tr class="<?= $wl_patient->pathway->getStatusString() ?>" data-timestamp="<?= time() ?>" id="js-pathway-<?=$wl_patient->pathway->id?>">
+                <td><?= $wl_patient->scheduledtime ?></td>
+                <td>
+                    <div class="list-name"><?= $wl_patient->worklist->name ?></div>
+                    <div class="code"><?= (int)$num_visits === 1 ? 'First Attendance' : null ?></div>
+                </td>
+                <td>
+                    <?php $this->renderPartial('application.widgets.views.PatientMeta', array('patient' => $wl_patient->patient, 'coreapi' => $coreapi)); ?>
 
-                    <?php foreach ($worklist->displayed_mapping_attributes as $attr) : ?>
-                        <td><?= $wl_patient->getWorklistAttributeValue($attr); ?></td>
-                    <?php endforeach; ?>
-                    <td><a href="<?= $link ?>"><i class="oe-i direction-right-circle medium pad"></i></a></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-            <tfoot <?= $is_printing ? "class=\"hidden\"" : "" ?>>
-            <tr>
-                <td colspan="9">
-                    <?php $this->widget('LinkPager', ['pages' => $data_provider->getPagination()]); ?>
+                </td>
+                <td id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $wl_patient->patient->id ?>">
+                    <i class="eye-circle medium pad oe-i js-worklist-btn" onmouseenter="onMouseEnterPatientQuickOverview(this)" onmouseleave="hidePatientQuickOverview()" onclick="onClickPatientQuickOverview(this)" id="js-worklist-btn"></i>
+                </td>
+                <td class="js-pathway-container">
+                    <!--Render full pathway in a separate view. -->
+                    <?php $this->renderPartial(
+                        '//worklist/_clinical_pathway',
+                        ['pathway' => $wl_patient->pathway]
+                    ); ?>
+                </td>
+                <td>
+                    <label class="patient-checkbox" <?=$hide_add_step_btn?>>
+                        <input class="js-check-patient" value="<?= $wl_patient->pathway->id ?>" type="checkbox"/>
+                        <div class="checkbox-btn"></div>
+                    </label>
+                </td>
+                <td class="js-pathway-assignee" data-id="<?= $wl_patient->pathway->owner_id ?>">
+                    <!-- Assignee -->
+                    <?= $wl_patient->pathway->owner ? $wl_patient->pathway->owner->getInitials() : null ?>
+                </td>
+                <td>
+                    <!-- Priority/Risk -->
+                    <?php
+                    if ($filter->priorityIsUsed()) {
+                        echo $exam_api->getLatestTriagePriority($wl_patient->patient, $wl_patient->worklist);
+                    } else {
+                        echo $exam_api->getLatestOutcomeRiskStatus($wl_patient->patient, $wl_patient->worklist);
+                    }
+                    ?>
+
+                </td>
+                <td>
+                    <span class="oe-pathstep-btn buff comments <?= $wl_patient->pathway->checkForComments() ? 'comments-added' : '' ?>"
+                          data-worklist-patient-id="<?= $wl_patient->id?>"
+                          data-pathway-id="<?= $wl_patient->pathway->id ?>"
+                          data-patient-id="<?= $wl_patient->patient_id ?>"
+                          data-pathstep-id="comment">
+                        <span class="step i-comments"></span>
+                        <span class="info" style="display: none;"></span>
+                    </span>
+                </td>
+                <td>
+                    <div class="wait-duration<?= (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? ' stopped' : ''?>">
+                        <?= $wl_patient->pathway->getTotalDurationHTML(true) ?>
+                    </div>
+                </td>
+                <td class="js-pathway-status">
+                    <!-- Completion icon/actions -->
+                    <?php
+                    $class = 'oe-i pad js-has-tooltip ';
+                    switch ($wl_patient->pathway->status) {
+                        case Pathway::STATUS_LATER:
+                            $class .= 'no-permissions small-icon';
+                            $tooltip_text = 'Pathway not started';
+                            break;
+                        case Pathway::STATUS_DISCHARGED:
+                            $class .= 'save medium-icon js-pathway-complete';
+                            $tooltip_text = 'Pathway completed';
+                            break;
+                        case Pathway::STATUS_DONE:
+                            // Done.
+                            $class .= 'undo medium-icon js-pathway-reactivate';
+                            $tooltip_text = 'Re-activate pathway to add steps';
+                            break;
+                        default:
+                            // Covers all 'active' statuses, including long-wait and break.
+                            $class .= 'save-blue medium-icon js-pathway-finish';
+                            $tooltip_text = 'Patient has left<br/>Quick complete pathway';
+                            break;
+                    } ?>
+                    <i class="<?= $class ?>" data-tooltip-content="<?= $tooltip_text ?>" data-pathway-id="<?= $wl_patient->pathway->id ?>"></i>
                 </td>
             </tr>
-            </tfoot>
-        </table>
-    <?php endif; ?>
-</div>
+        <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="11">
+                <?php $this->widget('LinkPager', ['pages' => $data_provider->getPagination()]); ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="oec-clock">
+        <!-- Use JS to bind this element to the bottom of the entry closest to the current time. -->
+        <?= date('H:i') ?>
+    </div>
+</section>
 
 <?php
     $assetManager = Yii::app()->getAssetManager();
@@ -172,7 +214,8 @@ $is_printing = isset($is_printing) && ($is_printing === true);
     Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 ?>
 
-<script type="text/javascript">
+<?php if (!$filter->getCombineWorklistsStatus()): ?>
+<!--script type="text/javascript">
     $(document).ready(function () {
         let col_num = $('#js-worklist-<?=$worklist->id?> thead th').length;
         $('#js-worklist-<?=$worklist->id?> tfoot td').attr('colspan', col_num);
@@ -182,4 +225,5 @@ $is_printing = isset($is_printing) && ($is_printing === true);
         $(this).toggleClass('collapse expand');
         $(this).next('div').toggle();
     });
-</script>
+</script-->
+<?php endif; ?>

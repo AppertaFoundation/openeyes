@@ -295,6 +295,11 @@ class User extends BaseActiveRecordVersioned
         return implode(' ', array($this->title, strtoupper($this->first_name[0]), $this->last_name));
     }
 
+    public function getInitials()
+    {
+        return strtoupper($this->first_name[0]) . strtoupper($this->last_name[0]);
+    }
+
     /**
      * @return string
      */
