@@ -863,6 +863,8 @@ class DefaultController extends \BaseEventTypeController
         $this->setContext($this->event->firm);
 
         $step_id = \Yii::app()->request->getParam('step_id');
+        Yii::app()->session['active_worklist_patient_id'] = \Yii::app()->request->getParam('worklist_patient_id');
+        Yii::app()->session['active_step_id'] = \Yii::app()->request->getParam('worklist_step_id');
 
         if ($step_id) {
             $this->step = models\OphCiExamination_ElementSet::model()->findByPk($step_id);

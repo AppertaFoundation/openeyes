@@ -59,7 +59,9 @@ class PathstepObserver
             if ($latest_exam_event_for_episode) {
                 $params = [
                     'patient_id' => $step->pathway->worklist_patient->patient_id,
-                    'step_id' => $step->getState('workflow_step_id')
+                    'step_id' => $step->getState('workflow_step_id'),
+                    'worklist_patient_id' => $step->pathway->worklist_patient_id,
+                    'worklist_step_id' => $step->id,
                 ];
                 $step->setState(
                     'event_create_url',
