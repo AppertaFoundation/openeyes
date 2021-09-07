@@ -147,6 +147,12 @@ class Element_OphTrConsent_Esign extends BaseEsignElement implements RequiresSig
      */
     public function isSigned(): bool
     {
+        foreach ($this->signatures as $signature) {
+            if ($signature->is_mandatory && !$signature->isSigned()) {
+                return false;
+            }
+        }
+
         return $this->countRemainingSignatures() === 0;
     }
 
@@ -187,5 +193,36 @@ class Element_OphTrConsent_Esign extends BaseEsignElement implements RequiresSig
     {
         $this->healthprof_signature_id = $signature_id;
         $this->save(false, ["healthprof_signature_id"]);
+    }
+
+    /**
+     * @return bool True if the signature is the one being signed in print mode
+     */
+    public function isBeingSigned(BaseSignature $signature) : bool
+    {
+        $req = Yii::app()->request;
+        return (int)$req->getParam("sign") > 0
+            && (int)$signature->initiator_element_type_id === (int)$req->getParam("initiator_element_type_id")
+            && (int)$signature->initiator_row_id === (int)$req->getParam("initiator_row_id");
+    }
+
+    /**
+     * @return object filtered signature object.
+     */
+    public function getSignatureByAttributes($element, $custom_key) {
+        if (!is_null($element->{$custom_key})) {
+            $filtered_signature = array_filter($element->getSignatures(), function ($signature) use ($element, $custom_key) {
+                return $signature->id === $element->{$custom_key};
+            });
+        } else {
+            $req = Yii::app()->request;
+            $filtered_signature = array_filter($element->getSignatures(), function ($signature) use ($req) {
+                return
+                    (int)$signature->initiator_element_type_id === (int)$req->getParam("initiator_element_type_id")
+                    && (int)$signature->initiator_row_id === (int)$req->getParam("initiator_row_id");
+
+            });
+        }
+        return isset($filtered_signature[0]) ? $filtered_signature[0] : false;
     }
 }

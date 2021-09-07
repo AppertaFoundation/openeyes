@@ -155,19 +155,20 @@ class OphTrConsent_Signature extends BaseSignature
     }
 
     /**
-     * Returns an HTML img tag containing the signature image
-     * or an empty string in case of failure
-     *
-     * @return string
-     * @throws CException
+     * @inheritDoc
      */
-    public function getSignatureImage() : string
+    public function getPrintout(): string
+    {
+        return $this->getSignatureImage();
+    }
+
+    private function getSignatureImage(): string
     {
         if ($thumb = $this->signatureFile->getThumbnail("150x50")) {
             $data = file_get_contents($thumb["path"]);
             if ($data !== false) {
                 $img = base64_encode($data);
-                return "<img style=\"max-height:100px;\" src=\"data:{$this->signatureFile->mimetype};base64,$img\"/>";
+                return "<img alt=\"Signature\" class=\"signature\" src=\"data:{$this->signatureFile->mimetype};base64,$img\"/>";
             }
         }
         // Display nothing in case of failure

@@ -130,4 +130,15 @@ class OphTrConsent_Type_Assessment extends BaseActiveRecordVersioned
     {
         return parent::model($className);
     }
+
+    /**
+     * A consent form is signed if at least one of the signatures
+     * (consultant or secretary) is done
+     *
+     * @return bool
+     */
+    public function existsElementInConsentForm($element_id, $type_id) : bool
+    {
+        return !empty(self::model()->findByAttributes(array('element_id' => $element_id, 'type_id' => $type_id)));
+    }
 }

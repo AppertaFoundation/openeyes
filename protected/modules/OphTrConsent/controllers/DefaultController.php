@@ -269,18 +269,18 @@ class DefaultController extends BaseEventTypeController
 
             $this->title = 'Please select booking';
             $this->event_tabs = array(
-                    array(
-                            'label' => 'Select a booking',
-                            'active' => true,
-                    ),
+                array(
+                    'label' => 'Select a booking',
+                    'active' => true,
+                ),
             );
             $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             $this->event_actions = array(
-                    EventAction::link(
-                        'Cancel',
-                        Yii::app()->createUrl($cancel_url),
-                        array('id' => 'et_cancel', 'class' => 'button small warning')
-                    ),
+                EventAction::link(
+                    'Cancel',
+                    Yii::app()->createUrl($cancel_url),
+                    array('id' => 'et_cancel', 'class' => 'button small warning')
+                ),
             );
             $this->processJsVars();
             $this->render('select_event', array(

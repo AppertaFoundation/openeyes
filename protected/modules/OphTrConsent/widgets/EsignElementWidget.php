@@ -17,35 +17,31 @@
 
 namespace OEModule\OphTrConsent\widgets;
 
-class EsignElementWidget extends \EsignElementWidget
-{
+class EsignElementWidget extends \EsignElementWidget {
     /**
      * @inheritDoc
      */
-    public function isSigningAllowed() : bool
-    {
+    public function isSigningAllowed(): bool {
         return $this->mode === \BaseEventElementWidget::$EVENT_VIEW_MODE;
     }
 
     /**
      * @inheritDoc
      */
-    protected function getView()
-    {
+    protected function getView() {
         $path = explode('\\', __CLASS__);
-        $prefix = "application.widgets.views.".array_pop($path);
+        $prefix = "application.widgets.views." . array_pop($path);
         if ($this->mode === self::$EVENT_PRINT_MODE) {
-            return $prefix."_event_print";
+            return $prefix . "_event_print";
         }
         // View is the same in edit mode and view mode
-        return $prefix."_event_edit";
+        return $prefix . "_event_edit";
     }
 
     /**
      * @inheritDoc
      */
-    protected static function getFieldTypes(): array
-    {
+    protected static function getFieldTypes(): array {
         return [
             \BaseSignature::TYPE_PATIENT => EsignSignatureCaptureField::class,
             \BaseSignature::TYPE_OTHER_USER => EsignPINField::class
