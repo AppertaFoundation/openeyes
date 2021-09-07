@@ -67,25 +67,27 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
             <td></td>
             <td>(e.g. other language/other communication method)</td>
         </tr>
-        <tr>
-            <th>Witness required</th>
-            <td><?= $elements['Element_OphTrConsent_Other']->witness_required ? 'Yes' : 'No' ?></td>
-        </tr>
-        <?php if ($elements['Element_OphTrConsent_Other']->witness_required) { ?>
+        <?php if (isset($elements['Element_OphTrConsent_Other'])) { ?>
             <tr>
-                <th>Witness name</th>
-                <td><?= $elements['Element_OphTrConsent_Other']->witness_name ?></td>
+                <th>Witness required</th>
+                <td><?= $elements['Element_OphTrConsent_Other']->witness_required ? 'Yes' : 'No' ?></td>
             </tr>
-        <?php } ?>
-        <tr>
-            <th>Interpreter required</th>
-            <td><?= $elements['Element_OphTrConsent_Other']->interpreter_required ? 'Yes' : 'No' ?></td>
-        </tr>
-        <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
+            <?php if ($elements['Element_OphTrConsent_Other']->witness_required) { ?>
+                <tr>
+                    <th>Witness name</th>
+                    <td><?= $elements['Element_OphTrConsent_Other']->witness_name ?></td>
+                </tr>
+            <?php } ?>
             <tr>
-                <th>Interpreter name</th>
-                <td><?= $elements['Element_OphTrConsent_Other']->interpreter_name ?></td>
+                <th>Interpreter required</th>
+                <td><?= $elements['Element_OphTrConsent_Other']->interpreter_required ? 'Yes' : 'No' ?></td>
             </tr>
+            <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
+                <tr>
+                    <th>Interpreter name</th>
+                    <td><?= $elements['Element_OphTrConsent_Other']->interpreter_name ?></td>
+                </tr>
+            <?php } ?>
         <?php } ?>
         <tr>
             <th>Procedure(s)</th>
@@ -98,7 +100,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
             } ?>
             </td>
         </tr>
-        <?php if ($elements['Element_OphTrConsent_AdvancedDecision']->description) { ?>
+        <?php if (isset($elements['Element_OphTrConsent_AdvancedDecision']->description)) { ?>
             <tr>
                 <th>Advanced Decision</th>
                 <td><?= $elements['Element_OphTrConsent_AdvancedDecision']->description ?></td>
@@ -195,16 +197,18 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
     The above procedure is, in my clinical judgement, in the best interests of the patient, who lacks capacity to consent for himself or herself. Where possible and appropriate I have discussed the patient’s condition with those close to him or her, and taken their knowledge of the patient’s past and present wishes, feelings, views and beliefs and values into account in determining his or her best interests.
 </p>
 <div class="spacer"></div>
-<?= $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
-<div class="spacer"></div>
-<p>
-    Where second opinion sought, s/he should sign below to confirm agreement:
-</p>
-<?= $this->renderPartial('signature_table1', array(
-    'vi' => ($css_class == 'impaired'),
-    'consultant' => $elements['Element_OphTrConsent_Other']->consultant,
-    'mask_consultant' => true
-)) ?>
+<?php if (isset($elements['Element_OphTrConsent_Other'])) { ?>
+    <?= $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
+    <div class="spacer"></div>
+    <p>
+        Where second opinion sought, s/he should sign below to confirm agreement:
+    </p>
+    <?= $this->renderPartial('signature_table1', array(
+        'vi' => ($css_class == 'impaired'),
+        'consultant' => $elements['Element_OphTrConsent_Other']->consultant,
+        'mask_consultant' => true
+    )) ?>
+<?php } ?>
 <div class="break"></div>
 <p>
     <strong>Guidance to health professionals</strong> (to be read in conjunction with consent policy)

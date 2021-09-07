@@ -144,6 +144,20 @@ $(document).ready(function() {
 	}
 
 	autosize($('.Element_OphTrConsent_BenefitsAndRisks textarea'));
+
+    let consent_type = document.getElementById('Element_OphTrConsent_Type_type_id');
+    if (consent_type !== null) {
+        consent_type.onchange = function () {
+            let url = window.location.href;
+            if (url.match(/type_id/)) {
+                url = url.replace(/&type_id=([0-9]+)/, '&type_id=' + this.value);
+            } else {
+                url = url + "&type_id=" + this.value;
+            }
+            window.formHasChanged = false;
+            window.location.href = url;
+        }
+    }
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

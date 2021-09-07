@@ -27,11 +27,22 @@
         $criteria->addCondition('id != 2');
     }
 
+    $disabled = false;
+    if ($this->action->id === "update") {
+        $disabled = true;
+    }
+
     echo $form->dropDownList(
         $element,
         'type_id',
         CHtml::listData(OphTrConsent_Type_Type::model()->findAll($criteria), 'id', 'name'),
-        ['nowrapper' => true],
+        [
+            'nowrapper' => true,
+            'disabled' => $disabled,
+            'options' => [
+                $element->type_id => [ 'selected' => true ]
+            ]
+        ],
         false,
         []
     );

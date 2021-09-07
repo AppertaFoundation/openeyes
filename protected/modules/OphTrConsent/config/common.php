@@ -28,6 +28,7 @@ return array(
                 'Additional Risks' => array('uri' => '/OphTrConsent/oeadmin/AdditionalRisks/list'),
                 'Extra Procedures' => array('uri' => '/OphTrConsent/oeadmin/ExtraProcedures/list'),
                 'Extra Procedures Subspecialty Assignment' => array('uri' => '/OphTrConsent/oeadmin/ExtraProcedures/EditSubspecialty'),
+                'Layouts' => array('uri' => '/OphTrConsent/oeadmin/ConsentLayouts/list'),
                 'Template' => array('uri' => '/OphTrConsent/oeadmin/Template/list'),
             ),
         ),
