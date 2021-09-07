@@ -412,7 +412,7 @@ class PatientController extends BaseController
         $term = \Yii::app()->request->getParam('term', '');
         $patient_identifier_type_id = \Yii::app()->request->getParam('patient_identifier_type_id');
 
-        $patient_search = new PatientSearch(\Yii::app()->request->getParam("nopas") !== "1");
+        $patient_search = new PatientSearch(true);
 
         if ($patient_identifier_type_id) {
             // if set we import/save Patient from this PAS - no update -
