@@ -100,17 +100,25 @@ class UserController extends BaseController
         $this->renderJSON($seconds_to_expire);
     }
 
-    public function actionCheckPincodeAvailability($pincode, $ins_auth_id, $user_id){
-        $user_auth = new UserAuthentication();
-        $user_auth->pincode = $pincode;
-        $user_auth->institution_authentication_id = $ins_auth_id;
-        $user_auth->user_id = $user_id;
-        $obj = $user_auth->checkUniqueness(null, null);
+    public function actionCheckPincodeAvailability($pincode, $ins_auth_id, $user_id)
+    {
+        if ($pincode === Yii::app()->params["secretary_pin"]) {
+            $ret = array(
+                "success" => false,
+                "user" => "Secretaries",
+            );
+        } else {
+            $user_auth = new UserAuthentication();
+            $user_auth->pincode = $pincode;
+            $user_auth->institution_authentication_id = $ins_auth_id;
+            $user_auth->user_id = $user_id;
+            $obj = $user_auth->checkUniqueness(null, null);
+            $ret = array(
+                'success' => $obj ? false : true,
+                'user' => $obj ? $obj->user->getFullName() : '',
+            );
+        }
 
-        $ret = array(
-            'success' => $obj ? false : true,
-            'user' => $obj ? $obj->user->getFullName() : '',
-        );
         $this->renderJSON($ret);
         unset($user_auth);
     }
