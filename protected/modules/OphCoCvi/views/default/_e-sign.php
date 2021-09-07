@@ -14,6 +14,11 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+array_walk($elements, function ($e) {
+    echo '<pre>' . print_r(get_class($e), true) . '</pre>';
+});
+
 ?>
 
 <!-- Page title -->
@@ -37,38 +42,51 @@
         <tbody>
         <tr>
             <th>Title and surname or family name:</th>
-            <td><?=$patient->title ?> <?=$patient->first_name ?></td>
+            <td><?= $patient->title ?> <?= $patient->first_name ?></td>
         </tr>
         <tr>
             <th>All other names (identify preferred name):</th>
-            <td><?=$patient->first_name ?></td>
+            <td><?= $patient->first_name ?></td>
         </tr>
         <tr>
             <th>Date of birth</th>
-            <td><?=\Helper::convertMySQL2NHS($patient->dob) ?></td>
+            <td><?= Helper::convertMySQL2NHS($patient->dob) ?></td>
         </tr>
         <tr>
             <th>Hospital #</th>
-            <td><?=$primary_identifier ;?></td>
+            <td><?= $primary_identifier; ?></td>
         </tr>
         <tr>
             <th>NHS #</th>
-            <td><?=$secondary_identifier ;?></td>
+            <td><?= $secondary_identifier; ?></td>
         </tr>
         <tr>
             <th>Gender</th>
-            <td><?=$patient->genderString ?></td>
+            <td><?= $patient->genderString ?></td>
         </tr>
         </tbody>
     </table>
     <hr class="divider"/>
+    <?php
+
+    $clinical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1');
+    echo '<pre>' . print_r($clinical_info->attributes, true) . '</pre>';
+    ?>
     <div class="highlighter">To be completed by the Ophthalmologist</div>
-    <h6>(Tick the box that applies)</h6><h4>I consider that this person is:</h4><span class="tickbox checked"></span>
-    <b>Slight impaired (partially sighted)</b><span class="tickbox"></span> <b>Severely sight impaired (blind)</b>
+    <h6>(Tick the box that applies)</h6><h4>I consider that this person is:</h4><span
+            class="tickbox <?= !$clinical_info->is_considered_blind ? 'checked' : '' ?>"></span>
+    <b>Slight impaired (partially sighted)</b><span
+            class="tickbox <?= $clinical_info->is_considered_blind ? 'checked' : '' ?>"></span> <b>Severely sight
+        impaired (blind)</b>
     <p>I have made the patient aware of the information booklet, “Sight Loss: What we needed to know”
-        (www.rnib.org.uk/sightlossinfo)</p><span class="tickbox"></span> Yes<span class="tickbox"></span> No<p>Has the
-        patient seen an Eye Clinic Liaison Officer (ECLO)/Sight Loss Advisor?</p><span class="tickbox"></span> Yes<span
-            class="tickbox"></span> Referred<span class="tickbox"></span> Not applicable
+        (www.rnib.org.uk/sightlossinfo)</p><span
+            class="tickbox <?= $clinical_info->information_booklet ? 'checked' : '' ?>"></span> Yes<span
+            class="tickbox <?= !$clinical_info->information_booklet ? 'checked' : '' ?>"></span> No
+    <p>Has the patient seen an Eye Clinic Liaison Officer (ECLO)/Sight Loss Advisor?</p><span
+            class="tickbox <?= $clinical_info->eclo === "1" ? 'checked' : '' ?>"></span> Yes<span
+            class="tickbox <?= $clinical_info->eclo === "2" ? 'checked' : '' ?>"></span> Referred<span
+            class="tickbox <?= ($clinical_info->eclo === "0" || !$clinical_info->eclo) ? 'checked' : '' ?>"></span> Not
+    applicable
     <div class="box">
         <div class="flex">
             <div class="dotted-area">
@@ -120,23 +138,21 @@
         </thead>
         <tbody>
         <tr>
-            <td>Logmar <small>select</small></td>
-            <td>Logmar <small>select</small></td>
-            <td>Logmar <small>select</small></td>
-        </tr>
-        <tr>
-            <td>Snellen <small>select</small></td>
-            <td>Snellen <small>select</small></td>
-            <td>Snellen <small>select</small></td>
+            <td><?= $clinical_info->getDisplayBestCorrectedRightVA() ?></td>
+            <td><?= $clinical_info->getDisplayBestCorrectedLeftVA() ?></td>
+            <td><?= $clinical_info->getDisplayBestCorrectedBinocularVA() ?></td>
         </tr>
         </tbody>
     </table>
-    <p><b>Field of vision:</b> Extensive loss of peripheral visual field (including hemianopia)</p><span
-            class="tickbox"></span> Yes<span class="tickbox"></span> No
+    <p><b>Field of vision:</b> Extensive loss of peripheral visual field (including hemianopia)</p>
+    <span class="tickbox <?= $clinical_info->field_of_vision === "1" ? 'checked' : '' ?>"></span> Yes
+    <span class="tickbox <?= $clinical_info->field_of_vision === "2" ? 'checked' : '' ?>"></span> No
     <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
-    <p><b>Low vision service:</b> If appropriate, has a referral for the low vision service been made?</p><span
-            class="tickbox"></span> Yes<span class="tickbox"></span> No<span class="tickbox"></span> Don't know<span
-            class="tickbox"></span> Not required
+    <p><b>Low vision service:</b> If appropriate, has a referral for the low vision service been made?</p>
+    <span class="tickbox <?= $clinical_info->low_vision_service === "1" ? 'checked' : '' ?>"></span> Yes
+    <span class="tickbox <?= $clinical_info->low_vision_service === "2" ? 'checked' : '' ?>"></span> No
+    <span class="tickbox <?= $clinical_info->low_vision_service === "3" ? 'checked' : '' ?>"></span> Don't know
+    <span class="tickbox <?= $clinical_info->low_vision_service === "4" ? 'checked' : '' ?>"></span> Not required
     <hr class="divider"/>
     <h2>Part 2a: Diagnosis (for patients 18 years of age or over)</h2><h4>Tick each that applies. <b>Tick "Main" if this
             is the main cause for the impairment.</b></h4><h6>Please note that this is not intended to be a
@@ -162,7 +178,8 @@
             </thead>
         </table>
     </div>
-    <div class="flex"><h3 class="cols-3">Retina</h3>
+    <?php foreach ($this->getDisorderSections_V1($clinical_info->patient_type) as $disorder_section) :?>
+    <div class="flex"><h3 class="cols-3"><?=\CHtml::encode($disorder_section->name); ?></h3>
         <table class="row-lines">
             <colgroup>
                 <col class="cols-6">
@@ -172,9 +189,20 @@
                 <col class="cols-1">
             </colgroup">
             <tbody>
+
+            <?php foreach ($disorder_section->disorders as $disorder) : ?>
+                <tr>
+                    <td><?= \CHtml::encode($disorder->name); ?></td>
+                    <td><span class="checkbox <?=$clinical_info->isCviDisorderMainCauseForSide($disorder, 'right') ? 'checked': ''?>"></span></td>
+                    <td>H35.32</td>
+                    <td><span class="tickbox"></span></td>
+                    <td><span class="tickbox"></span></td>
+                </tr>
+            <?php endforeach ;?>
+
             <tr>
                 <td>age-related macular degeneration – choroidal neovascularisation (wet)</td>
-                <td><span class="checkbox"></span></td>
+                <td><span class="checkbox" checked></span></td>
                 <td>H35.32</td>
                 <td><span class="tickbox"></span></td>
                 <td><span class="tickbox"></span></td>
@@ -231,7 +259,8 @@
             </tbody>
         </table>
     </div>
-    <div class="flex"><h3 class="cols-3">Glaucoma</h3>
+    <?php endforeach; ?>
+    <div style="display:none" class="flex"><h3 class="cols-3">Glaucoma</h3>
         <table class="row-lines">
             <colgroup>
                 <col class="cols-6">
@@ -272,7 +301,7 @@
             </tbody>
         </table>
     </div>
-    <div class="flex"><h3 class="cols-3">Globe</h3>
+    <div style="display:none" class="flex"><h3 class="cols-3">Globe</h3>
         <table class="row-lines">
             <colgroup>
                 <col class="cols-6">
@@ -292,7 +321,7 @@
             </tbody>
         </table>
     </div>
-    <div class="flex"><h3 class="cols-3">Neurological</h3>
+    <div style="display:none" class="flex"><h3 class="cols-3">Neurological</h3>
         <table class="row-lines">
             <colgroup>
                 <col class="cols-6">
@@ -326,7 +355,7 @@
             </tbody>
         </table>
     </div>
-    <div class="flex"><h3 class="cols-3">Choroid</h3>
+    <div style="display:none" class="flex"><h3 class="cols-3">Choroid</h3>
         <table class="row-lines">
             <colgroup>
                 <col class="cols-6">
@@ -353,7 +382,7 @@
             </tbody>
         </table>
     </div>
-    <div class="flex"><h3 class="cols-3">Lens</h3>
+    <div style="display:none" class="flex"><h3 class="cols-3">Lens</h3>
         <table class="row-lines">
             <colgroup>
                 <col class="cols-6">
@@ -373,7 +402,7 @@
             </tbody>
         </table>
     </div>
-    <div class="flex"><h3 class="cols-3">Cornea</h3>
+    <div style="display:none" class="flex"><h3 class="cols-3">Cornea</h3>
         <table class="row-lines">
             <colgroup>
                 <col class="cols-6">
@@ -400,7 +429,7 @@
             </tbody>
         </table>
     </div>
-    <div class="flex"><h3 class="cols-3">Neoplasia</h3>
+    <div style="display:none" class="flex"><h3 class="cols-3">Neoplasia</h3>
         <table class="row-lines">
             <colgroup>
                 <col class="cols-6">
@@ -1055,3 +1084,5 @@
             autism. Their easy read information can be found at www.seeability.org/looking- after-your-eyes or you can
             call 01372 755000.</p></div>
 </main>
+
+<?php echo $this->renderTiledElements([$this->getOpenElementByClassName('Element_OphCoCvi_Esign')], 'print'); ?>

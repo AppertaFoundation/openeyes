@@ -74,26 +74,6 @@ class DefaultController extends \BaseEventTypeController
         ];
     }
 
-    public function getElements($action = 'edit')
-    {
-        $elements = array();
-        if (is_array($this->open_elements)) {
-            foreach ($this->open_elements as $element) {
-
-                // we only need to render one element when patient sign the saved CVI
-                if(\Yii::app()->request->getParam('sign') && get_class($element) === 'Element_OphCoCvi_Esign') {
-                    return [$element];
-                }
-
-                if ($element->getElementType()) {
-                    $elements[] = $element;
-                }
-            }
-        }
-
-        return $elements;
-    }
-
     /** @var string label used in session storage for the list filter values */
     protected static $FILTER_LIST_KEY = 'OphCoCvi_list_filter';
 
@@ -1167,6 +1147,40 @@ class DefaultController extends \BaseEventTypeController
     public function initActionPrint()
     {
         $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
+     * Print action.
+     *
+     * @param int $id event id
+     */
+    public function actionPrint($id)
+    {
+        $this->printInit($id);
+
+        if (\Yii::app()->request->getParam('sign')) {
+            $this->printESign($id, $this->open_elements);
+        } else {
+            $this->printHTML($id, $this->open_elements);
+        }
+    }
+
+    protected function printESign($id, $elements, $template = '_e-sign')
+    {
+        $institution_id = \Institution::model()->getCurrent()->id;
+        $site_id = \Yii::app()->session['selected_site_id'];
+        $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+        $secondary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+
+        $this->layout = '//layouts/print';
+        $this->render($template, array(
+            'elements' => $elements,
+            'eventId' => $id,
+
+            'patient' => $this->patient,
+            'primary_identifier' => $primary_identifier->value,
+            'secondary_identifier' => $secondary_identifier->value,
+        ));
     }
 
     /**

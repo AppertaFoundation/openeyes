@@ -17,6 +17,11 @@
 
 ?>
 
+<?php $this->renderPartial('//print/event', array(
+    'hide_modified' => @$hide_modified,
+    'hide_created' => @$hide_created
+));
+
 <?php
     $institution_id = Institution::model()->getCurrent()->id;
     $site_id = Yii::app()->session['selected_site_id'];

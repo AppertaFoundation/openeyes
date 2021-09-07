@@ -9,7 +9,7 @@
         }
     ?>
         <tr>
-            <td><?= CHtml::encode($disorder->name); ?></td>
+            <td><?= \CHtml::encode($disorder->name); ?></td>
             <td>
                 <label class="inline highlight ">
                     <?= \CHtml::checkBox($right_field_base_name . "[main_cause]", $element->isCviDisorderMainCauseForSide($disorder, 'right'), array(
