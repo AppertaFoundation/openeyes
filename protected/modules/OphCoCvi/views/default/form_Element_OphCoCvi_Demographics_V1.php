@@ -14,9 +14,9 @@
  */
 ?>
 <?php
-    if ($element->isNewRecord) {
-        $element->nhs_number = \PatientIdentifierHelper::getIdentifierValue($this->patient->globalIdentifier);
-    }
+if ($element->isNewRecord) {
+    $element->nhs_number = \PatientIdentifierHelper::getIdentifierValue($this->patient->globalIdentifier);
+}
 ?>
 
 <div class="element-fields full-width">
@@ -79,14 +79,14 @@
                             $options = EthnicGroup::model()->findAll();
                             echo \CHtml::activeDropDownList($element, 'ethnic_group_id', \CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name'), [
                             'class' => 'cols-full',
-                            'options' => (function(array $options) {
+                            'options' => (function (array $options) {
                                 $result = [];
                                 foreach ($options as $model) {
                                     $result[$model->id] = ['data-describe' => $model->describe_needs];
                                 }
                                 return $result;
                             })($options)
-                        ]); ?>
+                            ]); ?>
                     </td>
                 </tr>
                 </tr>

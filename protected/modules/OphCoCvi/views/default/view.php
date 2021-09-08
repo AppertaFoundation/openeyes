@@ -28,9 +28,9 @@ $this->event_actions[] = EventAction::button('Print Visually Impaired', 'visuall
 $selectOptions['et_visually_impaired'] = 'Print Visually Impaired';
 
 
-if($this->checkLabelPrintAccess()){
-   $this->event_actions[] = EventAction::button('Print Labels', 'print_labels', null, array('class' => 'small button', 'style' => 'display:none;')); 
-   $selectOptions['et_print_labels'] = 'Print Labels';
+if ($this->checkLabelPrintAccess()) {
+    $this->event_actions[] = EventAction::button('Print Labels', 'print_labels', null, array('class' => 'small button', 'style' => 'display:none;'));
+    $selectOptions['et_print_labels'] = 'Print Labels';
 }
 
 //$elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature'))->id;
@@ -63,7 +63,7 @@ $this->beginContent('//patient/event_container');
     </div>
 <?php } ?>
 
-<?php if($this->getManager()->isIssued($this->event)): ?>
+<?php if ($this->getManager()->isIssued($this->event)) : ?>
     <div class="alert-box success">
         <u>Delivery status:</u><br/>
         Delivery to GP: <i><?=CHtml::encode($this->getManager()->getGPDeliveryStatus($this->event))?></i><br/>

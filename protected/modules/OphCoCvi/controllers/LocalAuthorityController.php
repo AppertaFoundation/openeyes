@@ -75,7 +75,7 @@ class LocalAuthorityController extends \BaseModuleController
             $body = $cbs->commissioning_body;
             $found_bodies[] = $body->id;
             $postcode = explode(" ", \Helper::setPostCodeFormat($cbs->contact->address->postcode));
-            
+
             $results[] = array(
                 'id' => 'service' . $cbs->id,
                 'label' => $cbs->name . " ({$body->name})",
@@ -97,7 +97,6 @@ class LocalAuthorityController extends \BaseModuleController
                     'email' => $body->contact->email,
                 ),
             );
-
         }
 
         $body_crit = new \CDbCriteria();
@@ -112,7 +111,7 @@ class LocalAuthorityController extends \BaseModuleController
 
         foreach (\CommissioningBody::model()->findAll($body_crit) as $body) {
             $postcode = explode(" ", \Helper::setPostCodeFormat($cbs->contact->address->postcode));
-            
+
             $results[] = array(
                 'id' => 'body' . $body->id,
                 'label' => $body->name,

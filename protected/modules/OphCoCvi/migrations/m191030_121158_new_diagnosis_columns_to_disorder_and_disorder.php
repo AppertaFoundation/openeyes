@@ -106,12 +106,10 @@ class m191030_121158_new_diagnosis_columns_to_disorder_and_disorder extends CDbM
             $this->delete('element_type', 'id = '.$last_event_id['id']);
         }
         $this->insert('element_type', array('name' => 'Clinical Info','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1', 'event_type_id' => $event_type['id'], 'display_order' => 30, 'required' => 1));
-
     }
 
     public function down()
     {
-
     }
 
     public function getSectionId($name, $patient_type = 1)
@@ -119,5 +117,4 @@ class m191030_121158_new_diagnosis_columns_to_disorder_and_disorder extends CDbM
         $getsection = $this->dbConnection->createCommand('SELECT id FROM ophcocvi_clinicinfo_disorder_section WHERE name LIKE "%'.$name.'%" AND event_type_version = 1 AND patient_type = "'.$patient_type.'"')->queryRow();
         return $getsection['id'];
     }
-
 }

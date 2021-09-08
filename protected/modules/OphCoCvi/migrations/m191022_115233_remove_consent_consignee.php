@@ -2,24 +2,24 @@
 
 class m191022_115233_remove_consent_consignee extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->dropForeignKey("fk_et_ophcocvi_pscca_element_id", "et_ophcocvi_patient_signature_consent_consignee_assignment");
         $this->dropForeignKey("fk_et_ophcocvi_pscca_consignee_id", "et_ophcocvi_patient_signature_consent_consignee_assignment");
 
         $this->dropOETable("et_ophcocvi_patient_signature_consent_consignee_assignment", false);
         $this->dropOETable("ophcocvi_consent_consignee", true);
 
-	    $this->addColumn("et_ophcocvi_patient_signature", "consented_to_gp", "BOOLEAN NOT NULL");
-	    $this->addColumn("et_ophcocvi_patient_signature_version", "consented_to_gp", "BOOLEAN NOT NULL");
-	    $this->addColumn("et_ophcocvi_patient_signature", "consented_to_la", "BOOLEAN NOT NULL");
-	    $this->addColumn("et_ophcocvi_patient_signature_version", "consented_to_la", "BOOLEAN NOT NULL");
-	    $this->addColumn("et_ophcocvi_patient_signature", "consented_to_rcop", "BOOLEAN NOT NULL");
-	    $this->addColumn("et_ophcocvi_patient_signature_version", "consented_to_rcop", "BOOLEAN NOT NULL");
-	}
+        $this->addColumn("et_ophcocvi_patient_signature", "consented_to_gp", "BOOLEAN NOT NULL");
+        $this->addColumn("et_ophcocvi_patient_signature_version", "consented_to_gp", "BOOLEAN NOT NULL");
+        $this->addColumn("et_ophcocvi_patient_signature", "consented_to_la", "BOOLEAN NOT NULL");
+        $this->addColumn("et_ophcocvi_patient_signature_version", "consented_to_la", "BOOLEAN NOT NULL");
+        $this->addColumn("et_ophcocvi_patient_signature", "consented_to_rcop", "BOOLEAN NOT NULL");
+        $this->addColumn("et_ophcocvi_patient_signature_version", "consented_to_rcop", "BOOLEAN NOT NULL");
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropColumn("et_ophcocvi_patient_signature", "consented_to_gp");
         $this->dropColumn("et_ophcocvi_patient_signature_version", "consented_to_gp");
         $this->dropColumn("et_ophcocvi_patient_signature", "consented_to_la");

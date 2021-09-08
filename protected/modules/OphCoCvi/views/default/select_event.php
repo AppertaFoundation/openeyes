@@ -16,55 +16,55 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
- ?>
+?>
 <?php
-	$this->beginContent('//patient/event_container');
-	$assetAliasPath = 'application.modules.OphCoCvi.assets';
+    $this->beginContent('//patient/event_container');
+    $assetAliasPath = 'application.modules.OphCoCvi.assets';
     $this->moduleNameCssClass .= ' edit';
 ?>
-	<div class="row">
-		<div class="large-12 column">
+    <div class="row">
+        <div class="large-12 column">
 
-			<section class="element">
+            <section class="element">
                 <header class="element-header">
-						<h3 class="element-title">Create CVI</h3>
-					</header>
+                        <h3 class="element-title">Create CVI</h3>
+                    </header>
 
-					<div class="element-fields">
+                    <div class="element-fields">
 
-						<div class="field-row">
-							<div class="field-info">
+                        <div class="field-row">
+                            <div class="field-info">
                                 This patient already has a CVI. Are you sure you want to create a new one?
-							</div>
-						</div>
+                            </div>
+                        </div>
                         <div class="field-row">
-							<div class="field-info">
+                            <div class="field-info">
                                 Current CVI are as follows:
-                                <?php if($current_cvis) {
-									$manager = $this->getManager();
-								?>
-									<ul>
-									<?php foreach($current_cvis as $cvi_event) { ?>
-										<li><a href='<?= $manager->getEventViewUri($cvi_event) ?>'>
-												<?= Helper::convertMySQL2NHS($cvi_event->event_date) . ': ' . $manager->getDisplayStatusForEvent($cvi_event) ?></a>
-										</li>
-									<?php } ?>
-									</ul>
-								<?php } ?>
-							</div>
-						</div>
+                                <?php if ($current_cvis) {
+                                    $manager = $this->getManager();
+                                    ?>
+                                    <ul>
+                                    <?php foreach ($current_cvis as $cvi_event) { ?>
+                                        <li><a href='<?= $manager->getEventViewUri($cvi_event) ?>'>
+                                                <?= Helper::convertMySQL2NHS($cvi_event->event_date) . ': ' . $manager->getDisplayStatusForEvent($cvi_event) ?></a>
+                                        </li>
+                                    <?php } ?>
+                                    </ul>
+                                <?php } ?>
+                            </div>
+                        </div>
                         <div class="field-row">
-							<div class="field-info">
+                            <div class="field-info">
                                 <a href="<?= CHtml::encode($can_create) ? \Yii::app()->request->requestUri."&createnewcvi=1" : '#'; ?>" >
                                     <button class="primary small<?= $can_create ? '' : ' disabled' ?>">
                                         Proceed to Create new CVI
                                     </button>
                                 </a>
-							</div>
-						</div>
+                            </div>
+                        </div>
                     </div>
                </section>
-		</div>
-	</div>
+        </div>
+    </div>
 
 <?php $this->endContent() ;?>

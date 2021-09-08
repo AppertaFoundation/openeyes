@@ -2,16 +2,16 @@
 
 class m190925_085623_add_element_patient_signature extends OEMigration
 {
-	public function up()
-	{
-	    $this->createOETable("ophcocvi_consent_consignee", [
-	        "id" => "pk",
+    public function up()
+    {
+        $this->createOETable("ophcocvi_consent_consignee", [
+            "id" => "pk",
             "name" => "VARCHAR(255)"
         ], true);
 
-	    $this->insert("ophcocvi_consent_consignee", ["name" => "GP"]);
-	    $this->insert("ophcocvi_consent_consignee", ["name" => "Local authority"]);
-	    $this->insert("ophcocvi_consent_consignee", ["name" => "Royal College of Ophthalmologists"]);
+        $this->insert("ophcocvi_consent_consignee", ["name" => "GP"]);
+        $this->insert("ophcocvi_consent_consignee", ["name" => "Local authority"]);
+        $this->insert("ophcocvi_consent_consignee", ["name" => "Royal College of Ophthalmologists"]);
 
         $this->createOETable("et_ophcocvi_patient_signature", [
             'id' => 'pk',
@@ -46,10 +46,10 @@ class m190925_085623_add_element_patient_signature extends OEMigration
         // Deprecate old Consent signature
 
         $this->execute("DELETE FROM element_type WHERE class_name='OEModule\\OphCoCvi\\models\\Element_OphCoCvi_ConsentSignature' AND event_type_id = (SELECT id FROM event_type WHERE event_type.class_name = 'OphCoCvi')");
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->execute("DELETE FROM element_type WHERE class_name='OEModule\\OphCoCvi\\models\\Element_OphCoCvi_PatientSignature' AND event_type_id = (SELECT id FROM event_type WHERE event_type.class_name = 'OphCoCvi')");
         $this->dropForeignKey("fk_et_ophcocvi_pscca_element_id", "et_ophcocvi_patient_signature_consent_consignee_assignment");
         $this->dropForeignKey("fk_et_ophcocvi_pscca_consignee_id", "et_ophcocvi_patient_signature_consent_consignee_assignment");
@@ -57,5 +57,5 @@ class m190925_085623_add_element_patient_signature extends OEMigration
         $this->dropForeignKey("fk_et_ophcocvi_patient_signature_event", "et_ophcocvi_patient_signature");
         $this->dropForeignKey("fk_et_ophcocvi_patient_signature_pf", "et_ophcocvi_patient_signature");
         $this->dropOETable("ophcocvi_consent_consignee", true);
-	}
+    }
 }

@@ -99,9 +99,9 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
                 'postcode, postcode_2nd, gp_postcode, gp_postcode_2nd, la_postcode, la_postcode_2nd', 'filter', 'filter'=>'trim'
             ),
             array(
-                'postcode, postcode_2nd, gp_postcode, gp_postcode_2nd, la_postcode, la_postcode_2nd', 'length', 'max' => 4 ,  
+                'postcode, postcode_2nd, gp_postcode, gp_postcode_2nd, la_postcode, la_postcode_2nd', 'length', 'max' => 4 ,
             ),
-            
+
             array(
                 'email, gp_name, la_name, la_email', 'length', 'max' => 255
             ),
@@ -172,17 +172,17 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
             'describe_ethnics' => 'Describe other ethnic group'
         );
     }
-    
+
     /**
      * Validate other ethnics textarea if the ethnic group describe_needs == 1
      * @param type $attribute
      * @param type $params
      */
-    public function ethnicsDescribeValidation($attribute,$params)
+    public function ethnicsDescribeValidation($attribute, $params)
     {
         $ethnic = \EthnicGroup::model()->findByAttributes(array('id' => $this->ethnic_group_id));
-        if($ethnic){
-            if(($ethnic->describe_needs == 1) && ( (bool) preg_match('/\S/', $this->describe_ethnics)) == false ){
+        if ($ethnic) {
+            if (($ethnic->describe_needs == 1) && ( (bool) preg_match('/\S/', $this->describe_ethnics)) == false ) {
                 $this->addError($attribute, 'Describe other ethnics cannot be blank');
             }
         }
@@ -195,7 +195,6 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
     {
         $this->title_surname = $patient->title . ' ' . $patient->last_name;
         $this->other_names = $patient->first_name;
-
     }
 
     /**
@@ -204,10 +203,10 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
     protected function mapGenderFromPatient(\Patient $patient)
     {
         $gender_string = $patient->getGenderString();
-       
+
         $gender = \Gender::model()->findByAttributes(array('name' => $gender_string));
         if ($gender) {
-            switch($gender->id){
+            switch ($gender->id) {
                 case 1:
                     $this->gender_id = self::GENDER_MALE;
                     break;
@@ -215,23 +214,23 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
                     $this->gender_id = self::GENDER_FEMALE;
                     break;
                 case 3:
-                case 4: 
+                case 4:
                     $this->gender_id = self::GENDER_UNSPECIFIED;
                     break;
             }
         }
     }
-    
+
     private function getEthnicIdForCVI(\Patient $patient)
     {
-        if($patient->ethnic_group_id){
+        if ($patient->ethnic_group_id) {
             $ethnic = \EthnicGroup::model()->findByAttributes(array('id_assignment' => $patient->ethnic_group_id));
-            if($ethnic){
+            if ($ethnic) {
                 $this->ethnic_group_id = $ethnic->id;
             }
         }
     }
- 
+
     /**
      * Initialises the element from the patient model.
      *
@@ -245,7 +244,7 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
         //$this->nhs_number = $patient->getNhsnum();
         $this->nhs_number = PatientIdentifierHelper::getIdentifierValue($patient->globalIdentifier);
         $this->address = $patient->getSummaryAddress(",\n");
-        
+
         if ($patient->contact && $patient->contact->address) {
             $postcode = explode(" ", \Helper::setPostCodeFormat($patient->contact->address->postcode));
 
@@ -263,9 +262,9 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
         if ($patient->gp) {
             $this->gp_name = $patient->gp->getFullName();
             $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ",\n", 'patient' => $patient));
-            
+
             $gpPostcode = explode(" ", \Helper::setPostCodeFormat( $patient->gp->getGPPostcode(array('patient' => $patient))));
-            
+
             $this->gp_postcode = array_key_exists(0, $gpPostcode) ? $gpPostcode[0] : null;
             $this->gp_postcode_2nd = array_key_exists(1, $gpPostcode) ? $gpPostcode[1] : null;
             if ($practice = $patient->practice) {
@@ -273,7 +272,7 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
             }
         }
     }
- 
+
     /**
      * Use the stored values to make a decent stab at putting together the patient name in its normalised form.
      *
@@ -290,8 +289,7 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
         if ($parts = explode(' ', $this->title_surname, 2)) {
             if (count($parts) == 1) {
                 $name[] = $parts[0];
-            }
-            else {
+            } else {
                 array_unshift($name, $parts[0]);
                 $name[] = $parts[1];
             }
@@ -305,7 +303,7 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
      */
     protected function generateStructuredGenderHeader()
     {
-        $gender_data = array_fill(0,4, '');
+        $gender_data = array_fill(0, 4, '');
 
         if ($gender = $this->gender) {
             if (strtolower($gender->name) == 'male') {
@@ -337,7 +335,7 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
      */
     protected function generateStructuredPostcodeHeader()
     {
-        $postcode_header = array_fill(0,4,'');
+        $postcode_header = array_fill(0, 4, '');
 
         if ($this->postcode) {
             $parts = explode(' ', $this->postcode, 2);
@@ -382,14 +380,14 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
             'patientDateOfBirth' => $this->date_of_birth,
             'nhsNumber' => $this->nhs_number,
             'gender' => $this->gender->name,
-            'patientAddress' => \Helper::lineLimit($this->address,1, 0, "\n", ''),
+            'patientAddress' => \Helper::lineLimit($this->address, 1, 0, "\n", ''),
             'patientEmail' => $this->email,
             'patientTel' => $this->telephone,
             'gpName' => $this->gp_name,
-            'gpAddress' => \Helper::lineLimit($this->gp_address,1, 0, "\n", ''),
+            'gpAddress' => \Helper::lineLimit($this->gp_address, 1, 0, "\n", ''),
             'gpTel' => $this->gp_telephone,
             'localAuthorityName' => $this->la_name,
-            'localAuthorityAddress' => \Helper::lineLimit($this->la_address,1, 0, "\n", ''),
+            'localAuthorityAddress' => \Helper::lineLimit($this->la_address, 1, 0, "\n", ''),
             'localAuthorityTel' => $this->la_telephone,
         );
 
@@ -403,18 +401,18 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
 
         return $data;
     }
-    
+
     /*
      * Get elements for CVI PDF
-     * 
+     *
      * @return array
      */
     public function getElementsForCVIpdf()
     {
-        
+
         $nhsNum = preg_replace('/[^0-9]/', '', $this->nhs_number);
-        
-        switch($this->gender_id){
+
+        switch ($this->gender_id) {
             case 5:
                 $sex = 1;
                 break;
@@ -425,10 +423,10 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
                 $sex = 2;
                 break;
         }
-        
+
         $patientAddress = $this->getAddressFormatForPDF( $this->address );
-        
-        
+
+
         $otherEthnicity = $this->getOtherEthnicityForPDF();
 
         $elements = [
@@ -441,12 +439,12 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
             'Telephone' => $this->telephone,
             'Email' => $this->email,
             'DoB' => \Helper::convertMySQL2NHS($this->date_of_birth),
-			'dob_original' => $this->date_of_birth,
+            'dob_original' => $this->date_of_birth,
             'Sex' => $sex,
             'Sex_String' => $this->gender->name,
             'NHS_1' => substr($nhsNum, 0, 3),
             'NHS_2' => substr($nhsNum, 3, 3),
-            'NHS_3' => substr($nhsNum, 6, 4),      
+            'NHS_3' => substr($nhsNum, 6, 4),
             'Ethnicity' => $this->getEthnicityIdForPDF(),          //Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16, "Off", "Yes"
             'Other White background description' => $otherEthnicity[0],
             'Ather Mixed/Multiple ethnic background description' => $otherEthnicity[1],
@@ -454,26 +452,26 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
             'Other Black/African/Caribbean background description' => $otherEthnicity[3],
             'Other Chinese background description' => $otherEthnicity[4],
             'Other ethnicity description' => $otherEthnicity[5],
-            'EthnicityForVisualyImpaired' => $this->getEthnicityForVisualyImpaired(), 
+            'EthnicityForVisualyImpaired' => $this->getEthnicityForVisualyImpaired(),
         ];
-        
+
         return $elements;
     }
-    
+
     private function getEthnicityIdForPDF()
     {
-        if($ethnic = \EthnicGroup::model()->findByAttributes(array('id' => $this->ethnic_group_id))) {
+        if ($ethnic = \EthnicGroup::model()->findByAttributes(array('id' => $this->ethnic_group_id))) {
             return array_key_exists($ethnic->id_assignment, self::PDF_ETHNIC_GROUP_MAPPING) ?
                 self::PDF_ETHNIC_GROUP_MAPPING[$ethnic->id_assignment] : "Off";
         }
         return 'Off';
     }
-    
+
     private function getEthnicityForVisualyImpaired()
     {
         $result = array();
-        
-        
+
+
         $criteria = new \CDbCriteria;
         $criteria->condition = "version=:version";
         $criteria->params = array(
@@ -481,18 +479,17 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
         );
         $ethnics = \EthnicGroup::model()->findAll($criteria);
 
-        foreach($ethnics as $ethnic){
-  
+        foreach ($ethnics as $ethnic) {
             $result[] = [
                 'id' => $ethnic['id'],
                 'name' => $ethnic['name'],
                 'describe_needs' => $ethnic['describe_needs'],
             ];
         }
-        
+
         return $result;
     }
-    
+
     private function getOtherEthnicityForPDF()
     {
         $result = [
@@ -504,15 +501,15 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
             5 => '',
         ];
         $ethnicityID = $this->getEthnicityIdForPDF();
-        if(($ethnicityID >=0) && ($ethnicityID <= 2)){
+        if (($ethnicityID >=0) && ($ethnicityID <= 2)) {
             $result[0] = $this->describe_ethnics;
-        } else if(($ethnicityID >=3) && ($ethnicityID <= 6)) {
+        } elseif (($ethnicityID >=3) && ($ethnicityID <= 6)) {
             $result[1] = $this->describe_ethnics;
-        } else if(($ethnicityID >=7) && ($ethnicityID <= 10)) {
+        } elseif (($ethnicityID >=7) && ($ethnicityID <= 10)) {
             $result[2] = $this->describe_ethnics;
-        } else if(($ethnicityID >=11) && ($ethnicityID <= 13)) {
+        } elseif (($ethnicityID >=11) && ($ethnicityID <= 13)) {
             $result[3] = $this->describe_ethnics;
-        } else if(($ethnicityID >=14) && ($ethnicityID <= 15)) {
+        } elseif (($ethnicityID >=14) && ($ethnicityID <= 15)) {
             $result[4] = $this->describe_ethnics;
         } else {
             $result[5] = $this->describe_ethnics;
@@ -520,30 +517,30 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
 
         return $result;
     }
-    
+
     /**
      * Get address format for PDF, sliced 2 lines
      * @return array
      */
-    public function getAddressFormatForPDF( $address )
+    public function getAddressFormatForPDF($address)
     {
         $patientAddress = explode(PHP_EOL, $address);
         $patientAddressLen = count($patientAddress);
-        
+
         $Address1 = '';
         $Address2 = '';
-       
-        if($patientAddressLen > 1){    
-            foreach(array_slice($patientAddress, 0, $patientAddressLen / 2) as $value){
+
+        if ($patientAddressLen > 1) {
+            foreach (array_slice($patientAddress, 0, $patientAddressLen / 2) as $value) {
                 $Address1 .= $value;
             }
-            foreach(array_slice($patientAddress, $patientAddressLen / 2) as $value){
+            foreach (array_slice($patientAddress, $patientAddressLen / 2) as $value) {
                 $Address2 .= $value;
             }
         } else {
             $Address1 = $patientAddress[0];
         }
-        
+
         return [
             'address1' => str_replace(array("\n","\r"), ' ', $Address1),
             'address2' => str_replace(array("\n","\r"), ' ', $Address2)

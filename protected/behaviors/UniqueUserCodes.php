@@ -5,53 +5,48 @@ class UniqueUserCodes extends CBehavior
     public function getUniqueCodeForUser()
     {
         $userUniqueCode = UniqueCodeMapping::model()->findByAttributes(array('user_id' => Yii::app()->user->id));
-        if($userUniqueCode)
-        {
+        if ($userUniqueCode) {
             return $userUniqueCode->unique_code_id;
-        }else
-        {
+        } else {
             $uniqueCode = $this->createNewUniqueCodeMapping(null, Yii::app()->user->id);
             return $uniqueCode->unique_code_id;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param type $eventId
      * @param type $userId
      * @return \UniqueCodeMapping
      * @throws Exception
      */
 
-    public function createNewUniqueCodeMapping($eventId=null, $userId=null)
+    public function createNewUniqueCodeMapping($eventId = null, $userId = null)
     {
         /* LOCK */
         UniqueCodeMapping::lock();
 
         $newUniqueCode = new UniqueCodeMapping();
         $ucid = $this->getActiveUnusedUniqueCode();
-        if(is_null($ucid)) {
+        if (is_null($ucid)) {
             throw new Exception("Couldn't get new unique code. Please make sure new ones are generated.");
         }
-        
+
         $newUniqueCode->unique_code_id = $ucid;
-        
-        if($eventId > 0)
-        {
+
+        if ($eventId > 0) {
             $newUniqueCode->event_id = $eventId;
-            $newUniqueCode->user_id = NULL;
-        }
-        else if($userId > 0)
-        {
-            $newUniqueCode->event_id = NULL;
+            $newUniqueCode->user_id = null;
+        } elseif ($userId > 0) {
+            $newUniqueCode->event_id = null;
             $newUniqueCode->user_id = $userId;
         }
-        
+
         $newUniqueCode->save();
-        
+
         /* UNLOCK */
         UniqueCodeMapping::unlock();
-        
+
         return $newUniqueCode;
     }
 
@@ -72,10 +67,10 @@ class UniqueUserCodes extends CBehavior
             ->limit(1)
             ->queryRow();
 
-        if($record){
+        if ($record) {
             return $record["id"];
         }
-        
+
         return null;
     }
 }

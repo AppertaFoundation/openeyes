@@ -45,8 +45,8 @@ class LabelManager extends ODTTemplateManager
     /**
      * Fill labels in document table by table-name
      * @param $tableName
-     * @param $addressesArray 
-     * @param $firstEmptyCell 
+     * @param $addressesArray
+     * @param $firstEmptyCell
      */
     public function fillLabelsInTable($tableName, $addressesArray, $firstEmptyCell)
     {
@@ -85,7 +85,6 @@ class LabelManager extends ODTTemplateManager
         }
 
         foreach ($addressesArray as $val) {
-
             if ($i % $this->cols == 1) {
                 $colCount = 0;
             } else {
@@ -102,7 +101,6 @@ class LabelManager extends ODTTemplateManager
                 $row++;
             }
             $i++;
-
         }
 
         return $result;

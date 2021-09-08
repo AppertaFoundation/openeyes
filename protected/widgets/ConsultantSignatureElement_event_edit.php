@@ -4,21 +4,20 @@
     $modelName = CHtml::modelName($element);
     $module_id = $this->getController()->getModule()->id;
     $user = User::model()->findByPk(Yii::app()->user->id);
-    if(isset($this->controller->event)) {
-        $event_type_name = $this->controller->event->eventType->name;
-    }
-    else {
-        $event_type_name = "Form";
-    }
+if (isset($this->controller->event)) {
+    $event_type_name = $this->controller->event->eventType->name;
+} else {
+    $event_type_name = "Form";
+}
     $tokenName = Yii::app()->request->csrfTokenName;
     $token = Yii::app()->request->csrfToken;
 
     $leftCol = $this->inEditMode() ? "2" : "3";
     $rightCol = $this->inEditMode() ? "5" : "9";
 
-    if(is_null($form)) {
-        $form = new BaseEventTypeCActiveForm();
-    }
+if (is_null($form)) {
+    $form = new BaseEventTypeCActiveForm();
+}
 
 ?>
 <div class="<?=$this->inEditMode() ? "element-fields row" : "element-data"?>">
@@ -34,22 +33,24 @@
         <fieldset class="row <?=$this->inEditMode() ? "field-row" : "data-row"?>">
             <div class="large-<?=$leftCol?> column">&nbsp;</div>
             <div class="large-3 column end">
-                <img id="<?=$modelName?>_signature_image" src="<?=$element->protected_file_id ? "/ProtectedFile/view?id=".$element->protected_file_id."&name=signature.jpg" : "//#0"?>" style="<?php if(!$element->protected_file_id){ echo "display:none;"; }?> max-height: 170px;" alt="Signature"/>
+                <img id="<?=$modelName?>_signature_image" src="<?=$element->protected_file_id ? "/ProtectedFile/view?id=".$element->protected_file_id."&name=signature.jpg" : "//#0"?>" style="<?php if (!$element->protected_file_id) {
+                    echo "display:none;";
+                         }?> max-height: 170px;" alt="Signature"/>
             </div>
         </fieldset>
     </div>
     <fieldset id="fieldset_<?=$modelName?>_unsigned" class="row <?=$this->inEditMode() ? "field-row" : "data-row"?>" style="<?= !$element->isSigned() ? "" : "display:none"?>">
-        <?php if(!is_null($info_msg = $this->getInfoMessage())): ?>
+        <?php if (!is_null($info_msg = $this->getInfoMessage())) : ?>
         <div class="alert-box warning" style="margin: 0 10px 10px 10px;">
             <?=$info_msg?>
         </div>
         <?php endif; ?>
 
-        <?php if(!$user->hasStoredSignature()): ?>
+        <?php if (!$user->hasStoredSignature()) : ?>
             <div class="alert-box warning" style="margin: 0 10px;">
                 You can't sign this event now because you haven't recorded your signature in OpenEyes yet. Please go to <a href="/profile/signature">your profile</a> and capture your signature.
             </div>
-        <?php elseif($this->isSigningAllowed()): ?>
+        <?php elseif ($this->isSigningAllowed()) : ?>
             <div class="large-<?=$leftCol?> column">
                 <label><?=$element->getAttributeLabel("pin")?>:</label>
             </div>
@@ -62,7 +63,7 @@
         <?php endif; ?>
     </fieldset>
 
-    <?php if($element->signature_date_readonly): ?>
+    <?php if ($element->signature_date_readonly) : ?>
     <fieldset class="row <?=$this->inEditMode() ? "field-row" : "data-row"?>">
         <div class="large-<?=$leftCol?> column">
             <label><?=$element->getAttributeLabel("signature_date")?>:</label>
@@ -70,21 +71,20 @@
         <div class="large-<?=$rightCol?> column end">
             <p id="<?=$modelName?>_signature_date_text">
                 <?php
-                    if($element->isSigned()) {
-                        $time = strtotime($element->signature_date);
-                        if($time) {
-                            echo date("j M Y, H:i", $time);
-                        }
+                if ($element->isSigned()) {
+                    $time = strtotime($element->signature_date);
+                    if ($time) {
+                        echo date("j M Y, H:i", $time);
                     }
-                    else {
-                        echo "-";
-                    }
+                } else {
+                    echo "-";
+                }
                 ?>
             </p>
             <?php echo $form->hiddenField($element, "signature_date"); ?>
         </div>
     </fieldset>
-    <?php else: ?>
+    <?php else : ?>
         <?php echo $form->datePicker($element, "signature_date", array("style" => "width: 110px")); ?>
     <?php endif; ?>
 
@@ -111,9 +111,9 @@
             var $signed_fs = $("#fieldset_<?=$modelName?>_signed");
             var $unsigned_fs = $("#fieldset_<?=$modelName?>_unsigned");
             var url;
-            <?php if(!$this->inEditMode()): ?>
+            <?php if (!$this->inEditMode()) : ?>
             url = "/<?=$module_id?>/default/signConsultantSignatureElement?element_id=<?=$element->id?>&element_type_id=<?=$element->getElementType()->id?>&user_id=<?= ($element->signed_by_user_id ? $element->signed_by_user_id : $user->id) ?>";
-            <?php else: ?>
+            <?php else : ?>
             url = "/user/getDecryptedSignatureId?id=<?= ($element->signed_by_user_id ? $element->signed_by_user_id : $user->id) ?>";
             <?php endif; ?>
             $.post(url,
@@ -138,7 +138,7 @@
                             )
                         );
                         $("#<?=$modelName?>_signature_image").attr("src", "/ProtectedFile/view?id="+data+"&name=signature.jpg").show();
-                        <?php if($this->getController()->action->id == "view") { ?>
+                        <?php if ($this->getController()->action->id == "view") { ?>
                         window.formHasChanged = false;
                         setTimeout(function () {
                             location.reload(true); // forces a reload from the server

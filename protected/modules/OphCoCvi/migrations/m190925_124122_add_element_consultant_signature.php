@@ -2,8 +2,8 @@
 
 class m190925_124122_add_element_consultant_signature extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createOETable("et_ophcocvi_consultant_signature", [
             'id' => 'pk',
             'event_id' => 'INT(10) UNSIGNED',
@@ -23,10 +23,10 @@ class m190925_124122_add_element_consultant_signature extends OEMigration
             'display_order' => 35,
             'version' => 1,
         ]);
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->execute("DELETE FROM event_type WHERE class_name = :class_name", array(":class_name" => 'OEModule\\OphCoCvi\\models\\Element_OphCoCvi_ConsultantSignature'));
 
         $this->dropForeignKey("fk_et_cviconsultant_signature_event", "et_ophcocvi_consultant_signature");
@@ -34,5 +34,5 @@ class m190925_124122_add_element_consultant_signature extends OEMigration
         $this->dropForeignKey("fk_et_cviconsultant_signature_sb", "et_ophcocvi_consultant_signature");
 
         $this->dropOETable("et_ophcocvi_consultant_signature", true);
-	}
+    }
 }

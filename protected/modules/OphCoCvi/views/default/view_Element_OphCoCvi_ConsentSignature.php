@@ -163,7 +163,7 @@
                         'field' => 10
                     )
                 ));
-            ?>
+                ?>
             <input type="hidden" name="signature_file_id" value="<?= CHtml::encode($element->signature_file_id) ?>" />
             <div class="large-4 column end">
                 <?php echo CHtml::button('Remove patient signature', array(
@@ -173,7 +173,7 @@
                     'class' => 'small button warning event-action'
                 )); ?>
             </div>
-            <?php
+                <?php
                 $this->endWidget();
             } ?>
         <?php }  ?>

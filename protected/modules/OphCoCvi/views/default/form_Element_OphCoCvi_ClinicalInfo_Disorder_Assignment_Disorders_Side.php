@@ -1,6 +1,6 @@
 <?php
-    foreach ($disorder_section->disorders as $disorder) {
-        $field_base_name = CHtml::modelName($element) . "[{$side}_disorders][{$disorder->id}]";
+foreach ($disorder_section->disorders as $disorder) {
+    $field_base_name = CHtml::modelName($element) . "[{$side}_disorders][{$disorder->id}]";
     ?>
     <fieldset class="row field-row">
         <div class="large-6 column">
@@ -8,8 +8,8 @@
         </div>
         <div class="large-6 column">
             <label class="inline highlight">
-                <?php
-                echo CHtml::radioButton($field_base_name . "[affected]", $element->hasCviDisorderForSide($disorder, $side), array('id' => $field_base_name . '_affected_1', 'value' => 1, 'class' => 'affected-selector'))?>
+            <?php
+            echo CHtml::radioButton($field_base_name . "[affected]", $element->hasCviDisorderForSide($disorder, $side), array('id' => $field_base_name . '_affected_1', 'value' => 1, 'class' => 'affected-selector'))?>
                 Yes
             </label>
             <label class="inline highlight">

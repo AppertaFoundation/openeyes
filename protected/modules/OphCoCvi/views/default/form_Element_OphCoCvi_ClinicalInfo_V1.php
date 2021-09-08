@@ -23,7 +23,7 @@ $visual_acuity_list = array();
 if (isset($element->best_corrected_right_va_list)) {
     if ($element->best_corrected_right_va_list == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_SNELLEN) {
         $visual_acuity_list = $element->getSnellenDatas();
-    } else if ($element->best_corrected_right_va_list == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_LOGMAR) {
+    } elseif ($element->best_corrected_right_va_list == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_LOGMAR) {
         $visual_acuity_list = $element->getLogmarDatas();
     }
 }

@@ -27,7 +27,7 @@ JS;
 ?>
 
 <div class="element-data">
-    <?php if($element->required_checkbox_visible): ?>
+    <?php if ($element->required_checkbox_visible) : ?>
         <div class="row data-row">
             <div class="large-3 column">
                 <div class="data-label"><?php echo $element->getAttributeLabel('signatory_required')?>:</div>
@@ -37,7 +37,7 @@ JS;
             </div>
         </div>
     <?php endif; ?>
-    <?php if($element->signatory_required): ?>
+    <?php if ($element->signatory_required) : ?>
         <div class="row data-row">
             <div class="large-3 column">
                 <div class="data-label"><?php echo $element->getAttributeLabel('signature_date')?>:</div>
@@ -45,20 +45,19 @@ JS;
             <div class="large-9 column">
                 <div class="data-value" id="<?=$modelName?>_signature_date_text">
                     <?php
-                        if($element->isSigned()) {
-                            $time = strtotime($element->signature_date);
-                            if($time) {
-                                echo date("j M Y, H:i", $time);
-                            }
+                    if ($element->isSigned()) {
+                        $time = strtotime($element->signature_date);
+                        if ($time) {
+                            echo date("j M Y, H:i", $time);
                         }
-                        else {
-                            echo "-";
-                        }
+                    } else {
+                        echo "-";
+                    }
                     ?>
                 </div>
             </div>
         </div>
-        <?php if(count($element->getSignatoryPersonOptions()) > 1): ?>
+        <?php if (count($element->getSignatoryPersonOptions()) > 1) : ?>
         <div class="row data-row">
             <div class="large-3 column">
                 <div class="data-label"><?php echo $element->getAttributeLabel('signatory_person')?>:</div>
@@ -68,7 +67,7 @@ JS;
             </div>
         </div>
         <?php endif; ?>
-        <?php if($element->signatory_name != ""): ?>
+        <?php if ($element->signatory_name != "") : ?>
             <div class="row data-row">
                 <div class="large-3 column">
                     <div class="data-label"><?php echo $element->getAttributeLabel('signatory_name')?>:</div>
@@ -84,8 +83,10 @@ JS;
             </div>
             <div class="large-9 column">
                 <div class="data-value">
-                    <img id="<?=$modelName?>_signature_image" src="<?=$element->protected_file_id ? "/ProtectedFile/view?id=".$element->protected_file_id."&name=signature.jpg" : ""?>" style="<?php if(!$element->protected_file_id){ echo "display:none;"; }?> max-height: 170px;" alt="Signature"/>
-                    <?php if($element->can_be_signed_in_view_mode && is_null($element->protected_file_id)): ?>
+                    <img id="<?=$modelName?>_signature_image" src="<?=$element->protected_file_id ? "/ProtectedFile/view?id=".$element->protected_file_id."&name=signature.jpg" : ""?>" style="<?php if (!$element->protected_file_id) {
+                        echo "display:none;";
+                             }?> max-height: 170px;" alt="Signature"/>
+                    <?php if ($element->can_be_signed_in_view_mode && is_null($element->protected_file_id)) : ?>
                         <div id="<?=$modelName?>_no-signature-note">
                         <p>No signature has been captured yet.</p>
                         <?php $this->widget('SignatureCapture', [
@@ -101,14 +102,14 @@ JS;
                                 data-element_type_id="<?=$element->elementType->id?>"
                                 data-event_id="<?=$element->event_id?>"
                                 class="button small success">Request signature</button>
-                    <?php endif; ?>
+                        <?php endif; ?>
                         </div>
                     <?php endif; ?>
                 </div>
             </div>
             <div class="large-3 column">&nbsp;</div>
         </div>
-        <?php foreach ($element->getAdditionalFields() as $field): ?>
+        <?php foreach ($element->getAdditionalFields() as $field) : ?>
             <div class="row data-row">
                 <div class="large-3 column">
                     <div class="data-label"><?php echo $element->getAttributeLabel($field)?>:</div>

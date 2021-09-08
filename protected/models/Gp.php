@@ -221,7 +221,8 @@ class Gp extends BaseActiveRecordVersioned
         return $query->queryAll();
     }
 
-    public function getAssociatePractice(){
+    public function getAssociatePractice()
+    {
         $return_value = null;
 
         $practice_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$this->id));
@@ -233,11 +234,13 @@ class Gp extends BaseActiveRecordVersioned
         return $return_value;
     }
 
-    public function getGPROle(){
+    public function getGPROle()
+    {
         return ($this->contact->label != null?$this->contact->label->name:'');
     }
 
-    public function GetActiveStatus($id){
+    public function GetActiveStatus($id)
+    {
         if (isset($id)) {
             $gp = Gp::model()->findByPk(array('id' => $id));
             return $gp->is_active;
@@ -246,7 +249,8 @@ class Gp extends BaseActiveRecordVersioned
         }
     }
 
-    public function getAssociatedPractice($id){
+    public function getAssociatedPractice($id)
+    {
         $query = "SELECT first_name, P.id FROM contact_practice_associate CPA
                         JOIN practice P ON CPA.practice_id = P.id
                         JOIN contact C ON P.contact_id = C.id
@@ -284,4 +288,3 @@ class Gp extends BaseActiveRecordVersioned
         }
     }
 }
-

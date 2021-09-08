@@ -98,10 +98,10 @@ class PrintTestController extends \BaseController
         $folder = realpath(__DIR__ . '/..') . '/views/odtTemplate/';
         $file = realpath(__DIR__ . '/..') . '/views/odtTemplate/CVI_test.pdf';
         $image = realpath(__DIR__ . '/..') . '/views/odtTemplate/cvi_image.jpg';
-        
+
         $pdf = new Pdf($file);
         //$data = $pdf->getDataFields();
-        
+
         $pdf->fillForm([
                 'Address1'  => 'UXBRIDGE, 76  Canterbury Road',
                 'Postcode1' => 'UB8 8JX',
@@ -113,23 +113,23 @@ class PrintTestController extends \BaseController
 
 
         $fpdf = new \FPDI();
-     
+
         $pagecount = $fpdf->setSourceFile($folder.'CVI_example.pdf');
         for ($i = 1; $i <= 8; $i++) {
             $fpdf->importPage($i);
             $fpdf->AddPage();
             $fpdf->useTemplate($i);
 
-            if($i == 1){
+            if ($i == 1) {
                 $fpdf->Image($image, 28, 194, 52, 6);
             }
         }
-      
-        $fpdf->Output($folder.'CVI_example_img.pdf','F');
+
+        $fpdf->Output($folder.'CVI_example_img.pdf', 'F');
         var_dump($data);
         exit;
-       
-        
+
+
         header('Content-type: application/pdf');
         header('Content-Disposition: inline; filename="CVI_test.pdf"');
         header('Content-Transfer-Encoding: binary');

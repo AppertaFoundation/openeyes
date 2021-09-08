@@ -85,19 +85,18 @@ abstract class Element_ConsultantSignature extends BaseEventTypeElement implemen
 
     public function beforeValidate()
     {
-        if($this->pin != "") {
-            if(strlen(filter_var($this->pin, FILTER_SANITIZE_NUMBER_INT)) != 4) {
+        if ($this->pin != "") {
+            if (strlen(filter_var($this->pin, FILTER_SANITIZE_NUMBER_INT)) != 4) {
                 $this->addError("pin", "PIN must be a four-digit number.");
-            }
-            else {
+            } else {
                 $user = $this->signed_by;
-                if(!$user->getDecryptedSignature($this->pin)) {
+                if (!$user->getDecryptedSignature($this->pin)) {
                     $this->addError("pin", "The entered PIN is invalid.");
                 }
             }
         }
 
-        if(
+        if (
             (!$this->signature_date && $this->getIsNewRecord() && $this->protected_file_id)
             ||
             (!$this->getIsNewRecord() && is_null($this->originalAttributes['protected_file_id']) && $this->protected_file_id)
@@ -110,8 +109,8 @@ abstract class Element_ConsultantSignature extends BaseEventTypeElement implemen
 
     public function beforeSave()
     {
-        if($this->protected_file_id) {
-            if($this->signed_by_user_id == 0 || $this->signed_by_user_id == "") {
+        if ($this->protected_file_id) {
+            if ($this->signed_by_user_id == 0 || $this->signed_by_user_id == "") {
                 $this->signed_by_user_id = Yii::app()->user->id;
             }
         }

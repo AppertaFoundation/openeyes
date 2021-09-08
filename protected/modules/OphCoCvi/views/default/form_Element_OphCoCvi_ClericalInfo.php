@@ -19,7 +19,7 @@
 <?php
 if ($this->checkClericalEditAccess()) {
     $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo::model();
-?>
+    ?>
     <div class="element-fields row">
         <?php
         foreach ($this->getPatientFactors() as $factor) { ?>

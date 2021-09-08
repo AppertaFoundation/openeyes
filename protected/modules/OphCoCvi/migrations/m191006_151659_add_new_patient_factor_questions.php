@@ -2,8 +2,8 @@
 
 class m191006_151659_add_new_patient_factor_questions extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $new_questions = array(
             array("name"=>"Does the patient live alone?",
                 "code"=>"1v1",
@@ -141,27 +141,24 @@ class m191006_151659_add_new_patient_factor_questions extends OEMigration
                 "event_type_version" => 1
             ),
         );
-		foreach($new_questions as $question)
-		{
-			$this->insert('ophcocvi_clericinfo_patient_factor',$question);
-		}
-		
-	}
+        foreach ($new_questions as $question) {
+            $this->insert('ophcocvi_clericinfo_patient_factor', $question);
+        }
+    }
 
-	public function down()
-	{
-		$this->dbConnection->createCommand()->delete('ophcocvi_clericinfo_patient_factor', "code in ('1v1','2v1','3v1','4v1','5v1','6v1','7v1','8v1','9v1','10v1','11v1','12v1','13v1','14v1','15v1')");
+    public function down()
+    {
+        $this->dbConnection->createCommand()->delete('ophcocvi_clericinfo_patient_factor', "code in ('1v1','2v1','3v1','4v1','5v1','6v1','7v1','8v1','9v1','10v1','11v1','12v1','13v1','14v1','15v1')");
+    }
 
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

@@ -44,7 +44,7 @@
         <p>Tick the box that applies</p>
         <p><strong>I consider that</strong></p>
         <p>
-            <?php if($elements['Opthalm1'] == 0){ ?>
+            <?php if ($elements['Opthalm1'] == 0) { ?>
             <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_ticked.png' ?>" />    
             <?php } else { ?>  
             <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_unticked.png' ?>" />    
@@ -52,7 +52,7 @@
             <strong>This person is sight impaired (partially sighted)</strong>
         </p>
         <p>
-            <?php if($elements['Opthalm1'] == 0){ ?>
+            <?php if ($elements['Opthalm1'] == 0) { ?>
             <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_unticked.png' ?>" />   
             <?php } else { ?>  
             <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_ticked.png' ?>" />    
@@ -86,9 +86,9 @@
             <?php echo CHtml::encode($elements['Hospital_address1']); ?><br>
             <?php echo CHtml::encode($elements['Hospital_address2']); ?><br>
         </p>
-		<p>
-			NB: the date of examination is taken as the date from which any concessions are calculated
-		</p>
+        <p>
+            NB: the date of examination is taken as the date from which any concessions are calculated
+        </p>
     </div>
     <div>
         <strong>
@@ -98,7 +98,7 @@
             <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_unticked.png' ?>" /> An accessible signed copy of the CVI form to the patient (or parent/guardian if the patient is a child). 
         </p>
         <p>
-            <?php if($elements['Pages 1-5 to the patient’s local council if the patient (or parent/guardian if the patient is a chil'] == "Yes"){ ?>
+            <?php if ($elements['Pages 1-5 to the patient’s local council if the patient (or parent/guardian if the patient is a chil'] == "Yes") { ?>
                <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_ticked.png' ?>" /> 
             <?php } else { ?>
                <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_unticked.png' ?>" /> 
@@ -106,7 +106,7 @@
                Pages 1-11 to the patient’s local council if the patient (or parent/guardian if the patient is a child) consents, <strong>within 5 working days.</strong> 
         </p>
         <p>
-            <?php if($elements['Pages 1-5 to the patient’s GP, if the patient (or parent/guardian if the patient is a child) consent'] == "Yes"){ ?>
+            <?php if ($elements['Pages 1-5 to the patient’s GP, if the patient (or parent/guardian if the patient is a child) consent'] == "Yes") { ?>
                <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_ticked.png' ?>" /> 
             <?php } else { ?>
                <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_unticked.png' ?>" /> 
@@ -114,7 +114,7 @@
                Pages 1-11 to the patient’s GP, if the patient (or parent/guardian if the patient is a child) consents.
         </p>
         <p>
-            <?php if($elements['Pages 1-6 to The Royal College of Ophthalmologists'] == "Yes"){ ?>
+            <?php if ($elements['Pages 1-6 to The Royal College of Ophthalmologists'] == "Yes") { ?>
                <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_ticked.png' ?>" /> 
             <?php } else { ?>
                <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_unticked.png' ?>" /> 
@@ -140,31 +140,31 @@
         <tr>
             <td><strong>Best corrected visual acuity</strong></td>
             <td>
-                <?php 
-                if($elements["Right eye: Logmar"] !== ""){
+                <?php
+                if ($elements["Right eye: Logmar"] !== "") {
                     echo CHtml::encode($elements["Right eye: Logmar"]).'<br>Logmar';
                 }
-                if($elements["Right eye: Snellen"] !== ""){
+                if ($elements["Right eye: Snellen"] !== "") {
                     echo CHtml::encode($elements["Right eye: Snellen"]).'<br>Snellen';
                 }
                 ?>
             </td>
             <td>
-                <?php 
-                if($elements["Left eye: Logmar"] !== ""){
+                <?php
+                if ($elements["Left eye: Logmar"] !== "") {
                     echo CHtml::encode($elements["Left eye: Logmar"]).'<br>Logmar';
                 }
-                if($elements["Left eye: Snellen"] !== ""){
+                if ($elements["Left eye: Snellen"] !== "") {
                     echo CHtml::encode($elements["Left eye: Snellen"]).'<br>Snellen';
                 }
                 ?>
             </td>
             <td>
-                <?php 
-                if($elements["Binocular: Logmar"] !== ""){
+                <?php
+                if ($elements["Binocular: Logmar"] !== "") {
                     echo CHtml::encode($elements["Binocular: Logmar"]).'<br>Logmar';
                 }
-                if($elements["Binocular: Snellen"] !== ""){
+                if ($elements["Binocular: Snellen"] !== "") {
                     echo CHtml::encode($elements["Binocular: Snellen"]).'<br>Snellen';
                 }
                 ?>
@@ -178,7 +178,7 @@
                 <strong>Field of vision</strong><br>
                 Extensive loss of peripheral visual field   
                 (including hemianopia)<br>  
-                <?php if($elements['Extensive loss of peripheral visual field (including hemianopia)'] == "0"){ ?>
+                <?php if ($elements['Extensive loss of peripheral visual field (including hemianopia)'] == "0") { ?>
                     <strong>Yes</strong>
                 <?php } else { ?>
                     <strong>No</strong>
@@ -238,10 +238,10 @@
     <p>
         If the patient is a baby, child or young person, is your child/are you known to the specialist visual impairment education service?  
         <strong>
-            <?php 
-            if($elements['If the patient is a baby, child or young person, is your child/are you known to the specialist visua'] == "0"){
+            <?php
+            if ($elements['If the patient is a baby, child or young person, is your child/are you known to the specialist visua'] == "0") {
                 echo "Yes";
-            } else if ($elements['If the patient is a baby, child or young person, is your child/are you known to the specialist visua'] == "1"){
+            } elseif ($elements['If the patient is a baby, child or young person, is your child/are you known to the specialist visua'] == "1") {
                 echo "No";
             } else {
                 echo "Don't know";
@@ -284,7 +284,7 @@
 </section>
 <section>
     <h1>Part 4: Consent to share information I understand that by signing this form </h1>
-    <?php if($elements['Consent_to_GP'] == true){ ?>
+    <?php if ($elements['Consent_to_GP'] == true) { ?>
         I give my permission for a copy to be sent to my GP to make them aware of this certificate.
     <?php } else { ?>
         I do not give my permission for a copy to be sent to my GP to make them aware of this certificate.
@@ -294,8 +294,8 @@
         <tr>
             <td style="width:50%;">My GP name/practice</td>
             <td style="width:50%;">
-                <?php 
-                if($elements['Consent_to_GP'] == true){
+                <?php
+                if ($elements['Consent_to_GP'] == true) {
                     echo CHtml::encode($elements["GP_name"]);
                 }
                 ?>
@@ -304,8 +304,8 @@
         <tr>
             <td style="width:50%;">Address</td>
             <td style="width:50%;">
-                <?php 
-                if($elements['Consent_to_GP'] == true){
+                <?php
+                if ($elements['Consent_to_GP'] == true) {
                     echo CHtml::encode($elements["GP_Address"])."<br>".CHtml::encode($elements["GP_Address_Line_2"]);
                 }
                 ?>
@@ -314,8 +314,8 @@
         <tr>
             <td style="width:50%;">Telephone number</td>
             <td style="width:50%;">
-                <?php 
-                if($elements['Consent_to_GP'] == true){
+                <?php
+                if ($elements['Consent_to_GP'] == true) {
                     echo CHtml::encode($elements["GP_Telephone"]);
                 }
                 ?>
@@ -323,7 +323,7 @@
         </tr>
     </table>
         
-    <?php if($elements['Consent_to_Local_Council'] == true){ ?>
+    <?php if ($elements['Consent_to_Local_Council'] == true) { ?>
         I give my permission for a copy to be sent to my local council (or an organisation working on their behalf) who have a duty (under the Care Act 2014) to contact me to offer advice on living with sight loss and explain the benefits of being registered. When the council contacts me, I am aware that I do not have to accept any help, or be registered at that time, if I choose not to do so.
     <?php } else { ?>
         I do not give my permission for a copy to be sent to my local council (or an organisation working on their behalf) who have a duty (under the Care Act 2014) to contact me to offer advice on living with sight loss and explain the benefits of being registered. When the council contacts me, I am aware that I do not have to accept any help, or be registered at that time, if I choose not to do so.
@@ -333,8 +333,8 @@
         <tr>
             <td style="width:50%;">My local council name</td>
             <td style="width:50%;">
-                <?php 
-                if($elements['Consent_to_Local_Council'] == true){
+                <?php
+                if ($elements['Consent_to_Local_Council'] == true) {
                     echo CHtml::encode($elements["Council_Name"]);
                 }
                 ?>
@@ -343,8 +343,8 @@
         <tr>
             <td style="width:50%;">Address</td>
             <td style="width:50%;">
-                <?php 
-                if($elements['Consent_to_Local_Council'] == true){
+                <?php
+                if ($elements['Consent_to_Local_Council'] == true) {
                     echo CHtml::encode($elements["Council_Address"])."<br>".CHtml::encode($elements["Council_Address2"]);
                 }
                 ?>
@@ -353,15 +353,15 @@
         <tr>
             <td style="width:50%;">Telephone number</td>
             <td style="width:50%;">
-                <?php 
-                if($elements['Consent_to_Local_Council'] == true){
+                <?php
+                if ($elements['Consent_to_Local_Council'] == true) {
                     echo CHtml::encode($elements["Council_Telephone"]);
                 }
                 ?>
             </td>
         </tr>
     </table>
-    <?php if($elements['Consent_to_RCO'] == true){ ?>
+    <?php if ($elements['Consent_to_RCO'] == true) { ?>
         I give my permission for a copy to be sent to The Royal College of Ophthalmologists. 
     <?php } else { ?>
         I do not give my permission for a copy to be sent to The Royal College of Ophthalmologists. 
@@ -385,36 +385,36 @@
     <h1>Ethnicity</h1>
     <p>(this information is needed for service and epidemiological monitoring)</p>
     <?php
-    foreach($elements['EthnicityForVisualyImpaired'] as $key => $ethnicity){
-        if($elements["Ethnicity"] == $key ){ ?>
+    foreach ($elements['EthnicityForVisualyImpaired'] as $key => $ethnicity) {
+        if ($elements["Ethnicity"] == $key ) { ?>
             <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_ticked.png' ?>" /> 
         <?php } else { ?>
             <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_unticked.png' ?>" /> 
-        <?php } 
-        
+        <?php }
+
         echo CHtml::encode($ethnicity['name']."<br>";
-        
-        if($ethnicity['describe_needs'] == 1){ ?>
+
+        if ($ethnicity['describe_needs'] == 1) { ?>
             <p class="describe_underline">
                 <?php
-                    if($key == 2){
-                        echo CHtml::encode($elements['Other White background description']);
-                    } else if($key == 6) {
-                        echo CHtml::encode($elements['Ather Mixed/Multiple ethnic background description']);
-                    } else if($key == 10 ) {
-                        echo CHtml::encode($elements['Other Asian background, description']);
-                    } else if($key == 13) {
-                        echo CHtml::encode($elements['Other Black/African/Caribbean background description']);
-                    } else if($key == 15) {
-                        echo CHtml::encode($elements['Other Chinese background description']);
-                    } else if($key == 16){
-                        echo CHtml::encode($elements['Other ethnicity description']);
-                    }
+                if ($key == 2) {
+                    echo CHtml::encode($elements['Other White background description']);
+                } elseif ($key == 6) {
+                    echo CHtml::encode($elements['Ather Mixed/Multiple ethnic background description']);
+                } elseif ($key == 10 ) {
+                    echo CHtml::encode($elements['Other Asian background, description']);
+                } elseif ($key == 13) {
+                    echo CHtml::encode($elements['Other Black/African/Caribbean background description']);
+                } elseif ($key == 15) {
+                    echo CHtml::encode($elements['Other Chinese background description']);
+                } elseif ($key == 16) {
+                    echo CHtml::encode($elements['Other ethnicity description']);
+                }
                 ?>
             </p>
         <?php }
     }
-    
+
     ?>
 </section>
 <section>

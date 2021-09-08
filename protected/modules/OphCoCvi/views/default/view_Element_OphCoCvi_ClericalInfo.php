@@ -118,12 +118,12 @@
                 </div>
                 <div class="large-6 column end">
                     <div class="data-value"><?php
-                        if($element->preferred_language_text){
-                            echo CHtml::encode($element->preferred_language_text);
-                        } else {
-                            echo $element->preferred_language ? CHtml::encode($element->preferred_language->name) : 'None';
-                        }
-                        ?></div>
+                    if ($element->preferred_language_text) {
+                        echo CHtml::encode($element->preferred_language_text);
+                    } else {
+                        echo $element->preferred_language ? CHtml::encode($element->preferred_language->name) : 'None';
+                    }
+                    ?></div>
                 </div>
             </div>
         </div>

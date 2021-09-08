@@ -9,7 +9,7 @@ class ConsultantSignatureElementWidget extends BaseEventElementWidget
     {
         return true;
     }
-    
+
     /**
      * @return string|null
      */

@@ -43,25 +43,25 @@ class OphCoCvi_Manager extends \CComponent
     public static $ISSUED = 8;
     public static $CONSENTED = 16;
     public static $CONSULTANT_SIGNED = 32;
-    
+
     public static $SIGHT_IMPAIRED = 'SI';
     public static $SEVERELY_SIGHT_IMPAIRED = 'SSI';
     private $input_template_file = 'cviTemplate.odt';
-    
+
     public $outDir;
     private $cviTemplate;
     public $patientSignatureImage;
     public $consultantSignatureImage;
     private $pdfOutput;
-    
+
     private $gpConsentImage;
     private $laConsentImage;
     private $rcConsentImage;
     private $diagnosisImage;
     private $signedByImage;
-    
+
     private $centralVisualPathwayPromblems;
-    
+
     private $anophtalmosMicrophthalmos = null;
     private $disorganisedGlobePhthisis = null;
     private $primaryCongenitalInfantileGlaucoma = null;
@@ -69,7 +69,7 @@ class OphCoCvi_Manager extends \CComponent
     private $white_rectangle;
 
     public $is_considered_blind = "";
-   
+
     /**
      * @param $status
      * @return string
@@ -77,10 +77,10 @@ class OphCoCvi_Manager extends \CComponent
     public function getStatusText($status)
     {
         $isConsideredBlind = "";
-        if($this->is_considered_blind !== ""){
+        if ($this->is_considered_blind !== "") {
             $isConsideredBlind = ' - '.$this->is_considered_blind;
         }
-        
+
         if ($status & self::$ISSUED) {
             return 'Issued'.$isConsideredBlind;
         }
@@ -93,13 +93,13 @@ class OphCoCvi_Manager extends \CComponent
         );
 
         $result = array();
-       
+
         foreach ($map as $label => $flag) {
             if (($status & $flag) != $flag) {
                 $result[] = $label;
             }
         }
-        
+
         if (count($result) === count($map)) {
             return 'Incomplete'.$isConsideredBlind;
         } elseif (count($result) === 0) {
@@ -135,14 +135,14 @@ class OphCoCvi_Manager extends \CComponent
 
         $this->yii = $yii;
         $this->outDir = $this->yii->basePath. '/runtime/cache/cvi/';
-        if(!is_dir($this->outDir)){
+        if (!is_dir($this->outDir)) {
             mkdir($this->outDir, 0777, true);
         }
         $this->cviTemplate = realpath(__DIR__ . '/..') . '/views/odtTemplate/cviTemplate.pdf';
         $this->gpConsentImage = realpath(__DIR__ . '/..') . '/assets/img/gp_consent.png';
         $this->laConsentImage = realpath(__DIR__ . '/..') . '/assets/img/la_consent.png';
         $this->rcConsentImage = realpath(__DIR__ . '/..') . '/assets/img/royal_college_consent.png';
-        
+
         $this->diagnosisImage = realpath(__DIR__ . '/..') . '/assets/img/diagnosis_image.png';
         $this->gray_rectangle = realpath(__DIR__ . '/..') . '/assets/img/gray_rectangle.png';
         $this->white_rectangle = realpath(__DIR__ . '/..') . '/assets/img/white_rectangle.png';
@@ -212,11 +212,11 @@ class OphCoCvi_Manager extends \CComponent
             'Element_OphCoCvi_ClericalInfo'.$version => 'clerical_element',
             'Element_OphCoCvi_Demographics'.$version => 'demographics_element'
         );
-        
+
         if (!isset($this->info_el_for_events[$event->id])) {
             $this->info_el_for_events[$event->id] = $namespaced_class::model()->with(array_values($cls_rel_map))->findByAttributes(array('event_id' => $event->id));
         }
-        
+
         if (array_key_exists($element_class, $cls_rel_map)) {
             return $this->info_el_for_events[$event->id]->{$cls_rel_map[$element_class]};
         } elseif ($element_class == $core_class) {
@@ -444,21 +444,20 @@ class OphCoCvi_Manager extends \CComponent
             return false;
         }
         */
-        
+
         if ($clinical = $this->getClinicalElementForEvent($event)) {
             $clinical->setScenario('finalise');
 
             if (!$clinical->validate()) {
                 return false;
             }
-            
         } else {
             return false;
         }
-        
-        if($consultant_signature = $this->getElementForEvent($event, "Element_OphCoCvi_ConsultantSignature")) {
+
+        if ($consultant_signature = $this->getElementForEvent($event, "Element_OphCoCvi_ConsultantSignature")) {
             /** @var SignatureInterface $consultant_signature */
-            if(!$consultant_signature->checkSignature()) {
+            if (!$consultant_signature->checkSignature()) {
                 return false;
             }
         } else {
@@ -564,7 +563,7 @@ class OphCoCvi_Manager extends \CComponent
     protected function populateCviCertificate(\Event $event, $ignore_portal = false)
     {
         $signature_element = $this->getConsentSignatureElementForEvent($event);
-        
+
         //  we need to check if we already have a signature file linked
         if (!$signature_element->checkSignature()) {
             //TODO: restructure or rename, as this process is basically also going to generate
@@ -579,7 +578,6 @@ class OphCoCvi_Manager extends \CComponent
             } else {
                 $signature = imagecreatetruecolor(1, 1);
             }
-
         }
 
 
@@ -629,7 +627,7 @@ class OphCoCvi_Manager extends \CComponent
     protected function generateCviCertificate(\Event $event)
     {
         //$document = $this->populateCviCertificate($event);
-        if($this->fillPDFForm( $event )){
+        if ($this->fillPDFForm( $event )) {
             $storedPDF = $this->getConsentPDF();
         }
         return $storedPDF;
@@ -666,7 +664,7 @@ class OphCoCvi_Manager extends \CComponent
             $event->lock();
 
             $cvi_certificate = $this->generateCviCertificate($event);
-           
+
             // set the status of the event to complete and assign the PDF to the event
             $info_element = $this->getEventInfoElementForEvent($event);
             $info_element->is_draft = false;
@@ -702,7 +700,6 @@ class OphCoCvi_Manager extends \CComponent
         }
 
         return false;
-
     }
 
     /**
@@ -763,7 +760,7 @@ class OphCoCvi_Manager extends \CComponent
 
         if ($demographics = $this->getDemographicsElementForEvent($event)) {
             $demographics->setScenario('finalise');
-           
+
             if ($demographics->validate()) {
                 $status |= self::$DEMOGRAPHICS_COMPLETE;
             }
@@ -871,43 +868,41 @@ class OphCoCvi_Manager extends \CComponent
     {
         //WTF???
         if ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
-            AND (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))
-            AND (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
+            and (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))
+            and (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
                 $criteria->addCondition('t.is_draft = false OR event.info LIKE "Complete%" OR event.info LIKE "Incomplete%"');
         } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
-        AND (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))){
+        and (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))) {
             $criteria->addCondition('event.info LIKE "Complete%" OR event.info LIKE "Incomplete%"');
-        }  elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
-            AND (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
+        } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
+            and (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
                $criteria->addCondition('t.is_draft = false OR event.info LIKE "Complete%"');
         } elseif ((!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))
-            AND (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
+            and (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
             $criteria->addCondition('t.is_draft = false OR event.info LIKE "Incomplete%"');
-        } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete'])))
-        {
+        } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))) {
             $criteria->addCondition('event.info LIKE "Complete%"');
-        } elseif ((!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete'])))
-            {
+        } elseif ((!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))) {
             $criteria->addCondition('event.info LIKE "Incomplete%"');
         } elseif (isset($filter['show_issued']) && (bool)$filter['show_issued']) {
             $criteria->addCondition('t.is_draft = false');
         }
     }
-    
+
     /**
-     * If "Missing Consultant Signature" and "Missing Clerical Part" are checked 
+     * If "Missing Consultant Signature" and "Missing Clerical Part" are checked
      * @param \CDbCriteria $criteria
      * @param array $filter
      */
     private function handleMissingFilter(\CDbCriteria $criteria, $filter = array())
     {
-        if(isset($filter['missing_consultant_signature']) && $filter['missing_consultant_signature'] == "1") {
+        if (isset($filter['missing_consultant_signature']) && $filter['missing_consultant_signature'] == "1") {
             $criteria->addCondition(
                 "event.info LIKE '%Consultant signature%'"
             );
         }
 
-        if(isset($filter['missing_clerical_part']) && $filter['missing_clerical_part'] == "1") {
+        if (isset($filter['missing_clerical_part']) && $filter['missing_clerical_part'] == "1") {
             $criteria->addCondition(
                 "event.info LIKE '%Clerical%'"
             );
@@ -997,17 +992,17 @@ class OphCoCvi_Manager extends \CComponent
             ),
         );
         $criteria = $this->buildFilterCriteria($filter);
-        
+
         $paginationArr = array();
-        if($pagination === false ){
+        if ($pagination === false ) {
             $paginationArr = array('pagination' => false);
         }
-       
-        return new \CActiveDataProvider($model, array_merge( 
+
+        return new \CActiveDataProvider($model, array_merge(
             array(
                 'sort' => $sort,
                 'criteria' => $criteria,
-            ), 
+            ),
             $paginationArr)
         );
     }
@@ -1042,7 +1037,6 @@ class OphCoCvi_Manager extends \CComponent
         } else {
             throw new \Exception("could not create event signature file");
         }
-
     }
 
     /**
@@ -1054,7 +1048,6 @@ class OphCoCvi_Manager extends \CComponent
     public function signCvi(\Event $event, \User $user, $pin)
     {
         if ($user->signature_file_id) {
-
             $decodedImage = $user->getDecryptedSignature($pin);
             if ($decodedImage) {
                 $transaction = $this->startTransaction();
@@ -1109,7 +1102,7 @@ class OphCoCvi_Manager extends \CComponent
 
         return false;
     }
-    
+
     /**
      * Include and fill the original empty PDF
      * @param \Event $event
@@ -1117,22 +1110,21 @@ class OphCoCvi_Manager extends \CComponent
     public function fillPDFForm(\Event $event)
     {
         $rand =  mt_rand();
-      
+
         $this->pdfOutput = $this->outDir . 'CVICert_' . $event->id . '_' . $rand . '.pdf';
-   
-        if($cviElements = $this->generateCviElementsForPDF($event)){
+
+        if ($cviElements = $this->generateCviElementsForPDF($event)) {
             $pdf = new Pdf($this->cviTemplate);
             unset( $cviElements['EthnicityForVisualyImpaired']);
             unset( $cviElements['diagnosis_for_visualy_impaired']);
 
-            if(!$pdf->fillForm($cviElements)
+            if (!$pdf->fillForm($cviElements)
                 ->needAppearances()
                 ->flatten()
                 ->saveAs( $this->pdfOutput )) {
-
                 throw new \Exception("Could not save CVI template: ".$pdf->getError());
             }
-           
+
             $fpdf = new \FPDI();
 
             $pagecount = $fpdf->setSourceFile( $this->pdfOutput );
@@ -1145,76 +1137,74 @@ class OphCoCvi_Manager extends \CComponent
                 // Remove page numbers from the entire document
                 $rectangle = $page == 2 ? $this->white_rectangle : $this->gray_rectangle;
                 $fpdf->Image($rectangle, 97, 291);
-                
-                if($page == 1){
+
+                if ($page == 1) {
                     $consultantGDImage = $this->generateGDFromSignature( $cviElements['consultantSignature'] );
                     $this->changeConsultantImageFromGDObject('consultant_signature_'.$rand, $consultantGDImage);
-                    $fpdf->Image( $this->consultantSignatureImage , 30, 194, 35, 5);
+                    $fpdf->Image( $this->consultantSignatureImage, 30, 194, 35, 5);
                 }
-                
-                if(($page == 3) && ($cviElements['patient_type'] == 1)){   
-                    
-                    if( $this->setDiagnosisUnder18( $cviElements )){
-                        $fpdf->Image( $this->centralVisualPathwayPromblems , 34, 24, 78, 9);
-                        
-                        if($this->anophtalmosMicrophthalmos !== null){
-                            $fpdf->Image( $this->anophtalmosMicrophthalmos , 34, 46, 78, 4.5);
+
+                if (($page == 3) && ($cviElements['patient_type'] == 1)) {
+                    if ( $this->setDiagnosisUnder18( $cviElements )) {
+                        $fpdf->Image( $this->centralVisualPathwayPromblems, 34, 24, 78, 9);
+
+                        if ($this->anophtalmosMicrophthalmos !== null) {
+                            $fpdf->Image( $this->anophtalmosMicrophthalmos, 34, 46, 78, 4.5);
                         }
-                        
-                        if($this->disorganisedGlobePhthisis !== null){
-                            $fpdf->Image( $this->disorganisedGlobePhthisis , 34, 51, 78, 5);
+
+                        if ($this->disorganisedGlobePhthisis !== null) {
+                            $fpdf->Image( $this->disorganisedGlobePhthisis, 34, 51, 78, 5);
                         }
-                        
-                        if($this->primaryCongenitalInfantileGlaucoma !== null){
-                            $fpdf->Image( $this->primaryCongenitalInfantileGlaucoma , 34, 62.5, 78, 4.5);
-                        } 
-                    }     
+
+                        if ($this->primaryCongenitalInfantileGlaucoma !== null) {
+                            $fpdf->Image( $this->primaryCongenitalInfantileGlaucoma, 34, 62.5, 78, 4.5);
+                        }
+                    }
                 }
-                
-                if($page == 5){
-                    
-                    if(!$cviElements['Consent_to_GP']){
-                        $fpdf->Image( $this->gpConsentImage , 6, 21, 190, 7);
+
+                if ($page == 5) {
+                    if (!$cviElements['Consent_to_GP']) {
+                        $fpdf->Image( $this->gpConsentImage, 6, 21, 190, 7);
                     }
-                    
-                    if(!$cviElements['Consent_to_Local_Council']){
-                        $fpdf->Image( $this->laConsentImage , 6, 77, 198, 21);
+
+                    if (!$cviElements['Consent_to_Local_Council']) {
+                        $fpdf->Image( $this->laConsentImage, 6, 77, 198, 21);
                     }
-                    
-                    if(!$cviElements['Consent_to_RCO']){
-                        $fpdf->Image( $this->rcConsentImage , 6, 146, 198, 18);
+
+                    if (!$cviElements['Consent_to_RCO']) {
+                        $fpdf->Image( $this->rcConsentImage, 6, 146, 198, 18);
                     }
-                     
+
                     $patientGDimage = $this->generateGDFromSignature( $cviElements['PatientSignature'] );
                     $this->changePatientImageFromGDObject('patient_signature_'.$rand, $patientGDimage);
-                    
-                    $fpdf->Image( $this->patientSignatureImage , 90, 210, 100, 35);
-                    
+
+                    $fpdf->Image( $this->patientSignatureImage, 90, 210, 100, 35);
+
                     /**
-                     * Set "signed by" image from text 
+                     * Set "signed by" image from text
                      */
-                    if( $this->createSignedByImage( $cviElements['signed_by'] )){
-                        $fpdf->Image( $this->signedByImage , 9, 207, 65, 22);
+                    if ( $this->createSignedByImage( $cviElements['signed_by'] )) {
+                        $fpdf->Image( $this->signedByImage, 9, 207, 65, 22);
                     }
                 }
             }
 
-            $fpdf->Output('F',$this->pdfOutput);
-            
+            $fpdf->Output('F', $this->pdfOutput);
+
             $this->setDiagnosisPagesForPatient( $cviElements );
-            
+
             return true;
         }
     }
-    
+
     /**
      * Set diagnosis on diagnosis page when patient under the age of 18
      * @param type $cviElements
      */
-    private function setDiagnosisUnder18( $cviElements )
+    private function setDiagnosisUnder18($cviElements)
     {
 
-        switch($cviElements['SelectedVisualPathwayProblem']){
+        switch ($cviElements['SelectedVisualPathwayProblem']) {
             case 44:
                 $this->centralVisualPathwayPromblems = realpath(__DIR__ . '/..') . '/assets/img/acuity.png';
                 break;
@@ -1224,24 +1214,24 @@ class OphCoCvi_Manager extends \CComponent
             case 46:
                 $this->centralVisualPathwayPromblems = realpath(__DIR__ . '/..') . '/assets/img/visual_perception.png';
                 break;
-            default: 
+            default:
                 $this->centralVisualPathwayPromblems = realpath(__DIR__ . '/..') . '/assets/img/central_visual_pathway_problems.png';
                 break;
         }
-        
-        if( $cviElements['SelectedAnophthalmosMicrophthalmos'] > 0){
-            switch($cviElements['SelectedAnophthalmosMicrophthalmos']){
+
+        if ( $cviElements['SelectedAnophthalmosMicrophthalmos'] > 0) {
+            switch ($cviElements['SelectedAnophthalmosMicrophthalmos']) {
                 case 48:
-                    $this->anophtalmosMicrophthalmos = realpath(__DIR__ . '/..') . '/assets/img/microphthalmos.png'; 
+                    $this->anophtalmosMicrophthalmos = realpath(__DIR__ . '/..') . '/assets/img/microphthalmos.png';
                     break;
                 case 49:
                     $this->anophtalmosMicrophthalmos = realpath(__DIR__ . '/..') . '/assets/img/anophthalmos.png';
                     break;
             }
         }
-        
-        if( $cviElements['SelectedDisorganisedglobePhthisis'] > 0){
-            switch($cviElements['SelectedDisorganisedglobePhthisis']){
+
+        if ( $cviElements['SelectedDisorganisedglobePhthisis'] > 0) {
+            switch ($cviElements['SelectedDisorganisedglobePhthisis']) {
                 case 50:
                     $this->disorganisedGlobePhthisis = realpath(__DIR__ . '/..') . '/assets/img/disorganised_globe.png';
                     break;
@@ -1250,9 +1240,9 @@ class OphCoCvi_Manager extends \CComponent
                     break;
             }
         }
-        
-        if( $cviElements['SelectedPrimaryCongenitalInfantileGlaucoma'] > 0){
-            switch($cviElements['SelectedPrimaryCongenitalInfantileGlaucoma']){
+
+        if ( $cviElements['SelectedPrimaryCongenitalInfantileGlaucoma'] > 0) {
+            switch ($cviElements['SelectedPrimaryCongenitalInfantileGlaucoma']) {
                 case 53:
                     $this->primaryCongenitalInfantileGlaucoma = realpath(__DIR__ . '/..') . '/assets/img/primary_congenital.png';
                     break;
@@ -1261,34 +1251,34 @@ class OphCoCvi_Manager extends \CComponent
                     break;
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Remove page 3 if patient under 18, hide part of page 2 if patient over 18
      * @param type $cviElements
      */
-    private function setDiagnosisPagesForPatient( $cviElements )
+    private function setDiagnosisPagesForPatient($cviElements)
     {
 
         $fpdf = new \FPDI();
         $pageCount = $fpdf->setSourceFile( $this->pdfOutput );
-        
+
         $skipPages = [3];
-       
-        for( $page=1; $page<=$pageCount; $page++ )
-        {
+
+        for ( $page=1; $page<=$pageCount; $page++ ) {
             //If patient over 18
-            if($cviElements['patient_type'] == 0){
+            if ($cviElements['patient_type'] == 0) {
                 //  Skip undesired pages
-                if( in_array($page,$skipPages) )
+                if ( in_array($page, $skipPages) ) {
                     continue;
+                }
             } else {
                 //Actually this is page 2
-                if($page == 3){
-                    $fpdf->Image( $this->diagnosisImage , 0, 70, 210, 220);
-                }       
+                if ($page == 3) {
+                    $fpdf->Image( $this->diagnosisImage, 0, 70, 210, 220);
+                }
             }
 
             $templateID = $fpdf->importPage($page);
@@ -1297,74 +1287,74 @@ class OphCoCvi_Manager extends \CComponent
             $fpdf->useTemplate($templateID);
         }
 
-        $fpdf->Output('F',$this->pdfOutput);
+        $fpdf->Output('F', $this->pdfOutput);
     }
-    
+
     /**
      * Get CVI print elements in array
      * @param type $event
      * @return array
      */
-    public function generateCviElementsForPDF( $event )
+    public function generateCviElementsForPDF($event)
     {
-        $info = $this->getElementForEvent( $event , 'Element_OphCoCvi_EventInfo_V1' )->getElementsForCVIpdf();
-        $demographics = $this->getElementForEvent( $event , 'Element_OphCoCvi_Demographics_V1')->getElementsForCVIpdf();
-        $clinical = $this->getElementForEvent( $event , 'Element_OphCoCvi_ClinicalInfo_V1')->getElementsForCVIpdf();
-        $clerical = $this->getElementForEvent( $event , 'Element_OphCoCvi_ClericalInfo_V1' )->getElementsForCVIpdf();
-        $consentSignature = $this->getElementForEvent( $event , 'Element_OphCoCvi_PatientSignature')->getElementsForCVIpdf();
-        $consultantSignature = $this->getElementForEvent( $event , 'Element_OphCoCvi_ConsultantSignature')->getElementsForCVIpdf();
-        
+        $info = $this->getElementForEvent( $event, 'Element_OphCoCvi_EventInfo_V1' )->getElementsForCVIpdf();
+        $demographics = $this->getElementForEvent( $event, 'Element_OphCoCvi_Demographics_V1')->getElementsForCVIpdf();
+        $clinical = $this->getElementForEvent( $event, 'Element_OphCoCvi_ClinicalInfo_V1')->getElementsForCVIpdf();
+        $clerical = $this->getElementForEvent( $event, 'Element_OphCoCvi_ClericalInfo_V1' )->getElementsForCVIpdf();
+        $consentSignature = $this->getElementForEvent( $event, 'Element_OphCoCvi_PatientSignature')->getElementsForCVIpdf();
+        $consultantSignature = $this->getElementForEvent( $event, 'Element_OphCoCvi_ConsultantSignature')->getElementsForCVIpdf();
+
         $cviElements = array_merge($info, $demographics, $clinical, $clerical, $consentSignature, $consultantSignature);
-        
+
         return $cviElements;
     }
-    
+
     /**
      * Create image from "Signed By" text
      * @param type $text
      * @return boolean
      */
-    private function createSignedByImage( $text )
+    private function createSignedByImage($text)
     {
         $image_width = 400;
-     
+
         $this->signedByImage = $this->outDir.'signedBy_' . mt_rand() .'.png';
-        
+
         $font = $this->yii->basePath.'/assets/fonts/Roboto/Roboto-Regular.ttf';
         $line_height = 20;
         $padding = 20;
         $font_size = 12;
-       
+
         $lines = explode("\n", $text);
-        $image = imagecreate($image_width,((count($lines) * $line_height)) + ($padding * 2));
+        $image = imagecreate($image_width, ((count($lines) * $line_height)) + ($padding * 2));
         $background = imagecolorallocate($image, 255, 255, 255);
         $colour = imagecolorallocate($image, 0, 0, 0);
         imagefill($image, 0, 0, $background);
         $i = $padding;
-        foreach($lines as $line){
+        foreach ($lines as $line) {
             imagettftext($image, $font_size, 0, 10, $i, $colour, $font, trim($line));
             $i += $line_height;
         }
 
         imagepng($image, $this->signedByImage);
         imagedestroy($image);
-        
+
         return true;
     }
-    
+
     /**
      * Generate GD source from base64 decoded image
      * if source image is missing (e.g. patient signature, the image will be an 1x1 image with transparent bg )
      * @param type $sourceImage
      * @return type
      */
-    public function generateGDFromSignature( $sourceImage )
+    public function generateGDFromSignature($sourceImage)
     {
         if ($sourceImage) {
             $signature = imagecreatefromstring($sourceImage);
         } else {
             $signature = imagecreatetruecolor(1, 1);
-            $color = imagecolorallocatealpha($signature, 0, 0, 0, 127); 
+            $color = imagecolorallocatealpha($signature, 0, 0, 0, 127);
             imagefill($signature, 0, 0, $color);
             imagesavealpha($signature, true);
         }
@@ -1377,7 +1367,7 @@ class OphCoCvi_Manager extends \CComponent
      * @param $imageName
      * @param $image
      */
-    
+
     public function changePatientImageFromGDObject($imageName, $image)
     {
         if ($image !== false) {
@@ -1386,13 +1376,13 @@ class OphCoCvi_Manager extends \CComponent
             imagedestroy($image);
         }
     }
-    
+
     /**
      * Change an existing image in document by GD object
      * @param $imageName
      * @param $image
      */
-    
+
     public function changeConsultantImageFromGDObject($imageName, $image)
     {
         if ($image !== false) {
@@ -1401,7 +1391,7 @@ class OphCoCvi_Manager extends \CComponent
             imagedestroy($image);
         }
     }
-    
+
     /**
      * Get generated v1 pdf
      */
@@ -1413,27 +1403,27 @@ class OphCoCvi_Manager extends \CComponent
 
         return $file;
     }
-    
+
     /**
      * Delete copied signatures images after print
      */
     public function clearImages()
     {
-        if($this->consultantSignatureImage){
+        if ($this->consultantSignatureImage) {
             unlink( $this->consultantSignatureImage );
         }
-        if($this->patientSignatureImage){
+        if ($this->patientSignatureImage) {
             unlink( $this->patientSignatureImage );
         }
-        
-        if($this->signedByImage){
+
+        if ($this->signedByImage) {
             unlink($this->signedByImage);
         }
     }
 
     public function createConsentPdf(\Event $event)
     {
-        if(!is_dir($this->outDir)){
+        if (!is_dir($this->outDir)) {
             mkdir($this->outDir, 0777, true);
         }
         $pdf = new Pdf(\Yii::getPathOfAlias("application.modules.OphCoCvi.views.odtTemplate")."/cvi_consent.pdf");
@@ -1442,14 +1432,14 @@ class OphCoCvi_Manager extends \CComponent
        // $info = $this->getDemographicsElementForEvent($event);
         $rand = uniqid();
         $tmp_name = "/tmp/OphCoCvi_cvi_consent_".$rand.".pdf";
-        
-        $consentSignature = $this->getElementForEvent( $event , 'Element_OphCoCvi_PatientSignature')->getElementsForCVIpdf();
-        
+
+        $consentSignature = $this->getElementForEvent( $event, 'Element_OphCoCvi_PatientSignature')->getElementsForCVIpdf();
+
         $pdf->fillForm($consentSignature)
         ->needAppearances()
         ->flatten()
         ->saveAs($tmp_name);
-        
+
         $fpdf = new \FPDI();
 
         $pagecount = $fpdf->setSourceFile( $tmp_name );
@@ -1459,30 +1449,30 @@ class OphCoCvi_Manager extends \CComponent
             $fpdf->AddPage();
             $fpdf->useTemplate($page);
 
-            if(!$consentSignature['Consent_to_GP']){
-                $fpdf->Image( $this->gpConsentImage , 6, 21, 190, 7);
+            if (!$consentSignature['Consent_to_GP']) {
+                $fpdf->Image( $this->gpConsentImage, 6, 21, 190, 7);
             }
 
-            if(!$consentSignature['Consent_to_Local_Council']){
-                $fpdf->Image( $this->laConsentImage , 6, 77, 198, 21);
+            if (!$consentSignature['Consent_to_Local_Council']) {
+                $fpdf->Image( $this->laConsentImage, 6, 77, 198, 21);
             }
 
-            if(!$consentSignature['Consent_to_RCO']){
-                $fpdf->Image( $this->rcConsentImage , 6, 146, 198, 18);
+            if (!$consentSignature['Consent_to_RCO']) {
+                $fpdf->Image( $this->rcConsentImage, 6, 146, 198, 18);
             }
-            
+
             $patientGDimage = $this->generateGDFromSignature( $consentSignature['PatientSignature'] );
             $this->changePatientImageFromGDObject('patient_signature_'.$rand, $patientGDimage);
-                    
-            $fpdf->Image( $this->patientSignatureImage , 80, 210, 110, 35);
-            
-            if( $consentSignature['signed_by'] !== "" ){
+
+            $fpdf->Image( $this->patientSignatureImage, 80, 210, 110, 35);
+
+            if ( $consentSignature['signed_by'] !== "" ) {
                 $this->createSignedByImage( $consentSignature['signed_by']);
-                $fpdf->Image( $this->signedByImage , 9, 207, 65, 22);
+                $fpdf->Image( $this->signedByImage, 9, 207, 65, 22);
             }
         }
 
-        $fpdf->Output('F',$tmp_name);
+        $fpdf->Output('F', $tmp_name);
 
         return $tmp_name;
     }
@@ -1510,11 +1500,11 @@ class OphCoCvi_Manager extends \CComponent
 
     public function getGPDeliveryStatus(\Event $event)
     {
-        if(!$info = $this->getEventInfoElementForEvent($event)) {
+        if (!$info = $this->getEventInfoElementForEvent($event)) {
             return "Unknown";
         }
 
-        if($info->gp_delivery == 0) {
+        if ($info->gp_delivery == 0) {
             return "Not consented or disabled by configuration";
         }
 
@@ -1523,11 +1513,11 @@ class OphCoCvi_Manager extends \CComponent
 
     public function getLADeliveryStatus(\Event $event)
     {
-        if(!$info = $this->getEventInfoElementForEvent($event)) {
+        if (!$info = $this->getEventInfoElementForEvent($event)) {
             return "Unknown";
         }
 
-        if($info->la_delivery == 0) {
+        if ($info->la_delivery == 0) {
             return "Not consented or disabled by configuration";
         }
 
@@ -1536,11 +1526,11 @@ class OphCoCvi_Manager extends \CComponent
 
     public function getRCOPDeliveryStatus(\Event $event)
     {
-        if(!$info = $this->getEventInfoElementForEvent($event)) {
+        if (!$info = $this->getEventInfoElementForEvent($event)) {
             return "Unknown";
         }
 
-        if($info->rco_delivery == 0) {
+        if ($info->rco_delivery == 0) {
             return "Not consented or disabled by configuration";
         }
 
@@ -1557,10 +1547,9 @@ class OphCoCvi_Manager extends \CComponent
         $creator = $event->user;
         $roles = array_keys($creator->getRoles());
 
-        if(in_array("Clinical CVI", $roles)) {
+        if (in_array("Clinical CVI", $roles)) {
             return $this->sendNotificationToClericalOfficer($event);
-        }
-        else if(in_array("Clerical CVI", $roles)) {
+        } elseif (in_array("Clerical CVI", $roles)) {
             return $this->sendNotificationToClinician($event);
         }
 
@@ -1577,7 +1566,7 @@ class OphCoCvi_Manager extends \CComponent
         /** @var Element_OphCoCvi_EventInfo_V1 $info_element */
         $info_element = $this->getEventInfoElementForEvent($event);
         $firm = $info_element->consultantInChargeOfThisCvi;
-        if(!is_null($firm) && $consultant = $firm->consultant) {
+        if (!is_null($firm) && $consultant = $firm->consultant) {
             $msg_type = $type = OphCoMessaging_Message_MessageType::model()->findByAttributes(array('name' => 'General'));
             $messenger = new MessageCreator($event->episode, $event->user, $consultant, $msg_type);
             $messenger->setMessageTemplate('application.modules.OphCoMessaging.views.templates.cvi');
@@ -1588,13 +1577,11 @@ class OphCoCvi_Manager extends \CComponent
             try {
                 $messenger->save('', array('event' => $event->id));
                 return true;
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 \Yii::log($e->getMessage(), \CLogger::LEVEL_ERROR);
                 return false;
             }
-        }
-        else {
+        } else {
             // There's no one to notify...
             return false;
         }
@@ -1607,7 +1594,7 @@ class OphCoCvi_Manager extends \CComponent
 
     private function sendNotificationToClericalOfficer(\Event $event)
     {
-        if(!isset(\Yii::app()->params['new_cvi_notification_email']) || !\Yii::app()->params['new_cvi_notification_email']) {
+        if (!isset(\Yii::app()->params['new_cvi_notification_email']) || !\Yii::app()->params['new_cvi_notification_email']) {
             return false;
         }
 

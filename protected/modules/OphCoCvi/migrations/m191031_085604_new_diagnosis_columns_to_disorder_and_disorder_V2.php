@@ -8,7 +8,7 @@ class m191031_085604_new_diagnosis_columns_to_disorder_and_disorder_V2 extends C
         $getmaxid = $this->dbConnection->createCommand('SELECT MAX(id)+1 as maxid FROM ophcocvi_clinicinfo_disorder')->queryRow();
         Yii::app()->db->createCommand('ALTER TABLE ophcocvi_clinicinfo_disorder AUTO_INCREMENT = '.$getmaxid['maxid'])->execute();
 
-        $this->addColumn('ophcocvi_clinicinfo_disorder', 'term_to_display','VARCHAR(255) DEFAULT NULL AFTER `name`');
+        $this->addColumn('ophcocvi_clinicinfo_disorder', 'term_to_display', 'VARCHAR(255) DEFAULT NULL AFTER `name`');
 
         $retina_id = $this->getSectionId('Retina', 0);
         $this->insert('ophcocvi_clinicinfo_disorder', array( 'name' => 'age-related macular degeneration – choroidal neovascularisation (wet)', 'term_to_display' => 'Age-related macular degeneration – choroidal neovascularisation (wet)', 'code' => 'H35.32', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 1, 'event_type_version' => 1, 'main_cause_pdf_id' => 0));
@@ -108,12 +108,10 @@ class m191031_085604_new_diagnosis_columns_to_disorder_and_disorder_V2 extends C
             $this->delete('element_type', 'id = '.$last_event_id['id']);
         }
         $this->insert('element_type', array('name' => 'Clinical Info','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1', 'event_type_id' => $event_type['id'], 'display_order' => 30, 'required' => 1));
-
     }
 
     public function down()
     {
-
     }
 
     public function getSectionId($name, $patient_type = 1)

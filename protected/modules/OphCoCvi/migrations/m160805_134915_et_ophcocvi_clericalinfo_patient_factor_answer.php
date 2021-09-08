@@ -52,7 +52,6 @@ class m160805_134915_et_ophcocvi_clericalinfo_patient_factor_answer extends CDbM
             'CONSTRAINT `acv_et_ophcocvi_clericinfo_patient_factor_answer_lku_fk` FOREIGN KEY (`ophcocvi_clinicinfo_patient_factor_id`) REFERENCES `ophcocvi_clinicinfo_patient_factor` (`id`)',
             'CONSTRAINT `et_ophcocvi_clericinfo_patient_factor_answer_aid_fk` FOREIGN KEY (`id`) REFERENCES `et_ophcocvi_clericinfo_patient_factor_answer` (`id`)',
         ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
-
     }
 
     public function down()

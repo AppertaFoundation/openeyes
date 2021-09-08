@@ -207,7 +207,6 @@ $logo_helper = new LogoHelper();
         </div>
     <?php endif;?>
     <?php foreach ($clinical_info->diagnosis_not_covered as $diagnosis) {
-
         if (isset($diagnosis->disorder) || isset($diagnosis->clinicinfo_disorder)) {
             switch ($diagnosis->eye_id) {
                 case 1:
@@ -386,9 +385,9 @@ $logo_helper = new LogoHelper();
     <div class="highlighter">This information is needed for service and epidemiological monitoring</div>
 
     <ul class="layout">
-        <?php foreach(\EthnicGroup::model()->findAll() as $k => $ethnic) :?>
+        <?php foreach (\EthnicGroup::model()->findAll() as $k => $ethnic) :?>
             <li><span class="tickbox <?=$demographics->ethnic_group_id == $ethnic->id ? 'checked' : '';?>"></span> <?=++$k;?>. <?=$ethnic->name;?></li>
-            <?php if($demographics->ethnic_group_id == $ethnic->id && $demographics->describe_ethnics) :?>
+            <?php if ($demographics->ethnic_group_id == $ethnic->id && $demographics->describe_ethnics) :?>
                 <div class="dotted-write"><?=\CHtml::encode($demographics->describe_ethnics);?></div>
             <?php endif;?>
         <?php endforeach; ?>

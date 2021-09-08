@@ -63,7 +63,7 @@ abstract class Element_PatientSignature extends BaseEventTypeElement implements 
             ),
         );
 
-        if(!$this->can_be_signed_in_view_mode) {
+        if (!$this->can_be_signed_in_view_mode) {
             $rules = array_merge($rules, array(array('protected_file_id', 'required')));
         }
 
@@ -72,24 +72,24 @@ abstract class Element_PatientSignature extends BaseEventTypeElement implements 
 
     public function validateSignatoryName($attribute, $params)
     {
-        if($this->signatory_required) {
-            if($this->signatory_person != self::SIGNATORY_PERSON_PATIENT && $this->signatory_name == "") {
+        if ($this->signatory_required) {
+            if ($this->signatory_person != self::SIGNATORY_PERSON_PATIENT && $this->signatory_name == "") {
                 $this->addError("signatory_name", "Signatory name must not be empty.");
             }
         }
     }
-	
-	/**
-	 * Validate function of Freehand drawing elements
-	 * @param type $object
-	 * @param type $attribute
-	 */
-	public function validateFreehandDrawing( $object, $attribute )
-	{
-		if(((int)$this->protected_file_id === 0) && (trim($this->comments) === "")){
-			$this->addError('protected_file_id','The image or the comments field cannot be empty!');
-		}
-	}
+
+    /**
+     * Validate function of Freehand drawing elements
+     * @param type $object
+     * @param type $attribute
+     */
+    public function validateFreehandDrawing($object, $attribute)
+    {
+        if (((int)$this->protected_file_id === 0) && (trim($this->comments) === "")) {
+            $this->addError('protected_file_id', 'The image or the comments field cannot be empty!');
+        }
+    }
 
     public function relations()
     {
@@ -140,9 +140,9 @@ abstract class Element_PatientSignature extends BaseEventTypeElement implements 
         return $this->getSignatoryPersonLabels();
     }
 
-    public function setDefaultOptions(?Patient $patient = NULL)
+    public function setDefaultOptions(?Patient $patient = null)
     {
-        if($this->isNewRecord && !Yii::app()->request->isPostRequest) {
+        if ($this->isNewRecord && !Yii::app()->request->isPostRequest) {
             $this->signatory_required = (int)!$this->required_checkbox_visible;
         }
     }
@@ -155,7 +155,7 @@ abstract class Element_PatientSignature extends BaseEventTypeElement implements 
 
     public function beforeValidate()
     {
-        if(
+        if (
             (!$this->signature_date && $this->getIsNewRecord() && $this->protected_file_id)
             ||
             (!$this->getIsNewRecord() && is_null($this->originalAttributes['protected_file_id']) && $this->protected_file_id)
@@ -168,11 +168,11 @@ abstract class Element_PatientSignature extends BaseEventTypeElement implements 
 
     public function beforeSave()
     {
-        if($this->signatory_required == 0) {
+        if ($this->signatory_required == 0) {
             $this->protected_file_id = null;
         }
 
-        if($this->signatory_name == "" && $this->signatory_person == self::SIGNATORY_PERSON_PATIENT) {
+        if ($this->signatory_name == "" && $this->signatory_person == self::SIGNATORY_PERSON_PATIENT) {
             $this->signatory_name = $this->event->episode->patient->getFullName();
         }
 
@@ -191,7 +191,7 @@ abstract class Element_PatientSignature extends BaseEventTypeElement implements 
 
     public function afterFind()
     {
-        if($this->signature_date === "0000-00-00") {
+        if ($this->signature_date === "0000-00-00") {
             $this->signature_date = null;
         }
 

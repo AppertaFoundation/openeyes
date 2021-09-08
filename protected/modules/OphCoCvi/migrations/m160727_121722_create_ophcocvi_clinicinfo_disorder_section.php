@@ -62,8 +62,6 @@ class m160727_121722_create_ophcocvi_clinicinfo_disorder_section extends CDbMigr
             'CONSTRAINT `acv_ophcocvi_clinicinfo_disorder_section_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
             'CONSTRAINT `ophcocvi_clinicinfo_disorder_section_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_disorder_section` (`id`)',
         ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
-
-
     }
 
     public function down()

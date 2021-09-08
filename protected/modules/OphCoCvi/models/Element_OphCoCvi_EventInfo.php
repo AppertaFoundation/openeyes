@@ -140,7 +140,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature',
                 array('id' => 'event_id'),
                 'through' => 'consent_event'
-            ), 
+            ),
             'demographics_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'demographics_element' => array(
                 self::HAS_ONE,
@@ -167,7 +167,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
             'consultant_in_charge_of_this_cvi_id' => 'Consultant in charge of this CVI',
         );
     }
-    
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.

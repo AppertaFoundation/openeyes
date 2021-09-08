@@ -19,7 +19,7 @@
 <?php
 if ($this->checkClericalEditAccess()) {
     $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1::model();
-?>
+    ?>
     <div class="element-fields row">
         <table>
             <colgroup>
@@ -27,7 +27,7 @@ if ($this->checkClericalEditAccess()) {
                 <col class="cols-4">
             </colgroup>
             <tbody>
-            <?php foreach ($this->getPatientFactors() as $factor): ?>
+            <?php foreach ($this->getPatientFactors() as $factor) : ?>
                 <tr>
                     <td><?php echo CHtml::encode($factor->name) ?></td>
                     <td>
@@ -42,7 +42,7 @@ if ($this->checkClericalEditAccess()) {
                         $comments = $answer ? $answer->comments : null;
                         ?>
 
-                        <?php if(!$factor->comments_only){ ?>
+                        <?php if (!$factor->comments_only) { ?>
                             <div class="large-6 column">
                                 <label class="inline highlight">
                                     <?php echo CHtml::radioButton($factor_field_name, ($value === 1), array('id' => $factor_field_name . '_1', 'value' => 1)) ?>
@@ -52,7 +52,7 @@ if ($this->checkClericalEditAccess()) {
                                     <?php echo CHtml::radioButton($factor_field_name, ($value === 0), array('id' => $factor_field_name . '_0', 'value' => 0)) ?>
                                     No
                                 </label>
-                                <?php  if(!$factor->yes_no_only){ ?>
+                                <?php  if (!$factor->yes_no_only) { ?>
                                     <label class="inline highlight">
                                         <?php echo CHtml::radioButton($factor_field_name, ($value === 2), array('id' => $factor_field_name . '_2', 'value' => 2)) ?>
                                         Don't know
@@ -169,7 +169,7 @@ if ($this->checkClericalEditAccess()) {
                                 Yes
                             </label>
                             <label class="inline highlight">
-                                <?php echo CHtml::radioButton(CHtml::modelName($element) . "[interpreter_required]",  ($element->interpreter_required == 0), array( 'value' => 0)) ?>
+                                <?php echo CHtml::radioButton(CHtml::modelName($element) . "[interpreter_required]", ($element->interpreter_required == 0), array( 'value' => 0)) ?>
                                 No
                             </label>
                         </div>

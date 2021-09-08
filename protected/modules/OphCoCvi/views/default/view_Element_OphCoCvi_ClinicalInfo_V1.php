@@ -30,7 +30,7 @@ use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
                         $element->getAttributeLabel('information_booklet') => (is_null($element->information_booklet) ? 'Not recorded' : ($element->information_booklet == 1 ? 'Yes' : 'No')),
                         $element->getAttributeLabel('eclo') => is_null($element->eclo) ? 'Not recorded' : $element->displayeclo,
                     ];?>
-                    <?php foreach ($rows as $label => $value):?>
+                    <?php foreach ($rows as $label => $value) :?>
                         <tr>
                             <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
                             <td><div class="data-value"><?= \CHtml::encode($value);?></div></td>
@@ -52,7 +52,7 @@ use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
 
 
                     ];?>
-                    <?php foreach ($rows as $label => $value):?>
+                    <?php foreach ($rows as $label => $value) :?>
                         <tr>
                             <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
                             <td><div class="data-value"><?= \CHtml::encode($value);?></div></td>
@@ -70,7 +70,7 @@ use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
                             $element->displaybestcorrectedrightvaList . " " . !is_null($element->best_corrected_left_va) ? $element->displaybestcorrectedleftva : '',
                         $element->getAttributeLabel('best_recorded_left_va') => (is_null($element->best_recorded_left_va) ? 'Not recorded' : ($element->best_recorded_left_va == 1 ? 'Yes' : 'No')),
                     ];?>
-                    <?php foreach ($rows as $label => $value):?>
+                    <?php foreach ($rows as $label => $value) :?>
                         <tr>
                             <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
                             <td><div class="data-value"><?= \CHtml::encode($value);?></div></td>
@@ -93,7 +93,7 @@ use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
                         $element->getAttributeLabel('field_of_vision') => (is_null($element->field_of_vision) || $element->field_of_vision == 0 ? 'Not recorded' : ($element->field_of_vision == 1 ? 'Yes' : 'No')),
                         $element->getAttributeLabel('low_vision_service') => (is_null($element->low_vision_service) || $element->low_vision_service == 0 ? 'Not recorded' : CHtml::encode($element->displaylowvisionservice)),
                     ];?>
-                    <?php foreach ($rows as $label => $value):?>
+                    <?php foreach ($rows as $label => $value) :?>
                         <tr>
                             <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
                             <td><div class="data-value"><?= \CHtml::encode($value);?></div></td>
@@ -124,7 +124,6 @@ use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
                     <tbody>
                     <?php
                     foreach ($element->diagnosis_not_covered as $diagnosis) {
-
                         if (isset($diagnosis->disorder) || isset($diagnosis->clinicinfo_disorder)) {
                             switch ($diagnosis->eye_id) {
                                 case 1:

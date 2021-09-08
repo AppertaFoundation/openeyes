@@ -37,9 +37,9 @@ class QRSignatureController extends \BaseController
     /**
      * @param $QRContent
      */
-    public function actionGenerateQRSignature($QRContent){
+    public function actionGenerateQRSignature($QRContent)
+    {
         $QRHelper = new SignatureQRCodeGenerator();
         $QRHelper->generateQRSignatureBox($QRContent);
     }
-
 }

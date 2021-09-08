@@ -34,6 +34,6 @@
     'primary_identifier' => $primary_identifier->value,
     'secondary_identifier' => $secondary_identifier->value,
 ]); ?>
-<?php $this->renderOpenElements('print'); ?>
+<?php $this->renderOpenElements('print');
 
 

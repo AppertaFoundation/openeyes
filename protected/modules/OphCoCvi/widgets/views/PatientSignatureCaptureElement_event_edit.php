@@ -20,7 +20,7 @@ JS;
         <?php echo $form->radioBoolean($element, "signatory_required") ?>
     </div>
     <div id="<?=CHtml::encode($modelName)?>_fields" style="<?=$element->signatory_required ? "" : "display:none"?>">
-        <?php if($element->signature_date_readonly): ?>
+        <?php if ($element->signature_date_readonly) : ?>
                 <fieldset class="row field-row <?= !$element->protected_file_id ? 'hide' : ''?>" id="<?=CHtml::encode($modelName)?>_date_row">
                     <div class="large-2 column">
                         <label><?=CHtml::encode($element->getAttributeLabel("signature_date"))?>:</label>
@@ -29,19 +29,21 @@ JS;
                         <p id="<?=CHtml::encode($modelName)?>_signature_date_text">
                             <?php
                                 $time = strtotime($element->signature_date);
-                                if($time) {
-                                    echo date("j M Y, H:i", $time);
-                                }
+                            if ($time) {
+                                echo date("j M Y, H:i", $time);
+                            }
                             ?>
                         </p>
                         <?php echo $form->hiddenField($element, "signature_date"); ?>
                     </div>
                 </fieldset>
-        <?php else: ?>
+        <?php else : ?>
             <?php echo $form->datePicker($element, 'signature_date', array('maxDate' => 'today'),
                 array('style' => 'width: 110px;')) ?>
         <?php endif; ?>
-        <fieldset class="row field-row" style="<?php if(count($element->getSignatoryPersonOptions()) == 1) { echo "display:none;"; } ?>">
+        <fieldset class="row field-row" style="<?php if (count($element->getSignatoryPersonOptions()) == 1) {
+            echo "display:none;";
+                                               } ?>">
             <div class="large-2 column">
                 <label><?=CHtml::encode($element->getAttributeLabel("signatory_person"))?>:</label>
             </div>
@@ -78,8 +80,10 @@ JS;
         <fieldset class="row field-row">
             <div class="large-2 column">&nbsp;</div>
             <div class="large-5 column end">
-                <img id="<?=CHtml::encode($modelName)?>_signature_image" src="<?=$element->protected_file_id ? "/ProtectedFile/view?id=".CHtml::encode($element->protected_file_id)."&name=signature.jpg" : "//:0"?>" style="<?php if(!$element->protected_file_id){ echo "display:none;"; }?> max-height: 170px;" alt="Signature"/>
-                <?php if($element->can_be_signed_in_view_mode && is_null($element->protected_file_id)): ?>
+                <img id="<?=CHtml::encode($modelName)?>_signature_image" src="<?=$element->protected_file_id ? "/ProtectedFile/view?id=".CHtml::encode($element->protected_file_id)."&name=signature.jpg" : "//:0"?>" style="<?php if (!$element->protected_file_id) {
+                    echo "display:none;";
+                         }?> max-height: 170px;" alt="Signature"/>
+                <?php if ($element->can_be_signed_in_view_mode && is_null($element->protected_file_id)) : ?>
                     <div class="alert-box info" id="<?=CHtml::encode($modelName)?>_sign_later_note">
                         Note: you can save this form now and capture the signature later.
                     </div>

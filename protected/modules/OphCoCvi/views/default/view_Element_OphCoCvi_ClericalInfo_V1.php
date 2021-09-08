@@ -98,8 +98,8 @@
                 </div>
                 <div class="large-6 column end">
                     <div class="data-value">
-                        <?php 
-                        if($element->preferred_format_other){
+                        <?php
+                        if ($element->preferred_format_other) {
                             echo CHtml::encode($element->preferred_format_other);
                         }
                         if (!empty($element->preferred_format_assignments)) {
@@ -110,7 +110,7 @@
                             }
                             echo CHtml::encode(substr($formats, 0, -2));
                         }
-                        if(empty($element->preferred_format_assignments) && !$element->preferred_format_other) {
+                        if (empty($element->preferred_format_assignments) && !$element->preferred_format_other) {
                             echo 'None';
                         }
                         ?>
@@ -129,15 +129,15 @@
                 <div class="large-6 column end">
                     <div class="data-value"><?php
                         echo $element->preferred_language ? CHtml::encode($element->preferred_language->name) : '';
-                        if($element->preferred_language_text){
-                            echo $element->preferred_language ? ', ' : '';
-                            echo CHtml::encode($element->preferred_language_text);
-                        }
-                        if(!$element->preferred_language_text && !$element->preferred_language) {
-                            echo 'None';
-                        }
+                    if ($element->preferred_language_text) {
+                        echo $element->preferred_language ? ', ' : '';
+                        echo CHtml::encode($element->preferred_language_text);
+                    }
+                    if (!$element->preferred_language_text && !$element->preferred_language) {
+                        echo 'None';
+                    }
 
-                        ?></div>
+                    ?></div>
                 </div>
             </div>
         </div>

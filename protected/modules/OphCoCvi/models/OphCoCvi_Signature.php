@@ -174,4 +174,3 @@ class OphCoCvi_Signature extends BaseSignature
         }
     }
 }
-

@@ -111,7 +111,8 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments extends \BaseEvent
         ));
     }
 
-    public function getDisorderSectionComments($disorder_section_id,$element_id) {
+    public function getDisorderSectionComments($disorder_section_id, $element_id)
+    {
         $criteria=new \CDbCriteria;
         $criteria->select='comments';
         $criteria->condition = "element_id=:element_id";

@@ -15,7 +15,6 @@ class m160901_181213_add_preferred_info_format_codes extends CDbMigration
             array(':name' => 'In braille'));
         $this->update('ophcocvi_clericinfo_preferred_info_fmt', array('code' => 'EMAIL'), 'name = :name',
             array(':name' => 'By email'));
-
     }
 
     public function down()

@@ -165,7 +165,7 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
             'consultant_event'  => array(self::BELONGS_TO, 'Event', 'event_id'),
         );
     }
-    
+
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -180,7 +180,7 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
             'consultant_in_charge_of_this_cvi_id' => 'Consultant in charge of this CVI',
         );
     }
-    
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -232,7 +232,7 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
         if ($this->is_draft) {
             return $this->event->info ? $this->event->info : 'Draft';
         }
-         if($this->event->info !== null){
+        if ($this->event->info !== null) {
             return $this->event->info;
         }
         return 'Issued';
@@ -247,38 +247,37 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
 
         return $result;
     }
-    
+
     /**
      * @return string
      */
     public function getConsultantSignature()
     {
-        if($this->consultant_element->signature_file)
-        {
+        if ($this->consultant_element->signature_file) {
             return file_get_contents ($this->consultant_element->signature_file->getPath());
         }
     }
-    
+
     /*
      * Get elements for CVI PDF
-     * 
+     *
      * @return array
      */
     public function getElementsForCVIpdf()
     {
         $siteAddress1 = '';
         $siteAddress2 = '';
-        if($this->site){
-            $siteAddress1 = str_replace(array("\n","\r"), ' ',$this->site->contact->address->address1);
+        if ($this->site) {
+            $siteAddress1 = str_replace(array("\n","\r"), ' ', $this->site->contact->address->address1);
             $siteAddress2 = $this->site->contact->address->city.' '.$this->site->contact->address->postcode;
         }
-        
+
         $elements = [
             'consultantSignature' => $this->getConsultantSignature(),
             'Hospital_address1' => $siteAddress1,
             'Hospital_address2' => $siteAddress2,
         ];
-        
+
         return $elements;
     }
 }

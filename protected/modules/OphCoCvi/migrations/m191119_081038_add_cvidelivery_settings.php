@@ -2,13 +2,13 @@
 
 class m191119_081038_add_cvidelivery_settings extends CDbMigration
 {
-	public function up()
-	{
-	    $this->alterColumn("setting_metadata", "default_value", "TEXT");
-	    $this->alterColumn("setting_metadata_version", "default_value", "TEXT");
+    public function up()
+    {
+        $this->alterColumn("setting_metadata", "default_value", "TEXT");
+        $this->alterColumn("setting_metadata_version", "default_value", "TEXT");
 
-	    $this->insert("setting_metadata", array(
-	        "element_type_id" => null,
+        $this->insert("setting_metadata", array(
+            "element_type_id" => null,
             "key" => "cvidelivery_la_sender_email",
             "name" => "CVI delivery to LA: Sender email address",
             "default_value" => "moorfields.noreplycvi@nhs.net",
@@ -37,7 +37,7 @@ class m191119_081038_add_cvidelivery_settings extends CDbMigration
             "name" => "CVI delivery to LA: Body",
             "field_type_id" => 5,
             "default_value" =>
-<<<EOS
+        <<<EOS
 Dear Team,
 
 Please find attached a Certificate of Visual Impairment for your resident.
@@ -93,7 +93,7 @@ EOS
             "name" => "CVI delivery to RCOP: Body",
             "field_type_id" => 5,
             "default_value" =>
-<<<EOS
+        <<<EOS
 Dear team,
 
 Please find attached CVI for research.
@@ -108,11 +108,11 @@ City Road, London, EC1V 2PD
 Phone: 0207 566 2355
 EOS
         ));
-	}
+    }
 
-	public function down()
-	{
-		$this->execute("DELETE FROM setting_metadata WHERE `key` IN (
+    public function down()
+    {
+        $this->execute("DELETE FROM setting_metadata WHERE `key` IN (
                                 'cvidelivery_la_sender_email',
                                 'cvidelivery_la_sender_name',
                                 'cvidelivery_la_subject',
@@ -125,6 +125,5 @@ EOS
 
         $this->alterColumn("setting_metadata", "default_value", "VARCHAR(64)");
         $this->alterColumn("setting_metadata_version", "default_value", "VARCHAR(64)");
-
     }
 }

@@ -19,7 +19,7 @@
     <?php
     foreach ($disorder_section->disorders as $disorder) {
         $main_cause = $element->isCviDisorderMainCauseForSide($disorder, 'right');
-             ?>
+        ?>
             <tr>
                     <td><?php echo CHtml::encode($disorder->name); ?></td>
                     <td><?php echo ($main_cause) ? 'Yes' : 'No';?></td>

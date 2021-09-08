@@ -2,8 +2,8 @@
 
 class m160811_133414_clinical_disorder_section_comments extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createTable('et_ophcocvi_clinicinfo_disorder_section_comment', array(
             'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
             'element_id' => 'int(10) unsigned NOT NULL',
@@ -38,21 +38,19 @@ class m160811_133414_clinical_disorder_section_comments extends CDbMigration
             'deleted' => 'tinyint(1) unsigned not null',
             'PRIMARY KEY (`version_id`)',
         ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
-        $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment', 'main_cause','tinyint(1) unsigned NOT NULL DEFAULT 0');
-        $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'main_cause','tinyint(1) unsigned NOT NULL DEFAULT 0');
-        $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'eye_id','int(10) unsigned NOT NULL');
-        $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'affected','tinyint(1) unsigned NOT NULL DEFAULT 0');
-
+        $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment', 'main_cause', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
+        $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'main_cause', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
+        $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'eye_id', 'int(10) unsigned NOT NULL');
+        $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'affected', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
     }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropTable('et_ophcocvi_clinicinfo_disorder_section_comment');
         $this->dropTable('et_ophcocvi_clinicinfo_disorder_section_comment_version');
         $this->dropColumn('et_ophcocvi_clinicinfo_disorder_assignment', 'main_cause');
         $this->dropColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'main_cause');
         $this->dropColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'eye_id');
         $this->dropColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'affected');
-	}
-
+    }
 }

@@ -27,7 +27,6 @@ class m190930_121855_add_clinical_info_version2_fields extends OEMigration
         $this->addColumn('et_ophcocvi_clinicinfo_version', 'best_recorded_binocular_va', 'tinyint(1) unsigned');
         $this->addColumn('et_ophcocvi_clinicinfo', 'best_corrected_binocular_va_list', 'int(1) unsigned');
         $this->addColumn('et_ophcocvi_clinicinfo_version', 'best_corrected_binocular_va_list', 'int(1) unsigned');
-
     }
 
     public function down()

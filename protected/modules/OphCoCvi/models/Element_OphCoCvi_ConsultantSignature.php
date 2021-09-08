@@ -23,7 +23,7 @@ class Element_OphCoCvi_ConsultantSignature extends \Element_ConsultantSignature 
             array ('pin' => 'Please enter your PIN')
         );
     }
-    
+
     public function getElementsForCVIpdf()
     {
         return [

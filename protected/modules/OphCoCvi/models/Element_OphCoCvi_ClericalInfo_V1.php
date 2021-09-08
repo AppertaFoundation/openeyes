@@ -134,7 +134,7 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredComm',
                 'preferred_comm_id',
             ),
-             */  
+             */
             'preferred_format' => array (
                 self::BELONGS_TO,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredFormat',
@@ -190,7 +190,7 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
             'criteria' => $criteria,
         ));
     }
-    
+
     /* Deprecated: 2019-10-31
     public function preferredCommSpecifyValidation( $attribute,$params )
     {
@@ -211,12 +211,13 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
 
         parent::afterValidate();
     }
-    
-    public function beforeDelete() {
+
+    public function beforeDelete()
+    {
         OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->deleteAllByAttributes(array("element_id" => $this->getPrimaryKey()));
         parent::beforeDelete();
     }
- 
+
     /**
      * Retrieves a list of patient factor
      *
@@ -269,8 +270,7 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
             if (array_key_exists($answer->patient_factor_id, $data)) {
                 $this->updateAnswer($answer, $data[$answer->patient_factor_id]);
                 unset($data[$answer->patient_factor_id]);
-            }
-            else {
+            } else {
                 if (!$answer->delete()) {
                     throw new \Exception('Unable to delete CVI Patient Factor Answer: ' . print_r($answer->getErrors(), true));
                 }
@@ -315,53 +315,53 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
         }
         return null;
     }
-    
+
     /*
      * Get elements for CVI PDF
-     * 
+     *
      * @return array
      */
     public function getElementsForCVIpdf()
     {
         $preferredFormat = $this->getPreferredFormatForPDF();
-      
+
         $elements = [
-            'If you are an adult do you live alone?'                => $this->getPatientFactorAnswersForPDF( '1v1' ), 
-            'Does someone support you with your care?'              => $this->getPatientFactorAnswersForPDF( '2v1' ), 
-            'Do you have difficulties with your physical mobility?' => $this->getPatientFactorAnswersForPDF( '3v1' ), 
-            'Do you have difficulties with your hearing?'           => $this->getPatientFactorAnswersForPDF( '4v1' ),  
-            'Do you have a learning disability?'                    => $this->getPatientFactorAnswersForPDF( '5v1' ), 
-            'Do you have a diagnosis of dementia?'                  => $this->getPatientFactorAnswersForPDF( '6v1' ),  
-            'Are you employed?'                                     => $this->getPatientFactorAnswersForPDF( '7v1' ),  
-            'Are you in full-time education?'                       => $this->getPatientFactorAnswersForPDF( '8v1' ),  
-            'If the patient is a baby, child or young person, is your child/are you known to the specialist visua' => $this->getPatientFactorAnswersForPDF( '9v1' ),   
-            'further_relevant_info' => $this->getPatientFurterInfoForPDF(), 
-            'Preferred method of contact?' => $this->getPreferredContactForPDF(),   
+            'If you are an adult do you live alone?'                => $this->getPatientFactorAnswersForPDF( '1v1' ),
+            'Does someone support you with your care?'              => $this->getPatientFactorAnswersForPDF( '2v1' ),
+            'Do you have difficulties with your physical mobility?' => $this->getPatientFactorAnswersForPDF( '3v1' ),
+            'Do you have difficulties with your hearing?'           => $this->getPatientFactorAnswersForPDF( '4v1' ),
+            'Do you have a learning disability?'                    => $this->getPatientFactorAnswersForPDF( '5v1' ),
+            'Do you have a diagnosis of dementia?'                  => $this->getPatientFactorAnswersForPDF( '6v1' ),
+            'Are you employed?'                                     => $this->getPatientFactorAnswersForPDF( '7v1' ),
+            'Are you in full-time education?'                       => $this->getPatientFactorAnswersForPDF( '8v1' ),
+            'If the patient is a baby, child or young person, is your child/are you known to the specialist visua' => $this->getPatientFactorAnswersForPDF( '9v1' ),
+            'further_relevant_info' => $this->getPatientFurterInfoForPDF(),
+            'Preferred method of contact?' => $this->getPreferredContactForPDF(),
             'Preferred_method_of_contact_string' => $this->preferred_info_fmt->name,
-            'Pref_method'   => $this->preferred_comm,   
-            'Preferred method of communication: Large print 18' => $preferredFormat[1],  
-            'Preferred method of communication: Large print 22' => $preferredFormat[2],  
-            'Preferred method of communication: Large print 26' => $preferredFormat[3],  
-            'Preferred method of communication: Easy-Read' => $preferredFormat[4],       
-            'Preferred method of communication: Audio CD' => $preferredFormat[5],        
-            'Preferred method of communication: Email' => $preferredFormat[6],           
-            'Preferred method of communication: Other (specify)' => $preferredFormat[7], 
+            'Pref_method'   => $this->preferred_comm,
+            'Preferred method of communication: Large print 18' => $preferredFormat[1],
+            'Preferred method of communication: Large print 22' => $preferredFormat[2],
+            'Preferred method of communication: Large print 26' => $preferredFormat[3],
+            'Preferred method of communication: Easy-Read' => $preferredFormat[4],
+            'Preferred method of communication: Audio CD' => $preferredFormat[5],
+            'Preferred method of communication: Email' => $preferredFormat[6],
+            'Preferred method of communication: Other (specify)' => $preferredFormat[7],
             'Other specify' => $this->preferred_format_other,
-            'Preferred method of communication: I don’t know and need an assessment' => $preferredFormat[7], 
+            'Preferred method of communication: I don’t know and need an assessment' => $preferredFormat[7],
             'Pref_Language' => $this->getPreferredLanguage(),
             'Preferred_format_of_information_visualy_impaired' => $this->getPreferredFormatOfInformation()
         ];
-     
+
         return $elements;
     }
-    
+
     /**
      * Set prefferect contact id for PDF
      * @return string|int
      */
     private function getPreferredContactForPDF()
     {
-        switch($this->preferred_info_fmt->id){
+        switch ($this->preferred_info_fmt->id) {
             case 6:
                 return 0;
             break;
@@ -374,9 +374,9 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
         }
         return '';
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     private function getPreferredFormatForPDF()
@@ -390,21 +390,21 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
             6 => 'Off', //Email
             7 => 'Off', //Other
         ];
-        
+
         /* Tick other field in pdf */
         if (!empty($this->preferred_format_assignments)) {
             foreach ($this->preferred_format_assignments as $format) {
                 $result[$format->preferred_format_id] = "Yes";
             }
         }
-        
-        if(strlen($this->preferred_format_other) > 0){
+
+        if (strlen($this->preferred_format_other) > 0) {
             $result[7] = "Yes";
         }
-      
+
         return $result;
     }
-    
+
     private function getPreferredFormatOfInformation()
     {
         $result = '';
@@ -421,7 +421,7 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
 
         return $result;
     }
-    
+
     /**
      * Get patient preferred language
      * @return string
@@ -429,35 +429,35 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
     private function getPreferredLanguage()
     {
         $interpreter = ', No interpreter required';
-        if($this->interpreter_required == 1){
+        if ($this->interpreter_required == 1) {
             $interpreter = ', Interpreter required';
         }
 
         $lang = $this->preferred_language ? $this->preferred_language->name : '';
-        if($this->preferred_language_text){
+        if ($this->preferred_language_text) {
             $lang .= $this->preferred_language ? ', ' : '';
             $lang .= $this->preferred_language_text;
         }
-        if(!$this->preferred_language_text && !$this->preferred_language) {
+        if (!$this->preferred_language_text && !$this->preferred_language) {
             $lang .= 'None';
-			$interpreter = "";
+            $interpreter = "";
         }
-        
+
         return $lang.$interpreter;
     }
-    
+
     /**
      * Get patient answers by code
      * @param type $code
      * @return string
      */
-    private function getPatientFactorAnswersForPDF( $code )
+    private function getPatientFactorAnswersForPDF($code)
     {
         $result = "";
-        if($this->patient_factor_answers){
-            foreach($this->patient_factor_answers as $answer){
-                if($answer->patient_factor->code == $code){
-                    switch($answer->is_factor){
+        if ($this->patient_factor_answers) {
+            foreach ($this->patient_factor_answers as $answer) {
+                if ($answer->patient_factor->code == $code) {
+                    switch ($answer->is_factor) {
                         case 0:
                             return "1";
                         break;
@@ -469,12 +469,12 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
                         break;
                     }
                 }
-            } 
+            }
         }
-        
-       return $result;
+
+        return $result;
     }
-    
+
     /**
      * Get patient furter information
      * @return type
@@ -482,17 +482,17 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
     private function getPatientFurterInfoForPDF()
     {
         $result = '';
-        if($this->patient_factor_answers){
-            foreach($this->patient_factor_answers as $answer){
-                if(($answer->patient_factor->require_comments == 1) && (!empty($answer->comments))){
-                    if(!empty($result)){
+        if ($this->patient_factor_answers) {
+            foreach ($this->patient_factor_answers as $answer) {
+                if (($answer->patient_factor->require_comments == 1) && (!empty($answer->comments))) {
+                    if (!empty($result)) {
                         $result .= ', ';
                     }
                     $result .= $answer->comments;
                 }
             }
         }
-        
+
         return $result;
     }
 }

@@ -284,7 +284,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function afterValidate()
     {
         foreach (array('left', 'right') as $side) {
-
             foreach ($this->{$side . '_cvi_disorder_assignments'} as $ass) {
                 // would prefer this to be just on the assignment validation, but having trouble
                 // with scenario specification for different contexts (i.e. validating for errors to return
@@ -396,8 +395,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         if ($this->is_considered_blind === null) {
             return static::$NULL_BOOLEAN;
-        }
-        else {
+        } else {
             return $this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS;
         }
     }
@@ -454,7 +452,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     /**
      * @return mixed
      */
-    private function getAllDisordersFromAssignments() {
+    private function getAllDisordersFromAssignments()
+    {
         $ids = array();
         foreach ($this->left_cvi_disorder_assignments as $ass) {
             $ids[] = $ass->ophcocvi_clinicinfo_disorder_id;
@@ -479,8 +478,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             // assume here that the assignment attributes have been set from the default controller.
             if ($this->isModelDirty()) {
                 $cvi_disorders = $this->getAllDisordersFromAssignments();
-            }
-            else {
+            } else {
                 $cvi_disorders = $this->cvi_disorders;
             }
 

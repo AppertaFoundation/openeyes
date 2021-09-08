@@ -2,7 +2,7 @@
 foreach ($this->getDisorderSections() as $disorder_section) {
     $comments = OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
         ->getDisorderSectionComments($disorder_section->id, $element->id);
-        ?>
+    ?>
         <fieldset class="row field-row">
             <legend class="large-12 column">
                 <?php echo CHtml::encode($disorder_section->name); ?>
@@ -41,6 +41,5 @@ foreach ($this->getDisorderSections() as $disorder_section) {
                 </fieldset>
             <?php }
         }
-
 }
 ?>

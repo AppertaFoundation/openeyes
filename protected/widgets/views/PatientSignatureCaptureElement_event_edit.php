@@ -20,7 +20,7 @@ JS;
 
 <div class="element-fields row">
     <div style="<?=$element->required_checkbox_visible ? "": "display:none"?>">
-        <?php if($element->signatory_person == $element::SIGNATORY_PERSON_WITNESS): ?>
+        <?php if ($element->signatory_person == $element::SIGNATORY_PERSON_WITNESS) : ?>
         <p>
             <img id="<?=$modelName?>_witness_tooltip" alt="Guidance" src="<?= $icon_path ?>" style="height: 20px" class="help-icon" data-tooltip-content="If a patient is unable to sign and has only provided a mark above or is unable to sign at all, a witness should sign below to indicate that the patient has consented (and please explain this in the medical records)." />
         </p>
@@ -28,7 +28,7 @@ JS;
         <?php echo $form->radioBoolean($element, "signatory_required") ?>
     </div>
     <div id="<?=$modelName?>_fields" style="<?=$element->signatory_required ? "" : "display:none"?>">
-        <?php if($element->signature_date_readonly): ?>
+        <?php if ($element->signature_date_readonly) : ?>
         <fieldset class="row field-row">
             <div class="large-2 column">
                 <label><?=$element->getAttributeLabel("signature_date")?>:</label>
@@ -37,22 +37,23 @@ JS;
                 <p id="<?=$modelName?>_signature_date_text">
                     <?php
                         $time = strtotime($element->signature_date);
-                        if($time && $element->isSigned()) {
-                            echo date("j M Y, H:i", $time);
-                        }
-                        else {
-                            echo "-";
-                        }
+                    if ($time && $element->isSigned()) {
+                        echo date("j M Y, H:i", $time);
+                    } else {
+                        echo "-";
+                    }
                     ?>
                 </p>
                 <?php echo $form->hiddenField($element, "signature_date"); ?>
             </div>
         </fieldset>
-        <?php else: ?>
+        <?php else : ?>
             <?php echo $form->datePicker($element, 'signature_date', array('maxDate' => 'today'),
                 array('style' => 'width: 110px;')) ?>
         <?php endif; ?>
-        <fieldset class="row field-row" style="<?php if(count($element->getSignatoryPersonOptions()) == 1) { echo "display:none;"; } ?>">
+        <fieldset class="row field-row" style="<?php if (count($element->getSignatoryPersonOptions()) == 1) {
+            echo "display:none;";
+                                               } ?>">
             <div class="large-2 column">
                 <label><?=$element->getAttributeLabel("signatory_person")?>:</label>
             </div>
@@ -80,7 +81,7 @@ JS;
                     'showMessage' => false,
                 ]); ?>
                 <?php // TODO remove "false &&" when this button is handled properly
-                    if (false && !$element->isNewRecord && !$element->protected_file_id) : ?>
+                if (false && !$element->isNewRecord && !$element->protected_file_id) : ?>
                     <button id="<?=$modelName?>_requestSignature"
                             type="button"
                             data-element_type_id="<?=$element->elementType->id?>"
@@ -92,8 +93,10 @@ JS;
         <fieldset class="row field-row">
             <div class="large-2 column">&nbsp;</div>
             <div class="large-5 column end">
-                <img id="<?=$modelName?>_signature_image" src="<?=$element->protected_file_id ? "/ProtectedFile/view?id=".$element->protected_file_id."&name=signature.jpg" : ""?>" style="<?php if(!$element->protected_file_id){ echo "display:none;"; }?> max-height: 170px;" alt="Signature"/>
-                <?php if($element->can_be_signed_in_view_mode && is_null($element->protected_file_id)): ?>
+                <img id="<?=$modelName?>_signature_image" src="<?=$element->protected_file_id ? "/ProtectedFile/view?id=".$element->protected_file_id."&name=signature.jpg" : ""?>" style="<?php if (!$element->protected_file_id) {
+                    echo "display:none;";
+                         }?> max-height: 170px;" alt="Signature"/>
+                <?php if ($element->can_be_signed_in_view_mode && is_null($element->protected_file_id)) : ?>
                     <div class="alert-box info" id="<?=$modelName?>_sign_later_note">
                         Note: you can save this form now and capture the signature later.
                     </div>

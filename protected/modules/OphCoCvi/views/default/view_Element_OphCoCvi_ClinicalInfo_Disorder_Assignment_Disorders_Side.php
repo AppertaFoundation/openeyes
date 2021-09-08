@@ -9,7 +9,7 @@
     foreach ($disorder_section->disorders as $disorder) {
         $affected = $element->hasCviDisorderForSide($disorder, $side);
         $main_cause = $element->isCviDisorderMainCauseForSide($disorder, $side);
-             ?>
+        ?>
             <tr>
                     <td><?php echo CHtml::encode($disorder->name); ?></td>
                     <td><?php echo ($affected) ? 'Yes' : 'No'; ?></td>

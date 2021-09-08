@@ -59,6 +59,6 @@
                 'placeholder' => 'Type to search for local authority',
             ),
         ));
-    ?>
+        ?>
     </div>
 </div>

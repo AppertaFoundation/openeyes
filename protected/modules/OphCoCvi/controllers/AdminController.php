@@ -96,7 +96,8 @@ class AdminController extends \ModuleAdminController
             if ($event_type_version) {
                 $disorder->event_type_version = $event_type_version;
             } else {
-                $maxVersion = OphCoCvi_ClinicalInfo_Disorder::model()->findBySql('SELECT event_type_version FROM ophcocvi_clinicinfo_disorder_section ORDER BY event_type_version DESC LIMIT 1');;
+                $maxVersion = OphCoCvi_ClinicalInfo_Disorder::model()->findBySql('SELECT event_type_version FROM ophcocvi_clinicinfo_disorder_section ORDER BY event_type_version DESC LIMIT 1');
+                ;
                 $disorder->event_type_version = $maxVersion->event_type_version;
             }
             if ($patient_type != '') {
@@ -381,11 +382,11 @@ class AdminController extends \ModuleAdminController
     public function actionPatientFactor()
     {
         /*
-        
+
         $search = new ModelSearch(OphCoCvi_ClericalInfo_PatientFactor::model());
 
         $search = $this->addVersionFilter(OphCoCvi_ClericalInfo_PatientFactor::class, 'event_type_version', $search);
- 
+
         if (empty(Yii::app()->request->getQuery('search'))) {
             $maxVersion = OphCoCvi_ClericalInfo_PatientFactor::model()->find(
                 array(
@@ -409,7 +410,7 @@ class AdminController extends \ModuleAdminController
                     array(
                         'field' => 'require_comments',
                         'type' => 'boolean',
-                    ), 
+                    ),
                     array(
                         'field' => 'comments_label',
                         'type' => 'text'
@@ -544,7 +545,6 @@ class AdminController extends \ModuleAdminController
     {
         $res = array();
         if (\Yii::app()->request->isAjaxRequest && !empty($term)) {
-
             $command = Yii::app()->db->createCommand()
                 ->select('f.id, f.name, s.name AS subspecialty')
                 ->from('firm f')
@@ -552,7 +552,7 @@ class AdminController extends \ModuleAdminController
                 ->join('subspecialty s', 'ssa.subspecialty_id = s.id')
                 ->where('f.active = 1 AND f.name LIKE "%'.$term.'%"');
 
-            if($subspecialty_id){
+            if ($subspecialty_id) {
                 $command->andWhere('s.id = :id', array(':id' => $subspecialty_id));
             }
 
@@ -579,5 +579,4 @@ class AdminController extends \ModuleAdminController
         }
         echo \CJSON::encode($res);
     }
-
 }

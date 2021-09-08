@@ -2,8 +2,8 @@
 
 class m200213_153400_update_ophcocvi_clinicinfo_disorder extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->update('ophcocvi_clinicinfo_disorder', array('main_cause_pdf_id' => 0), 'id = :id', array(':id' => 44));
         $this->update('ophcocvi_clinicinfo_disorder', array('main_cause_pdf_id' => 0), 'id = :id', array(':id' => 45));
         $this->update('ophcocvi_clinicinfo_disorder', array('main_cause_pdf_id' => 0), 'id = :id', array(':id' => 46));
@@ -35,9 +35,9 @@ class m200213_153400_update_ophcocvi_clinicinfo_disorder extends CDbMigration
         $this->update('ophcocvi_clinicinfo_disorder', array('main_cause_pdf_id' => 29), 'id = :id', array(':id' => 72));
         $this->update('ophcocvi_clinicinfo_disorder', array('main_cause_pdf_id' => 31), 'id = :id', array(':id' => 73));
         $this->update('ophcocvi_clinicinfo_disorder', array('main_cause_pdf_id' => 32), 'id = :id', array(':id' => 74));
-	}
+    }
 
-	public function down()
-	{
-	}
+    public function down()
+    {
+    }
 }

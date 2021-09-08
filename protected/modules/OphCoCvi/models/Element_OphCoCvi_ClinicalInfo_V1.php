@@ -67,9 +67,9 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
     const CVI_TYPE_CHILD = 1;
     const VISUAL_ACUITY_TYPE_SNELLEN = 1;
     const VISUAL_ACUITY_TYPE_LOGMAR = 2;
-    
+
     private $mainCause = "Off";
-    
+
     /*
      * This variables needs to the CVI Manager
      */
@@ -147,7 +147,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus',
                 'low_vision_status_id'
             ),
-             * 
+             *
              */
             'field_of_vision' => array(
                 self::BELONGS_TO,
@@ -475,8 +475,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
     {
         if ($this->is_considered_blind === null) {
             return static::$NULL_BOOLEAN;
-        }
-        else {
+        } else {
             return $this->is_considered_blind ? static::$BLIND_STATUS : static::$NOT_BLIND_STATUS;
         }
     }
@@ -523,7 +522,8 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
     /**
      * @return mixed
      */
-    private function getAllDisordersFromAssignments() {
+    private function getAllDisordersFromAssignments()
+    {
         $ids = array();
         foreach ($this->cvi_disorder_assignments as $ass) {
             $ids[] = $ass->ophcocvi_clinicinfo_disorder_id;
@@ -548,8 +548,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
             // assume here that the assignment attributes have been set from the default controller.
             if ($this->isModelDirty()) {
                 $cvi_disorders = $this->getAllDisordersFromAssignments();
-            }
-            else {
+            } else {
                 $cvi_disorders = $this->cvi_disorders;
             }
 
@@ -730,7 +729,6 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
             throw new \Exception("invalid side attribute");
         }
         foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
-
             if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
                 return $recorded_cvi->affected;
             }
@@ -748,7 +746,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         $left = false;
         $right = false;
 
-        foreach(['left', 'right'] as $side) {
+        foreach (['left', 'right'] as $side) {
             foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
                 if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
                     $$side = $recorded_cvi->affected;
@@ -833,7 +831,6 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                 }
             }
         }
-
     }
 
     /**
@@ -911,7 +908,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         } else {
             if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_SNELLEN) {
                 return ', '.self::getSnellenDatas()[$this->best_corrected_right_va];
-            } else if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
+            } elseif ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
                 return ', '.self::getLogmarDatas()[$this->best_corrected_right_va];
             }
         }
@@ -924,7 +921,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         } else {
             if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_SNELLEN) {
                 return ', '.self::getSnellenDatas()[$this->best_corrected_left_va];
-            } else if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
+            } elseif ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
                 return ', '.self::getLogmarDatas()[$this->best_corrected_left_va];
             }
         }
@@ -937,7 +934,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         } else {
             if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_SNELLEN) {
                 return ', '.self::getSnellenDatas()[$this->best_corrected_binocular_va];
-            } else if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
+            } elseif ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
                 return ', '.self::getLogmarDatas()[$this->best_corrected_binocular_va];
             }
         }
@@ -996,15 +993,16 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
     {
         if ($this->low_vision_service === null) {
             return '';
-        } else if (isset($this->getLowVisionService()[$this->low_vision_service])) {
+        } elseif (isset($this->getLowVisionService()[$this->low_vision_service])) {
             return $this->getLowVisionService()[$this->low_vision_service];
         } else {
             return '';
         }
     }
 
-    public function getLogmarDatas() {
-       return [
+    public function getLogmarDatas()
+    {
+        return [
             'NPL',
             'PL',
             'HM',
@@ -1033,7 +1031,8 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         ];
     }
 
-    public function getSnellenDatas() {
+    public function getSnellenDatas()
+    {
         return [
             'NPL',
             'PL',
@@ -1066,9 +1065,8 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         if ($this->{$best_corrected_va_list} == $type) {
             if (!is_null($this->{$best_corrected_va}) && $this->{$best_corrected_va} !== null) {
                 if ($type == self::VISUAL_ACUITY_TYPE_LOGMAR) {
-
                     $result = self::getLogmarDatas()[$this->{$best_corrected_va}];
-                } else if ($type == self::VISUAL_ACUITY_TYPE_SNELLEN) {
+                } elseif ($type == self::VISUAL_ACUITY_TYPE_SNELLEN) {
                     $result = self::getSnellenDatas()[$this->{$best_corrected_va}];
                 }
             }
@@ -1077,10 +1075,10 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         }
         return $result;
     }
- 
+
     /*
      * Get elements for CVI PDF
-     * 
+     *
      * @return array
      */
     public function getElementsForCVIpdf()
@@ -1105,69 +1103,69 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
             'patient_type' => $this->patient_type,
             'diagnosis_for_visualy_impaired' => $this->generateDiagnosisForVisualyImpaired(),
         ];
-        
+
         $patientDiagnosis = $this->getPatientDiagnosisForPDF();
 
         return array_merge( $elements, $patientDiagnosis);
     }
-    
+
     /**
-     * Set diagnosis result by patient age 
+     * Set diagnosis result by patient age
      * @return array
      */
     private function getPatientDiagnosisForPDF()
     {
         //If patient over 18
-        if($this->patient_type == 0){
+        if ($this->patient_type == 0) {
             return [
-                'age-related macular degeneration – choroidal neovascularisation (wet): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 23),       
-                'age-related macular degeneration – choroidal neovascularisation (wet): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 23),        
-                'age-related macular degeneration – atrophic/geographic macular atrophy (dry): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 24),    
-                'age-related macular degeneration – atrophic/geographic macular atrophy (dry): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 24),    
-                'age-related macular degeneration unspecified (mixed): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 25),    
-                'age-related macular degeneration unspecified (mixed): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 25),     
-                'diabetic retinopathy: Right eye'   => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 26),
-                'diabetic retinopathy: Left eye'    => $this->getDisorderAnswerForPDF( \Eye::LEFT , 26),  
-                'diabetic maculopathy: Right eye'   => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 27), 
-                'diabetic maculopathy: Left eye'    => $this->getDisorderAnswerForPDF( \Eye::LEFT , 27), 
-                'hereditary retinal dystrophy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 28),
-                'hereditary retinal dystrophy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 28), 
-                'retinal vascular occlusions: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 29),
-                'retinal vascular occlusions: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 29),
+                'age-related macular degeneration – choroidal neovascularisation (wet): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 23),
+                'age-related macular degeneration – choroidal neovascularisation (wet): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 23),
+                'age-related macular degeneration – atrophic/geographic macular atrophy (dry): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 24),
+                'age-related macular degeneration – atrophic/geographic macular atrophy (dry): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 24),
+                'age-related macular degeneration unspecified (mixed): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 25),
+                'age-related macular degeneration unspecified (mixed): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 25),
+                'diabetic retinopathy: Right eye'   => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 26),
+                'diabetic retinopathy: Left eye'    => $this->getDisorderAnswerForPDF( \Eye::LEFT, 26),
+                'diabetic maculopathy: Right eye'   => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 27),
+                'diabetic maculopathy: Left eye'    => $this->getDisorderAnswerForPDF( \Eye::LEFT, 27),
+                'hereditary retinal dystrophy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 28),
+                'hereditary retinal dystrophy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 28),
+                'retinal vascular occlusions: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 29),
+                'retinal vascular occlusions: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 29),
                 'other retinal (specify): Right eye' => '',
-                'other retinal (specify): Left eye' => '', 
-                'Glaucoma - primary open angle: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 30), 
-                'Glaucoma - primary open angle: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 30),
-                'Glaucoma - primary angle closure: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 31), 
-                'Glaucoma - primary angle closure: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 31), 
-                'Glaucoma - secondary: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 32), 
-                'Glaucoma - secondary: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 32),
+                'other retinal (specify): Left eye' => '',
+                'Glaucoma - primary open angle: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 30),
+                'Glaucoma - primary open angle: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 30),
+                'Glaucoma - primary angle closure: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 31),
+                'Glaucoma - primary angle closure: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 31),
+                'Glaucoma - secondary: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 32),
+                'Glaucoma - secondary: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 32),
                 'Glaucoma - other glaucoma: Right eye' => '',
-                'Glaucoma - other glaucoma: Left eye' => '', 
-                'Globe - degenerative myopia: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 33), 
-                'Globe - degenerative myopia: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 33), 
-                'Neurological - optic atrophy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 34), 
-                'Neurological - optic atrophy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 34), 
-                'Neurological - visual cortex disorder: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 35), 
-                'Neurological - visual cortex disorder: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 35), 
-                'Neurological - cerebrovascular disease: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 36), 
-                'Neurological - cerebrovascular disease: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 36), 
-                'Choroid - chorioretinitis: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 37), 
-                'Choroid - chorioretinitis: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 37),
-                'Choroid - choroidal degeneration: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 38),
-                'Choroid - choroidal degeneration: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 38),
-                'Lens - cataract (excludes congenital): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 39), 
-                'Lens - cataract (excludes congenital): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 39), 
-                'Cornea - corneal scars and opacities: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 40), 
-                'Cornea - corneal scars and opacities: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 40),
-                'Cornea - keratitis: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 41), 
-                'Cornea - keratitis: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 41),
-                'Neoplasia - eye: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 42),
-                'Neoplasia - eye: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 42),
-                'Neoplasia - brain & CNS: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 43),
-                'Neoplasia - brain & CNS: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 43),
-                'Neoplasia - other neoplasia: Right eye' => '', 
-                'Neoplasia - other neoplasia: Left eye' => '', 
+                'Glaucoma - other glaucoma: Left eye' => '',
+                'Globe - degenerative myopia: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 33),
+                'Globe - degenerative myopia: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 33),
+                'Neurological - optic atrophy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 34),
+                'Neurological - optic atrophy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 34),
+                'Neurological - visual cortex disorder: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 35),
+                'Neurological - visual cortex disorder: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 35),
+                'Neurological - cerebrovascular disease: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 36),
+                'Neurological - cerebrovascular disease: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 36),
+                'Choroid - chorioretinitis: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 37),
+                'Choroid - chorioretinitis: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 37),
+                'Choroid - choroidal degeneration: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 38),
+                'Choroid - choroidal degeneration: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 38),
+                'Lens - cataract (excludes congenital): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 39),
+                'Lens - cataract (excludes congenital): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 39),
+                'Cornea - corneal scars and opacities: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 40),
+                'Cornea - corneal scars and opacities: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 40),
+                'Cornea - keratitis: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 41),
+                'Cornea - keratitis: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 41),
+                'Neoplasia - eye: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 42),
+                'Neoplasia - eye: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 42),
+                'Neoplasia - brain & CNS: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 43),
+                'Neoplasia - brain & CNS: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 43),
+                'Neoplasia - other neoplasia: Right eye' => '',
+                'Neoplasia - other neoplasia: Left eye' => '',
                 'Page_2_Diagnosis_Text_Box' => $this->getNotCoveredDiagnosesForPDF(),
                 'Main Cause'            => $this->mainCause  //Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,"Off", "Yes"
             ];
@@ -1177,122 +1175,120 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                 'Central Visual Pathway Problems - cerebral/cortical pathology: Right eye' => $this->getCentralVisualPathway( \Eye::RIGHT ),
                 'Central Visual Pathway Problems - cerebral/cortical pathology: Left eye' => $this->getCentralVisualPathway( \Eye::LEFT ),
                 'SelectedVisualPathwayProblem' => $this->centralVisualPathwayProblemsQuiestionID,
-                
-                'Central Visual Pathway Problems - nystagmus: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 47),
-                'Central Visual Pathway Problems - nystagmus: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 47),
-                'Central Visual Pathway Problems - other: Right eye' => '', 
+
+                'Central Visual Pathway Problems - nystagmus: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 47),
+                'Central Visual Pathway Problems - nystagmus: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 47),
+                'Central Visual Pathway Problems - other: Right eye' => '',
                 'Central Visual Pathway Problems - other: Left eye' => '',
-                
+
                 'Whole Globe and Anterior Segment - anophthalmos/microphthalmos: Right eye' => $this->getAnophthalmosMicrophthalmos( \Eye::RIGHT ),
                 'Whole Globe and Anterior Segment - anophthalmos/microphthalmos: Left eye' => $this->getAnophthalmosMicrophthalmos( \Eye::LEFT ),
-                'SelectedAnophthalmosMicrophthalmos' => $this->anophtalmosMicrophthalmosQuiestionID, 
-                
-                'Whole Globe and Anterior Segment - disorganised globe/phthisis: Right eye' =>  $this->getGlobePhthisis( \Eye::RIGHT ), 
+                'SelectedAnophthalmosMicrophthalmos' => $this->anophtalmosMicrophthalmosQuiestionID,
+
+                'Whole Globe and Anterior Segment - disorganised globe/phthisis: Right eye' =>  $this->getGlobePhthisis( \Eye::RIGHT ),
                 'Whole Globe and Anterior Segment - disorganised globe/phthisis: Left eye' =>  $this->getGlobePhthisis( \Eye::LEFT ),
                 'SelectedDisorganisedglobePhthisis' => $this->disorganisedGlobePhthisisQuiestionID,
-                
-                'Whole Globe and Anterior Segment - anterior segment anomaly: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 52), 
-                'Whole Globe and Anterior Segment - anterior segment anomaly: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 52), 
+
+                'Whole Globe and Anterior Segment - anterior segment anomaly: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 52),
+                'Whole Globe and Anterior Segment - anterior segment anomaly: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 52),
                 'Whole Globe and Anterior Segment - primary congenital/infantile glaucoma: Right eye' =>  $this->getCongenitalInfantile( \Eye::RIGHT ),
-                'Whole Globe and Anterior Segment - primary congenital/infantile glaucoma: Left eye' =>  $this->getCongenitalInfantile( \Eye::LEFT ), 
+                'Whole Globe and Anterior Segment - primary congenital/infantile glaucoma: Left eye' =>  $this->getCongenitalInfantile( \Eye::LEFT ),
                 'SelectedPrimaryCongenitalInfantileGlaucoma' => $this->primaryCongenitalInfantileGlaucomaQuiestionID,
-                
+
                 'Whole Globe and Anterior Segment - other glaucoma: Right eye' =>  '',
                 'Whole Globe and Anterior Segment - other glaucoma: Left eye' =>  '',
-                'Amblyopia - stimulus deprivation: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 55), 
-                'Amblyopia - stimulus deprivation: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 55), 
-                'Amblyopia - strabismic: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 56),  
-                'Amblyopia - strabismic: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 56), 
-                'Amblyopia - refractive: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 57), 
-                'Amblyopia - refractive: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 57), 
-                'Cornea - opacity: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 58), 
-                'Cornea - opacity: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 58), 
-                'Cornea - dystrophy: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 59), 
-                'Cornea - dystrophy: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 59), 
-                'Cornea - other: Right eye' =>  '', 
-                'Cornea - other: Left eye' =>  '', 
-                'Cataract - congenital: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 60), 
-                'Cataract - congenital: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 60), 
-                'Cataract - developmental: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 61), 
-                'Cataract - developmental: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 61), 
-                'Cataract - secondary: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 62), 
-                'Cataract - secondary: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 62), 
-                'Uvea - aniridia: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 63), 
-                'Uvea - aniridia: Left eye' =>   $this->getDisorderAnswerForPDF( \Eye::LEFT , 63), 
-                'Uvea - coloboma: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 64), 
-                'Uvea - coloboma: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 64), 
-                'Uvea - uveitis: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 65), 
-                'Uvea - uveitis: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 65), 
-                'Uvea - other: Right eye' =>  '', 
-                'Uvea - other: Left eye' =>  '', 
-                'Retina - retinopathy of prematurity: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 66), 
-                'Retina - retinopathy of prematurity: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 66), 
-                'Retina - retinal dystrophy: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 67), 
-                'Retina - retinal dystrophy: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 67), 
-                'Retina - retinitis: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT , 68), 
-                'Retina - retinitis: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT , 68), 
-                'Retina - other retinopathy: Right eye' =>  '', 
-                'Retina - other retinopathy: Left eye' => '', 
-                'Retina - retinoblastoma: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 69), 
-                'Retina - retinoblastoma: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 69), 
-                'Retina - albinism: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 70), 
-                'Retina - albinism: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 70), 
-                'Retina - retinal detachment: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 71), 
-                'Retina - retinal detachment: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 71), 
+                'Amblyopia - stimulus deprivation: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 55),
+                'Amblyopia - stimulus deprivation: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 55),
+                'Amblyopia - strabismic: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 56),
+                'Amblyopia - strabismic: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 56),
+                'Amblyopia - refractive: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 57),
+                'Amblyopia - refractive: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 57),
+                'Cornea - opacity: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 58),
+                'Cornea - opacity: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 58),
+                'Cornea - dystrophy: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 59),
+                'Cornea - dystrophy: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 59),
+                'Cornea - other: Right eye' =>  '',
+                'Cornea - other: Left eye' =>  '',
+                'Cataract - congenital: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 60),
+                'Cataract - congenital: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 60),
+                'Cataract - developmental: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 61),
+                'Cataract - developmental: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 61),
+                'Cataract - secondary: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 62),
+                'Cataract - secondary: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 62),
+                'Uvea - aniridia: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 63),
+                'Uvea - aniridia: Left eye' =>   $this->getDisorderAnswerForPDF( \Eye::LEFT, 63),
+                'Uvea - coloboma: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 64),
+                'Uvea - coloboma: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 64),
+                'Uvea - uveitis: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 65),
+                'Uvea - uveitis: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 65),
+                'Uvea - other: Right eye' =>  '',
+                'Uvea - other: Left eye' =>  '',
+                'Retina - retinopathy of prematurity: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 66),
+                'Retina - retinopathy of prematurity: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 66),
+                'Retina - retinal dystrophy: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 67),
+                'Retina - retinal dystrophy: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 67),
+                'Retina - retinitis: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 68),
+                'Retina - retinitis: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 68),
+                'Retina - other retinopathy: Right eye' =>  '',
+                'Retina - other retinopathy: Left eye' => '',
+                'Retina - retinoblastoma: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 69),
+                'Retina - retinoblastoma: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 69),
+                'Retina - albinism: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 70),
+                'Retina - albinism: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 70),
+                'Retina - retinal detachment: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 71),
+                'Retina - retinal detachment: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 71),
                 'Retina - other: Right eye' => '',
                 'Retina - other: Left eye' => '',
-                'Optic Nerve - hypoplasia: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 72), 
-                'Optic Nerve - hypoplasia: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 72), 
-                'Optic Nerve - other congenital anomaly: Right eye' => '', 
-                'Optic Nerve - other congenital anomaly: Left eye' => '',  
-                'Optic Nerve - optic atrophy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 73),  
-                'Optic Nerve - optic atrophy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 73), 
-                'Optic Nerve - neuropathy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT , 74), 
-                'Optic Nerve - neuropathy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT , 74), 
+                'Optic Nerve - hypoplasia: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 72),
+                'Optic Nerve - hypoplasia: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 72),
+                'Optic Nerve - other congenital anomaly: Right eye' => '',
+                'Optic Nerve - other congenital anomaly: Left eye' => '',
+                'Optic Nerve - optic atrophy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 73),
+                'Optic Nerve - optic atrophy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 73),
+                'Optic Nerve - neuropathy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 74),
+                'Optic Nerve - neuropathy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 74),
                 'Optic Nerve - other: Right eye' => '',
-                'Optic Nerve - other: Left eye' => '', 
+                'Optic Nerve - other: Left eye' => '',
                 'Page_3_Diagnosis_Text_Box 2' => $this->getNotCoveredDiagnosesForPDF(),
                 'Main Cause Part 2b' => $this->mainCause         //Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,"Off", "Yes"
             ];
         }
     }
-    
+
     /**
      * Set diagnosis radio buttons by disorder id
      * @param type $eyeID
      * @param type $questionID
      * @return string
      */
-    private function getDisorderAnswerForPDF( $eyeID, $questionID  )
+    private function getDisorderAnswerForPDF($eyeID, $questionID)
     {
         $result = "Off";
-        
-        switch( $eyeID ){
+
+        switch ( $eyeID ) {
             case 1: //left
-                if($this->left_cvi_disorder_assignments){
-                    foreach( $this->left_cvi_disorder_assignments as $assignment){
-                        
-                        if($assignment->ophcocvi_clinicinfo_disorder_id == $questionID){
-                            if($assignment->affected == 1){
+                if ($this->left_cvi_disorder_assignments) {
+                    foreach ( $this->left_cvi_disorder_assignments as $assignment) {
+                        if ($assignment->ophcocvi_clinicinfo_disorder_id == $questionID) {
+                            if ($assignment->affected == 1) {
                                 $result = "Yes";
                             }
-                           
-                            if( $assignment->main_cause > 0){
+
+                            if ( $assignment->main_cause > 0) {
                                 $this->mainCause = $assignment->ophcocvi_clinicinfo_disorder->main_cause_pdf_id;
                             }
                         }
                     }
                 }
-                
-                if($this->both_cvi_disorder_assignments){
-                    foreach( $this->both_cvi_disorder_assignments as $assignment){
-                        if($assignment->ophcocvi_clinicinfo_disorder_id == $questionID){
-                            
-                            if($assignment->main_cause > 0){
+
+                if ($this->both_cvi_disorder_assignments) {
+                    foreach ( $this->both_cvi_disorder_assignments as $assignment) {
+                        if ($assignment->ophcocvi_clinicinfo_disorder_id == $questionID) {
+                            if ($assignment->main_cause > 0) {
                                 $this->mainCause = $assignment->ophcocvi_clinicinfo_disorder->main_cause_pdf_id;
                             }
-                        
-                            if($assignment->affected == 1){
+
+                            if ($assignment->affected == 1) {
                                 $result = "Yes";
                             }
                         }
@@ -1301,30 +1297,28 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
 
                 break;
             case 2:
-                if($this->right_cvi_disorder_assignments){
-                    foreach( $this->right_cvi_disorder_assignments as $assignment){
-                        if($assignment->ophcocvi_clinicinfo_disorder_id == $questionID){
-                            
-                            if($assignment->affected == 1){
+                if ($this->right_cvi_disorder_assignments) {
+                    foreach ( $this->right_cvi_disorder_assignments as $assignment) {
+                        if ($assignment->ophcocvi_clinicinfo_disorder_id == $questionID) {
+                            if ($assignment->affected == 1) {
                                 $result = "Yes";
                             }
-                            
-                            if( $assignment->main_cause > 0){
+
+                            if ( $assignment->main_cause > 0) {
                                 $this->mainCause = $assignment->ophcocvi_clinicinfo_disorder->main_cause_pdf_id;
                             }
                         }
                     }
                 }
 
-                if($this->both_cvi_disorder_assignments){
-                    foreach( $this->both_cvi_disorder_assignments as $assignment){
-                        
-                        if($assignment->ophcocvi_clinicinfo_disorder_id == $questionID){
-                            if($assignment->affected == 1){
+                if ($this->both_cvi_disorder_assignments) {
+                    foreach ( $this->both_cvi_disorder_assignments as $assignment) {
+                        if ($assignment->ophcocvi_clinicinfo_disorder_id == $questionID) {
+                            if ($assignment->affected == 1) {
                                 $result = "Yes";
                             }
-                            
-                            if( $assignment->main_cause > 0){
+
+                            if ( $assignment->main_cause > 0) {
                                 $this->mainCause = $assignment->ophcocvi_clinicinfo_disorder->main_cause_pdf_id;
                             }
                         }
@@ -1332,95 +1326,91 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                 }
                 break;
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Set selected Central Visual pathway problems from group
      * @param type $eyeSide
      * @return string
      */
-    private function getCentralVisualPathway( $eyeSide )
+    private function getCentralVisualPathway($eyeSide)
     {
-        $questionIDs = [44,45,46]; 
-        foreach($questionIDs as $question)
-        {
-            if($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes"){
+        $questionIDs = [44,45,46];
+        foreach ($questionIDs as $question) {
+            if ($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes") {
                 $this->centralVisualPathwayProblemsQuiestionID = $question;
                 return "Yes";
             }
         }
-        
+
         return "Off";
     }
-    
+
     /**
      * Set selected Anophthalmos or Microphthalmos
      * @param type $eyeSide
      * @return string
      */
-    private function getAnophthalmosMicrophthalmos( $eyeSide )
+    private function getAnophthalmosMicrophthalmos($eyeSide)
     {
-        $questionIDs = [48,49]; 
-        foreach($questionIDs as $question)
-        {
-            if($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes"){
+        $questionIDs = [48,49];
+        foreach ($questionIDs as $question) {
+            if ($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes") {
                 $this->anophtalmosMicrophthalmosQuiestionID = $question;
                 return "Yes";
             }
         }
-        
+
         return "Off";
     }
-    
+
     /**
      * Set selected Disorganised globe or Phthisis
      * @param type $eyeSide
      * @return string
      */
-    private function getGlobePhthisis( $eyeSide )
+    private function getGlobePhthisis($eyeSide)
     {
-        $questionIDs = [50,51]; 
-        foreach($questionIDs as $question)
-        {
-            if($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes"){
+        $questionIDs = [50,51];
+        foreach ($questionIDs as $question) {
+            if ($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes") {
                 $this->disorganisedGlobePhthisisQuiestionID = $question;
                 return "Yes";
             }
         }
-        
+
         return "Off";
     }
-    
+
      /**
      * Set selected Primary Congenital or Infantile Glaucoma
      * @param type $eyeSide
      * @return string
      */
-    private function getCongenitalInfantile( $eyeSide )
+    private function getCongenitalInfantile($eyeSide)
     {
-        $questionIDs = [53,54]; 
-        foreach($questionIDs as $question)
-        {
-            if($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes"){
+        $questionIDs = [53,54];
+        foreach ($questionIDs as $question) {
+            if ($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes") {
                 $this->primaryCongenitalInfantileGlaucomaQuiestionID = $question;
                 return "Yes";
             }
         }
-        
+
         return "Off";
     }
-    
+
     /**
      * Set vision id for pdf
      * @return string
      */
     private function getLowVisionServiceForPDF()
     {
- 
-        if($this->low_vision_service){
-            switch($this->low_vision_service){
+
+        if ($this->low_vision_service) {
+            switch ($this->low_vision_service) {
                 case "1":
                     return "3";
                     break;
@@ -1435,18 +1425,18 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                     break;
             }
         }
-        
+
         return "";
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     private function getLowVisionServiceForVisualyImpaired()
     {
-        if($this->low_vision_service){
-            switch($this->low_vision_service){
+        if ($this->low_vision_service) {
+            switch ($this->low_vision_service) {
                 case "1":
                     return "Yes";
                     break;
@@ -1461,10 +1451,10 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                     break;
             }
         }
-        
+
         return "";
     }
-    
+
     /**
      * Get "Diagnosis not covered text"
      * @return string
@@ -1472,10 +1462,10 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
     private function getNotCoveredDiagnosesForPDF()
     {
         $result = '';
-        if($this->diagnosis_not_covered){
-            foreach ($this->diagnosis_not_covered as $element){
+        if ($this->diagnosis_not_covered) {
+            foreach ($this->diagnosis_not_covered as $element) {
                 $mainCause = ($element->main_cause == 1) ? '(main cause)' : '';
-                switch($element->eye_id){
+                switch ($element->eye_id) {
                     case 1:
                         $eye = 'Left';
                         break;
@@ -1483,7 +1473,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                         $eye = 'Right';
                         break;
                     default:
-                        $eye = 'Both';       
+                        $eye = 'Both';
                 }
                 if ($element->disorder_type == OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered::TYPE_CLINICINFO_DISORDER) {
                     $disorder_name = $element->clinicinfo_disorder->term_to_display;
@@ -1499,17 +1489,17 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
 
         return substr($result, 0, -2);
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     private function getEcloForPDF()
     {
-        if($this->eclo !== false){ 
-            switch($this->eclo){
+        if ($this->eclo !== false) {
+            switch ($this->eclo) {
                 case '1':
-                   return '0';
+                    return '0';
                 break;
                 case '2':
                     return '1';
@@ -1518,20 +1508,20 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                     return '2';
             }
         }
-        
+
         return '';
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     private function getEcloForVisualyImpaired()
     {
-       if($this->eclo !== false){ 
-            switch($this->eclo){
+        if ($this->eclo !== false) {
+            switch ($this->eclo) {
                 case '1':
-                   return 'Yes';
+                    return 'Yes';
                 break;
                 case '2':
                     return 'Referred';
@@ -1540,20 +1530,20 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                     return 'Not available';
             }
         }
-        
-        return ''; 
+
+        return '';
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     private function getFieldOfvisionForPDF()
     {
-        if($this->field_of_vision !== false){
+        if ($this->field_of_vision !== false) {
             return ($this->field_of_vision == '1') ? '0' : '1';
         }
-        
+
         return '';
     }
 
@@ -1567,7 +1557,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
 
         return $types;
     }
-    
+
     /**
      * Generate dynamic diagnosis table for Visauly Impaired printout
      * @return string
@@ -1583,39 +1573,37 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
            // ':version' => $this->event->eventType->version,
             ':patient_type' => $this->patient_type
         );
-        
-        $disorderSections = OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll($criteria); 
-        
-        $table = '';
-        if($disorderSections){
-            foreach($disorderSections as $section){
-               
-                if($section->disorders){
-                    $table .= '<tr><td rowspan="'.count($section->disorders).'"><strong>'.$section->name.'</strong></td>';
-                    
-                    foreach ($section->disorders as $key => $disorder) {
 
-                        if($key !== 0){
-                           $table .= '<tr>';
+        $disorderSections = OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll($criteria);
+
+        $table = '';
+        if ($disorderSections) {
+            foreach ($disorderSections as $section) {
+                if ($section->disorders) {
+                    $table .= '<tr><td rowspan="'.count($section->disorders).'"><strong>'.$section->name.'</strong></td>';
+
+                    foreach ($section->disorders as $key => $disorder) {
+                        if ($key !== 0) {
+                            $table .= '<tr>';
                         }
 
                         $rightEye = '';
-                        if($this->hasCviDisorderForSide($disorder, 'right')){
+                        if ($this->hasCviDisorderForSide($disorder, 'right')) {
                             $rightEye = '<img class="ticked_diagnosis" src="'.realpath(__DIR__ . '/..') . '/assets/img/close_icon.png' .'" />';
                         }
 
                         $leftEye = '';
-                        if($this->hasCviDisorderForSide($disorder, 'left')){
+                        if ($this->hasCviDisorderForSide($disorder, 'left')) {
                             $leftEye = '<img class="ticked_diagnosis" src="'.realpath(__DIR__ . '/..') . '/assets/img/close_icon.png' .'" />';
                         }
 
-                        if($this->hasCviDisorderForSide($disorder, 'both')){
+                        if ($this->hasCviDisorderForSide($disorder, 'both')) {
                             $rightEye = '<img class="ticked_diagnosis" src="'.realpath(__DIR__ . '/..') . '/assets/img/close_icon.png' .'" />';
                             $leftEye = '<img class="ticked_diagnosis" src="'.realpath(__DIR__ . '/..') . '/assets/img/close_icon.png' .'" />';
                         }
-                        
+
                         $main_cause = '';
-                        if($this->isCviDisorderMainCauseForSide($disorder, 'right') == 1){
+                        if ($this->isCviDisorderMainCauseForSide($disorder, 'right') == 1) {
                             $main_cause = '<br><strong>Main Cause</strong>';
                         }
 
@@ -1625,10 +1613,9 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                              <td>'.$rightEye.'</td>
                              <td>'.$leftEye.'</td>
                         ';
-                        if($key === 0){
+                        if ($key === 0) {
                             $table .= '</tr>';
                         }
-
                     }
                     $table .= '</tr>';
                 }
@@ -1643,5 +1630,4 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         }
         return $table;
     }
-
 }

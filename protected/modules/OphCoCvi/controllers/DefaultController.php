@@ -259,18 +259,16 @@ class DefaultController extends \BaseEventTypeController
     protected function setElementDefaultOptions_Element_OphCoCvi_EventInfo(
         models\Element_OphCoCvi_EventInfo $element,
         $action
-    )
-    {
+    ) {
         if ($element->isNewRecord) {
             $element->site_id = $this->getApp()->session['selected_site_id'];
         }
     }
-    
+
     protected function setElementDefaultOptions_Element_OphCoCvi_EventInfo_V1(
         models\Element_OphCoCvi_EventInfo_V1 $element,
         $action
-    )
-    {
+    ) {
         if ($element->isNewRecord) {
             $element->site_id = $this->getApp()->session['selected_site_id'];
         }
@@ -283,8 +281,7 @@ class DefaultController extends \BaseEventTypeController
     protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo_V1(
         models\Element_OphCoCvi_ClinicalInfo_V1 $element,
         $action
-    )
-    {
+    ) {
         // only populate values into the new element if a clinical user
         if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
             $cvi_disorders = models\OphCoCvi_ClinicalInfo_Disorder::model()->active()->findAll();
@@ -356,7 +353,6 @@ class DefaultController extends \BaseEventTypeController
             }
             $element->cvi_disorder_section_comments = $comments;
         }
-
     }
     /**
      * <<<  * This just sets assignments for validation and the re-use in forms if a form submit does not validate
@@ -370,38 +366,37 @@ class DefaultController extends \BaseEventTypeController
         $model_name = \CHtml::modelName($element);
 
         if (array_key_exists($model_name, $data)) {
+            foreach ($data[$model_name]['disorders'] ?? [] as $key => $disorder) {
+                $is_right = isset($disorder['right_eye']) && $disorder['right_eye'] == 1;
+                $is_left = isset($disorder['left_eye']) && $disorder['left_eye'] == 1;
+                $is_both = ($is_right && $is_left);
 
-                foreach ($data[$model_name]['disorders'] ?? [] as $key => $disorder) {
-                    $is_right = isset($disorder['right_eye']) && $disorder['right_eye'] == 1;
-                    $is_left = isset($disorder['left_eye']) && $disorder['left_eye'] == 1;
-                    $is_both = ($is_right && $is_left);
+                if ($is_both) {
+                    $affected = \Eye::BOTH;
+                } else {
+                    $affected = $is_right ? \Eye::RIGHT : ($is_left ? \Eye::LEFT : null);
+                }
 
-                    if ($is_both) {
-                        $affected = \Eye::BOTH;
-                    } else {
-                        $affected = $is_right ? \Eye::RIGHT : ($is_left ? \Eye::LEFT : null);
-                    }
-
-                    switch ($affected) {
-                        case 1:
-                            $disorders['left_disorders'][$key]['affected'] = 1;
-                            if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
-                                $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
-                            }
-                            break;
-                        case 2:
-                            $disorders['right_disorders'][$key]['affected'] = 1;
-                            if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
-                                $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
-                            }
-                            break;
-                        case 3:
-                            $disorders['both_disorders'][$key]['affected'] = 1;
-                            if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
-                                $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
-                            }
-                            break;
-                    }
+                switch ($affected) {
+                    case 1:
+                        $disorders['left_disorders'][$key]['affected'] = 1;
+                        if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
+                            $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
+                        }
+                        break;
+                    case 2:
+                        $disorders['right_disorders'][$key]['affected'] = 1;
+                        if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
+                            $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
+                        }
+                        break;
+                    case 3:
+                        $disorders['both_disorders'][$key]['affected'] = 1;
+                        if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
+                            $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
+                        }
+                        break;
+                }
 
                 unset($data[$model_name]['disorders']);
                 $data[$model_name] = array_merge($data[$model_name], $disorders);
@@ -460,7 +455,6 @@ class DefaultController extends \BaseEventTypeController
             if (!isset($data[$model_name]['best_recorded_binocular_va'])) {
                 $element->best_recorded_binocular_va = 0;
             }
-
         }
     }
 
@@ -547,7 +541,6 @@ class DefaultController extends \BaseEventTypeController
                 models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->deleteAllByAttributes(['element_id' => $element->id]);
             }
         }
-
     }
 
     /**
@@ -566,7 +559,7 @@ class DefaultController extends \BaseEventTypeController
             }
         }
     }
-    
+
     /**
      * @param models\Element_OphCoCvi_ClericalInfo $element
      * @param                                      $action
@@ -612,7 +605,7 @@ class DefaultController extends \BaseEventTypeController
             $element->patient_factor_answers = $answers;
         }
     }
-    
+
     protected function setComplexAttributes_Element_OphCoCvi_ClericalInfo_V1(
         models\Element_OphCoCvi_ClericalInfo_V1 $element,
         $data,
@@ -646,7 +639,7 @@ class DefaultController extends \BaseEventTypeController
             }
         }
     }
-    
+
     public function saveComplexAttributes_Element_OphCoCvi_ClericalInfo_V1(
         models\Element_OphCoCvi_ClericalInfo_V1 $element,
         $data,
@@ -660,9 +653,8 @@ class DefaultController extends \BaseEventTypeController
             $preferred_format_datas = array_key_exists('preferred_format_ids', $data[$model_name]) ? $data[$model_name]['preferred_format_ids'] : array();
             $element->updatePreferredFormats($preferred_format_datas);
         }
-
     }
-    
+
     /**
      * Sets the default values for the element from the patient
      *
@@ -720,7 +712,7 @@ class DefaultController extends \BaseEventTypeController
                 $filter = $session_filter;
             }
         }
-        
+
         // set the is filtered flag for the controller
         foreach ($filter as $val) {
             if ($val) {
@@ -746,10 +738,10 @@ class DefaultController extends \BaseEventTypeController
         $filter = $this->getListFilter();
 
         $dp = $this->getManager()->getListDataProvider($filter);
-       
+
         $this->render('list', array('dp' => $dp, 'list_filter' => $filter));
     }
-    
+
     /**
      * Export and download CVI list result to csv file
      */
@@ -757,38 +749,36 @@ class DefaultController extends \BaseEventTypeController
     {
         $filename = 'export.csv';
 
-        $f = fopen( $this->getManager()->outDir.$filename , "w");
-     
+        $f = fopen( $this->getManager()->outDir.$filename, "w");
+
         $headers = array( array('Event Date', 'Subspeciality', 'Site', 'Name', 'Hospital No.', 'Created By', 'Consultant signed by', 'Consultant in charge', 'Status', 'Issue Date'));
         foreach ($headers as $header) {
             fputcsv($f, $header, ",");
         }
 
         $filters = $this->getListFilter();
-        $dataProvider = $this->getManager()->getListDataProvider($filters , false)->getData();
-       
-        if($dataProvider){
-           
+        $dataProvider = $this->getManager()->getListDataProvider($filters, false)->getData();
+
+        if ($dataProvider) {
             $rows = [];
-            foreach($dataProvider as $originalRow){
-                
+            foreach ($dataProvider as $originalRow) {
                 if ($consultant = $this->getManager()->getClinicalConsultant($originalRow)) {
-                    $consultant = $consultant->getFullNameAndTitle();      
+                    $consultant = $consultant->getFullNameAndTitle();
                 } else {
                     $consultant = "-";
                 }
-                
+
                 $inCharge = "-";
                 if (!is_null($originalRow->consultant_in_charge_of_this_cvi_id)) {
                     $inCharge = $originalRow->consultantInChargeOfThisCvi->getNameAndSubspecialty();
                 }
-                
+
                 $date = $originalRow->getIssueDateForDisplay();
                 $issueDate = "-";
                 if ($date) {
                     $issueDate = \Helper::convertMySQL2NHS($date);
                 }
-               
+
                 $rows[] = [
                     \Helper::convertMySQL2NHS($originalRow->event->event_date),
                     $originalRow->event->episode->getSubspecialtyText(),
@@ -809,11 +799,11 @@ class DefaultController extends \BaseEventTypeController
         }
 
         fclose($f);
-        
+
         header('Content-Type: application/csv');
         header('Content-Disposition: attachment; filename="'.$filename.'";');
         readfile( $this->getManager()->outDir.$filename );
-        
+
         unlink( $this->getManager()->outDir.$filename );
     }
 
@@ -841,8 +831,6 @@ class DefaultController extends \BaseEventTypeController
             $this->getApp()->user->setFlash('error.cvi_issue', 'The CVI could not be generated.');
             $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
         }
-
-
     }
 
     /**
@@ -873,11 +861,11 @@ class DefaultController extends \BaseEventTypeController
         } else {
             $elements = $this->event_type->getDefaultElements();
         }
- 
+
         $final_elements = array();
         foreach ($elements as $el) {
             $cls = get_class($el);
-            
+
             if (in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1'))
                 && $el->isNewRecord
                 && !$this->checkClinicalEditAccess()
@@ -1011,11 +999,11 @@ class DefaultController extends \BaseEventTypeController
     protected function updateEventInfo()
     {
         $this->getManager()->updateEventInfo($this->event);
-        if($this->action->id === "create") {
+        if ($this->action->id === "create") {
             $this->getManager()->sendNotification($this->event);
         }
     }
-    
+
     /**
      * @throws \CHttpException
      */
@@ -1023,8 +1011,8 @@ class DefaultController extends \BaseEventTypeController
     {
         $element_id = \Yii::app()->request->getPost("element_id");
 
-        if($element = models\Element_OphCoCvi_PatientSignature::model()->findByPk($element_id)) {
-           $this->initWithEventId($element->event_id);
+        if ($element = models\Element_OphCoCvi_PatientSignature::model()->findByPk($element_id)) {
+            $this->initWithEventId($element->event_id);
         }
     }
     /*
@@ -1038,21 +1026,21 @@ class DefaultController extends \BaseEventTypeController
         $element_id = \Yii::app()->request->getPost("element_id");
         $protected_file_id = \Yii::app()->request->getPost("protected_file_id");
 
-        if(!$protected_file = \ProtectedFile::model()->findByPk($protected_file_id)) {
+        if (!$protected_file = \ProtectedFile::model()->findByPk($protected_file_id)) {
             throw new \CHttpException(404);
         }
 
-        if($element =  models\Element_OphCoCvi_PatientSignature::model()->findByPk($element_id)) {
+        if ($element =  models\Element_OphCoCvi_PatientSignature::model()->findByPk($element_id)) {
             $element->protected_file_id = $protected_file_id;
             $element->signature_date = $protected_file->created_date;
-            if(!$element->save(false)) {
+            if (!$element->save(false)) {
                 throw new \Exception("Could not add signature: ".print_r($element->errors, true));
             }
-            
+
             $this->updateEventInfo();
             echo $protected_file_id;
         }
-        
+
         echo "0";
     }
 
@@ -1060,16 +1048,16 @@ class DefaultController extends \BaseEventTypeController
     {
         $signature = parent::signConsultantSignature($element_id, $element_type_id, $user_id);
 
-        if((int)$signature > 0){
+        if ((int)$signature > 0) {
             $element_id = \Yii::app()->request->getParam("element_id");
-            if($element = models\Element_OphCoCvi_ConsultantSignature::model()->findByPk($element_id)) {
-                $this->initWithEventId($element->event_id);   
+            if ($element = models\Element_OphCoCvi_ConsultantSignature::model()->findByPk($element_id)) {
+                $this->initWithEventId($element->event_id);
                 $this->updateEventInfo();
             }
         }
         echo $signature;
     }
-   
+
     /**
      * @throws \CHttpException
      */
@@ -1209,7 +1197,7 @@ class DefaultController extends \BaseEventTypeController
         $this->redirect(
              '/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/'
             . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name
-        );       
+        );
     }
 
     private function outputStaticPdfFile($filename)
@@ -1238,30 +1226,30 @@ class DefaultController extends \BaseEventTypeController
         $mgr = new OphCoCvi_Manager();
         $pdf = $mgr->createConsentPdf($this->event);
         $mgr->clearImages();
-        
+
         header("Content-type:application/pdf");
         header('Content-Length: '.filesize($pdf));
         readfile($pdf);
         unlink($pdf);
         \Yii::app()->end();
     }
-    
+
     public function actionPrintVisualyImpaired($event_id)
     {
         $this->initWithEventId($event_id);
-       
+
         \Yii::app()->getAssetManager()->registerCssFile('print_visual_impaired.css', 'application.modules.OphCoCvi.assets.css');
-        
-        if($this->cvi_manager == null){
+
+        if ($this->cvi_manager == null) {
             $this->getManager();
         }
-        
-        if(method_exists($this,"getSession")) {
+
+        if (method_exists($this, "getSession")) {
             $pdf_print_suffix = Yii::app()->user->id . '_' . rand();
-        }else{
+        } else {
             $pdf_print_suffix = getmypid().rand();
         }
-       
+
         $wk = new \WKHtmlToPDF();
         $wk->setMarginTop('20mm');
         $wk->setHeaderCss( \Yii::app()->getAssetManager()->publish( \Yii::getPathOfAlias('application.modules.OphCoCvi.assets.css').'/print_visual_impaired.css') );
@@ -1269,18 +1257,18 @@ class DefaultController extends \BaseEventTypeController
         $wk->setPatient($this->event->episode->patient);
         $wk->setBarcode($this->event->barcodeHTML);
         $wk->setDocref($this->event->docref);
-        
+
         $cviElements = $this->cvi_manager->generateCviElementsForPDF( $this->event );
-        
+
         $consultantGDImage = $this->cvi_manager->generateGDFromSignature( $cviElements['consultantSignature'] );
-        $consultantSignature = $this->cvi_manager->changeConsultantImageFromGDObject('consultant_signature_'.mt_rand() , $consultantGDImage);
-        
+        $consultantSignature = $this->cvi_manager->changeConsultantImageFromGDObject('consultant_signature_'.mt_rand(), $consultantGDImage);
+
         $patientGDImage = $this->cvi_manager->generateGDFromSignature( $cviElements['PatientSignature'] );
-        $patientSignature = $this->cvi_manager->changePatientImageFromGDObject('patient_signature_'.mt_rand() , $patientGDImage);
-        
+        $patientSignature = $this->cvi_manager->changePatientImageFromGDObject('patient_signature_'.mt_rand(), $patientGDImage);
+
         $cviElements['consultantSignatureImgSrc'] = $this->cvi_manager->consultantSignatureImage;
         $cviElements['patientSignatureImgSrc'] = $this->cvi_manager->patientSignatureImage;
-        
+
         $this->layout = '//layouts/print';
         $view = $this->render('/layouts/print_visual_impaired', [
             'elements' => $cviElements,
@@ -1288,16 +1276,16 @@ class DefaultController extends \BaseEventTypeController
         ], true);
 
         $header = realpath(__DIR__ . '/..') . '/views/layouts/print_visual_impaired_header.php';
-        
+
         $wk->generatePDF($this->cvi_manager->outDir, 'visualy_impaired', $pdf_print_suffix, $view, (boolean) @$_GET['html'], false, null, $header );
-       
+
         $pdf = $this->cvi_manager->outDir.'visualy_impaired_'.$pdf_print_suffix.'.pdf';
 
         header('Content-Type: application/pdf');
         header('Content-Length: '.filesize($pdf));
 
         readfile($pdf);
-        
+
         $this->cvi_manager->clearImages();
         unlink($pdf);
     }
@@ -1381,7 +1369,6 @@ class DefaultController extends \BaseEventTypeController
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         imagepng(imagecreatefromstring($signature_element->getDecryptedSignature()));
-
     }
 
     /**
@@ -1413,8 +1400,8 @@ class DefaultController extends \BaseEventTypeController
 
         $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
     }
-    
-   
+
+
     /**
      * Simple wrapper to get the disorder sections that should be rendered in the event form.
      *
@@ -1437,7 +1424,7 @@ class DefaultController extends \BaseEventTypeController
                     //'event_type_version' => $this->event->eventType->version
                 ]);
 
-            if(empty($listData)){
+            if (empty($listData)) {
                 $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll(
                     array(
                         "condition" => 'event_type_version = (SELECT MAX(version) AS maxVersion FROM ophcocvi_clinicinfo_disorder_section) 
@@ -1514,7 +1501,6 @@ class DefaultController extends \BaseEventTypeController
                         if ($cvi_ass->main_cause == 1) {
                             $all_cvi_assignments['right'][] = $cvi_ass;
                         }
-
                     } else {
                         unset($diagnosis_not_covered_list[$key]);
                     }
@@ -1601,4 +1587,3 @@ class DefaultController extends \BaseEventTypeController
         );
     }
 }
-

@@ -27,13 +27,12 @@ namespace OEModule\OphCoCvi;
 
 class OphCoCviModule extends \BaseEventTypeModule
 {
-	public $controllerNamespace = '\OEModule\OphCoCvi\controllers';
-    
+    public $controllerNamespace = '\OEModule\OphCoCvi\controllers';
+
     public function init()
     {
         $this->setImport(array(
             'application.components.odtTemplateManager.*',
         ));
-       
     }
 }
