@@ -15,11 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-array_walk($elements, function ($e) {
-    echo '<pre>' . print_r(get_class($e), true) . '</pre>';
-});
-
+$logo_helper = new LogoHelper();
 ?>
+
+<header class="print-header">
+    <?= $logo_helper->render() ?>
+</header>
 
 <!-- Page title -->
 <div class="print-title text-c">
@@ -67,11 +68,7 @@ array_walk($elements, function ($e) {
         </tbody>
     </table>
     <hr class="divider"/>
-    <?php
-
-    $clinical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1');
-    echo '<pre>' . print_r($clinical_info->attributes, true) . '</pre>';
-    ?>
+    <?php $clinical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1'); ?>
     <div class="highlighter">To be completed by the Ophthalmologist</div>
     <h6>(Tick the box that applies)</h6><h4>I consider that this person is:</h4><span
             class="tickbox <?= !$clinical_info->is_considered_blind ? 'checked' : '' ?>"></span>
@@ -194,746 +191,145 @@ array_walk($elements, function ($e) {
                 <tr>
                     <td><?= \CHtml::encode($disorder->name); ?></td>
                     <td><span class="checkbox <?=$clinical_info->isCviDisorderMainCauseForSide($disorder, 'right') ? 'checked': ''?>"></span></td>
-                    <td>H35.32</td>
-                    <td><span class="tickbox"></span></td>
-                    <td><span class="tickbox"></span></td>
+                    <td><?=\CHtml::encode($disorder->code)?></td>
+                    <td><span class="tickbox <?=$clinical_info->getCviDisorderSide($disorder) === \Eye::RIGHT ? 'checked' : '';?>"></span></td>
+                    <td><span class="tickbox <?=$clinical_info->getCviDisorderSide($disorder) === \Eye::LEFT ? 'checked' : '';?>"></span></td>
                 </tr>
             <?php endforeach ;?>
-
-            <tr>
-                <td>age-related macular degeneration – choroidal neovascularisation (wet)</td>
-                <td><span class="checkbox" checked></span></td>
-                <td>H35.32</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>age-related macular degeneration – atrophic/ geographic macular atrophy (dry)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H35.31</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>age-related macular degeneration unspecified (mixed)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H35.30</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>diabetic retinopathy</td>
-                <td><span class="checkbox"></span></td>
-                <td>E10.3-E14.3 H36.0</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>diabetic maculopathy</td>
-                <td><span class="checkbox"></span></td>
-                <td>H36.0A</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>hereditary retinal dystrophy</td>
-                <td><span class="checkbox"></span></td>
-                <td>H35.5</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>retinal vascular occlusions</td>
-                <td><span class="checkbox"></span></td>
-                <td>H34</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other retinal (specify)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H35</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
             </tbody>
         </table>
     </div>
     <?php endforeach; ?>
-    <div style="display:none" class="flex"><h3 class="cols-3">Glaucoma</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>primary open angle</td>
-                <td><span class="checkbox"></span></td>
-                <td>H40.1</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>primary angle closure</td>
-                <td><span class="checkbox"></span></td>
-                <td>H40.2</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>secondary</td>
-                <td><span class="checkbox"></span></td>
-                <td>H40.5</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other glaucoma (specify)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H40</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div style="display:none" class="flex"><h3 class="cols-3">Globe</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>degenerative myopia</td>
-                <td><span class="checkbox"></span></td>
-                <td>H44.2</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div style="display:none" class="flex"><h3 class="cols-3">Neurological</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>optic atrophy</td>
-                <td><span class="checkbox"></span></td>
-                <td>H47.2</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>visual cortex disorder</td>
-                <td><span class="checkbox"></span></td>
-                <td>H47.6</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>cerebrovascular disease</td>
-                <td><span class="checkbox"></span></td>
-                <td>I60-I69</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div style="display:none" class="flex"><h3 class="cols-3">Choroid</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>chorioretinitis</td>
-                <td><span class="checkbox"></span></td>
-                <td>H30.9</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>choroidal degeneration</td>
-                <td><span class="checkbox"></span></td>
-                <td>H31.1</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div style="display:none" class="flex"><h3 class="cols-3">Lens</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>cataract (excludes congenital)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H25.9</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div style="display:none" class="flex"><h3 class="cols-3">Cornea</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>corneal scars and opacities</td>
-                <td><span class="checkbox"></span></td>
-                <td>H17</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>keratitis</td>
-                <td><span class="checkbox"></span></td>
-                <td>H16</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div style="display:none" class="flex"><h3 class="cols-3">Neoplasia</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>eye</td>
-                <td><span class="checkbox"></span></td>
-                <td>C69</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>brain & CNS</td>
-                <td><span class="checkbox"></span></td>
-                <td>C70-C72, D43-D44</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other neoplasia (specify)</td>
-                <td><span class="checkbox"></span></td>
-                <td>C00-C68, C73-C97, D00-D42, D45-D48</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <h4>Diagnosis not covered in any of the above, specify, including ICD 10 code if known and indicating eye or
-        eyes</h4>
-    <div class="box">
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
+    <h4>Diagnosis not covered in any of the above, specify, including ICD 10 code if known and indicating eye or eyes</h4>
+    <?php if (!count($clinical_info->diagnosis_not_covered)) : ?>
+        <div class="box">
+            <div class="dotted-write"></div>
+        </div>
+    <?php endif;?>
+    <?php foreach ($clinical_info->diagnosis_not_covered as $diagnosis) {
+
+        if (isset($diagnosis->disorder) || isset($diagnosis->clinicinfo_disorder)) {
+            switch ($diagnosis->eye_id) {
+                case 1:
+                    $eye = 'Left';
+                    break;
+                case 2:
+                    $eye = 'Right';
+                    break;
+                case 3:
+                    $eye = 'Bilateral';
+                    break;
+            }
+            if ($diagnosis->disorder_type == OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered::TYPE_CLINICINFO_DISORDER) {
+                $disorder_name = $diagnosis->clinicinfo_disorder->term_to_display;
+                $disorder_code = $diagnosis->clinicinfo_disorder->code;
+            } else {
+                $disorder_name = $diagnosis->disorder->term;
+                $disorder_code = $diagnosis->code;
+            }
+            ?>
+
+            <div class="box">
+                <div class="dotted-write">
+                    <?= \CHtml::encode($eye) ?>
+                    <?= \CHtml::encode($disorder_name) ?>
+                    <?= $diagnosis->main_cause == 1 ? '(main cause)' : '' ?> -
+                    <?= \CHtml::encode($disorder_code) ?>
+                </div>
+            </div>
+        <?php } ?>
+    <?php } ?>
     <hr class="divider"/>
-    <h2>Part 2b: Diagnosis (for patients under the age of 18)</h2><h4>Tick each that applies. <b>Tick "Main" if this is
-            the main cause for the impairment.</b></h4>
-    <div class="flex"><h3 class="cols-3"><!----></h3>
-        <table>
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <thead>
-            <tr>
-                <td><!----></td>
-                <th>Main</th>
-                <th>ICD 10 code</th>
-                <th>Right</th>
-                <th>Left</th>
-            </tr>
-            </thead>
-        </table>
-    </div>
-    <div class="flex"><h3 class="cols-3">Central Visual Pathway Problems</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>cerebral/cortical pathology affecting mainly a) acuity b) fields c) visual perception (circle)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H47.6</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>nystagmus</td>
-                <td><span class="checkbox"></span></td>
-                <td>H55</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other (specify)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H47.7</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="flex"><h3 class="cols-3">Whole Globe and Anterior Segment</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>anophthalmos/microphthalmos</td>
-                <td><span class="checkbox"></span></td>
-                <td>Q11</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>disorganised globe/phthisis</td>
-                <td><span class="checkbox"></span></td>
-                <td>H44</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>anterior segment anomaly</td>
-                <td><span class="checkbox"></span></td>
-                <td>Q13</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>primary congenital/infantile glaucoma</td>
-                <td><span class="checkbox"></span></td>
-                <td>Q15, H40.1-H40.2</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other glaucoma</td>
-                <td><span class="checkbox"></span></td>
-                <td>H40.8-H40.9</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="flex"><h3 class="cols-3">Amblyopia</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>stimulus deprivation</td>
-                <td><span class="checkbox"></span></td>
-                <td>H53.0</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>strabismic</td>
-                <td><span class="checkbox"></span></td>
-                <td>H53.0</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>refractive</td>
-                <td><span class="checkbox"></span></td>
-                <td>H53.0</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="flex"><h3 class="cols-3">Cornea</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>opacity</td>
-                <td><span class="checkbox"></span></td>
-                <td>H17</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>dystrophy</td>
-                <td><span class="checkbox"></span></td>
-                <td>H18.4</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other (specify)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H18.8-H18.9</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="flex"><h3 class="cols-3">Cataract</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>congenital</td>
-                <td><span class="checkbox"></span></td>
-                <td>Q12.0</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>developmental</td>
-                <td><span class="checkbox"></span></td>
-                <td>H26.9</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>secondary</td>
-                <td><span class="checkbox"></span></td>
-                <td>H26.4</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="flex"><h3 class="cols-3">Uvea</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>aniridia</td>
-                <td><span class="checkbox"></span></td>
-                <td>Q13.1</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>coloboma</td>
-                <td><span class="checkbox"></span></td>
-                <td>Q12.2, Q13.0</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>uveitis</td>
-                <td><span class="checkbox"></span></td>
-                <td>H20</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other (specify)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H21</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="flex"><h3 class="cols-3">Retina</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>retinopathy of prematurity</td>
-                <td><span class="checkbox"></span></td>
-                <td>H35.1</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>retinal dystrophy</td>
-                <td><span class="checkbox"></span></td>
-                <td>H35.5</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>retinitis</td>
-                <td><span class="checkbox"></span></td>
-                <td>H30</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other retinopathy</td>
-                <td><span class="checkbox"></span></td>
-                <td>H35.2</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>retinoblastoma</td>
-                <td><span class="checkbox"></span></td>
-                <td>C69.2</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>albinism</td>
-                <td><span class="checkbox"></span></td>
-                <td>E70.3</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>retinal detachment</td>
-                <td><span class="checkbox"></span></td>
-                <td>H33</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other (specify)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H35</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="flex"><h3 class="cols-3">Optic Nerve</h3>
-        <table class="row-lines">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup">
-            <tbody>
-            <tr>
-                <td>hypoplasia</td>
-                <td><span class="checkbox"></span></td>
-                <td>Q11.2</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other congenital anomaly</td>
-                <td><span class="checkbox"></span></td>
-                <td>Q14.2</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>optic atrophy</td>
-                <td><span class="checkbox"></span></td>
-                <td>H47.2</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>neuropathy</td>
-                <td><span class="checkbox"></span></td>
-                <td>H47.0</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            <tr>
-                <td>other (specify)</td>
-                <td><span class="checkbox"></span></td>
-                <td>H47.0</td>
-                <td><span class="tickbox"></span></td>
-                <td><span class="tickbox"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <h4>Diagnosis not covered in any of the above, specify, including ICD 10 code if known and indicating eye or
-        eyes</h4>
-    <div class="box">
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
-    <hr class="divider"/>
+
     <h2>Part 3: To be completed by the patient (or parent/guardian if the patient is a child) and eye clinic staff e.g.
         ECLO/Sight Loss Advisor</h2>
     <div class="highlighter">Additional information for the patient’s local council</div>
+    <?php $clearical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_V1');?>
     <table class="row-lines">
         <colgroup>
             <col class="cols-6">
             <col class="cols-6">
         </colgroup">
         <tbody>
-        <tr>
-            <td>If you are an adult do you live alone?</td>
-            <td><span class="tickbox"></span> Yes <span class="tickbox"></span> No</td>
-        </tr>
-        <tr>
-            <td>Does someone support you with your care?</td>
-            <td><span class="tickbox"></span> Yes <span class="tickbox"></span> No</td>
-        </tr>
-        <tr>
-            <td>Do you have difficulties with your physical mobility?</td>
-            <td><span class="tickbox"></span> Yes <span class="tickbox"></span> No</td>
-        </tr>
-        <tr>
-            <td>Do you have difficulties with your hearing?</td>
-            <td><span class="tickbox"></span> Yes <span class="tickbox"></span> No</td>
-        </tr>
-        <tr>
-            <td>Do you have a learning disability?</td>
-            <td><span class="tickbox"></span> Yes <span class="tickbox"></span> No</td>
-        </tr>
-        <tr>
-            <td>Do you have a diagnosis of dementia?</td>
-            <td><span class="tickbox"></span> Yes <span class="tickbox"></span> No</td>
-        </tr>
-        <tr>
-            <td>Are you employed?</td>
-            <td><span class="tickbox"></span> Yes <span class="tickbox"></span> No</td>
-        </tr>
-        <tr>
-            <td>Are you in full-time education?</td>
-            <td><span class="tickbox"></span> Yes <span class="tickbox"></span> No</td>
-        </tr>
+            <?php foreach ($this->getPatientFactors() as $factor) :?>
+                <?php
+                    $answer = $clearical_info->getPatientFactorAnswer($factor);
+                    $value = $answer ? $answer->is_factor : null;
+                ?>
+                <tr>
+                    <td><?=\CHtml::encode($factor->name); ?></td>
+                    <td>
+                        <?php if (!$factor->comments_only) : ?>
+                            <span class="tickbox <?=$value === '1' ? 'checked':'';?> "></span> Yes <span class="tickbox <?=$value === '0' ? 'checked':'';?>"></span> No
+
+                            <?php if (!$factor->yes_no_only) : ?>
+                                <span class="tickbox <?=$value === '2' ? 'checked':'';?> "></span> Don't know
+                            <?php endif; ?>
+
+                            <?=($answer && $answer->comments) ? " | comments: " : '';?>
+                        <?php endif; ?>
+
+                        <?php if ($factor->require_comments) : ?>
+                            <?=\CHtml::encode($answer->comments);?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach;?>
         </tbody>
     </table>
-    <p>If the patient is a baby, child or young person, is your child/are you known to the specialist visual impairment
-        education service?</p><span class="tickbox"></span> Yes<span class="tickbox"></span> No<span
-            class="tickbox"></span> Don't know
+
     <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
-    <p>Record any further relevant information below e.g. medical conditions, emotional impact of sight loss, risk of
-        falls, benefits of vision rehabilitation and/or if you think the patient requires urgent support and reasons
-        why.</p>
-    <div class="box">
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
+
     <div class="highlighter">Patient’s information and communication needs</div>
     <p>All providers of NHS and local authority social care services are legally required to identify, record and meet
         your individual information/communication needs (refer to Explanatory Notes paragraphs 9, 22 and 23).</p>
-    <p>Preferred method of contact?</p><span class="tickbox"></span> Phone call<span class="tickbox"></span> Email<span
-            class="tickbox"></span> Letter
+    <p>Preferred method of contact?</p>
+
+    <?php foreach (OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array("condition"=>"version =  1",'order' => 'display_order asc')) as $fmt) :?>
+        <span class="tickbox <?=$clearical_info->preferred_info_fmt_id == $fmt->id ? 'checked' : '';?>"></span> <?=$fmt->name;?>
+    <?php endforeach; ?>
+
+
     <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
     <p>Preferred method of communication e.g. BSL, deafblind manual?</p>
     <div class="box">
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
+        <div class="dotted-write"><?=\CHtml::encode($clearical_info->preferred_comm);?></div>
     </div>
-    <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
-    <span class="tickbox"></span> Large print 18<span class="tickbox"></span> Large print 22<span
-            class="tickbox"></span> Large print 26<span class="tickbox"></span> Easy-Read<span class="tickbox"></span>
-    Audio CD<span class="tickbox"></span> Email<span class="tickbox"></span> Other (specify)
-    <div class="box">
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
-    <span class="tickbox"></span> I don’t know and need an assessment
-    <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
-    <p>Preferred language (and identify if an interpreter is required).</p>
-    <div class="box">
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
+
+    <?php $preferred_format_ids = array_map(fn($e) => $e->preferred_format_id, $clearical_info->preferred_format_assignments);?>
+
+    <?php foreach (OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredFormat::model()->findAll(array("condition"=>"version =  1",'order' => 'display_order asc')) as $format) :?>
+        <span class="tickbox <?=in_array($format->id, $preferred_format_ids) ? 'checked':'';?>"></span> <?=$format->name;?>
+    <?php endforeach; ?>
+
     <hr class="divider"/>
     <h2>Part 4: Consent to share information</h2>
     <div class="highlighter">I understand that by signing this form</div>
     <p>I give my permission for a copy to be sent to my GP to make them aware of this certificate.</p>
+
+    <?php
+        // getLetterAddress checks if the patient has Practice and returns that if he/she has
+        $address = $patient->gp->getLetterAddress(['patient' => $patient]);
+    ?>
+
     <div class="box">
         <div class="dotted-area">
             <div class="label">My <b>GP</b> name/practice</div>
+            <?=$patient->gp->contact->fullName ?? '';?>
         </div>
         <div class="dotted-area">
             <div class="label">GP address</div>
+            <?=implode(", ", $address ?? [])?>
         </div>
         <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
         <div class="flex">
             <div class="dotted-area">
                 <div class="label">Postcode</div>
+                <?=$patient->gp->getGPPostcode(['patient' => $patient]) ?? '';?>
             </div>
             <div class="dotted-area">
                 <div class="label">Telephone number</div>
+                <?=$patient->practice->contact->primary_phone ?? $patient->gp->contact->primary_phone ?? '';?>
             </div>
         </div>
     </div>
@@ -941,20 +337,26 @@ array_walk($elements, function ($e) {
         have a duty (under the Care Act 2014) to contact me to offer advice on living with sight loss and explain the
         benefits of being registered. When the council contacts me, I am aware that I do not have to accept any help, or
         be registered at that time, if I choose not to do so.</p>
+
+    <?php $demographics = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1');?>
     <div class="box">
         <div class="dotted-area">
             <div class="label">My <b>local council</b> name</div>
+            <?=\CHtml::encode($demographics->la_name ?? '') ;?>
         </div>
         <div class="dotted-area">
             <div class="label">Address</div>
+            <?=\CHtml::encode($demographics->la_address ?? '');?>
         </div>
         <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
         <div class="flex">
             <div class="dotted-area">
                 <div class="label">Postcode</div>
+                <?=\CHtml::encode($demographics->gp_postcode ?? '');?><?=\CHtml::encode($demographics->gp_postcode_2nd ?? '');?>
             </div>
             <div class="dotted-area">
                 <div class="label">Telephone number</div>
+                <?=\CHtml::encode($demographics->gp_telephone ?? '');?>
             </div>
         </div>
     </div>
@@ -982,53 +384,15 @@ array_walk($elements, function ($e) {
     <hr class="divider"/>
     <h2>Part 5: Ethnicity</h2>
     <div class="highlighter">This information is needed for service and epidemiological monitoring</div>
-    <div class="group"><h4>White</h4>
-        <ul class="layout">
-            <li><span class="tickbox"></span> 1. English/Northern Irish/Scottish/Welsh/British</li>
-            <li><span class="tickbox"></span> 2. Irish</li>
-            <li><span class="tickbox"></span> 3. Any other White background, describe below</li>
-        </ul>
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
-    <div class="group"><h4>Mixed/Multiple ethnic groups</h4>
-        <ul class="layout">
-            <li><span class="tickbox"></span> 4. White and Black Caribbean</li>
-            <li><span class="tickbox"></span> 5. White and Black African</li>
-            <li><span class="tickbox"></span> 6. White and Asian</li>
-            <li><span class="tickbox"></span> 7. Any other Mixed/Multiple ethnic background, describe below</li>
-        </ul>
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
-    <div class="group"><h4>Asian/Asian British</h4>
-        <ul class="layout">
-            <li><span class="tickbox"></span> 8. White and Black Caribbean</li>
-            <li><span class="tickbox"></span> 9. White and Black African</li>
-            <li><span class="tickbox"></span> 10. White and Asian</li>
-            <li><span class="tickbox"></span> 11. Any other Mixed/Multiple ethnic background, describe below</li>
-        </ul>
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
-    <div class="group"><h4>Black/African/Caribbean/Black British</h4>
-        <ul class="layout">
-            <li><span class="tickbox"></span> 12. African</li>
-            <li><span class="tickbox"></span> 13. Caribbean</li>
-            <li><span class="tickbox"></span> 14. Any other Black/African/Caribbean background, describe below</li>
-        </ul>
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
-    <div class="group"><h4>Chinese/Chinese British</h4>
-        <ul class="layout">
-            <li><span class="tickbox"></span> 15. Chinese</li>
-            <li><span class="tickbox"></span> 16. Any other Chinese background, describe below</li>
-        </ul>
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
-    <div class="group"><h4>Other ethnic group</h4>
-        <ul class="layout">
-            <li><span class="tickbox"></span> 17. Other, describe below</li>
-        </ul>
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
+
+    <ul class="layout">
+        <?php foreach(\EthnicGroup::model()->findAll() as $k => $ethnic) :?>
+            <li><span class="tickbox <?=$demographics->ethnic_group_id == $ethnic->id ? 'checked' : '';?>"></span> <?=++$k;?>. <?=$ethnic->name;?></li>
+            <?php if($demographics->ethnic_group_id == $ethnic->id && $demographics->describe_ethnics) :?>
+                <div class="dotted-write"><?=\CHtml::encode($demographics->describe_ethnics);?></div>
+            <?php endif;?>
+        <?php endforeach; ?>
+    </ul>
     <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider"/>
     <h2>Information Sheet for patients (or parents/guardians if the patient is a child)</h2>
