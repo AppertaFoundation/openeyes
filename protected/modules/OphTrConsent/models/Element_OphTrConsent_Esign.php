@@ -147,12 +147,6 @@ class Element_OphTrConsent_Esign extends BaseEsignElement implements RequiresSig
      */
     public function isSigned(): bool
     {
-        foreach ($this->signatures as $signature) {
-            if ($signature->is_mandatory && !$signature->isSigned()) {
-                return false;
-            }
-        }
-
         return $this->countRemainingSignatures() === 0;
     }
 

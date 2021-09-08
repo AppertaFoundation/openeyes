@@ -17,18 +17,21 @@
 
 namespace OEModule\OphTrConsent\widgets;
 
-class EsignPINField extends \EsignField {
+class EsignPINField extends \EsignField
+{
     /**
      * @inheritDoc
      */
-    public function getAction(): string {
+    public function getAction(): string
+    {
         return 'getSignatureByUsernameAndPin';
     }
 
     /**
      * @inheritDoc
      */
-    public function run() {
+    public function run()
+    {
         $path = explode("\\", get_class($this));
         $view_name = array_pop($path);
         $this->render($view_name);
@@ -37,7 +40,8 @@ class EsignPINField extends \EsignField {
     /**
      * @return string[]
      */
-    protected function getHiddenFields(): array {
+    protected function getHiddenFields(): array
+    {
         return [
             "id", "type", "proof", "signatory_name", "signatory_role",
             "user_id", "initiator_element_type_id", "initiator_row_id"

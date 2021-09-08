@@ -162,7 +162,14 @@ class OphTrConsent_Signature extends BaseSignature
         return $this->getSignatureImage();
     }
 
-    private function getSignatureImage(): string
+    /**
+     * Returns an HTML img tag containing the signature image
+     * or an empty string in case of failure
+     *
+     * @return string
+     * @throws CException
+     */
+    public function getSignatureImage(): string
     {
         if ($thumb = $this->signatureFile->getThumbnail("150x50")) {
             $data = file_get_contents($thumb["path"]);

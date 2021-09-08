@@ -22,7 +22,8 @@ namespace OEModule\OphTrConsent\models;
  * the E-sign element to collect a signature and then
  * call back the element to update
  */
-interface RequiresSignature {
+interface RequiresSignature
+{
     /**
      * An array of empty signatures that need to be signed
      *
