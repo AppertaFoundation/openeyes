@@ -21,19 +21,24 @@ $institution_id = Institution::model()->getCurrent()->id;
 $site_id = Yii::app()->session['selected_site_id'];
 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+$type_assessment = new OphTrConsent_Type_Assessment();
 ?>
+<body class="open-eyes print">
+<?php $this->renderPartial('_consent_header') ?>
+<div class="print-title text-c">
+    <h1><b>Consent form 2</b></h1>
+    <h1 class="highlighter">For adults with parental responsibility, who have mental capacity to give valid consent for a child or young person</h1>
+    <h2>Parental agreement to investigation or treatment for a child or young person</h2>
+</div>
+<hr class="divider"/>
 <main class="print-main">
-    <?php $this->renderPartial('_consent_header') ?>
-    <h1 class="print-title">
-        Consent form 2<br />
-        Parental agreement to investigation or treatment for a child or young person
-    </h1>
     <h3>Patient details (or pre-printed label)</h3>
-    <table class="large">
+    <table class="normal-text row-lines">
         <colgroup>
             <col class="cols-5">
             <col class="cols-7">
         </colgroup>
+        <tbody>
         <tr>
             <th>Patient's surname/family name</th>
             <td><?= $this->patient->last_name ?></td>
@@ -47,11 +52,11 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
             <td><?= $this->patient->NHSDate('dob') ?></td>
         </tr>
         <tr>
-            <th><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?></th>
+            <th>Hospital #</th>
             <td><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></td>
         </tr>
         <tr>
-            <th><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?></th>
+            <th>NHS #</th>
             <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
         </tr>
         <tr>
@@ -59,185 +64,176 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
             <td><?= $this->patient->genderString ?></td>
         </tr>
         <tr>
-            <th>&nbsp;<br />Special requirements</th>
-            <td>&nbsp;<div class="dotted-write"></div>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>(e.g. other language/other communication method)</td>
-        </tr>
-        <tr>
-            <th>Witness required</th>
-            <td><?= $elements['Element_OphTrConsent_Other']->witness_required ? 'Yes' : 'No' ?></td>
-        </tr>
-        <?php if ($elements['Element_OphTrConsent_Other']->witness_required) { ?>
-            <tr>
-                <th>Witness name</th>
-                <td><?= $elements['Element_OphTrConsent_Other']->witness_name ?></td>
-            </tr>
-        <?php } ?>
-        <tr>
-            <th>Interpreter required</th>
-            <td><?= $elements['Element_OphTrConsent_Other']->interpreter_required ? 'Yes' : 'No' ?></td>
-        </tr>
-        <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
-            <tr>
-                <th>Interpreter name</th>
-                <td><?= $elements['Element_OphTrConsent_Other']->interpreter_name ?></td>
-            </tr>
-        <?php } ?>
-        <tr>
-            <th>Procedure(s)</th>
+            <th>Special requirements <br> <small>(e.g other language/other communication method)</small></th>
             <td>
-                <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedure_assignments as $i => $procedure) {
-                    if ($i > 0) {
-                        echo ', ';
-                    }
-                    echo \CHtml::encode($procedure->eye->adjective) . ' - ' . \CHtml::encode($procedure->proc->term);
-                } ?>
+                <?php if (isset($elements['Element_OphTrConsent_Specialrequirements']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Specialrequirements']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+                    <?= isset($elements['Element_OphTrConsent_Specialrequirements']) ?
+                    nl2br(\CHtml::encode($elements['Element_OphTrConsent_Specialrequirements']->specialreq)) :
+                    'None'?>
+                <?php endif; ?>
             </td>
         </tr>
-        <?php if ($elements['Element_OphTrConsent_AdvancedDecision']->description) { ?>
+        <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
             <tr>
-                <th>Advanced Decision</th>
-                <td><?= $elements['Element_OphTrConsent_AdvancedDecision']->description ?></td>
+                <th>Procedure(s)</th>
+                <td>
+                    <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedure_assignments as $i => $procedure) {
+                        if ($i > 0) {
+                            echo ', ';
+                        }
+                        echo \CHtml::encode($procedure->eye) . ' - ' . \CHtml::encode($procedure->proc->term);
+                    } ?>
+                </td>
             </tr>
-        <?php } ?>
-        <tr>
-            <th>&nbsp;<br />Consent date</th>
-            <td>&nbsp;<div class="dotted-write"></div>
-            </td>
-        </tr>
+        <?php endif; ?>
+        </tbody>
     </table>
-    <h4>To be retained in patient's notes</h4>
-    <div class="break"></div>
-    <h3>Statement of parent</h3>
-    <p>
-        Please read this form carefully. If the procedure has been planned in advance, you should already have your own
-        copy of page 3 which describes the benefits and risks of the proposed treatment. If not, you will be offered a
-        copy now. If you have any further questions, do ask - we are here to help you and your child. You have the right
-        to change your mind at any time, including after you have signed this form.
-    </p>
-    <p>
-        <strong>I agree</strong> to the procedure or course of treatment described on this form and I confirm that I
-        have 'parental responsibility' for this child.<br />
-        <strong>I understand</strong> that you cannot give me a guarantee that a particular person will perform the
-        procedure. The person will, however, have appropriate experience.<br />
-        <strong>I understand</strong> that my child and I will have the opportunity to discuss the details of
-        anaesthesia with an anaesthetist before the procedure, unless the urgency of the situation prevents this. (This
-        only applies to children having general or regional anaesthesia.)<br />
-        <strong>I understand that any</strong> procedure in addition to those described on this form will only be
-        carried out if it is necessary to save the life of my child or to prevent serious harm to his or her
-        health.<br />
-        <strong>I have been told about</strong> additional procedures which may become necessary during my child's
-        treatment. I have listed below any procedures which I do not wish to be carried out without further discussion:
-    <div class="dotted-write"></div>
-    </p>
-    <?= $this->renderPartial('signature_table5', array('vi' => ($css_class == 'impaired'))) ?>
-    <div class="break"></div>
-    <h3>Child's agreement to treatment (if child wishes to sign)</h3>
-    <p>
-        I agree to have the treatment I have been told about.
-    </p>
-    <?= $this->renderPartial('signature_table3', array('vi' => ($css_class == 'impaired'), 'name' => $this->patient->first_name . ' ' . $this->patient->last_name)) ?>
-    <h3>Confirmation of consent <span class="noth3">(to be completed by a health professional when the child is admitted for the procedure, if the parent/child have signed the form in advance)</span>
-    </h3>
-    <p>
-        On behalf of the team treating the patient, I have confirmed with the child and his or her parent(s) that they
-        have no further questions and wish the procedure to go ahead.
-    </p>
-    <?= $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant, 'mask_consultant' => true)) ?>
-    <h3>Important notes: (tick if applicable)</h3>
-    <p>
-        See also advance directive/living will (eg Jehovah's Witness form)
-    </p>
-    <p>
-        Parent has withdrawn consent (ask parent to sign /date here)
-    <div class="dotted-write" style="display: block"></div>
-    </p>
-    <div class="break"></div>
-    <h3>Name of proposed procedure or course of treatment</h3>
-    <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedure_assignments)) ?>
-    <h3>Statement of health professional <span class="noth3">(to be filled in by a health professional with appropriate knowledge of the proposed procedure(s), as specified in the consent policy)</span>
-    </h3>
-    <p>
-        <strong>I have explained the procedure to the patient. In particular, I have explained:</strong>
-    </p>
-    <p>
-        <strong>The intended benefits:</strong>
-        <br><?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->benefits) ?><br />
-        <strong>Serious, frequently occurring or unavoidable risks:</strong>
-        <br><?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->risks) ?>
-    </p>
-    <?php if (!empty($elements['Element_OphTrConsent_Procedure']->additionalprocedure_assignments)) { ?>
-            <p>Any extra procedures which may become necessary during the procedure(s)</p>
-            <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->additionalprocedure_assignments)) ?>
-        <?php } ?>
-    <p>
-        I have also discussed what the procedure is likely to involve, the benefits and risks of any available
-        alternative treatments (including no treatment) and any particular concerns of this patient
-        and <?= $this->patient->pos ?> parents.
-    </p>
-    <?php if ($elements['Element_OphTrConsent_Leaflets']->leaflets) { ?>
-        <div class="group flex-layout">
-            <span class="nowrap">
-                <span class="checkbox <?= $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
-                <?= $this->renderPartial('view_Element_OphTrConsent_Leaflets', ['element' => $elements['Element_OphTrConsent_Leaflets']]) ?>
-            </span>
+    <hr class="divider">
+    <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+    <div class="group"><h4>Proposed procedure(s) or course of treatment:</h4>
+        <div class="indent">
+            <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedure_assignments)) ?>
         </div>
-    <?php } ?>
-    <?php if ($elements['Element_OphTrConsent_Other']->anaesthetic_leaflet) { ?>
-        <div class="group">
-            <span class="checkbox <?= $elements['Element_OphTrConsent_Other']->anaesthetic_leaflet ? 'checked' : '' ?>"></span> Anaesthesia leaflet has been provided
-        </div>
-    <?php } ?>
-    <div class="group">
-        This procedure will involve: <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA') ? 'checked' : '' ?>"></span>
-        general and/or regional anaesthesia&nbsp;&nbsp;<span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode(array('Topical', 'LAC', 'LA', 'LAS')) ? 'checked' : '' ?>"></span>
-        local anaesthesia&nbsp;&nbsp;<span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('Sedation') ? 'checked' : '' ?>"></span> sedation
     </div>
-    <?= $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
-    <br />
-    <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
-        <h3>Statement of interpreter</h3>
-        <span>I have interpreted the information above to the child and <?= $this->patient->pos ?> parents to the best of my ability and in a way in which I believe they can understand.</span>
-        <br /><br />
-        <?= $this->renderPartial('signature_table3', array('vi' => ($css_class == 'impaired'), 'name' => $elements['Element_OphTrConsent_Other']->interpreter_name)) ?>
-    <?php } ?>
+    <?php endif; ?>
 
-    <div class="break"></div>
-    <p>Top copy accepted by patient: yes/no (please ring)</p>
-    <?php if ($elements['Element_OphTrConsent_Other']->include_supplementary_consent) { ?>
-        <div class="break"></div>
-        <h2>Form 2: Supplementary consent</h2>
-        <h3>Images</h3>
-        <p>
-            Photographs, x-rays or other images may be taken as part of your child's treatment and will form part of the
-            medical record. It is very unlikely that your child would be recognised from these images. If however your
-            child could be recognised we would seek your specific consent before any particular publication.
-        </p>
-        <p>
-            <strong>I agree to use in audit, education and publication:</strong>
-        </p>
-        <div class="group">
-            <span class="checkbox <?= $elements['Element_OphTrConsent_Permissions']->images->name == 'Yes' ? 'checked' : '' ?>"></span>
-            Yes
-            <span class="checkbox <?= $elements['Element_OphTrConsent_Permissions']->images->name == 'No' ? 'checked' : '' ?>"></span>
-            No
-            <span class="checkbox <?= $elements['Element_OphTrConsent_Permissions']->images->name == 'Not applicable' ? 'checked' : '' ?>"></span>
-            Not applicable
+    <?php if (isset($elements['Element_OphTrConsent_BenefitsAndRisks']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_BenefitsAndRisks']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+    <div class="group"><h4>Statement of health professional (to be filled in by a health professional with appropriate
+            knowledge of the proposed procedure(s), as specified in the consent policy)</h4>
+        <div class="indent"><p>I have explained the procedure to the patient. In particular, I have explained:</p>
+            <p></p><h5>The intended benefits:</h5>
+            <?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->benefits) ?>
+            <p></p>
+            <p></p><h5>Serious, frequently occurring or unavoidable risks:</h5>
+            <?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->risks) ?>
+            <p></p>
         </div>
-        <p>
-            If you do not wish to take part in the above, your care will not be compromised in any way.
-        </p>
-        <p>
-            Signature of Parent/Guardian
-        <div class="dotted-write"></div>
-        </p>
-        <p>
-            Date
-        <div class="dotted-write"></div>
-        </p>
-    <?php } ?>
+    </div>
+    <?php endif; ?>
+
+    <?php if (isset($elements['Element_OphTrConsent_Specialrequirements']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Specialrequirements']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+    <div class="group">
+        <h4>Any special requirements:</h4>
+        <?php if (!empty($elements['Element_OphTrConsent_Specialrequirements']->specialreq)) { ?>
+            <div class="indent">
+                <?=nl2br(\CHtml::encode($elements['Element_OphTrConsent_Specialrequirements']->specialreq)) ?>
+            </div>
+        <?php } else {?>
+            <div class="indent"><p>No special requirements</p></div>
+        <?php } ?>
+    </div>
+        <p>I have also discussed what the procedure is likely to involve, the benefits and risks of any available
+            alternative treatments (including no treatment) and any particular concerns of this patient. I assess that this
+            patient has the capacity to give valid consent.</p>
+    <?php endif; ?>
+
+    <?php if (isset($elements['Element_OphTrConsent_Leaflets']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Leaflets']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+        <?php if ($elements['Element_OphTrConsent_Leaflets']->leaflets) { ?>
+        <div class="group">
+            <h4>The following informational leaflets have been provided:</h4>
+            <div class="indent">
+                <?php if (empty($elements['Element_OphTrConsent_Leaflets']->leaflets)) { ?>
+                    None
+                <?php } else { ?>
+                    <?php foreach ($elements['Element_OphTrConsent_Leaflets']->leaflets as $leaflet) { ?>
+                        <span class="checkbox <?= $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>
+                        <?php echo $leaflet->leaflet->name ?>
+                    <?php } ?>
+                <?php } ?>
+            </div>
+        </div>
+        <?php } ?>
+    <?php endif; ?>
+
+    <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+    <div class="group">
+        <h4>This procedure will involve:</h4>
+        <div class="indent">
+            <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA') ? 'checked' : '' ?>"></span> General and/or regional anaesthesia
+            <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode(array('Topical', 'LAC', 'LA', 'LAS')) ? 'checked' : '' ?>"></span> Local anaesthesia
+            <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('Sedation') ? 'checked' : '' ?>"></span> Sedation
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <h5 class="text-r">Contact details: 01234 456789</h5>
+    <div class="break"><!-- **** page break ***** --></div>
+    <hr class="divider">
+    <h2>Statement of patient</h2><h5>Please read this form carefully. If your treatment has been planned in advance, you
+        should already have your own copy of the page which describes the benefits and risks of the proposed treatment.
+        If not, you will be offered a copy now. If you have any questions, do ask - we are here to help you. You have
+        the right to change your mind at any time, including after you have signed this form.</h5>
+    <div class="spacer"><!-- spacer --></div>
+    <p><b>I agree</b> to the procedure or course of treatment described on this form.</p>
+    <p><b>I understand</b> that you cannot give me a guarantee that a particular person will perform the procedure. The
+        person will, however, have appropriate experience.</p>
+
+    <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+        <?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA')) { ?>
+            <strong>I understand</strong> that I will have the opportunity to discuss the details of anaesthesia before the procedure, unless the urgency of my situation prevents this.<br/>
+        <?php } ?>
+        <p><b>I understand</b> that any procedure in addition to those described on this form will only be carried out if it
+            is necessary to save my life or to prevent serious harm to my health.</p>
+        <p>I have been told <b>about additional procedures which may become necessary during my treatment. I have listed
+                below any procedures</b> which I do not wish to be carried out <b>without further discussion.</b></p>
+    <?php endif; ?>
+
+    <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
+    <div class="box">
+        <div class="flex">
+            <div class="dotted-area">
+                <div class="label">Signed</div>
+            </div>
+            <div class="dotted-area">
+                <div class="label">Date</div>
+            </div>
+        </div>
+        <div class="flex">
+            <div class="dotted-area">
+                <div class="label">Parent name</div>
+                HARRISON, George (Mr)
+            </div>
+            <div class="dotted-area">
+                <div class="label">Relationship to child</div>
+                Father
+            </div>
+        </div>
+    </div>
+    <hr class="divider">
+    <h2>Child's agreement to treatment</h2>
+    <p>I agree to have the treatment I have been told about.</p>
+    <div class="box">
+        <div class="flex">
+            <div class="dotted-area">
+                <div class="label">Signed</div>
+            </div>
+            <div class="dotted-area">
+                <div class="label">Date</div>
+            </div>
+        </div>
+        <div class="flex"
+            <div class="dotted-area">
+                <div class="label">Print name</div>
+            </div>
+            <div class="dotted-area">
+                <div class="label">Job title</div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+    <h2>Confirmation of consent</h2><h6>To be completed by a health professional when the patient is admitted, if the
+        patient has signed the form in advance.</h6>
+    <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions and
+        wishes the procedure to go ahead.</p>
+
+    <div class="highlighter"><h3>COVID-19</h3>
+        <p>In the majority, COVID-19 causes a mild, self-limiting illness but symptoms may be highly variable amongst
+            individuals. It is important that you understand the specific risk profile to yourself.</p>
+        <p>Although we make every effort to minimise the risk of an infection, we cannot guarantee zero risk of COVID-19
+            transmission.</p>
+        <p>For more information: www.gov.uk/coronavirus</p></div>
+
+
 </main>
+</body>

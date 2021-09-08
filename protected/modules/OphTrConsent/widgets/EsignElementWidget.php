@@ -22,7 +22,7 @@ class EsignElementWidget extends \EsignElementWidget
     /**
      * @inheritDoc
      */
-    public function isSigningAllowed() : bool
+    public function isSigningAllowed(): bool
     {
         return $this->mode === \BaseEventElementWidget::$EVENT_VIEW_MODE;
     }
@@ -33,12 +33,12 @@ class EsignElementWidget extends \EsignElementWidget
     protected function getView()
     {
         $path = explode('\\', __CLASS__);
-        $prefix = "application.widgets.views.".array_pop($path);
+        $prefix = "application.widgets.views." . array_pop($path);
         if ($this->mode === self::$EVENT_PRINT_MODE) {
-            return $prefix."_event_print";
+            return $prefix . "_event_print";
         }
         // View is the same in edit mode and view mode
-        return $prefix."_event_edit";
+        return $prefix . "_event_edit";
     }
 
     /**

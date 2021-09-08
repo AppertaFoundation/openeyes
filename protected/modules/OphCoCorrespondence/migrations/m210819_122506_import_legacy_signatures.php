@@ -11,6 +11,15 @@ class m210819_122506_import_legacy_signatures extends OEMigration
     public function safeUp()
     {
         if ($this->dbConnection->schema->getTable(self::LEGACY_ET)) {
+            $this->execute("
+                UPDATE ".self::LEGACY_ET." cs
+                    LEFT JOIN `protected_file` pf ON pf.id = cs.protected_file_id
+                SET cs.signature_date = pf.last_modified_date 
+                WHERE 
+                    UNIX_TIMESTAMP(cs.signature_date) IS NULL 
+                    AND cs.protected_file_id IS NOT NULL
+                ;
+            ");
             $evt_type_id = $this->dbConnection
                 ->createCommand("SELECT `id` FROM `event_type` WHERE `class_name` = 'OphCoCorrespondence';")
                 ->queryScalar();

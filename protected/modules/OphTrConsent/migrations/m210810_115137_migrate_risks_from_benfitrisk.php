@@ -2,7 +2,7 @@
 
 class m210810_115137_migrate_risks_from_benfitrisk extends OEMigration
 {
-    public function up()
+    public function safeUp()
     {
         if (!$this->verifyTableExists('et_ophtrconsent_benefitrisk_risk')) {
             return true;
@@ -10,37 +10,28 @@ class m210810_115137_migrate_risks_from_benfitrisk extends OEMigration
 
         $this->alterOEColumn('et_ophtrconsent_benfitrisk','risks','mediumtext',true);
 
-        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
-            'class_name = :class_name',
-            array(':class_name' => 'OphTrConsent')
-        )->queryScalar();
+        $risk_data = $this->dbConnection->createCommand("
+            SELECT
+                br.id AS element_id,
+                CONCAT('<ul><li>',GROUP_CONCAT(b.name SEPARATOR '</li><li>'),'</li></ul>') AS `risks_str`
+            FROM
+                event_type et
+                LEFT JOIN `event` e ON e.event_type_id = et.id
+                LEFT JOIN `et_ophtrconsent_benfitrisk` br ON br.`event_id` = e.id
+                LEFT JOIN `et_ophtrconsent_benefitrisk_risk` brr ON brr.`element_id` = br.id
+                LEFT JOIN `benefit` b ON b.id = brr.risk_id
+            WHERE et.`class_name` = 'OphTrConsent' AND brr.id IS NOT NULL
+            GROUP BY br.id;
+        ")->queryAll();
 
-        $consent_events = \Event::model()->findAll('event_type_id=:event_type_id', [':event_type_id'=>$event_type_id]);
-
-        foreach ($consent_events as $event) {
-            $append_string = '';
-            $benefits_and_risks = $event->getElementByClass(Element_OphTrConsent_BenefitsAndRisks::class);
-
-            if ($benefits_and_risks) {
-                $old_risks = $this->dbConnection->createCommand()
-                    ->select('b.name as name')
-                    ->from('et_ophtrconsent_benefitrisk_risk br')
-                    ->leftJoin('benefit b', 'b.id = br.risk_id')
-                    ->where('element_id='.$benefits_and_risks->id)
-                    ->queryAll();
-
-                if (count($old_risks) > 0) {
-                    foreach ($old_risks as $old_risk) {
-                        $append_string .= "<li>".$old_risk['name']."</li>";
-                    }
-                }
-
-                $benefits_and_risks->risks .= '<ul>'.$append_string.'</ul>';
-                $benefits_and_risks->save();
-            }
+        foreach($risk_data as $risk){
+            $this->update('et_ophtrconsent_benfitrisk',
+                array('risks' => new CDbExpression('CONCAT(risks,"'.addslashes($risk['risks_str']).'")')),
+                'id = '.$risk['element_id']
+            );
         }
-
-        $this->dropOETable('et_ophtrconsent_benefitrisk_risk', true);
+        // Assign table
+        $this->dropOETable('et_ophtrconsent_benefitrisk_risk', false);
     }
 
     public function safeDown()

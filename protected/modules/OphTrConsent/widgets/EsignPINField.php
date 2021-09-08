@@ -22,7 +22,7 @@ class EsignPINField extends \EsignField
     /**
      * @inheritDoc
      */
-    public function getAction() : string
+    public function getAction(): string
     {
         return 'getSignatureByUsernameAndPin';
     }
@@ -40,7 +40,7 @@ class EsignPINField extends \EsignField
     /**
      * @return string[]
      */
-    protected function getHiddenFields() : array
+    protected function getHiddenFields(): array
     {
         return [
             "id", "type", "proof", "signatory_name", "signatory_role",

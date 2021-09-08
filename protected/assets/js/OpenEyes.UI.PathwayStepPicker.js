@@ -1,7 +1,8 @@
-(function(exports) {
+(function (exports) {
     'use strict';
 
     function PathwayStepPicker(options) {
+        this.delaySearch = 0;
         this.options = $.extend(true, {}, PathwayStepPicker._defaultOptions, options);
     }
 
@@ -34,24 +35,25 @@
 
     PathwayStepPicker.prototype.selected_patients = 0;
 
-    PathwayStepPicker.prototype.init = function() {
+    PathwayStepPicker.prototype.init = function () {
         const self = this;
+
         $(selectors.mainSelector).on('click', selectors.step, this.addStep.bind(this));
         $(this.options.pathway_checkboxes).change(this.onAddButtonClicked.bind(this));
         $(selectors.addPresetPathway).click(this.addPresetPathway.bind(this));
         $(selectors.mainSelector).on('click', selectors.selectAssignee, this.assignToUser.bind(this));
-        $(selectors.mainSelector + ' ' + selectors.closeButton).click(function() {
+        $(selectors.mainSelector + ' ' + selectors.closeButton).click(function () {
             $(selectors.mainSelector).removeClass('fadein');
             $(self.options.pathway_checkboxes + ':checked').prop('checked', false);
         });
-        $(selectors.assigneeSearchField).change(this.onSearchAssignee.bind(this));
+        $(selectors.assigneeSearchField).keyup(this.onSearchAssignee.bind(this));
         $(selectors.undoTodoStepButton).click(this.undoTodoStep.bind(this));
     };
 
-    PathwayStepPicker.prototype.assignToUser = function(e) {
+    PathwayStepPicker.prototype.assignToUser = function (e) {
         const self = this;
         let pathway_ids = $(this.options.pathway_checkboxes + ':checked').map(
-            function() {
+            function () {
                 return $(this).val();
             }
         ).get();
@@ -64,7 +66,7 @@
                     YII_CSRF_TOKEN: YII_CSRF_TOKEN,
                 },
                 type: 'POST',
-                success: function(response) {
+                success: function (response) {
                     // Add the assignee's initials to the pathway.
                     let $affectedRow = $(self.options.pathway_checkboxes + '[value="' + pathway_id + '"]').closest('tr');
                     $affectedRow.find('td' + selectors.pathwayAssignee).attr('data-id', response.id);
@@ -74,7 +76,7 @@
         }
     };
 
-    PathwayStepPicker.prototype.onAddButtonClicked = function(e) {
+    PathwayStepPicker.prototype.onAddButtonClicked = function (e) {
         if ($(e.target).val() === 'all') {
             if ($(e.target).is(':checked')) {
                 $(e.target).closest('table').find(this.options.pathway_checkboxes).prop('checked', true);
@@ -99,31 +101,31 @@
         }
     };
 
-    PathwayStepPicker.prototype.addPresetPathway = function() {
+    PathwayStepPicker.prototype.addPresetPathway = function () {
         const self = this;
         let pathway_ids = $(this.options.pathway_checkboxes + ':checked').map(
-            function() {
+            function () {
                 return $(this).val();
             }
         ).get();
         new OpenEyes.UI.Dialog.PathwayStepOptions({
             title: 'Add common pathway',
             itemSets: [{
-                    is_form: true,
-                    title: 'Pathways',
-                    id: 'pathway',
-                    display_options: 'wide',
-                    items: this.options.pathways
-                },
+                is_form: true,
+                title: 'Pathways',
+                id: 'pathway',
+                display_options: 'wide',
+                items: this.options.pathways
+            },
                 {
                     is_form: true,
                     title: 'Insert position',
                     id: 'position',
                     items: [{
-                            id: 0,
-                            name: 'path-position',
-                            label: 'End of pathway',
-                        },
+                        id: 0,
+                        name: 'path-position',
+                        label: 'End of pathway',
+                    },
                         {
                             id: 1,
                             name: 'path-position',
@@ -142,7 +144,7 @@
                     ]
                 }
             ],
-            onReturn: function(dialog, selectedValues) {
+            onReturn: function (dialog, selectedValues) {
                 for (let pathway_id of pathway_ids) {
                     $.ajax({
                         url: self.options.base_url + 'worklist/addPathwayStepsToPathway',
@@ -152,7 +154,7 @@
                             YII_CSRF_TOKEN: YII_CSRF_TOKEN,
                         },
                         type: 'POST',
-                        success: function(response) {
+                        success: function (response) {
                             // Add all steps for the chosen pathway to the selected pathways.
                             $(self.options.pathway_checkboxes + ':checked').closest('tr').find('td.js-pathway-container').html(response.step_html);
                         },
@@ -163,7 +165,7 @@
         }).open();
     };
 
-    PathwayStepPicker.prototype.newStep = function(step_type_id, pathway_id, step_data = null, position = 0) {
+    PathwayStepPicker.prototype.newStep = function (step_type_id, pathway_id, step_data = null, position = 0) {
         const self = this;
         $.ajax({
             url: this.options.base_url + 'worklist/addStepToPathway',
@@ -175,7 +177,7 @@
                 YII_CSRF_TOKEN: YII_CSRF_TOKEN,
             },
             type: 'POST',
-            success: function(response) {
+            success: function (response) {
                 const $pathway = $(self.options.pathway_checkboxes + ':checked').closest('tr').find('td.js-pathway-container');
                 $pathway.html(response.step_html);
                 if (
@@ -183,7 +185,7 @@
                     $pathway.find('.oe-pathstep-btn.done').length > 0 &&
                     $pathway.find('.oe-pathstep-btn.active').length === 0) {
                     // Add a wait step after this step
-                    if(!response.no_wait_timer){
+                    if (!response.no_wait_timer) {
                         let step_html = Mustache.render($(selectors.stepTemplate).html(), {
                             status: 'wait',
                             type: 'buff',
@@ -199,14 +201,14 @@
         });
     };
 
-    PathwayStepPicker.prototype.getPSDDrugs = function() {
+    PathwayStepPicker.prototype.getPSDDrugs = function () {
         const self = this;
         $.ajax({
             url: this.options.base_url + 'worklist/getPresetDrugs/' + self.preset_id,
             data: {
                 laterality: self.laterality,
             },
-            success: function(response) {
+            success: function (response) {
                 $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] tbody').empty();
                 for (let drug_item of response) {
                     let newRow = Mustache.render($('#psd-drug-list-item').html(), drug_item);
@@ -216,9 +218,9 @@
         });
     };
 
-    PathwayStepPicker.prototype.addStep = function(e) {
+    PathwayStepPicker.prototype.addStep = function (e) {
         let pathway_ids = $(this.options.pathway_checkboxes + ':checked').map(
-            function() {
+            function () {
                 return $(this).val();
             }
         ).get();
@@ -232,29 +234,29 @@
                 new OpenEyes.UI.Dialog.PathwayStepOptions({
                     title: 'Drug Administration Preset Orders',
                     itemSets: [{
-                            is_form: true,
-                            title: 'Presets',
-                            id: 'preset',
-                            items: this.options.preset_orders,
-                            onSelectValue: function(dialog, itemSet, selected_value) {
-                                self.preset_id = selected_value;
-                                let preset_name = itemSet.items.find(element => element.id === selected_value).label;
-                                $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] tbody').empty();
-                                $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] h3').text(preset_name);
-                                if (self.preset_id && self.laterality) {
-                                    self.getPSDDrugs();
-                                }
+                        is_form: true,
+                        title: 'Presets',
+                        id: 'preset',
+                        items: this.options.preset_orders,
+                        onSelectValue: function (dialog, itemSet, selected_value) {
+                            self.preset_id = selected_value;
+                            let preset_name = itemSet.items.find(element => element.id === selected_value).label;
+                            $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] tbody').empty();
+                            $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] h3').text(preset_name);
+                            if (self.preset_id && self.laterality) {
+                                self.getPSDDrugs();
                             }
-                        },
+                        }
+                    },
                         {
                             is_form: true,
                             title: 'Laterality',
                             id: 'laterality',
                             items: [{
-                                    id: 3,
-                                    name: 'laterality',
-                                    label: 'Right & Left Eye'
-                                },
+                                id: 3,
+                                name: 'laterality',
+                                label: 'Right & Left Eye'
+                            },
                                 {
                                     id: 2,
                                     name: 'laterality',
@@ -266,7 +268,7 @@
                                     label: 'Left only'
                                 },
                             ],
-                            onSelectValue: function(dialog, itemSet, selected_value) {
+                            onSelectValue: function (dialog, itemSet, selected_value) {
                                 self.laterality = selected_value;
                                 $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] tbody').empty();
 
@@ -286,10 +288,10 @@
                             title: 'Insert position',
                             id: 'position',
                             items: [{
-                                    id: 0,
-                                    name: 'path-position',
-                                    label: 'End of pathway',
-                                },
+                                id: 0,
+                                name: 'path-position',
+                                label: 'End of pathway',
+                            },
                                 {
                                     id: 1,
                                     name: 'path-position',
@@ -308,7 +310,7 @@
                             ]
                         }
                     ],
-                    onReturn: function(dialog, selectedValues) {
+                    onReturn: function (dialog, selectedValues) {
                         for (let pathway_id of pathway_ids) {
                             self.newStep(step_type_id, pathway_id, {
                                 preset_id: selectedValues[0].value,
@@ -478,10 +480,10 @@
                     current_subspecialty: this.options.current_subspecialty_id,
                     current_firm: this.options.current_firm_id,
                     custom_options: [{
-                            id: 'subspecialty',
-                            name: 'Subspecialty',
-                            option_values: this.options.subspecialties
-                        },
+                        id: 'subspecialty',
+                        name: 'Subspecialty',
+                        option_values: this.options.subspecialties
+                    },
                         {
                             id: 'context',
                             name: 'Context',
@@ -494,7 +496,7 @@
                         }
                     ],
                     title: 'Add examination task',
-                    onReturn: function(dialog, long_name, short_name, selected_custom_options) {
+                    onReturn: function (dialog, long_name, short_name, selected_custom_options) {
                         for (let pathway_id of pathway_ids) {
                             self.newStep(step_type_id, pathway_id, {
                                 long_name,
@@ -516,7 +518,7 @@
                         option_values: this.options.macros,
                     }],
                     title: 'Add letter task',
-                    onReturn: function(dialog, long_name, short_name, selected_custom_option) {
+                    onReturn: function (dialog, long_name, short_name, selected_custom_option) {
                         for (let pathway_id of pathway_ids) {
                             self.newStep(step_type_id, pathway_id, {
                                 long_name,
@@ -532,7 +534,7 @@
                 // Display dialog for entering step name, selecting insert position and selecting workflow.
                 new OpenEyes.UI.Dialog.NewPathwayStep({
                     title: 'Add custom general task',
-                    onReturn: function(dialog, long_name, short_name) {
+                    onReturn: function (dialog, long_name, short_name) {
                         for (let pathway_id of pathway_ids) {
                             self.newStep(step_type_id, pathway_id, {
                                 long_name,
@@ -566,8 +568,8 @@
                         let duration = selectedValues[0].value
                         for (let pathway_id of pathway_ids) {
                             self.newStep(
-                                step_type_id, 
-                                pathway_id, 
+                                step_type_id,
+                                pathway_id,
                                 {
                                     short_name: duration,
                                     duration: duration,
@@ -586,26 +588,33 @@
         }
     };
 
-    PathwayStepPicker.prototype.onSearchAssignee = function(e) {
-        let search_term = $(e.target).val();
-        $.get(
-            this.options.base_url + 'worklist/getAssignees', { term: search_term },
-            function(response) {
-                $.each(response, function(id, item) {
-                    $(selectors.assigneeList).empty();
-                    $(selectors.assigneeList).append('<li data-id="' + item.id + '">' + item.label + '</li>');
-                });
-            }
-        );
+    PathwayStepPicker.prototype.onSearchAssignee = function (e) {
+        let self = this;
+        clearTimeout(this.delaySearch);
+        this.delaySearch = setTimeout(function () {
+            let search_term = $(e.target).val();
+            $(e.target).parent().find('.spinner-loader').show();
+            $.get(
+                self.options.base_url + 'worklist/getAssignees',
+                { term: search_term },
+                function (response) {
+                    $(e.target).parent().find('.spinner-loader').hide();
+                    $.each(response, function (id, item) {
+                        $(selectors.assigneeList).empty();
+                        $(selectors.assigneeList).append('<li data-id="' + item.id + '">' + item.label + '</li>');
+                    });
+                }
+            );
+        }, 500);
     };
 
-    PathwayStepPicker.prototype.undoTodoStep = function() {
+    PathwayStepPicker.prototype.undoTodoStep = function () {
         const self = this;
         const selected = $(`${this.options.pathway_checkboxes}:checked`);
         const rows = selected.closest('tr');
 
-        const result = { remaining: rows.length, hadError: false };
-        const onAjaxResult = function(isError) {
+        const result = {remaining: rows.length, hadError: false};
+        const onAjaxResult = function (isError) {
             result.remaining -= 1;
             result.hadError |= isError;
 
@@ -622,7 +631,7 @@
 
         $('.spinner').show();
 
-        rows.each(function() {
+        rows.each(function () {
             const lastStep = $(this).find('.pathway .oe-pathstep-btn.todo:last-child');
 
             if (lastStep.length > 0) {
@@ -635,13 +644,13 @@
                     url: self.options.base_url + 'worklist/deleteStep',
                     type: 'POST',
                     data: data,
-                    success: function() {
+                    success: function () {
                         // This is a requested step so as long as it is deleted the order of other requested steps should be correct.
                         lastStep.remove();
 
                         onAjaxResult(false);
                     },
-                    error: function() {
+                    error: function () {
                         onAjaxResult(true);
                     }
                 });
@@ -651,7 +660,7 @@
 
     PathwayStepPicker.prototype.reattachCheckboxHandlers = function () {
         $(this.options.pathway_checkboxes).off('change').on('change', this.onAddButtonClicked.bind(this));
-    }
+    };
 
     exports.PathwayStepPicker = PathwayStepPicker;
 }(OpenEyes.UI));

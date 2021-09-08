@@ -54,9 +54,11 @@ class DefaultController extends \BaseEventTypeController
         'list' => self::ACTION_TYPE_LIST,
         'export' => self::ACTION_TYPE_LIST,
         'LabelPDFprint' => self::ACTION_TYPE_VIEW,
+        'sign' => self::ACTION_TYPE_EDIT,
         'getSignatureByPin' => self::ACTION_TYPE_FORM,
         'saveCapturedSignature' => self::ACTION_TYPE_FORM,
-        'eSign' => self::ACTION_TYPE_FORM,
+        'esignDevicePopup' => self::ACTION_TYPE_FORM,
+        'postSignRequest' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -70,6 +72,12 @@ class DefaultController extends \BaseEventTypeController
             ],
             'saveCapturedSignature' => [
                 'class' => \SaveCapturedSignatureAction::class
+            ],
+            'esignDevicePopup' => [
+                'class' => \EsignDevicePopupAction::class
+            ],
+            'postSignRequest' => [
+                'class' => \PostSignRequestAction::class
             ]
         ];
     }
@@ -1571,53 +1579,25 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    public function actionCilinicalDiagnosisAutocomplete($term)
+    public function initActionSign()
     {
-        $search = "%".strtolower($term)."%";
-        $where = '(LOWER(term) like :search or id like :search)';
-        $where .= ' and active = 1';
-        $diagnosis = \Yii::app()->db->createCommand()
-            ->select('id, term AS value')
-            ->from('disorder')
-            ->where($where, array(
-                ':search' => $search,
-            ))
-            ->order('term')
-            ->queryAll();
-
-        echo json_encode($diagnosis);
+        $this->initWithEventId($this->request->getParam('id'));
     }
 
-    public function actionGetVisualAcuityDatas($unit_id)
+    public function actionSign($id)
     {
-        if ($unit_id == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_SNELLEN) {
-            $datas = Element_OphCoCvi_ClinicalInfo_V1::model()->getSnellenDatas();
-        } else if ($unit_id == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_LOGMAR) {
-            $datas = Element_OphCoCvi_ClinicalInfo_V1::model()->getLogmarDatas();
+        if (!$element_type = \ElementType::model()->findByPk(\Yii::app()->request->getParam("element_type_id"))) {
+            throw new \CHttpException(500, "Element type not found");
         }
-        echo json_encode($datas);
+        if (!$element = $this->event->getElementByClass($element_type->class_name)) {
+            throw new \CHttpException(500, "Element not found");
+        }
+        $this->redirect("/OphCoCvi/default/print/$id?html=1&auto_print=0&sign=1".
+            "&element_type_id=".\Yii::app()->request->getParam("element_type_id").
+            "&signature_type=".\Yii::app()->request->getParam("signature_type").
+            "&signatory_role=".\Yii::app()->request->getParam("signatory_role").
+            "&signature_name=".\Yii::app()->request->getParam("signatory_name").
+            "&element_id=".$element->id
+        );
     }
-
-    public function actionSign($id, $element_type_id)
-    {
-        $_GET['auto_print'] = "0";
-        $this->initWithEventId($id);
-        $this->layout = "//layouts/sign";
-        // Currently signing is restricted to the Consent page only
-        $this->render("print_Element_OphCoCvi_ConsentSignature", array(
-            "event" => $this->event,
-            "element_type_id" => $element_type_id,
-            "patient" => $this->event->episode->patient,
-        ));
-    }
-
-
-    public function checkPatientSignature()
-    {
-        return false;
-        // Element_OphCoCvi_PatientSignature deprecated
-        $patient_signature =  $this->event->getElementByClass(\OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature::class);
-        return !is_null($patient_signature) && $patient_signature->isSigned();
-    }
-
 }

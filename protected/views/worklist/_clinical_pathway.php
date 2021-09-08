@@ -54,7 +54,10 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
             <?php
             $red_flag_count = isset($step->associated_event)
                 ? \OEModule\OphCiExamination\models\Element_OphCiExamination_AE_RedFlags::model()
-                    ->countByAttributes(array('event_id' => $step->associated_event->id))
+                    ->count(
+                        'event_id = :event_id AND nrf_check != 1',
+                        array(':event_id' => $step->associated_event->id)
+                    )
                 : 0;
             if ($red_flag_count > 0) { ?>
             <span class="oe-pathstep-btn buff red-flag" data-pathstep-id="<?= $step->id ?>"
