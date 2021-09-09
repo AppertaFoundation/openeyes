@@ -102,6 +102,26 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     </div>
     <?php endif; ?>
 
+    <?php if (isset($elements['Element_OphTrConsent_PatientQuestions']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_PatientQuestions']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+        <?php
+        $purifier = new CHtmlPurifier();
+        $purifier->setOptions(array('HTML.Trusted' => true));
+        ?>
+    <div class="group">
+        <h4>Any questions asked by the patient:</h4>
+        <div class="indent">
+            <?= $purifier->purify((trim($elements['Element_OphTrConsent_PatientQuestions']->questions) === "" ? "None" : $elements['Element_OphTrConsent_PatientQuestions']->questions)) ?>
+        </div>
+    </div>
+
+    <div class="group">
+        <h4>Patient refuses the following procedures:</h4>
+        <div class="indent">
+            <?= $purifier->purify((trim($elements['Element_OphTrConsent_PatientQuestions']->refused_procedures) === "" ? "None" : $elements['Element_OphTrConsent_PatientQuestions']->refused_procedures)) ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
     <div class="group">
         <h4>Any extra procedures which may become necessary during the procedure(s):</h4>
