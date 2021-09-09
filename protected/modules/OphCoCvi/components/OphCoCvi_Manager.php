@@ -466,7 +466,6 @@ class OphCoCvi_Manager extends \CComponent
 
         if ($clerical = $this->getClericalElementForEvent($event)) {
             $clerical->setScenario('finalise');
-
             if (!$clerical->validate()) {
                 return false;
             }
@@ -547,7 +546,7 @@ class OphCoCvi_Manager extends \CComponent
         $address = $institutionInfo->name . '\n' . \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => false, 'delimiter' => '\n'));
         $data['hospitalAddress'] = \Helper::lineLimit($address, 2, 1, '\n');
         $data['hospitalAddressMultiline'] = \Helper::lineLimit($address, 4, 1, '\n');
-        $data['hospitalNumber'] = $event->episode->patient->hos_num;
+        $data['hospitalNumber'] = \PatientIdentifierHelper::getIdentifierValue(\PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $event->episode->patient->id, \Institution::model()->getCurrent()->id, \Yii::app()->session['selected_site_id']));
 
         return $data;
     }
@@ -741,7 +740,6 @@ class OphCoCvi_Manager extends \CComponent
 
         if ($clinical = $this->getClinicalElementForEvent($event)) {
             $clinical->setScenario('finalise');
-
             if ($clinical->validate()) {
                 $status |= self::$CLINICAL_COMPLETE;
             }
@@ -760,7 +758,6 @@ class OphCoCvi_Manager extends \CComponent
 
         if ($demographics = $this->getDemographicsElementForEvent($event)) {
             $demographics->setScenario('finalise');
-
             if ($demographics->validate()) {
                 $status |= self::$DEMOGRAPHICS_COMPLETE;
             }
@@ -866,7 +863,6 @@ class OphCoCvi_Manager extends \CComponent
      */
     private function handleIssuedFilter(\CDbCriteria $criteria, $filter = array())
     {
-        //WTF???
         if ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
             and (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))
             and (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
@@ -967,10 +963,6 @@ class OphCoCvi_Manager extends \CComponent
                 'asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
                 'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc',
             ),
-            'hosnum' => array(
-                'asc' => 'patient.hos_num asc, patient.id asc, event.id asc',
-                'desc' => 'patient.hos_num desc, patient.id desc, event.id desc',
-            ),
             'creator' => array(
                 'asc' => 'lower(user.last_name) asc, lower(user.first_name) asc, event.id asc',
                 'desc' => 'lower(user.last_name) desc, lower(user.first_name) desc, event.id desc',
@@ -1025,7 +1017,6 @@ class OphCoCvi_Manager extends \CComponent
     public function saveUserSignature($signatureFile, \Event $event)
     {
         $portal_connection = new \OptomPortalConnection();
-
         if ($new_file = $portal_connection->createNewSignatureImage($signatureFile, $event->id)) {
             if ($clinic_element = $this->getClinicalElementForEvent($event)) {
                 $clinic_element->consultant_signature_file_id = $new_file->id;

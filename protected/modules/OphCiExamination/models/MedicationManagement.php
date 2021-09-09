@@ -150,8 +150,8 @@ class MedicationManagement extends BaseMedicationElement
         return array_filter($this->visible_entries, function ($e) use ($event_date, $changed_entries_ids) {
             $continued_medication = $e->getContinuedMedication();
             return (($e->start_date == $event_date || $e->isUndated()) && is_null($continued_medication)
-                    && (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
-                    && !in_array($e->id, $changed_entries_ids))
+                && (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+                && !in_array($e->id, $changed_entries_ids))
                 && is_null($e->stopped_in_event_id);
         });
     }

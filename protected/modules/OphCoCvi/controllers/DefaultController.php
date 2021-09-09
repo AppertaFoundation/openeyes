@@ -169,8 +169,6 @@ class DefaultController extends \BaseEventTypeController
                         'firm' => $this->firm,
                         'event' => $this->event,
                     ));
-                    /* Only events of the current version are editable */
-                    //&& $this->event->version == $this->event->eventType->version;
         }
     }
 

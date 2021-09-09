@@ -51,18 +51,6 @@ class OphCoCvi_API extends \BaseAPI
     public $createOprnArgs = array('user_id', 'firm', 'episode');
 
     /**
-     * Get all events regardless of episode.
-     *
-     * @param Patient $patient
-     * @return \Event[]
-     * @throws \Exception
-     */
-//    public function getEvents(Patient $patient)
-//    {
-//        return $this->getManager()->getEventsForPatient($patient);
-//    }
-
-    /**
      * Convenience wrapper to allow template rendering.
      *
      * @param       $view

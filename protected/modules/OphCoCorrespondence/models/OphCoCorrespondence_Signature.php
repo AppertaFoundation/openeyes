@@ -29,6 +29,7 @@
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property integer $secretary
  *
  * The followings are the available model relations:
  * @property Element_OphCoCorrespondence_Esign $element

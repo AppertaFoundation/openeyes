@@ -104,9 +104,9 @@ abstract class BaseMedicationWidget extends BaseEventElementWidget
                 /** @var EventMedicationUse $entry */
 
                 foreach (array_merge(
-                             $entry->attributeNames(),
-                             ['is_copied_from_previous_event', 'group']
-                         )
+                    $entry->attributeNames(),
+                    ['is_copied_from_previous_event', 'group']
+                )
                          as $k) {
                     if (array_key_exists($k, $entry_data) && in_array($k, $entry->attributeNames())) {
                         if (in_array($k, ['prescribe', 'stop'])) {

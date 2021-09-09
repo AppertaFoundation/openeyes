@@ -21,8 +21,8 @@ class m210819_122506_import_legacy_signatures extends OEMigration
                 ;
             ");
             $evt_type_id = $this->dbConnection
-                ->createCommand("SELECT `id` FROM `event_type` WHERE `class_name` = 'OphCoCorrespondence';")
-                ->queryScalar();
+                            ->createCommand("SELECT `id` FROM `event_type` WHERE `class_name` = 'OphCoCorrespondence';")
+                            ->queryScalar();
             // Copy elements
             $this->execute("
                 INSERT INTO ".self::NEW_ET." (event_id, last_modified_user_id, last_modified_date, created_user_id, created_date)
