@@ -15,5 +15,24 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$purifier = new CHtmlPurifier();
+$purifier->setOptions(array('HTML.Trusted' => true));
 ?>
-    <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="<?php echo $name ?>" id="<?php echo $id ?>" size="16" maxlength="16" value="<?php echo $val?>" style="border: 1px solid #000;" />
+<div class="element-data full-width flex-layout flex-top col-gap">
+  <div class="cols-6">
+    <div class="data-label large-text">
+      Any questions asked by the patient:
+    </div>
+    <span class="large-text">
+        <?= $purifier->purify((trim($element->questions) === "" ? "None" : $element->questions)) ?>
+    </span>
+  </div>
+
+  <div class="cols-6">
+    <div class="data-label large-text">
+      Patient refuses the following procedures:
+    </div>
+        <?= $purifier->purify((trim($element->refused_procedures) === "" ? "None" : $element->refused_procedures)) ?>
+  </div>
+</div>
