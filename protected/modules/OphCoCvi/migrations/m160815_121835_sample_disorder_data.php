@@ -29,4 +29,5 @@ class m160815_121835_sample_disorder_data extends CDbMigration
     {
         $this->truncateTable('ophcocvi_clinicinfo_disorder_section');
     }
+
 }

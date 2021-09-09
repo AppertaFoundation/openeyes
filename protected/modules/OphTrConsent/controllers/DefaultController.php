@@ -24,7 +24,6 @@ use OEModule\OphTrConsent\models\Element_OphTrConsent_MedicalCapacityAdvocate;
 class DefaultController extends BaseEventTypeController
 {
     private $elementFilterList = [ 'Element_OphTrConsent_Other' ];
-
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,

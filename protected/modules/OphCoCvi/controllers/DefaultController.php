@@ -1042,20 +1042,6 @@ class DefaultController extends \BaseEventTypeController
         echo "0";
     }
 
-    public function actionSignConsultantSignatureElement($element_id, $element_type_id, $user_id)
-    {
-        $signature = parent::signConsultantSignature($element_id, $element_type_id, $user_id);
-
-        if ((int)$signature > 0) {
-            $element_id = \Yii::app()->request->getParam("element_id");
-            if ($element = models\Element_OphCoCvi_ConsultantSignature::model()->findByPk($element_id)) {
-                $this->initWithEventId($element->event_id);
-                $this->updateEventInfo();
-            }
-        }
-        echo $signature;
-    }
-
     /**
      * @throws \CHttpException
      */

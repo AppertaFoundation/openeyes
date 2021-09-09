@@ -4,6 +4,9 @@ class m190925_124122_add_element_consultant_signature extends OEMigration
 {
     public function up()
     {
+
+// Can we delete this file ? Sabi 09/09/2021
+
         $this->createOETable("et_ophcocvi_consultant_signature", [
             'id' => 'pk',
             'event_id' => 'INT(10) UNSIGNED',

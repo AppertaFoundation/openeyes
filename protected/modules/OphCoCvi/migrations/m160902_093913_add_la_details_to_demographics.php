@@ -10,6 +10,7 @@ class m160902_093913_add_la_details_to_demographics extends CDbMigration
         $this->addColumn('et_ophcocvi_demographics_version', 'la_address', 'text');
         $this->addColumn('et_ophcocvi_demographics', 'la_telephone', 'varchar(20)');
         $this->addColumn('et_ophcocvi_demographics_version', 'la_telephone', 'varchar(20)');
+
     }
 
     public function down()

@@ -2,6 +2,7 @@ this.OpenEyes = this.OpenEyes || {};
 this.OpenEyes.UI = this.OpenEyes.UI || {};
 
 (function(exports) {
+
     const BACKGROUND = 'rgb(255, 255, 255)';
     const FOREGROUND = 'rgb(22, 38, 76)';
     const FIXED_WIDTH = 900;
@@ -161,6 +162,7 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     SignatureCapture.prototype.addEventHandlers = function()
     {
         let widget = this;
+
         //Erase button
         $(document).on("click", widget.options.eraseButtonSelector, function() {
             widget.signaturePad.clear();
@@ -320,4 +322,3 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     exports.SignatureCapture = SignatureCapture;
 
 }(OpenEyes.UI));
-

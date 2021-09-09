@@ -42,6 +42,7 @@ class m160811_133414_clinical_disorder_section_comments extends CDbMigration
         $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'main_cause', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
         $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'eye_id', 'int(10) unsigned NOT NULL');
         $this->addColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'affected', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
+
     }
 
     public function down()
@@ -53,4 +54,5 @@ class m160811_133414_clinical_disorder_section_comments extends CDbMigration
         $this->dropColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'eye_id');
         $this->dropColumn('et_ophcocvi_clinicinfo_disorder_assignment_version', 'affected');
     }
+
 }

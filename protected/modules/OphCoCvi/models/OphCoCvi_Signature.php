@@ -127,7 +127,7 @@ class OphCoCvi_Signature extends BaseSignature
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria=new CDbCriteria;
 
         $criteria->compare('element_id', $this->element_id);
         $criteria->compare('signature_file_id', $this->signature_file_id, true);
@@ -140,7 +140,7 @@ class OphCoCvi_Signature extends BaseSignature
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria' => $criteria,
+            'criteria'=>$criteria,
         ));
     }
 

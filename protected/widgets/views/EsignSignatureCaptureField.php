@@ -84,4 +84,3 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
         });
     });
 </script>
-

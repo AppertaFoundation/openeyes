@@ -229,7 +229,6 @@ OpenEyes.UI = OpenEyes.UI || {};
             const $txt = $("<span>ELECTRONIC VERIFIED, NOT SIGNED TO AVOID DELAYS</span>");
             $txt.prependTo(this.$signatureWrapper);
         }
-
         this.$date.text(date).show();
         this.$time.text(time);
         this.$signatureWrapper.show();

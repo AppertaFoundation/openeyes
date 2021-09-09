@@ -16,9 +16,14 @@ class m160826_143933_change_element_order extends CDbMigration
                 ->where('class_name = :name', array(':name' => $cls))
                 ->queryRow();
 
-            $this->update('element_type', array('display_order' => $display_order += 10), 'id = :et_id',
-                array(':et_id' => $element['id']));
+            $this->update(
+                'element_type',
+                array('display_order' => $display_order += 10),
+                'id = :et_id',
+                array(':et_id' => $element['id'])
+            );
         }
+
     }
 
     public function down()
@@ -28,8 +33,12 @@ class m160826_143933_change_element_order extends CDbMigration
                 ->where('class_name = :name', array(':name' => $cls))
                 ->queryRow();
 
-            $this->update('element_type', array('display_order' => 1), 'id = :et_id',
-                array(':et_id' => $element['id']));
+            $this->update(
+                'element_type',
+                array('display_order' => 1),
+                'id = :et_id',
+                array(':et_id' => $element['id'])
+            );
         }
     }
 
