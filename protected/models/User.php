@@ -704,11 +704,6 @@ class User extends BaseActiveRecordVersioned
         if ($signature_pin) {
             if ($this->signature_file_id) {
                 $signature_file = ProtectedFile::model()->findByPk($this->signature_file_id);
-
-// this is used during the move of CVI event from 1.19 to v4 to bypass signature
-// until new sign element is ready
-//return file_get_contents($signature_file->getPath());
-
                 $image_data = base64_decode(
                     $this->decryptSignature(
                         file_get_contents($signature_file->getPath()),
