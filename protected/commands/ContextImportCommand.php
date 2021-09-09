@@ -64,31 +64,39 @@ EOH;
         $active = $row[8];
 
         $institution_id = Institution::model()->findByAttributes(array('name' => $institution))->id;
-        $subspecialty_id = Subspecialty::model()->findByAttributes(array('name' => $subspecialty))->id;
-        $service_subspecialty_assignment_id = ServiceSubspecialtyAssignment::model()->findByAttributes(array('subspecialty_id' => $subspecialty_id));
 
-        if (!$this->alreadyExists($context_name)) {
-            $firm = new \Firm;
-            $firm->pas_code = ($pas_code == "Blank") ? Null : $pas_code;
-            $firm->name = ($context_name == "Blank") ? Null : $context_name;
-            $firm->institution_id = $institution_id;
-            $firm->service_subspecialty_assignment_id = $service_subspecialty_assignment_id;
-            $firm->consultant->fullName = ($consultant == "Blank") ? Null : $consultant;
-            $firm->cost_code = ($cost_code == "Blank") ? Null : $cost_code;
-            $firm->can_own_an_episode = ($service_enabled == "No") ? 0 : 1;
-            $firm->runtime_selectable = ($context_enabled == "No") ? 0 : 1;
-            $firm->active = ($active == "No") ? 0 : 1;
+        $subspecialty_id = Subspecialty::model()->findByAttributes(array('name' => $subspecialty))->id;
+        $service_subspecialty_assignment_id = ServiceSubspecialtyAssignment::model()->findByAttributes(array('subspecialty_id' => $subspecialty_id))->id;
+
+        if ($consultant != "Blank") {
+            $consultant_id = User::model()->findByAttributes(array('first_name' => $consultant))->id;
         }
+
+        $firm = Null;
+
+        (!$this->alreadyExists($context_name)) ? $firm = new \Firm : $firm = \Firm::model()->findByAttributes(array('name'=>$context_name));
+        OELog::log($context_enabled);
+        $firm->pas_code = ($pas_code == "Blank") ? Null : $pas_code;
+        $firm->name = ($context_name == "Blank") ? Null : $context_name;
+        $firm->institution_id = $institution_id;
+        $firm->service_subspecialty_assignment_id = $service_subspecialty_assignment_id;
+        $firm->consultant_id = ($consultant == "Blank") ? Null : $consultant_id;
+        $firm->cost_code = ($cost_code == "Blank") ? Null : $cost_code;
+        $firm->can_own_an_episode = ($service_enabled == "No") ? 0 : 1;
+        $firm->runtime_selectable = ($context_enabled == "No") ? 0 : 1;
+        $firm->active = ($active == "No") ? 0 : 1;
+
+        (!$this->alreadyExists($context_name)) ? $firm->insert() : $firm->save(false);
     }
 
     public function alreadyExists($name)
     {
-        $model = \Firm::model()->findAllByAttributes(array('name'=>$name));
-        if ($model==array()) {
+        $model = \Firm::model()->findByAttributes(array('name'=>$name));
+        if ($model==Null) {
             return false;
         }
         else {
-            return $model;
+            return true;
         }
     }
 }
