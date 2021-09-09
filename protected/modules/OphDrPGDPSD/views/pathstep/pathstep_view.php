@@ -21,7 +21,7 @@ if ($is_step_instance) {
 }
 ?>
 <div class="slide-open" data-status-dict='<?=$assignment->getStatusDetails(true)?>'>
-    <form id="worklist-administration-form" method="POST" action='/OphDrPGDPSD/PSD/unlockPathStep'>
+    <form id="worklist-administration-form" method="POST" action='/OphDrPGDPSD/PSD/unlockPSD'>
         <?php if ($is_step_instance) { ?>
             <div class="patient"><?=$patient_name?></div>
         <?php } ?>
@@ -74,7 +74,7 @@ if ($is_step_instance) {
                                 $icon_css = isset($eye_med[$side]) ? $side[0]: null;
                                 $index = $eye_med_obj ? $eye_med_obj->id : $index;
                                 $this->renderPartial(
-                                    '/pathstep/pathstep_view_admin',
+                                    'application.modules.OphDrPGDPSD.views.pathstep.pathstep_view_admin',
                                     array(
                                         'assignment' => $assignment,
                                         'med_obj' => $eye_med_obj,
@@ -110,7 +110,7 @@ if ($is_step_instance) {
                         <td><i class="js-administer-icon oe-i <?=$other_med['administration_status']?> small no-click pad"></i></td>
                                 <?php
                                     $this->renderPartial(
-                                        '/pathstep/pathstep_view_admin',
+                                        'application.modules.OphDrPGDPSD.views.pathstep.pathstep_view_admin',
                                         array(
                                             'assignment' => $assignment,
                                             'med_obj' => $med_obj,
@@ -134,17 +134,15 @@ if ($is_step_instance) {
         <div class="step-actions">
             <?php if ($is_step_instance) { ?>
                 <?php if ($for_administer) {?>
-                    <button class="green hint js-confirm-admin" data-action="next">Confirm Administration</button>
-                    <button class="blue hint js-cancel-admin" data-action="prev">Cancel</button>
+                    <button class="green hint js-confirm-admin" data-action="confirm_da">Confirm Administration</button>
+                    <button class="blue hint js-cancel-admin" data-action="cancel_da">Cancel</button>
                 <?php } else {?>
                 <div class="oe-user-pin">
                     <input class="user-pin-entry" name="pincode" type="password" maxlength="6" minlength="6" inputmode="numeric" placeholder="*******">
-                    <button type="submit" class="try-pin js-unlock" data-action="next" disabled>Unlock</button>
+                    <button type="submit" class="try-pin js-unlock" data-action="unlock_da" disabled>Unlock</button>
                 </div>
                 <button class="js-remove-assignment blue hint" <?=$can_remove_psd?> data-action="remove">Remove PSD</button>
                 <?php } ?>
-            <?php } else { ?>
-                <button class="js-remove-assignment blue hint" data-action="remove">Remove PGD</button>
             <?php } ?>
         </div>
         <?php }?>

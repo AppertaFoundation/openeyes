@@ -145,6 +145,54 @@ $(document).ready(function() {
 
 	autosize($('.Element_OphTrConsent_BenefitsAndRisks textarea'));
 
+	dialog = new OpenEyes.UI.Dialog();
+
+	function openPopup(data)
+        {
+            dialog.content = data.html;
+            dialog.open();
+            document.getElementById("consent_delete_modal_no").addEventListener('click',() => {
+                dialog.close();
+            });
+			document.getElementById("consent_delete_modal_cancel").addEventListener('click',() => {
+                dialog.close();
+            });
+        }
+
+	function openDeleteModalWindow(consentId){
+		params = {id:consentId, YII_CSRF_TOKEN:YII_CSRF_TOKEN};
+		const searchParams = Object.keys(params).map((key) => {
+			return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+		}).join('&');
+		console.log(searchParams);
+
+		fetch(baseUrl + "/" + moduleName + "/default/getDeleteConsentPopupContent",{
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+			},
+			body: searchParams,
+			method: 'POST'
+		})
+			.then(response => response.json())
+			.then(data => {
+				if(data) {
+					openPopup(data);
+				}
+			});
+	}
+
+	$(document).on('click', '.delete-consent-button', function (e) {
+		e.preventDefault();
+		var id = this.getAttribute("data-id");
+		openDeleteModalWindow(id);
+	});
+
+	$(document).on('click', '.withdraw-consent-button', function (e) {
+		e.preventDefault();
+		var id = this.getAttribute("data-id");
+		console.log(id);
+	});
+
     let consent_type = document.getElementById('Element_OphTrConsent_Type_type_id');
     if (consent_type !== null) {
         consent_type.onchange = function () {

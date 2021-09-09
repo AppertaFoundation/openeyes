@@ -42,6 +42,7 @@ class PathwayStep extends BaseActiveRecordVersioned
     public const NON_GENERIC_STEP = array(
         'onhold',
         'break',
+        'drug admin',
     );
     public const NO_WAIT_TIMER_AFTER_ADD = array(
         'break'
@@ -325,5 +326,45 @@ class PathwayStep extends BaseActiveRecordVersioned
 
         $state_temp[$key] = $value;
         $this->state_data = json_encode($state_temp, JSON_THROW_ON_ERROR);
+    }
+
+    protected function afterFind(){
+        parent::afterFind();
+        $this->syncPSDStatus();
+    }
+
+    protected function syncPSDStatus(){
+        if(!$this->type || $this->type->short_name !== 'drug admin' || !$assignment_id = $this->getState('assignment_id')){
+            return;
+        }
+        $assignment = OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
+        // sync with step status
+        $assignment_status = (int)$assignment->status;
+        switch($assignment_status){
+            case OphDrPGDPSD_Assignment::STATUS_TODO:
+                $this->status = PathwayStep::STEP_REQUESTED;
+                $this->start_time = null;
+                $this->end_time = null;
+                $this->started_user_id = null;
+                $this->completed_user_id = null;
+                break;
+            case OphDrPGDPSD_Assignment::STATUS_PART_DONE:
+                $this->status = PathwayStep::STEP_STARTED;
+                if(!$this->start_time){
+                    $this->start_time = $assignment->last_modified_date;
+                }
+                $this->end_time = null;
+                if(!$this->started_user_id){
+                    $this->started_user_id = $assignment->last_modified_user_id;
+                }
+                $this->completed_user_id = null;
+                break;
+            case OphDrPGDPSD_Assignment::STATUS_COMPLETE:
+                $this->status = PathwayStep::STEP_COMPLETED;
+                $this->end_time = $assignment->last_modified_date;
+                $this->completed_user_id = $assignment->last_modified_user_id;
+                break;
+        }
+        $this->saveOnlyIfDirty(true)->save();
     }
 }

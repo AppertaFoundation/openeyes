@@ -66,7 +66,7 @@ class PSDObserver
                     throw new Exception('Unable to remove PSD.');
                 } else {
                     $transaction->commit();
-                    Audit::add('PSD Assignment', 'removed assignment', "Assignment id: {$data['id']}");
+                    Audit::add('PSD Assignment', 'removed assignment', "Assignment id: {$assignment->id}");
                 }
             }
         }
@@ -98,15 +98,16 @@ class PSDObserver
     public function confirmAdministration($params): void
     {
         if ($params['step']->getState('action_type') === 'manage_psd') {
+            $step = $params['step'];
             $pgdpsd_api = Yii::app()->moduleAPI->get('OphDrPGDPSD');
-            $assignment_id = $params['step']->getState('assignment_id');
-            $patient_id = $params['step']->pathway->worklist_patient->patient_id;
+            $assignment_id = $params['assignment_id'];
+            $patient_id = $params['patient_id'];
             $assignment = OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
 
             if (!$assignment) {
                 throw new Exception('Unable to retrieve step.');
             }
-            $entries = $params['step']->getState('Assignment[entries');
+            $entries = $params['assignment']['entries'];
             $worklist_patient_id = $assignment->visit_id;
             $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 

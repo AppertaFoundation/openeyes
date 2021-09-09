@@ -36,12 +36,14 @@ class DefaultController extends BaseEventTypeController
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
         'postSignRequest' => self::ACTION_TYPE_FORM,
         'sign' => self::ACTION_TYPE_EDIT,
+        'getDeleteConsentPopupContent' => self::ACTION_TYPE_FORM,
     );
 
     public $booking_event;
     public $booking_operation;
     public $unbooked = false;
     public $type_id = null;
+    public $template;
 
     public function actions()
     {
@@ -138,6 +140,8 @@ class DefaultController extends BaseEventTypeController
     {
         if ($action == 'create' && $this->booking_operation) {
             $element->setBenefitsAndRisksFromProcedures($this->booking_operation->procedures);
+        } elseif ($action == 'create' && $this->template) {
+            $element->setBenefitsAndRisksFromProcedures($this->template->procedures);
         }
     }
 
@@ -170,7 +174,9 @@ class DefaultController extends BaseEventTypeController
             $element->type_id = $this->type_id;
         }
 
-        if ($action == 'create') {
+        if ($action == 'create' && $this->template) {
+            $element->type_id = $this->template->type_id;
+        } elseif ($action == 'create') {
             $patient_age = (int)$this->patient->getAge();
             if ($patient_age <= 16) {
                 $element->type_id = 2;
@@ -198,6 +204,10 @@ class DefaultController extends BaseEventTypeController
             }
         } elseif (isset($_GET['unbooked'])) {
             $this->unbooked = true;
+        } elseif (isset($_GET['template_id'])) {
+            if (!($this->template = OphTrConsent_Template::model()->findByPk($_GET['template_id']))) {
+                throw new Exception('booking event not found');
+            }
         }
         if (is_null(Yii::app()->request->getParam("type_id"))) {
             $this->type_id = Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID;
@@ -232,7 +242,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function renderSidebar($default_view)
     {
-        if (!$this->booking_event && !$this->unbooked) {
+        if (!$this->booking_event && !$this->unbooked && !$this->template) {
             $this->show_element_sidebar = false;
         }
         parent::renderSidebar($default_view);
@@ -257,16 +267,66 @@ class DefaultController extends BaseEventTypeController
                 $this->redirect(array('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&unbooked=1'));
             } elseif (preg_match('/^booking([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
                 $this->redirect(array('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&booking_event_id='.$m[1]));
+            } elseif (preg_match('/^template([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
+                $this->redirect(array('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&template_id='.$m[1]));
             }
             $errors = array('Consent form' => array('Please select a booking or Unbooked procedures'));
         }
 
-        if ($this->booking_event || $this->unbooked) {
+        if ($this->booking_event || $this->unbooked || $this->template) {
             parent::actionCreate();
         } else {
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
                 $bookings = $api->getIncompleteOperationsForEpisode($this->patient);
             }
+
+            $criteria = new \CDbCriteria();
+            $criteria->join = "JOIN `et_ophtrconsent_procedure` pr ON pr.`event_id` = t.`id`
+                               JOIN `episode` ep ON t.`episode_id` = ep.`id`";
+            $criteria->addCondition('pr.booking_event_id IS NULL');
+            $criteria->addCondition('ep.patient_id = ' . $this->patient->id);
+            $criteria->addCondition('t.event_type_id = ' . $this->event_type->id);
+            $criteria->addCondition('ep.deleted = 0');
+
+            if ($this->event->institution_id) {
+                $criteria->addCondition('t.institution_id = ' . $this->event->institution_id);
+            }
+
+            if ($this->event->site_id) {
+                $criteria->addCondition('t.site_id = ' . $this->event->site_id);
+            }
+
+            $no_operation_booking = Event::model()->findAll($criteria);
+
+            $criteria = new \CDbCriteria();
+
+            if ($this->event->institution_id) {
+                $institution = $this->event->institution_id;
+                if ($institution == NULL) {
+                    $criteria->addCondition('institution_id IS NULL');
+                } else {
+                    $criteria->addCondition('institution_id = ' . $institution . ' OR institution_id IS NULL');
+                }
+            }
+
+            if ($this->event->site_id) {
+                $site = $this->event->site_id;
+                if ($site == NULL) {
+                    $criteria->addCondition('site_id IS NULL');
+                } else {
+                    $criteria->addCondition('site_id = ' . $site . ' OR site_id IS NULL');
+                }
+            }
+
+            if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+                $subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty_id;
+                if ($subspecialty == NULL) {
+                    $criteria->addCondition('subspecialty_id IS NULL');
+                } else {
+                    $criteria->addCondition('subspecialty_id = ' . $subspecialty . ' OR subspecialty_id IS NULL');
+                }
+            }
+            $templates = OphTrConsent_Template::model()->findAll($criteria);
 
             $this->title = 'Please select booking';
             $this->event_tabs = array(
@@ -287,6 +347,8 @@ class DefaultController extends BaseEventTypeController
             $this->render('select_event', array(
                 'errors' => $errors,
                 'bookings' => $bookings ? $bookings : [],
+                'templates' => $templates ? $templates : [],
+                'no_operation_booking' => $no_operation_booking ? $no_operation_booking : [],
             ), false, true);
         }
     }
@@ -554,6 +616,32 @@ class DefaultController extends BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    public function actionGetDeleteConsentPopupContent()
+    {
+        $old_consent_id = Yii::app()->request->getParam('id');
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('id = :old_consent_id');
+        $criteria->params = [
+            ':old_consent_id' => $old_consent_id
+        ];
+        $old_consent_event = Event::model()->findAll($criteria);
+        if (count($old_consent_event)===0) {
+            $response = null;
+        } else {
+            $response = [
+                'html' => $this->renderPartial(
+                    'select_event_with_consent_delete',
+                    array(
+                        'old_consent_event' => $old_consent_event,
+                    ),
+                    true
+                ),
+            ];
+        }
+
+        $this->renderJSON($response);
     }
 
     protected function setAndValidateElementsFromData($data)
