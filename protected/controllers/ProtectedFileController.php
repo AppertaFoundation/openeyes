@@ -20,9 +20,6 @@ class ProtectedFileController extends BaseController
     {
         return array(
                 array('allow',
-                    'actions' => array('uploadBase64Image', 'uploadBase64ImageWithJson')
-                ),
-                array('allow',
                     'actions' => array('download', 'view', 'thumbnail'),
                     'roles' => array('OprnViewProtectedFile'),
                 ),
@@ -110,34 +107,5 @@ class ProtectedFileController extends BaseController
             echo '<p>Imported '.$file->uid.' - '.$file->name.'</p>';
         }
         echo '<p>Done!</p>';
-    }
-
-    public function actionUploadBase64Image($name)
-    {
-        $image = Yii::app()->request->getPost("image");
-        if(is_null($image)) {
-            exit("Error: no image was uploaded");
-        }
-
-        $file = ProtectedFile::createForWriting($name);
-
-        $parts = explode(",", $image);
-        $info = $parts[0];
-        $data = $parts[1];
-
-        $info_parts = explode(";", $info);
-        $mimetype = $info_parts[0];
-
-        $image = base64_decode($data);
-        $file->mimetype = $mimetype;
-
-        file_put_contents($file->getPath(), $image);
-
-        if($file->save()) {
-            echo $file->id;
-        }
-        else {
-            echo "0";
-        }
     }
 }

@@ -26,10 +26,6 @@ class UserController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('getDecryptedSignatureId', 'getName','getCurrentUser')
-            ),
-
-            array('allow',
                 'actions' => array('checkPincodeAvailability'),
                 'roles' => array('admin'),
             ),
