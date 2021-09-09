@@ -1,9 +1,11 @@
 <?php
+
 /**
  * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2011-2018
+ * (C) Apperta Foundation, 2019-2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +14,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -134,7 +136,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
             $setting_value = strtolower($setting_value);
         }
 
-        if ( !empty(Yii::app()->params[$key]) ) {
+        if (!empty(Yii::app()->params[$key])) {
             $setting_value = strtolower(Yii::app()->params[$key]);
         }
         return $setting_value === $value;
@@ -145,8 +147,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $criteria = new CDbcriteria();
 
         if ($condition_field && $condition_value) {
-            $criteria->addCondition($condition_field.' = :'.$condition_field);
-            $criteria->params[':'.$condition_field] = $condition_value;
+            $criteria->addCondition($condition_field . ' = :' . $condition_field);
+            $criteria->params[':' . $condition_field] = $condition_value;
         }
 
         $criteria->addCondition('`key`=:key');
@@ -173,6 +175,11 @@ class SettingMetadata extends BaseActiveRecordVersioned
     {
         if (!$key) {
             $key = $this->key;
+        }
+
+        // If value is set in the config params (file config), then it always overrides anything set in the database
+        if (!empty(Yii::app()->params[$key] && !$return_object && empty($element_type))) {
+            return Yii::app()->params[$key];
         }
 
         if ($element_type) {
@@ -274,7 +281,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
                 foreach ($nodes as $node) {
                     $key = $node->getAttribute('data-substitution');
 
-                    if (array_key_exists($key, $substitutions) &&
+                    if (
+                        array_key_exists($key, $substitutions) &&
                         isset($substitutions[$key]['value']) &&
                         $substitutions[$key]['value'] !== '' &&
                         in_array($key, $data['substitutions'], true)
@@ -348,7 +356,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
         foreach ($nodes as $node) {
             $key = $node->getAttribute('data-substitution');
 
-            if (array_key_exists($key, $substitutions) &&
+            if (
+                array_key_exists($key, $substitutions) &&
                 isset($substitutions[$key]['value']) &&
                 !empty($substitutions[$key]['value'])
             ) {
