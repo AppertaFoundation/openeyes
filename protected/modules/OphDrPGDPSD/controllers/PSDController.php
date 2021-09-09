@@ -6,9 +6,7 @@ class PSDController extends DefaultController
         'getSetMedications' => self::ACTION_TYPE_FORM,
         'getMedication' => self::ACTION_TYPE_FORM,
         'getPathStep' => self::ACTION_TYPE_FORM,
-        'createPSD' => self::ACTION_TYPE_FORM,
-        'RemovePSD' => self::ACTION_TYPE_FORM,
-        'unlockPathStep' => self::ACTION_TYPE_FORM,
+        'unlockPSD' => self::ACTION_TYPE_FORM,
         'confirmAdministration' => self::ACTION_TYPE_FORM,
         'checkPincode' => self::ACTION_TYPE_FORM,
     );
@@ -22,14 +20,16 @@ class PSDController extends DefaultController
     }
 
     /**
-     * @param $partial
-     * @param $pathstep_id
-     * @param $patient_id
-     * @param bool $interactive
+     * @param $partial              to display overview of the popup or full (with actions, detailed info)
+     * @param $pathstep_id          for PathwayStep
+     * @param $assignment_id        for OphDrPGDPSD_Assignment
+     * @param $patient_id           for Patient
+     * @param $for_administer       to display form or read only content
+     * @param bool $interactive     to display popup buttons
      * @throws CHttpException
      * @throws Exception
      */
-    public function actionGetPathStep($partial, $pathstep_id, $patient_id, $interactive = true)
+    public function actionGetPathStep($partial, $pathstep_id, $patient_id, $for_administer, $interactive = true)
     {
         $step = PathwayStep::model()->findByPk($pathstep_id);
 
@@ -37,33 +37,26 @@ class PSDController extends DefaultController
             throw new CHttpException(404, 'Unable to retrieve path step.');
         }
 
-        $institution_auth = InstitutionAuthentication::model()->find('institution_id = :id', [':id' => Yii::app()->session['selected_institution_id']]);
+        $assignment_id = $step->getState('assignment_id');
 
-        if (!$institution_auth) {
-            throw new Exception('Unable to retrieve institution authentication information.');
+        if (!$assignment_id) {
+            throw new CHttpException(404, 'Unable to retrieve PSD id.');
         }
-
-        $user_auth = UserAuthentication::model()->find(
-            'user_id = :id AND institution_authentication_id = :institution_auth_id',
-            [':id' => Yii::app()->user->id, ':institution_auth_id' => $institution_auth->id]
-        );
-
-        if (!$user_auth) {
-            $for_administer = false;
-        } else {
-            $for_administer = $step->pincode === $user_auth->pincode;
-        }
-
-
-        $assignment = OphDrPGDPSD_Assignment::model()->find(
-            'patient_id = :patient_id AND visit_id = :visit_id',
-            [':patient_id' => $patient_id, ':visit_id' => $step->pathway->worklist_patient_id]
-        );
+        $assignment = OphDrPGDPSD_Assignment::model()->find('id = :id AND active = 1', [':id' => $assignment_id]);
 
         if (!$assignment) {
             throw new CHttpException(404, 'Unable to retrieve PSD.');
         }
-        $can_remove_psd = Yii::app()->user->checkAccess('Prescribe')
+
+        $pathway = $step->pathway;
+
+        if (!$pathway) {
+            throw new CHttpException(404, 'Unable to retrieve Pathway.');
+        }
+
+        $pathway->updateStatus();
+
+        $can_remove_psd = \Yii::app()->user->checkAccess('Prescribe')
             && (int)$step->status === PathwayStep::STEP_REQUESTED
             && !$assignment->elements ? '' : 'disabled';
         if ($interactive) {
@@ -83,7 +76,16 @@ class PSDController extends DefaultController
             ),
             true
         );
-        $this->renderJSON($dom);
+        $ret = array(
+            'dom' => $dom,
+            'step' => $step->toJSON(),
+            'pathway_status' => $pathway->getStatusString(),
+            'status_html' => $pathway->getPathwayStatusHTML(),
+            'step_html' => $this->renderPartial('//worklist/_clinical_pathway', ['pathway' => $pathway], true),
+            'waiting_time_html' => $pathway->getTotalDurationHTML(true),
+            'wait_time_details' => json_encode($pathway->getWaitTimeSinceLastAction()),
+        );
+        $this->renderJSON($ret);
     }
 
     public function actionCheckPincode()
@@ -131,5 +133,31 @@ class PSDController extends DefaultController
         $user = $ret['payload'] ? $ret['payload']['id'] : 'Not Found or Authorized';
         Audit::add('PSD Assignment', 'check pin', "Assignment id: {$assignment_id}, Accessed User: {$user}");
         $this->renderJSON($ret);
+    }
+
+    public function actionUnlockPSD()
+    {
+        $data = \Yii::app()->request->getParam('Assignment', array());
+        $patient_id = array_key_exists('patient_id', $data) ? $data['patient_id'] : null;
+        $step_id = \Yii::app()->request->getParam('step_id', null);
+
+        $this->actionGetPathStep(0, $step_id, $patient_id, 1);
+    }
+
+    public function actionConfirmAdministration()
+    {
+        $step_id = \Yii::app()->request->getParam('step_id');
+        $step = PathwayStep::model()->findByPk($step_id);
+        if (!$step) {
+            throw new CHttpException(404, 'Unable to retrieve step for processing.');
+        }
+        $assignment_id = $step->getState('assignment_id');
+        $patient_id = $step->pathway->worklist_patient->patient_id;
+        $assignment_data = \Yii::app()->request->getParam('Assignment', array());
+        \Yii::app()->event->dispatch(
+            'step_progress',
+            ['step' => $step, 'assignment' => $assignment_data, 'assignment_id' => $assignment_id, 'patient_id' => $patient_id]
+        );
+        $this->actionGetPathStep(0, $step_id, $patient_id, 0);
     }
 }

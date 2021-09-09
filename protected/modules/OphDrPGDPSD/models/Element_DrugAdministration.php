@@ -118,16 +118,32 @@ class Element_DrugAdministration extends BaseMedicationElement
                 $wl_manager = new \WorklistManager();
                 $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new \DateTime());
                 $assignment->visit_id = $worklist_patient->id;
-                Yii::app()->event->dispatch('psd_created', array(
-                    'step_type' => PathwayStepType::model()->find('short_name = \'drug admin\''),
-                    'worklist_patient_id' => $worklist_patient->id,
-                    'initial_state' => [
-                        'preset_id' => $assignment->pgdpsd ? $assignment->pgdpsd->id : null,
-                        'assignment_id' => $assignment->id,
-                    ]
-                ));
             }
             $assignment->save();
+            // If a new psd is attached to a worklist patient, a new pathway step will be needed as well
+            if ($assignment->worklist_patient && $assignment->worklist_patient->pathway) {
+                // find out all existing drug admin pathway step associated with corresponding pathway
+                $da_steps = PathwayStep::model()->findAll(
+                    'pathway_id = :pathway_id AND short_name = "drug admin"',
+                    array(':pathway_id' => $assignment->worklist_patient->pathway->id)
+                );
+                // try to find the pathway steps related to current psd
+                $matched_da_steps = array_filter($da_steps, function ($da_step) use ($assignment) {
+                    return (int)$da_step->getState('assignment_id') === (int)$assignment->id;
+                });
+                // if no matched found, create a new pathway step for current psd
+                if (!$matched_da_steps) {
+                    Yii::app()->event->dispatch('psd_created', array(
+                        'step_type' => PathwayStepType::model()->find('short_name = \'drug admin\''),
+                        'worklist_patient_id' => $assignment->worklist_patient->id,
+                        'initial_state' => [
+                            'preset_id' => $assignment->pgdpsd ? $assignment->pgdpsd->id : null,
+                            'assignment_id' => $assignment->id,
+                        ],
+                        'raise_event' => false
+                    ));
+                }
+            }
             if (!$assignment->isrelevant && count($this->assignments) > 1) {
                 unset($original[$key]);
             }
@@ -254,13 +270,13 @@ class Element_DrugAdministration extends BaseMedicationElement
     public function softDelete()
     {
         $new_assignments = array();
-        foreach($this->assignments as $assignment){
+        foreach ($this->assignments as $assignment) {
             $duplicate = new OphDrPGDPSD_Assignment();
             $assignment_attrs = $assignment->attributes;
             unset($assignment_attrs['id']);
             unset($assignment_attrs['comment_id']);
             $duplicate->attributes = $assignment_attrs;
-            $duplicate->assigned_meds = array_map(function($med){
+            $duplicate->assigned_meds = array_map(function ($med) {
                 $med_attrs = $med->attributes;
                 unset($med_attrs['id']);
                 return $med_attrs;
@@ -268,7 +284,7 @@ class Element_DrugAdministration extends BaseMedicationElement
             $duplicate->setConfirmed(true);
             $duplicate->active = 0;
             $duplicate->save();
-            if($assignment->comment){
+            if ($assignment->comment) {
                 $duplicate_comment = new OphDrPGDPSD_Assignment_Comment();
                 $duplicate_comment->attributes = $assignment->comment->attributes;
                 $duplicate->saveComment($duplicate_comment);

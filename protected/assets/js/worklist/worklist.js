@@ -233,13 +233,8 @@ $(function () {
         );
     };
     let updatePathstepIcon = function (ps, resp) {
-        ps.renderPopupContent(resp);
-        let status_dict = ps.currentPopup.find('.slide-open').data('status-dict');
-        let current_status_class = ps.currentPopup.find('.js-current-icon-class').val();
-        let status_class_list = status_dict.map(function (status) {
-            return status['css'];
-        });
-        $(ps.pathstepIcon).removeClass(status_class_list.join(' ')).addClass(current_status_class);
+        ps.renderPopupContent(resp['dom']);
+        handleRunActionResponse($(test), resp);
     };
 
     let serializeForm = function (selector) {
@@ -260,12 +255,10 @@ $(function () {
 
     let unlockAdministration = function (event, context, ps) {
         event.preventDefault();
-
-        let form_data = {
-            pincode: $('input[name="pincode"]').val(),
-        };
+        let form = $('form#worklist-administration-form')
+        ps.resetPopup();
         ps.administer_ready = true;
-        runAction(event, context, ps, form_data);
+        ps.requestDetails(form.serialize(), '/OphDrPGDPSD/PSD/unlockPSD', 'POST');
     };
     let administerMeds = function (event, context, ps) {
         let $admin_icon = $(context).closest('tr').find('.js-administer-icon');
@@ -296,7 +289,8 @@ $(function () {
     let confirmAdministration = function (event, context, ps) {
         event.preventDefault();
         let form_data = serializeForm('#worklist-administration-form');
-        runAction(event, context, ps, form_data);
+        ps.resetPopup();
+        ps.requestDetails(form_data, '/OphDrPGDPSD/PSD/confirmAdministration', 'POST', updatePathstepIcon, () => (ps.administer_ready = false));
     };
 
     let changeVisualFields = function (event, context, ps) {
@@ -440,6 +434,7 @@ $(function () {
         if (response.step.status === 'active') {
             $thisStep.removeClass('done');
             $thisStep.removeClass('todo');
+            $thisStep.removeClass('todo-next');
             $thisStep.addClass('active');
             $thisStep.find('.info').text(response.step.start_time);
             $thisStep.find('.info').show();

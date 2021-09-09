@@ -34,9 +34,10 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
         $time = $step->start_time;
         $formatted_time = $time ? DateTime::createFromFormat('Y-m-d H:i:s', $time)->format('H:i') : null ?>
         <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
-            $view_file = "_{$step->type->short_name}_step_icon";
+            $short_name = str_replace(' ', '_', $step->type->short_name);
+            $view_file = "_{$short_name}_step_icon";
             $this->renderPartial(
-                "non_generic_icon/$view_file",
+                "//worklist/non_generic_icon/$view_file",
                 array('pathway' => $pathway, 'step' => $step, 'status_class' => $status_class)
             );
         } else { ?>
@@ -76,9 +77,10 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
             'H:i'
         ) : null; ?>
         <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
-            $view_file = "_{$step->type->short_name}_step_icon";
+            $short_name = str_replace(' ', '_', $step->type->short_name);
+            $view_file = "_{$short_name}_step_icon";
             $this->renderPartial(
-                "non_generic_icon/$view_file",
+                "//worklist/non_generic_icon/$view_file",
                 array('pathway' => $pathway, 'step' => $step, 'status_class' => $status_class)
             );
         } else { ?>
@@ -115,9 +117,10 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
             'H:i'
         ) : null; ?>
         <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
-            $view_file = "_{$step->type->short_name}_step_icon";
+            $short_name = str_replace(' ', '_', $step->type->short_name);
+            $view_file = "_{$short_name}_step_icon";
             $this->renderPartial(
-                "non_generic_icon/$view_file",
+                "//worklist/non_generic_icon/$view_file",
                 array('pathway' => $pathway, 'step' => $step, 'status_class' => $status_class)
             );
         } else { ?>

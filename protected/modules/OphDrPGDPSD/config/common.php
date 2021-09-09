@@ -31,7 +31,7 @@ return array(
                         'method' => 'unlockPSD',
                     ]
                 ],
-                'step_completed' => [
+                'step_progress' => [
                     'complete_drug_admin' => [
                         'class' => 'PSDObserver',
                         'method' => 'confirmAdministration',
