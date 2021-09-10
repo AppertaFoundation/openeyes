@@ -23,7 +23,15 @@ class ContextImportCommand extends CConsoleCommand
         
 Context Import
         
-This command is able to import XLSX files 
+This command is able to import XLSX files
+
+The file should have the following headers:
+|PAS Code|Context Name|Institution|Subspecialty|Consultant|Cost Code|Service Enabled|Context Enabled|Active|
+|Code    |String      |String     |String      |String    |Code     |Yes/No         |Yes/No         |Yes/No|
+
+If you want a value to be Null please include 'Blank' in the cell
+Make sure all the values you put in the excel document exist in the database,
+check the Firm model to check for dependencies
 
 USAGE
   php yiic contextimport --filename=[filename.xlsx]
