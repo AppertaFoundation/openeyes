@@ -40,11 +40,11 @@
     <div class="cols-2 column" style="display: inline-block;">
       Patient consents to share data:
     </div>
+    <input type="hidden" value=""
+           name="Element_OphCoTherapyapplication_MrServiceInformation[patient_sharedata_consent]">
     <div class="cols-9 column" style="display: inline-block;">
       <label class="inline highlight">
             <?php echo $form->radioButton($element, 'patient_sharedata_consent'); ?> Yes
     </div>
-    <input type="hidden" value=""
-           name="Element_OphCoTherapyapplication_MrServiceInformation[patient_sharedata_consent]">
   </fieldset>
 </div>
