@@ -17,9 +17,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment;
-use OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision;
-use OEModule\OphTrConsent\models\Element_OphTrConsent_MedicalCapacityAdvocate;
+use OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures;
 
 class DefaultController extends BaseEventTypeController
 {
@@ -183,6 +181,20 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    protected function setElementDefaultOptions_Element_OphTrConsent_AdditionalSignatures($element, $action)
+    {
+        if ($action == 'create') {
+            $patient_age = (int)$this->patient->getAge();
+            if ($patient_age <= 16) {
+                $element->cf_type_id = 2;
+            } else {
+                $element->cf_type_id = $this->type_id;
+            }
+        } else {
+            $element->cf_type_id = $this->type_id;
+        }
+    }
+
     /**
      * Process the booking event value setting.
      *
@@ -208,6 +220,14 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('booking event not found');
             }
         }
+
+        if (is_null(Yii::app()->request->getParam("type_id"))) {
+            $this->type_id = Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID;
+            if ((Yii::app()->request->isPostRequest) && (Yii::app()->request->getPost('Element_OphTrConsent_Type'))) {
+                $this->type_id = \Yii::app()->request->getPost('Element_OphTrConsent_Type')['type_id'];
+            }
+        }
+
         if (is_null(Yii::app()->request->getParam("type_id"))) {
             $this->type_id = Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID;
         } else {
@@ -233,8 +253,11 @@ class DefaultController extends BaseEventTypeController
         if ($et = $this->event->getElementByClass(Element_OphTrConsent_Type::class)) {
             $this->type_id = $et->type_id;
         }
-    }
 
+        if ($et = $this->event->getElementByClass(Element_OphTrConsent_AdditionalSignatures::class)) {
+            $et->cf_type_id = $this->type_id;
+        }
+    }
 
     /**
      * @param $default_view
@@ -665,9 +688,7 @@ class DefaultController extends BaseEventTypeController
         $this->open_elements = $elements;
 
         foreach ($this->open_elements as $element) {
-            $this->setValidationScenarioForElement($element);
             $element->validate();
-
             if (method_exists($element, 'eventScopeValidation')) {
                 $element->eventScopeValidation($this->open_elements);
             }

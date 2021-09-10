@@ -107,8 +107,8 @@ OpenEyes.UI = OpenEyes.UI || {};
                 "element_id" : widget.options.element_id,
                 "element_type_id" : widget.$element.closest("section.element").attr("data-element-type-id"),
                 "event_id" : OE_event_id,
-                "signatory_role" : widget.$signatoryRole.val(),
-                "signatory_name" : widget.$signatoryName.val()
+                "signatory_role" : encodeURIComponent(widget.$signatoryRole.val()),
+                "signatory_name" : encodeURIComponent(widget.$signatoryName.val())
             };
             if(widget.$initiatorElementTypeId.length > 0) {
                 params["initiator_element_type_id"] = widget.$initiatorElementTypeId.val();
@@ -150,8 +150,8 @@ OpenEyes.UI = OpenEyes.UI || {};
                 "?html=1&auto_print=0&sign=1&element_id=" + widget.options.element_id +
                 "&element_type_id=" + widget.$element.closest("section.element").attr("data-element-type-id") +
                 "&signature_type=" + widget.options.signature_type +
-                "&signatory_role=" + widget.$signatoryRole.val() +
-                "&signatory_name=" + widget.$signatoryName.val();
+                "&signatory_role=" + encodeURIComponent(widget.$signatoryRole.val()) +
+                "&signatory_name=" + encodeURIComponent(widget.$signatoryName.val());
             if(widget.$initiatorElementTypeId.length > 0) {
                 printUrl += "&initiator_element_type_id=" + widget.$initiatorElementTypeId.val();
             }
@@ -182,8 +182,8 @@ OpenEyes.UI = OpenEyes.UI || {};
                     "event_id" : OE_event_id,
                     "element_type_id" : element_type_id,
                     "signature_type" : signature_type,
-                    "signatory_role" : signatory_role,
-                    "signatory_name" : signatory_name,
+                    "signatory_role" : encodeURIComponent(signatory_role),
+                    "signatory_name" : encodeURIComponent(signatory_name),
                 };
                 if(widget.$initiatorElementTypeId.length > 0) {
                     params["initiator_element_type_id"] = widget.$initiatorElementTypeId.val();

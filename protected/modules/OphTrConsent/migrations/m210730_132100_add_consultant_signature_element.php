@@ -62,3 +62,4 @@ class m210730_132100_add_consultant_signature_element extends OEMigration
         $this->dropOETable(self::ELEMENT_TBL, true);
     }
 }
+

@@ -164,7 +164,7 @@ class Element_OphTrConsent_Esign extends BaseEsignElement implements RequiresSig
      */
     public function getRequiredSignatures(): array
     {
-        if($this->healthprof_signature_id) {
+        if ($this->healthprof_signature_id) {
             return [OphTrConsent_Signature::model()->findByPk($this->healthprof_signature_id)];
         } else {
             $user = User::model()->findByPk(Yii::app()->session['user']->id);
@@ -201,9 +201,29 @@ class Element_OphTrConsent_Esign extends BaseEsignElement implements RequiresSig
     }
 
     /**
+     * Finds a signature by the initiator element's properties
+     *
+     * @param int $initiator_element_type_id
+     * @param int $initiator_row_id
+     * @return OphTrConsent_Signature|null
+     * @throws Exception
+     */
+    public function getSignatureByInitiatorAttributes(int $initiator_element_type_id, int $initiator_row_id)
+    {
+        foreach ($this->getSignatures() as $signature) {
+            if ((int)$signature->initiator_row_id === $initiator_row_id &&
+                (int)$signature->initiator_element_type_id === $initiator_element_type_id) {
+                return $signature;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return object filtered signature object.
      */
-    public function getSignatureByAttributes($element, $custom_key) {
+    public function getSignatureByAttributes($element, $custom_key)
+    {
         if (!is_null($element->{$custom_key})) {
             $filtered_signature = array_filter($element->getSignatures(), function ($signature) use ($element, $custom_key) {
                 return $signature->id === $element->{$custom_key};
@@ -214,7 +234,6 @@ class Element_OphTrConsent_Esign extends BaseEsignElement implements RequiresSig
                 return
                     (int)$signature->initiator_element_type_id === (int)$req->getParam("initiator_element_type_id")
                     && (int)$signature->initiator_row_id === (int)$req->getParam("initiator_row_id");
-
             });
         }
         return isset($filtered_signature[0]) ? $filtered_signature[0] : false;

@@ -13,3 +13,4 @@ class m210717_093657_invalidate_old_signatures extends OEMigration
         return false;
     }
 }
+
