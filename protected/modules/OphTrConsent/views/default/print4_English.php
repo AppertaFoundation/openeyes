@@ -161,6 +161,60 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     </div>
     <?php endif; ?>
 
+    <?php if (isset($elements['Element_OphTrConsent_OthersInvolvedDecisionMakingProcess'])) {
+        $contact_element = $elements['Element_OphTrConsent_OthersInvolvedDecisionMakingProcess'];
+        $contacts = $contact_element->consentContact;
+        ?>
+        <div class="group"><h4>Others consulted in the decision making process</h4>
+            <div class="indent">
+                <table class="row-lines">
+                    <colgroup>
+                        <col class="cols-2">
+                        <col class="cols-3">
+                        <col class="cols-2">
+                    </colgroup>
+                    <tbody>
+                    <?php foreach ($contacts as $contact) { ?>
+                        <tr>
+                            <td><?= $contact->getRelationshipName() ?></td>
+                            <td><?= $contact->getFullName() ?></td>
+                            <td>Consulted: <?= $contact->getContactMethodName() ?></td>
+                            <td><?= $contact->getSignatureRequiredString() ?></td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php foreach ($contact_element->getRequiredSignatures() as $contact_signature) { ?>
+            <?= $this->renderPartial(
+                '_print_signature',
+                array(
+                    'vi' => ($css_class == 'impaired'),
+                    'element' => $elements[Element_OphTrConsent_Esign::class],
+                    'signature' => $contact_signature,
+                    'title_label' => 'Relationship',
+                    'name_label' => 'Name',
+                )
+            ); ?>
+        <?php } ?>
+    <?php } ?>
+
+    <div class="group"><h4>Best Interests Decision</h4>
+        <div class="indent"><h5>To the best of my knowledge, the patient has not refused this procedure in a valid
+                advance directive.</h5><h5>Where possible and appropriate, I have encouraged the patient to participate
+                in the decision and I have consulted with those close to the patient and with colleagues and those close
+                to the patient.</h5><h5>In the case of a patient who does not have anyone close enough to help in the
+                decision-making process and for whom serious medical treatment is proposed, I have consulted an
+                Independent Medical Capacity Advocate and I believe the procedure to be in the patient’s best interests
+                because:</h5>
+            <ul>
+                <li>Reason for procedure here by user sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <div class="box">
         <div class="flex">
             <div class="dotted-area">
