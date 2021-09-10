@@ -50,8 +50,8 @@ $model_name = CHtml::modelName($element);
                                     $model_name . "[signature_required][]_" . $row_id,
                                     $contact->getSignatureRequired(),
                                     [
-                                        1 => $contact->consentPatientContactMethod->getTypeLabel('SIGNATURE_REQUIRED'),
-                                        0 => $contact->consentPatientContactMethod->getTypeLabel('SIGNATURE_NOT_REQUIRED'),
+                                        1 => $contact->consentPatientContactMethod::getTypeLabel('SIGNATURE_REQUIRED'),
+                                        0 => $contact->consentPatientContactMethod::getTypeLabel('SIGNATURE_NOT_REQUIRED'),
                                     ],
                                     array_merge(
                                         [],
