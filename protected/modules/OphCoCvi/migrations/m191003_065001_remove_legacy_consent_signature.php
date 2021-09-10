@@ -5,8 +5,6 @@ class m191003_065001_remove_legacy_consent_signature extends CDbMigration
     public function up()
     {
 
-// Can we delete this file ? Sabi 09/09/2021
-
         $this->execute("DELETE FROM element_type
             WHERE class_name = :class_name
             AND event_type_id = (SELECT id FROM event_type WHERE `name` = 'CVI')",

@@ -5,7 +5,7 @@ class m190925_085623_add_element_patient_signature extends OEMigration
     public function up()
     {
 
-// Can we delete this file ? Sabi 09/09/2021
+// Can we delete this file ? Sabi 09/09/2021 // NOPE // SABI-TODO
 
         $this->createOETable("ophcocvi_consent_consignee", [
             "id" => "pk",
