@@ -16,13 +16,13 @@ class PathstepObserver
          */
         $step_type = $params['step_type'];
         $worklist_patient_id = $params['worklist_patient_id'];
-
+        $raise_event = $params['raise_event'] ?? true;
         /**
          * @var WorklistPatient $worklist_patient
          */
         $worklist_patient = WorklistPatient::model()->findByPk($worklist_patient_id);
 
-        $step_type->createNewStepForPathway($worklist_patient->pathway->id, $params['initial_state']);
+        $step_type->createNewStepForPathway($worklist_patient->pathway->id, $params['initial_state'], $raise_event);
     }
 
     /**

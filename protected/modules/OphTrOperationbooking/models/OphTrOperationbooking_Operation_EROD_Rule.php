@@ -142,7 +142,7 @@ class OphTrOperationbooking_Operation_EROD_Rule extends BaseActiveRecordVersione
         $kls = get_class($this);
 
         if ($this->id) {
-            $all_rules = $kls::model()->findAll('id != ?', $this->id);
+            $all_rules = $kls::model()->findAll('id != :id', array(':id' => $this->id));
         } else {
             $all_rules = $kls::model()->findAll();
         }

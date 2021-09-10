@@ -21,6 +21,7 @@
         this.patientID = null;
         this.redFlag = null;
         this.visitID = null;
+        this.isInteractive = 1;
         this.request = null;
         this.pathstepIcon = null;
         this.init();
@@ -39,7 +40,6 @@
      * @config
      */
     PathStep._defaultOptions = {
-        interactive: 1,
         pathStepIconClassText: 'oe-pathstep-btn',
         pathStepIconClassSelector: '.oe-pathstep-btn',
         presetpopUpClassText: 'oe-pathstep-popup',
@@ -96,7 +96,13 @@
             ps.delayRequest = setTimeout(
                 ps.requestDetails.bind(
                     ps,
-                    {partial: 1, pathstep_id: ps.pathstepId, visit_id: ps.visitID, patient_id: ps.patientID, red_flag: ps.redFlag}
+                    {
+                        partial: 1, 
+                        pathstep_id: ps.pathstepId, 
+                        visit_id: ps.visitID, 
+                        patient_id: ps.patientID, 
+                        red_flag: ps.redFlag, 
+                    }
                 ),
                 300
             );
@@ -155,7 +161,7 @@
                         visit_id: ps.visitID,
                         patient_id: ps.patientID,
                         red_flag: ps.redFlag,
-                        interactive: ps.options.interactive
+                        interactive: ps.isInteractive
                     }
                 ),
                 350
@@ -185,6 +191,11 @@
         this.patientID = $(ele).data(this.options.patientIDKey);
         this.redFlag = $(ele).data(this.options.redFlagKey);
         this.visitID = $(ele).data(this.options.visitIDKey);
+        if($(ele).hasClass('js-no-interaction')){
+            this.isInteractive = 0;
+        } else {
+            this.isInteractive = 1;
+        }
         this.administer_ready = false;
 
         const popup_pos = this.getPopupPosition(ele, $pathstep_ctn);
@@ -250,7 +261,8 @@
                 if (callback) {
                     callback(ps, resp);
                 } else {
-                    ps.renderPopupContent(resp);
+                    const pop_html = resp['dom'] || resp;
+                    ps.renderPopupContent(pop_html);
                 }
                 $('.user-pin-entry').trigger('focus');
             },

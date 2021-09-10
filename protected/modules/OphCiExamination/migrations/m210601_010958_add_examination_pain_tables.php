@@ -7,7 +7,6 @@ class m210601_010958_add_examination_pain_tables extends OEMigration
         $this->createOETable('et_ophciexamination_pain', array(
             'id' => 'pk',
             'event_id' => 'int(10) unsigned NOT NULL',
-            'display_order' => 'int(10)',
         ), true);
         $this->addForeignKey(
             'et_ophciexamination_pain_event_fk',
@@ -36,14 +35,16 @@ class m210601_010958_add_examination_pain_tables extends OEMigration
         $examination_event_type_id = $connection->createCommand("SELECT id FROM event_type WHERE name = 'Examination'")->queryScalar();
         $element_group_id = $connection->createCommand("SELECT id FROM element_group WHERE name = 'History'")->queryScalar();
 
-        $this->insertOEElementType(array(
-            'OEModule\\OphCiExamination\\models\\Element_OphCiExamination_Pain' => array(
-                'name' => 'Pain',
-                'default' => 0,
-                'required' => 0,
-                'element_group_id' => $element_group_id,
+        $this->insertOEElementType(
+                array(
+                'OEModule\\OphCiExamination\\models\\Element_OphCiExamination_Pain' => array(
+                    'name' => 'Pain',
+                    'display_order' => 11,
+                    'element_group_id' => $element_group_id,
+                ),
             ),
-        ), $examination_event_type_id);
+            $examination_event_type_id
+        );
     }
 
     public function down()

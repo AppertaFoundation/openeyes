@@ -144,6 +144,158 @@ $(document).ready(function() {
 	}
 
 	autosize($('.Element_OphTrConsent_BenefitsAndRisks textarea'));
+
+	dialog = new OpenEyes.UI.Dialog();
+
+	function openPopup(data)
+        {
+            dialog.content = data.html;
+            dialog.open();
+            document.getElementById("consent_delete_modal_no").addEventListener('click',() => {
+                dialog.close();
+            });
+			document.getElementById("consent_delete_modal_cancel").addEventListener('click',() => {
+                dialog.close();
+            });
+        }
+
+	function openDeleteModalWindow(consentId){
+		params = {id:consentId, YII_CSRF_TOKEN:YII_CSRF_TOKEN};
+		const searchParams = Object.keys(params).map((key) => {
+			return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+		}).join('&');
+		console.log(searchParams);
+
+		fetch(baseUrl + "/" + moduleName + "/default/getDeleteConsentPopupContent",{
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+			},
+			body: searchParams,
+			method: 'POST'
+		})
+			.then(response => response.json())
+			.then(data => {
+				if(data) {
+					openPopup(data);
+				}
+			});
+	}
+
+	$(document).on('click', '.delete-consent-button', function (e) {
+		e.preventDefault();
+		var id = this.getAttribute("data-id");
+		openDeleteModalWindow(id);
+	});
+
+	$(document).on('click', '.withdraw-consent-button', function (e) {
+		e.preventDefault();
+		var id = this.getAttribute("data-id");
+		console.log(id);
+	});
+
+    let consent_type = document.getElementById('Element_OphTrConsent_Type_type_id');
+    if (consent_type !== null) {
+        consent_type.onchange = function () {
+            let url = window.location.href;
+            if (url.match(/type_id/)) {
+                url = url.replace(/&type_id=([0-9]+)/, '&type_id=' + this.value);
+            } else {
+                url = url + "&type_id=" + this.value;
+            }
+            window.formHasChanged = false;
+            window.location.href = url;
+        }
+    }
+
+    class AdditionalSignatures{
+        constructor()
+        {
+            this.name_prefix = 'OEModule_OphTrConsent_models_Element_OphTrConsent_AdditionalSignatures';
+            this.setWitnessPropreties();
+            this.setInterpreterPropreties();
+            this.setGuardianProperties();
+        }
+
+        setWitnessPropreties()
+        {
+            this.witness_required = document.getElementById('additional_signatures_witness_required');
+            this.witness_required_hidden = document.getElementById(this.name_prefix + '_witness_required');
+            this.witness_name = document.getElementById(this.name_prefix + '_witness_name');
+            if (this.witness_required !== null ) {
+                this.witness_required.addEventListener('change', evt => this.changeWitness(evt));
+            }
+        }
+
+        setInterpreterPropreties()
+        {
+            this.interpreter_required = document.getElementById('additional_signatures_interpreter_required');
+            this.interpreter_required_hidden = document.getElementById(this.name_prefix + '_interpreter_required');
+            this.interpreter_name = document.getElementById(this.name_prefix + '_interpreter_name');
+            if (this.interpreter_required !== null ) {
+                this.interpreter_required.addEventListener('change', evt => this.changeInterpreter(evt));
+            }
+        }
+
+        setGuardianProperties()
+        {
+            this.guardian_required = document.getElementById('additional_signatures_guardian_required');
+            this.guardian_required_hidden = document.getElementById(this.name_prefix + '_guardian_required');
+            this.guardian_name = document.getElementById(this.name_prefix + '_guardian_name');
+            this.guardian_relationship = document.getElementById(this.name_prefix + '_guardian_relationship');
+            if (this.guardian_required !== null ) {
+                this.guardian_required.addEventListener('change', evt => this.changeGuardian(evt));
+            }
+        }
+
+        changeWitness()
+        {
+            if (this.witness_required !== null ) {
+                if (this.witness_required.checked) {
+                    this.witness_name.disabled = false;
+                    this.witness_required_hidden.value = 1;
+                } else {
+                    this.witness_name.value  = '';
+                    this.witness_required_hidden.value = 0;
+                    this.witness_name.disabled = true;
+                }
+            }
+        }
+
+        changeInterpreter()
+        {
+            if (this.interpreter_required !== null ) {
+                if (this.interpreter_required.checked) {
+                    this.interpreter_name.disabled = false;
+                    this.interpreter_required_hidden.value = 1;
+                } else {
+                    this.interpreter_name.value = '';
+                    this.interpreter_name.disabled = true;
+                    this.interpreter_required_hidden.value = 0;
+                }
+            }
+        }
+
+        changeGuardian()
+        {
+            if (this.guardian_required !== null ) {
+                if (this.guardian_required.checked) {
+                    this.guardian_name.disabled = false;
+                    this.guardian_relationship.disabled = false;
+                    this.guardian_required_hidden.value = 1;
+                } else {
+                    this.guardian_name.disabled = true;
+                    this.guardian_relationship.value = '';
+                    this.guardian_relationship.disabled = true;
+                    this.guardian_required_hidden.value = 0;
+                }
+            }
+        }
+    }
+
+    const signatures = new AdditionalSignatures();
+    signatures.changeWitness();
+    signatures.changeInterpreter();
+    signatures.changeGuardian();
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
@@ -164,7 +316,7 @@ function OphTrConsent_inArray(needle, haystack) {
 function handleTinyMCEInput(target, data){
 	// get the tinymce object
 	const tinyMCE = tinymce.get(target);
-	// get the tinymce current content, and convert into jquery 
+	// get the tinymce current content, and convert into jquery
 	const tinyMCE_content = $(tinyMCE.getContent());
 	const tinyMCE_content_items = tinyMCE_content.find('li');
 	let existing_items = [];
@@ -222,7 +374,7 @@ function callbackRemoveProcedure(procedure_id) {
 	const risk_tinyMCE = tinymce.get('Element_OphTrConsent_BenefitsAndRisks_risks');
 	benefit_tinyMCE.setContent('');
 	risk_tinyMCE.setContent('');
-	
+
 	$.each($('.Element_OphTrConsent_ExtraProcedures input[name$="[proc_id]"]'),function() {
 		callbackAddProcedure($(this).val(), true);
 	});

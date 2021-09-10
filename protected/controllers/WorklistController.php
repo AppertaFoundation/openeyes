@@ -295,19 +295,7 @@ class WorklistController extends BaseController
 
             $pathway = $step->pathway;
 
-            if (count($pathway->started_steps) > 0) {
-                // If there are any active steps, the status is active.
-                $status = Pathway::STATUS_ACTIVE;
-            } elseif (count($pathway->requested_steps) > 0) {
-                // If there are no active steps but there are requested steps, the status is 'waiting'.
-                $status = Pathway::STATUS_WAITING;
-            } else {
-                // If there are only completed steps, the status is 'discharged'.
-                $status = Pathway::STATUS_DISCHARGED;
-            }
-
-            $pathway->status = $status;
-            $pathway->save();
+            $pathway->updateStatus();
 
             if ((int)$step->status === PathwayStep::STEP_STARTED) {
                 Yii::app()->event->dispatch('step_started', ['step' => $step]);
@@ -494,7 +482,7 @@ class WorklistController extends BaseController
      * @throws CException
      * @throws CHttpException
      */
-    public function actionGetPathStep($partial, $pathstep_id, $patient_id, $red_flag = false)
+    public function actionGetPathStep($partial, $pathstep_id, $patient_id, $red_flag = false, $interactive = 1)
     {
         switch ($pathstep_id) {
             case 'checkin':
@@ -553,16 +541,38 @@ class WorklistController extends BaseController
                 break;
             default:
                 $step = PathwayStep::model()->findByPk($pathstep_id);
-
                 if ($step && $step->type->short_name === 'drug admin') {
-                    if ($step->getState('pincode')) {
-                        // Refresh the pincode.
-                        $step->pincode = $step->getState('pincode');
-                        $step->save();
+                    $psd_assignment_id = $step->getState('assignment_id');
+
+                    if(!$psd_assignment_id){
+                        throw new CHttpException('Unable to retrieve PSD id');
                     }
-                    $this->redirect(
-                        "/OphDrPGDPSD/PSD/getPathStep?partial=$partial&pathstep_id=$pathstep_id&patient_id=$patient_id&interactive=1"
+
+                    $psd_assignment = OphDrPGDPSD_Assignment::model()->findByPk($psd_assignment_id);
+
+                    if (!$psd_assignment) {
+                        throw new CHttpException(404, 'Unable to retrieve PSD.');
+                    }
+
+                    if (intval($interactive)) {
+                        $interactive = $psd_assignment->getAppointmentDetails()['date'] === 'Today' ? 1 : 0;
+                    }
+                    $can_remove_psd = \Yii::app()->user->checkAccess('Prescribe') && (int)$step->status === PathwayStep::STEP_REQUESTED && !$psd_assignment->elements ? '' : 'disabled';
+                    $dom = $this->renderPartial(
+                        'application.modules.OphDrPGDPSD.views.pathstep.pathstep_view',
+                        array(
+                            'assignment' => $psd_assignment,
+                            'step' => $step,
+                            'partial' => (int)$partial,
+                            'patient_id' => $patient_id,
+                            'for_administer' => 0,
+                            'is_prescriber' => Yii::app()->user->checkAccess('Prescribe'),
+                            'can_remove_psd' => $can_remove_psd,
+                            'interactive' => (bool)$interactive,
+                        ),
+                        true
                     );
+                    $this->renderJSON($dom);
                     Yii::app()->end();
                 }
 

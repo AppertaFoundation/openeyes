@@ -29,7 +29,7 @@ interface RequiresSignature
      *
      * @return \OphTrConsent_Signature[]
      */
-    public function getRequiredSignatures() : array;
+    public function getRequiredSignatures(): array;
 
     /**
      * This method will be called when the signature is captured
@@ -38,5 +38,5 @@ interface RequiresSignature
      * @param int $signature_id The id of the collected signature in database
      * @return void
      */
-    public function afterSignedCallback(int $row_id, int $signature_id) : void;
+    public function afterSignedCallback(int $row_id, int $signature_id): void;
 }

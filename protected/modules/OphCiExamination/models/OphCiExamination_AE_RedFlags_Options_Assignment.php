@@ -60,9 +60,10 @@ class OphCiExamination_AE_RedFlags_Options_Assignment extends \BaseActiveRecordV
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, element_id, red_flag_id', 'safe', 'on' => 'search'),
+            array('element_id, red_flag_id', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, element_id, red_flag_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -74,10 +75,10 @@ class OphCiExamination_AE_RedFlags_Options_Assignment extends \BaseActiveRecordV
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_AE_RedFlags', 'element_id'),
-                'flag' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options', 'red_flag_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_AE_RedFlags', 'element_id'),
+            'flag' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options', 'red_flag_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
 

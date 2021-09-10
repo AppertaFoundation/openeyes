@@ -8,7 +8,6 @@ namespace OEModule\OphCiExamination\models;
  * The followings are the available columns in table 'et_ophciexamination_pain':
  * @property integer $id
  * @property string $event_id
- * @property int $display_order
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
@@ -22,6 +21,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Pain extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+
     /**
      * @return string the associated database table name
      */
@@ -39,7 +40,7 @@ class Element_OphCiExamination_Pain extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-            array('id, entries, display_order, last_modified_date, created_date', 'safe'),
+            array('entries, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, event_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
@@ -69,7 +70,6 @@ class Element_OphCiExamination_Pain extends \BaseEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'display_order' => 'Display Order',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',

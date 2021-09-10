@@ -81,6 +81,7 @@
             .on('change', '.js-custom-option[name="custom_option_subspecialty"]', this.updateContextList.bind(this));
         $(document).off('change', '.js-custom-option[name="custom_option_context"]')
             .on('change', '.js-custom-option[name="custom_option_context"]', this.updateWorkflowStepList.bind(this));
+        $(document).off('input', 'input[name="taskname"]').on('input', 'input[name="taskname"]', this.updateShortName.bind(this));
     };
 
     /**
@@ -112,6 +113,10 @@
         }
 
         self.content.find('.js-custom-option[name="custom_option_context"]').html(list);
+    };
+
+    NewPathwayStep.prototype.updateShortName = function (e) {
+        $('input[name="shortname"]').val($(e.target).val().substring(0, 16));
     };
 
     NewPathwayStep.prototype.updateWorkflowStepList = function () {

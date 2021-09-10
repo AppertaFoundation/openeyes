@@ -20,7 +20,6 @@ return array(
     'params' => array(
         'puppeteer_footer_left_OphTrConsent' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_PRIMARY_IDENTIFIER}}{{PATIENT_SECONDARY_IDENTIFIER}}{{PATIENT_DOB}}{{PROCEDURES}}',
         'puppeteer_bottom_margin_OphTrConsent' => '26mm',
-
         'admin_menu' => array(
             'OphTrConsent' => array(
                 'Leaflets' => array('uri' => '/OphTrConsent/oeadmin/Leaflets/list'),
@@ -28,7 +27,10 @@ return array(
                 'Additional Risks' => array('uri' => '/OphTrConsent/oeadmin/AdditionalRisks/list'),
                 'Extra Procedures' => array('uri' => '/OphTrConsent/oeadmin/ExtraProcedures/list'),
                 'Extra Procedures Subspecialty Assignment' => array('uri' => '/OphTrConsent/oeadmin/ExtraProcedures/EditSubspecialty'),
+                'Layouts' => array('uri' => '/OphTrConsent/oeadmin/ConsentLayouts/list'),
                 'Template' => array('uri' => '/OphTrConsent/oeadmin/Template/list'),
+                'Relationship to patient' => array('module' => 'OphTrConsent', 'uri' => '/OphTrConsent/oeadmin/PatientRelationship/list'),
+                'Contact method' => array('module' => 'OphTrConsent', 'uri' => '/OphTrConsent/oeadmin/PatientContactMethod/list'),
             ),
         ),
     ),

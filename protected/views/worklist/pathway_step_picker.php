@@ -16,6 +16,9 @@
     <div class="insert-steps">
         <div class="row">
             <input class="assign-to search" type="text" placeholder="Assign to..."/>
+            <div class="spinner-loader" style="display: none;">
+                <i class="spinner"></i>
+            </div>
             <ul id="js-assignee-list" class="btn-list"></ul>
         </div>
         <div class="row">

@@ -483,9 +483,8 @@ class Patient extends BaseActiveRecordVersioned
         $results = $data_provider->getData();
 
         $local_results_count = $data_provider->getItemCount();
-
         $results_from_pas = array();
-        if ($this->use_pas == true) {
+        if ($this->use_pas && $local_results_count === 0) {
             Yii::app()->event->dispatch('patient_search_criteria',
                 [
                     'results' => &$results_from_pas, 'patient' => $this,

@@ -3,9 +3,13 @@
 /**
  * @var $step PathwayStep|PathwayTypeStep
  * @var $patient Patient
+ * @var $red_flag bool
+ * @var $partial bool
  */
 
 use OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_AE_RedFlags;
+use OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment;
 
 $is_step_instance = $step instanceof PathwayStep;
 $is_requested = (int)$step->status === PathwayStep::STEP_REQUESTED || !$step->status;
@@ -16,23 +20,22 @@ if ($is_step_instance) {
 ?>
 <div class="slide-open">
     <?php if ($is_step_instance) { ?>
-        <div class="patient"><?= strtoupper($patient->last_name) . ', ' . $patient->first_name . ' (' . $patient->title . ')'?></div>
+        <div class="patient">
+            <?= strtoupper($patient->last_name) . ', ' . $patient->first_name . ' (' . $patient->title . ')'?>
+        </div>
     <?php }
-    if ($red_flag == true) {
-        $red_flags_event = \OEModule\OphCiExamination\models\Element_OphCiExamination_AE_RedFlags::model()->find('event_id =?',array($step->associated_event->id));
-        $red_flag_options = \OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAll('element_id =?',array($red_flags_event->id));
+    if ($red_flag) {
+        $red_flags_event = Element_OphCiExamination_AE_RedFlags::model()->find('event_id = ? AND nrf_check != 1', array($step->associated_event->id));
+        $red_flag_options = OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAll('element_id = ?', array($red_flags_event->id));
         ?>
 
-        <h3 class="title">Red flagged at <?= DateTime::createFromFormat('Y-m-d H:i:s', $red_flags_event->last_modified_date)->format('H:i') ?></h3>
+        <h3 class="title">
+            Red flagged at <?= DateTime::createFromFormat('Y-m-d H:i:s', $red_flags_event->last_modified_date)->format('H:i') ?>
+        </h3>
         <div class="step-content">
             <table>
                 <tbody>
-                <?php if (count($red_flag_options) === 0) { ?>
-                        <tr>
-                            <h4>No red flags for current attendance</h4>
-                        </tr>
-                <?php } else {
-                    foreach ($red_flag_options as $red_flag_option) { ?>
+                <?php foreach ($red_flag_options as $red_flag_option) { ?>
                     <tr>
                         <h4>
                             <?= OphCiExamination_AE_RedFlags_Options::model()->find(
@@ -41,8 +44,7 @@ if ($is_step_instance) {
                             )->name ?>
                         </h4>
                     </tr>
-                    <?php }
-                } ?>
+                <?php } ?>
                 </tbody>
             </table>
         </div>
@@ -97,7 +99,7 @@ if ($is_step_instance) {
                     <div class="step-actions">
                         <button class="green hint js-ps-popup-btn"
                                 data-action="goto"
-                                data-url="<?= $step->getState('event_view_url') ?>"<?= !$step->associated_event ? 'style="display: none;"' : ''?>>
+                                data-url="<?= $step->getState('event_view_url') ?>"<?= !$step->associated_event ? ' style="display: none;"' : ''?>>
                             Go to Event
                         </button>
                     </div>
@@ -133,10 +135,10 @@ if ($is_step_instance) {
         <?php if (!$partial || !$is_step_instance) { ?>
         <div class="step-actions">
             <?php if ($is_step_instance) { ?>
-                <button class="green hint js-ps-popup-btn" data-action="next"<?= (int)$step->status === PathwayStep::STEP_COMPLETED ? 'style="display: none;"' : ''?>>
+                <button class="green hint js-ps-popup-btn" data-action="next"<?= (int)$step->status === PathwayStep::STEP_COMPLETED ? ' style="display: none;"' : ''?>>
                     <?= (int)$step->status === PathwayStep::STEP_STARTED ? 'Complete' : 'Start' ?>
                 </button>
-                <button class="blue hint js-ps-popup-btn" data-action="prev"<?= $is_requested ? 'style="display: none;"' : ''?>>
+                <button class="blue hint js-ps-popup-btn" data-action="prev"<?= $is_requested ? ' style="display: none;"' : ''?>>
                     <?php if ((int)$step->status === PathwayStep::STEP_COMPLETED) {
                         echo 'Undo complete';
                     } else {
@@ -144,11 +146,11 @@ if ($is_step_instance) {
                     } ?>
                 </button>
             <?php } ?>
-            <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"<?= !$is_requested ? 'style="display: none;"' : ''?>>
+            <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"<?= !$is_requested ? ' style="display: none;"' : ''?>>
             </button>
-            <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"<?= !$is_requested ? 'style="display: none;"' : ''?>>
+            <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"<?= !$is_requested ? ' style="display: none;"' : ''?>>
             </button>
-            <button class="red i-btn trash hint js-ps-popup-btn" data-action="remove"<?= !$is_requested ? 'style="display: none;"' : ''?>>
+            <button class="red i-btn trash hint js-ps-popup-btn" data-action="remove"<?= !$is_requested ? ' style="display: none;"' : ''?>>
             </button>
         </div>
         <?php } ?>

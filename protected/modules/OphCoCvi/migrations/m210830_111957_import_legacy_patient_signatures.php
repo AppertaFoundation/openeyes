@@ -9,6 +9,16 @@ class m210830_111957_import_legacy_patient_signatures extends OEMigration
     public function safeUp()
     {
         if ($this->dbConnection->schema->getTable(self::LEGACY_ET_TABLE)) {
+            $this->execute("
+                UPDATE ".self::LEGACY_ET_TABLE." oc
+                    LEFT JOIN `protected_file` pf ON pf.id = oc.protected_file_id
+                SET oc.signature_date = pf.last_modified_date 
+                WHERE 
+                    UNIX_TIMESTAMP(oc.signature_date) IS NULL 
+                    AND oc.protected_file_id IS NOT NULL
+                ;
+            ");
+
             $this->execute("INSERT INTO ".self::ET_TABLE."
                     (event_id, last_modified_user_id, last_modified_date, created_user_id, created_date)
                     SELECT

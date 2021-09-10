@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures;
 
 class DefaultController extends BaseEventTypeController
 {
@@ -32,11 +33,15 @@ class DefaultController extends BaseEventTypeController
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
         'postSignRequest' => self::ACTION_TYPE_FORM,
         'sign' => self::ACTION_TYPE_EDIT,
+        'contactPage' => self::ACTION_TYPE_FORM,
+        'getDeleteConsentPopupContent' => self::ACTION_TYPE_FORM,
     );
 
     public $booking_event;
     public $booking_operation;
     public $unbooked = false;
+    public $type_id = null;
+    public $template;
 
     public function actions()
     {
@@ -133,6 +138,8 @@ class DefaultController extends BaseEventTypeController
     {
         if ($action == 'create' && $this->booking_operation) {
             $element->setBenefitsAndRisksFromProcedures($this->booking_operation->procedures);
+        } elseif ($action == 'create' && $this->template) {
+            $element->setBenefitsAndRisksFromProcedures($this->template->procedures);
         }
     }
 
@@ -159,13 +166,33 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setElementDefaultOptions_Element_OphTrConsent_Type($element, $action)
     {
-        if ($action == 'create') {
+        if (is_null($this->type_id)) {
+            $element->type_id = Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID;
+        } else {
+            $element->type_id = $this->type_id;
+        }
+
+        if ($action == 'create' && $this->template) {
+            $element->type_id = $this->template->type_id;
+        } elseif ($action == 'create') {
             $patient_age = (int)$this->patient->getAge();
             if ($patient_age <= 16) {
                 $element->type_id = 2;
-            } else {
-                $element->type_id = 1;
             }
+        }
+    }
+
+    protected function setElementDefaultOptions_Element_OphTrConsent_AdditionalSignatures($element, $action)
+    {
+        if ($action == 'create') {
+            $patient_age = (int)$this->patient->getAge();
+            if ($patient_age <= 16) {
+                $element->cf_type_id = 2;
+            } else {
+                $element->cf_type_id = $this->type_id;
+            }
+        } else {
+            $element->cf_type_id = $this->type_id;
         }
     }
 
@@ -189,6 +216,47 @@ class DefaultController extends BaseEventTypeController
             }
         } elseif (isset($_GET['unbooked'])) {
             $this->unbooked = true;
+        } elseif (isset($_GET['template_id'])) {
+            if (!($this->template = OphTrConsent_Template::model()->findByPk($_GET['template_id']))) {
+                throw new Exception('booking event not found');
+            }
+        }
+
+        if (is_null(Yii::app()->request->getParam("type_id"))) {
+            $this->type_id = Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID;
+            if ((Yii::app()->request->isPostRequest) && (Yii::app()->request->getPost('Element_OphTrConsent_Type'))) {
+                $this->type_id = \Yii::app()->request->getPost('Element_OphTrConsent_Type')['type_id'];
+            }
+        }
+
+        if (is_null(Yii::app()->request->getParam("type_id"))) {
+            $this->type_id = Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID;
+        } else {
+            $this->type_id = Yii::app()->request->getParam("type_id");
+        }
+    }
+
+    protected function initActionUpdate()
+    {
+        parent::initActionUpdate();
+        if (is_null(Yii::app()->request->getParam("type_id"))) {
+            if ($et = $this->event->getElementByClass(Element_OphTrConsent_Type::class)) {
+                $this->type_id = $et->type_id;
+            }
+        } else {
+            $this->type_id = Yii::app()->request->getParam("type_id");
+        }
+    }
+
+    protected function initActionView()
+    {
+        parent::initActionView();
+        if ($et = $this->event->getElementByClass(Element_OphTrConsent_Type::class)) {
+            $this->type_id = $et->type_id;
+        }
+
+        if ($et = $this->event->getElementByClass(Element_OphTrConsent_AdditionalSignatures::class)) {
+            $et->cf_type_id = $this->type_id;
         }
     }
 
@@ -197,7 +265,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function renderSidebar($default_view)
     {
-        if (!$this->booking_event && !$this->unbooked) {
+        if (!$this->booking_event && !$this->unbooked && !$this->template) {
             $this->show_element_sidebar = false;
         }
         parent::renderSidebar($default_view);
@@ -222,36 +290,88 @@ class DefaultController extends BaseEventTypeController
                 $this->redirect(array('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&unbooked=1'));
             } elseif (preg_match('/^booking([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
                 $this->redirect(array('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&booking_event_id='.$m[1]));
+            } elseif (preg_match('/^template([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
+                $this->redirect(array('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&template_id='.$m[1]));
             }
             $errors = array('Consent form' => array('Please select a booking or Unbooked procedures'));
         }
 
-        if ($this->booking_event || $this->unbooked) {
+        if ($this->booking_event || $this->unbooked || $this->template) {
             parent::actionCreate();
         } else {
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
                 $bookings = $api->getIncompleteOperationsForEpisode($this->patient);
             }
 
+            $criteria = new \CDbCriteria();
+            $criteria->join = "JOIN `et_ophtrconsent_procedure` pr ON pr.`event_id` = t.`id`
+                               JOIN `episode` ep ON t.`episode_id` = ep.`id`";
+            $criteria->addCondition('pr.booking_event_id IS NULL');
+            $criteria->addCondition('ep.patient_id = ' . $this->patient->id);
+            $criteria->addCondition('t.event_type_id = ' . $this->event_type->id);
+            $criteria->addCondition('ep.deleted = 0');
+
+            if ($this->event->institution_id) {
+                $criteria->addCondition('t.institution_id = ' . $this->event->institution_id);
+            }
+
+            if ($this->event->site_id) {
+                $criteria->addCondition('t.site_id = ' . $this->event->site_id);
+            }
+
+            $no_operation_booking = Event::model()->findAll($criteria);
+
+            $criteria = new \CDbCriteria();
+
+            if ($this->event->institution_id) {
+                $institution = $this->event->institution_id;
+                if ($institution == NULL) {
+                    $criteria->addCondition('institution_id IS NULL');
+                } else {
+                    $criteria->addCondition('institution_id = ' . $institution . ' OR institution_id IS NULL');
+                }
+            }
+
+            if ($this->event->site_id) {
+                $site = $this->event->site_id;
+                if ($site == NULL) {
+                    $criteria->addCondition('site_id IS NULL');
+                } else {
+                    $criteria->addCondition('site_id = ' . $site . ' OR site_id IS NULL');
+                }
+            }
+
+            if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+                $subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty_id;
+                if ($subspecialty == NULL) {
+                    $criteria->addCondition('subspecialty_id IS NULL');
+                } else {
+                    $criteria->addCondition('subspecialty_id = ' . $subspecialty . ' OR subspecialty_id IS NULL');
+                }
+            }
+            $templates = OphTrConsent_Template::model()->findAll($criteria);
+
             $this->title = 'Please select booking';
             $this->event_tabs = array(
-                    array(
-                            'label' => 'Select a booking',
-                            'active' => true,
-                    ),
+                array(
+                    'label' => 'Select a booking',
+                    'active' => true,
+                ),
             );
             $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             $this->event_actions = array(
-                    EventAction::link(
-                        'Cancel',
-                        Yii::app()->createUrl($cancel_url),
-                        array('id' => 'et_cancel', 'class' => 'button small warning')
-                    ),
+                EventAction::link(
+                    'Cancel',
+                    Yii::app()->createUrl($cancel_url),
+                    array('id' => 'et_cancel', 'class' => 'button small warning')
+                ),
             );
             $this->processJsVars();
             $this->render('select_event', array(
                 'errors' => $errors,
                 'bookings' => $bookings ? $bookings : [],
+                'templates' => $templates ? $templates : [],
+                'no_operation_booking' => $no_operation_booking ? $no_operation_booking : [],
             ), false, true);
         }
     }
@@ -381,14 +501,14 @@ class DefaultController extends BaseEventTypeController
         $type->draft = 0;
 
         if (!$type->save()) {
-            throw new Exception('Unable to save consent form: '.print_r($type->getErrors(), true));
+            throw new Exception('Unable to save consent form: ' . print_r($type->getErrors(), true));
         }
         if (!$event = Event::model()->findByPk($id)) {
             throw new Exception("Event not found: $id");
         }
         $event->info = '';
         if (!$event->save()) {
-            throw new Exception('Unable to save event: '.print_r($event->getErrors(), true));
+            throw new Exception('Unable to save event: ' . print_r($event->getErrors(), true));
         }
         Yii::app()->session['printConsent'] = isset($_GET['vi']) ? 2 : 1;
         echo '1';
@@ -400,7 +520,7 @@ class DefaultController extends BaseEventTypeController
             $type->print = 0;
             $type->draft = 0;
             if (!$type->save()) {
-                throw new Exception('Unable to mark consent form printed: '.print_r($type->getErrors(), true));
+                throw new Exception('Unable to mark consent form printed: ' . print_r($type->getErrors(), true));
             }
         }
     }
@@ -417,6 +537,7 @@ class DefaultController extends BaseEventTypeController
             $type = AnaestheticType::model()->findByPk($type_id);
             $assigned_anaesthetic_types[] = $type;
         }
+
         foreach ($procedures_data as $proc) {
             $procedure = new OphtrconsentProcedureProceduresProcedures();
             $procedure->eye_id = $proc['eye_id'];
@@ -473,7 +594,7 @@ class DefaultController extends BaseEventTypeController
                 }
             }
             if (!$foundExistingAssignment) {
-                $patientContactAssignment = new \PatientAttorneyDeputyContact;
+                $patientContactAssignment = new \PatientAttorneyDeputyContact();
                 $patientContactAssignment->patient_id = $patient->id;
                 $patientContactAssignment->contact_id = $contact_id;
                 $patientContactAssignment->authorised_decision_id = isset($entries[$key]['authorised_decision_id']) ? $entries[$key]['authorised_decision_id'] : null;
@@ -500,8 +621,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function getOptionalElements()
     {
-        $elements = parent::getOptionalElements();
-        return $this->filterElements($elements);
+        return [];
     }
 
     /**
@@ -519,6 +639,207 @@ class DefaultController extends BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    public function actionGetDeleteConsentPopupContent()
+    {
+        $old_consent_id = Yii::app()->request->getParam('id');
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('id = :old_consent_id');
+        $criteria->params = [
+            ':old_consent_id' => $old_consent_id
+        ];
+        $old_consent_event = Event::model()->findAll($criteria);
+        if (count($old_consent_event)===0) {
+            $response = null;
+        } else {
+            $response = [
+                'html' => $this->renderPartial(
+                    'select_event_with_consent_delete',
+                    array(
+                        'old_consent_event' => $old_consent_event,
+                    ),
+                    true
+                ),
+            ];
+        }
+
+        $this->renderJSON($response);
+    }
+
+    protected function setAndValidateElementsFromData($data)
+    {
+        $errors = [];
+        $elements = [];
+        $element_types = $this->getElementTypesForConsentFormType();
+
+        foreach ($element_types as $element_type) {
+            $from_data = $this->getElementsForElementType($element_type, $data);
+            if (count($from_data) > 0) {
+                $elements = array_merge($elements, $from_data);
+            } elseif ($element_type->required) {
+                $elements[] = $element_type->getInstance();
+            }
+        }
+
+        if (!count($elements)) {
+            $errors[$this->event_type->name][] = 'Cannot create an event without at least one element';
+        }
+
+        $this->open_elements = $elements;
+
+        foreach ($this->open_elements as $element) {
+            $element->validate();
+            if (method_exists($element, 'eventScopeValidation')) {
+                $element->eventScopeValidation($this->open_elements);
+            }
+
+            if ($element->hasErrors()) {
+                $name = $element->getElementTypeName();
+                foreach ($element->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$name][] = $error;
+                    }
+                }
+            }
+        }
+
+        if (isset($data['Event']['event_date'])) {
+            $this->setEventDate($data['Event']['event_date']);
+            $event = $this->event;
+            if (isset($data['Event']['parent_id'])) {
+                $event->parent_id = $data['Event']['parent_id'];
+            }
+            if (!$event->validate()) {
+                foreach ($event->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$this->event_type->name][] = $error;
+                    }
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Get event elements
+     * @return array
+     */
+    protected function getEventElements(): array
+    {
+        if ($this->event && !$this->event->isNewRecord) {
+            $used_elements = $this->event->getElements();
+            $missing_elements = $this->getMissingElementsToLayout($used_elements);
+            $elements = array_merge($used_elements, $missing_elements);
+        } else {
+            $elements = $this->getElementsForConsentFormType();
+        }
+
+        return $elements;
+    }
+
+    /**
+     * Get used elements name
+     * @param $elements
+     * @return array
+     */
+    private function getUsedElementNamesInEvent($elements): array
+    {
+        $result = [];
+        foreach ($elements as $element) {
+            $result[] = get_class($element);
+        }
+        return $result;
+    }
+
+    /**
+     * Create new instance from element to edit mode if element is missing
+     * @param $elements
+     * @return array
+     */
+    protected function getMissingElementsToLayout($elements): array
+    {
+        $missing_elements = [];
+        $result = [];
+        $used_elements = $this->getUsedElementNamesInEvent($elements);
+        if ($consent_assessments = $this->getElementsByConsentFormTypes()) {
+            foreach ($consent_assessments as $assessment) {
+                if (!in_array($assessment->element->class_name, $used_elements)) {
+                    $missing_elements[] = $assessment->element->class_name;
+                }
+            }
+        }
+
+        if (!empty($missing_elements)) {
+            foreach ($missing_elements as $missing) {
+                $element = new $missing();
+                /** @var BaseEventTypeElement $element */
+                if ($element->hasAttribute('type_id')) {
+                    $element->type_id = $this->type_id;
+                }
+                $result[] = $element;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Create instance layout elements
+     * @return array
+     */
+    private function getElementsForConsentFormType(): array
+    {
+        $elements = [];
+        if ($consent_assessments = $this->getElementsByConsentFormTypes()) {
+            foreach ($consent_assessments as $assessment) {
+                $element = new $assessment->element->class_name();
+                /** @var BaseEventTypeElement $element */
+                if ($element->hasAttribute('type_id')) {
+                    $element->type_id = $this->type_id;
+                }
+                $elements[] = $element;
+            }
+        }
+
+        return $elements;
+    }
+
+
+    /**
+     * Required element to selected Consent Type
+     * @return array
+     */
+    public function getElementsByConsentFormTypes(): array
+    {
+        return OphTrConsent_Type_Assessment::model()
+            ->with('element')
+            ->findAllByAttributes(
+                [
+                    'type_id' => $this->type_id
+                ],
+                [
+                    'order' => 't.display_order ASC'
+                ]
+            );
+    }
+
+    private function getElementTypesForConsentFormType(): array
+    {
+        if ($consent_assessments = $this->getElementsByConsentFormTypes()) {
+            foreach ($consent_assessments as $assessment) {
+                $element_classes[] = $assessment->element->class_name;
+            }
+
+            $criteria = new CDbCriteria();
+            $criteria->addInCondition("class_name", $element_classes);
+            $criteria->addSearchCondition("event_type_id", $this->getEvent_type()->id);
+            $criteria->order = "display_order ASC";
+            return (ElementType::model()->findAll($criteria));
+        }
+
+        return [];
     }
 
     public function actionBenefits($id)
@@ -569,5 +890,76 @@ class DefaultController extends BaseEventTypeController
             "&initiator_element_type_id=".\Yii::app()->request->getParam("initiator_element_type_id").
             "&initiator_row_id=".\Yii::app()->request->getParam("initiator_row_id")
         );
+    }
+
+    public function actionContactPage()
+    {
+        $selected_contact_type = null;
+        $params = [];
+
+        if (isset($_GET['selected_contact_type_id'])) {
+            $selected_contact_type_id = $_GET['selected_contact_type_id'];
+            $selected_contact_type = \OphTrConsent_PatientRelationship::model()->findByPk($selected_contact_type_id);
+            $params = array(
+                'selected_relationship_type_id' => $selected_contact_type_id,
+                'selected_relationship_type' => $selected_contact_type->name,
+            );
+        }
+
+        $this->renderPartial(
+            '_add_new_contact',
+            $params,
+            false,
+            true
+        );
+    }
+
+    protected function setComplexAttributes_Element_OphTrConsent_OthersInvolvedDecisionMakingProcess($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $post_data = \Yii::app()->request->getPost($model_name, []);
+        $existing_items = $element->consentContact;
+        $existing_contacts = [];
+        $deleted_item_ids = array_column($existing_items, 'id');
+        $new_items = [];
+
+        foreach ($existing_items as $existintg_item) {
+            $existing_contacts[$existintg_item->id] = $existintg_item;
+        }
+
+        foreach ($post_data['jsonData'] as $idx => $jsonStr) {
+            if (strlen($jsonStr) === 0) {
+                continue;
+            }
+
+            $data = json_decode(htmlspecialchars_decode($jsonStr), true);
+
+            $existing_id = isset($data['existing_id']) ? $data['existing_id'] : null;
+
+            if (!$existing_id) {
+                $contact = new \Ophtrconsent_OthersInvolvedDecisionMakingProcessContact();
+                $contact->setAttributes($data);
+
+                $contact->comment = $post_data['comment'][$idx];
+                $contact->signature_required = $post_data['signature_required'][$idx];
+
+                $new_items[] = $contact;
+            } else {
+                $existing_contact = \Ophtrconsent_OthersInvolvedDecisionMakingProcessContact::model()->findByPk($existing_id);
+                $existing_contact->comment = $post_data['comment'][$idx];
+                $existing_contact->signature_required = $post_data['signature_required'][$idx];
+
+                $existing_contacts[$existing_id] = $existing_contact;
+                $key = array_search($existing_id, $deleted_item_ids);
+                unset($deleted_item_ids[$key]);
+            }
+        }
+
+        foreach ($existing_contacts as $existing_item) {
+            if (in_array($existing_item->id, $deleted_item_ids)) {
+                unset($existing_contacts[$existing_item->id]);
+            }
+        }
+        $element->consentContact = array_merge($existing_contacts, $new_items);
     }
 }
