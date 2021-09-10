@@ -535,4 +535,21 @@ class Pathway extends BaseActiveRecordVersioned
         }
         return false;
     }
+
+    public function updateStatus()
+    {
+        if (count($this->started_steps) > 0) {
+            // If there are any active steps, the status is active.
+            $status = self::STATUS_ACTIVE;
+        } elseif (count($this->requested_steps) > 0) {
+            // If there are no active steps but there are requested steps, the status is 'waiting'.
+            $status = self::STATUS_WAITING;
+        } else {
+            // If there are only completed steps, the status is 'discharged'.
+            $status = self::STATUS_DISCHARGED;
+        }
+
+        $this->status = $status;
+        $this->save();
+    }
 }

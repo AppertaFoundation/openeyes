@@ -108,6 +108,9 @@ class Element_DrugAdministration extends BaseMedicationElement
     {
         $original = $this->assignments;
         foreach ($this->assignments as $key => $assignment) {
+            if(!$assignment->active){
+                continue;
+            }
             if ($assignment->create_wp) {
                 $site_id = \Yii::app()->session->get('selected_site_id');
                 $firm_id = \Yii::app()->session->get('selected_firm_id');
@@ -236,15 +239,14 @@ class Element_DrugAdministration extends BaseMedicationElement
             foreach ($assignment->assigned_meds as $med) {
                 if ($med->administered && !$med->event_entry) {
                     $med = $pgdpsd_api->setMedEventEntry($med, $this);
-                    $med->save();
                 } elseif (!$med->administered && $med->event_entry) {
                     $event_entry = $med->event_entry;
                     $med->administered_id = null;
                     $med->administered = 0;
                     $med->administered_time = null;
                     $med->administered_by = null;
-                    $med->save();
                 }
+                $med->save();
             }
         }
         parent::afterSave();

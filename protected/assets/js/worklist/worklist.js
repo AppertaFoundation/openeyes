@@ -234,7 +234,7 @@ $(function () {
     };
     let updatePathstepIcon = function (ps, resp) {
         ps.renderPopupContent(resp['dom']);
-        handleRunActionResponse($(test), resp);
+        handleRunActionResponse($(ps.pathstepIcon), resp);
     };
 
     let serializeForm = function (selector) {
