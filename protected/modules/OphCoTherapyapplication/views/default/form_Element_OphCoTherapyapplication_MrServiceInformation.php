@@ -45,6 +45,7 @@
     <div class="cols-9 column" style="display: inline-block;">
       <label class="inline highlight">
             <?php echo $form->radioButton($element, 'patient_sharedata_consent'); ?> Yes
+      </label>
     </div>
   </fieldset>
 </div>
