@@ -33,6 +33,7 @@ class DefaultController extends BaseEventTypeController
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
         'postSignRequest' => self::ACTION_TYPE_FORM,
         'sign' => self::ACTION_TYPE_EDIT,
+        'contactPage' => self::ACTION_TYPE_FORM,
         'getDeleteConsentPopupContent' => self::ACTION_TYPE_FORM,
     );
 
@@ -889,5 +890,76 @@ class DefaultController extends BaseEventTypeController
             "&initiator_element_type_id=".\Yii::app()->request->getParam("initiator_element_type_id").
             "&initiator_row_id=".\Yii::app()->request->getParam("initiator_row_id")
         );
+    }
+
+    public function actionContactPage()
+    {
+        $selected_contact_type = null;
+        $params = [];
+
+        if (isset($_GET['selected_contact_type_id'])) {
+            $selected_contact_type_id = $_GET['selected_contact_type_id'];
+            $selected_contact_type = \OphTrConsent_PatientRelationship::model()->findByPk($selected_contact_type_id);
+            $params = array(
+                'selected_relationship_type_id' => $selected_contact_type_id,
+                'selected_relationship_type' => $selected_contact_type->name,
+            );
+        }
+
+        $this->renderPartial(
+            '_add_new_contact',
+            $params,
+            false,
+            true
+        );
+    }
+
+    protected function setComplexAttributes_Element_OphTrConsent_OthersInvolvedDecisionMakingProcess($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $post_data = \Yii::app()->request->getPost($model_name, []);
+        $existing_items = $element->consentContact;
+        $existing_contacts = [];
+        $deleted_item_ids = array_column($existing_items, 'id');
+        $new_items = [];
+
+        foreach ($existing_items as $existintg_item) {
+            $existing_contacts[$existintg_item->id] = $existintg_item;
+        }
+
+        foreach ($post_data['jsonData'] as $idx => $jsonStr) {
+            if (strlen($jsonStr) === 0) {
+                continue;
+            }
+
+            $data = json_decode(htmlspecialchars_decode($jsonStr), true);
+
+            $existing_id = isset($data['existing_id']) ? $data['existing_id'] : null;
+
+            if (!$existing_id) {
+                $contact = new \Ophtrconsent_OthersInvolvedDecisionMakingProcessContact();
+                $contact->setAttributes($data);
+
+                $contact->comment = $post_data['comment'][$idx];
+                $contact->signature_required = $post_data['signature_required'][$idx];
+
+                $new_items[] = $contact;
+            } else {
+                $existing_contact = \Ophtrconsent_OthersInvolvedDecisionMakingProcessContact::model()->findByPk($existing_id);
+                $existing_contact->comment = $post_data['comment'][$idx];
+                $existing_contact->signature_required = $post_data['signature_required'][$idx];
+
+                $existing_contacts[$existing_id] = $existing_contact;
+                $key = array_search($existing_id, $deleted_item_ids);
+                unset($deleted_item_ids[$key]);
+            }
+        }
+
+        foreach ($existing_contacts as $existing_item) {
+            if (in_array($existing_item->id, $deleted_item_ids)) {
+                unset($existing_contacts[$existing_item->id]);
+            }
+        }
+        $element->consentContact = array_merge($existing_contacts, $new_items);
     }
 }

@@ -120,9 +120,9 @@ class ContactController extends \BaseController
      * @param \Contact $contact
      * @return array
      */
-    protected function contactStructure(\Contact $contact)
+    protected function contactStructure(\Contact $contact, $user = null)
     {
-        return array(
+        $result = array(
             'label' => $contact->getFullName() .
                 (isset($contact->label) && isset($contact->label->name) ?
                     " (" . $contact->label->name . ")" : "")
@@ -130,11 +130,27 @@ class ContactController extends \BaseController
                 " " . ($contact->address ? $contact->address->getLetterLine() : ""),
             'id' => $contact['id'],
             'name' => $contact->getFullName(),
+            'first_name' => $contact->first_name,
+            'last_name' => $contact->last_name,
             'email' => $contact->email,
             'phone' => $contact->primary_phone,
             'address' => $contact->address ? $contact->address->getLetterLine() : "",
             'contact_label' => $contact->label ? $contact->label->name : "",
         );
+
+        if ($user) {
+            $result['contact_user_id'] = $user->id;
+        }
+
+        if (isset($contact->address)) {
+            $result['address_line1'] = $contact->address->address1;
+            $result['address_line2'] = $contact->address->address2;
+            $result['city'] = $contact->address->city;
+            $result['country_id'] = $contact->address->country_id;
+            $result['postcode'] = $contact->address->postcode;
+        }
+
+        return $result;
     }
 
     public function actionContactPage()
@@ -207,6 +223,59 @@ class ContactController extends \BaseController
                     echo \CJSON::encode($this->contactStructure($contact));
                 }
             }
+        }
+    }
+
+    /**
+     * Lists all Openeyes user contacts for a given search term.
+     */
+    public function actionOpeneyesContactsWithUser()
+    {
+        if (\Yii::app()->request->isAjaxRequest) {
+            $criteria = new \CDbCriteria();
+
+            if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
+                $criteria->addSearchCondition('LOWER(contact.last_name)', $term, true, 'OR', 'LIKE');
+                $criteria->addSearchCondition('LOWER(contact.first_name)', $term, true, 'OR', 'LIKE');
+            }
+            $users = \User::model()->with('contact')->findAll($criteria);
+
+            $return = array();
+            foreach ($users as $i => $user) {
+                $return[$i] = $this->contactStructure($user->contact, $user);
+                $return[$i]['user_id'] = $user->id;
+            }
+
+            $this->renderJSON($return);
+        }
+    }
+
+    public function actionAllPatientContacts()
+    {
+        $patient_id = Yii::app()->request->getQuery('code');
+
+        if (strlen($patient_id)===0) {
+            return [];
+        }
+
+        if (\Yii::app()->request->isAjaxRequest) {
+            $criteria = new \CDbCriteria();
+            $criteria->join = "join patient_contact_assignment pca ON pca.contact_id = t.id";
+            $criteria->join .= " join contact_label cl ON cl.id = t.contact_label_id";
+
+            if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
+                $criteria->addSearchCondition('LOWER(last_name)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(first_name)', $term, true, 'OR');
+            }
+
+            $criteria->addSearchCondition('pca.patient_id', $patient_id, true, 'OR');
+
+            $contacts = \Contact::model()->findAll($criteria);
+            $return = array();
+            foreach ($contacts as $contact) {
+                $return[] = $this->contactStructure($contact);
+            }
+            $this->renderJSON($return);
         }
     }
 }
