@@ -134,7 +134,7 @@ class OphTrConsent_PatientContactMethod extends BaseActiveRecord
         return parent::model($className);
     }
 
-    public function getTypeLabel($type)
+    public static function getTypeLabel($type)
     {
         return self::SIGNATURE_OPTIONS[constant('self::'.$type)];
     }
@@ -143,13 +143,13 @@ class OphTrConsent_PatientContactMethod extends BaseActiveRecord
     {
         $result = '';
         switch ((int)$this->need_signature) {
-            case self::SIGNATURE_OPTIONS[self::SIGNATURE_NOT_REQUIRED]:
+            case self::SIGNATURE_NOT_REQUIRED:
                 $result = 'No signature';
                 break;
-            case self::SIGNATURE_OPTIONS[self::SIGNATURE_REQUIRED]:
+            case self::SIGNATURE_REQUIRED:
                 $result = 'Signature require';
                 break;
-            case self::SIGNATURE_OPTIONS[self::SIGNATURE_OPTIONAL]:
+            case self::SIGNATURE_OPTIONAL:
             default:
                 $result = 'Signature is optional';
         }

@@ -28,6 +28,13 @@ class WorklistController extends BaseController
         return array(array('allow', 'roles' => array('OprnWorklist')));
     }
 
+    public function behaviors()
+    {
+        return array(
+            'SetupPathwayStepPicker' => ['class' => 'application.behaviors.SetupPathwayStepPickerBehavior',],
+        );
+    }
+
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
@@ -40,7 +47,7 @@ class WorklistController extends BaseController
 
         return parent::beforeAction($action);
     }
-    protected function prescriberDomData()
+    protected function prescriberDomData($require_preset = true)
     {
         $ret = array(
             'preset_orders' => array(),
@@ -49,16 +56,18 @@ class WorklistController extends BaseController
             'assign_preset_btn' => null,
         );
         if ($is_prescriber = $this->checkAccess('Prescribe')) {
-            $preset_criteria = new CDbCriteria();
-            $preset_criteria->compare('active', true);
-            $preset_orders = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
-            $preset_orders_json = array_map(
-                static function ($item) {
-                    return array('id' => $item->id, 'name' => 'preset_order', 'label' => $item->name);
-                },
-                $preset_orders
-            );
-            $ret['preset_orders'] = $preset_orders_json;
+            if ($require_preset) {
+                $preset_criteria = new CDbCriteria();
+                $preset_criteria->compare('active', true);
+                $preset_orders = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
+                $preset_orders_json = array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'name' => 'preset_order', 'label' => $item->name);
+                    },
+                    $preset_orders
+                );
+                $ret['preset_orders'] = $preset_orders_json;
+            }
             $ret['is_prescriber'] = $is_prescriber;
             $ret['assign_preset_btn'] = "<div class='button-stack'><button disabled class='green hint' id='js-worklist-psd-add'>Assign Preset Order to selected patients</button></div>";
         }
@@ -66,7 +75,6 @@ class WorklistController extends BaseController
     }
     public function actionView()
     {
-        //$this->layout = 'main';
         $date_from = Yii::app()->request->getQuery('date_from');
         $date_to = Yii::app()->request->getQuery('date_to');
         $redirect = false;
@@ -91,83 +99,59 @@ class WorklistController extends BaseController
             }
         }
 
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.InputFieldValidation.js'), ClientScript::POS_END);
-        $worklist_js = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js.worklist') . '/worklist.js', true);
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.PathStep.js'), ClientScript::POS_END);
-        Yii::app()->clientScript->registerScriptFile($worklist_js, ClientScript::POS_END);
-
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.UI.WorklistFilterPanel.js'), ClientScript::POS_END);
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.UI.WorklistQuickFilterPanel.js'), ClientScript::POS_END);
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFilter.js'), ClientScript::POS_END);
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFiltersController.js'), ClientScript::POS_END);
-
         if ($redirect) {
             $this->redirect(array('/worklist/view?date_from='.$date_from.'&date_to='.$date_to));
         }
 
         $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
-        $sync_interval_setting_key = 'worklist_auto_sync_interval';
-        $sync_interval_settings = \SettingMetadata::model()->find("`key` = 'worklist_auto_sync_interval'");
-        $sync_interval_options = unserialize($sync_interval_settings->data, ['allowed_classes' => true]);
-        $sync_interval_value = $sync_interval_settings->getSetting();
-        $prescriber_dom_data = $this->prescriberDomData();
 
-        $steps = OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(
-            Yii::app()->session['selected_institution_id'],
-            null
-        );
+        if (WorklistFilter::model()->countForCurrentUser() !== 0 || WorklistRecentFilter::model()->countForCurrentUser() !== 0) {
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.InputFieldValidation.js'), ClientScript::POS_END);
+            $worklist_js = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js.worklist') . '/worklist.js', true);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.PathStep.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile($worklist_js, ClientScript::POS_END);
 
-        $vf_presets = VisualFieldTestPreset::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
-        $vf_test_types = VisualFieldTestType::model()->findAll();
-        $vf_test_options = VisualFieldTestOption::model()->findAll();
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.UI.WorklistFilterPanel.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.UI.WorklistQuickFilterPanel.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFilter.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFiltersController.js'), ClientScript::POS_END);
 
-        $vf_preset_json = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => 'preset_id', 'label' => $item->name);
-            },
-            $vf_presets
-        );
-        $vf_test_type_json = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => 'test_type_id', 'label' => $item->short_name);
-            },
-            $vf_test_types
-        );
-        $vf_test_option_json = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => 'option_id', 'label' => $item->short_name);
-            },
-            $vf_test_options
-        );
+            $sync_interval_setting_key = 'worklist_auto_sync_interval';
+            $sync_interval_settings = \SettingMetadata::model()->find("`key` = 'worklist_auto_sync_interval'");
+            $sync_interval_options = unserialize($sync_interval_settings->data, ['allowed_classes' => true]);
+            $sync_interval_value = $sync_interval_settings->getSetting();
+            $prescriber_dom_data = $this->prescriberDomData(false);
 
-        $letter_macros = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => $item->name);
-            },
-            LetterMacro::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION)
-        );
-        array_unshift($letter_macros, ['id' => '', 'name' => 'None']);
-        $this->render(
-            'index',
-            array(
-                'worklists' => $worklists,
-                'workflows' => $steps,
-                'letter_macros' => $letter_macros,
-                'vf_test_presets' => $vf_preset_json,
-                'vf_test_types' => $vf_test_type_json,
-                'vf_test_options' => $vf_test_option_json,
-                'path_steps' => PathwayStepType::getPathTypes(),
-                'pathways' => PathwayType::model()->findAll(),
-                'standard_steps' => PathwayStepType::getStandardTypes(),
-                'custom_steps' => PathwayStepType::getCustomTypes(),
-                'sync_interval_options' => $sync_interval_options,
-                'sync_interval_value' => $sync_interval_value,
-                'sync_interval_setting_key' => $sync_interval_setting_key,
-                'is_prescriber' => $prescriber_dom_data['is_prescriber'],
-                'preset_orders' => $prescriber_dom_data['preset_orders'],
-                'assign_preset_btn' => $prescriber_dom_data['assign_preset_btn'],
-            )
-        );
+            $picker_setup = json_encode($this->setupPicker());
+            $path_step_type_ids = json_encode($this->getPathwayStepTypesRequirePicker());
+            $this->render(
+                'index',
+                array(
+                    'worklists' => $worklists,
+                    'picker_setup' => $picker_setup,
+                    'path_step_type_ids' => $path_step_type_ids,
+                    'path_steps' => PathwayStepType::getPathTypes(),
+                    'pathways' => PathwayType::model()->findAll(),
+                    'standard_steps' => PathwayStepType::getStandardTypes(),
+                    'custom_steps' => PathwayStepType::getCustomTypes(),
+                    'sync_interval_options' => $sync_interval_options,
+                    'sync_interval_value' => $sync_interval_value,
+                    'sync_interval_setting_key' => $sync_interval_setting_key,
+                    'is_prescriber' => $prescriber_dom_data['is_prescriber'],
+                    'preset_orders' => $prescriber_dom_data['preset_orders'],
+                    'assign_preset_btn' => $prescriber_dom_data['assign_preset_btn'],
+                )
+            );
+        } else {
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.UI.WorklistFilterPanel.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFilter.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFiltersController.js'), ClientScript::POS_END);
+
+            $this->render(
+                'landing_page',
+                array('worklists' => $worklists)
+            );
+        }
     }
 
     public function actionGetPresetDrugs($id)
@@ -429,7 +413,7 @@ class WorklistController extends BaseController
 
             // As we're only moving one step, we should only have to reorder at most a single step.
             $step_to_reorder = PathwayStep::model()->find(
-                "pathway_id = :pathway_id AND status IN (-1, 0) AND id != :id AND `order` = :order",
+                "pathway_id = :pathway_id AND (status IN (-1, 0) OR status IS NULL) AND id != :id AND `order` = :order",
                 [
                     'pathway_id' => $step->pathway_id,
                     ':id' => $step->id,
@@ -544,7 +528,7 @@ class WorklistController extends BaseController
                 if ($step && $step->type->short_name === 'drug admin') {
                     $psd_assignment_id = $step->getState('assignment_id');
 
-                    if(!$psd_assignment_id){
+                    if (!$psd_assignment_id) {
                         throw new CHttpException('Unable to retrieve PSD id');
                     }
 
@@ -1294,7 +1278,7 @@ class WorklistController extends BaseController
         return $results;
     }
 
-    public function getWaitingForList($filter = null, $worklists = null, $includeAllStepTypes = false)
+    public function getWaitingForList($filter = null, $worklists = null)
     {
         if ($filter === null) {
             $filter = new WorklistFilterQuery();
@@ -1303,16 +1287,16 @@ class WorklistController extends BaseController
         return array_map(
             static function ($item) {
                 return array(
-                    'id' => $item['id'],
-                    'label' => $item['long_name'],
+                    'id' => $item['long_name'],
+                    'label' => '… ' . $item['long_name'],
                     'count' => $item['count']
                 );
             },
-            $filter->getWaitingForListQuery($worklists, $includeAllStepTypes)->queryAll()
+            $filter->getWaitingForListQuery($worklists)->queryAll()
         );
     }
 
-    public function getAssignedToList($filter = null, $worklists = null, $includeAllUsers = false)
+    public function getAssignedToList($filter = null, $worklists = null)
     {
         $helper = new User();
 
@@ -1331,7 +1315,7 @@ class WorklistController extends BaseController
                     'count' => $item['count']
                 );
             },
-            $filter->getAssignedToListQuery($worklists, $includeAllUsers)->queryAll()
+            $filter->getAssignedToListQuery($worklists)->queryAll()
         );
     }
 
@@ -1489,11 +1473,11 @@ class WorklistController extends BaseController
 
         $filters['max_recents'] = WorklistRecentFilter::MAX_RECENT_FILTERS;
 
-        $filters['recent'] = array_map(function ($f) {
+        $filters['recent'] = array_map(static function ($f) {
             return ['id' => $f->id, 'filter' => $f->filter];
         }, WorklistRecentFilter::model()->getForCurrentUser());
 
-        $filters['saved'] = array_map(function ($f) {
+        $filters['saved'] = array_map(static function ($f) {
             return ['id' => $f->id, 'name' => $f->name, 'filter' => $f->filter];
         }, WorklistFilter::model()->getForCurrentUser());
 

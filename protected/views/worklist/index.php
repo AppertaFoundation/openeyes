@@ -23,41 +23,6 @@ $pathway_json = json_encode(
     ),
     JSON_THROW_ON_ERROR
 );
-// Can't use the much faster json_encode here because the workflow step list contains a list of active records,
-// which can't be serialised by json_encode.
-$workflow_json = CJSON::encode($workflows);
-$macro_json = json_encode($letter_macros, JSON_THROW_ON_ERROR);
-$psd_step_type_id = Yii::app()->db->createCommand()
-->select('id')
-->from('pathway_step_type')
-->where('short_name = \'drug admin\'')
-->queryScalar();
-$exam_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Exam\'')
-    ->queryScalar();
-$vf_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Fields\'')
-    ->queryScalar();
-$letter_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Letter\'')
-    ->queryScalar();
-$generic_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Task\'')
-    ->queryScalar();
-$onhold_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'onhold\'')
-    ->queryScalar();
-$current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/object-hash/dist/object_hash.js')?>"></script>
 <input type="hidden" id="wl_print_selected_worklist" value="" />
@@ -315,7 +280,7 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
                                 {{/valueDisplaySuffix}}
                                 </br>
                             {{/patientIdentifiers}}
-	                        {{#patientDeletedIdentifiers}}
+                            {{#patientDeletedIdentifiers}}
                                 <hr>
                                     Previous Numbers
                                 <br>
@@ -341,7 +306,7 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
                         {{/patientPrimaryIdentifierStatus}}
                     </div>
                 </div>
-			{{/displayPrimaryNumberUsageCode}}
+            {{/displayPrimaryNumberUsageCode}}
             {{#displaySecondaryNumberUsageCode}}
                 <div class="nhs-number">
                     <span>{{ nhsNumberPrompt }}</span>
@@ -355,7 +320,7 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
                 <em>Gender</em>
                 {{ gender }}
             </div>
-			<div class="patient-{{#deceased}}died{{/deceased}}{{^deceased}}age{{/deceased}}">
+            <div class="patient-{{#deceased}}died{{/deceased}}{{^deceased}}age{{/deceased}}">
                 {{#deceased}}
                     <em>Died</em> {{dateOfDeath}}
                 {{/deceased}}
@@ -1253,7 +1218,7 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
         const $wl_ctn = $('main#js-clinic-manager');
         const $wl_cat_ul = $('ul#js-worklist-category');
         const selected_category = $('ul#js-worklist-category a.selected').data('worklist');
-        const $selected_patient = $('.js-select-patient-for-psd:checked, .work-ls-patient-all:checked');
+        const $selected_patient = $('.js-check-patient:checked');
         const $popup = $('.oe-popup-wrap.js-add-psd-popup');
         const $last_sync_time = $('.last-sync');
 
@@ -1269,6 +1234,9 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
                     return;
                 }
 
+                // Ensure the step adder checkboxes maintain their state
+                let checkedAdders = $wl_ctn.find('.js-check-patient:checked').map(function() { return this.value; }).get();
+
                 // Cleanup and repopulate worklist sections
                 $wl_ctn.find('section').remove();
                 $wl_ctn.find('div.oec-adder').after(resp['main']);
@@ -1277,13 +1245,17 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
                     picker.reattachCheckboxHandlers();
                 }
 
+                for (id of checkedAdders) {
+                    $wl_ctn.find(`.js-check-patient[value="${id}"]`).prop('checked', true);
+                }
+
                 $wl_cat_ul.html(resp['filter']);
                 if($popup.is(":hidden")){
                     $popup.html(resp['popup']);
                 }
                 $selected_patient.each(function(index, item){
-                    const table_selector = `table[id=js-worklist-${$(item).data('table-id')}]`;
-                    $wl_ctn.find(`${table_selector} .js-select-patient-for-psd[value="${$(item).val()}"], ${table_selector} .work-ls-patient-all[value="${$(item).val()}"]`).prop('checked', true);
+                    const val = $(item).val();
+                    $(`.js-check-patient[value="${val}"]`).prop('checked', true);
                 });
                 $('.patient-popup-worklist').remove();
 
@@ -1296,7 +1268,7 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
                     worklistFiltersController.resetShownLists();
                 }
 
-                // At every autorefresh, traverse all the child nodes of the patient popup dataand check if any
+                // At every autorefresh, traverse all the child nodes of the patient popup data and check if any
                 // of the patient data HTML needs to be updated.
                 $('.js-patient-popup-data').children('div').each(function (index, element) {
                     $.ajax({
@@ -1345,28 +1317,17 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
     });
 
     $(document).ready(function () {
+        const picker_setup = <?=$picker_setup?>;
+        const path_step_type_ids = <?=$path_step_type_ids?>;
         $('body').on('click', '.collapse-data-header-icon', function () {
             $(this).toggleClass('collapse expand');
             $(this).next('div').toggle();
         });
 
          picker = new OpenEyes.UI.PathwayStepPicker({
+            ...path_step_type_ids,
+            ...picker_setup,
             pathways: <?= $pathway_json ?>,
-            vf_test_presets: <?= json_encode($vf_test_presets) ?>,
-            vf_test_types: <?= json_encode($vf_test_types) ?>,
-            vf_test_options: <?= json_encode($vf_test_options) ?>,
-            exam_step_type_id: <?= $exam_step_type_id ?>,
-            vf_step_type_id: <?= $vf_step_type_id ?>,
-            letter_step_type_id: <?= $letter_step_type_id ?>,
-            generic_step_type_id: <?= $generic_step_type_id ?>,
-            onhold_step_type_id: <?= $onhold_step_type_id ?>,
-            workflows: <?= $workflow_json ?>,
-            macros: <?= $macro_json ?>,
-            psd_step_type_id: <?= $psd_step_type_id ?>,
-            preset_orders: <?= json_encode($preset_orders) ?>,
-            subspecialties: <?= json_encode(NewEventDialogHelper::structureAllSubspecialties()) ?>,
-            current_subspecialty_id: <?= $current_firm->getSubspecialty()->id ?>,
-            current_firm_id: <?= Yii::app()->session['selected_firm_id'] ?>
         });
         picker.init();
 
@@ -1385,9 +1346,13 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
             extantWorklists.push({ id: worklistSection.data('id'), title: worklistSection.data('title') });
         });
 
-        <?php $initial_filter = new WorklistFilterQuery(); ?>
-        const initialWaitingFor = <?= json_encode($this->getWaitingForList($initial_filter, $worklists, true)) ?>;
-        const initialAssignedTo = <?= json_encode($this->getAssignedToList($initial_filter, $worklists, true)) ?>;
+        const usersList = <?= json_encode(array_map(static function ($user) {
+            return ['id' => $user->id, 'label' => $user->getFullName() . ' (' . $user->getInitials() .')'];
+                          }, User::model()->findAll())) ?>;
+
+        const stepsList = <?= json_encode(array_map(static function ($step_type) {
+            return ['id' => $step_type->id, 'label' => $step_type->long_name];
+                          }, PathwayStepType::model()->findAll())) ?>;
 
         const controllerOptions = {
             worklistFilterPanelSelector: '#js-worklists-filter-panel',
@@ -1399,8 +1364,8 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
             sortByPopupSelector: '#js-worklist-sort-order-popup',
 
             worklists: extantWorklists,
-            users: initialAssignedTo,
-            steps: initialWaitingFor,
+            users: usersList,
+            steps: stepsList,
 
             applyFilter: function() { performSync(); },
 
@@ -1419,10 +1384,12 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
 
         worklistFiltersController = new OpenEyes.WorklistFiltersController(controllerOptions);
 
+        <?php $initial_filter = new WorklistFilterQuery(); ?>
+
         worklistFiltersController.updateCounts(
             <?= json_encode($this->getStatusCountsList($initial_filter, $worklists)) ?>,
-            initialWaitingFor,
-            initialAssignedTo
+            <?= json_encode($this->getWaitingForList($initial_filter, $worklists)) ?>,
+            <?= json_encode($this->getAssignedToList($initial_filter, $worklists)) ?>
         );
 
 

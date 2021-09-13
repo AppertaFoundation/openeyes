@@ -28,6 +28,7 @@ namespace OEModule\OphCiExamination\models;
  * @property string $comments
  *
  * The followings are the available model relations:
+ * @property OphCiExamination_AE_RedFlags_Options_Assignment[] $flags
  */
 class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
 {
@@ -79,7 +80,7 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         return array(
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'flags' => array(self::HAS_MANY,'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment', 'element_id'),
+            'flags' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment', 'element_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
@@ -128,8 +129,9 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         // if we have no new flags to check, we just delete all of them
         if ($this->flags && !empty($this->flags[0])&& is_object($this->flags[0])) {
             foreach ($allCurrentFlags as $curFlag) {
-                    $curFlag->delete();
+                $curFlag->delete();
             }
+            $this->refresh();
         }
         // if we have flags to check, go through them.
         elseif ($this->flags && !empty($this->flags[0])&& !is_object($this->flags[0])) {
@@ -140,6 +142,7 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
                     $curFlag->delete();
                 }
             }
+            $this->refresh();
         }
 
         // if we have flags to add
@@ -158,6 +161,7 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
                     $newFlagObj->save();
                 }
             }
+            $this->refresh();
         }
         parent::afterSave();
     }
@@ -188,6 +192,9 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
 
     public function getCurrentFlagOptionIDs()
     {
+        if (empty($this->flags)) {
+            return array();
+        }
         return array_map(function ($flag) {
             return $flag->red_flag_id;
         }, $this->flags);
@@ -198,13 +205,18 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         $criteria = new \CDbCriteria();
         $criteria->condition = "active = 1";
         $options = OphCiExamination_AE_RedFlags_Options::model()->findAll($criteria);
-        $currentFlags = array_map(function ($flag) {
-            return $flag->red_flag_id;
-        }, $this->flags);
+        if (!empty($this->flags)) {
+            $currentFlags = array_map(static function ($flag) {
+                return $flag->red_flag_id ?? null; // Should never come to this, but this will ensure that the system won't crash if for some reason the array is filled with nulls.
+            }, $this->flags);
+        } else {
+            $currentFlags = array();
+        }
+
         $levels = OphCiExamination_AE_RedFlags_Options::model()->enumerateSupportedLevels();
         $output = [];
         foreach ($options as $option) {
-            if (in_array($option->id, $currentFlags)) {
+            if (in_array($option->id, $currentFlags, false)) {
                 foreach ($levels as $level) {
                     if ($option->hasMapping($level, OphCiExamination_AE_RedFlags_Options::model()->getIdForLevel($level))) {
                         $output[] = $option->id;

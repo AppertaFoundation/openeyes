@@ -195,7 +195,7 @@ class Pathway extends BaseActiveRecordVersioned
             $end_position = Yii::app()->db->createCommand()
                 ->select('MAX(`order`)')
                 ->from('pathway_step')
-                ->where('pathway_id = :id AND status IN (-1, 0)')
+                ->where('pathway_id = :id AND (status IN (-1, 0) OR status IS NULL)')
                 ->bindValues([':id' => $this->id])
                 ->queryScalar();
         } else {
@@ -398,19 +398,22 @@ class Pathway extends BaseActiveRecordVersioned
      */
     public function getWaitTimeSinceLastAction(): array
     {
+        $start_time = DateTime::createFromFormat(
+            'Y-m-d H:i:s',
+            $this->start_time
+        );
+
         $acceptable_wait_time = $this->getAcceptableWaitTime();
         if ($this->completed_steps) {
             $completed_steps = array_filter($this->completed_steps, function ($step) {
                 return $step->type->type !== 'hold';
             });
-            $last_completed_step = $completed_steps[array_key_last($completed_steps)];
-            $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $last_completed_step->end_time);
-        } else {
-            $start_time = DateTime::createFromFormat(
-                'Y-m-d H:i:s',
-                $this->start_time
-            );
+            if ($completed_steps) {
+                $last_completed_step = $completed_steps[array_key_last($completed_steps)];
+                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $last_completed_step->end_time);
+            }
         }
+
         $end_time = new DateTime();
         $wait_time = floor(($end_time->getTimestamp() - $start_time->getTimestamp()) / 60);
 

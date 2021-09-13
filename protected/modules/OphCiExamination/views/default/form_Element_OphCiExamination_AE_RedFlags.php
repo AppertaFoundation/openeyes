@@ -33,12 +33,16 @@ $current_flags = $element->getMyCurrentFlagOptionIDs();
                 <tr>
                     <td>
                         <ul class="dot-list" id="red-flag-assignment">
-                            <?php foreach ($element->flags as $tempFlag) { ?>
-                                <li>
-                                    <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_AE_RedFlags[flags][]" value="<?= $tempFlag->flag->id ?>">
-                                    <span><?= $tempFlag->flag->name ?></span>
-                                </li>
-                            <?php } ?>
+                            <?php if (!empty($element->flags)) {
+                                foreach ($element->flags as $tempFlag) {
+                                    if ($tempFlag) {?>
+                                    <li>
+                                        <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_AE_RedFlags[flags][]" value="<?= $tempFlag->flag->id ?>">
+                                        <span><?= $tempFlag->flag->name ?></span>
+                                    </li>
+                                    <?php }
+                                }
+                            } ?>
                         </ul>
                         <span class="data-value large-text"></span>
                     </td>

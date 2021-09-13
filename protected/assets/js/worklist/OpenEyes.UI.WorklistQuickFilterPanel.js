@@ -4,13 +4,15 @@ OpenEyes.UI = OpenEyes.UI || {};
 (function(exports) {
     const filterOptionTemplate =
           '<div class="filter-btn js-filter-option" data-id="{{id}}">\
-               <div class="name">… {{label}}</div>\
+               <div class="name">{{label}}</div>\
                <div class="count">{{count}}</div>\
            </div>';
 
     function WorklistQuickFilterPanel(controller, panelElementSelector, sortByPopupSelector) {
         this.controller = controller;
         this.panel = $(panelElementSelector);
+
+        this.nameEntryTimeoutId = 0;
 
         this.buttons = [];
         this.menus = [];
@@ -47,12 +49,13 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         this.panel.find('input.search').keyup(function (e) {
-            const keyCode = event.keyCode ? event.keyCode : event.which;
+            const input = $(this);
 
-            if (keyCode == 13) {
-                e.preventDefault();
-                controller.quickName = $(this).val();
-            }
+            clearTimeout(view.nameEntryTimeoutId);
+
+            view.nameEntryTimeoutId = setTimeout(function() {
+                controller.quickName = input.val();
+            }, 500);
         });
 
         if (this.sortByPopup) {
@@ -138,26 +141,12 @@ OpenEyes.UI = OpenEyes.UI || {};
             const name = menu.data('filter');
             const into = menu.children('nav.options');
 
-            let afterId = null;
-
-            into.find(`.js-filter-option > .count`).text('0');
+            into.children().remove();
 
             for (option of data[name]) {
-                const existing = into.children(`.js-filter-option[data-id=${option.id}]`);
+                const entry = Mustache.render(filterOptionTemplate, option);
 
-                if (existing.length > 0) {
-                    existing.children('.count').text(option.count);
-                } else {
-                    const entry = Mustache.render(filterOptionTemplate, option);
-
-                    if (afterId) {
-                        into.children(`.js-filter-option[data-id=${afterId}]`).after(entry);
-                    } else {
-                        into.prepend(entry);
-                    }
-                }
-
-                afterId = option.id;
+                into.append(entry);
             }
 
             into.find('.js-filter-option').off('click').on('click', function() {

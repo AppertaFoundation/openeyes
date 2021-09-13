@@ -11,32 +11,6 @@
  */
 
 use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
-
-// Can't use the much faster json_encode here because the workflow step list contains a list of active records,
-// which can't be serialised by json_encode.
-$workflow_json = CJSON::encode($workflows);
-$macro_json = json_encode($letter_macros, JSON_THROW_ON_ERROR);
-$psd_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'drug admin\'')
-    ->queryScalar();
-$exam_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Exam\'')
-    ->queryScalar();
-$letter_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Letter\'')
-    ->queryScalar();
-$generic_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Task\'')
-    ->queryScalar();
-$current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 ?>
 <div class="admin box" id="js-clinic-manager">
     <?php $this->renderPartial(
@@ -111,17 +85,11 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
+        const path_step_type_ids = <?=$path_step_type_ids?>;
+        const picker_setup = <?=$picker_setup?>;
         let picker = new OpenEyes.UI.PathwayStepPicker({
-            exam_step_type_id: <?= $exam_step_type_id ?>,
-            letter_step_type_id: <?= $letter_step_type_id ?>,
-            generic_step_type_id: <?= $generic_step_type_id ?>,
-            workflows: <?= $workflow_json ?>,
-            macros: <?= $macro_json ?>,
-            psd_step_type_id: <?= $psd_step_type_id ?>,
-            preset_orders: <?= json_encode($pgd_presets) ?>,
-            subspecialties: <?= json_encode(NewEventDialogHelper::structureAllSubspecialties()) ?>,
-            current_subspecialty_id: <?= $current_firm->getSubspecialty()->id ?>,
-            current_firm_id: <?= Yii::app()->session['selected_firm_id'] ?>,
+            ...path_step_type_ids,
+            ...picker_setup,
             pathway_checkboxes: '.js-check-pathway',
             base_url: '/Admin/',
         });

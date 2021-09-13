@@ -178,7 +178,10 @@
             },
             type: 'POST',
             success: function (response) {
-                const $pathway = $(self.options.pathway_checkboxes + ':checked').closest('tr').find('td.js-pathway-container');
+                let $pathway = $(`.pathway[data-visit-id="${pathway_id}"]`).closest('td.js-pathway-container');
+                if(!$pathway.length){
+                    $pathway = $(`tr[data-pathway-type-id="${pathway_id}"]`).find('td.js-pathway-container');
+                }
                 $pathway.html(response.step_html);
                 if (
                     $pathway.find('.oe-pathstep-btn.wait, .oe-pathstep-btn.delayed-wait').length === 0 &&
@@ -219,7 +222,7 @@
     };
 
     PathwayStepPicker.prototype.addStep = function (e) {
-        let pathway_ids = $(this.options.pathway_checkboxes + ':checked').map(
+        let pathway_ids = $(this.options.pathway_checkboxes + '[value!="all"]' + ':checked').map(
             function () {
                 return $(this).val();
             }

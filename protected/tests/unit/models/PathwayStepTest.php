@@ -97,7 +97,7 @@ class PathwayStepTest extends ActiveRecordTestCase
         $step->nextStatus();
         self::assertEquals(PathwayStep::STEP_COMPLETED, $step->status);
 
-        $this->expectException('Exception');
         $step->nextStatus();
+        self::assertEquals(PathwayStep::STEP_COMPLETED, $step->status);
     }
 }

@@ -96,17 +96,19 @@ if (!Yii::app()->user->isGuest) {
                 <li class="oe-nav-btn">
                     <?php if (!isset($this->layout) || $this->layout !== 'worklist') : ?>
                     <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
-                    <?php else : ?>
-                    <a class="nav-js-btn icon-btn" id="js-nav-worklist-btn" onclick="return false;">
-                    <?php endif; ?>
                         <svg viewBox="0 0 80 40" class="icon clinic ">
                             <use xlink:href="<?= $navIconUrl . '#clinic-icon' ?>"></use>
                         </svg>
                     </a>
-                    <?php
-                    if (isset($this->layout) && $this->layout === 'worklist') {
+                    <?php else : ?>
+                    <a class="nav-js-btn icon-btn" id="js-nav-worklist-btn" onclick="return false;">
+                        <svg viewBox="0 0 80 40" class="icon clinic ">
+                            <use xlink:href="<?= $navIconUrl . '#clinic-change-icon' ?>"></use>
+                        </svg>
+                    </a>
+                        <?php
                         $this->renderPartial('//base/_worklist_filters_panel');
-                    }
+                    endif;
                     ?>
                 </li>
             <?php endif; ?>
