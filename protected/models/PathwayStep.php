@@ -179,6 +179,9 @@ class PathwayStep extends BaseActiveRecordVersioned
                 $this->setState($key, $value);
             }
         }
+        if((int)$this->status === self::STEP_COMPLETED){
+            return;
+        }
         if ((int)$this->status === self::STEP_CONFIG) {
             $this->status = self::STEP_REQUESTED;
             $this->save();
@@ -188,12 +191,16 @@ class PathwayStep extends BaseActiveRecordVersioned
             $this->started_user_id = Yii::app()->user->id;
             $this->pathway->enqueue($this);
         } elseif ((int)$this->status === self::STEP_STARTED) {
+            if($this->getState('duration')){
+                $diff = strtotime(date('Y-m-d H:i:s')) - strtotime($this->start_time);
+                if($diff < (int)$this->getState('duration') * 60){
+                    return;
+                }
+            }
             $this->status = self::STEP_COMPLETED;
             $this->end_time = date('Y-m-d H:i:s');
             $this->completed_user_id = Yii::app()->user->id;
             $this->pathway->enqueue($this);
-        } else {
-            throw new Exception('This step is complete and cannot be progressed any further.');
         }
     }
 

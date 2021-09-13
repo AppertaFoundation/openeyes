@@ -1089,6 +1089,8 @@ class BaseEventTypeController extends BaseModuleController
                         Yii::app()->event->dispatch('event_updated', ['event' => $this->event, 'action' => 'update']);
                         $transaction->commit();
 
+                        $this->afterUpdateEvent($this->event);
+
                         unset(
                             Yii::app()->session['active_worklist_patient_id'],
                             Yii::app()->session['active_step_id'],
@@ -2271,6 +2273,8 @@ class BaseEventTypeController extends BaseModuleController
                     );
                     $transaction->commit();
 
+                    $this->afterDeleteEvent($this->event);
+
                     if (!$this->dont_redirect) {
                         $this->redirect(
                             (new CoreAPI())->generatePatientLandingPageLink($this->event->episode->patient)
@@ -2320,6 +2324,26 @@ class BaseEventTypeController extends BaseModuleController
      * @param \Event $event
      */
     protected function afterCreateEvent($event)
+    {
+    }
+
+    /**
+     * Called after the event is saved, transaction is commited
+     * useful for PAS callouts following successful saving of an updated event
+     *
+     * @param \Event $event
+     */
+    protected function afterUpdateEvent($event)
+    {
+    }
+
+    /**
+     * Called after the event is deleted, transaction is commited
+     * useful for PAS callouts following successful deletion of an event
+     *
+     * @param \Event $event
+     */
+    protected function afterDeleteEvent($event)
     {
     }
 

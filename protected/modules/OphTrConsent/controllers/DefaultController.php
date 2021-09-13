@@ -17,9 +17,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment;
-use OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision;
-use OEModule\OphTrConsent\models\Element_OphTrConsent_MedicalCapacityAdvocate;
+use OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures;
 
 class DefaultController extends BaseEventTypeController
 {
@@ -35,6 +33,7 @@ class DefaultController extends BaseEventTypeController
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
         'postSignRequest' => self::ACTION_TYPE_FORM,
         'sign' => self::ACTION_TYPE_EDIT,
+        'contactPage' => self::ACTION_TYPE_FORM,
         'getDeleteConsentPopupContent' => self::ACTION_TYPE_FORM,
     );
 
@@ -183,6 +182,20 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    protected function setElementDefaultOptions_Element_OphTrConsent_AdditionalSignatures($element, $action)
+    {
+        if ($action == 'create') {
+            $patient_age = (int)$this->patient->getAge();
+            if ($patient_age <= 16) {
+                $element->cf_type_id = 2;
+            } else {
+                $element->cf_type_id = $this->type_id;
+            }
+        } else {
+            $element->cf_type_id = $this->type_id;
+        }
+    }
+
     /**
      * Process the booking event value setting.
      *
@@ -208,6 +221,14 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('booking event not found');
             }
         }
+
+        if (is_null(Yii::app()->request->getParam("type_id"))) {
+            $this->type_id = Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID;
+            if ((Yii::app()->request->isPostRequest) && (Yii::app()->request->getPost('Element_OphTrConsent_Type'))) {
+                $this->type_id = \Yii::app()->request->getPost('Element_OphTrConsent_Type')['type_id'];
+            }
+        }
+
         if (is_null(Yii::app()->request->getParam("type_id"))) {
             $this->type_id = Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID;
         } else {
@@ -233,8 +254,11 @@ class DefaultController extends BaseEventTypeController
         if ($et = $this->event->getElementByClass(Element_OphTrConsent_Type::class)) {
             $this->type_id = $et->type_id;
         }
-    }
 
+        if ($et = $this->event->getElementByClass(Element_OphTrConsent_AdditionalSignatures::class)) {
+            $et->cf_type_id = $this->type_id;
+        }
+    }
 
     /**
      * @param $default_view
@@ -665,9 +689,7 @@ class DefaultController extends BaseEventTypeController
         $this->open_elements = $elements;
 
         foreach ($this->open_elements as $element) {
-            $this->setValidationScenarioForElement($element);
             $element->validate();
-
             if (method_exists($element, 'eventScopeValidation')) {
                 $element->eventScopeValidation($this->open_elements);
             }
@@ -868,5 +890,76 @@ class DefaultController extends BaseEventTypeController
             "&initiator_element_type_id=".\Yii::app()->request->getParam("initiator_element_type_id").
             "&initiator_row_id=".\Yii::app()->request->getParam("initiator_row_id")
         );
+    }
+
+    public function actionContactPage()
+    {
+        $selected_contact_type = null;
+        $params = [];
+
+        if (isset($_GET['selected_contact_type_id'])) {
+            $selected_contact_type_id = $_GET['selected_contact_type_id'];
+            $selected_contact_type = \OphTrConsent_PatientRelationship::model()->findByPk($selected_contact_type_id);
+            $params = array(
+                'selected_relationship_type_id' => $selected_contact_type_id,
+                'selected_relationship_type' => $selected_contact_type->name,
+            );
+        }
+
+        $this->renderPartial(
+            '_add_new_contact',
+            $params,
+            false,
+            true
+        );
+    }
+
+    protected function setComplexAttributes_Element_OphTrConsent_OthersInvolvedDecisionMakingProcess($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $post_data = \Yii::app()->request->getPost($model_name, []);
+        $existing_items = $element->consentContact;
+        $existing_contacts = [];
+        $deleted_item_ids = array_column($existing_items, 'id');
+        $new_items = [];
+
+        foreach ($existing_items as $existintg_item) {
+            $existing_contacts[$existintg_item->id] = $existintg_item;
+        }
+
+        foreach ($post_data['jsonData'] as $idx => $jsonStr) {
+            if (strlen($jsonStr) === 0) {
+                continue;
+            }
+
+            $data = json_decode(htmlspecialchars_decode($jsonStr), true);
+
+            $existing_id = isset($data['existing_id']) ? $data['existing_id'] : null;
+
+            if (!$existing_id) {
+                $contact = new \Ophtrconsent_OthersInvolvedDecisionMakingProcessContact();
+                $contact->setAttributes($data);
+
+                $contact->comment = $post_data['comment'][$idx];
+                $contact->signature_required = $post_data['signature_required'][$idx];
+
+                $new_items[] = $contact;
+            } else {
+                $existing_contact = \Ophtrconsent_OthersInvolvedDecisionMakingProcessContact::model()->findByPk($existing_id);
+                $existing_contact->comment = $post_data['comment'][$idx];
+                $existing_contact->signature_required = $post_data['signature_required'][$idx];
+
+                $existing_contacts[$existing_id] = $existing_contact;
+                $key = array_search($existing_id, $deleted_item_ids);
+                unset($deleted_item_ids[$key]);
+            }
+        }
+
+        foreach ($existing_contacts as $existing_item) {
+            if (in_array($existing_item->id, $deleted_item_ids)) {
+                unset($existing_contacts[$existing_item->id]);
+            }
+        }
+        $element->consentContact = array_merge($existing_contacts, $new_items);
     }
 }

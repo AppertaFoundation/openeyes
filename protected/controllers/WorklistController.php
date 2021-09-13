@@ -28,6 +28,13 @@ class WorklistController extends BaseController
         return array(array('allow', 'roles' => array('OprnWorklist')));
     }
 
+    public function behaviors()
+    {
+        return array(
+            'SetupPathwayStepPicker' => ['class' => 'application.behaviors.SetupPathwayStepPickerBehavior',],
+        );
+    }
+
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
@@ -40,7 +47,7 @@ class WorklistController extends BaseController
 
         return parent::beforeAction($action);
     }
-    protected function prescriberDomData()
+    protected function prescriberDomData($require_preset = true)
     {
         $ret = array(
             'preset_orders' => array(),
@@ -49,16 +56,18 @@ class WorklistController extends BaseController
             'assign_preset_btn' => null,
         );
         if ($is_prescriber = $this->checkAccess('Prescribe')) {
-            $preset_criteria = new CDbCriteria();
-            $preset_criteria->compare('active', true);
-            $preset_orders = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
-            $preset_orders_json = array_map(
-                static function ($item) {
-                    return array('id' => $item->id, 'name' => 'preset_order', 'label' => $item->name);
-                },
-                $preset_orders
-            );
-            $ret['preset_orders'] = $preset_orders_json;
+            if($require_preset){
+                $preset_criteria = new CDbCriteria();
+                $preset_criteria->compare('active', true);
+                $preset_orders = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
+                $preset_orders_json = array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'name' => 'preset_order', 'label' => $item->name);
+                    },
+                    $preset_orders
+                );
+                $ret['preset_orders'] = $preset_orders_json;
+            }
             $ret['is_prescriber'] = $is_prescriber;
             $ret['assign_preset_btn'] = "<div class='button-stack'><button disabled class='green hint' id='js-worklist-psd-add'>Assign Preset Order to selected patients</button></div>";
         }
@@ -110,52 +119,16 @@ class WorklistController extends BaseController
         $sync_interval_settings = \SettingMetadata::model()->find("`key` = 'worklist_auto_sync_interval'");
         $sync_interval_options = unserialize($sync_interval_settings->data, ['allowed_classes' => true]);
         $sync_interval_value = $sync_interval_settings->getSetting();
-        $prescriber_dom_data = $this->prescriberDomData();
+        $prescriber_dom_data = $this->prescriberDomData(false);
 
-        $steps = OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(
-            Yii::app()->session['selected_institution_id'],
-            null
-        );
-
-        $vf_presets = VisualFieldTestPreset::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
-        $vf_test_types = VisualFieldTestType::model()->findAll();
-        $vf_test_options = VisualFieldTestOption::model()->findAll();
-
-        $vf_preset_json = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => 'preset_id', 'label' => $item->name);
-            },
-            $vf_presets
-        );
-        $vf_test_type_json = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => 'test_type_id', 'label' => $item->short_name);
-            },
-            $vf_test_types
-        );
-        $vf_test_option_json = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => 'option_id', 'label' => $item->short_name);
-            },
-            $vf_test_options
-        );
-
-        $letter_macros = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => $item->name);
-            },
-            LetterMacro::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION)
-        );
-        array_unshift($letter_macros, ['id' => '', 'name' => 'None']);
+        $picker_setup = json_encode($this->setupPicker());
+        $path_step_type_ids = json_encode($this->getPathwayStepTypesRequirePicker());
         $this->render(
             'index',
             array(
                 'worklists' => $worklists,
-                'workflows' => $steps,
-                'letter_macros' => $letter_macros,
-                'vf_test_presets' => $vf_preset_json,
-                'vf_test_types' => $vf_test_type_json,
-                'vf_test_options' => $vf_test_option_json,
+                'picker_setup' => $picker_setup,
+                'path_step_type_ids' => $path_step_type_ids,
                 'path_steps' => PathwayStepType::getPathTypes(),
                 'pathways' => PathwayType::model()->findAll(),
                 'standard_steps' => PathwayStepType::getStandardTypes(),

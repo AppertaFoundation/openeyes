@@ -66,7 +66,6 @@ class m210623_092225_add_safeguarding_tables extends OEMigration
             'no_concerns' => 'bool',
             'outcome_id' => 'int(11)',
             'outcome_comments' => 'text',
-            'display_order' => 'int(10)',
         ), true);
         $this->addForeignKey(
             'et_ophciexamination_safeguarding_ev_fk',
@@ -117,8 +116,7 @@ class m210623_092225_add_safeguarding_tables extends OEMigration
             array(
                 'OEModule\\OphCiExamination\\models\\Element_OphCiExamination_Safeguarding' => array(
                     'name' => 'Safeguarding',
-                    'required' => 0,
-                    'default' => 1,
+                    'display_order' => 12,
                     'element_group_id' => $element_group_id,
                 ),
             ),

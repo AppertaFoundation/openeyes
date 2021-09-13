@@ -398,19 +398,22 @@ class Pathway extends BaseActiveRecordVersioned
      */
     public function getWaitTimeSinceLastAction(): array
     {
+        $start_time = DateTime::createFromFormat(
+            'Y-m-d H:i:s',
+            $this->start_time
+        );
+
         $acceptable_wait_time = $this->getAcceptableWaitTime();
         if ($this->completed_steps) {
             $completed_steps = array_filter($this->completed_steps, function ($step) {
                 return $step->type->type !== 'hold';
             });
-            $last_completed_step = $completed_steps[array_key_last($completed_steps)];
-            $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $last_completed_step->end_time);
-        } else {
-            $start_time = DateTime::createFromFormat(
-                'Y-m-d H:i:s',
-                $this->start_time
-            );
+            if ($completed_steps) {
+                $last_completed_step = $completed_steps[array_key_last($completed_steps)];
+                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $last_completed_step->end_time);
+            }
         }
+
         $end_time = new DateTime();
         $wait_time = floor(($end_time->getTimestamp() - $start_time->getTimestamp()) / 60);
 
@@ -534,5 +537,22 @@ class Pathway extends BaseActiveRecordVersioned
             }
         }
         return false;
+    }
+
+    public function updateStatus()
+    {
+        if (count($this->started_steps) > 0) {
+            // If there are any active steps, the status is active.
+            $status = self::STATUS_ACTIVE;
+        } elseif (count($this->requested_steps) > 0) {
+            // If there are no active steps but there are requested steps, the status is 'waiting'.
+            $status = self::STATUS_WAITING;
+        } else {
+            // If there are only completed steps, the status is 'discharged'.
+            $status = self::STATUS_DISCHARGED;
+        }
+
+        $this->status = $status;
+        $this->save();
     }
 }

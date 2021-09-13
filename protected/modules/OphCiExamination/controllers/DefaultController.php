@@ -863,8 +863,10 @@ class DefaultController extends \BaseEventTypeController
         $this->setContext($this->event->firm);
 
         $step_id = \Yii::app()->request->getParam('step_id');
-        Yii::app()->session['active_worklist_patient_id'] = \Yii::app()->request->getParam('worklist_patient_id');
-        Yii::app()->session['active_step_id'] = \Yii::app()->request->getParam('worklist_step_id');
+        if (!isset(Yii::app()->session['active_step_id'])) {
+            Yii::app()->session['active_worklist_patient_id'] = \Yii::app()->request->getParam('worklist_patient_id');
+            Yii::app()->session['active_step_id'] = \Yii::app()->request->getParam('worklist_step_id');
+        }
 
         if ($step_id) {
             $this->step = models\OphCiExamination_ElementSet::model()->findByPk($step_id);
@@ -939,6 +941,41 @@ class DefaultController extends \BaseEventTypeController
 
         // save email address in the contact model
         $this->saveContactEmailAddressForCommunicationPreferences($_POST);
+    }
+
+    protected function afterCreateEvent($event)
+    {
+        parent::afterCreateEvent($event);
+        // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
+        // Change this if it is a different value.
+        if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
+            $this->pasCallout($event, 'A08');
+        }
+    }
+
+    protected function afterUpdateEvent($event)
+    {
+        parent::afterUpdateEvent($event);
+        // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
+        // Change this if it is a different value.
+        if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
+            $this->pasCallout($event, 'A08');
+        }
+    }
+
+    protected function afterDeleteEvent($event)
+    {
+        parent::afterDeleteEvent($event);
+        // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
+        // Change this if it is a different value.
+        if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
+            $this->pasCallout($event, 'A11');
+        }
+    }
+
+    protected function pasCallout($event, $hl7_trigger_event)
+    {
+        // Construct a PAS message for the specified trigger event here and send it to the PAS.
     }
 
     protected function afterCreateElements($event)

@@ -4,10 +4,10 @@ class m210826_105900_add_default_templates extends CDbMigration
 {
     public function safeUp()
     {
-        $procedures = $this->dbConnection->createCommand("SELECT id, term, snomed_code 
+        $procedures = $this->dbConnection->createCommand("SELECT id, term, snomed_code
                                                         FROM proc
-                                                        WHERE term 
-                                                        IN ('Course of LUCENTIS anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor', 
+                                                        WHERE term
+                                                        IN ('Course of LUCENTIS anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor',
                                                         'Course of EYLEA anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor',
                                                         'Course of BEOVU anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor',
                                                         'Course of AVASTIN anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor')")->queryAll();

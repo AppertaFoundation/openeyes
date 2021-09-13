@@ -137,7 +137,7 @@ class OphTrConsent_Type_Assessment extends BaseActiveRecordVersioned
      *
      * @return bool
      */
-    public function existsElementInConsentForm($element_id, $type_id) : bool
+    public function existsElementInConsentForm($element_id, $type_id): bool
     {
         return !empty(self::model()->findByAttributes(array('element_id' => $element_id, 'type_id' => $type_id)));
     }

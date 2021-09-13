@@ -114,7 +114,7 @@ class Event extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('event_type_id, event_date, institution_id', 'required'),
-            array('parent_id, worklist_patient_id, institution_id, site_id, step_id', 'safe'),
+            array('parent_id, worklist_patient_id, institution_id, firm_id, site_id, step_id', 'safe'),
             array('episode_id, event_type_id', 'length', 'max' => 10),
             array('worklist_patient_id', 'length', 'max' => 40),
             // The following rule is used by search().
@@ -147,6 +147,8 @@ class Event extends BaseActiveRecordVersioned
             'eventAttachmentGroups' => [self::HAS_MANY, 'EventAttachmentGroup', 'event_id'],
             'institution' => [self::BELONGS_TO, 'Institution', 'institution_id'],
             'site' => [self::BELONGS_TO, 'Site', 'site_id'],
+            'worklist_patient' => [self::BELONGS_TO, 'WorklistPatient', 'worklist_patient_id'],
+            'step' => [self::BELONGS_TO, 'PathwayStep', 'step_id']
         );
     }
 

@@ -22,6 +22,10 @@ $site_id = Yii::app()->session['selected_site_id'];
 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
 $type_assessment = new OphTrConsent_Type_Assessment();
+$additional_signatures = false;
+if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures'])) {
+    $additional_signatures = $elements['OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures'];
+}
 ?>
 <body class="open-eyes print">
 <?php $this->renderPartial('_consent_header') ?>
@@ -63,6 +67,39 @@ $type_assessment = new OphTrConsent_Type_Assessment();
             <th>Gender</th>
             <td><?= $this->patient->genderString ?></td>
         </tr>
+        <tr>
+            <th>Witness required</th>
+            <td>
+                <?php if ($additional_signatures !== false && $additional_signatures->witness_required === "1") {
+                    echo 'Yes';
+                } else {
+                    echo 'No';
+                }?>
+            </td>
+        </tr>
+        <?php if ($additional_signatures !== false && $additional_signatures->witness_required === "1") { ?>
+            <tr>
+                <th>Witness name</th>
+                <td><?= \CHtml::encode($additional_signatures->witness_name) ?></td>
+            </tr>
+        <?php } ?>
+        <tr>
+            <th>Interpreter required</th>
+            <td>
+                <?php if ($additional_signatures !== false && $additional_signatures->interpreter_required === "1") {
+                    echo 'Yes';
+                } else {
+                    echo 'No';
+                }?>
+            </td>
+        </tr>
+
+        <?php if ($additional_signatures !== false && $additional_signatures->interpreter_required === "1") { ?>
+            <tr>
+                <th>Interpreter name</th>
+                <td><?= \CHtml::encode($additional_signatures->interpreter_name) ?></td>
+            </tr>
+        <?php } ?>
         <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
             <tr>
                 <th>Procedure(s)</th>
@@ -200,24 +237,58 @@ $type_assessment = new OphTrConsent_Type_Assessment();
         is necessary to save my life or to prevent serious harm to my health.</p>
     <p>I have been told <b>about additional procedures which may become necessary during my treatment. I have listed
             below any procedures</b> which I do not wish to be carried out <b>without further discussion.</b></p>
-    <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
 
+    <!-- patient signature -->
+
+    <?= $this->renderPartial(
+        '_print_signature',
+        array(
+            'vi' => ($css_class == 'impaired'),
+            'element' => $elements[Element_OphTrConsent_Esign::class],
+            'signature' => $elements[Element_OphTrConsent_Esign::class]
+                ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 5),
+            'title_label' => 'Role',
+            'name_label' => 'Patient name',
+        )
+    ); ?>
+
+    <?php if ($additional_signatures) { ?>
     <p>A <b>witness</b> should sign below <b>if the patient is unable to sign but has indicated their consent.</b></p>
-    <div class="box">
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label">Signed</div>
-            </div>
-            <div class="dotted-area">
-                <div class="label">Date</div>
-            </div>
-        </div>
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label">Witness name</div>
-            </div>
-        </div>
-    </div>
+        <?php
+        if ($type_assessment->existsElementInConsentForm($additional_signatures->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) {
+            echo $this->renderPartial(
+                '_print_signature',
+                array(
+                    'vi' => ($css_class == 'impaired'),
+                    'element' => $elements[Element_OphTrConsent_Esign::class],
+                    'signature' => $elements[Element_OphTrConsent_Esign::class]
+                        ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 1),
+                    'title_label' => 'Role',
+                    'name_label' => 'Witness name',
+                )
+            );
+        }
+    }
+    ?>
+
+    <!-- Interpreter's signature -->
+
+    <?php if($additional_signatures && $additional_signatures->interpreter_required): ?>
+        <h2>Statement of interpreter</h2>
+        <p>I have interpreted the information above to the patient to the best of my ability and in a way in which I believe s/he can understand.</p>
+        <?= $this->renderPartial(
+            '_print_signature',
+            array(
+                'vi' => ($css_class == 'impaired'),
+                'element' => $elements[Element_OphTrConsent_Esign::class],
+                'signature' => $elements[Element_OphTrConsent_Esign::class]
+                    ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 2),
+                'title_label' => 'Job title',
+                'name_label' => 'Interpreter name',
+            )
+        ); ?>
+    <?php endif; ?>
+
     <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider">
     <h2>Confirmation of consent</h2><h6>To be completed by a health professional when the patient is admitted, if the

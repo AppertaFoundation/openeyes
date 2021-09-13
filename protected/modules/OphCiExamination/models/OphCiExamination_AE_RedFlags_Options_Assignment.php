@@ -23,9 +23,8 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available columns in table:
  *
- * @property int $id
- * @property string $name
- * @property bool $active
+ * @property int $element_id
+ * @property int $red_flag_id
  *
  * The followings are the available model relations:
  */

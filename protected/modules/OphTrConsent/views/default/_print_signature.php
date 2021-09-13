@@ -16,51 +16,50 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-$signature = $element->getSignatureByAttributes($element, $custom_key);
-if ($signature) {
-    if ($element->isBeingSigned($signature)) {
-        $this->widget(SignatureCapture::class, [
-            "submit_url" => Yii::app()->createUrl(
-                $this->module->id . "/" . $this->id . "/saveCapturedSignature",
-                [
-                    "element_id" => $element->id,
-                    "element_type_id" => $element->getElementType()->id,
-                    "signature_type" => $signature->type,
-                    "signatory_role" => Yii::app()->request->getParam("signatory_role"),
-                    "signatory_name" => Yii::app()->request->getParam("signatory_name"),
-                    "initiator_element_type_id" => Yii::app()->request->getParam("initiator_element_type_id"),
-                    "initiator_row_id" => Yii::app()->request->getParam("initiator_row_id"),
-                ]
-            ),
-            "after_submit_js" => 'function(response, widget) {window.parent.formHasChanged=false;window.parent.location.reload();}'
-        ]);
-    } elseif ($signature->isSigned()) {
-        ?>
-        <div class="box">
-            <div class="flex">
-                <div class="dotted-area">
-                    <div class="label">Signed</div>
-                    <?php
-                    echo $signature->getPrintout() ?>
-                </div>
-                <div class="dotted-area">
-                    <div class="label">Date</div>
-                    <?php echo CHtml::encode(date("j M Y, H:i", strtotime($signature->last_modified_date))); ?>
-                </div>
+/** @var OphTrConsent_Signature $signature */
+/** @var Element_OphTrConsent_Esign $element */
+if ($element->isBeingSigned($signature)) {
+    $this->widget(SignatureCapture::class, [
+        "submit_url" => Yii::app()->createUrl(
+            $this->module->id . "/" . $this->id . "/saveCapturedSignature",
+            [
+                "element_id" => $element->id,
+                "element_type_id" => $element->getElementType()->id,
+                "signature_type" => $signature->type,
+                "signatory_role" => urlencode(Yii::app()->request->getParam("signatory_role")),
+                "signatory_name" => urlencode(Yii::app()->request->getParam("signatory_name")),
+                "initiator_element_type_id" => Yii::app()->request->getParam("initiator_element_type_id"),
+                "initiator_row_id" => Yii::app()->request->getParam("initiator_row_id"),
+            ]
+        ),
+        "after_submit_js" => 'function(response, widget) {window.parent.formHasChanged=false;window.parent.location.reload();}'
+    ]);
+} elseif ($signature->isSigned()) {
+    ?>
+    <div class="box">
+        <div class="flex">
+            <div class="dotted-area">
+                <div class="label">Signed</div>
+                <?php
+                echo $signature->getPrintout() ?>
             </div>
-            <div class="flex">
-                <div class="dotted-area">
-                    <div class="label"><?= $name_label ?></div>
-                    <?= $signature->signatory_name ?>
-                </div>
-                <div class="dotted-area">
-                    <div class="label"><?= $title_label ?></div>
-                    <?= $signature->signatory_role ?>
-                </div>
+            <div class="dotted-area">
+                <div class="label">Date</div>
+                <?php echo CHtml::encode(date("j M Y, H:i", strtotime($signature->last_modified_date))); ?>
             </div>
         </div>
-        <?php
-    }
+        <div class="flex">
+            <div class="dotted-area">
+                <div class="label"><?= $name_label ?></div>
+                <?= $signature->signatory_name ?>
+            </div>
+            <div class="dotted-area">
+                <div class="label"><?= $title_label ?></div>
+                <?= $signature->signatory_role ?>
+            </div>
+        </div>
+    </div>
+    <?php
 }
+
 ?>

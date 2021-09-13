@@ -325,6 +325,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $administered_count = 0;
         $status = $this->status;
         foreach ($this->assigned_meds as $med) {
+            $med->refresh();
             $event_entry = $med->event_entry;
             if ($event_entry && (!$event_entry->event || ($event_entry->event && $event_entry->event->deleted) || !$event_entry->element)) {
                 // assignment med has corresponding event medication use but event is deleted

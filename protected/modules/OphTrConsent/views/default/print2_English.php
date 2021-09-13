@@ -22,6 +22,10 @@ $site_id = Yii::app()->session['selected_site_id'];
 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
 $type_assessment = new OphTrConsent_Type_Assessment();
+$additional_signatures = false;
+if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures'])) {
+    $additional_signatures = $elements['OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures'];
+}
 ?>
 <body class="open-eyes print">
 <?php $this->renderPartial('_consent_header') ?>
@@ -63,6 +67,23 @@ $type_assessment = new OphTrConsent_Type_Assessment();
             <th>Gender</th>
             <td><?= $this->patient->genderString ?></td>
         </tr>
+        <tr>
+            <th>Interpreter required</th>
+            <td>
+                <?php if ($additional_signatures !== false && $additional_signatures->interpreter_required === "1") {
+                    echo 'Yes';
+                } else {
+                    echo 'No';
+                }?>
+            </td>
+        </tr>
+
+        <?php if ($additional_signatures !== false && $additional_signatures->interpreter_required === "1") { ?>
+            <tr>
+                <th>Interpreter name</th>
+                <td><?= \CHtml::encode($additional_signatures->interpreter_name) ?></td>
+            </tr>
+        <?php } ?>
         <tr>
             <th>Special requirements <br> <small>(e.g other language/other communication method)</small></th>
             <td>
@@ -199,49 +220,64 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     <?php endif; ?>
 
     <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    <div class="box">
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label">Signed</div>
-            </div>
-            <div class="dotted-area">
-                <div class="label">Date</div>
-            </div>
-        </div>
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label">Parent name</div>
-                HARRISON, George (Mr)
-            </div>
-            <div class="dotted-area">
-                <div class="label">Relationship to child</div>
-                Father
-            </div>
-        </div>
-    </div>
+
+    <?php if ($additional_signatures !== false && $additional_signatures->guardian_required === "1") {
+        if ($type_assessment->existsElementInConsentForm($additional_signatures->elementType->id, Element_OphTrConsent_Type::TYPE_PARENTAL_AGREEMENT_ID)) {
+            echo $this->renderPartial(
+                '_print_signature',
+                array(
+                    'vi' => ($css_class == 'impaired'),
+                    'element' => $elements[Element_OphTrConsent_Esign::class],
+                    'signature' => $elements[Element_OphTrConsent_Esign::class]
+                        ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 3),
+                    'title_label' => 'Relationship to child',
+                    'name_label' => 'Parent name'
+                )
+            );
+        }
+    } ?>
+
+    <?php if ($additional_signatures !== false && $additional_signatures->child_agreement === "1") { ?>
     <hr class="divider">
     <h2>Child's agreement to treatment</h2>
     <p>I agree to have the treatment I have been told about.</p>
-    <div class="box">
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label">Signed</div>
-            </div>
-            <div class="dotted-area">
-                <div class="label">Date</div>
-            </div>
-        </div>
-        <div class="flex"
-            <div class="dotted-area">
-                <div class="label">Print name</div>
-            </div>
-            <div class="dotted-area">
-                <div class="label">Job title</div>
-            </div>
-        </div>
-    </div>
+        <?php
+        if ($type_assessment->existsElementInConsentForm($additional_signatures->elementType->id, Element_OphTrConsent_Type::TYPE_PARENTAL_AGREEMENT_ID)) {
+            echo $this->renderPartial(
+                '_print_signature',
+                array(
+                    'vi' => ($css_class == 'impaired'),
+                    'element' => $elements[Element_OphTrConsent_Esign::class],
+                    'signature' => $elements[Element_OphTrConsent_Esign::class]
+                        ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 4),
+                    'title_label' => 'Role',
+                    'name_label' => 'Child\'s name'
+                )
+            );
+        }
+    } ?>
+
+    <!-- Interpreter's signature -->
+
+    <?php if($additional_signatures && $additional_signatures->interpreter_required): ?>
+        <hr class="divider">
+        <h2>Statement of interpreter</h2>
+        <p>I have interpreted the information above to the patient to the best of my ability and in a way in which I believe s/he can understand.</p>
+        <?= $this->renderPartial(
+            '_print_signature',
+            array(
+                'vi' => ($css_class == 'impaired'),
+                'element' => $elements[Element_OphTrConsent_Esign::class],
+                'signature' => $elements[Element_OphTrConsent_Esign::class]
+                    ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 2),
+                'title_label' => 'Job title',
+                'name_label' => 'Interpreter name',
+            )
+        ); ?>
+    <?php endif; ?>
 
     <hr class="divider">
+
     <h2>Confirmation of consent</h2><h6>To be completed by a health professional when the patient is admitted, if the
         patient has signed the form in advance.</h6>
     <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions and
@@ -253,7 +289,5 @@ $type_assessment = new OphTrConsent_Type_Assessment();
         <p>Although we make every effort to minimise the risk of an infection, we cannot guarantee zero risk of COVID-19
             transmission.</p>
         <p>For more information: www.gov.uk/coronavirus</p></div>
-
-
 </main>
 </body>
