@@ -147,6 +147,8 @@ class Event extends BaseActiveRecordVersioned
             'eventAttachmentGroups' => [self::HAS_MANY, 'EventAttachmentGroup', 'event_id'],
             'institution' => [self::BELONGS_TO, 'Institution', 'institution_id'],
             'site' => [self::BELONGS_TO, 'Site', 'site_id'],
+            'worklist_patient' => [self::BELONGS_TO, 'WorklistPatient', 'worklist_patient_id'],
+            'step' => [self::BELONGS_TO, 'PathwayStep', 'step_id']
         );
     }
 
