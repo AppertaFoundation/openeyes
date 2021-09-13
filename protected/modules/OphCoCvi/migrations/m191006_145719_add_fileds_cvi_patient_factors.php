@@ -21,15 +21,4 @@ class m191006_145719_add_fileds_cvi_patient_factors extends OEMigration
         $this->dropColumn('ophcocvi_clericinfo_patient_factor', 'event_type_version');
         $this->dropColumn('ophcocvi_clericinfo_patient_factor_version', 'event_type_version');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

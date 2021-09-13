@@ -18,10 +18,9 @@
 ?>
 
 <?php
-    $form_id = 'create-form';
-    $this->beginContent('//patient/event_container', array('no_face' => false , 'form_id' => $form_id)); ?>
-
-<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+$form_id = 'create-form';
+$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id));
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => $form_id,
     'enableAjaxValidation' => false,
     'layoutColumns' => array(

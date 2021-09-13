@@ -2469,6 +2469,7 @@ class AdminController extends BaseAdminController
                     throw $e;
                 }
 
+
                 $this->redirect($return_url);
             }
         }

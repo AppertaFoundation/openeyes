@@ -2,17 +2,17 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCoCvi\controllers;
@@ -164,11 +164,14 @@ class DefaultController extends \BaseEventTypeController
             // because we are using this check for clinical edit access checks, we need to handle new events as well
             return $this->checkCreateAccess();
         } else {
-            return !$this->getManager()->isIssued($this->event) && $this->checkAccess('OprnEditCvi',
-                    $this->getApp()->user->id, array(
-                        'firm' => $this->firm,
-                        'event' => $this->event,
-                    ));
+            return !$this->getManager()->isIssued($this->event) && $this->checkAccess(
+                'OprnEditCvi',
+                $this->getApp()->user->id,
+                array(
+                    'firm' => $this->firm,
+                    'event' => $this->event,
+                )
+            );
         }
     }
 
@@ -331,10 +334,14 @@ class DefaultController extends \BaseEventTypeController
                     foreach ($data[$model_name][$key] as $idx => $data_disorder) {
                         $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
                         $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
-                        $cvi_ass->affected = array_key_exists('affected',
-                            $data_disorder) ? $data_disorder['affected'] : false;
-                        $cvi_ass->main_cause = array_key_exists('main_cause',
-                            $data_disorder) ? $data_disorder['main_cause'] : false;
+                        $cvi_ass->affected = array_key_exists(
+                            'affected',
+                            $data_disorder
+                        ) ? $data_disorder['affected'] : false;
+                        $cvi_ass->main_cause = array_key_exists(
+                            'main_cause',
+                            $data_disorder
+                        ) ? $data_disorder['main_cause'] : false;
                         $cvi_assignments[] = $cvi_ass;
                     }
                 }
@@ -473,8 +480,10 @@ class DefaultController extends \BaseEventTypeController
             $side_data = array_key_exists($key, $data[$model_name]) ? $data[$model_name][$key] : array();
             $element->updateDisorders($side, $side_data);
         }
-        $comments_data = array_key_exists('cvi_disorder_section',
-            $data[$model_name]) ? $data[$model_name]['cvi_disorder_section'] : array();
+        $comments_data = array_key_exists(
+            'cvi_disorder_section',
+            $data[$model_name]
+        ) ? $data[$model_name]['cvi_disorder_section'] : array();
         $element->updateDisorderSectionComments($comments_data);
     }
 

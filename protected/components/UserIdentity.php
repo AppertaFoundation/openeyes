@@ -324,8 +324,8 @@ class UserIdentity extends CUserIdentity
      */
     public function authenticateUser($user_authentication, $force = false)
     {
-        // if (!in_array(Yii::app()->params['ldap_method'], array('native', 'zend', 'native-search'))) {
-        //     throw new Exception('Unsupported LDAP authentication method: '.Yii::app()->params['ldap_method'].', please use native or zend.');
+       // if (!in_array(Yii::app()->params['ldap_method'], array('native', 'zend', 'native-search'))) {
+       //     throw new Exception('Unsupported LDAP authentication method: '.Yii::app()->params['ldap_method'].', please use native or zend.');
         // }
 
         $inst_auth = $user_authentication->institutionAuthentication;
@@ -352,14 +352,14 @@ class UserIdentity extends CUserIdentity
 
             $auth_result = [false, "Invalid login."];
             switch ($ldap_config->ldap_method) {
-                case 'zend':
-                    $auth_result = $this->authenticateZendLDAP($user_authentication);
-                    break;
-                case 'native-search':
-                    $auth_result = $this->authenticateNativeLDAP($user_authentication);
-                    break;
-                default:
-                    $auth_result = $this->authenticateOtherLDAP($user_authentication);
+            case 'zend':
+                $auth_result = $this->authenticateZendLDAP($user_authentication);
+                break;
+            case 'native-search':
+                $auth_result = $this->authenticateNativeLDAP($user_authentication);
+                break;
+            default:
+                $auth_result = $this->authenticateOtherLDAP($user_authentication);
             }
 
             if (!$auth_result[0]) {
