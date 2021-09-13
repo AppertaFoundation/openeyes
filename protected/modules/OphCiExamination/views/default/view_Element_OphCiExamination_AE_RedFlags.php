@@ -49,9 +49,13 @@
             </td>
             <td>
                 <ul class="dot-list">
-                <?php foreach ($element->flags as $tempFlag) {?>
-                    <li><?= $tempFlag->flag->name ?></li>
-                <?php }?>
+                <?php if (!empty($element->flags)) {
+                    foreach ($element->flags as $tempFlag) {
+                        if ($tempFlag) { ?>
+                            <li><?= $tempFlag->flag->name ?></li>
+                        <?php }
+                    }
+                } ?>
                 </ul>
                 <span class="data-value large-text"></span>
             </td>

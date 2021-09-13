@@ -129,8 +129,9 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         // if we have no new flags to check, we just delete all of them
         if ($this->flags && !empty($this->flags[0])&& is_object($this->flags[0])) {
             foreach ($allCurrentFlags as $curFlag) {
-                    $curFlag->delete();
+                $curFlag->delete();
             }
+            $this->refresh();
         }
         // if we have flags to check, go through them.
         elseif ($this->flags && !empty($this->flags[0])&& !is_object($this->flags[0])) {
@@ -141,6 +142,7 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
                     $curFlag->delete();
                 }
             }
+            $this->refresh();
         }
 
         // if we have flags to add
@@ -159,6 +161,7 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
                     $newFlagObj->save();
                 }
             }
+            $this->refresh();
         }
         parent::afterSave();
     }
@@ -189,6 +192,9 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
 
     public function getCurrentFlagOptionIDs()
     {
+        if (empty($this->flags)) {
+            return array();
+        }
         return array_map(function ($flag) {
             return $flag->red_flag_id;
         }, $this->flags);
