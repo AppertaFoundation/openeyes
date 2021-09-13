@@ -201,7 +201,7 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         $options = OphCiExamination_AE_RedFlags_Options::model()->findAll($criteria);
         if (!empty($this->flags)) {
             $currentFlags = array_map(static function ($flag) {
-                return $flag->red_flag_id;
+                return $flag->red_flag_id ?? null; // Should never come to this, but this will ensure that the system won't crash if for some reason the array is filled with nulls.
             }, $this->flags);
         } else {
             $currentFlags = array();
