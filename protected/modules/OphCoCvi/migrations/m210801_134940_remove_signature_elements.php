@@ -2,9 +2,6 @@
 
 class m210801_134940_remove_signature_elements extends OEMigration
 {
-    private const RETIRED_ET_TABLE = 'et_ophcocvi_patient_signature';
-    private const RETIRED_ET_CLASS = 'OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature';
-
     private const RETIRED_ELEMENTS = [
         'et_ophcocvi_patient_signature' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature',
         'et_ophcocvi_consultant_signature' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsultantSignature'
@@ -14,7 +11,6 @@ class m210801_134940_remove_signature_elements extends OEMigration
     {
         foreach (self::RETIRED_ELEMENTS as $table => $class) {
             $this->deleteElementType('OphCoCvi', $class);
-            $this->dropOETable($table, true);
         }
     }
 
