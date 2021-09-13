@@ -47,6 +47,7 @@ class WorklistFilterQuery
     ];
 
     private const PATHWAY_STEP_WAIT_TIME_VALUE = 'IF(pathway.end_time IS NULL AND (NVL(pswt.started_count, 0) = 0), NVL(pswt.step_wait, NOW() - pathway.start_time), NULL)';
+    private const EARLIEST_UNCOMPLETED_STEP_QUERY = '(SELECT pathway_id, MIN(`order`) AS first FROM pathway_step WHERE status IS NULL OR status <> 2 GROUP BY pathway_id) AS earlier';
 
     private $site;
     private $context;
@@ -278,18 +279,12 @@ class WorklistFilterQuery
         return $command;
     }
 
-    public function getWaitingForListQuery($worklists, $include_all)
+    public function getWaitingForListQuery($worklists)
     {
         $command = Yii::app()->db->createCommand();
 
-        $command->from('pathway_step_type pst');
-        $command->select('pst.id, pst.long_name, COUNT(ps.id) AS count');
-
-        $pathway_step_conditions = [
-            'and',
-            'ps.step_type_id = pst.id',
-            ['or', 'ps.status IS NULL', 'ps.status <> '. PathwayStep::STEP_COMPLETED]
-        ];
+        $command->from('pathway_step ps');
+        $command->select('long_name, COUNT(earlier.first) AS count');
 
         $worklists = array_map(static function ($worklist) {
             return $worklist->id;
@@ -301,30 +296,25 @@ class WorklistFilterQuery
             ['in', 'wp.worklist_id', $worklists]
         ];
 
-        if ($include_all) {
-            $command->leftJoin('pathway_step ps', $pathway_step_conditions);
-            $command->leftJoin('pathway', 'pathway.id = ps.pathway_id');
-            $command->leftJoin('worklist_patient wp', $worklist_patient_conditions);
-        } else {
-            $command->join('pathway_step ps', $pathway_step_conditions);
-            $command->join('pathway', 'pathway.id = ps.pathway_id');
-            $command->join('worklist_patient wp', $worklist_patient_conditions);
+        $command->join('pathway', 'pathway.id = ps.pathway_id');
+        $command->join('worklist_patient wp', $worklist_patient_conditions);
 
-            $conditions = array('and');
-            $params = [];
+        $command->leftJoin(self::EARLIEST_UNCOMPLETED_STEP_QUERY, 'earlier.pathway_id = ps.pathway_id AND earlier.first = ps.`order`');
 
-            $this->getOptionalCriteria($command, $conditions, $params);
+        $conditions = array('and');
+        $params = [];
 
-            $command->where($conditions);
-            $command->params = $params;
-        }
+        $this->getOptionalCriteria($command, $conditions, $params);
 
-        $command->group = 'pst.id';
+        $command->where($conditions);
+        $command->params = $params;
+
+        $command->group = 'long_name';
 
         return $command;
     }
 
-    public function getAssignedToListQuery($worklists, $include_all)
+    public function getAssignedToListQuery($worklists)
     {
         $command = Yii::app()->db->createCommand();
 
@@ -341,21 +331,16 @@ class WorklistFilterQuery
             ['in', 'wp.worklist_id', $worklists]
         ];
 
-        if ($include_all) {
-            $command->leftJoin('pathway', 'pathway.owner_id = u.id');
-            $command->leftJoin('worklist_patient wp', $worklist_patient_conditions);
-        } else {
-            $command->join('pathway', 'pathway.owner_id = u.id');
-            $command->join('worklist_patient wp', $worklist_patient_conditions);
+        $command->join('pathway', 'pathway.owner_id = u.id');
+        $command->join('worklist_patient wp', $worklist_patient_conditions);
 
-            $conditions = array('and');
-            $params = [];
+        $conditions = array('and');
+        $params = [];
 
-            $this->getOptionalCriteria($command, $conditions, $params);
+        $this->getOptionalCriteria($command, $conditions, $params);
 
-            $command->where($conditions);
-            $command->params = $params;
-        }
+        $command->where($conditions);
+        $command->params = $params;
 
         $command->group = 'u.id';
 
@@ -574,11 +559,15 @@ class WorklistFilterQuery
                 default:
                     switch ($this->quick->filter->type) {
                         case 'waitingFor':
-                            $params[':quick_step_type_id'] = $this->quick->filter->value;
+                            $params[':quick_step_long_name'] = $this->quick->filter->value;
+
                             $command->join('pathway_step',
                                    'pathway_step.pathway_id = pathway.id'.
-                                   ' AND ((pathway_step.status IS NULL OR pathway_step.status <> 2))'.
-                                   ' AND pathway_step.step_type_id = :quick_step_type_id');
+                                   ' AND pathway_step.long_name = :quick_step_long_name');
+
+                            $command->join(self::EARLIEST_UNCOMPLETED_STEP_QUERY,
+                                           'earlier.pathway_id = pathway.id'.
+                                           ' AND earlier.first = pathway_step.`order`');
                             break;
 
                         case 'assignedTo':
@@ -588,6 +577,15 @@ class WorklistFilterQuery
                     }
                     break;
             }
+        }
+
+        if ($this->quick->patientName !== '') {
+            $likeExpr = '%' . $this->quick->patientName . '%';
+
+            $command->join('patient qp', 'qp.id = wp.patient_id');
+            $command->join('contact qc', 'qc.id = qp.contact_id');
+
+            $conditions[] = ['or', ['like', 'qc.first_name', $likeExpr], ['like', 'qc.last_name', $likeExpr]];
         }
     }
 }

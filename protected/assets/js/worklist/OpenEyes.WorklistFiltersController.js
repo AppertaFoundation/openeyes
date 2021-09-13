@@ -125,11 +125,11 @@ var OpenEyes = OpenEyes || {};
 
         this.filter = new OpenEyes.WorklistFilter();
         this.filter.site = this.options.selectedSite;
-        this.filterIsAltered = false;
+        this.filterIsAltered = true;
 
         this.quickProperties = {
             filter: 'all',
-            name: '',
+            patientName: '',
         };
 
         this.savedFilters = [];
@@ -152,6 +152,11 @@ var OpenEyes = OpenEyes || {};
         this.updateActiveFilter();
 
         this.retrieveFilters();
+
+        if (this.recentFilters.length > 0) {
+            this.filterIsAltered = false;
+            this.loadRecentFilter(this.recentFilterse.length - 1);
+        }
     }
 
     WorklistFiltersController.prototype.constructor = WorklistFiltersController;
@@ -427,7 +432,7 @@ var OpenEyes = OpenEyes || {};
     // Quick filter (Name component)
     Object.defineProperty(WorklistFiltersController.prototype, 'quickName', {
         set: function (newQuickName) {
-            this.quickProperties.name = newQuickName;
+            this.quickProperties.patientName = newQuickName;
 
             if (this.quickView) {
                 this.quickView.setQuickName(newQuickName);

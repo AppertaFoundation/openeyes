@@ -195,7 +195,7 @@ class Pathway extends BaseActiveRecordVersioned
             $end_position = Yii::app()->db->createCommand()
                 ->select('MAX(`order`)')
                 ->from('pathway_step')
-                ->where('pathway_id = :id AND status IN (-1, 0)')
+                ->where('pathway_id = :id AND (status IN (-1, 0) OR status IS NULL)')
                 ->bindValues([':id' => $this->id])
                 ->queryScalar();
         } else {
