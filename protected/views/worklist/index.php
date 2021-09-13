@@ -23,41 +23,6 @@ $pathway_json = json_encode(
     ),
     JSON_THROW_ON_ERROR
 );
-// Can't use the much faster json_encode here because the workflow step list contains a list of active records,
-// which can't be serialised by json_encode.
-$workflow_json = CJSON::encode($workflows);
-$macro_json = json_encode($letter_macros, JSON_THROW_ON_ERROR);
-$psd_step_type_id = Yii::app()->db->createCommand()
-->select('id')
-->from('pathway_step_type')
-->where('short_name = \'drug admin\'')
-->queryScalar();
-$exam_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Exam\'')
-    ->queryScalar();
-$vf_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Fields\'')
-    ->queryScalar();
-$letter_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Letter\'')
-    ->queryScalar();
-$generic_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'Task\'')
-    ->queryScalar();
-$onhold_step_type_id = Yii::app()->db->createCommand()
-    ->select('id')
-    ->from('pathway_step_type')
-    ->where('short_name = \'onhold\'')
-    ->queryScalar();
-$current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/object-hash/dist/object_hash.js')?>"></script>
 <input type="hidden" id="wl_print_selected_worklist" value="" />
@@ -1253,7 +1218,7 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
         const $wl_ctn = $('main#js-clinic-manager');
         const $wl_cat_ul = $('ul#js-worklist-category');
         const selected_category = $('ul#js-worklist-category a.selected').data('worklist');
-        const $selected_patient = $('.js-select-patient-for-psd:checked, .work-ls-patient-all:checked');
+        const $selected_patient = $('.js-check-patient:checked');
         const $popup = $('.oe-popup-wrap.js-add-psd-popup');
         const $last_sync_time = $('.last-sync');
 
@@ -1282,8 +1247,8 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
                     $popup.html(resp['popup']);
                 }
                 $selected_patient.each(function(index, item){
-                    const table_selector = `table[id=js-worklist-${$(item).data('table-id')}]`;
-                    $wl_ctn.find(`${table_selector} .js-select-patient-for-psd[value="${$(item).val()}"], ${table_selector} .work-ls-patient-all[value="${$(item).val()}"]`).prop('checked', true);
+                    const val = $(item).val();
+                    $(`.js-check-patient[value="${val}"]`).prop('checked', true);
                 });
                 $('.patient-popup-worklist').remove();
 
@@ -1345,28 +1310,17 @@ $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])
     });
 
     $(document).ready(function () {
+        const picker_setup = <?=$picker_setup?>;
+        const path_step_type_ids = <?=$path_step_type_ids?>;
         $('body').on('click', '.collapse-data-header-icon', function () {
             $(this).toggleClass('collapse expand');
             $(this).next('div').toggle();
         });
 
          picker = new OpenEyes.UI.PathwayStepPicker({
+            ...path_step_type_ids,
+            ...picker_setup,
             pathways: <?= $pathway_json ?>,
-            vf_test_presets: <?= json_encode($vf_test_presets) ?>,
-            vf_test_types: <?= json_encode($vf_test_types) ?>,
-            vf_test_options: <?= json_encode($vf_test_options) ?>,
-            exam_step_type_id: <?= $exam_step_type_id ?>,
-            vf_step_type_id: <?= $vf_step_type_id ?>,
-            letter_step_type_id: <?= $letter_step_type_id ?>,
-            generic_step_type_id: <?= $generic_step_type_id ?>,
-            onhold_step_type_id: <?= $onhold_step_type_id ?>,
-            workflows: <?= $workflow_json ?>,
-            macros: <?= $macro_json ?>,
-            psd_step_type_id: <?= $psd_step_type_id ?>,
-            preset_orders: <?= json_encode($preset_orders) ?>,
-            subspecialties: <?= json_encode(NewEventDialogHelper::structureAllSubspecialties()) ?>,
-            current_subspecialty_id: <?= $current_firm->getSubspecialty()->id ?>,
-            current_firm_id: <?= Yii::app()->session['selected_firm_id'] ?>
         });
         picker.init();
 

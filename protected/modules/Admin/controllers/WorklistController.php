@@ -37,6 +37,12 @@ class WorklistController extends BaseAdminController
         return parent::beforeAction($action);
     }
 
+    public function behaviors()
+    {
+        return array(
+            'SetupPathwayStepPicker' => ['class' => 'application.behaviors.SetupPathwayStepPickerBehavior',],
+        );
+    }
     /**
      * @param string $type - the classification of the message
      * @param $message - the message to display
@@ -192,7 +198,8 @@ class WorklistController extends BaseAdminController
     /**
      * Modify acceptable worklist wait times.
      */
-    public function actionWaitTimes() {
+    public function actionWaitTimes()
+    {
         $this->group = 'Worklist';
         $this->genericAdmin(
             'Wait Times',
@@ -652,36 +659,16 @@ class WorklistController extends BaseAdminController
     public function actionPresetPathways()
     {
         $pathway_types = PathwayType::model()->findAll('is_preset = 1');
-        $steps = OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(
-            Yii::app()->session['selected_institution_id'],
-            null
-        );
-
-        $preset_criteria = new CDbCriteria();
-        $preset_criteria->compare('LOWER(type)', 'pgd');
-        $preset_criteria->compare('active', true);
-        $preset_orders = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
-        $pgd_presets = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => 'preset_order', 'label' => $item->name);
-            },
-            $preset_orders
-        );
-
-        $letter_macros = array_map(
-            static function ($item) {
-                return array('id' => $item->id, 'name' => $item->name);
-            },
-            LetterMacro::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION)
-        );
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.PathStep.js'), ClientScript::POS_END);
         $worklist_js = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js.worklist') . '/worklist_admin.js', true);
         Yii::app()->clientScript->registerScriptFile($worklist_js, ClientScript::POS_END);
+
+        $picker_setup = json_encode($this->setupPicker());
+        $path_step_type_ids = json_encode($this->getPathwayStepTypesRequirePicker());
         $this->render('preset_pathways', array(
             'pathway_types' => $pathway_types,
-            'workflows' => $steps,
-            'letter_macros' => $letter_macros,
-            'pgd_presets' => $pgd_presets,
+            'picker_setup' => $picker_setup,
+            'path_step_type_ids' => $path_step_type_ids,
             'path_steps' => PathwayStepType::getPathTypes(),
             'standard_steps' => PathwayStepType::getStandardTypes(),
             'custom_steps' => PathwayStepType::getCustomTypes(),

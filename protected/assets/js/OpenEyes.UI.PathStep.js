@@ -278,10 +278,16 @@
         }
     };
     PathStep.prototype.renderPopupContent = function (content) {
+        if(!this.currentPopup){
+            return;
+        }
         this.currentPopup.html(content);
         this.configPopupHeight(this.currentPopup, this.options.popupContentCtnSelector);
     };
     PathStep.prototype.resetPopup = function () {
+        if(!this.currentPopup){
+            return;
+        }
         this.currentPopup.html('');
         $(this.options.spinnerHTML).appendTo(this.currentPopup);
         this.currentPopup.get(0).style.height = this.popupOriginalHeight + 'px';

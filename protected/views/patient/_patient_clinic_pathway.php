@@ -19,6 +19,9 @@
  * @var $display_wait_duration bool
  */
 $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+$pick_behavior = new SetupPathwayStepPickerBehavior();
+$path_step_type_ids = json_encode($pick_behavior->getPathwayStepTypesRequirePicker());
+$picker_setup = json_encode($pick_behavior->setupPicker());
 ?>
 <div class="clinic-pathway">
     <table class="oec-patients in-event">
@@ -80,8 +83,9 @@ $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
                 <script type="text/javascript">
                     $(document).ready(function () {
                         let picker = new OpenEyes.UI.PathwayStepPicker({
+                            ...<?=$path_step_type_ids?>,
+                            ...<?=$picker_setup?>,
                             pathways: <?= $pathway->getPathwaysJSON() ?>,
-                            psd_step_type_id: <?= $psd_step_type_id ?>,
                         });
                         picker.init();
 

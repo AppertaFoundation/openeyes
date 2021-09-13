@@ -15,7 +15,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
+<?php
+$pick_behavior = new SetupPathwayStepPickerBehavior();
+$path_step_type_ids = json_encode($pick_behavior->getPathwayStepTypesRequirePicker());
+$picker_setup = json_encode($pick_behavior->setupPicker());
+?>
 <div class="clinic-pathway-btn" id="clinic-pathway-btn">
     <?= ucfirst($pathway->getStatusString()) ?>
     <div class="wait-duration">
@@ -54,7 +58,8 @@
                     ?>
                     let picker = new OpenEyes.UI.PathwayStepPicker({
                         pathways: <?= $pathway->getPathwaysJSON() ?>,
-                        psd_step_type_id: <?= $psd_step_type_id ?>,
+                        ...<?=$path_step_type_ids?>,
+                        ...<?=$picker_setup?>,
                     });
                     picker.init();
                 },

@@ -1,15 +1,62 @@
+// avoid progressing timer step status multiple times from different pages
+window.timer_status_request = window.timer_status_request || {};
 $(function () {
+    // setup the node to observe
+    const targetNode = document.querySelector('main, .clinic-pathway');
+    const config = { childList: true, subtree: true,};
+    // call back to run when detect dom changes
+    const callback = function(mutationsList, observer) {
+        for(const mutation of mutationsList) {
+            // if there is no new added/updated node, proceed to next node mutation
+            if(!mutation.addedNodes.length){
+                continue;
+            }
+            // if find any active hold timer, start the timer
+            if($(mutation.target).hasClass('oec-group') && $(mutation.addedNodes).find('.pathway').find('.oe-pathstep-btn.hold.active').length){
+                // if the mutation target has class oec-group, that means the mutation was from auto refresh
+                loadTimer();
+            } else {
+                // adding new steps will cause the entire pathway step list refreshed, then the active timer still stop ticking
+                // call loadTimer just in case
+                loadTimer();
+                // get last done step
+                let lastDone = $(mutation.target).closest('tr').find('.oe-pathstep-btn.done').last();
+                let $nextHoldStep = null;
+                // check if the next step is the wait icon
+                if($(lastDone).next().hasClass('wait') || $(lastDone).next().hasClass('delayed-wait')){
+                    $nextHoldStep = $(lastDone).next().next();
+                } else {
+                    $nextHoldStep = $(lastDone).next();
+                }
+                // if find a hold step after last done step, start the timer
+                if ($nextHoldStep.hasClass('hold') && $nextHoldStep.hasClass('todo')) {
+                    $nextHoldStep.find('.js-ps-popup-btn.green').trigger('click');
+                }
+            }
+        }
+    };
+    let observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+
+    // timer interval dictionary to avoid conflict setintervals
+    // when there are multiple timers on the page
     let timer_interval = {};
     let completeHoldStep = function (ele, step_data) {
+        let id = parseInt(step_data.id)
+        if(window.timer_status_request[id]){
+            return;
+        }
         cancelTimer(ele, step_data);
         $(ele).find('svg').remove();
+
         // send post request to update the hold step to complete
         let data = {
             step_id: step_data.id,
             direction: 'next',
             YII_CSRF_TOKEN: YII_CSRF_TOKEN
         };
-        $.ajax({
+
+        timer_status_request[id] = $.ajax({
             url: '/worklist/changeStepStatus',
             type: 'POST',
             data: data,
@@ -20,15 +67,17 @@ $(function () {
     };
     
     let cancelTimer = function (ele, step_data) {
-        if (timer_interval[step_data.id]) {
-            clearInterval(timer_interval[step_data.id]);
+        let id = parseInt(step_data.id)
+        if (timer_interval[id]) {
+            clearInterval(timer_interval[id]);
         }
     };
 
     let startTimer = function (ele, step_data) {
         // clear active interval if exists
-        if (timer_interval[step_data.id]) {
-            clearInterval(timer_interval);
+        let id = parseInt(step_data.id)
+        if (timer_interval[id]) {
+            clearInterval(timer_interval[id]);
         }
         // total duration
         const total = Number(step_data.short_name) * 60;
@@ -38,7 +87,7 @@ $(function () {
         const radius = 15;
         const circumference = radius * 2 * Math.PI;
 
-        timer_interval[step_data.id] = setInterval(() => {
+        timer_interval[id] = setInterval(() => {
             let percent = (elapsed / total) * 100;
             if (percent >= 100) {
                 // clear interval and complete the hold step when time is up
@@ -57,8 +106,11 @@ $(function () {
 
 
     let loadTimer = function() {
-        $('.oe-pathstep-btn.hold.active').each(function (i, ele) {
-            startTimer(ele, $(ele).data('step-data'));
+        $(document).find('.oe-pathstep-btn.hold.active').each(function (i, ele) {
+            let step_data = $(ele).data('step-data');
+            if(step_data.status !== 'todo' && step_data.start_time){
+                startTimer(ele, step_data);
+            }
         });
     };
 
@@ -516,9 +568,6 @@ $(function () {
                         // get the special action from the button data attribute
                         // current format: step_status: callback
                         let special_action = $(event.target).data('special-action');
-
-                        // Move the step to the correct position.
-                        handleRunActionResponse($thisStep, response);
                         
                         const state_data = JSON.parse(response.step.state_data);
                         // run the special action if it matches the current status
@@ -530,6 +579,8 @@ $(function () {
                             */
                             special_actions[callback].call(null, $thisStep, response.step);
                         }
+                        // Move the step to the correct position.
+                        handleRunActionResponse($thisStep, response);
                         if (state_data.hasOwnProperty('event_create_url') && state_data.event_create_url) {
                             // Redirect to the target URL.
                             window.location = state_data.event_create_url;
