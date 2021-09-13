@@ -579,7 +579,7 @@ class WorklistFilterQuery
             }
         }
 
-        if ($this->quick->patientName !== '') {
+        if (!empty($this->quick->patientName)) {
             $likeExpr = '%' . $this->quick->patientName . '%';
 
             $command->join('patient qp', 'qp.id = wp.patient_id');
