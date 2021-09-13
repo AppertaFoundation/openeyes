@@ -75,6 +75,17 @@ class WorklistRecentFilter extends BaseActiveRecord
         return self::model()->findAll($criteria);
     }
 
+    public function countForCurrentUser()
+    {
+        $criteria = new CDbCriteria();
+        $current_user_id = Yii::app()->session['user']->id ?? Yii::app()->user->id;
+
+        $criteria->addCondition('created_user_id = :user_id');
+        $criteria->params = array(':user_id' => $current_user_id);
+
+        return (int)self::model()->count($criteria);
+    }
+
     public function removeOldFiltersForCurrentUser()
     {
         $criteria = new CDbCriteria();

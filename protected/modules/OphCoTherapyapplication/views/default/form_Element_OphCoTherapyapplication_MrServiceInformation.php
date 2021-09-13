@@ -44,7 +44,5 @@
       <label class="inline highlight">
             <?php echo $form->radioButton($element, 'patient_sharedata_consent'); ?> Yes
     </div>
-    <input type="hidden" value=""
-           name="Element_OphCoTherapyapplication_MrServiceInformation[patient_sharedata_consent]">
   </fieldset>
 </div>

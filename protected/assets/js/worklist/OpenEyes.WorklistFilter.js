@@ -107,6 +107,7 @@ var OpenEyes = OpenEyes || {};
         return this.site === other.site
             && this.context === other.context
             && worklistsEqual
+            && this.sortBy === other.sortBy
             && optionalEqual
             && this.combined === other.combined;
     };
@@ -134,6 +135,7 @@ var OpenEyes = OpenEyes || {};
         result.context = data.context;
 
         result.worklists = decodeWorklists(data.worklists);
+        result.sortBy = data.sortBy;
         result.optional = new Map(data.optional);
 
         result.combined = data.combined;

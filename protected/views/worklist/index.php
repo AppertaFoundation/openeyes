@@ -280,7 +280,7 @@ $pathway_json = json_encode(
                                 {{/valueDisplaySuffix}}
                                 </br>
                             {{/patientIdentifiers}}
-	                        {{#patientDeletedIdentifiers}}
+                            {{#patientDeletedIdentifiers}}
                                 <hr>
                                     Previous Numbers
                                 <br>
@@ -306,7 +306,7 @@ $pathway_json = json_encode(
                         {{/patientPrimaryIdentifierStatus}}
                     </div>
                 </div>
-			{{/displayPrimaryNumberUsageCode}}
+            {{/displayPrimaryNumberUsageCode}}
             {{#displaySecondaryNumberUsageCode}}
                 <div class="nhs-number">
                     <span>{{ nhsNumberPrompt }}</span>
@@ -320,7 +320,7 @@ $pathway_json = json_encode(
                 <em>Gender</em>
                 {{ gender }}
             </div>
-			<div class="patient-{{#deceased}}died{{/deceased}}{{^deceased}}age{{/deceased}}">
+            <div class="patient-{{#deceased}}died{{/deceased}}{{^deceased}}age{{/deceased}}">
                 {{#deceased}}
                     <em>Died</em> {{dateOfDeath}}
                 {{/deceased}}
@@ -1234,12 +1234,19 @@ $pathway_json = json_encode(
                     return;
                 }
 
+                // Ensure the step adder checkboxes maintain their state
+                let checkedAdders = $wl_ctn.find('.js-check-patient:checked').map(function() { return this.value; }).get();
+
                 // Cleanup and repopulate worklist sections
                 $wl_ctn.find('section').remove();
                 $wl_ctn.find('div.oec-adder').after(resp['main']);
 
                 if (picker) {
                     picker.reattachCheckboxHandlers();
+                }
+
+                for (id of checkedAdders) {
+                    $wl_ctn.find(`.js-check-patient[value="${id}"]`).prop('checked', true);
                 }
 
                 $wl_cat_ul.html(resp['filter']);
@@ -1261,7 +1268,7 @@ $pathway_json = json_encode(
                     worklistFiltersController.resetShownLists();
                 }
 
-                // At every autorefresh, traverse all the child nodes of the patient popup dataand check if any
+                // At every autorefresh, traverse all the child nodes of the patient popup data and check if any
                 // of the patient data HTML needs to be updated.
                 $('.js-patient-popup-data').children('div').each(function (index, element) {
                     $.ajax({
@@ -1339,9 +1346,13 @@ $pathway_json = json_encode(
             extantWorklists.push({ id: worklistSection.data('id'), title: worklistSection.data('title') });
         });
 
-        <?php $initial_filter = new WorklistFilterQuery(); ?>
-        const initialWaitingFor = <?= json_encode($this->getWaitingForList($initial_filter, $worklists, true)) ?>;
-        const initialAssignedTo = <?= json_encode($this->getAssignedToList($initial_filter, $worklists, true)) ?>;
+        const usersList = <?= json_encode(array_map(static function ($user) {
+            return ['id' => $user->id, 'label' => $user->getFullName() . ' (' . $user->getInitials() .')'];
+                          }, User::model()->findAll())) ?>;
+
+        const stepsList = <?= json_encode(array_map(static function ($step_type) {
+            return ['id' => $step_type->id, 'label' => $step_type->long_name];
+                          }, PathwayStepType::model()->findAll())) ?>;
 
         const controllerOptions = {
             worklistFilterPanelSelector: '#js-worklists-filter-panel',
@@ -1353,8 +1364,8 @@ $pathway_json = json_encode(
             sortByPopupSelector: '#js-worklist-sort-order-popup',
 
             worklists: extantWorklists,
-            users: initialAssignedTo,
-            steps: initialWaitingFor,
+            users: usersList,
+            steps: stepsList,
 
             applyFilter: function() { performSync(); },
 
@@ -1373,10 +1384,12 @@ $pathway_json = json_encode(
 
         worklistFiltersController = new OpenEyes.WorklistFiltersController(controllerOptions);
 
+        <?php $initial_filter = new WorklistFilterQuery(); ?>
+
         worklistFiltersController.updateCounts(
             <?= json_encode($this->getStatusCountsList($initial_filter, $worklists)) ?>,
-            initialWaitingFor,
-            initialAssignedTo
+            <?= json_encode($this->getWaitingForList($initial_filter, $worklists)) ?>,
+            <?= json_encode($this->getAssignedToList($initial_filter, $worklists)) ?>
         );
 
 

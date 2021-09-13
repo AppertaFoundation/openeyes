@@ -38,20 +38,22 @@
             </thead>
             <tbody>
                 <?php
-                $entries = $element->entries;
-
                 $row_count = 0;
 
-                foreach ($entries as $entry) {
-                    $entry = $entry->attributes;
+                if (isset($element->id)) {
+                    $entries = \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
 
-                    $entry_editable = $entry['element_id'] === $element->id;
+                    foreach ($entries as $entry) {
+                        $entry = $entry->attributes;
 
-                    $this->renderPartial(
-                        'form_Element_OphCiExamination_Pain_Entry',
-                        array('model' => $entry, 'element' => $element, 'row_count' => $row_count, 'editable' => $entry_editable)
-                    );
-                    $row_count++;
+                        $entry_editable = $entry['element_id'] === $element->id;
+
+                        $this->renderPartial(
+                            'form_Element_OphCiExamination_Pain_Entry',
+                            array('model' => $entry, 'element' => $element, 'row_count' => $row_count, 'editable' => $entry_editable)
+                        );
+                        $row_count++;
+                    }
                 }
                 ?>
             </tbody>

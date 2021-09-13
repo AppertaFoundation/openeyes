@@ -16,7 +16,7 @@
  */
 
 ?>
-<div class="oe-worklists-panel" id="js-worklists-filter-panel" style="display: none;">
+<div class="oe-worklists-panel" id="js-worklists-filter-panel">
     <table class="site-context">
         <tbody>
             <tr>
@@ -171,11 +171,45 @@
 
 <script type="text/javascript">
      $(document).ready(function() {
-         var worklistPanel = new OpenEyes.UI.NavBtnPopup(
-             'worklist-panel',
-             $('#js-nav-worklist-btn'),
-             $('#js-worklists-filter-panel')
-         );
+         const hidePanelWidth = 1890;
+         const button = $('#js-nav-worklist-btn');
+
+         button.click(function() {
+             if (button.hasClass('open')) {
+                 $('#js-hotlist-panel').show();
+                 $('#js-worklists-filter-panel').hide();
+
+                 button.removeClass('open');
+             } else {
+                 $('#js-hotlist-panel').hide();
+                 $('#js-worklists-filter-panel').show();
+
+                 button.addClass('open');
+             }
+         });
+
+         $('#js-nav-hotlist-btn').click(function() {
+             if (button.hasClass('open')) {
+                 $('#js-hotlist-panel').show();
+                 $('#js-worklists-filter-panel').hide();
+
+                 button.removeClass('open');
+             }
+         });
+
+         $(window).resize(function() {
+             if (button.hasClass('open')) {
+                 if ($(this).width() > hidePanelWidth) {
+                     $('#js-worklists-filter-panel').show();
+                 } else {
+                     $('#js-worklists-filter-panel').hide();
+                 }
+             }
+         });
+
+         $('#js-hotlist-panel').hide();
+         $('#js-worklists-filter-panel').show();
+         button.addClass('open');
      });
 </script>
 
