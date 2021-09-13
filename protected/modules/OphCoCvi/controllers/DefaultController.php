@@ -873,14 +873,14 @@ class DefaultController extends \BaseEventTypeController
         foreach ($elements as $el) {
             $cls = get_class($el);
 
-            if (in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1'))
+            if (in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1'))
                 && $el->isNewRecord
                 && !$this->checkClinicalEditAccess()
             ) {
                 // implies no values have been recorded yet for this element
                 continue;
             }
-            if (in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo', 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1'))
+            if (in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1'))
                 && $el->isNewRecord
                 && !$this->checkClericalEditAccess()
             ) {
@@ -952,8 +952,6 @@ class DefaultController extends \BaseEventTypeController
         $cls = $element_type->class_name;
 
         $map = array(
-            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo' => 'Clinical',
-            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo' => 'Clerical',
             'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1' => 'Clinical',
             'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1' => 'Clerical',
         );

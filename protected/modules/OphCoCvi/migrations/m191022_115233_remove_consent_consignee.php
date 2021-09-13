@@ -4,9 +4,6 @@ class m191022_115233_remove_consent_consignee extends OEMigration
 {
     public function up()
     {
-
-// Can we delete this file ? Sabi 09/09/2021
-
         $this->dropForeignKey("fk_et_ophcocvi_pscca_element_id", "et_ophcocvi_patient_signature_consent_consignee_assignment");
         $this->dropForeignKey("fk_et_ophcocvi_pscca_consignee_id", "et_ophcocvi_patient_signature_consent_consignee_assignment");
 

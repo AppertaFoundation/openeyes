@@ -2378,7 +2378,7 @@ class Patient extends BaseActiveRecordVersioned
             );
         }
         if ($cvi_api) {
-            $CoCvi_cvi = $cvi_api->getLatestElement('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', $this);
+            $CoCvi_cvi = $cvi_api->getLatestElement('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1', $this);
         }
         if (isset($examination_cvi, $CoCvi_cvi)) {
             if ($examination_cvi->element_date <= $CoCvi_cvi->examination_date) {
