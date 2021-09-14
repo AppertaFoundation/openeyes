@@ -153,16 +153,6 @@ $config = array(
                     'js' => array('eventemitter2/lib/eventemitter2.js'),
                     'basePath' => 'application.assets.components',
                 ),
-                'flot' => array(
-                    'js' => array(
-                        'components/flot/jquery.flot.js',
-                        'components/flot/jquery.flot.time.js',
-                        'components/flot/jquery.flot.navigate.js',
-                        'js/jquery.flot.dashes.js',
-                    ),
-                    'basePath' => 'application.assets',
-                    'depends' => array('jquery'),
-                ),
                 'rrule' => array(
                     'js' => array(
                         'components/rrule/lib/rrule.js',
