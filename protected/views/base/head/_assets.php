@@ -16,11 +16,6 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <link rel="stylesheet" type="text/css" data-theme="light"
       href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_light.3.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
 
-<link rel="stylesheet" type="text/css" data-theme="dark"
-      href="<?= $assetManager->getPublishedUrl($basic_assets_path, true) . '/css/patient_panel.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
-<link rel="stylesheet" type="text/css" data-theme="light"
-      href="<?= $assetManager->getPublishedUrl($basic_assets_path, true) . '/css/patient_panel_classic.css' ?>" media="<?= $display_theme !== 'dark' ? '' : 'none' ?>">
-
 <?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>
 <?php $assetManager->registerCoreScript('jquery.ui')?>
@@ -72,8 +67,6 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Search.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.CopyToClipboard.js')?>
 <?php $assetManager->registerScriptFile('js/script.js')?>
-<?php $assetManager->registerScriptFile('components/foundation/js/foundation.min.js');?>
-<?php $assetManager->registerScriptFile('components/foundation/js/foundation/foundation.dropdown.js');?>
 <?php $assetManager->registerScriptFile('components/jt.timepicker/jquery.timepicker.js');?>
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
 <?php $assetManager->registerScriptFile('../../node_modules/sortablejs/Sortable.min.js', 'application.assets.newblue');?>
@@ -83,4 +76,3 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.PathwayStepPicker.js'); ?>
 <?php $assetManager->registerScriptFile('js/worklist/OpenEyes.UI.Dialog.PathwayStepOptions.js'); ?>
 <?php $assetManager->registerScriptFile('js/worklist/OpenEyes.UI.Dialog.NewPathwayStep.js'); ?>
-
