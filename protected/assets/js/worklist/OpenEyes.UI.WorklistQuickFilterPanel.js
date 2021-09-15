@@ -91,6 +91,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.panel.find('.js-clinic-btn-filter').removeClass('selected');
         this.panel.find('.js-filter-option').removeClass('selected');
         this.panel.find('.js-clinic-filter-menu').removeClass('selected');
+        this.panel.find('.js-clinic-filter-menu').attr('data-selected-id', null);
 
         this.panel.find('.js-clinic-filter-menu > .filter-btn .name').each(function() {
             $(this).html($(this).data('old-label'));
@@ -114,6 +115,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             option.addClass('selected');
 
+            menu.attr('data-selected-id', id);
             menuButton.children('.name').text(option.children('.name').text());
             menuButton.children('.count').text(option.children('.count').text());
         }
@@ -153,6 +155,64 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.quick = { type: name, value: $(this).data('id') };
             });
         });
+    }
+
+    WorklistQuickFilterPanel.prototype.changeWaitingFor = function(id, amount) {
+        const controller = this.controller;
+        const button = this.panel.find(`.js-clinic-filter-menu[data-filter="waitingFor"] .js-filter-option[data-id="${id}"]`);
+
+        if (button.length > 0 && amount !== 0) {
+            const header = this.panel.find(`.js-clinic-filter-menu[data-filter="waitingFor"][data-selected-id="${id}"] > .filter-btn .count`);
+            const count = parseInt(button.children('.count').text().trim()) + amount;
+
+            if (count > 0) {
+                button.children('.count').text(count);
+            } else {
+                button.remove();
+            }
+
+            if (header.length > 0) {
+                header.text(Math.max(count, 0));
+            }
+        } else if (button.length === 0 && amount >= 0) {
+            const data = { id: id, label: `… ${id}`, count: amount };
+            const entry = Mustache.render(filterOptionTemplate, data);
+
+            this.panel.find('.js-clinic-filter-menu[data-filter="waitingFor"] nav.options').append(entry);
+            this.panel.find(`.js-clinic-filter-menu[data-filter="waitingFor"] .js-filter-option[data-id="${id}"]`)
+                .click(function() {
+                    controller.quick = { type: 'waitingFor', value: $(this).data('id') };
+                });
+        }
+    }
+
+    WorklistQuickFilterPanel.prototype.changeAssignedTo = function(mappings, id, amount) {
+        const controller = this.controller;
+        const button = this.panel.find(`.js-clinic-filter-menu[data-filter="assignedTo"] .js-filter-option[data-id="${id}"]`);
+
+        if (button.length > 0) {
+            const header = this.panel.find(`.js-clinic-filter-menu[data-filter="assignedTo"][data-selected-id="${id}"] > .filter-btn .count`);
+            const count = parseInt(button.children('.count').text().trim()) + amount;
+
+            if (count > 0) {
+                button.children('.count').text(count);
+            } else {
+                button.remove();
+            }
+
+            if (header.length > 0) {
+                header.text(Math.max(count, 0));
+            }
+        } else if (amount > 0) {
+            const data = { id: id, label: mappings.get(id), count: amount };
+            const entry = Mustache.render(filterOptionTemplate, data);
+
+            this.panel.find('.js-clinic-filter-menu[data-filter="assignedTo"] nav.options').append(entry);
+            this.panel.find(`.js-clinic-filter-menu[data-filter="assignedTo"] .js-filter-option[data-id="${id}"]`)
+                .click(function() {
+                    controller.quick = { type: 'assignedTo', value: $(this).data('id') };
+                });
+        }
     }
 
     exports.WorklistQuickFilterPanel = WorklistQuickFilterPanel;

@@ -1328,6 +1328,9 @@ $pathway_json = json_encode(
             ...path_step_type_ids,
             ...picker_setup,
             pathways: <?= $pathway_json ?>,
+            onChangePatientRow: function(changeType, details) {
+                worklistFiltersController.updateCountsOnChange(changeType, details);
+            },
         });
         picker.init();
 
@@ -1379,6 +1382,24 @@ $pathway_json = json_encode(
                         $(`#js-clinic-manager section[data-id="${id}"]`).show();
                     }
                 }
+            },
+
+            removeRow: function(pathwayId) {
+                const pathway = $(`#js-pathway-${pathwayId}`);
+                const pagination = pathway.closest('.oec-patients').find('.pagination');
+
+                pathway.remove();
+
+                // This will change the pagination numbers for the worklist the row is in, since it reflects server PHP state, not client JS state otherwise
+                const countRegex = /([0-9]+) - ([0-9]+) of ([0-9]+)/;
+                const countText = pagination.contents()[0].data;
+                const paginationCounts = countRegex.exec(countText);
+
+                paginationCounts[1] = parseInt(paginationCounts[1]);
+                paginationCounts[2] = parseInt(paginationCounts[2]) - 1;
+                paginationCounts[3] = parseInt(paginationCounts[3]) - 1;
+
+                pagination.contents()[0].data = `${paginationCounts[1]} - ${paginationCounts[2]} of ${paginationCounts[3]}`;
             }
         };
 
@@ -1391,7 +1412,6 @@ $pathway_json = json_encode(
             <?= json_encode($this->getWaitingForList($initial_filter, $worklists)) ?>,
             <?= json_encode($this->getAssignedToList($initial_filter, $worklists)) ?>
         );
-
 
         // init timer obj
         let autorefresh_countdown = null;
