@@ -66,24 +66,16 @@ class m191005_121000_preferred_method_communication extends OEMigration
             'display_order'=> 70
         ]);
 
-        $this->addColumn('et_ophcocvi_clericinfo', 'interpreter_required', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
-
-        $this->addColumn('et_ophcocvi_clericinfo', 'preferred_comm_id', 'int(10) DEFAULT NULL');
-        $this->addColumn('et_ophcocvi_clericinfo', 'preferred_comm_other', 'text');
+        $this->addOEColumn('et_ophcocvi_clericinfo', 'interpreter_required', 'tinyint(1) unsigned NOT NULL DEFAULT 0', true);
+        $this->addOEColumn('et_ophcocvi_clericinfo', 'preferred_comm_id', 'int(10) DEFAULT NULL', true);
+        $this->addOEColumn('et_ophcocvi_clericinfo', 'preferred_comm_other', 'text', true);
 
         $this->addForeignKey('fk_preferred_comm_id', 'et_ophcocvi_clericinfo', 'preferred_comm_id', 'ophcocvi_clericinfo_preferred_comm', 'id');
 
-         $this->addColumn('et_ophcocvi_clericinfo_version', 'interpreter_required', 'tinyint(1) unsigned NOT NULL DEFAULT 0');
-        $this->addColumn('et_ophcocvi_clericinfo_version', 'preferred_comm_id', 'int(10) DEFAULT NULL');
-        $this->addColumn('et_ophcocvi_clericinfo_version', 'preferred_comm_other', 'text');
-
-        $this->addColumn('et_ophcocvi_clericinfo', 'preferred_format_id', 'int(10) DEFAULT NULL');
-        $this->addColumn('et_ophcocvi_clericinfo', 'preferred_format_other', 'text');
+        $this->addOEColumn('et_ophcocvi_clericinfo', 'preferred_format_id', 'int(10) DEFAULT NULL', true);
+        $this->addOEColumn('et_ophcocvi_clericinfo', 'preferred_format_other', 'text', true);
 
         $this->addForeignKey('fk_preferred_format_id', 'et_ophcocvi_clericinfo', 'preferred_format_id', 'ophcocvi_clericinfo_preferred_format', 'id');
-
-        $this->addColumn('et_ophcocvi_clericinfo_version', 'preferred_format_id', 'int(10) DEFAULT NULL');
-        $this->addColumn('et_ophcocvi_clericinfo_version', 'preferred_format_other', 'text');
     }
 
     public function down()
@@ -91,20 +83,12 @@ class m191005_121000_preferred_method_communication extends OEMigration
         $this->dropForeignKey('fk_preferred_format_id', 'et_ophcocvi_clericinfo');
         $this->dropForeignKey('fk_preferred_comm_id', 'et_ophcocvi_clericinfo');
 
-        $this->dropColumn('et_ophcocvi_clericinfo_version', 'interpreter_required');
-        $this->dropColumn('et_ophcocvi_clericinfo_version', 'preferred_comm_other');
-        $this->dropColumn('et_ophcocvi_clericinfo_version', 'preferred_comm_id');
+        $this->dropOEColumn('et_ophcocvi_clericinfo', 'preferred_format_other', true);
+        $this->dropOEColumn('et_ophcocvi_clericinfo', 'preferred_format_id', true);
+        $this->dropOEColumn('et_ophcocvi_clericinfo', 'preferred_comm_other', true);
+        $this->dropOEColumn('et_ophcocvi_clericinfo', 'preferred_comm_id', true);
+        $this->dropOEColumn('et_ophcocvi_clericinfo', 'interpreter_required', true);
 
-        $this->dropColumn('et_ophcocvi_clericinfo_version', 'preferred_format_other');
-        $this->dropColumn('et_ophcocvi_clericinfo_version', 'preferred_format_id');
-
-        $this->dropColumn('et_ophcocvi_clericinfo', 'preferred_format_other');
-        $this->dropColumn('et_ophcocvi_clericinfo', 'preferred_format_id');
-
-        $this->dropColumn('et_ophcocvi_clericinfo', 'preferred_comm_other');
-        $this->dropColumn('et_ophcocvi_clericinfo', 'preferred_comm_id');
-
-        $this->dropColumn('et_ophcocvi_clericinfo', 'interpreter_required');
         $this->dropOETable('ophcocvi_clericinfo_preferred_comm');
     }
 }

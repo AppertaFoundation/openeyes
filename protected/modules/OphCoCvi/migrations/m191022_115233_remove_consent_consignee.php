@@ -10,22 +10,16 @@ class m191022_115233_remove_consent_consignee extends OEMigration
         $this->dropOETable("et_ophcocvi_patient_signature_consent_consignee_assignment", false);
         $this->dropOETable("ophcocvi_consent_consignee", true);
 
-        $this->addColumn("et_ophcocvi_patient_signature", "consented_to_gp", "BOOLEAN NOT NULL");
-        $this->addColumn("et_ophcocvi_patient_signature_version", "consented_to_gp", "BOOLEAN NOT NULL");
-        $this->addColumn("et_ophcocvi_patient_signature", "consented_to_la", "BOOLEAN NOT NULL");
-        $this->addColumn("et_ophcocvi_patient_signature_version", "consented_to_la", "BOOLEAN NOT NULL");
-        $this->addColumn("et_ophcocvi_patient_signature", "consented_to_rcop", "BOOLEAN NOT NULL");
-        $this->addColumn("et_ophcocvi_patient_signature_version", "consented_to_rcop", "BOOLEAN NOT NULL");
+        $this->addOEColumn("et_ophcocvi_patient_signature", "consented_to_gp", "BOOLEAN NOT NULL", true);
+        $this->addOEColumn("et_ophcocvi_patient_signature", "consented_to_la", "BOOLEAN NOT NULL", true);
+        $this->addOEColumn("et_ophcocvi_patient_signature", "consented_to_rcop", "BOOLEAN NOT NULL", true);
     }
 
     public function down()
     {
-        $this->dropColumn("et_ophcocvi_patient_signature", "consented_to_gp");
-        $this->dropColumn("et_ophcocvi_patient_signature_version", "consented_to_gp");
-        $this->dropColumn("et_ophcocvi_patient_signature", "consented_to_la");
-        $this->dropColumn("et_ophcocvi_patient_signature_version", "consented_to_la");
-        $this->dropColumn("et_ophcocvi_patient_signature", "consented_to_rcop");
-        $this->dropColumn("et_ophcocvi_patient_signature_version", "consented_to_rcop");
+        $this->dropOEColumn("et_ophcocvi_patient_signature", "consented_to_gp", true);
+        $this->dropOEColumn("et_ophcocvi_patient_signature", "consented_to_la", true);
+        $this->dropOEColumn("et_ophcocvi_patient_signature", "consented_to_rcop", true);
 
         $this->createOETable("ophcocvi_consent_consignee", [
             "id" => "pk",

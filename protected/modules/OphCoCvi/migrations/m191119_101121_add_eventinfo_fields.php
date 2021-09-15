@@ -29,15 +29,4 @@ class m191119_101121_add_eventinfo_fields extends CDbMigration
             $this->dropColumn($table, "rco_delivery_status");
         }
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

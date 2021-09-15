@@ -20,15 +20,4 @@ class m160815_113951_patient_factor_data extends CDbMigration
     {
         $this->truncateTable('ophcocvi_clinicinfo_patient_factor');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

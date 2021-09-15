@@ -25,15 +25,4 @@ class m160823_152837_set_elements_optional extends CDbMigration
             $this->update('element_type', array('required' => true), 'id = :et_id', array(':et_id' => $element['id']));
         }
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

@@ -16,14 +16,4 @@ class m160916_090908_add_site_to_event extends CDbMigration
         $this->dropColumn('et_ophcocvi_eventinfo', 'site_id');
     }
 
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

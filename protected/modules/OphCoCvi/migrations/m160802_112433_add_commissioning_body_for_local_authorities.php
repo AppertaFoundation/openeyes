@@ -13,15 +13,4 @@ class m160802_112433_add_commissioning_body_for_local_authorities extends CDbMig
         $this->delete('commissioning_body_type', "shortname = 'LA'");
         $this->delete('commissioning_body_service_type', "shortname = 'SSD'");
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

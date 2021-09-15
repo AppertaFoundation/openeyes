@@ -13,15 +13,4 @@ class m160901_142704_missing_demo_fields extends CDbMigration
         $this->dropColumn('et_ophcocvi_demographics', 'postcode');
         $this->dropColumn('et_ophcocvi_demographics_version', 'postcode');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

@@ -22,15 +22,4 @@ class m160902_093913_add_la_details_to_demographics extends CDbMigration
         $this->dropColumn('et_ophcocvi_demographics', 'la_telephone');
         $this->dropColumn('et_ophcocvi_demographics_version', 'la_telephone');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

@@ -40,14 +40,4 @@ class m160901_181213_add_preferred_info_format_codes extends CDbMigration
         $this->dropColumn('ophcocvi_clericinfo_preferred_info_fmt_version', 'code');
     }
 
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

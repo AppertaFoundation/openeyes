@@ -1,9 +1,22 @@
 <?php
 
-class m191119_081038_add_cvidelivery_settings extends CDbMigration
+class m191119_081038_add_cvidelivery_settings extends OEMigration
 {
+
     public function up()
     {
+        $institution = $this->getDbConnection()->createCommand()
+            ->select('*')
+            ->from('institution')
+            ->join('contact c', 'c.id = institution.contact_id')
+            ->join('address a', 'a.contact_id = c.id')
+            ->where('remote_id = :institution_code')
+            ->bindValues([':institution_code' => \Yii::app()->params['institution_code']])
+            ->queryRow();
+
+$address = $institution['address'] . ", " . ($institution['address2'] ? "{$institution['address2']}, " : "") . ", {$institution['city']}, {$institution['postcode']}";
+
+
         $this->alterColumn("setting_metadata", "default_value", "TEXT");
         $this->alterColumn("setting_metadata_version", "default_value", "TEXT");
 
@@ -11,16 +24,16 @@ class m191119_081038_add_cvidelivery_settings extends CDbMigration
             "element_type_id" => null,
             "key" => "cvidelivery_la_sender_email",
             "name" => "CVI delivery to LA: Sender email address",
-            "default_value" => "moorfields.noreplycvi@nhs.net",
-            "field_type_id" => 4,
+            "default_value" => $institution['email'],
+            "field_type_id" => $this->getSettingFieldIdByName('Text Field'),
         ));
 
         $this->insert("setting_metadata", array(
             "element_type_id" => null,
             "key" => "cvidelivery_la_sender_name",
             "name" => "CVI delivery to LA: Sender name",
-            "default_value" => "Moorfields Certificate of Vision Impairment team",
-            "field_type_id" => 4,
+            "default_value" => "${$institution['name']} Certificate of Vision Impairment team",
+            "field_type_id" => $this->getSettingFieldIdByName('Text Field'),
         ));
 
         $this->insert("setting_metadata", array(
@@ -28,14 +41,14 @@ class m191119_081038_add_cvidelivery_settings extends CDbMigration
             "key" => "cvidelivery_la_subject",
             "name" => "CVI delivery to LA: Subject",
             "default_value" => "New Referral (CVI) for blind register",
-            "field_type_id" => 4,
+            "field_type_id" => $this->getSettingFieldIdByName('Text Field'),
         ));
 
         $this->insert("setting_metadata", array(
             "element_type_id" => null,
             "key" => "cvidelivery_la_body",
             "name" => "CVI delivery to LA: Body",
-            "field_type_id" => 5,
+            "field_type_id" => $this->getSettingFieldIdByName('Textarea'),
             "default_value" =>
         <<<EOS
 Dear Team,
@@ -44,14 +57,14 @@ Please find attached a Certificate of Visual Impairment for your resident.
 
 Please contact the resident and gain their consent to be added to the blind register and offer an Visual Impairment assessment as required.
 
-If you can't read the attachment, contact Moorfields 0207 566 2355.
+If you can't read the attachment, contact {$institution['name']} {$institution['primary_phone']}.
 
 Please do not reply to this email as it is not monitored.
 
-Moorfields Certificate of Vision Impairment team.
-Moorfields Eye Hospital NHS Foundation Trust
-City Road, London, EC1V 2PD
-Phone: 0207 566 2355
+Certificate of Vision Impairment team.
+{$institution['name']}
+$address
+Phone: {$institution['primary_phone']}
 EOS
         ));
 
@@ -59,53 +72,53 @@ EOS
             "element_type_id" => null,
             "key" => "cvidelivery_rcop_sender_email",
             "name" => "CVI delivery to RCOP: Sender email address",
-            "default_value" => "moorfields.noreplycvi@nhs.net",
-            "field_type_id" => 4,
+            "default_value" => "",
+            "field_type_id" => $this->getSettingFieldIdByName('Text Field'),
         ));
 
         $this->insert("setting_metadata", array(
             "element_type_id" => null,
             "key" => "cvidelivery_rcop_sender_name",
             "name" => "CVI delivery to RCOP: Sender name",
-            "default_value" => "Moorfields Certificate of Vision Impairment team",
-            "field_type_id" => 4,
+            "default_value" => "Certificate of Vision Impairment team",
+            "field_type_id" => $this->getSettingFieldIdByName('Text Field'),
         ));
 
         $this->insert("setting_metadata", array(
             "element_type_id" => null,
             "key" => "cvidelivery_rcop_subject",
             "name" => "CVI delivery to RCOP: Subject",
-            "default_value" => "CVI from Moorfields",
-            "field_type_id" => 4,
+            "default_value" => "CVI from {$institution['name']}",
+            "field_type_id" => $this->getSettingFieldIdByName('Text Field'),
         ));
 
          $this->insert("setting_metadata", array(
              "element_type_id" => null,
              "key" => "cvidelivery_rcop_to_email",
              "name" => "CVI delivery to RCOP: To email address",
-             "default_value" => "meh-tr.CVI@nhs.net",
-             "field_type_id" => 4,
+             "default_value" => "",
+             "field_type_id" => $this->getSettingFieldIdByName('Text Field'),
          ));
 
         $this->insert("setting_metadata", array(
             "element_type_id" => null,
             "key" => "cvidelivery_rcop_body",
             "name" => "CVI delivery to RCOP: Body",
-            "field_type_id" => 5,
+            "field_type_id" => $this->getSettingFieldIdByName('Textarea'),
             "default_value" =>
         <<<EOS
 Dear team,
 
 Please find attached CVI for research.
 
-If you can't read the attachment, contact Moorfields 0207 566 2355.
+If you can't read the attachment, contact {$institution['name']} {$institution['primary_phone']}.
 
 Please do not reply to this email as it is not monitored.
 
-Moorfields Certificate of Vision Impairment team.
-Moorfields Eye Hospital NHS Foundation Trust
-City Road, London, EC1V 2PD
-Phone: 0207 566 2355
+Certificate of Vision Impairment team.
+{$institution['name']}
+$address
+Phone: {$institution['primary_phone']}
 EOS
         ));
     }

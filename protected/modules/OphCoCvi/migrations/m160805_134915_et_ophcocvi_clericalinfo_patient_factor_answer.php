@@ -60,15 +60,4 @@ class m160805_134915_et_ophcocvi_clericalinfo_patient_factor_answer extends CDbM
         $this->dropTable('et_ophcocvi_clericalinfo_patient_factor_answer');
         $this->dropTable('et_ophcocvi_clericalinfo_patient_factor_answer_version');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

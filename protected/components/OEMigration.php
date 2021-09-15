@@ -1107,4 +1107,20 @@ class OEMigration extends CDbMigration
             $this->renameTable($current_name . '_version', $new_name . '_version');
         }
     }
+
+    /**
+     * Gets the settings field type id by name
+     *
+     * @param $field_type
+     * @return int
+     * @throws CException
+     */
+    protected function getSettingFieldIdByName(string $name)
+    {
+        return $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('setting_field_type')
+            ->where('name = :name', [':name' => $name])
+            ->queryScalar();
+    }
 }

@@ -28,15 +28,4 @@ class m160819_143308_rename_table_for_patientfactor extends CDbMigration
         $this->addForeignKey('acv_et_ophcocvi_clericinfo_patient_factor_answer_lku_fk', 'ophcocvi_clericinfo_patient_factor_answer_version', 'ophcocvi_clinicinfo_patient_factor_id', 'ophcocvi_clinicinfo_patient_factor', 'id');
 
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

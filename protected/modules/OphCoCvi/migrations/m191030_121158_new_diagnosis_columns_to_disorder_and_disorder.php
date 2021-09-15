@@ -6,7 +6,7 @@ class m191030_121158_new_diagnosis_columns_to_disorder_and_disorder extends CDbM
     {
         $this->delete('ophcocvi_clinicinfo_disorder', 'event_type_version=1');
         $getmaxid = $this->dbConnection->createCommand('SELECT MAX(id)+1 as maxid FROM ophcocvi_clinicinfo_disorder')->queryRow();
-        Yii::app()->db->createCommand('ALTER TABLE ophcocvi_clinicinfo_disorder AUTO_INCREMENT = '.$getmaxid['maxid'])->execute();
+        $this->dbConnection->createCommand('ALTER TABLE ophcocvi_clinicinfo_disorder AUTO_INCREMENT = '.$getmaxid['maxid'])->execute();
         $retina_id = $this->getSectionId('Retina', 0);
 
         $this->insert('ophcocvi_clinicinfo_disorder', array( 'name' => 'Age-related macular degeneration – choroidal neovascularisation (wet)', 'code' => 'H35.32', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 1, 'event_type_version' => 1, 'main_cause_pdf_id' => 0));

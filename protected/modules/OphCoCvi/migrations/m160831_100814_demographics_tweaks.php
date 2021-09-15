@@ -39,14 +39,4 @@ class m160831_100814_demographics_tweaks extends CDbMigration
         $this->addColumn('et_ophcocvi_demographics_version', 'name', 'varchar(255)');
     }
 
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

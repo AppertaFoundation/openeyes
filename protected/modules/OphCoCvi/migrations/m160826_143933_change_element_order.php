@@ -41,15 +41,4 @@ class m160826_143933_change_element_order extends CDbMigration
             );
         }
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

@@ -4,8 +4,7 @@ class m191005_120000_preffered_method extends OEMigration
 {
     public function up()
     {
-        $this->addColumn('ophcocvi_clericinfo_preferred_info_fmt', 'version', 'INT UNSIGNED NOT NULL DEFAULT 0');
-        $this->addColumn('ophcocvi_clericinfo_preferred_info_fmt_version', 'version', 'INT UNSIGNED NOT NULL DEFAULT 0');
+        $this->addOEColumn('ophcocvi_clericinfo_preferred_info_fmt', 'version', 'INT UNSIGNED NOT NULL DEFAULT 0', true);
 
         $this->insert('ophcocvi_clericinfo_preferred_info_fmt', [
             'name' => 'telephone',
@@ -35,7 +34,6 @@ class m191005_120000_preffered_method extends OEMigration
     public function down()
     {
         $this->execute("DELETE FROM ophcocvi_clericinfo_preferred_info_fmt WHERE version = 1");
-        $this->dropColumn('ophcocvi_clericinfo_preferred_info_fmt_version', 'version');
-        $this->dropColumn('ophcocvi_clericinfo_preferred_info_fmt', 'version');
+        $this->dropOEColumn('ophcocvi_clericinfo_preferred_info_fmt', 'version', true);
     }
 }

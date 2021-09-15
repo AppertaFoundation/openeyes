@@ -6,7 +6,7 @@ class m191031_085604_new_diagnosis_columns_to_disorder_and_disorder_V2 extends C
     {
         $this->delete('ophcocvi_clinicinfo_disorder', 'event_type_version=1');
         $getmaxid = $this->dbConnection->createCommand('SELECT MAX(id)+1 as maxid FROM ophcocvi_clinicinfo_disorder')->queryRow();
-        Yii::app()->db->createCommand('ALTER TABLE ophcocvi_clinicinfo_disorder AUTO_INCREMENT = '.$getmaxid['maxid'])->execute();
+        $this->dbConnection->createCommand('ALTER TABLE ophcocvi_clinicinfo_disorder AUTO_INCREMENT = '.$getmaxid['maxid'])->execute();
 
         $this->addColumn('ophcocvi_clinicinfo_disorder', 'term_to_display', 'VARCHAR(255) DEFAULT NULL AFTER `name`');
 

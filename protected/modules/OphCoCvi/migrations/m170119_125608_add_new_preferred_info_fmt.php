@@ -20,15 +20,4 @@ class m170119_125608_add_new_preferred_info_fmt extends CDbMigration
     {
         $this->delete('ophcocvi_clericinfo_preferred_info_fmt', '`name`="No Preference"');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }

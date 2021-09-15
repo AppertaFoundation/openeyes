@@ -14,14 +14,4 @@ class m161102_094326_preferred_language_text extends CDbMigration
         $this->dropColumn('et_ophcocvi_clericinfo_version', 'preferred_language_text');
     }
 
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }
