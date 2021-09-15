@@ -14,7 +14,7 @@ class m191119_081038_add_cvidelivery_settings extends OEMigration
             ->bindValues([':institution_code' => \Yii::app()->params['institution_code']])
             ->queryRow();
 
-$address = $institution['address'] . ", " . ($institution['address2'] ? "{$institution['address2']}, " : "") . ", {$institution['city']}, {$institution['postcode']}";
+        $address = $institution['address1'] . ", " . ($institution['address2'] ? "{$institution['address2']}, " : "") . ", {$institution['city']}, {$institution['postcode']}";
 
 
         $this->alterColumn("setting_metadata", "default_value", "TEXT");
@@ -32,7 +32,7 @@ $address = $institution['address'] . ", " . ($institution['address2'] ? "{$insti
             "element_type_id" => null,
             "key" => "cvidelivery_la_sender_name",
             "name" => "CVI delivery to LA: Sender name",
-            "default_value" => "${$institution['name']} Certificate of Vision Impairment team",
+            "default_value" => "{$institution['name']} Certificate of Vision Impairment team",
             "field_type_id" => $this->getSettingFieldIdByName('Text Field'),
         ));
 
@@ -63,7 +63,7 @@ Please do not reply to this email as it is not monitored.
 
 Certificate of Vision Impairment team.
 {$institution['name']}
-$address
+{$address}
 Phone: {$institution['primary_phone']}
 EOS
         ));
@@ -117,7 +117,7 @@ Please do not reply to this email as it is not monitored.
 
 Certificate of Vision Impairment team.
 {$institution['name']}
-$address
+{$address}
 Phone: {$institution['primary_phone']}
 EOS
         ));
