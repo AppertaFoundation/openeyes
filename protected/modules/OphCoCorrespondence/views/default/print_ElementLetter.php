@@ -91,7 +91,7 @@ if (!@$no_header) { ?>
     <div class="spacer"></div>
     <h5>
         <?php
-        echo($toAddress ? ('To: ' . (isset($toAddressContactType) ? $toAddressContactType . ' : ' : '') . $element->renderSourceAddress($toAddress) . ($isToAddressDocumentOutputEmail ? ' (Sent by Email)' : '') . '<br/>') : '');
+        echo($toAddress ? ('To: ' . (Yii::app()->params['default_country'] === 'Australia' ? '' : (isset($toAddressContactType) ? $toAddressContactType . ' : ' : '')) . $element->renderSourceAddress($toAddress) . ($isToAddressDocumentOutputEmail ? ' (Sent by Email)' : '') . '<br/>') : '');
         echo($ccString ? $ccString : ''); ?>
     </h5>
     <p nobr="true">

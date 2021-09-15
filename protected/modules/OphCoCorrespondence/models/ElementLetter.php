@@ -1074,6 +1074,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     {
         $ccString = '';
 
+        $Australia = Yii::app()->params['default_country'] === 'Australia';
+
         if ($this->document_instance && $this->document_instance[0]->document_target) {
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
@@ -1083,7 +1085,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                         } else {
                             $contact_type = $target->contact_type != \SettingMetadata::model()->getSetting('gp_label') ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                         }
-                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
+                        $ccString .= "CC: " . ($Australia ? "" : ($contact_type != "Other" ? $contact_type . ": " : "")) . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
                     }
                 }
             }
