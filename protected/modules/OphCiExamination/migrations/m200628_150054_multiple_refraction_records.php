@@ -54,9 +54,6 @@ class m200628_150054_multiple_refraction_records extends OEMigration
         $this->migrateReadingVersionsForSide('left', 1);
         $this->migrateReadingVersionsForSide('right', 2);
 
-        $this->dropIndex('refraction_reading_i', 'ophciexamination_refraction_reading');
-        $this->dropIndex('refraction_reading_eye_i', 'ophciexamination_refraction_reading');
-
         // remove redundant columns from the element
         $fk_exists = $this->dbConnection->createCommand(
             'SELECT count(*)
