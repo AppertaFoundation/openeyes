@@ -23,7 +23,6 @@ class m210801_134940_remove_signature_elements extends OEMigration
     public function safeUp()
     {
         foreach (self::RETIRED_ELEMENTS as $table => $class) {
-
             $element_type_id = $this->getIdOfElementTypeByClassName($class);
 
             if ($element_type_id) {
