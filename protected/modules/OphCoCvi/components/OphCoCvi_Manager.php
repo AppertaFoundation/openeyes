@@ -1545,7 +1545,9 @@ class OphCoCvi_Manager extends \CComponent
         $firm = $info_element->consultantInChargeOfThisCvi;
         if (!is_null($firm) && $consultant = $firm->consultant) {
             $msg_type = $type = OphCoMessaging_Message_MessageType::model()->findByAttributes(array('name' => 'General'));
-            $messenger = new MessageCreator($event->episode, $event->user, $consultant, $msg_type);
+            $institution_id = \Institution::model()->getCurrent()->id;
+            $site_id = \Yii::app()->session['selected_site_id'];
+            $messenger = new MessageCreator($event->episode, $event->user, $consultant, $msg_type, $institution_id, $site_id);
             $messenger->setMessageTemplate('application.modules.OphCoMessaging.views.templates.cvi');
             $messenger->setMessageData(array(
                 'recipient' => $consultant,
