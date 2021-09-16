@@ -16,6 +16,12 @@
  */
 
 $(document).ready(function() {
+
+	const $bestInterestDecisionElement = $(".element.OEModule_OphTrConsent_models_Element_OphTrConsent_BestInterestDecision");
+	if($bestInterestDecisionElement.length > 0) {
+		new BestInterestDecisionController($bestInterestDecisionElement);
+	}
+
 	$(this).on('click','#et_save_draft, #et_save_draft_footer',function() {
 		$('#Element_OphTrConsent_Type_draft').val(1);
 	});
@@ -398,4 +404,131 @@ function OphTrConsent_do_print(va) {
 			enableButtons();
 		}
 	});
+}
+
+class BestInterestDecisionController {
+
+	/**
+	 * Object constructor
+	 * @param {jQuery} $element
+	 */
+	constructor($element) {
+        this.$element = $element;
+		this.$uploadLabel = $element.find(".upload-label");
+		this.$fileInput = $element.find(".js-file-input");
+		this.$list = $element.find(".js-list");
+		this.$list.attr("data-key", this.$list.children("tr").length);
+		this.bindEvents();
+    }
+
+	/**
+	 * Bind the required js events to DOM elements
+	 */
+	bindEvents() {
+		let controller = this;
+		controller.$uploadLabel
+			.on("click", function () {
+				controller.$fileInput.click();
+			})
+			.on("dragover", function (e) {
+				e.preventDefault();
+			})
+			.on("drop", function (e) {
+				e.preventDefault();
+				const dt = e.originalEvent.dataTransfer;
+				if (dt.items) {
+					for (let i = 0; i < dt.items.length; i++) {
+						if (dt.items[i].kind === 'file') {
+							controller.addItem(dt.items[i].getAsFile());
+						}
+					}
+				}
+			});
+		controller.$fileInput
+			.on("change", function (e) {
+				e.preventDefault();
+				if (this.files) {
+					for (let i = 0; i < this.files.length; i++) {
+						controller.addItem(this.files[i]);
+					}
+				}
+			});
+		controller.$element
+			.on("click", ".js-remove", function (e) {
+				$(e.target).closest("tr").remove();
+			})
+			.on("click", ".js-retry", function (e) {
+				let file = $(e.target).data("file");
+				$(e.target).closest("tr").remove();
+				controller.addItem(file);
+			});
+	}
+
+	/**
+	 * Add one file to the upload list and attempt uploading
+	 * @param {File} file
+	 */
+	addItem(file) {
+		let controller = this;
+		const inputPrefix = "OEModule_OphTrConsent_models_Element_OphTrConsent_BestInterestDecision[attachments]";
+		const key = this.getNextKey();
+		disableButtons();
+		let $newRow = $("<tr data-id='new'/>")
+			.append('<input type="hidden" name="' + inputPrefix + '[' + key + '][tmp_name]" value="' + file.name + '" />')
+			.append('<input type="hidden" name="' + inputPrefix + '[' + key + '][id]" value="new" />')
+			.append('<input type="hidden" name="' + inputPrefix + '[' + key + '][protected_file_id]" value="" class="js-pf-id" />')
+			.append("<td>" + file.name + "</td>")
+			.append("<td>" + BestInterestDecisionController.getFileSizeString(file.size) + "</td>")
+			.append("<td class='js-result-message'><i class=\"oe-i waiting small pad-right\"></i>In progress...</td>")
+			.append("<td class='js-actions'><i class=\"oe-i trash js-remove\"></i></td>");
+		$newRow.appendTo(controller.$list);
+		let formData = new FormData();
+		formData.append("file", file, file.name);
+		formData.append("YII_CSRF_TOKEN", YII_CSRF_TOKEN);
+		fetch("/OphTrConsent/Default/uploadFile", {
+			method: 'POST',
+			body: formData
+		})
+			.then(response => response.json())
+			.then(data => {
+				if(data.success) {
+					$newRow.find("input.js-pf-id").val(data.protected_file_id);
+					$newRow.find(".js-result-message").html("<i class=\"oe-i tick-green small pad-right\"></i>Attached");
+				}
+				else {
+					let $btn = $("<button type='button' class='js-retry'>Try upload again</button>");
+					$btn.data("file", file);
+					$btn.prependTo($newRow.find(".js-actions"));
+					$newRow.find(".js-result-message").html("<i class=\"oe-i cross-red small pad-right\"></i>Error: " + data.message);
+				}
+				enableButtons();
+			})
+			.catch(() => {
+				$newRow.find(".js-result-message").html("<i class=\"oe-i cross-red small pad-right\"></i>Error: unable to attach");
+				enableButtons();
+			});
+	}
+
+	/**
+	 * Returns the next row number in the list
+	 * @return {int}
+	 */
+	getNextKey() {
+		const key = parseInt(this.$list.attr("data-key"));
+		this.$list.attr("data-key", key + 1);
+		return key;
+	}
+
+	/**
+	 * Returns the file size in human-readable form
+	 * @param {int} sizeInBytes
+	 * @return {string}
+	 */
+	static getFileSizeString(sizeInBytes) {
+		const units = ['B','kB','MB','GB','TB'];
+		const i = Math.floor(Math.log(sizeInBytes) / Math.log(1024));
+		const unit = units[i];
+		const precision = i <= 1 ? 0 : 2;
+		return (sizeInBytes / Math.pow(1024, i)).toFixed(precision) + unit;
+	}
 }
