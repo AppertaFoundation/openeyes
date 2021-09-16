@@ -75,9 +75,6 @@ $(document).ready(function() {
         }
     });
     
-    handleButton($('#et_save'),function() {
-    });
-    
     handleButton($('#et_cancel'),function(e) {
         if (m = window.location.href.match(/\/update\/[0-9]+/)) {
             window.location.href = window.location.href.replace('/update/','/view/');
@@ -208,10 +205,7 @@ $(document).ready(function() {
         });
         
         labelDialog.open();
-        
-        
-        
-        
+
         $('#printLabelPanel tr td').click(function(){
             $('#printLabelPanel tr td').removeClass('active-panel');
             $('#printLabelPanel tr td').text('Label');
@@ -627,18 +621,6 @@ $(document).ready(function() {
         "even better if they have a marked field defect e.g. homonymous hemianopia."
     );
 });
-
-function attachTooltip($element, text) {
-    // var tt = new OpenEyes.UI.Tooltip();
-    // tt.setContent(text);
-    // $element.hover(function () {
-    //     var pos = $(this).offset();
-    //     tt.show(pos.left + $(this).width() + 5, pos.top);
-    // }).mouseleave(function () {
-    //     tt.hide();
-    // });
-
-}
 
 function updateVisualAcuityDropdown(unit_id, type){
     

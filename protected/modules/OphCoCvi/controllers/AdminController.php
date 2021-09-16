@@ -97,7 +97,6 @@ class AdminController extends \ModuleAdminController
                 $disorder->event_type_version = $event_type_version;
             } else {
                 $maxVersion = OphCoCvi_ClinicalInfo_Disorder::model()->findBySql('SELECT event_type_version FROM ophcocvi_clinicinfo_disorder_section ORDER BY event_type_version DESC LIMIT 1');
-                ;
                 $disorder->event_type_version = $maxVersion->event_type_version;
             }
             if ($patient_type != '') {
@@ -174,7 +173,7 @@ class AdminController extends \ModuleAdminController
             ->order('term')
             ->queryAll();
 
-        echo json_encode($disorders);
+        $this->renderJSON($disorders);
     }
 
     /**
@@ -381,23 +380,6 @@ class AdminController extends \ModuleAdminController
      */
     public function actionPatientFactor()
     {
-        /*
-
-        $search = new ModelSearch(OphCoCvi_ClericalInfo_PatientFactor::model());
-
-        $search = $this->addVersionFilter(OphCoCvi_ClericalInfo_PatientFactor::class, 'event_type_version', $search);
-
-        if (empty(Yii::app()->request->getQuery('search'))) {
-            $maxVersion = OphCoCvi_ClericalInfo_PatientFactor::model()->find(
-                array(
-                    "condition" => 'event_type_version = (SELECT MAX(event_type_version) FROM ophcocvi_clericinfo_patient_factor)',
-                ));
-            //$this->redirect('/OphCoCvi/admin/patientFactor/?search[event_type_version][]='.$maxVersion->event_type_version);
-        }
-        */
-
-
-
         $this->genericAdmin(
             'Patient Factor',
             'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PatientFactor',
@@ -577,6 +559,6 @@ class AdminController extends \ModuleAdminController
                 );
             }
         }
-        echo \CJSON::encode($res);
+        $this->renderJSON($res);
     }
 }

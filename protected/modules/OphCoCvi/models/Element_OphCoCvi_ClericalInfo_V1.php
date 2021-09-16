@@ -72,15 +72,6 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
     }
 
     /**
-     * Pass English as default Preferred Language id
-     */
-    public function init()
-    {
-      //  $preferred_language_id= \Language::model()->findByAttributes(array('name'=>'English'));
-      //  $this->preferred_language_id = $this->preferred_language_id ? $this->preferred_language_id : $preferred_language_id;
-    }
-
-    /**
      * @return array validation rules for model attributes.
      */
     public function rules()
@@ -103,7 +94,6 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
                 'safe',
                 'on' => 'search'
             ),
-            //array('preferred_comm_other', 'preferredCommSpecifyValidation','required', 'on' => 'finalise'),
         );
     }
 
@@ -128,13 +118,6 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt',
                 'preferred_info_fmt_id',
             ),
-            /* Deprecated: 2019-10-31
-            'preferred_communicaton' => array (
-                self::BELONGS_TO,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredComm',
-                'preferred_comm_id',
-            ),
-             */
             'preferred_format' => array (
                 self::BELONGS_TO,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredFormat',
@@ -164,9 +147,7 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
             'event_id' => 'Event',
             'employment_status_id' => 'Employment status',
             'preferred_info_fmt_id' => 'Preferred method of contact',
-            //'preferred_comm_id' => 'Preferred method of communication',
             'preferred_comm' => 'Preferred method of communication e.g. BSL, deafblind manual?',
-           // 'preferred_comm_other' => 'Other communication methods(specify)',
             'preferred_format_id' => 'Preferred format of information',
             'preferred_format_other' => 'Other information format (specify)',
             'contact_urgency_id' => 'Contact urgency',
@@ -190,16 +171,6 @@ class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
             'criteria' => $criteria,
         ));
     }
-
-    /* Deprecated: 2019-10-31
-    public function preferredCommSpecifyValidation( $attribute,$params )
-    {
-        if(($this->preferred_comm_id == 7) && (preg_match('/\S/', $this->preferred_comm_other)) == 0){
-            $this->addError($attribute, 'Please specify the preferred method of communication');
-        }
-
-    }
-     */
 
     public function afterValidate()
     {

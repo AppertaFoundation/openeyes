@@ -142,7 +142,8 @@ if ($this->checkClinicalEditAccess()) { ?>
                 </colgroup>
                 <tbody>
                 <tr>
-                    <td><?= CHtml::encode($element->getAttributeLabel('eclo')); ?></td>
+                    <td>
+                        <?= CHtml::encode($element->getAttributeLabel('eclo')); ?></td>
                     <td>
                         <?php echo $form->radioButtons(
                             $element,

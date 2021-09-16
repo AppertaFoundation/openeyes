@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2019
+ * (C) OpenEyes Foundation, 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -11,21 +11,18 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 
 namespace OEModule\OphCoCvi\components;
 
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics_V1;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo_V1;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature;
 use mikehaertl\pdftk\Pdf;
-use OEModule\OphCoCvi\models\SignatureInterface;
 use OEModule\OphCoMessaging\components\MessageCreator;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 
@@ -306,7 +303,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
-     * @return null|Element_OphCoCvi_ClericalInfo
+     * @return null|Element_OphCoCvi_ClericalInfo_V1
      */
     public function getClericalElementForEvent(\Event $event)
     {
@@ -315,16 +312,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
-     * @return null|SignatureInterface
-     */
-    public function getConsentSignatureElementForEvent(\Event $event)
-    {
-        return $this->getElementForEvent($event, "Element_OphCoCvi_PatientSignature");
-    }
-
-    /**
-     * @param \Event $event
-     * @return Element_OphCoCvi_Demographics|null
+     * @return Element_OphCoCvi_Demographics_V1|null
      */
     public function getDemographicsElementForEvent(\Event $event)
     {
@@ -334,8 +322,8 @@ class OphCoCvi_Manager extends \CComponent
     /**
      * Generate the text display of the status of the CVI
      *
-     * @param Element_OphCoCvi_ClinicalInfo $clinical
-     * @param Element_OphCoCvi_EventInfo    $info
+     * @param Element_OphCoCvi_ClinicalInfo_V1 $clinical
+     * @param Element_OphCoCvi_EventInfo_V1    $info
      * @return string
      */
     protected function getDisplayStatus($clinical = null, $info)
@@ -403,7 +391,7 @@ class OphCoCvi_Manager extends \CComponent
      * @param Element_OphCoCvi_EventInfo $event_info
      * @return \User|null
      */
-    public function getClinicalConsultant(Element_OphCoCvi_EventInfo $event_info)
+    public function getClinicalConsultant(Element_OphCoCvi_EventInfo_V1 $event_info)
     {
         /**
          * @var Element_OphCoCvi_ClinicalInfo
@@ -415,10 +403,10 @@ class OphCoCvi_Manager extends \CComponent
         return null;
     }
 
-    public function getConsultantSignedBy(Element_OphCoCvi_EventInfo $event_info)
+    public function getConsultantSignedBy(Element_OphCoCvi_EventInfo_V1 $event_info)
     {
         /**
-         * @var Element_OphCoCvi_ClinicalInfo
+         * @var Element_OphCoCvi_ClinicalInfo_V1
          */
 
         if ($consultant = $event_info->consultant_element) {
@@ -931,7 +919,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getListDataProvider($filter = array(), $pagination = true)
     {
-        $model = Element_OphCoCvi_EventInfo::model()->with(
+        $model = Element_OphCoCvi_EventInfo_V1::model()->with(
             'site',
             'user',
             'clinical_element',
@@ -1292,10 +1280,8 @@ class OphCoCvi_Manager extends \CComponent
         $demographics = $this->getElementForEvent( $event, 'Element_OphCoCvi_Demographics_V1')->getElementsForCVIpdf();
         $clinical = $this->getElementForEvent( $event, 'Element_OphCoCvi_ClinicalInfo_V1')->getElementsForCVIpdf();
         $clerical = $this->getElementForEvent( $event, 'Element_OphCoCvi_ClericalInfo_V1' )->getElementsForCVIpdf();
-        $consentSignature = $this->getElementForEvent( $event, 'Element_OphCoCvi_PatientSignature')->getElementsForCVIpdf();
-        $consultantSignature = $this->getElementForEvent( $event, 'Element_OphCoCvi_ConsultantSignature')->getElementsForCVIpdf();
 
-        $cviElements = array_merge($info, $demographics, $clinical, $clerical, $consentSignature, $consultantSignature);
+        $cviElements = array_merge($info, $demographics, $clinical, $clerical);
 
         return $cviElements;
     }

@@ -392,7 +392,7 @@
             <img class="tickbox" src="<?php echo CHtml::encode($imageFolder).'box_unticked.png' ?>" /> 
         <?php }
 
-        echo CHtml::encode($ethnicity['name']."<br>";
+        echo \CHtml::encode($ethnicity['name']) . "<br>";
 
         if ($ethnicity['describe_needs'] == 1) { ?>
             <p class="describe_underline">

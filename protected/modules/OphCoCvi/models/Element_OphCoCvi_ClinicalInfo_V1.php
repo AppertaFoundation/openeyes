@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -141,14 +141,6 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            /*
-            'low_vision_status' => array(
-                self::BELONGS_TO,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus',
-                'low_vision_status_id'
-            ),
-             *
-             */
             'field_of_vision' => array(
                 self::BELONGS_TO,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision',
@@ -262,7 +254,6 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
             'best_recorded_binocular_va' => 'Best recorded binocular VA',
             'low_vision_service' => 'Low vision service: <br> If appropriate, has a referal for the low vision service been made?',
             'field_of_vision' => 'Field of vision: Extensive loss of peripheral visual field (including hemianopia)',
-           // 'low_vision_status_id' => 'Low vision status:',
             'field_of_vision_id' => 'Field of vision',
             'disorders' => 'Disorders',
             'diagnoses_not_covered' => 'Diagnosis not covered in any of the above',
@@ -289,7 +280,6 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         $criteria->compare('best_corrected_left_va', $this->best_corrected_left_va);
         $criteria->compare('best_corrected_binocular_va', $this->best_corrected_binocular_va);
         $criteria->compare('patient_type', $this->patient_type);
-        //$criteria->compare('low_vision_status_id', $this->low_vision_status_id);
         $criteria->compare('field_of_vision_id', $this->field_of_vision_id);
         $criteria->compare('disorders', $this->disorders);
         $criteria->compare('diagnoses_not_covered', $this->diagnoses_not_covered);
@@ -692,11 +682,6 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         }
 
         $result['fieldOfVisionAndLowVisionStatus'] = $this->generateStructuredVisionTable();
-
-        /*
-        $result['sightVariesByLightLevelYes'] = $this->sight_varies_by_light_levels ? 'X' : '';
-        $result['sightVariesByLightLevelNo'] = $this->sight_varies_by_light_levels ? '' : 'X';
-        */
 
         $result = array_merge($result, $this->generateStructuredDisorderTable());
 
@@ -1414,7 +1399,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                 case "1":
                     return "3";
                     break;
-                case "2";
+                case "2":
                     return "0";
                     break;
                 case "3":
@@ -1440,7 +1425,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
                 case "1":
                     return "Yes";
                     break;
-                case "2";
+                case "2":
                     return "No";
                     break;
                 case "3":
@@ -1522,7 +1507,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
             switch ($this->eclo) {
                 case '1':
                     return 'Yes';
-                break;
+                    break;
                 case '2':
                     return 'Referred';
                     break;
@@ -1566,11 +1551,9 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
     {
         $criteria = new \CDbCriteria;
         $criteria->condition = "active=:active";
-        $criteria->addCondition("event_type_version=:version");
         $criteria->addCondition("patient_type=:patient_type");
         $criteria->params = array(
             ':active' => 1,
-           // ':version' => $this->event->eventType->version,
             ':patient_type' => $this->patient_type
         );
 

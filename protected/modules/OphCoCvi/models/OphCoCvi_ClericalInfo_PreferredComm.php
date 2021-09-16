@@ -59,7 +59,7 @@ class OphCoCvi_ClericalInfo_PreferredComm extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'clerical_info' => array(self::HAS_MANY, 'EtOphcocviClericinfo', 'preferred_comm_id'),
+            'clerical_info' => array(self::HAS_MANY, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1', 'preferred_comm_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );

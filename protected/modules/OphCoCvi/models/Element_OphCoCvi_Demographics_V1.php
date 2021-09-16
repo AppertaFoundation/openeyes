@@ -182,7 +182,7 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
     {
         $ethnic = \EthnicGroup::model()->findByAttributes(array('id' => $this->ethnic_group_id));
         if ($ethnic) {
-            if (($ethnic->describe_needs == 1) && ( (bool) preg_match('/\S/', $this->describe_ethnics)) == false ) {
+            if (($ethnic->describe_needs === "1") && !(bool) preg_match('/\S/', $this->describe_ethnics)) {
                 $this->addError($attribute, 'Describe other ethnics cannot be blank');
             }
         }
@@ -241,7 +241,6 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
     public function initFromPatient(\Patient $patient)
     {
         $this->date_of_birth = $patient->dob;
-        //$this->nhs_number = $patient->getNhsnum();
         $this->nhs_number = PatientIdentifierHelper::getIdentifierValue($patient->globalIdentifier);
         $this->address = $patient->getSummaryAddress(",\n");
 
@@ -470,14 +469,7 @@ class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
     private function getEthnicityForVisualyImpaired()
     {
         $result = array();
-
-
-        $criteria = new \CDbCriteria;
-        $criteria->condition = "version=:version";
-        $criteria->params = array(
-          //  ':version' => $this->event->eventType->version
-        );
-        $ethnics = \EthnicGroup::model()->findAll($criteria);
+        $ethnics = \EthnicGroup::model()->findAll();
 
         foreach ($ethnics as $ethnic) {
             $result[] = [
