@@ -27,8 +27,6 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/jquery.cookie.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.query-object.min.js')?>
-<?php $assetManager->registerScriptFile('js/jquery.waypoints.min.js')?>
-<?php $assetManager->registerScriptFile('js/sticky.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>
 <?php $assetManager->registerScriptFile('js/libs/uri-1.10.2.js')?>
 <?php $assetManager->registerScriptFile('js/print.js')?>
