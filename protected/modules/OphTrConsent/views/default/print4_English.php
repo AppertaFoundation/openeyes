@@ -215,27 +215,17 @@ $type_assessment = new OphTrConsent_Type_Assessment();
         </div>
     </div>
 
-    <div class="box">
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label">Signed</div>
-                <img src="/idg-php/imgDemo/esign/esign2.png" class="signature"></div>
-            <div class="dotted-area">
-                <div class="label">Date</div>
-                30 Aug 2021
-            </div>
-        </div>
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label">Print name</div>
-                Micheal Morgan
-            </div>
-            <div class="dotted-area">
-                <div class="label">Job title</div>
-                Consultant
-            </div>
-        </div>
-    </div>
+    <?= $this->renderPartial(
+        '_print_signature',
+        array(
+            'vi' => ($css_class === 'impaired'),
+            'element' => $elements[Element_OphTrConsent_Esign::class],
+            'signature' => $elements[Element_OphTrConsent_Esign::class]
+                ->getSignatureByInitiatorAttributes($elements[Element_OphTrConsent_Esign::class]->getElementType()->id, 0),
+            'title_label' => 'Job title',
+            'name_label' => 'Interpreter name',
+        )
+    ); ?>
 
     <div class="highlighter"><h3>COVID-19</h3>
         <p>In the majority, COVID-19 causes a mild, self-limiting illness but symptoms may be highly variable amongst
