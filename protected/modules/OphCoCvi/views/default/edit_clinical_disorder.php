@@ -13,6 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section;
+
 $version = $disorder->id ? $disorder->event_type_version : Yii::app()->request->getQuery('event_type_version');
 $patient_type = $disorder->id ? $disorder->patient_type : Yii::app()->request->getQuery('patient_type');
 ?>
@@ -71,7 +73,8 @@ $patient_type = $disorder->id ? $disorder->patient_type : Yii::app()->request->g
             $criteria->condition = 'event_type_version = '.$version.' AND patient_type='.$patient_type.' AND active=1';
             echo CHtml::dropDownList('OEModule_OphCoCvi_models_OphCoCvi_ClinicalInfo_Disorder[section_id]',
                 $disorder->section_id,
-                CHtml::listData(\OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll($criteria,array('patient_type' => $patient_type)), 'id', 'name'), array('empty' => '- None -')) ?>
+                CHtml::listData(OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll($criteria, array('patient_type' => $patient_type)), 'id', 'name'), array('empty' => '- None -'));
+            ?>
         </div>
     </div>
     <div id="div_ClinicalInfo_Disorder_Section_consultant_id" class="row field-row">

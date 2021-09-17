@@ -346,6 +346,7 @@ $(document).ready(function() {
         confirmDialogFirst.open();
         confirmDialogFirst.content.off('click', '.ok');
         confirmDialogFirst.content.on('click', '.ok', function() {
+            confirmDialogFirst.close();
             var confirmDialogSecond = new OpenEyes.UI.Dialog.Confirm({
                 title: "",
                 'content': 'Would you like to retain diagnoses you have selected?',
@@ -359,7 +360,7 @@ $(document).ready(function() {
                 var diagnosis_not_covered_list = [];
                 $('#diagnosis_not_covered_table tr').each(function() {
                     var data_id = $(this).attr('data-id');
-                    if (data_id != '' || data_id != 'undefined') {
+                    if (data_id !== '' || data_id !== 'undefined') {
                         var main_cause = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered][' + data_id + '][main_cause]"][type="hidden"]').val();
                         var eyes = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered][' + data_id + '][eyes]"][type="hidden"]').val();
                         diagnosis_not_covered_list[data_id] = {main_cause: main_cause, eyes: eyes};
@@ -397,6 +398,7 @@ $(document).ready(function() {
                     'url': baseUrl + '/OphCoCvi/Default/clinicalInfoDisorderList',
                     'data': {patient_type: patient_type, diagnosis_not_covered_list: diagnosis_not_covered_list, 'transfer_data':true, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
                     'success': function(data) {
+                        console.log(data);
                         $('#diagnosis_list').html(data);
                     }
                 });
@@ -598,28 +600,6 @@ $(document).ready(function() {
         $('#best_corrected_left_va_list').val($(this).val());
         $('#best_corrected_binocular_va_list').val($(this).val());
     });
-
-    attachTooltip(
-        $("#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_clinical_info_tooltip"),
-        "<strong>SSI - Who should be certified as severely sight impaired?</strong> <br>" +
-        "<u>Group 1:</u> Offer to certify as severely sight impaired: people who have visual acuity worse" +
-        "than 3/60 Snellen (or equivalent);<br>" +
-        "<u>Group 2:</u> Offer to certify as severely sight impaired: people who are 3/60 Snellen or better" +
-        "(or equivalent) but worse than 6/60 Snellen (or equivalent) who also have contraction of" +
-        "their visual field;<br>" +
-        "<u>Group 3:</u> Offer to certify as severely sight impaired: people who are 6/60 Snellen or better" +
-        "(or equivalent) who have a clinically significant contracted field of vision which is" +
-        "functionally impairing the person e.g. significant reduction of inferior field or bi-temporal hemianopia<br><br>" +
-        "<strong>SI - Who should be certified as sight impaired?</strong><br>" +
-        "People can be classified into three groups:<br>" +
-        "<u>Group 1:</u> Offer to certify as sight impaired: people who are 3/60 to 6/60 Snellen (or" +
-        "equivalent) with full field;<br>" +
-        "<u>Group 2:</u> Offer to certify as sight impaired: people between 6/60 and 6/24 Snellen (or" +
-        "equivalent) with moderate contraction of the field e.g. superior or patchy loss, media" +
-        "opacities or aphakia;<br>" +
-        "<u>Group 3:</u> Offer to certify as sight impaired: people who are 6/18 Snellen (or equivalent) or" +
-        "even better if they have a marked field defect e.g. homonymous hemianopia."
-    );
 });
 
 function updateVisualAcuityDropdown(unit_id, type){

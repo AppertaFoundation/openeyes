@@ -17,7 +17,7 @@
 
     <h2>Clinical Disorder Section</h2>
 
-    <?php $this->widget('GenericSearch', array('search' => $search)); ?>
+        <?php $this->widget('GenericSearch', array('search' => $search)); ?>
 
     <form id="admin_sections">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
@@ -42,13 +42,6 @@
             <tr>
                 <td colspan="6">
                     <?php echo EventAction::button('Add', 'add', array(), array('class' => 'small','data-type' => 'ClinicalDisorderSection', 'data-uri' => '/OphCoCvi/admin/addClinicalDisorderSection'))->toHtml() ?>
-                    <?php
-                    /*
-                    echo $this->renderPartial('_pagination', array(
-                        'pagination' => $pagination,
-                    ))
-                    */
-                    ?>
                 </td>
             </tr>
             </tfoot>

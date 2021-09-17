@@ -13,6 +13,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+    $search_params =\Yii::app()->request->getQuery('search')['event_type_version'];
+    $event_type_version = \CHtml::encode($search_params['event_type_version'] ?? 0);
+    $patient_type = \CHtml::encode($search_params['patient_type'] ?? 0);
+?>
 <div class="admin box">
 
     <h2>Clinical Disorders</h2>
@@ -37,7 +42,7 @@
             foreach ($disorders as $i => $disorder) {
                 ?>
                 <tr class="clickable" data-id="<?php echo CHtml::encode($disorder->id) ?>"
-                    data-uri="OphCoCvi/admin/editClinicalDisorder/<?php echo CHtml::encode($disorder->id) ?>?event_type_version=<?=Yii::app()->request->getQuery('search')['event_type_version']?>&patient_type=<?=Yii::app()->request->getQuery('search')['patient_type']?>">
+                    data-uri="OphCoCvi/admin/editClinicalDisorder/<?php echo \CHtml::encode($disorder->id) ?>?event_type_version=<?=$event_type_version;?>&patient_type=<?=$patient_type;?>">
                     <td><?php echo CHtml::encode($disorder->name) ?></td>
                     <td><?php echo CHtml::encode($disorder->code) ?></td>
                     <td><?php echo CHtml::encode($disorder->section->name) ?></td>
@@ -50,14 +55,9 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="6">
-                    <?php echo EventAction::button('Add', 'add', array(), array('class' => 'small','data-type' => 'ClinicalDisorder', 'data-uri' => '/OphCoCvi/admin/addClinicalDisorder'))->toHtml() ?>
                     <?php
-                    /*
-                    echo $this->renderPartial('_pagination', array(
-                        'pagination' => $pagination,
-                    ))
-                    */
-                    ?>
+                    $url = "/OphCoCvi/admin/addClinicalDisorder?event_type_version={$event_type_version}&patient_type={$patient_type}";
+                    echo EventAction::button('Add', 'add', array(), array('class' => 'small','data-type' => 'ClinicalDisorder', 'data-uri' => $url))->toHtml() ?>
                 </td>
             </tr>
             </tfoot>

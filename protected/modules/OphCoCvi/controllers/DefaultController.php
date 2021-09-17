@@ -255,15 +255,6 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    protected function setElementDefaultOptions_Element_OphCoCvi_EventInfo(
-        models\Element_OphCoCvi_EventInfo $element,
-        $action
-    ) {
-        if ($element->isNewRecord) {
-            $element->site_id = $this->getApp()->session['selected_site_id'];
-        }
-    }
-
     protected function setElementDefaultOptions_Element_OphCoCvi_EventInfo_V1(
         models\Element_OphCoCvi_EventInfo_V1 $element,
         $action
@@ -307,11 +298,6 @@ class DefaultController extends \BaseEventTypeController
             }
             $element->patient_type = ($this->getGetPatientAge() < 18) ? 1 : 0;
         }
-    }
-
-    protected function setElementDefaultOptions_Element_OphCoCvi_PatientSignature(models\Element_OphCoCvi_PatientSignature $element, $action)
-    {
-        $element->setDefaultOptions();
     }
 
     /**
@@ -892,12 +878,12 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * @return models\Element_OphCoCvi_EventInfo[]
+     * @return models\Element_OphCoCvi_EventInfo_V1[]
      */
     private function getElementsForEventInfo()
     {
         if ($this->event->isNewRecord) {
-            return array(new models\Element_OphCoCvi_EventInfo());
+            return array(new models\Element_OphCoCvi_EventInfo_V1());
         } else {
             return array($this->getManager()->getEventInfoElementForEvent($this->event));
         }
@@ -1574,5 +1560,26 @@ class DefaultController extends \BaseEventTypeController
             "&signature_name=".\Yii::app()->request->getParam("signatory_name").
             "&element_id=".$element->id
         );
+    }
+
+    /**
+     * Incasesensitive diagnosis search for autocomplete
+     * @param $term
+     */
+    public function actionCilinicalDiagnosisAutocomplete($term)
+    {
+        $search = "%".strtolower($term)."%";
+        $where = '(LOWER(term) like :search or id like :search)';
+        $where .= ' and active = 1';
+        $diagnosis = \Yii::app()->db->createCommand()
+            ->select('id, term AS value')
+            ->from('disorder')
+            ->where($where, array(
+                ':search' => $search,
+            ))
+            ->order('term')
+            ->queryAll();
+
+        $this->renderJSON($diagnosis);
     }
 }

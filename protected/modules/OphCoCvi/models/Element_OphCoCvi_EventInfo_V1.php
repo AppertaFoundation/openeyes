@@ -205,7 +205,7 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
         $criteria->join .= 'join episode on event.episode_id = episode.id';
         $criteria->condition = 'episode.patient_id = :patient_id';
         $criteria->params = array(':patient_id' => $patient_id);
-        $cvis = Element_OphCoCvi_EventInfo::model()->findAll($criteria);
+        $cvis = Element_OphCoCvi_EventInfo_V1::model()->findAll($criteria);
         return $cvis;
     }
 

@@ -32,7 +32,6 @@
                 'type':'GET',
                 'data':{'term': request.term},
                 'success':function(data) {
-                    data = $.parseJSON(data);
                     if (!data.length) {
                         data = [
                         {

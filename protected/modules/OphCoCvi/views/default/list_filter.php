@@ -23,7 +23,7 @@
         ),
         'enableAjaxValidation' => false,
     )) ?>
-    <div class="large-12 column">
+    <div class="cols-12 column">
         <div class="panel box js-toggle-container">
             <h3>Filter CVIs</h3>
             <a href="#" class="toggle-trigger toggle-hide js-toggle">

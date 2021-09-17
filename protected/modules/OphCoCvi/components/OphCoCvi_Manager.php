@@ -283,7 +283,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
-     * @return null|Element_OphCoCvi_EventInfo
+     * @return null|Element_OphCoCvi_EventInfo_V1
      */
     public function getEventInfoElementForEvent(\Event $event)
     {
@@ -342,10 +342,10 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
-     * @param Element_OphCoCvi_EventInfo $element
+     * @param Element_OphCoCvi_EventInfo_V1 $element
      * @return string
      */
-    public function getDisplayStatusFromEventInfo(Element_OphCoCvi_EventInfo $element)
+    public function getDisplayStatusFromEventInfo(Element_OphCoCvi_EventInfo_V1 $element)
     {
         return $this->getDisplayStatus($element->clinical_element, $element);
     }
@@ -386,7 +386,7 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
-     * @param Element_OphCoCvi_EventInfo $event_info
+     * @param Element_OphCoCvi_EventInfo_V1 $event_info
      * @return \User|null
      */
     public function getClinicalConsultant(Element_OphCoCvi_EventInfo_V1 $event_info)
@@ -441,15 +441,6 @@ class OphCoCvi_Manager extends \CComponent
             return false;
         }
 
-        if ($consultant_signature = $this->getElementForEvent($event, "Element_OphCoCvi_ConsultantSignature")) {
-            /** @var SignatureInterface $consultant_signature */
-            if (!$consultant_signature->checkSignature()) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-
         if ($clerical = $this->getClericalElementForEvent($event)) {
             $clerical->setScenario('finalise');
             if (!$clerical->validate()) {
@@ -462,17 +453,6 @@ class OphCoCvi_Manager extends \CComponent
         if ($demographics = $this->getDemographicsElementForEvent($event)) {
             $demographics->setScenario('finalise');
             if (!$demographics->validate()) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-
-        if ($signature = $this->getConsentSignatureElementForEvent($event)) {
-            if (!$signature->checkSignature()) {
-                return false;
-            }
-            if ( is_null($signature->consented_to_gp) || is_null($signature->consented_to_la) && is_null($signature->consented_to_rcop)) {
                 return false;
             }
         } else {
