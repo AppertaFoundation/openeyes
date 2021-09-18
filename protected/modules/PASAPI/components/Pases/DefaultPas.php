@@ -210,10 +210,41 @@ class DefaultPas extends BasePAS
 
                 $xml_handler->next('Patient');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             \OELog::log("PASAPI : " . $e->getMessage());
         }
 
         return $resources;
+    }
+
+    function buildXML($xml, $data) {
+        foreach ($data as $idx=>$record) {
+            if(is_array($record)) {
+                $xml = $this->buildXML($xml, $record);
+            } else {
+                $xml->addChild($idx, $record);
+            }
+        }
+        return $xml;
+    }
+
+    /***
+     * @param HL7_A08 $data
+     */
+    public function sendUpdate($data) {
+
+        $xml = new \SimpleXMLElement('<root/>');
+
+        $this->buildXML($xml, $data);
+
+        $post_data = "xmlrequest=".$xml->asXML();
+
+        $xml = $this->curl->post($this->config['url'], $post_data);
+        $ch = $this->curl->curl;
+
+        if (curl_errno($ch)) {
+            $error = 'PASAPI cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
+            \OELog::log($error);
+        }
     }
 }
