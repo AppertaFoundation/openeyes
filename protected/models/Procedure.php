@@ -157,6 +157,8 @@ class Procedure extends BaseActiveRecordVersioned
             $where .= ' and unbooked = 1';
         } elseif ($restrict == 'booked') {
             $where .= ' and unbooked = 0';
+        } elseif ($restrict === 'clinical') {
+            $where .= ' and is_clinic_proc = 1';
         }
 
         $where .= ' and proc.active = 1';
