@@ -26,15 +26,6 @@ class m210801_134940_remove_signature_elements extends OEMigration
             $element_type_id = $this->getIdOfElementTypeByClassName($class);
 
             if ($element_type_id) {
-                $sql = "SELECT * FROM signature_request WHERE element_type_id = :element_type_id";
-
-                $entries = $this->dbConnection->createCommand($sql)->queryAll(true, [
-                    ':element_type_id' => $element_type_id
-                ]);
-
-                \OELog::log("The element_type_id set to NULL on the following entries (element type: {$class}|id:{$element_type_id}):");
-                \OELog::log(print_r($entries, true));
-
                 $sql = "UPDATE signature_request SET element_type_id = NULL WHERE element_type_id = :element_type_id";
                 $this->execute($sql, [
                     ':element_type_id' => $element_type_id
