@@ -18,7 +18,6 @@
  * @var $institution_id int
  */
 
-$is_admin = $this->checkAccess('admin');
 ?>
 
 <div class="cols-7">
@@ -50,12 +49,18 @@ $is_admin = $this->checkAccess('admin');
         <tbody>
             <?php
             $purifier = new CHtmlPurifier();
+            $allowed_classes = $institution_id ? ['SettingInstitution', 'SettingInstallation'] : ['SettingInstallation'];
             foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) {
                 // Setting pulled from database
-                $metadata_value = (string)$metadata->getSettingName($metadata->key, ['SettingInstallation', 'SettingInstitution']);
+                $metadata_value = (string)$metadata->getSettingName($metadata->key, $allowed_classes, $institution_id, true);
 
-                //data-uri
-                $data_uri = "admin/editSystemSetting?key=" . $metadata->key . ($metadata->lowest_setting_level === 'INSTITUTION' ? '&class=SettingInstitution': '&class=SettingInstallation');
+                $base_data_uri = "admin/editSystemSetting?key=" . $metadata->key;
+                if($metadata->lowest_setting_level === 'INSTITUTION' && $institution_id){
+                    $uri_param = "&class=SettingInstitution&institution_id={$institution_id}";
+                } else {
+                    $uri_param = '&class=SettingInstallation';
+                }
+                $data_uri = $base_data_uri . $uri_param;
 
                 // Check to see if the param is being set in a config file
                 if (array_key_exists($metadata->key, OEConfig::getMergedConfig('main')['params'])) {
