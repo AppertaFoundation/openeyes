@@ -1,0 +1,25 @@
++------------------------------------------------------------------+
+| +et_ophtrconsent_benefitrisk_risk                                 |
+| et_ophtrconsent_benfitrisk                                       |
+| et_ophtrconsent_best_interest_decision                           |
+| +et_ophtrconsent_best_interest_decision_deputy_signature          |
+| +et_ophtrconsent_best_interest_decision_ppl                       |
+| +et_ophtrconsent_best_interest_decision_user                      |
+| et_ophtrconsent_capacity_assessment                              |
+| et_ophtrconsent_capacity_assessment_lack_cap_reason              |
+| +et_ophtrconsent_child_signature                                  |
+| +et_ophtrconsent_confirmation                                     |
+| +et_ophtrconsent_confirmation_consultant_signature                |
+| +et_ophtrconsent_consultant_signature_with_second_opinion         |
+| +et_ophtrconsent_interpreter_signature                            |
+| et_ophtrconsent_leaflets                                         |
+| et_ophtrconsent_other                                            |
+| +et_ophtrconsent_parent_signature                                 |
+| +et_ophtrconsent_patient_signature                                |
+| et_ophtrconsent_permissions                                      |
+| et_ophtrconsent_procedure                                        |
+| et_ophtrconsent_type                                             |
+| +et_ophtrconsent_withdrawal                                       |
+| +et_ophtrconsent_withdrawal_patient_signature                     |
+| +et_ophtrconsent_witness_signature                                |
++------------------------------------------------------------------+

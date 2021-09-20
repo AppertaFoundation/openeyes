@@ -161,6 +161,16 @@ class ProtectedFile extends BaseActiveRecordVersioned
     }
 
     /**
+     * Returns the file size in bytes, 0 in case the file cannot be found
+     * @return int
+     */
+    public function getSize(): int
+    {
+        $path = $this->getPath();
+        return file_exists($path) ? filesize($path) : 0;
+    }
+
+    /**
      * ensures that mimetype and size are set based on the file that's been stored (unless the file
      * is being copied from elsewhere, in which case this should have been taken care of).
      *

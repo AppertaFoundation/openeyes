@@ -484,15 +484,15 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                     }
 
                     if ($risk->comments !== '') {
-                        if ($exam_risk['name'] === 'Other') {
+                        if ($risk_name === 'Other') {
                             return array($risk_present, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $risk->other . '</span>');
                         }
-                        return array($risk_present, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $exam_risk['name'] . '</span>');
+                        return array($risk_present, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $risk_name . '</span>');
                     }
-                    if ($exam_risk['name'] === 'Other') {
+                    if ($risk_name === 'Other') {
                         return array($risk_present, $risk->other);
                     }
-                    return array($risk_present, $exam_risk['name']);
+                    return array($risk_present, $risk_name);
                 },
                 array_filter(
                     $risks,

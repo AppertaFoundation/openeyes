@@ -98,6 +98,37 @@
                 </div>
             <?php endif; ?>
         </div>
-
     <?php endif; ?>
+</div>
+<hr class="divider">
+<div class="flex-t">
+    <div class="cols-3">
+        Attached support documentation
+    </div>
+    <div class="cols-8">
+        <?php if (!empty($element->attachments)): ?>
+            <table class="cols-full">
+                <tbody>
+                <?php foreach ($element->attachments as $attachment): ?>
+                    <tr>
+                        <td>
+                            <a href="<?= $attachment->protectedFile->getDownloadURL() ?>" target="_blank">
+                                <?= \CHtml::encode($attachment->protectedFile->name) ?>
+                            </a>
+                        </td>
+                        <td><?= Helper::fileSize($attachment->protectedFile->getSize()) ?></td>
+                        <td><i class="oe-i tick-green small pad-right"></i>Attached</td>
+                        <td>
+                            <a href="<?= $attachment->protectedFile->getDownloadURL() ?>" target="_blank">
+                                <i class="oe-i direction-right-circle small"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p>No attachments.</p>
+        <?php endif; ?>
+    </div>
 </div>

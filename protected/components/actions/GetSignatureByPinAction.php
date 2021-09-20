@@ -156,8 +156,8 @@ class GetSignatureByPinAction extends \CAction
                     "signature_file_id" => $this->signature_file_id,
                     "signed_user_id" => $this->user->id,
                     "type" => $signature_type,
-                    "signatory_role" => Yii::app()->request->getPost("signatory_role"),
-                    "signatory_name" => Yii::app()->request->getPost("signatory_name"),
+                    "signatory_role" => urldecode(Yii::app()->request->getPost("signatory_role")),
+                    "signatory_name" => urldecode(Yii::app()->request->getPost("signatory_name")),
                 ], false);
                 if($signature->hasAttribute("secretary") && property_exists($this, "is_secretary_signing")) {
                     $signature->secretary = $this->is_secretary_signing;

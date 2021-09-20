@@ -24,6 +24,7 @@ use OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
+use OEModule\PASAPI\resources\HL7_A08;
 use services\DateTime;
 use OEModule\PatientTicketing\models\QueueOutcome;
 use Yii;
@@ -973,9 +974,22 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    /***
+     * Construct a PAS message for the specified trigger event here and send it to the PAS.
+     * @param Event $event
+     * @param string $hl7_trigger_event "A03|A08|A11"
+     */
     protected function pasCallout($event, $hl7_trigger_event)
     {
-        // Construct a PAS message for the specified trigger event here and send it to the PAS.
+        switch ($hl7_trigger_event) {
+            case 'A08':
+                $hl7_a08 = new HL7_A08();
+                $hl7_a08->setDataFromEvent($event->id);
+                Yii::app()->event->dispatch('emergency_care_update',
+                    $hl7_a08
+                );
+                break;
+        }
     }
 
     protected function afterCreateElements($event)

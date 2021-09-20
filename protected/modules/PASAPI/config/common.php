@@ -41,6 +41,12 @@ return [
                         'method' => 'search',
                     ],
                 ],
+                'emergency_care_update' => [
+                    'update_emergency_care_update' => [
+                        'class' => 'OEModule\PASAPI\components\PasApiObserver',
+                        'method' => 'updateEmergencyCareVisit',
+                    ],
+                ],
             ],
         ],
     ],
