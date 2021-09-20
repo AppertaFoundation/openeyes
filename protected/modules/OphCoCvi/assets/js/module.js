@@ -386,7 +386,7 @@ $(document).ready(function() {
                 var diagnosis_not_covered_list = [];
                 $('#diagnosis_not_covered_table tr').each(function() {
                     var data_id = $(this).attr('data-id');
-                    if (data_id != '' || data_id != 'undefined') {
+                    if (typeof data_id !== 'undefined' && data_id !== '') {
                         var main_cause = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered][' + data_id + '][main_cause]"][type="hidden"]').val();
                         var eyes = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered][' + data_id + '][eyes]"][type="hidden"]').val();
                         diagnosis_not_covered_list[data_id] = {main_cause: main_cause, eyes: eyes};
@@ -398,23 +398,34 @@ $(document).ready(function() {
                     'url': baseUrl + '/OphCoCvi/Default/clinicalInfoDisorderList',
                     'data': {patient_type: patient_type, diagnosis_not_covered_list: diagnosis_not_covered_list, 'transfer_data':true, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
                     'success': function(data) {
-                        console.log(data);
+
                         $('#diagnosis_list').html(data);
                     }
                 });
-                
-                $('#diagnosis_list input[type=radio]:checked').each(function() {
-                    var input_name = $(this).attr('name');
-                    var data_name = $(this).attr('data-name');
-                    var data_code = $(this).attr('data-code');
-                    var data_id = parseInt($(this).attr('data-id'));
-                    var data_eye = $(this).attr('data-eye');
-                    var last_tr_id = $('#diagnosis_not_covered_table tr:last').attr('data-id');
-                    var last_tr_id = parseInt(last_tr_id)+1;
+
+                const getEye = function($tr) {
+                    const $right = $tr.querySelector('.js-left-eye:checked');
+                    const $left = $tr.querySelector('.js-right-eye:checked');
+
+                    if ($right && $left) {
+                        return 3;
+                    }
+                     return $left ? 1 : ($right ? 2 : null);
+                };
+
+
+                $('#diagnosis_list tr:has(input[type=checkbox]:checked) ').each(function() {
+                    const $tr = $(this).closest('tr')[0];
+
+                    var data_name = $tr.dataset.name;
+                    var data_code = $tr.dataset.code;
+                    var data_id = parseInt($tr.dataset.id);
+                    var data_eye = getEye($tr);
+
                     var main_cause = '';
                     var main_cause_id = 0;
                     
-                    if ($('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_'+data_id+'_main_cause').is(':checked')) {
+                    if ($tr.querySelector('input[name$="[main_cause]"]:checked')) {
                         main_cause = '(main cause)';
                         main_cause_id = 1;
                     }

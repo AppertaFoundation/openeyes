@@ -64,6 +64,7 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
     </table>
 </div>
 
+<div id="diagnosis_list">
 <?php foreach ($this->getDisorderSections_V1($element->patient_type) as $disorder_section) :?>
     <?php $is_open = $element->hasAffectedCviDisorderInSection($disorder_section);?>
 

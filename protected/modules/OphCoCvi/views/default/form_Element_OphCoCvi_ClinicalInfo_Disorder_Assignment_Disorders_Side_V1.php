@@ -23,12 +23,19 @@ foreach ($disorder_section->disorders as $disorder) {
     } else {
         $disorder_name = $disorder->term_to_display;
     }
+    $disorder_name = \CHtml::encode($disorder->name);
+    $code = \CHtml::encode($disorder->code);
     ?>
-        <tr>
-            <td><?= \CHtml::encode($disorder->name); ?></td>
+        <tr
+                data-name="<?=$disorder_name;?>"
+                data-code="<?=$code;?>"
+                data-id="<?=$disorder->id;?>"
+                data-eye="<?=$element->getCviDisorderSide($disorder)?>"
+        >
+            <td><?=$disorder_name;?></td>
             <td>
                 <label class="inline highlight ">
-                <?= \CHtml::checkBox($right_field_base_name . "[main_cause]", $element->isCviDisorderMainCauseForSide($disorder, 'right'), array(
+                <?= \CHtml::checkBox($right_field_base_name . "[main_cause]", $element->isCviDisorderMainCauseForSide($disorder, 'right'), array( // MainCause tied to right side
                         'class' => 'disorder-main-cause',
                         'disabled' => !$element->isCviDisorderMainCauseForAny($disorder, 'right'),
                         'data-active' => $element->hasCviDisorderForAny($disorder),
@@ -39,7 +46,7 @@ foreach ($disorder_section->disorders as $disorder) {
             </td>
             <td data-group_id="<?=$disorder->group_id;?>" data-disorder_id="<?=$disorder->id;?>">
                 <label class="inline highlight icd10code">
-                    <?=CHtml::encode($disorder->code)?>
+                    <?=$code?>
                 </label>
 
                 <?php $this->widget('application.widgets.EyeSelector', [

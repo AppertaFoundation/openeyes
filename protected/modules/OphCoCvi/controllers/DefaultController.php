@@ -1449,7 +1449,6 @@ class DefaultController extends \BaseEventTypeController
         $element = new Element_OphCoCvi_ClinicalInfo_V1();
 
         $patient_type = \Yii::app()->request->getPost("patient_type");
-        $patient_type = \Yii::app()->request->getPost("patient_type");
         $diagnosis_not_covered_list = \Yii::app()->request->getPost("diagnosis_not_covered_list");
 
         if (!is_null(\Yii::app()->request->getPost("transfer_data"))) {
@@ -1495,14 +1494,14 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-        $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll(
+        $disorder_sections = OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll(
             array(
                 "condition" => '
                 event_type_version = (SELECT MAX(event_type_version) AS maxVersion FROM ophcocvi_clinicinfo_disorder) 
-                AND patient_type = '.$patient_type,
+                AND patient_type = ' . (int)$patient_type,
                 "order"     => "display_order"
             ));
-        $this->renderPartial('ajax_load_diagnosis_list', ['disorder_sections' => $listData, 'element' => $element]);
+        $this->renderPartial('ajax_load_diagnosis_list', ['disorder_sections' => $disorder_sections, 'element' => $element]);
     }
 
     public function actionDeleteDiagnosisNotCoveredElement($data_id)

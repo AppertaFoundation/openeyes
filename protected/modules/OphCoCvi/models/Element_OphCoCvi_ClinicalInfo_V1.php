@@ -639,8 +639,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         );
 
         for ($k = 0, $k_max = count($field_of_vision_data); $k < $k_max; $k++) {
-            $data[$k + 1] = array_merge($field_of_vision_data[$k],
-                $low_vision_data[$k]);
+            $data[$k + 1] = array_merge($field_of_vision_data[$k], $low_vision_data[$k]);
         }
 
         return $data;
