@@ -113,8 +113,7 @@
             <div class="alert-box info">
                 No mapping items have been defined for this Worklist Definition.
                 Your system does not allow definitions to be edited after generating instances.
-                If you want to add some mappings please delete instances first
-                and then delete and recreate the Worklist Definition.
+                If you want to add some mappings please delete instances first.
             </div>
         <?php }
     } ?>

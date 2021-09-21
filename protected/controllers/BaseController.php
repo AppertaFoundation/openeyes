@@ -160,11 +160,12 @@ class BaseController extends Controller
         $this->onBeforeAction(new \CEvent($this, ["action" => $action]));
 
         $app = Yii::app();
-
-        foreach (SettingMetadata::model()->findAll() as $metadata) {
-            if (!$metadata->element_type) {
-                if (!isset(Yii::app()->params[$metadata->key])) {
-                    Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+        if(!in_array($action->id, array('settings'))){
+            foreach (SettingMetadata::model()->findAll() as $metadata) {
+                if (!$metadata->element_type) {
+                    if (!isset(Yii::app()->params[$metadata->key])) {
+                        Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+                    }
                 }
             }
         }
