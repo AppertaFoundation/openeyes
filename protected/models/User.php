@@ -301,7 +301,7 @@ class User extends BaseActiveRecordVersioned
             return Yii::app()->session['selected_institution_id'] === $item->institution_id;
         });
     }
-    
+
     public function getInitials()
     {
         return strtoupper($this->first_name[0]) . strtoupper($this->last_name[0]);
@@ -962,7 +962,7 @@ class User extends BaseActiveRecordVersioned
                 [":site_id"=>$site_id, ":institution_id"=>$institution_id]
             );
 
-        if($institution_authentication){
+        if ($institution_authentication) {
             $user_authentication = UserAuthentication::model()
                 ->find(
                     'user_id=:user_id AND institution_authentication_id=:institution_authentication_id AND pincode=:pincode',
