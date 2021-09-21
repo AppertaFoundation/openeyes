@@ -532,6 +532,12 @@ $config = array(
                 'position' => 90,
                 'requires_setting' => array('setting_key' => 'enable_virus_scanning', 'required_value' => 'on'),
             ),
+            'safeguarding' => array(
+                'title' => 'Safeguarding',
+                'position' => 40,
+                'uri' => '/Safeguarding/index/',
+                'restricted' => array('Safeguarding'),
+            ),
             /*
                  //TODO: not yet implemented
                  'worklist' => array(
