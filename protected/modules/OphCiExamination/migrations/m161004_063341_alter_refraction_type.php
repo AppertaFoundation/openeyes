@@ -11,5 +11,4 @@ class m161004_063341_alter_refraction_type extends CDbMigration
     {
         $this->update('ophciexamination_refraction_type', array('name' => 'Own Glasses'), 'name = "Focimetry"');
     }
-    
 }

@@ -42,7 +42,7 @@ class RefMedicationSetAdminController extends BaseAdminController
         $admin->setModelDisplayName("Medications in set '{$medSet->name}'");
         $admin->setForceTitleDisplay(true);
         $admin->setForceFormDisplay(true);
-        
+
         $admin->setListFieldsAction('medEditRedir');
 
         $admin->listModel();

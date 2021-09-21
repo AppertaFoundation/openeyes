@@ -1,8 +1,0 @@
-{
-  "name": "openeyes/oph-tr-operationbooking",
-  "description": "Module for booking operations in OpenEyes",
-  "type": "openeyes-module",
-  "require": {
-    "openeyes/module-installer": "*"
-  }
-}

@@ -44,7 +44,7 @@ class ReportController extends BaseReportController
                 $this->subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
             }
         }
-        
+
         if (!$this->siteId) {
             $this->siteId = Yii::app()->session['selected_site_id'];
         }

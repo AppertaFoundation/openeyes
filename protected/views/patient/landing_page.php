@@ -46,7 +46,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         'patient_id' => $this->patient->id,
         'event_types' => EventType::model()->getEventTypeModules(),
     ));?>
-<?php } else if ($allow_clinical) { ?>
+<?php } elseif ($allow_clinical) { ?>
     <nav class="event-header no-face">
         <i class="oe-i-e large i-Patient"></i>
         <h2 class="event-header-title">Patient Overview</h2>
@@ -286,7 +286,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                                             <td><i class="oe-i info small pro-left js-has-tooltip"
                                                          data-tooltip-content="<?= $summary->user ?>"></i></td>
                                         </tr>
-                                    <?php }
+                            <?php }
                         } ?>
                                 </tbody>
                             </table>

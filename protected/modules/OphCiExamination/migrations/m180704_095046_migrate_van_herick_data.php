@@ -21,7 +21,7 @@ class m180704_095046_migrate_van_herick_data extends CDbMigration
             $van_herick_element->eye_id = \EYE::BOTH;
             if ($van_herick_element->left_van_herick_id && !$van_herick_element->right_van_herick_id) {
                 $van_herick_element->eye_id = \EYE::LEFT;
-            } else if (!$van_herick_element->left_van_herick_id && $van_herick_element->right_van_herick_id) {
+            } elseif (!$van_herick_element->left_van_herick_id && $van_herick_element->right_van_herick_id) {
                 $van_herick_element->eye_id = \EYE::RIGHT;
             }
 

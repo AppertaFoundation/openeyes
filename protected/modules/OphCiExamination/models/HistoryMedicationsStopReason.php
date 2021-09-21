@@ -37,7 +37,7 @@ class HistoryMedicationsStopReason extends \BaseActiveRecordVersioned
     {
         return array('order' => $this->getTableAlias(true, false).'.display_order');
     }
-    
+
     public function rules()
     {
         return array(

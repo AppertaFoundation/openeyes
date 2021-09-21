@@ -59,7 +59,7 @@ $widgetOptionsJson = json_encode(array(
 
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div id="<?php echo $div_id ?>"
-     class="<?php echo $div_class ?> row widget" <?php if ($hidden) {
+     class="<?php echo $div_class ?> row widget flex-layout" <?php if ($hidden) {
             ?>hidden<?php
             } ?>>
   <div class="cols-<?php echo $layoutColumns['label']; ?> column">
@@ -171,13 +171,13 @@ $widgetOptionsJson = json_encode(array(
                           '#\[(.*)\]#',
                           '[${1}_through]',
                           $field
-                      ) ?>[<?= $id ?>][<?= $through['field'] ?>]">
+                                    ) ?>[<?= $id ?>][<?= $through['field'] ?>]">
                               <?php foreach ($through['options'] as $option_id => $option) { ?>
                             <option
                                 value="<?= $option_id ?>" <?php if ($currentField && $currentField == $option_id) :
                                     ?> selected <?php
                                        endif; ?>><?= $option ?></option>
-                                <?php } ?>
+                              <?php } ?>
                       </select>
                         <?php } ?>
                 </li>

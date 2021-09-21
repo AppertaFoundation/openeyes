@@ -24,4 +24,4 @@ $status = $service->getApplicationStatus(); ?>
 <?php $this->beginContent('//patient/event_content_image', array('no_face' => false)) ?>
 <?php $this->renderOpenElements($this->action->id, false, array('status' => $status)) ?>
 <?php $this->renderPartial('emails', array('service' => $service)) ?>
-<?php $this->endContent(); ?>
+<?php $this->endContent();

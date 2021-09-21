@@ -37,7 +37,6 @@
             <thead>
             <tr>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
-                <th>Institution</th>
                 <th>Subspecialty</th>
                 <th><?php echo Firm::contextLabel() ?></th>
                 <th>Episode status</th>
@@ -49,7 +48,6 @@
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="OphCiExamination/admin/editWorkflowRule/<?php echo $model->id ?>">
                     <td><input type="checkbox" name="workflowrules[]" value="<?php echo $model->id ?>"/></td>
-                    <td><?php echo $model->institution ? $model->institution->name : 'All' ?></td>
                     <td><?php echo $model->subspecialty ? $model->subspecialty->name : 'All' ?></td>
                     <td><?php echo $model->firm ? $model->firm->name : 'All' ?></td>
                     <td><?php echo $model->episode_status ? $model->episode_status->name : 'All' ?></td>

@@ -115,7 +115,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
      */
     public function search()
     {
-        $criteria = new CDbCriteria;
+        $criteria = new \CDbCriteria;
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -124,7 +124,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
         $criteria->compare('representative_name', $this->representative_name);
         $criteria->compare('signature_file_id', $this->signature_file_id);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
     }
@@ -166,7 +166,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     public function getDecryptedSignature()
     {
         if ($this->signature_file) {
-            return base64_decode($this->decryptSignature(file_get_contents($this->signature_file->getPath()), md5($this->getEncryptionKey().\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event))));
+            return file_get_contents($this->signature_file->getPath());
         }
     }
 
@@ -193,7 +193,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
                     \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event)
                 );
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             //pass
         }
         // add this to list all available data!

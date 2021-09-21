@@ -25,7 +25,7 @@ class Element_OphInLabResults_Entry extends Element_OphInLabResults_ResultTimedN
 
         return $string;
     }
-    
+
     public function getPrint_view()
     {
         return 'print_'.$this->getDefaultView();

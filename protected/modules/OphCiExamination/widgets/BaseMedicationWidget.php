@@ -57,7 +57,6 @@ abstract class BaseMedicationWidget extends BaseEventElementWidget
                 $element->do_not_save_entries = (bool)$data['do_not_save_entries'];
         }
         */
-
         if (!is_a($element, static::$elementClass)) {
             throw new CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
@@ -178,6 +177,30 @@ abstract class BaseMedicationWidget extends BaseEventElementWidget
             $element->entries = array();
         }
 
+        if (array_key_exists("save_draft_prescription", $data)) {
+            $element->save_draft_prescription = $data['save_draft_prescription'] === "1";
+        }
+
+        $rels = $element->relations();
+        if (array_key_exists("signatures", $data)) {
+            $models = [];
+            $signature_class = $rels["signatures"][1];
+
+            foreach ($data["signatures"] as $signature_data) {
+                if ((int)$signature_data["id"] > 0) {
+                    $model = $signature_class::model()->findByPk($signature_data["id"]);
+                } else {
+                    $model = new $signature_class();
+                }
+
+                $model->setAttributes($signature_data);
+                $model->proof = $signature_data["proof"];
+                $model->setDataFromProof();
+                array_push($models, $model);
+            }
+
+            $element->signatures = $models;
+        }
     }
 
     /**

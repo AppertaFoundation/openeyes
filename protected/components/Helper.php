@@ -594,4 +594,19 @@ class Helper
         return $val;
 
     }
+
+    /**
+     * Returns a file size in human-readable form
+     *
+     * @param int $bytes
+     * @return string
+     */
+    public static function fileSize(int $bytes): string
+    {
+        $units = ['B','kB','MB','GB','TB'];
+        $i = floor(log($bytes, 1024));
+        $unit = $units[$i];
+        $precision = $i <= 1 ? 0 : 2;
+        return round($bytes / pow(1024, $i), $precision).$unit;
+    }
 }

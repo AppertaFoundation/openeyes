@@ -24,7 +24,7 @@ if (isset($eur)) {
 }
 if (isset($operation) && $operation) {
     $clinical = $clinical = $this->checkAccess('OprnViewClinical');
-    
+
     $warnings = $this->patient->getWarnings($clinical);
     $this->moduleNameCssClass .= ' highlight-fields';
     $this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')';

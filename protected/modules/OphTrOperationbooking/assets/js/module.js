@@ -196,5 +196,89 @@
             });
         }
 
+
+        $('.js-preassessment_type_dropdown-tr input').click(function(e) {
+            let use_location = $(this).attr('data-use-location');
+            if (use_location === "1") {
+                $('.js-preassessment_location_dropdown-tr').removeClass('hidden');
+            } else {
+                $('.js-preassessment_location_dropdown-tr').addClass('hidden');
+            }
+        });
+
+        complexityRadios = document.getElementsByName('Element_OphTrOperationbooking_Operation[complexity]');
+        high_flow_low_option = complexityRadios[1];
+        dialog = new OpenEyes.UI.Dialog();
+
+        function openPopup(data)
+        {
+            dialog.content = data.html;
+            dialog.open();
+            document.getElementById("high_flow_modal_yes").addEventListener('click',() => {
+                dialog.close();
+            });
+            document.getElementById("high_flow_modal_no").addEventListener('click',() => {
+                high_flow_low_option.checked = false;
+                dialog.close();
+            });
+            document.getElementById("high_flow_modal_close").addEventListener('click',() => {
+                dialog.close();
+            });
+        }
+
+        function openHighFlowModalWindow(){
+
+            let ids = new Array();
+            let procedure_inputs = document.getElementsByName('Procedures_procs[]');
+
+            for (let i = 0; i < procedure_inputs.length; i++) {
+                ids.push(procedure_inputs[i].value);
+            }
+
+            params = {id:ids, YII_CSRF_TOKEN:YII_CSRF_TOKEN};
+            const searchParams = Object.keys(params).map((key) => {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+            }).join('&');
+
+            fetch(baseUrl + "/" + moduleName + "/default/getHighFlowCriteriaPopupContent",{
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                },
+                body: searchParams,
+                method: 'POST',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if(data) {
+                        openPopup(data);
+                    }
+                });
+        }
+
+        const addEventListenerToProcedures = function(onObject, type, subselector, listener, options) {
+            onObject.addEventListener(type, function(e) {
+                if (subselector) {
+                    for (let target = e.target; target && target !== this; target = target.parentNode) {
+                        if (target.matches(subselector)) {
+                            listener.call(target, e);
+                            break;
+                        }
+                    }
+                } else {
+                    listener.call(e.target, e);
+                }
+            }, options);
+        };
+
+        if(high_flow_low_option){
+            high_flow_low_option.addEventListener('change', openHighFlowModalWindow);
+        }
+
+        addEventListenerToProcedures(document, 'click', "#procedure_popup_procs .add-icon-btn", () => {
+            if(high_flow_low_option.checked === true){
+                openHighFlowModalWindow();
+            }
+        });
+
     });
 }());

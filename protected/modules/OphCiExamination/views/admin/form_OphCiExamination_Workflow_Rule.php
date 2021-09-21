@@ -34,25 +34,13 @@
             </td>
         </tr>
     <?php endif; ?>
-
-    <tr>
-        <td>Institution</td>
-        <td class="cols-full">
-            <?= CHtml::activeDropDownList(
-                $model,
-                'institution_id',
-                Institution::model()->getList(true),
-                ['class' => 'cols-full']
-            ); ?>
-        </td>
-    </tr>
     <tr>
         <td>Context</td>
         <td class="cols-full">
             <?= \CHtml::activeDropDownList(
                 $model,
                 'firm_id',
-                CHtml::listData(Firm::model()->activeOrPk($model->firm_id)->findAll(), 'id', 'nameAndSubspecialty'),
+                CHtml::listData(Firm::model()->activeOrPk($model->firm_id)->findAllByAttributes(array('institution_id' => Institution::model()->getCurrent()->id)), 'id', 'nameAndSubspecialty'),
                 ['class' => 'cols-full', 'empty' => '- All -']
             ); ?>
         </td>
@@ -86,7 +74,7 @@
                 $model,
                 'workflow_id',
                 CHtml::listData(
-                    OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findAll(),
+                    OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findAllByAttributes(array('institution_id' => Institution::model()->getCurrent()->id)),
                     'id',
                     'name'
                 ),

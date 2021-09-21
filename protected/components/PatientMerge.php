@@ -40,14 +40,20 @@ class PatientMerge
     private $merge_id;
 
     /**
-     * @var Patient Identifier
+     * @var PatientIdentifier
      */
     public $primary_patient_identifier;
     /**
-     * @var Patient Identifier
+     * @var PatientIdentifier
      */
     public $secondary_patient_identifier;
 
+    /**
+     * @var PatientIdentifierType|null
+     * If set, this explicit identifier type will be used
+     * to look up patient numbers
+     */
+    private ?PatientIdentifierType $patient_identifier_type;
 
     /**
      * Set primary patient by id.
@@ -113,20 +119,27 @@ class PatientMerge
      * Load data from PatientMergeRequest AR record.
      *
      * @param PatientMergeRequest $request
+     * @param PatientIdentifierType $patient_identifier_type If set, this identifier type will be used to look up
+     *                                       patients instead of the one based on the logged in user's
+     *                                       institution_id
      */
-    public function load(PatientMergeRequest $request)
+    public function load(PatientMergeRequest $request, PatientIdentifierType $patient_identifier_type = null)
     {
         $this->setPrimaryPatientById($request->primary_id);
         $this->setSecondaryPatientById($request->secondary_id);
+        $this->patient_identifier_type = $patient_identifier_type;
         $this->merge_id = $request->id;
-        $this->primary_patient_identifier = $this->setPatientIdentifier($request->primary_id);
-        $this->secondary_patient_identifier = $this->setPatientIdentifier($request->secondary_id);
-
+        $this->primary_patient_identifier = $this->getPatientIdentifier($request->primary_id);
+        $this->secondary_patient_identifier = $this->getPatientIdentifier($request->secondary_id);
     }
 
-    function setPatientIdentifier($patient_id)
+    private function getPatientIdentifier($patient_id)
     {
-        return PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient_id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+        if(is_null($this->patient_identifier_type)) {
+            return PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient_id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+        } else {
+            return PatientIdentifierHelper::getPatientIdentifierByType($patient_id, $this->patient_identifier_type);
+        }
     }
 
     /**
@@ -271,35 +284,59 @@ class PatientMerge
                 $secondary_patient_identifiers = PatientIdentifier::model()->findAllBySql($sql, [$this->secondary_patient->id]);
                 foreach ($secondary_patient_identifiers as $row_id => $secondary_patient_identifier_row) {
 
-                    $new_patient_identifier_row = new PatientIdentifier();
-                    $new_patient_identifier_row->patient_id = $this->primary_patient->id;
-                    $new_patient_identifier_row->patient_identifier_type_id = $secondary_patient_identifier_row->patient_identifier_type_id;
-                    $new_patient_identifier_row->value = $secondary_patient_identifier_row->value;
-                    $new_patient_identifier_row->deleted = $secondary_patient_identifier_row->deleted;
-                    $new_patient_identifier_row->source_info = ($secondary_patient_identifier_row->source_info !== 'ACTIVE' ? $secondary_patient_identifier_row->source_info . ', ' : '');
-                    if (in_array(
-                            $secondary_patient_identifier_row->patient_identifier_type_id,
-                            array_column($this->primary_patient->identifiers, 'patient_identifier_type_id')
-                        ) || $secondary_patient_identifier_row->deleted == "1") {
-                        $new_patient_identifier_row->source_info .= "DEL ID=(" . $this->merge_id . ")";
-                        $new_patient_identifier_row->deleted = '1';
-                    } else {
+                    $criteria = new CDbCriteria();
+                    $criteria->addCondition('patient_id = :patient_id');
+                    $criteria->addCondition('value = :value');
+                    $criteria->addCondition('patient_identifier_type_id = :patient_identifier_type_id');
+                    $criteria->params[':patient_id'] = $this->primary_patient->id;
+                    $criteria->params[':value'] = $secondary_patient_identifier_row->value;
+                    $criteria->params[':patient_identifier_type_id'] = $secondary_patient_identifier_row->patient_identifier_type_id;
 
-                        $new_patient_identifier_row->source_info .= "MERG ID =(" . $this->merge_id . ")";
+                    $duplicate_patient_identifier = PatientIdentifier::model()->disableDefaultScope()->find($criteria);
+
+                    $duplicate_patient_identifier_found = !is_null($duplicate_patient_identifier);
+
+                    if (!$duplicate_patient_identifier_found) {
+                        $new_patient_identifier_row = new PatientIdentifier();
+                        $new_patient_identifier_row->patient_id = $this->primary_patient->id;
+                        $new_patient_identifier_row->patient_identifier_type_id = $secondary_patient_identifier_row->patient_identifier_type_id;
+                        $new_patient_identifier_row->value = $secondary_patient_identifier_row->value;
+                        $new_patient_identifier_row->deleted = $secondary_patient_identifier_row->deleted;
+                        $new_patient_identifier_row->source_info = ($secondary_patient_identifier_row->source_info !== 'ACTIVE' ? $secondary_patient_identifier_row->source_info . ', ' : '');
+                        if (in_array(
+                                $secondary_patient_identifier_row->patient_identifier_type_id,
+                                array_column($this->primary_patient->identifiers, 'patient_identifier_type_id')
+                            ) || $secondary_patient_identifier_row->deleted == "1") {
+                            $new_patient_identifier_row->source_info .= "DEL ID=(" . $this->merge_id . ")";
+                            $new_patient_identifier_row->deleted = '1';
+                        } else {
+
+                            $new_patient_identifier_row->source_info .= "MERG ID =(" . $this->merge_id . ")";
+                        }
+                        $new_patient_identifier_row->last_modified_user_id = Yii::app()->user->id;
+                        $new_patient_identifier_row->last_modified_date = date("Y-m-d H:i:s");
+                        $new_patient_identifier_row->created_user_id = Yii::app()->user->id;
+                        $new_patient_identifier_row->created_date = date("Y-m-d H:i:s");
                     }
-                    $new_patient_identifier_row->last_modified_user_id = Yii::app()->user->id;
-                    $new_patient_identifier_row->last_modified_date = date("Y-m-d H:i:s");
-                    $new_patient_identifier_row->created_user_id = Yii::app()->user->id;
-                    $new_patient_identifier_row->created_date = date("Y-m-d H:i:s");
 
                     $secondary_patient_identifier_row->deleted = '1';
-                    if (!$secondary_patient_identifier_row->save()) {
+                    $secondary_patient_identifier_row->source_info = "DEL ID=(" . $this->merge_id . ")" . "[" . time() . "]";
+                    if (!$secondary_patient_identifier_row->update(['deleted','source_info'])) {
                         $errors[] = $secondary_patient_identifier_row->getErrors();
                         throw new Exception('Failed to update : ' . print_r($errors, true));
                     }
-                    if (!$new_patient_identifier_row->save()) {
-                        $errors[] = $new_patient_identifier_row->getErrors();
-                        throw new Exception('Failed to insert : ' . print_r($errors, true));
+
+                    if (!$duplicate_patient_identifier_found) {
+                        if (!$new_patient_identifier_row->save()) {
+                            $errors[] = $new_patient_identifier_row->getErrors();
+                            throw new Exception('Failed to insert : ' . print_r($errors, true));
+                        }
+                    }
+
+                    if ($duplicate_patient_identifier_found && $duplicate_patient_identifier->deleted == 1) {
+                        $duplicate_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_ACTIVE_SOURCE_INFO;
+                        $duplicate_patient_identifier->deleted = 0;
+                        $duplicate_patient_identifier->update(['source_info', 'deleted']);
                     }
                 }
 
@@ -460,8 +497,8 @@ class PatientMerge
                 // Patient can have only one legacy episode
                 $legacy_episode = $secondary_patient->legacyepisodes[0];
 
-                $primary_identifier = $this->setPatientIdentifier($primary_patient->id);
-                $secondary_identifier = $this->setPatientIdentifier($secondary_patient->id);
+                $primary_identifier = $this->getPatientIdentifier($primary_patient->id);
+                $secondary_identifier = $this->getPatientIdentifier($secondary_patient->id);
 
                 $legacy_episode->patient_id = $primary_patient->id;
                 if ($legacy_episode->save()) {
@@ -527,8 +564,8 @@ class PatientMerge
     {
         $primary_ep = Episode::getChangeEpisode($primary_patient, false);
         $secondary_ep = Episode::getChangeEpisode($secondary_patient, false);
-        $primary_identifier = $this->setPatientIdentifier($primary_patient->id);
-        $secondary_identifier = $this->setPatientIdentifier($secondary_patient->id);
+        $primary_identifier = $this->getPatientIdentifier($primary_patient->id);
+        $secondary_identifier = $this->getPatientIdentifier($secondary_patient->id);
         if ($secondary_ep) {
             if ($primary_ep) {
                 // move events
@@ -567,10 +604,10 @@ class PatientMerge
      */
     public function updateOphthalmicDiagnoses($new_patient, $ophthalmic_diagnoses)
     {
-        $primary_identifier = $this->setPatientIdentifier($new_patient->id);
+        $primary_identifier = $this->getPatientIdentifier($new_patient->id);
         foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
 
-            $secondary_identifier = $this->setPatientIdentifier($ophthalmic_diagnosis->patient->id);
+            $secondary_identifier = $this->getPatientIdentifier($ophthalmic_diagnosis->patient->id);
             $msg = 'Ophthalmic Diagnosis(SecondaryDiagnosis) ' . $ophthalmic_diagnosis->id . ' moved from Patient ' . PatientIdentifierHelper::getIdentifierValue($secondary_identifier) . ' to ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier);
             $ophthalmic_diagnosis->patient_id = $new_patient->id;
             if ($ophthalmic_diagnosis->save()) {
@@ -595,9 +632,9 @@ class PatientMerge
      */
     public function updateSystemicDiagnoses($new_patient, $systemic_diagnoses)
     {
-        $primary_identifier = $this->setPatientIdentifier($new_patient->id);
+        $primary_identifier = $this->getPatientIdentifier($new_patient->id);
         foreach ($systemic_diagnoses as $systemic_diagnosis) {
-            $secondary_identifier = $this->setPatientIdentifier($systemic_diagnosis->patient->id);
+            $secondary_identifier = $this->getPatientIdentifier($systemic_diagnosis->patient->id);
             $msg = 'Systemic Diagnoses ' . $systemic_diagnosis->id . ' moved from Patient ' . PatientIdentifierHelper::getIdentifierValue($secondary_identifier) . ' to ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier);
             $systemic_diagnosis->patient_id = $new_patient->id;
             if ($systemic_diagnosis->save()) {
@@ -623,8 +660,8 @@ class PatientMerge
         $primary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $primary_patient->id]);
         $secondary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $secondary_patient->id]);
 
-        $primary_identifier = $this->setPatientIdentifier($primary_patient->id);
-        $secondary_identifier = $this->setPatientIdentifier($secondary_patient->patient->id);
+        $primary_identifier = $this->getPatientIdentifier($primary_patient->id);
+        $secondary_identifier = $this->getPatientIdentifier($secondary_patient->id);
 
         //if primary is genetics patient but secondary is not
         if ($primary_genetics_patient && !$secondary_genetics_patient) {

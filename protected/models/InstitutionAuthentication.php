@@ -188,4 +188,3 @@ class InstitutionAuthentication extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 }
-

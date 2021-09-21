@@ -149,6 +149,30 @@
             </td>
         </tr>
         <tr>
+            <td>LVC:</td>
+            <td>
+                <span class="field-info"><?php echo CHtml::encode($element->{'lvc_' . $side}) ?></span>
+            </td>
+            <td></td>
+            <td></td>
+            <td>
+                <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                LVC Mode:
+            </td>
+            <td>
+                <span class="field-info"><?php echo CHtml::encode($element->{'lvc_mode_' . $side}) ?></span>
+            </td>
+            <td></td>
+            <td></td>
+            <td>
+                <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+            </td>
+        </tr>
+        <tr>
             <td>Status</td>
             <td colspan="3">
                 <span class="large-text highlighter orange">

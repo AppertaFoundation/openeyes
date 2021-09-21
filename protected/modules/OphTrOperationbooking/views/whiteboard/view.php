@@ -263,6 +263,7 @@ $other_card_list = array(
     <footer class="wb3-actions down" style="z-index: 9999">
         <?php $this->renderPartial('footer', array(
             'biometry' => false,
+            'consent' => false,
             'booking_id' => $booking_id,
         )); ?>
     </footer>

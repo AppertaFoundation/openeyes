@@ -53,10 +53,13 @@ class HistoryRisksManager
      * @param \Medication[] $tagged_list
      * @return array|mixed|null
      */
-    protected function getRisksFromTagged($tagged_list) {
+    protected function getRisksFromTagged($tagged_list)
+    {
         $by_id = array();
         foreach ($tagged_list as $tagged) {
-            $medication_set_ids = array_map(function($e) { return $e->id; }, $tagged->medicationSets);
+            $medication_set_ids = array_map(function ($e) {
+                return $e->id;
+            }, $tagged->medicationSets);
             $risks = OphCiExaminationRisk::findForMedicationSetIds($medication_set_ids);
             foreach ($risks as $risk) {
                 if (!array_key_exists($risk->id, $by_id)) {
@@ -79,14 +82,14 @@ class HistoryRisksManager
             $present_risks = $element ? $element->present : array();
             $missing_risks = array_filter(
                 $risks,
-                function($r) use ($present_risks) {
+                function ($r) use ($present_risks) {
                     foreach ($present_risks as $present) {
                         if ($r['risk']->id === $present->risk_id) {
                             // for the matching risk, we filter it out if
                             // all the required comments are already on the present entry
                             return (bool) array_filter(
                                 $r['comments_list'],
-                                function($c) use ($present) {
+                                function ($c) use ($present) {
                                     return strpos(strtolower($present->comments), strtolower($c)) < 0;
                                 }
                             );
@@ -164,7 +167,6 @@ class HistoryRisksManager
                 $entry->save();
             }
         }
-
     }
 
     /**
