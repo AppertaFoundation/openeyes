@@ -14,7 +14,8 @@
  */
 ?>
 
-<?php $currentValue = $metadata->getSettingName(null, $allowed_classes);
+<?php $currentValue = $metadata->getSettingName(null, $allowed_classes, $institution_id, true);
+;
 if (!isset($currentValue) || $currentValue == null) {
     // we need this to prevent HTML value without =
     $currentValue = '';

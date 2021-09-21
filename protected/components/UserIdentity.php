@@ -496,36 +496,53 @@ class UserIdentity extends CUserIdentity
             return;
         }
 
-        // Get all the user's firms and put them in a session
+        // Set this first as we'll need it to determine the selected firm and site.
+        $app->session['selected_institution_id'] = $this->institution_id;
+        $institution = Institution::model()->findByPk($this->institution_id);
+
+        // Get all the user's firms for the current institution and put them in a session.
 
         $firms = array();
 
-        foreach ($user->getAvailableFirms() as $firm) {
+        $userFirms = $user->getFirmsForCurrentInstitution();
+        foreach ($userFirms as $firm) {
             $firms[$firm->id] = $this->firmString($firm);
         }
 
         if (!count($firms)) {
-            $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: user has no firm rights and cannot use the system");
-            throw new Exception('User has no firm rights and cannot use the system.');
+            $user->audit(
+                'login',
+                'login-failed',
+                null,
+                "Login failed for user {$this->username}: user has no firm rights for {$institution->name} and cannot use the system."
+            );
+            throw new Exception('User has no firm rights for the selected institution and cannot use the system.');
         }
 
+
+
         // Select firm
-        if ($user->last_firm_id) {
+        if (
+            $user->last_firm_id
+            && Firm::model()->find('id = :id', [':id' => $user->last_firm_id])->institution_id === $app->session['selected_institution_id']
+        ) {
             $app->session['selected_firm_id'] = $user->last_firm_id;
         } elseif (count($user->firms)) {
             // Set the firm to one the user is associated with
-            $userFirms = $user->firms;
             $app->session['selected_firm_id'] = $userFirms[0]->id;
         } else {
             // The user doesn't have firms of their own to select from so we select
-            // one arbitrarily
+            // one arbitrarily that belongs to the current institution.
             $app->session['selected_firm_id'] = key($firms);
         }
 
         // Select site
         if (!empty($this->site_id)) {
             $app->session['selected_site_id'] = $this->site_id;
-        } else if ($user->last_site_id) {
+        } else if (
+            $user->last_site_id
+            && Site::model()->find('id = :id', [':id' => $user->last_site_id])->institution_id === $app->session['selected_institution_id']
+        ) {
             $app->session['selected_site_id'] = $user->last_site_id;
         } elseif ($default_site = Site::model()->getDefaultSite()) {
             $app->session['selected_site_id'] = $default_site->id;

@@ -44,13 +44,15 @@ foreach ($element->entries as $entry) {
     $is_stopped = false;
     // if the request is POST, it means we are on the validation error screen
     // therefore we show entries just like the user set up originally
-    if ($entry->isStopped() && !empty($entry->stopped_in_event_id) && $entry->stopped_in_event_id !== $event_id) {
-        $is_stopped = true;
-    } else {
-        foreach ($history_entries as $history_entry) {
-            if (!$entry->isDuplicate($history_entry) && $entry->medication_id === $history_entry->medication_id && $entry->isStopped()) {
-                $is_stopped = true;
-                break;
+    if (!$entry->hasErrors()) {
+        if ($entry->isStopped() && !empty($entry->stopped_in_event_id) && $entry->stopped_in_event_id !== $event_id) {
+            $is_stopped = true;
+        } else {
+            foreach ($history_entries as $history_entry) {
+                if (!$entry->isDuplicate($history_entry) && $entry->medication_id === $history_entry->medication_id && $entry->isStopped()) {
+                    $is_stopped = true;
+                    break;
+                }
             }
         }
     }

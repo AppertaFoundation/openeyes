@@ -145,12 +145,17 @@ class Firm extends BaseActiveRecordVersioned
         );
     }
 
+    private static function getLabelSettings($key){
+        $institution_id = \Yii::app()->session['selected_institution_id'];
+        return \SettingMetadata::model()->getSetting($key, null, false, ['SettingInstitution', 'SettingInstallation'], $institution_id);
+    }
     /**
      * @return string
      */
     public static function contextLabel()
     {
-        return ucwords(strtolower(Yii::app()->params['context_firm_label']));
+        $label = Yii::app()->params['context_firm_label'] ? : self::getLabelSettings('context_firm_label');
+        return ucwords(strtolower($label));
     }
 
     /**
@@ -158,7 +163,8 @@ class Firm extends BaseActiveRecordVersioned
      */
     public static function serviceLabel()
     {
-        return ucwords(strtolower(Yii::app()->params['service_firm_label']));
+        $label = Yii::app()->params['service_firm_label'] ? : self::getLabelSettings('service_firm_label');
+        return ucwords(strtolower($label));
     }
 
     /**

@@ -190,7 +190,7 @@ class Site extends BaseActiveRecordVersioned
             $site = $this->findByAttributes(array('remote_id' => Yii::app()->params['default_site_code']));
         }
         if (!$site) {
-            $site = $this->find();
+            $site = $this->find('institution_id = :id', [':id' => Yii::app()->session['selected_institution_id']]);
         }
 
         return $site;

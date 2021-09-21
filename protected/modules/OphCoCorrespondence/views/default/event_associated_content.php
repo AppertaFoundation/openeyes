@@ -107,6 +107,7 @@
                     <td class="attachment_status">
                         <?php if ($ac->associated_protected_file_id) { ?>
                             <i class="oe-i tick-green small pad-right"></i>Attached
+                            <input type="hidden" name="file_id[<?=$row_index?>]" value="<?=$ac->associated_protected_file_id?>">
                         <?php } else {
                             $tooltip_content = 'Temporary error, please try again. If the error still occurs, please contact support.';
                             ?>
@@ -127,21 +128,59 @@
                 if (!empty($posted_data)) {
                     foreach ($posted_data as $pdk => $pdv) {
                         $event = Event::model()->findByPk($pdv);
+                        $attachment_event_id = $_POST['attachments_event_id'][$pdk];
+                        $display_title = $_POST['attachments_display_title'][$pdk] ?? null;
+                        $is_hidden = $_POST['attachments_system_hidden'][$pdk] ?? 0;
+                        $is_print_appended = $_POST['attachments_print_appended'][$pdk] ?? 0;
+                        $short_code = $_POST['attachments_short_code'][$pdk] ?? null;
+                        $file_id = $_POST['file_id'][$pdk] ?? null;
                         $row_index++;
                         ?>
 
                         <tr data-id="<?= $row_index ?>">
-                            <input type="hidden" class="attachments_event_id"
-                                   name="attachments_event_id[<?= $row_index ?>]"
-                                   value="<?= $_POST['attachments_event_id'][$pdk] ?>"/>
+                            <input
+                                type="hidden"
+                                class="attachments_event_id"
+                                name="attachments_event_id[<?= $row_index ?>]"
+                                value="<?= $attachment_event_id ?>"/>
                             <td><?= $event->eventType->name ?></td>
-                            <td><input type="text" class="attachments_display_title"
-                                       name="attachments_display_title[<?= $row_index ?>]"
-                                       value="<?= $_POST['attachments_display_title'][$pdk] ?>"/></td>
                             <td>
+                                <input 
+                                    type="text" 
+                                    class="attachments_display_title"
+                                    name="attachments_display_title[<?= $row_index ?>]"
+                                    value="<?= $display_title ?>"/>
+                            </td>
+                            <td>
+                                <input 
+                                    type="hidden" 
+                                    name="attachments_system_hidden[<?= $row_index ?>]"
+                                    value="<?= $is_hidden ?>"/>
+                                <input
+                                    type="hidden"
+                                    name="attachments_print_appended[<?= $row_index ?>]"
+                                    value="<?= $is_print_appended ?>"/>
+                                <input 
+                                    type="hidden"
+                                    name="attachments_short_code[<?= $row_index ?>]"
+                                    value="<?= $short_code ?>"/>
                                 <?= Helper::convertDate2NHS($event->event_date); ?>
                             </td>
-                            <td><i class="oe-i trash"></i></td>
+                            <td class="attachment_status">
+                                <?php if ($file_id) { ?>
+                                    <i class="oe-i tick-green small pad-right"></i>Attached
+                                    <input type="hidden" name="file_id[<?=$row_index?>]" value="<?=$file_id?>">
+                                <?php } else {
+                                    $tooltip_content = 'Temporary error, please try again. If the error still occurs, please contact support.';
+                                    ?>
+                                    <i class="oe-i cross-red small pad-right"></i>Unable to attach
+                                    <i class="oe-i oe-i info small pad js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>"></i>
+                                <?php } ?>
+                            </td>
+                            <td style="text-align: right;">
+                                <button class="reprocess_btn" style="display: <?= $file_id ? 'none' : ''?>" type="button">Try again</button>
+                                <i class="oe-i trash"></i>
+                            </td>
                         </tr>
                         <?php
                     }
@@ -150,11 +189,11 @@
             ?>
             </tbody>
         </table>
-            <div class="add-data-actions flex-item-bottom" id="correspondence-attachment-popup">
-                <button class="button hint green js-add-select-search" id="add-attachment-btn" type="button">
-                    <i class="oe-i plus pro-theme"></i>
-                </button>
-            </div>
+        <div class="add-data-actions flex-item-bottom" id="correspondence-attachment-popup">
+            <button class="button hint green js-add-select-search" id="add-attachment-btn" type="button">
+                <i class="oe-i plus pro-theme"></i>
+            </button>
+        </div>
     </div>
 <script>
     <?php  $events = $this->getAttachableEvents($patient); ?>

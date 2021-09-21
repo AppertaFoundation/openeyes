@@ -40,8 +40,8 @@ $(document).ready(() => {
         };
 
         if (status !== "stop") {
-            // get the first form under event-content
-            let form = document.querySelector('#event-content form');
+            // get form ends with -create or -update
+            let form = document.querySelector('#event-content form[id$="-create"], #event-content form[id$="-update"]');
             $(form).submit(); // Non JQuery method causes odd behaviour so left for now.
         }
     }

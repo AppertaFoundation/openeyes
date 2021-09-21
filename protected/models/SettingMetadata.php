@@ -171,7 +171,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
      * @param string[]|null $allowed_classes The allowed setting model classes to query over.
      * @return array|CList|false|mixed|string|null
      */
-    public function getSetting($key = null, $element_type = null, $return_object = false, $allowed_classes = null)
+    public function getSetting($key = null, $element_type = null, $return_object = false, $allowed_classes = null, $institution_id = null, $is_setting_page = false)
     {
         if (!$key) {
             $key = $this->key;
@@ -199,8 +199,9 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $specialty_id = $firm && $firm->specialty ? $firm->specialty->id : null;
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
         $site_id = $site->id ?? null;
-        $institution_id = $site->institution_id ?? null;
-
+        $is_admin = Yii::app()->user->checkAccess('admin');
+        // only on the admin system settings page and with admin role, the user can view other institution settings
+        $institution_id = $is_setting_page && $is_admin ? ($institution_id ?? null) : ($site->institution_id ?? null);
         foreach (static::$CONTEXT_CLASSES as $class => $field) {
             if ($allowed_classes && !in_array($class, $allowed_classes, true)) {
                 continue;
@@ -234,14 +235,12 @@ class SettingMetadata extends BaseActiveRecordVersioned
      * @param string[]|null $allowed_classes The allowed setting instance classes to use.
      * @return array|CList|false|mixed|string|null
      */
-    public function getSettingName($key = null, $allowed_classes = null)
+    public function getSettingName($key = null, $allowed_classes = null, $institution_id = null, $is_setting_page = false)
     {
         if (!$key) {
             $key = $this->key;
         }
-
-        $value = $this->getSetting($key, null, false, $allowed_classes);
-
+        $value = $this->getSetting($key, null, false, $allowed_classes, $institution_id, $is_setting_page);
         if ($value === '') {
             $value = $this->default_value;
         }
