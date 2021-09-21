@@ -274,6 +274,13 @@ class User extends BaseActiveRecordVersioned
         return implode(' ', array($this->title, strtoupper($this->first_name[0]), $this->last_name));
     }
 
+    public function getFirmsForCurrentInstitution()
+    {
+        return array_filter($this->getAvailableFirms(), static function ($item) {
+            return Yii::app()->session['selected_institution_id'] === $item->institution_id;
+        });
+    }
+
     /**
      * @return string
      */
