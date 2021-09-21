@@ -14,7 +14,6 @@
  */
 ?>
 <?php foreach ($disorder_sections as $disorder_section) :?>
-
     <div class="collapse-group highlight">
         <div class="header-icon collapse" data-bjc="20"><?=\CHtml::encode($disorder_section->name); ?></div>
         <div class="collapse-group-content " style="display: block;">
