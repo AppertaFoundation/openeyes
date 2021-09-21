@@ -982,7 +982,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         }
     }
 
-    public function getLogmarDatas()
+    public static function getLogmarDatas()
     {
         return [
             'NPL',
@@ -1013,7 +1013,7 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
         ];
     }
 
-    public function getSnellenDatas()
+    public static function getSnellenDatas()
     {
         return [
             'NPL',

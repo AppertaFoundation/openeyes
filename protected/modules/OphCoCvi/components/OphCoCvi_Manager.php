@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCoCvi\components;
 
+use Element_OphCoCvi_Esign;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics_V1;
@@ -435,6 +436,15 @@ class OphCoCvi_Manager extends \CComponent
             $clinical->setScenario('finalise');
 
             if (!$clinical->validate()) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        if ($signature = $this->getElementForEvent($event, "Element_OphCoCvi_Esign")) {
+            /** @var Element_OphCoCvi_Esign $signature */
+            if (!$signature->isSignedByConsultant()) {
                 return false;
             }
         } else {

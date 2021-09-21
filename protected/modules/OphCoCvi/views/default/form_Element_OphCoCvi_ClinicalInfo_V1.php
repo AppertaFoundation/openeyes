@@ -19,9 +19,9 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
 $visual_acuity_list = array();
 if (isset($element->best_corrected_right_va_list)) {
     if ($element->best_corrected_right_va_list == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_SNELLEN) {
-        $visual_acuity_list = $element->getSnellenDatas();
+        $visual_acuity_list = $element::getSnellenDatas();
     } elseif ($element->best_corrected_right_va_list == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_LOGMAR) {
-        $visual_acuity_list = $element->getLogmarDatas();
+        $visual_acuity_list = $element::getLogmarDatas();
     }
 }
 $modelName = CHtml::modelName($element);

@@ -147,6 +147,16 @@ class Element_OphCoCvi_Esign extends BaseEsignElement
         return true;
     }
 
+    public function isSignedByConsultant(): bool
+    {
+        foreach ($this->getSignatures() as $signature) {
+            if ($signature->type === \BaseSignature::TYPE_LOGGEDIN_USER) {
+                return $signature->isSigned();
+            }
+        }
+        return false;
+    }
+
     /**
      * @inheritDoc
      */
