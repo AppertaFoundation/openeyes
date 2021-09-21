@@ -24,7 +24,7 @@ class SiteController extends BaseController
                 'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo', 'listSites'),
             ),
             array('allow',
-                'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout', 'deviceready', 'pollSignatureRequests', 'pollCompletedSignature'),
+                'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout', 'deviceready', 'pollSignatureRequests', 'pollCompletedSignature', 'getCurrentTimestamp'),
                 'users' => array('@'),
             ),
         );
@@ -567,6 +567,11 @@ class SiteController extends BaseController
 
         $this->renderJSON($output);
         Yii::app()->end();
+    }
+
+    public function actionGetCurrentTimestamp()
+    {
+        return time();
     }
 
 //    Advanced search is not integrated at the moment, but we leave the code here for later
