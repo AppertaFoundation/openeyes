@@ -1209,62 +1209,6 @@ class DefaultController extends \BaseEventTypeController
         \Yii::app()->end();
     }
 
-    public function actionPrintVisualyImpaired($event_id)
-    {
-        $this->initWithEventId($event_id);
-
-        \Yii::app()->getAssetManager()->registerCssFile('print_visual_impaired.css', 'application.modules.OphCoCvi.assets.css');
-
-        if ($this->cvi_manager == null) {
-            $this->getManager();
-        }
-
-        if (method_exists($this, "getSession")) {
-            $pdf_print_suffix = Yii::app()->user->id . '_' . rand();
-        } else {
-            $pdf_print_suffix = getmypid().rand();
-        }
-
-        $wk = new \WKHtmlToPDF();
-        $wk->setMarginTop('20mm');
-        $wk->setHeaderCss( \Yii::app()->getAssetManager()->publish( \Yii::getPathOfAlias('application.modules.OphCoCvi.assets.css').'/print_visual_impaired.css') );
-        $wk->setCanvasImagePath($this->event->imageDirectory);
-        $wk->setPatient($this->event->episode->patient);
-        $wk->setBarcode($this->event->barcodeHTML);
-        $wk->setDocref($this->event->docref);
-
-        $cviElements = $this->cvi_manager->generateCviElementsForPDF( $this->event );
-
-        $consultantGDImage = $this->cvi_manager->generateGDFromSignature( $cviElements['consultantSignature'] );
-        $consultantSignature = $this->cvi_manager->changeConsultantImageFromGDObject('consultant_signature_'.mt_rand(), $consultantGDImage);
-
-        $patientGDImage = $this->cvi_manager->generateGDFromSignature( $cviElements['PatientSignature'] );
-        $patientSignature = $this->cvi_manager->changePatientImageFromGDObject('patient_signature_'.mt_rand(), $patientGDImage);
-
-        $cviElements['consultantSignatureImgSrc'] = $this->cvi_manager->consultantSignatureImage;
-        $cviElements['patientSignatureImgSrc'] = $this->cvi_manager->patientSignatureImage;
-
-        $this->layout = '//layouts/print';
-        $view = $this->render('/layouts/print_visual_impaired', [
-            'elements' => $cviElements,
-            'imageFolder' => realpath(__DIR__ . '/..') . '/assets/img/',
-        ], true);
-
-        $header = realpath(__DIR__ . '/..') . '/views/layouts/print_visual_impaired_header.php';
-
-        $wk->generatePDF($this->cvi_manager->outDir, 'visualy_impaired', $pdf_print_suffix, $view, (boolean) @$_GET['html'], false, null, $header );
-
-        $pdf = $this->cvi_manager->outDir.'visualy_impaired_'.$pdf_print_suffix.'.pdf';
-
-        header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf));
-
-        readfile($pdf);
-
-        $this->cvi_manager->clearImages();
-        unlink($pdf);
-    }
-
     /**
      * init action
      */
