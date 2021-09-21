@@ -117,15 +117,18 @@ class m210913_110100_import_legacy_signatures extends OEMigration
 				")->queryAll();
 
         foreach ($interpreters as $interpreter) {
+            $element_id = $this->dbConnection
+                ->createCommand("
+				SELECT id FROM " . self::NEW_ET . " WHERE event_id = ".$interpreter['event_id']."
+				")->queryScalar();
             $date = strtotime($interpreter['signature_date']);
             $this->execute("
                 INSERT INTO " . self::NEW_ITEM . "
             (
-            				element_id, `type`, signature_file_id, signatory_role, signatory_name,
+            				element_id, signature_file_id, signatory_role, signatory_name,
             				`timestamp`, last_modified_user_id, last_modified_date, created_user_id, created_date
             ) VALUES (
-            " . $interpreter['id'] . ",
-            " . $interpreter['signatory_person'] . ",
+            " . $element_id . ",
             " . $interpreter['protected_file_id'] . ",
             '".$role."',
             '" . $interpreter['signatory_name'] . "',
