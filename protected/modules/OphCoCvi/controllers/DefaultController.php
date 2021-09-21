@@ -1529,7 +1529,7 @@ class DefaultController extends \BaseEventTypeController
     {
         if ($unit_id == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_SNELLEN) {
             $datas = Element_OphCoCvi_ClinicalInfo_V1::model()->getSnellenDatas();
-        } else if ($unit_id == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_LOGMAR) {
+        } elseif ($unit_id == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_LOGMAR) {
             $datas = Element_OphCoCvi_ClinicalInfo_V1::model()->getLogmarDatas();
         }
 
