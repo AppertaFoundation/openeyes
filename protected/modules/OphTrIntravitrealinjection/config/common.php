@@ -19,9 +19,11 @@
 return array(
     'params' => array(
         'admin_menu' => array(
-            'Treatment Drugs' => '/OphTrIntravitrealinjection/admin/viewTreatmentDrugs',
-            'IOP Lowering Drugs' => '/OphTrIntravitrealinjection/admin/manageIOPLoweringDrugs',
-            'Injection given by users' => '/OphTrIntravitrealinjection/admin/injectionUsers',
+            'OphTrIntravitrealinjection' => [
+                'Treatment Drugs' => ['uri' => '/OphTrIntravitrealinjection/admin/viewTreatmentDrugs', 'restricted' => array('admin')],
+                'IOP Lowering Drugs' => ['uri' => '/OphTrIntravitrealinjection/admin/manageIOPLoweringDrugs', 'restricted' => array('admin')],
+                'Injection given by users' => '/OphTrIntravitrealinjection/admin/injectionUsers',
+            ]
         ),
         'reports' => array(
             'Intravitreal injections' => '/OphTrIntravitrealinjection/report/injections',

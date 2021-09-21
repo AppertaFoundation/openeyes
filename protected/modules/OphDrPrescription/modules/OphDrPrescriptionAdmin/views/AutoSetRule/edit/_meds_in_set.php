@@ -16,8 +16,8 @@
 ?>
 <?php
 $is_prescription_set = $medication_set->hasUsageCode("PRESCRIPTION_SET");
-$default_dispense_location = \CHtml::listData(\OphDrPrescription_DispenseLocation::model()->findAll(), 'id', 'name');
-$default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondition::model()->findAll(), 'id', 'name');
+$default_dispense_location = \CHtml::listData(\OphDrPrescription_DispenseLocation::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION), 'id', 'name');
+$default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondition::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION), 'id', 'name');
 
 // FP10 settings
 $fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
@@ -78,9 +78,17 @@ $dispense_condition_options = array(
                 ?>
             <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
                     <?php
-                    $med_dispense_locations = isset($med->defaultDispenseCondition) ?
-                        \CHtml::listData($med->defaultDispenseCondition->locations, 'id', 'name') :
-                        $default_dispense_location;
+                    if (isset($med->defaultDispenseCondition)) {
+                        $dispense_condition_institution = OphDrPrescription_DispenseCondition_Institution::model()->findByAttributes(['dispense_condition_id' => $med->defaultDispenseCondition->id, 'institution_id' => Yii::app()->session['selected_institution_id']]);
+                        $med_dispense_locations = CHtml::listData(array_map(
+                            static function ($item) {
+                                return $item->dispense_location;
+                            },
+                            $dispense_condition_institution->dispense_location_institutions
+                        ), 'id', 'name');
+                    } else {
+                        $med_dispense_locations = $default_dispense_location;
+                    }
                     ?>
                     <tr class="js-row-of-<?=$med->id?>" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>" data-key="<?=$k;?>">
                         <td>
@@ -152,12 +160,7 @@ $dispense_condition_options = array(
                                 $med,
                                 'default_dispense_condition_id',
                                 CHtml::listData(
-                                    OphDrPrescription_DispenseCondition::model()->findAll(array(
-                                        'condition' => '(active'
-                                            . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
-                                            . ") or id='" . $med->default_dispense_condition_id . "'",
-                                        'order' => 'display_order',
-                                    )),
+                                    OphDrPrescription_DispenseCondition::model()->withSettings($overprint_setting, $fpten_dispense_condition->id)->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION),
                                     'id',
                                     'name'
                                 ),

@@ -20,9 +20,19 @@
 <?php
     $queue = $queueset->initial_queue;
 ?>
-<tr class="queueset-item<?= $queueset->active ? '' : ' inactive'?>" data-queueset-id="<?=$queueset->id?>" data-initial-queue-id="<?=$queue->id?>" id="queue-nav-<?=$queue->id?>">
+<tr class="queueset-item" data-queueset-id="<?=$queueset->id?>" data-initial-queue-id="<?=$queue->id?>" id="queue-nav-<?=$queue->id?>">
+    <td>
+        <input type="checkbox" name="selected[]" value="<?php echo $queueset->id?>"/>
+    </td>
     <td>
         <div class="queueset-link" style="cursor:pointer"><?=$queueset->name?></div>
+    </td>
+    <td>
+        <?php if ($queueset->hasMapping(ReferenceData::LEVEL_INSTITUTION, Yii::app()->session['selected_institution_id'])) { ?>
+            <i class="oe-i tick small"></i>
+        <?php } else { ?>
+            <i class="oe-i remove small"></i>
+        <?php } ?>
     </td>
     <td>
         <span class="queueset-admin">
@@ -30,6 +40,7 @@
             <button class="permissions admin-action">Permissions</button>
         </span>
     </td>
+
 </tr>
 <ul class="queue-set" id="queue-container-<?=$queue->id?>" style="display: none;">
     <?php $this->renderPartial('queue_as_list', array('queue' => $queue)); ?>

@@ -15,7 +15,19 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGrading_ClinicalRetinopathy::model()->activeOrPk($element->{$side . '_clinicalret_id'})->findAll();
+
+/**
+ * @var $element Element_OphCiExamination_DRGrading
+ * @var $side string
+ */
+
+use OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading;
+use OEModule\OphCiExamination\models\OphCiExamination_DRGrading_ClinicalMaculopathy;
+use OEModule\OphCiExamination\models\OphCiExamination_DRGrading_ClinicalRetinopathy;
+use OEModule\OphCiExamination\models\OphCiExamination_DRGrading_NSCMaculopathy;
+use OEModule\OphCiExamination\models\OphCiExamination_DRGrading_NSCRetinopathy;
+
+$clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()->activeOrPk($element->{$side . '_clinicalret_id'})->findAll();
 ?>
 <table>
   <tbody>
@@ -187,19 +199,23 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
       </div>
       <!-- REMOVED UNTIL WE ARE PROVIDED WITH APPROPRIATE TEXT FOR THE DESCRIPTIONS
         TODO: code to auto detect when there are no descriptions, so that this works dynamically based on the data.
-        <span class="grade-info-icon" data-info-type="clinical"><img src="<?php echo $this->getAssetPathForElement($element) ?>/img/icon_info.png" style="height:20px" /></span>
+        <span class="grade-info-icon" data-info-type="clinical">
+            <img src="<?php echo $this->getAssetPathForElement($element) ?>/img/icon_info.png" style="height:20px" />
+        </span>
         <div class="quicklook grade-info" style="display: none;">
             <?php foreach ($clinical_maculopathys as $clinical) {
-                echo '<div style="display: none;" class="' . CHtml::modelName($element) . '_' . $side . '_clinicalmac_desc" id="' . CHtml::modelName($element) . '_' . $side . '_clinicalmac_desc_' . $clinical->code . '">' . $clinical->description . '</div>';
+                    echo '<div style="display: none;" class="' . CHtml::modelName($element) . '_' . $side . '_clinicalmac_desc" id="' . CHtml::modelName($element) . '_' . $side . '_clinicalmac_desc_' . $clinical->code . '">' . $clinical->description . '</div>';
             }
             ?>
         </div>
 
-        <div id="<?=\CHtml::modelName($element) . '_' . $side . '_all_clinicalmac_desc'; ?>" class="grade-info-all" data-select-id="<?=\CHtml::modelName($element) . '_' . $side . '_clinicalmac_id'; ?>">
+        <div id="<?=\CHtml::modelName($element) . '_' . $side . '_all_clinicalmac_desc'; ?>" class="grade-info-all" data-select-id="<?=CHtml::modelName($element) . '_' . $side . '_clinicalmac_id' ?>">
             <dl>
                 <?php foreach ($clinical_maculopathys as $clinical) {
                     ?>
-                    <dt class="<?php echo $clinical->class ?>"><a href="#" data-id="<?php echo $clinical->id ?>"><?php echo $clinical->name ?></a></dt>
+                    <dt class="<?php echo $clinical->class ?>">
+                        <a href="#" data-id="<?php echo $clinical->id ?>"><?php echo $clinical->name ?></a>
+                    </dt>
                     <dd class="<?php echo $clinical->class ?>"><?php echo nl2br($clinical->description) ?></dd>
                     <?php
                 } ?>
@@ -250,42 +266,43 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
             foreach ($nsc_maculopathys as $macu) {
                 $show_div = false;
 
-                if ($selected_value == $macu->id) {
+                if ($selected_value === $macu->id) {
                     $show_div = true;
                 }
-                echo '<div ' . ($show_div ? ' ' : 'style="display: none;" ') . 'class="' . CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_desc desc" id="' . CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_desc_' . $macu->code . '">' . $macu->description . '</div>';
+                        echo '<div ' . ($show_div ? ' ' : 'style="display: none;" ') . 'class="' . CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_desc desc" id="' . CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_desc_' . $macu->code . '">' . $macu->description . '</div>';
             }
             ?>
-      </div>
-      <!-- div containing the full list of descriptions for nsc maculopathy -->
-      <div id="<?=\CHtml::modelName($element) . '_' . $side . '_all_maculopathy_desc'; ?>"
-           class="grade-info-all"
-           style="display: none; padding: 10px;"
-           data-select-id="<?=\CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_id'; ?>">
-        <dl>
-            <?php foreach ($nsc_maculopathys as $macu) { ?>
-              <div class="status-box <?= getLevelColour($macu->class) ?>">
-                <b>
-                  <a href="#" data-id="<?php echo $macu->id ?>"><?php echo $macu->name ?></a>
-                </b>
-                <br>
-                  <?php echo nl2br($macu->description) ?>
-              </div>
-                <?php
-            } ?>
-        </dl>
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <label for="<?=\CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_photocoagulation'; ?>">
-            <?php echo $element->getAttributelabel($side . '_nscmaculopathy_photocoagulation') ?>:
-      </label>
-    </td>
-    <td>
-        <?php echo $form->radioBoolean($element, $side . '_nscmaculopathy_photocoagulation', array('nowrapper'=> true), array()) ?>
-    </td>
-  </tr>
-  </tbody>
-</table>
+                </div>
+                <!-- div containing the full list of descriptions for nsc maculopathy -->
+                <div id="<?=CHtml::modelName($element) . '_' . $side . '_all_maculopathy_desc' ?>"
+                     class="grade-info-all"
+                     style="display: none; padding: 10px;"
+                     data-select-id="<?=CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_id' ?>">
+                    <dl>
+                        <?php foreach ($nsc_maculopathys as $macu) { ?>
+                            <div class="status-box <?= getLevelColour($macu->class) ?>">
+                                <b>
+                                    <a href="#" data-id="<?php echo $macu->id ?>"><?php echo $macu->name ?></a>
+                                </b>
+                                <br>
+                                <?php echo nl2br($macu->description) ?>
+                            </div>
+                            <?php
+                        } ?>
+                    </dl>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="<?=CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_photocoagulation' ?>">
+                    <?php echo $element->getAttributelabel($side . '_nscmaculopathy_photocoagulation') ?>:
+                </label>
+            </td>
+            <td>
+                <?php echo $form->radioBoolean($element, $side . '_nscmaculopathy_photocoagulation', array('nowrapper'=> true)) ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

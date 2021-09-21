@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -20,6 +21,7 @@ return array(
     'event1' => array(
         'id' => 1,
         'episode_id' => 1,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1,
         'last_modified_user_id' => 1,
@@ -34,6 +36,7 @@ return array(
     'event2' => array(
         'id' => 2,
         'episode_id' => 2,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1,
         'last_modified_user_id' => 1,
@@ -48,6 +51,7 @@ return array(
     'event3' => array(
         'id' => 3,
         'episode_id' => 2,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1,
         'last_modified_user_id' => 1,
@@ -62,6 +66,7 @@ return array(
     'event4' => array(
         'id' => 4,
         'episode_id' => 3,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1,
         'last_modified_user_id' => 1,
@@ -76,6 +81,7 @@ return array(
     'event5' => array(
         'id' => 5,
         'episode_id' => 4,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1,
         'last_modified_user_id' => 1,
@@ -90,6 +96,7 @@ return array(
     'event6' => array(
         'id' => 6,
         'episode_id' => 4,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1001,
         'last_modified_user_id' => 1,
@@ -104,6 +111,7 @@ return array(
     'event7' => array(
         'id' => 7,
         'episode_id' => 3,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1007,
         'last_modified_user_id' => 1,
@@ -118,6 +126,7 @@ return array(
     'event8' => array(
         'id' => 8,
         'episode_id' => 3,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1012,
         'last_modified_user_id' => 1,
@@ -132,6 +141,7 @@ return array(
     'event9' => array(
         'id' => 9,
         'episode_id' => 4,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1012,
         'last_modified_user_id' => 1,
@@ -145,6 +155,7 @@ return array(
     ),
     'event10' => array(
         'episode_id' => 6,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1001,
         'last_modified_user_id' => 1,
@@ -158,6 +169,7 @@ return array(
     ),
     'event11' => array(
         'episode_id' => 6,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1001,
         'last_modified_user_id' => 1,
@@ -171,6 +183,7 @@ return array(
     ),
     'event12' => array(
         'episode_id' => 6,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1001,
         'last_modified_user_id' => 1,
@@ -184,6 +197,7 @@ return array(
     ),
     'event13' => array(
         'episode_id' => 6,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1003,
         'last_modified_user_id' => 1,
@@ -197,6 +211,7 @@ return array(
     ),
     'event14' => array(
         'episode_id' => 6,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1003,
         'last_modified_user_id' => 1,
@@ -210,6 +225,7 @@ return array(
     ),
     'event15' => array(
         'episode_id' => 1,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1002,
         'last_modified_user_id' => 1,
@@ -226,6 +242,7 @@ return array(
 
     'event16' => array(
         'episode_id' => 7,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1003,
         'last_modified_user_id' => 1,
@@ -239,6 +256,7 @@ return array(
     ),
     'event17' => array(
         'episode_id' => 7,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1002,
         'last_modified_user_id' => 1,
@@ -253,6 +271,7 @@ return array(
 
     'event18' => array(
         'episode_id' => 8,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1003,
         'last_modified_user_id' => 1,
@@ -266,6 +285,7 @@ return array(
     ),
     'event19' => array(
         'episode_id' => 8,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1002,
         'last_modified_user_id' => 1,
@@ -280,6 +300,7 @@ return array(
 
     'event20' => array(
         'episode_id' => 9,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1003,
         'last_modified_user_id' => 1,
@@ -293,6 +314,7 @@ return array(
     ),
     'event21' => array(
         'episode_id' => 9,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1002,
         'last_modified_user_id' => 1,
@@ -307,6 +329,7 @@ return array(
 
     'event22' => array(
         'episode_id' => 10,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1003,
         'last_modified_user_id' => 1,
@@ -320,6 +343,7 @@ return array(
     ),
     'event23' => array(
         'episode_id' => 10,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1002,
         'last_modified_user_id' => 1,
@@ -333,6 +357,7 @@ return array(
     ),
     'event24' => array(
         'episode_id' => 10,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1008,
         'last_modified_user_id' => 1,
@@ -346,12 +371,13 @@ return array(
     ),
     'event25' => array(
         'episode_id' => 6,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1002,
         'last_modified_user_id' => 1,
         'last_modified_date' => date('Y-m-d 00:00:00'),
         'created_date' => '2014-01-01 00:00:40',
-        'event_date' => date('Y-m-d 00:00:00'),
+        'event_date' => '2014-01-01 00:00:40',
         'info' => 'someinfo',
         'deleted' => false,
         'delete_reason' => null,
@@ -359,6 +385,7 @@ return array(
     ),
     'event26' => array(
         'episode_id' => 6,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1001,
         'last_modified_user_id' => 1,
@@ -372,6 +399,7 @@ return array(
     ),
     'event27' => array(
         'episode_id' => 6,
+        'institution_id' => 1,
         'created_user_id' => 1,
         'event_type_id' => 1000,
         'last_modified_user_id' => 1,
@@ -383,4 +411,19 @@ return array(
         'delete_reason' => null,
         'delete_pending' => false,
     ),
+    /*'event28' => array(
+        'id' => 28,
+        'episode_id' => 6,
+        'institution_id' => 1,
+        'created_user_id' => 1,
+        'event_type_id' => 1002,
+        'last_modified_user_id' => 1,
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+        'created_date' => '2014-01-01 00:00:00',
+        'event_date' => '2014-01-01 00:00:00',
+        'info' => 'someinfo',
+        'deleted' => false,
+        'delete_reason' => null,
+        'delete_pending' => false,
+    ),*/
 );

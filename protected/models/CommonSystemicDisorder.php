@@ -31,6 +31,19 @@
  */
 class CommonSystemicDisorder extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return $this->tableName().'_id';
+    }
+
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -68,6 +81,7 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     {
         return array(
             'disorder' => [self::BELONGS_TO, 'Disorder', 'disorder_id', 'on' => 'disorder.active = 1'],
+            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
         );
     }
 
@@ -116,8 +130,8 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
 
     public static function getCommonSystemicDisorders()
     {
-        return CommonSystemicDisorder::model()->findAll(array(
-            'condition' => 'specialty_id is null',
+        return CommonSystemicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, array(
+            'condition' => 'specialty_id is null',//Why is this here? It's causing inconsistent results with configured common systemic disorders, versus their representation in the systemic diagnoses exam element
             'join' => 'JOIN disorder ON t.disorder_id = disorder.id',
             'order' => 't.display_order',
         ));

@@ -22,29 +22,14 @@
  * The followings are the available columns in table 'User':
  *
  * @property int    $id
- * @property string $username
  * @property string $first_name
  * @property string $last_name
  * @property string $email
- * @property int    $active
- * @property string $password
- * @property string $salt
  * @property int    $global_firm_rights
- * @property date   $password_last_changed_date
- * @property int    $password_failed_tries
- * @property string $password_status
- * @property date   $password_softlocked_until
+ * @property date   $correspondence_sign_off_user_id
  */
 class User extends BaseActiveRecordVersioned
 {
-    /**
-     * Used to check password and password confirmation match.
-     *
-     * @var string
-     */
-    public $password_repeat;
-    public $password_hashed;
-
     /**
      * Returns the static model of the specified AR class.
      *
@@ -79,12 +64,11 @@ class User extends BaseActiveRecordVersioned
     {
         $commonRules = array(
             // Added for uniqueness of username
-            array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
-            array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
+            array('id, first_name, last_name, email, global_firm_rights, correspondence_sign_off_user_id', 'safe', 'on' => 'search'),
             array('title, first_name, last_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
             array(
-                'username, first_name, last_name, email, active, global_firm_rights, title, qualifications, role, salt, password, is_consultant, is_surgeon,
-                 has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
+                'first_name, last_name, email, global_firm_rights, title, qualifications, role, is_consultant, is_surgeon,
+                 has_selected_firms,doctor_grade_id, registration_code, signature_file_id, correspondence_sign_off_user_id',
                 'safe',
             ),
         );
@@ -99,73 +83,25 @@ class User extends BaseActiveRecordVersioned
             );
         }
 
-        if (Yii::app()->params['auth_source'] === 'BASIC') {
-            $user = Yii::app()->request->getPost('User');
+        $generalUserRules = [
+            ['email, first_name, last_name, global_firm_rights', 'required'],
+            ['first_name, last_name', 'length', 'max' => 40],
+            ['email', 'length', 'max' => 80],
+            ['email', 'email']
+        ];
 
-            // if the global firm rights is set to No, at least one context needs to be selected
-            if (isset($user['global_firm_rights']) && $user['global_firm_rights'] == 0) {
-                $commonRules = array_merge(
-                    $commonRules,
-                    array(
-                        array('firms', 'required'),
-                    )
-                );
-            }
+        $surgeonRules = [
+            ['doctor_grade_id, registration_code', 'required']
+        ];
 
-            $pw_restrictions = $this->getPasswordRestrictions();
-            $generalUserRules = array(
-                array(
-                    'username',
-                    'match',
-                    'pattern' => '/^[\w|\.\-_\+@]+$/',
-                    'message' => 'Only letters, numbers and underscores are allowed for usernames.',
-                ),
-                array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
-                array('username, first_name, last_name', 'length', 'max' => 40),
-                array(
-                    'password',
-                    'length',
-                    'min' => $pw_restrictions['min_length'],
-                    'tooShort' => $pw_restrictions['min_length_message'],
-                    'max' => $pw_restrictions['max_length'],
-                    'tooLong' => $pw_restrictions['max_length_message'],
-                ),
-                array('password','match','pattern'=> $pw_restrictions['strength_regex'],'message'=> $pw_restrictions['strength_message']),
-                array('email', 'length', 'max' => 80),
-                array('email', 'email'),
-                array('salt', 'length', 'max' => 10),
-                // Added for password comparison functionality
-                array('password_repeat, password_last_changed_date, password_failed_tries, password_status, password_softlocked_until', 'safe'),
-            );
-            $surgeonRules = array(array('doctor_grade_id,registration_code ','required'));
-
-            if (isset($user['is_surgeon']) && $user['is_surgeon'] == 1) {
-                return array_merge($commonRules, $surgeonRules, $generalUserRules);
-            } else {
-                return array_merge($commonRules, $generalUserRules);
-            }
-        } elseif (Yii::app()->params['auth_source'] === 'LDAP') {
-            return array_merge(
-                $commonRules,
-                array(
-                    array('username, active, global_firm_rights', 'required'),
-                    array('username', 'length', 'max' => 40),
-                    array('password_repeat', 'safe'),
-                )
-            );
-        } elseif (Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC') {
-            return array_merge(
-                $commonRules,
-                array(
-                    array('username, first_name, last_name, email, active', 'required'),
-                    array('username', 'length', 'max' => 40),
-                    array('email', 'length', 'max' => 40),
-                    array('password_repeat', 'safe'),
-                )
-            );
-        } else {
-            throw new SystemException('Unknown auth_source: ' . Yii::app()->params['auth_source']);
+        if (isset($user['is_surgeon']) && $user['is_surgeon'] == 1) {
+            $commonRules = array_merge($commonRules, $surgeonRules);
         }
+
+        return array_merge(
+            $commonRules,
+            $generalUserRules
+        );
     }
 
     /**
@@ -197,6 +133,8 @@ class User extends BaseActiveRecordVersioned
             'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
             'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
             'signature' => array(self::BELONGS_TO, 'ProtectedFile', 'signature_file_id'),
+            'signOffUser' => array(self::BELONGS_TO, 'User', 'correspondence_sign_off_user_id'),
+            'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id')
         );
 
         if ($this->getScenario() !== 'portal_command') {
@@ -258,25 +196,15 @@ class User extends BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
-            'username' => 'Username',
             'first_name' => 'First name',
             'last_name' => 'Last name',
             'email' => 'Email',
-            'active' => 'Active',
-            'password' => 'Password',
-            'password_old' => 'Current password',
-            'password_new' => 'New password',
-            'password_confirm' => 'Confirm password',
             'global_firm_rights' => 'Global firm rights',
             'firms' => 'Context',
             'is_consultant' => 'Consultant',
             'is_surgeon' => 'Surgeon',
             'doctor_grade_id' => 'Grade',
             'role' => 'Position',
-            'password_last_changed_date' => 'Date Password was last changed',
-            'password_failed_tries' => 'Number of failed Password attempts',
-            'password_status' => 'Status of User Password',
-            'password_softlocked_until' => 'Password locked until',
         );
     }
 
@@ -290,90 +218,14 @@ class User extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
-        $criteria->compare('username', $this->username, true);
         $criteria->compare('first_name', $this->first_name, true);
         $criteria->compare('last_name', $this->last_name, true);
         $criteria->compare('email', $this->email, true);
-        $criteria->compare('active', $this->active);
         $criteria->compare('global_firm_rights', $this->global_firm_rights);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
-    }
-
-    /**
-     * Hashes the user password for insertion into the db.
-     */
-    protected function afterValidate()
-    {
-        parent::afterValidate();
-
-        if (!$this->password_hashed) {
-            $this->salt = null;
-            $this->password = $this->hashPassword($this->password, null);
-            $this->password_hashed = true;
-        }
-    }
-
-    /**
-     * Returns an md5 hash of the password and username provided.
-     *
-     * @param string $password
-     * @param string $salt
-     *
-     * @return string
-     */
-    public function hashPassword($password, $salt)
-    {
-        if (!$salt) {
-            return password_hash($password, PASSWORD_BCRYPT);
-        }
-        return md5($salt . $password);
-    }
-
-    /**
-     * Returns whether the password provided is valid for this user.
-     *
-     * Hashes the password with the salt for this user. If valid, return true,
-     * else return false.
-     *
-     * @param string $password
-     * @throws Exception
-     *
-     * @return bool
-     */
-    public function validatePassword($password)
-    {
-        if (!$this->salt) {
-            return password_verify($password, $this->password);
-        }
-        if ($this->hashPassword($password, $this->salt) === $this->password) {
-            // Regenerate the hash using the new method.
-            $this->salt = null;
-            $this->password = $this->hashPassword($password, null);
-            if (!$this->saveAttributes(array('password','salt'))) {
-                $this->audit('login', 'auto-encrypt-password-failed', "user_id = {$this->id}, with error :". var_export($this->getErrors(), true));
-                return false;
-            }
-            $this->audit('login', 'auto-encrypt-password', "user_id = {$this->id}");
-            return password_verify($password, $this->password);
-        }
-        return false;
-    }
-
-    /**
-     * Displays a string indicating whether the user account is active.
-     *
-     * @return string
-     */
-    public function getActiveText()
-    {
-        if ($this->active) {
-            return 'Yes';
-        } else {
-            return 'No';
-        }
     }
 
     /**
@@ -401,25 +253,9 @@ class User extends BaseActiveRecordVersioned
     /**
      * @return string
      */
-    public function getFullNameAndUserName()
-    {
-        return implode(' ', array($this->first_name, $this->last_name)) . (" ({$this->username})");
-    }
-
-    /**
-     * @return string
-     */
     public function getReversedFullName()
     {
         return implode(' ', array($this->last_name, $this->first_name));
-    }
-
-    /**
-     * @return string
-     */
-    public function getReversedFullNameAndUserName()
-    {
-        return implode(' ', array($this->last_name, $this->first_name)) . (" ({$this->username})");
     }
 
     /**
@@ -436,6 +272,13 @@ class User extends BaseActiveRecordVersioned
     public function getFirstInitialFullNameAndTitle()
     {
         return implode(' ', array($this->title, strtoupper($this->first_name[0]), $this->last_name));
+    }
+
+    public function getFirmsForCurrentInstitution()
+    {
+        return array_filter($this->getAvailableFirms(), static function ($item) {
+            return Yii::app()->session['selected_institution_id'] === $item->institution_id;
+        });
     }
 
     /**
@@ -458,6 +301,16 @@ class User extends BaseActiveRecordVersioned
         return implode(' ', array($this->title, $this->last_name, $this->first_name));
     }
 
+    public function getUsersFromCurrentInstitution()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = "join user_authentication ua on ua.user_id = t.id";
+        $criteria->compare('ua.institution_authentication_id', \Yii::app()->session['selected_institution_id']);
+        $criteria->order = 't.last_name,t.first_name asc';
+
+        return self::model()->findAll($criteria);
+    }
+
     /**
      * Returns the users that are eligible to be considered surgeons.
      *
@@ -467,7 +320,6 @@ class User extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->compare('is_surgeon', 1);
-        $criteria->compare('active', 1);
         $criteria->order = 'last_name,first_name asc';
 
         return self::model()->findAll($criteria);
@@ -492,7 +344,6 @@ class User extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->compare('is_surgeon', 1);
-        $criteria->compare('active', 1);
         $criteria->order = 'last_name,first_name asc';
 
         return CHtml::listData(self::model()->findAll($criteria), 'id', 'reversedFullName');
@@ -503,74 +354,12 @@ class User extends BaseActiveRecordVersioned
         return $this->fullName;
     }
 
-    public function getIs_local()
-    {
-        return in_array($this->username, \Yii::app()->params['local_users']);
-    }
-
-    public function generateRandomPassword()
-    {
-        $pwd = bin2hex(openssl_random_pseudo_bytes(15));
-        $pwd[rand(0, strlen($pwd))] = "_";
-
-        return $pwd;
-    }
-
-    public function beforeValidate()
-    {
-        //When LDAP is enabled and the user is not a local user than we generate a random password
-
-        if ($this->isNewRecord && \Yii::app()->params['auth_source'] === 'LDAP' && !$this->is_local) {
-            $password = $this->generateRandomPassword();
-            $this->password = $password;
-            $this->password_repeat = $password;
-        } elseif ($this->isNewRecord && (\Yii::app()->params['auth_source'] === 'SAML' || \Yii::app()->params['auth_source'] === 'OIDC')) {
-            $password = $this->generateRandomPassword();
-            $this->password = $password;
-            $this->password_repeat = $password;
-        }
-
-        if (!$this->password_hashed) {
-            if ($this->password != $this->password_repeat) {
-                $this->addError('password', 'Password confirmation must match exactly');
-            }
-            $this->salt = $this->randomSalt();
-        }
-
-        if ($this->getIsNewRecord() && !$this->password) {
-            $this->addError('password', 'Password is required');
-        }
-
-        return parent::beforeValidate();
-    }
-
-    public function randomSalt()
-    {
-        $salt = '';
-        for ($i = 0; $i < 10; ++$i) {
-            switch (rand(0, 2)) {
-                case 0:
-                    $salt .= chr(rand(48, 57));
-                    break;
-                case 1:
-                    $salt .= chr(rand(65, 90));
-                    break;
-                case 2:
-                    $salt .= chr(rand(97, 122));
-                    break;
-            }
-        }
-
-        return $salt;
-    }
-
     public function findAsContacts($term)
     {
         $contacts = array();
 
         $criteria = new CDbCriteria();
         $criteria->addSearchCondition('lower(`t`.last_name)', $term, false);
-        $criteria->compare('active', 1);
         $criteria->order = 'contact.title, contact.first_name, contact.last_name';
 
         foreach (self::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
@@ -583,6 +372,15 @@ class User extends BaseActiveRecordVersioned
         }
 
         return $contacts;
+    }
+
+    public function beforeSave()
+    {
+        if (!$this->correspondence_sign_off_user_id) {
+            $this->correspondence_sign_off_user_id = null;
+        }
+
+        return parent::beforeSave();
     }
 
     public function getActiveSiteSelections()
@@ -601,7 +399,6 @@ class User extends BaseActiveRecordVersioned
 
         $criteria = new CDbCriteria();
         $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
-        $criteria->compare('active', 1);
         $criteria->addNotInCondition('id', $site_ids);
         $criteria->order = 'name asc';
 
@@ -654,7 +451,7 @@ class User extends BaseActiveRecordVersioned
         foreach ($added_roles as $role) {
             Yii::app()->authManager->assign($role, $this->id);
 //            If one of the roles added is an admin, then provide the user with permissions to manage all trials - CERA -523
-            if ($role == 'admin') {
+            if ($role == 'admin' && Yii::app()->moduleAPI->get('OETrial')) {
                 $trials = Trial::model()->findAll();
                 foreach ($trials as $trial) {
                     $newPermission = new UserTrialAssignment();
@@ -677,7 +474,7 @@ class User extends BaseActiveRecordVersioned
         foreach ($removed_roles as $role) {
             Yii::app()->authManager->revoke($role, $this->id);
 //            If one of the roles removed from the user is that of an admin, thhn remove ability to manage trials not owned by the user - CERA-523
-            if ($role == 'admin') {
+            if ($role == 'admin' && Yii::app()->moduleAPI->get('OETrial')) {
                 $trials = Trial::model()->findAll();
                 foreach ($trials as $trial) {
                     $criteria = new CDbCriteria();
@@ -725,16 +522,33 @@ class User extends BaseActiveRecordVersioned
      */
     public function getAvailableFirms()
     {
-        $crit = new CDbCriteria;
-        $crit->compare('active', 1);
+        $crit = new CDbCriteria();
+        $crit->compare('t.active', 1);
         if (!$this->global_firm_rights) {
-            $crit->join = "left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = :user_id " .
-                "left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = :user_id " .
-                "left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id " .
-                "left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = :user_id ";
+            $crit->join =
+                'join institution i on i.id = t.institution_id ' .
+                'join institution_authentication ia on ia.institution_id = i.id and ia.active = 1 ' .
+                'join user_authentication ua ON ua.institution_authentication_id = ia.id and ua.active = 1 ' .
+                'left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = ua.user_id ' .
+                'left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = ua.user_id ' .
+                'left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id ' .
+                'left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = ua.user_id ';
             $crit->addCondition("fua.id is not null or ufr.id is not null or usr.id is not null");
-            $crit->params['user_id'] = $this->id;
+            $crit->addCondition("ua.user_id = :user_id");
+            $crit->params[':user_id'] = $this->id;
         }
+
+        return Firm::model()->findAll($crit);
+    }
+
+    public function getAllAvailableFirms()
+    {
+        $crit = new CDbCriteria();
+        $crit->compare('t.active', 1);
+        $crit->join = "join institution i on i.id = t.institution_id
+            join institution_authentication ia on ia.institution_id = i.id and ia.active = 1
+            join user_authentication ua on ua.institution_authentication_id = ia.id  and ua.active = 1";
+        $crit->compare('ua.user_id', $this->id);
 
         return Firm::model()->findAll($crit);
     }
@@ -766,10 +580,10 @@ class User extends BaseActiveRecordVersioned
             'portal_user',
             Yii::app()->params
         )) ? Yii::app()->params['portal_user'] : 'portal_user';
-        $crit = new CDbCriteria();
-        $crit->compare('username', $username);
-
-        return $this->find($crit);
+        $criteria = new CDbCriteria();
+        $criteria->compare('username', $username);
+        $userAuthentication = UserAuthentication::model()->find($criteria);
+        return $userAuthentication ? $userAuthentication->user : null;
     }
 
     /**
@@ -920,257 +734,39 @@ class User extends BaseActiveRecordVersioned
 
         return $users_with_roles;
     }
-
-    /**
-     * Returns active status for a selected user
-     *
-     * @param User $user
-     * @return bool active status for a user
-     */
-    public function getUserActiveStatus($user)
+    // get user permission details
+    public function getUserPermissionDetails($tooltip = false)
     {
-        if ($user->active) {
-            $active = '1';
-        } else {
-            $active = '0';
-        }
-        return $active;
-    }
-
-     /**
-     * Returns if user has that a password status
-     *
-     * @param string $status
-     * @param User $user
-     * @return bool is user at that level
-     */
-    public function testUserPWStatus($status = 'locked', $user = null)
-    {
-        if (!$user) {
-            $user = $this;
-        }
-        if ($user->password_status == $status) {
-            return true;
-        }
-        if ($status === 'locked') { // checking bad statuses
-            if (!($user->password_status === 'current' || $user->password_status === 'expired' ||$user->password_status === 'stale' )) {
-                return true;
-            }
-        }
-        return false;
-    }
-    /**
-     * Returns if setting the password status was successful/if it would be if $save had been true, assuming the save performs.
-     *
-     * @param string $status
-     * @param User $user
-     * @param bool $save should the function save the value itself?
-     * @return bool is user at that level or greater - if true and saving were there issues saving? false = "I cannot do that" either due to rules or error saving (like the value is already set to that)
-     */
-    public function setPWStatusHarsher($status = null, $user = null, $save = true)
-    {
-        if (!$user) {
-            $user = $this;
-        }
-        switch ($status) {
-            case 'locked':
-                $user->password_status ='locked';
-                if ($save) {
-                    return $user->saveAttributes(array('password_status'));
-                } else {
-                    return true;
+        $user_roles = Yii::app()->user->getRole($this->id);
+        $can_prescribe = in_array('Prescribe', array_values($user_roles));
+        $is_med_administer = in_array('Med Administer', array_values($user_roles));
+        $ret = array(
+            'id' => $this->id,
+            'label' => $this->getFullNameAndTitle(),
+            'name' => $this->getFullNameAndTitle(),
+            'value' => $this->id,
+            'grade' => $this->grade ? $this->grade->grade : '',
+            'can_prescribe' => $can_prescribe ? 'Yes' : 'No',
+            'is_med_administer' => $is_med_administer ? 'Yes' : 'No',
+            'consultant' => $this->is_consultant ? 'Yes' : 'No',
+        );
+        if ($tooltip) {
+            $tooltip_str = "";
+            $ignore_keys = array('label', 'id', 'name', 'value', 'username');
+            foreach ($ret as $key => $val) {
+                if (in_array($key, $ignore_keys)) {
+                    continue;
                 }
-                break;
-            case 'softlocked':
-                if ($user->password_status !='locked') {
-                    $user->password_status ='softlocked';
-                    $temp_now = new DateTime();
-                    $pw_timeout = !empty(Yii::app()->params['pw_status_checks']['pw_softlock_timeout'])? Yii::app()->params['pw_status_checks']['pw_softlock_timeout'] : '10 mins';
-                    $user->password_softlocked_until = date_format(date_add($temp_now, date_interval_create_from_date_string($pw_timeout)), "Y-m-d H:i:s");
-                    if ($save) {
-                        return $user->saveAttributes(array('password_status', 'password_softlocked_until'));
-                    } else {
-                        return true;
-                    }
-                }
-                break;
-            case 'expired':
-                if ($user->password_status === 'current'||$user->password_status === 'stale') {
-                    $user->password_status ='expired';
-                    if ($save) {
-                        return $user->saveAttributes(array('password_status'));
-                    } else {
-                        return true;
-                    }
-                }
-                break;
-            case 'stale':
-                if ($user->password_status === 'current') {
-                    $user->password_status ='stale';
-                    if ($save) {
-                        return $user->saveAttributes(array('password_status'));
-                    } else {
-                        return true;
-                    }
-                }
-                break;
+                $key = str_replace('_', ' ', $key);
+                $key = strtoupper($key);
+                $tooltip_str .= "<em>$key: </em>$val<br/>";
+            }
+            $ret = $tooltip_str;
         }
-        return false;
+        return $ret;
     }
-
-    /**
-     * Checks if the user has passed the allowed log in attempts, and will apply the appropriate status if so.
-     *
-     * @param User $user
-     */
-    public function setFailedLogin($user = null)
-    {
-        if (!$user) {
-            $user = $this;
-        }
-        if (!$user->testUserPWStatus()) {
-            //Increase the number of failed tries
-            $user->password_failed_tries++;
-            $user->saveAttributes(array('password_failed_tries'));
-        }
-    }
-
-    /**
-     * Checks if the user has passed the allowed log in attempts, and will apply the appropriate status if so.
-     *
-     * @param User $user
-     * @return bool has status level been changed?
-     */
-    public function userLogOnAttemptsCheck($user = null)
-    {
-        if (!$user) {
-            $user = $this;
-        }
-        $threshold = isset(Yii::app()->params['pw_status_checks']['pw_tries'])?Yii::app()->params['pw_status_checks']['pw_tries']:3;
-        if ($threshold) { //only check pw tries if we have a threshold to check against
-            $pwTriesFailed = Yii::app()->params['pw_status_checks']['pw_tries_failed']?? 'locked';
-            if ($pwTriesFailed === 'softlocked' && $user->password_status === 'softlocked' ) {
-                if ( $user->password_softlocked_until < date("Y-m-d H:i:s")) {
-                    $user->password_failed_tries = 0;
-                    $user->password_status = 'current';
-                    $user->saveAttributes(array('password_status', 'password_failed_tries', 'password_softlocked_until'));
-                    $user->audit('login', 'user-soft-unlock', null, "User: {$this->username} has finished their softlock period ");
-                }
-            }
-
-            if ($user->password_failed_tries >= $threshold) {   // if the number of attempts is greater than what is allowed then try to lock the account
-                $user->password_failed_tries = $threshold; //reset to avoid overflow errors
-                if ($user->setPWStatusHarsher($pwTriesFailed, $user)) {
-                    $user->audit('login', 'user-' . $pwTriesFailed, null, "User: {$this->username} has exceeded " . $threshold.' tries, account is now ' . $pwTriesFailed);
-                } else {
-                    $user->audit('login', 'user-' . $pwTriesFailed.'-same', null, "User: {$this->username} has exceeded " . $threshold.' tries, account is already ' . $pwTriesFailed);
-                }
-                return $user->saveAttributes(array('password_failed_tries')); // save only these values
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Checks if the user has the time allowed for changing thier password, and will apply the appropriate status if so.
-     *
-     * @param User $user
-     * @return bool has status level been changed?
-     */
-    public function testUserPwDate($date = null, $user = null)
-    {
-        if (!$user) {
-            $user = $this;
-        }
-        if ($date == null) {
-            $date = $this->password_last_changed_date;
-        }
-        if ($date == null) {
-            $date = date("Y-m-d H:i:s");
-        }
-        //Get params
-        $pwDaysLock = !empty(Yii::app()->params['pw_status_checks']['pw_days_lock']) ? Yii::app()->params['pw_status_checks']['pw_days_lock'] : null; //get tolerance for pw expiry
-        $pwDaysExpire = !empty(Yii::app()->params['pw_status_checks']['pw_days_expire']) ? Yii::app()->params['pw_status_checks']['pw_days_expire'] : null ; //get tolerance for pw expiry
-        $pwDaysStale = !empty(Yii::app()->params['pw_status_checks']['pw_days_stale']) ? Yii::app()->params['pw_status_checks']['pw_days_stale'] : null; //get tolerance for pw expiry
-
-        if ($pwDaysLock && $user->password_last_changed_date) {
-            $pwDateCutoffLock =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysLock)); // get last valid time
-            if ($date <= $pwDateCutoffLock) {
-                return $user->setPWStatusHarsher('locked');
-            }
-        }
-        if ($pwDaysExpire) {
-            $pwDateCutoffExpire =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysExpire)); // get last valid time
-            if ($date <= $pwDateCutoffExpire) {
-                return $user->setPWStatusHarsher('expired');
-            }
-        }
-        if ($pwDaysStale) {
-            $pwDateCutoffStale =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysStale)); // get last valid time
-            if ($date <= $pwDateCutoffStale) {
-                return $user->setPWStatusHarsher('stale');
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Gets the frontend name of the password status
-     * @param string $user
-     * @return string Name of status
-     */
-    public function getUserPwStatusName($user = null)
-    {
-        if (!$user) {
-            $user = $this;
-        }
-        switch ($user->password_status) {
-            case 'current':
-                return 'Current';
-                break;
-            case 'stale':
-                return 'Stale';
-                break;
-            case 'expired':
-                return 'Expired';
-                break;
-            case 'softlocked':
-                return 'Soft locked with timeout';
-                break;
-            default:
-                return 'Locked';
-                break;
-        }
-    }
-        /**
-     * Gets the frontend name of the password status
-     * @param string $user
-     * @return string Name of status
-     */
-    public function getUserDaysLeft($user = null)
-    {
-        if (!$user) {
-            $user = $this;
-        }
-        $daysLeft = array();
-        if ($user->password_last_changed_date) {
-            $pwDaysStale = !empty(Yii::app()->params['pw_status_checks']['pw_days_stale'])?Yii::app()->params['pw_status_checks']['pw_days_stale'] : null; //get tolerance for pw expiry
-            $pwDaysExpire = !empty(Yii::app()->params['pw_status_checks']['pw_days_expire'])?Yii::app()->params['pw_status_checks']['pw_days_expire'] : null; //get tolerance for pw expiry
-            $pwDaysLock = !empty(Yii::app()->params['pw_status_checks']['pw_days_lock'])?Yii::app()->params['pw_status_checks']['pw_days_lock'] : null; //get tolerance for pw expiry
-
-            if ($pwDaysStale) {
-                $daysLeft["DaysStale"]=date_diff(date_create(date("Y-m-d H:i:s", strtotime('-'.$pwDaysStale))), date_create($user->password_last_changed_date))->format('%a days');
-            }
-            if ($pwDaysExpire) {
-                $daysLeft["DaysExpire"]=date_diff(date_create(date("Y-m-d H:i:s", strtotime('-'.$pwDaysExpire))), date_create($user->password_last_changed_date))->format('%a days');
-            }
-            if ($pwDaysLock) {
-                $daysLeft["DaysLock"]=date_diff(date_create(date("Y-m-d H:i:s", strtotime('-'.$pwDaysLock))), date_create($user->password_last_changed_date))->format('%a days');
-            }
-        }
-        return $daysLeft;
-    }
-
+    /// NOTE: SSO is not currently supported under the multi-tenancy model. To support it, these functions will likely
+    /// need to move to UserAuthentication.
     public function setSSOUserInformation($response)
     {
         // Set user credentials that login through SAML authentication
@@ -1182,9 +778,8 @@ class User extends BaseActiveRecordVersioned
             $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
             $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'][0] : '';
             $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
-        }
-        // Set the user credentials that login through OIDC suthentication
-        elseif (Yii::app()->params['auth_source'] === 'OIDC') {
+        } elseif (Yii::app()->params['auth_source'] === 'OIDC') {
+            // Set the user credentials that login through OIDC suthentication
             $this->username = $response['email'];       // OIDC users set emails as their usernames
             $this->first_name = $response['given_name'];
             $this->last_name = $response['family_name'];

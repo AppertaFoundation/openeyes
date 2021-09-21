@@ -5,9 +5,14 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue;
 
+/**
+ * Class PatientVisionParameterTest
+ * @covers PatientVisionParameter
+ * @covers CaseSearchParameter
+ */
 class PatientVisionParameterTest extends CDbTestCase
 {
-    public $parameter;
+    public PatientVisionParameter $parameter;
     protected $fixtures = array(
         'patients' => 'Patient',
         'va_readings' => OphCiExamination_VisualAcuity_Reading::class,
@@ -34,15 +39,22 @@ class PatientVisionParameterTest extends CDbTestCase
         unset($this->parameter);
     }
 
-    public function testSaveSearch()
+    public function testSaveSearch(): void
     {
         $this->parameter->operation = 'IN';
         $this->parameter->value = 101;
         $this->parameter->bothEyesIndicator = true;
 
-        $expected = 'a:6:{s:10:"class_name";s:22:"PatientVisionParameter";s:4:"name";s:6:"vision";s:9:"operation";s:2:"IN";s:2:"id";i:0;s:5:"value";i:101;s:17:"bothEyesIndicator";b:1;}';
+        $expected = serialize(array(
+            'class_name' => 'PatientVisionParameter',
+            'name' => 'vision',
+            'operation' => 'IN',
+            'id' => 0,
+            'value' => 101,
+            'bothEyesIndicator' => true
+        ));
 
-        $this->assertEquals($expected, serialize($this->parameter->saveSearch()));
+        self::assertEquals($expected, serialize($this->parameter->saveSearch()));
     }
 
     /**
@@ -50,7 +62,7 @@ class PatientVisionParameterTest extends CDbTestCase
      * @param $op
      * @param bool $both_eyes
      */
-    public function testGetAuditData($op, $both_eyes = false)
+    public function testGetAuditData($op, $both_eyes = false): void
     {
         if ($op === '=') {
             $this->parameter->operation = 'IN';
@@ -64,10 +76,10 @@ class PatientVisionParameterTest extends CDbTestCase
             $this->parameter->bothEyesIndicator = true;
         }
 
-        $this->assertEquals($expected, $this->parameter->getAuditData());
+        self::assertEquals($expected, $this->parameter->getAuditData());
     }
 
-    public function getOperators()
+    public function getOperators(): array
     {
         return array(
             'INCLUDES single-eye' => array(
@@ -92,7 +104,7 @@ class PatientVisionParameterTest extends CDbTestCase
      * @param $op
      * @param bool $both_eyes
      */
-    public function testQuery($op, $both_eyes = false)
+    public function testQuery($op, $both_eyes = false): void
     {
         $second_operation = 'OR';
         if ($both_eyes) {
@@ -104,7 +116,7 @@ class PatientVisionParameterTest extends CDbTestCase
 
         $this->parameter->value = 1;
 
-        $this->assertTrue($this->parameter->validate());
+        self::assertTrue($this->parameter->validate());
 
         $expected = "SELECT DISTINCT t5.patient_id
 FROM (
@@ -134,45 +146,50 @@ FROM (
                                             FROM patient
                                                    LEFT JOIN episode e ON patient.id = e.patient_id
                                                    LEFT JOIN event ON event.episode_id = e.id
-                                                   LEFT JOIN et_ophciexamination_visualacuity eov ON event.id = eov.event_id
-                                                   LEFT JOIN ophciexamination_visualacuity_reading ovr ON eov.id = ovr.element_id
+                                                   LEFT JOIN et_ophciexamination_visualacuity eov
+                                                       ON event.id = eov.event_id
+                                                   LEFT JOIN ophciexamination_visualacuity_reading ovr
+                                                       ON eov.id = ovr.element_id
                                             WHERE ovr.value IS NOT NULL
                                               AND ovr.side IS NOT NULL
                                               AND ovr.last_modified_date IS NOT NULL) t2
                                       WHERE t2.patient_id = t1.patient_id
                                         AND t1.va_side = t2.va_side)
                    ) t3) t4
-       GROUP BY patient_id) t5 WHERE (t5.left_va_value {$op} :p_v_value_0) {$second_operation} (t5.right_va_value {$op} :p_v_value_0)";
+       GROUP BY patient_id) t5
+WHERE (t5.left_va_value {$op} :p_v_value_0)
+{$second_operation} (t5.right_va_value {$op} :p_v_value_0)";
 
-        // Have to use str_replace here because the line endings are different between the text block above and the block used within the parameter.
-        $this->assertEquals(str_replace("\r\n", "\n", $expected), $this->parameter->query());
+        // Using str_replace here because the line endings are different
+        // between the text block above and the block used within the parameter.
+        self::assertEquals(str_replace("\r\n", "\n", $expected), $this->parameter->query());
     }
 
     /**
      * @throws CException
      */
-    public function testGetValueForAttribute()
+    public function testGetValueForAttribute(): void
     {
         $this->parameter->operation = 'IN';
         $this->parameter->value = 101;
         $this->parameter->bothEyesIndicator = true;
 
-        $this->assertEquals('IN', $this->parameter->getValueForAttribute('operation'));
-        $this->assertEquals('6/9', $this->parameter->getValueForAttribute('value'));
-        $this->assertEquals('Both eyes', $this->parameter->getValueForAttribute('bothEyesIndicator'));
+        self::assertEquals('IN', $this->parameter->getValueForAttribute('operation'));
+        self::assertEquals('6/9', $this->parameter->getValueForAttribute('value'));
+        self::assertEquals('Both eyes', $this->parameter->getValueForAttribute('bothEyesIndicator'));
 
         $this->expectException('CException');
 
         $this->parameter->getValueForAttribute('invalid');
     }
 
-    public function testBindValues()
+    public function testBindValues(): void
     {
         $this->parameter->value = 10;
         $expected = array(
             "p_v_value_0" => (int)$this->parameter->value
         );
 
-        $this->assertEquals($expected, $this->parameter->bindValues());
+        self::assertEquals($expected, $this->parameter->bindValues());
     }
 }

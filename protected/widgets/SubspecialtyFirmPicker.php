@@ -18,13 +18,16 @@
 
 class SubspecialtyFirmPicker extends \BaseFieldWidget
 {
+    public $institutions;
     public $subspecialties;
     public $firms = [];
     public $model;
 
-    public $template = "<tr><td>{SubspecialtyLabel}</td><td>{SubspecialtyDropDown}</td></tr>
+    public $template = "<tr><td>{InstitutionLabel}</td><td>{InstitutionDropDown}</td></tr>
+                        <tr><td>{SubspecialtyLabel}</td><td>{SubspecialtyDropDown}</td></tr>
                         <tr><td>{ContextLabel}</td><td>{ContextDropDown}</td></tr>";
 
+    public $institution_id;
     public $firm_id;
     public $subspecialty_id;
 
@@ -36,9 +39,10 @@ class SubspecialtyFirmPicker extends \BaseFieldWidget
     public function init()
     {
         parent::init();
+        $this->institutions = Institution::model()->getList(false);
         $this->subspecialties = \Subspecialty::model()->findAll();
         if ($this->model->subspecialty_id) {
-            $this->firms = \Firm::model()->getList($this->model->subspecialty_id);
+            $this->firms = \Firm::model()->getList(Yii::app()->session['selected_institution_id'], $this->model->subspecialty_id);
         }
     }
 
@@ -63,6 +67,20 @@ class SubspecialtyFirmPicker extends \BaseFieldWidget
         ob_end_flush();
     }
 
+    public function renderInstitutionLabel()
+    {
+        echo 'Institution';
+    }
+
+    public function renderInstitutionDropDown()
+    {
+        echo CHtml::activeDropDownList(
+            $this->model,
+            'institution_id',
+            Institution::model()->getList(true),
+            ['class' => 'cols-full']
+        );
+    }
 
     public function renderSubspecialtyLabel()
     {
@@ -87,7 +105,7 @@ class SubspecialtyFirmPicker extends \BaseFieldWidget
 
     public function renderContextDropDown()
     {
-        $firms = $this->model->subspecialty_id ? Firm::model()->getList($this->model->subspecialty_id) : [];
+        $firms = $this->model->subspecialty_id ? Firm::model()->getList(Yii::app()->session['selected_institution_id'], $this->model->subspecialty_id) : [];
         echo CHtml::activeDropDownList(
             $this->model,
             'firm_id',

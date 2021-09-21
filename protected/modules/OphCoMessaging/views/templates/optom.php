@@ -16,7 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-Message regarding patient: <?= $patient->hos_num ?>
+Message regarding patient: <?= PatientIdentifierHelper::getIdentifierValue($patient_identifier) .
+    " (" . PatientIdentifierHelper::getIdentifierPrompt($patient_identifier) . ")" ?>
 
 Message from Optometrist: <?= $optom ?>
 

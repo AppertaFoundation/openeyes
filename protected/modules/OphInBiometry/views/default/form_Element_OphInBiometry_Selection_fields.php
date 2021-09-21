@@ -62,11 +62,15 @@
 
                     if (!empty(${'lens_' . $side})) {
                         if ($manual_override) {
-                            $criteria->condition = 'active = 1';
+                            $criteria->condition = 't.active = 1';
                         } else {
-                            $criteria->condition = 'id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
+                            $criteria->condition = 't.id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
                         }
+                        $criteria->with = 'institutions';
+                        $criteria->condition .= ' AND institutions_institutions.institution_id = :institution_id';
+                        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
                         $lenses = OphInBiometry_LensType_Lens::model()->findAll($criteria, array('order' => 'display_order'));
+                        $lens_options = [];
                         foreach ($lenses as $lens_data_options) {
                             $lens_options[$lens_data_options->id] = ['data-constant' => number_format($lens_data_options->acon, 2)];
                         }
@@ -110,7 +114,12 @@
                     if ($disable) {
                         $htmlOptions['disabled'] = 'disabled';
                     }
-                    echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_' . $side})->findAll(array('order' => 'display_order asc')), 'id', 'display_name'), $htmlOptions, null, array('label' => 6, 'field' => 12))
+                    $criteria = new CDbCriteria();
+                    $criteria->order = 'display_order asc';
+                    $criteria->with = 'institutions';
+                    $criteria->condition = 'institutions_institutions = :institution_id';
+                    $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
+                    echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_' . $side})->findAll($criteria), 'id', 'display_name'), $htmlOptions, null, array('label' => 6, 'field' => 12))
                     ?>
                 </td>
             </tr>

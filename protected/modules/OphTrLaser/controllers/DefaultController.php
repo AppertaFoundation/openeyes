@@ -30,9 +30,9 @@ class DefaultController extends BaseEventTypeController
         $eventId = Yii::app()->getRequest()->getQuery('id', null);
         if ($eventId) {
             $eventObj = Element_OphTrLaser_Site::model()->find('event_id = '.$eventId);
-            $lasers = OphTrLaser_Site_Laser::model()->activeOrPk($eventObj->laser_id)->findAll();
+            $lasers = OphTrLaser_Site_Laser::model()->activeOrPk($eventObj->laser_id)->findAll('institution_id=:institution_id', [':institution_id' => Yii::app()->session['selected_institution_id']]);
         } else {
-            $lasers = OphTrLaser_Site_Laser::model()->active()->findAll();
+            $lasers = OphTrLaser_Site_Laser::model()->active()->findAll('institution_id=:institution_id', [':institution_id' => Yii::app()->session['selected_institution_id']]);
         }
 
         $l_by_s = array();
@@ -58,10 +58,8 @@ class DefaultController extends BaseEventTypeController
 
     public function siteLaserOperatorCheck()
     {
-        if (empty(OphTrLaser_Site_Laser::model()->findAll())) {
+        if (empty(OphTrLaser_Site_Laser::model()->findAll('institution_id=:institution_id', [':institution_id' => Yii::app()->session['selected_institution_id']]))) {
             Yii::app()->user->setFlash('error.no_laser_site', "No laser site has been added, please contact your administrator to add laser sites.");
-        } elseif (empty(OphTrLaser_Laser_Operator::model()->findAll())) {
-            Yii::app()->user->setFlash('error.no_laser_operator', "No laser operator has been added, please contact your administrator to add laser operators.");
         }
     }
     /**
@@ -69,14 +67,20 @@ class DefaultController extends BaseEventTypeController
      */
     public function initActionCreate()
     {
-                $this->siteLaserOperatorCheck();
+        $this->siteLaserOperatorCheck();
+        if (isset($_POST['Element_OphTrLaser_Site']['institution_id'])) {
+            $institution_id = $_POST['Element_OphTrLaser_Site']['institution_id'];
+        } else {
+            $institution_id = Yii::app()->session['institution_id'];
+        }
         if (isset($_POST['Element_OphTrLaser_Site']['site_id'])) {
             $site_id = $_POST['Element_OphTrLaser_Site']['site_id'];
         } else {
             $site_id = Yii::app()->session['selected_site_id'];
         }
+        $this->jsVars['institution_id'] = $institution_id;
         $this->jsVars['site_id'] = $site_id;
-        $this->jsVars['lasers_available'] = count(OphTrLaser_Site_Laser::model()->findAllByAttributes(['site_id' => $site_id])) > 0;
+        $this->jsVars['lasers_available'] = count(OphTrLaser_Site_Laser::model()->findAllByAttributes(['institution_id' => $institution_id, 'site_id' => $site_id])) > 0;
         parent::initActionCreate();
         $this->_jsCreate();
     }

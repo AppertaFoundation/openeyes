@@ -51,7 +51,7 @@ class PatientTicketing_QueueSetCategoryService extends \services\ModelService
     public function modelToResource($queuesetcategory)
     {
         $res = parent::modelToResource($queuesetcategory);
-        foreach (array('name', 'active', 'display_order') as $pass_thru) {
+        foreach (array('name', 'display_order') as $pass_thru) {
             $res->$pass_thru = $queuesetcategory->$pass_thru;
         }
 
@@ -67,7 +67,7 @@ class PatientTicketing_QueueSetCategoryService extends \services\ModelService
      */
     public function readActive($id)
     {
-        return $this->modelToResource($this->model->active()->findByPk($id));
+        return $this->modelToResource($this->model->findByPk($id));
     }
 
     /**
@@ -80,7 +80,7 @@ class PatientTicketing_QueueSetCategoryService extends \services\ModelService
     public function getCategoriesForUser($user_id)
     {
         $permissioned = array();
-        foreach ($this->model->active()->findAll() as $qsc) {
+        foreach ($this->model->findAll() as $qsc) {
             $qscr = $this->modelToResource($qsc);
             if ($this->isCategoryPermissionedForUser($qscr, $user_id)) {
                 $permissioned[] = $qscr;

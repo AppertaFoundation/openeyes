@@ -193,6 +193,7 @@ class BookingController extends OphTrOperationbookingEventController
 
         $criteria = new \CDbCriteria();
         $criteria->addCondition('active = 1');
+        $criteria->compare('institution_id', Yii::app()->session['selected_institution_id']);
         $criteria->distinct = true;
         $criteria->join = "JOIN ophtroperationbooking_operation_session session ON t.id = session.firm_id";
 

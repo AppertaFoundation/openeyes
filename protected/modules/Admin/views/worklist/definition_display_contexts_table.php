@@ -20,6 +20,7 @@
     <table class="generic-admin standard">
         <thead>
         <tr>
+            <th>Institution</th>
             <th>Site</th>
             <th>Subspecialty</th>
             <th><?php echo Firm::contextLabel() ?></th>
@@ -29,6 +30,7 @@
         <tbody>
         <?php foreach ($definition->display_contexts as $display_context) { ?>
             <tr>
+                <td><?=$display_context->InstitutionDisplay ?></td>
                 <td><?=$display_context->siteDisplay ?></td>
                 <td><?=$display_context->subspecialtyDisplay ?></td>
                 <td><?=$display_context->firmDisplay ?></td>

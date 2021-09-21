@@ -23,12 +23,15 @@ if (@$disabled) {
     <?php
     echo CHtml::hiddenField("id[{$i}]", $row->id, $html_options);
     if ($display_order) {?>
-    <td class="reorder">
-        <span>&uarr;&darr;</span>
-        <?php
+        <td class="reorder">
+            <span>&uarr;&darr;</span>
+            <?php
             echo CHtml::hiddenField("display_order[{$i}]", $row->display_order ? $row->display_order : $i, $html_options);
-        ?>
-    </td>
+            ?>
+        </td>
+        <td>
+            <input type="checkbox" name="selected[]" value="<?php echo $row->id?>" />
+        </td>
     <?php } ?>
     <?php if (!$label_extra_field) :?>
     <td>
@@ -74,4 +77,14 @@ if (@$disabled) {
             <?=\CHtml::radioButton('default', $row->default, array('value' => $i))?>
         </td>
     <?php }?>
+    <?php if ($is_mapping) {
+        foreach ($model::model()->enumerateSupportedLevels() as $level) {?>
+        <td>
+            <?php if ($row->hasMapping($level, $model::model()->getIdForLevel($level))) { ?>
+                <i class="oe-i tick small"></i>
+            <?php } else { ?>
+                <i class="oe-i remove small"></i>
+            <?php } ?>
+        </td>
+    <?php }} ?>
 </tr>

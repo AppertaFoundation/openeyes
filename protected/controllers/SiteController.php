@@ -21,7 +21,7 @@ class SiteController extends BaseController
         return array(
             // Allow unauthenticated users to view certain pages
             array('allow',
-                'actions' => array('error', 'login', 'loginFromOverlay', 'debuginfo'),
+                'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo'),
             ),
             array('allow',
                 'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout'),
@@ -68,10 +68,11 @@ class SiteController extends BaseController
                 } else {
                     $patientSearch = new PatientSearch();
 
-                    // lets check if it is a NHS number, Hospital number or Patient name
-
-                    if ($patientSearch->getNHSnumber($query) || $patientSearch->getHospitalNumber($query) || $patientSearch->getPatientName($query)) {
-                        $this->redirect(array('patient/search', 'term' => $query));
+                    if ($patientSearch->getValidSearchTerm($query)) {
+                        $redirect_array = ['patient/search', 'term' => $query];
+                        $type_id = \Yii::app()->request->getParam('patient_identifier_type_id');
+                        $redirect_array = $type_id ? array_merge($redirect_array, ['patient_identifier_type_id' => $type_id]) : $redirect_array;
+                        $this->redirect($redirect_array);
                     } else {
                         // not a valid search
                         Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
@@ -172,12 +173,6 @@ class SiteController extends BaseController
             }
         }
 
-        $institution = Institution::model()->getCurrent();
-
-        $criteria = new CDbCriteria();
-        $criteria->compare('institution_id', $institution->id);
-        $criteria->order = 'short_name asc';
-
         // display the login form
         $this->render(
             'login',
@@ -185,6 +180,33 @@ class SiteController extends BaseController
                 'model' => $model,
             )
         );
+    }
+
+    public function actionGetOverlayPrepopulationData()
+    {
+        $data = array();
+
+        $session = Yii::app()->session;
+
+        if (isset($session['user_auth']->username)) {
+            $data['username'] = $session['user_auth']->username;
+        }
+
+        if (isset($session['selected_institution_id'])) {
+            $selected_institution = Institution::model()->findByPK($session['selected_institution_id']);
+
+            $data['institution']['id'] = $selected_institution->id;
+            $data['institution']['name'] = $selected_institution->name;
+        }
+
+        if (isset($session['selected_site_id'])) {
+            $selected_site = Site::model()->findByPK($session['selected_site_id']);
+
+            $data['site']['id'] = $selected_site->id;
+            $data['site']['name'] = $selected_site->name;
+        }
+
+        $this->renderJSON($data);
     }
 
     public function actionLoginFromOverlay()
@@ -216,11 +238,12 @@ class SiteController extends BaseController
      */
     public function actionLogout()
     {
-        $user = Yii::app()->session['user'];
+        $user_auth = Yii::app()->session['user_auth'];
+        $user = $user_auth->user;
 
         $user->audit('logout', 'logout');
 
-        OELog::log("User $user->username logged out");
+        OELog::log("User $user_auth->username logged out");
 
         Yii::app()->user->logout();
         $this->redirect(Yii::app()->homeUrl);
@@ -286,21 +309,15 @@ class SiteController extends BaseController
             $ex = explode('/', file_get_contents('.git/HEAD'));
             $branch = array_pop($ex);
         }
-        if (!empty(Yii::app()->session['user'])) {
-            $user = Yii::app()->session['user'];
-        } else {
-            $user = User::model()->findByPk(Yii::app()->user->id);
-        }
 
         $firm_id = $this->getApp()->session->get('selected_firm_id');
         $firm = Firm::model()->findByPk($firm_id);
-        if (is_object($user)) {
-            $username = "$user->username ($user->id)";
+        if (is_object($firm)) {
             $firm = "$firm->name ($firm->id)";
         } else {
-            $username = 'Not logged in';
             $firm = 'Not logged in';
         }
+        $username = Yii::app()->session['user_auth']->username ?? 'Not logged in';
 
         $ipaddress = '';
         if (getenv('HTTP_X_FORWARDED_FOR')) {

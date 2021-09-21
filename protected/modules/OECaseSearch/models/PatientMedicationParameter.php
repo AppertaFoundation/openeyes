@@ -5,7 +5,15 @@
  */
 class PatientMedicationParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $label_ = 'Medication';
+    protected string $label_ = 'Medication';
+
+    protected array $options = array(
+        'value_type' => 'string_search',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '='),
+            array('label' => 'IS NOT', 'id' => '!='),
+        )
+    );
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -15,7 +23,6 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
     {
         parent::__construct($scenario);
         $this->name = 'medication';
-        $this->operation = 'LIKE';
     }
 
     public function rules()
@@ -29,30 +36,35 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
         );
     }
 
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term) : array
     {
-        $drugs = Medication::model()->findAllBySql('
-SELECT *
-FROM medication d 
-WHERE LOWER(d.preferred_term) LIKE LOWER(:term) ORDER BY d.preferred_term LIMIT 30', array('term' => "$term%"));
+        $institution_id = Institution::model()->getCurrent()->id;
 
-        $values = array();
-        foreach ($drugs as $drug) {
-            $values[] = array('id' => $drug->id, 'label' => $drug->preferred_term);
-        }
-        return $values;
+        $drugs = Medication::model()->findAllBySql("
+SELECT *
+FROM (SELECT m.* FROM medication m LEFT OUTER JOIN medication_institution mi ON mi.medication_id = m.id WHERE m.source_type != 'LOCAL' OR mi.institution_id = :institution_id) d
+WHERE LOWER(d.preferred_term) LIKE LOWER(:term) ORDER BY d.preferred_term LIMIT 30", array('term' => "$term%", 'institution_id' => $institution_id));
+
+        return array_map(
+            static function ($drug) {
+                return array('id' => $drug->id, 'label' => $drug->preferred_term);
+            },
+            $drugs
+        );
     }
 
-    public function getValueForAttribute($attribute)
+    /**
+     * @param string $attribute
+     * @return mixed|void
+     * @throws CException
+     */
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
-            switch ($attribute) {
-                case 'value':
-                    return Medication::model()->findByPk($this->$attribute)->preferred_term;
-                    break;
-                default:
-                    return parent::getValueForAttribute($attribute);
+            if ($attribute === 'value') {
+                return Medication::model()->findByPk($this->$attribute)->preferred_term;
             }
+            return parent::getValueForAttribute($attribute);
         }
         return parent::getValueForAttribute($attribute);
     }
@@ -61,7 +73,7 @@ WHERE LOWER(d.preferred_term) LIKE LOWER(:term) ORDER BY d.preferred_term LIMIT 
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @return string The constructed query string.
      */
-    public function query()
+    public function query(): string
     {
         if ($this->operation === '=') {
             $op = '=';
@@ -93,7 +105,7 @@ OR m.id IS NULL";
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
@@ -104,7 +116,7 @@ OR m.id IS NULL";
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $op = '=';
         if ($this->operation !== '=') {

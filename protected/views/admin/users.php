@@ -45,36 +45,26 @@
                value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <table class="standard">
             <colgroup>
-                <col span="3">
+                <col span="2">
                 <col class="cols-1" span="3">
                 <col>
                 <col class="cols-4"><!-- roles -->
             </colgroup>
             <thead>
             <tr>
-                <th><input type="checkbox" name="selectall" id="selectall"/></th>
                 <th>ID</th>
-                <th>Username</th>
                 <th>Title</th>
                 <th>First name</th>
                 <th>Last name</th>
                 <th>Doctor</th>
                 <th>Roles</th>
-                <th>Active</th>
-                <?php if (Yii::app()->params['auth_source'] === 'BASIC') { ?>
-                    <th>Pw Status</th>
-                <?php } ?>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($users as $i => $user) : ?>
                 <tr class="clickable js-clickable" data-id="<?php echo $user->id ?>"
                     data-uri="admin/editUser/<?php echo $user->id ?>">
-                    <td><input type="checkbox"
-                               name="users[]"
-                               value="<?php echo $user->id ?>"/></td>
                     <td><?php echo $user->id ?></td>
-                    <td><?php echo strtolower($user->username) ?></td>
                     <td><?php echo $user->title ?></td>
                     <td><?php echo $user->first_name ?></td>
                     <td><?php echo $user->last_name ?></td>
@@ -85,10 +75,6 @@
                             echo $roles ? CHtml::encode(implode(', ', $roles)) : '-';
                         ?>
                     </td>
-                    <td><i class="oe-i <?=($user->active ? 'tick' : 'remove');?> small"></i></td>
-                    <?php if (Yii::app()->params['auth_source'] === 'BASIC') { ?>
-                        <td><?=$user->getUserPwStatusName();?></td>
-                    <?php } ?>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -100,15 +86,6 @@
                         [
                             'class' => 'button large',
                             'id' => 'et_add'
-                        ]
-                    ); ?>
-                    <?=\CHtml::button(
-                        'Deactivate Users',
-                        [
-                            'class' => 'button large',
-                            'name' => 'delete',
-                            'data-object' => 'users',
-                            'id' => 'et_delete',
                         ]
                     ); ?>
                 </td>

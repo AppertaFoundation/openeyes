@@ -102,6 +102,19 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
         ));
     }
 
+    public function getPreviousVersionWithCriteria(CDbCriteria $criteria)
+    {
+        $criteria->addCondition('id = :id');
+        $criteria->params[':id'] = $this->id;
+
+        if ($this->version_id) {
+            $criteria->addCondition('version_id = :version_id');
+            $criteria->params[':version_id'] = $this->version_id;
+        }
+        $criteria->order = 'version_id desc';
+        return $this->model()->fromVersion()->find($criteria);
+    }
+
     public function getVersionTableSchema()
     {
         return $this->getDbConnection()->getSchema()->getTable($this->tableName().'_version', true);

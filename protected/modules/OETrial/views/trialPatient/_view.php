@@ -33,6 +33,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
               'patient' => $data->patient,
               'layout' => 'list',
               'list_mode' => true,
+              'selected_site_id' => $this->selectedSiteId,
             )
         );
         $patientPanel->render('PatientPanel');

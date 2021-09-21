@@ -18,12 +18,30 @@
 
 namespace OEModule\PatientTicketing\models;
 
-class TicketAssignOutcomeOption extends \BaseActiveRecordVersioned
+use BaseActiveRecordVersioned;
+use CActiveDataProvider;
+use CDbCriteria;
+use Institution;
+use MappedReferenceData;
+use ReferenceData;
+
+class TicketAssignOutcomeOption extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'queueset_id';
+    }
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OEModule\PatientTicketing\models\TicketAssignOutcomeOption the static model class
+     * @return TicketAssignOutcomeOption the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -62,6 +80,8 @@ class TicketAssignOutcomeOption extends \BaseActiveRecordVersioned
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'episode_status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
+            'outcome_option_institutions' => array(self::HAS_MANY, TicketAssignOutComeOption_Institution::class, 'outcome_option_id'),
+            'institutions' => array(self::MANY_MANY, Institution::class, 'patientticketing_ticketassignoutcomeoption_institution(outcome_option_id, institution_id)')
         );
     }
 

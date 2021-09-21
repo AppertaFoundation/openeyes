@@ -100,7 +100,7 @@ class DefaultController extends \BaseModuleController
 
         // TODO: we probably don't want to have such a gnarly approach to this, we might want to denormalise so that we are able to do eager loading
         // That being said, we might get away with setting together false on the with to do this filtering (multiple query eager loading).
-        $criteria->join = 'JOIN '.models\TicketQueueAssignment::model()->tableName().' cqa ON cqa.ticket_id = t.id and cqa.id = (SELECT id from '.models\TicketQueueAssignment::model()->tableName().' qa2 WHERE qa2.ticket_id = t.id order by qa2.created_date desc limit 1)';
+        $criteria->join = 'JOIN ' . models\TicketQueueAssignment::model()->tableName() . ' cqa ON cqa.ticket_id = t.id and cqa.id = (SELECT id from ' . models\TicketQueueAssignment::model()->tableName() . ' qa2 WHERE qa2.ticket_id = t.id order by qa2.created_date desc limit 1)';
 
         // build queue id list
         $queue_ids = array();
@@ -120,7 +120,7 @@ class DefaultController extends \BaseModuleController
                     $queueset,
                     @$filter_options['closed-tickets'] ? true : false
                 ) as $queue) {
-                            $queue_ids[] = $queue->id;
+                    $queue_ids[] = $queue->id;
                 }
             }
         }
@@ -144,7 +144,7 @@ class DefaultController extends \BaseModuleController
         if (@$filter_options['firm-id']) {
             $criteria->addColumnCondition(array('cqa.assignment_firm_id' => $filter_options['firm-id']));
         } elseif (@$filter_options['subspecialty-id']) {
-            $criteria->join .= 'JOIN '.\Firm::model()->tableName().' f ON f.id = cqa.assignment_firm_id JOIN '.\ServiceSubspecialtyAssignment::model()->tableName().' ssa ON ssa.id = f.service_subspecialty_assignment_id';
+            $criteria->join .= 'JOIN ' . \Firm::model()->tableName() . ' f ON f.id = cqa.assignment_firm_id JOIN ' . \ServiceSubspecialtyAssignment::model()->tableName() . ' ssa ON ssa.id = f.service_subspecialty_assignment_id';
             $criteria->addColumnCondition(array('ssa.subspecialty_id' => $filter_options['subspecialty-id']));
         }
         if (isset($filter_options['patient-ids'])) {
@@ -176,16 +176,21 @@ class DefaultController extends \BaseModuleController
         }
 
         $search = new \PatientSearch();
-        $search_terms = $search->parseTerm($term);
+        $search_terms = $search->prepareSearch($term);
 
         $patient = new Patient();
         $patient->use_pas = false;
 
-        $patient->hos_num = $search_terms['hos_num'];
-        $patient->nhs_num = $search_terms['nhs_num'];
-
         $data_provider = $patient->search($search_terms);
         $criteria = $data_provider->getCriteria();
+
+        $search_terms['terms_with_types'] = $search_terms['terms_with_types'] ?? [];
+
+        if (!$search_terms['terms_with_types'] && !$search_terms['first_name'] && !$search_terms['last_name']) {
+            // no name search and no types found to search in
+            // we return no result
+            $criteria->addCondition("1=0");
+        }
 
         $criteria->distinct = true;
 
@@ -206,6 +211,17 @@ class DefaultController extends \BaseModuleController
 
         $result = [];
         foreach ($data_provider->getData(true) as $patient) {
+            $pi = [];
+            foreach ($patient->identifiers as $identifier) {
+                $pi[] = [
+                    'title' => $identifier->patientIdentifierType->long_title ?? $identifier->patientIdentifierType->short_title,
+                    'value' => $identifier->value
+                ];
+            }
+
+            $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
+                $patient->id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+
             $result[] = array(
                 'id' => $patient->id,
                 'first_name' => $patient->first_name,
@@ -214,15 +230,67 @@ class DefaultController extends \BaseModuleController
                 'gender' => $patient->getGenderString(),
                 'genderletter' => $patient->gender,
                 'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
-                'hos_num' => $patient->hos_num,
-                'nhsnum' => $patient->nhsnum,
-                'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
                 'is_deceased' => $patient->is_deceased,
+                'patient_identifiers' => $pi,
+                'primary_patient_identifiers' => [
+                    'title' => \PatientIdentifierHelper::getIdentifierPrompt($primary_identifier),
+                    'value' => \PatientIdentifierHelper::getIdentifierValue($primary_identifier)
+                ]
             );
         }
 
         echo CJavaScript::jsonEncode($result);
         Yii::app()->end();
+    }
+
+    /**
+     * @param $a
+     * @param $b
+     * @return int
+     */
+    private function sortBy_list($a, $b): int
+    {
+        return strnatcmp($a->current_queue->name, $b->current_queue->name);
+    }
+
+    /**
+     * @param $a
+     * @param $b
+     * @return int
+     */
+    private function sortBy_patient($a, $b): int
+    {
+        return strnatcmp($a->patient->last_name, $b->patient->last_name);
+    }
+
+    /**
+     * @param $a
+     * @param $b
+     * @return int
+     */
+    private function sortBy_priority($a, $b): int
+    {
+        return strnatcmp($a->priority->display_order, $b->priority->display_order);
+    }
+
+    /**
+     * @param $a
+     * @param $b
+     * @return int
+     */
+    private function sortBy_date($a, $b): int
+    {
+        return strnatcmp($a->created_date, $b->created_date);
+    }
+
+    /**
+     * @param $a
+     * @param $b
+     * @return int
+     */
+    private function sortBy_context($a, $b): int
+    {
+        return strnatcmp($a->getTicketFirm(), $b->getTicketFirm());
     }
 
     /**
@@ -254,7 +322,7 @@ class DefaultController extends \BaseModuleController
 
         $qsc_svc = Yii::app()->service->getService(self::$QUEUESETCATEGORY_SERVICE);
 
-        if (!$category = $qsc_svc->readActive((int) $cat_id)) {
+        if (!$category = $qsc_svc->readActive((int)$cat_id)) {
             throw new \CHttpException(404, 'Invalid category id');
         }
 
@@ -327,6 +395,14 @@ class DefaultController extends \BaseModuleController
 
                 // get tickets that match criteria
                 $tickets = models\Ticket::model()->findAll($criteria);
+                $sort_by = Yii::app()->getRequest()->getParam('sort_by', '');
+                $sort_by_order = Yii::app()->getRequest()->getParam('sort_by_order', '');
+                if ($sort_by != '' && method_exists($this, 'sortBy_' . $sort_by)) {
+                    uasort($tickets, [$this, 'sortBy_' . $sort_by]);
+                    if ($sort_by_order == "DESC") {
+                        $tickets = array_reverse($tickets);
+                    }
+                }
                 \Audit::add('queueset', 'view', $queueset->getId());
             }
         }
@@ -334,14 +410,14 @@ class DefaultController extends \BaseModuleController
         // render
         $this->pageTitle = 'Virtual Clinic';
         $this->render('index', array(
-                'category' => $category,
-                'queueset' => $queueset,
-                'tickets' => $tickets,
-                'patient_filter' => $patient_filter,
-                'pagination' => $pagination,
-                'cat_id' => $cat_id,
-                'patients' => $patient_ids ? \Patient::model()->findAllByPk($patient_ids) : [],
-            ));
+            'category' => $category,
+            'queueset' => $queueset,
+            'tickets' => $tickets,
+            'patient_filter' => $patient_filter,
+            'pagination' => $pagination,
+            'cat_id' => $cat_id,
+            'patients' => $patient_ids ? \Patient::model()->findAllByPk($patient_ids) : [],
+        ));
     }
 
     /**
@@ -373,8 +449,9 @@ class DefaultController extends \BaseModuleController
         }
 
         // if this is for a ticket, then we pass the patient id through for any event creation links
-        if (@$_GET['ticket_id']) {
-            if (!$ticket = models\Ticket::model()->findByPk((int) $_GET['ticket_id'])) {
+        $ticket_id =  \Yii::app()->request->getParam('ticket_id', null);
+        if ($ticket_id) {
+            if (!$ticket = models\Ticket::model()->findByPk((int)$ticket_id)) {
                 throw new \CHttpException(404, 'Invalid ticket id.');
             };
             $template_vars['patient_id'] = $ticket->patient_id;
@@ -445,9 +522,9 @@ class DefaultController extends \BaseModuleController
 
                 $flsh_id .= $queueset->getId();
                 if ($to_queue->outcomes) {
-                    Yii::app()->user->setFlash($flsh_id, $t_svc->getCategoryForTicket($ticket)->name.' - '.$ticket->patient->getHSCICName().' moved to '.$to_queue->name);
+                    Yii::app()->user->setFlash($flsh_id, $t_svc->getCategoryForTicket($ticket)->name . ' - ' . $ticket->patient->getHSCICName() . ' moved to ' . $to_queue->name);
                 } else {
-                    Yii::app()->user->setFlash($flsh_id, $t_svc->getCategoryForTicket($ticket)->name.' - '.$ticket->patient->getHSCICName().' completed');
+                    Yii::app()->user->setFlash($flsh_id, $t_svc->getCategoryForTicket($ticket)->name . ' - ' . $ticket->patient->getHSCICName() . ' completed');
                 }
             } else {
                 throw new Exception('unable to assign ticket to queue');
@@ -532,9 +609,9 @@ class DefaultController extends \BaseModuleController
         $can_process = $qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id);
 
         $this->renderPartial('_ticketlist_row', array(
-                    'ticket' => $ticket,
-                    'can_process' => $can_process,
-                ), false, false);
+            'ticket' => $ticket,
+            'can_process' => $can_process,
+        ), false, false);
     }
 
     /**
@@ -553,9 +630,9 @@ class DefaultController extends \BaseModuleController
         $ticket->audit('ticket', 'view-history', $ticket->id);
 
         $this->renderPartial('_ticketlist_history', array(
-                    'ticket' => $ticket,
-                    'assignments' => $ticket->getPastQueueAssignments(),
-                ), false, false);
+            'ticket' => $ticket,
+            'assignments' => $ticket->getPastQueueAssignments(),
+        ), false, false);
     }
 
     /**
@@ -583,7 +660,7 @@ class DefaultController extends \BaseModuleController
         if ($ticket->assignee_user_id) {
             $resp['status'] = 0;
             if ($ticket->assignee_user_id != Yii::app()->user->id) {
-                $resp['message'] = 'Ticket has already been taken by '.$ticket->assignee->getFullName();
+                $resp['message'] = 'Ticket has already been taken by ' . $ticket->assignee->getFullName();
             } else {
                 $resp['message'] = 'Ticket was already taken by you.';
             }
@@ -596,7 +673,7 @@ class DefaultController extends \BaseModuleController
             } else {
                 $resp['status'] = 0;
                 $resp['message'] = 'Unable to take ticket at this time.';
-                Yii::log("Couldn't save ticket to take it: ".print_r($ticket->getErrors(), true), \CLogger::LEVEL_ERROR);
+                Yii::log("Couldn't save ticket to take it: " . print_r($ticket->getErrors(), true), \CLogger::LEVEL_ERROR);
             }
         }
         echo \CJSON::encode($resp);
@@ -638,7 +715,7 @@ class DefaultController extends \BaseModuleController
             } else {
                 $resp['status'] = 0;
                 $resp['message'] = 'Unable to release ticket at this time.';
-                Yii::log("Couldn't save ticket to release it: ".print_r($ticket->getErrors(), true), \CLogger::LEVEL_ERROR);
+                Yii::log("Couldn't save ticket to release it: " . print_r($ticket->getErrors(), true), \CLogger::LEVEL_ERROR);
             }
         }
         echo \CJSON::encode($resp);
@@ -745,7 +822,7 @@ class DefaultController extends \BaseModuleController
      */
     public function actionCollapseTicket($ticket_id)
     {
-        if (!$ticket = models\Ticket::model()->findByPk((int) $ticket_id)) {
+        if (!$ticket = models\Ticket::model()->findByPk((int)$ticket_id)) {
             throw new \CHttpException(404, 'Invalid ticket id.');
         }
         $this->setTicketState($ticket, false);
@@ -760,7 +837,7 @@ class DefaultController extends \BaseModuleController
      */
     public function actionGetPatientAlert($patient_id)
     {
-        if (!$patient = \Patient::model()->findByPk((int) $patient_id)) {
+        if (!$patient = \Patient::model()->findByPk((int)$patient_id)) {
             throw new \CHttpException(404, 'Invalid patient id.');
         }
         $patient->audit('patient', 'view-alert');
@@ -777,7 +854,7 @@ class DefaultController extends \BaseModuleController
         echo \CHtml::dropDownList(
             'firm-id',
             '',
-            \Firm::model()->getList($subspecialty->id),
+            \Firm::model()->getList(Yii::app()->session['selected_institution_id'], $subspecialty->id),
             ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']
         );
     }
@@ -792,7 +869,7 @@ class DefaultController extends \BaseModuleController
         $last_assignment = array_pop($queue_assignments);
 
         if (!$last_assignment->delete()) {
-            throw new \Exception('Unable to remove ticket queue assignment: '.print_r($last_assignment->errors, true));
+            throw new \Exception('Unable to remove ticket queue assignment: ' . print_r($last_assignment->errors, true));
         }
 
         echo '1';

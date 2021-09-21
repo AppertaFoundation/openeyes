@@ -24,7 +24,7 @@
         </colgroup>
         <tr>
             <td>
-                <?=\CHtml::dropDownList('user_id', '', CHtml::listData($user_list, 'id', 'fullNameAndUserName'), array('empty' => '- Select user -')) ?>
+                <?=\CHtml::dropDownList('user_id', '', CHtml::listData($user_list, 'id', 'fullName'), array('empty' => '- Select user -')) ?>
             </td>
             <td>
                 <?=\CHtml::htmlButton('Add user', array('class' => 'button small addUser')) ?>

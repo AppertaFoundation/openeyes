@@ -18,8 +18,27 @@
 
 namespace OEModule\PatientTicketing\models;
 
-class QueueSet extends \BaseActiveRecordVersioned
+use BaseActiveRecord;
+use BaseActiveRecordVersioned;
+use CActiveDataProvider;
+use CDbCriteria;
+use Institution;
+use MappedReferenceData;
+use ReferenceData;
+
+class QueueSet extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'queueset_id';
+    }
 
     const STATUS_YES = '1';
     const STATUS_NO = '2';
@@ -29,7 +48,7 @@ class QueueSet extends \BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphTrOperationnote_GlaucomaTube_PlatePosition the static model class
+     * @return QueueSet|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -64,10 +83,12 @@ class QueueSet extends \BaseActiveRecordVersioned
         return array(
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'queuesetcategory' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\QueueSetCategory', 'category_id'),
-            'initial_queue' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Queue', 'initial_queue_id'),
+            'queuesetcategory' => array(self::BELONGS_TO, QueueSetCategory::class, 'category_id'),
+            'initial_queue' => array(self::BELONGS_TO, Queue::class, 'initial_queue_id'),
             'permissioned_users' => array(self::MANY_MANY, 'User', 'patientticketing_queuesetuser(queueset_id, user_id)'),
-            'default_queue' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Queue', 'default_queue_id'),
+            'default_queue' => array(self::BELONGS_TO, Queue::class, 'default_queue_id'),
+            'institutions' => array(self::MANY_MANY, Institution::class, 'patientticketing_queueset_institution(queueset_id, institution_id)'),
+            'queueset_institutions' => array(self::HAS_MANY, QueueSet_Institution::class, 'queueset_id'),
         );
     }
 
@@ -100,13 +121,13 @@ class QueueSet extends \BaseActiveRecordVersioned
      */
     public function search()
     {
-        $criteria = new \CDbCriteria();
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
         $criteria->compare('category_id', $this->category_id, true);
 
-        return new \CActiveDataProvider(get_class($this), array(
+        return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
     }

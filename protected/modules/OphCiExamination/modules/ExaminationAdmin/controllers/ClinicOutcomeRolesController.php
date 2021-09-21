@@ -40,7 +40,10 @@ class ClinicOutcomeRolesController extends \ModuleAdminController
 
         $this->render('/clinicoutcomeroles/index', [
         'model' => OphCiExamination_ClinicOutcome_Role::model(),
-        'model_list' => OphCiExamination_ClinicOutcome_Role::model()->findAll(['order' => 'display_order']),
+        'model_list' => OphCiExamination_ClinicOutcome_Role::model()->findAll([
+            'condition' => 'institution_id = :institution_id',
+            'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+            'order' => 'display_order']),
         ]);
     }
 

@@ -153,6 +153,7 @@ class ContactController extends \BaseController
                 $contact->last_name = $data->last_name;
                 $contact->primary_phone = $data->primary_phone;
                 $contact->contact_label_id = $data->contact_label_id;
+                $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
                 $contact->active = 1;
                 $contact->email = $data->email;
 

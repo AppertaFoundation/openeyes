@@ -80,7 +80,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
     {
         $element = $this->generateSavedVisualAcuityElementWithReadings();
 
-        $this->setFirmIdInSession($element->event->episode->firm_id);
+        $this->setVariablesInSession($element->event->episode->firm_id);
 
         // set up the request data for submitting values
         $_REQUEST['patient_id'] = $element->event->episode->patient_id;
@@ -109,7 +109,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
 
         $episode = $patient->episodes[0];
         // enables controller to know what episode the event will be created in.
-        $this->setFirmIdInSession($episode->firm_id);
+        $this->setVariablesInSession($episode->firm_id);
 
         ob_start();
 

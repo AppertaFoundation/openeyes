@@ -23,14 +23,16 @@ $config = array(
         ),
         'populate_clinic_date_from_last_examination' => false,
         'admin_menu' => array(
-            'Letter macros' => '/OphCoCorrespondence/admin/letterMacros',
-            'Letter Snippet Groups' => '/OphCoCorrespondence/oeadmin/snippetGroup/list',
-            'Letter Snippets' => '/OphCoCorrespondence/oeadmin/snippet/list',
-            //'Letter Types' => '/OphCoCorrespondence/oeadmin/letterType/list', //available but have to find out how could work with Internal Referral (re letter type enable, rename)
-            'Internal Referral' => '/OphCoCorrespondence/oeadmin/internalReferralSettings/settings',
-            'Letter settings' => '/OphCoCorrespondence/admin/letterSettings',
-            'Sender Email Addresses' => '/OphCoCorrespondence/admin/senderEmailAddresses',
-            'Email Templates' => '/OphCoCorrespondence/admin/emailTemplates',
+            'OphCoCorrespondence' => [
+                'Letter macros' => '/OphCoCorrespondence/admin/letterMacros',
+                'Letter Snippet Groups' => '/OphCoCorrespondence/oeadmin/snippetGroup/list',
+                'Letter Snippets' => '/OphCoCorrespondence/oeadmin/snippet/list',
+                //'Letter Types' => '/OphCoCorrespondence/oeadmin/letterType/list', //available but have to find out how could work with Internal Referral (re letter type enable, rename)
+                'Internal Referral' => ['uri' => '/OphCoCorrespondence/oeadmin/internalReferralSettings/settings', 'restricted' => array('admin')],
+                'Letter settings' => '/OphCoCorrespondence/admin/letterSettings',
+                'Sender Email Addresses' => '/OphCoCorrespondence/admin/senderEmailAddresses',
+                'Email Templates' => '/OphCoCorrespondence/admin/emailTemplates',
+            ]
         ),
     ),
 );

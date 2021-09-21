@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -27,6 +28,7 @@ class BaseController extends Controller
     public bool $fixedHotlist = true;
     public $selectedFirmId;
     public $selectedSiteId;
+    public $selectedInstitutionId;
     public $firms;
     public $jsVars = array();
     public $assetManager;
@@ -122,7 +124,7 @@ class BaseController extends Controller
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
         if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])) {
             $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true).'/css/style_oe3_print.min.css';
+            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_print.3.css';
             $newparams =
                 array_merge_recursive(
                     Yii::app()->getParams()->toArray(),
@@ -158,11 +160,12 @@ class BaseController extends Controller
         $this->onBeforeAction(new \CEvent($this, ["action" => $action]));
 
         $app = Yii::app();
-
-        foreach (SettingMetadata::model()->findAll() as $metadata) {
-            if (!$metadata->element_type) {
-                if (!isset(Yii::app()->params[$metadata->key])) {
-                    Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+        if(!in_array($action->id, array('settings'))){
+            foreach (SettingMetadata::model()->findAll() as $metadata) {
+                if (!$metadata->element_type) {
+                    if (!isset(Yii::app()->params[$metadata->key])) {
+                        Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+                    }
                 }
             }
         }
@@ -179,22 +182,28 @@ class BaseController extends Controller
                 $app->session['patient_name'] = 'John Smith';
             }
         } else {
-            $user = User::model()->findByPk(Yii::app()->user->id);
-            if ($user && Yii::app()->params['auth_source'] === 'BASIC') {
+            $user_authentication = Yii::app()->session['user_auth'];
+            if ($user_authentication) {
+                $user = $user_authentication->user;
                 // if not a active user, force log out
-                if (!$user->getUserActiveStatus($user)||$user->testUserPWStatus()) {
-                    $user->audit('BaseControler', 'force-logout', null, "User $user->username logged out because their account is not active");
+                if (!$user_authentication->active || PasswordUtils::testStatus('locked', $user_authentication)) {
+                    $user->audit('BaseController', 'force-logout', null, "User $user_authentication->username logged out because their account is not active");
                     Yii::app()->user->logout();
                     $this->redirect(Yii::app()->homeUrl);
                 }
-                $user->testUserPwDate();
+                PasswordUtils::testPasswordExpiry($user_authentication);
 
-                $user->userLogOnAttemptsCheck();
+                if (PasswordUtils::testStatus('softlocked', $user_authentication) && $user_authentication->password_softlocked_until < date("Y-m-d H:i:s")) {
+                    $user_authentication->password_failed_tries = 0;
+                    $user_authentication->password_status = 'current';
+                    $user_authentication->saveAttributes(array('password_status', 'password_failed_tries'));
+                    $user_authentication->audit('login', 'user-soft-unlock', null, "User: {$user_authentication->username} has finished their softlock period ");
+                }
 
                 $whitelistedRequestCheck = $user->CheckRequestOnExpiryWhitelist($_SERVER['REQUEST_URI']);
 
                 // if user is expired, force them to change their password
-                if ((!( $user->password_status=="current" || $user->password_status=="stale")) && !$whitelistedRequestCheck) {
+                if (PasswordUtils::testStatus('expired', $user_authentication) && !$whitelistedRequestCheck) {
                     Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
                     $this->redirect(array('/profile/password'));
                 }
@@ -206,10 +215,12 @@ class BaseController extends Controller
             $this->selectedFirmId = $app->session['selected_firm_id'];
         }
 
+        $this->selectedInstitutionId = $app->session['selected_institution_id'];
         if (isset($app->session['selected_site_id'])) {
             $this->selectedSiteId = $app->session['selected_site_id'];
         }
 
+        $this->attachBehavior('DisplayDeletedEventsBehavior', array('class' => 'DisplayDeletedEventsBehavior'));
         return parent::beforeAction($action);
     }
 
@@ -223,6 +234,11 @@ class BaseController extends Controller
         if (isset($this->action)) {
             Yii::app()->getAssetManager()->registerFiles($this->isPrintAction($this->action->id));
         }
+
+        $execution_time = CJavaScript::encode(round(Yii::getLogger()->executionTime, 3));
+        $memory_usage = round(Yii::getLogger()->memoryUsage / 1024 / 1024, 3) . " MB";
+        Yii::app()->getClientScript()->registerScript('scr_' . "execution_time", "execution_time = $execution_time;", CClientScript::POS_HEAD);
+        Yii::app()->getClientScript()->registerScript('scr_' . "memory_usage", "memory_usage = '$memory_usage';", CClientScript::POS_HEAD);
     }
 
     protected function setSessionPatient($patient)
@@ -260,16 +276,17 @@ class BaseController extends Controller
     {
         // TODO: Check logged in before setting
         $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
-        if (isset(Yii::app()->session['user'])) {
-            $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
+        if (isset(Yii::app()->session['user_auth'])) {
+            $user_auth = Yii::app()->session['user_auth'];
+            $user = $user_auth->user;
             $this->jsVars['user_id'] = $user->id;
-            $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
+            $this->jsVars['user_full_name'] = $user->first_name . " " . $user->last_name;
             $this->jsVars['user_email'] = $user->email;
-            $this->jsVars['user_username'] = $user->username;
+            $this->jsVars['user_username'] = $user_auth->username;
+            $institution = Institution::model()->getCurrent();
+            $this->jsVars['institution_code'] = $institution->remote_id;
+            $this->jsVars['institution_name'] = $institution->name;
         }
-        $institution = Institution::model()->findByAttributes(array('remote_id' => Yii::app()->params['institution_code']));
-        $this->jsVars['institution_code'] = $institution->remote_id;
-        $this->jsVars['institution_name'] = $institution->name;
         $this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
         $this->jsVars['OE_core_asset_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
         $this->jsVars['OE_module_name'] = $this->module ? $this->module->id : false;

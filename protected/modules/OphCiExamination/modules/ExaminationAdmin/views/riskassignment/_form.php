@@ -55,7 +55,10 @@
     <?php
     echo "<br>";
 
-    $examination_risk_listdata = CHtml::listData(OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll('active=1'), 'id', 'name');
+    $examination_risk_listdata = CHtml::listData(OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll([
+        'with' => 'institutions',
+        'condition' => 't.active = 1 AND institutions_institutions.institution_id = :institution_id',
+        'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]]), 'id', 'name');
     $gender_models = Gender::model()->findAll();
     $gender_options = CHtml::listData($gender_models, function ($gender_model) {
         return CHtml::encode($gender_model->name)[0];

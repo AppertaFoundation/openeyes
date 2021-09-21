@@ -83,18 +83,10 @@
                             <col style="width: 7%;">
                             <col style="width: 3.5%;">
                             <col style="width: 3.5%;">
-                            <col style="width: 24%;">
+                            <col style="width: 19%;">
                         </colgroup>
-                        <thead>
+                        <thead id="p_header">
                         <tr>
-                            <th class="drill_down_patient_list text-left" style="vertical-align: center;">Hospital No</th>
-                            <th class="drill_down_patient_list text-left" style="vertical-align: center;">NHS No</th>
-                            <th class="drill_down_patient_list text-left" style="vertical-align: center;">Name</th>
-                            <th class="text-left" style="vertical-align: center;">DOB</th>
-                            <th class="text-left" style="vertical-align: center;">Age</th>
-                            <th class="text-left" style="vertical-align: center;">Gender</th>
-                            <th class="text-left" style="vertical-align: center;">Diagnoses</th>
-                            <th class="text-left patient_procedures" style="vertical-align: center;">Procedures</th>
                         </tr>
                         </thead>
                         <tbody id="p_list">
@@ -122,7 +114,7 @@
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_drill_down.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_init.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/enhancedPopupFixed.js')?>"></script>
-    <script src="<?= Yii::app()->assetManager->createUrl('newblue/plotlyJS/oePlotly_v1.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('newblue/dist/js/plotlyJS/oePlotly_v1.js')?>"></script>
     <script>
         analytics_init();
     </script>

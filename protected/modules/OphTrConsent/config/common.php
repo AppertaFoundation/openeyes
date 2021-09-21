@@ -18,7 +18,7 @@
 
 return array(
     'params' => array(
-        'puppeteer_footer_left_OphTrConsent' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}{{PROCEDURES}}',
+        'puppeteer_footer_left_OphTrConsent' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_PRIMARY_IDENTIFIER}}{{PATIENT_SECONDARY_IDENTIFIER}}{{PATIENT_DOB}}{{PROCEDURES}}',
         'puppeteer_bottom_margin_OphTrConsent' => '26mm',
     ),
 );

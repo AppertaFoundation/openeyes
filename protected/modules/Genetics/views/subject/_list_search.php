@@ -26,22 +26,13 @@
     <div>
 
         <div>
-            <?php // echo $form->label($model, 'id'); ?>
             <?php echo $form->textField($model, 'id', ['placeholder' => 'Subject Id']); ?>
         </div>
-
         <div>
-            <?php // echo $form->label($model, 'contact.first_name'); ?>
-            <?php echo $form->textField($model, 'patient_hos_num', ['placeholder' => 'Hospital number']); ?>
-        </div>
-
-        <div>
-            <?php // echo $form->label($model, 'contact.first_name'); ?>
             <?php echo $form->textField($model, 'patient_pedigree_id', ['placeholder' => 'Family id']); ?>
         </div>
 
         <div>
-            <?php // echo $form->label($model, 'patient.dob'); ?>
             <?php
             $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name'  => 'patient-dob-id',
@@ -66,12 +57,10 @@
         </div>
 
         <div>
-            <?php // echo $form->label($model, 'contact.first_name'); ?>
             <?php echo $form->textField($model, 'patient_firstname', ['placeholder' => 'First name']); ?>
         </div>
 
         <div>
-            <?php // echo $form->label($model, 'contact.last_name'); ?>
             <?php echo $form->textField($model, 'patient_lastname', ['placeholder' => 'Last name']); ?>
         </div>
 
@@ -80,11 +69,9 @@
         </div>
 
         <div>
-            <?php // echo $form->label($model, 'comments'); ?>
             <?php echo $form->textField($model, 'comments', ['placeholder' => 'Comments']); ?>
         </div>
         <div>
-            <?php // echo $form->label($model, 'patient_yob'); ?>
             <?php echo $form->textField($model, 'patient_yob', ['placeholder' => 'Year of Birth']); ?>
         </div>
         <div id="diagnosis-search">

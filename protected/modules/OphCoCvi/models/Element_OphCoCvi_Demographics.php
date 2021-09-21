@@ -3,6 +3,8 @@
 
 namespace OEModule\OphCoCvi\models;
 
+use PatientIdentifierHelper;
+
 /**
  * Class Element_OphCoCvi_Demographics
  *
@@ -170,8 +172,10 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     public function initFromPatient(\Patient $patient)
     {
+        $primary_global_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+            'GLOBAL', $patient->id, \Institution::model()->getCurrent()->id, \Yii::app()->session['selected_site_id']);
         $this->date_of_birth = $patient->dob;
-        $this->nhs_number = $patient->getNhsnum();
+        $this->nhs_number =\PatientIdentifierHelper::getIdentifierValue($primary_global_identifier);
         $this->address = $patient->getSummaryAddress(",\n");
         if ($patient->contact && $patient->contact->address) {
             $this->postcode = substr($patient->contact->address->postcode, 0, 4);

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /**
  * OpenEyes.
@@ -1001,8 +1001,10 @@ EOH;
                 break;
             case 'ccg':
                 $dbTable = 'commissioning_body';
+                break;
             default:
                 $this->usageError("Invalid type: $type");
+                break;
         }
 
         return $dbTable;

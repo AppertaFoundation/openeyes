@@ -32,12 +32,14 @@ class ExaminationElementAttributesController extends BaseAdminController
             'label',
             'attribute_elements_id.id',
             'attribute_elements.name',
-            'is_multiselect'
+            'is_multiselect',
         ));
-        $admin->searchAll();
+        $criteria = new CDbCriteria;
+        $criteria->addCondition("t.institution_id = :institution_id");
+        $criteria->params = [':institution_id' => \Yii::app()->session['selected_institution_id']];
+        $admin->getSearch()->setCriteria($criteria);
         $admin->setModelDisplayName('Element Attributes');
         $admin->div_wrapper_class = 'cols-8';
-        //$admin->getSearch()->addActiveFilter();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
     }
@@ -64,11 +66,18 @@ class ExaminationElementAttributesController extends BaseAdminController
             'attribute_elements' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(ElementType::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
+                'htmlOptions' => ['class' => 'cols-8'],
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
-            'is_multiselect' => 'checkbox'
+            'institution' => array(
+                'widget' => 'DropDownList',
+                'options' => Institution::model()->getList(true),
+                'htmlOptions' => ['class' => 'cols-8'],
+                'hidden' => false,
+                'layoutColumns' => null,
+            ),
+            'is_multiselect' => 'checkbox',
         ));
 
         $admin->editModel();
@@ -88,6 +97,7 @@ class ExaminationElementAttributesController extends BaseAdminController
         $attributeName = $post['name'];
         $attributeLabel = $post['label'];
         $attributeElements = $post['attribute_elements'];
+        $attributeInstitution = $post['institution'];
         $attributeIsMultiSelect = $post['is_multiselect'];
 
         $count = $newOCEA::model()->countByAttributes(array(
@@ -98,6 +108,8 @@ class ExaminationElementAttributesController extends BaseAdminController
         if (!isset($attributeElements)) {
             $newOCEA->name = $attributeName;
             $newOCEA->label = $attributeLabel;
+            $newOCEA->institution_id = $attributeInstitution;
+            $newOCEA->is_multiselect = $attributeIsMultiSelect;
 
             if ($newOCEA->save()) {
                 echo 'success';
@@ -111,6 +123,8 @@ class ExaminationElementAttributesController extends BaseAdminController
             if ($attributeId ==  '') {
                 $newOCEA->name = $attributeName;
                 $newOCEA->label = $attributeLabel;
+                $newOCEA->institution_id = $attributeInstitution;
+                $newOCEA->is_multiselect = $attributeIsMultiSelect;
 
                 if ($newOCEA->save()) {
                     $newAttributeId = Yii::app()->db->getLastInsertID();
@@ -135,7 +149,9 @@ class ExaminationElementAttributesController extends BaseAdminController
                 $attribute = $newOCEA::model()->findByPk($attributeId);
                 $attribute->name = $attributeName;
                 $attribute->label = $attributeLabel;
+                $attribute->institution_id = $attributeInstitution;
                 $attribute->is_multiselect = $attributeIsMultiSelect;
+
 
                 if ($attribute->save()) {
                     $element = $newOCEAE::model()->findByAttributes(array('attribute_id' => $attributeId));

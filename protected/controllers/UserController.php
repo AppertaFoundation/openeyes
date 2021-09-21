@@ -25,6 +25,10 @@ class UserController extends BaseController
                 'actions' => array('testAuthenticated', 'getSecondsUntilSessionExpire'),
                 'users' => array('@'),
             ),
+            array('allow',
+                'actions' => array('checkPincodeAvailability'),
+                'roles' => array('admin'),
+            ),
         );
     }
 
@@ -35,7 +39,8 @@ class UserController extends BaseController
             $term = strtolower($term);
 
             $criteria = new \CDbCriteria;
-            $criteria->compare("LOWER(username)", $term, true, 'OR');
+            $criteria->join = 'JOIN user_authentication user_auth ON t.id = user_auth.user_id';
+            $criteria->compare("LOWER(user_auth.username)", $term, true, 'OR');
             $criteria->compare("LOWER(first_name)", $term, true, 'OR');
             $criteria->compare("LOWER(last_name)", $term, true, 'OR');
             $words = explode(" ", $term);
@@ -55,15 +60,10 @@ class UserController extends BaseController
             if ($consultant_only) {
                 $criteria->compare("is_consultant", true);
             }
-            $criteria->compare('active', true);
+            $criteria->compare('user_auth.active', true);
 
             foreach (\User::model()->findAll($criteria) as $user) {
-                $res[] = array(
-                    'id' => $user->id,
-                    'label' => $user->getFullNameAndTitle(),
-                    'value' => $user->id,
-                    'username' => $user->username,
-                );
+                $res[] = $user->getUserPermissionDetails();
             }
         }
         echo \CJSON::encode($res);
@@ -98,5 +98,20 @@ class UserController extends BaseController
         $seconds_to_expire = $expire['expire'] - time();
 
         $this->renderJSON($seconds_to_expire);
+    }
+
+    public function actionCheckPincodeAvailability($pincode, $ins_auth_id, $user_id){
+        $user_auth = new UserAuthentication();
+        $user_auth->pincode = $pincode;
+        $user_auth->institution_authentication_id = $ins_auth_id;
+        $user_auth->user_id = $user_id;
+        $obj = $user_auth->checkUniqueness(null, null);
+
+        $ret = array(
+            'success' => $obj ? false : true,
+            'user' => $obj ? $obj->user->getFullName() : '',
+        );
+        $this->renderJSON($ret);
+        unset($user_auth);
     }
 }

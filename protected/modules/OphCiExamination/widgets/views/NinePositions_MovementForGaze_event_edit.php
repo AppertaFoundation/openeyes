@@ -24,8 +24,6 @@ use OEModule\OphCiExamination\models\NinePositions_Reading;
 $movement_for_gaze = $reading->getMovementForGazeType($side, $gaze_type) ?: NinePositions_MovementForGaze::model();
 $field_prefix .= "[movements][{$side}_{$gaze_type}]"
 ?>
-<?= $movement_for_gaze ? $movement_for_gaze->id : 'not found' ?>
-
 <?php if ($movement_for_gaze->id) { ?>
     <input type="hidden" name="<?= "{$field_prefix}[id]" ?>" value="<?= $movement_for_gaze->id ?>" />
 <?php } ?>

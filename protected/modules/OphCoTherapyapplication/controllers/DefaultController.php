@@ -99,7 +99,7 @@ class DefaultController extends BaseEventTypeController
         } else {
             Yii::app()->user->setFlash('error', 'Unable to process the application at this time.');
         }
-        $this->redirect(array($this->successUri.$this->event->id));
+        $this->redirect(array($this->successUri));
     }
 
     public function actionDownloadFileCollection($id)

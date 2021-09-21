@@ -12,13 +12,18 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var $model_list OphInLabResults_Type[]
+ */
+$api = new OphInLabResults_API();
 ?>
 
 <?php $this->renderPartial('//base/_messages') ?>
 
 <div class="cols-12">
     <div class="alert-box error with-icon js-admin-errors" style="display:none">
-        <p>Could not be deleted:</p>
+        <p class="js-admin-error-header">Could not be deleted:</p>
         <div class="js-admin-error-container"></div>
     </div>
     <div class="row divider">
@@ -50,24 +55,34 @@
                 <th>Default Units</th>
                 <th>Custom Warning Message</th>
                 <th>Show on Whiteboard</th>
+                <th>Assigned to current institution</th>
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($model_list as $i => $model) { ?>
+            <?php
+            $institution_id = Institution::model()->getCurrent()->id;
+            foreach ($model_list as $i => $model) { ?>
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="OphInLabResults/oeadmin/resultType/edit/<?php echo $model->id ?>">
                     <td class="reorder">
                         <span>&uarr;&darr;</span>
-                        <?= CHtml::hiddenField($model_class."[display_order][]", $model->id); ?>
+                        <?= CHtml::hiddenField($model_class."[display_order][]", $model->id) ?>
                     </td>
                     <td><input type="checkbox" name="resultTypes[]" value="<?php echo $model->id ?>"/></td>
-                    <td><?= $model->type; ?></td>
+                    <td><?= $model->type ?></td>
                     <td><?= $model->fieldType->name ?></td>
                     <td><?= $model->show_units ?></td>
                     <td><?= $model->allow_unit_change ?></td>
-                    <td><?= $model->default_units ? $model->default_units : '-' ?></td>
-                    <td><?= $model->custom_warning_message ? $model->custom_warning_message : '-' ?></td>
+                    <td><?= $model->default_units ?: '-' ?></td>
+                    <td><?= $model->custom_warning_message ?: '-' ?></td>
                     <td><?= $model->show_on_whiteboard ?></td>
+                    <td class="js-assigned-to-institution">
+                        <?php if ($model->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) { ?>
+                            <i class="oe-i tick small"></i>
+                        <?php } else { ?>
+                            <i class="oe-i tick small" style="display: none;"></i>
+                        <?php } ?>
+                    </td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -82,7 +97,7 @@
                             'data-uri' => 'add',
                             'id' => 'et_add'
                         ]
-                    ); ?>
+                    ) ?>
                     <?= CHtml::submitButton(
                         'Delete',
                         [
@@ -90,7 +105,27 @@
                             'name' => 'delete_result_type',
                             'id' => 'et_delete_result_type'
                         ]
-                    ); ?>
+                    ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <?= CHtml::submitButton(
+                        'Assign selected to current institution',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add-mapping',
+                            'id' => 'js-add-mapping'
+                        ]
+                    ) ?>
+                    <?= CHtml::submitButton(
+                        'Unassign selected from current institution',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete-mapping',
+                            'id' => 'js-delete-mapping'
+                        ]
+                    ) ?>
                 </td>
             </tr>
         </table>
@@ -99,6 +134,67 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $("#js-add-mapping").click(function(e) {
+            e.preventDefault();
+            console.log("Adding mapping.");
+
+            let $checked = $('input[name="resultTypes[]"]:checked');
+            if ($checked.length === 0) {
+                alert('Please select one or more result type data to assign.');
+                return;
+            }
+
+            $.ajax({
+                'type': 'POST',
+                'url': baseUrl + '/OphInLabResults/oeadmin/resultType/addMapping',
+                'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                'success': function (response) {
+                    if (response['status'] === 1) {
+                        window.location.reload();
+                    } else {
+                        $('.js-admin-errors').show();
+                        let $errorContainer = $('.js-admin-error-container');
+                        $errorContainer.html("");
+                        $('.js-admin-error-header').text('Could not add institution mapping:');
+
+                        response['errors'].forEach(function (error) {
+                            $errorContainer.append('<p class="js-admin-errors">' + error + '</p>');
+                        });
+                    }
+                }
+            });
+        });
+
+        $("#js-delete-mapping").click(function(e) {
+            e.preventDefault();
+
+            let $checked = $('input[name="resultTypes[]"]:checked');
+            if ($checked.length === 0) {
+                alert('Please select one or more result type data to assign.');
+                return;
+            }
+
+            $.ajax({
+                'type': 'POST',
+                'url': baseUrl + '/OphInLabResults/oeadmin/resultType/deleteMapping',
+                'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                'success': function (response) {
+                    if (response['status'] === 1) {
+                        window.location.reload();
+                    } else {
+                        $('.js-admin-errors').show();
+                        let $errorContainer = $('.js-admin-error-container');
+                        $('.js-admin-error-header').text('Could not delete institution mapping:');
+                        $errorContainer.html("");
+
+                        response['errors'].forEach(function (error) {
+                            $errorContainer.append('<p class="js-admin-errors">' + error + '</p>');
+                        });
+                    }
+                }
+            });
+        });
+
         $('#et_delete_result_type').click(function (e) {
             e.preventDefault();
 
@@ -113,13 +209,13 @@
                 'url': baseUrl + '/OphInLabResults/oeadmin/resultType/delete',
                 'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
                 'success': function (response) {
-                    response = JSON.parse(response);
                     if (response['status'] === 1) {
                         window.location.reload();
                     } else {
                         $('.js-admin-errors').show();
                         let $errorContainer = $('.js-admin-error-container');
                         $errorContainer.html("");
+                        $('.js-admin-error-header').text('Could not be deleted:');
 
                         response['errors'].forEach(function (error) {
                             $errorContainer.append('<p class="js-admin-errors">' + error + '</p>');

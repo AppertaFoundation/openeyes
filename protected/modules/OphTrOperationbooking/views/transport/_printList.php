@@ -16,11 +16,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+$institution_id = Institution::model()->getCurrent()->id;
+$site_id = Yii::app()->session['selected_site_id'];
+?>
 <div id="printable">
     <table>
         <thead>
             <tr>
-                <th>Hospital number</th>
+                <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></th>
                 <th>Patient</th>
                 <th>TCI date</th>
                 <th>Admission time</th>
@@ -36,19 +40,19 @@
         <tbody>
             <?php foreach ($operations as $operation) {?>
                 <tr>
-                    <td style="width: 53px;"><?php echo $operation->event->episode->patient->hos_num?></td>
+                    <td style="width: 53px;"><?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $operation->event->episode->patient->id, $institution_id, $site_id)) ?></td>
                     <td>
-                        <?php echo '<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.trim($operation->event->episode->patient->first_name)?>
+                        <?= '<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.trim($operation->event->episode->patient->first_name)?>
                     </td>
-                    <td style="width: 83px;"><?php echo date('j-M-Y', strtotime($operation->latestBooking->session_date))?></td>
-                    <td style="width: 73px;"><?php echo $operation->latestBooking->session_start_time?></td>
-                    <td style="width: 95px;"><?php echo $operation->latestBooking->theatre->site->shortName?></td>
-                    <td style="width: 170px;"><?php echo $operation->latestBooking->ward->name?></td>
-                    <td style="width: 53px;"><?php echo $operation->transportStatus?></td>
-                    <td style="width: 43px;"><?php echo $operation->event->episode->firm->pas_code?></td>
-                    <td style="width: 53px;"><?php echo $operation->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec?></td>
-                    <td style="width: 80px;"><?php echo $operation->NHSDate('decision_date')?></td>
-                    <td><?php echo $operation->priority->name?></td>
+                    <td style="width: 83px;"><?= date('j-M-Y', strtotime($operation->latestBooking->session_date))?></td>
+                    <td style="width: 73px;"><?= $operation->latestBooking->session_start_time?></td>
+                    <td style="width: 95px;"><?= $operation->latestBooking->theatre->site->shortName?></td>
+                    <td style="width: 170px;"><?= $operation->latestBooking->ward->name?></td>
+                    <td style="width: 53px;"><?= $operation->transportStatus?></td>
+                    <td style="width: 43px;"><?= $operation->event->episode->firm->pas_code?></td>
+                    <td style="width: 53px;"><?= $operation->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec?></td>
+                    <td style="width: 80px;"><?= $operation->NHSDate('decision_date')?></td>
+                    <td><?= $operation->priority->name?></td>
                 </tr>
             <?php }?>
         </tbody>

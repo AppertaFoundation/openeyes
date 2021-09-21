@@ -32,12 +32,17 @@ switch ($data->complexity) {
 $is_deleted = ((int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_COMPLETED
     || (int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_CANCELLED);
 
+$institution = Institution::model()->getCurrent();
+$event = Event::model()->findByPk($data->event_id);
+$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $event->episode->patient->id, $institution->id, Yii::app()->session['selected_site_id']);
+
 $cataract_card_list = array(
     'Patient' => array(
         'data' => array(
             $data->patient_name,
             date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y'),
-            $data->hos_num
+            PatientIdentifierHelper::getIdentifierValue($primary_identifier)
         )
     ),
     'Procedure' => array(
@@ -122,7 +127,7 @@ $other_card_list = array(
         'data' => array(
             $data->patient_name,
             date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y'),
-            $data->hos_num
+            PatientIdentifierHelper::getIdentifierValue($primary_identifier),
         )
     ),
     (int)$data->eye_id === Eye::BOTH ? 'Procedure (1st)' : 'Procedure' => array(
@@ -263,4 +268,4 @@ $other_card_list = array(
     </footer>
 </main>
 
-<script src="<?= Yii::app()->assetManager->createUrl('/newblue/whiteboardJS/wb_procedure_name.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('/newblue/dist/js/whiteboardJS/wb_procedure_name.js')?>"></script>

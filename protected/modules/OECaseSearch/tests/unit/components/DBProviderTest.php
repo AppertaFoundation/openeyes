@@ -1,9 +1,13 @@
 <?php
 
-
+/**
+ * Class DBProviderTest
+ * @covers DBProvider
+ * @covers SearchProvider
+ */
 class DBProviderTest extends CDbTestCase
 {
-    public $searchProvider;
+    public DBProvider $searchProvider;
 
     protected $fixtures = array(
         'patients' => Patient::class,
@@ -32,7 +36,7 @@ class DBProviderTest extends CDbTestCase
      * @throws CException
      * @throws Exception
      */
-    public function testGetVariableData()
+    public function testGetVariableData(): void
     {
         $parameter = new PatientDeceasedParameter();
         $parameter->operation = false;
@@ -42,24 +46,24 @@ class DBProviderTest extends CDbTestCase
         $variable = new AgeVariable(array_column($results, 'id'));
         $var_data = $this->searchProvider->getVariableData(array($variable));
 
-        $this->assertCount(1, $var_data);
+        self::assertCount(1, $var_data);
     }
 
     /**
      * @covers DBProvider
      */
-    public function testGetDriver()
+    public function testGetDriver(): void
     {
-        $this->assertEquals('mariadb', $this->searchProvider->driver);
+        self::assertEquals('mariadb', $this->searchProvider->driver);
     }
 
     /**
      * @covers DBProvider
      */
-    public function testSetDriver()
+    public function testSetDriver(): void
     {
         $this->searchProvider->driver = 'mysql';
-        $this->assertEquals('mysql', $this->searchProvider->driver);
+        self::assertEquals('mysql', $this->searchProvider->driver);
     }
 
     /**
@@ -67,21 +71,23 @@ class DBProviderTest extends CDbTestCase
      * @covers DBProvider
      * @throws Exception
      */
-    public function testSearch()
+    public function testSearch(): void
     {
         $parameter = new PatientDeceasedParameter();
+        $parameter->id = 1;
         $parameter->operation = false;
 
         $results =  $this->searchProvider->search(array($parameter));
 
-        $this->assertCount(8, $results);
+        self::assertCount(8, $results);
 
         $parameter = new PreviousProceduresParameter();
         $parameter->operation = '=';
         $parameter->value = 1;
+        $parameter->id = 1;
 
         $results = $this->searchProvider->search(array($parameter));
 
-        $this->assertCount(0, $results);
+        self::assertCount(0, $results);
     }
 }

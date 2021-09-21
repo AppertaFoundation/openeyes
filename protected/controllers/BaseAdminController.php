@@ -54,7 +54,7 @@ class BaseAdminController extends BaseController
 
     public function accessRules()
     {
-        return array(array('allow', 'roles' => array('admin')));
+        return array(array('allow', 'roles' => array('OprnInstitutionAdmin')));
     }
 
     protected function beforeAction($action)
@@ -71,7 +71,7 @@ class BaseAdminController extends BaseController
      *
      * @author bizmate
      *
-     * @param class  $model
+     * @param BaseActiveRecord  $model
      * @param string $criteria
      *
      * @return CPagination
@@ -105,7 +105,7 @@ class BaseAdminController extends BaseController
      *                        filter_fields - Will allow you to filter results, expects an array the same as extra_fields
      * @param int    $key     - if provided will only generate a single row for a null instance of the $model (for ajax additions)
      */
-    protected function genericAdmin($title, $model, array $options = array(), $key = null)
+    protected function genericAdmin($title, $model, array $options = array(), $key = null, $is_mapping = false)
     {
         $options = array_merge(array(
             'label_field' => $model::SELECTION_LABEL_FIELD,
@@ -160,6 +160,7 @@ class BaseAdminController extends BaseController
                 'items' => $items,
                 'errors' => $errors,
                 'options' => $options,
+                'is_mapping' => $is_mapping,
             ), false, true);
         } else {
             if ($options['filters_ready']) {
@@ -293,6 +294,7 @@ class BaseAdminController extends BaseController
                 'items' => $items,
                 'errors' => $errors,
                 'options' => $options,
+                'is_mapping' => $is_mapping,
             ));
         }
     }

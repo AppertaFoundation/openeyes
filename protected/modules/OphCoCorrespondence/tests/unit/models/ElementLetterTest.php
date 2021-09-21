@@ -20,6 +20,7 @@ class ElementLetterTest extends CDbTestCase
     {
         parent::setUp();
         Yii::app()->session['selected_firm_id'] = 2;
+        Yii::app()->session['selected_institution_id'] = 1;
         $this->letter = $this->letters('letter1');
         file_put_contents('testfile.pdf', '');
     }
@@ -30,6 +31,7 @@ class ElementLetterTest extends CDbTestCase
         if (file_exists('testfile.pdf')) {
             unlink('testfile.pdf');
         }
+        unset(Yii::app()->session['selected_firm_id'], Yii::app()->session['selected_institution_id']);
     }
 
     public function testGetExportUrl(): void

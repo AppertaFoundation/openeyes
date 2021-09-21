@@ -5,11 +5,13 @@ use OEModule\OphCiExamination\models\OphCiExamination_Instrument;
 use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value;
 
 /**
-* Class IOPVariableTest
-*/
+ * Class IOPVariableTest
+ * @covers IOPVariable
+ * @covers CaseSearchVariable
+ */
 class IOPVariableTest extends CDbTestCase
 {
-    protected $variable;
+    protected IOPVariable $variable;
 
     protected $fixtures = array(
         'iop' => Element_OphCiExamination_IntraocularPressure::class,
@@ -37,7 +39,7 @@ class IOPVariableTest extends CDbTestCase
         unset($this->variable);
     }
 
-    public function getData()
+    public function getData(): array
     {
         return array(
             'Standard' => array(
@@ -72,7 +74,13 @@ class IOPVariableTest extends CDbTestCase
                 'csv_mode' => 'ADVANCED',
                 'var_mode' => 'last',
                 'query_template' => '
-        SELECT p.nhs_num, iop.value iop, iop.side, iop.event_date, iop.reading_time
+        SELECT (
+            SELECT pi.value
+            FROM patient_identifier pi
+                JOIN patient_identifier_type pit ON pit.id = pi.patient_identifier_type_id
+            WHERE pi.patient_id = p.id
+            AND pit.usage_type = \'GLOBAL\'
+            ) nhs_num, iop.value iop, iop.side, iop.event_date, iop.reading_time
         FROM v_patient_iop iop
         JOIN patient p ON p.id = iop.patient_id
         WHERE iop.patient_id IN (1, 2, 3)
@@ -91,7 +99,7 @@ class IOPVariableTest extends CDbTestCase
      * @param $var_mode
      * @param $query_template
      */
-    public function testQuery($csv_mode, $var_mode, $query_template)
+    public function testQuery($csv_mode, $var_mode, $query_template): void
     {
         $this->variable->query_flags = array($var_mode);
         $date_predicate = null;
@@ -105,23 +113,29 @@ class IOPVariableTest extends CDbTestCase
         }
         $expected = str_replace('{{date}}', $date_predicate, str_replace('{{time}}', $time_predicate, $query_template));
         $this->variable->csv_mode = $csv_mode;
-        $this->assertEquals($expected, $this->variable->query());
+        self::assertEquals($expected, $this->variable->query());
     }
 
-    public function testGetVariableData()
+    public function testGetVariableData(): void
     {
         $this->variable->query_flags = array('first');
-        $this->assertEquals('iop', $this->variable->field_name);
-        $this->assertEquals('IOP', $this->variable->label);
-        $this->assertEquals('IOP (mm Hg)', $this->variable->x_label);
-        $this->assertNotEmpty($this->variable->id_list);
+        self::assertEquals('iop', $this->variable->field_name);
+        self::assertEquals('IOP', $this->variable->label);
+        self::assertEquals('IOP (mm Hg)', $this->variable->x_label);
+        self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        $this->assertCount(1, $results[$this->variable->field_name]);
-        $this->assertEquals('20', $results[$this->variable->field_name][0]['iop']);
-        $this->assertEquals('1', $results[$this->variable->field_name][0]['frequency']);
-        $this->assertEquals('1', $results[$this->variable->field_name][0]['patient_id_list']);
+        self::assertCount(1, $results[$this->variable->field_name]);
+        self::assertEquals('20', $results[$this->variable->field_name][0]['iop']);
+        self::assertEquals('1', $results[$this->variable->field_name][0]['frequency']);
+        self::assertEquals('1', $results[$this->variable->field_name][0]['patient_id_list']);
+    }
+
+    public function testGetPrimaryDataPointName()
+    {
+        $this->variable->field_name = 'iop_first';
+        self::assertEquals('iop', $this->variable->getPrimaryDataPointName());
     }
 }

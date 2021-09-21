@@ -139,6 +139,57 @@ function gradeCalculator(_drawing) {
     return false;
 }
 
+function addDRFeature($container, selectedItems, template, side)
+{
+    // Selected item/s are features.
+    let feature_id_list = [];
+    let ma_count = null;
+    // If the feature from the itemSet is '(MA)', set the ma_count. Otherwise, add the feature ID as normal to the list.
+    // The assumption made here is that MA has been selected from the R1 list before an MA value was selected.
+    $.each(selectedItems, function(index, item) {
+        if (item.itemSet.options.header === '(MA)') {
+            ma_count = item;
+        } else if (item.itemSet.options.header !== '(MA)' && item.label !== 'DR') {
+            feature_id_list.push(item.id);
+        }
+    });
+
+    // Obtain the main data points for the selected features and add rows for each one.
+    $.ajax({
+        url: '/OphCiExamination/default/getDrFeatures',
+        data: {
+            feature_list: feature_id_list
+        },
+        success: function(response) {
+            $($container).find("tbody").empty();
+            $.each(JSON.parse(response), function(index, item) {
+                var data = {
+                    grade: item.grade,
+                    id: item.id,
+                    name: ((ma_count !== null && item.name === 'MA') ? ma_count.id + ' ' + item.name : item.name),
+                    index: index,
+                    feature_count: (ma_count !== null && item.name === 'MA') ? ma_count.id : null,
+                    side: side
+                };
+                var row = Mustache.render(template, data);
+                $($container).find("tbody").append(row);
+            });
+        },
+        error: function(request, status, error) {
+            let content = "Unable to add DR features due to ";
+            if (status === 'error' || status === null) {
+                content = content + 'unknown error.';
+            } else {
+                content = content + status + '.';
+            }
+            console.log(error);
+            new OpenEyes.UI.Dialog.Alert({
+                content: content,
+            });
+        }
+    });
+}
+
 //returns the number of weeks booking recommendation from the DR grades (based on nsc retinopathy value for the given side)
 function getDRBookingVal(side) {
     var dr_grade = $('.' + dr_grade_et_class);

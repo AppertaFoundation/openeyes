@@ -473,7 +473,7 @@ class DefaultController extends \BaseEventTypeController
 
         $dp = $this->getManager()->getListDataProvider($filter);
 
-        $this->render('list', array('dp' => $dp, 'list_filter' => $filter));
+        $this->render('list', array('dp' => $dp, 'list_filter' => $filter, 'institution_id'=> \Institution::model()->getCurrent()->id,));
     }
 
     /**

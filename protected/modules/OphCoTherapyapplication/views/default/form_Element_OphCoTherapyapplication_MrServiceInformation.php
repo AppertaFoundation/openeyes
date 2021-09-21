@@ -22,7 +22,7 @@
     echo $form->dropDownList(
         $element,
         'consultant_id',
-        Firm::model()->getList($subspecialty->id, $element->consultant_id),
+        Firm::model()->getList(Yii::app()->session['selected_institution_id'], $subspecialty->id, $element->consultant_id),
         array('empty' => 'Select'),
         false,
         array('field' => 3)

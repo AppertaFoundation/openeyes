@@ -22,7 +22,8 @@ class CommonSystemicDisorderController extends BaseAdminController
 
     public function actionList()
     {
-        $models = CommonSystemicDisorderGroup::model()->findAll();
+        $this->group = 'Disorders';
+        $models = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
         $data = array_map(function ($model) {
             return $model->getAttributes(array("id", "name"));
         }, $models);
@@ -51,8 +52,14 @@ class CommonSystemicDisorderController extends BaseAdminController
                 return $entry['CommonSystemicDisorder'];
             }, $JSON);
 
+            $institution_mappings = array_map(function ($entry) {
+                return isset($entry['assigned_institution']) && $entry['assigned_institution'];
+            }, $JSON);
+
+            $institution_id = Institution::model()->getCurrent()->id;
+
             $ids = array();
-            foreach ($disorders as $disorder) {
+            foreach ($disorders as $key => $disorder) {
                 $common_systemic_disorder = CommonSystemicDisorder::model()->findByPk($disorder['id']);
                 if (!$common_systemic_disorder) {
                     $common_systemic_disorder = new CommonSystemicDisorder;
@@ -64,6 +71,18 @@ class CommonSystemicDisorderController extends BaseAdminController
 
                 if (!$common_systemic_disorder->save()) {
                     $errors[] = $common_systemic_disorder->getErrors();
+                }
+
+                $needs_mapping = $institution_mappings[$key];
+
+                if ($common_systemic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                    if (!$needs_mapping) {
+                        $common_systemic_disorder->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                    }
+                } else {
+                    if ($needs_mapping) {
+                        $common_systemic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                    }
                 }
 
                 $ids[$common_systemic_disorder->id] = $common_systemic_disorder->id;
@@ -78,7 +97,7 @@ class CommonSystemicDisorderController extends BaseAdminController
                     }, $ids));
                 }
 
-                $to_delete = CommonSystemicDisorder::model()->findAll($criteria);
+                $to_delete = CommonSystemicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
                 foreach ($to_delete as $item) {
                     if (!$item->delete()) {
                         $errors[] = $item->getErrors();

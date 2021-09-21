@@ -5,6 +5,8 @@ use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
 
 /**
  * Class PatientDiagnosisParameterTest
+ * @covers PatientDiagnosisParameter
+ * @covers CaseSearchParameter
  * @method Patient patient($fixtureId)
  * @method OphCiExamination_Diagnosis ophciexamination_diagnosis($fixtureId)
  * @method Element_OphCiExamination_Diagnoses et_ophciexamination_diagnoses($fixtureId)
@@ -17,7 +19,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     /**
      * @var PatientDiagnosisParameter $parameter
      */
-    protected $parameter;
+    protected PatientDiagnosisParameter $parameter;
 
     protected $fixtures = array(
         'disorder' => 'Disorder',
@@ -47,7 +49,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         unset($this->parameter);
     }
 
-    public function testBindValues()
+    public function testBindValues(): void
     {
         $this->parameter->value = 'Diabetes';
         $this->parameter->firm_id = 1;
@@ -58,9 +60,9 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         );
 
         // Ensure that all bind values are returned.
-        $this->assertEquals($expected, $this->parameter->bindValues());
+        self::assertEquals($expected, $this->parameter->bindValues());
 
-        $this->parameter->firm_id = '';
+        $this->parameter->firm_id = null;
 
         $expected = array(
             'p_d_value_0' => $this->parameter->value,
@@ -68,10 +70,10 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             'p_d_only_latest_event_0' => $this->parameter->only_latest_event,
         );
 
-        $this->assertEquals($expected, $this->parameter->bindValues());
+        self::assertEquals($expected, $this->parameter->bindValues());
     }
 
-    public function attributeValueTestList()
+    public function attributeValueTestList(): array
     {
         return array(
             'Operation' => array(
@@ -105,7 +107,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
      * @param null|string $exception
      * @throws CException
      */
-    public function testGetValueForAttribute($attribute, $expected, $exception = null)
+    public function testGetValueForAttribute($attribute, $expected, $exception = null): void
     {
         $this->parameter->operation = '=';
         $this->parameter->value = 1;
@@ -115,14 +117,14 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             $this->expectException($exception);
             $this->parameter->getValueForAttribute($attribute);
         } else {
-            $this->assertEquals($expected, $this->parameter->getValueForAttribute($attribute));
+            self::assertEquals($expected, $this->parameter->getValueForAttribute($attribute));
         }
     }
 
     /**
      * @covers CaseSearchParameter
      */
-    public function testGetOptions()
+    public function testGetOptions(): void
     {
         $options = array(
             'value_type' => 'string_search',
@@ -151,31 +153,31 @@ class PatientDiagnosisParameterTest extends CDbTestCase
                 ),
             ),
         );
-        $this->assertEquals($options, $this->parameter->getOptions());
+        self::assertEquals($options, $this->parameter->getOptions());
     }
 
     /**
      * @covers PatientDiagnosisParameter
      * @covers CaseSearchParameter
      */
-    public function testGetCommonItemsForTerm()
+    public function testGetCommonItemsForTerm(): void
     {
         // Full match
-        $this->assertCount(1, PatientDiagnosisParameter::getCommonItemsForTerm('Myopia'));
-        $this->assertEquals('Myopia', PatientDiagnosisParameter::getCommonItemsForTerm('Myopia')[0]['label']);
-        $this->assertEquals(1, PatientDiagnosisParameter::getCommonItemsForTerm('Myopia')[0]['id']);
+        self::assertCount(1, PatientDiagnosisParameter::getCommonItemsForTerm('Myopia'));
+        self::assertEquals('Myopia', PatientDiagnosisParameter::getCommonItemsForTerm('Myopia')[0]['label']);
+        self::assertEquals(1, PatientDiagnosisParameter::getCommonItemsForTerm('Myopia')[0]['id']);
 
         // Partial match
-        $this->assertCount(2, PatientDiagnosisParameter::getCommonItemsForTerm('m'));
+        self::assertCount(2, PatientDiagnosisParameter::getCommonItemsForTerm('m'));
     }
 
-    public function getSearchData()
+    public function getSearchData(): array
     {
         return array(
             'Exact match, no firm' => array(
                 'op' => 'IN',
                 'value' => 1,
-                'firm_id' => '',
+                'firm_id' => null,
                 'expected_ids' => array(1, 2, 3, 7),
             ),
             'Exact match with firm' => array(
@@ -187,7 +189,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             'Does not match, no firm' => array(
                 'op' => 'NOT IN',
                 'value' => 1,
-                'firm_id' => '',
+                'firm_id' => null,
                 'expected_ids' => array(4, 5, 6, 8, 9, 10),
             ),
             'Does not match, including firm' => array(
@@ -207,7 +209,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
      * @param $firm_id
      * @param $expected_ids
      */
-    public function testSearch($op, $value, $firm_id, $expected_ids)
+    public function testSearch($op, $value, $firm_id, $expected_ids): void
     {
         $expected = array();
         foreach ($expected_ids as $patientNum) {
@@ -217,9 +219,9 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->operation = $op;
         $this->parameter->value = $value;
         $this->parameter->firm_id = $firm_id;
-        $this->parameter->only_latest_event = 0;
+        $this->parameter->only_latest_event = false;
 
-        $this->assertTrue($this->parameter->validate());
+        self::assertTrue($this->parameter->validate());
 
         $results = Yii::app()->searchProvider->search(array($this->parameter));
 
@@ -230,7 +232,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
 
         $patients = Patient::model()->findAllByPk($ids);
 
-        $this->assertEquals($expected, $patients);
+        self::assertEquals($expected, $patients);
     }
 
     /**
@@ -239,7 +241,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
      * @param $value
      * @param $firm_id
      */
-    public function testSaveSearch($op, $value, $firm_id)
+    public function testSaveSearch($op, $value, $firm_id): void
     {
         $this->parameter->operation = $op;
         $this->parameter->value = $value;
@@ -248,13 +250,13 @@ class PatientDiagnosisParameterTest extends CDbTestCase
 
         $actual = $this->parameter->saveSearch();
 
-        $this->assertEquals($op, $actual['operation']);
-        $this->assertEquals($value, $actual['value']);
-        $this->assertEquals($firm_id, $actual['firm_id']);
-        $this->assertEquals(0, $actual['only_latest_event']);
+        self::assertEquals($op, $actual['operation']);
+        self::assertEquals($value, $actual['value']);
+        self::assertEquals($firm_id, $actual['firm_id']);
+        self::assertEquals(0, $actual['only_latest_event']);
     }
 
-    public function getAuditParams()
+    public function getAuditParams(): array
     {
         return array(
             'All params' => array(
@@ -286,7 +288,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
      * @param $firm_id
      * @param $only_latest_event
      */
-    public function testGetAuditData($operator, $value, $firm_id, $only_latest_event)
+    public function testGetAuditData($operator, $value, $firm_id, $only_latest_event): void
     {
         $op = '=';
         if ($operator !== 'IN') {
@@ -309,6 +311,6 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             $expected .= ' with only the latest event';
         }
 
-        $this->assertEquals($expected, $this->parameter->getAuditData());
+        self::assertEquals($expected, $this->parameter->getAuditData());
     }
 }

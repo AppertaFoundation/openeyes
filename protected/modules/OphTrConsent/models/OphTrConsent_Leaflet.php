@@ -33,10 +33,22 @@
  */
 class OphTrConsent_Leaflet extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_SUBSPECIALTY | ReferenceData::LEVEL_FIRM;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'leaflet_id';
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphTrConsent_Leaflet|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -142,8 +154,8 @@ class OphTrConsent_Leaflet extends BaseActiveRecordVersioned
         $return2 = self::model()->with('firms')->activeOrPk($leaflet_values)->findAll($criteria2);
         if (is_array($return1)) {
             return array_merge($return1, $return2);
-        } else {
-            return $return2;
         }
+
+        return $return2;
     }
 }
