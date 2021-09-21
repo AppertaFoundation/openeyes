@@ -19,7 +19,7 @@
  * The followings are the available columns in table 'ophcocvi_signature':
  * @property integer $id
  * @property integer $element_id
- * @property integer $type
+ * @property numeric-string $type
  * @property string $signature_file_id
  * @property string $signed_user_id
  * @property string $signatory_role
@@ -83,11 +83,11 @@ class OphCoCvi_Signature extends BaseSignature
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element' => array(self::BELONGS_TO, Element_OphCoCvi_Esign::class, 'element_id'),
-            'signatureFile' => array(self::BELONGS_TO, ProtectedFile::class, 'signature_file_id'),
-            'signedUser' => array(self::BELONGS_TO, User::class, 'signed_user_id'),
-            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'element' => array(self::BELONGS_TO, OEModule\OphCoCvi\models\Element_OphCoCvi_Esign::class, 'element_id'),
+            'signatureFile' => array(self::BELONGS_TO, \ProtectedFile::class, 'signature_file_id'),
+            'signedUser' => array(self::BELONGS_TO, \User::class, 'signed_user_id'),
+            'createdUser' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
         );
     }
 

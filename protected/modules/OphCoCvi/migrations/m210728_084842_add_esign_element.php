@@ -51,7 +51,7 @@ class m210728_084842_add_esign_element extends OEMigration
         $this->addForeignKey('fk_ophcocvi_signature_suser_id', self::ITEM_TBL, 'signed_user_id', 'user', 'id');
 
         $this->createElementType('OphCoCvi', 'E-Sign', array(
-            'class_name' => 'Element_OphCoCvi_Esign',
+            'class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign',
             'display_order' => 60,
             'parent_class' => null,
             "default" => 1,
@@ -65,7 +65,7 @@ class m210728_084842_add_esign_element extends OEMigration
     {
         $event_type_id = $this->getIdOfEventTypeByClassName("OphCoCvi");
         $this->insert('element_type', array('name' => 'Consent Signature','class_name' => 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature', 'event_type_id' => $event_type_id, 'display_order' => 30, 'required' => 1));
-        $this->deleteElementType('OphCoCvi', 'Element_OphCoCvi_Esign');
+        $this->deleteElementType('OphCoCvi', 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign');
         $this->dropForeignKey('fk_ophcocvi_signature_etid', self::ITEM_TBL);
         $this->dropForeignKey('fk_et_ophcocvi_esign_event_id', self::ELEMENT_TBL);
         $this->dropForeignKey('fk_ophcocvi_signature_sfile_id', self::ITEM_TBL);

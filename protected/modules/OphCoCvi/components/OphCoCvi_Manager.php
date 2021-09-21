@@ -16,7 +16,7 @@
 
 namespace OEModule\OphCoCvi\components;
 
-use Element_OphCoCvi_Esign;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_Esign;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics_V1;
@@ -206,7 +206,8 @@ class OphCoCvi_Manager extends \CComponent
         $cls_rel_map = array(
             'Element_OphCoCvi_ClinicalInfo'.$version => 'clinical_element',
             'Element_OphCoCvi_ClericalInfo'.$version => 'clerical_element',
-            'Element_OphCoCvi_Demographics'.$version => 'demographics_element'
+            'Element_OphCoCvi_Demographics'.$version => 'demographics_element',
+            'Element_OphCoCvi_Esign' => 'esign_element'
         );
 
         if (!isset($this->info_el_for_events[$event->id])) {
@@ -442,7 +443,9 @@ class OphCoCvi_Manager extends \CComponent
             return false;
         }
 
-        if ($signature = $this->getElementForEvent($event, "Element_OphCoCvi_Esign")) {
+        $signature = $this->getElementForEvent($event, "Element_OphCoCvi_Esign");
+
+        if ($signature) {
             /** @var Element_OphCoCvi_Esign $signature */
             if (!$signature->isSignedByConsultant()) {
                 return false;
@@ -653,8 +656,7 @@ class OphCoCvi_Manager extends \CComponent
 
             $event->audit('event', 'cvi-issued', null, 'CVI Issued', array('user_id' => $user_id));
 
-            /** @var Element_OphCoCvi_PatientSignature $consent_element */
-            $consent_element = $this->getConsentSignatureElementForEvent($event);
+            $consent_element = $this->getElementForEvent($event, "Element_OphCoCvi_Consent");
 
             $info_element->gp_delivery = $gp_delivery = (int)($consent_element->consented_to_gp && $consent_element::isDocmanEnabled());
             $info_element->la_delivery = $la_delivery = (int)($consent_element->consented_to_la && $consent_element::isLADeliveryEnabled());
@@ -721,7 +723,7 @@ class OphCoCvi_Manager extends \CComponent
             }
         }
 
-        if ($esign_element = $event->getElementByClass(\Element_OphCoCvi_Esign::class)) {
+        if ($esign_element = $event->getElementByClass(Element_OphCoCvi_Esign::class)) {
             /** @var \Element_OphCoCvi_Esign $esign_element */
             foreach ($esign_element->signatures as $signature) {
                 if ((int)$signature->type === \BaseSignature::TYPE_PATIENT && $signature->isSigned()) {
@@ -1004,37 +1006,6 @@ class OphCoCvi_Manager extends \CComponent
         } else {
             throw new \Exception("could not create event signature file");
         }
-    }
-
-    /**
-     * @param \Event $event
-     * @param \User  $user
-     * @param        $pin
-     * @return bool
-     */
-    public function signCvi(\Event $event, \User $user, $pin)
-    {
-        if ($user->signature_file_id) {
-            $decodedImage = $user->getDecryptedSignature($pin);
-            if ($decodedImage) {
-                $transaction = $this->startTransaction();
-                try {
-                    $this->saveUserSignature($decodedImage, $event);
-                    $this->updateEventInfo($event);
-                    $event->audit('event', 'cvi-consultant-signed', null, 'CVI Consultant Signature added', array('user_id' => $user->id));
-                    $transaction->commit();
-
-                    return true;
-                } catch (\Exception $e) {
-                    \OELog::log($e->getMessage());
-                    $transaction->rollback();
-
-                    return false;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -1364,26 +1335,8 @@ class OphCoCvi_Manager extends \CComponent
     {
         $file = \ProtectedFile::createFromFile( $this->pdfOutput );
         $file->save();
-        $this->clearImages();
 
         return $file;
-    }
-
-    /**
-     * Delete copied signatures images after print
-     */
-    public function clearImages()
-    {
-        if ($this->consultantSignatureImage) {
-            unlink( $this->consultantSignatureImage );
-        }
-        if ($this->patientSignatureImage) {
-            unlink( $this->patientSignatureImage );
-        }
-
-        if ($this->signedByImage) {
-            unlink($this->signedByImage);
-        }
     }
 
     public function createConsentPdf(\Event $event)

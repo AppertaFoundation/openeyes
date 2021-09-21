@@ -12,7 +12,6 @@
  * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 ?>
 
 <?php
@@ -34,13 +33,11 @@ if ($this->checkLabelPrintAccess()) {
 $this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small', 'style' => 'display:none;'));
 $selectOptions['et_print_info_sheet'] = 'Print Information Sheet';
 
-
 $this->event_actions[] = EventAction::dropdownToButton('', 'select_action', $selectOptions, null);
 
 if ($this->canIssue()) {
     $this->event_actions[] = EventAction::link('Issue', '/OphCoCvi/default/issue/' . $this->event->id, null, array('class' => 'small button secondary'));
 }
-
 
 $this->beginContent('//patient/event_container');
 ?>

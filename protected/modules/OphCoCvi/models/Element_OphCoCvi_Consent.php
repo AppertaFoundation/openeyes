@@ -16,7 +16,7 @@
 namespace OEModule\OphCoCvi\models;
 
 /**
- * Class Element_OphCoCvi_Esign
+ * Class Element_OphCoCvi_Consent
  *
  * @property int $id
  * @property int $event_id

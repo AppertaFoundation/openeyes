@@ -1200,7 +1200,6 @@ class DefaultController extends \BaseEventTypeController
         $this->initWithEventId($event_id);
         $mgr = new OphCoCvi_Manager();
         $pdf = $mgr->createConsentPdf($this->event);
-        $mgr->clearImages();
 
         header("Content-type:application/pdf");
         header('Content-Length: '.filesize($pdf));
@@ -1524,5 +1523,16 @@ class DefaultController extends \BaseEventTypeController
             ->queryAll();
 
         $this->renderJSON($diagnosis);
+    }
+
+    public function actionGetVisualAcuityDatas($unit_id)
+    {
+        if ($unit_id == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_SNELLEN) {
+            $datas = Element_OphCoCvi_ClinicalInfo_V1::model()->getSnellenDatas();
+        } else if ($unit_id == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_LOGMAR) {
+            $datas = Element_OphCoCvi_ClinicalInfo_V1::model()->getLogmarDatas();
+        }
+
+        $this->renderJSON($datas);
     }
 }
