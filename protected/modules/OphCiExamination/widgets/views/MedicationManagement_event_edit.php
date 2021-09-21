@@ -484,6 +484,10 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                     }
                 });
 
+                // Filter out undefined values from the array
+                medication_management_bound_keys = medication_history_bound_keys.filter(function (item) {
+                    return item !== undefined
+                });
                 if (medication_management_bound_keys.length !== 0) {
                     medication_history_bound_keys.forEach(function(bound_key) {
                         if (!medication_management_bound_keys.includes(bound_key)) {
