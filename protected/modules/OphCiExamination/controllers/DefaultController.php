@@ -1591,6 +1591,26 @@ class DefaultController extends \BaseEventTypeController
             if (!$prescription->save()) {
                 throw new \Exception("Error while saving prescription: " . print_r($prescription->getErrors(), true));
             }
+
+            foreach ($element->entries as $entry) {
+                if ($entry->hasLinkedPrescribedEntry()) {
+                    $prescribed_entry = $entry->prescriptionItem();
+
+                    $prescribed_entry->dose = $entry->dose;
+                    $prescribed_entry->dose_unit_term = $entry->dose_unit_term;
+                    $prescribed_entry->route_id = $entry->route_id;
+                    $prescribed_entry->frequency_id = $entry->frequency_id;
+                    $prescribed_entry->duration_id = $entry->duration_id;
+                    $prescribed_entry->dispense_location_id = $entry->dispense_location_id;
+                    $prescribed_entry->start_date = $entry->start_date;
+                    $prescribed_entry->end_date = $entry->end_date;
+                    $prescribed_entry->stop_reason_id = $entry->stop_reason_id;
+                    $prescribed_entry->comments = $entry->comments;
+
+                    $prescribed_entry->save();
+                }
+            }
+
             $prescription->event->audit('event', 'update', serialize(array_merge($prescription->attributes, ['prescription_edit_reason' => $audit_prescription_edit_reason])), null, array('module' => 'Prescription', 'model' => 'Element_OphDrPrescription_Details'));
         }
     }
