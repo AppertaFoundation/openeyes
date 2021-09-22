@@ -39,4 +39,4 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
 
 <?php $this->endWidget()?>
 
-<?php $this->endContent()?>
+<?php $this->endContent();

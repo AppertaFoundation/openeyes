@@ -17,6 +17,8 @@
 
 class PatientIdentifierHelper
 {
+    const PATIENT_IDENTIFIER_ACTIVE_SOURCE_INFO = "ACTIVE";
+    const PATIENT_IDENTIFIER_DELETED_BY_STRING = "DEL BY PATIENT ID ";
     /**
      * Returns the display order rules for the specified institution and site.
      *
@@ -96,7 +98,7 @@ class PatientIdentifierHelper
      * @param null $site_id
      * @return PatientIdentifier|null
      */
-    public static function getIdentifierForPatient($usage_type, $patient_id, $institution_id, $site_id = null) : ?PatientIdentifier
+    public static function getIdentifierForPatient($usage_type, $patient_id, $institution_id, $site_id = null, $disable_default_scope = false) : ?PatientIdentifier
     {
         $cases = $site_id ? ['site', 'institution'] : ['institution'];
         $current_site_id = $site_id;
@@ -127,7 +129,16 @@ class PatientIdentifierHelper
             }
             $identifier_type = self::getPatientIdentifierType($usage_type, $institution_id, $current_site_id);
             if ($identifier_type) {
-                $identifier = PatientIdentifier::model()->find("patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id AND deleted = 0", [':patient_id' => $patient_id, ':patient_identifier_type_id' => $identifier_type->id]);
+                $criteria = new CDbCriteria();
+                $criteria->condition = "patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id";
+                $criteria->params = [':patient_id' => $patient_id, ':patient_identifier_type_id' => $identifier_type->id];
+
+                if ($disable_default_scope) {
+                    $identifier = PatientIdentifier::model()->disableDefaultScope()->find($criteria);
+                } else {
+                    $identifier = PatientIdentifier::model()->find($criteria);
+                }
+
                 if ($identifier) {
                     return $identifier;
                 }
@@ -242,13 +253,26 @@ class PatientIdentifierHelper
      */
     public static function addNumberToPatient(\Patient $patient, \PatientIdentifierType $type, string $identifier) : bool
     {
-        $count = \PatientIdentifier::model()->countByAttributes([
+        $duplicate_identifier = \PatientIdentifier::model()->findByAttributes([
             'patient_identifier_type_id' => $type->id,
-            'value' => $identifier
+            'value' => $identifier,
+            'deleted' => 0,
+            'source_info' => PatientIdentifierHelper::PATIENT_IDENTIFIER_ACTIVE_SOURCE_INFO
         ]);
 
         $is_term_valid = $type->validateTerm($identifier);
-        if (!$count && $is_term_valid) {
+
+        if ($is_term_valid) {
+            if ($duplicate_identifier) {
+                if ($type->usage_type == PatientIdentifierType::GLOBAL_USAGE_TYPE) {
+                    $duplicate_identifier->deleted = 1;
+                    $duplicate_identifier->source_info =  \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id . '['.time().']';
+                    $duplicate_identifier->save();
+                } else {
+                    return false;
+                }
+            }
+
             $patient_identifier = new \PatientIdentifier();
             $patient_identifier->patient_id = $patient->id;
             $patient_identifier->patient_identifier_type_id = $type->id;
@@ -277,5 +301,20 @@ class PatientIdentifierHelper
     {
         $global_institution_id = \PatientIdentifierHelper::getGlobalInstitutionIdFromSetting();
         return \PatientIdentifierHelper::getPatientIdentifierType("GLOBAL", $global_institution_id);
+    }
+
+    /**
+     * Retrieve an identifier for a Patient by identifier type
+     *
+     * @param int $patient_id
+     * @param PatientIdentifierType $id_type
+     * @return PatientIdentifier|null
+     */
+    public static function getPatientIdentifierByType(int $patient_id, PatientIdentifierType $patient_identifier_type): ?PatientIdentifier
+    {
+        return PatientIdentifier::model()->findByAttributes([
+            "patient_id" => $patient_id,
+            "patient_identifier_type_id" => $patient_identifier_type->id
+        ]);
     }
 }

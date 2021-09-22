@@ -117,7 +117,7 @@ if ($this->checkAccess('admin')) {
 </form>
 
 <h2>Sessions<?php if (@$_GET['sequence_id'] !== '') {
-    ?> for sequence <?=\CHtml::encode($_GET['sequence_id'])?><?php
+    ?> for sequence <?=\CHtml::encode(@$_GET['sequence_id'])?><?php
             }?></h2>
 <form id="admin_sessions">
 

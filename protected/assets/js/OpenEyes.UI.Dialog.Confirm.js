@@ -58,6 +58,8 @@
 		dialogClass: 'dialog confirm',
 		okButton: 'OK',
 		cancelButton: 'Cancel',
+		okButtonClassList: 'secondary small confirm ok',
+		cancelButtonClassList: 'warning small confirm cancel',
 		templateSelector: '#dialog-confirm-template'
 	};
 
@@ -77,7 +79,9 @@
 			data: {
 				content: options.content,
 				okButton: options.okButton,
-				cancelButton: options.cancelButton
+				cancelButton: options.cancelButton,
+				okButtonClassList: options.okButtonClassList,
+				cancelButtonClassList: options.cancelButtonClassList
 			}
 		});
 	};

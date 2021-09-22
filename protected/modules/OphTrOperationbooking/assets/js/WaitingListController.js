@@ -153,18 +153,6 @@ $(function () {
       });
 
   });
-
-  new OpenEyes.UI.StickyElement('.panel.actions', {
-    offset: -44,
-    enableHandler: function (instance) {
-      instance.element.width(instance.element.width());
-      instance.enable();
-    },
-    disableHandler: function (instance) {
-      instance.element.width('auto');
-      instance.disable();
-    }
-  });
 });
 
 function print_items_from_selector(sel, all) {

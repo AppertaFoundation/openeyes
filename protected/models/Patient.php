@@ -19,6 +19,7 @@
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\OphCiExamination\models\SocialHistory;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
 
 /**
  * This is the model class for table "patient".
@@ -384,6 +385,16 @@ class Patient extends BaseActiveRecordVersioned
         return 'None';
     }
 
+    public function getClinicPathwayInProgress()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = 'JOIN worklist_patient wp ON wp.id = t.worklist_patient_id';
+        $criteria->addCondition('wp.patient_id = :patient_id');
+        $criteria->params = [':patient_id' => $this->id];
+        $criteria->addInCondition('t.status', Pathway::inProgressStatuses());
+        return Pathway::model()->find($criteria);
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -472,9 +483,8 @@ class Patient extends BaseActiveRecordVersioned
         $results = $data_provider->getData();
 
         $local_results_count = $data_provider->getItemCount();
-
         $results_from_pas = array();
-        if ($this->use_pas == true) {
+        if ($this->use_pas && $local_results_count === 0) {
             Yii::app()->event->dispatch('patient_search_criteria',
                 [
                     'results' => &$results_from_pas, 'patient' => $this,
@@ -2486,6 +2496,50 @@ class Patient extends BaseActiveRecordVersioned
             }
         }
     }
+
+    /**
+     * Convenience method that returns the patient's language
+     * as it was set in the latest Communication Preferences element
+     *
+     * @return Language|null    Language object or null if not set
+     */
+    public function getLanguage(): ?Language
+    {
+        if ($element = $this->getLatestCommunicationPreferences()) {
+            return $element->language;
+        }
+
+        return null;
+    }
+
+    /**
+     * Convenience method that returns whether the Patient requires interpreter
+     * in any language as it was set in the latest Communication Preferences element
+     *
+     * @return Language|null    Language object or null if not set
+     */
+    public function getInterpreterRequired(): ?Language
+    {
+        if ($element = $this->getLatestCommunicationPreferences()) {
+            return $element->interpreter_required;
+        }
+
+        return null;
+    }
+
+    private function getLatestCommunicationPreferences(): ?Element_OphCiExamination_CommunicationPreferences
+    {
+        if ($api = \Yii::app()->moduleAPI->get("OphCiExamination")) {
+            /** @var OphCiExamination_API $api */
+            return $api->getLatestElement(
+                Element_OphCiExamination_CommunicationPreferences::class,
+                $this
+            );
+        }
+
+        return null;
+    }
+
     /**
      * Builds a sorted list of operations carried out on the patient either historically or across relevant events.
      *

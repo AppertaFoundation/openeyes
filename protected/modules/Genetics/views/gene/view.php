@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="admin box">
     <div class="data-group">
@@ -27,9 +29,9 @@
     </div>
     
     <?php $this->widget('zii.widgets.CDetailView', array(
-        'data'=>$model,
-        'htmlOptions' => array('class'=>'detailview'),
-        'attributes'=>array(
+        'data' => $model,
+        'htmlOptions' => array('class' => 'standard flex-layout cols-full'),
+        'attributes' => array(
             'name',
             'location',
             array(
@@ -39,6 +41,6 @@
             'description',
             'details',
             'refs',
-            
+
         ),
         ));

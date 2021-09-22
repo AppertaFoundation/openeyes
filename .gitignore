@@ -57,6 +57,7 @@ protected/modules/*
 # Include core modules
 !/protected/modules/Admin/
 !/protected/modules/Api/
+!/protected/modules/CSDClient/
 !/protected/modules/Genetics/
 !/protected/modules/OECaseSearch/
 !/protected/modules/OETrial/
@@ -101,4 +102,14 @@ build/logs
 protected/widgets/views/IndexSearch_Examination.php
 protected/scripts/sample_db.sql
 protected/scripts/sample_db.zip
+
+# Never tracker docker-compose overrides or .env's
+/docker-compose.override.yml
+/.env
+
+# Never track php-cs-fixer stuff
+/.php-cs-fixer.*
+
+# Allow local git ignores for dynamic changes we do not want to commit or track
+.local_gitignore
 **/0-a-restore.sql

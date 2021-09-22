@@ -114,7 +114,7 @@ class NinePositionsTest extends \OEDbTestCase
             'element_type_id = ? and `key` = ?', [
                 $this->element_type_id,
                 $flag
-        ]);
+            ]);
 
         $setting->default_value = 0;
         $setting->save();

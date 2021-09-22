@@ -107,6 +107,6 @@ class PrismReflex_Entry extends \BaseElement
 
         $result[] = sprintf("%s - %s", $this->prismbase, $this->finding);
 
-        return sprintf("%s: %s", $this->prismdioptre, implode(", " , $result));
+        return sprintf("%s: %s", $this->prismdioptre, implode(", ", $result));
     }
 }

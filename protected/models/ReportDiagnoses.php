@@ -75,8 +75,10 @@ class ReportDiagnoses extends BaseReport
         $all = array();
 
         foreach ($this->all as $disorder_id) {
-            if ((empty($this->principal) || !in_array($disorder_id, $this->principal)) &&
-                (empty($this->secondary) || !in_array($disorder_id, $this->secondary))) {
+            if (
+                (empty($this->principal) || !in_array($disorder_id, $this->principal)) &&
+                (empty($this->secondary) || !in_array($disorder_id, $this->secondary))
+            ) {
                 $all[] = $disorder_id;
             }
         }
@@ -93,7 +95,6 @@ class ReportDiagnoses extends BaseReport
 
     public function run()
     {
-
         $this->setInstitutionAndSite();
 
         if (!empty($this->all)) {
@@ -150,20 +151,20 @@ class ReportDiagnoses extends BaseReport
 
         if ($type === 'Principal') {
             foreach ($list as $disorder_id) {
-                $conditions[] = $this->joinDisorder(ReportDiagnoses::TYPE_PRINCIPAL_ONLY, $i, $disorder_id, $select, $whereParams, $query);
+                $conditions[] = $this->joinDisorder(self::TYPE_PRINCIPAL_ONLY, $i, $disorder_id, $select, $whereParams, $query);
 
                 ++$i;
             }
         } elseif ($type === 'Secondary') {
             foreach ($list as $disorder_id) {
-                $conditions[] = $this->joinDisorder(ReportDiagnoses::TYPE_SECONDARY_ONLY, $i, $disorder_id, $select, $whereParams, $query);
+                $conditions[] = $this->joinDisorder(self::TYPE_SECONDARY_ONLY, $i, $disorder_id, $select, $whereParams, $query);
 
                 ++$i;
             }
         } else {
             foreach ($list as $disorder_id) {
-                $condition_p = $this->joinDisorder(ReportDiagnoses::TYPE_PRINCIPAL_ALL, $i, $disorder_id, $select, $whereParams, $query);
-                $condition_s = $this->joinDisorder(ReportDiagnoses::TYPE_SECONDARY_ALL, $i, $disorder_id, $select, $whereParams, $query);
+                $condition_p = $this->joinDisorder(self::TYPE_PRINCIPAL_ALL, $i, $disorder_id, $select, $whereParams, $query);
+                $condition_s = $this->joinDisorder(self::TYPE_SECONDARY_ALL, $i, $disorder_id, $select, $whereParams, $query);
 
                 $conditions[] = '(' . $condition_p . ' or ' . $condition_s . ')';
 
@@ -207,16 +208,16 @@ class ReportDiagnoses extends BaseReport
 
         if ($type === 'Principal') {
             for ($i = 0; $i < count($list); ++$i) {
-                $this->insertReportItem(ReportDiagnoses::TYPE_PRINCIPAL_ONLY, $i, $eyes, $diagnoses, $item);
+                $this->insertReportItem(self::TYPE_PRINCIPAL_ONLY, $i, $eyes, $diagnoses, $item);
             }
         } elseif ($type === 'Secondary') {
             for ($i = 0; $i < count($list); ++$i) {
-                $this->insertReportItem(ReportDiagnoses::TYPE_SECONDARY_ONLY, $i, $eyes, $diagnoses, $item);
+                $this->insertReportItem(self::TYPE_SECONDARY_ONLY, $i, $eyes, $diagnoses, $item);
             }
         } elseif ($type === 'All') {
             for ($i = 0; $i < count($list); ++$i) {
-                $this->insertReportItem(ReportDiagnoses::TYPE_PRINCIPAL_ALL, $i, $eyes, $diagnoses, $item);
-                $this->insertReportItem(ReportDiagnoses::TYPE_SECONDARY_ALL, $i, $eyes, $diagnoses, $item);
+                $this->insertReportItem(self::TYPE_PRINCIPAL_ALL, $i, $eyes, $diagnoses, $item);
+                $this->insertReportItem(self::TYPE_SECONDARY_ALL, $i, $eyes, $diagnoses, $item);
             }
         }
 
@@ -294,11 +295,11 @@ class ReportDiagnoses extends BaseReport
      */
     private function getFieldPrefix($type)
     {
-        if ($type == ReportDiagnoses::TYPE_PRINCIPAL_ONLY) {
+        if ($type === self::TYPE_PRINCIPAL_ONLY) {
             return 'pdis';
-        } elseif ($type == ReportDiagnoses::TYPE_PRINCIPAL_ALL) {
+        } elseif ($type === self::TYPE_PRINCIPAL_ALL) {
             return 'padis';
-        } elseif ($type == ReportDiagnoses::TYPE_SECONDARY_ONLY) {
+        } elseif ($type === self::TYPE_SECONDARY_ONLY) {
             return 'sdis';
         } else {
             return 'sadis';
@@ -315,8 +316,10 @@ class ReportDiagnoses extends BaseReport
      */
     private function getDateColumnName($type)
     {
-        if ($type === ReportDiagnoses::TYPE_PRINCIPAL_ONLY
-            || $type === ReportDiagnoses::TYPE_PRINCIPAL_ALL) {
+        if (
+            $type === self::TYPE_PRINCIPAL_ONLY
+            || $type === self::TYPE_PRINCIPAL_ALL
+        ) {
             return 'created_date';
         } else {
             return 'date';
@@ -332,11 +335,11 @@ class ReportDiagnoses extends BaseReport
      */
     private function getJoinTableNames($type)
     {
-        if ($type === ReportDiagnoses::TYPE_PRINCIPAL_ONLY) {
+        if ($type === self::TYPE_PRINCIPAL_ONLY) {
             return array('episode', 'e');
-        } elseif ($type === ReportDiagnoses::TYPE_PRINCIPAL_ALL) {
+        } elseif ($type === self::TYPE_PRINCIPAL_ALL) {
             return array('episode', 'ea');
-        } elseif ($type === ReportDiagnoses::TYPE_SECONDARY_ONLY) {
+        } elseif ($type === self::TYPE_SECONDARY_ONLY) {
             return array('secondary_diagnosis', 'sd');
         } else {
             return array('secondary_diagnosis', 'sda');
@@ -353,8 +356,10 @@ class ReportDiagnoses extends BaseReport
      */
     private function getTypeReportName($type)
     {
-        if ($type === ReportDiagnoses::TYPE_PRINCIPAL_ONLY
-            || $type === ReportDiagnoses::TYPE_PRINCIPAL_ALL) {
+        if (
+            $type === self::TYPE_PRINCIPAL_ONLY
+            || $type === self::TYPE_PRINCIPAL_ALL
+        ) {
             return 'Principal';
         } else {
             return 'Secondary';
@@ -364,7 +369,7 @@ class ReportDiagnoses extends BaseReport
     /**
      * Insert an item into the list of diagnoses if there is a record set for it
      *
-     * @param string $type The diagnosis item type, either TYPE_PRINCIPAL_ONLY, TYPE_PRINCIPAL_ALL or TYPE_SECONDARY
+     * @param string $type The diagnosis item type, either TYPE_PRINCIPAL_ONLY, TYPE_PRINCIPAL_ALL, TYPE_SECONDARY_ONLY or TYPE_SECONDARY_ALL
      * @param int $i The index of the diagnosis in the query
      * @param array $eyes The list of eye model ids and names, to be matched with the item
      * @param array &$diagnoses A reference to the list of diagnoses to insert the item into

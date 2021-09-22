@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $cross_section_ed = null;
@@ -65,22 +67,22 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
 
             // overflow
             'ToricPCIOL', 'ACIOL', 'CapsularTensionRing', 'RK', 'ContinuousCornealSuture', 'SidePort', 'TrabyFlap', 'TrabySuture', 'Tube',
-            'Patch', 'TubeExtender', 'Supramid', 'TubeLigation', 'SectorIridectomy',
+            'Patch', 'TubeExtender', 'IntraluminalStent', 'TubeLigation', 'SectorIridectomy',
         ]
     ],
     'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
-    'idSuffix' => $side.'_'.$element->elementType->id,
+    'idSuffix' => $side . '_' . $element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',
     'width' => 300,
     'height' => 300,
     'model' => $element,
-    'attribute' => $side.'_eyedraw',
+    'attribute' => $side . '_eyedraw',
     'maxToolbarButtons' => 12,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
     'popupDisplaySide' => 'right',
-    'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_ed_report',
+    'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_' . $side . '_ed_report',
     'autoReportEditable' => false,
     'fields' => $cross_section_ed
 ));

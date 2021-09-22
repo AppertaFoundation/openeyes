@@ -44,7 +44,7 @@ $annotateToolsIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOf
 
     <hr>
 
-    <input type="text" id="js-label-text" class="cols-full" placeholder="Label text...">
+    <input type="text" class="js-label-text cols-full" placeholder="Label text...">
     <button name="text" class="js-tool-btn">Add label</button>
 
     <hr>

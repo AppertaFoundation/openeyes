@@ -29,7 +29,7 @@
            href="<?php echo Yii::app()->createUrl(
                '/OphCoCvi/Default/create',
                array('patient_id' => $this->patient->id)
-           ); ?>">
+                 ); ?>">
           Create CVI
         </a>
         <?php else : ?>

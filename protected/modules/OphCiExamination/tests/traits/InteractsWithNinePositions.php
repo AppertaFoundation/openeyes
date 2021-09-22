@@ -157,5 +157,4 @@ trait InteractsWithNinePositions
 
         return $data;
     }
-
 }

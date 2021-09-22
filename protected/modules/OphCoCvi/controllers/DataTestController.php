@@ -88,5 +88,3 @@ class DataTestController extends \BaseController
         print_r($dataHandler->dataSource);
     }
 }
-
-?>

@@ -44,8 +44,12 @@ $(document).ready(function() {
             }
         }
     });
-
+    $(this).on('click', '#save-new-storage-btn',function(f) {
+        saveNewStorage();
+        $(".close-icon-btn").click();
+    });
     $(this).on('click', '#addNewStoragePopup',function(e) {
+
         $.ajax({
           'type': 'POST',
           'data': {YII_CSRF_TOKEN: YII_CSRF_TOKEN},
@@ -56,42 +60,16 @@ $(document).ready(function() {
               content: html,
               title: "Add new storage",
               autoOpen: false,
+                dialogClass: 'oe-popup',
               onClose: function() { enableButtons(); },
               open: function (event, ui) {
-                $('#save-new-storage-btn').css({'color':'#FFF'});
               },
-              buttons: {
-                "Close" : {
-                  text: "Close",
-                  id: "close-new-storage-btn",
-                  class: 'cancel event-action button small',
-                  click: function(){
-                    $( this ).dialog( "close" );
-                    enableButtons();
-                  }
-                },
-                "Save":{
-                  text: "Save",
-                  class: 'button small secondary',
-                  id: "save-new-storage-btn",
-                  css:'color:#FFF',
-                  click: function(){
-                    if(saveNewStorage()){
-                      $( this ).dialog( "close" );
-                      enableButtons();
-                    }
-
-                  }
-                }
-              }
-
             });
 
             storageDialog.open();
           },
         });
       });
-    }
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
@@ -115,9 +93,9 @@ function getAvailableLetterNumberToBox( obj ){
         'dataType': 'json',
         'success': function(response) {
             if (typeof(response.letter) != "undefined"){
-                $('#dnaextraction_letter').val(response.letter);
-                $('#dnaextraction_number').val(response.number);
-                
+                $('#dnaextraction_letter').attr("placeholder", response.letter);
+                $('#dnaextraction_number').attr("placeholder", response.number);
+
                 $('#dnaextraction_letter').prop('disabled', false);
                 $('#dnaextraction_number').prop('disabled', false);
             } else {        

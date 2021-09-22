@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -37,7 +38,6 @@
  */
 class Episode extends BaseActiveRecordVersioned
 {
-    private $defaultScopeDisabled = false;
 
     /**
      * Returns the static model of the specified AR class.
@@ -81,22 +81,15 @@ class Episode extends BaseActiveRecordVersioned
     public function defaultScope()
     {
         $this->displayDeletedEvents();
-        if ($this->defaultScopeDisabled) {
-            return array();
+        if ($this->getDefaultScopeDisabled()) {
+            return [];
         }
 
         $table_alias = $this->getTableAlias(false, false);
 
         return array(
-            'condition' => $table_alias.'.deleted = 0',
+            'condition' => $table_alias . '.deleted = 0',
         );
-    }
-
-    public function disableDefaultScope()
-    {
-        $this->defaultScopeDisabled = true;
-
-        return $this;
     }
 
     /**
@@ -263,7 +256,7 @@ class Episode extends BaseActiveRecordVersioned
                 ->from('episode e')
                 ->join('firm f', 'e.firm_id = f.id')
                 ->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-                ->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
+                ->where('e.deleted = false' . $where . ' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
                     ':patient_id' => $patient_id,
                     ':subspecialty_id' => $subspecialty_id,
                 ))
@@ -272,7 +265,7 @@ class Episode extends BaseActiveRecordVersioned
             $episode = Yii::app()->db->createCommand()
                 ->select('e.id AS eid')
                 ->from('episode e')
-                ->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
+                ->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE ' . $where . ' AND e.patient_id = :patient_id', array(
                     ':patient_id' => $patient_id,
                 ))
                 ->queryRow();
@@ -500,7 +493,7 @@ class Episode extends BaseActiveRecordVersioned
         $this->eye_id = $eye_id;
         $this->disorder_date = $disorder_date;
         if (!$this->save()) {
-            throw new Exception('Unable to set episode principal diagnosis/eye: '.print_r($this->getErrors(), true));
+            throw new Exception('Unable to set episode principal diagnosis/eye: ' . print_r($this->getErrors(), true));
         }
 
         $this->audit('episode', 'set-principal-diagnosis');

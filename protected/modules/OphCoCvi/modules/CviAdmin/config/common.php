@@ -26,6 +26,7 @@ $config = [
                 'Low Vision Status' => ['uri' => '/OphCoCvi/admin/default/lowVisionStatus', 'restricted' => array('admin')],
                 'Preferred Info Format' => ['uri' => '/OphCoCvi/admin/default/preferredInfoFormat', 'restricted' => array('admin')],
                 'Local Authorities' => ['uri' => '/OphCoCvi/admin/localAuthorities/list', 'restricted' => array('admin')],
+                'Signature Import Log' => ['uri' => '/DicomLogViewer/signatureList', 'restricted' => array('admin')],
             ]
         ),
         'menu_bar_items' => array(

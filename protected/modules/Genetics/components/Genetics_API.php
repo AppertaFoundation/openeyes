@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -26,7 +27,7 @@ class Genetics_API extends BaseAPI
      */
     public function findViewFile($type, $partial)
     {
-        $viewFile = Yii::getPathOfAlias('Genetics.views.'.$type.'.'.$partial).'.php';
+        $viewFile = Yii::getPathOfAlias('Genetics.views.' . $type . '.' . $partial) . '.php';
 
         if (file_exists($viewFile)) {
             return $viewFile;
@@ -44,13 +45,11 @@ class Genetics_API extends BaseAPI
     public function validateGene($variant)
     {
         $return = json_encode(['valid' => 'failed']);
-
         if (is_callable(Yii::app()->params['external_gene_validation'])) {
             $data = call_user_func(Yii::app()->params['external_gene_validation'], $variant);
             $json = json_decode($data, true);
-
             // false means the external service failed to validate the gene, eg. cURL wasn't able to access the internet
-            if ( isset($json['valid']) && $json['valid'] === 'failed' ) {
+            if (isset($json['valid']) && $json['valid'] === 'failed') {
                 // return value already set - default value
             } else {
                 // external service returned valid json

@@ -100,6 +100,8 @@ Create and Update of patients is managed with PUT requests:
         <DateOfDeath/>
         <PracticeCode>F001</PracticeCode>
         <GpCode>G0102926</GpCode>
+        <LanguageCode>alb</LanguageCode>
+        <InterpreterRequired>alb</InterpreterRequired>
     </Patient>
     
 ##### Response Body (Success)

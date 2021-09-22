@@ -1,5 +1,6 @@
 <?php
-class UpdateInstitutionCodeCommand extends CConsoleCommand{
+class UpdateInstitutionCodeCommand extends CConsoleCommand
+{
     public function run($args)
     {
         $warning_list = array(
@@ -74,14 +75,14 @@ class UpdateInstitutionCodeCommand extends CConsoleCommand{
                 $selected_ins->remote_id = $remote_id;
                 $selected_ins->save();
                 $this->listInstitutions();
-            break;
+                break;
             case 'N':
             case 'n':
             case 'no':
             case 'No':
             case 'NO':
                 $this->listInstitutions();
-            break;
+                break;
             default:
                 exit;
             break;

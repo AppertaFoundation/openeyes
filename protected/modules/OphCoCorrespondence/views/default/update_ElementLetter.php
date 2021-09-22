@@ -21,5 +21,4 @@
     array('element' => $element, 'data' => $data, 'form' => $form, 'creating' => false),
     false,
     false
-)
-?>
+);

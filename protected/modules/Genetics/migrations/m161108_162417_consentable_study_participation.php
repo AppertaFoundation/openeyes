@@ -17,5 +17,4 @@ class m161108_162417_consentable_study_participation extends CDbMigration
         $this->dropColumn('genetics_study_subject', 'consent_given_on');
         $this->dropColumn('genetics_study_subject', 'comments');
     }
-
 }

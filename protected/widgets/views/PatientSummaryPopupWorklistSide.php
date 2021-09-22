@@ -1,5 +1,5 @@
 <?php
-    /**
+/**
      * OpenEyes.
      *
      * (C) OpenEyes Foundation, 2019
@@ -15,18 +15,17 @@
      * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
      */
 
-    /**
-     * @var PatientSummaryPopup $this
-     * @var \OEModule\OphCiExamination\components\OphCiExamination_API $exam_api
-     * @var OphCoCorrespondence_API $correspondence_api
-     * @var \OEModule\OphCoCvi\components\OphCoCvi_API $co_cvi_api
-     */
-    $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-    $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-    $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+/**
+ * @var PatientSummaryPopup $this
+ * @var \OEModule\OphCiExamination\components\OphCiExamination_API $exam_api
+ * @var OphCoCorrespondence_API $correspondence_api
+ * @var \OEModule\OphCoCvi\components\OphCoCvi_API $co_cvi_api
+ */
+$exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+$correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+$co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
-<div class="patient-popup-worklist oe-patient-quick-overview side-panel" style="display:none;"
-     data-patient-id="<?= $this->patient->id ?>">
+<div class="patient-popup-worklist oe-patient-quick-overview side-panel" data-patient-id="<?= $this->patient->id ?>">
     <!-- Show full patient Worklist -->
     <div class="close-icon-btn">
         <i class="oe-i remove-circle medium"></i>
@@ -37,8 +36,6 @@
     ?>
     <div class="quick-overview-content">
         <!-- insert the data -->
-        <?php $this->render('application.widgets.views.PatientSummaryPopupPatientIdentifierStatuses'); ?>
-        <?php $this->render('application.widgets.views.PatientSummaryPopupPatientNumbers'); ?>
         <!-- Warnings: Allergies -->
         <div class="data-group">
             <?php $this->widget(\OEModule\OphCiExamination\widgets\Allergies::class, array(
@@ -53,84 +50,86 @@
               'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
             )); ?>
         </div><!-- .data-group -->
+
+        <div class="situational-awareness">
+            <div class="group">
+                <?php
+                $vaData = $exam_api->getMostRecentVADataStandardised($patient);
+
+                if ($vaData) { ?>
+                    <?php if ($vaData['has_beo']) { ?>
+                        <span class="data">BEO <?= $vaData['beo_result'] ?></span>
+                        <span class="data"><?= $vaData['beo_method_abbr'] ?></span>
+                    <?php } ?>
+                    <span class="data">R <?= $vaData['has_right'] ? $vaData['right_result'] : 'NA'; ?></span>
+                    <?php if ($vaData['has_right']) { ?>
+                        <span class="data"><?= $vaData['right_method_abbr'] ?></span>
+                    <?php } ?>
+                    <span class="data"> L <?= $vaData['has_left'] ? $vaData['left_result'] : 'NA' ?></span>
+                    <?php if ($vaData['has_left']) { ?>
+                        <span class="data"><?= $vaData['left_method_abbr'] ?></span>
+                    <?php } ?>
+                    <span class="oe-date" style="text-align: left;">
+                    <?= Helper::convertDate2NHS($vaData['event_date']); ?>
+                </span>
+                <?php } else { ?>
+                    <span class="data-value not-available">VA: NA</span>
+                <?php } ?>
+            </div>
+
+            <div class="group">
+                <?php
+                $refractionData = $exam_api->getLatestRefractionReadingFromAnyElementType($patient);
+                if ($refractionData) { ?>
+                    <span class="data">R <?= $refractionData['right'] ?: 'NA' ?></span>
+                    <span class="data">L <?= $refractionData['left'] ?: 'NA' ?></span>
+                    <span class="oe-date"
+                          style="text-align: left"><?= Helper::convertDate2NHS($refractionData['event_date']) ?></span>
+                <?php } else { ?>
+                    <span class="data">Refraction: NA</span>
+                <?php } ?>
+            </div>
+
+            <div class="group">
+                <?php
+                $leftCCT = $exam_api->getCCTLeft($patient);
+                $rightCCT = $exam_api->getCCTRight($patient);
+                if ($leftCCT !== null || $rightCCT !== null) { ?>
+                    <span class="data">R <?= $rightCCT ?: 'NA' ?> </span>
+                    <span class="data">L <?= $leftCCT ?: 'NA' ?> </span>
+                    <span class="oe-date" style="text-align: left"><?= \Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
+                <?php } else { ?>
+                    <span class="data">CCT: NA</span>
+                <?php } ?>
+            </div>
+
+            <div class="group">
+                <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
+                    <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
+                    <span class="oe-date"> <?= $this->cviStatus[1] && $this->cviStatus[1] !== '0000-00-00' ?
+                            \Helper::convertDate2HTML($this->cviStatus[1]) : 'N/A' ?></span>
+                <?php } else { ?>
+                    <span class="data">CVI Status: NA</span>
+                <?php } ?>
+            </div>
+        </div>
         <div class="data-group">
             <div class="quicklook-data-groups">
-                <div class="group">
-                    <?php
-                    $vaData = $exam_api->getMostRecentVADataStandardised($patient);
-
-                    if ($vaData) { ?>
-                        <?php if ($vaData['has_beo']) { ?>
-                            <span class="data">BEO <?= $vaData['beo_result'] ?></span>
-                            <span class="data"><?= $vaData['beo_method_abbr'] ?></span>
-                        <?php } ?>
-                        <span class="data">R <?= $vaData['has_right'] ? $vaData['right_result'] : 'NA'; ?></span>
-                        <?php if ($vaData['has_right']) { ?>
-                            <span class="data"><?= $vaData['right_method_abbr'] ?></span>
-                        <?php } ?>
-                        <span class="data"> L <?= $vaData['has_left'] ? $vaData['left_result'] : 'NA' ?></span>
-                        <?php if ($vaData['has_left']) { ?>
-                            <span class="data"><?= $vaData['left_method_abbr'] ?></span>
-                        <?php } ?>
-                        <span class="oe-date" style="text-align: left;">
-                            <?= Helper::convertDate2NHS($vaData['event_date']); ?>
-                        </span>
-                    <?php } else { ?>
-                        <span class="data-value not-available">VA: NA</span>
-                    <?php } ?>
-                </div>
-
-                <div class="group">
-                    <?php
-                    $refractionData = $exam_api->getLatestRefractionReadingFromAnyElementType($patient);
-                    if ($refractionData) { ?>
-                        <span class="data">R <?= $refractionData['right'] ?: 'NA' ?></span>
-                        <span class="data">L <?= $refractionData['left'] ?: 'NA' ?></span>
-                        <span class="oe-date"
-                              style="text-align: left"><?= Helper::convertDate2NHS($refractionData['event_date']) ?></span>
-                    <?php } else { ?>
-                        <span class="data">Refraction: NA</span>
-                    <?php } ?>
-                </div>
-
-                <div class="group">
-                    <?php
-                    $leftCCT = $exam_api->getCCTLeft($patient);
-                    $rightCCT = $exam_api->getCCTRight($patient);
-                    if ($leftCCT !== null || $rightCCT !== null) { ?>
-                        <span class="data">R <?= $rightCCT ?: 'NA' ?> </span>
-                        <span class="data">L <?= $leftCCT ?: 'NA' ?> </span>
-                        <span class="oe-date" style="text-align: left"><?= \Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
-                    <?php } else { ?>
-                        <span class="data">CCT: NA</span>
-                    <?php } ?>
-                </div>
-
-                <div class="group">
-                    <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
-                        <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
-                        <span class="oe-date"> <?= $this->cviStatus[1] && $this->cviStatus[1] !== '0000-00-00' ?
-                              \Helper::convertDate2HTML($this->cviStatus[1]) : 'N/A' ?></span>
-                    <?php } else { ?>
-                        <span class="data">CVI Status: NA</span>
-                    <?php } ?>
-                </div>
-
                 <div class="group">
                     <div class="label">Eye Diagnoses</div>
                     <div class="data">
                         <table>
                             <tbody>
                             <?php
-                                $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
+                            $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
                             if (count($ophthalmic_diagnoses) === 0) { ?>
-                                    <tr>
-                                        <td>
-                                            <div class="nil-recorded">Nil recorded</div>
-                                        </td>
-                                    </tr>
-                            <?php } ?>
-                            <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
+                                <tr>
+                                    <td>
+                                        <div class="nil-recorded">Nil recorded</div>
+                                    </td>
+                                </tr>
+                            <?php }
+                            foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
                                 list($side, $name, $date) = explode('~', $ophthalmic_diagnosis); ?>
                                 <tr>
                                     <td><?= $name ?></td>
@@ -208,7 +207,6 @@
                         ); ?>
                     </div>
                 </div>
-
                 <div class="group">
                     <div class="label">Social History</div>
                     <div class="data">
@@ -222,14 +220,13 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="data-group">
-            <h3>Management Summaries</h3>
-            <table class="management-summaries">
-                <tbody>
-                <?php $summaries = $exam_api->getManagementSummaries($patient);
-                if (sizeof($summaries) != 0) {
-                    foreach ($summaries as $summary) { ?>
+            <div class="data-group">
+                <h3>Management Summaries</h3>
+                <table class="management-summaries">
+                    <tbody>
+                    <?php $summaries = $exam_api->getManagementSummaries($patient);
+                    if (sizeof($summaries) != 0) {
+                        foreach ($summaries as $summary) { ?>
                             <tr>
                                 <td><?= $summary->service ?></td>
                                 <td><?= $summary->comments ?></td>
@@ -246,22 +243,24 @@
                                     </i>
                                 </td>
                             </tr>
-                    <?php }
-                }
-                ?>
-                </tbody>
-            </table>
+                        <?php }
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="data-group">
+                <?php $this->widget(
+                    'application.widgets.PlansProblemsWidget',
+                    ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true, 'allow_save' => false]
+                ); ?>
+            </div>
+            <div class="data-group">
+                <h3>Appointments</h3>
+                <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]) ?>
+            </div>
+            <?php if (Yii::app()->getModule('OETrial')) {
+                $this->widget('application.modules.OETrial.widgets.PatientTrialSummary', array('patient' => $this->patient,));
+            } ?>
         </div>
-        <div class="data-group">
-            <h3>Appointments</h3>
-            <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]) ?>
-            <?php $this->widget(
-                'application.widgets.PlansProblemsWidget',
-                ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true, 'allow_save' => false]
-            ); ?>
-        </div>
-        <?php if (Yii::app()->getModule('OETrial')) {
-            $this->widget('application.modules.OETrial.widgets.PatientTrialSummary', array('patient' => $this->patient,));
-        } ?>
-    </div>
 </div>

@@ -25,7 +25,7 @@
             <li><?=\CHtml::encode($element->NHSDate('signature_date')) ?></li>
           </ul>
         </div>
-        <div id="js-listview-info-full data-group" class="cols-6" style="display: none;">
+        <div id="js-listview-info-full data-group" class="cols-6">
           <table class="large-text last-left cols-6">
             <colgroup>
               <col class="cols-4">

@@ -92,4 +92,3 @@ class UserAuthenticationMethod extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 }
-

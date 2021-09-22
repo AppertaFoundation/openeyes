@@ -17,7 +17,7 @@
 class OphInLabResultsModule extends BaseEventTypeModule
 {
     public $moduleShortSuffix;
-    
+
     public function init()
     {
         // this method is called when the module is being created
@@ -30,9 +30,9 @@ class OphInLabResultsModule extends BaseEventTypeModule
             'OphInLabResults.controllers.*',
             'OphInLabResults.components.*'
         ));
-        
+
         $this->moduleShortSuffix = "Lab Results";
-        
+
         parent::init();
     }
 }

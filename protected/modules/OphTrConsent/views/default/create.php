@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -9,7 +10,7 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @link http://www.openeyes.org.uk
+ * @see http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
@@ -18,21 +19,16 @@
 ?>
 <?php
 $form_id = 'clinical-create';
-$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => $form_id,
-            'enableAjaxValidation' => false,
-        ));
-
-        $this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'secondary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id));
-        $this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id));
-    ?>
-
-        <?php  $this->displayErrors($errors)?>
-        <?php  $this->renderOpenElements($this->action->id, $form); ?>
-        <?php  $this->renderOptionalElements($this->action->id, $form); ?>
-        <?php  $this->displayErrors($errors, true)?>
-
-    <?php  $this->endWidget(); ?>
-
-<?php $this->endContent();
+$this->beginContent('//patient/event_container', ['no_face' => true, 'form_id' => $form_id]);
+$form = $this->beginWidget('BaseEventTypeCActiveForm', [
+    'id' => $form_id,
+    'enableAjaxValidation' => false,
+]);
+$this->event_actions[] = EventAction::button('Save draft', 'savedraft', ['level' => 'secondary'], ['id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id]);
+$this->event_actions[] = EventAction::button('Save and print', 'saveprint', ['level' => 'secondary'], ['id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id]);
+$this->displayErrors($errors);
+$this->renderOpenElements($this->action->id, $form);
+$this->renderOptionalElements($this->action->id, $form);
+$this->displayErrors($errors, true);
+$this->endWidget();
+$this->endContent();

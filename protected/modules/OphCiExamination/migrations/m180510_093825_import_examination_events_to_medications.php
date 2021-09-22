@@ -11,7 +11,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
 
         echo "> The import may take a several seconds...\n";
 
-        
+
 
         /*
          * Import Examination events with Drugs

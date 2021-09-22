@@ -57,6 +57,7 @@
       <?php echo $content; ?>
     </main>
   </div><!-- /.content -->
+  <?php $this->renderPartial('//base/_footer'); ?>
 </body>
 
 </html>

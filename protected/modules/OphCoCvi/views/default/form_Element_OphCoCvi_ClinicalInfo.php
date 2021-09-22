@@ -168,7 +168,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                       $element,
                       'best_corrected_'.$eye_side.'_va',
                       array('size' => 5, 'nowrapper' => true)
-                  ); ?>
+                      ); ?>
                   </td>
                 </tr>
                 <?php if ($eye_side=='right') { ?>
@@ -192,7 +192,7 @@ if ($this->checkClinicalEditAccess()) { ?>
               </table>
             </div>
           </div>
-            <?php } ?>
+          <?php } ?>
         </div>
         </section>
       <section class="element full edit">

@@ -26,6 +26,7 @@ class UserTest extends ActiveRecordTestCase
         'users' => 'User',
         'UserFirmRights',
         'UserServiceRights',
+        'protected_file' => 'ProtectedFile'
     );
 
     protected array $columns_to_skip = [
@@ -34,6 +35,24 @@ class UserTest extends ActiveRecordTestCase
         'role',
         'has_selected_firms'
     ];
+
+    public function setUp()
+    {
+        parent::setUp();
+        $pf = $this->protected_file('0');
+        $uid = $pf->uid;
+        $path = Yii::app()->basePath."/files/".$uid[0]."/".$uid[1]."/".$uid[2];
+        if(!file_exists($path)) mkdir($path, 0777, true);
+        file_put_contents($path."/$uid", "dummy");
+    }
+
+    public function tearDown()
+    {
+        $pf = $this->protected_file('0');
+        $uid = $pf->uid;
+        unlink(Yii::app()->basePath."/files/".$uid[0]."/".$uid[1]."/".$uid[2]."/$uid");
+        parent::tearDown();
+    }
 
     public function getModel()
     {
@@ -158,5 +177,17 @@ class UserTest extends ActiveRecordTestCase
         $testuser = array('email' => 'user@unittest.com', 'given_name' => 'User', 'family_name' => 'SSO');
         $this->assertArrayHasKey('username', $this->users('ssouser')->setSSOUserInformation($testuser));
         $this->assertArrayHasKey('password', $this->users('ssouser')->setSSOUserInformation($testuser));
+    }
+
+    public function testGetSignatureImage()
+    {
+        $user = $this->users('user1');
+        $user->signature_file_id = null;
+        $this->assertNull($user->getSignatureImage());
+        unset($user);
+        $user = $this->users('user1');
+        $pf = $this->protected_file('0');
+        $user->signature_file_id = $pf->id;
+        $this->assertIsString($user->getSignatureImage());
     }
 }

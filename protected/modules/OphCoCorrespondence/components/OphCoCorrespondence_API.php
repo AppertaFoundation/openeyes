@@ -17,6 +17,8 @@
  */
 class OphCoCorrespondence_API extends BaseAPI
 {
+    public const ESIGN_PLACEHOLDER = "{electronic_signature}";
+
     /**
      * @param int $event_id
      *
@@ -762,34 +764,26 @@ class OphCoCorrespondence_API extends BaseAPI
         $firm = $firm ? $firm : \Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(\Yii::app()->session['selected_firm_id']);
 
         if (!$consultant) {
-            // only want a consultant for medical firms
+            // only want a consultant for medical firms or support services such as orthoptics
             if ($specialty = $firm->getSpecialty()) {
-                if ($specialty->medical) {
+                if ($specialty->medical || $specialty->name === 'Support Services') {
                     $consultant = $firm->consultant;
                 }
             }
         }
 
         if ($contact = $user->contact) {
+            $service_name = '';
             $consultant_name = false;
 
             // if we have a consultant for the firm, and its not the matched user, attach the consultant name to the entry
             if ($consultant && ($user->id != $consultant->id)) {
+                $service_name = $firm->getServiceText();
                 $consultant_name = trim($consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name);
             }
 
             $full_name = trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications);
-
-            $empty_lines = "\n";
-            $meta_data = OphCoCorrespondenceLetterSettingValue::model()->find('`key`=?', array('letter_footer_blank_line_count'));
-
-            $count = $meta_data ? $meta_data->value : 0;
-            if (is_numeric($count)) {
-                for ($x = 0; $x < $count; $x++) {
-                    $empty_lines .= "\n";
-                }
-            }
-            return "Yours sincerely" . $empty_lines . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
+            return "Yours sincerely\n" . self::ESIGN_PLACEHOLDER . "\n" . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Head of " . $service_name . ": " . $consultant_name : '');
         }
 
         return null;
