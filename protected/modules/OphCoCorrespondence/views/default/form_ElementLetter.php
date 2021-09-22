@@ -384,7 +384,7 @@ $creating = $creating ?? false;
                             }
 
                             $criteria = new CDbCriteria();
-                            $criteria->addCondition('t.institution_id = :institution_id');
+                            $criteria->addCondition('t.institution_id is NULL OR t.institution_id = :institution_id');
                             $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
                             $criteria->order = 't.display_order asc';
                             foreach (LetterStringGroup::model()->with($with)->findAll($criteria) as $string_group) {

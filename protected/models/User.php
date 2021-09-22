@@ -304,7 +304,7 @@ class User extends BaseActiveRecordVersioned
 
     public function getInitials()
     {
-        return strtoupper($this->first_name[0]) . strtoupper($this->last_name[0]);
+        return mb_strtoupper($this->first_name[0]) . mb_strtoupper($this->last_name[0]);
     }
 
     /**
