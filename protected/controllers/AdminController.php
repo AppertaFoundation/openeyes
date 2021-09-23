@@ -470,7 +470,7 @@ class AdminController extends BaseAdminController
         ));*/
     }
 
-    public function actionUserFind()
+    public function actionUserFind($term)
     {
         $res = array();
         if (Yii::app()->request->isAjaxRequest && $term) {
