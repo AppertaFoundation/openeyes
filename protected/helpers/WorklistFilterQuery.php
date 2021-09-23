@@ -71,8 +71,14 @@ class WorklistFilterQuery
             $this->context = $filter->context;
 
             $this->worklists = $filter->worklists;
-            $this->from = !empty($filter->from) ? $this->filter->from : null;
-            $this->to = !empty($filter->to) ? $this->filter->to : null;
+
+            if (isset($filter->period)) {
+                $this->from = $filter->period->from;
+                $this->to = $filter->period->to;
+            } else {
+                $this->from = null;
+                $this->to = null;
+            }
 
             $this->sortBy = $filter->sortBy;
             $this->optional = $filter->optional;

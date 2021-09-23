@@ -21,6 +21,17 @@ var OpenEyes = OpenEyes || {};
         }
     }
 
+    function compareTimePeriods(lhs, rhs)
+    {
+        if (typeof lhs === 'string') {
+            return lhs === rhs;
+        } else if (typeof lhs === typeof rhs) {
+            return lhs.from === rhs.from && lhs.to === rhs.to;
+        } else {
+            return false;
+        }
+    }
+
     function compareWorklists(lhs, rhs)
     {
         if (typeof lhs === 'string') {
@@ -101,11 +112,13 @@ var OpenEyes = OpenEyes || {};
     WorklistFilter.prototype.constructor = WorklistFilter;
 
     WorklistFilter.prototype.compare = function (other) {
+        const timePeriodsEqual = compareTimePeriods(this.period, other.period);
         const worklistsEqual = compareWorklists(this.worklists, other.worklists);
         const optionalEqual = compareOptional(this.optional, other.optional);
 
         return this.site === other.site
             && this.context === other.context
+            && timePeriodsEqual
             && worklistsEqual
             && this.sortBy === other.sortBy
             && optionalEqual
