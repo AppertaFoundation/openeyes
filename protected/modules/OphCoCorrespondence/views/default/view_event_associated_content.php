@@ -30,26 +30,41 @@
                 <tbody>
                 <?php foreach ($associated_content as $ac) {
                     $event = Event::model()->findByPk($ac->associated_event_id);
-                    $event_name = $event->eventType->name;
-                    $event_date = Helper::convertDate2NHS($event->event_date);
-                    ?>
-                    <tr>
-                        <td><?= $event_name ?></td>
-                        <td><?= $ac->display_title ?></td>
-                        <td><?= $event_date ?></td>
-                        <td>
-                            <?php if ($ac->associated_protected_file_id) { ?>
-                                <i class="oe-i tick-green small pad-right"></i>Attached
-                            <?php } else {
-                                $tooltip_content = 'Temporary error, please try again. If the error still occurs, please contact support.';
-                                ?>
-                                <i class="oe-i cross-red small pad-right"></i>Unable to attach
-                                <i class="oe-i oe-i info small pad js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>"></i>
-                            <?php } ?>
-                        </td>
-                    </tr>
+                    if (isset($event)) {
+                        $event_name = $event->eventType->name;
+                        $event_date = Helper::convertDate2NHS($event->event_date);
+                        ?>
+                        <tr>
+                            <td><?= $event_name ?></td>
+                            <td><?= $ac->display_title ?></td>
+                            <td><?= $event_date ?></td>
+                            <td>
+                                <?php if ($ac->associated_protected_file_id) { ?>
+                                    <i class="oe-i tick-green small pad-right"></i>Attached
+                                <?php } else {
+                                    $tooltip_content = 'Temporary error, please try again. If the error still occurs, please contact support.';
+                                    ?>
+                                    <i class="oe-i cross-red small pad-right"></i>Unable to attach
+                                    <i class="oe-i oe-i info small pad js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>"></i>
+                                <?php } ?>
+                            </td>
+                        </tr>
 
-                <?php } ?>
+                        <?php
+                    } else {
+                        ?>
+                        <tr>
+                            <td><?= $ac->display_title ?> (deleted)</td>
+                            <td><?= $ac->display_title ?></td>
+                            <td>N/A</td>
+                            <td>
+                                <i class="oe-i cross-red small pad-right"></i>Unable to attach
+                                <i class="oe-i oe-i info small pad js-has-tooltip" data-tooltip-content="Event cannot be attached as it has been deleted"></i>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                } ?>
                 </tbody>
             </table>
         <?php } else { ?>
