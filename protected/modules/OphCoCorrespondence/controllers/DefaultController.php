@@ -1348,10 +1348,11 @@ class DefaultController extends BaseEventTypeController
                         $attachment_route = $this->setPDFprintData($attached_event->id, false, true, $attached_event->eventType->class_name);
 
                         $attachment_path = $attached_event->imageDirectory . '/event_' . $attachment_route . '.pdf';
+
+                        $this->addPDFToOutput($attachment_path);
+                        @unlink($attachment_path);
+                        @rmdir($attached_event->imageDirectory);
                     }
-                    $this->addPDFToOutput($attachment_path);
-                    @unlink($attachment_path);
-                    @rmdir($attached_event->imageDirectory);
                 }
             }
 
