@@ -571,11 +571,10 @@ class User extends BaseActiveRecordVersioned
     public function getAllAvailableFirms()
     {
         $crit = new CDbCriteria();
-        $crit->compare('t.active', 1);
         $crit->join = "join institution i on i.id = t.institution_id
             join institution_authentication ia on ia.institution_id = i.id and ia.active = 1
             join user_authentication ua on ua.institution_authentication_id = ia.id  and ua.active = 1";
-        $crit->compare('ua.user_id', $this->id);
+        $crit->condition = 'ua.user_id = '.Yii::app()->user->id.' && t.active = 1';
 
         return Firm::model()->findAll($crit);
     }
