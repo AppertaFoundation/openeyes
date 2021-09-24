@@ -34,7 +34,7 @@
             <?php
             foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) {
                 // Setting pulled from database
-                $metadata_value = (string)$metadata->getSettingName($metadata->key, ['SettingInstallation']);
+                $metadata_value = $metadata->getSettingName($metadata->key, ['SettingInstallation']);
 
                 // Check to see if the param is being set in a config file
                 if (array_key_exists($metadata->key, OEConfig::getMergedConfig('main')['params'])) {
