@@ -52,7 +52,7 @@ class HL7_Diagnosis extends BaseHL7_Section
             $this->prefix.'.3.2' => $this->diagnosis_code_text,
             $this->prefix.'.3.3' => $this->diagnosis_code_name_of_coding_system,
             $this->prefix.'.4' => $this->diagnosis_description,
-            $this->prefix.'.5' => $this->diagnosis_date_time,
+            $this->prefix.'.5' => substr(str_replace('-','',str_replace(':','',str_replace(' ','',$this->diagnosis_date_time))),0,14),
             $this->prefix.'.6' => $this->diagnosis_type,
             $this->prefix.'.16.1' => $this->clinician_id_number,
             $this->prefix.'.16.2' => $this->clinician_family_name,
