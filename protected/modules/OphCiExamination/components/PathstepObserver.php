@@ -49,6 +49,7 @@ class PathstepObserver
                 ->join('event_type et', 'et.id = e.event_type_id')
                 ->join('episode ep', 'ep.id = e.episode_id')
                 ->where('ep.patient_id = :patient_id AND ep.firm_id = :service_id AND et.class_name = \'OphCiExamination\'')
+                ->andWhere('e.deleted = 0')
                 ->limit(1)
                 ->order('e.event_date DESC')
                 ->bindValues(
