@@ -64,7 +64,7 @@ class Episode extends BaseActiveRecordVersioned
      */
     protected function instantiate($attributes)
     {
-        $deleted = !empty($attributes) ? intval($attributes['deleted']) : 0;
+        $deleted = (!empty($attributes) && array_key_exists('deleted', $attributes)) ? intval($attributes['deleted']) : 0;
         if ($deleted) {
             $class = 'DeletedEpisode';
         } else {
