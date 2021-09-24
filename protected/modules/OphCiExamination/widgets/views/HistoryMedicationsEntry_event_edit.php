@@ -82,7 +82,7 @@ $stop_fields_validation_error = array_intersect(
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[copied_from_med_use_id]" value="<?= (int) $entry->copied_from_med_use_id ?>" />
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
-        <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[pgdpsd_id]" value="<?= !isset($entry->pgdpsd_id) ? "{{pgdpsd_id}}" : $entry->pgdpsd_id ?>" />
+        <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[pgdpsd_id]" value="<?= $entry->pgdpsd_id ?>" />
         <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]" value="<?= !isset($entry->medication_id) ? "{{medication_id}}" : $entry->medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay(true) ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
