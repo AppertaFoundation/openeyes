@@ -2145,6 +2145,9 @@ class AdminController extends BaseAdminController
             $cb = new CommissioningBody();
             $address = new Address();
             $address->country_id = 1;
+
+            $contact = new Contact();
+            $cb->contact = $contact;
         }
 
         $errors = array();
@@ -2162,7 +2165,7 @@ class AdminController extends BaseAdminController
                 $transaction = Yii::app()->db->beginInternalTransaction();
                 try {
                     $contact = $cb->contact;
-                    if (!$contact) {
+                    if (!$contact || $cb->contact->isNewRecord) {
                         $contact = new Contact();
                         $contact->first_name = '';
                         $contact->last_name = '';
@@ -2418,7 +2421,10 @@ class AdminController extends BaseAdminController
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
             }
+            $contact->scenario = 'admin_contact';
             $contact->attributes = $_POST['Contact'];
+            $contact->last_name = $cbs->name;
+
             if (!$contact->validate()) {
                 $errors = array_merge($errors, $contact->getErrors());
             }
