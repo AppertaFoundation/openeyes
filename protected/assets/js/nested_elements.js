@@ -162,9 +162,6 @@ function removeElement(e) {
         $(container).append(element);
     }
 
-    // Update sticky elements to cope with change in page size
-    OpenEyes.UI.StickyElements.refresh();
-
     // Update text macros (if defined)
     if (typeof updateTextMacros === 'function') {
         updateTextMacros();

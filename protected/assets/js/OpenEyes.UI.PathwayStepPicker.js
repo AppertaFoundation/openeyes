@@ -69,8 +69,14 @@
                 success: function (response) {
                     // Add the assignee's initials to the pathway.
                     let $affectedRow = $(self.options.pathway_checkboxes + '[value="' + pathway_id + '"]').closest('tr');
+                    const oldId = $affectedRow.find('td' + selectors.pathwayAssignee).attr('data-id');
+
                     $affectedRow.find('td' + selectors.pathwayAssignee).attr('data-id', response.id);
                     $affectedRow.find('td' + selectors.pathwayAssignee).text(response.initials);
+
+                    if (self.options.onChangePatientRow) {
+                        self.options.onChangePatientRow('change-assigned-to', { pathwayId: pathway_id, oldId: oldId, newId: response.id });
+                    }
                 }
             });
         }
@@ -146,6 +152,8 @@
             ],
             onReturn: function (dialog, selectedValues) {
                 for (let pathway_id of pathway_ids) {
+                    const into_pathway_id = pathway_id;
+
                     $.ajax({
                         url: self.options.base_url + 'worklist/addPathwayStepsToPathway',
                         data: {
@@ -156,7 +164,17 @@
                         type: 'POST',
                         success: function (response) {
                             // Add all steps for the chosen pathway to the selected pathways.
-                            $(self.options.pathway_checkboxes + ':checked').closest('tr').find('td.js-pathway-container').html(response.step_html);
+                            const pathway = $(`${self.options.pathway_checkboxes}:checked[value="${into_pathway_id}"]`).closest('tr').find('td.js-pathway-container');
+
+                            const oldSteps = pathway.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+
+                            pathway.html(response.step_html);
+
+                            const newSteps = pathway.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+
+                            if (self.options.onChangePatientRow) {
+                                self.options.onChangePatientRow('change-waiting-for', { pathwayId: into_pathway_id, oldSteps: oldSteps, newSteps: newSteps });
+                            }
                         },
                     });
                 }
@@ -182,7 +200,13 @@
                 if(!$pathway.length){
                     $pathway = $(`tr[data-pathway-type-id="${pathway_id}"]`).find('td.js-pathway-container');
                 }
+
+                const oldSteps = $pathway.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+
                 $pathway.html(response.step_html);
+
+                const newSteps = $pathway.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+
                 if (
                     $pathway.find('.oe-pathstep-btn.wait, .oe-pathstep-btn.delayed-wait').length === 0 &&
                     $pathway.find('.oe-pathstep-btn.done').length > 0 &&
@@ -199,6 +223,10 @@
                         });
                         $pathway.find('.oe-pathstep-btn.todo:first').before(step_html);
                     }
+                }
+
+                if (self.options.onChangePatientRow) {
+                    self.options.onChangePatientRow('change-waiting-for', { pathwayId: pathway_id, oldSteps: oldSteps, newSteps: newSteps });
                 }
             }
         });
@@ -635,7 +663,8 @@
         $('.spinner').show();
 
         rows.each(function () {
-            const lastStep = $(this).find('.pathway .oe-pathstep-btn.todo:last-child');
+            const row = $(this);
+            const lastStep = row.find('.pathway .oe-pathstep-btn.todo:last-child');
 
             if (lastStep.length > 0) {
                 const data = {
@@ -648,8 +677,17 @@
                     type: 'POST',
                     data: data,
                     success: function () {
+                        const pathwayId = row.children('.pathway').data('visit-id') || row.data('pathway-type-id');
+                        const oldSteps = row.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+
                         // This is a requested step so as long as it is deleted the order of other requested steps should be correct.
                         lastStep.remove();
+
+                        const newSteps = oldSteps.slice(0, -1);
+
+                        if (self.options.onChangePatientRow) {
+                            self.options.onChangePatientRow('change-waiting-for', { pathwayId: pathwayId, oldSteps: oldSteps, newSteps: newSteps });
+                        }
 
                         onAjaxResult(false);
                     },

@@ -18,6 +18,8 @@
  */
 
 use OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures;
+use OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision;
+use OEModule\OphTrConsent\models\OphTrConsent_BestInterestDecision_Attachment;
 
 class DefaultController extends BaseEventTypeController
 {
@@ -35,7 +37,18 @@ class DefaultController extends BaseEventTypeController
         'sign' => self::ACTION_TYPE_EDIT,
         'contactPage' => self::ACTION_TYPE_FORM,
         'getDeleteConsentPopupContent' => self::ACTION_TYPE_FORM,
+        'uploadFile' => self::ACTION_TYPE_FORM,
     );
+
+    protected static array $accepted_file_types = [
+        'jpg'  => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png'  => 'image/png',
+        'gif'  => 'image/gif',
+        'pdf'  => 'application/pdf',
+    ];
+
+    protected static int $max_filesize = 2_097_152;
 
     public $booking_event;
     public $booking_operation;
@@ -961,5 +974,131 @@ class DefaultController extends BaseEventTypeController
             }
         }
         $element->consentContact = array_merge($existing_contacts, $new_items);
+    }
+
+    private function checkFileError(int $error): void
+    {
+        switch ($error) {
+            case UPLOAD_ERR_OK:
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                throw new Exception('No file sent.');
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                throw new Exception('Exceeded filesize limit.');
+            default:
+                throw new Exception('Unknown error.');
+        }
+    }
+
+    private function checkMimeType(string $file_path): void
+    {
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $type = $finfo->file($file_path);
+        if (!array_search(
+            $type,
+            self::$accepted_file_types,
+            true
+        )) {
+            throw new Exception("File type $type not allowed.");
+        }
+    }
+
+    private function sanitizeFileName(string $orig_name): string
+    {
+        return preg_replace('/[^\da-zA-Z\.\-_]/i', '_', $orig_name);
+    }
+
+    private function checkFileSize(int $size): void
+    {
+        if ($size > static::$max_filesize) {
+            throw new Exception("File too large.");
+        }
+    }
+
+    public function actionUploadFile()
+    {
+        if (isset($_FILES["file"])) {
+            $file = $_FILES["file"];
+            try {
+                $this->checkFileError($file["error"]);
+                $this->checkFileSize($file["size"]);
+                $this->checkMimeType($file["tmp_name"]);
+            } catch (Exception $e) {
+                $this->renderJSON([
+                    "success" => false,
+                    "message" => $e->getMessage(),
+                ]);
+            }
+            $file_name = $this->sanitizeFileName($file["name"]);
+            $pf = ProtectedFile::createForWriting($file_name);
+            $pf->title = "Best Interest Decision support document";
+            if(!move_uploaded_file($file["tmp_name"], $pf->getPath())) {
+                $this->renderJSON([
+                    "success" => false,
+                    "message" => "Error uploading file.",
+                ]);
+            }
+            $pf->save();
+            $this->renderJSON([
+                "success" => true,
+                "protected_file_id" => $pf->id,
+            ]);
+        } else {
+            throw new CHttpException(400, "Bad request");
+        }
+    }
+
+    protected function setComplexAttributes_Element_OphTrConsent_BestInterestDecision(
+        Element_OphTrConsent_BestInterestDecision $element,
+                                                  $data,
+                                                  $index = null)
+    {
+        $data = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_BestInterestDecision"];
+        $items = [];
+        if (isset($data["attachments"]) && is_array($data["attachments"])) {
+            foreach ($data["attachments"] as $attachment) {
+                if($attachment["id"] === "new") {
+                    $item = new OphTrConsent_BestInterestDecision_Attachment();
+                    $pf_id = $attachment["protected_file_id"];
+                    $item->protected_file_id = $pf_id;
+                    if(array_key_exists("tmp_name", $attachment)) {
+                        $item->tmp_name = $attachment["tmp_name"];
+                    }
+                } else {
+                    $item = OphTrConsent_BestInterestDecision_Attachment::model()->findByPk($attachment["id"]);
+                }
+                $items[] = $item;
+            }
+        }
+        $element->attachments = $items;
+    }
+
+    protected function saveComplexAttributes_Element_OphTrConsent_BestInterestDecision(
+        Element_OphTrConsent_BestInterestDecision $element,
+                                                  $data,
+                                                  $index = null
+    )
+    {
+        $existing_ids = Yii::app()->db->createCommand(
+            "SELECT id FROM ".OphTrConsent_BestInterestDecision_Attachment::model()->tableName()
+            ." WHERE element_id = :element_id"
+        )->queryColumn([":element_id" => $element->id]);
+        $ids_to_keep = [];
+        foreach ($element->attachments as $attachment) {
+            if($attachment->isNewRecord) {
+                $attachment->element_id = $element->id;
+                if(!$attachment->save()) {
+                    throw new Exception("Could not save attachment ".print_r($attachment->errors, 1));
+                }
+            } else {
+                $ids_to_keep[] = $attachment->id;
+            }
+        }
+
+        // Remove those that the user marked as deleted
+        foreach (array_diff($existing_ids, $ids_to_keep) as $id) {
+            OphTrConsent_BestInterestDecision_Attachment::model()->deleteByPk($id);
+        }
     }
 }

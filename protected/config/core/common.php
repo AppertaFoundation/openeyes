@@ -130,7 +130,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202108311638',
+            'time' => '202109161046',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -152,16 +152,6 @@ $config = array(
                 'eventemitter2' => array(
                     'js' => array('eventemitter2/lib/eventemitter2.js'),
                     'basePath' => 'application.assets.components',
-                ),
-                'flot' => array(
-                    'js' => array(
-                        'components/flot/jquery.flot.js',
-                        'components/flot/jquery.flot.time.js',
-                        'components/flot/jquery.flot.navigate.js',
-                        'js/jquery.flot.dashes.js',
-                    ),
-                    'basePath' => 'application.assets',
-                    'depends' => array('jquery'),
                 ),
                 'rrule' => array(
                     'js' => array(
@@ -541,6 +531,12 @@ $config = array(
                 'uri' => '/VirusScan/index',
                 'position' => 90,
                 'requires_setting' => array('setting_key' => 'enable_virus_scanning', 'required_value' => 'on'),
+            ),
+            'safeguarding' => array(
+                'title' => 'Safeguarding',
+                'position' => 40,
+                'uri' => '/Safeguarding/index/',
+                'restricted' => array('Safeguarding'),
             ),
             /*
                  //TODO: not yet implemented

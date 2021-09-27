@@ -121,48 +121,32 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
 
     public function afterSave()
     {
-        // get current flags to check for deletion
-        $curCriteria = new \CDbCriteria();
-        $curCriteria->compare('element_id', $this->id, true);
-        $allCurrentFlags = OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAll($curCriteria);
+        if (!empty($this->flags)) {
+            $existingFlags = OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAllByAttributes(array('element_id' => $this->id));
 
-        // if we have no new flags to check, we just delete all of them
-        if ($this->flags && !empty($this->flags[0])&& is_object($this->flags[0])) {
-            foreach ($allCurrentFlags as $curFlag) {
-                $curFlag->delete();
-            }
-            $this->refresh();
-        }
-        // if we have flags to check, go through them.
-        elseif ($this->flags && !empty($this->flags[0])&& !is_object($this->flags[0])) {
-             // check each current flag
-            foreach ($allCurrentFlags as $curFlag) {
-                //if the flag is not in the new flags list, delete it.
-                if (!in_array($curFlag->id, $this->flags)) {
-                    $curFlag->delete();
-                }
-            }
-            $this->refresh();
-        }
+            //map objects to [$existing_red_flag->red_flag_id => $existing_red_flag->id] format for easy lookup
+            $flags_to_delete = array_map(function ($item) {
+                return array($item->red_flag_id => $item->id);
+            }, $existingFlags);
 
-        // if we have flags to add
-        if ($this->flags && !empty($this->flags[0])&& !is_object($this->flags[0])) {
             foreach ($this->flags as $flag) {
-                // find all
-                $criteria = new \CDbCriteria();
-                $criteria->compare('element_id', $this->id, true);
-                $criteria->compare('red_flag_id', $flag, true);
-                $currentFlags = OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAll($criteria);
-                // if the element doesn't already contain this element
-                if (empty($currentFlags)) {
+                if (is_object($flag)) {
+                    $flag_id = $flag->id;
+                } else {
+                    $flag_id = $flag;
                     $newFlagObj = new OphCiExamination_AE_RedFlags_Options_Assignment();
-                    $newFlagObj->red_flag_id = $flag;
+                    $newFlagObj->red_flag_id = $flag_id;
                     $newFlagObj->element_id = $this->id;
                     $newFlagObj->save();
                 }
+                unset($flags_to_delete[$flag_id]);
             }
-            $this->refresh();
+
+            foreach ($flags_to_delete as $red_flag_id => $model_id) {
+                OphCiExamination_AE_RedFlags_Options_Assignment::model()->findByPk($model_id)->delete();
+            }
         }
+
         parent::afterSave();
     }
 

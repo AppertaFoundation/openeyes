@@ -26,5 +26,4 @@ $data->hasAllergyStatus();
     );
     $patientPanel->render('PatientPanel');
     ?>
-        ?>
 </tr>

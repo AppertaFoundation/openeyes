@@ -1133,6 +1133,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     {
         $ccString = '';
 
+        $Australia = Yii::app()->params['default_country'] === 'Australia';
+
         if ($this->document_instance && $this->document_instance[0]->document_target) {
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
@@ -1142,7 +1144,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                         } else {
                             $contact_type = $target->contact_type != \SettingMetadata::model()->getSetting('gp_label') ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                         }
-                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
+                        $ccString .= "CC: " . ($Australia ? "" : ($contact_type != "Other" ? $contact_type . ": " : "")) . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
                     }
                 }
             }
@@ -1268,13 +1270,14 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
                     $eventAssociatedContent->is_print_appended = $attachments_print_appended[$key] ?? 0;
 
-                    if (isset($attachments_short_code[$key])) {
+                    if (isset($attachments_short_code[$key]) && !empty($attachments_short_code[$key])) {
                         $eventAssociatedContent->short_code  = $attachments_short_code[$key];
                     } else {
                         $eventAssociatedContent->short_code = $this->generateShortcodeByEventId($attachments_last_event_id[$key]);
                     }
 
                     $eventAssociatedContent->display_title = $attachments_display_title[$key] ?? null;
+                    $eventAssociatedContent->associated_protected_file_id = $attachments_protected_file_id[$key] ?? null;
                     $eventAssociatedContent->association_storage  = 'EVENT';
                     $eventAssociatedContent->associated_event_id  = $last_event;
                     $eventAssociatedContent->display_order   = $order;

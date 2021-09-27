@@ -171,7 +171,7 @@ class Element_OphTrConsent_Esign extends BaseEsignElement implements RequiresSig
             $sig = new OphTrConsent_Signature();
             $sig->setAttributes([
                 "type" => BaseSignature::TYPE_OTHER_USER,
-                "signatory_role" => "Health professional",
+                "signatory_role" => "Consultant",
                 "signatory_name" => $user->getFullNameAndTitleAndQualifications(),
                 "initiator_row_id" => 0,
             ]);

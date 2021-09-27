@@ -106,6 +106,7 @@ var OpenEyes = OpenEyes || {};
         // for updating the worklists in the main view.
         applyFilter: null, // Called to apply a filter, passing the controller as the argument
         changeShownLists: null, // Called to change which lists are shown in the main view
+        removeRow: null, // Called to remove a single worklist patient row (client side only)
     };
 
     function WorklistFiltersController(options = {}) {
@@ -490,6 +491,65 @@ var OpenEyes = OpenEyes || {};
             };
 
             this.quickView.setListsAndCounts(data);
+        }
+    }
+
+    // Update Quick filter panel details
+    WorklistFiltersController.prototype.updateCountsOnChange = function (changeType, details) {
+        switch (changeType) {
+        case 'change-assigned-to':
+            if (this.quickView) {
+                if (details.oldId !== undefined && details.oldId !== '') {
+                    this.quickView.changeAssignedTo(this.mappings.users, parseInt(details.oldId), -1);
+                }
+
+                this.quickView.changeAssignedTo(this.mappings.users, parseInt(details.newId), 1);
+            }
+
+            if (this.options.removeRow
+                && typeof this.quickProperties.filter !== 'string'
+                && this.quickProperties.filter.type === 'assignedTo'
+                && this.quickProperties.filter.value !== parseInt(details.newId))
+            {
+                this.options.removeRow(details.pathwayId);
+            }
+            break;
+
+        case 'change-waiting-for':
+            // No 'waiting for' status means the row may still be filtered out
+            const newId = details.newSteps.length > 0 ? details.newSteps[0] : '';
+
+            if (this.quickView) {
+                if (details.oldSteps.length === 0) {
+                    if (details.newSteps.length !== 0) {
+                        this.quickView.changeWaitingFor(details.newSteps[0], 1);
+
+                        for (step of details.newSteps) {
+                            this.quickView.changeWaitingFor(step, 0);
+                        }
+                    }
+                } else if (details.newSteps.length === 0) {
+                    this.quickView.changeWaitingFor(details.oldSteps[0], -1);
+                } else {
+                    if (details.oldSteps[0] !== details.newSteps[0]) {
+                        this.quickView.changeWaitingFor(details.oldSteps[0], -1);
+                        this.quickView.changeWaitingFor(details.newSteps[0], 1);
+                    }
+
+                    for (step of details.newSteps) {
+                        this.quickView.changeWaitingFor(step, 0);
+                    }
+                }
+            }
+
+            if (this.options.removeRow
+                && typeof this.quickProperties.filter !== 'string'
+                && this.quickProperties.filter.type === 'waitingFor'
+                && this.quickProperties.filter.value !== newId)
+            {
+                this.options.removeRow(details.pathwayId);
+            }
+            break;
         }
     }
 

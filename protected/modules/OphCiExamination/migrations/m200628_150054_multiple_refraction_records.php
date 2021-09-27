@@ -47,6 +47,14 @@ class m200628_150054_multiple_refraction_records extends OEMigration
 
         $this->migrateReadingsForSide('left', 1);
         $this->migrateReadingsForSide('right', 2);
+
+        $this->execute("CREATE INDEX refraction_reading_id_i ON ophciexamination_refraction_reading(id) USING HASH;");
+        $this->execute("CREATE INDEX refraction_reading_id_version_i ON ophciexamination_refraction_reading_version(id) USING HASH;");
+
+        $this->execute("CREATE INDEX refraction_reading_i ON ophciexamination_refraction_reading(element_id) USING HASH;");
+        $this->execute("CREATE INDEX refraction_reading_eye_i ON ophciexamination_refraction_reading(eye_id) USING HASH;");
+
+
         $this->migrateReadingVersionsForSide('left', 1);
         $this->migrateReadingVersionsForSide('right', 2);
 

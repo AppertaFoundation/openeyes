@@ -24,6 +24,7 @@ use OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
+use OEModule\PASAPI\resources\HL7_A08;
 use services\DateTime;
 use OEModule\PatientTicketing\models\QueueOutcome;
 use Yii;
@@ -973,9 +974,22 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    /***
+     * Construct a PAS message for the specified trigger event here and send it to the PAS.
+     * @param Event $event
+     * @param string $hl7_trigger_event "A03|A08|A11"
+     */
     protected function pasCallout($event, $hl7_trigger_event)
     {
-        // Construct a PAS message for the specified trigger event here and send it to the PAS.
+        switch ($hl7_trigger_event) {
+            case 'A08':
+                $hl7_a08 = new HL7_A08();
+                $hl7_a08->setDataFromEvent($event->id);
+                Yii::app()->event->dispatch('emergency_care_update',
+                    $hl7_a08
+                );
+                break;
+        }
     }
 
     protected function afterCreateElements($event)
@@ -1708,6 +1722,26 @@ class DefaultController extends \BaseEventTypeController
             if (!$prescription->save()) {
                 throw new \Exception("Error while saving prescription: " . print_r($prescription->getErrors(), true));
             }
+
+            foreach ($element->entries as $entry) {
+                if ($entry->hasLinkedPrescribedEntry()) {
+                    $prescribed_entry = $entry->prescriptionItem();
+
+                    $prescribed_entry->dose = $entry->dose;
+                    $prescribed_entry->dose_unit_term = $entry->dose_unit_term;
+                    $prescribed_entry->route_id = $entry->route_id;
+                    $prescribed_entry->frequency_id = $entry->frequency_id;
+                    $prescribed_entry->duration_id = $entry->duration_id;
+                    $prescribed_entry->dispense_location_id = $entry->dispense_location_id;
+                    $prescribed_entry->start_date = $entry->start_date;
+                    $prescribed_entry->end_date = $entry->end_date;
+                    $prescribed_entry->stop_reason_id = $entry->stop_reason_id;
+                    $prescribed_entry->comments = $entry->comments;
+
+                    $prescribed_entry->save();
+                }
+            }
+
             $prescription->event->audit('event', 'update', serialize(array_merge($prescription->attributes, ['prescription_edit_reason' => $audit_prescription_edit_reason])), null, array('module' => 'Prescription', 'model' => 'Element_OphDrPrescription_Details'));
         }
     }

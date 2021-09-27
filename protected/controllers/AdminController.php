@@ -613,14 +613,14 @@ class AdminController extends BaseAdminController
             // Get only the users for the current institution that are not installation admins.
             $institution = Yii::app()->session['selected_institution_id'];
             $institution_user_ids = Yii::app()->db->createCommand()
-                ->select('DISTINCT ia.user_id')
+                ->selectDistinct('ua.user_id')
                 ->from('institution_authentication ia')
                 ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id')
                 ->where('ia.institution_id = :institution_id')
                 ->bindValue(':institution_id', $institution)
                 ->queryColumn();
             $admin_user_ids = Yii::app()->db->createCommand()
-                ->select('DISTINCT a.userid')
+                ->selectDistinct('a.userid')
                 ->from('authassignment a')
                 ->leftJoin('authitemchild c', 'c.child = a.itemname')
                 ->where('c.parent = :admin_role OR a.itemname = :admin_role')
@@ -2145,6 +2145,9 @@ class AdminController extends BaseAdminController
             $cb = new CommissioningBody();
             $address = new Address();
             $address->country_id = 1;
+
+            $contact = new Contact();
+            $cb->contact = $contact;
         }
 
         $errors = array();
@@ -2162,7 +2165,7 @@ class AdminController extends BaseAdminController
                 $transaction = Yii::app()->db->beginInternalTransaction();
                 try {
                     $contact = $cb->contact;
-                    if (!$contact) {
+                    if (!$contact || $cb->contact->isNewRecord) {
                         $contact = new Contact();
                         $contact->first_name = '';
                         $contact->last_name = '';
@@ -2418,7 +2421,10 @@ class AdminController extends BaseAdminController
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
             }
+            $contact->scenario = 'admin_contact';
             $contact->attributes = $_POST['Contact'];
+            $contact->last_name = $cbs->name;
+
             if (!$contact->validate()) {
                 $errors = array_merge($errors, $contact->getErrors());
             }
@@ -2664,19 +2670,29 @@ class AdminController extends BaseAdminController
         $this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
     }
 
+    private function getInstitutionIdForSettings($is_admin)
+    {
+        // non general admin can only view selected institution settings
+        if ($is_admin) {
+            $institution_id = $_GET['institution_id'] ?? null;
+        } else {
+            $institution_id = $this->selectedInstitutionId;
+        }
+        return $institution_id;
+    }
+
     public function actionSettings()
     {
         // If the user is an admin, default to null (global/installation settings);
         // otherwise default to the currently selected institution.
-        $institution_id = $this->checkAccess('admin') ? null : $this->selectedInstitutionId;
-        if (array_key_exists('institution_id', $_GET)) {
-            // Override the default institution_id value if a different institution was selected from the drop-down list.
-            $institution_id = $_GET['institution_id'];
-        }
+        $is_admin = $this->checkAccess('admin');
+
+        $institution_id = $this->getInstitutionIdForSettings($is_admin);
 
         $this->group = "System";
         $this->render('/admin/settings', array(
-            'institution_id' => $institution_id
+            'institution_id' => $institution_id,
+            'is_admin' => $is_admin,
         ));
     }
 
@@ -2722,6 +2738,9 @@ class AdminController extends BaseAdminController
         $this->group = "System";
 
         $key = $_GET['key'] ?? null;
+        $is_admin = $this->checkAccess('admin');
+
+        $institution_id = $this->getInstitutionIdForSettings($is_admin);
         $metadata = SettingMetadata::model()->find('`key`=?', array($key));
         if (!$metadata) {
             $this->redirect(array('/admin/settings'));
@@ -2730,14 +2749,27 @@ class AdminController extends BaseAdminController
         $errors = array();
 
         if (Yii::app()->request->isPostRequest) {
-            $system_setting = $class::model()->findByAttributes(['key' => $key]);
+            $criteria = new CDbCriteria();
+            $criteria->compare('`key`', array($key));
+            if ($institution_id) {
+                $criteria->compare('institution_id', $institution_id);
+                $class = 'SettingInstitution';
+            } else {
+                $class = 'SettingInstallation';
+            }
+
+            $system_setting = $class::model()->find($criteria);
             $value = \Yii::app()->request->getPost($key);
             if (!$system_setting) {
                 $system_setting = new $class();
                 $system_setting->key = $key;
             }
-
             $metadata->setSettingValue($system_setting, $metadata, $value);
+            // make sure institution_id exists before assigning it
+            if ($institution_id && array_key_exists('institution_id', $system_setting->getAttributes())) {
+                $system_setting->institution_id = $institution_id;
+            }
+
             if (!$system_setting->save()) {
                 $errors = $system_setting->errors;
             } else {
@@ -2745,7 +2777,16 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors, 'allowed_classes' => [$class]));
+        $this->render(
+            '/admin/edit_setting',
+            array(
+                'metadata' => $metadata,
+                'errors' => $errors,
+                'allowed_classes' => [$class],
+                'institution_id' => $institution_id,
+                'is_admin' => $is_admin,
+            )
+        );
     }
 
     /**

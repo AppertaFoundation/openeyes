@@ -232,10 +232,12 @@ class Pathway extends BaseActiveRecordVersioned
 
     /**
      * Gets the step at the front of the specified queue if there are any steps for the specified queue.
+     * If a step_type_id_list is specified, this will return the first step of one of the specified types in the specified queue.
      * @param int $queue The queue to peek at. This value should match one of the three step statuses.
-     * @return PathwayStep|null The step at the front of the queue; otherwise null.
+     * @param int[] $step_type_id_list The IDs of the step types to treat as the first step in the queue.
+     * @return PathwayStep|null The step at the front of the queue (of one of the specified types if step_type_id_list has been specified); otherwise null.
      */
-    public function peek(int $queue): ?PathwayStep
+    public function peek(int $queue, array $step_type_id_list = array()): ?PathwayStep
     {
         switch ($queue) {
             case PathwayStep::STEP_COMPLETED:
@@ -247,6 +249,15 @@ class Pathway extends BaseActiveRecordVersioned
             default:
                 $prefix = 'requested';
                 break;
+        }
+        if (count($step_type_id_list) !== 0) {
+            $criteria = new CDbCriteria();
+            $criteria->compare('pathway_id', $this->id);
+            $criteria->compare('status', $queue);
+            $criteria->addInCondition('step_type_id', $step_type_id_list);
+            $criteria->order = '`order`';
+            $criteria->limit = 1;
+            return PathwayStep::model()->find($criteria);
         }
         return empty(($this->{$prefix . '_steps'})) ? null : ($this->{$prefix . '_steps'})[0];
     }

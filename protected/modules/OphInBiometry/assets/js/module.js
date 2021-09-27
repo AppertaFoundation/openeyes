@@ -41,7 +41,6 @@ $(document).ready(function() {
 
 	if(sdmw ==1 ){
 		$("#event-content").hide();
-		$(".sticky-wrapper-event-header").hide();
 		$("#et_save").hide();
 		show_disable_manual_warning = true;
 	}

@@ -395,4 +395,36 @@ class PasApiObserver
         $enabled = (isset(\Yii::app()->params['pasapi']['enabled']) && \Yii::app()->params['pasapi']['enabled'] === true);
         return $this->available = $enabled;
     }
+
+    /**
+     * Performs PAS searches and saves or returns Patient object
+     *
+     * @param $data
+     * @return bool
+     */
+    public function updateEmergencyCareVisit($data)
+    {
+        $this->extraLog($data);
+
+        if (!$this->isAvailable()) {
+            $this->extraLog("PAS is not available");
+            return false;
+        }
+
+        $type = \PatientIdentifierType::model()->find('usage_type="GLOBAL"'); //using NHS number to initialize pasapi, but this is not required for update
+        $pas = $this->initPas($type);
+
+        if (!$pas || !$pas->isAvailable()) {
+            $this->extraLog("PAS is not available");
+            return false;
+        }
+
+        $this->extraLog("PAS is available");
+
+        $obj = $data->getHL7attributes();
+
+        $results = $pas->sendUpdate($obj);
+
+        return true;
+    }
 }

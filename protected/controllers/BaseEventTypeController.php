@@ -62,7 +62,7 @@ class BaseEventTypeController extends BaseModuleController
 
     private $unique_code_elements = array(
         array('event' => 'OphTrOperationnote', 'element' => array('Element_OphTrOperationnote_Cataract')),
-        array('event' => 'OphCoCvi', 'element' => array('Element_OphCoCvi_EventInfo')),
+        array('event' => 'OphCoCvi', 'element' => array('Element_OphCoCvi_EventInfo_V1')),
     );
 
     private static $base_action_types = array(
@@ -1211,7 +1211,7 @@ class BaseEventTypeController extends BaseModuleController
             'enableAjaxValidation' => false,
             'htmlOptions' => array('class' => 'sliding'),
         ));
-        if (isset($this->set) && !$this->set) {
+        if(property_exists($this, 'set') && !$this->set){
             $this->set = $this->getSetFromEpisode($this->episode);
         }
         $this->renderElement($element, 'create', $form, null, array(

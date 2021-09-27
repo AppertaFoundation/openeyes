@@ -478,11 +478,25 @@ $(function () {
         }
     };
 
+    let collectActiveTodoStepsFrom = function (row) {
+        return row.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+    }
+
+    let refreshStatistics = function (pathwayId, oldSteps, newSteps) {
+        // This really should be threaded in elsewhere but this may entail restructuring
+        if (worklistFiltersController) {
+            worklistFiltersController.updateCountsOnChange('change-waiting-for', { pathwayId: pathwayId, oldSteps: oldSteps, newSteps: newSteps });
+        }
+    }
+
     // update pathstep icon status and position
     let handleRunActionResponse = function ($thisStep, response) {
         const $lastActiveStep = $thisStep.closest('.pathway').find('.active').not($thisStep).last();
         const $lastCompleteStep = $thisStep.closest('.pathway').find('.done').not($thisStep).last();
         const $lastRequestedStep = $thisStep.closest('.pathway').find('.todo').not($thisStep).last();
+
+        const oldSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+
         if (response.step.status === 'active') {
             $thisStep.removeClass('done');
             $thisStep.removeClass('todo');
@@ -537,6 +551,12 @@ $(function () {
             }
 
         }
+
+        const newSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+        const pathwayId = $thisStep.closest('.pathway').data('visit-id') || $thisStep.closest('tr').data('pathway-type-id');
+
+        refreshStatistics(pathwayId, oldSteps, newSteps);
+
         updatePathwayTr($thisStep.closest('tr'), response);
     }
 
@@ -568,7 +588,9 @@ $(function () {
                         // get the special action from the button data attribute
                         // current format: step_status: callback
                         let special_action = $(event.target).data('special-action');
-                        
+
+                        const oldSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+
                         const state_data = JSON.parse(response.step.state_data);
                         // run the special action if it matches the current status
                         if (special_action && special_action[response.step.status]) {
@@ -585,6 +607,10 @@ $(function () {
                             // Redirect to the target URL.
                             window.location = state_data.event_create_url;
                         } else {
+                            const newSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+
+                            refreshStatistics(ps.visitID, oldSteps, newSteps);
+
                             ps.resetPopup();
                             ps.requestDetails({
                                 partial: 0,
@@ -609,6 +635,8 @@ $(function () {
                     success: function () {
                         // Swap the step with the step either in front or behind it (depending on the action).
                         let $current_step = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"]');
+                        const oldSteps = collectActiveTodoStepsFrom($current_step.closest('td.js-pathway-container'));
+
                         if (action === 'left') {
                             if ($current_step.prev()) {
                                 $current_step.prev().before($current_step);
@@ -618,6 +646,11 @@ $(function () {
                                 $current_step.before($current_step.next());
                             }
                         }
+
+                        const newSteps = collectActiveTodoStepsFrom($current_step.closest('td.js-pathway-container'));
+
+                        refreshStatistics(ps.visitID, oldSteps, newSteps);
+
                         ps.resetPopup();
                         ps.requestDetails({
                             partial: 0,
@@ -638,6 +671,8 @@ $(function () {
                     success: function (response) {
                         // This is a check-in step so it is already in the correct position.
                         const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="checkin"][data-visit-id="' + ps.visitID + '"]');
+                        const oldSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+
                         $thisStep.addClass('done');
                         $thisStep.removeClass('todo');
                         $thisStep.removeClass('active');
@@ -658,6 +693,11 @@ $(function () {
                         // As the first completed element will always be the check-in element (and no other steps should have been started by this point),
                         // place the wait timer after the first done step (the check-in step).
                         $thisStep.closest('.js-pathway-container').find('.oe-pathstep-btn.done:first').after(step_html);
+
+                        const newSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+
+                        refreshStatistics(ps.visitID, oldSteps, newSteps);
+
                         ps.resetPopup();
                         ps.requestDetails({
                             partial: 0,
@@ -679,11 +719,17 @@ $(function () {
                     success: function (response) {
                         // This is a check-in step so it is already in the correct position.
                         const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="checkin"][data-visit-id="' + ps.visitID + '"]');
+                        const oldSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+
                         $thisStep.addClass('done');
                         $thisStep.removeClass('todo');
                         $thisStep.removeClass('active');
                         // Change the icon for the pathway's completion status.
                         $thisStep.closest('tr').find('td:last').html(response.pathway_status_html);
+
+                        const newSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+
+                        refreshStatistics(ps.visitID, oldSteps, newSteps);
 
                         ps.resetPopup();
                         ps.requestDetails({
@@ -702,7 +748,15 @@ $(function () {
                     success: function () {
                         // This is a requested step so as long as it is deleted the order of other requested steps should be correct.
                         const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"]');
+                        const $pathway = $thisStep.closest('td.js-pathway-container');
+                        const oldSteps = collectActiveTodoStepsFrom($pathway);
+
                         $thisStep.remove();
+
+                        const newSteps = collectActiveTodoStepsFrom($pathway);
+
+                        refreshStatistics(ps.visitID, oldSteps, newSteps);
+
                         ps.closePopup(true);
                     }
                 });

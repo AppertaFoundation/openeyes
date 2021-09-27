@@ -140,7 +140,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                         });
                         dlg.open();
                     }
-                    enableButtons();
+                    setTimeout(enableButtons, 500);
                 }
             );
         });

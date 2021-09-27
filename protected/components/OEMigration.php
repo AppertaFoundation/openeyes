@@ -775,6 +775,25 @@ class OEMigration extends CDbMigration
         return -1;
     }
 
+    public function insertIfNotExist($table, $attributes = [])
+    {
+        $command = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from($table);
+
+        $command->where("1=1");
+        foreach ($attributes as $attr => $val) {
+            $command->andWhere("{$attr} = :{$attr}", [":$attr" => $val]);
+        }
+
+        $is_exist = $command->queryRow();
+        if (!$is_exist) {
+            $this->insert($table, $attributes);
+        } else {
+            echo "\n    > SKIP insert into $table ... value already exist\n";
+        }
+    }
+
     /**
      * @description - return csvFiles array of files that will be imported
      *
@@ -1087,5 +1106,21 @@ class OEMigration extends CDbMigration
         if ($versioned && $this->verifyTableVersioned($current_name)) {
             $this->renameTable($current_name . '_version', $new_name . '_version');
         }
+    }
+
+    /**
+     * Gets the settings field type id by name
+     *
+     * @param $field_type
+     * @return int
+     * @throws CException
+     */
+    protected function getSettingFieldIdByName(string $name)
+    {
+        return $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('setting_field_type')
+            ->where('name = :name', [':name' => $name])
+            ->queryScalar();
     }
 }
