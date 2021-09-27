@@ -23,7 +23,7 @@ use OEModule\OphTrConsent\models\OphTrConsent_BestInterestDecision_Attachment;
 
 class DefaultController extends BaseEventTypeController
 {
-    private $elementFilterList = [ 'Element_OphTrConsent_Other' ];
+    private $elementFilterList = ['Element_OphTrConsent_Other'];
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -41,11 +41,11 @@ class DefaultController extends BaseEventTypeController
     );
 
     protected static array $accepted_file_types = [
-        'jpg'  => 'image/jpeg',
+        'jpg' => 'image/jpeg',
         'jpeg' => 'image/jpeg',
-        'png'  => 'image/png',
-        'gif'  => 'image/gif',
-        'pdf'  => 'application/pdf',
+        'png' => 'image/png',
+        'gif' => 'image/gif',
+        'pdf' => 'application/pdf',
     ];
 
     protected static int $max_filesize = 2_097_152;
@@ -106,7 +106,7 @@ class DefaultController extends BaseEventTypeController
                 $anaesthetic_types = array();
                 if ($this->booking_operation->anaesthetic_type) {
                     foreach ($this->booking_operation->anaesthetic_type as $anaesthetic_type) {
-                        if ( !array_key_exists($anaesthetic_type->id, $type_assessments_by_id) ) {
+                        if (!array_key_exists($anaesthetic_type->id, $type_assessments_by_id)) {
                             $anaesthetic_type_assesment = new OphTrConsent_Procedure_AnaestheticType();
                         } else {
                             $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type->id];
@@ -300,11 +300,11 @@ class DefaultController extends BaseEventTypeController
                 Yii::app()->session['printConsent'] = 1;
             }
             if (@$_POST['SelectBooking'] == 'unbooked') {
-                $this->redirect(array('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&unbooked=1'));
+                $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&unbooked=1'));
             } elseif (preg_match('/^booking([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
-                $this->redirect(array('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&booking_event_id='.$m[1]));
+                $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&booking_event_id=' . $m[1]));
             } elseif (preg_match('/^template([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
-                $this->redirect(array('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&template_id='.$m[1]));
+                $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1]));
             }
             $errors = array('Consent form' => array('Please select a booking or Unbooked procedures'));
         }
@@ -448,7 +448,7 @@ class DefaultController extends BaseEventTypeController
         $pdf_route = $this->setPDFprintData($procedure->event_id, false);
 
         $pf = ProtectedFile::createFromFile($procedure->event->imageDirectory . '/event_' . $pdf_route . '.pdf');
-        $pf->title = 'event_'.$pdf_route.'.pdf';
+        $pf->title = 'event_' . $pdf_route . '.pdf';
 
         if ($pf->save()) {
             // Create preview images of generated pdf file
@@ -469,7 +469,7 @@ class DefaultController extends BaseEventTypeController
 
         $criteria->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) LIKE :term"));
 
-        $params[':term'] = '%'.strtolower(strtr($_GET['term'], array('%' => '\%'))).'%';
+        $params[':term'] = '%' . strtolower(strtr($_GET['term'], array('%' => '\%'))) . '%';
 
         $criteria->params = $params;
         $criteria->order = 'first_name, last_name';
@@ -488,13 +488,13 @@ class DefaultController extends BaseEventTypeController
 
                 // if we have a consultant for the firm, and its not the matched user, attach the consultant name to the entry
                 if ($consultant && $user->id != $consultant->id) {
-                    $consultant_name = trim($consultant->contact->title.' '.$consultant->contact->first_name.' '.$consultant->contact->last_name);
+                    $consultant_name = trim($consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name);
                 }
 
                 $users[] = array(
                     'id' => $user->id,
-                    'value' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name.' '.$contact->qualifications).' ('.$user->role.')',
-                    'fullname' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name.' '.$contact->qualifications),
+                    'value' => trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications) . ' (' . $user->role . ')',
+                    'fullname' => trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications),
                     'role' => $user->role,
                     'consultant' => $consultant_name,
                 );
@@ -663,7 +663,7 @@ class DefaultController extends BaseEventTypeController
             ':old_consent_id' => $old_consent_id
         ];
         $old_consent_event = Event::model()->findAll($criteria);
-        if (count($old_consent_event)===0) {
+        if (count($old_consent_event) === 0) {
             $response = null;
         } else {
             $response = [
@@ -742,13 +742,10 @@ class DefaultController extends BaseEventTypeController
     protected function getEventElements(): array
     {
         if ($this->event && !$this->event->isNewRecord) {
-            $used_elements = $this->event->getElements();
-            $missing_elements = $this->getMissingElementsToLayout($used_elements);
-            $elements = array_merge($used_elements, $missing_elements);
+            $elements = $this->event->getElements();
         } else {
             $elements = $this->getElementsForConsentFormType();
         }
-
         return $elements;
     }
 
@@ -763,38 +760,6 @@ class DefaultController extends BaseEventTypeController
         foreach ($elements as $element) {
             $result[] = get_class($element);
         }
-        return $result;
-    }
-
-    /**
-     * Create new instance from element to edit mode if element is missing
-     * @param $elements
-     * @return array
-     */
-    protected function getMissingElementsToLayout($elements): array
-    {
-        $missing_elements = [];
-        $result = [];
-        $used_elements = $this->getUsedElementNamesInEvent($elements);
-        if ($consent_assessments = $this->getElementsByConsentFormTypes()) {
-            foreach ($consent_assessments as $assessment) {
-                if (!in_array($assessment->element->class_name, $used_elements)) {
-                    $missing_elements[] = $assessment->element->class_name;
-                }
-            }
-        }
-
-        if (!empty($missing_elements)) {
-            foreach ($missing_elements as $missing) {
-                $element = new $missing();
-                /** @var BaseEventTypeElement $element */
-                if ($element->hasAttribute('type_id')) {
-                    $element->type_id = $this->type_id;
-                }
-                $result[] = $element;
-            }
-        }
-
         return $result;
     }
 
@@ -894,14 +859,14 @@ class DefaultController extends BaseEventTypeController
         if (!$element = $this->event->getElementByClass($element_type->class_name)) {
             throw new \CHttpException(500, "Element not found");
         }
-        $this->redirect("/OphCoCvi/default/print/$id?html=1&auto_print=0&sign=1".
-            "&element_type_id=".\Yii::app()->request->getParam("element_type_id").
-            "&signature_type=".\Yii::app()->request->getParam("signature_type").
-            "&signatory_role=".\Yii::app()->request->getParam("signatory_role").
-            "&signature_name=".\Yii::app()->request->getParam("signatory_name").
-            "&element_id=".$element->id.
-            "&initiator_element_type_id=".\Yii::app()->request->getParam("initiator_element_type_id").
-            "&initiator_row_id=".\Yii::app()->request->getParam("initiator_row_id")
+        $this->redirect("/OphCoCvi/default/print/$id?html=1&auto_print=0&sign=1" .
+            "&element_type_id=" . \Yii::app()->request->getParam("element_type_id") .
+            "&signature_type=" . \Yii::app()->request->getParam("signature_type") .
+            "&signatory_role=" . \Yii::app()->request->getParam("signatory_role") .
+            "&signature_name=" . \Yii::app()->request->getParam("signatory_name") .
+            "&element_id=" . $element->id .
+            "&initiator_element_type_id=" . \Yii::app()->request->getParam("initiator_element_type_id") .
+            "&initiator_row_id=" . \Yii::app()->request->getParam("initiator_row_id")
         );
     }
 
@@ -1033,7 +998,7 @@ class DefaultController extends BaseEventTypeController
             $file_name = $this->sanitizeFileName($file["name"]);
             $pf = ProtectedFile::createForWriting($file_name);
             $pf->title = "Best Interest Decision support document";
-            if(!move_uploaded_file($file["tmp_name"], $pf->getPath())) {
+            if (!move_uploaded_file($file["tmp_name"], $pf->getPath())) {
                 $this->renderJSON([
                     "success" => false,
                     "message" => "Error uploading file.",
@@ -1058,11 +1023,11 @@ class DefaultController extends BaseEventTypeController
         $items = [];
         if (isset($data["attachments"]) && is_array($data["attachments"])) {
             foreach ($data["attachments"] as $attachment) {
-                if($attachment["id"] === "new") {
+                if ($attachment["id"] === "new") {
                     $item = new OphTrConsent_BestInterestDecision_Attachment();
                     $pf_id = $attachment["protected_file_id"];
                     $item->protected_file_id = $pf_id;
-                    if(array_key_exists("tmp_name", $attachment)) {
+                    if (array_key_exists("tmp_name", $attachment)) {
                         $item->tmp_name = $attachment["tmp_name"];
                     }
                 } else {
@@ -1081,15 +1046,15 @@ class DefaultController extends BaseEventTypeController
     )
     {
         $existing_ids = Yii::app()->db->createCommand(
-            "SELECT id FROM ".OphTrConsent_BestInterestDecision_Attachment::model()->tableName()
-            ." WHERE element_id = :element_id"
+            "SELECT id FROM " . OphTrConsent_BestInterestDecision_Attachment::model()->tableName()
+            . " WHERE element_id = :element_id"
         )->queryColumn([":element_id" => $element->id]);
         $ids_to_keep = [];
         foreach ($element->attachments as $attachment) {
-            if($attachment->isNewRecord) {
+            if ($attachment->isNewRecord) {
                 $attachment->element_id = $element->id;
-                if(!$attachment->save()) {
-                    throw new Exception("Could not save attachment ".print_r($attachment->errors, 1));
+                if (!$attachment->save()) {
+                    throw new Exception("Could not save attachment " . print_r($attachment->errors, 1));
                 }
             } else {
                 $ids_to_keep[] = $attachment->id;
