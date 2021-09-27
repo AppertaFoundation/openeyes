@@ -30,7 +30,7 @@
                 : <?php echo $element->photo ? $element->photo->name : 'None' ?></li>
               <li><?=\CHtml::encode($element->getAttributeLabel('oct_id')) ?>
                 : <?php echo $element->oct ? $element->oct->name : 'None' ?></li>
-              <li><?php echo $element->oct ? $element->oct->name : 'None' ?>
+              <li><?=\CHtml::encode($element->getAttributeLabel('hfa_id')) ?>
                 : <?php echo $element->hfa ? $element->hfa->name : 'None' ?></li>
               <li><?=\CHtml::encode($element->getAttributeLabel('gonio_id')) ?>
                 : <?php echo $element->gonio ? $element->gonio->name : 'None' ?></li>
