@@ -49,10 +49,10 @@
                         <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
                         <td><?php if ($item->route != null) {
                                     echo $item->route->term;
-                                    if ($item->route->has_laterality) {
-                                        echo ' (' . $item->medicationLaterality->name . ')';
-                                    }
-                                }?>
+                            if ($item->route->has_laterality) {
+                                echo ' (' . $item->medicationLaterality->name . ')';
+                            }
+                            }?>
                         </td>
               <td><?php echo $item->frequency ? $item->frequency->term : '' ?></td>
               <td><?php echo $item->duration_id ? $item->medicationDuration->name : '' ?></td>
