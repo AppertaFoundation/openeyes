@@ -186,7 +186,9 @@ if (isset($element->authorisedByUser)) {
     </table>
 
     <div class="spacer"></div>
-    <?php if (!$data['copy'] && $site_theatre = $this->getSiteAndTheatreForLatestEvent()) { ?>
+    <?php
+    $site_theatre = $this->getSiteAndTheatreForSameDayEvent($prescribed_date, $element->event->episode->firm_id);
+    if (!$data['copy'] && $site_theatre) { ?>
         <table class="borders done_bys">
             <tr>
                 <th>Site</th>
@@ -281,7 +283,7 @@ if (isset($element->authorisedByUser)) {
             </td>
         </tr>
     </table>
-
+    <div class="clearfix"></div>
     <?php if ($footer_text !== null) { ?>
         <div><?= $footer_text ?></div>
     <?php } ?>

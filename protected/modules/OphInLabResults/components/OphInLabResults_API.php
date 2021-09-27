@@ -37,7 +37,7 @@ class OphInLabResults_API extends BaseAPI
             static function ($entry) {
                 return $entry->type;
             },
-            OphInLabResults_Type_Institution::model()->with('OphInLabResults_Type')->findAll(
+            OphInLabResults_Type_Institution::model()->with('type')->findAll(
                 'institution_id IS NULL OR institution_id = :institution_id',
                 array(':institution_id' => $institution->id)
             )

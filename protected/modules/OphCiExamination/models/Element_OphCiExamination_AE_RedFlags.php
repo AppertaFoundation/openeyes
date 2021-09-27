@@ -28,6 +28,7 @@ namespace OEModule\OphCiExamination\models;
  * @property string $comments
  *
  * The followings are the available model relations:
+ * @property OphCiExamination_AE_RedFlags_Options_Assignment[] $flags
  */
 class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
 {
@@ -77,11 +78,11 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'flags' => array(self::HAS_MANY,'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment', 'element_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'flags' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment', 'element_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
 
@@ -120,45 +121,32 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
 
     public function afterSave()
     {
-        // get current flags to check for deletion
-        $curCriteria = new \CDbCriteria();
-        $curCriteria->compare('element_id', $this->id, true);
-        $allCurrentFlags = OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAll($curCriteria);
+        if (!empty($this->flags)) {
+            $existingFlags = OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAllByAttributes(array('element_id' => $this->id));
 
-        // if we have no new flags to check, we just delete all of them
-        if ($this->flags && !empty($this->flags[0])&& is_object($this->flags[0])) {
-            foreach ($allCurrentFlags as $curFlag) {
-                    $curFlag->delete();
-            }
-        }
-        // if we have flags to check, go through them.
-        elseif ($this->flags && !empty($this->flags[0])&& !is_object($this->flags[0])) {
-             // check each current flag
-            foreach ($allCurrentFlags as $curFlag) {
-                //if the flag is not in the new flags list, delete it.
-                if (!in_array($curFlag->id, $this->flags)) {
-                    $curFlag->delete();
-                }
-            }
-        }
+            //map objects to [$existing_red_flag->red_flag_id => $existing_red_flag->id] format for easy lookup
+            $flags_to_delete = array_map(function ($item) {
+                return array($item->red_flag_id => $item->id);
+            }, $existingFlags);
 
-        // if we have flags to add
-        if ($this->flags && !empty($this->flags[0])&& !is_object($this->flags[0])) {
             foreach ($this->flags as $flag) {
-                // find all
-                $criteria = new \CDbCriteria();
-                $criteria->compare('element_id', $this->id, true);
-                $criteria->compare('red_flag_id', $flag, true);
-                $currentFlags = OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAll($criteria);
-                // if the element doesn't already contain this element
-                if (empty($currentFlags)) {
+                if (is_object($flag)) {
+                    $flag_id = $flag->id;
+                } else {
+                    $flag_id = $flag;
                     $newFlagObj = new OphCiExamination_AE_RedFlags_Options_Assignment();
-                    $newFlagObj->red_flag_id = $flag;
+                    $newFlagObj->red_flag_id = $flag_id;
                     $newFlagObj->element_id = $this->id;
                     $newFlagObj->save();
                 }
+                unset($flags_to_delete[$flag_id]);
+            }
+
+            foreach ($flags_to_delete as $red_flag_id => $model_id) {
+                OphCiExamination_AE_RedFlags_Options_Assignment::model()->findByPk($model_id)->delete();
             }
         }
+
         parent::afterSave();
     }
 
@@ -188,6 +176,9 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
 
     public function getCurrentFlagOptionIDs()
     {
+        if (empty($this->flags)) {
+            return array();
+        }
         return array_map(function ($flag) {
             return $flag->red_flag_id;
         }, $this->flags);
@@ -198,13 +189,18 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         $criteria = new \CDbCriteria();
         $criteria->condition = "active = 1";
         $options = OphCiExamination_AE_RedFlags_Options::model()->findAll($criteria);
-        $currentFlags = array_map(function ($flag) {
-            return $flag->red_flag_id;
-        }, $this->flags);
+        if (!empty($this->flags)) {
+            $currentFlags = array_map(static function ($flag) {
+                return $flag->red_flag_id ?? null; // Should never come to this, but this will ensure that the system won't crash if for some reason the array is filled with nulls.
+            }, $this->flags);
+        } else {
+            $currentFlags = array();
+        }
+
         $levels = OphCiExamination_AE_RedFlags_Options::model()->enumerateSupportedLevels();
         $output = [];
         foreach ($options as $option) {
-            if (in_array($option->id, $currentFlags)) {
+            if (in_array($option->id, $currentFlags, false)) {
                 foreach ($levels as $level) {
                     if ($option->hasMapping($level, OphCiExamination_AE_RedFlags_Options::model()->getIdForLevel($level))) {
                         $output[] = $option->id;

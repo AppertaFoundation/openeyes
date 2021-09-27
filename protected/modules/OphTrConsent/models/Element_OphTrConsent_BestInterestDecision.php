@@ -1,5 +1,5 @@
 <?php
-
+namespace OEModule\OphTrConsent\models;
 /**
  * OpenEyes
  *
@@ -33,9 +33,8 @@
  * The followings are the available model relations:
  * @property \User $createdUser
  * @property \User $lastModifiedUser
+ * @property OphTrConsent_BestInterestDecision_Attachment[] $attachments
  */
-
-namespace OEModule\OphTrConsent\models;
 
 class Element_OphTrConsent_BestInterestDecision extends \BaseEventTypeElement
 {
@@ -72,6 +71,15 @@ class Element_OphTrConsent_BestInterestDecision extends \BaseEventTypeElement
         );
     }
 
+    public function beforeValidate()
+    {
+        foreach ($this->attachments as $attachment) {
+            if($attachment->protected_file_id < 1) {
+                $this->addError("attachments", "Please remove any files that couldn't be attached.");
+            }
+        }
+    }
+
     public function validatePatientHasNotRefused()
     {
         if (!$this->patient_has_not_refused) {
@@ -99,6 +107,7 @@ class Element_OphTrConsent_BestInterestDecision extends \BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'createdUser' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
+            'attachments' => array(self::HAS_MANY, OphTrConsent_BestInterestDecision_Attachment::class, 'element_id'),
         );
     }
 
@@ -133,7 +142,7 @@ class Element_OphTrConsent_BestInterestDecision extends \BaseEventTypeElement
      * models according to data in model fields.
      * - Pass data provider to CGridView, CListView or any similar widget.
      *
-     * @return CActiveDataProvider the data provider that can return the models
+     * @return \CActiveDataProvider the data provider that can return the models
      * based on the search/filter conditions.
      */
     public function search()

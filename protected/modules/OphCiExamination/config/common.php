@@ -22,7 +22,13 @@ return [
                         'class' => 'OEModule\OphCiExamination\components\HistoryRisksManager',
                         'method' => 'addPatientMedicationRisks'
                     ]
-                ]
+                ],
+                'step_started' => [
+                    'create_or_update_event' => [
+                        'class' => 'OEModule\OphCiExamination\components\PathstepObserver',
+                        'method' => 'createOrUpdateEvent',
+                    ]
+                ],
             ]
         ]
     ],

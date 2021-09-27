@@ -36,7 +36,7 @@ class OphTrConsent_AdditionalRiskSubspecialtyAssignment extends BaseActiveRecord
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphTrConsent_AdditionalRisk|BaseActiveRecord the static model class
+     * @return OphTrConsent_AdditionalRiskSubspecialtyAssignment|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {

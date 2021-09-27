@@ -61,7 +61,6 @@ class Element_OphTrConsent_Specialrequirements extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, specialreq', 'safe'),
-            array('specialreq', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, specialreq', 'safe', 'on' => 'search'),

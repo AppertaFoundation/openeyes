@@ -15,7 +15,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use \RRule\RRule;
 namespace OEModule\OphCiExamination\models;
 use Period;
 

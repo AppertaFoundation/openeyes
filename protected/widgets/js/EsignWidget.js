@@ -30,6 +30,9 @@ OpenEyes.UI = OpenEyes.UI || {};
     {
         this.$pinInput = this.$element.find(".js-pin-input");
         this.$userIdInput = this.$element.find(".js-user_id-input");
+        if(this.$userIdInput.length === 0) {
+            this.$userIdInput = this.$element.find(".js-user_id-field");
+        }
         this.$signButton = this.$element.find(".js-sign-button");
         this.$popupSignButton = this.$element.find(".js-popup-sign-btn");
         this.$deviceSignButton = this.$element.find(".js-device-sign-btn");
@@ -38,6 +41,8 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.$time = this.$element.find(".js-signature-time");
         this.$signatoryName = this.$element.find(".js-signatory_name-field");
         this.$signatoryRole = this.$element.find(".js-signatory_role-field");
+        this.$initiatorElementTypeId = this.$element.find(".js-initiator_element_type_id-field");
+        this.$initiatorRowId = this.$element.find(".js-initiator_row_id-field");
         this.$signatureWrapper = this.$element.find(".js-signature-wrapper");
         this.$signature = this.$element.find(".js-signature");
         this.events = [];
@@ -94,19 +99,26 @@ OpenEyes.UI = OpenEyes.UI || {};
                 return false;
             }
             disableButtons();
+            let params = {
+                "pin": pin,
+                "user_id": user_id,
+                "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+                "signature_type" : widget.options.signature_type,
+                "element_id" : widget.options.element_id,
+                "element_type_id" : widget.$element.closest("section.element").attr("data-element-type-id"),
+                "event_id" : OE_event_id,
+                "signatory_role" : encodeURIComponent(widget.$signatoryRole.val()),
+                "signatory_name" : encodeURIComponent(widget.$signatoryName.val())
+            };
+            if(widget.$initiatorElementTypeId.length > 0) {
+                params["initiator_element_type_id"] = widget.$initiatorElementTypeId.val();
+            }
+            if(widget.$initiatorRowId.length > 0) {
+                params["initiator_row_id"] = widget.$initiatorRowId.val();
+            }
             $.post(
                 baseUrl + "/" + moduleName + "/default/" + widget.options.submitAction,
-                {
-                    "pin": pin,
-                    "user_id": user_id,
-                    "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-                    "signature_type" : widget.options.signature_type,
-                    "element_id" : widget.options.element_id,
-                    "element_type_id" : widget.$element.closest("section.element").attr("data-element-type-id"),
-                    "event_id" : OE_event_id,
-                    "signatory_role" : widget.$signatoryRole.val(),
-                    "signatory_name" : widget.$signatoryName.val()
-                },
+                params,
                 function (response) {
                     if (response.code === 0) {
                         widget.displaySignature(
@@ -128,7 +140,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                         });
                         dlg.open();
                     }
-                    enableButtons();
+                    setTimeout(enableButtons, 500);
                 }
             );
         });
@@ -138,8 +150,14 @@ OpenEyes.UI = OpenEyes.UI || {};
                 "?html=1&auto_print=0&sign=1&element_id=" + widget.options.element_id +
                 "&element_type_id=" + widget.$element.closest("section.element").attr("data-element-type-id") +
                 "&signature_type=" + widget.options.signature_type +
-                "&signatory_role=" + widget.$signatoryRole.val() +
-                "&signatory_name=" + widget.$signatoryName.val();
+                "&signatory_role=" + encodeURIComponent(widget.$signatoryRole.val()) +
+                "&signatory_name=" + encodeURIComponent(widget.$signatoryName.val());
+            if(widget.$initiatorElementTypeId.length > 0) {
+                printUrl += "&initiator_element_type_id=" + widget.$initiatorElementTypeId.val();
+            }
+            if(widget.$initiatorRowId.length > 0) {
+                printUrl += "&initiator_row_id=" + widget.$initiatorRowId.val();
+            }
             let popup = new OpenEyes.UI.Dialog({
                 title: "e-Sign",
                 iframe: printUrl,
@@ -159,15 +177,22 @@ OpenEyes.UI = OpenEyes.UI || {};
                 content: "Once you capture the signature, signatory role and name can't be changed. Are you sure you want to proceed?"
             });
             confirm_dlg.on("ok", function () {
+                let params = {
+                    "YII_CSRF_TOKEN" : YII_CSRF_TOKEN,
+                    "event_id" : OE_event_id,
+                    "element_type_id" : element_type_id,
+                    "signature_type" : signature_type,
+                    "signatory_role" : encodeURIComponent(signatory_role),
+                    "signatory_name" : encodeURIComponent(signatory_name),
+                };
+                if(widget.$initiatorElementTypeId.length > 0) {
+                    params["initiator_element_type_id"] = widget.$initiatorElementTypeId.val();
+                }
+                if(widget.$initiatorRowId.length > 0) {
+                    params["initiator_row_id"] = widget.$initiatorRowId.val();
+                }
                 $.post("/" + moduleName + "/default/postSignRequest",
-                    {
-                        "YII_CSRF_TOKEN" : YII_CSRF_TOKEN,
-                        "event_id" : OE_event_id,
-                        "element_type_id" : element_type_id,
-                        "signature_type" : signature_type,
-                        "signatory_role" : signatory_role,
-                        "signatory_name" : signatory_name,
-                    },
+                    params,
                     function (response) {
                         if(response.success) {
                             const waitingDlg = new OpenEyes.UI.Dialog({

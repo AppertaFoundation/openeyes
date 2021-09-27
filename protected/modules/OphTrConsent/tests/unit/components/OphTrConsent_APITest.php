@@ -16,7 +16,7 @@ class OphTrConsent_APITest extends CDbTestCase
 {
     public $fixtures = array(
         'el_procedure' => 'Element_OphTrConsent_Procedure',
-        'proclist' => 'EtOphtrconsentProcedureProceduresProcedures',
+        'proclist' => 'OphtrconsentProcedureProceduresProcedures',
         'procs' => 'Procedure',
         'events' => 'Event',
         'episodes' => 'Episode',

@@ -24,6 +24,7 @@ use OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
+use OEModule\PASAPI\resources\HL7_A08;
 use services\DateTime;
 use OEModule\PatientTicketing\models\QueueOutcome;
 use Yii;
@@ -49,6 +50,8 @@ class DefaultController extends \BaseEventTypeController
         'getOctAssessment' => self::ACTION_TYPE_FORM,
         'getAttachment' => self::ACTION_TYPE_FORM,
         'resolveSafeguardingElement' => self::ACTION_TYPE_SAFEGUARDING,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM
     );
 
     private const ACTION_TYPE_SAFEGUARDING = 'Safeguarding';
@@ -71,6 +74,21 @@ class DefaultController extends \BaseEventTypeController
     protected $deletedAllergies = array();
     private $step = false;
 
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'getSignatureByPin' => [
+                'class' => \GetSignatureByPinAction::class
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => \GetSignatureByUsernameAndPinAction::class
+            ]
+        ];
+    }
+
     public function getTitle()
     {
         $title = parent::getTitle();
@@ -92,6 +110,10 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $assignment = $this->getElementSetAssignment($event);
+
+        if (isset(Yii::app()->session['active_step_state_data']['workflow_step_id']) && Yii::app()->session['active_step_state_data']['workflow_step_id']) {
+            return models\OphCiExamination_ElementSet::model()->findByPk(Yii::app()->session['active_step_state_data']['workflow_step_id']);
+        }
 
         return $assignment ? $assignment->step : $this->getFirstStep();
     }
@@ -124,9 +146,10 @@ class DefaultController extends \BaseEventTypeController
         $institution_id = $this->institution->id;
         $firm_id = $this->firm->id;
         $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
+
         $workflow = new models\OphCiExamination_Workflow_Rule();
 
-        return $workflow->findWorkflowCascading($institution_id, $firm_id, $status_id)->getFirstStep();
+        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
     }
 
     /**
@@ -210,21 +233,37 @@ class DefaultController extends \BaseEventTypeController
     protected function setCurrentSet()
     {
         $element_assignment = $this->getElementSetAssignment();
-        if (!$this->set) {
-            /*@TODO: probably the getNextStep() should be able to recognize if there were no steps completed before and return the first step
-              Note: getCurrentStep() will return firstStep if there were no steps before */
-            $this->set = $element_assignment && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
+        if (isset(Yii::app()->session['active_step_state_data']['workflow_step_id']) && Yii::app()->session['active_step_state_data']['workflow_step_id']) {
+            if (!$this->set) {
+                // getCurrentStep, when the workflow step ID is specified as above,
+                // will return the specified workflow element set. Otherwise it returns the current (or first) step.
+                $this->set = $this->getCurrentStep();
 
-            //if $this->set is null than no workflow rule to apply
-            $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
-        }
+                //if $this->set is null than no workflow rule to apply
+                $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
+            }
 
-        if (!$element_assignment && $this->event) {
-            \OELog::log("Assignment not found for event id: {$this->event->id}");
-        }
+            if (!$element_assignment && $this->event) {
+                \OELog::log("Assignment not found for event id: {$this->event->id}");
+            }
 
-        if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
+        } else {
+            if (!$this->set) {
+                // Note: getCurrentStep() will return firstStep if there were no steps before
+                $this->set = $element_assignment && $this->action->id !== 'update' ? $this->getNextStep() : $this->getCurrentStep();
+
+                //if $this->set is null than no workflow rule to apply
+                $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
+            }
+
+            if (!$element_assignment && $this->event) {
+                \OELog::log("Assignment not found for event id: {$this->event->id}");
+            }
+
+            if ($this->action->id === 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
+                $this->step = $this->getCurrentStep();
+            }
         }
     }
 
@@ -825,6 +864,10 @@ class DefaultController extends \BaseEventTypeController
         $this->setContext($this->event->firm);
 
         $step_id = \Yii::app()->request->getParam('step_id');
+        if (!isset(Yii::app()->session['active_step_id'])) {
+            Yii::app()->session['active_worklist_patient_id'] = \Yii::app()->request->getParam('worklist_patient_id');
+            Yii::app()->session['active_step_id'] = \Yii::app()->request->getParam('worklist_step_id');
+        }
 
         if ($step_id) {
             $this->step = models\OphCiExamination_ElementSet::model()->findByPk($step_id);
@@ -899,6 +942,54 @@ class DefaultController extends \BaseEventTypeController
 
         // save email address in the contact model
         $this->saveContactEmailAddressForCommunicationPreferences($_POST);
+    }
+
+    protected function afterCreateEvent($event)
+    {
+        parent::afterCreateEvent($event);
+        // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
+        // Change this if it is a different value.
+        if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
+            $this->pasCallout($event, 'A08');
+        }
+    }
+
+    protected function afterUpdateEvent($event)
+    {
+        parent::afterUpdateEvent($event);
+        // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
+        // Change this if it is a different value.
+        if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
+            $this->pasCallout($event, 'A08');
+        }
+    }
+
+    protected function afterDeleteEvent($event)
+    {
+        parent::afterDeleteEvent($event);
+        // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
+        // Change this if it is a different value.
+        if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
+            $this->pasCallout($event, 'A11');
+        }
+    }
+
+    /***
+     * Construct a PAS message for the specified trigger event here and send it to the PAS.
+     * @param Event $event
+     * @param string $hl7_trigger_event "A03|A08|A11"
+     */
+    protected function pasCallout($event, $hl7_trigger_event)
+    {
+        switch ($hl7_trigger_event) {
+            case 'A08':
+                $hl7_a08 = new HL7_A08();
+                $hl7_a08->setDataFromEvent($event->id);
+                Yii::app()->event->dispatch('emergency_care_update',
+                    $hl7_a08
+                );
+                break;
+        }
     }
 
     protected function afterCreateElements($event)
@@ -986,7 +1077,7 @@ class DefaultController extends \BaseEventTypeController
         $firm_id = $this->firm->id;
         $status_id = ($episode) ? $episode->episode_status_id : 1;
         $workflow = new models\OphCiExamination_Workflow_Rule();
-        return $workflow->findWorkflowCascading($institution_id, $firm_id, $status_id)->getFirstStep();
+        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
     }
 
     /**
@@ -1631,6 +1722,26 @@ class DefaultController extends \BaseEventTypeController
             if (!$prescription->save()) {
                 throw new \Exception("Error while saving prescription: " . print_r($prescription->getErrors(), true));
             }
+
+            foreach ($element->entries as $entry) {
+                if ($entry->hasLinkedPrescribedEntry()) {
+                    $prescribed_entry = $entry->prescriptionItem();
+
+                    $prescribed_entry->dose = $entry->dose;
+                    $prescribed_entry->dose_unit_term = $entry->dose_unit_term;
+                    $prescribed_entry->route_id = $entry->route_id;
+                    $prescribed_entry->frequency_id = $entry->frequency_id;
+                    $prescribed_entry->duration_id = $entry->duration_id;
+                    $prescribed_entry->dispense_location_id = $entry->dispense_location_id;
+                    $prescribed_entry->start_date = $entry->start_date;
+                    $prescribed_entry->end_date = $entry->end_date;
+                    $prescribed_entry->stop_reason_id = $entry->stop_reason_id;
+                    $prescribed_entry->comments = $entry->comments;
+
+                    $prescribed_entry->save();
+                }
+            }
+
             $prescription->event->audit('event', 'update', serialize(array_merge($prescription->attributes, ['prescription_edit_reason' => $audit_prescription_edit_reason])), null, array('module' => 'Prescription', 'model' => 'Element_OphDrPrescription_Details'));
         }
     }

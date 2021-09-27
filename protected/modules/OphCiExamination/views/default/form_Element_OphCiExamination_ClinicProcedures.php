@@ -120,6 +120,9 @@ $past_procedures = $this->getPastClinicProcedures();
                     }, $clinic_procedures)
                 )?>, {'multiSelect': true})],
                 liClass: 'add-options multi',
+                searchOptions: {
+                    searchSource: '/procedure/autocomplete?restrict=clinical',
+                },
                 onReturn: function (adderDialog, selectedItems) {
                     if (selectedItems.length < 1) {
                         return false;

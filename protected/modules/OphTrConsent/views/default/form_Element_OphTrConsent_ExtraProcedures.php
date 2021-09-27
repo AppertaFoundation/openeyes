@@ -1,38 +1,58 @@
 <?php
-
-/**
- * OpenEyes
- *
- * (C) OpenEyes Foundation, 2021
- * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
- *
- * @package OpenEyes
- * @link http://www.openeyes.org.uk
- * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2021, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
- */
+$name = CHtml::modelName($element);
+$extra_procedures = OphTrConsent_Extra_Procedure::model()->findAll();
+$extra_procedure_itemsets = array_map(function ($proc) {
+    return array(
+        'label' => $proc->term,
+        'id' => $proc->id
+    );
+}, $extra_procedures);
 ?>
-<table class="cols-full last-left">
-  <tbody>
 
-    <?= $form->hiddenField($element, 'booking_event_id')?>
-
-  <tr>     
-    <td>
-        <?php $form->widget('application.widgets.ProcedureSelection', array(
-            'element' => $element,
-            'durations' => false,
-            'relation' => 'element_type',
-            'identifier' => 'additional',
-            'label' => '',
-            'headertext' => 'Any extra procedures which may become necessary during the procedure.',
-        ))?>
-    </td>
-    <td></td>
-  </tr>
-  </tbody>
-</table>
+<div class="element-fields full-width">
+    <!-- to keep retain the extra procedure element -->
+    <?= CHtml::hiddenField("{$name}[]", 1); ?>
+    <div class="flex">
+        <div class="cols-10">
+            <table class="cols-full">
+                <tbody id="js-extra-proc-entries">
+                    <?php foreach ($element->extra_procedure_assignments as $i => $procedure) {?>
+                        <tr data-key="<?= $i ?>" class="js-proc-row">
+                            <?= CHtml::hiddenField("{$name}[extra_procedure_assignments][$i][proc_id]", $procedure->extra_proc_id); ?>
+                            <td><?= $procedure->extra_procedure->term ?></td>
+                            <td><i class="oe-i trash"></i></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="add-data-actions flex-item-bottom ">
+            <button id="js-add-extra-proc-btn" class="adder"></button>
+        </div>
+    </div>
+</div>
+<script type="text/template" class="hidden" id="js-new-extra-procedure-row">
+    <tr data-key="{{key}}" class="js-proc-row">
+        <input type="hidden" name="<?= $name ?>[extra_procedure_assignments][{{key}}][proc_id]" value="{{proc_id}}">
+        <td>
+            {{term}}
+        </td>
+        <td>
+            <i class="oe-i trash"></i>
+        </td>
+    </tr>
+</script>
+<?php
+$this->renderPartial(
+    'procedure_selection',
+    array(
+        'procedure_list' => $extra_procedure_itemsets,
+        'laterality' => false,
+        'search_source' => '/procedure/autocomplete',
+        'bind_add_button' => '#js-add-extra-proc-btn',
+        'entry_container' => '#js-extra-proc-entries',
+        'template' => '#js-new-extra-procedure-row',
+        'is_extra_procedure' => true,
+    )
+);
+?>

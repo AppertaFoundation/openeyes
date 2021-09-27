@@ -20,7 +20,6 @@
 /** @var \OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision $element */
 
 $model_name = CHtml::modelName($element);
-
 ?>
 <div class="element-fields full-width">
 	<label class="highlight inline">
@@ -79,6 +78,54 @@ $model_name = CHtml::modelName($element);
                         )
                     ); ?>
                 </div>
+            </div>
+        </div>
+        <hr class="divider" />
+        <div class="flex-t">
+            <div class="upload-box cols-2">
+                <label for="Document_right_document_id" id="upload_box" class="upload-label">
+                    <i class="oe-i download no-click large"></i>
+                    <br> Select or drop files here
+                </label>
+                <input class="js-file-input" multiple="multiple" autocomplete="off" type="file" name="Document[right_document_id]" style="display:none">
+            </div>
+            <div class="cols-9">
+                <div class="small-row">
+                    <i
+                        class="oe-i info small pad-right js-has-tooltip"
+                        data-tooltip-content='The following file types are accepted: <?= implode(", ", array_keys(static::$accepted_file_types))?> (Maximum size: <?= Helper::fileSize(static::$max_filesize) ?>)'>
+                    </i>
+                    Upload support documentation (optional)
+                </div>
+                <table class="cols-full">
+                    <tbody class="js-list">
+                        <?php $i = 0; ?>
+                        <?php foreach ($element->attachments as $attachment): ?>
+                            <tr data-id="<?= $attachment->id ?? "new" ?>">
+                                <td>
+                                    <?= $attachment->protected_file_id > 0 ? \CHtml::encode($attachment->protectedFile->name) : \CHtml::encode($attachment->tmp_name) ?>
+                                </td>
+                                <td>
+                                    <?= $attachment->protected_file_id > 0 ? Helper::fileSize($attachment->protectedFile->getSize()) : "N/A" ?>
+                                </td>
+                                <td>
+                                    <?php if($attachment->protected_file_id > 0): ?>
+                                        <i class="oe-i tick-green small pad-right"></i>Attached
+                                    <?php else: ?>
+                                        <i class="oe-i cross-red small pad-right"></i>Error: unable to attach
+                                    <?php endif; ?>
+                                </td>
+                                <td><i class="oe-i trash js-remove"></i></td>
+                                <?=\CHtml::hiddenField("{$model_name}[attachments][{$i}][id]", $attachment->id ?? "new"); ?>
+                                <?=\CHtml::hiddenField("{$model_name}[attachments][{$i}][protected_file_id]", $attachment->protected_file_id); ?>
+                                <?php if(strlen($attachment->tmp_name) > 0) {
+                                    echo \CHtml::hiddenField("{$model_name}[attachments][{$i}][tmp_name]", $attachment->tmp_name);
+                                }?>
+                            </tr>
+                            <?php $i++; ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

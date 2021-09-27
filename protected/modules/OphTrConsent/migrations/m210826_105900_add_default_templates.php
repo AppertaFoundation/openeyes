@@ -2,12 +2,12 @@
 
 class m210826_105900_add_default_templates extends CDbMigration
 {
-    public function up()
+    public function safeUp()
     {
-        $procedures = $this->dbConnection->createCommand("SELECT id, term, snomed_code 
+        $procedures = $this->dbConnection->createCommand("SELECT id, term, snomed_code
                                                         FROM proc
-                                                        WHERE term 
-                                                        IN ('Course of LUCENTIS anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor', 
+                                                        WHERE term
+                                                        IN ('Course of LUCENTIS anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor',
                                                         'Course of EYLEA anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor',
                                                         'Course of BEOVU anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor',
                                                         'Course of AVASTIN anti-VEGF Intravitreal Treatment by either nurse practitioner or doctor')")->queryAll();
@@ -16,9 +16,6 @@ class m210826_105900_add_default_templates extends CDbMigration
                                                         FROM ophtrconsent_type_type
                                                         WHERE name = "3. Patient/parental agreement to investigation or treatment (procedures where consciousness not impaired)"')->queryRow();
 
-        var_dump($procedures);
-        var_dump($consent_3);
-
         foreach($procedures as $procedure) {
             $this->insert('ophtrconsent_template', array('name' => $procedure['term'], 'type_id' => $consent_3['id']));
             $insert_id = Yii::app()->db->getLastInsertID();
@@ -26,8 +23,10 @@ class m210826_105900_add_default_templates extends CDbMigration
         }
     }
 
-    public function down()
+    public function safeDown()
     {
-        return true;
+        echo "m210826_105900_add_default_templates does not support migration down.\n";
+
+        return false;
     }
 }

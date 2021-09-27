@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,7 +15,6 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
 
 <?php
     $patient_overview_popup_mode = isset(Yii::app()->controller->jsVars['popupMode']) ? Yii::app()->controller->jsVars['popupMode'] : SettingMetadata::model()->getSetting('patient_overview_popup_mode');
@@ -33,6 +33,6 @@
 
 <script type="application/javascript">
     $(function () {
-        PatientPanel.patientPopups.init(false,<?= $data->id?>);
+        PatientPanel.patientPopups.init(false,<?= $data->id ?>);
     });
 </script>

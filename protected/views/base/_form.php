@@ -51,12 +51,22 @@ if (!Yii::app()->user->isGuest) {
 
     $menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
     $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
-    ?>
-
-    <div class="oe-user-banner">
-        <?php $this->renderPartial('//base/_banner_watermark'); ?>
-    </div>
-    <div class="oe-user">
+    if ($as_clinic) { ?>
+        <div class="clinic-context">
+            <div class="favourite-btn js-favourite"></div>
+            <div class="details">
+                <div class="context">
+                    <?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty() ?>
+                    <span class="lists"></span>
+                </div>
+                <div class="date-range"></div>
+            </div>
+        </div>
+    <?php } else { ?>
+        <div class="oe-user-banner">
+            <?php $this->renderPartial('//base/_banner_watermark'); ?>
+        </div>
+    <?php } ?>    <div class="oe-user">
         <ul class="oe-user-profile-context">
             <li><?= $user->first_name . ' ' . $user->last_name; ?>
                 <?php if (Yii::app()->params['profile_user_can_edit']) { ?>
@@ -64,9 +74,9 @@ if (!Yii::app()->user->isGuest) {
                 <?php } ?>
             </li>
             <li id="user-profile-site-institution"><?= Site::model()->findByPk($this->selectedSiteId)->short_name . ' (' .
-                    Institution::model()->findByPk($this->selectedInstitutionId)->short_name . ')';?></li>
+                    Institution::model()->findByPk($this->selectedInstitutionId)->short_name . ')' ?></li>
             <li>
-                <?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?>
+                <?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty() ?>
                 <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a>
             </li>
         </ul>
@@ -84,11 +94,22 @@ if (!Yii::app()->user->isGuest) {
             <!--            The exclude admin structure parameter list has elements that can be excluded from the admin sidebar, if Worklist is excluded from that, then it can be removed from the home screen too-->
             <?php if (!in_array("Worklist", Yii::app()->params['exclude_admin_structure_param_list'])) : ?>
                 <li class="oe-nav-btn">
+                    <?php if (!isset($this->layout) || $this->layout !== 'worklist') : ?>
                     <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
                         <svg viewBox="0 0 80 40" class="icon clinic ">
                             <use xlink:href="<?= $navIconUrl . '#clinic-icon' ?>"></use>
                         </svg>
                     </a>
+                    <?php else : ?>
+                    <a class="nav-js-btn icon-btn" id="js-nav-worklist-btn" onclick="return false;">
+                        <svg viewBox="0 0 80 40" class="icon clinic ">
+                            <use xlink:href="<?= $navIconUrl . '#clinic-change-icon' ?>"></use>
+                        </svg>
+                    </a>
+                        <?php
+                        $this->renderPartial('//base/_worklist_filters_panel');
+                    endif;
+                    ?>
                 </li>
             <?php endif; ?>
             <li class="oe-nav-btn js-hotlist-panel-wrapper">

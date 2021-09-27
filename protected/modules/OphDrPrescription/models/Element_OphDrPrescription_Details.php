@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use \OEModule\OphCiExamination\models\MedicationManagement;
 /**
  * The followings are the available columns in table 'et_ophdrprescription_details':.
  *
@@ -108,6 +109,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             ),
             'printedByUser' => array(self::BELONGS_TO, 'User', 'printed_by_user'),
             'authorisedByUser' => array(self::BELONGS_TO, 'User', 'authorised_by_user'),
+            'esign' => array(self::BELONGS_TO, Element_OphDrPrescription_Esign::class, array('event_id' => 'event_id')),
         );
     }
 
@@ -325,6 +327,23 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     }
 
     /**
+     * The Presciption is signed by Examination Medication Management
+     * @return mixed
+     */
+    public function isSignedByMedication()
+    {
+        foreach ($this->items as $item) {
+            if ($item->parent) {
+                $signed_element = MedicationManagement::model()->findByAttributes(array('event_id' => $item->parent[0]->event_id));
+                if ($signed_element) {
+                    return $signed_element;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Validate prescription items.
      */
     protected function afterValidate()
@@ -353,6 +372,16 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
         $this->auditAllergicDrugEntries("prescription");
         return parent::afterSave();
+    }
+
+    protected function beforeSave()
+    {
+        if ($this->draft === "1" && $this->event->id && $this->esign) {
+            if ($this->esign->signatures) {
+                $this->esign->signatures[0]->deletePreviousSignature();
+            }
+        }
+        return parent::beforeSave();
     }
 
     /**

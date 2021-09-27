@@ -29,8 +29,10 @@
                             "element_id" => $this->element->id,
                             "element_type_id" => $this->element->getElementType()->id,
                             "signature_type" => $signature->type,
-                            "signatory_role" => Yii::app()->request->getParam("signatory_role"),
-                            "signatory_name" => Yii::app()->request->getParam("signatory_name"),
+                            "signatory_role" => urlencode(Yii::app()->request->getParam("signatory_role")),
+                            "signatory_name" => urlencode(Yii::app()->request->getParam("signatory_name")),
+                            "initiator_element_type_id" => Yii::app()->request->getParam("initiator_element_type_id"),
+                            "initiator_row_id" => Yii::app()->request->getParam("initiator_row_id"),
                         ]
                 ),
                 "after_submit_js" => 'function(response, widget) {window.parent.formHasChanged=false;window.parent.location.reload();}'

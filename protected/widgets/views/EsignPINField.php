@@ -38,10 +38,11 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
         <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
             <div class="oe-user-pin">
                 <?php echo CHtml::passwordField('pin_'.$uid, '', array(
-                    'placeholder' => "********",
-                    'maxlength' => 8,
+                    'placeholder' => "******",
+                    'maxlength' => 6,
                     'inputmode' => "numeric",
-                    'class' => "user-pin-entry js-pin-input"
+                    'class' => "user-pin-entry js-pin-input",
+                    "autocomplete"=>"off",
                 )); ?>
                 <button type="button" class="try-pin js-sign-button">PIN sign</button>
             </div>

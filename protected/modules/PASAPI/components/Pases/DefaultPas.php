@@ -1,6 +1,8 @@
 <?php
 
 namespace OEModule\PASAPI\components\Pases;
+
+use Exception;
 use OEModule\PASAPI\models\PasApiAssignment;
 
 /**
@@ -210,10 +212,46 @@ class DefaultPas extends BasePAS
 
                 $xml_handler->next('Patient');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             \OELog::log("PASAPI : " . $e->getMessage());
         }
 
         return $resources;
+    }
+
+    function buildXML($xml, $data) {
+        foreach ($data as $idx=>$record) {
+            if(is_array($record) || is_object($record)) {
+                $xml = $this->buildXML($xml, $record);
+            } else {
+                try {
+                    $xml->addChild($idx, $record);
+                } catch (Exception $e) {
+                    \OELog::log("PASAPI buildXML: ". $e->getMessage());
+                    \OELog::log("PASAPI buildXML record: ". var_export($record, true));
+                }
+            }
+        }
+        return $xml;
+    }
+
+    /***
+     * @param HL7_A08 $data
+     */
+    public function sendUpdate($data) {
+
+        $xml = new \SimpleXMLElement('<root/>');
+
+        $this->buildXML($xml, $data);
+
+        $post_data = "xmlrequest=".$xml->asXML();
+
+        $xml = $this->curl->post($this->config['url'], $post_data);
+        $ch = $this->curl->curl;
+
+        if (curl_errno($ch)) {
+            $error = 'PASAPI cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
+            \OELog::log($error);
+        }
     }
 }

@@ -69,6 +69,12 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
+<?php
+$assetManager = \Yii::app()->getAssetManager();
+$asset_folder = $assetManager->publish('protected/widgets/js', true);
+echo '<script type="text/javascript" src="' . $asset_folder . '/EsignWidget.js"></script>';
+echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidget.js"></script>';
+?>
 <?php if ($read_only) {
     Yii::app()->user->setFlash('alert.read_only', 'Medication Management cannot be edited for past events');
 } ?>
@@ -156,10 +162,30 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             </tbody>
         </table>
     </div>
+
+    <div id="MedicationManegement_Signature_row">
+        <hr class="divider">
+        <div class="data-group">
+        <?php
+            $row = 0;
+        foreach ($element->getSignatures() as $signature) {
+            $this->widget(
+                $this->getWidgetClassByType($signature->type),
+                [
+                    "row_id" => $row++,
+                    "element" => $element,
+                    "signature" => $signature,
+                ]
+            );
+        }
+        ?>
+        </div>
+    </div>
+
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-management-popup">
             <?php if (!\Yii::app()->user->checkAccess('Prescribe')) { ?>
-            <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
+                <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
             <?php } ?>
             <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
                 ?>disabled<?php
@@ -171,6 +197,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             </button>
         </div>
     </div>
+
     <div class="oe-popup-wrap" id="js-save-mm-event" style="z-index:100; display: none">
         <div class="oe-popup">
             <div class="title">
@@ -484,6 +511,10 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                     }
                 });
 
+                // Filter out undefined values from the array
+                medication_management_bound_keys = medication_history_bound_keys.filter(function (item) {
+                    return item !== undefined
+                });
                 if (medication_management_bound_keys.length !== 0) {
                     medication_history_bound_keys.forEach(function(bound_key) {
                         if (!medication_management_bound_keys.includes(bound_key)) {
@@ -607,5 +638,16 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
         if (elementHasRisks && !$('.' + OE_MODEL_PREFIX + 'HistoryRisks').length) {
             $('#episodes-and-events').data('patient-sidebar').addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks', undefined);
         }
+    });
+</script>
+
+<script type="text/javascript">
+    $(function(){
+        new OpenEyes.UI.EsignElementWidget(
+            $(".<?= \CHtml::modelName($element) ?>"),
+            {
+                mode : "<?= $this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit' ?>"
+            }
+        );
     });
 </script>

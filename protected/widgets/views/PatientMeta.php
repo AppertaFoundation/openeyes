@@ -16,21 +16,31 @@
  */
 ?>
 <?php
-$deceased = $this->patient->isDeceased();
+/**
+ * @var $patient Patient
+ * @var $coreapi CoreAPI
+ */
+if (!isset($patient)) {
+    $patient = $this->patient;
+}
+if (!isset($coreapi)) {
+    $coreapi = new CoreAPI();
+}
+$deceased = $patient->isDeceased();
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
 $display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
 $display_secondary_number_usage_code = Yii::app()->params['display_secondary_number_usage_code'];
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
-$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
-if ($this->controller->id != "patient" && $this->controller->id != 'default') { ?>
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $patient->id, $institution->id, $selected_site_id);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $patient->id, $institution->id, $selected_site_id);
+if (!isset($this->controller) || ($this->controller->id != "patient" && $this->controller->id != 'default')) { ?>
     <div class="oe-patient-meta">
         <div class="patient-name">
-            <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
-                <span class="patient-surname"><?= $this->patient->getLast_name(); ?></span>,
+            <a href="<?= $coreapi->generatePatientLandingPageLink($patient); ?>">
+                <span class="patient-surname"><?= $patient->getLast_name(); ?></span>,
                 <span class="patient-firstname">
-                        <?= $this->patient->getFirst_name(); ?>
-                        <?= $this->patient->getTitle() ? "({$this->patient->getTitle()})" : ''; ?>
+                        <?= $patient->getFirst_name(); ?>
+                        <?= $patient->getTitle() ? "({$patient->getTitle()})" : ''; ?>
                     </span>
             </a>
         </div>
@@ -44,7 +54,7 @@ if ($this->controller->id != "patient" && $this->controller->id != 'default') { 
                         $this->widget(
                             'application.widgets.PatientIdentifiers',
                             [
-                                'patient' => $this->patient,
+                                'patient' => $patient,
                                 'show_all' => true
                             ]); ?>
                         <?php if ($display_primary_number_usage_code === 'GLOBAL' && $primary_identifier && $primary_identifier->patientIdentifierStatus) { ?>
@@ -64,13 +74,13 @@ if ($this->controller->id != "patient" && $this->controller->id != 'default') { 
             <?php } ?>
             <div class="patient-gender">
                     <em>Gender</em>
-                <?php echo $this->patient->getGenderString() ?>
+                <?php echo $patient->getGenderString() ?>
             </div>
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
                 <?php if ($deceased) : ?>
-                    <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
+                    <em>Died</em> <?= Helper::convertDate2NHS($patient->date_of_death); ?>
                 <?php endif; ?>
-                <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge() . 'y'; ?>
+                <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $patient->getAge() . 'y'; ?>
             </div>
         </div>
     </div>

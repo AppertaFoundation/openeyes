@@ -24,7 +24,7 @@ class SiteController extends BaseController
                 'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo', 'listSites'),
             ),
             array('allow',
-                'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout', 'deviceready', 'pollSignatureRequests', 'pollCompletedSignature'),
+                'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout', 'deviceready', 'pollSignatureRequests', 'pollCompletedSignature', 'getCurrentTimestamp'),
                 'users' => array('@'),
             ),
         );
@@ -68,20 +68,10 @@ class SiteController extends BaseController
                 } else {
                     $patientSearch = new PatientSearch();
 
-                    if ($terms = $patientSearch->getValidSearchTerm($query)) {
-                        if(\Yii::app()->request->getParam("nopas") !== "1") {
-                            $search_terms = $patientSearch->parseTerm($terms[0]);
-                            if(array_key_exists("is_name_search", $search_terms) && $search_terms["is_name_search"]) {
-                                Yii::app()->user->setFlash('warning.search_error', "Searching in PAS by Patient name is not supported. Please try local search instead or provide Patient identifier.");
-                                $this->redirect(Yii::app()->request->urlReferrer);
-                            }
-                        }
+                    if ($patientSearch->getValidSearchTerm($query)) {
                         $redirect_array = ['patient/search', 'term' => $query];
                         $type_id = \Yii::app()->request->getParam('patient_identifier_type_id');
                         $redirect_array = $type_id ? array_merge($redirect_array, ['patient_identifier_type_id' => $type_id]) : $redirect_array;
-                        if(\Yii::app()->request->getParam("nopas") === "1") {
-                            $redirect_array["nopas"] = "1";
-                        }
                         $this->redirect($redirect_array);
                     } else {
                         // not a valid search
@@ -506,7 +496,12 @@ class SiteController extends BaseController
                     'status' => true,
                     'event_id' => $result->event_id,
                     'module_id' => $result->event->eventType->class_name,
-                    'element_type_id' => $result->element_type_id
+                    'element_type_id' => $result->element_type_id,
+                    'signature_type' => $result->signature_type,
+                    'signatory_role' => $result->signatory_role,
+                    'signatory_name' => $result->signatory_name,
+                    'initiator_element_type_id' => $result->initiator_element_type_id,
+                    'initiator_row_id' => $result->initiator_row_id,
                 ]);
             }
 
@@ -572,6 +567,11 @@ class SiteController extends BaseController
 
         $this->renderJSON($output);
         Yii::app()->end();
+    }
+
+    public function actionGetCurrentTimestamp()
+    {
+        return time();
     }
 
 //    Advanced search is not integrated at the moment, but we leave the code here for later

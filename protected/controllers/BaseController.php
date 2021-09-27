@@ -160,11 +160,12 @@ class BaseController extends Controller
         $this->onBeforeAction(new \CEvent($this, ["action" => $action]));
 
         $app = Yii::app();
-
-        foreach (SettingMetadata::model()->findAll() as $metadata) {
-            if (!$metadata->element_type) {
-                if (!isset(Yii::app()->params[$metadata->key])) {
-                    Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+        if(!in_array($action->id, array('settings'))){
+            foreach (SettingMetadata::model()->findAll() as $metadata) {
+                if (!$metadata->element_type) {
+                    if (!isset(Yii::app()->params[$metadata->key])) {
+                        Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+                    }
                 }
             }
         }
@@ -448,5 +449,23 @@ class BaseController extends Controller
             }
         }
         return $input;
+    }
+
+    /**
+     * Get active Clinic Pathway for the patient
+     * @return array|CActiveRecord|mixed|Pathway|null
+     */
+    public function getClinicPathwayInProgress()
+    {
+        $pathway = null;
+        if ($this->patient && $this->checkAccess('OprnWorklist')) {
+            $criteria = new CDbCriteria();
+            $criteria->join = 'JOIN worklist_patient wp ON wp.id = t.worklist_patient_id';
+            $criteria->addCondition('wp.patient_id = :patient_id');
+            $criteria->params = [':patient_id' => $this->patient->id];
+            $criteria->addInCondition('t.status', Pathway::inProgressStatuses());
+            $pathway = Pathway::model()->find($criteria);
+        }
+        return $pathway;
     }
 }

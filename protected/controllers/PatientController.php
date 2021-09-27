@@ -50,7 +50,7 @@ class PatientController extends BaseController
             ),
             array(
                 'allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients', 'getCitoUrl'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl', 'getPastWorklistPatients', 'getCitoUrl', 'showCurrentPathway'),
                 'users' => array('@'),
             ),
             array(
@@ -412,7 +412,7 @@ class PatientController extends BaseController
         $term = \Yii::app()->request->getParam('term', '');
         $patient_identifier_type_id = \Yii::app()->request->getParam('patient_identifier_type_id');
 
-        $patient_search = new PatientSearch(\Yii::app()->request->getParam("nopas") !== "1");
+        $patient_search = new PatientSearch(true);
 
         if ($patient_identifier_type_id) {
             // if set we import/save Patient from this PAS - no update -
@@ -461,7 +461,7 @@ class PatientController extends BaseController
                         $message = 'Identifier <strong>' . implode(', ', $search_terms['patient_identifier_value']) . '</strong> was merged into <strong>' . $patientMergeRequest->primary_local_identifier_value . '</strong>';
                     }
                 } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
-                    $message .= 'for Patient Name/DOB <strong>"' . $search_terms['first_name'] . ' ' . $search_terms['last_name'] . ($search_terms['dob'] ? ' ' . $search_terms['dob'] : '') . '"</strong>';
+                    $message .= 'for Patient Name/DOB <strong>"' . $search_terms['first_name'] . ' ' . $search_terms['last_name'] . (isset($search_terms['dob']) ? ' ' . $search_terms['dob'] : '') . '"</strong>';
                 } else {
                     $message .= 'found for your search.';
                 }
@@ -3041,6 +3041,16 @@ class PatientController extends BaseController
         $this->renderJSON(array(
             'past_worklist_tbody' => $this->renderPartial('/default/appointment_entry_tbody', array('worklist_patients' => $past_worklist_patients), true),
         ));
+    }
+
+    public function actionShowCurrentPathway()
+    {
+        $pathway = Pathway::model()->findByPk($_POST['pathway_id']);
+        $this->renderJSON($this->renderPartial('//patient/_patient_clinic_pathway', [
+            'pathway' => $pathway,
+            'display_wait_duration' => true,
+            'editable' => true,
+        ], true));
     }
 
     /**

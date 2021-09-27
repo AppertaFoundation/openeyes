@@ -38,6 +38,9 @@ class PostSignRequestAction extends CAction
             "signatory_role" => $this->signatory_role,
             "signatory_name" => $this->signatory_name,
         ]);
+        foreach (["initiator_element_type_id", "initiator_row_id"] as $attr) {
+            $signature_request->$attr = Yii::app()->request->getPost($attr);
+        }
         $success = $signature_request->save();
         // We don't care if it's a duplicate error
         // bc users might want to press the button

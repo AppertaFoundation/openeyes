@@ -81,18 +81,13 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
      *
      * @return OphCiExamination_Workflow
      */
-    public function findWorkflow($institution_id, $firm_id, $status_id)
+    public function findWorkflow($firm_id, $status_id)
     {
         $subspecialty_id = null;
         $firm = \Firm::model()->findByPk($firm_id);
 
         if ($firm) {
             $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-        }
-
-        $rule = self::model()->find('subspecialty_id=? and firm_id=? and episode_status_id=?', array($subspecialty_id, $firm_id, $status_id));
-        if ($rule) {
-            return $rule->workflow;
         }
 
         $rule = self::model()->find('subspecialty_id=? and firm_id=? and episode_status_id=?', array($subspecialty_id, $firm_id, $status_id));
@@ -127,7 +122,7 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
      *
      * @throws \CException
      */
-    public function findWorkflowCascading($institution_id, $firm_id, $status_id)
+    public function findWorkflowCascading($firm_id, $status_id)
     {
         $firm = \Firm::model()->findByPk($firm_id);
         $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
@@ -240,7 +235,7 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
         $workflowSteps = [];
 
         foreach ($firms as $firm) {
-            $workflow = self::model()->findWorkflowCascading($institution_id, $firm->id, $episode_status_id);
+            $workflow = self::model()->findWorkflowCascading($firm->id, $episode_status_id);
             $workflowSteps[$firm->id] = $workflow ? $workflow->active_steps : null;
         }
 

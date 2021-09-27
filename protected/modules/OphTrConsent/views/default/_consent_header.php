@@ -18,7 +18,6 @@
  $logo_helper = new LogoHelper();
 
 ?>
-<header class="print-header">
+<header class="print-header flex">
         <?= $logo_helper->render('letter_head') ?>
-    
 </header>

@@ -2148,6 +2148,21 @@ class OphCiExamination_API extends \BaseAPI
         return $str;
     }
 
+    public function getLatestTriagePriority(\Patient $patient, $worklist, $use_context = false)
+    {
+        $ret = '';
+        $triage_elements = $this->getElements(
+            'models\Element_OphCiExamination_Triage',
+            $patient,
+            $use_context,
+        );
+        if (count($triage_elements) > 0) {
+            $priority = $triage_elements[0]->triage->priority;
+            $ret = "<i class=\"circle-{$priority->label_colour}\" data-tt-type=\"basic\" data-tooltip-content=\"Priority: {$priority->description}\"></i>";
+        }
+        return $ret;
+    }
+
     public function getLatestOutcomeRiskStatus(\Patient $patient, $worklist, $use_context = false)
     {
         $ret = "<i class='oe-i triangle-grey js-has-tooltip' data-tooltip-content='No Risk Status Recorded'></i>";

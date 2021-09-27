@@ -385,6 +385,16 @@ class Patient extends BaseActiveRecordVersioned
         return 'None';
     }
 
+    public function getClinicPathwayInProgress()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = 'JOIN worklist_patient wp ON wp.id = t.worklist_patient_id';
+        $criteria->addCondition('wp.patient_id = :patient_id');
+        $criteria->params = [':patient_id' => $this->id];
+        $criteria->addInCondition('t.status', Pathway::inProgressStatuses());
+        return Pathway::model()->find($criteria);
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -473,9 +483,8 @@ class Patient extends BaseActiveRecordVersioned
         $results = $data_provider->getData();
 
         $local_results_count = $data_provider->getItemCount();
-
         $results_from_pas = array();
-        if ($this->use_pas == true) {
+        if ($this->use_pas && $local_results_count === 0) {
             Yii::app()->event->dispatch('patient_search_criteria',
                 [
                     'results' => &$results_from_pas, 'patient' => $this,
@@ -2369,7 +2378,7 @@ class Patient extends BaseActiveRecordVersioned
             );
         }
         if ($cvi_api) {
-            $CoCvi_cvi = $cvi_api->getLatestElement('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', $this);
+            $CoCvi_cvi = $cvi_api->getLatestElement('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1', $this);
         }
         if (isset($examination_cvi, $CoCvi_cvi)) {
             if ($examination_cvi->element_date <= $CoCvi_cvi->examination_date) {

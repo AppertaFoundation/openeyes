@@ -28,19 +28,26 @@ class WorklistController extends BaseController
         return array(array('allow', 'roles' => array('OprnWorklist')));
     }
 
+    public function behaviors()
+    {
+        return array(
+            'SetupPathwayStepPicker' => ['class' => 'application.behaviors.SetupPathwayStepPickerBehavior',],
+        );
+    }
+
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
         if ($action->getId() === "print") {
             $newblue_path = 'application.assets.newblue';
-            Yii::app()->assetManager->registerCssFile('css/style_oe3_print.min.css', $newblue_path, null);
+            Yii::app()->assetManager->registerCssFile('dist/css/style_oe_print.3.css', $newblue_path, null);
         }
 
         $this->manager = new WorklistManager();
 
         return parent::beforeAction($action);
     }
-    protected function prescriberDomData()
+    protected function prescriberDomData($require_preset = true)
     {
         $ret = array(
             'preset_orders' => array(),
@@ -49,27 +56,25 @@ class WorklistController extends BaseController
             'assign_preset_btn' => null,
         );
         if ($is_prescriber = $this->checkAccess('Prescribe')) {
-            $preset_criteria = new CDbCriteria();
-            $preset_criteria->compare('LOWER(type)', 'psd');
-            $preset_criteria->compare('active', true);
-            $preset_orders = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
-            $popup = $this->renderPartial(
-                'worklist_psd_assignment_popup',
-                array(
-                    'preset_orders' => $preset_orders,
-                ),
-                true,
-            );
-            $ret['preset_orders'] = $preset_orders;
+            if ($require_preset) {
+                $preset_criteria = new CDbCriteria();
+                $preset_criteria->compare('active', true);
+                $preset_orders = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
+                $preset_orders_json = array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'name' => 'preset_order', 'label' => $item->name);
+                    },
+                    $preset_orders
+                );
+                $ret['preset_orders'] = $preset_orders_json;
+            }
             $ret['is_prescriber'] = $is_prescriber;
-            $ret['popup'] = $popup;
             $ret['assign_preset_btn'] = "<div class='button-stack'><button disabled class='green hint' id='js-worklist-psd-add'>Assign Preset Order to selected patients</button></div>";
         }
         return $ret;
     }
     public function actionView()
     {
-        $this->layout = 'main';
         $date_from = Yii::app()->request->getQuery('date_from');
         $date_to = Yii::app()->request->getQuery('date_to');
         $redirect = false;
@@ -94,32 +99,483 @@ class WorklistController extends BaseController
             }
         }
 
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.InputFieldValidation.js'), ClientScript::POS_END);
-        $worklist_js = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js.worklist') . '/worklist.js', true);
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.PathStep.js'), ClientScript::POS_END);
-        Yii::app()->clientScript->registerScriptFile($worklist_js, ClientScript::POS_END);
         if ($redirect) {
-            return $this->redirect(array('/worklist/view?date_from='.$date_from.'&date_to='.$date_to));
+            $this->redirect(array('/worklist/view?date_from='.$date_from.'&date_to='.$date_to));
         }
 
         $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
-        $sync_interval_setting_key = 'worklist_auto_sync_interval';
-        $sync_interval_settings = \SettingMetadata::model()->find("`key` = 'worklist_auto_sync_interval'");
-        $sync_interval_options = unserialize($sync_interval_settings->data);
-        $sync_interval_value = $sync_interval_settings->getSetting();
-        $prescriber_dom_data = $this->prescriberDomData();
-        $this->render(
-            'index',
-            array(
-                'worklists' => $worklists,
-                'sync_interval_options' => $sync_interval_options,
-                'sync_interval_value' => $sync_interval_value,
-                'sync_interval_setting_key' => $sync_interval_setting_key,
-                'is_prescriber' => $prescriber_dom_data['is_prescriber'],
-                'preset_popup' => $prescriber_dom_data['popup'],
-                'assign_preset_btn' => $prescriber_dom_data['assign_preset_btn'],
-            )
-        );
+
+        if (WorklistFilter::model()->countForCurrentUser() !== 0 || WorklistRecentFilter::model()->countForCurrentUser() !== 0) {
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.InputFieldValidation.js'), ClientScript::POS_END);
+            $worklist_js = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js.worklist') . '/worklist.js', true);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.PathStep.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile($worklist_js, ClientScript::POS_END);
+
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.UI.WorklistFilterPanel.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.UI.WorklistQuickFilterPanel.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFilter.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFiltersController.js'), ClientScript::POS_END);
+
+            $sync_interval_setting_key = 'worklist_auto_sync_interval';
+            $sync_interval_settings = \SettingMetadata::model()->find("`key` = 'worklist_auto_sync_interval'");
+            $sync_interval_options = unserialize($sync_interval_settings->data, ['allowed_classes' => true]);
+            $sync_interval_value = $sync_interval_settings->getSetting();
+            $prescriber_dom_data = $this->prescriberDomData(false);
+
+            $picker_setup = json_encode($this->setupPicker());
+            $path_step_type_ids = json_encode($this->getPathwayStepTypesRequirePicker());
+            $this->render(
+                'index',
+                array(
+                    'worklists' => $worklists,
+                    'picker_setup' => $picker_setup,
+                    'path_step_type_ids' => $path_step_type_ids,
+                    'path_steps' => PathwayStepType::getPathTypes(),
+                    'pathways' => PathwayType::model()->findAll(),
+                    'standard_steps' => PathwayStepType::getStandardTypes(),
+                    'custom_steps' => PathwayStepType::getCustomTypes(),
+                    'sync_interval_options' => $sync_interval_options,
+                    'sync_interval_value' => $sync_interval_value,
+                    'sync_interval_setting_key' => $sync_interval_setting_key,
+                    'is_prescriber' => $prescriber_dom_data['is_prescriber'],
+                    'preset_orders' => $prescriber_dom_data['preset_orders'],
+                    'assign_preset_btn' => $prescriber_dom_data['assign_preset_btn'],
+                )
+            );
+        } else {
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.UI.WorklistFilterPanel.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFilter.js'), ClientScript::POS_END);
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/worklist/OpenEyes.WorklistFiltersController.js'), ClientScript::POS_END);
+
+            $this->render(
+                'landing_page',
+                array('worklists' => $worklists)
+            );
+        }
+    }
+
+    public function actionGetPresetDrugs($id)
+    {
+        $preset = OphDrPGDPSD_PGDPSD::model()->findByPk($id);
+        $laterality = Yii::app()->request->getQuery('laterality');
+
+        if ($preset) {
+            $json = array_map(
+                static function ($medication) use ($laterality) {
+                    return array(
+                        'id' => $medication->id,
+                        'drug_name' => $medication->medication->preferred_term,
+                        'dose' => $medication->dose . ' ' . $medication->dose_unit_term,
+                        'route' => $medication->route->has_laterality ? false : $medication->route->term,
+                        'laterality' => (bool)$medication->route->has_laterality,
+                        'right_eye' => $laterality && ($laterality & MedicationLaterality::RIGHT),
+                        'left_eye' => $laterality && ($laterality & MedicationLaterality::LEFT),
+                    );
+                },
+                $preset->assigned_meds
+            );
+            $this->renderJSON($json);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionChangePathwayStatus()
+    {
+        $pathway_id = Yii::app()->request->getPost('pathway_id');
+        $new_status = Yii::app()->request->getPost('new_status');
+        $step_action = Yii::app()->request->getPost('step_action');
+        $pathway = Pathway::model()->findByPk($pathway_id);
+
+        if ($pathway) {
+            switch ($step_action) {
+                case 'remove':
+                    $success = $pathway->removeIncompleteSteps();
+                    break;
+                case 'mark_done':
+                    $success = $pathway->completeIncompleteSteps();
+                    break;
+                default:
+                    $success = true;
+            }
+            $pathway->refresh();
+            if ($success) {
+                switch ($new_status) {
+                    case 'discharged':
+                        // This comparison caters for quick-completed pathways being re-activated.
+                        if (count($pathway->started_steps) > 0) {
+                            $pathway->status = Pathway::STATUS_ACTIVE;
+                        } elseif (count($pathway->requested_steps) > 0) {
+                            $pathway->status = Pathway::STATUS_WAITING;
+                        } else {
+                            $pathway->status = Pathway::STATUS_DISCHARGED;
+                        }
+
+                        if ($pathway->end_time) {
+                            $pathway->end_time = null;
+                        }
+                        break;
+                    case 'done':
+                        $pathway->status = Pathway::STATUS_DONE;
+                        $pathway->end_time = date('Y-m-d H:i:s');
+                        break;
+                    case 'wait':
+                        $pathway->status = Pathway::STATUS_WAITING;
+                        break;
+                    case 'long-wait':
+                        $pathway->status = Pathway::STATUS_DELAYED;
+                        break;
+                    case 'stuck':
+                        $pathway->status = Pathway::STATUS_STUCK;
+                        break;
+                    case 'break':
+                        $pathway->status = Pathway::STATUS_BREAK;
+                        break;
+                    case 'active':
+                        $pathway->status = Pathway::STATUS_ACTIVE;
+                        break;
+                    default:
+                        $pathway->status = Pathway::STATUS_LATER;
+                        break;
+                }
+                $pathway->save();
+                $pathway->refresh();
+                $this->renderJSON(
+                    [
+                        'status' => $pathway->getStatusString(),
+                        'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true),
+                        'status_html' => $pathway->getPathwayStatusHTML(),
+                        'waiting_time_html' => $pathway->getTotalDurationHTML(true),
+                    ]
+                );
+                Yii::app()->end();
+            }
+            throw new CHttpException(500, 'Unable to transition pathway steps.');
+        }
+        throw new CHttpException(404, 'Unable to locate pathway');
+    }
+
+    /**
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function actionChangeStepStatus()
+    {
+        $step_id = Yii::app()->request->getPost('step_id');
+        $direction = Yii::app()->request->getPost('direction');
+        $step = PathwayStep::model()->findByPk($step_id);
+        if ($step) {
+            if ($direction === 'next') {
+                $extra_form_data = Yii::app()->request->getPost('extra_form_data');
+                if ($extra_form_data && array_key_exists('YII_CSRF_TOKEN', $extra_form_data)) {
+                    unset($extra_form_data['YII_CSRF_TOKEN']);
+                }
+                $step->nextStatus($extra_form_data);
+            } else {
+                $step->prevStatus();
+            }
+            $step->refresh();
+
+            $pathway = $step->pathway;
+
+            $pathway->updateStatus();
+
+            if ((int)$step->status === PathwayStep::STEP_STARTED) {
+                Yii::app()->event->dispatch('step_started', ['step' => $step]);
+            } elseif ((int)$step->status === PathwayStep::STEP_COMPLETED) {
+                Yii::app()->event->dispatch('step_completed', ['step' => $step]);
+            }
+
+            $this->renderJSON(
+                [
+                    'step' => $step->toJSON(),
+                    'pathway_status' => $pathway->getStatusString(),
+                    'pathway_status_html' => $pathway->getPathwayStatusHTML(),
+                    'wait_time_details' => json_encode($pathway->getWaitTimeSinceLastAction()),
+                ]
+            );
+            Yii::app()->end();
+        }
+        throw new CHttpException(404, 'Unable to retrieve step for processing.');
+    }
+
+    /**
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function actionCheckIn()
+    {
+        $visit_id = Yii::app()->request->getPost('visit_id');
+        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
+        /**
+         * @var $wl_patient WorklistPatient
+         */
+        $pathway = $wl_patient->pathway;
+
+        if ($pathway) {
+            if (count($pathway->requested_steps) === 0) {
+                $pathway->status = Pathway::STATUS_STUCK;
+            } else {
+                $pathway->status = Pathway::STATUS_WAITING;
+            }
+            $pathway->start_time = date('Y-m-d H:i:s');
+            $pathway->save();
+            $this->renderJSON(
+                [
+                    'end_time' => DateTime::createFromFormat('Y-m-d H:i:s', $pathway->start_time)->format('H:i'),
+                    'pathway_status_html' => $pathway->getPathwayStatusHTML(),
+                ]
+            );
+        }
+        throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a checkin step.');
+    }
+
+    /**
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function actionDidNotAttend()
+    {
+        $visit_id = Yii::app()->request->getPost('visit_id');
+        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
+        /**
+         * @var $wl_patient WorklistPatient
+         */
+        $pathway = $wl_patient->pathway;
+
+        if ($pathway) {
+            $pathway->start_time = date('Y-m-d H:i:s');
+            if (count($pathway->requested_steps) === 0) {
+                $pathway->status = Pathway::STATUS_DONE;
+                $pathway->end_time = date('Y-m-d H:i:s');
+            } else {
+                $pathway->status = Pathway::STATUS_DISCHARGED;
+            }
+
+            $pathway->did_not_attend = true;
+            $pathway->save();
+            // Create and save a Did Not Attend event.
+            $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+            $event_type_id = EventType::model()->find(
+                'class_name = :class_name', [':class_name' => 'OphCiDidNotAttend']
+            )->id;
+            $service = Firm::model()->find(
+                'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
+                [':id' => $firm->service_subspecialty_assignment_id]
+            );
+            $service_id = $service->id;
+
+            $params = [
+                'patient_id' => $pathway->worklist_patient->patient_id,
+                'context_id' => $firm->id,
+                'service_id' => $service_id,
+                'event_type_id' => $event_type_id
+            ];
+
+            $this->renderJSON(
+                [
+                    'redirect_url' => '/patientEvent/create?' . http_build_query($params),
+                    'pathway_status_html' => $pathway->getPathwayStatusHTML(),
+                ]
+            );
+        }
+        throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a checkin step.');
+    }
+
+    /**
+     * @throws CDbException
+     */
+    public function actionDeleteStep()
+    {
+        $step_id = Yii::app()->request->getPost('step_id');
+        $step = PathwayStep::model()->findByPk($step_id);
+        if ($step) {
+            Yii::app()->event->dispatch('step_deleted', ['step' => $step]);
+            $step->delete();
+            echo '1';
+        }
+    }
+
+    /**
+     * @throws CHttpException
+     */
+    public function actionReorderStep()
+    {
+        $step_id = Yii::app()->request->getPost('step_id');
+        $direction = Yii::app()->request->getPost('direction');
+        $step = PathwayStep::model()->findByPk($step_id);
+        $altered_steps = array();
+
+        if ($step) {
+            $old_order = $step->order;
+            $new_order = $direction === 'left' ? $old_order - 1 : $old_order + 1;
+
+            // As we're only moving one step, we should only have to reorder at most a single step.
+            $step_to_reorder = PathwayStep::model()->find(
+                "pathway_id = :pathway_id AND (status IN (-1, 0) OR status IS NULL) AND id != :id AND `order` = :order",
+                [
+                    'pathway_id' => $step->pathway_id,
+                    ':id' => $step->id,
+                    ':order' => $new_order
+                ]
+            );
+
+            if ($step_to_reorder) {
+                $step_to_reorder->order = $old_order;
+                $step_to_reorder->save();
+                $step_to_reorder->refresh();
+                $altered_steps[$step_to_reorder->id] = $step_to_reorder;
+            }
+            $step->order = $new_order;
+            if (!$step->save()) {
+                throw new CHttpException('Unable to reorder step.');
+            }
+            $step->refresh();
+            $altered_steps[$step->id] = $step;
+        }
+
+        $this->renderJSON($altered_steps);
+    }
+
+    /**
+     * @param $id
+     * @throws CHttpException
+     */
+    public function actionGetVfPresetData($id)
+    {
+        $preset = VisualFieldTestPreset::model()->findByPk($id);
+        if ($preset) {
+            $this->renderJSON(
+                array(
+                    'test_type_id' => $preset->test_type_id,
+                    'test_type_name' => $preset->testType->short_name,
+                    'test_option_id' => $preset->option_id,
+                    'option_name' => $preset->option->short_name,
+                )
+            );
+        }
+        throw new CHttpException(404, 'Unable to retrieve Fields preset.');
+    }
+
+    /**
+     * @param $partial
+     * @param $pathstep_id
+     * @param $patient_id
+     * @param $red_flag
+     * @throws CException
+     * @throws CHttpException
+     */
+    public function actionGetPathStep($partial, $pathstep_id, $patient_id, $red_flag = false, $interactive = 1)
+    {
+        switch ($pathstep_id) {
+            case 'checkin':
+                $wl_patient = WorklistPatient::model()->find('patient_id = :id', [':id' => $patient_id]);
+                if ($wl_patient) {
+                    $dom = $this->renderPartial('/worklist/steps/checkin', array(
+                        'pathway' => $wl_patient->pathway,
+                        'patient' => Patient::model()->findByPk($patient_id),
+                        'partial' => $partial
+                    ), true);
+                    $this->renderJSON($dom);
+                } else {
+                    throw new CHttpException('Unable to retrieve pathway for patient.');
+                }
+                break;
+            case 'comment':
+                $wl_patient = WorklistPatient::model()->find('patient_id = :id', [':id' => $patient_id]);
+                if ($wl_patient) {
+                    $dom = $this->renderPartial('//worklist/comment', array(
+                        'pathway' => $wl_patient->pathway,
+                        'patient' => Patient::model()->findByPk($patient_id),
+                        'partial' => $partial
+                    ), true);
+                    $this->renderJSON($dom);
+                } else {
+                    throw new CHttpException('Unable to retrieve pathway for patient.');
+                }
+                break;
+            case 'wait':
+                $wl_patient = WorklistPatient::model()->find('patient_id = :id', [':id' => $patient_id]);
+                $view_file = 'callout';
+                $dom = $this->renderPartial(
+                    '//worklist/steps/' . $view_file,
+                    array(
+                        'pathway' => $wl_patient->pathway,
+                        'patient' => Patient::model()->findByPk($patient_id),
+                        'partial' => $partial
+                    ),
+                    true
+                );
+                $this->renderJSON($dom);
+                break;
+            case 'finished':
+                $wl_patient = WorklistPatient::model()->find('patient_id = :id', [':id' => $patient_id]);
+                $view_file = 'finished';
+                $dom = $this->renderPartial(
+                    '//worklist/steps/' . $view_file,
+                    array(
+                        'pathway' => $wl_patient->pathway,
+                        'patient' => Patient::model()->findByPk($patient_id),
+                        'partial' => $partial
+                    ),
+                    true
+                );
+                $this->renderJSON($dom);
+                break;
+            default:
+                $step = PathwayStep::model()->findByPk($pathstep_id);
+                if ($step && $step->type->short_name === 'drug admin') {
+                    $psd_assignment_id = $step->getState('assignment_id');
+
+                    if (!$psd_assignment_id) {
+                        throw new CHttpException('Unable to retrieve PSD id');
+                    }
+
+                    $psd_assignment = OphDrPGDPSD_Assignment::model()->findByPk($psd_assignment_id);
+
+                    if (!$psd_assignment) {
+                        throw new CHttpException(404, 'Unable to retrieve PSD.');
+                    }
+
+                    if (intval($interactive)) {
+                        $interactive = $psd_assignment->getAppointmentDetails()['date'] === 'Today' ? 1 : 0;
+                    }
+                    $can_remove_psd = \Yii::app()->user->checkAccess('Prescribe') && (int)$step->status === PathwayStep::STEP_REQUESTED && !$psd_assignment->elements ? '' : 'disabled';
+                    $dom = $this->renderPartial(
+                        'application.modules.OphDrPGDPSD.views.pathstep.pathstep_view',
+                        array(
+                            'assignment' => $psd_assignment,
+                            'step' => $step,
+                            'partial' => (int)$partial,
+                            'patient_id' => $patient_id,
+                            'for_administer' => 0,
+                            'is_prescriber' => Yii::app()->user->checkAccess('Prescribe'),
+                            'can_remove_psd' => $can_remove_psd,
+                            'interactive' => (bool)$interactive,
+                        ),
+                        true
+                    );
+                    $this->renderJSON($dom);
+                    Yii::app()->end();
+                }
+
+                if ($step) {
+                    $view_file = $step->type->widget_view ?? 'generic_step';
+                    $dom = $this->renderPartial(
+                        '//worklist/steps/' . $view_file,
+                        array(
+                            'step' => $step,
+                            'patient' => Patient::model()->findByPk($patient_id),
+                            'partial' => $partial,
+                            'red_flag' => $red_flag
+                        ),
+                        true
+                    );
+                    $this->renderJSON($dom);
+                }
+                break;
+        }
     }
 
     /**
@@ -393,7 +849,7 @@ class WorklistController extends BaseController
                 $temp['date'] = $diagnosis->getFormatedDate();
 
                 $eye = $diagnosis->eye;
-                $laterality = $this->getLaterality($eye, NULL);
+                $laterality = $this->getLaterality($eye, null);
                 $temp['left'] = $laterality['left'];
                 $temp['right'] = $laterality['right'];
 
@@ -785,22 +1241,368 @@ class WorklistController extends BaseController
         return $return;
     }
 
+    public function getStatusCountsList($filter = null, $worklists = null)
+    {
+        if ($filter) {
+            $counts = $filter->getPatientStatusCountsQuery($worklists)->queryAll();
+        } else {
+            $counts = Yii::app()->db->createCommand('SELECT `status`, COUNT(`id`) AS `count` FROM `pathway` GROUP BY `status`')->queryAll();
+        }
+
+        $results = array(
+            'all' => 0,
+            'clinic' => 0,     // Arrived
+            'issues' => 0,     // Issues
+            'discharged' => 0, // Departed
+            'done' => 0        // Completed
+        );
+
+        foreach ($counts as $item) {
+            $progress = Pathway::inProgressStatuses();
+            $results['all'] += $item['count'];
+
+            if ($item['status'] != Pathway::STATUS_LATER) {
+                $results['clinic'] += $item['count'];
+            }
+
+            if ($item['status'] != Pathway::STATUS_ACTIVE
+                && in_array($item['status'], $progress)) {
+                $results['issues'] += $item['count'];
+            } elseif ($item['status'] == Pathway::STATUS_DISCHARGED) {
+                $results['discharged'] += $item['count'];
+            } elseif ($item['status'] == Pathway::STATUS_DONE) {
+                $results['done'] += $item['count'];
+            }
+        }
+
+        return $results;
+    }
+
+    public function getWaitingForList($filter = null, $worklists = null)
+    {
+        if ($filter === null) {
+            $filter = new WorklistFilterQuery();
+        }
+
+        return array_map(
+            static function ($item) {
+                return array(
+                    'id' => $item['long_name'],
+                    'label' => '… ' . $item['long_name'],
+                    'count' => $item['count']
+                );
+            },
+            $filter->getWaitingForListQuery($worklists)->queryAll()
+        );
+    }
+
+    public function getAssignedToList($filter = null, $worklists = null)
+    {
+        $helper = new User();
+
+        if ($filter === null) {
+            $filter = new WorklistFilterQuery();
+        }
+
+        return array_map(
+            static function ($item) use ($helper) {
+                $helper->first_name = $item['first_name'];
+                $helper->last_name = $item['last_name'];
+
+                return array(
+                    'id' => $item['id'],
+                    'label' => $helper->getFullName() . ' (' . $helper->getInitials() .')',
+                    'count' => $item['count']
+                );
+            },
+            $filter->getAssignedToListQuery($worklists)->queryAll()
+        );
+    }
+
     public function actionAutoRefresh()
     {
         $date_from = Yii::app()->request->getParam('date_from');
         $date_to = Yii::app()->request->getParam('date_to');
-        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
+
+        $filter = new WorklistFilterQuery(Yii::app()->request->getParam('filter'));
+
+        $date_from = $filter->getFrom() ?? $date_from;
+        $date_to = $filter->getTo() ?? $date_to;
+
+        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null, $filter);
 
         $prescriber_dom_data = $this->prescriberDomData();
         $dom = array();
         $dom['main'] = null;
         $dom['filter'] = "<li><a class='js-worklist-filter' href='#' data-worklist='all'>All</a></li>";
         $dom['popup'] = $prescriber_dom_data['popup'];
-        foreach ($worklists as $worklist) {
-            $dom['main'] .= $this->renderPartial('_worklist', array('worklist' => $worklist, 'is_prescriber' => $prescriber_dom_data['is_prescriber']), true);
-            $dom['filter'] .= "<li><a href='#' class='js-worklist-filter' data-worklist='js-worklist-{$worklist->id}'>{$worklist->name} : {$worklist->getDisplayShortDate()}</a></li>";
+
+        if ($filter->getCombineWorklistsStatus()) {
+            $dom['main'] = $this->renderPartial('_worklist', array('worklist' => $worklists, 'is_prescriber' => $prescriber_dom_data['is_prescriber'], 'filter' => $filter), true);
+        } else {
+            foreach ($worklists as $worklist) {
+                $dom['main'] .= $this->renderPartial('_worklist', array('worklist' => $worklist, 'is_prescriber' => $prescriber_dom_data['is_prescriber'], 'filter' => $filter), true);
+                $dom['filter'] .= "<li><a href='#' class='js-worklist-filter' data-worklist='js-worklist-{$worklist->id}'>{$worklist->name} : {$worklist->getDisplayShortDate()}</a></li>";
+            }
         }
         $dom['refresh_time'] = date('H:i');
+
+        $dom['quick_details'] = $this->getStatusCountsList($filter, $worklists);
+        $dom['waiting_for_details'] = $this->getWaitingForList($filter, $worklists);
+        $dom['assigned_to_details'] = $this->getAssignedToList($filter, $worklists);
+
         $this->renderJSON($dom);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionAddStepToPathway()
+    {
+        $id = Yii::app()->request->getPost('id');
+        $pathway_id = Yii::app()->request->getPost('pathway_id');
+        $position = Yii::app()->request->getPost('position');
+        $step_data = Yii::app()->request->getPost('step_data') ?: array();
+
+        $step = PathwayStepType::model()->findByPk($id);
+        // priority for firm_id: user input > template > current firm id
+        $step_data['firm_id'] = $step_data['firm_id'] ?? $step->getState('firm_id') ?? Yii::app()->session['selected_firm_id'];
+        // if the template has subspecialty_id, then setup for the step
+        if($step->getState('subspecialty_id')){
+            $step_data['subspecialty_id'] = $step->getState('subspecialty_id');
+        }
+
+        $new_step = null;
+        if ($step) {
+            $new_step = $step->createNewStepForPathway($pathway_id, $step_data, true, (int)$position);
+        }
+
+        if ($new_step) {
+            $this->renderJSON(
+                [
+                    'step_html' => $this->renderPartial(
+                        '_clinical_pathway',
+                        ['pathway' => $new_step->pathway],
+                        true
+                    ),
+                    'no_wait_timer' => in_array($new_step->type->short_name, PathwayStep::NO_WAIT_TIMER_AFTER_ADD)
+                ]
+            );
+        }
+        throw new CHttpException(500, 'Unable to add step to pathway.');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionAddPathwayStepsToPathway()
+    {
+        $id = $_POST['selected_values'][0]['value'];
+        $position = $_POST['selected_values'][1]['value'];
+        $pathway_type = PathwayType::model()->findByPk($id);
+        $pathway_id = Yii::app()->request->getPost('target_pathway_id');
+        $pathway = Pathway::model()->findByPk($pathway_id);
+
+        if ($pathway_type) {
+            $pathway_type->duplicateStepsForPathway($pathway_id, $position);
+            $this->renderJSON(['step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true)]);
+        }
+        throw new CHttpException(404, 'Unable to retrieve pathway type for duplication.');
+    }
+
+    /**
+     * @param $term
+     */
+    public function actionGetAssignees($term)
+    {
+        $users = User::model()->with('contact')->findAll(
+            'contact.first_name LIKE CONCAT(\'%\', :term, \'%\')',
+            array(':term' => $term)
+        );
+        $this->renderJSON(array_map(
+            static function ($item) {
+                return array(
+                    'id' => $item->id,
+                    'label' => $item->getFullName(),
+                );
+            },
+            $users
+        ));
+    }
+
+    /**
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function actionAssignUserToPathway()
+    {
+        $id = Yii::app()->request->getPost('user_id');
+        $pathway_id = Yii::app()->request->getPost('target_pathway_id');
+        $pathway = Pathway::model()->findByPk($pathway_id);
+
+        if ($pathway) {
+            $pathway->owner_id = $id;
+            $pathway->save();
+            $pathway->refresh();
+            $this->renderJSON(array('id' => $id, 'initials' => $pathway->owner->getInitials()));
+        }
+        throw new CHttpException(404, 'Unable to retrieve pathway');
+    }
+
+    public function actionAddComment()
+    {
+        $post = $_POST;
+        if ($post['pathstep_id'] === 'comment') {
+            $comment = PathwayComment::model()->find('pathway_id=?', [$post['pathway_id']]);
+            if ($comment === null) {
+                $comment = new PathwayComment();
+                $comment->pathway_id = $post['pathway_id'];
+            }
+        } else {
+            $comment = PathwayStepComment::model()->find('pathway_step_id=?', [$post['pathstep_id']]);
+            if ($comment === null) {
+                $comment = new PathwayStepComment();
+                $comment->pathway_step_id = $post['pathstep_id'];
+            }
+        }
+        $comment->comment = $post['comment'];
+        $comment->doctor_id = $post['user_id'];
+        if ($comment->save()) {
+            $this->renderJSON($comment->comment);
+        }
+    }
+
+    public function actionRetrieveFilters()
+    {
+        $filters = array();
+
+        WorklistRecentFilter::model()->removeOldFiltersForCurrentUser();
+
+        $filters['max_recents'] = WorklistRecentFilter::MAX_RECENT_FILTERS;
+
+        $filters['recent'] = array_map(static function ($f) {
+            return ['id' => $f->id, 'filter' => $f->filter];
+        }, WorklistRecentFilter::model()->getForCurrentUser());
+
+        $filters['saved'] = array_map(static function ($f) {
+            return ['id' => $f->id, 'name' => $f->name, 'filter' => $f->filter];
+        }, WorklistFilter::model()->getForCurrentUser());
+
+        $this->renderJSON($filters);
+    }
+
+    public function actionStoreFilter()
+    {
+        $filter = null;
+        $response = array();
+
+        if (Yii::app()->request->getParam('is_recent') === 'true') {
+            $filter = new WorklistRecentFilter();
+        } else {
+            $filter_name = Yii::app()->request->getParam('name');
+            $filter = WorklistFilter::model()->findByNameForCurrentUser($filter_name);
+
+            if ($filter === null) {
+                $filter = new WorklistFilter();
+                $filter->name = $filter_name;
+            }
+        }
+
+        $filter->filter = Yii::app()->request->getParam('filter');
+
+        $filter->save();
+
+        $response['id'] = $filter->id;
+        $response['user'] = $filter->created_user_id;
+
+        $this->renderJSON($response);
+    }
+
+    public function actionDeleteFilter()
+    {
+        $filter_name = Yii::app()->request->getParam('name');
+        $filter = WorklistFilter::model()->findByNameForCurrentUser($filter_name);
+
+        if ($filter !== null) {
+            $filter->delete();
+        }
+    }
+
+    /**
+     * Get the pathwaystep according to the provided pathstep_id
+     * and get the corresponding pathway
+     *
+     * @return array instances of Pathway, PathwayStep
+     * @throws CHttpException
+     */
+    private function getStepAndPathway($pathstep_id)
+    {
+        $step = PathwayStep::model()->findByPk($pathstep_id);
+        $pathway = $step->pathway;
+        if (!$step) {
+            throw new CHttpException(404, 'Step not found.');
+        }
+        if (!$pathway) {
+            throw new CHttpException(404, 'Pathway not found.');
+        }
+        return array(
+            'pathway' => $pathway,
+            'step' => $step,
+        );
+    }
+
+    /**
+     * Checkout the pathway
+     */
+    public function actionCheckout()
+    {
+        $pathstep_id = Yii::app()->request->getPost('step_id');
+        extract($this->getStepAndPathway($pathstep_id));
+        // push the step to next status
+        $step->nextStatus();
+        // set the pathway as done
+        $pathway->status = Pathway::STATUS_DONE;
+        $pathway->end_time = date('Y-m-d H:i:s');
+        $pathway->save();
+        $this->renderJSON(
+            [
+                'status' => $pathway->getStatusString(),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true),
+                'status_html' => $pathway->getPathwayStatusHTML(),
+                'pathway_id' => $pathway->id,
+            ]
+        );
+    }
+    /**
+     * Revert the done pathwaystep to discharged
+     */
+    public function actionRevertCheckout()
+    {
+        $pathstep_id = Yii::app()->request->getPost('step_id');
+        extract($this->getStepAndPathway($pathstep_id));
+        // revert step
+        $step->status = PathwayStep::STEP_REQUESTED;
+        $step->start_time = null;
+        $step->end_time = null;
+        $step->started_user_id = null;
+        $step->completed_user_id = null;
+        if (!$step->save()) {
+            throw new CHttpException(500, 'Unable to update the step status');
+        }
+        // revert the pathway back to discharged
+        $pathway->status = Pathway::STATUS_DISCHARGED;
+        $pathway->end_time = null;
+        if (!$pathway->save()) {
+            throw new CHttpException(500, 'Unable to update the pathway status');
+        }
+        $this->renderJSON(
+            [
+                'status' => $pathway->getStatusString(),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true),
+                'status_html' => $pathway->getPathwayStatusHTML(),
+                'pathway_id' => $pathway->id,
+                'waiting_time_html' => $pathway->getTotalDurationHTML(true),
+            ]
+        );
     }
 }

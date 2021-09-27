@@ -499,7 +499,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
             if (!$patient) {
                 // determine if there are any circumstances where this is necessary. Almost certainly very redundant
-                if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
+                if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))
+                    ->findByPk(@$_GET['patient_id'])) {
                     throw new Exception('Patient not found: ' . @$_GET['patient_id']);
                 }
             }
@@ -511,23 +512,46 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             $this->re = $this->calculateRe($patient);
 
             $user = Yii::app()->session['user'];
-            $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
+            $firm = Firm::model()
+                ->with('serviceSubspecialtyAssignment')
+                ->findByPk(Yii::app()->session['selected_firm_id']);
+
             $contact = $user->contact;
 
             // Footer will be built after signatures are recorded
             $this->footer = "";
 
+            // If the event is being created from a worklist step, assign the default macro if one has been specified.
+            if (isset(Yii::app()->session['active_step_state_data']['macro_id'])) {
+                $this->macro = LetterMacro::model()
+                    ->findByPk(Yii::app()->session['active_step_state_data']['macro_id']);
+            }
+
             // Look for a macro based on the episode_status
             $episode = $patient->getEpisodeForCurrentSubspecialty();
-            if ($episode) {
-                $this->macro = LetterMacro::model()->with('firms')->find('firms_firms.firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
+            if ($episode && !$this->macro) {
+                $this->macro = LetterMacro::model()
+                    ->with('firms')
+                    ->find(
+                        'firms_firms.firm_id=? and episode_status_id=?',
+                        array($firm->id, $episode->episode_status_id)
+                    );
                 if (!$this->macro && $firm->service_subspecialty_assignment_id) {
                     $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-                    $this->macro = LetterMacro::model()->with('subspecialties')->find('subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
+                    $this->macro = LetterMacro::model()
+                        ->with('subspecialties')
+                        ->find(
+                            'subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?',
+                            array($subspecialty_id, $episode->episode_status_id)
+                        );
                     if (!$this->macro) {
                         $this->macro = LetterMacro::model()->with('sites', 'institutions')->find([
                             'condition' => '(institutions_institutions.institution_id=? OR sites_sites.site_id=?) AND episode_status_id=?',
-                            'params' => array(Yii::app()->session['selected_institution_id'], Yii::app()->session['selected_site_id'], $episode->episode_status_id)]);
+                            'params' => array(
+                                Yii::app()->session['selected_institution_id'],
+                                Yii::app()->session['selected_site_id'],
+                                $episode->episode_status_id
+                            )]);
                     }
                 }
             }
@@ -1109,6 +1133,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     {
         $ccString = '';
 
+        $Australia = Yii::app()->params['default_country'] === 'Australia';
+
         if ($this->document_instance && $this->document_instance[0]->document_target) {
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
@@ -1118,7 +1144,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                         } else {
                             $contact_type = $target->contact_type != \SettingMetadata::model()->getSetting('gp_label') ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                         }
-                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
+                        $ccString .= "CC: " . ($Australia ? "" : ($contact_type != "Other" ? $contact_type . ": " : "")) . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
                     }
                 }
             }
@@ -1244,13 +1270,14 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
                     $eventAssociatedContent->is_print_appended = $attachments_print_appended[$key] ?? 0;
 
-                    if (isset($attachments_short_code[$key])) {
+                    if (isset($attachments_short_code[$key]) && !empty($attachments_short_code[$key])) {
                         $eventAssociatedContent->short_code  = $attachments_short_code[$key];
                     } else {
                         $eventAssociatedContent->short_code = $this->generateShortcodeByEventId($attachments_last_event_id[$key]);
                     }
 
                     $eventAssociatedContent->display_title = $attachments_display_title[$key] ?? null;
+                    $eventAssociatedContent->associated_protected_file_id = $attachments_protected_file_id[$key] ?? null;
                     $eventAssociatedContent->association_storage  = 'EVENT';
                     $eventAssociatedContent->associated_event_id  = $last_event;
                     $eventAssociatedContent->display_order   = $order;

@@ -18,6 +18,7 @@
 ?>
 <?php /** @var EsignElementWidget $this */ ?>
 <div class="element-fields">
+    <?php if(isset($form)) { $form->hiddenInput($this->element, "dummy"); } ?>
     <div class="element-data full-width">
         <?php foreach ($this->element->getInfoMessages() as $msg): ?>
             <div class="alert-box info"><?=CHtml::encode($msg)?></div>

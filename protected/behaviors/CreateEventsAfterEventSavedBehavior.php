@@ -144,7 +144,7 @@ class CreateEventsAfterEventSavedBehavior extends CBehavior
 
             if ($element) {
                 $prescription_creator->addMedicationSet($set->id, $element->eye_id);
-
+                $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = !Yii::app()->user->checkAccess('OprnCreatePrescription');
                 $prescription_creator->save();
 
                 $success = !$prescription_creator->hasErrors();

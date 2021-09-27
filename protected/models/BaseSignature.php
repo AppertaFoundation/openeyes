@@ -39,6 +39,8 @@ abstract class BaseSignature extends BaseActiveRecordVersioned
     public const TYPE_OTHER_USER = 2;
     /** @var int Captured signature of a non-user */
     public const TYPE_PATIENT = 3;
+    /** @var int Signed by the logged in user Medication Management*/
+    public const TYPE_LOGGEDIN_MED_USER = 5;
 
     /** @var string The proof string previously created on server and sent to the client */
     public string $proof = "";

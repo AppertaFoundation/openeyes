@@ -37,6 +37,11 @@ class Element_OphTrConsent_Type extends BaseEventTypeElement
 {
     public $service;
 
+    public const TYPE_PATIENT_AGREEMENT_ID = 1;
+    public const TYPE_PARENTAL_AGREEMENT_ID = 2;
+    public const TYPE_PATIENT_PARENTAL_AGREEMENT_ID = 3;
+    public const TYPE_UNABLE_TO_CONSENT_ID = 4;
+
     /**
      * Returns the static model of the specified AR class.
      *

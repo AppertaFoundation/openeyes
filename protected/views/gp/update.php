@@ -14,7 +14,7 @@ $this->pageTitle = 'Update Practitioner';
 <div class="oe-home oe-allow-for-fixing-hotlist">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
-            Update <b>Practitioner</b>
+            Update&nbsp;<b>Practitioner</b>
         </div>
     </div>
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
@@ -30,6 +30,9 @@ $this->pageTitle = 'Update Practitioner';
                     // See class documentation of CActiveForm for details on this.
                     'enableAjaxValidation' => true,
                 )); ?>
+                <?php if ($gp->hasErrors()) { ?>
+                <div class="error alert-box"><?php echo $form->error($gp, 'contact'); ?></div>
+                <?php } ?>
                     <table class="standard row">
                         <tbody>
                             <tr>

@@ -36,26 +36,26 @@
         $adminiter_unlock_display = $administer_interaction;
     }
     ?>
-    <input type="hidden" name="Assignment[entries][<?=$index;?>][assignment_id]" value="<?=$assignment->id?>">
-    <input type="hidden" name="Assignment[entries][<?=$index;?>][medication_id]" value="<?=$med_obj->medication_id?>">
-    <input type="hidden" name="Assignment[entries][<?=$index;?>][laterality]" value="<?=isset($lat_id) ? $lat_id : null?>">
-    <input type="hidden" name="Assignment[entries][<?=$index;?>][dose]" value="<?=$med_obj->dose?>">
-    <input type="hidden" name="Assignment[entries][<?=$index;?>][dose_unit_term]" value="<?=$med_obj->dose_unit_term?>">
-    <input type="hidden" name="Assignment[entries][<?=$index;?>][route_id]" value="<?=$med_obj->route_id?>">
+    <input type="hidden" name="Assignment[entries][<?=$index?>][assignment_id]" value="<?=$assignment->id?>">
+    <input type="hidden" name="Assignment[entries][<?=$index?>][medication_id]" value="<?=$med_obj->medication_id?>">
+    <input type="hidden" name="Assignment[entries][<?=$index?>][laterality]" value="<?=isset($lat_id) ? $lat_id : null?>">
+    <input type="hidden" name="Assignment[entries][<?=$index?>][dose]" value="<?=$med_obj->dose?>">
+    <input type="hidden" name="Assignment[entries][<?=$index?>][dose_unit_term]" value="<?=$med_obj->dose_unit_term?>">
+    <input type="hidden" name="Assignment[entries][<?=$index?>][route_id]" value="<?=$med_obj->route_id?>">
     <?php if ($for_administer) {?>
-    <td <?= !isset($side) ? 'colspan="2"' : '';?>>
+    <td <?= !isset($side) ? 'colspan="2"' : ''?>>
         <div class="flex-l">
-            <?=$lat_icon;?>
-            <label class="<?=$label_css;?>">
+            <?=$lat_icon?>
+            <label class="<?=$label_css?>">
                 <?=$administer_interaction?>
-                <input type="hidden" class="js-administer-end" name="Assignment[entries][<?=$index;?>][administered_time]" value="<?=$administered_timestamp?>">
-                <input type="hidden" class="js-administer-user" name="Assignment[entries][<?=$index;?>][administered_by]" value="<?=$administered_user_id?>">
+                <input type="hidden" class="js-administer-end" name="Assignment[entries][<?=$index?>][administered_time]" value="<?=$administered_timestamp?>">
+                <input type="hidden" class="js-administer-user" name="Assignment[entries][<?=$index?>][administered_by]" value="<?=$administered_user_id?>">
             </label>
         </div>
     </td>
     <?php } else { ?>
-    <td <?= !isset($side) ? 'colspan="2"' : '';?>>
-        <?= $adminiter_unlock_display;?>
+    <td <?= !isset($side) ? 'colspan="2"' : ''?>>
+        <?= $adminiter_unlock_display?>
     </td>
     <?php } ?>
 <?php } ?>

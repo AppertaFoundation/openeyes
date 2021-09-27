@@ -28,6 +28,8 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
         'finalize' => self::ACTION_TYPE_FORM,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM
     );
 
     private function userIsAdmin()
@@ -39,6 +41,21 @@ class DefaultController extends BaseEventTypeController
         }
 
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'getSignatureByPin' => [
+                'class' => GetSignatureByPinAction::class
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => GetSignatureByUsernameAndPinAction::class
+            ]
+        ];
     }
 
     public function actionView($id)
@@ -959,6 +976,28 @@ class DefaultController extends BaseEventTypeController
             $item_group[$item->dispense_condition_id][] = $item;
         }
         return $item_group;
+    }
+
+    /**
+     * Function gets the last Element_OphTrOperationnote_SiteTheatre
+     * and returns it if site and subspecialty are the same as parameters
+     * @param $prescribed_date
+     * @param $firm_id
+     * @return Element_OphTrOperationnote_SiteTheatre | bool
+     */
+    public function getSiteAndTheatreForSameDayEvent($prescribed_date, $firm_id)
+    {
+        $api = Yii::app()->moduleAPI->get('OphTrOperationnote');
+        if ($api) {
+            $site_theatre = $api->getElementFromLatestEvent(
+                'Element_OphTrOperationnote_SiteTheatre',
+                $this->patient,
+                true);
+            if ($site_theatre && $site_theatre->event->NHSDate('event_date') === $prescribed_date && $site_theatre->event->episode->firm_id === $firm_id) {
+                return $site_theatre;
+            }
+        }
+        return false;
     }
 
     /**

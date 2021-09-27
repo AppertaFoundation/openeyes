@@ -179,6 +179,7 @@ class m180506_111023_medication_drugs_import extends OEMigration
                         d.aliases,
                         d.form_id,
                         d.dose_unit,
+                        d.default_frequency_id,
                         REGEXP_REPLACE(d.default_dose, '[a-z -\]', '' ) AS 'default_dose', -- strip non numerics
                         df.name AS drug_form_name,
                         rmf.id  AS ref_form_id,
@@ -275,7 +276,7 @@ class m180506_111023_medication_drugs_import extends OEMigration
                             ->bindValue(':prescription_usage_code', $usage_codes['PRESCRIPTION_SET'])
                             ->bindvalue(':default_dose', !empty(preg_replace('/[^\d.]+/', '', $drug_set['dose'])) ? preg_replace('/[^\d.]+/', '', $drug_set['dose']) : null)
                             ->bindValue(':drug_route_id', $drug['ref_route_id'])
-                            ->bindValue(':defualt_freq_id', $drug_set['frequency_id'] ?: ($drug_set['default_frequency_id'] ?: $drug['ref_freq_id']))
+                            ->bindValue(':defualt_freq_id', $drug_set['frequency_id'] ?: ($drug['default_frequency_id'] ?: $drug['ref_freq_id']))
                             ->bindValue(':default_dose_unit', $drug['dose_unit'])
                             ->bindValue(':default_duration_id', $drug_set['duration_id'] ?: $drug['default_duration_id'])
                             ->bindValue(':dispense_condition_id', $drug_set['dispense_condition_id'] ?: null)
