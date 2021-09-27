@@ -297,4 +297,16 @@ class PathwayStepType extends BaseActiveRecordVersioned
         }
         return false;
     }
+
+    /**
+     * @throws JsonException
+     */
+    public function getState(string $key)
+    {
+        if ($this->state_data_template) {
+            $state_temp = json_decode($this->state_data_template, true, 512, JSON_THROW_ON_ERROR);
+            return $state_temp[$key] ?? null;
+        }
+        return null;
+    }
 }

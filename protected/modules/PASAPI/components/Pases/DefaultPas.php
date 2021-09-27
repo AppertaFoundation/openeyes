@@ -1,6 +1,8 @@
 <?php
 
 namespace OEModule\PASAPI\components\Pases;
+
+use Exception;
 use OEModule\PASAPI\models\PasApiAssignment;
 
 /**
@@ -219,10 +221,15 @@ class DefaultPas extends BasePAS
 
     function buildXML($xml, $data) {
         foreach ($data as $idx=>$record) {
-            if(is_array($record)) {
+            if(is_array($record) || is_object($record)) {
                 $xml = $this->buildXML($xml, $record);
             } else {
-                $xml->addChild($idx, $record);
+                try {
+                    $xml->addChild($idx, $record);
+                } catch (Exception $e) {
+                    \OELog::log("PASAPI buildXML: ". $e->getMessage());
+                    \OELog::log("PASAPI buildXML record: ". var_export($record, true));
+                }
             }
         }
         return $xml;

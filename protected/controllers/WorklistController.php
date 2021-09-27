@@ -40,7 +40,7 @@ class WorklistController extends BaseController
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
         if ($action->getId() === "print") {
             $newblue_path = 'application.assets.newblue';
-            Yii::app()->assetManager->registerCssFile('css/style_oe3_print.min.css', $newblue_path, null);
+            Yii::app()->assetManager->registerCssFile('dist/css/style_oe_print.3.css', $newblue_path, null);
         }
 
         $this->manager = new WorklistManager();
@@ -1363,8 +1363,15 @@ class WorklistController extends BaseController
         $pathway_id = Yii::app()->request->getPost('pathway_id');
         $position = Yii::app()->request->getPost('position');
         $step_data = Yii::app()->request->getPost('step_data') ?: array();
-        $step_data['firm_id'] = $step_data['firm_id'] ?? Yii::app()->session['selected_firm_id'];
+
         $step = PathwayStepType::model()->findByPk($id);
+        // priority for firm_id: user input > template > current firm id
+        $step_data['firm_id'] = $step_data['firm_id'] ?? $step->getState('firm_id') ?? Yii::app()->session['selected_firm_id'];
+        // if the template has subspecialty_id, then setup for the step
+        if($step->getState('subspecialty_id')){
+            $step_data['subspecialty_id'] = $step->getState('subspecialty_id');
+        }
+
         $new_step = null;
         if ($step) {
             $new_step = $step->createNewStepForPathway($pathway_id, $step_data, true, (int)$position);
