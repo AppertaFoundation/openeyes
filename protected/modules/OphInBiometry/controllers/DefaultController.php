@@ -300,7 +300,7 @@ class DefaultController extends BaseEventTypeController
 
         $criteria = new CDbCriteria();
         $criteria->with = 'institutions';
-        $criteria->condition = 'institutions_institutions.institution_id = :institution_id';
+        $criteria->condition = 'institutions.id = :institution_id';
         $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
 
         foreach (OphInBiometry_LensType_Lens::model()->findAll($criteria) as $lens) {
