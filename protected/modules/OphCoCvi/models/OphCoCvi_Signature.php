@@ -1,26 +1,25 @@
 <?php
 /**
- * OpenEyes
- *
- * (C) OpenEyes Foundation, 2021
+ * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2021, OpenEyes Foundation
+ * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 /**
  * This is the model class for table "ophcocvi_signature".
  *
  * The followings are the available columns in table 'ophcocvi_signature':
  * @property integer $id
  * @property integer $element_id
- * @property integer $type
+ * @property numeric-string $type
  * @property string $signature_file_id
  * @property string $signed_user_id
  * @property string $signatory_role
@@ -84,11 +83,11 @@ class OphCoCvi_Signature extends BaseSignature
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element' => array(self::BELONGS_TO, Element_OphCoCvi_Esign::class, 'element_id'),
-            'signatureFile' => array(self::BELONGS_TO, ProtectedFile::class, 'signature_file_id'),
-            'signedUser' => array(self::BELONGS_TO, User::class, 'signed_user_id'),
-            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'element' => array(self::BELONGS_TO, OEModule\OphCoCvi\models\Element_OphCoCvi_Esign::class, 'element_id'),
+            'signatureFile' => array(self::BELONGS_TO, \ProtectedFile::class, 'signature_file_id'),
+            'signedUser' => array(self::BELONGS_TO, \User::class, 'signed_user_id'),
+            'createdUser' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
         );
     }
 
