@@ -540,6 +540,7 @@ function createLoginOverlay() {
 
         let passwordField = document.createElement('input');
         passwordField.id = 'js-password';
+        passwordField.autocomplete = 'new-password';
         passwordField.type = 'password';
         passwordField.placeholder = 'Password';
         $(passwordField).keyup(
