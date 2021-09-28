@@ -915,7 +915,6 @@ class OphCoCvi_Manager extends \CComponent
             'clinical_element',
             'clinical_element.consultant',
             'clerical_element',
-            'consultant_element',
             'event',
             'event.episode.patient.contact',
             'event.episode.firm.serviceSubspecialtyAssignment.subspecialty',
