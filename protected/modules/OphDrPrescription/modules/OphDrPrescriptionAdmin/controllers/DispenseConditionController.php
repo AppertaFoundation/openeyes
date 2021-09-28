@@ -125,7 +125,7 @@ class DispenseConditionController extends BaseAdminController
         $institution_id = Yii::app()->session['selected_institution_id'];
         $model->attributes = Yii::app()->request->getParam('OphDrPrescription_DispenseCondition', array());
         $dci_data = Yii::app()->request->getParam('OphDrPrescription_DispenseCondition_Institution', array());
-        $dci_associated_dli_ids = array_key_exists('dispense_location_institutions', $dci_data) ? $dci_data['dispense_location_institutions'] : array();
+        $dci_associated_dli_ids = array_key_exists('dispense_location_institutions', $dci_data) && $dci_data['dispense_location_institutions'] ? $dci_data['dispense_location_institutions'] : array();
         $errors = array();
         $transaction = \Yii::app()->db->beginTransaction();
         foreach ($model->dispense_condition_institutions as $dci) {
