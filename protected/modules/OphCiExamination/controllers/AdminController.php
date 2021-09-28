@@ -109,6 +109,7 @@ class AdminController extends \ModuleAdminController
                 $model->name = $post_attributes['name'];
                 $model->short_name = $post_attributes['short_name'];
                 $model->active = $post_attributes['active'];
+                $model->visible = $post_attributes['visible'];
                 $model->save();
 
                 if (Yii::app()->user->checkAccess('admin')) {
@@ -146,7 +147,7 @@ class AdminController extends \ModuleAdminController
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $post_attributes = $_POST[\CHtml::modelName($model)];
-            if (Yii::app()->checkAccess('admin')) {
+            if (Yii::app()->user->checkAccess('admin')) {
                 // Only admins can create instances at installation level
                 if (isset($post_attributes['institutions'])) {
                     $institutions = $post_attributes['institutions'];
@@ -161,6 +162,7 @@ class AdminController extends \ModuleAdminController
                 $model->name = $post_attributes['name'];
                 $model->short_name = $post_attributes['short_name'];
                 $model->active = $post_attributes['active'];
+                $model->visible = $post_attributes['visible'];
 
                 $criteria=new CDbCriteria;
                 $criteria->select = 'max(display_order) AS display_order';
