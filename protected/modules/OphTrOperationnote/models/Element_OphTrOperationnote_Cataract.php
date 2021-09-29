@@ -89,7 +89,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         return array(
             array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk, phaco_cde , comments', 'safe'),
             array('incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, eyedraw2', 'required'),
-            array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
+            array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9]{0,2})$/', 'message' => 'Length must be 0 - 9.99 in increments of 0.01'),
             array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
             array('phaco_cde', 'numerical' , 'integerOnly' => false, 'message'=>'Phaco CDE need to be a numeric value'),
             array('phaco_cde', 'default', 'setOnEmpty' => true, 'value' => null),

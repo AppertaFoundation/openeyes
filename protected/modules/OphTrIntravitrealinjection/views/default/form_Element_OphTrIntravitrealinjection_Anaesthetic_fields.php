@@ -23,6 +23,6 @@ echo $form->radioButtons($element, $side.'_anaesthetictype_id', $element->anaest
 
 echo $form->radioButtons($element, $side.'_anaestheticdelivery_id', $element->anaestheticDeliveryTypes);
 
-echo $form->dropDownList($element, $side.'_anaestheticagent_id', CHtml::listData($element->getAnaestheticAgentsForSide($side), 'id', 'name'), array('empty' => 'Select'), false, array('field' => 6));
+echo $form->dropDownList($element, $side.'_anaestheticagent_id', CHtml::listData($element->getAnaestheticAgentsForSide($side), 'id', 'name'), array('empty' => 'Select', 'class' => 'cols-full'), false, array('field' => 6));
 
 ?>
