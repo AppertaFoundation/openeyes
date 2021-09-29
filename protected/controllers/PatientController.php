@@ -39,6 +39,7 @@ class PatientController extends BaseController
     public $event_tabs = array();
     public $event_actions = array();
     public $episodes = array();
+    public $iframe_policy = '';
 
     public function accessRules()
     {
@@ -228,6 +229,14 @@ class PatientController extends BaseController
             $this->layout = '//layouts/events_and_episodes';
         }
 
+        $hie_url = \SettingMetadata::model()->getSetting('hie_remote_url');
+        if (filter_var($hie_url, FILTER_VALIDATE_URL)) {
+            $iframe_policy = " frame-src {$hie_url} localhost:*;";
+        } else {
+            $iframe_policy = '';
+        }
+
+        $this->iframe_policy = $iframe_policy;
         $this->render('hie_view', array(
             'encrypted_url' => $url,
             'patient' => $this->patient,

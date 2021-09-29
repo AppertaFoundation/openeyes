@@ -23,15 +23,10 @@ $favicon_path = $newblue_path . '/favicon_package_OE';
 <?php }?>
 
 <?php
-    $hie_url = \SettingMetadata::model()->getSetting('hie_remote_url');
-if (strlen($hie_url) > 0 && filter_var($hie_url, FILTER_VALIDATE_URL)) {
-    $iframePolicy = "frame-src {$hie_url} localhost:*;";
-} else {
-    $iframePolicy = '';
-}
+    $iframe_policy = $this->iframe_policy ?? '';
+    header("Content-Security-Policy:default-src 'self' localhost:*;script-src 'self' 'unsafe-inline' 'unsafe-eval';style-src 'self' 'unsafe-inline';{$iframe_policy}img-src data: https://*/Analytics http://*/Analytics 'self';worker-src blob:;font-src 'self' data:", true);
 ?>
 
-<?php header("Content-Security-Policy: default-src 'self' localhost:*; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';{$iframePolicy} img-src data: https://*/Analytics http://*/Analytics 'self'; worker-src blob:; font-src 'self' data:", true); ?>
 
 <link rel="apple-touch-icon" sizes="180x180" href="<?= $favicon_path ?>/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="<?= $favicon_path ?>/favicon-32x32.png">
