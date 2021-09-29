@@ -779,8 +779,14 @@ class WorklistController extends BaseAdminController
         $pathway_id = Yii::app()->request->getPost('pathway_id');
         $position = Yii::app()->request->getPost('position');
         $step_data = Yii::app()->request->getPost('step_data') ?: array();
-        $step_data['firm_id'] = $step_data['firm_id'] ?? Yii::app()->session['selected_firm_id'];
+
         $step = PathwayStepType::model()->findByPk($id);
+        // priority for firm_id: user input > template > current firm id
+        $step_data['firm_id'] = $step_data['firm_id'] ?? $step->getState('firm_id') ?? Yii::app()->session['selected_firm_id'];
+        // if the template has subspecialty_id, then setup for the step
+        if($step->getState('subspecialty_id')){
+            $step_data['subspecialty_id'] = $step->getState('subspecialty_id');
+        }
         $new_step = null;
         if ($step) {
             $new_step = $step->createNewStepForPathwayType($pathway_id, $step_data, (int)$position);

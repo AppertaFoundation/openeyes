@@ -24,7 +24,7 @@ if ($is_step_instance) {
             <?= strtoupper($patient->last_name) . ', ' . $patient->first_name . ' (' . $patient->title . ')'?>
         </div>
     <?php }
-    if ($red_flag) {
+    if (isset($red_flag) && $red_flag) {
         $red_flags_event = Element_OphCiExamination_AE_RedFlags::model()->find('event_id = ? AND nrf_check != 1', array($step->associated_event->id));
         $red_flag_options = OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAll('element_id = ?', array($red_flags_event->id));
         ?>
