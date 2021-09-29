@@ -1,25 +1,26 @@
 <?php
 /**
- * OpenEyes
- *
- * (C) OpenEyes Foundation, 2019
+ * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCoCvi\controllers;
 
-use OEModule\OphCoCvi\components\LabelManager;
-use OEModule\OphCoCvi\components\OphCoCvi_Manager;
-use OEModule\OphCoCvi\models;
+use \OEModule\OphCoCvi\models;
+use \OEModule\OphCoCvi\components\OphCoCvi_Manager;
+use \OEModule\OphCoCvi\components\LabelManager;
+use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section;
+use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
 
 /**
  * Class DefaultController
@@ -37,15 +38,47 @@ class DefaultController extends \BaseEventTypeController
     const ACTION_TYPE_LIST = 'List';
 
     protected static $action_types = array(
+        'clinicalInfoDisorderList' => self::ACTION_TYPE_FORM,
+        'deleteDiagnosisNotCoveredElement' => self::ACTION_TYPE_FORM,
+        'cilinicalDiagnosisAutocomplete' => self::ACTION_TYPE_FORM,
+        'getVisualAcuityDatas' => self::ACTION_TYPE_FORM,
         'consentsignature' => self::ACTION_TYPE_EDIT,
         'retrieveconsentsignature' => self::ACTION_TYPE_EDIT,
         'displayconsentsignature' => self::ACTION_TYPE_VIEW,
         'removeconsentsignature' => self::ACTION_TYPE_EDIT,
+        'addPatientSignature' => self::ACTION_TYPE_EDIT,
         'issue' => self::ACTION_TYPE_EDIT,
         'signCVI' => self::ACTION_TYPE_EDIT,
         'list' => self::ACTION_TYPE_LIST,
+        'export' => self::ACTION_TYPE_LIST,
         'LabelPDFprint' => self::ACTION_TYPE_VIEW,
+        'sign' => self::ACTION_TYPE_EDIT,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'saveCapturedSignature' => self::ACTION_TYPE_FORM,
+        'esignDevicePopup' => self::ACTION_TYPE_FORM,
+        'postSignRequest' => self::ACTION_TYPE_FORM,
     );
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'getSignatureByPin' => [
+                'class' => \GetSignatureByPinAction::class
+            ],
+            'saveCapturedSignature' => [
+                'class' => \SaveCapturedSignatureAction::class
+            ],
+            'esignDevicePopup' => [
+                'class' => \EsignDevicePopupAction::class
+            ],
+            'postSignRequest' => [
+                'class' => \PostSignRequestAction::class
+            ]
+        ];
+    }
 
     /** @var string label used in session storage for the list filter values */
     protected static $FILTER_LIST_KEY = 'OphCoCvi_list_filter';
@@ -59,7 +92,8 @@ class DefaultController extends \BaseEventTypeController
     {
         $create_new_cvi = $this->request->getParam('createnewcvi', null);
         if ($create_new_cvi !== null) {
-            $cancel_url = \Yii::app()->createURL("/patient/summary/", array("id" => $this->patient->id));
+            $cancel_url = $this->episode ? '/patient/episode/' . $this->episode->id
+                : '/patient/episodes/' . $this->patient->id;
             if ($create_new_cvi == 1) {
                 if (!$this->getManager()->canCreateEventForPatient($this->patient)) {
                     $this->getApp()->user->setFlash('warning.cvi_create', 'You cannot create another CVI whilst one exists that has not been issued.');
@@ -155,6 +189,12 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkPrintAccess()
     {
+        // we allow print action if the patient signs - probably we need to separate the e-sign and print
+        // but that would be a later refactor when this works development works
+        if (\Yii::app()->request->getParam('sign')) {
+            return true;
+        }
+
         if (is_a($this->event, 'Event') && !$this->getManager()->isIssued($this->event)) {
             return false;
         }
@@ -215,8 +255,8 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    protected function setElementDefaultOptions_Element_OphCoCvi_EventInfo(
-        models\Element_OphCoCvi_EventInfo $element,
+    protected function setElementDefaultOptions_Element_OphCoCvi_EventInfo_V1(
+        models\Element_OphCoCvi_EventInfo_V1 $element,
         $action
     ) {
         if ($element->isNewRecord) {
@@ -228,8 +268,8 @@ class DefaultController extends \BaseEventTypeController
      * @param models\Element_OphCoCvi_ClinicalInfo $element
      * @param                                      $action
      */
-    protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo(
-        models\Element_OphCoCvi_ClinicalInfo $element,
+    protected function setElementDefaultOptions_Element_OphCoCvi_ClinicalInfo_V1(
+        models\Element_OphCoCvi_ClinicalInfo_V1 $element,
         $action
     ) {
         // only populate values into the new element if a clinical user
@@ -256,6 +296,7 @@ class DefaultController extends \BaseEventTypeController
                     $element->{$side . '_cvi_disorder_assignments'} = $assignments;
                 }
             }
+            $element->patient_type = ($this->getGetPatientAge() < 18) ? 1 : 0;
         }
     }
 
@@ -302,6 +343,109 @@ class DefaultController extends \BaseEventTypeController
             $element->cvi_disorder_section_comments = $comments;
         }
     }
+    /**
+     * <<<  * This just sets assignments for validation and the re-use in forms if a form submit does not validate
+     *
+     * @param models\Element_OphCoCvi_ClinicalInfo $element
+     * @param                                      $data
+     * @param                                      $index
+     */
+    protected function setComplexAttributes_Element_OphCoCvi_ClinicalInfo_V1($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+
+        if (array_key_exists($model_name, $data)) {
+            foreach ($data[$model_name]['disorders'] ?? [] as $key => $disorder) {
+                $is_right = isset($disorder['right_eye']) && $disorder['right_eye'] == 1;
+                $is_left = isset($disorder['left_eye']) && $disorder['left_eye'] == 1;
+                $is_both = ($is_right && $is_left);
+
+                if ($is_both) {
+                    $affected = \Eye::BOTH;
+                } else {
+                    $affected = $is_right ? \Eye::RIGHT : ($is_left ? \Eye::LEFT : null);
+                }
+
+                switch ($affected) {
+                    case 1:
+                        $disorders['left_disorders'][$key]['affected'] = 1;
+                        if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
+                            $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
+                        }
+                        break;
+                    case 2:
+                        $disorders['right_disorders'][$key]['affected'] = 1;
+                        if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
+                            $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
+                        }
+                        break;
+                    case 3:
+                        $disorders['both_disorders'][$key]['affected'] = 1;
+                        if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
+                            $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
+                        }
+                        break;
+                }
+
+                unset($data[$model_name]['disorders']);
+                $data[$model_name] = array_merge($data[$model_name], $disorders);
+            }
+
+            if (!empty($data[$model_name]['diagnosis_not_covered'])) {
+                $diagnosis_list = array();
+                foreach ($data[$model_name]['diagnosis_not_covered'] as $key => $disorder) {
+                    $diagnosis = new OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered();
+                    $diagnosis->disorder_id = isset($disorder['disorder_id']) ? $disorder['disorder_id'] : false;
+                    $diagnosis->eye_id = isset($disorder['eyes']) ? $disorder['eyes'] : false;
+                    $diagnosis->main_cause = isset($disorder['main_cause']) ? $disorder['main_cause'] : false;
+                    $diagnosis->disorder_type = isset($disorder['disorder_type']) ? $disorder['disorder_type'] : false;
+                    if ($diagnosis->disorder_type == OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered::TYPE_DISORDER) {
+                        $diagnosis->code = isset($disorder['code']) ? $disorder['code'] : false;
+                    }
+                    $diagnosis_list[] = $diagnosis;
+                }
+                $element->diagnosis_not_covered = $diagnosis_list;
+            }
+
+            $all_cvi_assignments = array();
+            $main_cause_assignment = array();
+            foreach (array('left' => \Eye::LEFT, 'right' => \Eye::RIGHT, 'both' => \Eye::BOTH) as $side => $eye_id) {
+                $cvi_assignments = array();
+                $key = $side . '_disorders';
+                if (array_key_exists($key, $data[$model_name])) {
+                    foreach ($data[$model_name][$key] as $idx => $data_disorder) {
+                        $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+                        $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
+                        $cvi_ass->affected = array_key_exists('affected',
+                            $data_disorder) ? $data_disorder['affected'] : false;
+                        $cvi_ass->eye_id = $eye_id;
+                        $cvi_ass->main_cause = array_key_exists('main_cause',
+                            $data_disorder) ? $data_disorder['main_cause'] : false;
+                        if ($cvi_ass->main_cause == 1) {
+                            $main_cause_assignment[] = $cvi_ass;
+                        }
+                        $cvi_assignments[] = $cvi_ass;
+                        $all_cvi_assignments[] = $cvi_ass;
+                    }
+                }
+                if (!empty($main_cause_assignment)) {
+                    $element->main_cause_cvi_disorder_assignment = $main_cause_assignment;
+                }
+                $element->{$side . '_cvi_disorder_assignments'} = $cvi_assignments;
+                $element->cvi_disorder_assignments = $all_cvi_assignments;
+            }
+
+            if (!isset($data[$model_name]['best_recorded_left_va'])) {
+                $element->best_recorded_left_va = 0;
+            }
+            if (!isset($data[$model_name]['best_recorded_right_va'])) {
+                $element->best_recorded_right_va = 0;
+            }
+            if (!isset($data[$model_name]['best_recorded_binocular_va'])) {
+                $element->best_recorded_binocular_va = 0;
+            }
+        }
+    }
 
     /**
      * @param models\Element_OphCoCvi_ClinicalInfo $element
@@ -327,6 +471,69 @@ class DefaultController extends \BaseEventTypeController
         $element->updateDisorderSectionComments($comments_data);
     }
 
+    protected function saveComplexAttributes_Element_OphCoCvi_ClinicalInfo_V1(
+        models\Element_OphCoCvi_ClinicalInfo_V1 $element,
+        $data,
+        $index
+    ) {
+        $model_name = \CHtml::modelName($element);
+
+        if (!$element->isNewRecord) {
+            OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered::model()->deleteAllByAttributes(['element_id' => $element->id]);
+        }
+        if (!empty($data[$model_name]['diagnosis_not_covered'])) {
+            $element->updateDisordersNotCovered($data[$model_name]['diagnosis_not_covered']);
+        }
+
+        $disorders = array();
+        if (!empty($data[$model_name]['disorders'])) {
+            foreach ($data[$model_name]['disorders'] as $key => $disorder) {
+                $is_right = isset($disorder['right_eye']) && $disorder['right_eye'] == 1;
+                $is_left = isset($disorder['left_eye']) && $disorder['left_eye'] == 1;
+                $is_both = ($is_right && $is_left);
+
+                if ($is_both) {
+                    $affected = \Eye::BOTH;
+                } else {
+                    $affected = $is_right ? \Eye::RIGHT : ($is_left ? \Eye::LEFT : null);
+                }
+
+                switch ($affected) {
+                    case 1:
+                        $disorders['left_disorders'][$key]['affected'] = 1;
+                        if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
+                            $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
+                        }
+                        break;
+                    case 2:
+                        $disorders['right_disorders'][$key]['affected'] = 1;
+                        if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
+                            $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
+                        }
+                        break;
+                    case 3:
+                        $disorders['both_disorders'][$key]['affected'] = 1;
+                        if (isset($data[$model_name]['right_disorders'][$key]['main_cause'])) {
+                            $disorders['right_disorders'][$key]['main_cause'] = $data[$model_name]['right_disorders'][$key]['main_cause'];
+                        }
+                        break;
+                }
+            }
+            unset($data[$model_name]['disorders']);
+            $data[$model_name] = array_merge($data[$model_name], $disorders);
+
+            foreach (array('left', 'right', 'both') as $side) {
+                $key = $side . '_disorders';
+                $side_data = array_key_exists($key, $data[$model_name]) ? $data[$model_name][$key] : array();
+                $element->updateDisorders($side, $side_data);
+            }
+        } else {
+            if (!$element->isNewRecord) {
+                models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment::model()->deleteAllByAttributes(['element_id' => $element->id]);
+            }
+        }
+    }
+
     /**
      * @param models\Element_OphCoCvi_ClericalInfo $element
      * @param                                      $action
@@ -342,6 +549,25 @@ class DefaultController extends \BaseEventTypeController
                 $element->employment_status_id = models\OphCoCvi_ClericalInfo_EmploymentStatus::defaultForSocialHistoryId($this->patient->socialhistory);
             }
         }
+    }
+
+    /**
+     * @param models\Element_OphCoCvi_ClericalInfo $element
+     * @param                                      $action
+     */
+    protected function setElementDefaultOptions_Element_OphCoCvi_ClericalInfo_V1(
+        models\Element_OphCoCvi_ClericalInfo_V1 $element,
+        $action
+    ) {
+        if ($element->isNewRecord && $this->checkClinicalEditAccess()) {
+            if ($this->patient->isChild()) {
+                $element->employment_status_id = models\OphCoCvi_ClericalInfo_EmploymentStatus::defaultChildStatusId();
+            } elseif ($this->patient->socialhistory) {
+                $element->employment_status_id = models\OphCoCvi_ClericalInfo_EmploymentStatus::defaultForSocialHistoryId($this->patient->socialhistory);
+            }
+        }
+        $preferred_language = \Language::model()->findByAttributes(array('pas_term'=>'eng'));
+        $element->preferred_language_id = $element->preferred_language_id ? $element->preferred_language_id : $preferred_language->id;
     }
 
     /**
@@ -371,14 +597,42 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    /**
-     * @param models\Element_OphCoCvi_ClericalInfo $element
-     * @param                                      $data
-     * @param                                      $index
-     * @throws \Exception
-     */
-    public function saveComplexAttributes_Element_OphCoCvi_ClericalInfo(
-        models\Element_OphCoCvi_ClericalInfo $element,
+    protected function setComplexAttributes_Element_OphCoCvi_ClericalInfo_V1(
+        models\Element_OphCoCvi_ClericalInfo_V1 $element,
+        $data,
+        $index
+    ) {
+        $model_name = \CHtml::modelName($element);
+
+        if (array_key_exists($model_name, $data)) {
+            $answers = array();
+            if (array_key_exists('patient_factors', $data[$model_name])) {
+                foreach ($data[$model_name]['patient_factors'] as $id => $data_answer) {
+                    $a = new models\OphCoCvi_ClericalInfo_PatientFactor_Answer();
+                    $a->patient_factor_id = $id;
+                    $a->is_factor = isset($data_answer['is_factor']) ? $data_answer['is_factor'] : null;
+                    $a->comments = isset($data_answer['comments']) ? $data_answer['comments'] : null;
+                    $answers[] = $a;
+                }
+            }
+            $element->patient_factor_answers = $answers;
+
+            if (array_key_exists('preferred_format_ids', $data[$model_name])) {
+                if (!empty($data[$model_name]['preferred_format_ids'])) {
+                    foreach ($data[$model_name]['preferred_format_ids'] as $id => $data_preferred_format_id) {
+                        $assignment = new models\OphCoCvi_Clericalinfo_Preferredformat_Assignment();
+                        $assignment->element_id = $this->id;
+                        $assignment->preferred_format_id = $data_preferred_format_id;
+                        $preferred_format_ids[] = $assignment;
+                    }
+                    $element->preferred_format_assignments = $preferred_format_ids;
+                }
+            }
+        }
+    }
+
+    public function saveComplexAttributes_Element_OphCoCvi_ClericalInfo_V1(
+        models\Element_OphCoCvi_ClericalInfo_V1 $element,
         $data,
         $index
     ) {
@@ -386,6 +640,9 @@ class DefaultController extends \BaseEventTypeController
         if (array_key_exists($model_name, $data)) {
             $answer_data = array_key_exists('patient_factors', $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
             $element->updatePatientFactorAnswers($answer_data);
+
+            $preferred_format_datas = array_key_exists('preferred_format_ids', $data[$model_name]) ? $data[$model_name]['preferred_format_ids'] : array();
+            $element->updatePreferredFormats($preferred_format_datas);
         }
     }
 
@@ -394,8 +651,8 @@ class DefaultController extends \BaseEventTypeController
      *
      * @param models\Element_OphCoCvi_Demographics $element
      */
-    protected function setElementDefaultOptions_Element_OphCoCvi_Demographics(
-        models\Element_OphCoCvi_Demographics $element
+    protected function setElementDefaultOptions_Element_OphCoCvi_Demographics_V1(
+        models\Element_OphCoCvi_Demographics_V1 $element
     ) {
         if ($element->isNewRecord) {
             $element->initFromPatient($this->patient);
@@ -437,7 +694,7 @@ class DefaultController extends \BaseEventTypeController
 
         // if POST, then a new filter is to be applied, otherwise retrieve from the session
         if ($this->request->isPostRequest) {
-            foreach (array('date_from', 'date_to', 'subspecialty_id', 'site_id', 'consultant_ids', 'show_issued', 'issue_status', 'issue_complete', 'issue_incomplete', 'createdby_ids') as $key) {
+            foreach (array('date_from', 'date_to', 'subspecialty_id', 'site_id', 'consultant_ids', 'firm_ids', 'show_issued', 'issue_status', 'issue_complete', 'issue_incomplete', 'createdby_ids', 'missing_consultant_signature','missing_clerical_part') as $key) {
                 $val = $this->request->getPost($key, null);
                 $filter[$key] = $val;
             }
@@ -473,7 +730,72 @@ class DefaultController extends \BaseEventTypeController
 
         $dp = $this->getManager()->getListDataProvider($filter);
 
-        $this->render('list', array('dp' => $dp, 'list_filter' => $filter, 'institution_id'=> \Institution::model()->getCurrent()->id,));
+        $this->render('list', array('dp' => $dp, 'list_filter' => $filter));
+    }
+
+    /**
+     * Export and download CVI list result to csv file
+     */
+    public function actionExport()
+    {
+        $filename = 'export.csv';
+
+        $f = fopen( $this->getManager()->outDir.$filename, "w");
+
+        $headers = array( array('Event Date', 'Subspeciality', 'Site', 'Name', 'Hospital No.', 'Created By', 'Consultant signed by', 'Consultant in charge', 'Status', 'Issue Date'));
+        foreach ($headers as $header) {
+            fputcsv($f, $header, ",");
+        }
+
+        $filters = $this->getListFilter();
+        $dataProvider = $this->getManager()->getListDataProvider($filters, false)->getData();
+
+        if ($dataProvider) {
+            $rows = [];
+            foreach ($dataProvider as $originalRow) {
+                if ($consultant = $this->getManager()->getClinicalConsultant($originalRow)) {
+                    $consultant = $consultant->getFullNameAndTitle();
+                } else {
+                    $consultant = "-";
+                }
+
+                $inCharge = "-";
+                if (!is_null($originalRow->consultant_in_charge_of_this_cvi_id)) {
+                    $inCharge = $originalRow->consultantInChargeOfThisCvi->getNameAndSubspecialty();
+                }
+
+                $date = $originalRow->getIssueDateForDisplay();
+                $issueDate = "-";
+                if ($date) {
+                    $issueDate = \Helper::convertMySQL2NHS($date);
+                }
+
+                $rows[] = [
+                    \Helper::convertMySQL2NHS($originalRow->event->event_date),
+                    $originalRow->event->episode->getSubspecialtyText(),
+                    $originalRow->site ? $originalRow->site->name : "-",
+                    $originalRow->event->episode->patient->getFullName() . " (" . $originalRow->event->episode->patient->getAge() . "y)",
+                    $originalRow->event->episode->patient->hos_num,
+                    $originalRow->user->getFullNameAndTitle(),
+                    $consultant,
+                    $inCharge,
+                    $originalRow->event->info,
+                    $issueDate
+                ];
+            }
+
+            foreach ($rows as $row) {
+                fputcsv($f, $row, ",");
+            }
+        }
+
+        fclose($f);
+
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachment; filename="'.$filename.'";');
+        readfile( $this->getManager()->outDir.$filename );
+
+        unlink( $this->getManager()->outDir.$filename );
     }
 
     /**
@@ -534,14 +856,15 @@ class DefaultController extends \BaseEventTypeController
         $final_elements = array();
         foreach ($elements as $el) {
             $cls = get_class($el);
-            if ($cls === 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo'
+
+            if (in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1'))
                 && $el->isNewRecord
                 && !$this->checkClinicalEditAccess()
             ) {
                 // implies no values have been recorded yet for this element
                 continue;
             }
-            if ($cls === 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo'
+            if (in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1'))
                 && $el->isNewRecord
                 && !$this->checkClericalEditAccess()
             ) {
@@ -555,24 +878,12 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Override to prevent the event_info element appearing in the sidebar when editing
-     *
-     * @param array $remove_list
-     * @return string
-     */
-    public function getElementTree($remove_list = array())
-    {
-        $remove_list = array_merge($remove_list, array('OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo'));
-        return parent::getElementTree($remove_list);
-    }
-
-    /**
-     * @return models\Element_OphCoCvi_EventInfo[]
+     * @return models\Element_OphCoCvi_EventInfo_V1[]
      */
     private function getElementsForEventInfo()
     {
         if ($this->event->isNewRecord) {
-            return array(new models\Element_OphCoCvi_EventInfo());
+            return array(new models\Element_OphCoCvi_EventInfo_V1());
         } else {
             return array($this->getManager()->getEventInfoElementForEvent($this->event));
         }
@@ -625,8 +936,8 @@ class DefaultController extends \BaseEventTypeController
         $cls = $element_type->class_name;
 
         $map = array(
-            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo' => 'Clinical',
-            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo' => 'Clerical',
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1' => 'Clinical',
+            'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1' => 'Clerical',
         );
 
         if (array_key_exists($cls, $map)) {
@@ -652,17 +963,17 @@ class DefaultController extends \BaseEventTypeController
             // form has been submitted using the save button, so full validation rules should be applied to the elements
             // TODO: validation for signature(s)
             switch (get_class($element)) {
-                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo':
+                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1':
                     if ($this->checkClinicalEditAccess()) {
                         $element->setScenario('finalise');
                     }
                     break;
-                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo':
+                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1':
                     if ($this->checkClericalEditAccess()) {
                         $element->setScenario('finalise');
                     }
                     break;
-                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics':
+                case 'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics_V1':
                     $element->setScenario('finalise');
                     break;
             }
@@ -677,6 +988,49 @@ class DefaultController extends \BaseEventTypeController
     protected function updateEventInfo()
     {
         $this->getManager()->updateEventInfo($this->event);
+        if ($this->action->id === "create") {
+            $this->getManager()->sendNotification($this->event);
+        }
+    }
+
+    /**
+     * @throws \CHttpException
+     */
+    public function initActionAddPatientSignature()
+    {
+        $element_id = \Yii::app()->request->getPost("element_id");
+
+        if ($element = models\Element_OphCoCvi_PatientSignature::model()->findByPk($element_id)) {
+            $this->initWithEventId($element->event_id);
+        }
+    }
+    /*
+     * Save patient signature in view mode
+     *
+     * @throws \Exception
+     */
+
+    public function actionAddPatientSignature()
+    {
+        $element_id = \Yii::app()->request->getPost("element_id");
+        $protected_file_id = \Yii::app()->request->getPost("protected_file_id");
+
+        if (!$protected_file = \ProtectedFile::model()->findByPk($protected_file_id)) {
+            throw new \CHttpException(404);
+        }
+
+        if ($element =  models\Element_OphCoCvi_PatientSignature::model()->findByPk($element_id)) {
+            $element->protected_file_id = $protected_file_id;
+            $element->signature_date = $protected_file->created_date;
+            if (!$element->save(false)) {
+                throw new \Exception("Could not add signature: ".print_r($element->errors, true));
+            }
+
+            $this->updateEventInfo();
+            echo $protected_file_id;
+        }
+
+        echo "0";
     }
 
     /**
@@ -761,6 +1115,50 @@ class DefaultController extends \BaseEventTypeController
      *
      * @throws \CHttpException
      */
+    public function initActionPrint()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    /**
+     * Print action.
+     *
+     * @param int $id event id
+     */
+    public function actionPrint($id)
+    {
+        $this->printInit($id);
+
+        if (\Yii::app()->request->getParam('sign')) {
+            $this->printESign($id, $this->open_elements);
+        } else {
+            $this->printHTML($id, $this->open_elements);
+        }
+    }
+
+    protected function printESign($id, $elements, $template = '_e-sign')
+    {
+        $institution_id = \Institution::model()->getCurrent()->id;
+        $site_id = \Yii::app()->session['selected_site_id'];
+        $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+        $secondary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+
+        $this->layout = '//layouts/print';
+        $this->render($template, array(
+            'elements' => $elements,
+            'eventId' => $id,
+
+            'patient' => $this->patient,
+            'primary_identifier' => $primary_identifier->value,
+            'secondary_identifier' => $secondary_identifier->value,
+        ));
+    }
+
+    /**
+     * Ensure the event is setup on the controller
+     *
+     * @throws \CHttpException
+     */
     public function initActionPDFPrint()
     {
         $this->initWithEventId($this->request->getParam('id'));
@@ -772,9 +1170,42 @@ class DefaultController extends \BaseEventTypeController
     public function actionPDFPrint($id)
     {
         $this->redirect(
-            '/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/'
+             '/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/'
             . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name
         );
+    }
+
+    private function outputStaticPdfFile($filename)
+    {
+        $dir = \Yii::getPathOfAlias("application.modules.OphCoCvi.assets");
+        $fullpath = $dir."/pdf/$filename";
+        header("Content-type:application/pdf");
+        header('Content-Length: '.filesize($fullpath));
+        readfile($fullpath);
+        \Yii::app()->end();
+    }
+
+    public function actionPrintEmptyConsent()
+    {
+        $this->outputStaticPdfFile("CVI_consent_page.pdf");
+    }
+
+    public function actionPrintInfoSheet()
+    {
+        $this->outputStaticPdfFile("CVI_info_sheet.pdf");
+    }
+
+    public function actionPrintConsent($event_id)
+    {
+        $this->initWithEventId($event_id);
+        $mgr = new OphCoCvi_Manager();
+        $pdf = $mgr->createConsentPdf($this->event);
+
+        header("Content-type:application/pdf");
+        header('Content-Length: '.filesize($pdf));
+        readfile($pdf);
+        unlink($pdf);
+        \Yii::app()->end();
     }
 
     /**
@@ -888,15 +1319,143 @@ class DefaultController extends \BaseEventTypeController
         $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
     }
 
+
     /**
      * Simple wrapper to get the disorder sections that should be rendered in the event form.
      *
      * @return mixed
      */
+    public function getDisorderSections_V1($patient_type = null)
+    {
+        if ($patient_type != '') {
+            $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAllByAttributes(
+                [
+                    'patient_type' => $patient_type,
+                   // 'event_type_version' => $this->event->eventType->version
+                ]);
+        } else {
+            $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAllByAttributes(
+                ['patient_type' =>
+                    ($this->getGetPatientAge() < 18)
+                        ? Element_OphCoCvi_ClinicalInfo_V1::CVI_TYPE_CHILD
+                        : Element_OphCoCvi_ClinicalInfo_V1::CVI_TYPE_ADULT,
+                    //'event_type_version' => $this->event->eventType->version
+                ]);
+
+            if (empty($listData)) {
+                $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll(
+                    array(
+                        "condition" => 'event_type_version = (SELECT MAX(version) AS maxVersion FROM ophcocvi_clinicinfo_disorder_section) 
+                    AND patient_type = 
+                    '.($this->getGetPatientAge() < 18)
+                            ? Element_OphCoCvi_ClinicalInfo_V1::CVI_TYPE_CHILD
+                            : Element_OphCoCvi_ClinicalInfo_V1::CVI_TYPE_ADULT,
+                        "order"     => "display_order"
+                    ));
+            }
+        }
+
+        return $listData;
+    }
+
     public function getDisorderSections()
     {
         return models\OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll();
     }
+
+    public function getGetPatientAge()
+    {
+        $date1 = new \DateTime($this->patient->dob);
+        $date2 = new \DateTime();
+        $diff = $date1->diff($date2);
+
+        return $diff->format('%y');
+    }
+
+    /*
+     * month difference of patient from adult age
+     */
+    public function getGetPatientMonthDiff()
+    {
+        $patient_dob = $this->patient->dob;
+        $dob = new \DateTime($patient_dob);
+        $dob->add(new \DateInterval("P18Y"));
+        $nowDate = new \DateTime();
+        $difference = $nowDate->diff($dob);
+        $month_diff = $difference->m;
+
+        return $month_diff;
+    }
+
+    public function actionClinicalInfoDisorderList()
+    {
+        $element = new Element_OphCoCvi_ClinicalInfo_V1();
+
+        $patient_type = \Yii::app()->request->getPost("patient_type");
+        $diagnosis_not_covered_list = \Yii::app()->request->getPost("diagnosis_not_covered_list");
+
+        if (!is_null(\Yii::app()->request->getPost("transfer_data"))) {
+            if (!empty($diagnosis_not_covered_list)) {
+                $all_cvi_assignments = array();
+                foreach ($diagnosis_not_covered_list as $key => $value) {
+                    if (!empty($value)) {
+                        $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
+                        $cvi_ass->ophcocvi_clinicinfo_disorder_id = $key;
+                        $cvi_ass->affected = 1;
+                        $cvi_ass->eye_id = $value['eyes'];
+                        $cvi_ass->main_cause = $value['main_cause'];
+
+                        if ($cvi_ass->eye_id == \Eye::LEFT) {
+                            $all_cvi_assignments['left'][] = $cvi_ass;
+                        }
+                        if ($cvi_ass->eye_id == \Eye::RIGHT) {
+                            $all_cvi_assignments['right'][] = $cvi_ass;
+                        }
+                        if ($cvi_ass->eye_id == \Eye::BOTH) {
+                            $all_cvi_assignments['both'][] = $cvi_ass;
+                        }
+
+                        if ($cvi_ass->main_cause == 1) {
+                            $all_cvi_assignments['right'][] = $cvi_ass;
+                        }
+                    } else {
+                        unset($diagnosis_not_covered_list[$key]);
+                    }
+                }
+
+                if (!empty($all_cvi_assignments)) {
+                    if (!empty($all_cvi_assignments['left'])) {
+                        $element->left_cvi_disorder_assignments = $all_cvi_assignments['left'];
+                    }
+                    if (!empty($all_cvi_assignments['right'])) {
+                        $element->right_cvi_disorder_assignments = $all_cvi_assignments['right'];
+                    }
+                    if (!empty($all_cvi_assignments['both'])) {
+                        $element->both_cvi_disorder_assignments = $all_cvi_assignments['both'];
+                    }
+                }
+            }
+        }
+
+        $disorder_sections = OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll(
+            array(
+                "condition" => '
+                event_type_version = (SELECT MAX(event_type_version) AS maxVersion FROM ophcocvi_clinicinfo_disorder) 
+                AND patient_type = ' . (int)$patient_type,
+                "order"     => "display_order"
+            ));
+        $this->renderPartial('ajax_load_diagnosis_list', ['disorder_sections' => $disorder_sections, 'element' => $element]);
+    }
+
+    public function actionDeleteDiagnosisNotCoveredElement($data_id)
+    {
+        if (isset($data_id)) {
+            OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered::model()->deleteByPk($data_id);
+            return true;
+        }
+    }
+
+
 
     /**
      * Simple abstraction wrapper to get the patient factors that should be rendered in the event form.
@@ -905,7 +1464,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getPatientFactors()
     {
-        return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll();
+        return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll(
+            array(
+                "order"     => "display_order"
+        ));
     }
 
     /**
@@ -918,5 +1480,59 @@ class DefaultController extends \BaseEventTypeController
         } else {
             return false;
         }
+    }
+
+    public function initActionSign()
+    {
+        $this->initWithEventId($this->request->getParam('id'));
+    }
+
+    public function actionSign($id)
+    {
+        if (!$element_type = \ElementType::model()->findByPk(\Yii::app()->request->getParam("element_type_id"))) {
+            throw new \CHttpException(500, "Element type not found");
+        }
+        if (!$element = $this->event->getElementByClass($element_type->class_name)) {
+            throw new \CHttpException(500, "Element not found");
+        }
+        $this->redirect("/OphCoCvi/default/print/$id?html=1&auto_print=0&sign=1".
+            "&element_type_id=".\Yii::app()->request->getParam("element_type_id").
+            "&signature_type=".\Yii::app()->request->getParam("signature_type").
+            "&signatory_role=".\Yii::app()->request->getParam("signatory_role").
+            "&signature_name=".\Yii::app()->request->getParam("signatory_name").
+            "&element_id=".$element->id
+        );
+    }
+
+    /**
+     * Incasesensitive diagnosis search for autocomplete
+     * @param $term
+     */
+    public function actionCilinicalDiagnosisAutocomplete($term)
+    {
+        $search = "%".strtolower($term)."%";
+        $where = '(LOWER(term) like :search or id like :search)';
+        $where .= ' and active = 1';
+        $diagnosis = \Yii::app()->db->createCommand()
+            ->select('id, term AS value')
+            ->from('disorder')
+            ->where($where, array(
+                ':search' => $search,
+            ))
+            ->order('term')
+            ->queryAll();
+
+        $this->renderJSON($diagnosis);
+    }
+
+    public function actionGetVisualAcuityDatas($unit_id)
+    {
+        if ($unit_id == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_SNELLEN) {
+            $datas = Element_OphCoCvi_ClinicalInfo_V1::model()->getSnellenDatas();
+        } elseif ($unit_id == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_LOGMAR) {
+            $datas = Element_OphCoCvi_ClinicalInfo_V1::model()->getLogmarDatas();
+        }
+
+        $this->renderJSON($datas);
     }
 }

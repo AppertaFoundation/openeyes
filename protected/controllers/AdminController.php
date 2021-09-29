@@ -49,8 +49,8 @@ class AdminController extends BaseAdminController
         $this->genericAdmin(
             'Common Ophthalmic Disorder Groups',
             'CommonOphthalmicDisorderGroup',
-            ['div_wrapper_class' => 'cols-5',
-                'return_url' => 'editcommonophthalmicdisordergroups'],
+            ['input_class' => 'cols-full',
+            'return_url' => 'editcommonophthalmicdisordergroups'],
             null,
             true,
         );
@@ -603,7 +603,10 @@ class AdminController extends BaseAdminController
         if (!empty($_GET['search'])) {
             $criteria->compare('LOWER(first_name)', strtolower($_GET['search']), true, 'OR');
             $criteria->compare('LOWER(last_name)', strtolower($_GET['search']), true, 'OR');
-            $criteria->compare('LOWER(id)', $_GET['search'], false, 'OR');
+            $criteria->compare('LOWER(t.id)', $_GET['search'], false, 'OR');
+            $criteria->with = 'authentications';
+            $criteria->together = true;
+            $criteria->compare('LOWER(authentications.username)', $_GET['search'], true, 'OR');
         }
 
         if (!$this->checkAccess('admin')) {
@@ -826,7 +829,7 @@ class AdminController extends BaseAdminController
 
     public function actionLookupUser()
     {
-        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
+        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username'], 'institution_authentication_id' => $_GET['institution_authentication_id']));
 
         $user_auth = UserAuthentication::model()->find('username=?', array($_GET['username']));
         if ($user_auth) {
@@ -2142,6 +2145,9 @@ class AdminController extends BaseAdminController
             $cb = new CommissioningBody();
             $address = new Address();
             $address->country_id = 1;
+
+            $contact = new Contact();
+            $cb->contact = $contact;
         }
 
         $errors = array();
@@ -2159,7 +2165,7 @@ class AdminController extends BaseAdminController
                 $transaction = Yii::app()->db->beginInternalTransaction();
                 try {
                     $contact = $cb->contact;
-                    if (!$contact) {
+                    if (!$contact || $cb->contact->isNewRecord) {
                         $contact = new Contact();
                         $contact->first_name = '';
                         $contact->last_name = '';
@@ -2415,7 +2421,10 @@ class AdminController extends BaseAdminController
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
             }
+            $contact->scenario = 'admin_contact';
             $contact->attributes = $_POST['Contact'];
+            $contact->last_name = $cbs->name;
+
             if (!$contact->validate()) {
                 $errors = array_merge($errors, $contact->getErrors());
             }

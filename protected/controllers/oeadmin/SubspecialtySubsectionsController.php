@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -13,7 +14,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class SubspecialtySubsectionsController extends BaseAdminController {
+class SubspecialtySubsectionsController extends BaseAdminController
+{
     public $layout = 'admin';
     public $group = 'Core';
 
@@ -133,10 +135,11 @@ class SubspecialtySubsectionsController extends BaseAdminController {
             $transaction->rollback();
         }
 
-        echo CJavaScript::jsonEncode($success);
+        echo $this->renderJSON($success);
     }
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'sortConditions' => [
                 'class' => 'SaveDisplayOrderAction',
@@ -145,5 +148,4 @@ class SubspecialtySubsectionsController extends BaseAdminController {
             ],
         ];
     }
-
 }

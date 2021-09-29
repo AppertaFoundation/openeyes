@@ -23,7 +23,7 @@
  */
 class BaseController extends Controller
 {
-
+    use RenderJsonTrait;
     public $renderPatientPanel = false;
     public bool $fixedHotlist = true;
     public $selectedFirmId;
@@ -210,8 +210,7 @@ class BaseController extends Controller
             }
         }
 
-        if (isset($app->session['firms']) && count($app->session['firms'])) {
-            $this->firms = $app->session['firms'];
+        if (!empty($app->session['selected_firm_id'])) {
             $this->selectedFirmId = $app->session['selected_firm_id'];
         }
 
@@ -252,8 +251,7 @@ class BaseController extends Controller
     {
         $app = Yii::app();
 
-        if (!empty($app->session['firms'])) {
-            $this->firms = $app->session['firms'];
+        if (!empty($app->session['selected_firm_id'])) {
             $this->selectedFirmId = $app->session['selected_firm_id'];
         }
     }
@@ -342,25 +340,6 @@ class BaseController extends Controller
         }
 
         return $model;
-    }
-
-    /**
-     * Renders data as JSON, turns off any to screen logging so output isn't broken.
-     *
-     * @param $data
-     */
-    protected function renderJSON($data)
-    {
-        header('Content-type: application/json', true);
-        header('Cache-Control: no-store');
-        echo json_encode($data);
-
-        foreach (Yii::app()->log->routes as $route) {
-            if ($route instanceof CWebLogRoute) {
-                $route->enabled = false; // disable any weblogroutes
-            }
-        }
-        Yii::app()->end();
     }
 
     /**
@@ -470,5 +449,23 @@ class BaseController extends Controller
             }
         }
         return $input;
+    }
+
+    /**
+     * Get active Clinic Pathway for the patient
+     * @return array|CActiveRecord|mixed|Pathway|null
+     */
+    public function getClinicPathwayInProgress()
+    {
+        $pathway = null;
+        if ($this->patient && $this->checkAccess('OprnWorklist')) {
+            $criteria = new CDbCriteria();
+            $criteria->join = 'JOIN worklist_patient wp ON wp.id = t.worklist_patient_id';
+            $criteria->addCondition('wp.patient_id = :patient_id');
+            $criteria->params = [':patient_id' => $this->patient->id];
+            $criteria->addInCondition('t.status', Pathway::inProgressStatuses());
+            $pathway = Pathway::model()->find($criteria);
+        }
+        return $pathway;
     }
 }

@@ -98,7 +98,7 @@ class EventImage extends BaseActiveRecord
                   )
                 )')
             ->order('event.last_modified_date DESC');
-           
+
         if ($event_count!==INF) {
             $cmd = $cmd->limit($event_count);
         }

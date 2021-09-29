@@ -21,10 +21,11 @@
  *
  * @property int $patient_id
  * @property int $worklist_id
- * @property datetime $when
+ * @property datetime|string $when
  * @property Patient $patient
  * @property Worklist $worklist
  * @property WorklistPatientAttribute[] $worklist_attributes
+ * @property Pathway $pathway
  */
 class WorklistPatient extends BaseActiveRecordVersioned
 {
@@ -63,7 +64,8 @@ class WorklistPatient extends BaseActiveRecordVersioned
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id'),
             'worklist_attributes' => array(self::HAS_MANY, 'WorklistPatientAttribute', 'worklist_patient_id'),
-            'order_assignments' => array(self::HAS_MANY, 'OphDrPGDPSD_Assignment', 'visit_id', 'on' => 'order_assignments.active = 1')
+            'order_assignments' => array(self::HAS_MANY, 'OphDrPGDPSD_Assignment', 'visit_id', 'on' => 'order_assignments.active = 1'),
+            'pathway' => array(self::HAS_ONE, 'Pathway', 'worklist_patient_id'),
         );
     }
 
@@ -97,9 +99,12 @@ class WorklistPatient extends BaseActiveRecordVersioned
 
         // TODO: proper support for date/time "when" search
 
-        return new CActiveDataProvider(get_class($this), array(
-            'criteria' => $criteria,
-        ));
+        return new CActiveDataProvider(
+            get_class($this),
+            array(
+                'criteria' => $criteria,
+            )
+        );
     }
 
     /**
@@ -109,35 +114,41 @@ class WorklistPatient extends BaseActiveRecordVersioned
     {
         if ($this->worklist->scheduled) {
             if (empty($this->when)) {
-                $this->addError('when', $this->getAttributeLabel('when').' is required when the Worklist is scheduled.');
+                $this->addError(
+                    'when',
+                    $this->getAttributeLabel('when') . ' is required when the Worklist is scheduled.'
+                );
             }
-        } else {
-            if (!empty($this->when)) {
-                $this->addError('when', $this->getAttributeLabel('when').' cannot be set when the Worklist not scheduled.');
-            }
+        } elseif (!empty($this->when)) {
+            $this->addError(
+                'when',
+                $this->getAttributeLabel('when') . ' cannot be set when the Worklist not scheduled.'
+            );
         }
 
         parent::afterValidate();
     }
 
-    public function getScheduledTime()
+    public function getScheduledTime(): ?string
     {
         if ($this->when) {
             if ($this->when instanceof DateTime) {
                 return $this->when->format('H:i');
-            } else {
-                return DateTime::createFromFormat('Y-m-d H:i:s', $this->when)->format('H:i');
             }
+
+            return DateTime::createFromFormat('Y-m-d H:i:s', $this->when)->format('H:i');
         }
+        return null;
     }
 
-    public function getWorklistAttributeValue(WorklistAttribute $attr)
+    public function getWorklistAttributeValue(WorklistAttribute $attr): ?string
     {
         foreach ($this->worklist_attributes as $wa) {
-            if ($wa->worklist_attribute_id == $attr->id) {
+            if ($wa->worklist_attribute_id === $attr->id) {
                 return $wa->attribute_value;
             }
         }
+        return null;
     }
 
     /**
@@ -145,7 +156,7 @@ class WorklistPatient extends BaseActiveRecordVersioned
      *
      * @return array
      */
-    public function getCurrentAttributesById()
+    public function getCurrentAttributesById(): array
     {
         $res = array();
         foreach ($this->worklist_attributes as $wa) {
@@ -155,8 +166,9 @@ class WorklistPatient extends BaseActiveRecordVersioned
         return $res;
     }
 
-    public function getWorklistPatientAttribute($attribute_name) {
-        $criteria = new \CDbCriteria();
+    public function getWorklistPatientAttribute($attribute_name): ?WorklistPatientAttribute
+    {
+        $criteria = new CDbCriteria();
         $criteria->join = " JOIN worklist_attribute wa ON wa.id = t.worklist_attribute_id";
         $criteria->addCondition('t.worklist_patient_id = :worklist_patient_id');
         $criteria->addCondition('LOWER(wa.name) = :attribute_name');
@@ -164,8 +176,22 @@ class WorklistPatient extends BaseActiveRecordVersioned
         $criteria->params[':attribute_name'] = strtolower($attribute_name);
         $criteria->params[':worklist_patient_id'] = $this->id;
         $criteria->params[':worklist_id'] = $this->worklist->id;
-        $results = WorklistPatientAttribute::model()->find($criteria);
+        return WorklistPatientAttribute::model()->find($criteria);
+    }
 
-        return $results;
+    protected function afterSave()
+    {
+        parent::afterSave();
+
+        $this->refresh();
+
+        if (!$this->pathway) {
+            $pathway_type_id = $this->worklist->worklist_definition->pathway_type_id;
+            $pathway_type = PathwayType::model()->findByPk($pathway_type_id);
+
+            if ($pathway_type) {
+                $pathway_type->createNewPathway($this->id);
+            }
+        }
     }
 }

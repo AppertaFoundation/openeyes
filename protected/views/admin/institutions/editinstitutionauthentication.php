@@ -82,7 +82,7 @@
                     <?= \CHtml::activeDropDownList(
                         $institution_authentication,
                         'user_authentication_method',
-                        CHtml::listData(UserAuthenticationMethod::model()->findAll(), 'code', 'code'), 
+                        CHtml::listData(UserAuthenticationMethod::model()->findAll(), 'code', 'code'),
                         ['class' => 'cols-full']
                     ); ?>
                 </td>
@@ -93,7 +93,7 @@
                     <?= \CHtml::activeDropDownList(
                         $institution_authentication,
                         'ldap_config_id',
-                        CHtml::listData(LDAPConfig::model()->findAll(), 'id', 'description'), 
+                        CHtml::listData(LDAPConfig::model()->findAll(), 'id', 'description'),
                         ['class' => 'cols-full']
                     ); ?>
                 </td>

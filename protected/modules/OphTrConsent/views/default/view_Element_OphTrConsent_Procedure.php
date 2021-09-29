@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,65 +17,66 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<table class="cols-8">
-  <tbody>
-  <tr>
-    <td><?=\CHtml::encode($element->getAttributeLabel('eye_id')) ?>:</td>
-    <td><?php echo $element->eye ? $element->eye->name : 'None' ?></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>
-        <?=\CHtml::encode($element->getAttributeLabel('procedures')) ?>:
-    </td>
-    <td>
-        <?php if (!$element->procedures) { ?>
-          <h4>None</h4>
-        <?php } else { ?>
-          <h4>
-              <?php foreach ($element->procedures as $item) {
-                    echo $item->term ?><br/>
-                <?php } ?>
-          </h4>
-        <?php } ?>
-    </td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>
-        <?=\CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')) ?>:
-    </td>
-    <td>
-        <?php $text = '';
-        foreach ($element->anaesthetic_type as $anaesthetic_type) {
-            if (!empty($text)) {
-                $text .= ', ';
-            }
-            $text .= $anaesthetic_type->name;
-        }
-        echo $text;
-        ?>
-    </td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>
-        <?=\CHtml::encode($element->getAttributeLabel('add_procs')) ?>:
-    </td>
-    <td>
-      <ul>
-            <?php if (!$element->additional_procedures) { ?>
-            <li>None</li>
-            <?php } else { ?>
-            <li>
-                <?php foreach ($element->additional_procedures as $item) {
-                    echo $item->term ?><br/>
-                <?php } ?>
-            </li>
-            <?php } ?>
-      </ul>
-    </td>
-    <td></td>
-  </tr>
-  </tbody>
-</table>
+<div class="element-data full-width">
+    <div class="flex-t">
+        <div class="cols-5">
+            <table class="cols-full large-text">
+                <tbody>
+                    <?php foreach ($element->procedure_assignments as $assigned_proc) { ?>
+                        <tr>
+                            <td>
+                                <span class="oe-eye-lat-icons">
+                                    <i class="oe-i laterality <?= $element->getLateralityIcon()[$assigned_proc->eye_id]['right'] ?> small pad"></i>
+                                    <i class="oe-i laterality <?= $element->getLateralityIcon()[$assigned_proc->eye_id]['left'] ?> small pad"></i>
+                                </span>
+                            </td>
+                            <td><?= $assigned_proc->proc->term ?></td>
+                            <td>
+                                <?php if ($element->booking_event_id) { ?>
+                                    <i class="oe-i-e i-TrOperation js-has-tooltip" data-tooltip-content="Procedure info from Op Booking"></i>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php foreach ($element->additionalprocedure_assignments as $additional_proc) { ?>
+                        <tr>
+                            <td>
+                                <span class="oe-eye-lat-icons">
+                                    <i class="oe-i laterality <?= $element->getLateralityIcon()[$additional_proc->eye_id]['right'] ?> small pad"></i>
+                                    <i class="oe-i laterality <?= $element->getLateralityIcon()[$additional_proc->eye_id]['left'] ?> small pad"></i>
+                                </span>
+                            </td>
+                            <td><?= $additional_proc->proc->term ?></td>
+                            <td>
+                                Legacy Additional Procedure
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <tr>
+                        <th>Anaesthetic</th>
+                        <td><?= implode(' + ', $element->anaesthetic_type) ?></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="cols-5">
+            <table class="last-left">
+                <thead>
+                    <tr>
+                        <th>Extra procedures which may become necessary during the procedure(s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $extra_proc = $element->event->getElementByClass("Element_OphTrConsent_ExtraProcedures");
+                    if (!empty($extra_proc)) {
+                        echo $extra_proc->extraProceduresView();
+                    } else {
+                        echo '<tr><td>None</td></tr>';
+                    }?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

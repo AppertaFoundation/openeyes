@@ -44,8 +44,6 @@ abstract class OEMTMigration extends OEMigration
     {
         $level_tables = $this->getLevelStructuredTables();
 
-        $this->alterOEColumn('secondaryto_common_oph_disorder', 'letter_macro_text', "varchar(255) default '' not null", true);
-
         $institution_list = $this->dbConnection->createCommand()
             ->select('id')
             ->from('institution')

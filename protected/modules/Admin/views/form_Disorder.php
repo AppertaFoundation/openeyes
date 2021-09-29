@@ -90,6 +90,26 @@
                 ); ?>
             </td>
         </tr>
+        <tr>
+            <td>ECDS Code</td>
+            <td>
+                <?= \CHtml::activeTextArea(
+                    $model,
+                    'ecds_code',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>ECDS Term</td>
+            <td>
+                <?= \CHtml::activeTextArea(
+                    $model,
+                    'ecds_term',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>

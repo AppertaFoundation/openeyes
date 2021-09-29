@@ -16,4 +16,4 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-    <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="<?php echo $name ?>" id="<?php echo $id ?>" size="16" maxlength="16" value="<?php echo $val?>" />
+    <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="<?php echo $name ?>" id="<?php echo $id ?>" size="16" maxlength="16" value="<?php echo $val?>" style="border: 1px solid #000;" />

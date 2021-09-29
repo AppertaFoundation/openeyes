@@ -35,7 +35,7 @@ use Yii;
 class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
-    
+
     protected $errorExceptions = array(
       'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_left_treatments' => 'dilation_left',
       'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_right_treatments' => 'dilation_right',
@@ -220,7 +220,8 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
      * @param $treatment
      * @return string
      */
-    public function createUIDTreatments($treatment) {
+    public function createUIDTreatments($treatment)
+    {
         $index = "";
         foreach ($treatment as $key=>$treat) {
             $index .= $treat;
@@ -285,7 +286,7 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
     {
         return true;
     }
-    
+
     public function getPrint_view()
     {
         return 'print_'.$this->getDefaultView();

@@ -384,7 +384,7 @@ $creating = $creating ?? false;
                             }
 
                             $criteria = new CDbCriteria();
-                            $criteria->addCondition('t.institution_id = :institution_id');
+                            $criteria->addCondition('t.institution_id is NULL OR t.institution_id = :institution_id');
                             $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
                             $criteria->order = 't.display_order asc';
                             foreach (LetterStringGroup::model()->with($with)->findAll($criteria) as $string_group) {
@@ -458,22 +458,26 @@ $creating = $creating ?? false;
             <col>
           </colgroup>
           <tbody>
+            <?php if (strlen($element->footer) > 0) : ?>
             <tr>
               <td>From</td>
               <td>
-                <?php $this->widget(
-                    'application.widgets.AutoCompleteSearch',
-                    ['htmlOptions' => ['placeholder' => 'Search for users full title and details']]
-                ); ?>
                 <?php echo $form->textArea(
                     $element,
                     'footer',
                     array('label' => false, 'nowrapper' => true),
                     false,
-                    array('class' => 'correspondence-letter-text autosize', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 54px;')
+                    array(
+                        'readonly' => true,
+                        'class' => 'correspondence-letter-text autosize',
+                        'style' => 'overflow: hidden; overflow-wrap: break-word; height: 54px;'
+                    )
                 ) ?>
               </td>
             </tr>
+            <?php else : ?>
+                <?= $form->hiddenField($element, "footer") ?>
+            <?php endif; ?>
             <tr>
                 <td>
                     Enclosures

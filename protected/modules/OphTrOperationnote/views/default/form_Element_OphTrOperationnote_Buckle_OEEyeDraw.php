@@ -40,4 +40,3 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'offsetY' => 10,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
 ));
-?>

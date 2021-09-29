@@ -1,6 +1,6 @@
 <?php
 
-class m210427_080924_create_index_for_attachment_data_hash_code extends CDbMigration
+class m210427_080924_create_index_for_attachment_data_hash_code extends OEMigration
 {
 
     public function safeUp()

@@ -23,6 +23,8 @@ class BaseEventElementWidget extends CWidget
     public static $EVENT_VIEW_MODE = 4;
     public static $EVENT_PRINT_MODE = 8;
     public static $EVENT_EDIT_MODE = 16;
+    public static $PATIENT_SUMMARY_MODE_OUTPUT = 32;
+
     public static $EPISODE_SUMMARY_MODE = 32;
     public static $DATA_MODE = 64;
     public static $PATIENT_LANDING_PAGE_MODE = 128;
@@ -107,7 +109,7 @@ class BaseEventElementWidget extends CWidget
                 static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
                 static::$EVENT_VIEW_MODE, static::$EVENT_PRINT_MODE,
                 static::$EVENT_EDIT_MODE, static::$DATA_MODE,
-                static::$PATIENT_LANDING_PAGE_MODE
+                static::$PATIENT_LANDING_PAGE_MODE, static::$PATIENT_SUMMARY_MODE_OUTPUT
             ),
             true
         );
@@ -432,6 +434,8 @@ class BaseEventElementWidget extends CWidget
             return $this->popupList();
         } elseif ($this->mode === static::$EVENT_VIEW_MODE) {
             return $this->render($this->getView(), $this->getViewData());
+        } elseif ($this->mode === static::$PATIENT_SUMMARY_MODE_OUTPUT) {
+            return NULL;
         } else {
             return $this->renderWarnings() . $this->render($this->getView(), $this->getViewData());
         }

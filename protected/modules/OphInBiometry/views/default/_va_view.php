@@ -40,7 +40,7 @@ $section_cls_append = [
             $formatted_readings = array_map(function ($reading) {
                 return $reading['value'] . " " . $reading['method_name'] . " (" . $reading['unit'] . ")";
             }, $va_data["{$eye_side}_readings"] ?? []);
-        ?>
+            ?>
         <div class="js-element-eye <?= $eye_side ?>-eye column">
             <?php if (count($formatted_readings)) { ?>
                 <div class="data-group">

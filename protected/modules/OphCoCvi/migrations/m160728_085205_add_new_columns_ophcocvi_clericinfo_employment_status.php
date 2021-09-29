@@ -1,18 +1,15 @@
 <?php
 /**
- * OpenEyes
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -28,25 +25,15 @@ class m160728_085205_add_new_columns_ophcocvi_clericinfo_employment_status exten
         $this->addColumn('ophcocvi_clericinfo_employment_status_version', 'active', 'tinyint(1) unsigned not null default 1 AFTER `social_history_occupation_id`');
 
         $this->update('ophcocvi_clericinfo_employment_status', array('child_default' => true), 'name = :name', array(':name' => 'Child'));
-        $occ_tbl = null;
-        foreach (array('socialhistory_occupation', 'ophciexamination_socialhistory_occupation') as $possible) {
-            if ($this->dbConnection->schema->getTable($possible)) {
-                $occ_tbl = $possible;
-                break;
+        foreach (array('Retired', 'Employed', 'Unemployed', 'Student') as $label) {
+            $sh_occ = $this->dbConnection->createCommand()->select('id')->from('socialhistory_occupation')
+                ->where('name = :name', array(':name' => $label))
+                ->queryRow();
+
+            if ($sh_occ) {
+                $this->update('ophcocvi_clericinfo_employment_status', array('social_history_occupation_id' => $sh_occ['id']), 'name = :name', array(':name' => $label));
             }
         }
-        if ($occ_tbl !== null) {
-            foreach (array('Retired', 'Employed', 'Unemployed', 'Student') as $label) {
-                $sh_occ = $this->dbConnection->createCommand()->select('id')->from($occ_tbl)
-                    ->where('name = :name', array(':name' => $label))
-                    ->queryRow();
-
-                if ($sh_occ) {
-                    $this->update('ophcocvi_clericinfo_employment_status', array('social_history_occupation_id' => $sh_occ['id']), 'name = :name', array(':name' => $label));
-                }
-            }
-        }
-
     }
 
     public function down()

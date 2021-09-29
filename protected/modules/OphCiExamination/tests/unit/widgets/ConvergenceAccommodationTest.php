@@ -75,5 +75,4 @@ class ConvergenceAccommodationTest extends \OEDbTestCase
         $this->assertContains($element->display_with_head_posture, $result);
         $this->assertContains($element->comments, $result);
     }
-
 }

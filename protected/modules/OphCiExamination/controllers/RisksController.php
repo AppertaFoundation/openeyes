@@ -42,7 +42,8 @@ class RisksController extends \BaseController
     protected function riskIdsForTagIds($tag_ids = array())
     {
         return array_map(
-            function($r) { return $r->id;
+            function ($r) {
+                return $r->id;
             },
             OphCiExaminationRisk::findForTagIds($tag_ids)
         );
@@ -72,7 +73,9 @@ class RisksController extends \BaseController
     protected function riskIdsForMedicationSetIds($medication_set_ids = array())
     {
         return array_map(
-            function($r) { return $r->getAttributes(); },
+            function ($r) {
+                return $r->getAttributes();
+            },
             OphCiExaminationRisk::findForMedicationSetIds($medication_set_ids)
         );
     }
@@ -84,7 +87,9 @@ class RisksController extends \BaseController
         }
 
         /** @var \Medication $medication */
-        $med_set_ids = array_map(function($e){ return $e->id; }, $medication->medicationSets);
+        $med_set_ids = array_map(function ($e) {
+            return $e->id;
+        }, $medication->medicationSets);
 
         echo \CJSON::encode($this->riskIdsForMedicationSetIds($med_set_ids));
     }
@@ -96,7 +101,8 @@ class RisksController extends \BaseController
      * @deprecated
      */
 
-    protected function tagIdsForTagged($obj) {
+    protected function tagIdsForTagged($obj)
+    {
         return array_map(
             function ($tag) {
                 return $tag->id;

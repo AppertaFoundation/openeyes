@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -35,6 +36,7 @@
  * @property string $last_modified_date
  * @property string $worklist_patient_id
  * @property int $firm_id
+ * @property int $step_id
  *
  * The followings are the available model relations:
  * @property Episode $episode
@@ -44,7 +46,6 @@
  */
 class Event extends BaseActiveRecordVersioned
 {
-    private $defaultScopeDisabled = false;
     protected $event_view_path = '/default/view';
 
     /**
@@ -93,8 +94,8 @@ class Event extends BaseActiveRecordVersioned
     public function defaultScope()
     {
         $this->displayDeletedEvents();
-        if ($this->defaultScopeDisabled) {
-            return array();
+        if ($this->getDefaultScopeDisabled()) {
+            return [];
         }
 
         $table_alias = $this->getTableAlias(false, false);
@@ -102,13 +103,6 @@ class Event extends BaseActiveRecordVersioned
         return array(
             'condition' => $table_alias . '.deleted = 0',
         );
-    }
-
-    public function disableDefaultScope()
-    {
-        $this->defaultScopeDisabled = true;
-
-        return $this;
     }
 
     /**
@@ -120,7 +114,7 @@ class Event extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('event_type_id, event_date, institution_id', 'required'),
-            array('parent_id, worklist_patient_id, institution_id, site_id', 'safe'),
+            array('parent_id, worklist_patient_id, institution_id, firm_id, site_id, step_id', 'safe'),
             array('episode_id, event_type_id', 'length', 'max' => 10),
             array('worklist_patient_id', 'length', 'max' => 40),
             // The following rule is used by search().
@@ -153,6 +147,8 @@ class Event extends BaseActiveRecordVersioned
             'eventAttachmentGroups' => [self::HAS_MANY, 'EventAttachmentGroup', 'event_id'],
             'institution' => [self::BELONGS_TO, 'Institution', 'institution_id'],
             'site' => [self::BELONGS_TO, 'Site', 'site_id'],
+            'worklist_patient' => [self::BELONGS_TO, 'WorklistPatient', 'worklist_patient_id'],
+            'step' => [self::BELONGS_TO, 'PathwayStep', 'step_id']
         );
     }
 
@@ -260,7 +256,7 @@ class Event extends BaseActiveRecordVersioned
     public function hasIssue($type = null)
     {
         if ($type === null) {
-            return (boolean)$this->issues;
+            return (bool)$this->issues;
         }
         foreach ($this->issues as $event_issue) {
             if (strtolower($event_issue->issue->name) === strtolower($type)) {
@@ -355,10 +351,12 @@ class Event extends BaseActiveRecordVersioned
             return false;
         }
 
-        foreach (EventIssue::model()->findAll(
-            'event_id=? and issue_id = ?',
-            array($this->id, $issue->id)
-        ) as $event_issue) {
+        foreach (
+            EventIssue::model()->findAll(
+                'event_id=? and issue_id = ?',
+                array($this->id, $issue->id)
+            ) as $event_issue
+        ) {
             $event_issue->delete();
         }
 
@@ -523,7 +521,7 @@ class Event extends BaseActiveRecordVersioned
         $properties['event_id'] = $this->id;
         $properties['episode_id'] = $this->episode_id;
         $properties['patient_id'] = $this->episode->patient_id;
-        $data = is_null($data)? 'Event Info: ' . $this->info : $data;
+        $data = is_null($data) ? 'Event Info: ' . $this->info : $data;
         parent::audit($target, $action, $data, $log, $properties);
     }
 
@@ -558,7 +556,7 @@ class Event extends BaseActiveRecordVersioned
 
             // Temporarily install an error handler to deal with missing files.
             // Plese make sure the restore_error_handler below the loop is present while this exists.
-            $yii_err_handler = set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) use (&$yii_err_handler, &$element_class) {
+            $yii_err_handler = set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) use (&$yii_err_handler, &$element_class) {
                 /*
                  * More kludging - we just want to look for errors where include failed to open the class file,
                  * for missing element classes.
@@ -737,7 +735,7 @@ class Event extends BaseActiveRecordVersioned
      */
     public function getEventsOfTypeForPatient(EventType $event_type, Patient $patient)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->compare('patient_id', $patient->id);
         $criteria->compare('event_type_id', $event_type->id);
         $criteria->addCondition('t.deleted = 0');

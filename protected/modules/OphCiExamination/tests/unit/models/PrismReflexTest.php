@@ -95,7 +95,7 @@ class PrismReflexTest extends \ModelTestCase
         }
         $instance->entries = $entries;
 
-        if($comment){
+        if ($comment) {
             $instance->comments = $comment;
         }
 

@@ -149,7 +149,7 @@ class Element_OphTrOperationbooking_Diagnosis extends BaseEventTypeElement
                     }
                 }
             }
-        } else if (!$patient_has_disorder) {
+        } elseif (!$patient_has_disorder) {
             $this->event->episode->patient->addDiagnosis($this->disorder_id, $this->eye_id);
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,26 +25,35 @@
     <?php $this->renderPartial('//base/head/_assets'); ?>
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
-<body class="open-eyes">
-<?php //$this->renderPartial('//base/_banner_watermark'); ?>
+<body class="open-eyes oe-grid">
+
 <?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
-<div class="container main" role="main">
-    <?php $this->renderPartial('//base/_header'); ?>
-    <div class="container content">
-        <h1 class="badge admin">Genetics</h1>
-        <div class="box content admin-content">
-            <div class="data-group">
-                <aside class="cols-2 column sidebar admin">
-                    <?php $this->renderPartial('//../modules/Genetics/views/default/sidebar'); ?>
-                </aside>
-                <div class="cols-10 column">
-                    <?php echo $content; ?>
-                </div>
-            </div>
-        </div>
+
+    <!-- Branding (logo) -->
+    <div class="openeyes-brand">
+        <?php $this->renderPartial('//base/_brand'); ?>
     </div>
+    <div id="oe-restrict-print">
+        <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
+    </div>
+
+    <!-- Minimum screed width warning -->
+    <div id="oe-minimum-width-warning">Device width not supported</div>
+
+    <?php $this->renderPartial('//base/_header'); ?>
+
+    <div class="oe-full-header">
+        <div class="title wordcaps"><span class="title wordcaps">Genetics</span></div>
+    </div>  
+
+    <div class="oe-full-content subgrid">
+    
+        <?php $this->renderPartial('//../modules/Genetics/views/default/sidebar'); ?>
+        <main class="oe-full-main">
+            <?php echo $content; ?>
+        </main>
+     </div>  
     <?php $this->renderPartial('//base/_footer'); ?>
 </div>
 </body>
 </html>
-

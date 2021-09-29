@@ -62,6 +62,24 @@
 ## Options are england, scotland, ni
 # export OE_HSCIC_REGION="england"
 
+## Authentication options
+# export AUTH_SOURCE="BASIC" # OIDC, SAML, BASIC or LDAP;
+
+# export SSO_BASE_URL='http://localhost'
+# export SSO_ENTITY_ID=''
+# export SSO_APP_EMBED_LINK=''
+# export ## Credentials necessary for single-sign-on using OpenID-Connect
+# export SSO_PROVIDER_URL=''
+# export SSO_CLIENT_ID=''
+# export SSO_CLIENT_SECRET''
+# export SSO_ISSUER_URL
+# export SSO_REDIRECT_URL='http://localhost'
+# export SSO_RESPONSE_TYPE='code'
+# export SSO_IMPLICIT_FLOW='true'
+# export SSO_USER_ATTRIBUTES=''
+# export SSO_CUSTOM_CLAIMS=''
+# export STRICT_SSO_ROLES_CHECK='true'
+
 ## Set the endpoint for an LDAP server. Also automatically changes authentication from 'BASIC' to 'LDAP'
 # export OE_LDAP_SERVER='ldap.example.com'
 # export OE_LDAP_PORT='389'
@@ -86,13 +104,13 @@
 # Amount of time before account is automatically unlocked after failed PW_STAT_TRIES - 0 to disable - (0, X days, X months, X Years,  see https://www.php.net/manual/en/function.strtotime.php  for more options)
 # export PW_SOFTLOCK_TIMEOUT='10 mins'
 
-## Password status after trigger by number of tries exceeded or after password changed by admin  -  ('current', 'stale', 'expired', 'locked') 
+## Password status after trigger by number of tries exceeded or after password changed by admin  -  ('current', 'stale', 'expired', 'locked')
 # export PW_STAT_TRIES_FAILED= 'locked'
 # export PW_STAT_ADMIN_CHANGE = 'stale'
 
 ## Number of days before password stales, expires or locks - 0 to disable - (0, X days, X months, X Years,  see https://www.php.net/manual/en/function.strtotime.php  for more options)
 # export PW_STAT_DAYS_STALE= '15 days'
-# export PW_STAT_DAYS_EXPIRE = '30 days' 
+# export PW_STAT_DAYS_EXPIRE = '30 days'
 # export PW_STAT_DAYS_LOCK =  '45 days'
 
 ## Set hos num parameters
@@ -114,3 +132,7 @@
 # export OE_USER_BANNER_LONG=""
 # export OE_ADMIN_BANNER_SHORT=""
 # export OE_ADMIN_BANNER_LONG=""
+
+## Training hub variables
+# export OE_TRAINING_HUB_TEXT=""
+# export OE_TRAINING_HUB_URL=""

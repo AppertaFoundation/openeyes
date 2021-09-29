@@ -112,6 +112,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
+            'user' => [self::BELONGS_TO, 'User', 'created_user_id'],
         );
     }
 
@@ -157,6 +158,16 @@ class ProtectedFile extends BaseActiveRecordVersioned
     public function getDownloadURL()
     {
         return Yii::app()->createURL('ProtectedFile/Download', array('id' => $this->id));
+    }
+
+    /**
+     * Returns the file size in bytes, 0 in case the file cannot be found
+     * @return int
+     */
+    public function getSize(): int
+    {
+        $path = $this->getPath();
+        return file_exists($path) ? filesize($path) : 0;
     }
 
     /**

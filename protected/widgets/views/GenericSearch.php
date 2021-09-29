@@ -26,7 +26,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'generic-search-form',
             'enableAjaxValidation' => false,
-            'method' => 'get',
+            'method' => 'post',
             'action' => '#',
         ));
     endif; ?>
@@ -55,6 +55,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
                             echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
                                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                                 'placeholder' => $comparePlaceholder,
+                                'class' => 'cols-full search',
                             )); ?>
                         </td>
                         <?php
@@ -162,7 +163,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
         endforeach;
         ?>
         <td class="submit-row">
-            <button class="button small primary event-action" name="save" formmethod="get" type="submit">Search</button>
+            <button class="button small primary event-action blue hint" name="save" formmethod="post" type="submit">Search</button>
         </td>
         </tr>
     </table>

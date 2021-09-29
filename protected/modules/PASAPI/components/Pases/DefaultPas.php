@@ -1,6 +1,8 @@
 <?php
 
 namespace OEModule\PASAPI\components\Pases;
+
+use Exception;
 use OEModule\PASAPI\models\PasApiAssignment;
 
 /**
@@ -73,7 +75,6 @@ class DefaultPas extends BasePAS
         }
 
         if (!empty($params['patient_identifier_value'])) {
-
             //get the patient
             $criteria = new \CDbCriteria();
 
@@ -139,7 +140,6 @@ class DefaultPas extends BasePAS
 
 
         if (isset($data['patient_identifier_value']) && $data['patient_identifier_value']) {
-
             if ($this->type->usage_type === 'LOCAL') {
                 $query['hosnum'] = $data['patient_identifier_value'];
             } elseif ($this->type->usage_type === 'GLOBAL') {
@@ -160,7 +160,6 @@ class DefaultPas extends BasePAS
 
         $error = '';
         if (!empty($query)) {
-
             $xml = $this->curl->get($this->config['url'] . '?' . http_build_query($query));
             $ch = $this->curl->curl;
 
@@ -213,11 +212,46 @@ class DefaultPas extends BasePAS
 
                 $xml_handler->next('Patient');
             }
-
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             \OELog::log("PASAPI : " . $e->getMessage());
         }
 
         return $resources;
+    }
+
+    function buildXML($xml, $data) {
+        foreach ($data as $idx=>$record) {
+            if(is_array($record) || is_object($record)) {
+                $xml = $this->buildXML($xml, $record);
+            } else {
+                try {
+                    $xml->addChild($idx, $record);
+                } catch (Exception $e) {
+                    \OELog::log("PASAPI buildXML: ". $e->getMessage());
+                    \OELog::log("PASAPI buildXML record: ". var_export($record, true));
+                }
+            }
+        }
+        return $xml;
+    }
+
+    /***
+     * @param HL7_A08 $data
+     */
+    public function sendUpdate($data) {
+
+        $xml = new \SimpleXMLElement('<root/>');
+
+        $this->buildXML($xml, $data);
+
+        $post_data = "xmlrequest=".$xml->asXML();
+
+        $xml = $this->curl->post($this->config['url'], $post_data);
+        $ch = $this->curl->curl;
+
+        if (curl_errno($ch)) {
+            $error = 'PASAPI cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
+            \OELog::log($error);
+        }
     }
 }

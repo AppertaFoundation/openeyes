@@ -45,31 +45,33 @@
                             <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
                             <?=$item->renderPGDInfo();?>
                         </td>
-                            
+
                         <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
-                        <td><?php echo $item->route->term ?>
-                            <?php if ($item->laterality) {
+                        <td><?php if ($item->route != null) {
+                                    echo $item->route->term;
+                            if ($item->route->has_laterality) {
                                 echo ' (' . $item->medicationLaterality->name . ')';
-                            } ?>
+                            }
+                            }?>
                         </td>
               <td><?php echo $item->frequency ? $item->frequency->term : '' ?></td>
               <td><?php echo $item->duration_id ? $item->medicationDuration->name : '' ?></td>
-                <?php if ($item->dispense_condition->name === 'Print to {form_type}') : ?>
+                    <?php if ($item->dispense_condition->name === 'Print to {form_type}') : ?>
                 <td>
-                    <?php echo str_replace(
+                        <?php echo str_replace(
                         '{form_type}',
                         $data['form_setting'],
                         $item->dispense_condition->name
-                    ) . " / {$item->dispense_location->name}" ?>
+                        ) . " / {$item->dispense_location->name}" ?>
                 </td>
-                <?php else : ?>
+                    <?php else : ?>
                         <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
-                <?php endif; ?>
+                    <?php endif; ?>
 
                         <td class="prescription-label">
                     <?php if ($item->comments !== null) : ?>
                                 <i><?= \CHtml::encode($item->comments); ?></i>
-                            <?php endif; ?>
+                    <?php endif; ?>
                         </td>
                     </tr>
                     <?php foreach ($item->tapers as $taper) { ?>
@@ -107,4 +109,27 @@
             <span class="large-text"><?php echo $element->textWithLineBreaks('comments') ?></span>
         </div>
     </div>
-    <?php } ?>
+<?php } ?>
+
+<?php if ($signatures = $element->isSignedByMedication()) {?>
+    <div class="element-data full-width">
+        <?php
+        $row = 0;
+        foreach ($signatures->getSignatures(true) as $signature) {
+            ?>
+        <div class="js-signature-wrapper flex-r">
+            <div class="large-text">
+                <small class="fade"><?= $signature->signatory_role ?></small> <?= $signature->signatory_name ?>
+                <span class="tabspace"></span>
+            </div>
+            <div class="flex-l">
+                <?= $signature->displaySignature() ?>
+                <div class="esigned-at">
+                    <i class="oe-i tick-green small pad-right"></i>
+                    Signed <small>at</small> <span class="js-signature-time"><?= $signature->getSignedTime(); ?></span>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
+    </div>
+<?php } ?>

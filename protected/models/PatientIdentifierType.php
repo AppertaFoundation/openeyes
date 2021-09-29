@@ -29,6 +29,8 @@
  */
 class PatientIdentifierType extends BaseActiveRecordVersioned
 {
+    const GLOBAL_USAGE_TYPE = "GLOBAL";
+    const LOCAL_USAGE_TYPE = "LOCAL";
     /**
      * @return string the associated database table name
      */

@@ -233,13 +233,13 @@ class PrismReflex_EntryTest extends \ModelTestCase
      * @test
      * @dataProvider letter_string_provider
      */
-    public function to_string_for_letter($attrs, $expected){
+    public function to_string_for_letter($attrs, $expected)
+    {
 
         $instance = $this->getElementInstance();
         $instance->setAttributes($attrs);
         $savedInstance = $this->saveEntry($instance);
         $this->assertEquals($expected, (string)$savedInstance); // explicit type casting may not be nesc, but added for readability
-
     }
 
     protected function saveEntry(PrismReflex_Entry $instance)

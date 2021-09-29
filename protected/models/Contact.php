@@ -25,6 +25,7 @@
  * @property int $id
  * @property string $nick_name
  * @property string $primary_phone
+ * @property string $mobile_phone
  * @property string $title
  * @property string $first_name
  * @property string $last_name
@@ -76,19 +77,20 @@ class Contact extends BaseActiveRecordVersioned
     {
         return array(
             array('nick_name', 'length', 'max' => 80),
-            array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name,
+            array('title, first_name, last_name, nick_name, primary_phone, mobile_phone, qualifications, maiden_name,
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
             array('first_name, last_name, created_institution_id', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
             array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
             array('first_name, last_name', 'parenthesisValidator', 'except' => 'team_contact'),
-            array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
+            array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req', 'pasapi_import')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message' => 'Please select a Role.'),
             array('primary_phone', 'requiredValidator'),
-            array('id, nick_name, primary_phone, title, first_name, last_name, qualifications, email', 'safe', 'on' => 'search'),
+            array('id, nick_name, primary_phone, mobile_phone, title, first_name, last_name, qualifications, email', 'safe', 'on' => 'search'),
             array('first_name', 'required', 'on' => array('manage_practice')),
             array('first_name', 'length', 'max' => 300, 'on' => 'manage_practice'),
             array('primary_phone','OEPhoneNumberValidator'),
+            array('mobile_phone','OEPhoneNumberValidator'),
             array('email', 'length', 'max' => 255),
             array('email','email'),
             array('email', 'required', 'on' => array('self_register')),
@@ -98,7 +100,7 @@ class Contact extends BaseActiveRecordVersioned
     public function parenthesisValidator($attribute, $params)
     {
         $scenario = $this->getScenario();
-        if ($scenario === 'hscic_import') {
+        if (in_array($scenario, ['hscic_import', 'pasapi_import'])) {
             return;
         }
         if ($scenario === 'admin_contact') {
@@ -175,6 +177,7 @@ class Contact extends BaseActiveRecordVersioned
             'id' => 'ID',
             'nick_name' => 'Nickname',
             'primary_phone' => 'Phone number',
+            'mobile_phone' => 'Mobile number',
             'title' => 'Title',
             'first_name' => $this->scenario === 'manage_practice' ? 'Practice Name' : 'First name',
             'last_name' => 'Last name',

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,72 +16,86 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 
-    <?php $form=$this->beginWidget('CActiveForm', array(
+    <?php $form = $this->beginWidget('CActiveForm', array(
         'action' => Yii::app()->createUrl($this->route),
-        'method' => 'get',
+        'method' => 'post',
         'id' => 'generic-search-form',
     )); ?>
-    <div>
+    <table class="standard">
+        <tr>
+            <td>
+                <?php // echo $form->label($model, 'id'); ?>
+                <?php echo $form->textField($model, 'id', ['placeholder' => 'Subject Id']); ?>
+            </td>
 
-        <div>
-            <?php echo $form->textField($model, 'id', ['placeholder' => 'Subject Id']); ?>
-        </div>
-        <div>
-            <?php echo $form->textField($model, 'patient_pedigree_id', ['placeholder' => 'Family id']); ?>
-        </div>
+            <td>
+                <?php // echo $form->label($model, 'contact.first_name'); ?>
+                <?php echo $form->textField($model, 'patient_hos_num', ['placeholder' => 'Hospital number']); ?>
+            </td>
 
-        <div>
-            <?php
-            $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                'name'  => 'patient-dob-id',
-                'value' => Yii::app()->request->getQuery('patient-dob-id'),
-                'id'    => 'GeneticsPatient_patient_dob',
-                'options' => array(
-                    'showAnim'      => 'fold',
-                    'changeMonth'   => true,
-                    'changeYear'    => true,
-                    'altFormat'     => 'yy-mm-dd',
-                    'altField'      => '#GeneticsPatient_patient_dob_alt',
-                    'dateFormat'    => Helper::NHS_DATE_FORMAT_JS,
-                    'yearRange'     => '-120:+0'
-                ),
-                'htmlOptions' =>array(
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
-                    'placeholder' => 'Date of Birth',
-                )
-            ));
-            ?>
-            <input type="hidden" name="GeneticsPatient[patient_dob]" id="GeneticsPatient_patient_dob_alt" value="<?=$model->patient_dob;?>"/>
-        </div>
+            <td>
+                <?php // echo $form->label($model, 'contact.first_name'); ?>
+                <?php echo $form->textField($model, 'patient_pedigree_id', ['placeholder' => 'Family id']); ?>
+            </td>
+            <td>
+                <?php // echo $form->label($model, 'patient.dob'); ?>
+                <?php
+                $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                    'name'  => 'patient-dob-id',
+                    'value' => Yii::app()->request->getQuery('patient-dob-id'),
+                    'id'    => 'GeneticsPatient_patient_dob',
+                    'options' => array(
+                        'showAnim'      => 'fold',
+                        'changeMonth'   => true,
+                        'changeYear'    => true,
+                        'altFormat'     => 'yy-mm-dd',
+                        'altField'      => '#GeneticsPatient_patient_dob_alt',
+                        'dateFormat'    => Helper::NHS_DATE_FORMAT_JS,
+                        'yearRange'     => '-120:+0'
+                    ),
+                    'htmlOptions' => array(
+                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'placeholder' => 'Date of Birth',
+                    )
+                ));
+                ?>
+                <input type="hidden" name="GeneticsPatient[patient_dob]" id="GeneticsPatient_patient_dob_alt" value="<?=$model->patient_dob;?>"/>
+            </td>
 
-        <div>
-            <?php echo $form->textField($model, 'patient_firstname', ['placeholder' => 'First name']); ?>
-        </div>
+            <td>
+                <?php // echo $form->label($model, 'contact.first_name'); ?>
+                <?php echo $form->textField($model, 'patient_firstname', ['placeholder' => 'First name']); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php // echo $form->label($model, 'contact.last_name'); ?>
+                <?php echo $form->textField($model, 'patient_lastname', ['placeholder' => 'Last name']); ?>
+            </td>
 
-        <div>
-            <?php echo $form->textField($model, 'patient_lastname', ['placeholder' => 'Last name']); ?>
-        </div>
+            <td>
+                <?php echo $form->textField($model, 'patient_maidenname', ['placeholder' => 'Maiden name']); ?>
+            </td>
 
-        <div>
-            <?php echo $form->textField($model, 'patient_maidenname', ['placeholder' => 'Maiden name']); ?>
-        </div>
-
-        <div>
-            <?php echo $form->textField($model, 'comments', ['placeholder' => 'Comments']); ?>
-        </div>
-        <div>
-            <?php echo $form->textField($model, 'patient_yob', ['placeholder' => 'Year of Birth']); ?>
-        </div>
-        <div id="diagnosis-search">
-            <?php
+            <td>
+                <?php // echo $form->label($model, 'comments'); ?>
+                <?php echo $form->textField($model, 'comments', ['placeholder' => 'Comments']); ?>
+            </td>
+            <td>
+                <?php // echo $form->label($model, 'patient_yob'); ?>
+                <?php echo $form->textField($model, 'patient_yob', ['placeholder' => 'Year of Birth']); ?>
+            </td>
+            <td id="diagnosis-search">
+                <?php
                 $query = Yii::app()->request->getQuery('search');
                 $value = isset($query['patient_disorder_id']) ? $query['patient_disorder_id'] : '';
-            ?>
-            <!-- <label for="GeneticsPatient_comments">Search for a diagnosis</label> -->
-            <span id="enteredDiagnosisText" class="<?php echo $value ? '' : 'hidden' ?>">
+                ?>
+                <!-- <label for="GeneticsPatient_comments">Search for a diagnosis</label> -->
+                <span id="enteredDiagnosisText" class="<?php echo $value ? '' : 'hidden' ?>">
                 <?php
                 if ($value) {
                     $disorder = Disorder::model()->findByPk($value);
@@ -89,7 +104,7 @@
                 }
                 ?>
             </span>
-            <?php
+                <?php
                 $this->renderPartial('//disorder/disorderAutoComplete', array(
                     'class' => 'search',
                     'name' => 'patient_disorder_id',
@@ -100,14 +115,11 @@
                     'callback' => null
                 ));
                 ?>
-        </div>
-        
-        <div></div>
+            </td>
 
-
-        <div class="submit-row text-right">
-            <?=\CHtml::submitButton('Search', ['class' => 'button small primary event-action']); ?>
-        </div>
-    </div>
+            <td class="submit-row text-right">
+                <?=\CHtml::submitButton('Search', ['class' => 'button small primary event-action blue hint']); ?>
+            </td>
+        </tr>
+    </table>
     <?php $this->endWidget(); ?>
-

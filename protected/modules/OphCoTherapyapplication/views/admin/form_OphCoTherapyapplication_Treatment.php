@@ -123,8 +123,10 @@
 </tr>
 <tr>
     <td><?=$model->getAttributeLabel('duration');?></td>
-    <td><?=\CHtml::activeTextArea($model, 'duration', [
-            'class' => 'cols-full',
+    <td class='cols-full'>
+        <?=\CHtml::activeTextArea($model, 'duration', [
+            'cols' => 57,
+            'class' => 'autosize',
             'autocomplete' => Yii::app()->params['html_autocomplete']
         ])?>
     </td>
@@ -132,7 +134,8 @@
 <tr>
     <td><?=$model->getAttributeLabel('toxicity');?></td>
     <td><?=\CHtml::activeTextArea($model, 'toxicity', [
-            'class' => 'cols-full',
+            'cols' => 57,
+            'class' => 'autosize',
             'autocomplete' => Yii::app()->params['html_autocomplete']
         ])?>
     </td>

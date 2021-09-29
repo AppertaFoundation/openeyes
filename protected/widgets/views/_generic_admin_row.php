@@ -29,62 +29,63 @@ if (@$disabled) {
             echo CHtml::hiddenField("display_order[{$i}]", $row->display_order ? $row->display_order : $i, $html_options);
             ?>
         </td>
-        <td>
-            <input type="checkbox" name="selected[]" value="<?php echo $row->id?>" />
-        </td>
     <?php } ?>
-    <?php if (!$label_extra_field) :?>
     <td>
-        <?php
-        if ($label_field_type) {
-            $this->render('application.widgets.views._generic_admin_'.$label_field_type, array(
-                'row' => $row,
-                'params' => array(
-                    'relation' => $label_relation,
-                    'field' => $label_field,
-                    'model' => $label_field_model,
-                    'allow_null' => false,
-                ),
-                'i' => $i,
-            ));
-        } else {
-            echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, array_merge($html_options, ['class' => $input_class]));
-        }?>
+        <input type="checkbox" name="selected[]" value="<?php echo $row->id ?>" id="selected_<?= $i ?>" />
+    </td>
+    <?php if (!$label_extra_field) : ?>
+        <td>
+            <?php
+            if ($label_field_type) {
+                $this->render('application.widgets.views._generic_admin_' . $label_field_type, array(
+                    'row' => $row,
+                    'params' => array(
+                        'relation' => $label_relation,
+                        'field' => $label_field,
+                        'model' => $label_field_model,
+                        'allow_null' => false,
+                    ),
+                    'i' => $i,
+                ));
+            } else {
+                echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, array_merge($html_options, ['class' => $input_class]));
+            } ?>
             <?php if (isset($errors[$i])) { ?>
                 <span class="error">
-                <?php echo htmlspecialchars($errors[$i]) ?>
+                    <?php echo htmlspecialchars($errors[$i]) ?>
                 </span>
-            <?php }?>
-    </td>
-    <?php endif;?>
-    <?php foreach ($extra_fields as $field) {?>
-        <td>
-            <?php $this->render('_generic_admin_'.$field['type'], array('row' => $row, 'params' => $field, 'i' => $i))?>
-        </td>
-    <?php }?>
-    <td>
-        <?php if (isset($row->active)) {
-            echo CHtml::checkBox('active['.$i.']', $row->active);
-        } elseif (!$this->cannot_delete) {?>
-            <button type='button'><a href="#" class="deleteRow">delete</a></button>
-        <?php }?>
-        <?php foreach ($this->action_links as $link) { ?>
-        <a class="button" href="<?= call_user_func($link['url'], $row) ?>"><?= $link['label'] ?></a>
-        <?php } ?>
-    </td>
-    <?php if ($model::model()->hasAttribute('default')) {?>
-        <td>
-            <?=\CHtml::radioButton('default', $row->default, array('value' => $i))?>
-        </td>
-    <?php }?>
-    <?php if ($is_mapping) {
-        foreach ($model::model()->enumerateSupportedLevels() as $level) {?>
-        <td>
-            <?php if ($row->hasMapping($level, $model::model()->getIdForLevel($level))) { ?>
-                <i class="oe-i tick small"></i>
-            <?php } else { ?>
-                <i class="oe-i remove small"></i>
             <?php } ?>
         </td>
-    <?php }} ?>
+    <?php endif; ?>
+    <?php foreach ($extra_fields as $field) { ?>
+        <td>
+            <?php $this->render('_generic_admin_' . $field['type'], array('row' => $row, 'params' => $field, 'i' => $i)) ?>
+        </td>
+    <?php } ?>
+    <td>
+        <?php if (isset($row->active)) {
+            echo CHtml::checkBox('active[' . $i . ']', $row->active);
+        } elseif (!$this->cannot_delete) { ?>
+            <button type='button'><a href="#" class="deleteRow">delete</a></button>
+        <?php } ?>
+        <?php foreach ($this->action_links as $link) { ?>
+            <a class="button" href="<?= call_user_func($link['url'], $row) ?>"><?= $link['label'] ?></a>
+        <?php } ?>
+    </td>
+    <?php if ($model::model()->hasAttribute('default')) { ?>
+        <td>
+            <?= \CHtml::radioButton('default', $row->default, array('value' => $i)) ?>
+        </td>
+    <?php } ?>
+    <?php if ($is_mapping) {
+        foreach ($model::model()->enumerateSupportedLevels() as $level) { ?>
+            <td>
+                <?php if ($row->hasMapping($level, $model::model()->getIdForLevel($level))) { ?>
+                    <i class="oe-i tick small"></i>
+                <?php } else { ?>
+                    <i class="oe-i remove small"></i>
+                <?php } ?>
+            </td>
+    <?php }
+    } ?>
 </tr>

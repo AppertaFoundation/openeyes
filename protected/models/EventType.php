@@ -494,7 +494,8 @@ class EventType extends BaseActiveRecordVersioned
             'OphTrOperationchecklists' => 'i-TrSafetyChecklist',
             'OphInKowastereo' => 'i-InStereoPair',
             'SupCoPhonelog' => 'i-CoTelephoneCall',
-            'OphDrPGDPSD'=>'i-DrDrops',
+            'OphInMehPac' => 'i-NuPreOpCheck',
+            'OphDrPGDPSD' => 'i-DrDrops',
         );
 
         return array_key_exists($this->class_name, $style_mapping) ? $style_mapping[$this->class_name] : null;

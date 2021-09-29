@@ -33,12 +33,14 @@ use RRule\RRule;
  * @property string                             $end_time
  * @property DateTime                           $active_from
  * @property DateTime                           $active_until
+ * @property int                                $pathway_type_id
  * @property Worklist[]                         $worklists
  * @property WorklistDefinitionMapping[]        $mappings
  * @property WorklistDefinitionMappingp[]       $displayed_mappings
  * @property WorklistDefinitionMappingp[]       $hidden_mappings
  * @property WorklistDefinitionDisplayContext[] $display_contexts
  * @property PatientIdentifierType $patient_identifier_type
+ * @property PathwayType $pathway_type
  */
 class WorklistDefinition extends BaseActiveRecordVersioned
 {
@@ -100,7 +102,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         return array(
             array('name, rrule, worklist_name, start_time, end_time, description, patient_identifier_type_id', 'safe'),
             array('rrule', 'validateRrule'),
-            array('name, rrule, start_time, end_time, patient_identifier_type_id', 'required'),
+            array('name, rrule, start_time, end_time, patient_identifier_type_id, pathway_type_id', 'required'),
             array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss', 'except' => 'sortDisplayOrder'),
@@ -153,6 +155,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             ),
             'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id'),
             'patient_identifier_type' => array(self::BELONGS_TO, 'PatientIdentifierType', 'patient_identifier_type_id'),
+            'pathway_type' => array(self::BELONGS_TO, 'PathwayType', 'pathway_type_id'),
         );
     }
 

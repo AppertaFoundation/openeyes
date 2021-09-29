@@ -12,7 +12,7 @@ class m180409_104752_observations_remove_default_values extends OEMigration
         $this->alterColumn('et_ophciexamination_observations', 'height', 'VARCHAR(5) DEFAULT NULL');
         $this->alterColumn('et_ophciexamination_observations', 'weight', 'VARCHAR(5) DEFAULT NULL');
         $this->alterColumn('et_ophciexamination_observations', 'pulse', 'INT(3) UNSIGNED DEFAULT NULL');
-        
+
         $this->update('element_type', array('display_order' => 11), "name = 'Observations' AND display_order = 12");
     }
 
@@ -26,7 +26,7 @@ class m180409_104752_observations_remove_default_values extends OEMigration
         $this->alterColumn('et_ophciexamination_observations', 'height', 'VARCHAR(5) NOT NULL DEFAULT 0.0');
         $this->alterColumn('et_ophciexamination_observations', 'weight', 'VARCHAR(5) NOT NULL DEFAULT 0.0');
         $this->alterColumn('et_ophciexamination_observations', 'pulse', 'INT(3) UNSIGNED NOT NULL DEFAULT 0');
-        
+
         $this->update('element_type', array('display_order' => 12), 'name = Observations AND display_order = 11');
     }
 }

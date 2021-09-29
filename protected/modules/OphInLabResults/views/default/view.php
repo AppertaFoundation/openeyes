@@ -25,6 +25,4 @@ $this->moduleNameCssClass .= ' highlight-fields';
 $this->renderOpenElements($this->action->id);
 $this->renderPartial('//default/delete');
 
-$this->endContent();?>
-
-
+$this->endContent();

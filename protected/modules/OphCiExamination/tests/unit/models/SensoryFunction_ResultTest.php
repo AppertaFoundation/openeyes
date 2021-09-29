@@ -33,5 +33,4 @@ class SensoryFunction_ResultTest extends \ModelTestCase
     use HasLookupBehavioursToTest;
 
     protected $element_cls = SensoryFunction_Result::class;
-
 }
