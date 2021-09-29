@@ -97,7 +97,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $this->event_id = $id;
         $this->booking = $booking;
-        $this->consent_procedure_id = $consent->id;
+        if (!is_null($consent)) {
+            $this->consent_procedure_id = $consent->id;
+        }
         $this->eye_id = $eye->id;
         $this->eye = $eye;
         $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
