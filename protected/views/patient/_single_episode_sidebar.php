@@ -120,6 +120,8 @@ $display_deleted_events_in_deleted_category = $display_deleted_in && $display_de
                                         $event_icon_class .= ' ready';
                                     } elseif ($eur = EUREventResults::model()->find('event_id=?', array($event->id)) && $event->hasIssue('EUR Failed')) {
                                         $event_icon_class .= ' cancelled';
+                                    } elseif($event->hasIssue('Consent Withdrawn')) {
+                                        $event_icon_class .= ' cancelled';
                                     } else {
                                         $event_icon_class .= ' alert';
                                     }

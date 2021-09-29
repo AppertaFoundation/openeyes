@@ -27,7 +27,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     $additional_signatures = $elements['OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures'];
 }
 ?>
-<body class="open-eyes print">
+<body class="open-eyes print<?= isset($elements['Element_OphTrConsent_Withdrawal']) ? ' void' : ''?>">
 <?php $this->renderPartial('_consent_header') ?>
 <div class="print-title text-c">
     <h1><b>Consent form 1</b></h1>
@@ -35,6 +35,10 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <h2>Patient agreement to investigation or treatment</h2>
 </div>
 <hr class="divider"/>
+<?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) { ?>
+    <h1 class="highlighter">Patient has withdrawn consent</h1>
+    <hr class="divider"/>
+<?php } ?>
 <main class="print-main">
     <h3>Patient details (or pre-printed label)</h3>
     <table class="normal-text row-lines">
@@ -260,7 +264,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <?= $this->renderPartial(
         '_print_signature',
         array(
-            'vi' => ($css_class == 'impaired'),
+            'vi' => ($css_class === 'impaired'),
             'element' => $elements[Element_OphTrConsent_Esign::class],
             'signature' => $elements[Element_OphTrConsent_Esign::class]
                 ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 5),
@@ -290,7 +294,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
 
     <!-- Interpreter's signature -->
 
-    <?php if($additional_signatures && $additional_signatures->interpreter_required): ?>
+    <?php if ($additional_signatures && $additional_signatures->interpreter_required) : ?>
         <h2>Statement of interpreter</h2>
         <p>I have interpreted the information above to the patient to the best of my ability and in a way in which I believe s/he can understand.</p>
         <?= $this->renderPartial(
@@ -342,9 +346,23 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <div class="group"><span class="checkbox <?= strlen($elements['Element_OphTrConsent_AdvancedDecision']->description) > 0 ? 'checked' : ''?>"></span> See also advance decision refusing treatment (including a Jehovah’s Witness form)
     </div>
     <?php endif; ?>
-    <div class="group"><span class="checkbox"></span> Patient has withdrawn consent (ask patient to sign /date here)
-        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
-    </div>
+    <div class="group"><span class="checkbox <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? 'checked' : ''?>"></span><?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '<b class="highlighter">' : ''?> Patient has withdrawn consent <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '</b>' : ''?></div>
+    <?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) { ?>
+        <p><b>Reason for withdrawal:</b> <?= isset($elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason) ? $elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason : '-'?></p>
+        <?= $this->renderPartial('_print_signature',
+            array(
+                'vi' => ($css_class === 'impaired'),
+                'element' => $elements['Element_OphTrConsent_Esign'],
+                'signature' => $elements['Element_OphTrConsent_Esign']
+                                ->getSignatureByInitiatorAttributes(
+                                        $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
+                                        5
+                                ),
+                                         'title_label' => 'Job title',
+                                         'name_label' => 'Print name'
+            )
+        );
+    } ?>
     <hr class="divider">
     <?php if (isset($elements['Element_OphTrConsent_Permissions']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Permissions']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
         <?php if (isset($elements['Element_OphTrConsent_Permissions'])) : ?>

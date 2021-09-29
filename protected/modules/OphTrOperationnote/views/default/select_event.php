@@ -98,6 +98,23 @@ $warnings = $this->patient->getWarnings($clinical);
                   </td>
                   <td>
                       <?= $operation->comments; ?>
+                      <?php
+                        $existing_consent_criteria = new CDbCriteria();
+                        $existing_consent_criteria->with = ['event'];
+                        $existing_consent_criteria->compare('event.deleted', 0);
+                        $existing_consent_criteria->compare('t.booking_event_id', $operation->event_id);
+                        $has_consent = Element_OphTrConsent_Procedure::model()->find($existing_consent_criteria);
+
+                        if ($has_consent) {
+                            $withdrawal_criteria = new CDbCriteria();
+                            $withdrawal_criteria->compare('event_id', $has_consent->event_id);
+                            $withdrawal = Element_OphTrConsent_Withdrawal::model()->find($withdrawal_criteria);
+                            if ($withdrawal && $withdrawal->signature_id !== null) { ?>
+                            <div class="alert-box warning with-icon">
+                              This event has a consent which has been withdrawn.
+                            </div>
+                            <?php } ?>
+                        <?php } ?>
                   </td>
                   <td>
                     <button class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">

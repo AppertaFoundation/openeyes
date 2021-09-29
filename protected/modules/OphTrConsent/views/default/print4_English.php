@@ -23,7 +23,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
 $type_assessment = new OphTrConsent_Type_Assessment();
 ?>
-<body class="open-eyes print">
+<body class="open-eyes print<?= isset($elements['Element_OphTrConsent_Withdrawal']) ? ' void' : ''?>">
 <?php $this->renderPartial('_consent_header') ?>
 <div class="print-title text-c">
     <h1><b>Consent form 4</b></h1>
@@ -31,6 +31,10 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     <h2>Form for adults who are unable to consent to investigation or treatment</h2>
 </div>
 <hr class="divider"/>
+<?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) { ?>
+    <h1 class="highlighter">Patient has withdrawn consent</h1>
+    <hr class="divider"/>
+<?php } ?>
 <main class="print-main">
     <h3>Patient details (or pre-printed label)</h3>
     <table class="normal-text row-lines">
@@ -226,6 +230,24 @@ $type_assessment = new OphTrConsent_Type_Assessment();
             'name_label' => 'Interpreter name',
         )
     ); ?>
+
+    <div class="group"><span class="checkbox <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? 'checked' : ''?>"></span><?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '<b class="highlighter">' : ''?> Patient has withdrawn consent <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '</b>' : ''?></div>
+    <?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) {?>
+        <p><b>Reason for withdrawal:</b> <?= isset($elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason) ? $elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason : '-'?></p>
+        <?= $this->renderPartial('_print_signature',
+            array(
+                'vi' => ($css_class === 'impaired'),
+                'element' => $elements['Element_OphTrConsent_Esign'],
+                'signature' => $elements['Element_OphTrConsent_Esign']
+                                ->getSignatureByInitiatorAttributes(
+                                        $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
+                                        5
+                                ),
+                                         'title_label' => 'Job title',
+                                         'name_label' => 'Print name'
+            )
+        );
+    } ?>
 
     <div class="highlighter"><h3>COVID-19</h3>
         <p>In the majority, COVID-19 causes a mild, self-limiting illness but symptoms may be highly variable amongst

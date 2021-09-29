@@ -16,6 +16,10 @@
  */
 
 $(document).ready(function() {
+	
+	$(this).on('click','#et_save',function() {
+		$('#Element_OphTrConsent_Type_draft').val(0);
+	});
 
 	const $bestInterestDecisionElement = $(".element.OEModule_OphTrConsent_models_Element_OphTrConsent_BestInterestDecision");
 	if($bestInterestDecisionElement.length > 0) {
@@ -170,7 +174,6 @@ $(document).ready(function() {
 		const searchParams = Object.keys(params).map((key) => {
 			return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
 		}).join('&');
-		console.log(searchParams);
 
 		fetch(baseUrl + "/" + moduleName + "/default/getDeleteConsentPopupContent",{
 			headers: {
@@ -196,7 +199,6 @@ $(document).ready(function() {
 	$(document).on('click', '.withdraw-consent-button', function (e) {
 		e.preventDefault();
 		var id = this.getAttribute("data-id");
-		console.log(id);
 	});
 
     let consent_type = document.getElementById('Element_OphTrConsent_Type_type_id');
@@ -302,6 +304,66 @@ $(document).ready(function() {
     signatures.changeWitness();
     signatures.changeInterpreter();
     signatures.changeGuardian();
+	
+	$("#clinical-create").submit(function(e) {
+		if(proceed || !savenprint_clicked) {
+			return true;
+		} else {
+			e.preventDefault();
+			if(savenprint_clicked) {
+				var missing_signatures = checkMissingSignatures();
+
+				if(missing_signatures.length > 0) {
+					var list = [];
+					$.each(missing_signatures, function (i, str) {
+							list.push("<li>" + str + "</li>");
+					});
+					var dlg = new OpenEyes.UI.Dialog.Confirm({
+							content: "<p>One or more signatures are missing:</p><ul>" + list.join("\n") + "</ul><p>Do you wish to proceed?</p>"
+					});
+					dlg.on("ok", function (e) {
+						proceed = true;
+						var input = $("<input>")
+								.attr("type", "hidden")
+								.attr("name", "saveprint").val("");
+
+						editors = $('textarea[data-richtext="true"]');
+						if(editors.length > 0){
+							for(i = 0; i < editors.length; i++){
+								nic = nicEditors.findEditor( editors[i].getAttribute("id") );
+								nic.saveContent();
+								nic = null;
+							}
+						}
+
+						$('#clinical-create').append(input).submit();
+					});
+					dlg.open();
+					proceed = false;
+				} else {
+					proceed = true;
+					var input = $("<input>")
+							.attr("type", "hidden")
+							.attr("name", "saveprint").val("");
+
+					editors = $('textarea[data-richtext="true"]');
+					if(editors.length > 0){
+						for(i = 0; i < editors.length; i++){
+							nic = nicEditors.findEditor( editors[i].getAttribute("id") );
+							nic.saveContent();
+							nic = null;
+						}
+					}
+
+					$('#clinical-create').append(input).submit();
+				}
+			}
+		}
+	});
+
+	$(this).on('click','.js-add-withdrawal',function(e) {
+		window.location.href = '/OphTrConsent/default/withdraw?event_id='+OE_event_id;
+	});
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

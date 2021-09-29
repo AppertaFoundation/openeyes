@@ -25,7 +25,11 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
 <tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
-    <td><span class="highlighter js-row-num"></span></td>
+    <?php if(strcmp($row_id, "X") == 0) { ?>
+        <td><span class="highlighter red">X</span></td>
+    <?php } else { ?>
+        <td><span class="highlighter js-row-num"></span></td>
+    <?php } ?>
     <!-- Role -->
     <td>
         <span class="js-signatory-label">

@@ -27,7 +27,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     $additional_signatures = $elements['OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures'];
 }
 ?>
-<body class="open-eyes print">
+<body class="open-eyes print<?= isset($elements['Element_OphTrConsent_Withdrawal']) ? ' void' : ''?>">
 <?php $this->renderPartial('_consent_header') ?>
 <div class="print-title text-c">
     <h1><b>Consent form 3</b></h1>
@@ -35,6 +35,10 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <h2>Parental agreement to investigation or treatment</h2>
 </div>
 <hr class="divider"/>
+<?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) { ?>
+    <h1 class="highlighter">Patient has withdrawn consent</h1>
+    <hr class="divider"/>
+<?php } ?>
 <main class="print-main">
     <h3>Patient details (or pre-printed label)</h3>
     <table class="normal-text row-lines">
@@ -252,7 +256,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         )
     ); ?>
 
-    <?php if ($additional_signatures) { ?>
+    <?php if ($additional_signatures && $additional_signatures->witness_required) { ?>
     <p>A <b>witness</b> should sign below <b>if the patient is unable to sign but has indicated their consent.</b></p>
         <?php
         if ($type_assessment->existsElementInConsentForm($additional_signatures->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) {
@@ -273,7 +277,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
 
     <!-- Interpreter's signature -->
 
-    <?php if($additional_signatures && $additional_signatures->interpreter_required): ?>
+    <?php if ($additional_signatures && $additional_signatures->interpreter_required) : ?>
         <h2>Statement of interpreter</h2>
         <p>I have interpreted the information above to the patient to the best of my ability and in a way in which I believe s/he can understand.</p>
         <?= $this->renderPartial(
@@ -295,6 +299,24 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         patient has signed the form in advance.</h6>
     <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions and
         wishes the procedure to go ahead.</p>
+
+    <div class="group"><span class="checkbox <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? 'checked' : ''?>"></span><?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '<b class="highlighter">' : ''?> Patient has withdrawn consent <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '</b>' : ''?></div>
+    <?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) { ?>
+        <p><b>Reason for withdrawal:</b> <?= isset($elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason) ? $elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason : '-'?></p>
+        <?= $this->renderPartial('_print_signature',
+            array(
+                'vi' => ($css_class === 'impaired'),
+                'element' => $elements['Element_OphTrConsent_Esign'],
+                'signature' => $elements['Element_OphTrConsent_Esign']
+                                ->getSignatureByInitiatorAttributes(
+                                        $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
+                                        5
+                                ),
+                                         'title_label' => 'Job title',
+                                         'name_label' => 'Print name'
+            )
+        );
+    } ?>
 
     <div class="highlighter"><h3>COVID-19</h3>
         <p>In the majority, COVID-19 causes a mild, self-limiting illness but symptoms may be highly variable amongst

@@ -38,6 +38,25 @@ if (isset($operation) && $operation) {
             </div>
         </div>
     <?php }?>
+
+    <?php
+        $existing_consent_criteria = new CDbCriteria();
+        $existing_consent_criteria->with = ['event'];
+        $existing_consent_criteria->compare('event.deleted', 0);
+        $existing_consent_criteria->compare('t.booking_event_id', $operation->event_id);
+        $has_consent = Element_OphTrConsent_Procedure::model()->find($existing_consent_criteria);
+
+    if ($has_consent) {
+        $withdrawal_criteria = new CDbCriteria();
+        $withdrawal_criteria->compare('event_id', $has_consent->event_id);
+        $withdrawal = Element_OphTrConsent_Withdrawal::model()->find($withdrawal_criteria);
+        if ($withdrawal && $withdrawal->signature_id !== null) { ?>
+                <div class="alert-box warning with-icon">
+                This event has a consent which has been withdrawn.
+                </div>
+        <?php } ?>
+    <?php } ?>
+
     <?php if (!$operation->has_gp) {?>
         <div class="alert-box alert with-icon">
             Patient has no <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> practice address, please correct in PAS before printing <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> letter.
