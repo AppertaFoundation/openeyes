@@ -67,7 +67,7 @@
                             $criteria->condition = 't.id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
                         }
                         $criteria->with = 'institutions';
-                        $criteria->condition .= ' AND institutions_institutions.institution_id = :institution_id';
+                        $criteria->condition .= ' AND institutions.id = :institution_id';
                         $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
                         $lenses = OphInBiometry_LensType_Lens::model()->findAll($criteria, array('order' => 'display_order'));
                         $lens_options = [];
@@ -117,7 +117,7 @@
                     $criteria = new CDbCriteria();
                     $criteria->order = 'display_order asc';
                     $criteria->with = 'institutions';
-                    $criteria->condition = 'institutions_institutions.institution_id = :institution_id';
+                    $criteria->condition = 'institutions.id = :institution_id';
                     $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
                     echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_' . $side})->findAll($criteria), 'id', 'display_name'), $htmlOptions, null, array('label' => 6, 'field' => 12))
                     ?>

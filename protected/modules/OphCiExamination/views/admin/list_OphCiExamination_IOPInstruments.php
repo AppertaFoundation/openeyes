@@ -27,6 +27,7 @@
                 <th>Short Name</th>
                 <th>Institution</th>
                 <th>Active</th>
+                <th>Visible</th>
             </tr>
             </thead>
             <colgroup>
@@ -52,6 +53,7 @@
                         echo $institutions ? CHtml::encode(implode(', ', $institutions)) : 'N/A'; ?>
                     </td>
                     <td><i class="oe-i <?= ($model->active ? 'tick' : 'remove'); ?> small"></i></td>
+                    <td><i class="oe-i <?= ($model->visible ? 'tick' : 'remove'); ?> small"></i></td>
                 </tr>
             <?php } ?>
             </tbody>

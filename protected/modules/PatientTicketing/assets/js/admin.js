@@ -314,45 +314,45 @@
   $(document).ready(function () {
     var queueAdmin = new QueueAdmin();
 
-    $(this).on('click', '#add-queueset', function () {
+    $(this).off('click', '#add-queueset').on('click', '#add-queueset', function () {
       queueAdmin.addQueueSet();
     });
 
-    $(this).on('click', '.queueset-link', function () {
+    $(this).off('click', '.queueset-link').on('click', '.queueset-link', function () {
       queueAdmin.displayQueue($(this).parents('tr').data('initial-queue-id'));
     });
 
-    $(this).on('click', '.queueset-admin .permissions', function (e) {
+    $(this).off('click', '.queueset-admin .permissions').on('click', '.queueset-admin .permissions', function (e) {
       e.preventDefault();
       var queueSetId = $(this).parents('tr').data('queueset-id');
       queueAdmin.editQueueSetPermissions(queueSetId);
       queueAdmin.displayQueue($(this).parents('tr').data('initial-queue-id'));
     });
 
-    $(this).on('click', '.add-child', function (e) {
+    $(this).off('click', '.add-child').on('click', '.add-child', function (e) {
       var queueId = $(this).parent('div').data('queue-id');
       queueAdmin.addQueue(queueId);
     });
 
-    $(this).on('click', '.queueset-admin .edit', function (e) {
+    $(this).off('click', '.queueset-admin .edit').on('click', '.queueset-admin .edit', function (e) {
       e.preventDefault();
       var queueSetId = $(this).parents('tr').data('queueset-id');
       queueAdmin.editQueueSet(queueSetId);
       queueAdmin.displayQueue($(this).parents('tr').data('initial-queue-id'));
     });
 
-    $(this).on('click', '.queue .edit', function () {
+    $(this).off('click', '.queue .edit').on('click', '.queue .edit', function () {
       var queueId = $(this).parent('div').data('queue-id');
       queueAdmin.editQueue(queueId);
     });
 
-    $(this).on('click', '.active-toggle', function () {
+    $(this).off('click', '.active-toggle').on('click', '.active-toggle', function () {
       var queueId = $(this).parent('div').data('queue-id');
       var active = !$(this).closest('div.node').hasClass('inactive');
       queueAdmin.activeToggleQueue(queueId, active);
     });
 
-    $(this).on('click', '#current-users-list .remove', function () {
+    $(this).off('click', '#current-users-list .remove').on('click', '#current-users-list .remove', function () {
       $(this).parents('li').remove();
     });
 

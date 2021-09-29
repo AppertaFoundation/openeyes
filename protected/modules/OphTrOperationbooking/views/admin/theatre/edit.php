@@ -17,6 +17,9 @@
  */
 if ($this->checkAccess('admin')) {
     $sites = Site::model()->getListForAllInstitutions();
+    // getListForAllInstitutions returns an array which uses 'list', 'options' as keys,
+    // the 'list' key stores id => site_name
+    $sites = $sites['list'];
 } else {
     $sites = Site::model()->getListForCurrentInstitution();
 }

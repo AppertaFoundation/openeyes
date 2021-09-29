@@ -36,7 +36,7 @@ $roles = $qs_svc->getQueueSetRoles();
         ?>
             <div class="alert-box issue">Support for multiple Patient Ticketing roles not yet implemented.</div>
         <?php
-    } elseif (count($roles) == 1) {
+    } elseif (count($roles) === 1) {
         ?>
         <div class="alert-box info">User(s) will be given the "<?=$roles[0]?>" role if not already setup.</div>
         <input type="hidden" name="user_role" value="<?=$roles[0]?>" />

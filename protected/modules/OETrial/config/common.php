@@ -3,6 +3,7 @@
 return array(
     'import' => array(
         'application.modules.OETrial.models.*',
+        'application.modules.OECaseSearch.models.*',
     ),
     'params' => array(
         'menu_bar_items' => array(

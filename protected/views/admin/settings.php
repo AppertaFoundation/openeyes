@@ -52,7 +52,7 @@
             $allowed_classes = $institution_id ? ['SettingInstitution', 'SettingInstallation'] : ['SettingInstallation'];
             foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) {
                 // Setting pulled from database
-                $metadata_value = (string)$metadata->getSettingName($metadata->key, $allowed_classes, $institution_id, true);
+                $metadata_value = $metadata->getSettingName($metadata->key, $allowed_classes, $institution_id, true);
 
                 $base_data_uri = "admin/editSystemSetting?key=" . $metadata->key;
                 if($metadata->lowest_setting_level === 'INSTITUTION' && $institution_id){

@@ -429,6 +429,7 @@ class DefaultController extends BaseEventTypeController
     {
         if (@$_GET['vi']) {
             $this->pdf_print_suffix = 'vi';
+            $this->print_args = '?vi=1' ;
         }
 
         return parent::actionPDFPrint($id);
