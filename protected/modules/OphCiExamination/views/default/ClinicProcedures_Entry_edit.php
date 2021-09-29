@@ -49,7 +49,7 @@ if (!isset($values)) {
                id="clinic-procedures-datepicker-<?= $row_count ?>"
                name="<?= $field_prefix ?>[date]"
                value="<?= $values['date'] ?>"
-               placeholder="dd Mth YYYY" autocomplete="off">
+               autocomplete="off">
     </td>
     <td>
         <input class="fixed-width-medium"
