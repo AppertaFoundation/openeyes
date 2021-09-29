@@ -22,15 +22,10 @@ class m210801_134940_remove_signature_elements extends OEMigration
 
     public function safeUp()
     {
-        foreach (self::RETIRED_ELEMENTS as $table => $class) {
+        foreach (self::RETIRED_ELEMENTS as $class) {
             $element_type_id = $this->getIdOfElementTypeByClassName($class);
-
             if ($element_type_id) {
-                $sql = "UPDATE signature_request SET element_type_id = NULL WHERE element_type_id = :element_type_id";
-                $this->execute($sql, [
-                    ':element_type_id' => $element_type_id
-                ]);
-
+                $this->delete('signature_request', 'element_type_id = ?', [$element_type_id]);
                 $this->deleteElementType('OphCoCvi', $class);
             }
         }

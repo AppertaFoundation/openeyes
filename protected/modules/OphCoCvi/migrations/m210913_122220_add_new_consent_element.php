@@ -20,9 +20,9 @@ class m210913_122220_add_new_consent_element extends OEMigration
         $this->createOETable("et_ophcocvi_consent", [
             'id' => 'pk',
             'event_id' => 'INT(10) UNSIGNED',
-            "consented_to_gp" => "BOOLEAN NOT NULL",
-            "consented_to_la" => "BOOLEAN NOT NULL",
-            "consented_to_rcop" => "BOOLEAN NOT NULL"
+            "consented_to_gp" => "BOOLEAN NULL DEFAULT NULL",
+            "consented_to_la" => "BOOLEAN NULL DEFAULT NULL",
+            "consented_to_rcop" => "BOOLEAN NULL DEFAULT NULL"
         ], true);
 
         $this->createElementType("OphCoCvi", "Consent", [
