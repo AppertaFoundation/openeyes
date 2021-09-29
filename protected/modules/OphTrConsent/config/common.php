@@ -28,6 +28,7 @@ return array(
                 'Extra Procedures' => array('uri' => '/OphTrConsent/oeadmin/ExtraProcedures/list'),
                 'Extra Procedures Subspecialty Assignment' => array('uri' => '/OphTrConsent/oeadmin/ExtraProcedures/EditSubspecialty'),
                 'Layouts' => array('uri' => '/OphTrConsent/oeadmin/ConsentLayouts/list'),
+                'Supplementary Consent' => array('uri' => '/OphTrConsent/oeadmin/SupplementaryConsent/list'),
                 'Template' => array('uri' => '/OphTrConsent/oeadmin/Template/list'),
                 'Relationship to patient' => array('module' => 'OphTrConsent', 'uri' => '/OphTrConsent/oeadmin/PatientRelationship/list'),
                 'Contact method' => array('module' => 'OphTrConsent', 'uri' => '/OphTrConsent/oeadmin/PatientContactMethod/list'),

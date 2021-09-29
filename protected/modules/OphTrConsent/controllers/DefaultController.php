@@ -338,7 +338,7 @@ class DefaultController extends BaseEventTypeController
 
             if ($this->event->institution_id) {
                 $institution = $this->event->institution_id;
-                if ($institution == NULL) {
+                if (is_null($institution)) {
                     $criteria->addCondition('institution_id IS NULL');
                 } else {
                     $criteria->addCondition('institution_id = ' . $institution . ' OR institution_id IS NULL');
@@ -347,7 +347,7 @@ class DefaultController extends BaseEventTypeController
 
             if ($this->event->site_id) {
                 $site = $this->event->site_id;
-                if ($site == NULL) {
+                if (is_null($site)) {
                     $criteria->addCondition('site_id IS NULL');
                 } else {
                     $criteria->addCondition('site_id = ' . $site . ' OR site_id IS NULL');
@@ -356,7 +356,7 @@ class DefaultController extends BaseEventTypeController
 
             if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id) {
                 $subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty_id;
-                if ($subspecialty == NULL) {
+                if (is_null($subspecialty)) {
                     $criteria->addCondition('subspecialty_id IS NULL');
                 } else {
                     $criteria->addCondition('subspecialty_id = ' . $subspecialty . ' OR subspecialty_id IS NULL');
@@ -652,6 +652,111 @@ class DefaultController extends BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    protected function saveComplexAttributes_Element_OphTrConsent_SupplementaryConsent($element, $data, $index)
+    {
+        $ele_qs = $data['Element_OphTrConsent_SupplementaryConsent']['element_question'];
+
+        //for each element question id posted
+        foreach ($ele_qs as $ele_q_id => $ele_q_data) {
+            // check if question exists in this element
+            $new = true;
+            $element_question = new Ophtrconsent_SupplementaryConsentElementQuestion();
+
+            foreach ($element->element_question as $ele_ques) {
+                if ((int)$ele_q_id === (int)$ele_ques->question_id) {
+                    $new = false;
+                    $element_question = $ele_ques;
+                    break;
+                }
+            }
+            if ($new) {//if new instantiate the question
+                $element_question->element_id = $element->id;
+                $element_question->question_id = $ele_q_id;
+            }
+
+            // check if value is dirty
+            $element_question->save();
+
+            foreach ($ele_q_data as $data_type => $ele_a_data) {
+                $new_a = true;
+                $element_answer = new Ophtrconsent_SupplementaryConsentElementQuestionAnswer();
+
+                // check each type of value posted to figure out how to handle them
+                if ($data_type === 'text' || $data_type === 'textarea') { // text
+                    foreach ($element_question->element_answers as $ele_ans) {
+                        // check if answer is the same as the data we got
+                        if ((int)$ele_ans->answer_text === (int)$ele_a_data) {
+                            $new_a = false;
+                            $element_answer = $ele_ans;
+                        } else { // cleanup extra answers to this question.
+                            $ele_ans->delete();
+                        }
+                    }
+                    if ($new_a) { //if new instantiate the answer
+                        $element_answer->element_question_id = $element_question->id;
+                        $element_answer->answer_text = $ele_a_data;
+                    }
+                    // if old but not up to date
+                    if ($ele_a_data != $element_answer->answer_text) {
+                        $element_answer->answer_text = $ele_a_data;
+                    }
+                    $element_answer->save();
+                } elseif ($data_type === 'dropdown' || $data_type === 'radio') { // one choice
+                    foreach ($element_question->element_answers as $ele_ans) {
+                        // check if answer is the same as the data we got
+                        if ($ele_a_data === (int)$ele_ans->answer_id) {
+                            $new = false;
+                            $element_answer = $ele_ans;
+                        } else { // cleanup extra answers to this question.
+                            $ele_ans->delete();
+                        }
+                    }
+                    if ($new_a) { //if new instantiate the question
+                        $element_answer->element_question_id = $element_question->id;
+                        $element_answer->answer_id = $ele_a_data;
+                    } // if old but not up to date
+                    if ($ele_a_data !== (int)$element_answer->answer_id) {
+                        $element_answer->answer_id = $ele_a_data;
+                    }
+                    $element_answer->save();
+                } elseif ($data_type === 'check') { // multiple choice
+                    $ans_choice_check = [];
+
+                    //cleanup old data by removing any answer that is not in the current list (has to loop twice)
+                    foreach ($element_question->element_answers as $ele_ans) {
+                        // check if answer is the same as the data we got
+                        if (in_array($ele_ans->answer_id, $ele_a_data)) {
+                            array_push($ans_choice_check, $ele_ans);
+                        }
+                    }
+                    foreach ($element_question->element_answers as $ele_ans) {
+                        // check if answer was previously confirmed and delete extra answers to this question.
+                        if (!in_array($ele_ans, $ans_choice_check)) {
+                            $ele_ans->delete();
+                        }
+                    }
+
+                    //for each of the answers we have
+                    foreach ($ele_a_data as $data_answer_id) {
+                        $new = true;
+                        foreach ($ans_choice_check as $ans_choice_check_item) {
+                            if ($data_answer_id === (int)$ans_choice_check_item->answer_id) {
+                                $new = false;
+                            }
+                        }
+                        //check to see if it is new
+                        if ($new) {
+                            $element_answer = new Ophtrconsent_SupplementaryConsentElementQuestionAnswer();
+                            $element_answer->element_question_id = $element_question->id;
+                            $element_answer->answer_id = $data_answer_id;
+                            $element_answer->save();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function actionGetDeleteConsentPopupContent()
@@ -1016,9 +1121,9 @@ class DefaultController extends BaseEventTypeController
 
     protected function setComplexAttributes_Element_OphTrConsent_BestInterestDecision(
         Element_OphTrConsent_BestInterestDecision $element,
-                                                  $data,
-                                                  $index = null)
-    {
+        $data,
+        $index = null
+    ) {
         $data = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_BestInterestDecision"];
         $items = [];
         if (isset($data["attachments"]) && is_array($data["attachments"])) {
@@ -1041,10 +1146,9 @@ class DefaultController extends BaseEventTypeController
 
     protected function saveComplexAttributes_Element_OphTrConsent_BestInterestDecision(
         Element_OphTrConsent_BestInterestDecision $element,
-                                                  $data,
-                                                  $index = null
-    )
-    {
+        $data,
+        $index = null
+    ) {
         $existing_ids = Yii::app()->db->createCommand(
             "SELECT id FROM " . OphTrConsent_BestInterestDecision_Attachment::model()->tableName()
             . " WHERE element_id = :element_id"
