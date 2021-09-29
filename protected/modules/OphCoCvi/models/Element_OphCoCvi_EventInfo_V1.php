@@ -205,18 +205,6 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
         ));
     }
 
-    public function patientCviCount($patient_id)
-    {
-        $criteria = new \CDbCriteria;
-        $criteria->select = 't.id,t.event_id';
-        $criteria->join = 'join event on event.id = t.event_id ';
-        $criteria->join .= 'join episode on event.episode_id = episode.id';
-        $criteria->condition = 'episode.patient_id = :patient_id';
-        $criteria->params = array(':patient_id' => $patient_id);
-        $cvis = Element_OphCoCvi_EventInfo_V1::model()->findAll($criteria);
-        return $cvis;
-    }
-
     /**
      * @TODO: Should probably be storing a fixed date for issue rather than relying on modified date
      *

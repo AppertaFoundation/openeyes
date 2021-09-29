@@ -12,45 +12,38 @@
  * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$currentFirm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+$currentFirm = \Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 $current_firm_subspecialty_id = $currentFirm->serviceSubspecialtyAssignment->subspecialty_id;
+$firms = \Firm::model()->getListWithSpecialties(Institution::model()->getCurrent()->id, false, $current_firm_subspecialty_id);
 ?>
 
 <div class="element-fields full-width">
-    <table class="cols-full last-left">
-        <colgroup>
-            <col class="cols-6">
-            <col class="cols-6">
-        </colgroup>
-        <tbody>
-        <tr class="col-gap">
-            <td>
-                <?= CHtml::activeDropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), ['class' => 'cols-full', 'empty' => '- Please Select -']); ?>
-            </td>
-        </tr>
-        <tr class="col-gap">
-            <td>
-                <?php echo $form->dropDownList($element, 'consultant_in_charge_of_this_cvi_id', Firm::model()->getListWithSpecialties(false, $current_firm_subspecialty_id), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 4, 'field' => 8)) ?>
-            </td>
-
-        </tr>
-
-        </tbody>
-    </table>
-
-
-</div>
-
-<div class="element-fields" style="display:none">
-    <div class="large-6 column">
-        <div class="fields-row">
-            <?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 4, 'field' => 8)) ?>
+    <div class="flex-layout flex-top col-gap">
+        <div class="cols-6">
+            <table class="cols-full last-left">
+                <colgroup>
+                    <col class="cols-5">
+                    <col class="cols-7">
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td><?=$element->getAttributeLabel('site_id');?></td>
+                    <td>
+                        <?= CHtml::activeDropDownList($element, 'site_id', \Site::model()->getListForCurrentInstitution(), ['class' => 'cols-full', 'empty' => '- Please Select -']); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td><?=$element->getAttributeLabel('consultant_in_charge_of_this_cvi_id');?></td>
+                    <td>
+                        <?= \CHtml::activeDropDownList($element, 'consultant_in_charge_of_this_cvi_id', $firms, ['class' => 'cols-full', 'empty' => '- Please Select -']); ?>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
-    <div class="large-6 column">
-        <div class="fields-row">
-            <?php echo $form->dropDownList($element, 'consultant_in_charge_of_this_cvi_id', Firm::model()->getListWithSpecialties(false, $current_firm_subspecialty_id), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 4, 'field' => 8)) ?>
-        </div>
+        <?php /* Having the following div makes sure that Event Info and Demographics elements' forms aligned properly*/ ?>
+        <div class="cols-6"></div>
     </div>
 </div>
+
 
