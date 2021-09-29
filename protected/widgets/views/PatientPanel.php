@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,11 +16,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
-$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
+$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
 /***
  * @var $trialContext TrialContext
  */
@@ -33,11 +35,17 @@ if ($this->trial) {
 $controllerID = (isset($this->controller->id) ? $this->controller->id : $this->id);
 
 $deceased = $this->patient->isDeceased();
+$institution = Institution::model()->getCurrent();
+
+$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+$display_secondary_number_usage_code = Yii::app()->params['display_secondary_number_usage_code'];
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $this->patient->id, $institution->id, $this->selected_site_id);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $this->patient->id, $institution->id, $this->selected_site_id);
 ?>
 
 <?php
 if ($summary) {
-    $this->render('application.widgets.views.PatientPanelSummary', array('deceased'=>$deceased,'trialContext'=>$trialContext,'navIconsUrl'=>$navIconsUrl));
+    $this->render('application.widgets.views.PatientPanelSummary', array('deceased' => $deceased,'trialContext' => $trialContext,'navIconsUrl' => $navIconsUrl));
 
     $assetManager = Yii::app()->getAssetManager();
     $widgetPath = $assetManager->publish('protected/widgets/js', true);
@@ -52,14 +60,14 @@ if ($summary) {
         data-patient-id="<?= $this->patient->id ?>" style="text-align: left">
         <?php if (!$deceased) { ?>
             <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
-            <i class="<?= in_array($controllerID, ['caseSearch','trial','worklist'])?'oe-i warning':'patient-allergies-risks' ?> medium pad js-allergies-risks-btn">
+            <i class="<?= in_array($controllerID, ['caseSearch','trial','worklist']) ? 'oe-i warning' : 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn">
             </i>
             <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
-            <i class="unknown <?= in_array($controllerID, ['caseSearch','trial','worklist'])? 'oe-i triangle': 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn"></i>
+            <i class="unknown <?= in_array($controllerID, ['caseSearch','trial','worklist']) ? 'oe-i triangle' : 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn"></i>
             <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
-            <i class="no-risk <?= in_array($controllerID, ['caseSearch','trial','worklist'])? 'oe-i triangle': 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn"></i>
+            <i class="no-risk <?= in_array($controllerID, ['caseSearch','trial','worklist']) ? 'oe-i triangle' : 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn"></i>
             <?php } else { /*either risk or allergy status in unknown*/ ?>
-            <i class="unknown <?= in_array($controllerID, ['caseSearch','trial','worklist'])? 'oe-i triangle': 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn"></i>
+            <i class="unknown <?= in_array($controllerID, ['caseSearch','trial','worklist']) ? 'oe-i triangle' : 'patient-allergies-risks' ?> medium pad js-allergies-risks-btn"></i>
             <?php }
         } ?>
             <i class=" js-patient-quick-overview oe-i info medium pad patient-demographics js-demographics-btn" id="js-demographics-btn"></i>
@@ -70,7 +78,7 @@ if ($summary) {
         <?php }?>
 
             <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
-              <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id'=>$this->patient->id, 'prevUrl'=>Yii::app()->request->url)); ?>" >
+              <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>" >
                   <i class="patient-local-edit js-patient-local-edit-btn oe-i medium pad pencil cc_pointer"
                     <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials)) {
                         echo 'style ="top: 35px; right: 0px"';

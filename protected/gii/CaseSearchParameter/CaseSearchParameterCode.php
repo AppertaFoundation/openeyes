@@ -11,6 +11,7 @@ class CaseSearchParameterCode extends CCodeModel
     public $className;
     public $alias;
     public $name;
+    public $type;
     public $attributeList;
     public $searchProviders = 'DBProvider'; // default to DBProvider
     public $path = 'application.modules.OECaseSearch';
@@ -18,10 +19,10 @@ class CaseSearchParameterCode extends CCodeModel
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('className, name, alias, searchProviders, path', 'required'),
+            array('className, name, type, alias, searchProviders, path', 'required'),
             array('className, alias', 'match', 'pattern' => '/^\w+$/'),
             array('attributeList, searchProviders', 'match', 'pattern' => '/^[\w,]+$/'),
-            array('className, name, alias, attributeList, searchProviders', 'sticky')
+            array('className, name, type, alias, attributeList, searchProviders', 'sticky')
         ));
     }
 
@@ -30,6 +31,7 @@ class CaseSearchParameterCode extends CCodeModel
         return array_merge(parent::attributeLabels(), array(
             'className' => 'Parameter Class Name',
             'name' => 'Parameter Name',
+            'type' => 'Parameter Type',
             'alias' => 'SQL alias prefix',
             'attributeList' => 'Attributes',
             'searchProviders' => 'Supported Search Providers',

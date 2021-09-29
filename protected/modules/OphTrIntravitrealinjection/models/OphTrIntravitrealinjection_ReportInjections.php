@@ -60,19 +60,23 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             'post_va' => 'Post injection VA',
             'drug_id' => 'Drug',
             'pre_antisept_drug_id' => 'Pre-injection Antiseptics',
+            'all_ids' => 'Patient IDs'
         );
     }
 
     public function rules()
     {
         return array(
-            array('date_from, date_to, given_by_id, summary, pre_va, post_va, drug_id, pre_antisept_drug_id', 'safe'),
+            array('date_from, date_to, given_by_id, summary, pre_va, post_va, drug_id, pre_antisept_drug_id, institution_id', 'safe'),
             array('date_from, date_to, summary, pre_va, post_va', 'required'),
         );
     }
 
     public function run()
     {
+        $user_id = Yii::app()->user->id;
+        $this->setInstitutionAndSite($user_id);
+
         if (!$this->date_from) {
             $this->date_from = date('Y-m-d', strtotime('-1 year'));
         } else {
@@ -86,8 +90,8 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         }
 
         //If user does NOT have the RBAC role 'Report' then select the current user
-        if ( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
-            $this->given_by_id = Yii::app()->user->id;
+        if ( !Yii::app()->getAuthManager()->checkAccess('Report', $user_id) ) {
+            $this->given_by_id = $user_id;
         }
 
         if ($this->given_by_id) {
@@ -137,7 +141,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                 foreach (array_keys($patient_data[$side]) as $drug) {
                     foreach (array_keys($patient_data[$side][$drug]) as $site) {
                         $records[] = array(
-                            'patient_hosnum' => $patient_data['patient_hosnum'],
+                            'patient_identifier' => $patient_data['patient_identifier'],
                             'patient_firstname' => $patient_data['patient_firstname'],
                             'patient_surname' => $patient_data['patient_surname'],
                             'patient_gender' => $patient_data['patient_gender'],
@@ -148,6 +152,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                             'first_injection_date' => $patient_data[$side][$drug][$site]['first_injection_date'],
                             'last_injection_date' => $patient_data[$side][$drug][$site]['last_injection_date'],
                             'injection_number' => $patient_data[$side][$drug][$site]['injection_number'],
+                            'all_ids' => $patient_data['all_ids'],
                         );
                     }
                 }
@@ -164,7 +169,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         $command = Yii::app()->db->createCommand()
             ->select(
                 'p.id as patient_id, treat.left_drug_id, treat.right_drug_id, treat.left_number, treat.right_number, e.id,
-						e.event_date, c.first_name, c.last_name, e.created_date, p.hos_num,p.gender, p.dob, eye.name AS eye, site.name as site_name'
+						e.event_date, c.first_name, c.last_name, e.created_date, p.gender, p.dob, eye.name AS eye, site.name as site_name'
             )
             ->from('et_ophtrintravitinjection_treatment treat')
             ->join('event e', 'e.id = treat.event_id')
@@ -189,6 +194,11 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             $params[':user_id'] = $given_by_user->id;
         }
 
+        if ($this->institution_id) {
+            $where .= ' and (e.institution_id = :institution_id)';
+            $params[':institution_id'] = $this->institution_id;
+        }
+
         if ($drug) {
             $where .= ' and (treat.left_drug_id = :drug_id or treat.right_drug_id = :drug_id)';
             $params[':drug_id'] = $drug->id;
@@ -209,9 +219,14 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                         $results[] = $record;
                     }
                 }
+
+                $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
+                $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['patient_id']);
+
                 $patient_data = array(
                     'id' => $row['patient_id'],
-                    'patient_hosnum' => $row['hos_num'],
+                    'patient_identifier' => $patient_identifier_value,
+                    'all_ids' => $patient_identifiers,
                     'patient_firstname' => $row['first_name'],
                     'patient_surname' => $row['last_name'],
                     'patient_gender' => $row['gender'],
@@ -246,7 +261,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         $command = Yii::app()->db->createCommand()
             ->select(
                 'p.id as patient_id, treat.left_drug_id, treat.right_drug_id, treat.left_number, treat.right_number, e.id,
-                e.event_date, c.first_name, c.last_name, p.hos_num, p.gender, p.dob, eye.name AS eye, site.name as site_name,
+                e.event_date, c.first_name, c.last_name, p.gender, p.dob, eye.name AS eye, site.name as site_name,
                 treat.left_injection_given_by_id, treat.right_injection_given_by_id,
                 treat.left_pre_antisept_drug_id, treat.right_pre_antisept_drug_id, anteriorseg.left_lens_status_id, anteriorseg.right_lens_status_id'
             )
@@ -277,15 +292,22 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             $params[':pre_antisept_drug_id'] = $pre_antisept_drug->id;
         }
 
+        if ($this->institution_id) {
+            $where .= ' and (e.institution_id = :institution_id)';
+            $params[':institution_id'] = $this->institution_id;
+        }
+
         $command->where($where);
 
         $results = array();
         foreach ($command->queryAll(true, $params) as $row) {
             $diagnosisData = $this->getDiagnosisData($row['patient_id'], $date_to . ' 23:59:59');
+            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
+            $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['patient_id']);
 
             $record = array(
                 'injection_date' => date('j M Y', strtotime($row['event_date'])),
-                'patient_hosnum' => $row['hos_num'],
+                'patient_identifier' => $patient_identifier_value,
                 'patient_firstname' => $row['first_name'],
                 'patient_surname' => $row['last_name'],
                 'patient_gender' => $row['gender'],
@@ -304,6 +326,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                 'lens_status_right' => $this->getLensStatus($row['right_lens_status_id']),
                 'diagnosis_left' => $this->getDiagnosisName($diagnosisData['left_diagnosis_id']),
                 'diagnosis_right' => $this->getDiagnosisName($diagnosisData['right_diagnosis_id']),
+                'all_ids' => $patient_identifiers,
             );
 
             $this->appendExaminationValues($record, $row['patient_id'], $row['event_date']);
@@ -352,7 +375,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         $output = $this->description() . "\n\n";
 
         if (!$this->summary) {
-            $output .= Patient::model()->getAttributeLabel('hos_num') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ',' . Patient::model()->getAttributeLabel('dob') . ',Eye,Drug,Site,First injection date,Last injection date,Injection no';
+            $output .= 'Date,' . $this->getPatientIdentifierPrompt() . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ',' . Patient::model()->getAttributeLabel('dob') . ',Eye,Site,Left drug,Left injection no,Right drug,Right injection no,Left Pre-injection Antiseptics,Right Pre-injection Antiseptics,Left Injection given by,Right Injection given by,Left Lens Status,Right Lens Status,Left Diagnosis,Right Diagnosis';
 
             if ($this->pre_va) {
                 $output .= ',Left pre-injection VA,Right pre-injection VA';
@@ -360,9 +383,9 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             if ($this->post_va) {
                 $output .= ',Left post-injection VA,Right post-injection VA';
             }
-            $output .= "\n";
+            $output .= ',Patient IDs' . "\n";
         } else {
-            $output .= 'Date,' . Patient::model()->getAttributeLabel('hos_num') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ',' . Patient::model()->getAttributeLabel('dob') . ',Eye,Site,Left drug,Left injection no,Right drug,Right injection no,Left Pre-injection Antiseptics,Right Pre-injection Antiseptics,Left Injection given by,Right Injection given by,Left Lens Status,Right Lens Status,Left Diagnosis,Right Diagnosis';
+            $output .= $this->getPatientIdentifierPrompt() . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ',' . Patient::model()->getAttributeLabel('dob') . ',Eye,Drug,Site,First injection date,Last injection date,Injection no';
 
             if ($this->pre_va) {
                 $output .= ',Left pre-injection VA,Right pre-injection VA';
@@ -370,7 +393,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             if ($this->post_va) {
                 $output .= ',Left post-injection VA,Right post-injection VA';
             }
-            $output .= "\n";
+            $output .= ',Patient IDs' . "\n";
         }
 
         return $output . $this->array2Csv($this->injections);

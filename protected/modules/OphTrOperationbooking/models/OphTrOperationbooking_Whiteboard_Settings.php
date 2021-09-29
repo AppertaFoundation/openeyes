@@ -25,7 +25,7 @@ class OphTrOperationbooking_Whiteboard_Settings extends BaseSetting
      * @var array
      */
     protected $setting_tables = [
-        'OphTrOperationbooking_Whiteboard_Settings_Data' => null
+        'OphTrOperationbooking_Whiteboard_Settings_Data' => 'institution_id'
     ];
 
     /**
@@ -52,7 +52,7 @@ class OphTrOperationbooking_Whiteboard_Settings extends BaseSetting
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria=new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('display_order', $this->display_order);

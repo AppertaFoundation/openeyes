@@ -15,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 use Guzzle\Http\Client;
 
 abstract class PASAPI_BaseTest extends RestTestCase
@@ -42,7 +43,7 @@ abstract class PASAPI_BaseTest extends RestTestCase
     protected function cleanUpTestUser()
     {
         if (!$this->user) {
-            $this->user = User::model()->findByAttributes(array('username' => 'autotestapi'));
+            $this->user = User::model()->with('authentications')->findByAttributes(array('authentications.username' => 'autotestapi'));
             if (!$this->user) {
                 return;
             }

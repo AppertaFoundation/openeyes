@@ -84,11 +84,10 @@ class WaitingListController extends BaseModuleController
         if (empty($_POST)) {
             $operations = array();
         } else {
-            $subspecialty_id = !empty($_POST['subspecialty-id']) ? $_POST['subspecialty-id'] : null;
+            $subspecialty_id = \Yii::app()->request->getParam('subspecialty-id');
             $firm_id = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
             $status = !empty($_POST['status']) ? $_POST['status'] : null;
-            $patient_search = new PatientSearch();
-            $hos_num = $patient_search->getHospitalNumber($_POST['hos_num']);
+            $patient_identifier_value = \Yii::app()->request->getParam('patient_identifier_value');
             $site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
                         $booking_status =  \Yii::app()->request->getParam('booking_status', '');
 
@@ -96,12 +95,12 @@ class WaitingListController extends BaseModuleController
                     'subspecialty-id' => $subspecialty_id,
                     'firm-id' => $firm_id,
                     'status' => $status,
-                    'hos_num' => $hos_num,
+                    'patient_identifier_value' => $patient_identifier_value,
                     'site_id' => $site_id,
                     'booking_status' => $booking_status
             ));
 
-            $operations = $this->getWaitingList($firm_id, $subspecialty_id, $status, $hos_num, $site_id, $booking_status);
+            $operations = $this->getWaitingList($firm_id, $subspecialty_id, $status, $patient_identifier_value, $site_id, $booking_status);
         }
 
         $this->renderPartial('_list', array('operations' => $operations, 'assetPath' => $this->assetPath), false, true);
@@ -117,8 +116,9 @@ class WaitingListController extends BaseModuleController
      * @param bool $site_id
      *
      * @return Element_OphTrOperationbooking_Operation[]
+     * @throws Exception
      */
-    public function getWaitingList($firm_id, $subspecialty_id, $status, $hos_num = false, $site_id = false, $booking_status)
+    public function getWaitingList($firm_id, $subspecialty_id, $status, $patient_identifier_value = false, $site_id = false, $booking_status)
     {
         $where_sql = '';
         $where_params = array();
@@ -131,38 +131,56 @@ class WaitingListController extends BaseModuleController
             $where_params[':subspecialty_id'] = $subspecialty_id;
         }
 
-        if ($hos_num) {
-            $where_sql .= ' AND patient.hos_num = :hos_num';
-            $where_params[':hos_num'] = $hos_num;
+        $patient_search = new \PatientSearch();
+        $patient_search_details = $patient_search->prepareSearch($patient_identifier_value);
+        $terms_with_types = $patient_search_details['terms_with_types'] ?? [];
+
+        if ($patient_search_details['original_term']) {
+            $id_condition = [];
+            foreach ($terms_with_types as $pi_key => $item) {
+                $type = $item['patient_identifier_type'];
+                $id_condition[] = "(value = :{$pi_key}_value AND patient_identifier_type_id = :{$pi_key}_type_id)";
+
+                $where_params[":{$pi_key}_value"] = $item['term'];
+                $where_params[":{$pi_key}_type_id"] = $type->id;
+            }
+
+            if ($id_condition) {
+                $where_sql .= ' AND (' . implode(' OR ', $id_condition) . ')';
+            } else {
+                // means 'terms_with_types' didn't return anything so we have no patient_identifier_type to search in
+                // if no values in $patient_search_details['patient_identifier_value'] means the input field was empty
+                // so we do not have to restrict this part
+                $where_sql .= ' AND 1=0 ';
+            }
         }
 
         if ($site_id && ctype_digit($site_id)) {
             $where_sql .= ' AND t.site_id = :site_id';
             $where_params[':site_id'] = $site_id;
+        } else {
+            $where_sql .= ' AND site.institution_id = :institution_id';
+            $where_params[':institution_id'] = Institution::model()->getCurrent()->id;
         }
 
         if ($booking_status) {
-                        $where_sql .= ' AND t.status_id = :status_id';
-                        $where_params[':status_id'] = $booking_status;
+            $where_sql .= ' AND t.status_id = :status_id';
+            $where_params[':status_id'] = $booking_status;
         } else {
-                        $booking_status_ids = Yii::app()->db->createCommand()->select('id')->from('ophtroperationbooking_operation_status')
-                            ->where(['in','name', ['On-Hold', 'Requires scheduling', 'Requires rescheduling', ]])->queryColumn();
-                        $booking_status_ids = "(" . implode(',', $booking_status_ids) . ")";
-                        $where_sql .= ' AND t.status_id IN ' . $booking_status_ids;
+            $booking_status_ids = Yii::app()->db->createCommand()->select('id')->from('ophtroperationbooking_operation_status')
+                ->where(['in','name', ['On-Hold', 'Requires scheduling', 'Requires rescheduling', ]])->queryColumn();
+            $booking_status_ids = "(" . implode(',', $booking_status_ids) . ")";
+            $where_sql .= ' AND t.status_id IN ' . $booking_status_ids;
         }
 
         Yii::app()->event->dispatch('start_batch_mode');
 
         $operations = Element_OphTrOperationbooking_Operation::model()
             ->with(array(
-                    'event',
-                    'event.episode',
-                    'event.episode.firm',
-                    'event.episode.firm.serviceSubspecialtyAssignment',
                     'event.episode.firm.serviceSubspecialtyAssignment.subspecialty',
-                    'event.episode.patient',
                     'event.episode.patient.contact',
                     'event.episode.patient.practice',
+                    'event.episode.patient.identifiers',
                     'event.episode.patient.contact.correspondAddress',
                     'site',
                     'eye',
@@ -237,7 +255,7 @@ class WaitingListController extends BaseModuleController
      */
     public function actionFilterSetHosNum()
     {
-        $this->setFilter('hos_num', $_POST['hos_num']);
+        $this->setFilter('patient_identifier_value', \Yii::app()->request->getParam('patient_identifier_value'));
     }
     /**
      * Helper method to fetch firms by subspecialty ID.

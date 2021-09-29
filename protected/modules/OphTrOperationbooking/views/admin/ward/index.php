@@ -48,7 +48,7 @@
                         <td><?php echo $ward->name?></td>
                         <td><?php echo $ward->code?>&nbsp;</td>
                         <td><?php echo $ward->restrictionText?></td>
-                        <td><i class="oe-i <?=($ward->active ? 'tick' : 'remove');?> small"></i></td>
+                        <td><i class="oe-i <?=($ward->active ? 'tick' : 'remove')?> small"></i></td>
                     </tr>
                     <?php } }?>
             </tbody>

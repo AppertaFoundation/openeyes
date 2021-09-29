@@ -27,10 +27,22 @@
  */
 class LetterString extends LetterStringBase
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_SITE;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'letter_string_id';
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ElementOperation the static model class
+     * @return LetterString|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -57,7 +69,7 @@ class LetterString extends LetterStringBase
             array('letter_string_group_id, name, body', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('letter_string_group_id, name, body, display_order, site_id', 'safe', 'on' => 'search'),
+            array('letter_string_group_id, name, body, display_order', 'safe', 'on' => 'search'),
         );
     }
 
@@ -73,7 +85,9 @@ class LetterString extends LetterStringBase
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'letter_string_group' => array(self::BELONGS_TO, 'LetterStringGroup', 'letter_string_group_id'),
             'elementType' => array(self::HAS_ONE, 'ElementType', ['class_name' => 'element_type']),
-            'eventType' => array(self::HAS_ONE, 'EventType', ['class_name' => 'event_type'])
+            'eventType' => array(self::HAS_ONE, 'EventType', ['class_name' => 'event_type']),
+            'institutions' => array(self::MANY_MANY, 'Institution', 'ophcocorrespondence_letter_string_institution(letter_string_id,institution_id)'),
+            'sites' => array(self::MANY_MANY, 'Site', 'ophcocorrespondence_letter_string_site(letter_string_id,site_id)'),
         );
     }
 
@@ -83,7 +97,8 @@ class LetterString extends LetterStringBase
     public function attributeLabels()
     {
         return array(
-            'site_id' => 'Site',
+            'institutions.name' => 'Institutions',
+            'sites.name' => 'Sites',
             'letter_string_group_id' => 'Letter String Group',
             'elementType.name' => 'Element Type',
             'eventType.name' => 'Event Type'

@@ -58,7 +58,6 @@ $roles = $qs_svc->getQueueSetRoles();
             foreach ($queueset->permissioned_users as $user) {
                 $this->renderPartial('form_queueset_perms_user', array(
                             'fullname' => $user->getFullName(),
-                            'username' => $user->username,
                             'id' => $user->id,
                         ));
             }
@@ -75,7 +74,6 @@ $roles = $qs_svc->getQueueSetRoles();
         <?php
             $this->renderPartial('form_queueset_perms_user', array(
                 'fullname' => '{{fullname}}',
-                'username' => '{{username}}',
                 'id' => '{{id}}',
             ));
             ?>
@@ -99,7 +97,6 @@ $roles = $qs_svc->getQueueSetRoles();
                             Mustache.render($('#user-template').html(),
                                 {
                                     fullname: autoCompleteResponse.value,
-                                    username: autoCompleteResponse.username,
                                     id: autoCompleteResponse.id
                                 }
                             )

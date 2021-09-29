@@ -47,58 +47,18 @@
   </div>
 </div>
 
-<?php if ($this->action->id == 'create') :?>
-    <div>
-        <hr />
-        <?php
-            $prescription_setting = \SettingMetadata::model()->getSetting('auto_generate_prescription_after_surgery');
-            // typecaset on/off to true/false
-            $prescription_setting = $prescription_setting ? ($prescription_setting === 'on' ? true : false) : false;
-            //if posted we use that otherwise we use the default
-            $prescription_setting = $this->request->getParam('auto_generate_prescription_after_surgery', $prescription_setting);
+<?php
+if ($this->action->id == 'create') {
+    $this->widget('EventAutoGenerateCheckboxesWidget', [
+        'suffix' => strtolower($this->event->eventType->class_name)
+    ]);
+}
 
-            $gp_letter_setting = \SettingMetadata::model()->getSetting('auto_generate_gp_letter_after_surgery');
-            $gp_letter_setting = $gp_letter_setting ? ($gp_letter_setting === 'on' ? true : false) : false;
-            $gp_letter_setting = $this->request->getParam('auto_generate_gp_letter_after_surgery', $gp_letter_setting);
+$instru_list = $element->postop_instructions_list;
 
-            $optom_setting = \SettingMetadata::model()->getSetting('auto_generate_optom_post_op_letter_after_surgery');
-            $optom_setting = $optom_setting ? ($optom_setting === 'on' ? true : false) : false;
-            $optom_setting = $this->request->getParam('auto_generate_optom_post_op_letter_after_surgery', $optom_setting);
-        ?>
-
-        <?php if (\SettingMetadata::model()->getSetting('default_post_op_drug_set')) :?>
-        <label class="inline highlight">
-            <?=\CHtml::hiddenField('auto_generate_prescription_after_surgery', 0);?>
-            <?= \CHtml::checkBox('auto_generate_prescription_after_surgery', $prescription_setting); ?> Generate standard prescription
-        </label>
-        <?php endif; ?>
-
-        <?php
-        $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-        $post_op_macro_name = SettingMetadata::model()->getSetting('default_post_op_letter');
-        $optom_post_op_name = SettingMetadata::model()->getSetting('default_optom_post_op_letter');
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-        $macro = $correspondence_api->getDefaultMacro($firm, Yii::app()->session['selected_site_id'], $post_op_macro_name);
-        if ($macro) { ?>
-            <label class="inline highlight">
-                <?=\CHtml::hiddenField('auto_generate_gp_letter_after_surgery', 0);?>
-                <?=\CHtml::checkBox('auto_generate_gp_letter_after_surgery', $gp_letter_setting);?>Generate standard GP letter
-            </label>
-        <?php }
-        $macro = $correspondence_api->getDefaultMacro($firm, Yii::app()->session['selected_site_id'], $optom_post_op_name);
-        if ($macro) { ?>
-            <label class="inline highlight">
-                <?=\CHtml::hiddenField('auto_generate_optom_post_op_letter_after_surgery', 0);?>
-                <?=\CHtml::checkBox('auto_generate_optom_post_op_letter_after_surgery', $optom_setting);?>Generate standard Optom letter
-            </label>
-        <?php } ?>
-
-    </div>
-<?php endif; ?>
-
-<?php $instru_list = $element->postop_instructions_list; ?>
-<script type="text/javascript">
-  $(document).ready(function () {
+?>
+<script>
+    $(document).ready(function () {
     var inputText = $('#Element_OphTrOperationnote_Comments_postop_instructions');
 
     new OpenEyes.UI.AdderDialog({

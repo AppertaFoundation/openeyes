@@ -72,7 +72,7 @@ $recipients_data = $recipients_data + $none_option;
                 <?php echo $form->dropDownList(
                     $macro,
                     'type',
-                    array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()),
+                    array('institutions' => 'Institution', 'sites' => 'Site', 'subspecialties' => 'Subspecialty', 'firms' => Firm::contextLabel()),
                     array('empty' => '- Type -', 'class' => 'cols-full', 'nowrapper' => true,)
                 ) ?>
             </td>
@@ -95,25 +95,44 @@ $recipients_data = $recipients_data + $none_option;
         <tr>
             <td id="LetterMacro_type_dropdown"></td>
             <td>
-                <?=\CHtml::activeDropDownList(
+                <?= $form->multiSelectList(
                     $macro,
-                    'site_id',
+                    'LetterMacro[institutions]',
+                    'institutions',
+                    'id',
+                    Institution::model()->getList(!Yii::app()->user->checkAccess('selected_institution_id')),
+                    null,
+                    ['class' => 'cols-full', 'div-class' => 'typeInstitution', 'empty' => '- Institution -', 'nowrapper' => true, 'hidden' => true],
+                    $macro->type != 'institution'
+                ) ?>
+                <?= $form->multiSelectList(
+                    $macro,
+                    'LetterMacro[sites]',
+                    'sites',
+                    'id',
                     Site::model()->getListForCurrentInstitution(),
-                    array('empty' => '- Site -', 'div-class' => 'typeSite', 'class' => 'cols-full', 'hidden' => true),
+                    null,
+                    array('empty' => '- Site -', 'div-class' => 'typeSite', 'class' => 'cols-full', 'nowrapper' => true, 'hidden' => true),
                     $macro->type != 'site'
                 ) ?>
-                <?=\CHtml::activeDropDownList(
+                <?= $form->multiSelectList(
                     $macro,
-                    'subspecialty_id',
+                    'LetterMacro[subspecialties]',
+                    'subspecialties',
+                    'id',
                     CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-                    array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty', 'class' => 'cols-full', 'hidden' => true),
+                    null,
+                    array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty', 'class' => 'cols-full', 'nowrapper' => true, 'hidden' => true),
                     $macro->type != 'subspecialty'
                 ) ?>
-                <?=\CHtml::activeDropDownList(
+                <?= $form->multiSelectList(
                     $macro,
-                    'firm_id',
-                    Firm::model()->getListWithSpecialties(true),
-                    array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm', 'class' => 'cols-full', 'hidden' => true),
+                    'LetterMacro[firms]',
+                    'firms',
+                    'id',
+                    Firm::model()->getListWithSpecialties(Yii::app()->session['selected_institution_id'], true),
+                    null,
+                    array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm', 'class' => 'cols-full', 'nowrapper' => true, 'hidden' => true),
                     $macro->type != 'firm'
                 ) ?>
             </td>

@@ -35,7 +35,7 @@ else :
     <?php if (!@$htmlOptions['nolabel']) : ?>
   <div class="<?= $stretch?'': 'cols-'.$layoutColumns['label']; ?> column">
     <label for="<?= CHtml::modelName($element)."_".$field ?>">
-        <?= $element->getAttributeLabel($field) ?>:
+        <?= (isset($htmlOptions['label']) ? $htmlOptions['label'] : $element->getAttributeLabel($field)) ?>:
     </label>
   </div>
     <?php endif ?>

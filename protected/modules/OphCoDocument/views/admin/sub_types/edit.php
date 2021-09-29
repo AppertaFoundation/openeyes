@@ -30,6 +30,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'label' => 2,
         'field' => 5,
     ),
+    'htmlOptions' => array('enctype' => 'multipart/form-data'),
 )) ?>
 
 <?php $this->renderPartial(

@@ -1,61 +1,69 @@
 <?php
 /**
  * @var PatientIdentifier[] $patient_identifiers
+ * @var array $pid_type_necessity_values
  */
 ?>
-<?php if (isset(Yii::app()->params['patient_identifiers'])) { ?>
-    <?php $index = 0;
-    foreach (Yii::app()->params['patient_identifiers'] as $identifier_code => $identifier_config) {
-        $patient_identifier = null;
-        foreach ($patient_identifiers as $pi) {
-            if ($pi->code === $identifier_code) {
-                $patient_identifier = $pi;
-                break;
-            }
-        }
 
-        if ($patient_identifier === null) {
-            $patient_identifier = new PatientIdentifier();
-            $patient_identifier->code = $identifier_code;
-        }
-        ?>
-      <tr class="patient-identifier-duplicate-check">
-        <td class="<?= $patient_identifier->isRequired() ? 'required' : '' ?>">
-            <?= $patient_identifier->getLabel() ?>
-          <br/>
+<?php foreach ($patient_identifiers as $index => $patient_identifier) { ?>
+    <tr class="js-patient-identifier-duplicate-check-<?= $index ?>">
+        <td class=<?= $pid_type_necessity_values[$patient_identifier->patient_identifier_type_id]['necessity'] === 'mandatory' ? 'required' : '' ?>>
+            <?= $patient_identifier->patientIdentifierType->short_title ?>
+            <br/>
             <?= $form->error($patient_identifier, 'value') ?>
         </td>
         <td>
             <?php
-
-            echo $form->textField($patient_identifier, 'value', array(
-                    'placeholder' => $patient_identifier->getPlaceholder(),
-                    'maxlength' => 255,
-                    'name' => 'PatientIdentifier['.$index.'][value]',
-                    'onblur' => "findDuplicatesByPatientIdentifier($patient->id);",
-                    !$patient_identifier->isEditable() ? 'readonly' : '' => 'readonly',
-            ));
-            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][id]', $patient_identifier->id);
-            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $patient_identifier->code);
-            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][null_check]', $patient_identifier->nullCheck());
+                echo $form->textField($patient_identifier, 'value', [
+                    'placeholder' => $patient_identifier->patientIdentifierType->long_title,
+                    'maxlength' => 40,
+                    'size' => 40,
+                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'name' => 'PatientIdentifier[' . $index . '][value]',
+                    'onblur' => "findDuplicatesByPatientIdentifier($index);",
+                ]);
+                echo CHtml::hiddenField('PatientIdentifier[' . $index . '][patient_identifier_type_id]', $patient_identifier->patient_identifier_type_id);
             ?>
         </td>
-      </tr>
+    </tr>
+    <?php if ($pid_type_necessity_values[$patient_identifier->patient_identifier_type_id]['status_necessity'] !== 'hidden') { ?>
+        <tr>
+            <td class=<?= $pid_type_necessity_values[$patient_identifier->patient_identifier_type_id]['status_necessity'] === 'mandatory' ? 'required' : '' ?>>
+                <?= $patient_identifier->patientIdentifierType->short_title . ' Status' ?>
+                <br/>
+                <?= $form->error($patient_identifier, 'patient_identifier_status_id') ?>
+            </td>
+            <td>
+                <?= $form->dropDownList(
+                        $patient_identifier,
+                        'patient_identifier_status_id',
+                        CHtml::listData($patient_identifier->patientIdentifierType->patientIdentifierStatuses, 'id', 'description'), [
+                            'empty' => '-- select --',
+                            'name' => 'PatientIdentifier[' . $index . '][patient_identifier_status_id]',
+                        ],
+                    );
+                ?>
+            </td>
+        </tr>
+    <?php } ?>
 <?php } ?>
 
 <script>
-    function findDuplicatesByPatientIdentifier( id ) {
-        var identifier_value = $('#PatientIdentifier_<?= $index ?>_value').val();
-        var null_check = $('#PatientIdentifier_<?= $index ?>_null_check').val();
+    function findDuplicatesByPatientIdentifier(index) {
+        let identifier_value = $('#PatientIdentifier_' + index + '_value').val();
+        let identifier_type_id = $('#PatientIdentifier_' + index + '_patient_identifier_type_id').val();
+        let patient_id = <?= $patient->id ?: 'null' ?>;
         $.ajax({
             url: "<?php echo Yii::app()->controller->createUrl('patient/findDuplicatesByIdentifier');?>",
-            data: {identifier_code: '<?= $identifier_code ?>',identifier_value: identifier_value, id: id, null_check: null_check},
+            data: {identifier_type_id: identifier_type_id ,identifier_value: identifier_value, id: patient_id},
             type: 'GET',
             success: function (response) {
-                $('#conflicts').remove();
-                $('.patient-identifier-duplicate-check').after(response);
+                let response_class = 'js-patient-identifier-duplicate-check-response-' + index;
+                $('.' + response_class).remove();
+                let $response = $(response);
+                $('.js-patient-identifier-duplicate-check-' + index).after($response);
+                $response.addClass(response_class)
             }
         });
     }
 </script>
-    <?php $index++; } ?>

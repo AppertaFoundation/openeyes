@@ -445,8 +445,8 @@ class CorrespondenceEmailManager
         // if the email is being sent via the cron job then set the user_id for the auditing
         // as the docman_user.
         if ($this->isConsole) {
-            $user = User::model()->find('username = "docman_user"');
-            $properties['user_id'] = $user->id;
+            $user_auth = UserAuthentication::model()->find('username = "docman_user"');
+            $properties['user_id'] = $user_auth->user_id;
         }
         $audit = Audit::add('event', 'email', str_replace(PHP_EOL, "<br/>", $msg), $msg, $properties);
         if ($audit) {

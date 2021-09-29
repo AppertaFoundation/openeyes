@@ -422,15 +422,22 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
 
     protected function afterConstruct()
     {
-        if ($this->isNewRecord && isset(Yii::app()->session['selected_firm_id'])) {
-            $defaultLengthRecord = OphTrOperationnote_CataractIncisionLengthDefault::model()->findByAttributes(
-                array('firm_id' => (int) Yii::app()->session['selected_firm_id'])
-            );
+        if ($this->isNewRecord) {
+            $element_type = ElementType::model()->find('class_name = :class_name', array(':class_name' => get_class($this)));
+            $incision_length = SettingUser::model()->find('user_id = :user_id AND element_type_id = :element_type_id AND `key` = :key', array(':user_id' => Yii::app()->user->id, ':element_type_id' => $element_type->id, ':key' => 'incision_length'));
 
-            if ($defaultLengthRecord) {
-                $this->length = $defaultLengthRecord->value;
-            } elseif (isset(Yii::app()->params['default_incision_length']) && Yii::app()->params['default_incision_length'] !== '') {
-                $this->length = Yii::app()->params['default_incision_length'];
+            if ($incision_length) {
+                $this->length = $incision_length->value;
+            } elseif (isset(Yii::app()->session['selected_firm_id'])) {
+                $defaultLengthRecord = OphTrOperationnote_CataractIncisionLengthDefault::model()->findByAttributes(
+                    array('firm_id' => (int) Yii::app()->session['selected_firm_id'])
+                );
+
+                if ($defaultLengthRecord) {
+                    $this->length = $defaultLengthRecord->value;
+                } elseif (isset(Yii::app()->params['default_incision_length']) && Yii::app()->params['default_incision_length'] !== '') {
+                    $this->length = Yii::app()->params['default_incision_length'];
+                }
             }
         }
 
@@ -484,7 +491,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     }
 
     private function getNoneIolPosition()
-        {
+    {
             $position_none = OphTrOperationnote_IOLPosition::model()->findByAttributes(array('name'=>'None'));
         if ($position_none) {
             return $position_none;
@@ -493,7 +500,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         }
     }
 
-        /**
+     /**
      * Load in the correction values for the eyedraw fields
      *
      * @param Patient|null $patient

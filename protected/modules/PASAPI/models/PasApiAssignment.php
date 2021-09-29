@@ -28,13 +28,12 @@ namespace OEModule\PASAPI\models;
  */
 class PasApiAssignment extends \BaseActiveRecord
 {
-
     /**
      * Default time (in seconds) before cached PAS details are considered stale
      * 0 : always stale - update from query PAS every time
      * null : never stale - never update from PAS
      */
-    public $pas_cache_time = 0;
+    public $pas_cache_time = null;
 
     /**
      * Whenever a record missing from PAS
@@ -122,12 +121,26 @@ class PasApiAssignment extends \BaseActiveRecord
 
         $record = $this->findByAttributes(array('resource_type' => $resource_type, 'resource_id' => $resource_id));
         if (!$record) {
-            $record = new static();
-            $record->resource_type = $resource_type;
-            $record->resource_id = $resource_id;
-            // assuming all models are in the root namespace at this point
-            $record->internal_type = '\\'.$internal_type;
+            $record = $this->getNewAssignment($resource_type, $resource_id, $internal_type);
         }
+
+        return $record;
+    }
+
+    /**
+     * Sets a new assignment
+     *
+     * @param $resource_type
+     * @param $resource_id
+     * @param null $internal_type
+     */
+    public function getNewAssignment($resource_type, $resource_id, $internal_type = null)
+    {
+        $record = new static();
+        $record->resource_type = $resource_type;
+        $record->resource_id = $resource_id;
+        // assuming all models are in the root namespace at this point
+        $record->internal_type = '\\'.$internal_type;
 
         return $record;
     }

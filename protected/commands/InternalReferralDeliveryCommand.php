@@ -32,11 +32,13 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
     private $file_random_number;
 
-    public function setFileRandomNumber($number){
+    public function setFileRandomNumber($number)
+    {
         $this->file_random_number = $number;
     }
 
-    public function getFileRandomNumber(){
+    public function getFileRandomNumber()
+    {
         return $this->file_random_number ? $this->file_random_number : rand();
     }
 
@@ -121,8 +123,15 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
             if ($this->updateDelivery($document->id)) {
                 $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $event->id));
+
+                $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
+                    'LOCAL',
+                    $event->episode->patient->id,
+                    $event->institution_id, $event->site_id
+                ));
+
                 $this->logData(array(
-                    'hos_num' => $event->episode->patient->hos_num,
+                    'hos_num' => $local_identifier_value,
                     'clinician_name' => $event->user->getFullName(),
                     'letter_type' => (isset($element_letter->letterType->name) ? $element_letter->letterType->name : ''),
                     'letter_finalised_date' => $event->last_modified_date,
@@ -230,17 +239,22 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
      */
     private function getFileName(\Event $event)
     {
+        $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
+            'LOCAL',
+            $event->episode->patient->id,
+            $event->institution_id, $event->site_id
+        ));
         if (!isset(Yii::app()->params['filename_format']) || Yii::app()->params['filename_format'] === 'format1') {
-            $filename = "OPENEYES_Internal_" . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . $event->id . "_" . $this->getFileRandomNumber();
+            $filename = "OPENEYES_Internal_" . (str_replace(' ', '', $local_identifier_value)) . '_' . $event->id . "_" . $this->getFileRandomNumber();
         } else {
             if (Yii::app()->params['filename_format'] === 'format2') {
-                $filename = 'Internal_' . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . date(
+                $filename = 'Internal_' . (str_replace(' ', '', $local_identifier_value)) . '_' . date(
                     'YmdHi',
                     strtotime($event->last_modified_date)
                 ) . '_' . $event->id;
             } else {
                 if (Yii::app()->params['filename_format'] === 'format3') {
-                    $filename = 'Internal_' . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_edtdep-OEY_' .
+                    $filename = 'Internal_' . (str_replace(' ', '', $local_identifier_value)) . '_edtdep-OEY_' .
                         date('Ymd_His', strtotime($event->last_modified_date)) . '_' . $event->id;
                 }
             }
@@ -317,5 +331,4 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
         return $output->save();
     }
-
 }

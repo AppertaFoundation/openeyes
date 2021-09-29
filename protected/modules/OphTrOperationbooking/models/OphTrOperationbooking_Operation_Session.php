@@ -49,13 +49,12 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @param string $className
-     *
-     * @return the static model class
+     * @param string $class_name
+     * @return OphTrOperationbooking_Operation_Session|BaseActiveRecord static model class
      */
-    public static function model($className = __CLASS__)
+    public static function model($class_name = __CLASS__)
     {
-        return parent::model($className);
+        return parent::model($class_name);
     }
 
     /**
@@ -109,9 +108,10 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'theatre' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Theatre', 'theatre_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'sequence' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Sequence', 'sequence_id'),
             'unavailablereason' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Session_UnavailableReason', 'unavailablereason_id'),
+
             'activeBookings' => array(self::HAS_MANY, 'OphTrOperationbooking_Operation_Booking', 'session_id',
                 'on' => 'activeBookings.booking_cancellation_date is null',
                 'order' => 'activeBookings.display_order ASC, activeBookings.id ASC',
@@ -144,7 +144,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     {
         $criteria = array(
             'with' => array(
-                'operation',
                 'operation.anaesthetic_type',
                 'operation.priority',
                 'operation.event' => array('joinType' => 'join'),
@@ -161,7 +160,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
                 'user',
             ),
         );
-        if ((int)$ward_id) {
+
+        if ((int)$ward_id != 'All') {
             $criteria['condition'] = 'ward.id = :ward_id';
             $criteria['params'][':ward_id'] = (int)$ward_id;
         }
@@ -600,10 +600,12 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     public function getUnavailableReasonList()
     {
         $criteria = new CDbCriteria();
-        $criteria->condition = 'enabled = true';
         $criteria->order = 'display_order asc';
 
-        $reasons = OphTrOperationbooking_Operation_Session_UnavailableReason::model()->findAll($criteria);
+        $reasons = OphTrOperationbooking_Operation_Session_UnavailableReason::model()->findAllAtLevel(
+            ReferenceData::LEVEL_INSTITUTION,
+            $criteria
+        );
         // just use standard list
         if (!$this->unavailablereason_id) {
             return $reasons;
@@ -715,6 +717,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             $criteria->addCondition('t.active = 1');
             $criteria->params[':sub_id'] = $subspecialty_id;
         }
+
+        $criteria->compare('institution_id', Yii::app()->session['selected_institution_id']);
 
         return \Firm::model()->findAll($criteria);
     }

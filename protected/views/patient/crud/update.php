@@ -3,7 +3,7 @@
  * @var PatientController $this
  * @var Patient $model
  * @var Contact $contact
- * @var PatientIdentifier[] $patient_identifiers
+ * @var ArchivePatientIdentifier[] $patient_identifiers
  */
 ?>
 <div class="oe-full-header flex-layout">
@@ -16,5 +16,6 @@
     'referral' => $referral,
     'patientuserreferral' => $patientuserreferral,
     'patient_identifiers' => $patient_identifiers,
+    'pid_type_necessity_values' => $pid_type_necessity_values,
     'prevUrl'=>$prevUrl,
 )); ?>

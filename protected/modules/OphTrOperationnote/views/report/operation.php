@@ -18,6 +18,7 @@
             <col class="cols-7">
         </colgroup>
         <tbody>
+        <?php $this->renderPartial('//report/_institution_table_row', ['field_name' => "institution_id"]);?>
         <tr class="col-gap">
             <td>
                 <?= \CHtml::label('Surgeon', 'surgeon_id') ?>

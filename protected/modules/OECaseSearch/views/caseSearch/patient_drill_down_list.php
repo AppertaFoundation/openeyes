@@ -97,5 +97,5 @@ if ($patients->itemCount > 0) { ?>
         </tr>
         </tfoot>
     </table>
-    <?php } ?>
+<?php } ?>
 </div>

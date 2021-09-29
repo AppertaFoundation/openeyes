@@ -98,17 +98,27 @@ $default_urls = $logo_helper->getLogoURLs();
         <tr>
             <td>Institution</td>
             <td>
-                <?= \CHtml::activeDropDownList(
-                    $site,
-                    'institution_id',
-                    CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
-                    ['class' => 'cols-full']
-                ); ?>
+                <?php if ($this->checkAccess('admin')) {
+                    echo \CHtml::activeDropDownList(
+                        $site,
+                        'institution_id',
+                        CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
+                        ['class' => 'cols-full']
+                    );
+                } else {
+                    $institution = Institution::model()->getCurrent();
+                    echo $site->institution_id ? $site->institution->name : $institution->name;
+                    echo \CHtml::activeHiddenField(
+                        $site,
+                        'institution_id',
+                        ['value' => $site->institution_id ?? $institution->id]
+                    );
+                } ?>
             </td>
         </tr>
         <?php foreach (['name', 'short_name', 'remote_id'] as $field) : ?>
             <tr>
-                <td><?= $site->getAttributeLabel($field); ?></td>
+                <td><?= $site->getAttributeLabel($field) ?></td>
                 <td>
                     <?= \CHtml::activeTextField(
                         $site,
@@ -117,7 +127,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             'class' => 'cols-full',
                             'autocomplete' => Yii::app()->params['html_autocomplete']
                         ]
-                    ); ?>
+                    ) ?>
                 </td>
             </tr>
         <?php endforeach; ?>

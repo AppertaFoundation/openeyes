@@ -281,9 +281,8 @@ var macro_cursor_position = 0;
  */
 function setTypeFilter(type)
 {
-
-    $('#LetterMacro_site_id, #LetterMacro_subspecialty_id, #LetterMacro_firm_id').hide();
-    $('#LetterMacro_'+type+'_id').show();
+    $('#LetterMacro_institutions, #LetterMacro_sites, #LetterMacro_subspecialties, #LetterMacro_firms').hide();
+    $('#LetterMacro_'+type).show();
 	$('#LetterMacro_type_dropdown').text(type.charAt(0).toUpperCase() + type.slice(1));
 }
 

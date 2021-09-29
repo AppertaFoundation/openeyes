@@ -26,6 +26,22 @@
  */
 class OphTrLaser_LaserProcedure extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    /**
+     * @param int $level
+     * @return string The name of the reference data ID column in the mapping table.
+     */
+    protected function mappingColumn(int $level): string
+    {
+        return 'laserprocedure_id';
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -62,6 +78,7 @@ class OphTrLaser_LaserProcedure extends BaseActiveRecordVersioned
     {
         return array(
                 'procedure' => array(self::BELONGS_TO, 'Procedure', 'procedure_id'),
+                'institutions' => array(self::MANY_MANY, 'Institution', 'ophtrlaser_laserprocedure_institution(laserprocedure_id,institution_id)'),
         );
     }
 

@@ -43,9 +43,22 @@ class AdminSidebar extends BaseCWidget
                 continue;
             }
             foreach ($box_data as $item_title => $item) {
+                $has_access = true;
                 $uri = $item;
                 if (is_array($item)) {
                     $uri = $item['uri'];
+                    if (isset($item['restricted'])) {
+                        $has_access = false;
+                        $restricted = $item['restricted'];
+                        foreach ($restricted as $role) {
+                            // User only needs to have at least 1 of the specified roles to have access.
+                            if (Yii::app()->controller->checkAccess($role)) {
+                                $has_access = true;
+                                break;
+                            }
+                        }
+                    }
+
                     // need to check if function depends on a module
                     if (array_key_exists('module', $item)) {
                         // simply replaces all occurrences of context_firm_label with output of Firm::contextLabel
@@ -66,7 +79,9 @@ class AdminSidebar extends BaseCWidget
                 $item_title = str_replace('service_firm_label', Firm::serviceLabel(), $item_title);
                 // end of nasty hack
 
-                $menu_items[$box_title][$item_title] = $uri;
+                if ($has_access) {
+                    $menu_items[$box_title][$item_title] = $uri;
+                }
             }
         }
         return $menu_items;

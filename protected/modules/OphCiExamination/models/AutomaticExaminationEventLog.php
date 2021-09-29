@@ -117,7 +117,8 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     protected function buildOptomFilterCriteria($filter = array())
     {
         $criteria = new \CDbCriteria();
-        $criteria->with = array('event.episode.patient');
+        $criteria->with = array('event.episode.patient.identifiers');
+        $criteria->together = true;
         $criteria->condition = "import_success = 1";
         $criteria->addCondition("event.deleted<>1");
 
@@ -183,9 +184,24 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     private function patientNumberSearch(\CDbCriteria $criteria, $filter)
     {
         if (array_key_exists('patient_number', $filter) && $filter['patient_number'] !== '') {
-            $patient_search = new PatientSearch();
-            $criteria->addCondition('hos_num = :hos_num');
-            $criteria->params[':hos_num'] = $patient_search->getHospitalNumber($filter['patient_number']);
+            $patient_search = new \PatientSearch();
+            $patient_search_details = $patient_search->prepareSearch($filter['patient_number']);
+            $terms_with_types = $patient_search_details['terms_with_types'] ?? [];
+
+            $id_condition = [];
+            foreach ($terms_with_types as $tid => $item) {
+                $type = $item['patient_identifier_type'];
+                $id_condition[] = "value = :{$tid}_value AND patient_identifier_type_id = :{$tid}_type_id";
+                $criteria->params[":{$tid}_value"] = $item['term'];
+                $criteria->params[":{$tid}_type_id"] = $type['id'];
+            }
+
+            if ($id_condition) {
+                $criteria->addCondition(implode(' OR ', $id_condition));
+            } else {
+                // no type to returned to search in, so return no result
+                $criteria->addCondition("1=0");
+            }
         }
     }
 

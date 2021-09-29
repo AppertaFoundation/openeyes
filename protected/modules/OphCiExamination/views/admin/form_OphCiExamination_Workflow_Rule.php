@@ -36,6 +36,17 @@
     <?php endif; ?>
 
     <tr>
+        <td>Institution</td>
+        <td class="cols-full">
+            <?= CHtml::activeDropDownList(
+                $model,
+                'institution_id',
+                Institution::model()->getList(true),
+                ['class' => 'cols-full']
+            ); ?>
+        </td>
+    </tr>
+    <tr>
         <td>Context</td>
         <td class="cols-full">
             <?= \CHtml::activeDropDownList(

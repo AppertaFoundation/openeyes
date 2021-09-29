@@ -86,25 +86,14 @@
                 array('empty' => 'All sites', 'class' => 'cols-full')
             ); ?>
 
-        <h4>Hospital Number</h4>
-            <?=\CHtml::textField(
-                'hos_num',
-                @$_POST['hos_num'],
+        <h4>Patient Identifier</h4>
+            <?=\CHtml::textField('patient_identifier_value', @$_POST['patient_identifier_value'],
                 array(
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'size' => 12,
                   'class' => 'search cols-full',
-                  'placeholder' => 'Enter Hospital Number',
-                )
-            ) ?>
-
-        <div id="hos_num_error"
-             class="alert-box warning"
-            style="<?php if (!@$_POST['hos_num'] || ctype_digit($_POST['hos_num'])) {
-                ?>display: none;<?php
-                   } ?>">
-          Invalid hospital number
-        </div>
+                  'placeholder' => 'Enter Patient Identifier',
+              )) ?>
 
           <h4>Status</h4>
                 <?=\CHtml::dropDownList(
@@ -179,15 +168,4 @@
       max: 'today',
     });
   });
-
-  function validateHosNum() {
-    var pattern = <?php echo Yii::app()->params['hos_num_regex'] ? Yii::app()->params['hos_num_regex'] : '/^[0-9]+$/'; ?>;
-    if ($('#hos_num').val().length < 1 || $('#hos_num').val().match(pattern)) {
-      $('#hos_num_error').hide();
-      return true;
-    } else {
-      $('#hos_num_error').show();
-      return false;
-    }
-  }
 </script>

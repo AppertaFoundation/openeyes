@@ -276,7 +276,7 @@ class CsvController extends BaseController
         //check that principal investigator's user name exists in the system
         if(!empty($trial_raw_data['principal_investigator'])) {
 //          CERA-523 CERA-524 only active users can be made principal investigators
-            $principal_investigator = User::model()->find('username = ? AND active = 1', array($trial_raw_data['principal_investigator']));
+            $principal_investigator = User::model()->with('authentications')->find('authentications.username = ? AND authentications.active = 1', array($trial_raw_data['principal_investigator']));
             if(!isset($principal_investigator)) {
 							$errors[] = 'The entered Principal Investigator does not exist in the system or is inactive.';
 							return $errors;
@@ -469,6 +469,7 @@ class CsvController extends BaseController
             array('var_name' => 'maiden_name', 'default' => null,),
             array('var_name' => 'qualifications', 'default' => null,),
             array('var_name' => 'contact_label_id', 'default' => null,),
+            array('var_name' => 'created_institution_id', 'default' => Yii::app()->session['selected_institution_id'])
         );
 
         foreach ($contact_cols as $col) {
@@ -514,7 +515,6 @@ class CsvController extends BaseController
 
         $new_patient = new Patient();
         $patient_cols = array(
-            array('var_name' => 'pas_key', 'default' => null,),
             array('var_name' => 'dob', 'default' => null,),
             array('var_name' => 'gender', 'default' => 'U',),
             array('var_name' => 'nhs_num', 'default' => null,),
@@ -554,7 +554,7 @@ class CsvController extends BaseController
 
         //Add a RVEEH_UR value for patient
         if(array_key_exists('RVEEH_UR', $patient_raw_data) && $patient_raw_data['RVEEH_UR']) {
-            $patient_RVEEH_UR = new PatientIdentifier();
+            $patient_RVEEH_UR = new ArchivePatientIdentifier();
 
             $patient_RVEEH_UR->patient_id = $new_patient->id;
             $patient_RVEEH_UR->code = 'RVEEH_UR';
@@ -571,8 +571,8 @@ class CsvController extends BaseController
         //referred to
         if(!empty($patient_raw_data['referred_to'])){
             //Find if exists
-            $referred_to = User::model()->findByAttributes(array(
-                'username' => $patient_raw_data['referred_to']
+            $referred_to = User::model()->with('authentications')->findByAttributes(array(
+                'authentications.username' => $patient_raw_data['referred_to']
             ));
             if ($referred_to === null) {
                 $errors[] = 'Cannot find referred to user: ' . $patient_raw_data['referred_to'];

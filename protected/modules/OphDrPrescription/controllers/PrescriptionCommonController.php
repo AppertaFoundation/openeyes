@@ -26,6 +26,8 @@ class PrescriptionCommonController extends DefaultController
         'saveDrugSetAdmin' => self::ACTION_TYPE_FORM,
         'getDispenseLocation' => self::ACTION_TYPE_FORM,
         'getSetDrugs' => self::ACTION_TYPE_FORM,
+        'getPGDDrugs' => self::ACTION_TYPE_FORM,
+        'PGDForm' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -39,7 +41,7 @@ class PrescriptionCommonController extends DefaultController
     {
         $this->initForPatient($patient_id);
 
-        $key = (integer)$key;
+        $key = (int)$key;
 
         $items = MedicationSet::model()->findByPk($set_id)->items;
         if ($items) {
@@ -57,6 +59,36 @@ class PrescriptionCommonController extends DefaultController
         /** @var MedicationSetItem[] $drug_set_items */
         foreach ($drug_set_items as $drug_set_item) {
             $drug = $drug_set_item->medication;
+            $drugs[] = [
+                'label' => $drug->getLabel(),
+                'allergies' => array_map(function ($allergy) {
+                    return $allergy->id;
+                }, $drug->allergies),
+            ];
+        }
+        $this->renderJSON($drugs);
+    }
+    public function actionPGDForm($key, $patient_id, $pgd_id)
+    {
+        $this->initForPatient($patient_id);
+
+        $key = (int)$key;
+
+        $items = OphDrPGDPSD_PGDPSD::model()->findByPk($pgd_id)->assigned_meds;
+        if ($items) {
+            foreach ($items as $item) {
+                $this->renderPrescriptionItem($key, $item);
+                ++$key;
+            }
+        }
+    }
+    public function actionGetPGDDrugs($pgd_id)
+    {
+        $pgd = OphDrPGDPSD_PGDPSD::model()->findByPk($pgd_id);
+        $drugs = [];
+        /** @var MedicationSetItem[] $drug_set_items */
+        foreach ($pgd->assigned_meds as $pgd_med) {
+            $drug = $pgd_med->medication;
             $drugs[] = [
                 'label' => $drug->getLabel(),
                 'allergies' => array_map(function ($allergy) {
@@ -95,9 +127,15 @@ class PrescriptionCommonController extends DefaultController
     public function actionGetDispenseLocation($condition_id)
     {
         if ($condition_id) {
-            $dispense_condition = OphDrPrescription_DispenseCondition::model()->findByPk($condition_id);
-            foreach ($dispense_condition->locations as $location) {
-                echo '<option value="' . $location->id . '">' . $location->name . '</option>';
+            $institution_id = Yii::app()->session['selected_institution_id'];
+            $criteria = new CDbCriteria();
+            $criteria->with = array('dispense_location_institutions', 'dispense_location_institutions.dispense_location');
+            $criteria->compare('t.dispense_condition_id', $condition_id);
+            $criteria->compare('t.institution_id', $institution_id);
+            $criteria->compare('dispense_location_institutions.institution_id', $institution_id);
+            $dispense_condition = OphDrPrescription_DispenseCondition_Institution::model()->find($criteria);
+            foreach ($dispense_condition->dispense_location_institutions as $location_institution) {
+                echo '<option value="' . $location_institution->dispense_location->id . '">' . $location_institution->dispense_location->name . '</option>';
             }
         }
     }

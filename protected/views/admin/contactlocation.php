@@ -13,6 +13,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+$institution_id = Institution::model()->getCurrent()->id;
+$site_id = Yii::app()->session['selected_site_id'];
+?>
 <div class="box admin">
     <h2>Contact location</h2>
     <div class="data-group">
@@ -20,16 +24,16 @@
             <div class="data-label">Contact:</div>
         </div>
         <div class="cols-10 column">
-            <div class="data-value"><?php echo $location->contact->fullName?></div>
+            <div class="data-value"><?= $location->contact->fullName ?></div>
         </div>
     </div>
     <div class="data-group">
         <div class="cols-2 column">
-            <div class="data-label"><?php echo $location->site_id ? 'Site' : 'Institution'?>:</div>
+            <div class="data-label"><?= $location->site_id ? 'Site' : 'Institution' ?>:</div>
         </div>
         <div class="cols-10 column">
             <div class="data-value">
-                <?php echo $location->site ? $location->site->name : $location->institution->name?>
+                <?= $location->site ? $location->site->name : $location->institution->name ?>
             </div>
         </div>
     </div>
@@ -40,22 +44,22 @@
     <form id="admin_contact_patients">
         <table class="standard">
             <thead>
-                <tr>
-                    <th>Hos num</th>
-                    <th>Title</th>
-                    <th>First name</th>
-                    <th>Last name</th>
-                </tr>
+            <tr>
+                <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></th>
+                <th>Title</th>
+                <th>First name</th>
+                <th>Last name</th>
+            </tr>
             </thead>
             <tbody>
-                <?php foreach ($location->patients as $i => $patient) {?>
-                    <tr class="clickable" data-id="<?php echo $patient->id?>" data-uri="patient/view/<?php echo $patient->id?>">
-                        <td><?php echo $patient->hos_num?>&nbsp;</td>
-                        <td><?php echo $patient->title?>&nbsp;</td>
-                        <td><?php echo $patient->first_name?>&nbsp;</td>
-                        <td><?php echo $patient->last_name?>&nbsp;</td>
-                    </tr>
-                <?php }?>
+            <?php foreach ($location->patients as $i => $patient) { ?>
+                <tr class="clickable" data-id="<?= $patient->id ?>" data-uri="patient/view/<?= $patient->id ?>">
+                    <td><?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient->id, Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id'])) ?></td>
+                    <td><?= $patient->title ?></td>
+                    <td><?= $patient->first_name ?></td>
+                    <td><?= $patient->last_name ?>&nbsp</td>
+                </tr>
+            <?php } ?>
             </tbody>
         </table>
     </form>

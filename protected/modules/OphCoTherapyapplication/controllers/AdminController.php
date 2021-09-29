@@ -261,7 +261,9 @@ class AdminController extends ModuleAdminController
 
     public function actionViewDecisionTrees()
     {
-        $data_provider = new CActiveDataProvider('OphCoTherapyapplication_DecisionTree');
+        $data_provider = new CActiveDataProvider('OphCoTherapyapplication_DecisionTree', ['criteria' => [
+            'condition' => 'institution_id is null OR institution_id = '. Yii::app()->session['selected_institution_id'],
+        ]]);
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphCoTherapyapplication', 'model' => 'OphCoTherapyapplication_DecisionTree'));
 
@@ -431,7 +433,7 @@ class AdminController extends ModuleAdminController
 
         $this->render('list_OphCoTherapyapplication_FileCollection', array(
                 'model_class' => 'OphCoTherapyapplication_FileCollection',
-                'model_list' => OphCoTherapyapplication_FileCollection::model()->findAll(),
+                'model_list' => OphCoTherapyapplication_FileCollection::model()->findAll(['condition' => 'institution_id is null OR institution_id = '. Yii::app()->session['selected_institution_id']]),
                 'title' => 'File Collections',
         ));
     }
@@ -643,7 +645,12 @@ class AdminController extends ModuleAdminController
 
         $this->render('list_OphCoTherapyapplication_Email_Recipient', array(
                 'model_class' => 'OphCoTherapyapplication_Email_Recipient',
-                'model_list' => OphCoTherapyapplication_Email_Recipient::model()->findAll(array('order' => 'display_order asc')),
+                'model_list' => OphCoTherapyapplication_Email_Recipient::model()->findAll([
+                    'with' => 'site',
+                    'condition' => 't.institution_id = :institution_id OR t.site_id is null OR site.institution_id = :institution_id',
+                    'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+                    'order' => 'display_order asc',
+                ]),
                 'title' => 'Email recipients',
         ));
     }

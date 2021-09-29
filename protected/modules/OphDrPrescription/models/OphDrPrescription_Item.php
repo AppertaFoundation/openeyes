@@ -227,6 +227,7 @@ class OphDrPrescription_Item extends EventMedicationUse
     {
         $attributes_to_check = array(
             'medication_id',
+            'pgdpsd_id',
             'form_id',
             'laterality',
             'route_id',

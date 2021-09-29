@@ -24,12 +24,24 @@
         <table id='draggablelist-items' class='standard data-group'>
             <tbody>
             <tr>
+                <td><h3>Institution</h3></td>
+                <td>
+                    <?= CHtml::dropDownList(
+                        'institution_id',
+                        $institution_id,
+                        Institution::model()->getList(true),
+                        ['class' => 'cols-6']
+                    ) ?>
+                </td>
+            </tr>
+            <tr>
                 <td><h3>Subspecialty</h3></td>
                 <td>
                     <?= CHtml::dropDownList(
                         'subspecialty_id',
                         $subspecialty_id,
-                        CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name', 'specialty.name')
+                        CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name', 'specialty.name'),
+                        ['empty' => '- Select -', 'class' => 'cols-6']
                     ); ?>
                 </td>
             </tr>

@@ -96,7 +96,7 @@ class SubjectController extends BaseModuleController
             $htmlOptions = null;
         }
 
-        if (isset($_GET['patient']) && ((int)$_GET['patient'] > 0) && ($this->patient == NULL)) {
+        if (isset($_GET['patient']) && ((int)$_GET['patient'] > 0) && ($this->patient == null)) {
             $this->patient = Patient::model()->findByPk((int)$_GET['patient']);
 
             $admin->getModel()->patient = $this->patient;
@@ -245,7 +245,7 @@ class SubjectController extends BaseModuleController
             }
         }
     }
-    
+
     /**
      * List the Genetic Patients
      */
@@ -280,7 +280,6 @@ class SubjectController extends BaseModuleController
         $this->render('list', array(
             'model' => $model,
         ));
-
     }
 
 
@@ -311,7 +310,7 @@ class SubjectController extends BaseModuleController
             'pivot' => $pivot,
         ));
     }
-    
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -340,7 +339,7 @@ class SubjectController extends BaseModuleController
         //no PAS sync required at this stage
         $patientSearch->use_pas = false;
 
-        if ($patientSearch->isValidSearchTerm($term)) {
+        if ($patientSearch->getValidSearchTerm($term)) {
             $dataProvider = $patientSearch->search($term);
 
             $criteria = $dataProvider->getCriteria();
@@ -351,6 +350,17 @@ class SubjectController extends BaseModuleController
             $dataProvider->setPagination(false);
 
             foreach ($dataProvider->getData() as $patient) {
+                $pi = [];
+                foreach ($patient->identifiers as $identifier) {
+                    $pi[] = [
+                        'title' => $identifier->patientIdentifierType->long_title ?? $identifier->patientIdentifierType->short_title,
+                        'value' => $identifier->value
+                    ];
+                }
+
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
+                    $patient->id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+
                 $result[] = array(
                     'id' => $patient->id,
                     'genetics_patient_id' => $patient->geneticsPatient->id,
@@ -360,11 +370,15 @@ class SubjectController extends BaseModuleController
                     'gender' => $patient->getGenderString(),
                     'genderletter' => $patient->gender,
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
-                    'hos_num' => $patient->hos_num,
-                    'nhsnum' => $patient->nhsnum,
                     // in script.js we override the behaviour for showing search results and its require the label key to be present
-                    'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
+                    'label' => $patient->first_name.' '.$patient->last_name.' ('.PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . PatientIdentifierHelper::getIdentifierValue($primary_identifier) .')',
                     'is_deceased' => $patient->is_deceased,
+                    'patient_identifiers' => $pi,
+                    'primary_patient_identifiers' => [
+                        'title' => PatientIdentifierHelper::getIdentifierPrompt($primary_identifier),
+                        'value' => PatientIdentifierHelper::getIdentifierValue($primary_identifier)
+                    ]
+
                 );
             }
         }

@@ -17,7 +17,10 @@
  */
 class BaseReport extends CModel
 {
+    public $user_institution_id;
+    public $user_selected_site_id = null;
     public $view;
+    public $institution_id;
 
     public function getView()
     {
@@ -54,5 +57,16 @@ class BaseReport extends CModel
         fclose($df);
 
         return ob_get_clean();
+    }
+
+    protected function setInstitutionAndSite()
+    {
+        $this->user_institution_id = Institution::model()->getCurrent()->id;
+        $this->user_selected_site_id = Yii::app()->session['selected_site_id'];
+    }
+
+    public function getPatientIdentifierPrompt()
+    {
+        return PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $this->user_institution_id, $this->user_selected_site_id);
     }
 }

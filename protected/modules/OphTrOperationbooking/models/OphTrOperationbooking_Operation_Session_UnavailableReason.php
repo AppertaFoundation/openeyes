@@ -30,10 +30,27 @@
  */
 class OphTrOperationbooking_Operation_Session_UnavailableReason extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'unavailablereason_id';
+    }
+
+    protected function mappingModelName(int $level): string
+    {
+        return 'SessionUnavailableReason_Institution';
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphTrOperationbooking_Operation_Session_UnavailableReason|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -92,8 +109,9 @@ class OphTrOperationbooking_Operation_Session_UnavailableReason extends BaseActi
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', 'ophtroperationbooking_sessionunavailreason_institution(unavailablereason_id, institution_id)'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
 

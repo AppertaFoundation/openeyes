@@ -43,6 +43,7 @@ services:
       DATABASE_NAME: "phpunitdb"
       # temporarily fallback to develop branch, as some eyedraw tests require something that is not in master yet
       OE_DEFAULT_BRANCH: "develop"
+      OE_INSTITUTION_CODE: "NEW"
     secrets:
       - source: SSH_PRIVATE_KEY
     stdin_open: true

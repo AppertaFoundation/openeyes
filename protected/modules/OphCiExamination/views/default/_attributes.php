@@ -31,7 +31,7 @@ if ($element->elementType->name!="Clinic Outcome") :
   <tbody>
   <tr>
         <?php
-        $firms = Firm::model()->findAll();
+        $firms = Firm::model()->findAll('institution_id=?', array(Yii::app()->session['selected_institution_id']));
         $firm_name = array();
         $firm_sub_id = array();
         foreach ($firms as $firm) {

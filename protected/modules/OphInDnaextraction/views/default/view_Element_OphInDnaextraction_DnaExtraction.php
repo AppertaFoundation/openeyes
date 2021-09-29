@@ -59,7 +59,7 @@
             </div>
             <div class="cols-9 column">
                 <div class="data-value">
-            <?php if (isset($element->extracted_by->username)) {
+            <?php if (isset($element->extracted_by)) {
                 echo CHtml::encode($element->extracted_by->first_name . ' ' . $element->extracted_by->last_name);
             } else {
                 echo 'Not set';

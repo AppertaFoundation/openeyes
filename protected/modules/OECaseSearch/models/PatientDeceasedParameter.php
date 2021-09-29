@@ -3,13 +3,18 @@
 /**
  * Class PatientDeceasedParameter
  */
+
 class PatientDeceasedParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'boolean',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '1'),
+            array('label' => 'IS NOT', 'id' => '0'),
+        ),
     );
 
-    protected $label_ = 'Patient Deceased';
+    protected string $label_ = 'Patient Deceased';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -20,14 +25,9 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
         parent::__construct($scenario);
         $this->name = 'patient_deceased';
         $this->operation = false;
-
-        // Override the existing operation IDs to use boolean values.
-        $this->options['operations'][0]['id'] = '1';
-        $this->options['operations'][1]['id'] = '0';
     }
 
     /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
     public function rules()
@@ -42,18 +42,15 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
      * @return string The constructed query string.
      * @throws CHttpException
      */
-    public function query()
+    public function query() : string
     {
         switch ($this->operation) {
             case '0':
                 return 'SELECT id FROM patient WHERE NOT(is_deceased)';
-                break;
             case '1':
                 return 'SELECT id FROM patient WHERE is_deceased';
-                break;
             default:
                 throw new CHttpException(400, "Invalid value specified: $this->operation");
-                break;
         }
     }
 
@@ -61,7 +58,7 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues() : array
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         // No binds are used in this query, so return an empty array.
@@ -71,7 +68,7 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         $value = $this->operation === false ? 'False' : 'True';
         return "$this->name: $value";

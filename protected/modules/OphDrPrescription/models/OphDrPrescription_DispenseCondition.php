@@ -8,6 +8,22 @@
  */
 class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'dispense_condition_id';
+    }
+
+    protected function mappingModelName(int $level): string
+    {
+        return 'OphDrPrescription_DispenseCondition_Institution';
+    }
 
     protected $auto_update_relations = true;
 
@@ -32,12 +48,12 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, display_order, active', 'required'),
+            array('name, display_order', 'required'),
             array('display_order', 'numerical', 'integerOnly'=>true),
             array('name', 'length', 'max'=>255),
             array('created_user_id', 'length', 'max'=>10),
-            array('created_date, name, display_order, active, created_user_id, last_modified_user_id, last_modified_date, locations, all_locations', 'safe'),
-            array('id, caption, active', 'safe', 'on'=>'search'),
+            array('created_date, name, display_order, created_user_id, last_modified_user_id, last_modified_date, dispense_condition_institutions', 'safe'),
+            array('id, caption', 'safe', 'on'=>'search'),
         );
     }
 
@@ -49,10 +65,8 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'all_locations' => [self::MANY_MANY,'OphDrPrescription_DispenseLocation','ophdrprescription_dispense_condition_assignment(dispense_condition_id, dispense_location_id)'],
-
-            'locations' => [self::MANY_MANY,
-            'OphDrPrescription_DispenseLocation','ophdrprescription_dispense_condition_assignment(dispense_condition_id, dispense_location_id)','condition'=>'locations.active=1' ],
+            'dispense_condition_institutions' => [self::HAS_MANY, 'OphDrPrescription_DispenseCondition_Institution', 'dispense_condition_id'],
+            'institutions' => [self::MANY_MANY, 'Institution', 'ophdrprescription_dispense_condition_institution(dispense_condition_id, institution_id)']
         ];
     }
 
@@ -67,7 +81,6 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
             'display_order' => 'Display Order',
             'created_date' => 'Created Date',
             'created_user_id' => 'Created By',
-            'active' => 'Active'
         );
     }
 
@@ -95,5 +108,34 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
     {
         return ['order' => 'display_order'];
     }
-    
+
+    public function getLocationsForCurrentInstitution()
+    {
+        $locations = array();
+        $dc_institution = OphDrPrescription_DispenseCondition_Institution::model()->findByAttributes(
+            [
+                'institution_id' => Yii::app()->session['selected_institution_id'],
+                'dispense_condition_id' => $this->id
+            ]
+        );
+        foreach ($dc_institution->dispense_location_institutions as $dl_institution) {
+            $locations[] = $dl_institution->dispense_location;
+        }
+        return $locations;
+    }
+
+    public function withSettings($overprint_setting, $fpten_dispense_condition_id)
+    {
+        $condition = array();
+        if ($overprint_setting === 'off') {
+            $condition = array(
+                'condition' => "id != :fpten_id",
+                'params' => array(
+                    ':fpten_id' => $fpten_dispense_condition_id
+                )
+            );
+        }
+        $this->getDbCriteria()->mergeWith($condition);
+        return $this;
+    }
 }
