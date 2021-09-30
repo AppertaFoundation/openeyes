@@ -33,28 +33,78 @@ class m210913_110100_import_legacy_signatures extends OEMigration
             ->queryScalar();
 
         if ($this->dbConnection->schema->getTable(self::LEGACY_6_ET)) {
-            // Copy elements
-            $this->execute("
-                INSERT INTO " . self::NEW_2ND_ET . " (event_id, last_modified_user_id, last_modified_date, created_user_id, created_date)
-                SELECT b.event_id, b.last_modified_user_id, b.last_modified_date, b.created_user_id, b.created_date
-                FROM " . self::LEGACY_6_ET . " as b
-                LEFT JOIN `event` ON `event`.id = b.event_id
-                WHERE `event`.event_type_id = " . $evt_type_id . "
-                AND b.protected_file_id IS NOT NULL");
+            $constultant_signatures = $this->dbConnection
+                ->createCommand("
+				SELECT * FROM " . self::LEGACY_6_ET . " WHERE protected_file_id IS NOT NULL
+				")->queryAll();
 
-            $this->execute("
-                INSERT INTO " . self::NEW_ITEM . " (element_id, `type`, signature_file_id, signed_user_id, signatory_role,
-                    signatory_name, `timestamp`, last_modified_user_id, last_modified_date, created_user_id, created_date)
-                SELECT
-                    c.id, 1, b.protected_file_id, b.signed_by_user_id, 'Health professional', CONCAT(`user`.first_name, ' ', `user`.last_name),
-                    UNIX_TIMESTAMP(b.signature_date), b.last_modified_user_id, b.last_modified_date, b.created_user_id, b.created_date
-                FROM " . self::LEGACY_6_ET . " AS b
-                LEFT JOIN " . self::NEW_2ND_ET . " AS c ON c.event_id = b.event_id
-                LEFT JOIN `event` ON `event`.id = b.event_id
-                LEFT JOIN `user` ON `user`.id = b.signed_by_user_id
-                WHERE `event`.event_type_id = " . $evt_type_id . "
-                AND b.protected_file_id IS NOT NULL"
-            );
+            foreach ($constultant_signatures as $signature) {
+                $isset_signature = $this->dbConnection
+                    ->createCommand("SELECT id FROM " . self::NEW_2ND_ET . " WHERE event_id = ".$signature['event_id']." ORDER BY id DESC LIMIT 1;")
+                    ->queryScalar();
+
+                if (!$isset_signature) {
+                    $this->execute("
+                        INSERT INTO " . self::NEW_2ND_ET . " (event_id, last_modified_user_id, last_modified_date, created_user_id, created_date)
+                        VALUES (
+                    " . $signature['event_id'] . ",
+                    " . $signature['last_modified_user_id'] . ",
+                    '" . $signature['last_modified_date'] . "',
+                    " . $signature['created_user_id'] . ",
+                    '" . $signature['created_date'] . "'
+                    )
+                    ");
+                }
+
+                $esign_id = $this->dbConnection
+                    ->createCommand("SELECT `id` FROM " . self::NEW_2ND_ET . " WHERE event_id = ".$signature['event_id'].";")
+                    ->queryScalar();
+
+                $signatory_name = "N/A";
+                if (!empty($signature['signed_by_user_id'])) {
+                    $user = $this->dbConnection
+                        ->createCommand("SELECT * FROM user WHERE id = " . $signature['signed_by_user_id'] . ";")
+                        ->queryRow();
+                    $signatory_name  = $user['first_name'] . " " . $user['last_name'];
+                    $signatory_name = str_replace("'", "\'", $signatory_name);
+                }
+
+                $this->execute("
+                INSERT INTO " . self::NEW_ITEM . " (
+                element_id,
+                `type`,
+                signature_file_id,
+                signed_user_id,
+                signatory_role,
+                signatory_name,
+                `timestamp`,
+                last_modified_user_id,
+                last_modified_date,
+                created_user_id,
+                created_date
+                ) VALUES (
+								" . $esign_id . ",
+								2,
+								" . $signature['protected_file_id'] . ",
+								" . $signature['signed_by_user_id'] . ",
+								'Health professional',
+								'" . $signatory_name ."',
+								" . strtotime($signature['signature_date']) . ",
+								" . $signature['last_modified_user_id'] . ",
+								'" . $signature['last_modified_date'] . "',
+								" . $signature['created_user_id'] . ",
+								'" . $signature['created_date'] . "'
+            		)
+        ");
+
+                $healthprof_signature_id = $this->dbConnection
+                    ->createCommand("SELECT `id` FROM " . self::NEW_ITEM . " WHERE element_id = ".$esign_id.";")
+                    ->queryScalar();
+
+                $this->execute("
+					UPDATE " . self::NEW_2ND_ET . " SET healthprof_signature_id = " . $healthprof_signature_id . " WHERE event_id = " . $signature['event_id'] . "
+					");
+            }
         }
     }
 
@@ -79,9 +129,9 @@ class m210913_110100_import_legacy_signatures extends OEMigration
             // Copy elements
             $this->execute("
                 INSERT INTO " . self::NEW_ET . " (
-                id, event_id, interpreter_required, interpreter_name, witness_required, witness_name, guardian_required, guardian_name, guardian_relationship, child_agreement, last_modified_user_id, last_modified_date, created_user_id, created_date)
+                event_id, interpreter_required, interpreter_name, witness_required, witness_name, guardian_required, guardian_name, guardian_relationship, child_agreement, last_modified_user_id, last_modified_date, created_user_id, created_date)
                 SELECT
-                a.id, a.event_id, a.signatory_required, a.signatory_name, b.signatory_required, b.signatory_name, c.signatory_required, c.signatory_name, c.relationship_status, d.signatory_required, a.last_modified_user_id, a.last_modified_date, a.created_user_id, a.created_date
+                a.event_id, a.signatory_required, a.signatory_name, b.signatory_required, b.signatory_name, c.signatory_required, c.signatory_name, c.relationship_status, d.signatory_required, a.last_modified_user_id, a.last_modified_date, a.created_user_id, a.created_date
                 FROM " . self::LEGACY_ET . " as a
                 LEFT JOIN " . self::LEGACY_2ND_ET . " as b ON a.event_id = b.event_id
                 LEFT JOIN " . self::LEGACY_4_ET . " as c ON b.event_id = c.event_id
@@ -92,6 +142,17 @@ class m210913_110100_import_legacy_signatures extends OEMigration
                 OR b.protected_file_id IS NOT NULL
                 OR c.protected_file_id IS NOT NULL)
                 ");
+
+            $this->execute("
+                INSERT INTO " . self::NEW_2ND_ET . "
+            (
+            				event_id, last_modified_user_id, last_modified_date, created_user_id, created_date
+            )
+            SELECT
+                a.event_id, a.last_modified_user_id, a.last_modified_date, a.created_user_id, a.created_date
+                FROM " . self::NEW_ET . " as a
+                "
+            );
 
             $additionals = $this->dbConnection
                 ->createCommand("
@@ -111,32 +172,33 @@ class m210913_110100_import_legacy_signatures extends OEMigration
     public function addSignature($additional, $table, $role, $attribute)
     {
 
-        $interpreters = $this->dbConnection
+        $signature_items = $this->dbConnection
             ->createCommand("
 				SELECT * FROM " . $table . " WHERE event_id = ".$additional['event_id']." AND protected_file_id IS NOT NULL
 				")->queryAll();
 
-        foreach ($interpreters as $interpreter) {
+        foreach ($signature_items as $signature_item) {
             $element_id = $this->dbConnection
                 ->createCommand("
-				SELECT id FROM " . self::NEW_ET . " WHERE event_id = ".$interpreter['event_id']."
+				SELECT id FROM " . self::NEW_2ND_ET . " WHERE event_id = ".$signature_item['event_id']."
 				")->queryScalar();
-            $date = strtotime($interpreter['signature_date']);
+            $date = strtotime($signature_item['signature_date']);
             $this->execute("
                 INSERT INTO " . self::NEW_ITEM . "
             (
-            				element_id, signature_file_id, signatory_role, signatory_name,
+            				element_id, `type`, signature_file_id, signatory_role, signatory_name,
             				`timestamp`, last_modified_user_id, last_modified_date, created_user_id, created_date
             ) VALUES (
             " . $element_id . ",
-            " . $interpreter['protected_file_id'] . ",
+            " . $signature_item['signatory_person'] . ",
+            " . $signature_item['protected_file_id'] . ",
             '".$role."',
-            '" . $interpreter['signatory_name'] . "',
+            '" . $signature_item['signatory_name'] . "',
             ".$date.",
-            " . $interpreter['last_modified_user_id'] . ",
-            '" . $interpreter['last_modified_date'] . "',
-            " . $interpreter['created_user_id'] . ",
-            '" . $interpreter['created_date'] . "'
+            " . $signature_item['last_modified_user_id'] . ",
+            '" . $signature_item['last_modified_date'] . "',
+            " . $signature_item['created_user_id'] . ",
+            '" . $signature_item['created_date'] . "'
             )
                 "
             );
