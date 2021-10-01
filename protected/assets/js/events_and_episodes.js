@@ -233,24 +233,6 @@ $(document).ready(function () {
             }
         }
     });
-
-    $('#js-get-cito-url').click(function(e) {
-        e.preventDefault();
-        $.ajax({
-            'type': 'GET',
-            'url': baseUrl+'/Patient/getCitoUrl',
-            'data': $.param({hos_num: OE_patient_hosnum})+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-            'success': function(data) {
-                if (data.success) {
-                    window.open(data.url, 'newwindow', 'width=1200,height=800');
-                } else {
-                    new OpenEyes.UI.Dialog.Alert({
-                        content: data.message
-                    }).open();
-                }
-            }
-        });
-    });
 });
 
 function WidgetSlider() {

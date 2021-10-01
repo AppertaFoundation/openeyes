@@ -246,19 +246,6 @@ class PatientController extends BaseController
 
     public function actionSummary($id)
     {
-        if (strlen(Yii::app()->params['cito_access_token_url']) !== 0) {
-            $cito_to_menu =
-                [
-                    'cito' => [
-                        'title' => 'Open in CITO',
-                        'position' => 46,
-                        'uri' => '#',
-                        'options' => ['id' => 'js-get-cito-url', 'class' => 'hidden'],
-                    ]
-                ];
-            Yii::app()->params['menu_bar_items'] = array_merge(Yii::app()->params['menu_bar_items'], $cito_to_menu);
-        }
-
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($id, false);
 

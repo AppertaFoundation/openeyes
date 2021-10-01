@@ -553,6 +553,13 @@ $config = array(
                 'position' => 92,
                 'options' => ['target' => '_blank'],
             ),
+            'cito_integration' => array(
+                'title' => 'Open in CITO',
+                'uri' => '',
+                'requires_setting' => array('setting_key' => 'cito_access_token_url', 'required_value' => 'not-empty'),
+                'position' => 46,
+                'options' => ['id' => 'js-get-cito-url', 'class' => 'hidden', 'requires_patient' => true],
+            ),
             'hie_integration' => array(
                 'title' => 'View HIE Record',
                 'uri' => '',
