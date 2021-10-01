@@ -305,4 +305,3 @@ $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()
         </tr>
         </tbody>
     </table>
-</div>
