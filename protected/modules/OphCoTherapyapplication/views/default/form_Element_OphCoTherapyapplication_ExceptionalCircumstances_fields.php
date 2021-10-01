@@ -387,6 +387,7 @@ if (@$_POST[get_class($element)]) {
               'div_class' => 'elementField',
               'label' => 'File Attachments',
               'nowrapper' => true,
+              'style' => 'width : 100%',
             );
             $collections = OphCoTherapyapplication_FileCollection::model()->activeOrPk($element->getFileCollectionValuesForSide($side))->findAll();
           //TODO: have sorting with display_order when implemented

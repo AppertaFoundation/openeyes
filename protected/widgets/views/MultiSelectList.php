@@ -86,7 +86,7 @@ $widgetOptionsJson = json_encode(array(
                     <?= isset($htmlOptions['class'])?$htmlOptions['class']:''?>
                 "
                 name=""
-                style=""
+                style="<?= isset($htmlOptions['style'])?$htmlOptions['style']:''?>"
             <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
               data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
             <?php } ?>
