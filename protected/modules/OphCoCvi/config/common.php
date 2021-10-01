@@ -26,6 +26,7 @@ return array(
                 'Low Vision Status' => '/OphCoCvi/admin/lowVisionStatus',
                 'Preferred Info Format' => '/OphCoCvi/admin/preferredInfoFormat',
                 'Local Authorities' => '/OphCoCvi/localAuthoritiesAdmin/list',
+                'Signature Import Log' => '/DicomLogViewer/signatureList',
             ),
         ),
         'menu_bar_items' => array(
