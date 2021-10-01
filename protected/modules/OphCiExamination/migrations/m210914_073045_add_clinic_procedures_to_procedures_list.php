@@ -25,6 +25,8 @@ class m210914_073045_add_clinic_procedures_to_procedures_list extends OEMigratio
                     'default_duration' => $data[2],
                     'snomed_code' => $data[3],
                     'snomed_term' => $data[4],
+                    'ecds_code' => $data[3],
+                    'ecds_term' => $data[4],
                     'aliases' => $data[5],
                     'active' => 1,
                     'is_clinic_proc' => 1
