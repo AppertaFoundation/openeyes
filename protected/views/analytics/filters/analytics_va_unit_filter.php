@@ -1,18 +1,23 @@
 <?php
+    $case_insensitive_default_va_unit = NULL;
     $va_unit_list = array();
 foreach ($va_units as $key => $value) {
-    if ($key === $default_va_unit) {
+    if (strtolower($key) === strtolower($default_va_unit)) {
         $va_unit_list[] = array(
             'label' => $key,
             'id' => $value,
             'defaultSelected' => true,
         );
+        $case_insensitive_default_va_unit = $key;
     } else {
         $va_unit_list[] = array(
             'label' => $key,
             'id' => $value,
         );
     }
+}
+if(isset($case_insensitive_default_va_unit)) {
+    $default_va_unit = $case_insensitive_default_va_unit;
 }
 ?>
 <tr class="custom-filter">
