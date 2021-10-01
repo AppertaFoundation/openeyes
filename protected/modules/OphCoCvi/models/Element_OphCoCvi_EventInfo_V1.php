@@ -169,6 +169,15 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
                 array('id' => 'event_id'),
                 'through' => 'esign_event'
             ),
+            'consent_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'consent_element' => array(
+                self::HAS_ONE,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_Consent',
+                array('id' => 'event_id'),
+                'through' => 'consent_event'
+            ),
+
+
         );
     }
 
@@ -247,9 +256,22 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
      */
     public function getConsultantSignature()
     {
-        if ($this->consultant_element->signature_file) {
-            return file_get_contents ($this->consultant_element->signature_file->getPath());
+        foreach ($this->esign_element->getSignatures() as $signature) {
+            if ((int)$signature->type === \BaseSignature::TYPE_LOGGEDIN_USER) {
+                return file_get_contents ($signature->signatureFile->getPath());
+            }
         }
+    }
+
+    public function getSignatureByType($type)
+    {
+        foreach ($this->esign_element->getSignatures() as $signature) {
+            if ((int)$signature->type === $type && $signature->signatureFile) {
+                return file_get_contents ($signature->signatureFile->getPath());
+            }
+        }
+
+        return null;
     }
 
     /*

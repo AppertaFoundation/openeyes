@@ -446,4 +446,4 @@ $logo_helper = new LogoHelper();
             call 01372 755000.</p></div>
 </main>
 
-<?php echo $this->renderTiledElements([$this->getOpenElementByClassName('Element_OphCoCvi_Esign')], 'print'); ?>
+<?php echo $this->renderTiledElements([$this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_Esign')], 'print'); ?>

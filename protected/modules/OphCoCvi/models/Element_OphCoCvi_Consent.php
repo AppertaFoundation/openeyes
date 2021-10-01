@@ -84,6 +84,21 @@ class Element_OphCoCvi_Consent extends \BaseEventTypeElement
         );
     }
 
+    public static function isDocmanEnabled()
+    {
+        return isset(\Yii::app()->params["cvi_docman_delivery_enabled"]) && \Yii::app()->params["cvi_docman_delivery_enabled"];
+    }
+
+    public static function isRCOPDeliveryEnabled()
+    {
+        return isset(\Yii::app()->params["cvi_rcop_delivery_enabled"]) && \Yii::app()->params["cvi_rcop_delivery_enabled"];
+    }
+
+    public static function isLADeliveryEnabled()
+    {
+        return isset(\Yii::app()->params["cvi_la_delivery_enabled"]) && \Yii::app()->params["cvi_la_delivery_enabled"];
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *

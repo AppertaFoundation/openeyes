@@ -207,7 +207,8 @@ class OphCoCvi_Manager extends \CComponent
             'Element_OphCoCvi_ClinicalInfo'.$version => 'clinical_element',
             'Element_OphCoCvi_ClericalInfo'.$version => 'clerical_element',
             'Element_OphCoCvi_Demographics'.$version => 'demographics_element',
-            'Element_OphCoCvi_Esign' => 'esign_element'
+            'Element_OphCoCvi_Esign' => 'esign_element',
+            'Element_OphCoCvi_Consent' => 'consent_element',
         );
 
         if (!isset($this->info_el_for_events[$event->id])) {
@@ -597,21 +598,6 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
-     * Create the CVI Certificate and store it as a ProtectedFile.
-     *
-     * @param \Event $event
-     * @return \ProtectedFile
-     */
-    protected function generateCviCertificate(\Event $event)
-    {
-        //$document = $this->populateCviCertificate($event);
-        if ($this->fillPDFForm( $event )) {
-            $storedPDF = $this->getConsentPDF();
-        }
-        return $storedPDF;
-    }
-
-    /**
      * Generate the CVI Consent Form for the patient to sign.
      *
      * @param \Event $event
@@ -641,7 +627,13 @@ class OphCoCvi_Manager extends \CComponent
         try {
             $event->lock();
 
-            $cvi_certificate = $this->generateCviCertificate($event);
+            \Yii::app()->controller->print_args = "?issue=1";
+
+            $pdf_route = \Yii::app()->controller->setPDFprintData($event->id, false, false);
+            $pdf = $event->getPDF($pdf_route);
+
+            $cvi_certificate = \ProtectedFile::createFromFile($pdf);
+            $cvi_certificate->save();
 
             // set the status of the event to complete and assign the PDF to the event
             $info_element = $this->getEventInfoElementForEvent($event);

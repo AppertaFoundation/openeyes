@@ -189,6 +189,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkPrintAccess()
     {
+        if (\Yii::app()->session['cvi_issue_print']) {
+            return true;
+        }
+
         // we allow print action if the patient signs - probably we need to separate the e-sign and print
         // but that would be a later refactor when this works development works
         if (\Yii::app()->request->getParam('sign')) {
@@ -807,6 +811,8 @@ class DefaultController extends \BaseEventTypeController
         if (!$this->canIssue()) {
             throw new \CHttpException(403, 'Event cannot be issued.');
         }
+
+        \Yii::app()->session['cvi_issue_print'] = true;
     }
 
     /**
@@ -1131,12 +1137,19 @@ class DefaultController extends \BaseEventTypeController
 
         if (\Yii::app()->request->getParam('sign')) {
             $this->printESign($id, $this->open_elements);
+        } elseif (\Yii::app()->request->getParam('issue')) {
+            $this->printIssue($id, $this->open_elements);
         } else {
             $this->printHTML($id, $this->open_elements);
         }
     }
 
-    protected function printESign($id, $elements, $template = '_e-sign')
+    protected function printIssue($id, $elements, $template = '_issue')
+    {
+        $this->printESign($id, $elements, $template);
+    }
+
+    protected function printESign($id, $elements, $template = '_issue')
     {
         $institution_id = \Institution::model()->getCurrent()->id;
         $site_id = \Yii::app()->session['selected_site_id'];
@@ -1151,6 +1164,7 @@ class DefaultController extends \BaseEventTypeController
             'patient' => $this->patient,
             'primary_identifier' => $primary_identifier->value,
             'secondary_identifier' => $secondary_identifier->value,
+            'with_esign_element' => false,
         ));
     }
 

@@ -15,21 +15,27 @@
 ?>
 
 <?php
+$event_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_EventInfo_V1');
+$patient_sign = $event_info->getSignatureByType(\BaseSignature::TYPE_PATIENT);
 
 $selectOptions = [];
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::printButton();
+    $this->event_actions[] = EventAction::button('Print Visually Impaired', 'visually_impaired', null, array('class' => 'small button'));
+    $selectOptions['print_visually_impaired'] = 'Print Visually Impaired';
 }
-
-$this->event_actions[] = EventAction::button('Print Visually Impaired', 'visually_impaired', null, array('class' => 'small button', 'style' => 'display:none;'));
-$selectOptions['et_visually_impaired'] = 'Print Visually Impaired';
-
 
 if ($this->checkLabelPrintAccess()) {
-    $this->event_actions[] = EventAction::button('Print Labels', 'print_labels', null, array('class' => 'small button', 'style' => 'display:none;'));
-    $selectOptions['et_print_labels'] = 'Print Labels';
+    // OE-11960 for missing buttons on 'Print Labels' popup
+    $this->event_actions[] = EventAction::button('Print Labels', 'print_labels', null, array('class' => 'small button'));
+    $selectOptions['print_labels'] = 'Print Labels';
 }
 
+// To be fixed in: OE-11959 - CVI - "Print Consent Page" feature is missing
+$this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small', 'style' => 'display:none;'));
+$selectOptions['et_print_info_sheet'] = 'Print Information Sheet';
+
+// OE-11961 - CVI - "Print Information sheet" functionality is broken
 $this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small', 'style' => 'display:none;'));
 $selectOptions['et_print_info_sheet'] = 'Print Information Sheet';
 

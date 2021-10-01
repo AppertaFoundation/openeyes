@@ -2001,7 +2001,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         if (!$this->event = Event::model()->findByPk($id)) {
-            throw new Exception("Method not found: " . $id);
+            throw new Exception("Event not found: " . $id);
         }
 
         $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', null);
