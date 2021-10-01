@@ -48,4 +48,10 @@
         background-color: #bf4040;
         color: #fff;
     }
+    
+    li[id^='side-element-'] {
+        padding: 0px 0px 0px 0px;
+        min-height: 0px;
+        background-color: transparent;
+    }
 </style>
