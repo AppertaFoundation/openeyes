@@ -851,6 +851,44 @@ class AdminController extends \ModuleAdminController
         );
     }
 
+    public function actionManageDischargeStatuses()
+    {
+        $this->genericAdmin(
+            'Edit Discharge Statuses',
+            'OEModule\OphCiExamination\models\DischargeStatus',
+            [
+                'div_wrapper_class' => 'cols-4',
+                'extra_fields' => [
+                    'ecds_code' => [
+                        'type' => 'text',
+                        'field' => 'ecds_code'
+                    ]
+                ]
+            ]
+        );
+    }
+
+    public function actionManageDischargeDestinations()
+    {
+        $this->genericAdmin(
+            'Edit Discharge Destinations',
+            'OEModule\OphCiExamination\models\DischargeDestination',
+            [
+                'div_wrapper_class' => 'cols-4',
+                'extra_fields' => [
+                    'ecds_code' => [
+                        'type' => 'text',
+                        'field' => 'ecds_code'
+                    ],
+                    'institution_required' => [
+                        'type' => 'boolean',
+                        'field' => 'institution_required'
+                    ]
+                ]
+            ]
+        );
+    }
+
     public function actionManageVisitIntervals()
     {
         $this->genericAdmin(
@@ -980,6 +1018,10 @@ class AdminController extends \ModuleAdminController
             ],
             [
                 'field' => 'followup',
+                'type' => 'boolean',
+            ],
+            [
+                'field' => 'discharge',
                 'type' => 'boolean',
             ],
         ];

@@ -29,10 +29,11 @@ if (@$disabled) {
             echo CHtml::hiddenField("display_order[{$i}]", $row->display_order ? $row->display_order : $i, $html_options);
             ?>
         </td>
+        <td>
+            <input type="checkbox" name="selected[]" value="<?php echo $row->id ?>" id="selected_<?= $i ?>" />
+        </td>
     <?php } ?>
-    <td>
-        <input type="checkbox" name="selected[]" value="<?php echo $row->id ?>" id="selected_<?= $i ?>" />
-    </td>
+
     <?php if (!$label_extra_field) : ?>
         <td>
             <?php

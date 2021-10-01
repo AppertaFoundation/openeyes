@@ -51,7 +51,8 @@ class DefaultController extends \BaseEventTypeController
         'getAttachment' => self::ACTION_TYPE_FORM,
         'resolveSafeguardingElement' => self::ACTION_TYPE_SAFEGUARDING,
         'getSignatureByPin' => self::ACTION_TYPE_FORM,
-        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
+        'searchInstitutions' => self::ACTION_TYPE_FORM
     );
 
     private const ACTION_TYPE_SAFEGUARDING = 'Safeguarding';
@@ -415,6 +416,20 @@ class DefaultController extends \BaseEventTypeController
                 $this->renderPartial('_qualitative_scale', ['name' => $name, 'value' => $value, 'scale' => $scale, 'side' => $side, 'index' => $index]);
             }
         }
+    }
+
+    public function actionSearchInstitutions($term)
+    {
+        $institutions = \Institution::model()->findAll('LOWER(name) LIKE CONCAT(LOWER(:term), \'%\')', [':term' => $term]);
+
+        $output = '';
+
+        foreach ($institutions as $institution) {
+            $output .= "<li data-transfer-institution-id=\"$institution->id\" data-label=\"$institution->name\">
+    <span class=\"restrict-width\">$institution->name</span>
+</li>";
+        }
+        echo $output;
     }
 
     public function actionGetPreviousIOPAverage()

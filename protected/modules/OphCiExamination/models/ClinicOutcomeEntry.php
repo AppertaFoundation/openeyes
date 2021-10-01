@@ -25,6 +25,9 @@ use Period;
  * @property int $id
  * @property int $element_id
  * @property int $status_id
+ * @property int $discharge_status_id
+ * @property int $discharge_destination_id
+ * @property int $transfer_institution_id
  * @property int $risk_status_id
  * @property int $followup_quantity
  * @property int $followup_period_id
@@ -37,6 +40,9 @@ use Period;
  *
  * @property Element_OphCiExamination_ClinicOutcome $element
  * @property OphCiExamination_ClinicOutcome_Status $status
+ * @property DischargeStatus $discharge_status
+ * @property DischargeDestination $discharge_destination
+ * @property \Institution $transfer_to
  * @property Period $followupPeriod
  * @property OphCiExamination_ClinicOutcome_Role $role
  * @property OphCiExamination_ClinicOutcome_Risk_Status $risk_status
@@ -68,7 +74,7 @@ class ClinicOutcomeEntry extends \BaseElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('id, element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe'),
+            array('id, element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments, discharge_status_id, discharge_destination_id, transfer_institution_id', 'safe'),
             array('status_id', 'required'),
             array('status_id', 'statusDependencyValidation'),
             array('role_id', 'roleDependencyValidation'),
@@ -90,6 +96,9 @@ class ClinicOutcomeEntry extends \BaseElement
             'createdUser' => [self::BELONGS_TO, 'User', 'created_user_id'],
             'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
             'status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status', 'status_id'],
+            'discharge_status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\DischargeStatus', 'discharge_status_id'],
+            'discharge_destination' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\DischargeDestination', 'discharge_destination_id'],
+            'transfer_to' => [self::BELONGS_TO, 'Institution', 'transfer_institution_id'],
             'followupPeriod' => [self::BELONGS_TO, 'Period', 'followup_period_id'],
             'role' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role', 'role_id'],
             'risk_status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status', 'risk_status_id'],
@@ -178,6 +187,21 @@ class ClinicOutcomeEntry extends \BaseElement
         return $this->status->name;
     }
 
+    public function getDischargeStatusLabel()
+    {
+        return $this->discharge_status->name;
+    }
+
+    public function getDischargeDestinationLabel()
+    {
+        return $this->discharge_destination->name;
+    }
+
+    public function getTransferToLabel()
+    {
+        return $this->transfer_to->name;
+    }
+
     public function getRoleLabel()
     {
         if ($this->status->followup && $this->role) {
@@ -249,9 +273,13 @@ class ClinicOutcomeEntry extends \BaseElement
         if ($this->isFollowUp()) {
             $risk_status_info = $this->getRiskStatusLabel();
             return $this->getStatusLabel() . ' ' . $this->followup_quantity . ' ' . $this->getPeriodLabel() . $this->getRoleLabel() . ' ' . $this->getDisplayComments() . $risk_status_info['icon'];
-        } else {
-            return $this->getStatusLabel();
         }
+
+        if ($this->isDischarge()) {
+            return $this->getStatusLabel() . ' ' . $this->getDischargeStatusLabel() . ' ' . $this->getDischargeDestinationLabel() . ($this->transfer_to ? "({$this->getTransferToLabel()})" : '');
+        }
+
+        return $this->getStatusLabel();
     }
 
     public function isPatientTicket()
@@ -265,6 +293,14 @@ class ClinicOutcomeEntry extends \BaseElement
     public function isFollowUp()
     {
         if ($this->status->followup) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isDischarge()
+    {
+        if ($this->status->discharge) {
             return true;
         }
         return false;

@@ -49,6 +49,8 @@ $config = [
                 'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
                 'Medication Stop Reasons' => ['uri' => '/OphCiExamination/admin/MedicationStopReason/index', 'restricted' => array('admin')],
                 'Overall Periods' => ['uri' => '/OphCiExamination/admin/manageOverallPeriods', 'restricted' => array('admin')],
+                'Discharge Statuses' => ['uri' => '/OphCiExamination/admin/manageDischargeStatuses', 'restricted' => array('admin')],
+                'Discharge Destinations' => ['uri' => '/OphCiExamination/admin/manageDischargeDestinations', 'restricted' => array('admin')],
                 'Visit Intervals' => '/OphCiExamination/admin/manageVisitIntervals',
                 'Glaucoma Statuses' => ['uri' => '/OphCiExamination/admin/manageGlaucomaStatuses', 'restricted' => array('admin')],
                 'Target IOP Values' => ['uri' => '/OphCiExamination/admin/manageTargetIOPs', 'restricted' => array('admin')],
