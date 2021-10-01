@@ -41,7 +41,7 @@ class WhiteboardSettingsController extends ModuleAdminController
         }
 
         $errors = array();
-
+        $institution_id = Institution::model()->getCurrent()->id;
         if (Yii::app()->request->isPostRequest) {
             foreach (OphTrOperationbooking_Whiteboard_Settings::model()->findAll() as $metadata) {
                 if (@$_POST['hidden_' . $metadata->key] || @$_POST[$metadata->key]) {
@@ -60,6 +60,13 @@ class WhiteboardSettingsController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/whiteboard/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+        $this->render(
+            '/admin/whiteboard/edit_setting',
+            array(
+                'metadata' => $metadata,
+                'errors' => $errors,
+                'institution_id' => $institution_id,
+            )
+        );
     }
 }
