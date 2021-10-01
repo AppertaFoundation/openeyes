@@ -33,7 +33,7 @@
                         'parent_id',
                         (isset($_GET['parent_id']) ? $_GET['parent_id'] : null),
                         CHtml::listData(
-                            CommonOphthalmicDisorder::model()->findAll(),
+                            CommonOphthalmicDisorder::model()->findAll('disorder_id IS NOT NULL'),
                             'id',
                             function($item){return $item->disorder->term . ' (' . $item->subspecialty->name . ')';}//'disorder.term'
                         )
