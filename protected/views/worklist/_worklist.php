@@ -52,7 +52,7 @@ $is_printing = isset($is_printing) && ($is_printing === true);
     <?php else : ?>
     <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows js-table-controller <?=$is_printing?"allow-page-break":""?>">
         <colgroup>
-            <?php if ($is_prescriber) {?>
+            <?php if (isset($is_prescriber) && $is_prescriber) {?>
             <col class="cols-icon"><!--checkbox-->
             <?php }?>
             <col><!--Time-->
@@ -66,7 +66,7 @@ $is_printing = isset($is_printing) && ($is_printing === true);
         </colgroup>
         <thead>
         <tr>
-            <?php if ($is_prescriber) {?>
+            <?php if (isset($is_prescriber) && $is_prescriber) {?>
             <th>
                 <label class="inline highlight ">
                     <input 
@@ -97,7 +97,7 @@ $is_printing = isset($is_printing) && ($is_printing === true);
             <?php foreach ($data_provider->getData() as $wl_patient) : ?>
                 <?php $link = $core_api->generatePatientLandingPageLink($wl_patient->patient, ['worklist_patient_id' => $wl_patient->id]);?>
                 <tr data-url="<?=$link;?>" style="cursor:pointer">
-                    <?php if ($is_prescriber) {?>
+                    <?php if (isset($is_prescriber) && $is_prescriber) {?>
                     <td>
                         <label class="highlight inline">
                             <input class="js-select-patient-for-psd"
