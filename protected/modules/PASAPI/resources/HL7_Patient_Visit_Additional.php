@@ -12,9 +12,6 @@ class HL7_Patient_Visit_Additional extends BaseHL7_Section
     protected $name_of_alternative_coding_system = "ECDS";
     public $referral_source_code;
     public $patient_status_code;
-    public $admission_level_acuity_identifier;
-    public $admission_level_text;
-    public $admission_level_name_of_coding_system = "PCS";
     public $admission_level_alternative_identifier;
     public $admission_level_name_of_alternative_coding_system = "ECDS";
 
@@ -53,8 +50,6 @@ class HL7_Patient_Visit_Additional extends BaseHL7_Section
 
         $priority =  \OEModule\OphCiExamination\models\OphCiExamination_Triage_Priority::model()->findByPk($triage_data->priority_id);
         if ($priority) {
-            $this->admission_level_acuity_identifier = $priority->id;
-            $this->admission_level_text = $priority->description;
             $this->admission_level_alternative_identifier = $priority->snomed_code;
         }
     }
@@ -65,17 +60,14 @@ class HL7_Patient_Visit_Additional extends BaseHL7_Section
     function getHL7attributes()
     {
         $attributes = array(
-            $this->prefix.'.3.1' => $this->chief_complaint_code,
-            $this->prefix.'.3.2' => $this->chief_complaint_description,
-            $this->prefix.'.3.4' => $this->chief_alternative_identifier,
-            $this->prefix.'.3.6' => $this->name_of_alternative_coding_system,
-            $this->prefix.'.13' => $this->referral_source_code,
-            $this->prefix.'.24' => $this->patient_status_code,
-            $this->prefix.'.40.1' => $this->admission_level_acuity_identifier,
-            $this->prefix.'.40.2' => $this->admission_level_text,
-            $this->prefix.'.40.3' => $this->admission_level_name_of_coding_system,
-            $this->prefix.'.40.4' => $this->admission_level_alternative_identifier,
-            $this->prefix.'.40.5' => $this->name_of_alternative_coding_system
+            $this->prefix.'.3.1' => $this->chief_complaint_code ?? '',
+            $this->prefix.'.3.2' => $this->chief_complaint_description ?? '',
+            $this->prefix.'.3.4' => $this->chief_alternative_identifier ?? '',
+            $this->prefix.'.3.6' => $this->name_of_alternative_coding_system ?? '',
+            $this->prefix.'.13' => $this->referral_source_code ?? '',
+            $this->prefix.'.24' => $this->patient_status_code ?? '',
+            $this->prefix.'.40.4' => $this->admission_level_alternative_identifier ?? '',
+            $this->prefix.'.40.6' => $this->name_of_alternative_coding_system ?? ''
         );
 
         return $attributes;

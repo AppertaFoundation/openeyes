@@ -219,13 +219,21 @@ class DefaultPas extends BasePAS
         return $resources;
     }
 
-    function buildXML($xml, $data) {
+    function buildXML(&$xml, $data, &$parent_xml = null, $parent_idx = null)
+    {
         foreach ($data as $idx=>$record) {
-            if(is_array($record) || is_object($record)) {
-                $xml = $this->buildXML($xml, $record);
+            if (is_array($record) || is_object($record)) {
+                if (is_numeric($idx)) {
+                    $child = $parent_xml->addChild($parent_idx);
+                } else {
+                    $child = $xml->addChild($idx);
+                }
+                $this->buildXML($child, $record, $xml, $idx);
             } else {
                 try {
-                    $xml->addChild($idx, $record);
+                    if ($record !== "") {
+                        $xml->addChild($idx, htmlspecialchars($record));
+                    }
                 } catch (Exception $e) {
                     \OELog::log("PASAPI buildXML: ". $e->getMessage());
                     \OELog::log("PASAPI buildXML record: ". var_export($record, true));
@@ -238,7 +246,8 @@ class DefaultPas extends BasePAS
     /***
      * @param HL7_A08 $data
      */
-    public function sendUpdate($data) {
+    public function sendUpdate($data)
+    {
 
         $xml = new \SimpleXMLElement('<root/>');
 
