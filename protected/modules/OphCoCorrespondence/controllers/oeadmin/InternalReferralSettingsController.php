@@ -39,7 +39,7 @@ class InternalReferralSettingsController extends ModuleAdminController
         }
 
         $errors = array();
-
+        $institution_id = Institution::model()->getCurrent()->id;
         if (Yii::app()->request->isPostRequest) {
             foreach (OphcocorrespondenceInternalReferralSettings::model()->findAll() as $metadata) {
                 if (@$_POST['hidden_' . $metadata->key] || @$_POST[$metadata->key]) {
@@ -63,6 +63,7 @@ class InternalReferralSettingsController extends ModuleAdminController
                 'metadata' => $metadata,
                 'errors' => $errors,
                 'cancel_uri' => '/OphCoCorrespondence/oeadmin/internalReferralSettings/settings',
+                'institution_id' => $institution_id,
             ]
         );
     }

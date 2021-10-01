@@ -86,6 +86,7 @@ class AdminController extends \ModuleAdminController
             $this->redirect(array('/OphCoCorrespondence/admin/letterSettings/settings'));
         }
 
+        $institution_id = Institution::model()->getCurrent()->id;
         $errors = array();
 
         if (Yii::app()->request->isPostRequest) {
@@ -111,6 +112,7 @@ class AdminController extends \ModuleAdminController
                 'metadata' => $metadata,
                 'errors' => $errors,
                 'cancel_uri' => '/OphCoCorrespondence/admin/letterSettings/settings',
+                'institution_id' => $institution_id,
             ]
         );
     }
