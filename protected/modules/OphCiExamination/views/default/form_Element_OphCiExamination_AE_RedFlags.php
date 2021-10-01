@@ -35,7 +35,11 @@ $current_flags = $element->getMyCurrentFlagOptionIDs();
                         <ul class="dot-list" id="red-flag-assignment">
                             <?php if (!empty($element->flags)) {
                                 foreach ($element->flags as $tempFlag) {
-                                    if ($tempFlag) {?>
+                                    if ($tempFlag) {
+                                        if (!is_object($tempFlag)) {
+                                            // If the flag is not of object type, then get the relevant object from the id assigned to it
+                                            $tempFlag = \OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment::model()->findByAttributes(['element_id' => $element->id, 'red_flag_id' => $tempFlag]);
+                                        } ?>
                                     <li>
                                         <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_AE_RedFlags[flags][]" value="<?= $tempFlag->flag->id ?>">
                                         <span><?= $tempFlag->flag->name ?></span>
