@@ -30,7 +30,10 @@
             null,
             false,
             false,
-            array('field' => 10)
+            array(
+                'label' => 6,
+                'field' => 6,
+            )
         ) ?>
 
   <div class="add-data-actions flex-item-bottom " id="add-surgeon-popup">
