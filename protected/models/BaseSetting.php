@@ -24,8 +24,6 @@ class BaseSetting extends BaseActiveRecord
      */
     protected $setting_tables = [];
 
-
-
     public function getSettingTables()
     {
         return $this->setting_tables;
@@ -119,7 +117,7 @@ class BaseSetting extends BaseActiveRecord
         $specialty_id = $firm && $firm->specialty ? $firm->specialty->id : null;
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
         $site_id = $site->id ?? null;
-        $institution_id = $site->institution_id ?? null;
+        $institution_id = \Institution::model()->getCurrent()->id;
 
         foreach ($this->getSettingTables() as $class => $field) {
             if ($field) {
@@ -145,8 +143,6 @@ class BaseSetting extends BaseActiveRecord
 
         return $metadata->default_value;
     }
-
-
 
     public function getSettingName($key = null)
     {

@@ -25,38 +25,38 @@ class WhiteboardSettingsController extends ModuleAdminController
 
     public function actionSettings()
     {
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('institution_id = :institution_id');
-        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
         $this->render('/admin/whiteboard/settings', array(
-            'settings' => OphTrOperationbooking_Whiteboard_Settings::model()->findAll($criteria)
+            'settings' => OphTrOperationbooking_Whiteboard_Settings::model()->findAll()
         ));
     }
 
     public function actionEditSetting()
     {
-
-        if (!$metadata = OphTrOperationbooking_Whiteboard_Settings::model()->find('`key`=?', array(@$_GET['key']))) {
+        $key = \Yii::app()->request->getParam('key');
+        $metadata = \OphTrOperationbooking_Whiteboard_Settings::model()->find('`key`=?', [$key]);
+        $institution_id = $this->selectedInstitutionId;
+        if (!$metadata) {
             $this->redirect(array('/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings'));
         }
 
-        $errors = array();
-        $institution_id = Institution::model()->getCurrent()->id;
-        if (Yii::app()->request->isPostRequest) {
-            foreach (OphTrOperationbooking_Whiteboard_Settings::model()->findAll() as $metadata) {
-                if (@$_POST['hidden_' . $metadata->key] || @$_POST[$metadata->key]) {
-                    if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
-                        $setting = new OphTrOperationbooking_Whiteboard_Settings_Data();
-                        $setting->key = $metadata->key;
-                        $setting->institution_id = $this->selectedInstitutionId;
-                    }
-                    $setting->value = @$_POST[$metadata->key];
-                    if (!$setting->save()) {
-                        $errors = $setting->errors;
-                    } else {
-                        $this->redirect(array('/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings'));
-                    }
-                }
+        $errors = [];
+        $value = \Yii::app()->request->getPost($metadata->key);
+
+        if ($value) {
+            $setting = $metadata->getSetting($metadata->key, null, true);
+
+            if (!$setting) {
+                $setting = new \OphTrOperationbooking_Whiteboard_Settings_Data();
+                $setting->key = $metadata->key;
+                $setting->institution_id = $institution_id;
+            }
+
+            $setting->value = $value;
+
+            if (!$setting->save()) {
+                $errors = $setting->errors;
+            } else {
+                $this->redirect(array('/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings'));
             }
         }
 
