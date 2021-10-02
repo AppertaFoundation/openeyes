@@ -190,10 +190,10 @@ class m210913_110100_import_legacy_signatures extends OEMigration
             				`timestamp`, last_modified_user_id, last_modified_date, created_user_id, created_date
             ) VALUES (
             " . $element_id . ",
-            " . $signature_item['signatory_person'] . ",
+            " . \BaseSignature::TYPE_OTHER_USER . ",
             " . $signature_item['protected_file_id'] . ",
             '".$role."',
-            '" . $signature_item['signatory_name'] . "',
+            '" . substr($signature_item['signatory_name'], 0, 60) . "',
             ".$date.",
             " . $signature_item['last_modified_user_id'] . ",
             '" . $signature_item['last_modified_date'] . "',
