@@ -34,7 +34,7 @@ class ClinicLocation extends BaseActiveRecordVersioned
 
     protected function mappingColumn(int $level): string
     {
-        return 'queueset_id';
+        return 'clinic_location_id';
     }
     public function tableName()
     {

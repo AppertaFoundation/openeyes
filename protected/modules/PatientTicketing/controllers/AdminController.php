@@ -70,10 +70,14 @@ class AdminController extends \ModuleAdminController
 
     public function actionQueueSetCategories()
     {
+        $return_url = Yii::app()->request->url ?? '/PatientTicketing/admin/queueSetCategories';
         $this->genericAdmin(
             'Edit Queue Set Categories',
             'OEModule\PatientTicketing\models\QueueSetCategory',
-            ['div_wrapper_class' => 'cols-5'],
+            [
+                'div_wrapper_class' => 'cols-5',
+                'return_url' => $return_url
+            ],
             null,
             true
         );
@@ -81,6 +85,7 @@ class AdminController extends \ModuleAdminController
 
     public function actionTicketAssignOutcomes()
     {
+        $return_url = Yii::app()->request->url ?? '/PatientTicketing/admin/ticketAssignOutcomes';
         $this->genericAdmin(
             'Edit Outcome Options',
             'OEModule\PatientTicketing\models\TicketAssignOutcomeOption',
@@ -97,6 +102,7 @@ class AdminController extends \ModuleAdminController
                     ),
                 ),
                 'div_wrapper_class' => 'cols-5',
+                'return_url' => $return_url
             ),
             null,
             true
@@ -494,10 +500,14 @@ class AdminController extends \ModuleAdminController
 
     public function actionClinicLocations()
     {
+        $return_url = Yii::app()->request->url ?? '/PatientTicketing/admin/clinicLocations';
         $this->genericAdmin(
             'Clinic locations',
             'OEModule\PatientTicketing\models\ClinicLocation',
-            ['div_wrapper_class' => 'cols-5'],
+            [
+                'div_wrapper_class' => 'cols-5',
+                'return_url' => $return_url
+            ],
             null,
             true
         );
