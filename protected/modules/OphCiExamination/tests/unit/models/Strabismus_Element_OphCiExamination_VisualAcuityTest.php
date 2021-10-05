@@ -31,7 +31,7 @@ class Strabismus_Element_OphCiExamination_VisualAcuityTest extends BaseVisualAcu
     protected function getRandomUnit()
     {
         $unit_criteria = new \CDbCriteria();
-        $unit_criteria->addColumnCondition(['is_near' => false]);
+        $unit_criteria->addColumnCondition(['is_va' => true]);
         return $this->getRandomLookup(OphCiExamination_VisualAcuityUnit::class, 1, $unit_criteria);
     }
 

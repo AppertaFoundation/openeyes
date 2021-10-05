@@ -17,6 +17,7 @@
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js') ?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-MR.js') ?>"></script>
+
 <div id="js-hs-chart-MR" class="highchart-area" data-highcharts-chart="0" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
 <form id="mr-history-form" action="#OphCiExamination_Episode_MedicalRetinalHistory">
     <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
@@ -26,7 +27,7 @@
         $va_unit->id,
         CHtml::listData(
             OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
-            model()->active()->findAllByAttributes(array('is_near' => 0)),
+            model()->active()->findAllByAttributes(array('is_va' => 1)),
             'id',
             'name'
         )

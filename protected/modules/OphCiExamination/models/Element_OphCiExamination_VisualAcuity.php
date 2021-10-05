@@ -283,8 +283,10 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
     public function getUnits($excluded_unit_id, $is_near)
     {
         $criteria = new \CDbCriteria();
-        $criteria->condition = 'id <> :unit_id AND active = 1 AND is_near = :is_near';
-        $criteria->params = array(':unit_id' => $excluded_unit_id, 'is_near' => $is_near);
+        $criteria->condition = 'id <> :unit_id AND active = 1';
+        $criteria->addCondition($is_near ? 'is_near = 1' : 'is_va = 1');
+
+        $criteria->params = array(':unit_id' => $excluded_unit_id);
         $criteria->order = 'name';
         return OphCiExamination_VisualAcuityUnit::model()->findAll($criteria);
     }

@@ -24,7 +24,7 @@ trait InteractsWithVisualAcuity
     {
         $unit_criteria = new \CDbCriteria();
         $unit_criteria->select = 't.*, count(values.id) as valuesTotal';
-        $unit_criteria->addColumnCondition(['is_near' => $near, 'active' => true]);
+        $unit_criteria->addColumnCondition([($near ? 'is_near' : 'is_va') => 1, 'active' => true]);
         $unit_criteria->join = 'join ophciexamination_visual_acuity_unit_value `values` on (values.unit_id = t.id)';
         $unit_criteria->group = 't.id';
         $unit_criteria->having = 'valuesTotal > 0';
@@ -34,7 +34,7 @@ trait InteractsWithVisualAcuity
     protected function getRandomAcuitySource($near = false)
     {
         $criteria = new \CDbCriteria();
-        $criteria->addColumnCondition(['is_near' => $near, 'active' => true]);
+        $criteria->addColumnCondition([$near ? 'is_near = 1' : 'is_va = 1', 'active' => true]);
         return $this->getRandomLookup(OphCiExamination_VisualAcuitySource::class, 1, $criteria);
     }
 

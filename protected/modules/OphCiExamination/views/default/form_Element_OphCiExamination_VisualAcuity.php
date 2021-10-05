@@ -69,7 +69,7 @@ if (isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_por
                 @$element->unit_id,
                 CHtml::listData(
                     OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
-                    model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
+                    model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_va' => '1')),
                     'id',
                     'name'
                 ),

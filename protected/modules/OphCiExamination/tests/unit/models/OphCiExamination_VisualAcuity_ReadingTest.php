@@ -81,7 +81,7 @@ class OphCiExamination_VisualAcuity_ReadingTest extends BaseVisualAcuityReadingT
         $expected_pks = array_map(function ($related_obj) {
             return $related_obj->getPrimaryKey();
         }, OphCiExamination_VisualAcuitySource::model()->active()->findAll([
-            'condition' => 'is_near = 0'
+            'condition' => 'is_va = 1'
         ]));
 
         $this->assertOptionsAreRetrievable(
