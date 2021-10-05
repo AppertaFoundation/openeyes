@@ -37,7 +37,7 @@ class QueueSetCategory extends BaseActiveRecordVersioned
 
     protected function mappingColumn(int $level): string
     {
-        return 'queueset_id';
+        return 'category_id';
     }
     /**
      * Returns the static model of the specified AR class.
