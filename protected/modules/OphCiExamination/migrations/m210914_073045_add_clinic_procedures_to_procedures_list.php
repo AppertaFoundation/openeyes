@@ -10,13 +10,7 @@ class m210914_073045_add_clinic_procedures_to_procedures_list extends OEMigratio
             $procedure = $this->dbConnection->createCommand()->select('*')->from('proc')->where('term = ?', [$data[0]])->queryRow();
             // The procedure already exists in the table
             if ($procedure) {
-                if ((string)$procedure['snomed_code'] === $data[3]) {
-                    // The entry is as expected, add it to list of clinical procedures
-                    $this->update('proc', ['is_clinic_proc' => 1], "id = :id", [':id' => $procedure['id']]);
-                } else {
-                    // Add ECDS Code to Procedure
-                    $this->update('proc', ['ecds_code' => $data[3], 'ecds_term' => $data[4], 'is_clinic_proc' => 1], "id = :id", [':id' => $procedure['id']]);
-                }
+                $this->update('proc', ['is_clinic_proc' => 1, 'ecds_code' => $data[3], 'ecds_term' => $data[4]], "id = :id", [':id' => $procedure['id']]);
             } else {
                 // Procedure does not exist, add it to the table
                 $this->insert('proc', [
