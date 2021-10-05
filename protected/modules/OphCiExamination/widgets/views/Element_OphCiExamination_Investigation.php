@@ -100,7 +100,7 @@ $model_name = CHtml::modelName($element);
                 'last_modified_user_id' => Yii::app()->user->id,
                 'last_modified_user_name' => User::model()->findByPk(Yii::app()->user->id)->getFullNameAndTitle(),
                 'date' =>  date("Y-m-d"),
-                'time' =>  time(),
+                'time' =>  (new DateTime())->format('H:i'),
                 'comments' => null,
             ),
 
