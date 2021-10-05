@@ -195,8 +195,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data.discharge_status = $selected_discharge_status.data('label');
             data.discharge_destination_id = $selected_discharge_destination.data('discharge-destination-id');
             data.discharge_destination = $selected_discharge_destination.data('label');
-            data.transfer_institution_id = $selected_transfer_to.data('transfer-institution-id');
-            data.transfer_to = $selected_transfer_to.data('label');
+            data.transfer_institution_id = $selected_transfer_to.length > 0 ? $selected_transfer_to.data('transfer-institution-id') : null;
+            data.transfer_to = $selected_transfer_to.length > 0 ? (' (' + $selected_transfer_to.data('label') + ')') : null;
         }
 
         this.hideUniqueOptions($selected_status);

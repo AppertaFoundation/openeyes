@@ -108,6 +108,14 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                 <i class="oe-i plus pro-theme"></i>
             </button>
             <table class="select-options">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th style="display: none;" class="follow-up-options-discharge-only">Discharge Status</th>
+                    <th style="display: none;" class="follow-up-options-discharge-only">Discharge Destination</th>
+                    <th style="display: none;" class="follow-up-options-discharge-transfer-only">Transfer to Institution</th>
+                </tr>
+                </thead>
                 <tbody>
                 <tr>
                     <td>

@@ -199,7 +199,7 @@ class ClinicOutcomeEntry extends \BaseElement
 
     public function getTransferToLabel()
     {
-        return $this->transfer_to->name;
+        return " ({$this->transfer_to->name})";
     }
 
     public function getRoleLabel()
@@ -276,7 +276,7 @@ class ClinicOutcomeEntry extends \BaseElement
         }
 
         if ($this->isDischarge()) {
-            return $this->getStatusLabel() . ' ' . $this->getDischargeStatusLabel() . ' ' . $this->getDischargeDestinationLabel() . ($this->transfer_to ? "({$this->getTransferToLabel()})" : '');
+            return $this->getStatusLabel() . ' ' . $this->getDischargeStatusLabel() . ' ' . $this->getDischargeDestinationLabel() . ($this->transfer_to ? $this->getTransferToLabel() : '');
         }
 
         return $this->getStatusLabel();

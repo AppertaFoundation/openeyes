@@ -75,7 +75,7 @@ if (!isset($values)) {
             . ' '
             . $values['discharge_status']
             . ' '
-            . $values['discharge_destination'] . ($values['transfer_institution_id'] ? ' (' . $values['transfer_to'] . ')' : '')
+            . $values['discharge_destination'] . ($values['transfer_to'] ?? null)
             . ' '
             . $values['followup_quantity']
             . ' '
