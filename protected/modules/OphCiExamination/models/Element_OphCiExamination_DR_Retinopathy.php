@@ -4,6 +4,7 @@ namespace OEModule\OphCiExamination\models;
 
 use CActiveDataProvider;
 use CDbCriteria;
+use OEModule\OphCiExamination\models\traits\CustomOrdering;
 use SplitEventTypeElement;
 
 /**
@@ -28,6 +29,7 @@ use SplitEventTypeElement;
 
 class Element_OphCiExamination_DR_Retinopathy extends SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     /**
      * @return string the associated database table name
      */

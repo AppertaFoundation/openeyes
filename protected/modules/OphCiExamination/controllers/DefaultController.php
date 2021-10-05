@@ -1192,7 +1192,7 @@ class DefaultController extends \BaseEventTypeController
                      'right' => \Eye::RIGHT, ) as $side => $eye_id) {
             $features = array();
             $checker = 'has'.ucfirst($side);
-            if ($element->$checker()) {
+            if ($element->$checker() && isset($data[$model_name][$side.'_retinopathy_features'])) {
                 foreach ($data[$model_name][$side.'_retinopathy_features'] as $model) {
                     if (@$model['id']) {
                         if (!$feature = models\RetinopathyFeature::model()->findByPk($model['id'])) {
@@ -1217,7 +1217,7 @@ class DefaultController extends \BaseEventTypeController
                      'right' => \Eye::RIGHT, ) as $side => $eye_id) {
             $features = array();
             $checker = 'has'.ucfirst($side);
-            if ($element->$checker()) {
+            if ($element->$checker() && isset($data[$model_name][$side.'_maculopathy_features'])) {
                 foreach ($data[$model_name][$side.'_maculopathy_features'] as $model) {
                     if (@$model['id']) {
                         if (!$feature = models\MaculopathyFeature::model()->findByPk($model['id'])) {
