@@ -191,6 +191,12 @@ class WorklistPatient extends BaseActiveRecordVersioned
 
             if ($pathway_type) {
                 $pathway_type->createNewPathway($this->id);
+                $this->refresh(); // Need to refresh first to synchronise the pathway relation to the newly created pathway.
+                $start_status = $this->getWorklistPatientAttribute('Status'); // Could we genericise this attribute name in future?
+                if ($start_status && $start_status->attribute_value === 'Attended') {
+                    // Start the pathway immediately.
+                    $this->pathway->startPathway();
+                }
             }
         }
     }

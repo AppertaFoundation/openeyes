@@ -39,6 +39,7 @@ class Pathway extends BaseActiveRecordVersioned
     public const STATUS_BREAK = 5;
     public const STATUS_DISCHARGED = 6;
     public const STATUS_DONE = 7;
+
     /**
      * @return string the associated database table name
      */
@@ -87,9 +88,9 @@ class Pathway extends BaseActiveRecordVersioned
                 'PathwayStep',
                 'pathway_id',
                 'condition' => 'status IS NULL OR status IN (' . implode(
-                    ', ',
-                    [PathwayStep::STEP_REQUESTED, PathwayStep::STEP_CONFIG]
-                ) . ')',
+                        ', ',
+                        [PathwayStep::STEP_REQUESTED, PathwayStep::STEP_CONFIG]
+                    ) . ')',
                 'order' => '`order`'
             ),
             'started_steps' => array(
@@ -450,9 +451,11 @@ class Pathway extends BaseActiveRecordVersioned
             });
             if ($started_break_steps) {
                 // get the earliest start time among the break steps
-                $break_step_time = min(array_map(static function ($o) {
-                    return $o->start_time;
-                }, $this->started_steps));
+                $break_step_time = min(
+                    array_map(static function ($o) {
+                        return $o->start_time;
+                    }, $this->started_steps)
+                );
                 // use break step start time as the end time for the calculation
                 $end_time = DateTime::createFromFormat('Y-m-d H:i:s', $break_step_time);
             } else {
@@ -521,12 +524,15 @@ class Pathway extends BaseActiveRecordVersioned
         if ($pathways === null) {
             $pathways = PathwayType::model()->findAll();
         }
-        $pathway_json = json_encode(array_map(
-            static function ($item) {
-                return ['id' => $item->id, 'name' => 'pathway', 'label' => $item->name];
-            },
-            $pathways
-        ), JSON_THROW_ON_ERROR);
+        $pathway_json = json_encode(
+            array_map(
+                static function ($item) {
+                    return ['id' => $item->id, 'name' => 'pathway', 'label' => $item->name];
+                },
+                $pathways
+            ),
+            JSON_THROW_ON_ERROR
+        );
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new Exception(json_last_error_msg());
         }
@@ -548,6 +554,22 @@ class Pathway extends BaseActiveRecordVersioned
             }
         }
         return false;
+    }
+
+    /**
+     * Starts the pathway.
+     * @return bool True if pathway was successfully started; otherwise false.
+     * @throws Exception
+     */
+    public function startPathway(): bool
+    {
+        if (count($this->requested_steps) === 0) {
+            $this->status = Pathway::STATUS_STUCK;
+        } else {
+            $this->status = Pathway::STATUS_WAITING;
+        }
+        $this->start_time = date('Y-m-d H:i:s');
+        return $this->save();
     }
 
     public function updateStatus()

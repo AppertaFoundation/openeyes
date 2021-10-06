@@ -314,13 +314,7 @@ class WorklistController extends BaseController
         $pathway = $wl_patient->pathway;
 
         if ($pathway) {
-            if (count($pathway->requested_steps) === 0) {
-                $pathway->status = Pathway::STATUS_STUCK;
-            } else {
-                $pathway->status = Pathway::STATUS_WAITING;
-            }
-            $pathway->start_time = date('Y-m-d H:i:s');
-            $pathway->save();
+            $pathway->startPathway();
             $this->renderJSON(
                 [
                     'end_time' => DateTime::createFromFormat('Y-m-d H:i:s', $pathway->start_time)->format('H:i'),
