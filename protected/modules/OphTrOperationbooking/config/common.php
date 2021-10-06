@@ -46,6 +46,12 @@ return array(
                 'position' => 20,
                 'restricted' => array('Schedule operation' , 'Super schedule operation'),
             ),
+            'theatre_management' => array(
+                'title' => 'Theatre Management',
+                'uri' => 'OphTrOperationbooking/admin/viewSequences',
+                'position' => 30,
+                'restricted' => array('Theatre Management'),
+            ),
         ),
         'future_scheduling_limit' => '3 months',
         'admin_menu' => array(
