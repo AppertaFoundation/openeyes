@@ -4614,8 +4614,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
             </INDEX>
           </INDEX_LIST>
         </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Freehand Draw</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\FreehandDraw</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
       </INDEX_LIST>
     </EVENT>
   </EVENT_LIST>
 </OE_ED_CONFIG>
-
