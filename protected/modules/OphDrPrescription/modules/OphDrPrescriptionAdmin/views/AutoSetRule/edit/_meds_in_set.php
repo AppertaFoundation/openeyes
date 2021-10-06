@@ -33,14 +33,13 @@ $dispense_condition_options = array(
 <h2>Medications in set</h2>
 <div class="row flex-layout flex-top col-gap">
     <div class="cols-6">
-
         <input type="text"
                class="search cols-12"
                autocomplete=""
                name="search"
                id="search_query"
                placeholder="Search medication in set..."
-                <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
+            <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
         >
         <small class="empty-set" <?= $medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>>Empty set</small>
     </div>
@@ -268,7 +267,7 @@ $dispense_condition_options = array(
 </script>
 
 <script type="x-tmpl-mustache" id="medication_template" style="display:none">
-    <tr class="js-row-of-{{medication_id}} new" id="medication_set_item_{{key}}" data-id="{{medication_id}}" data-med_id="{{medication_id}}" data-key="{{key}}" style="cursor: default;">
+    <tr class="js-row-of-{{medication_id}} new" id="medication_set_item_{{key}}" data-id="{{id}}" data-med_id="{{medication_id}}" data-key="{{key}}" style="cursor: default;">
         <td>
             {{preferred_term}}
             <input class="js-input" name="MedicationSetAutoRuleMedication[{{key}}][id]" type="hidden" value="{{id}}">

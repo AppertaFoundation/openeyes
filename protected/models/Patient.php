@@ -217,7 +217,7 @@ class Patient extends BaseActiveRecordVersioned
     //    Generates an auto incremented Hospital Number
     public function autoCompleteHosNum()
     {
-        if (Yii::app()->params['set_auto_increment'] == 'on') {
+        if (Yii::app()->params['set_auto_increment_hospital_no'] == 'on') {
             $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
             $command = Yii::app()->db->createCommand($query);
             $command->prepare();

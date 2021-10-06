@@ -1206,7 +1206,7 @@ class EventMedicationUse extends BaseElement
                                 $formatted_end_date = $latest_item->end_date;
                             }
                             if (is_null($latest_item_end_date) || $formatted_end_date >= date('Y-m-d')) {
-                                $attributes = ['latest_med_use_id' => $this->id];
+                                $attributes = is_null($this->latest_med_use_id) ? ['latest_med_use_id' => $this->id] : ['latest_med_use_id' => null];
                                 if (!$this->isEqualsAttributes($latest_item, true, false)) {
                                     $latest_item->setStopReasonTo('Medication parameters changed');
                                     $attributes = array_merge($attributes, ['end_date' => date('Y-m-d'), 'stop_reason_id', 'is_discontinued' => false]);
