@@ -272,6 +272,10 @@ class WaitingListController extends BaseModuleController
             $criteria->params[':subspecialtyId'] = $subspecialtyId;
         }
         $criteria->addCondition('can_own_an_episode = 1');
+        if (!isset(Yii::app()->session['selected_institution_id'])) {
+            $criteria->addCondition('institution_id = :institutionId');
+            $criteria->params[':institutionId'] = Institution::model()->getCurrent()->id;
+        }
         $criteria->order = '`t`.name asc';
 
         return CHtml::listData(Firm::model()
