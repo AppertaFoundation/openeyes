@@ -15,7 +15,7 @@
 ?>
 
 <?php
-$event_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_EventInfo_V1');
+$event_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_EventInfo');
 $patient_sign = $event_info->getSignatureByType(\BaseSignature::TYPE_PATIENT);
 
 $selectOptions = [];
@@ -72,7 +72,7 @@ $(document).ready(function(){
         $('.event-header').find('button').hide();
         var option = $(this).val();
         $('#'+option).show();
-        
+
         $(this).val("");
     });
 });

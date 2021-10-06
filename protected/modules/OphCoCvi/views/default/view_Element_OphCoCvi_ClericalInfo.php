@@ -27,7 +27,7 @@
                 </thead>
                 <tbody>
                 <?php
-                $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1::model();
+                $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo::model();
                 ?>
                 <?php
                 foreach ($model->patientFactorList($element->id) as $factor) {
@@ -58,7 +58,7 @@
             </table>
         </div>
     </div>
-   
+
     <div class="element-fields row">
         <div class="large-12 column">
             <div class="row data-row">
@@ -70,9 +70,9 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
-    
+
     <div class="element-fields row">
         <div class="large-12 column">
             <div class="row data-row">
@@ -140,7 +140,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="element-fields row">
         <div class="large-12 column">
             <div class="row data-row">

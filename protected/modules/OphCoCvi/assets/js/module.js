@@ -2,25 +2,25 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
-    
+
     if (typeof(cvi_do_print) !== 'undefined' && cvi_do_print == 1) {
         doPrint();
     }
-    
+
     handleButton($("#et_print_empty_consent"), function (e) {
         $frame = $("<iframe src='/OphCoCvi/default/printEmptyConsent' style='display: none;'></iframe>");
         $frame.appendTo("body");
         $frame.get(0).contentWindow.print();
         setTimeout(enableButtons, 2000);
     });
-    
+
     handleButton($("#et_print_info_sheet"), function (e) {
         $frame = $("<iframe src='/OphCoCvi/default/printInfoSheet' style='display: none;'></iframe>");
         $frame.appendTo("body");
         $frame.get(0).contentWindow.print();
         setTimeout(enableButtons, 2000);
     });
-    
+
     handleButton($("#et_print_consent"), function (e) {
         $frame = $("<iframe src='/OphCoCvi/default/printConsent?event_id="+OE_event_id+"' style='display: none;'></iframe>");
         $frame.appendTo("body");
@@ -36,24 +36,24 @@ $(document).ready(function() {
         $frame.get(0).contentWindow.print();
         setTimeout(enableButtons, 2000);
     });
-    
+
     handleButton($("#et_visually_impaired"), function (e) {
         $frame = $("<iframe src='/OphCoCvi/default/printVisualyImpaired?event_id="+OE_event_id+"' style='display: none;'></iframe>");
         $frame.appendTo("body");
         $frame.get(0).contentWindow.print();
         setTimeout(enableButtons, 2000);
     });
-    
-    $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_describe_ethnics').hide();
+
+    $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_describe_ethnics').hide();
     openIfOtherEthnicity();
-    
-    
-    $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_ethnic_group_id').change(function(){
+
+
+    $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_ethnic_group_id').change(function(){
         openIfOtherEthnicity();
     });
-    
+
     $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_text').hide();
-    
+
     $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_id').change(function(){
         var label_name = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_id').find(":selected").text();
         if (label_name.toLowerCase().indexOf("other") >= 0) {
@@ -62,10 +62,10 @@ $(document).ready(function() {
             $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_text').hide();
         }
     });
-    
-    
+
+
     $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_info_email').hide();
-    
+
     $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_info_fmt_id').change(function(){
         var label_name = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_info_fmt_id').find(":selected").text();
         if (label_name.toLowerCase().indexOf("email") >= 0) {
@@ -74,7 +74,7 @@ $(document).ready(function() {
             $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_info_email').hide();
         }
     });
-    
+
     handleButton($('#et_cancel'),function(e) {
         if (m = window.location.href.match(/\/update\/[0-9]+/)) {
             window.location.href = window.location.href.replace('/update/','/view/');
@@ -83,13 +83,13 @@ $(document).ready(function() {
         }
         e.preventDefault();
     });
-    
+
     handleButton($('#et_deleteevent'));
-    
+
     handleButton($('#et_canceldelete'));
-    
+
     handleButton($('#capture-patient-signature'), function(e) {
-        
+
         $('#capture-patient-signature-instructions').show();
         $('#capture-patient-signature').parent().hide();
         // I honestly don't know wny this works, but it works and we have a demo to do:
@@ -97,11 +97,11 @@ $(document).ready(function() {
         setTimeout(function() {e.preventDefault(); enableButtons();}, 100);
         return false;
     });
-    
+
     $('#remove-patient-signature').on('click', function(e) {
-        
+
         e.preventDefault();
-        
+
         var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
             title: "Remove Patient Signature",
             'content': 'Are you sure you want to delete the current Patient Signature?',
@@ -114,43 +114,43 @@ $(document).ready(function() {
         confirmDialog.content.on('click', '.ok', function() {
             $('#remove-consent-signature-form').submit();
         });
-        
+
         return false;
     });
-    
+
     handleButton( $('#print-for-signature'),function(e) {
         var data = {'firstPage':'1'};
         printIFrameUrl($(e.target).data('print-url'), data);
-        
+
         iframeId = 'print_content_iframe',
         $iframe = $('iframe#print_content_iframe');
-        
+
         $iframe.load(function() {
             enableButtons();
-            e.preventDefault();            
-            
+            e.preventDefault();
+
             try{
                 var PDF = document.getElementById(iframeId);
                 PDF.focus();
                 PDF.contentWindow.print();
             } catch (e) {
                 alert("Exception thrown: " + e);
-            }                                    
+            }
         });
     });
-    
+
     handleButton($('#et_print'),function(e) {
         doPrint(e);
     });
-    
+
         handleButton($('#et_print_labels'),function(e) {
-        
+
         var table = generateTable();
         var dialogContainer = '<div id="label-print-dialog">'
                 + generateLabelInput()
                 + table.outerHTML
                 +'</div>';
-        
+
         var labelDialog = new OpenEyes.UI.Dialog({
             content: dialogContainer,
             title: "Print Labels",
@@ -163,53 +163,53 @@ $(document).ready(function() {
                     click: function(){
                         $( this ).dialog( "close" );
                         enableButtons();
-                    }   
+                    }
                 },
                 "Print":{
                     text: "Print",
                     id: "my-button-id",
                     click: function(){
                         var num = $('#firstLabel').val();
-                        
+
                         if(num > 0){
                             var data = {'firstLabel':num};
                             printIFrameUrl(label_print_url, data);
-                            
+
                             iframeId = 'print_content_iframe',
                             $iframe = $('iframe#print_content_iframe');
-                            
+
                             $iframe.load(function() {
                                 enableButtons();
-                                e.preventDefault();            
-                                
+                                e.preventDefault();
+
                                 try{
                                     var PDF = document.getElementById(iframeId);
                                     PDF.focus();
                                     PDF.contentWindow.print();
-                                    
+
                                 } catch (e) {
                                     alert("Exception thrown: " + e);
-                                }   
-                                
+                                }
+
                             });
                         } else {
                             new OpenEyes.UI.Dialog.Alert({
                                 content: 'The value cannot be less than 1'
                             }).open();
                         }
-                        
-                    }   
+
+                    }
                 }
-                
+
             }
         });
-        
+
         labelDialog.open();
 
         $('#printLabelPanel tr td').click(function(){
             $('#printLabelPanel tr td').removeClass('active-panel');
             $('#printLabelPanel tr td').text('Label');
-            
+
             var tdID = $(this).attr('id').match(/\d+/);
             $('input#firstLabel').val(tdID);
             for(var i = 1; i<= tdID; i++ ){
@@ -217,14 +217,14 @@ $(document).ready(function() {
                     $('#labelPanel_'+i).text('First empty label');
                 } else {
                     $('#labelPanel_'+i).addClass('active-panel');
-                    $('#labelPanel_'+i).text('Used label'); 
+                    $('#labelPanel_'+i).text('Used label');
                 }
-            } 
+            }
         });
         $('#firstLabel').keyup(function() {
             $('#printLabelPanel tr td').removeClass('active-panel');
             $('#printLabelPanel tr td').text('Label');
-            
+
             var tdID = $(this).val();
             for(var i = 1; i <= tdID; i++ ){
                 if(i == tdID){
@@ -233,9 +233,9 @@ $(document).ready(function() {
                     $('#labelPanel_'+i).addClass('active-panel');
                     $('#labelPanel_'+i).text('Used label');
                 }
-            } 
+            }
         });
-        
+
     });
 
     handleButton($('#la-search-toggle'), function(e) {
@@ -250,7 +250,7 @@ $(document).ready(function() {
             var el = $('#'+cLass+'_'+$(this).attr('id'));
             var currentText = el.text();
             var newText = $(this).children('option:selected').text();
-            
+
             if (currentText.length == 0) {
                 el.text(ucfirst(newText));
             } else {
@@ -258,23 +258,23 @@ $(document).ready(function() {
             }
         }
     });
-    
+
     // if a disorder is a main cause, it should be marked as "affected"
     $(document).on('change', '.disorder-main-cause', function(e) {
         if (e.target.checked) {
             $(this).closest('.column').find('.affected-selector[value="1"]').prop('checked', 'checked');
         }
     });
-    
+
     $(document).on('change', 'input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature[is_patient]"][type="radio"]',function(e) {
         if ($(e.target).val() === '1') {
             $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').prop('disabled', 'disabled').closest('.field-row').hide();
         } else {
             $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').removeProp('disabled').closest('.field-row').show();
         }
-        
+
     });
-    
+
     $(document).on('change', '.collapse-group .js-right-eye, .collapse-group .js-left-eye', function(e) {
         const $td = e.target.closest('td');
         var current_group_id = $td.dataset.group_id;
@@ -284,15 +284,15 @@ $(document).ready(function() {
             $("input[data-group_id='" +current_group_id+ "'][type='radio']").each(function () {
                 var current_data_id = $(this).attr('data-id');
                 $(this).prop({checked: false});
-                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_'+current_data_id+'_main_cause').prop({checked: false});
-                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_'+current_data_id+'_main_cause').attr('disabled', 'disabled');
-                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_'+current_data_id+'_main_cause').removeAttr('data-active');
+                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_right_disorders_'+current_data_id+'_main_cause').prop({checked: false});
+                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_right_disorders_'+current_data_id+'_main_cause').attr('disabled', 'disabled');
+                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_right_disorders_'+current_data_id+'_main_cause').removeAttr('data-active');
             });
             $(e.target).prop({checked: true});
         }
 
         const is_active = $td.querySelectorAll('.js-right-eye:checked, .js-left-eye:checked').length;
-        const $main = document.getElementById(`OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_${data_id}_main_cause`);
+        const $main = document.getElementById(`OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_right_disorders_${data_id}_main_cause`);
         if (!is_active) {
             $main.checked = false;
         }
@@ -322,11 +322,11 @@ $(document).ready(function() {
         e.preventDefault();
         var current_checkbox = $(this);
         var data_id = current_checkbox.attr('data-id');
-        $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[disorders]['+data_id+'][affected]"][type="radio"]').each(function() {
+        $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[disorders]['+data_id+'][affected]"][type="radio"]').each(function() {
             $(this).prop({checked: false});
-            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_'+data_id+'_main_cause').attr('disabled', 'disabled');
-            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_'+data_id+'_main_cause').removeAttr('data-active');
-            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_right_disorders_'+data_id+'_main_cause').prop({checked: false});
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_right_disorders_'+data_id+'_main_cause').attr('disabled', 'disabled');
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_right_disorders_'+data_id+'_main_cause').removeAttr('data-active');
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_right_disorders_'+data_id+'_main_cause').prop({checked: false});
             $('.disorder-main-cause').each(function() {
                 if ($(this).attr('data-active') == 1) {
                     $(this).prop({disabled: false, checked: false});
@@ -334,10 +334,10 @@ $(document).ready(function() {
             });
         });
     });
-    
-    $(document).on('change', 'input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[patient_type]"][type="radio"]',function(e) {
+
+    $(document).on('change', 'input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[patient_type]"][type="radio"]',function(e) {
         var patient_type = this.value;
-        
+
         var confirmDialogFirst = new OpenEyes.UI.Dialog.Confirm({
             title: "",
             'content': 'You are about to switch between adult and child diagnosis list. Are you sure you wish to continue?',
@@ -356,19 +356,19 @@ $(document).ready(function() {
             confirmDialogSecond.open();
             confirmDialogSecond.content.off('click', '.cancel');
             confirmDialogSecond.content.on('click', '.cancel', function() {
-                
+
                 var diagnosis_not_covered_list = [];
                 $('#diagnosis_not_covered_table tr').each(function() {
                     var data_id = $(this).attr('data-id');
                     if (data_id !== '' || data_id !== 'undefined') {
-                        var main_cause = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered][' + data_id + '][main_cause]"][type="hidden"]').val();
-                        var eyes = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered][' + data_id + '][eyes]"][type="hidden"]').val();
+                        var main_cause = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered][' + data_id + '][main_cause]"][type="hidden"]').val();
+                        var eyes = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered][' + data_id + '][eyes]"][type="hidden"]').val();
                         diagnosis_not_covered_list[data_id] = {main_cause: main_cause, eyes: eyes};
                     }
                     $(this).remove();
                 });
                 $('#diagnosis_not_covered_table tbody').after('<tr data-id="1"></tr>');
-                
+
                 $.ajax({
                     'type': 'POST',
                     'url': baseUrl + '/OphCoCvi/Default/clinicalInfoDisorderList',
@@ -382,13 +382,13 @@ $(document).ready(function() {
             });
             confirmDialogSecond.content.off('click', '.ok');
             confirmDialogSecond.content.on('click', '.ok', function() {
-                
+
                 var diagnosis_not_covered_list = [];
                 $('#diagnosis_not_covered_table tr').each(function() {
                     var data_id = $(this).attr('data-id');
                     if (typeof data_id !== 'undefined' && data_id !== '') {
-                        var main_cause = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered][' + data_id + '][main_cause]"][type="hidden"]').val();
-                        var eyes = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered][' + data_id + '][eyes]"][type="hidden"]').val();
+                        var main_cause = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered][' + data_id + '][main_cause]"][type="hidden"]').val();
+                        var eyes = $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered][' + data_id + '][eyes]"][type="hidden"]').val();
                         diagnosis_not_covered_list[data_id] = {main_cause: main_cause, eyes: eyes};
                         $('#diagnosis_not_covered_'+data_id).remove();
                     }
@@ -424,12 +424,12 @@ $(document).ready(function() {
 
                     var main_cause = '';
                     var main_cause_id = 0;
-                    
+
                     if ($tr.querySelector('input[name$="[main_cause]"]:checked')) {
                         main_cause = '(main cause)';
                         main_cause_id = 1;
                     }
-                    
+
                     var add_row_content = '<tr id="diagnosis_not_covered_'+data_id+'" data-id="'+data_id+'">\n' +
                             '                        <td>'+data_name+' '+main_cause+' - '+data_code+'</td>\n' +
                             '                        <td>\n' +
@@ -438,15 +438,15 @@ $(document).ready(function() {
                             '                                <span class="hide-offscreen">Remove element</span>\n' +
                             '                            </button>\n' +
                             '                        </td>\n' +
-                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][disorder_id]" value="'+data_id+'">' +
-                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][main_cause]" value="'+main_cause_id+'">' +
-                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][code]" value="'+data_code+'">' +
-                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][eyes]" value="'+data_eye+'">' +
-                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][disorder_type]" value="1">' +
+                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][disorder_id]" value="'+data_id+'">' +
+                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][main_cause]" value="'+main_cause_id+'">' +
+                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][code]" value="'+data_code+'">' +
+                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][eyes]" value="'+data_eye+'">' +
+                            '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][disorder_type]" value="1">' +
                             '</tr>';
                     $('#diagnosis_not_covered_table tr:last').after(add_row_content);
                 });
-                
+
                 confirmDialogSecond.close();
                 confirmDialogFirst.close();
             });
@@ -454,24 +454,24 @@ $(document).ready(function() {
         confirmDialogFirst.content.off('click', '.cancel');
         confirmDialogFirst.content.on('click', '.cancel', function(e) {
             if (patient_type == 0) {
-                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_patient_type_0').attr('checked', false);
-                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_patient_type_1').attr('checked', true);
+                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_patient_type_0').attr('checked', false);
+                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_patient_type_1').attr('checked', true);
             } else if (patient_type == 1) {
-                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_patient_type_1').attr('checked', false);
-                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_patient_type_0').attr('checked', true);
+                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_patient_type_1').attr('checked', false);
+                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_patient_type_0').attr('checked', true);
             }
             confirmDialogFirst.close();
         });
     });
-    
-    $(document).on('change', 'input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_V1[patient_factors][24][is_factor]"][type="radio"]',function(e) {
+
+    $(document).on('change', 'input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo[patient_factors][24][is_factor]"][type="radio"]',function(e) {
         if ($(e.target).val() === '1') {
             $('#comment_15v1').show();
         } else {
             $('#comment_15v1').hide();
         }
     });
-    
+
     $(document).on('click', '.js-remove-diagnosis-not-covered-element',function(e) {
         e.preventDefault();
         var data_id = $(this).attr('data-id');
@@ -484,15 +484,15 @@ $(document).ready(function() {
         confirmDialog.content.off('click', '.ok');
         confirmDialog.content.on('click', '.ok', function() {
             $('#diagnosis_not_covered_'+data_id).remove();
-            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][disorder_id]"]').remove();
-            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][main_cause]"]').remove();
-            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][code]"]').remove();
-            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][eyes]"]').remove();
-            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+data_id+'][disorder_type]"]').remove();
+            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][disorder_id]"]').remove();
+            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][main_cause]"]').remove();
+            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][code]"]').remove();
+            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][eyes]"]').remove();
+            $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+data_id+'][disorder_type]"]').remove();
             confirmDialog.close();
         });
     });
-    
+
     $(document).on('click', '#js-add-diagnosis-not-covered', function(e) {
         e.preventDefault();
 
@@ -538,7 +538,7 @@ $(document).ready(function() {
             eye_label = 'Left';
             eye_id = 1;
         }
-        
+
         var add_row_content = '<tr id="diagnosis_not_covered_'+disorder_id+'">\n' +
                 '                        <td>'+eye_label+' '+disorder.val()+' '+main_cause+' '+code+'</td>\n' +
                 '                        <td>\n' +
@@ -547,21 +547,21 @@ $(document).ready(function() {
                 '                                <span class="hide-offscreen">Remove element</span>\n' +
                 '                            </button>\n' +
                 '                        </td>\n' +
-                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+disorder_id+'][disorder_id]" value="'+disorder_id+'">' +
-                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+disorder_id+'][main_cause]" value="'+main_cause_id+'">' +
-                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+disorder_id+'][code]" value="'+code+'">' +
-                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+disorder_id+'][eyes]" value="'+eye_id+'">' +
-                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[diagnosis_not_covered]['+disorder_id+'][disorder_type]" value="2">' +
+                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+disorder_id+'][disorder_id]" value="'+disorder_id+'">' +
+                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+disorder_id+'][main_cause]" value="'+main_cause_id+'">' +
+                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+disorder_id+'][code]" value="'+code+'">' +
+                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+disorder_id+'][eyes]" value="'+eye_id+'">' +
+                '<input type="hidden" name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[diagnosis_not_covered]['+disorder_id+'][disorder_type]" value="2">' +
                 '</tr>';
         $('#diagnosis_not_covered_table tr:last').after(add_row_content);
         clearDiagnosisNotCoveredForm();
     });
-    
+
     $(document).on('click', '#js-clear-diagnosis-not-covered',function(e) {
         e.preventDefault();
         clearDiagnosisNotCoveredForm();
     });
-    
+
     function clearDiagnosisNotCoveredForm() {
         $('#autocomplete_disorder_id').val('');
         $('#disorder_id').val('');
@@ -569,8 +569,8 @@ $(document).ready(function() {
         $('#icd10').val('');
         $('#dynamic_right_eye:checked, #dynamic_left_eye:checked').prop("checked", false);
     }
-    
-    
+
+
     $('#js-show_icd10_code').on('change',function(e) {
         if(this.checked) {
             $('.icd10code').show();
@@ -579,7 +579,7 @@ $(document).ready(function() {
         }
     });
 
-    
+
     $(document).on('click', '.disorder-main-cause',function(e) {
         var current_checkbox = $(this);
         $('.disorder-main-cause').each(function() {
@@ -594,17 +594,17 @@ $(document).ready(function() {
             }
         });
     });
-    
+
     $(document).on('click', '.js-unchecked-diagnosis-element',function(e) {
         e.preventDefault();
         var current_checkbox = $(this);
         var data_id = current_checkbox.attr('data-id');
-        $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1[disorders]['+data_id+'][affected]"][type="radio"]').each(function() {
+        $('input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo[disorders]['+data_id+'][affected]"][type="radio"]').each(function() {
             $(this).prop({checked: false});
         });
     });
 
-    $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_best_corrected_right_va_list').on('change',function(){
+    $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_best_corrected_right_va_list').on('change',function(){
         updateVisualAcuityDropdown( $(this).val(), 'right');
         updateVisualAcuityDropdown( $(this).val(), 'left');
         updateVisualAcuityDropdown( $(this).val(), 'binocular');
@@ -614,17 +614,17 @@ $(document).ready(function() {
 });
 
 function updateVisualAcuityDropdown(unit_id, type){
-    
+
     jQuery.ajax({
         'url': baseUrl + '/OphCoCvi/Default/getVisualAcuityDatas',
         data: {"unit_id": unit_id },
         dataType: "json",
         success: function(data){
             var options = [];
-            
+
             //remove old options
-            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_best_corrected_'+type+'_va option:gt(0)').remove();
-            
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_best_corrected_'+type+'_va option:gt(0)').remove();
+
             //create js array from obj to sort
             for(item in data){
                 options.push([item,data[item]]);
@@ -632,7 +632,7 @@ function updateVisualAcuityDropdown(unit_id, type){
 
             //append new option to the dropdown
             $.each(options, function(key, value) {
-                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1_best_corrected_'+type+'_va').append($("<option></option>")
+                $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_best_corrected_'+type+'_va').append($("<option></option>")
                         .attr("value", value[0]).text(value[1]));
             });
         }
@@ -649,21 +649,21 @@ function eDparameterListener(_drawing) {
 
 function updateLAFields(item) {
     if (item.service) {
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_name').val(item.service.name);
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_address').val(item.service.address);
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_telephone').val(item.service.telephone);
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_postcode').val(item.service.postcode_1);
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_postcode_2nd').val(item.service.postcode_2);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_name').val(item.service.name);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_address').val(item.service.address);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_telephone').val(item.service.telephone);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_postcode').val(item.service.postcode_1);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_postcode_2nd').val(item.service.postcode_2);
     } else if (item.body) {
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_name').val(item.body.name);
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_address').val(item.body.address);
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_telephone').val(item.body.telephone);
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_postcode').val(item.body.postcode_1);
-        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_postcode_2nd').val(item.body.postcode_2);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_name').val(item.body.name);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_address').val(item.body.address);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_telephone').val(item.body.telephone);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_postcode').val(item.body.postcode_1);
+        $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_postcode_2nd').val(item.body.postcode_2);
     }
 
     if(item.body) {
-      $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_la_email').val(item.body.email);
+      $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_la_email').val(item.body.email);
     }
 
     $('#local_authority_search_wrapper').hide();
@@ -672,16 +672,16 @@ function updateLAFields(item) {
 
 function doPrint(e) {
     printIFrameUrl(cvi_print_url, null);
-    
+
     iframeId = 'print_content_iframe',
             $iframe = $('iframe#print_content_iframe');
-    
+
     $iframe.load(function() {
         if (e != undefined) {
             enableButtons();
             e.preventDefault();
         }
-        
+
         try{
             var PDF = document.getElementById(iframeId);
             PDF.focus();
@@ -699,7 +699,7 @@ function generateLabelInput(){
             +'<div class="large-4 column">'
             +'<input type="text" name="firstLabel" id="firstLabel" value=""/>'
             +'</div>';
-    
+
     return inputField;
 }
 
@@ -711,34 +711,34 @@ function generateTable(){
     for (var j = 1; j <= 8; j++) {
         // table row creation
         var row = document.createElement("tr");
-        
+
         for (var i = 1; i <= 3; i++) {
-            
-            var cell = document.createElement("td");   
+
+            var cell = document.createElement("td");
             cell.setAttribute("id", 'labelPanel_'+counter);
-            var cellText = document.createTextNode("Label"); 
-            
+            var cellText = document.createTextNode("Label");
+
             cell.appendChild(cellText);
             row.appendChild(cell);
             counter++;
         }
-        
+
         //row added to end of table body
         tblBody.appendChild(row);
     }
-    
-    
+
+
     tbl.appendChild(tblBody);
-    
+
     return tbl;
 }
 
 function openIfOtherEthnicity() {
-    
-    const selected = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_ethnic_group_id').find(":selected");
+
+    const selected = $('#OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_ethnic_group_id').find(":selected");
     const dataAttr = selected.data('describe');
-    const $describe_ethnics = $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_describe_ethnics');
-    
+    const $describe_ethnics = $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_describe_ethnics');
+
     if(dataAttr === 1) {
         $describe_ethnics.show();
     } else {

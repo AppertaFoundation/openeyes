@@ -16,7 +16,7 @@
 ?>
 <?php
 if ($this->checkClericalEditAccess()) {
-    $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1::model();
+    $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo::model();
     ?>
     <div class="element-fields row">
         <table>
@@ -117,7 +117,7 @@ if ($this->checkClericalEditAccess()) {
                         ?>
                     </div>
                     <div class="large-12">
-                        <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_V1_preferred_format_id" class="row field-row">
+                        <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_format_id" class="row field-row">
                             <div class="large-6 column">
                                 <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_format_other')) ?></div>
                             </div>
@@ -133,7 +133,7 @@ if ($this->checkClericalEditAccess()) {
             <div class="indent-correct row">
                 <div class="large-6 column">
                     <div class="large-12">
-                        <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_V1_preferred_comm" class="row field-row">
+                        <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_comm" class="row field-row">
                             <div class="large-6 column">
                                 <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_comm')) ?>:</div>
                             </div>
@@ -157,7 +157,7 @@ if ($this->checkClericalEditAccess()) {
             <div class="indent-correct row">
                 <div class="large-6 column">
                     <div class="large-12">
-                        <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_V1_interpreter_required" class="row field-row">
+                        <div id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_interpreter_required" class="row field-row">
                         <div class="large-6 column">
                             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('interpreter_required')) ?></div>
                         </div>
@@ -179,6 +179,6 @@ if ($this->checkClericalEditAccess()) {
     </div>
 
 <?php } else {
-    $this->renderPartial('view_Element_OphCoCvi_ClericalInfo_V1', array('element' => $element));
+    $this->renderPartial('view_Element_OphCoCvi_ClericalInfo', array('element' => $element));
 }
 

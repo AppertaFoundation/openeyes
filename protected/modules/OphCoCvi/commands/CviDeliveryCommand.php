@@ -13,7 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo_V1;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_Consent;
 
 class CviDeliveryCommand extends BaseDocmanDeliveryCommand
 {
@@ -82,14 +83,14 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
         exit(0);
     }
 
-    private function sendToGP(\Event $event, Element_OphCoCvi_EventInfo_V1 $info)
+    private function sendToGP(\Event $event, Element_OphCoCvi_EventInfo $info)
     {
-        if (!Element_OphCoCvi_PatientSignature::isDocmanEnabled()) {
+        if (!Element_OphCoCvi_Consent::isDocmanEnabled()) {
             $this->log_info("Sending to GP disabled");
             return;
         }
 
-        if ($info->gp_delivery == 0 || $info->gp_delivery_status == Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_SENT) {
+        if ($info->gp_delivery == 0 || $info->gp_delivery_status == Element_OphCoCvi_EventInfo::DELIVERY_STATUS_SENT) {
             return;
         }
 
@@ -97,7 +98,7 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
         $file = $info->generated_document->getPath();
         if (!file_exists($file)) {
             $this->log_error("File not found: $file");
-            $info->gp_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR;
+            $info->gp_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
             return;
         }
@@ -111,12 +112,12 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
                 if (!$xml_generated) {
                     $this->log_error("Failed to generate XML for $filename");
                     unlink($dest);
-                    $info->gp_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR;
+                    $info->gp_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
                     $info->save();
                     return;
                 }
             }
-            $info->gp_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_SENT;
+            $info->gp_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_SENT;
             $info->save();
 
             $this->logData(array(
@@ -130,20 +131,20 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
             ));
         } else {
             $this->log_error("Failed to copy $file to $dest");
-            $info->gp_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR;
+            $info->gp_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
             return;
         }
     }
 
-    private function sendToLA(\Event $event, Element_OphCoCvi_EventInfo_V1 $info, \OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics_V1 $demographics)
+    private function sendToLA(\Event $event, Element_OphCoCvi_EventInfo $info, \OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics $demographics)
     {
-        if (!Element_OphCoCvi_PatientSignature::isLADeliveryEnabled()) {
+        if (!Element_OphCoCvi_Consent::isLADeliveryEnabled()) {
             $this->log_info("Sending to LA disabled");
             return;
         }
 
-        if ($info->la_delivery == 0 || $info->la_delivery_status == Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_SENT) {
+        if ($info->la_delivery == 0 || $info->la_delivery_status == Element_OphCoCvi_EventInfo::DELIVERY_STATUS_SENT) {
             return;
         }
 
@@ -151,7 +152,7 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
         $la_email = $demographics->la_email;
         if (is_null($la_email)) {
             $this->log_error("Local Authority email address has not been set in event");
-            $info->la_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR;
+            $info->la_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
             return;
         }
@@ -159,7 +160,7 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
         $file = $info->generated_document->getPath();
         if (!file_exists($file)) {
             $this->log_error("File not found: $file");
-            $info->la_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR;
+            $info->la_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
             return;
         }
@@ -171,23 +172,23 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
 
         if (!$this->sendEmail($la_email, $file, $from_email, $from_name, $subject, $body)) {
             $this->log_error("Failed to send email to: $la_email");
-            $info->la_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR;
+            $info->la_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
             return;
         }
 
-        $info->la_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_SENT;
+        $info->la_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_SENT;
         $info->save();
     }
 
-    private function sendToRCOP(\Event $event, Element_OphCoCvi_EventInfo_V1 $info)
+    private function sendToRCOP(\Event $event, Element_OphCoCvi_EventInfo $info)
     {
-        if (!Element_OphCoCvi_PatientSignature::isRCOPDeliveryEnabled()) {
+        if (!Element_OphCoCvi_Consent::isRCOPDeliveryEnabled()) {
             $this->log_info("Sending to RCOP disabled");
             return;
         }
 
-        if ($info->rco_delivery == 0 || $info->rco_delivery_status == Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_SENT) {
+        if ($info->rco_delivery == 0 || $info->rco_delivery_status == Element_OphCoCvi_EventInfo::DELIVERY_STATUS_SENT) {
             return;
         }
 
@@ -196,7 +197,7 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
             $rco_email = Yii::app()->params['cvidelivery_rcop_to_email'];
         } else {
             $this->log_error("RCOP email address has not been set in configuration");
-            $info->rco_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR;
+            $info->rco_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
             return;
         }
@@ -204,7 +205,7 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
         $file = $info->generated_document->getPath();
         if (!file_exists($file)) {
             $this->log_error("File not found: $file");
-            $info->rco_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR;
+            $info->rco_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
             return;
         }
@@ -216,12 +217,12 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
 
         if (!$this->sendEmail($rco_email, $file, $from_email, $from_name, $subject, $body)) {
             $this->log_error("Failed to send email to: $rco_email");
-            $info->rco_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR;
+            $info->rco_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
             return;
         }
 
-        $info->rco_delivery_status = Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_SENT;
+        $info->rco_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_SENT;
         $info->save();
     }
 

@@ -14,13 +14,13 @@
  */
 
 use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 
 $visual_acuity_list = array();
 if (isset($element->best_corrected_right_va_list)) {
-    if ($element->best_corrected_right_va_list == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_SNELLEN) {
+    if ($element->best_corrected_right_va_list == Element_OphCoCvi_ClinicalInfo::VISUAL_ACUITY_TYPE_SNELLEN) {
         $visual_acuity_list = $element::getSnellenDatas();
-    } elseif ($element->best_corrected_right_va_list == Element_OphCoCvi_ClinicalInfo_V1::VISUAL_ACUITY_TYPE_LOGMAR) {
+    } elseif ($element->best_corrected_right_va_list == Element_OphCoCvi_ClinicalInfo::VISUAL_ACUITY_TYPE_LOGMAR) {
         $visual_acuity_list = $element::getLogmarDatas();
     }
 }
@@ -349,7 +349,7 @@ if ($this->checkClinicalEditAccess()) { ?>
     </table>
     <div>
 
-        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_V1', array(
+        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
             'element' => $element,
             'form' => $form,
         )) ?>
@@ -500,5 +500,5 @@ if ($this->checkClinicalEditAccess()) { ?>
 
     </script>
 <?php } else {
-    $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_V1', array('element' => $element));
+    $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo', array('element' => $element));
 } ?>

@@ -90,7 +90,7 @@ if ($element->isNewRecord) {
                     </td>
                 </tr>
                 </tr>
-                <tr style="display:none" id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1_describe_ethnics">
+                <tr style="display:none" id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_describe_ethnics">
                     <td><?=$element->getAttributeLabel('describe_ethnics');?></td>
                     <td>
                         <?= CHtml::activeTextArea($element, 'describe_ethnics', ['class' => 'cols-full']); ?>

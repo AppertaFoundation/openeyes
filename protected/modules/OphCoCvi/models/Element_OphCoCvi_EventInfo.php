@@ -43,14 +43,14 @@ namespace OEModule\OphCoCvi\models;
  * @property \User $usermodified
  * @property \ProtectedFile $generated_document
  * @property \Site
- * @property Element_OphCoCvi_ClinicalInfo_V1 $clinical_element
- * @property Element_OphCoCvi_ClericalInfo_V1 $clerical_element
+ * @property Element_OphCoCvi_ClinicalInfo $clinical_element
+ * @property Element_OphCoCvi_ClericalInfo $clerical_element
  * @property Element_OphCoCvi_ConsentSignature $consent_element
- * @property Element_OphCoCvi_Demographics_V1 $demographics_element
+ * @property Element_OphCoCvi_Demographics $demographics_element
  * @property \Firm $consultantInChargeOfThisCvi
  */
 
-class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
+class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 {
     const DELIVERY_STATUS_PENDING = "PENDING";
     const DELIVERY_STATUS_SENT = "SENT";
@@ -139,23 +139,21 @@ class Element_OphCoCvi_EventInfo_V1 extends \BaseEventTypeElement
             'clinical_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'clinical_element' => array(
                 self::HAS_ONE,
-                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1',
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo',
                 array('id' => 'event_id'),
                 'through' => 'clinical_event'
             ),
             'clerical_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'clerical_element' => array(
                 self::HAS_ONE,
-                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1',
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo',
                 array('id' => 'event_id'),
                 'through' => 'clerical_event'
             ),
-            'consent_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-
             'demographics_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'demographics_element' => array(
                 self::HAS_ONE,
-                'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics_V1',
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics',
                 array('id' => 'event_id'),
                 'through' => 'demographics_event'
             ),

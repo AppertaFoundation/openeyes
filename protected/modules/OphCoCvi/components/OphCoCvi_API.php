@@ -16,9 +16,9 @@
 
 namespace OEModule\OphCoCvi\components;
 
-use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo_V1;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use \Patient;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 
 /**

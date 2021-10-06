@@ -70,7 +70,7 @@ class OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered extends \BaseActiveRecordVersi
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1', 'element_id'),
+            'element' => array(self::BELONGS_TO, 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', 'element_id'),
             'clinicinfo_disorder' => array(
                 self::BELONGS_TO,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',

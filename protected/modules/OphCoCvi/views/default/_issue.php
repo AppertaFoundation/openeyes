@@ -66,7 +66,7 @@ $logo_helper = new LogoHelper();
         </tbody>
     </table>
     <hr class="divider"/>
-    <?php $clinical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo_V1'); ?>
+    <?php $clinical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo'); ?>
     <div class="highlighter">To be completed by the Ophthalmologist</div>
     <h6>(Tick the box that applies)</h6><h4>I consider that this person is:</h4><span
             class="tickbox <?= !$clinical_info->is_considered_blind ? 'checked' : '' ?>"></span>
@@ -173,7 +173,7 @@ $logo_helper = new LogoHelper();
             </thead>
         </table>
     </div>
-    <?php foreach ($this->getDisorderSections_V1($clinical_info->patient_type) as $disorder_section) :?>
+    <?php foreach ($this->getDisorderSections($clinical_info->patient_type) as $disorder_section) :?>
     <div class="flex"><h3 class="cols-3"><?=\CHtml::encode($disorder_section->name); ?></h3>
         <table class="row-lines">
             <colgroup>
@@ -241,7 +241,7 @@ $logo_helper = new LogoHelper();
     <h2>Part 3: To be completed by the patient (or parent/guardian if the patient is a child) and eye clinic staff e.g.
         ECLO/Sight Loss Advisor</h2>
     <div class="highlighter">Additional information for the patient’s local council</div>
-    <?php $clearical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_V1');?>
+    <?php $clearical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo');?>
     <table class="row-lines">
         <colgroup>
             <col class="cols-6">
@@ -335,7 +335,7 @@ $logo_helper = new LogoHelper();
         benefits of being registered. When the council contacts me, I am aware that I do not have to accept any help, or
         be registered at that time, if I choose not to do so.</p>
 
-    <?php $demographics = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_V1');?>
+    <?php $demographics = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics');?>
     <div class="box">
         <div class="dotted-area">
             <div class="label">My <b>local council</b> name</div>

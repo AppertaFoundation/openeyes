@@ -17,10 +17,10 @@
 namespace OEModule\OphCoCvi\components;
 
 use OEModule\OphCoCvi\models\Element_OphCoCvi_Esign;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo_V1;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics_V1;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo_V1;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use mikehaertl\pdftk\Pdf;
 use OEModule\OphCoMessaging\components\MessageCreator;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
@@ -199,14 +199,13 @@ class OphCoCvi_Manager extends \CComponent
      */
     protected function getElementForEvent($event, $element_class)
     {
-        $version = '_V1';
-        $core_class = 'Element_OphCoCvi_EventInfo'.$version;
+        $core_class = 'Element_OphCoCvi_EventInfo';
         $namespaced_class = '\\OEModule\OphCoCvi\\models\\' . $core_class;
 
         $cls_rel_map = array(
-            'Element_OphCoCvi_ClinicalInfo'.$version => 'clinical_element',
-            'Element_OphCoCvi_ClericalInfo'.$version => 'clerical_element',
-            'Element_OphCoCvi_Demographics'.$version => 'demographics_element',
+            'Element_OphCoCvi_ClinicalInfo' => 'clinical_element',
+            'Element_OphCoCvi_ClericalInfo' => 'clerical_element',
+            'Element_OphCoCvi_Demographics' => 'demographics_element',
             'Element_OphCoCvi_Esign' => 'esign_element',
             'Element_OphCoCvi_Consent' => 'consent_element',
         );
@@ -286,11 +285,11 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Event $event
-     * @return null|Element_OphCoCvi_EventInfo_V1
+     * @return null|Element_OphCoCvi_EventInfo
      */
     public function getEventInfoElementForEvent(\Event $event)
     {
-        return $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo_V1');
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_EventInfo');
     }
 
     /**
@@ -299,32 +298,32 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getClinicalElementForEvent(\Event $event)
     {
-        return $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo_V1');
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_ClinicalInfo');
     }
 
     /**
      * @param \Event $event
-     * @return null|Element_OphCoCvi_ClericalInfo_V1
+     * @return null|Element_OphCoCvi_ClericalInfo
      */
     public function getClericalElementForEvent(\Event $event)
     {
-        return $this->getElementForEvent($event, 'Element_OphCoCvi_ClericalInfo_V1');
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_ClericalInfo');
     }
 
     /**
      * @param \Event $event
-     * @return Element_OphCoCvi_Demographics_V1|null
+     * @return Element_OphCoCvi_Demographics|null
      */
     public function getDemographicsElementForEvent(\Event $event)
     {
-        return $this->getElementForEvent($event, 'Element_OphCoCvi_Demographics_V1');
+        return $this->getElementForEvent($event, 'Element_OphCoCvi_Demographics');
     }
 
     /**
      * Generate the text display of the status of the CVI
      *
-     * @param Element_OphCoCvi_ClinicalInfo_V1 $clinical
-     * @param Element_OphCoCvi_EventInfo_V1    $info
+     * @param Element_OphCoCvi_ClinicalInfo $clinical
+     * @param Element_OphCoCvi_EventInfo    $info
      * @return string
      */
     protected function getDisplayStatus($clinical = null, $info)
@@ -345,10 +344,10 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
-     * @param Element_OphCoCvi_EventInfo_V1 $element
+     * @param Element_OphCoCvi_EventInfo $element
      * @return string
      */
-    public function getDisplayStatusFromEventInfo(Element_OphCoCvi_EventInfo_V1 $element)
+    public function getDisplayStatusFromEventInfo(Element_OphCoCvi_EventInfo $element)
     {
         return $this->getDisplayStatus($element->clinical_element, $element);
     }
@@ -389,10 +388,10 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
-     * @param Element_OphCoCvi_EventInfo_V1 $event_info
+     * @param Element_OphCoCvi_EventInfo $event_info
      * @return \User|null
      */
-    public function getClinicalConsultant(Element_OphCoCvi_EventInfo_V1 $event_info)
+    public function getClinicalConsultant(Element_OphCoCvi_EventInfo $event_info)
     {
         /**
          * @var Element_OphCoCvi_ClinicalInfo
@@ -404,10 +403,10 @@ class OphCoCvi_Manager extends \CComponent
         return null;
     }
 
-    public function getConsultantSignedBy(Element_OphCoCvi_EventInfo_V1 $event_info)
+    public function getConsultantSignedBy(Element_OphCoCvi_EventInfo $event_info)
     {
         /**
-         * @var Element_OphCoCvi_ClinicalInfo_V1
+         * @var Element_OphCoCvi_ClinicalInfo
          */
 
         if ($consultant = $event_info->consultant_element) {
@@ -653,9 +652,9 @@ class OphCoCvi_Manager extends \CComponent
             $info_element->gp_delivery = $gp_delivery = (int)($consent_element->consented_to_gp && $consent_element::isDocmanEnabled());
             $info_element->la_delivery = $la_delivery = (int)($consent_element->consented_to_la && $consent_element::isLADeliveryEnabled());
             $info_element->rco_delivery = $rco_delivery = (int)($consent_element->consented_to_rcop && $consent_element::isRCOPDeliveryEnabled());
-            $info_element->gp_delivery_status = $gp_delivery === 1 ? Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING : null;
-            $info_element->la_delivery_status = $la_delivery === 1 ? Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING : null;
-            $info_element->rco_delivery_status = $rco_delivery === 1 ? Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING : null;
+            $info_element->gp_delivery_status = $gp_delivery === 1 ? Element_OphCoCvi_EventInfo::DELIVERY_STATUS_PENDING : null;
+            $info_element->la_delivery_status = $la_delivery === 1 ? Element_OphCoCvi_EventInfo::DELIVERY_STATUS_PENDING : null;
+            $info_element->rco_delivery_status = $rco_delivery === 1 ? Element_OphCoCvi_EventInfo::DELIVERY_STATUS_PENDING : null;
             $info_element->save();
 
             $transaction->commit();
@@ -901,7 +900,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getListDataProvider($filter = array(), $pagination = true)
     {
-        $model = Element_OphCoCvi_EventInfo_V1::model()->with(
+        $model = Element_OphCoCvi_EventInfo::model()->with(
             'site',
             'user',
             'clinical_element',
@@ -1226,10 +1225,10 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function generateCviElementsForPDF($event)
     {
-        $info = $this->getElementForEvent( $event, 'Element_OphCoCvi_EventInfo_V1' )->getElementsForCVIpdf();
-        $demographics = $this->getElementForEvent( $event, 'Element_OphCoCvi_Demographics_V1')->getElementsForCVIpdf();
-        $clinical = $this->getElementForEvent( $event, 'Element_OphCoCvi_ClinicalInfo_V1')->getElementsForCVIpdf();
-        $clerical = $this->getElementForEvent( $event, 'Element_OphCoCvi_ClericalInfo_V1' )->getElementsForCVIpdf();
+        $info = $this->getElementForEvent( $event, 'Element_OphCoCvi_EventInfo' )->getElementsForCVIpdf();
+        $demographics = $this->getElementForEvent( $event, 'Element_OphCoCvi_Demographics')->getElementsForCVIpdf();
+        $clinical = $this->getElementForEvent( $event, 'Element_OphCoCvi_ClinicalInfo')->getElementsForCVIpdf();
+        $clerical = $this->getElementForEvent( $event, 'Element_OphCoCvi_ClericalInfo' )->getElementsForCVIpdf();
 
         $cviElements = array_merge($info, $demographics, $clinical, $clerical);
 
@@ -1337,7 +1336,7 @@ class OphCoCvi_Manager extends \CComponent
         }
         $pdf = new Pdf(\Yii::getPathOfAlias("application.modules.OphCoCvi.views.odtTemplate")."/cvi_consent.pdf");
 
-        /** @var Element_OphCoCvi_Demographics_V1 $info */
+        /** @var Element_OphCoCvi_Demographics $info */
        // $info = $this->getDemographicsElementForEvent($event);
         $rand = uniqid();
         $tmp_name = "/tmp/OphCoCvi_cvi_consent_".$rand.".pdf";
@@ -1389,15 +1388,15 @@ class OphCoCvi_Manager extends \CComponent
     private function deliveryStatusText($status_code)
     {
         switch ($status_code) {
-            case Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_PENDING:
+            case Element_OphCoCvi_EventInfo::DELIVERY_STATUS_PENDING:
                 return "Pending";
                 break;
 
-            case Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_SENT:
+            case Element_OphCoCvi_EventInfo::DELIVERY_STATUS_SENT:
                 return "Sent";
                 break;
 
-            case Element_OphCoCvi_EventInfo_V1::DELIVERY_STATUS_ERROR:
+            case Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR:
                 return "Error";
                 break;
 
@@ -1472,7 +1471,7 @@ class OphCoCvi_Manager extends \CComponent
 
     private function sendNotificationToClinician(\Event $event)
     {
-        /** @var Element_OphCoCvi_EventInfo_V1 $info_element */
+        /** @var Element_OphCoCvi_EventInfo $info_element */
         $info_element = $this->getEventInfoElementForEvent($event);
         $firm = $info_element->consultantInChargeOfThisCvi;
         if (!is_null($firm) && $consultant = $firm->consultant) {

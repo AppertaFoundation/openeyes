@@ -55,7 +55,7 @@ namespace OEModule\OphCoCvi\models;
 
 use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
 
-class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
+class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 {
 
     public static $BLIND_STATUS = 'Severely Sight Impaired';
@@ -1533,8 +1533,8 @@ class Element_OphCoCvi_ClinicalInfo_V1 extends \BaseEventTypeElement
     public function getPatientTypes()
     {
         $types = [
-            Element_OphCoCvi_ClinicalInfo_V1::CVI_TYPE_ADULT => "Diagnosis (for patients 18 years of age or over)",
-            Element_OphCoCvi_ClinicalInfo_V1::CVI_TYPE_CHILD => "Diagnosis (for patients under the age of 18)",
+            Element_OphCoCvi_ClinicalInfo::CVI_TYPE_ADULT => "Diagnosis (for patients 18 years of age or over)",
+            Element_OphCoCvi_ClinicalInfo::CVI_TYPE_CHILD => "Diagnosis (for patients under the age of 18)",
         ];
 
         return $types;

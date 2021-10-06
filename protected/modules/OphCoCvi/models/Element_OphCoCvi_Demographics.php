@@ -48,7 +48,7 @@ use PatientIdentifierHelper;
  * @property \User $user
  * @property \EventType $eventType
  */
-class Element_OphCoCvi_Demographics_V1 extends \BaseEventTypeElement
+class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
 {
     const GENDER_MALE = 5;
     const GENDER_FEMALE = 6;

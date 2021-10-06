@@ -14,7 +14,7 @@
  */
 
     $model_name = CHtml::modelName($element);
-    /** @var \OEModule\OphCoCvi\models\Element_OphCoCvi_PatientSignature $element */
+    /** @var \OEModule\OphCoCvi\models\Element_OphCoCvi_Consent $element */
 ?>
 <div class="row field-row">
     <div class="large-2 column">

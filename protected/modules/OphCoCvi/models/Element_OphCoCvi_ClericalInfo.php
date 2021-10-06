@@ -46,7 +46,7 @@ namespace OEModule\OphCoCvi\models;
  * @property \Language $preferred_language
  */
 
-class Element_OphCoCvi_ClericalInfo_V1 extends \BaseEventTypeElement
+class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
 {
 
     public $preferred_format_ids = array();

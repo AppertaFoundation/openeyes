@@ -13,14 +13,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-foreach ($this->getDisorderSections_V1($element->patient_type) as $disorder_section) {
+foreach ($this->getDisorderSections($element->patient_type) as $disorder_section) {
     ?>
         <div class="collapse-data-header-icon collapse"><h3><?php echo \CHtml::encode($disorder_section->name); ?></h3></div>
         <div class="row data-row">
             <div class="large-12 column end">
                 <div class="row">
                     <div class="element-eye column">
-                        <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side_V1', array(
+                        <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
                             'element' => $element,
                             'disorder_section' => $disorder_section,
                         )) ?>

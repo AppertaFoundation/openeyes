@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 
 ?>
 
@@ -27,7 +27,7 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
             </div>
         <?php endif; ?>
     <?php } else {
-        if ($this->getGetPatientAge() == 17 && $this->getGetPatientMonthDiff() <= 2 && $element->patient_type == Element_OphCoCvi_ClinicalInfo_V1::CVI_TYPE_CHILD) : ?>
+        if ($this->getGetPatientAge() == 17 && $this->getGetPatientMonthDiff() <= 2 && $element->patient_type == Element_OphCoCvi_ClinicalInfo::CVI_TYPE_CHILD) : ?>
             <div class="alert-box error with-icon">
                 <p>This patient is 2 months away from his/her 18th birthday. The suggested children diagnosis list might
                     need to be changed.</p>
@@ -65,7 +65,7 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
 </div>
 
 <div id="diagnosis_list">
-<?php foreach ($this->getDisorderSections_V1($element->patient_type) as $disorder_section) :?>
+<?php foreach ($this->getDisorderSections($element->patient_type) as $disorder_section) :?>
     <?php $is_open = $element->hasAffectedCviDisorderInSection($disorder_section);?>
 
     <div class="collapse-group highlight">
@@ -81,7 +81,7 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_V1;
                             <col class="cols-4">
                         </colgroup>
                         <tbody>
-                        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side_V1', array(
+                        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
                             'element' => $element,
                             'form' => $form,
                             'disorder_section' => $disorder_section,

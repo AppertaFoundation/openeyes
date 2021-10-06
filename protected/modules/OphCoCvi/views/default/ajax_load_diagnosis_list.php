@@ -27,7 +27,7 @@
                             <col class="cols-4">
                         </colgroup>
                         <tbody>
-                        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side_V1', array(
+                        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
                             'element' => $element,
                             'disorder_section' => $disorder_section,
                         )) ?>
