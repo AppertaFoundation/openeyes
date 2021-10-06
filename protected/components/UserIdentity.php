@@ -133,7 +133,9 @@ class UserIdentity extends CUserIdentity
             'useStartTls' => false,
         );
 
+        OELog::log('Establishing LDAP connection at ' . (new DateTime())->format('H:i:s'));
         $ldap = $this->getLdap($options);
+        OELog::log('LDAP connection established at ' . (new DateTime())->format('H:i:s'));
 
         /*
          * Try and bind to the login details provided. This indicates if
@@ -141,14 +143,17 @@ class UserIdentity extends CUserIdentity
          */
 
         try {
+            OELog::log('Attempting LDAP bind at ' . (new DateTime())->format('H:i:s'));
             $ldap->bind(
                 'cn='.$this->username.','.$ldap_config->ldap_dn,
                 $this->password
             );
+            OELog::log('LDAP bind complete at ' . (new DateTime())->format('H:i:s'));
         } catch (Exception $e) {
             /*
              * User not authenticated via LDAP
              */
+            OELog::log('LDAP login failed at ' . (new DateTime())->format('H:i:s'));
             $audit = new Audit();
             $audit->action = 'login-failed';
             $audit->target_type = 'login';
@@ -178,6 +183,7 @@ class UserIdentity extends CUserIdentity
         $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
         $user = $user_authentication->user;
 
+        OELog::log('Establising LDAP connection at ' . (new DateTime())->format('H:i:s'));
         if (preg_match('~ldaps?://~', $ldap_config->ldap_server)) {
             if (!$link = ldap_connect($ldap_config->ldap_server)) {
                 OELog::log('Unable to connect to LDAP server: '.$ldap_config->ldap_server);
@@ -190,6 +196,7 @@ class UserIdentity extends CUserIdentity
                 return [false, "Invalid login."];
             }
         }
+        OELog::log('LDAP connection established at ' . (new DateTime())->format('H:i:s'));
 
         ldap_set_option($link, LDAP_OPT_REFERRALS, 0);
         if ($ldap_config->getLDAPParam('ldap_protocol_version') !== null) {
@@ -198,6 +205,7 @@ class UserIdentity extends CUserIdentity
         ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, $ldap_config->getLDAPParam('ldap_native_timeout'));
 
         // Bind as the LDAP admin user. Set parameters ldap_admin_dn and ldap_password in local config for this.
+        OELog::log('Attempting LDAP bind at ' . (new DateTime())->format('H:i:s'));
         if (!@ldap_bind($link, $ldap_config->ldap_admin_dn, $ldap_config->ldap_admin_password)) {
             $audit = new Audit();
             $audit->action = 'login-failed';
@@ -211,12 +219,15 @@ class UserIdentity extends CUserIdentity
 
             return [false, "Invalid login."];
         }
+        OELog::log('LDAP bind successful at ' . (new DateTime())->format('H:i:s'));
 
         // Perform an LDAP search for the username in order to retrieve their DN. Set the base DN in parameter ldap_dn in local config for this.
 
         $ldapSearchFilter = '(sAMAccountName='.$this->username.')';
 
+        OELog::log('LDAP search started at ' . (new DateTime())->format('H:i:s'));
         $ldapSearchResult = ldap_search($link, $ldap_config->ldap_dn, $ldapSearchFilter);
+        OELog::log('LDAP search completed at ' . (new DateTime())->format('H:i:s'));
 
         $ldapSearchEntries = ldap_get_entries($link, $ldapSearchResult);
 
@@ -238,6 +249,7 @@ class UserIdentity extends CUserIdentity
 
         // Now attempt to bind to the user's DN with their entered password.
 
+        OELog::log('LDAP distinguished name bind attempted at ' . (new DateTime())->format('H:i:s'));
         if (!@ldap_bind($link, $info['distinguishedname'][0], $this->password)) {
             $audit = new Audit();
             $audit->action = 'login-failed';
@@ -251,6 +263,7 @@ class UserIdentity extends CUserIdentity
 
             return [false, "Invalid login."];
         }
+        OELog::log('LDAP distinguished name bind successful at ' . (new DateTime())->format('H:i:s'));
         return [true, $info];
     }
 
@@ -260,10 +273,12 @@ class UserIdentity extends CUserIdentity
         $user = $user_authentication->user;
 
         if ($fp = @fsockopen($ldap_config->ldap_server, 389, $errno, $errstr, 5)) {
+            OELog::log('LDAP connection attempted at ' . (new DateTime())->format('H:i:s'));
             if (!$link = ldap_connect($ldap_config->ldap_server)) {
                 OELog::log('Unable to connect to LDAP server: '.$ldap_config->ldap_server);
                 return [false, "Invalid login."];
             }
+            OELog::log('LDAP connection established at ' . (new DateTime())->format('H:i:s'));
         } else {
             throw new Exception('Unable to reach ldap server: '.$ldap_config->ldap_server.': '.$errstr);
             OELog::log('Unable to reach ldap server: '.$ldap_config->ldap_server.': '.$errstr);
@@ -276,6 +291,7 @@ class UserIdentity extends CUserIdentity
         }
         $ldap_user_prefix = $ldap_config->getLDAPParam('ldap_username_prefix') ?: 'cn';
 
+        OELog::log('LDAP bind attempted at ' . (new DateTime())->format('H:i:s'));
         if (!@ldap_bind($link, "$ldap_user_prefix=$this->username,".$ldap_config->ldap_dn, $this->password)) {
             $audit = new Audit();
             $audit->action = 'login-failed';
@@ -289,6 +305,7 @@ class UserIdentity extends CUserIdentity
 
             return [false, "Invalid login."];
         }
+        OELog::log('LDAP bind at ' . (new DateTime())->format('H:i:s'));
 
         $attempts = $ldap_config->getLDAPParam('ldap_info_retries') ?? 1;
 
@@ -296,7 +313,9 @@ class UserIdentity extends CUserIdentity
             if ($i > 0 && $ldap_config->getLDAPParam('ldap_info_retry_delay')) {
                 sleep($ldap_config->getLDAPParam('ldap_info_retry_delay'));
             }
+            OELog::log('LDAP search commenced at ' . (new DateTime())->format('H:i:s'));
             $sr = ldap_search($link, $ldap_config->ldap_dn, "$ldap_user_prefix=$this->username");
+            OELog::log('LDAP search completed at ' . (new DateTime())->format('H:i:s'));
             $info = ldap_get_entries($link, $sr);
 
             if (isset($info[0])) {
