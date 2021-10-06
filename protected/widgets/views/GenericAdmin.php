@@ -17,6 +17,17 @@
  */
 ?>
 
+<?php if($errors):?>
+    <div class="alert-box warning">
+        <p>Please fix the following input errors:</p>
+        <ul>
+            <?php foreach(array_unique($errors) as $error):?>
+            <li><?=$error;?></li>
+            <?php endforeach;?>
+        </ul>
+    </div>
+<?php endif;?>
+
 <div class='<?=$div_wrapper_class?>'>
 <?php if (!$get_row) {
     if ($filter_fields) { ?>
