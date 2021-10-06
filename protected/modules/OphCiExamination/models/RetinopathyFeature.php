@@ -13,6 +13,7 @@ use CDbCriteria;
  * @property integer $id
  * @property integer $element_id
  * @property integer $feature_id
+ * @property string $eye_id
  * @property string $feature_count
  * @property string $last_modified_user_id
  * @property string $last_modified_date
@@ -78,6 +79,7 @@ class RetinopathyFeature extends BaseActiveRecordVersioned
             'id' => 'ID',
             'element_id' => 'Element',
             'feature_id' => 'Feature',
+            'eye_id' => 'Eye',
             'feature_count' => 'Feature Count',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
@@ -107,6 +109,7 @@ class RetinopathyFeature extends BaseActiveRecordVersioned
         $criteria->compare('id', $this->id);
         $criteria->compare('element_id', $this->element_id);
         $criteria->compare('feature_id', $this->feature_id);
+        $criteria->compare('eye_id', $this->eye_id, true);
         $criteria->compare('feature_count', $this->feature_count, true);
         $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
         $criteria->compare('last_modified_date', $this->last_modified_date, true);

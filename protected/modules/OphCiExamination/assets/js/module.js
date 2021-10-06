@@ -160,7 +160,10 @@ function addDRFeature($container, selectedItems, template, side) {
         },
         success: function(response) {
             $($container).find("tbody").empty();
-            $.each(JSON.parse(response), function(index, item) {
+            if (typeof response !== 'object') {
+                response = JSON.parse(response);
+            }
+            $.each(response, function(index, item) {
                 var data = {
                     grade: item.grade,
                     id: item.id,

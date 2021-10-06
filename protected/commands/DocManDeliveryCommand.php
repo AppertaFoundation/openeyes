@@ -290,20 +290,34 @@ EOH;
             $filename = $this->getFileName($output_id)['filename'];
 
             $content_rtf = null;
-            if (isset(Yii::app()->modules['RTFGeneration'])) {
+            if (getenv("RTF_HOSTNAME") != null) {
                 $html_url = "http://localhost/OphCoCorrespondence/default/printForRecipient/" . $event->id;
 
                 $footer = Yii::app()->db->createCommand()->select('footer')->from('document_instance')->where('correspondence_event_id=:event_id', array(':event_id'=>$event_id))->queryRow()['footer'];
+                $footer = addslashes("<div style=\"font-size: 7.4pt;\">" . substr($footer, strpos($footer, "<div class"), strpos($footer, "</body>") - strpos($footer, "<div class")) . "</div>");
 
-                require("/var/www/openeyes/protected/modules/RTFGeneration/RTFGenerationModule.php");
-                $content_rtf = \RTFGenerationModule::generateRTF($html_url, $footer);
+                $file = fopen("/tmp/cookie.txt", 'r');
+                $cookie_file = fread($file, filesize("/tmp/cookie.txt"));
+                $oe_cookie = trim(explode(' ', preg_split('/OESESSID/', $cookie_file)[1])[0]);
+                fclose($file);
 
-                $rtf_generated = (file_put_contents($this->path . "/" . $filename . ".rtf", $content_rtf) !== false);
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, "http://".getenv("RTF_HOSTNAME").":4567/");
+                curl_setopt($ch, CURLOPT_POST, 1);
+                $payload = json_encode(array("html"=>$html_url, "cookie"=>$oe_cookie, "footer"=>$footer));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                curl_setopt( $ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+                curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+                $content_rtf = curl_exec($ch);
+                $http_response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
 
-                if (!$rtf_generated) {
-                    echo 'Generating Docman file' . $filename . '.rtf failsed' . PHP_EOL;
+                if ($http_response != 200) {
+                    echo 'Generating Docman file' . $filename . '.rtf failed, with response ' . $http_response . PHP_EOL;
                     return false;
                 }
+
+                $rtf_generated = (file_put_contents($this->path . "/" . $filename . ".rtf", $content_rtf) !== false);
             }
 
             if (substr($content, 0, 4) !== "%PDF") {

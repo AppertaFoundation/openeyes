@@ -42,7 +42,7 @@ class WhiteboardSettingsController extends ModuleAdminController
         $errors = [];
         $value = \Yii::app()->request->getPost($metadata->key);
 
-        if ($value) {
+        if ($value !== null && $value !== '') {
             $setting = $metadata->getSetting($metadata->key, null, true);
 
             if (!$setting) {

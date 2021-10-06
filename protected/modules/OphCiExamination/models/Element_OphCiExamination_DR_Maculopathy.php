@@ -25,6 +25,7 @@ use SplitEventTypeElement;
 
 class Element_OphCiExamination_DR_Maculopathy extends SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     /**
      * @return string the associated database table name
      */
