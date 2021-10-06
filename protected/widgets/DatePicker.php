@@ -44,7 +44,7 @@ class DatePicker extends BaseFieldWidget
                 if ($this->getPostValue($this->name)) {
                     $this->value = $this->getPostValue($this->name);
                 } else {
-                    if ($this->htmlOptions['null']) {
+                    if (isset($this->htmlOptions['null']) && $this->htmlOptions['null']) {
                         $this->value = null;
                     } else {
                         $this->value = date('d M Y');
