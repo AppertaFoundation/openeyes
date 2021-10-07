@@ -26,12 +26,12 @@ use services\DateTime;
  * @property int $element_id
  * @property int $procedure_id
  * @property int $eye_id
- * @property time $outcome_time
+ * @property string $outcome_time
  * @property DateTime $date
  * @property string $comments
  * @property int $subspecialty_id
  */
-class OphCiExamination_ClinicProcedures_Entry extends \BaseEventTypeElement
+class OphCiExamination_ClinicProcedures_Entry extends \BaseActiveRecordVersioned
 {
     public static function model($class_name = null)
     {

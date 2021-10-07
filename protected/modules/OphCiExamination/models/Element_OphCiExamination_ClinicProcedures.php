@@ -85,7 +85,7 @@ class Element_OphCiExamination_ClinicProcedures extends \BaseEventTypeElement
     {
         $entries = $_POST['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'] ?: [];
 
-        foreach ($this->entries as $entry) {
+        foreach ($entries as $entry) {
             $procedure_entry = new OphCiExamination_ClinicProcedures_Entry();
             $procedure_entry->element_id = $this->id;
             $procedure_entry->procedure_id = $entry['procedure_id'];
@@ -104,5 +104,6 @@ class Element_OphCiExamination_ClinicProcedures extends \BaseEventTypeElement
             $procedure_entry->eye_id = $eye_id;
             $procedure_entry->save();
         }
+        parent::afterSave();
     }
 }
