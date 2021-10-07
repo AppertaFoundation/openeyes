@@ -187,6 +187,23 @@ class ChangeEventController extends BaseController
         $this->redirect('/patient/view/'.$this->patient->id);
     }
 
+    public function actionFindWorkflowSteps()
+    {
+        $firm_id = Yii::app()->request->getQuery('firm_id');
+        if (!$firm_id) {
+            $this->renderJSON([]);
+        }
+        $event = Event::model()->find('id = :id', [':id' => Yii::app()->request->getQuery('event_id')]);
+        $workflow = \OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowCascading(
+            $firm_id, $event->episode->status->id
+        );
+        // Have to do this manually as $this->renderJSON does not support implicit Yii object serialisation.
+        header('Content-type: application/json');
+        echo CJSON::encode(
+            $workflow->active_steps ?? []
+        );
+    }
+
     function actionUpdateEpisode(){
         $outcome = 'false';
         $event_id = \Yii::app()->request->getPost('eventId');
