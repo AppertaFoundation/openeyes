@@ -189,17 +189,18 @@ class ClinicOutcomeEntry extends \BaseElement
 
     public function getDischargeStatusLabel()
     {
-        return $this->discharge_status->name;
+        return $this->discharge_status->name ?? null;
     }
 
     public function getDischargeDestinationLabel()
     {
-        return $this->discharge_destination->name;
+        return $this->discharge_destination->name ?? null;
     }
 
     public function getTransferToLabel()
     {
-        return " ({$this->transfer_to->name})";
+        $transfer_to_name = $this->transfer_to->name ?? null;
+        return $transfer_to_name ? " ({$transfer_to_name})" : null;
     }
 
     public function getRoleLabel()
