@@ -16,6 +16,7 @@
 namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\models\traits\CustomOrdering;
+use services\DateTime;
 
 /**
  * This is the model class for table "et_ophciexamination_intraocularpressure".
@@ -42,7 +43,7 @@ class Element_OphCiExamination_ClinicProcedures extends \BaseEventTypeElement
     public function rules()
     {
         return [
-            ['event_id', 'safe']
+            ['event_id, entries', 'safe']
         ];
     }
 
@@ -52,5 +53,56 @@ class Element_OphCiExamination_ClinicProcedures extends \BaseEventTypeElement
             'event' => [self::BELONGS_TO, 'Event', 'event_id'],
             'entries' => [self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicProcedures_Entry', 'element_id']
         ];
+    }
+
+    protected function afterValidate()
+    {
+        $entries = $_POST['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'];
+        if (isset($this->entries)) {
+            foreach ($this->entries as $entry) {
+                if (!array_key_exists('date', $entry) || $entry['date'] === '') {
+                    $this->addError('date', 'Entry Date Cannot be blank');
+                }
+                if (!array_key_exists('outcome_time', $entry) || $entry['outcome_time'] === '') {
+                    $this->addError('outcome_time', 'Entry Outcome Time Cannot be blank');
+                }
+            }
+        }
+
+        parent::afterValidate();
+    }
+
+    protected function beforeSave()
+    {
+        if($this->id !== null){
+            OphCiExamination_ClinicProcedures_Entry::model()->deleteAll('element_id = ?', array($this->id));
+        }
+
+        return parent::beforeSave();
+    }
+
+    protected function afterSave()
+    {
+        $entries = $_POST['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'] ?: [];
+
+        foreach ($this->entries as $entry) {
+            $procedure_entry = new OphCiExamination_ClinicProcedures_Entry();
+            $procedure_entry->element_id = $this->id;
+            $procedure_entry->procedure_id = $entry['procedure_id'];
+            $procedure_entry->outcome_time = $entry['outcome_time'];
+            $date = new DateTime($entry['date']);
+            $procedure_entry->date = $date->format('Y-m-d');
+            $procedure_entry->comments = (array_key_exists('comments', $entry) && !empty($entry['comments'])) ? $entry['comments'] : null;
+            $procedure_entry->subspecialty_id = $this->event->firm->serviceSubspecialtyAssignment->subspecialty->id;
+            $eye_id = 0;
+            if (array_key_exists('left_eye', $entry)) {
+                $eye_id += 1;
+            }
+            if (array_key_exists('right_eye', $entry)) {
+                $eye_id += 2;
+            }
+            $procedure_entry->eye_id = $eye_id;
+            $procedure_entry->save();
+        }
     }
 }

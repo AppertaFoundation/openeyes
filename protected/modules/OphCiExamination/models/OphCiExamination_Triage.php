@@ -54,6 +54,18 @@ class OphCiExamination_Triage extends \BaseActiveRecordVersioned
         ];
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'treat_as_adult' => 'Treat as',
+            'priority_id' => 'Priority',
+            'chief_complaint_id' => 'Chief Complaint',
+            'eye_id' => 'Eye',
+            'site_id' => 'Site',
+        ];
+    }
+
     public function getChiefComplaint()
     {
         $chief_complaint_text = null;

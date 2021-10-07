@@ -19,15 +19,26 @@
  */
 
 if (!isset($values)) {
-    $values = [
-        'id' => $entry->id,
-        'procedure' => $entry->procedure->term,
-        'procedure_id' => $entry->procedure->id,
-        'eye_id' => $entry->eye_id,
-        'outcome_time' => $entry->outcome_time,
-        'date' => $entry->date,
-        'comments' => $entry->comments,
-    ];
+    if ($entry instanceof \OEModule\OphCiExamination\models\OphCiExamination_ClinicProcedures_Entry) {
+        $values = [
+            'id' => $entry->id,
+            'procedure' => $entry->procedure->term,
+            'procedure_id' => $entry->procedure->id,
+            'eye_id' => $entry->eye_id,
+            'outcome_time' => $entry->outcome_time,
+            'date' => $entry->date,
+            'comments' => $entry->comments,
+        ];
+    } else {
+        $values = [
+            'procedure_id' => $entry['procedure_id'],
+            'procedure' => Procedure::model()->findByPk($entry['procedure_id'])->term,
+            'eye_id' => array_key_exists('eye_id', $entry) ? $entry['eye_id'] : '',
+            'outcome_time' => $entry['outcome_time'],
+            'date' => $entry['date'],
+            'comments' => $entry['comments'],
+        ];
+    }
 }
 ?>
 

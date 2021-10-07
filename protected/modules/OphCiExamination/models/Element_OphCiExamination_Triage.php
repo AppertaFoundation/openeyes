@@ -53,4 +53,32 @@ class Element_OphCiExamination_Triage extends \BaseEventTypeElement
             'triage' => [self::HAS_ONE, 'OEModule\OphCiExamination\models\OphCiExamination_Triage', 'element_id'],
         ];
     }
+
+    public function afterValidate()
+    {
+        $triage_data = $_POST[\CHtml::modelName($this)]['triage'];
+        $triage = new OphCiExamination_Triage();
+        $triage->attributes = $triage_data;
+        if (!$triage->validate()) {
+            foreach ($triage->getErrors() as $fld => $err) {
+                $this->addError($fld, implode(', ', $err));
+            }
+        }
+
+        parent::afterValidate();
+    }
+
+    public function afterSave()
+    {
+        $triage_data = $_POST[\CHtml::modelName($this)]['triage'];
+        if (!$this->triage) {
+            $triage = new OphCiExamination_Triage();
+            $triage->element_id = $this->id;
+            $triage->attributes = $triage_data;
+            $triage->save(false);
+        } else {
+            $this->triage->attributes = $triage_data;
+            $this->triage->save(false);
+        }
+    }
 }
