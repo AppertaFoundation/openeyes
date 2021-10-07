@@ -17,24 +17,39 @@
 
     <h2>Clinical Disorder Section</h2>
 
-        <?php $this->widget('GenericSearch', array('search' => $search)); ?>
+    <form action="#" method="get">
+        <?=\CHtml::dropDownList('search[version]', $search['version'], [0, 1], [
+                'empty' => '- Version -'
+        ])?>
+
+        <?=\CHtml::dropDownList('search[patient_type]', $search['patient_type'], $patient_types, [
+                'empty' => '- Select -'
+        ])?>
+        <button type="submit">Search</button>
+    </form>
 
     <form id="admin_sections">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="grid">
+        <table class="standard">
+            <colgroup>
+                <col class="cols-2">
+                <col class="cols-1">
+            </colgroup>
             <thead>
             <tr>
                 <th>Name</th>
                 <th>Active</th>
+                <th>Event type version</th>
             </tr>
             </thead>
             <tbody>
             <?php
-            foreach ($sections as $i => $section) { ?>
-                <tr class="clickable" data-id="<?php echo CHtml::encode($section->id) ?>"
-                    data-uri="OphCoCvi/admin/editClinicalDisorderSection/<?php echo CHtml::encode($section->id) ?>?event_type_version=<?=Yii::app()->request->getQuery('search')['event_type_version']?>&patient_type=<?=Yii::app()->request->getQuery('search')['patient_type']?>">
-                    <td><?php echo CHtml::encode($section->name) ?></td>
-                    <td><?php echo ($section->active) ? 'Active' : 'Inactive' ?></td>
+            foreach ($disorder_sections as $i => $section) { ?>
+                <tr class="clickable" data-id="<?=$section->id ?>"
+                    data-uri="OphCoCvi/admin/editClinicalDisorderSection/<?=$section->id?>?event_type_version=<?=$search['version']?>&patient_type=<?=$search['patient_type']?>">
+                    <td><?=\CHtml::encode($section->name) ?></td>
+                    <td><?= \OEHtml::icon($section->active ? 'tick' : 'remove', ['class' => 'small']) ?></td>
+                    <td><?=$section->event_type_version ?></td>
                 </tr>
             <?php } ?>
             </tbody>

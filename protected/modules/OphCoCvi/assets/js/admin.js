@@ -38,19 +38,6 @@ $(document).ready(function () {
 
     });
 
-    if ($('#search_version').val() == 0) {
-        $('#search_patient_type').hide();
-    } else {
-        $('#search_patient_type').show();
-    }
-    $(document).on('change', '#search_version', function(e) {
-        if ($(this).val() == 0) {
-            $('#search_patient_type').hide();
-        } else {
-            $('#search_patient_type').show();
-        }
-    });
-
     $(document).on('click', '#js-clear-disorder',function(e) {
         e.preventDefault();
         $('#autocomplete_disorder_id').val('');

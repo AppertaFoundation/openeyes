@@ -14,19 +14,25 @@
  */
 ?>
 <?php
-    $search_params =\Yii::app()->request->getQuery('search')['event_type_version'];
-    $event_type_version = \CHtml::encode($search_params['event_type_version'] ?? 0);
-    $patient_type = \CHtml::encode($search_params['patient_type'] ?? 0);
+
 ?>
 <div class="admin box">
 
     <h2>Clinical Disorders</h2>
+    <form action="#" method="get">
+        <?=\CHtml::dropDownList('search[version]', $search['version'], [0, 1], [
+            'empty' => '- Version -'
+        ])?>
 
-    <?php $this->widget('GenericSearch', array('search' => $search)); ?>
+        <?=\CHtml::dropDownList('search[patient_type]', $search['patient_type'], $patient_types, [
+            'empty' => '- Select -'
+        ])?>
+        <button type="submit">Search</button>
+    </form>
 
     <form id="admin_sections">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="grid">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+        <table class="standard">
             <thead>
             <tr>
                 <th>Name</th>
@@ -41,14 +47,14 @@
             <?php
             foreach ($disorders as $i => $disorder) {
                 ?>
-                <tr class="clickable" data-id="<?php echo CHtml::encode($disorder->id) ?>"
-                    data-uri="OphCoCvi/admin/editClinicalDisorder/<?php echo \CHtml::encode($disorder->id) ?>?event_type_version=<?=$event_type_version;?>&patient_type=<?=$patient_type;?>">
-                    <td><?php echo CHtml::encode($disorder->name) ?></td>
-                    <td><?php echo CHtml::encode($disorder->code) ?></td>
-                    <td><?php echo CHtml::encode($disorder->section->name) ?></td>
-                    <td><?php echo (!empty($disorder->disorder->term)) ? CHtml::encode($disorder->disorder->term) : '' ?></td>
-                    <td><?php echo CHtml::encode($disorder->disorder_id) ?></td>
-                    <td><?php echo ($disorder->active) ? 'Active' : 'Inactive' ?></td>
+                <tr class="clickable" data-id="<?=$disorder->id?>"
+                    data-uri="OphCoCvi/admin/editClinicalDisorder/<?=$disorder->id?>?event_type_version=<?=$search['version'];?>&patient_type=<?=$search['patient_type'];?>">
+                    <td><?= \CHtml::encode($disorder->name) ?></td>
+                    <td><?= \CHtml::encode($disorder->code) ?></td>
+                    <td><?= \CHtml::encode($disorder->section->name) ?></td>
+                    <td><?= \CHtml::encode($disorder->disorder->term ?? '')?></td>
+                    <td><?= \CHtml::encode($disorder->disorder_id) ?></td>
+                    <td><?= \OEHtml::icon($disorder->active ? 'tick' : 'remove', ['class' => 'small']) ?></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -56,7 +62,7 @@
             <tr>
                 <td colspan="6">
                     <?php
-                    $url = "/OphCoCvi/admin/addClinicalDisorder?event_type_version={$event_type_version}&patient_type={$patient_type}";
+                    $url = "/OphCoCvi/admin/addClinicalDisorder?event_type_version={$search['version']}&patient_type={$search['patient_type']}";
                     echo EventAction::button('Add', 'add', array(), array('class' => 'small','data-type' => 'ClinicalDisorder', 'data-uri' => $url))->toHtml() ?>
                 </td>
             </tr>

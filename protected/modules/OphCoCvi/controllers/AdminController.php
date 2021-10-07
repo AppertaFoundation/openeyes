@@ -29,6 +29,7 @@ class AdminController extends \ModuleAdminController
 {
     public $defaultAction = 'clinicalDisorderSection';
     public $displayOrder = 0;
+    public $group = "CVI";
 
     /**
      * Event type version search filter field
@@ -56,30 +57,30 @@ class AdminController extends \ModuleAdminController
     public function actionClinicalDisorders()
     {
         Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder', 'list');
-        $search = new ModelSearch(OphCoCvi_ClinicalInfo_Disorder::model());
+        $search = \Yii::app()->request->getParam('search', [
+            'patient_type' => null,
+            'version' => null
+        ]);
 
-        $search = $this->addVersionFilter(OphCoCvi_ClinicalInfo_Disorder::class, 'event_type_version', $search);
+        $criteria = new \CDbCriteria();
+        if (isset($search['version'])) {
+            $criteria->addCondition('event_type_version = :version');
+            $criteria->params[':version'] = $search['version'];
+        }
 
-        $search->addSearchItem('patient_type', array(
-            'type' => 'dropdown',
-            'options' => [
+        if (isset($search['patient_type'])) {
+            $criteria->addCondition('patient_type =:patient_type');
+            $criteria->params[':patient_type'] = $search['patient_type'];
+        }
+        $disorders = OphCoCvi_ClinicalInfo_Disorder::model()->findAll($criteria);
+
+        $this->render('/default/clinical_disorders', array(
+            'search' => $search,
+            'patient_types' => [
                 OphCoCvi_ClinicalInfo_Disorder::PATIENT_TYPE_ADULT => 'Diagnosis for patients 18 years of age or over',
                 OphCoCvi_ClinicalInfo_Disorder::PATIENT_TYPE_CHILD => 'Diagnosis for patients under the age of 18',
             ],
-        ));
-
-        if (empty(Yii::app()->request->getQuery('search'))) {
-            $maxVersion = OphCoCvi_ClinicalInfo_Disorder::model()->find(
-                array(
-                    "condition" => 'event_type_version = (SELECT MAX(event_type_version) FROM ophcocvi_clinicinfo_disorder_section)',
-                ));
-            $this->redirect('/OphCoCvi/admin/clinicalDisorders/?search[event_type_version]='.$maxVersion->event_type_version.'&search[patient_type]=0');
-        }
-        $this->render('/default/clinical_disorders', array(
-            //'pagination' => $search->initPagination(),
-            'disorders' => $search->retrieveResults(),
-            'search' => $search,
-            'displayOrder' => $this->displayOrder,
+            'disorders' => $disorders,
         ));
     }
 
@@ -179,40 +180,33 @@ class AdminController extends \ModuleAdminController
      */
     public function actionClinicalDisorderSection()
     {
+        $search = \Yii::app()->request->getParam('search', [
+            'patient_type' => null,
+            'version' => null
+        ]);
+
         Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder_Section', 'list');
-        $search = new ModelSearch(OphCoCvi_ClinicalInfo_Disorder_Section::model());
-        $versions = OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll(['group' => 'event_type_version', 'order' => 'event_type_version DESC']);
-        if ($versions) {
-            foreach ($versions as $version) {
-                $options[$version->event_type_version] = 'Version '.$version->event_type_version;
-            }
+        $criteria = new \CDbCriteria();
+
+        if (isset($search['version'])) {
+            $criteria->addCondition('event_type_version = :version');
+            $criteria->params[':version'] = $search['version'];
         }
 
-        $search->addSearchItem('event_type_version', array(
-            'type' => 'dropdown',
-            'options' => $options,
-        ));
+        if (isset($search['patient_type'])) {
+            $criteria->addCondition('patient_type =:patient_type');
+            $criteria->params[':patient_type'] = $search['patient_type'];
+        }
 
-        $search->addSearchItem('patient_type', array(
-            'type' => 'dropdown',
-            'options' => [
+        $disorder_sections = OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll($criteria);
+
+        $this->render('/default/clinical_disorder_section', array(
+            'search' => $search,
+            'patient_types' => [
                 OphCoCvi_ClinicalInfo_Disorder::PATIENT_TYPE_ADULT => 'Diagnosis for patients 18 years of age or over',
                 OphCoCvi_ClinicalInfo_Disorder::PATIENT_TYPE_CHILD => 'Diagnosis for patients under the age of 18',
             ],
-        ));
-        if (empty(Yii::app()->request->getQuery('search'))) {
-            $maxVersion = OphCoCvi_ClinicalInfo_Disorder_Section::model()->find(
-                array(
-                    "condition" => 'event_type_version = (SELECT MAX(event_type_version) FROM ophcocvi_clinicinfo_disorder_section)',
-                ));
-            $this->redirect('/OphCoCvi/admin/clinicalDisorderSection/?search[event_type_version]='.$maxVersion->event_type_version.'&search[patient_type]=0');
-        }
-
-        $this->render('/default/clinical_disorder_section', array(
-            //'pagination' => $search->initPagination(),
-            'sections' => $search->retrieveResults(),
-            'search' => $search,
-            'displayOrder' => $this->displayOrder,
+            'disorder_sections' => $disorder_sections,
         ));
     }
 
