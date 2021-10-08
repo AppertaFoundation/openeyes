@@ -63,7 +63,4 @@ Username: <?php echo $username?>
 
 Firm: <?php echo $firm?>
 
-Modules running:
-<?= implode("<\br>", Yii::app()->modules) ?>
-
 -->

@@ -60,6 +60,7 @@ if ($thisEnv == 'DEV') {
     $ex = explode('/', file_get_contents('.git/HEAD'));
     $branch = array_pop($ex);
 }
+
 ?>
 <div id="debug-info-modal">
     <p><strong>This information is provided to assist the helpdesk in diagnosing any problems</strong></p>
@@ -74,8 +75,10 @@ if ($thisEnv == 'DEV') {
         Client IP: <?php echo htmlspecialchars(@$_SERVER['REMOTE_ADDR'])?><br />
         Username: <?php echo $username?><br />
         Firm: <?php echo $firm?><br />
-        Modules running:
-            <?= implode("<\br>", Yii::app()->modules) ?>
+        Modules running: <br/>
+            <?php foreach (Yii::app()->modules as $key => $val) {
+                echo "&nbsp;&nbsp;" . $key . "<br/>";
+            } ?>
     </code>
     <br />
     <p class="js-copy-to-clipboard" data-copy-content-selector=".js-to-copy-to-clipboard" style="cursor: pointer;">
