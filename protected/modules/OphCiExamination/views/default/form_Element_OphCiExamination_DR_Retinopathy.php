@@ -143,17 +143,38 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                         '<?= $eye_side ?>'
                     );
                 },
+                onOpen: function (adderDialog) {
+                    if ($(adderDialog).find('ul[data-id = "add-to-retinopathy-dr"] .selected').data('label') === 'No DR') {
+                        // 'No DR' has been selected, so hide all the columns except for the first one when dialog is opened
+                        adderDialog.toggleColumnById(['add-to-retinopathy-r1', 'add-to-retinopathy-ma', 'add-to-retinopathy-r2', 'add-to-retinopathy-r3s', 'add-to-retinopathy-r3a'], false);
+                    }
+                },
                 onSelect: function() {
                     // If the selected option is 'DR', display all other columns; otherwise hide all other columns.
                     let $adderDialog = $(this).closest('.oe-add-select-search');
-                    if ($(this).data("label") === 'MA' && $(this).attr("class") !== 'selected') {
-                        // Selected, so show the MA column
-                        $($adderDialog).find('th[data-id = "add-to-retinopathy-ma"]').show();
-                        $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').closest('td').show();
-                    } else if ($(this).data("label") === 'MA' && $(this).attr("class") === 'selected') {
-                        // Deselected, so hide the MA column
-                        $($adderDialog).find('th[data-id = "add-to-retinopathy-ma"]').hide();
-                        $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').closest('td').hide();
+                    if ($(this).data("label") === 'DR' && $(this).attr("class") !== 'selected') {
+                        // DR Selected, so show all the other options
+                        $($adderDialog).find('th:not(:first)').show();
+                        $($adderDialog).find('ul:not(:first)').closest('td').show();
+                        // If MA option has not been selected, hide the MA column
+                        if ($($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').children('.selected').length === 0) {
+                            $($adderDialog).find('th[data-id = "add-to-retinopathy-ma"]').hide();
+                            $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').closest('td').hide();
+                        }
+                    } else if ($(this).data("label") === 'No DR' && $(this).attr("class") !== 'selected') {
+                        // 'No DR' selected, so hide all the other options
+                        $($adderDialog).find('th:not(:first)').hide();
+                        $($adderDialog).find('ul:not(:first)').closest('td').hide();
+                    } else if ($(this).data("label") === 'MA') {
+                        if ($(this).attr("class") !== 'selected') {
+                            // Selected, so show the MA column
+                            $($adderDialog).find('th[data-id = "add-to-retinopathy-ma"]').show();
+                            $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').closest('td').show();
+                        } else {
+                            // Deselected, so hide the MA column
+                            $($adderDialog).find('th[data-id = "add-to-retinopathy-ma"]').hide();
+                            $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').closest('td').hide();
+                        }
                     }
                 }
             });
