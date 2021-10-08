@@ -19,13 +19,14 @@ class m191004_100000_add_ethnics extends \OEMigration
     {
         $this->addOEColumn('ethnic_group', 'id_assignment', 'INT UNSIGNED NULL', true);
         $this->addOEColumn('ethnic_group', 'describe_needs', 'tinyint(1) NOT NULL DEFAULT 0', true);
+        $this->alterColumn('ethnic_group', 'code', 'VARCHAR(2) NOT NULL');
+        $this->alterColumn('ethnic_group_version', 'code', 'VARCHAR(2) NOT NULL');
 
         $this->insert('ethnic_group', [
             'name' => 'English/Northern Irish/Scottish/Welsh/British',
             'id_assignment' => 1,
             'display_order' => 10,
             'code' => 'I'
-
         ]);
 
         $this->insert('ethnic_group', [
@@ -83,14 +84,14 @@ class m191004_100000_add_ethnics extends \OEMigration
             'name' => 'Pakistani',
             'id_assignment' => 9,
             'display_order' => 90,
-            'code' => 'Z'
+            'code' => 'ZA'
         ]);
 
         $this->insert('ethnic_group', [
             'name' => 'Bangladeshi',
             'id_assignment' => 10,
             'display_order' => 100,
-            'code' => 'Z'
+            'code' => 'ZB'
         ]);
 
         $this->insert('ethnic_group', [
@@ -98,21 +99,21 @@ class m191004_100000_add_ethnics extends \OEMigration
             'id_assignment' => 11,
             'describe_needs' => 1,
             'display_order' => 110,
-            'code' => 'Z'
+            'code' => 'ZC'
         ]);
 
         $this->insert('ethnic_group', [
             'name' => 'African',
             'id_assignment' => 13,
             'display_order' => 120,
-            'code' => 'Z'
+            'code' => 'ZD'
         ]);
 
         $this->insert('ethnic_group', [
             'id_assignment' => 12,
             'name' => 'Caribbean',
             'display_order' => 130,
-            'code' => 'Z'
+            'code' => 'ZE'
         ]);
 
         $this->insert('ethnic_group', [
@@ -120,13 +121,13 @@ class m191004_100000_add_ethnics extends \OEMigration
             'id_assignment' => 14,
             'describe_needs' => 1,
             'display_order' => 140,
-            'code' => 'Z'
+            'code' => 'ZF'
         ]);
 
         $this->insert('ethnic_group', [
             'name' => 'Chinese',
             'display_order' => 150,
-            'code' => 'Z'
+            'code' => 'ZG'
         ]);
 
         $this->insert('ethnic_group', [
@@ -134,7 +135,7 @@ class m191004_100000_add_ethnics extends \OEMigration
             'id_assignment' => 15,
             'describe_needs' => 1,
             'display_order' => 160,
-            'code' => 'Z'
+            'code' => 'ZH'
         ]);
 
         $this->insert('ethnic_group', [
@@ -143,11 +144,21 @@ class m191004_100000_add_ethnics extends \OEMigration
             'display_order' => 170,
             'code' => 'Z'
         ]);
+
+        $this->update('ethnic_group', ['code' => 'CA'], 'name="Greek"');
+        $this->update('ethnic_group', ['code' => 'CB'], 'name="Italian"');
+        $this->update('ethnic_group', ['code' => 'SA'], 'name="Indigenous Australian"');
+        $this->update('ethnic_group', ['code' => 'SB'], 'name="White and Black Caribbean"');
+        $this->update('ethnic_group', ['code' => 'ZX'], 'name="Not Stated"');
+        $this->update('ethnic_group', ['code' => 'ZZ'], 'name="White and Asian"');
+        $this->update('ethnic_group', ['code' => 'ZX'], 'name="Not Stated"');
     }
 
     public function down()
     {
         $this->dropOEColumn('ethnic_group', 'id_assignment', true);
         $this->dropOEColumn('ethnic_group', 'describe_needs', true);
+        $this->alterColumn('ethnic_group', 'code', 'VARCHAR(1) NOT NULL');
+        $this->alterColumn('ethnic_group_version', 'code', 'VARCHAR(1) NOT NULL');
     }
 }

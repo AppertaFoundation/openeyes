@@ -41,14 +41,14 @@ class m190923_094126_add_diagnosis_columns_to_disorder_section_and_disorder exte
         }
         $this->dbConnection->schema->refresh();
 
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Retina', 'display_order' => 1, 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Glaucoma', 'display_order' => 2, 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Globe', 'display_order' => 3, 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Neurological', 'display_order' => 4, 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Choroid', 'display_order' => 5, 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Lens', 'display_order' => 6, 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Cornea', 'display_order' => 7, 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Neoplasia', 'display_order' => 8, 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Retina', 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Glaucoma', 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Globe', 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Neurological', 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Choroid', 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Lens', 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Cornea', 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder_section', array( 'name' => 'Neoplasia', 'active' => 1, 'event_type_version' => 1, 'comments_allowed' => 0));
 
         $retina_id = $this->getSectionId('Retina', 0);
 

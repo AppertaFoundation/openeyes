@@ -76,13 +76,24 @@ if ($element->isNewRecord) {
                     <td>Ethnic Group</td>
                     <td>
                         <?php
-                            $options = EthnicGroup::model()->findAll();
-                            echo \CHtml::activeDropDownList($element, 'ethnic_group_id', \CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name'), [
+                            $options = EthnicGroup::model()->findAllAndGroup();
+                            $list_data = [];
+                        foreach ($options as $name => $options_array) {
+                            $items = [];
+                            foreach ($options_array as $ethnic_option) {
+                                $items[$ethnic_option->id] = $ethnic_option->name;
+                            }
+                            $list_data[$name] = $items;
+                        }
+                            echo \CHtml::activeDropDownList($element, 'ethnic_group_id', $list_data, [
                             'class' => 'cols-full',
                             'options' => (function (array $options) {
                                 $result = [];
-                                foreach ($options as $model) {
-                                    $result[$model->id] = ['data-describe' => $model->describe_needs];
+                                foreach ($options as $models) {
+                                    foreach ($models as $model) {
+                                        $describe_needs = ($model->describe_needs || str_contains($model->name, 'describe below')) ? 1 : 0;
+                                        $result[$model->id] = ['data-describe' => $describe_needs];
+                                    }
                                 }
                                 return $result;
                             })($options)
