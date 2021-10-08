@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $user_auth = null;
@@ -37,7 +39,7 @@ if (is_object($user_auth)) {
     $firm = 'Not logged in';
 }
 
-$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath.'/../.git/FETCH_HEAD'));
+$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath . '/../.git/FETCH_HEAD'));
 
 $thisEnv = 'LIVE';
 if (file_exists('/etc/openeyes/env.conf')) {
@@ -51,7 +53,7 @@ if ($thisEnv == 'DEV') {
     $branch = "<br/><div style='height:150px; overflow-y:scroll;border:1px solid #000; margin-bottom:10px'>";
     $result = exec('oe-which', $lines);
     foreach ($lines as $line) {
-        $branch .= trim(strtr($line, array('[32m' => '', '[39m' => '', '--' => ':'))).'<br/>';
+        $branch .= trim(strtr($line, array('[32m' => '', '[39m' => '', '--' => ':'))) . '<br/>';
     }
     $branch .= '</div>';
 } else {
@@ -72,7 +74,8 @@ if ($thisEnv == 'DEV') {
         Client IP: <?php echo htmlspecialchars(@$_SERVER['REMOTE_ADDR'])?><br />
         Username: <?php echo $username?><br />
         Firm: <?php echo $firm?><br />
-
+        Modules running:
+            <?= implode("<\br>", Yii::app()->modules) ?>
     </code>
     <br />
     <p class="js-copy-to-clipboard" data-copy-content-selector=".js-to-copy-to-clipboard" style="cursor: pointer;">
