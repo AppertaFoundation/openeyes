@@ -19,6 +19,12 @@ class m211004_135200_remove_old_element_type_from_consent_form extends OEMigrati
 
     public function safeUp()
     {
+        if ($this->dbConnection->schema->getTable('signature_request')) {
+            $this->execute("CREATE TABLE signature_request_archive LIKE signature_request;");
+            $this->execute("INSERT INTO signature_request_archive SELECT * FROM signature_request;");
+            $this->execute("TRUNCATE TABLE  signature_request;");
+        }
+
         foreach ($this->consent_elements as $class_name => $element) {
             $this->deleteElementType('OphTrConsent', $class_name);
         }
@@ -26,6 +32,10 @@ class m211004_135200_remove_old_element_type_from_consent_form extends OEMigrati
 
     public function safeDown()
     {
+        if ($this->dbConnection->schema->getTable('signature_request') && $this->dbConnection->schema->getTable('signature_request_archive')) {
+            $this->execute("INSERT INTO signature_request SELECT * FROM signature_request_archive;");
+            $this->execute("DROP TABLE signature_request_archive;");
+        }
         foreach ($this->consent_elements as $class_name => $element) {
             $this->createElementType(
                 'OphTrConsent',
