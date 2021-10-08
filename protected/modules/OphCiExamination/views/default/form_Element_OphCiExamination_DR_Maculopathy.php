@@ -82,6 +82,21 @@ $m1_maculopathy_features = OphCiExamination_DRGrading_Feature::model()->findAllB
                     ),
                 ],
                 liClass: 'auto-width',
+                onSelect: function () {
+                    // If the selected option is 'nil', display all other columns; otherwise hide all other columns.
+                    let $adderDialog = $(this).closest('.oe-add-select-search');
+                    if ($(this).data("label") === 'Nil') {
+                        if ($(this).attr("class") === 'selected') {
+                            // Selected, so show the MA column
+                            $($adderDialog).find('th[data-id = "add-to-maculopathy-m1"]').show();
+                            $($adderDialog).find('ul[data-id = "add-to-maculopathy-m1"]').closest('td').show();
+                        } else {
+                            // Deselected, so hide the MA column
+                            $($adderDialog).find('th[data-id = "add-to-maculopathy-m1"]').hide();
+                            $($adderDialog).find('ul[data-id = "add-to-maculopathy-m1"]').closest('td').hide();
+                        }
+                    }
+                },
                 onReturn: function(adderDialog, selectedItems) {
                     // Add selected items to list of features, then determine the DR grade based on the selected features.
                     addDRFeature(

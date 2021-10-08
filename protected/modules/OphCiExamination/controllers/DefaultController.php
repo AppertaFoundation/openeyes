@@ -251,6 +251,10 @@ class DefaultController extends \BaseEventTypeController
                 'id' => $feature->id,
                 'grade' => $feature->grade,
             );
+            if ($feature->name === 'No DR' || $feature->name === 'Nil') {
+                // Discard all other options
+                break;
+            }
         }
 
         $this->renderJSON($features);
