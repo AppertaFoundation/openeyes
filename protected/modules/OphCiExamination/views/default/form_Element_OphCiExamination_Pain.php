@@ -265,6 +265,8 @@
 
                 attachTrashEvents($last_pain_row.find('i.pain-trash'));
 
+                selected_pain_radio.prop('checked', false);
+
                 row_count++;
             }
         });
