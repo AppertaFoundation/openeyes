@@ -47,7 +47,7 @@ class WorklistFilterQuery
     ];
 
     private const PATHWAY_STEP_WAIT_TIME_VALUE = 'IF(pathway.end_time IS NULL AND (NVL(pswt.started_count, 0) = 0), NVL(pswt.step_wait, NOW() - pathway.start_time), NULL)';
-    private const EARLIEST_UNCOMPLETED_STEP_QUERY = '(SELECT pathway_id, MIN(`order`) AS first FROM pathway_step WHERE status IS NULL OR status <> 2 GROUP BY pathway_id) AS earlier';
+    private const EARLIEST_UNCOMPLETED_STEP_QUERY = '(SELECT pathway_id, MIN(`order`) AS first FROM pathway_step WHERE status IS NULL OR status < 1 GROUP BY pathway_id) AS earlier';
 
     private $site;
     private $context;
