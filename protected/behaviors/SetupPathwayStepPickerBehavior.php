@@ -47,6 +47,20 @@ class SetupPathwayStepPickerBehavior extends CBehavior
         );
         array_unshift($letter_macros, ['id' => '', 'name' => 'None']);
 
+        $sites = array_map(
+            static function ($item) {
+                return ['id' => $item->id, 'name' => 'site', 'label' => $item->name];
+            },
+            Institution::model()->getCurrent()->sites
+        );
+
+        $services = array_map(
+            static function ($item) {
+                return ['id' => $item->id, 'name' => 'subspecialty', 'label' => $item->name];
+            },
+            Subspecialty::model()->with(['serviceSubspecialtyAssignment' => ['with' => 'firms']])->findAll('firms.active = 1')
+        );
+
         // key names need to be consistent to OpenEyes.UI.PathwayStepPicker part of default options
         return array(
             // Can't use the much faster json_encode here because the workflow step list contains a list of active records,
@@ -57,7 +71,9 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             'vf_test_types' => $vf_test_type_json,
             'vf_test_options' => $vf_test_option_json,
             'preset_orders' => $preset_orders,
-            'subspecialties' => json_encode(NewEventDialogHelper::structureAllSubspecialties()),
+            'sites' => $sites,
+            'services' => $services,
+            'subspecialties' => NewEventDialogHelper::structureAllSubspecialties(),
         );
     }
 
@@ -92,6 +108,11 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             ->from('pathway_step_type')
             ->where('short_name = \'onhold\'')
             ->queryScalar();
+        $booking_step_type_id = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('pathway_step_type')
+            ->where('short_name = \'Book Apt.\'')
+            ->queryScalar();
         $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
         // key names need to be consistent to OpenEyes.UI.PathwayStepPicker part of default options
@@ -102,6 +123,7 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             'letter_step_type_id' => (int)$letter_step_type_id,
             'generic_step_type_id' => (int)$generic_step_type_id,
             'onhold_step_type_id' => (int)$onhold_step_type_id,
+            'booking_step_type_id' => (int)$booking_step_type_id,
             'current_firm_id' => (int)$current_firm->id,
             'current_subspecialty_id' => (int)$current_firm->getSubspecialtyID()
         );

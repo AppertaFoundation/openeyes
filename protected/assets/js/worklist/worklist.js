@@ -1,6 +1,8 @@
 // avoid progressing timer step status multiple times from different pages
 window.timer_status_request = window.timer_status_request || {};
 $(function () {
+    // Worklist Filter is not required when pathway is added through patient overview page
+    let worklistFiltersController = null;
     // setup the node to observe
     const targetNode = document.querySelector('main, .clinic-pathway');
     const config = { childList: true, subtree: true,};
@@ -365,6 +367,17 @@ $(function () {
                     delete form_data.eyelat_select_L;
                 }
             }
+            runAction(event, context, ps, form_data);
+        } else {
+            runAction(event, context, ps);
+        }
+    };
+
+    let changeBookingAppointment = function (event, context, ps) {
+        event.preventDefault();
+        let action = $(event.target).data('action');
+        if (action === 'next') {
+            let form_data = serializeForm('#appointment-booking-form');
             runAction(event, context, ps, form_data);
         } else {
             runAction(event, context, ps);
@@ -874,6 +887,11 @@ $(function () {
                 'target': '.step-actions .js-change-visual-fields',
                 'event': 'click',
                 'callback': changeVisualFields,
+            },
+            {
+                'target': '.step-actions .js-change-book-appointment',
+                'event': 'click',
+                'callback': changeBookingAppointment,
             },
             {
                 'target': '.step-actions .user-pin-entry',

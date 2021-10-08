@@ -44,7 +44,7 @@ class PathwayStepTypeTest extends ActiveRecordTestCase
     {
         $standard_types = PathwayStepType::getStandardTypes();
 
-        self::assertCount(7, $standard_types);
+        self::assertCount(8, $standard_types);
     }
 
     /**

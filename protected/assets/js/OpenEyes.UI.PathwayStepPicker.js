@@ -13,6 +13,7 @@
         letter_step_type_id: null,
         generic_step_type_id: null,
         vf_step_type_id: null,
+        booking_step_type_id: null,
         userContext: 'undefined',
         pathway_checkboxes: '.js-check-patient',
         base_url: '/',
@@ -249,6 +250,24 @@
         });
     };
 
+    PathwayStepPicker.prototype.getContextList = function (value) {
+        const self = this;
+        let contexts = self.options.subspecialties.find(i => i.id === String(value)).contexts
+        let contextList = [];
+        contexts.forEach(element => {
+            contextList.push({'id': element.id, 'name': 'context', 'label': element.name});
+        });
+        return contextList;
+    };
+
+    PathwayStepPicker.prototype.getDurationDigits = function () {
+        let durationDigits = [];
+        for (let i = 1; i <= 18; i++) {
+            durationDigits.push({id: i, name: 'duration-digits', label: i});
+        }
+        return durationDigits;
+    };
+
     PathwayStepPicker.prototype.addStep = function (e) {
         let pathway_ids = $(this.options.pathway_checkboxes + '[value!="all"]' + ':checked').map(
             function () {
@@ -261,6 +280,96 @@
         let step_type_id = $(e.target).data('id');
 
         switch (step_type_id) {
+            case this.options.booking_step_type_id:
+                new OpenEyes.UI.Dialog.PathwayStepOptions({
+                    title: 'Book Follow-up Appointment',
+                    height: 50,
+                    minHeight: 100,
+                    width: 'auto',
+                    maxHeight: 100,
+                    itemSets: [
+                        {
+                            is_form: true,
+                            title: 'Site',
+                            id: 'site',
+                            items: this.options.sites,
+                            onSelectValue: function (dialog, itemSet, selected_value) {
+                                self.site_id = selected_value;
+                            }
+                        },
+                        {
+                            is_form: true,
+                            title: 'Service',
+                            id: 'service',
+                            items: this.options.services,
+                            onSelectValue: function (dialog, itemSet, selected_value) {
+                                // Show relevant contexts list
+                                self.service_id = selected_value;
+                                let $contextSection = $('.js-itemset[data-itemset-id="context"] .btn-list');
+                                $contextSection.empty();
+                                itemSet.items = self.getContextList(selected_value);
+                                let list = '';
+                                for (let item of itemSet.items) {
+                                    list += '<label><input type="radio" name="context" value="'+item.id+'"><div class="li">'+item.label+'</div></label>';
+                                }
+                                $contextSection.append(list);
+                            }
+                        },
+                        {
+                            is_form: true,
+                            title: 'Context',
+                            id: 'context',
+                            items: this.getContextList(this.options.current_subspecialty_id),
+                            onSelectValue: function (dialog, itemSet, selected_value) {
+                                self.context_id = selected_value;
+                            }
+                        },
+                        {
+                            is_form: true,
+                            title: 'Duration Time',
+                            id: 'duration-digits',
+                            items: this.getDurationDigits(),
+                            onSelectValue: function (dialog, itemSet, selected_value) {
+                                self.duration_digits = selected_value;
+                            }
+                        },
+                        {
+                            is_form: true,
+                            title: 'Duration Period',
+                            id: 'duration-period',
+                            items: [
+                                {id: 'days', name: 'duration-period', label: 'days'},
+                                {id: 'weeks', name: 'duration-period', label: 'weeks'},
+                                {id: 'months', name: 'duration-period', label: 'months'},
+                                {id: 'years', name: 'duration-period', label: 'years'},
+                            ],
+                            onSelectValue: function (dialog, itemSet, selected_value, label) {
+                                self.duration_period = selected_value;
+                            }
+                        }
+                    ],
+                    onReturn: function (dialog, selectedValues) {
+                        for (let pathway_id of pathway_ids) {
+                            self.newStep(step_type_id, pathway_id, {
+                                'site_id' : self.site_id,
+                                'service_id' : self.service_id,
+                                'firm_id' : self.context_id,
+                                'duration_value' : self.duration_digits,
+                                'duration_period' : self.duration_period,
+                            });
+                        }
+                        dialog.close();
+                    },
+                }).on('open', function () {
+                    // Reset selected values
+                    self.site_id = null;
+                    self.service_id = self.options.current_subspecialty_id;
+                    self.context_id = null;
+                    self.duration_digits = null;
+                    self.duration_period = null;
+                    $('.js-itemset[data-itemset-id="service"] .btn-list label input[value="'+self.options.current_subspecialty_id+'"]').prop("checked", true);
+                }).open();
+                break;
             case this.options.psd_step_type_id:
                 new OpenEyes.UI.Dialog.PathwayStepOptions({
                     title: 'Drug Administration Preset Orders',
