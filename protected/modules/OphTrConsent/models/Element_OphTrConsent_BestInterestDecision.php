@@ -108,6 +108,7 @@ class Element_OphTrConsent_BestInterestDecision extends \BaseEventTypeElement
             'createdUser' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
             'attachments' => array(self::HAS_MANY, OphTrConsent_BestInterestDecision_Attachment::class, 'element_id'),
+            'file' => array(self::BELONGS_TO, \ProtectedFile::class, 'protected_file_id'),
         );
     }
 

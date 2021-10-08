@@ -88,7 +88,7 @@
                     <span class="user-comment"><?php echo nl2br(CHtml::encode($element->decision ?: "-")) ?></span>
                 </div>
             <?php endif; ?>
-            <?php if (isset($element->protected_file_id)) : ?>
+            <?php if (isset($element->protected_file_id) && $element->file) : ?>
                 <div class="row">
                     <?= CHtml::encode($element->getAttributeLabel("protected_file_id")).':'?>
                 </div>
