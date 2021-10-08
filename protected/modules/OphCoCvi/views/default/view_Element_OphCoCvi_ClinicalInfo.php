@@ -46,11 +46,11 @@ use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
                     <tbody>
                     <?php $rows = [
                         $element->getAttributeLabel('best_corrected_right_va') =>
-                            $element->displaybestcorrectedrightvaList . " " . !is_null($element->best_corrected_right_va) ? $element->displaybestcorrectedrightva : '',
+                            $element->displaybestcorrectedvalist . " " .
+                            $element->getDisplayBestCorrectedVA("right"),
                         $element->getAttributeLabel('best_recorded_right_va') => (is_null($element->best_recorded_right_va) ? 'Not recorded' : ($element->best_recorded_right_va == 1 ? 'Yes' : 'No')),
-
-
-                    ];?>
+                    ];
+?>
                     <?php foreach ($rows as $label => $value) :?>
                         <tr>
                             <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
@@ -66,9 +66,11 @@ use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
 
                     <?php $rows = [
                         $element->getAttributeLabel('best_corrected_left_va') =>
-                            $element->displaybestcorrectedrightvaList . " " . !is_null($element->best_corrected_left_va) ? $element->displaybestcorrectedleftva : '',
+                            $element->displaybestcorrectedvalist . " " .
+                            $element->getDisplayBestCorrectedVA("left"),
                         $element->getAttributeLabel('best_recorded_left_va') => (is_null($element->best_recorded_left_va) ? 'Not recorded' : ($element->best_recorded_left_va == 1 ? 'Yes' : 'No')),
-                    ];?>
+                    ];
+?>
                     <?php foreach ($rows as $label => $value) :?>
                         <tr>
                             <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
@@ -87,7 +89,8 @@ use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
 
                     <?php $rows = [
                         $element->getAttributeLabel('best_corrected_binocular_va') =>
-                            $element->displaybestcorrectedbinocularvaList . ' ' . !is_null($element->best_corrected_binocular_va) ? CHtml::encode($element->displaybestcorrectedbinocularva) : '',
+                        $element->displaybestcorrectedvalist . " " .
+                        $element->getDisplayBestCorrectedVA("binocular"),
                         $element->getAttributeLabel('best_recorded_binocular_va') => (is_null($element->best_recorded_binocular_va) ? 'Not recorded' : ($element->best_recorded_binocular_va == 1 ? 'Yes' : 'No')),
                         $element->getAttributeLabel('field_of_vision') => (is_null($element->field_of_vision) || $element->field_of_vision == 0 ? 'Not recorded' : ($element->field_of_vision == 1 ? 'Yes' : 'No')),
                         $element->getAttributeLabel('low_vision_service') => (is_null($element->low_vision_service) || $element->low_vision_service == 0 ? 'Not recorded' : CHtml::encode($element->displaylowvisionservice)),

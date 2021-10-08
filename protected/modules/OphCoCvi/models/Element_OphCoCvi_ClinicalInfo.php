@@ -516,9 +516,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         foreach ($this->cvi_disorder_assignments as $ass) {
             $ids[] = $ass->ophcocvi_clinicinfo_disorder_id;
         }
-        foreach ($this->right_cvi_disorder_assignments as $ass) {
-            $ids[] = $ass->ophcocvi_clinicinfo_disorder_id;
-        }
         return OphCoCvi_ClinicalInfo_Disorder::model()->findAllByPk($ids);
     }
 
@@ -874,66 +871,26 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         return $corrected;
     }
 
-    public function getDisplayBestCorrectedRightVAList()
-    {
-        if ($this->best_corrected_right_va_list === null || $this->best_corrected_right_va_list == 0) {
-            return 'Not recorded';
-        } else {
-            return $this->getBestCorrectedVAList()[$this->best_corrected_right_va_list];
-        }
-    }
 
-    public function getDisplayBestCorrectedRightVA()
+    public function getDisplayBestCorrectedVA($side)
     {
-        if ($this->best_corrected_right_va === null || $this->best_corrected_right_va == '') {
+        $best_corrected_va = "best_corrected_".$side."_va";
+        if ($this->{$best_corrected_va} === null || $this->{$best_corrected_va} == '') {
             return '';
         } else {
             if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_SNELLEN) {
-                return ', '.self::getSnellenDatas()[$this->best_corrected_right_va];
+                return ', '.self::getSnellenDatas()[$this->{$best_corrected_va}];
             } elseif ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
-                return ', '.self::getLogmarDatas()[$this->best_corrected_right_va];
+                return ', '.self::getLogmarDatas()[$this->{$best_corrected_va}];
             }
         }
     }
 
-    public function getDisplayBestCorrectedLeftVA()
-    {
-        if ($this->best_corrected_left_va === null || $this->best_corrected_left_va == '') {
-            return 'Not recorded';
-        } else {
-            if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_SNELLEN) {
-                return ', '.self::getSnellenDatas()[$this->best_corrected_left_va];
-            } elseif ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
-                return ', '.self::getLogmarDatas()[$this->best_corrected_left_va];
-            }
-        }
-    }
 
-    public function getDisplayBestCorrectedBinocularVA()
-    {
-        if ($this->best_corrected_binocular_va === null || $this->best_corrected_binocular_va == '') {
-            return 'Not recorded';
-        } else {
-            if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_SNELLEN) {
-                return ', '.self::getSnellenDatas()[$this->best_corrected_binocular_va];
-            } elseif ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
-                return ', '.self::getLogmarDatas()[$this->best_corrected_binocular_va];
-            }
-        }
-    }
-
-    public function getDisplayBestCorrectedLeftVAList()
+    public function getDisplayBestCorrectedVAList()
     {
         if ($this->best_corrected_right_va_list === null || $this->best_corrected_right_va_list == 0) {
-            return '';
-        } else {
-            return $this->getBestCorrectedVAList()[$this->best_corrected_right_va_list];
-        }
-    }
-    public function getDisplayBestCorrectedBinocularVAList()
-    {
-        if ($this->best_corrected_right_va_list === null || $this->best_corrected_right_va_list == 0) {
-            return '';
+            return 'Not recorded';
         } else {
             return $this->getBestCorrectedVAList()[$this->best_corrected_right_va_list];
         }
