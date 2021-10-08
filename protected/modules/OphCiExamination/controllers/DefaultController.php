@@ -1471,7 +1471,8 @@ class DefaultController extends \BaseEventTypeController
                         'eye_id' => \Helper::getEyeIdFromArray($disorder),
                         'disorder_id' => $disorder['disorder_id'],
                         'principal' => ($principal_diagnosis_row_key == $disorder['row_key']),
-                        'date' => isset($disorder['date']) ? $disorder['date'] : null
+                        'date' => isset($disorder['date']) ? $disorder['date'] : null,
+                        'time' => isset($disorder['time']) ? $disorder['time'] : null
                     ];
                 }
             }
@@ -1483,7 +1484,8 @@ class DefaultController extends \BaseEventTypeController
                     'eye_id' => $diagnosis_eyes[$i],
                     'disorder_id' => $disorder_id,
                     'principal' => (@$data['principal_diagnosis'] == $disorder_id),
-                    'date' => isset($data[$model_name]['date'][$i]) ? $data[$model_name]['date'][$i] : null
+                    'date' => isset($data[$model_name]['date'][$i]) ? $data[$model_name]['date'][$i] : null,
+                    'time' => isset($data[$model_name]['time'][$i]) ? $data[$model_name]['time'][$i] : null
                 );
             }
         }

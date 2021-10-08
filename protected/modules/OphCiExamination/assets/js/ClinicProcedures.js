@@ -62,7 +62,7 @@ OpenEyes.OphCiExamination.ClinicProceduresController = (function (){
     ClinicProceduresController.prototype.setCurrentTime = function () {
         let date = new Date();
         let hours = date.getHours();
-        let minutes = date.getMinutes();
+        let minutes = ('0' + date.getMinutes()).slice(-2); // This handles instances where the minute value is <10 as a leading 0 is required.
         return hours + ':' + minutes;
     };
 

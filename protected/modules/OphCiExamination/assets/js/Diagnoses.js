@@ -230,7 +230,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key') - 1;
         var datepicker_name = '#diagnoses-datepicker-' + row_count;
         var datepicker = $(this.$table).find(datepicker_name);
-        if (datepicker.length != 0) {
+        if (datepicker.length !== 0) {
             pickmeup(datepicker_name, {
                 format: 'Y-m-d',
                 hide_on_select: true,
@@ -239,6 +239,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
             $(datepicker_name).val($.datepicker.formatDate('yy-mm-dd', new Date()));
         }
+    };
+
+    DiagnosesController.prototype.setCurrentTime = function () {
+        let date = new Date();
+        let hours = date.getHours();
+        let minutes = ('0' + date.getMinutes()).slice(-2); // This handles instances where the minute value is <10 as a leading 0 is required.
+        return hours + ':' + minutes;
     };
 
     DiagnosesController.prototype.getEyeIdFromRow = function($row) {
@@ -253,6 +260,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       var template = this.templateText;
       var element = this.$element;
       var row;
+      let time = this.setCurrentTime();
 
       for (var i in selectedItems) {
 
@@ -269,6 +277,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         data.left_eye_checked = selectedItems[i].eye_id === 1 || selectedItems[i].eye_id === 3;
         data.is_principal = selectedItems[i].is_principal;
         data.is_glaucoma = selectedItems[i].is_glaucoma;
+        data.time = time;
         row = Mustache.render(template, data);
         newRows.push(row);
       }
