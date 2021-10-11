@@ -40,7 +40,7 @@ class WorklistController extends BaseController
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
         if ($action->getId() === "print") {
             $newblue_path = 'application.assets.newblue';
-            Yii::app()->assetManager->registerCssFile('dist/css/style_oe_print.3.css', $newblue_path, null);
+            Yii::app()->assetManager->registerCssFile('/dist/css/style_oe_print.3.css', $newblue_path, null);
         }
 
         $this->manager = new WorklistManager();
@@ -100,7 +100,7 @@ class WorklistController extends BaseController
         }
 
         if ($redirect) {
-            $this->redirect(array('/worklist/view?date_from='.$date_from.'&date_to='.$date_to));
+            $this->redirect(array('/worklist/view?date_from=' . $date_from . '&date_to=' . $date_to));
         }
 
         $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
@@ -352,7 +352,8 @@ class WorklistController extends BaseController
             // Create and save a Did Not Attend event.
             $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
             $event_type_id = EventType::model()->find(
-                'class_name = :class_name', [':class_name' => 'OphCiDidNotAttend']
+                'class_name = :class_name',
+                [':class_name' => 'OphCiDidNotAttend']
             )->id;
             $service = Firm::model()->find(
                 'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
@@ -857,9 +858,9 @@ class WorklistController extends BaseController
             ));
             $pastSurgeryData = $pastSurgeryWidget->getViewData();
             $operations = is_array($pastSurgeryData) ? $pastSurgeryData['operations'] : false;
-            $patientData['pastSurgery']['nilRecord'] = (!$operations || sizeof($operations)==0) && !$pastSurgeryWidget->element->no_pastsurgery_date;
-            $patientData['pastSurgery']['noPreviousData'] = !((!$operations || sizeof($operations)==0) && !$pastSurgeryWidget->element->no_pastsurgery_date) && $pastSurgeryWidget->element->no_pastsurgery_date;
-            $pastSurgeryDataExists = !((!$operations || sizeof($operations)==0) && !$pastSurgeryWidget->element->no_pastsurgery_date) && !($pastSurgeryWidget->element->no_pastsurgery_date);
+            $patientData['pastSurgery']['nilRecord'] = (!$operations || sizeof($operations) == 0) && !$pastSurgeryWidget->element->no_pastsurgery_date;
+            $patientData['pastSurgery']['noPreviousData'] = !((!$operations || sizeof($operations) == 0) && !$pastSurgeryWidget->element->no_pastsurgery_date) && $pastSurgeryWidget->element->no_pastsurgery_date;
+            $pastSurgeryDataExists = !((!$operations || sizeof($operations) == 0) && !$pastSurgeryWidget->element->no_pastsurgery_date) && !($pastSurgeryWidget->element->no_pastsurgery_date);
             if ($pastSurgeryDataExists) {
                 foreach ($operations as $operation) {
                     $temp = [];
@@ -1009,11 +1010,11 @@ class WorklistController extends BaseController
                 }
                 if ($element->smoking_status) {
                     $patientData['socialHistory']['smokingStatus']['label'] = CHtml::encode($element->getAttributeLabel('smoking_status_id'));
-                    $patientData['socialHistory']['smokingStatus']['value'] =\CHtml::encode($element->smoking_status->name);
+                    $patientData['socialHistory']['smokingStatus']['value'] = \CHtml::encode($element->smoking_status->name);
                 }
                 if ($element->accommodation) {
                     $patientData['socialHistory']['accommodation']['label'] = CHtml::encode($element->getAttributeLabel('accommodation_id'));
-                    $patientData['socialHistory']['accommodation']['value'] =\CHtml::encode($element->accommodation->name);
+                    $patientData['socialHistory']['accommodation']['value'] = \CHtml::encode($element->accommodation->name);
                 }
                 if ($element->comments) {
                     $patientData['socialHistory']['comments']['label'] = CHtml::encode($element->getAttributeLabel('comments'));
@@ -1021,15 +1022,15 @@ class WorklistController extends BaseController
                 }
                 if (isset($element->carer)) {
                     $patientData['socialHistory']['carer']['label'] = CHtml::encode($element->getAttributeLabel('carer_id'));
-                    $patientData['socialHistory']['carer']['value'] =\CHtml::encode($element->carer);
+                    $patientData['socialHistory']['carer']['value'] = \CHtml::encode($element->carer);
                 }
                 if (isset($element->alcohol_intake)) {
                     $patientData['socialHistory']['alcoholIntake']['label'] = CHtml::encode($element->getAttributeLabel('alcohol_intake'));
-                    $patientData['socialHistory']['alcoholIntake']['value'] =\CHtml::encode($element->alcohol_intake) . ' units/week';
+                    $patientData['socialHistory']['alcoholIntake']['value'] = \CHtml::encode($element->alcohol_intake) . ' units/week';
                 }
                 if (isset($element->substance_misuse)) {
                     $patientData['socialHistory']['substanceMisuse']['label'] = CHtml::encode($element->getAttributeLabel('substance_misuse'));
-                    $patientData['socialHistory']['substanceMisuse']['value'] =\CHtml::encode($element->substance_misuse->name);
+                    $patientData['socialHistory']['substanceMisuse']['value'] = \CHtml::encode($element->substance_misuse->name);
                 }
             }
 
@@ -1117,13 +1118,17 @@ class WorklistController extends BaseController
                 foreach ($patient->trials as $trialPatient) {
                     $temp = [];
                     if (Yii::app()->user->checkAccess('TaskViewTrial')) {
-                        $temp['trial'] = CHtml::link(CHtml::encode($trialPatient->trial->name),
-                            Yii::app()->controller->createUrl('/OETrial/trial/permissions',
-                                array('id' => $trialPatient->trial_id)));
+                        $temp['trial'] = CHtml::link(
+                            CHtml::encode($trialPatient->trial->name),
+                            Yii::app()->controller->createUrl(
+                                '/OETrial/trial/permissions',
+                                array('id' => $trialPatient->trial_id)
+                            )
+                        );
                     } else {
                         $temp['trial'] = CHtml::encode($trialPatient->trial->name);
                     }
-                    $temp['date'] = $trialPatient->trial->getStartedDateForDisplay().' - '.$trialPatient->trial->getClosedDateForDisplay();
+                    $temp['date'] = $trialPatient->trial->getStartedDateForDisplay() . ' - ' . $trialPatient->trial->getClosedDateForDisplay();
                     $coordinators = $trialPatient->trial->getTrialStudyCoordinators();
                     if (sizeof($coordinators)) {
                         $studyCoordinators = '';
@@ -1147,7 +1152,7 @@ class WorklistController extends BaseController
         }
     }
 
-    protected function patientHistoryMedicationsData($historyMedicationsWidget, $history_meds, $current, $getComments = false, $showLink = false, $getLaterality = false) : array
+    protected function patientHistoryMedicationsData($historyMedicationsWidget, $history_meds, $current, $getComments = false, $showLink = false, $getLaterality = false): array
     {
         $result = [];
 
@@ -1259,8 +1264,10 @@ class WorklistController extends BaseController
                 $results['clinic'] += $item['count'];
             }
 
-            if ($item['status'] != Pathway::STATUS_ACTIVE
-                && in_array($item['status'], $progress)) {
+            if (
+                $item['status'] != Pathway::STATUS_ACTIVE
+                && in_array($item['status'], $progress)
+            ) {
                 $results['issues'] += $item['count'];
             } elseif ($item['status'] == Pathway::STATUS_DISCHARGED) {
                 $results['discharged'] += $item['count'];
@@ -1305,7 +1312,7 @@ class WorklistController extends BaseController
 
                 return array(
                     'id' => $item['id'],
-                    'label' => $helper->getFullName() . ' (' . $helper->getInitials() .')',
+                    'label' => $helper->getFullName() . ' (' . $helper->getInitials() . ')',
                     'count' => $item['count']
                 );
             },
@@ -1362,7 +1369,7 @@ class WorklistController extends BaseController
         // priority for firm_id: user input > template > current firm id
         $step_data['firm_id'] = $step_data['firm_id'] ?? $step->getState('firm_id') ?? Yii::app()->session['selected_firm_id'];
         // if the template has subspecialty_id, then setup for the step
-        if($step->getState('subspecialty_id')){
+        if ($step->getState('subspecialty_id')) {
             $step_data['subspecialty_id'] = $step->getState('subspecialty_id');
         }
 

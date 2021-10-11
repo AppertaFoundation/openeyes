@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /**
@@ -48,12 +50,12 @@ $is_printing = isset($is_printing) && ($is_printing === true);
 if (!isset($coreapi)) {
     $coreapi = new CoreAPI();
 } ?>
-<?php if ($filter->getCombineWorklistsStatus()): ?>
+<?php if ($filter->getCombineWorklistsStatus()) : ?>
 <section class="oec-group" id="js-worklist-combined" data-title="Combined Worklists">
     <header>
         <h3><?= 'Combined worklists : ' . date('d M Y') ?></h3>
     </header>
-<?php else: ?>
+<?php else : ?>
 <section class="oec-group" id="js-worklist-<?= $worklist->id ?>" data-id="<?= $worklist->id ?>" data-title="<?= $worklist->name ?>">
     <header>
         <h3><?= $worklist->name . ' : ' . date('d M Y') ?></h3>
@@ -214,7 +216,7 @@ if (!isset($coreapi)) {
     Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 ?>
 
-<?php if (!$filter->getCombineWorklistsStatus()): ?>
+<?php if (!$filter->getCombineWorklistsStatus()) : ?>
 <!--script type="text/javascript">
     $(document).ready(function () {
         let col_num = $('#js-worklist-<?=$worklist->id?> thead th').length;
