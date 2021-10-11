@@ -127,10 +127,10 @@ jobs:
               default=${{ env.SSH_AUTH_SOCK }}
           context: ./DatabaseBootstrap
           push: true
-          build-args: |
+          build-args: | # Note that OE_VERSION must use GITHUB_REF_SLUG, not GITHUB_REF_NAME, becuse /'s get converted to -'s
             BUILD_BRANCH=${{ env.GITHUB_REF_NAME }}
             MODULES=
-            OE_VERSION=${{ env.GITHUB_REF_NAME }}
+            OE_VERSION=${{ env.GITHUB_REF_SLUG }}
           tags: ${{ steps.meta-dbboot.outputs.tags }}
           labels: ${{ steps.meta-dbboot.outputs.labels }}
 
