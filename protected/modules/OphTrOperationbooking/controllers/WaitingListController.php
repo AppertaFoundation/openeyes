@@ -358,8 +358,15 @@ class WaitingListController extends BaseModuleController
         $wk->setDocrefs($docrefs);
         $wk->setBarcodes($barcodes);
         $wk->setPatients($patients);
-        $wk->savePageToPDF($directory, $pdf_suffix, '', $html);
 
+        $ts = time();
+        $filename = "/tmp/".$ts.".html";
+        $url = "file://".$filename;
+        file_put_contents($filename,$html);
+
+        $wk->savePageToPDF($directory, $pdf_suffix, '', $url, false, false, false);
+
+        @unlink($filename);
         $pdf = $directory."/$pdf_suffix.pdf";
 
         header('Content-Type: application/pdf');
