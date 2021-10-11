@@ -76,7 +76,7 @@ jobs:
             type=ref,event=tag
             type=semver,pattern=v{{version}}
             type=semver,pattern=v{{major}}.{{minor}}
-            type=semver,pattern==v{{major}}
+            type=semver,pattern=v{{major}}
             type=edge,branch=develop
 
       - name: Build and push Live image
@@ -117,7 +117,7 @@ jobs:
             type=ref,event=tag
             type=semver,pattern=v{{version}}
             type=semver,pattern=v{{major}}.{{minor}}
-            type=semver,pattern==v{{major}}
+            type=semver,pattern=v{{major}}
             type=edge,branch=develop
 
       - name: Build and push DatabaseBootstrap image
@@ -142,7 +142,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: toukanlabsdocker/oe-db-bootstrap   
 
-          
+
 # THE NEXT 2 IMAGES ARE NOT YET READY OR NEEDED, so are commented out at this time
 
 # ###########  Dev image
@@ -162,7 +162,7 @@ jobs:
 #             type=ref,event=tag
 #             type=semver,pattern=v{{version}}
 #             type=semver,pattern=v{{major}}.{{minor}}
-#             type=semver,pattern==v{{major}}
+#             type=semver,pattern=v{{major}}
 #             type=edge,branch=develop
 
 #       - name: Build and push Dev image
@@ -205,7 +205,7 @@ jobs:
 #             type=ref,event=tag
 #             type=semver,pattern=v{{version}}
 #             type=semver,pattern=v{{major}}.{{minor}}
-#             type=semver,pattern==v{{major}}
+#             type=semver,pattern=v{{major}}
 #             type=edge,branch=develop
 
 #       - name: Build and push CI image
