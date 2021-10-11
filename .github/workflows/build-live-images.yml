@@ -1,0 +1,232 @@
+name: Publish Docker images
+
+## Builds deployable images for the OE application.
+## For production scenarios, always try to tag the repo, which will cfreate a tagged image
+## Tags should use semantic versioning (major.minor.patch - e.g, v4.1.2)
+## Note that the following special image tags are created:
+  ## - v<major> (always up-to-date with the latest minor and patch version for the relevant major version)
+  ## - v<major.<minor> (always up-todate with the latest patch version for the relevant minor release)
+##
+## Continuously up-to-date images are also built for the following branches - but these are not recommended for production deployment
+  ## - "master"
+  ## - "main"
+  ## - "develop"
+  ## - "release/*"
+  ## - "bugfix/*"
+##
+## The 'latest' tag is applied to master branch image. Again, this should never be used in production
+
+on:
+  push:
+    branches:
+      - "master"
+      - "main"
+      - "develop"
+      - "release/*"
+      - "bugfix/*"
+    tags:
+      - "*"
+
+jobs:
+  push_to_registry:
+    name: Build and push production images
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Checkout OEBuilder
+        uses: actions/checkout@v2
+        with: 
+          repository: ToukanLabs/OEImageBuilder
+          ref: master
+          ssh-key: ${{ secrets.TKL_DEPLOY_PRIVATE_KEY }}
+
+      - name: Setup SSH Agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+            ssh-private-key: ${{ secrets.TKL_DEPLOY_PRIVATE_KEY }}
+
+      # Resolve the github ref to use as a buiold arg in following step(s)
+      # This creates ${{ env.GITHUB_REF_NAME }} with the correct branch or tag name 
+      - name: Resolve ref
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+###########  Live image
+
+      - name: Setup Docker metadata tags for Live image
+        id: meta-live
+        uses: docker/metadata-action@v3
+        with:
+          images: toukanlabsdocker/oe-web-live
+          # Only apply the latest tag to the master branch
+          flavor: |
+            latest=${{ contains(github.ref,'refs/heads/master') }}
+          # set tags to symantic versions for each release.
+          # NOTE: for semver, the tag must contain 3x parts 1.2.3 (e.g v4.1.0)
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern==v{{major}}
+            type=edge,branch=develop
+
+      - name: Build and push Live image
+        uses: docker/build-push-action@v2
+        with:
+          ssh: |
+              default=${{ env.SSH_AUTH_SOCK }}
+          context: ./Web-Live
+          push: true
+          build-args: |
+            BUILD_BRANCH=${{ env.GITHUB_REF_NAME }}
+            MODULES=
+          tags: ${{ steps.meta-live.outputs.tags }}
+          labels: ${{ steps.meta-live.outputs.labels }}
+
+      - name: Update Docker Hub Description for Live image
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          readme-filepath: ./Web-Live/README.md
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: toukanlabsdocker/oe-web-live
+
+###########  Database Bootstrap image
+
+      - name: Setup Docker metadata tags for DatabaseBootstrap image
+        id: meta-dbboot
+        uses: docker/metadata-action@v3
+        with:
+          images: toukanlabsdocker/oe-db-bootstrap
+          # Only apply the latest tag to the master branch
+          flavor: |
+            latest=${{ contains(github.ref,'refs/heads/master') }}
+          # set tags to symantic versions for each release.
+          # NOTE: for semver, the tag must contain 3x parts 1.2.3 (e.g v4.1.0)
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern==v{{major}}
+            type=edge,branch=develop
+
+      - name: Build and push DatabaseBootstrap image
+        uses: docker/build-push-action@v2
+        with:
+          ssh: |
+              default=${{ env.SSH_AUTH_SOCK }}
+          context: ./DatabaseBootstrap
+          push: true
+          build-args: |
+            BUILD_BRANCH=${{ env.GITHUB_REF_NAME }}
+            MODULES=
+            OE_VERSION=${{ env.GITHUB_REF_NAME }}
+          tags: ${{ steps.meta-dbboot.outputs.tags }}
+          labels: ${{ steps.meta-dbboot.outputs.labels }}
+
+      - name: Update Docker Hub Description for DatabaseBootstrap image
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          readme-filepath: ./DatabaseBootstrap/README.md
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: toukanlabsdocker/oe-db-bootstrap   
+
+          
+# THE NEXT 2 IMAGES ARE NOT YET READY OR NEEDED, so are commented out at this time
+
+# ###########  Dev image
+
+#       - name: Setup Docker metadata tags for dev image
+#         id: meta-dev
+#         uses: docker/metadata-action@v3
+#         with:
+#           images: toukanlabsdocker/oe-web-dev
+#           # Only apply the latest tag to the master branch
+#           flavor: |
+#             latest=${{ contains(github.ref,'refs/heads/master') }}
+#           # set tags to symantic versions for each release.
+#           # NOTE: for semver, the tag must contain 3x parts 1.2.3 (e.g v4.1.0)
+#           tags: |
+#             type=ref,event=branch
+#             type=ref,event=tag
+#             type=semver,pattern=v{{version}}
+#             type=semver,pattern=v{{major}}.{{minor}}
+#             type=semver,pattern==v{{major}}
+#             type=edge,branch=develop
+
+#       - name: Build and push Dev image
+#         uses: docker/build-push-action@v2
+#         with:
+            # Could do with finding how to use cache-from: to use the existing image as a cache, rather than rebuilding every time
+#           ssh: |
+#               default=${{ env.SSH_AUTH_SOCK }}
+#           context: ./DatabaseBootstrap
+#           push: true
+#           build-args: |
+#             BUILD_BRANCH=${{ env.GITHUB_REF_NAME }}
+#             MODULES=
+#             OE_VERSION=${{ env.GITHUB_REF_NAME }}
+#           tags: ${{ steps.meta-dev.outputs.tags }}
+#           labels: ${{ steps.meta-dev.outputs.labels }}
+
+#       - name: Update Docker Hub Description for DatabaseBootstrap image
+#         uses: peter-evans/dockerhub-description@v2
+#         with:
+#           readme-filepath: ./Web-Dev/README.md
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+#           repository: toukanlabsdocker/oe-web-dev  
+
+# ###########  CI image
+
+#       - name: Setup Docker metadata tags for CI image
+#         id: meta-CI
+#         uses: docker/metadata-action@v3
+#         with:
+#           images: toukanlabsdocker/oe-web-CI
+#           # Only apply the latest tag to the master branch
+#           flavor: |
+#             latest=${{ contains(github.ref,'refs/heads/master') }}
+#           # set tags to symantic versions for each release.
+#           # NOTE: for semver, the tag must contain 3x parts 1.2.3 (e.g v4.1.0)
+#           tags: |
+#             type=ref,event=branch
+#             type=ref,event=tag
+#             type=semver,pattern=v{{version}}
+#             type=semver,pattern=v{{major}}.{{minor}}
+#             type=semver,pattern==v{{major}}
+#             type=edge,branch=develop
+
+#       - name: Build and push CI image
+#         uses: docker/build-push-action@v2
+#         with:
+#           # Could do with finding how to use cache-from: to use the existing image as a cache, rather than rebuilding every time
+#           ssh: |
+#               default=${{ env.SSH_AUTH_SOCK }}
+#           context: ./DatabaseBootstrap
+#           push: true
+#           build-args: |
+#             BUILD_BRANCH=${{ env.GITHUB_REF_NAME }}
+#             MODULES=
+#             OE_VERSION=${{ env.GITHUB_REF_NAME }}
+#           tags: ${{ steps.meta-CI.outputs.tags }}
+#           labels: ${{ steps.meta-CI.outputs.labels }}
+
+#       - name: Update Docker Hub Description for DatabaseBootstrap image
+#         uses: peter-evans/dockerhub-description@v2
+#         with:
+#           readme-filepath: ./Web-CI/README.md
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+#           repository: toukanlabsdocker/oe-web-CI  
