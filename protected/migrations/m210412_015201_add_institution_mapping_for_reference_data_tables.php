@@ -19,6 +19,16 @@ class m210412_015201_add_institution_mapping_for_reference_data_tables extends O
 
         $this->execute("UPDATE firm SET institution_id = :id", array(':id' => $institution_id));
 
+        // Dealing with duplicates before setting constraint
+        $duplicate_ids = $this->dbConnection->createCommand("SELECT MAX(id) FROM firm GROUP BY name, institution_id, service_subspecialty_assignment_id HAVING COUNT(name)>1")->queryAll();
+
+        foreach($duplicate_ids as $id) {
+            $entry = Firm::model()->findByPk($id);
+            $this->execute("UPDATE firm SET name = concat(name,IF(active=0, '_Inactive', '_Duplicate')) WHERE id<>:id AND name=:name AND institution_id=:institution_id AND service_subspecialty_assignment_id=:ssaid",
+                array(':id' => $entry->id, ':name' => $entry->name, ':institution_id' => $entry->institution_id, ':ssaid' => $entry->service_subspecialty_assignment_id));
+        }
+
+
         $this->execute("ALTER TABLE firm ADD CONSTRAINT firm_name_institution_service UNIQUE (`name`, institution_id, service_subspecialty_assignment_id)");
     }
 
