@@ -136,3 +136,7 @@
 ## Training hub variables
 # export OE_TRAINING_HUB_TEXT=""
 # export OE_TRAINING_HUB_URL=""
+
+## Users - comma separated lists
+# export OE_LOCAL_USERS='admin, api, docman_user, payload_processor'
+# export OE_SPECIAL_USERS='api'
