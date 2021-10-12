@@ -995,7 +995,7 @@ $modules = array(
         'OphDrPGDPSD',
 );
 
-// deal with any custom modulesadded for the local deployment - which are set in /config/modules.conf (added via docker)
+// deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
 // Gracefully ignores file if it is missing
 $custom_modules = trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf")));
 if (!empty($custom_modules)) {
@@ -1004,5 +1004,20 @@ if (!empty($custom_modules)) {
 
 $config["modules"] = $modules;
 
+/**
+ * Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
+ * else, default to the standard array
+ * The OE_LOCAL_USERS environment variable should be a comma separated string
+ */
+$local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
+$config["local_users"] = explode(',', $local_users);
+
+/**
+ * Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
+ * else, default to the standard array
+ * The OE_SPECIAL_USERS environment variable should be a comma separated string
+ */
+$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
+$config["special_users"] = explode(',', $special_users);
 
 return $config;
