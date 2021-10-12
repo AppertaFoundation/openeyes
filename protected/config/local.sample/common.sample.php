@@ -19,6 +19,7 @@
 $config = array(
     'params' => array(
         'local_users' => array('admin','api','docman_user','payload_processor'),
+        'special_usernames' => array('api'),
         'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
     ),
 );
