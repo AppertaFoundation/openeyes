@@ -1010,7 +1010,7 @@ $config["modules"] = $modules;
  * The OE_LOCAL_USERS environment variable should be a comma separated string
  */
 $local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
-$config["local_users"] = explode(',', $local_users);
+$config["params"]["local_users"] = explode(',', $local_users);
 
 /**
  * Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
@@ -1018,6 +1018,6 @@ $config["local_users"] = explode(',', $local_users);
  * The OE_SPECIAL_USERS environment variable should be a comma separated string
  */
 $special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
-$config["special_users"] = explode(',', $special_users);
+$config["params"]["special_users"] = explode(',', $special_users);
 
 return $config;
