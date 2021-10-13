@@ -266,7 +266,7 @@ class DefaultController extends BaseEventTypeController
 
         if ($macroInitAssocContent !== null) {
             $data['associated_content'] = $this->renderPartial('event_associated_content', array(
-                'associated_content' => $macroInitAssocContent,
+                'init_associated_content' => $macroInitAssocContent,
                 'patient' => $patient,
                 'api' => Yii::app()->moduleAPI->get('OphCoCorrespondence'),
             ), true);

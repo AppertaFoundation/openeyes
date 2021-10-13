@@ -1223,7 +1223,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     $eventAssociatedContent->associated_event_id  = $last_event;
                     $eventAssociatedContent->display_order   = $order;
 
-                    $eventAssociatedContent->save();
+                    //These errors are not communicated on the front end, and cannot be influenced by user error, so are logged instead
+                    if (!$eventAssociatedContent->save()) {
+                        OELog::log("Event associated content failed validations");
+                        OELog::log(print_r($eventAssociatedContent->getErrors(), true));
+                    }
 
                     $order++;
                 }
