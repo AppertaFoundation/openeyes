@@ -1276,10 +1276,6 @@ class DefaultController extends BaseEventTypeController
 
     private function generatePDF($event, $savefile = false)
     {
-        $cookies = Yii::app()->request->cookies;
-        $cookies['savePrint'] = new CHttpCookie('savePrint', $event->id, [
-            'expire' => strtotime('+20 seconds')
-        ]);
         $letter = ElementLetter::model()->find('event_id=?', array($event->id));
 
         $recipient = Yii::app()->request->getParam('recipient');

@@ -649,6 +649,9 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
         if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
             if (isset($_POST['saveprint'])) {
+                Yii::app()->request->cookies['savePrint'] = new CHttpCookie('savePrint', $this->event_id, [
+                    'expire' => strtotime('+30 seconds')
+                ]);
                 $this->print = 1;
                 $this->print_all = 1;
             }
@@ -1158,7 +1161,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         $print_output = $this->getOutputByType();
         $additional_print_info = (count($print_output) > 1 ? '&all=1' : '');
         if ($cookies->contains('savePrint')) {
-            if (!$this->draft && $print_output) {
+            if (!(bool)$this->draft && $print_output) {
                 return '1' . $additional_print_info;
             }
         }
