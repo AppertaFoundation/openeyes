@@ -94,7 +94,7 @@ class m210426_124320_freehand_drawing_element_data_migration extends \OEMigratio
 
     private function removeFromElementType()
     {
-        $event_type = $this->getIdOfEventTypeByClassName('OphCiExamination');
+        $event_type = 'OphCiExamination';
 
         // using varibable so the line length doesn't exceed the line length
         $AE_prefix = 'OEModule\OphCiAccidentandemergency\modules';
@@ -113,8 +113,8 @@ class m210426_124320_freehand_drawing_element_data_migration extends \OEMigratio
         $this->deleteElementType($event_type, 'OEModule\OphCiExamination\models\Element_OphCiExamination_Freedraw_Blepharospasm');
         $this->deleteElementType($event_type, 'OEModule\OphCiExamination\models\Element_OphCiExamination_Synoptophore');
         $this->deleteElementType($event_type, 'OEModule\OphCiExamination\models\Element_OphCiExamination_EyeMovements');
-        $this->deleteElementType($event_type, "{$AE_prefix}\OphCiAccidentandemergency_Nurseassessment\models\Element_Ocular_Media");
-        $this->deleteElementType($event_type, "{$AE_prefix}\OphCiAccidentandemergency_Doctor\models\Element_Ocular_Media");
+        $this->deleteElementType('Nurse Assessment', "{$AE_prefix}\OphCiAccidentandemergency_Nurseassessment\models\Element_Ocular_Media");
+        $this->deleteElementType('Doctor', "{$AE_prefix}\OphCiAccidentandemergency_Doctor\models\Element_Ocular_Media");
     }
 
     private function addFreehandElement($row)
