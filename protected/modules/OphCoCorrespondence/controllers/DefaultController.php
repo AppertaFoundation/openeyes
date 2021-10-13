@@ -149,10 +149,10 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        if ($macro->recipient
-            && ($contact = $patient->gp ?: $patient->practice)
-            && $macro->recipient->name === Yii::app()->params['gp_label']) {
-            $data['sel_address_target'] = get_class($contact) . $contact->id;
+        if ($macro->recipient && ($macro->recipient->name === Yii::app()->params['gp_label'] || $macro->recipient->name === 'GP')) {
+            if ($contact = $patient->gp ?: $patient->practice) {
+                $data['sel_address_target'] = get_class($contact) . $contact->id;
+            }
         }
 
         if ($macro->recipient && $macro->recipient->name === 'Optometrist') {
