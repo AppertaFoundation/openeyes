@@ -280,6 +280,7 @@ class PatientController extends BaseController
             $events = Event::model()->findAll($criteria);
 
             $criteria->compare('t.deleted', 0);
+            $criteria->addCondition('episode.change_tracker IS NULL OR episode.change_tracker = 0');
             $active_events = Event::model()->findAll($criteria);
 
             $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
