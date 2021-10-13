@@ -1,7 +1,12 @@
 <?php
-    $outcome_actionable = Yii::app()->user->checkAccess('Safeguarding');
+    use \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding;
+
+    $outcome_actionable =
+        Yii::app()->user->checkAccess('Safeguarding') &&
+        (!isset($element->outcome_id) ||
+        $element->outcome_id === Element_OphCiExamination_Safeguarding::FOLLOWUP_REQUIRED);
     $patient_is_minor = $element->event->getPatient()->isChild();
-?>
+    ?>
 <div class="cols-11">
     <?php if ($element->no_concerns) { ?>
         <span>Patient has no safeguarding concerns.</span>
@@ -42,13 +47,13 @@
         <hr class="divider">
         <div class="flex-t">
             <div class="highlighter">Safeguarding outcome review</div>
-            <?php if (isset($element->outcome_id)) { ?>
-                <div id="safeguarding-outcome-summary" class="cols-8">
+            <div class="cols-2"></div>
+                <div id="safeguarding-outcome-summary" class="cols-6">
                     <table class="last-left">
                         <tbody>
                             <tr>
                                 <th>Status:</th>
-                                <td><?= $element->outcome->term ?></td>
+                                <td><?= isset($element->outcome_id) ? $element->outcome->term : 'Pending' ?></td>
                             </tr>
                             <?php if (isset($element->outcome_comments) && !empty($element->outcome_comments)) { ?>
                                 <tr>
@@ -59,7 +64,10 @@
                         </tbody>
                     </table>
                 </div>
-            <?php } elseif ($outcome_actionable) { ?>
+            <?php
+            if ($outcome_actionable) {
+                ?>
+                <div class="cols-1"></div>
                 <div id="safeguarding-action-buttons" class="cols-8">
                     <table class="last-left">
                         <tbody>
@@ -88,49 +96,44 @@
                     Please fix the following input errors:
                     <ul id="safeguarding-actions-error-list"></ul>
                 </div>
-            <?php } else { ?>
-                <div id="safeguarding-outcome-summary" class="cols-8">
-                    <table class="last-left">
-                        <tbody>
-                        <tr>
-                            <th>Status</th>
-                            <td>Pending</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
             <?php } ?>
         </div>
     <?php } ?>
 </div>
 
-<?php if (!isset($element->outcome_id)) { ?>
+<?php if ($outcome_actionable) { ?>
     <script type="text/javascript">
         $(document).ready(function () {
             $("#safeguarding-confirm-concerns").click(function() {
                 $("#safeguarding-action-buttons").hide();
                 $("#safeguarding-actions-clickthrough").show();
 
-                $("#safeguarding-outcome-id").val(<?= \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::CONFIRM_SAFEGUARDING_CONCERNS ?>);
+                $("#safeguarding-outcome-id").val(<?= Element_OphCiExamination_Safeguarding::CONFIRM_SAFEGUARDING_CONCERNS ?>);
             });
 
             $("#safeguarding-follow-up-required").click(function() {
                 $("#safeguarding-action-buttons").hide();
                 $("#safeguarding-actions-clickthrough").show();
 
-                $("#safeguarding-outcome-id").val(<?= \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::FOLLOWUP_REQUIRED ?>);
+                $("#safeguarding-outcome-id").val(<?= Element_OphCiExamination_Safeguarding::FOLLOWUP_REQUIRED ?>);
             });
 
             $("#safeguarding-no-concerns").click(function() {
                 $("#safeguarding-action-buttons").hide();
                 $("#safeguarding-actions-clickthrough").show();
 
-                $("#safeguarding-outcome-id").val(<?= \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::NO_SAFEGUARDING_CONCERNS ?>);
+                $("#safeguarding-outcome-id").val(<?= Element_OphCiExamination_Safeguarding::NO_SAFEGUARDING_CONCERNS ?>);
             });
 
             $("#safeguarding-outcome-save").click(function() {
                 $("#safeguarding-actions-clickthrough").hide();
                 $("#safeguarding-actions-failed").hide();
+
+                let existingComment = "<?= $element->outcome_comments ?>";
+
+                if (existingComment) {
+                    existingComment = existingComment + "<br>";
+                }
 
                 $.ajax({
                     url: "../ResolveSafeguardingElement",
@@ -141,7 +144,7 @@
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN,
                         element_id: <?= $element->id ?>,
                         outcome_id: $("#safeguarding-outcome-id").val(),
-                        outcome_comments: $("#safeguarding-outcome-comments").val()
+                        outcome_comments: existingComment + $("#safeguarding-outcome-comments").val()
                     },
                     success: function(response) {
                         console.log(response.success);
