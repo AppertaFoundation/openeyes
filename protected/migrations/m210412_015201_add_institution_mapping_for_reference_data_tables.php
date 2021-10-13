@@ -2,9 +2,7 @@
 
 class m210412_015201_add_institution_mapping_for_reference_data_tables extends OEMigration
 {
-
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
+    public function up()
     {
         $this->addOEColumn('firm', 'institution_id', 'int(10) unsigned', true);
         $this->addForeignKey(
@@ -32,7 +30,7 @@ class m210412_015201_add_institution_mapping_for_reference_data_tables extends O
         $this->execute("ALTER TABLE firm ADD CONSTRAINT firm_name_institution_service UNIQUE (`name`, institution_id, service_subspecialty_assignment_id)");
     }
 
-    public function safeDown()
+    public function down()
     {
         $institution_ids = $this->dbConnection->createCommand()
             ->select('id')
