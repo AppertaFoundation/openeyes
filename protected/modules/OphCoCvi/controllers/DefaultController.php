@@ -57,6 +57,7 @@ class DefaultController extends \BaseEventTypeController
         'esignDevicePopup' => self::ACTION_TYPE_FORM,
         'postSignRequest' => self::ACTION_TYPE_FORM,
         'printVisualyImpaired' => self::ACTION_TYPE_PRINT,
+        'printInfoSheet' => self::ACTION_TYPE_PRINT,
     );
 
     /**

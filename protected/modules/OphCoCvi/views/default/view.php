@@ -32,7 +32,7 @@ if ($this->checkLabelPrintAccess()) {
 }
 
 // To be fixed in: OE-11959 - CVI - "Print Consent Page" feature is missing
-$this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small', 'style' => 'display:none;'));
+$this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small'));
 $selectOptions['et_print_info_sheet'] = 'Print Information Sheet';
 
 // OE-11961 - CVI - "Print Information sheet" functionality is broken
