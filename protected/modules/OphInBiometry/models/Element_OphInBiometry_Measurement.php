@@ -133,7 +133,7 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
                 array('axial_length_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 40, 'min' => 15),
                 array('axial_length_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 40, 'min' => 15),
                 array('k1_left, k1_right, k2_left, k2_right, axial_length_left, axial_length_right, delta_k_left, delta_k_right, acd_left, acd_right,', 'default', 'setOnEmpty' => true, 'value' => 0.00),
-                array('snr_left, snr_right, k1_axis_left, k1_axis_right, k2_axis_left, k2_axis_right, delta_k_axis_left, delta_k_axis_right', 'default', 'setOnEmpty' => true, 'value' => 0.0),
+                array('k1_axis_left, k1_axis_right, k2_axis_left, k2_axis_right, delta_k_axis_left, delta_k_axis_right', 'default', 'setOnEmpty' => true, 'value' => 0.0),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, event_id', 'safe', 'on' => 'search'),
