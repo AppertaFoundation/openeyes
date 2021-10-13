@@ -32,8 +32,6 @@ class m190923_094126_add_diagnosis_columns_to_disorder_section_and_disorder exte
             list($table, $column, $type) = $data;
             $table_info = $this->dbConnection->schema->getTable($table, true);
 
-            echo '<pre>' . print_r(array_keys($table_info->columns), true) . '</pre>';
-
             if (!isset($table_info->columns[$column])) {
                 $this->addColumn($table, $column, $type);
                 $this->addColumn("{$table}_version", $column, $type);

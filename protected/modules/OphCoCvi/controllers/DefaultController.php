@@ -55,7 +55,8 @@ class DefaultController extends \BaseEventTypeController
         'getSignatureByPin' => self::ACTION_TYPE_FORM,
         'saveCapturedSignature' => self::ACTION_TYPE_FORM,
         'esignDevicePopup' => self::ACTION_TYPE_FORM,
-        'postSignRequest' => self::ACTION_TYPE_FORM
+        'postSignRequest' => self::ACTION_TYPE_FORM,
+        'printVisualyImpaired' => self::ACTION_TYPE_PRINT,
     );
 
     /**
@@ -1310,6 +1311,13 @@ class DefaultController extends \BaseEventTypeController
                 "order"     => "display_order"
             ));
         $this->renderPartial('ajax_load_diagnosis_list', ['disorder_sections' => $disorder_sections, 'element' => $element]);
+    }
+
+    public function actionPrintVisualyImpaired(int $event_id)
+    {
+        $this->initWithEventId($event_id);
+        $this->print_args = "?issue=1&is_visual_impairment=1";
+        parent::actionPDFPrint($event_id);
     }
 
     public function actionDeleteDiagnosisNotCoveredElement($data_id)

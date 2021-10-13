@@ -178,9 +178,9 @@ if ($demographics_element->isNewRecord) {
             </thead>
             <tbody>
             <tr>
-                <td><?= $clinical_info->getDisplayBestCorrectedRightVA() ?></td>
-                <td><?= $clinical_info->getDisplayBestCorrectedLeftVA() ?></td>
-                <td><?= $clinical_info->getDisplayBestCorrectedBinocularVA() ?></td>
+                <td><?= $clinical_info->getDisplayBestCorrectedVA('right') ?></td>
+                <td><?= $clinical_info->getDisplayBestCorrectedVA('left') ?></td>
+                <td><?= $clinical_info->getDisplayBestCorrectedVA('binocular') ?></td>
             </tr>
             </tbody>
         </table>
