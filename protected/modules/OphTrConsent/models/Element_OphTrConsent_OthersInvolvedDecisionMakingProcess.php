@@ -270,16 +270,18 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
         return parent::afterSave();
     }
 
-    public function getRequiredSignatures($only_required = true) : array
+    public function getRequiredSignatures() : array
     {
         $result = [];
         $contacts = $this->consentContact;
 
         foreach ($contacts as $contact) {
             $user = null;
-            if($contact->signature_required === '0' && $only_required ){
+
+            if($contact->signature_required === '0'){
                 continue;
             }
+
             $signature_id = $contact->contact_signature_id;
             if ($signature_id) {
                 $result[] = OphTrConsent_Signature::model()->findByPk($signature_id);
@@ -304,7 +306,6 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
                 $result[] = $sig;
             }
         }
-
         return $result;
     }
 
