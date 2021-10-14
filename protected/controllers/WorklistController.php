@@ -630,10 +630,17 @@ class WorklistController extends BaseController
         $this->redirect('/worklist/manual');
     }
 
-    public function actionPrint($date_from = null, $date_to = null, $list_id = null)
+    public function actionPrint($date_from = null, $date_to = null, $list_id = null, $filter = null)
     {
         $this->layout = '//layouts/print';
-        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
+
+        $filter = new WorklistFilterQuery($filter);
+
+        $date_from = $filter->getFrom() ?? $date_from;
+        $date_to = $filter->getTo() ?? $date_to;
+
+        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null, $filter);
+
         if ($list_id) {
             $worklists = array_filter($worklists, function ($e) use ($list_id) {
                 return (int)$e->id === (int)$list_id;
@@ -641,7 +648,7 @@ class WorklistController extends BaseController
         }
 
 
-        $this->render('//worklist/print', array('worklists' => $worklists));
+        $this->render('//worklist/print', array('worklists' => $worklists, 'filter' => $filter));
     }
 
     public function actionClearDates()

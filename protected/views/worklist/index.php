@@ -1208,10 +1208,15 @@ $pathway_json = json_encode(
     }
 
     function goPrint() {
-        const v = $("#wl_print_selected_worklist").val().replace("js-worklist-","");
-        const df = $("#worklist-date-from").val() === "" ? "" : "&date_from="+$("#worklist-date-from").val();
-        const dt = $("#worklist-date-to").val() === "" ? "" : "&date_to="+$("#worklist-date-to").val();
-        window.open("/worklist/print?list_id=" + v + df + dt, "_blank");
+        printIFrameUrl(
+            '/worklist/print',
+            {
+                list_id: $("#wl_print_selected_worklist").val().replace("js-worklist-",""),
+                date_from: $("#worklist-date-from").val(),
+                date_to: $("#worklist-date-to").val(),
+                filter: worklistFiltersController ? worklistFiltersController.getFilterJSON() : undefined,
+            }
+        );
     }
 
     function performSync() {
