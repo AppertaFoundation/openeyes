@@ -32,10 +32,10 @@ jobs:
     name: Build and push production images
     runs-on: ubuntu-latest
     steps:
-      
+
       - name: Checkout OEBuilder
         uses: actions/checkout@v2
-        with: 
+        with:
           repository: ToukanLabs/OEImageBuilder
           ref: master
           ssh-key: ${{ secrets.TKL_DEPLOY_PRIVATE_KEY }}
@@ -46,7 +46,7 @@ jobs:
             ssh-private-key: ${{ secrets.TKL_DEPLOY_PRIVATE_KEY }}
 
       # Resolve the github ref to use as a buiold arg in following step(s)
-      # This creates ${{ env.GITHUB_REF_NAME }} with the correct branch or tag name 
+      # This creates ${{ env.GITHUB_REF_NAME }} with the correct branch or tag name
       - name: Resolve ref
         uses: rlespinasse/github-slug-action@v3.x
 
@@ -140,7 +140,7 @@ jobs:
           readme-filepath: ./DatabaseBootstrap/README.md
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: toukanlabsdocker/oe-db-bootstrap   
+          repository: toukanlabsdocker/oe-db-bootstrap
 
 
 # THE NEXT 2 IMAGES ARE NOT YET READY OR NEEDED, so are commented out at this time
@@ -186,7 +186,7 @@ jobs:
 #           readme-filepath: ./Web-Dev/README.md
 #           username: ${{ secrets.DOCKER_USERNAME }}
 #           password: ${{ secrets.DOCKER_PASSWORD }}
-#           repository: toukanlabsdocker/oe-web-dev  
+#           repository: toukanlabsdocker/oe-web-dev
 
 # ###########  CI image
 
@@ -229,4 +229,4 @@ jobs:
 #           readme-filepath: ./Web-CI/README.md
 #           username: ${{ secrets.DOCKER_USERNAME }}
 #           password: ${{ secrets.DOCKER_PASSWORD }}
-#           repository: toukanlabsdocker/oe-web-CI  
+#           repository: toukanlabsdocker/oe-web-CI

@@ -56,6 +56,8 @@ class DefaultController extends \BaseEventTypeController
         'saveCapturedSignature' => self::ACTION_TYPE_FORM,
         'esignDevicePopup' => self::ACTION_TYPE_FORM,
         'postSignRequest' => self::ACTION_TYPE_FORM,
+        'printEmptyConsent' => self::ACTION_TYPE_PRINT,
+        'printConsent' => self::ACTION_TYPE_PRINT,
         'printVisualyImpaired' => self::ACTION_TYPE_PRINT,
         'printInfoSheet' => self::ACTION_TYPE_PRINT,
     );
