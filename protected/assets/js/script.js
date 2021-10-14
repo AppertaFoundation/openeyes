@@ -624,16 +624,14 @@ function redirectToSSOWithOverlay() {
                 window.open(resp, '_blank');
                 // The user has been redirected to SSO Portal so check every 15 seconds to see if user has authenticated
                 // This is to avoid data from previous session from being lost due to SSO sign-in
-                let authSuccess = false;
                 let testAuthenticated = setInterval(function () {
-                    authSuccess = pollUserAuthenticated()
+                    if (pollUserAuthenticated()) {
+                        // The user has authenticated, remove the login overlay
+                        loginOverlay.hide();
+                        clearInterval(testAuthenticated);
+                        queueLoginOverlay();
+                    }
                 }, 15000);
-                if (authSuccess) {
-                    // The user has authenticated, remove the login overlay
-                    loginOverlay.hide();
-                    clearInterval(testAuthenticated);
-                    queueLoginOverlay();
-                }
                 // Clear interval and show error if the user is not authenticated in 10 minutes after redirect
                 setTimeout(function () {
                     clearInterval(testAuthenticated);
