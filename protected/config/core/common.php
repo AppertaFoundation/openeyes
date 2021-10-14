@@ -916,14 +916,25 @@ $modules = array(
         'OphDrPGDPSD',
 );
 
-// deal with any custom modulesadded for the local deployment - which are set in /config/modules.conf (added via docker)
+// deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
 // Gracefully ignores file if it is missing
-$custom_modules = trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf")));
+$custom_modules = explode(" ", trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf"))));
 if (!empty($custom_modules)) {
-    $modules = array_unique(array_merge($modules, explode(" ", $custom_modules)), SORT_REGULAR);
+    $final_custom_modules = array();
+    foreach ($custom_modules as $module) {
+        if (!empty($module)) {
+            $mod_split = explode("=", $module);
+            if (sizeof($mod_split) > 1) {
+                $final_custom_modules[$mod_split[0]] = array('class' => $mod_split[1]);
+            } else {
+                // array_push($final_custom_modules, $mod_split[0]);
+                $final_custom_modules[] = (string)$mod_split[0];
+            }
+        }
+    }
+    $modules = array_unique(array_merge($modules, $final_custom_modules), SORT_REGULAR);
 }
 
 $config["modules"] = $modules;
-
 
 return $config;
