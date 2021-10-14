@@ -239,7 +239,7 @@ fi
 echo ""
 echo "Checking out branch $branch..."
 echo "for modules:"
-printf '%s\n' "${modules[@]}"
+printf '%s\n' "${modules[@]%=*}"
 echo ""
 
 if [ -n "$cloneparams" ]; then
@@ -311,7 +311,8 @@ git config --global core.fileMode false 2>/dev/null
 ######################################################
 if [ ! "$usessh" == "$previousssh" ]; then
 
-    for module in "${modules[@]}"; do
+    # Note that the "%=*" removes any namespace definitions (i.e, given OphInTesme=\OEModule\OphInTestme\OphInTestme::class, it would only return OphInTestme)
+    for module in "${modules[@]%=*}"; do
         # only run if module exists
         if [ ! -d "$MODULEROOT/$module" ]; then
             if [ ! "$module" = "openeyes" ]; then
@@ -342,7 +343,8 @@ if [ ! "$force" = "1" ]; then
     changes=0
     modulelist=""
 
-    for module in "${modules[@]}"; do
+    # Note that the "%=*" removes any namespace definitions (i.e, given OphInTesme=\OEModule\OphInTestme\OphInTestme::class, it would only return OphInTestme)
+    for module in "${modules[@]%=*}"; do
         if [ ! -d "$MODULEROOT/$module" ]; then
             if [ ! "$module" = "openeyes" ]; then
                 printf "\e[31mModule %s not found\e[0m\n" "$module"
@@ -379,7 +381,8 @@ fi
 # make sure modules directory exists
 mkdir -p "$MODULEROOT"
 
-for module in "${modules[@]}"; do
+# Note that the "%=*" removes any namespace definitions (i.e, given OphInTesme=\OEModule\OphInTestme\OphInTestme::class, it would only return OphInTestme)
+for module in "${modules[@]%=*}"; do
     [ -z $module ] && continue || : # ignore any empty modules is the array
 
     printf "\e[32m$module: \e[0m"
