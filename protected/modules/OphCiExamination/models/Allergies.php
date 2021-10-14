@@ -278,13 +278,4 @@ class Allergies extends \BaseEventTypeElement
         }
         return null;
     }
-
-    public function checkAllAllergiesAreSetNo() {
-        foreach ($this->entries as $entry) {
-            if ($entry->has_allergy === null || intval($entry->has_allergy) !== 0) {
-                return false;
-            }
-        }
-        return !empty($this->entries);
-    }
 }
