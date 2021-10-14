@@ -39,10 +39,10 @@ OpenEyes is provided under an GNU Affero GPL v3.0  (AGPL v3.0)  license and all 
 1.	These instructions are for an Ubuntu 18.04 machine, although it may work for 16.04, 20.04 and Ubuntu variants but it was built and tested for Ubuntu 18.04. So step one is to build an Ubuntu 18.04 machine, and perform software updates as required sudo apt-get update
 2.	Install Git sudo apt-get install git
 3.	Clone the openeyes repo:
-    - a.	cd /var
-    - b.	sudo mkdir www
-    - c.	cd www
-    - d.	sudo git clone https://github.com/AppertaFoundation/openeyes.git
+    - a.	`cd /var`
+    - b.	`sudo mkdir www`
+    - c.	`cd www`
+    - d.	`sudo git clone https://github.com/AppertaFoundation/openeyes.git`
 4.	Run `sudo bash /var/www/openeyes/protected/scripts/install-system.sh`
     - (this installs and configures the necessary services, such as the Apache webserver)
 5.	When that completes successfully, restart the Apache service using `sudo systemctl restart apache2`
