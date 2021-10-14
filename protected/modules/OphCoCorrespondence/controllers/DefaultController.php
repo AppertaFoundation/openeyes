@@ -18,6 +18,7 @@
 
 class DefaultController extends BaseEventTypeController
 {
+    public $secretary_can_sign = true;
     protected static $action_types = array(
         'getAddress' => self::ACTION_TYPE_FORM,
         'getMacroData' => self::ACTION_TYPE_FORM,
