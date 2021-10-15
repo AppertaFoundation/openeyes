@@ -362,6 +362,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         if (!$this->consultant_required) {
             $this->named_consultant_id = null;
         }
+        if (!$this->referral_id) {
+            $this->referral_id = null;
+        }
 
         return parent::beforeSave();
     }
