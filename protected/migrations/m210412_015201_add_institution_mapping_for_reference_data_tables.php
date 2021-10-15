@@ -22,7 +22,7 @@ class m210412_015201_add_institution_mapping_for_reference_data_tables extends O
                 ->from('firm')
                 ->where('id=:id', array(':id'=>$id['id']))
                 ->queryRow();
-            $this->execute("UPDATE firm SET name = concat(name,IF(active=0, '_Inactive', '_Duplicate')) WHERE id<>:id AND name=:name AND institution_id=:institution_id AND service_subspecialty_assignment_id=:ssaid",
+            $this->execute("UPDATE firm SET name = CONCAT(name,IF(active=0, CONCAT('_Inactive_', id), CONCAT('_Duplicate_', id))) WHERE id<>:id AND name=:name AND institution_id=:institution_id AND service_subspecialty_assignment_id=:ssaid",
                 array(':id' => $id['id'],
                     ':name' => $entry["name"],
                     ':institution_id' => $institution_id,
