@@ -26,6 +26,7 @@ class m211014_114600_import_health_professional extends OEMigration
     }
 
     function down() {
-        //cannot reverse this migration
+        echo "m211014_114600_import_health_professional does not support migration down.\n";
+        return false;
     }
 }
