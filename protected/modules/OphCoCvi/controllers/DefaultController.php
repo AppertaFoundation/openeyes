@@ -1061,7 +1061,12 @@ class DefaultController extends \BaseEventTypeController
 
     public function actionPrintEmptyConsent()
     {
-        $this->outputStaticPdfFile("CVI_consent_page.pdf");
+        $this->layout = '//layouts/print';
+        $this->render('_consent', [
+            'elements' => $this->open_elements,
+            'eventId' => $this->event->id ?? null,
+            'print_empty' => true,
+        ]);
     }
 
     public function actionPrintInfoSheet()
@@ -1071,14 +1076,15 @@ class DefaultController extends \BaseEventTypeController
 
     public function actionPrintConsent($event_id)
     {
-        $this->initWithEventId($event_id);
-        $mgr = new OphCoCvi_Manager();
-        $pdf = $mgr->createConsentPdf($this->event);
+        $this->printInit($event_id);
+        $this->layout = '//layouts/print';
+        $this->render('_consent', [
+            'elements' => $this->open_elements,
+            'eventId' => $this->event->id,
+            'print_empty' => false,
+            'patient' => $this->patient,
+        ]);
 
-        header("Content-type:application/pdf");
-        header('Content-Length: '.filesize($pdf));
-        readfile($pdf);
-        unlink($pdf);
         \Yii::app()->end();
     }
 

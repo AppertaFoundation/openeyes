@@ -36,16 +36,16 @@ if ($demographics_element->isNewRecord) {
     $gp_name = $patient->gp->contact->fullName ?? '';
     // getLetterAddress checks if the patient has Practice and returns that if he/she has
     $address = $patient->gp->getLetterAddress(['patient' => $patient]);
-    $postcode = $patient->gp->getGPPostcode(['patient' => $patient]) ?? '';
-    $primary_phone = $patient->practice->contact->primary_phone ?? $patient->gp->contact->primary_phone ?? '';
+    $gp_postcode = $patient->gp->getGPPostcode(['patient' => $patient]) ?? '';
+    $gp_telephone = $patient->practice->contact->primary_phone ?? $patient->gp->contact->primary_phone ?? '';
 
     $title_surname = $patient->title . " " . $patient->first_name;
     $other_names = '';
 } else {
     $gp_name = $demographics_element->gp_name;
     $address = [$demographics_element->gp_address];
-    $postcode = $demographics_element->gp_postcode . " " . $demographics_element->gp_postcode_2nd;
-    $primary_phone = $demographics_element->gp_telephone;
+    $gp_postcode = $demographics_element->gp_postcode . " " . $demographics_element->gp_postcode_2nd;
+    $gp_telephone = $demographics_element->gp_telephone;
     $title_surname = $demographics_element->title_surname;
     $other_names = $demographics_element->other_names;
 }
@@ -77,11 +77,11 @@ if ($demographics_element->isNewRecord) {
             <tbody>
             <tr>
                 <th>Title and surname or family name:</th>
-                <td><?= CHtml::encode($title_surname) ?></td>
+                <td><?= \CHtml::encode($title_surname) ?></td>
             </tr>
             <tr>
                 <th>All other names (identify preferred name):</th>
-                <td><?= CHtml::encode($other_names) ?></td>
+                <td><?= \CHtml::encode($other_names) ?></td>
             </tr>
             <tr>
                 <th>Date of birth</th>
@@ -220,7 +220,7 @@ if ($demographics_element->isNewRecord) {
             </table>
         </div>
         <?php foreach ($this->getDisorderSections($clinical_info->patient_type) as $disorder_section) : ?>
-            <div class="flex"><h3 class="cols-3"><?= CHtml::encode($disorder_section->name); ?></h3>
+            <div class="flex"><h3 class="cols-3"><?= \CHtml::encode($disorder_section->name); ?></h3>
                 <table class="row-lines">
                     <colgroup>
                         <col class="cols-6">
@@ -233,11 +233,11 @@ if ($demographics_element->isNewRecord) {
 
                     <?php foreach ($disorder_section->disorders as $disorder) : ?>
                         <tr>
-                            <td><?= CHtml::encode($disorder->name); ?></td>
+                            <td><?= \CHtml::encode($disorder->name); ?></td>
                             <td>
                                 <span class="checkbox <?= $clinical_info->isCviDisorderMainCauseForSide($disorder, 'right') ? 'checked' : '' ?>"></span>
                             </td>
-                            <td><?= CHtml::encode($disorder->code) ?></td>
+                            <td><?= \CHtml::encode($disorder->code) ?></td>
                             <td>
                                 <span class="tickbox <?= $clinical_info->getCviDisorderSide($disorder) === Eye::RIGHT ? 'checked' : ''; ?>"></span>
                             </td>
@@ -281,10 +281,10 @@ if ($demographics_element->isNewRecord) {
 
                 <div class="box">
                     <div class="dotted-write">
-                        <?= CHtml::encode($eye) ?>
-                        <?= CHtml::encode($disorder_name) ?>
+                        <?= \CHtml::encode($eye) ?>
+                        <?= \CHtml::encode($disorder_name) ?>
                         <?= $diagnosis->main_cause == 1 ? '(main cause)' : '' ?> -
-                        <?= CHtml::encode($disorder_code) ?>
+                        <?= \CHtml::encode($disorder_code) ?>
                     </div>
                 </div>
             <?php } ?>
@@ -308,7 +308,7 @@ if ($demographics_element->isNewRecord) {
                     $value = $answer ? $answer->is_factor : null;
                     ?>
                     <tr>
-                        <td><?= CHtml::encode($factor->name); ?></td>
+                        <td><?= \CHtml::encode($factor->name); ?></td>
                         <td>
                             <?php if (!$factor->comments_only) : ?>
                                 <span class="tickbox <?= $value === '1' ? 'checked' : ''; ?> "></span> Yes <span
@@ -322,7 +322,7 @@ if ($demographics_element->isNewRecord) {
                             <?php endif; ?>
 
                             <?php if ($factor->require_comments) : ?>
-                                <?= CHtml::encode($answer->comments); ?>
+                                <?= \CHtml::encode($answer->comments); ?>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -346,7 +346,7 @@ if ($demographics_element->isNewRecord) {
         <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
         <p>Preferred method of communication e.g. BSL, deafblind manual?</p>
         <div class="box">
-            <div class="dotted-write"><?= CHtml::encode($clearical_info->preferred_comm); ?></div>
+            <div class="dotted-write"><?= \CHtml::encode($clearical_info->preferred_comm); ?></div>
         </div>
 
         <?php $preferred_format_ids = array_map(fn($e) => $e->preferred_format_id, $clearical_info->preferred_format_assignments); ?>
@@ -363,21 +363,21 @@ if ($demographics_element->isNewRecord) {
         <div class="box">
             <div class="dotted-area">
                 <div class="label">My <b>GP</b> name/practice</div>
-                <?= CHtml::encode($gp_name); ?>
+                <?= \CHtml::encode($gp_name); ?>
             </div>
             <div class="dotted-area">
                 <div class="label">GP address</div>
-                <?= CHtml::encode($address ? implode(", ", $address) : '') ?>
+                <?= \CHtml::encode($address ? implode(", ", $address) : '') ?>
             </div>
             <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
             <div class="flex">
                 <div class="dotted-area">
                     <div class="label">Postcode</div>
-                    <?= CHtml::encode($postcode); ?>
+                    <?= \CHtml::encode($gp_postcode); ?>
                 </div>
                 <div class="dotted-area">
                     <div class="label">Telephone number</div>
-                    <?= CHtml::encode($primary_phone) ?>
+                    <?= \CHtml::encode($gp_telephone) ?>
                 </div>
             </div>
         </div>
@@ -393,21 +393,21 @@ if ($demographics_element->isNewRecord) {
         <div class="box">
             <div class="dotted-area">
                 <div class="label">My <b>local council</b> name</div>
-                <?= CHtml::encode($demographics_element->la_name ?? ''); ?>
+                <?= \CHtml::encode($demographics_element->la_name ?? ''); ?>
             </div>
             <div class="dotted-area">
                 <div class="label">Address</div>
-                <?= CHtml::encode($demographics_element->la_address ?? ''); ?>
+                <?= \CHtml::encode($demographics_element->la_address ?? ''); ?>
             </div>
             <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
             <div class="flex">
                 <div class="dotted-area">
                     <div class="label">Postcode</div>
-                    <?= CHtml::encode($demographics_element->gp_postcode ?? ''); ?><?= CHtml::encode($demographics_element->gp_postcode_2nd ?? ''); ?>
+                    <?= \CHtml::encode($demographics_element->la_postcode ?? ''); ?><?= \CHtml::encode($demographics_element->la_postcode_2nd ?? ''); ?>
                 </div>
                 <div class="dotted-area">
                     <div class="label">Telephone number</div>
-                    <?= CHtml::encode($demographics_element->gp_telephone ?? ''); ?>
+                    <?= \CHtml::encode($demographics_element->la_telephone ?? ''); ?>
                 </div>
             </div>
         </div>

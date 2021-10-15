@@ -22,7 +22,7 @@ $(document).ready(function() {
     });
 
     handleButton($("#et_print_consent"), function (e) {
-        $frame = $("<iframe src='/OphCoCvi/default/printConsent?event_id="+OE_event_id+"' style='display: none;'></iframe>");
+        $frame = $("<iframe src='/OphCoCvi/default/printConsent?event_id="+OE_event_id+"' style='position:fixed;left:-1000px;'></iframe>");
         $frame.appendTo("body");
         $frame.get(0).contentWindow.print();
         setTimeout(enableButtons, 2000);

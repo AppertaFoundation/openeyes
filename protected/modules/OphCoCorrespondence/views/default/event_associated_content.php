@@ -1,8 +1,8 @@
 <?php
-    if (empty($patient)) {
-        $patient = $this->patient;
-    }
-    ?>
+if (empty($patient)) {
+    $patient = $this->patient;
+}
+?>
     
     <header class="element-header"><h3 class="element-title">Attachments</h3></header>
     <div class="element-fields full-width flex-layout">
