@@ -17,7 +17,7 @@ class m211015_114500_import_communication_method extends OEMigration
                 (event_id, specialreq, created_date, created_user_id, last_modified_date, last_modified_user_id)
                 SELECT event_id,
 					CASE
-						WHEN `special_requirement_other` IS NOT NULL THEN `special_requirement_other`
+						WHEN `special_requirement_other` <>'' THEN `special_requirement_other`
 						ELSE (
 							SELECT name FROM " . self::SPECIAL_REQ . " WHERE id = et.special_requirement_id
 						)
