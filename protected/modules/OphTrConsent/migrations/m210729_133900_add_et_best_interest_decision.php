@@ -16,6 +16,9 @@ class m210729_133900_add_et_best_interest_decision extends OEMigration
             ), true);
 
             $this->addForeignKey("fk_et_ophtrconsent_best_interest_decision_event", "et_ophtrconsent_best_interest_decision", "event_id", "event", "id");
+        } else {
+            $this->addOEColumn('et_ophtrconsent_best_interest_decision','treatment_cannot_wait','BOOLEAN',true);
+            $this->addOEColumn('et_ophtrconsent_best_interest_decision','reason_for_procedure','TEXT NULL',true);
         }
     }
 
