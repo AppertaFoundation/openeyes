@@ -946,7 +946,6 @@ if (!empty($custom_modules)) {
             if (sizeof($mod_split) > 1) {
                 $final_custom_modules[$mod_split[0]] = array('class' => $mod_split[1]);
             } else {
-                // array_push($final_custom_modules, $mod_split[0]);
                 $final_custom_modules[] = (string)$mod_split[0];
             }
         }
@@ -955,5 +954,21 @@ if (!empty($custom_modules)) {
 }
 
 $config["modules"] = $modules;
+
+/**
+ * Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
+ * else, default to the standard array
+ * The OE_LOCAL_USERS environment variable should be a comma separated string
+ */
+$local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
+$config["params"]["local_users"] = explode(',', $local_users);
+
+/**
+ * Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
+ * else, default to the standard array
+ * The OE_SPECIAL_USERS environment variable should be a comma separated string
+ */
+$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
+$config["params"]["special_users"] = explode(',', $special_users);
 
 return $config;
