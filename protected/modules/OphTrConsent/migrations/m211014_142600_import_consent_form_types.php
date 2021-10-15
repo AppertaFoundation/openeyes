@@ -6,7 +6,7 @@ class m211014_142600_import_consent_form_types extends OEMigration
     public function safeUp()
     {
         if (!$this->dbConnection->schema->getTable(self::ARCHIVE_TABLE, true)) {
-            $this->execute("CREATE TABLE et_ophtrconsent_type_archive AS SELECT * FROM et_ophtrconsent_type");
+            $this->execute("CREATE TABLE " . self::ARCHIVE_TABLE . " AS SELECT * FROM et_ophtrconsent_type");
         }
 
         $this->execute("
