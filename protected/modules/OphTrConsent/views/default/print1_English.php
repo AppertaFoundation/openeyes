@@ -42,11 +42,11 @@
                 <td><?php echo $this->patient->NHSDate('dob') ?></td>
             </tr>
             <tr>
-                <th><?php echo Yii::app()->params['hos_num_label'].': '?></th>
+                <th><?php echo \SettingMetadata::model()->getSetting('hos_num_label').': '?></th>
                 <td><?php echo $this->patient->hos_num ?></td>
             </tr>
             <tr>
-                <th><?php echo Yii::app()->params['nhs_num_label']?> number</th>
+                <th><?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> number</th>
                 <td><?php echo $this->patient->nhs_num ?></td>
             </tr>
             <tr>

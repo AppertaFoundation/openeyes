@@ -395,13 +395,15 @@ class EventMedicationUse extends BaseElement
             }
         }
 
-        if (($this->prescribe || $this->isPrescription())) {
-            foreach ($this->tapers as $taper) {
-                foreach ($this->taper_equals_attributes as $attribute) {
-                    $result = $taper->$attribute === $medication->$attribute;
+        if (isset($this->tapers)) {
+            if ((!$this->prescribe || $this->isPrescription())) {
+                foreach ($this->tapers as $taper) {
+                    foreach ($this->taper_equals_attributes as $attribute) {
+                        $result = $taper->$attribute === $medication->$attribute;
 
-                    if (!$result) {
-                        return $result;
+                        if (!$result) {
+                            return $result;
+                        }
                     }
                 }
             }
@@ -1124,7 +1126,7 @@ class EventMedicationUse extends BaseElement
             $medication->short_term = $this->medication_name;
             $medication->source_type = self::USER_MEDICATION_SOURCE_TYPE;
             $medication->source_subtype = self::USER_MEDICATION_SOURCE_SUBTYPE;
-            $medication->preferred_code = self::USER_MEDICATION_SOURCE_SUBTYPE;
+            $medication->preferred_code = Medication::getNextUnmappedPreferredCode();
             if ($medication->save()) {
                 $medication->addDefaultSearchIndex();
                 $this->medication_id = $medication->id;

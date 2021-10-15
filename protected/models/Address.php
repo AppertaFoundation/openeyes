@@ -153,12 +153,20 @@ class Address extends BaseActiveRecordVersioned
             if (!empty($this->$field) && trim($this->$field) != ',' && trim($this->$field) != "") {
                 $line = $this->$field;
                 if ($field == 'address1') {
-                    $line = str_replace(',', '', $line);
                     foreach (explode("\n", $line) as $part) {
                         $address[] = $part;
                     }
                 } else {
-                    $address[] = $line;
+                    // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
+                    if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
+                        if (!empty($this->address2)) {
+                            $address[] = $this->address2;
+                        }
+                        $address[] = trim($this->city.' '.$this->county).' '.$this->postcode;
+                        break;
+                    } else {
+                        $address[] = $line;
+                    }
                 }
             }
         }

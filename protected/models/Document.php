@@ -34,7 +34,7 @@ class Document //extends BaseActiveRecord
     public static function getContactTypes()
     {
         return [
-            'GP' => \Yii::app()->params['gp_label'],
+            'GP' => \SettingMetadata::model()->getSetting('gp_label'),
             'PATIENT' => 'Patient',
             'DRSS' => 'DRSS',
             'OPTOMETRIST' => 'Optometrist',

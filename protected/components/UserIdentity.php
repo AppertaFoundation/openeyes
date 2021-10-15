@@ -291,7 +291,7 @@ class UserIdentity extends CUserIdentity
             $pwActive = !$user->testUserPWStatus('locked');
             if (!$force && !($validPw && $pwActive)) { //if failed logon or locked
             $user->userLogOnAttemptsCheck($user);
-                if(!$validPw && isset(Yii::app()->params['pw_status_checks']['pw_tries'])){ // if the password was not correct and we check the number of tries
+                if(!$validPw && !empty(Yii::app()->params['pw_status_checks']['pw_tries'])){ // if the password was not correct and we check the number of tries
                     $user->setFailedLogin();                    
                     $user->userLogOnAttemptsCheck($user);
                 }

@@ -51,11 +51,11 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 
 <table cellpadding="5">
 <tr>
-<td>Patient <?php echo Yii::app()->params['nhs_num_label']?> Number:</td>
+<td>Patient <?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> Number:</td>
 <td><?php echo $patient->nhs_num ? $patient->nhs_num : 'Unknown' ?></td>
 <td>Trust</td>
 <td>Moorfields NHS Foundation Trust</td>
-<td><?php echo Yii::app()->params['gp_label']?> Name:</td>
+<td><?php echo \SettingMetadata::model()->getSetting('gp_label')?> Name:</td>
 <td><?php echo ($patient->gp) ? $patient->gp->contact->fullName : 'Unknown'; ?></td>
 </tr>
 
@@ -64,7 +64,7 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 <td><?php echo $patient->hos_num ?></td>
 <td>Consultant Making Request:</td>
 <td><?php echo $service_info->consultant->getConsultantName() ?></td>
-<td><?php echo Yii::app()->params['gp_label']?> Practice Code:</td>
+<td><?php echo \SettingMetadata::model()->getSetting('gp_label')?> Practice Code:</td>
 <td><?php echo $patient->gp ? $patient->gp->nat_id : 'Unknown' ?></td>
 </tr>
 
@@ -73,7 +73,7 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 <td><?php echo $patient->getFullName() ?></td>
 <td>Proposed MEH Site:</td>
 <td>TBD</td>
-<td><?php echo Yii::app()->params['gp_label']?> Post Code:</td>
+<td><?php echo \SettingMetadata::model()->getSetting('gp_label')?> Post Code:</td>
 <td><?php echo ($patient->practice && $patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress->postcode : 'Unknown' ?></td>
 <td>Patient consents to share data:</td>
 <td>
@@ -89,7 +89,7 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 </tr>
 
 <tr>
-<td><?php echo Yii::app()->params['gp_label']?> CCG</td>
+<td><?php echo \SettingMetadata::model()->getSetting('gp_label')?> CCG</td>
 <td colspan="5"><?php echo $gp_cb ? $gp_cb->code.','.$gp_cb->name."\n" : "Unknown\n" ?></td>
 </tr>
 

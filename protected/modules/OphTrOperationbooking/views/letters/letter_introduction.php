@@ -27,7 +27,7 @@
     }?>
     <strong>Hospital Reference Number: <?php echo $patient->hos_num; ?>
     <?php if ($patient->nhsnum) {
-        ?><br/> <?php echo Yii::app()->params['nhs_num_label']?> Number: <?php echo $patient->nhsnum;
+        ?><br/> <?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> Number: <?php echo $patient->nhsnum;
     }?>
     <?php if (@$patient_ref) {?>
     <br /><?php echo $patient->getLetterAddress(array('delimiter' => ', '))?>

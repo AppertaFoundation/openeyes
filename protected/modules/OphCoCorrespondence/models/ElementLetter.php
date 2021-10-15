@@ -284,15 +284,15 @@ class ElementLetter extends BaseEventTypeElement
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options['Gp' . $patient->gp_id] = $patient->gp->contact->fullname . ' (' . ((isset($patient->gp->contact->label)) ? $patient->gp->contact->label->name : Yii::app()->params['gp_label']) . ')';
+                $options['Gp' . $patient->gp_id] = $patient->gp->contact->fullname . ' (' . ((isset($patient->gp->contact->label)) ? $patient->gp->contact->label->name : \SettingMetadata::model()->getSetting('gp_label')) . ')';
             } else {
-                $options['Gp' . $patient->gp_id] = Gp::UNKNOWN_NAME . ' (' . Yii::app()->params['gp_label'] . ')';
+                $options['Gp' . $patient->gp_id] = Gp::UNKNOWN_NAME . ' (' . \SettingMetadata::model()->getSetting('gp_label') . ')';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
                 $options['Gp' . $patient->gp_id] .= ' - NO ADDRESS';
             }
         } elseif ($patient->practice) {
-            $options['Practice' . $patient->practice_id] = Gp::UNKNOWN_NAME . ' (' . Yii::app()->params['gp_label'] . ')';
+            $options['Practice' . $patient->practice_id] = Gp::UNKNOWN_NAME . ' (' . \SettingMetadata::model()->getSetting('gp_label') . ')';
             if (@$patient->practice->contact && !@$patient->practice->contact->address) {
                 $options['Practice' . $patient->practice_id] .= ' - NO ADDRESS';
             }
@@ -367,7 +367,7 @@ class ElementLetter extends BaseEventTypeElement
                 $gp = $pcassocitate->gp;
                 $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id' => $gp->id));
                 if (isset($cpa->practice) && !empty($cpa->practice->getAddressLines())) {
-                    $options['ContactPracticeAssociate' . $cpa->id] = $gp->contact->fullname . ' (' . ((isset($gp->contact->label)) ? $gp->contact->label->name : Yii::app()->params['gp_label']) . ')';
+                    $options['ContactPracticeAssociate' . $cpa->id] = $gp->contact->fullname . ' (' . ((isset($gp->contact->label)) ? $gp->contact->label->name : \SettingMetadata::model()->getSetting('gp_label')) . ')';
                 }
             }
         }
@@ -392,9 +392,9 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
         if (Yii::app()->params['nhs_num_private'] === true) {
-            return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num;
+            return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . \SettingMetadata::model()->getSetting('hos_num_label') . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num;
         }
-        return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num . ', ' . Yii::app()->params['nhs_num_label'] . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->nhsnum;
+        return $re . ', DOB: ' . $patient->NHSDate('dob') . ', ' . \SettingMetadata::model()->getSetting('hos_num_label') . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->hos_num . ', ' . \SettingMetadata::model()->getSetting('nhs_num_label') . (Yii::app()->params['institution_code'] === 'CERA' ? ': ' : ' No: ') . $patient->nhsnum;
     }
 
     /**
@@ -427,9 +427,9 @@ class ElementLetter extends BaseEventTypeElement
             }
 
             if (Yii::app()->params['nhs_num_private'] == true) {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num;
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . \SettingMetadata::model()->getSetting('hos_num_label') . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num;
             } else {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . Yii::app()->params['hos_num_label'] . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num . ', ' . Yii::app()->params['nhs_num_label'] . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->nhsnum;
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', ' . \SettingMetadata::model()->getSetting('hos_num_label') . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->hos_num . ', ' . \SettingMetadata::model()->getSetting('nhs_num_label') . (Yii::app()->params['institution_code'] === "CERA" ? ': ' : ' No: ') . $patient->nhsnum;
             }
 
             $user = Yii::app()->session['user'];
@@ -501,7 +501,7 @@ class ElementLetter extends BaseEventTypeElement
             $this->introduction = $patient->getLetterIntroduction(array(
                 'nickname' => $this->use_nickname,
             ));
-        } elseif ($this->macro->recipient && $this->macro->recipient->name === Yii::app()->params['gp_label']) {
+        } elseif ($this->macro->recipient && $this->macro->recipient->name === \SettingMetadata::model()->getSetting('gp_label')) {
             $this->address_target = 'gp';
             if ($patient->gp) {
                 $this->introduction = $patient->gp->getLetterIntroduction(array(
@@ -942,7 +942,21 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        return $target->contact_name . "\n" . $target->address;
+                        // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
+                        if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
+                            $addressPart = explode("\n", $target->address);
+                            $address ='';
+                            foreach ($addressPart as $index=>$part) {
+                                if ($index === 0) {
+                                    $address = $part."\n";
+                                } else {
+                                    $address = $address.$part;
+                                }
+                            }
+                            return $target->contact_name . "\n" . $address;
+                        } else {
+                            return $target->contact_name . "\n" . $target->address;
+                        }
                     }
                 }
             }
@@ -999,7 +1013,7 @@ class ElementLetter extends BaseEventTypeElement
                         if ($target->contact_type === "DRSS") {
                             $contact_type = $target->commissioningBodyService && $target->commissioningBodyService->type ? $target->commissioningBodyService->type->shortname : null;
                         } else {
-                            $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                            $contact_type = $target->contact_type != \SettingMetadata::model()->getSetting('gp_label') ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                         }
                         $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
                     }

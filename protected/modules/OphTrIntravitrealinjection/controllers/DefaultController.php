@@ -119,10 +119,6 @@ class DefaultController extends BaseEventTypeController
         elseif ($this->episode && $therapy_api && $side = $therapy_api->getLatestApplicationSide($this->patient, $this->episode)) {
             $default_eye = $side;
         }
-        // get the side of the episode diagnosis and use that as the default for the elements
-        elseif ($this->episode && $this->episode->eye_id) {
-            $default_eye = $this->episode->eye_id;
-        }
 
         // if we haven't got the default drug from the imc, try therapy application
         if ($therapy_api) {

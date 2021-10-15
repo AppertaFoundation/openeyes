@@ -40,12 +40,12 @@
         <div class="patient-details">
             <div class="hospital-number">
                 <!--                Displaying only ID label (instead of CERA ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", Yii::app()->params['hos_num_label'])[1] : Yii::app()->params['hos_num_label'] ) ?> </span>
+                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", \SettingMetadata::model()->getSetting('hos_num_label'))[1] : \SettingMetadata::model()->getSetting('hos_num_label') ) ?> </span>
                 <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
             </div>
             <div class="nhs-number">
                 <!--                Displaying only Medicare label (instead of Medicare ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", Yii::app()->params['nhs_num_label'])[0] : Yii::app()->params['nhs_num_label'] ) ?></span>
+                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", \SettingMetadata::model()->getSetting('nhs_num_label'))[0] : \SettingMetadata::model()->getSetting('nhs_num_label') ) ?></span>
                     <?php echo $this->patient->nhsnum ?>
                     <?php if ($this->patient->nhsNumberStatus) : ?>
                   <i class="oe-i <?= isset($this->patient->nhsNumberStatus->icon->class_name) ? $this->patient->nhsNumberStatus->icon->class_name : 'exclamation' ?> small"></i>

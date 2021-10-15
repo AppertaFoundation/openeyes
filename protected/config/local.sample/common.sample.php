@@ -57,6 +57,10 @@ $config = array(
                 // Log to browser
                 'browser' => array(
                     'class' => 'CWebLogRoute',
+                    // 'enabled' => YII_DEBUG,
+                    // 'levels' => 'error, warning, trace, notice',
+                    // 'categories' => 'application',
+                    'showInFireBug' => true,
                 ),
             ),
         ),

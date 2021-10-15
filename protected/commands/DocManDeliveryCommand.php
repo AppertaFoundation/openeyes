@@ -463,6 +463,7 @@ EOH;
             'site_name' => $element_letter->site->name,
             'site_short_name' => $element_letter->site->short_name,
             'letter_type' => isset($element_letter->letterType->name) ? $element_letter->letterType->name : '',
+            'letter_type_id' => isset($element_letter->letterType->id) ? $element_letter->letterType->id : '',
             'with_internal_referral' => $this->with_internal_referral,
             'service_to' => isset($element_letter->toSubspecialty) ? $element_letter->toSubspecialty->ref_spec : '',
             'consultant_to' => isset($element_letter->toFirm) ? $element_letter->toFirm->pas_code : '',

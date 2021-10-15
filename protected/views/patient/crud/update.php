@@ -7,7 +7,7 @@
  */
 ?>
 <div class="oe-full-header flex-layout">
-  <div class="title wordcaps">Update <strong><?= $patient->getFullName() ?></strong></div>
+  <div class="title wordcaps">Update&nbsp;<strong><?= $patient->getFullName() ?></strong></div>
 </div>
 <?php $this->renderPartial('crud/_form', array(
     'patient' => $patient,

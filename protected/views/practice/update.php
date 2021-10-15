@@ -7,7 +7,7 @@ $this->pageTitle = 'Update Practice';
 <div class="oe-home">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
-            Update <b>Practice</b>
+            Update&nbsp;<b>Practice</b>
         </div>
     </div>
 
