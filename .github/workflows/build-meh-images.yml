@@ -35,6 +35,7 @@ on:
 
 jobs:
   push_to_registry:
+    if: github.repository == 'openeyes/OpenEyes'
     name: Build and push MEH live images
     runs-on: ubuntu-latest
     steps:
