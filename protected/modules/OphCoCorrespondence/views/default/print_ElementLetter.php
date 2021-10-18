@@ -29,9 +29,9 @@ if (is_null($contact_type)) {
 }
 if ($contact_type === "PATIENT") {
     $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-    $examination_communication_preferences = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $this->patient);
-    if ($examination_communication_preferences) {
-        $large_letters = $examination_communication_preferences->correspondence_in_large_letters === '1';
+    $most_recent_communication_preference = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $this->patient);
+    if ($most_recent_communication_preference) {
+        $large_letters = $most_recent_communication_preference->correspondence_in_large_letters === '1';
     }
 }
 

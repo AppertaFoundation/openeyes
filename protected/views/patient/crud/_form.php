@@ -366,18 +366,24 @@ foreach ($ethnic_list as $key => $item) {
                             <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
                         </li>
                     </ul>
+                    <?= CHtml::hiddenField(
+                        'Patient[practice_id]',
+                        $patient->practice_id,
+                        array('class' => 'hidden_id')
+                    ); ?>
                 </div>
                 <div id="no_practice_result" style="display: none;">
                     <div>No result</div>
                 </div>
             </td>
         </tr>
-        <?php } ?>
+        <?php } else { ?>
         <?= CHtml::hiddenField(
             'Patient[practice_id]',
             $patient->practice_id,
             array('class' => 'hidden_id')
         ); ?>
+        <?php } ?>
         <tr>
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 <?= $form->label($referral, 'uploadedFile'); ?>
@@ -671,7 +677,7 @@ if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
       onSelect: function(){
       let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
       removeSelectedGP();
-      addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse}, true);
+      addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse}, <?= Yii::app()->params['use_contact_practice_associate_model'] === true  ? 'true' : 'false'; ?>);
     }
     });
 
