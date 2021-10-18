@@ -43,7 +43,8 @@ node_modules
 /docs/public
 /protected/assets/img/fieldImages/*
 /assets/
-/protected/files/*
+/protected/files/**
+/protected/files
 package-lock.json
 .recycle/
 /.recycle
