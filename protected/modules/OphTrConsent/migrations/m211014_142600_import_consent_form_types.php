@@ -3,8 +3,7 @@
 class m211014_142600_import_consent_form_types extends OEMigration
 {
     private const ARCHIVE_TABLE = 'et_ophtrconsent_type_archive';
-    private const ARCHIVE_TYPES_TABLE = 'ophtrconsent_type_type_archive';
-
+    
     public function safeUp()
     {
         if (!$this->dbConnection->schema->getTable(self::ARCHIVE_TABLE, true)) {
@@ -24,11 +23,6 @@ class m211014_142600_import_consent_form_types extends OEMigration
 			END
 			WHERE type_id  in (5,6,7,8,9,10)
 		");
-
-        if (!$this->dbConnection->schema->getTable(self::ARCHIVE_TYPES_TABLE, true)) {
-            $this->execute("CREATE TABLE " . self::ARCHIVE_TYPES_TABLE . " AS SELECT * FROM ophtrconsent_type_type");
-        }
-        $this->execute("DELETE FROM ophtrconsent_type_type WHERE ID > 4;");
     }
 
     public function safeDown()
