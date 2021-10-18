@@ -31,6 +31,8 @@ class m211018_092600_import_consent_form_types extends OEMigration
             $this->execute("CREATE TABLE " . self::ARCHIVE_TYPES_TABLE . " AS SELECT * FROM ophtrconsent_type_type");
         }
         $this->execute("DELETE FROM ophtrconsent_type_type WHERE ID > 4;");
+
+        $this->execute("DELETE FROM ophtrconsent_type_assessment WHERE type_id > 4;");
     }
 
     public function safeDown()
