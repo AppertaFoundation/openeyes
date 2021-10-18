@@ -23,7 +23,7 @@ class m211018_092600_import_consent_form_types extends OEMigration
                     WHEN ophtrconsent_type_type_id = 10 THEN 3
                     ELSE ophtrconsent_type_type_id
                 END
-                WHERE type_id  in (5,6,7,8,9,10)
+                WHERE ophtrconsent_type_type_id  in (5,6,7,8,9,10)
 		    ");
         }
 
