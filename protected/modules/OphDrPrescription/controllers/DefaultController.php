@@ -913,15 +913,22 @@ class DefaultController extends BaseEventTypeController
         return $item_group;
     }
 
-
-    public function getSiteAndTheatreForLatestEvent()
+    /**
+     * Function gets the last Element_OphTrOperationnote_SiteTheatre
+     * and returns it if site and subspecialty are the same as parameters
+     * @param $prescribed_date
+     * @param $firm_id
+     * @return Element_OphTrOperationnote_SiteTheatre | bool
+     */
+    public function getSiteAndTheatreForSameDayEvent($prescribed_date, $firm_id)
     {
-        if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-            if ($site_theatre = $api->getElementFromLatestEvent(
+        $api = Yii::app()->moduleAPI->get('OphTrOperationnote');
+        if ($api) {
+            $site_theatre = $api->getElementFromLatestEvent(
                 'Element_OphTrOperationnote_SiteTheatre',
                 $this->patient,
-                true
-            )) {
+                true);
+            if ($site_theatre && $site_theatre->event->NHSDate('event_date') === $prescribed_date && $site_theatre->event->episode->firm_id === $firm_id) {
                 return $site_theatre;
             }
         }

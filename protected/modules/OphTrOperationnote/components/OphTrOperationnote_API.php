@@ -251,7 +251,7 @@ class OphTrOperationnote_API extends BaseAPI
     {
         $details = '';
         if ($cataract_element = $this->getLatestCataractElementForEpisode($patient, $use_context)) {
-            $details = $cataract_element->report2 ."\n". $cataract_element->comments ?: '';
+            $details = (empty($cataract_element->report2) ? $cataract_element->report : $cataract_element->report2) ."\n". ($cataract_element->comments ?: '');
         }
 
         return $details;

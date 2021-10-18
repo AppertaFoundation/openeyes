@@ -14,6 +14,9 @@
         // See class documentation of CActiveForm for details on this.
         'enableAjaxValidation' => true,
     )); ?>
+    <?php if ($gp->hasErrors()) { ?>
+    <div class="error alert-box"><?php echo $form->error($gp, 'contact'); ?></div>
+    <?php } ?>
     <table class="standard row">
         <tbody>
         <tr>

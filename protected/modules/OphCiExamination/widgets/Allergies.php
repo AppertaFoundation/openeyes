@@ -65,7 +65,7 @@ class Allergies extends \BaseEventElementWidget
             $element->entries = array();
         }
 
-        if ((array_key_exists('no_allergies', $data) && $data['no_allergies'] == 1) || $element->checkAllAllergiesAreSetNo()) {
+        if ((array_key_exists('no_allergies', $data) && $data['no_allergies'] == 1)) {
             // TODO: Think about the importance of this date information, and therefore whether it should
             // TODO: be preserved across change events for the family history
             if (!$element->no_allergies_date) {

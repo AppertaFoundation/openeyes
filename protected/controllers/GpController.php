@@ -100,7 +100,7 @@ class GpController extends BaseController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @param $context string The context through which create action is invoked.
      */
-    public function actionCreate()
+    public function actionCreate($context = null)
     {
         Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
         $gp = new Gp();
@@ -110,20 +110,100 @@ class GpController extends BaseController
 
         if (isset($_POST['Contact'])) {
             $contact->attributes = $_POST['Contact'];
-            $gp->is_active = $_POST['Gp']['is_active'];
-            $this->performAjaxValidation($contact);
-            list($contact, $gp) = $this->performGpSave($contact, $gp);
 
-            if ($gp->id) {
-                $this->redirect(array('view', 'id' => $gp->id));
+            // if context is AJAX then it means that this action is called from add patient screen, or it will go
+            // to the else condition if it is called from the practitioners screen.
+            if ($context === 'AJAX') {
+                $contactPracticeAssociate = new ContactPracticeAssociate();
+
+                if ($contact->validate()) {
+                    // For CERA, check for an existing practitioner and send it back instead if there is one.
+                    // This happens for the AJAX context, for the normal context below the existance is treated as an error
+                    if (SettingMetadata::model()->getSetting('default_country') === 'Australia' &&
+                        isset($contact->label) &&
+                        $existing_gp_contact = $this->findExistingGpWithNameAndLabel($contact->first_name, $contact->last_name,
+                                                                                     $contact->label->id)) {
+                        echo CJSON::encode(array(
+                            'title' => $existing_gp_contact->title,
+                            'firstName' => $existing_gp_contact->first_name,
+                            'lastName' => $existing_gp_contact->last_name,
+                            'primaryPhone' => $existing_gp_contact->primary_phone,
+                            'labelId' => isset($existing_gp_contact->label) ? $existing_gp_contact->label->id : '',
+                            'providerNo' => '',
+                            'gpId' => $existing_gp_contact->gp->id,
+                        ));
+                    } else {
+                        // checking for the duplicate provider no.
+                        if (!empty($_POST['ContactPracticeAssociate']['provider_no'])) {
+                            $contactPracticeAssociate->provider_no = $_POST['ContactPracticeAssociate']['provider_no'];
+
+                            $query = Yii::app()->db->createCommand()
+                                                   ->select('cpa.id')
+                                                   ->from('contact_practice_associate cpa')
+                                                   ->where('LOWER(cpa.provider_no) = LOWER(:provider_no)',
+                                                           array(':provider_no' => $contactPracticeAssociate->provider_no))
+                                                   ->queryAll();
+
+                            $isDuplicate = count($query);
+
+                            if ($isDuplicate !== 0) {
+                                echo CJSON::encode(array('error' => 'Duplicate Provider number detected. <br/> This provider number already exists.'));
+                                Yii::app()->end();
+                            }
+                        }
+
+                        echo CJSON::encode(array(
+                            'title' => $contact->title,
+                            'firstName' => $contact->first_name,
+                            'lastName' => $contact->last_name,
+                            'primaryPhone' => $contact->primary_phone,
+                            'labelId' => isset($contact->label) ? $contact->label->id : '',
+                            'providerNo' => isset($contactPracticeAssociate->provider_no) ? $contactPracticeAssociate->provider_no : '',
+                        ));
+                    }
+                } else {
+                    // get the error messages for the contact model.
+                    echo CJSON::encode(array('error' => CHtml::errorSummary($contact)));
+                }
+            } else {
+                $gp->is_active = $_POST['Gp']['is_active'];
+
+                $this->performAjaxValidation($contact);
+
+                /* For Australian setups, check for duplicate practitioners which are not allowed */
+                if (SettingMetadata::model()->getSetting('default_country') === 'Australia' &&
+                    $contact->validate() && isset($contact->label) &&
+                    $this->findExistingGpWithNameAndLabel($contact->first_name, $contact->last_name, $contact->label->id)) {
+                    $gp->addError('contact', 'A practitioner with this name and role already exists.');
+
+                    $this->render('create', array(
+                        'model' => $contact,
+                        'gp' => $gp,
+                        'context' => null
+                    ));
+
+                    return;
+                }
+
+                list($contact, $gp) = $this->performGpSave($contact, $gp);
+
+                if ($gp->id) {
+                    $this->redirect(array('view', 'id' => $gp->id));
+                }
+
+                $this->render('create', array(
+                    'model' => $contact,
+                    'gp' => $gp,
+                    'context' => null
+                ));
             }
+        } elseif ($context !== 'AJAX') {
+            $this->render('create', array(
+                'model' => $contact,
+                'gp' => $gp,
+                'context' => null
+            ));
         }
-
-        $this->render('create', array(
-           'model' => $contact,
-           'gp' => $gp,
-           'context' => null
-        ));
     }
 
     /**
@@ -149,6 +229,23 @@ class GpController extends BaseController
             $model->is_active = $_POST['Gp']['is_active'];
             $this->performAjaxValidation($contact);
             $this->performAjaxValidation($model);
+
+            /* For Australian setups, check for duplicate practitioners which are not allowed */
+            if (SettingMetadata::model()->getSetting('default_country') === 'Australia' &&
+                $contact->validate() && isset($contact->label) &&
+                ($existing = $this->findExistingGpWithNameAndLabel($contact->first_name, $contact->last_name, $contact->label->id))) {
+                if ($existing->id !== $contact->id) {
+                    $model->addError('contact', 'Another practitioner with this name and role already exists.');
+
+                    $this->render('update', array(
+                        'model' => $contact,
+                        'gp' => $model,
+                        'cpas' => $cpas,
+                    ));
+
+                    return;
+                }
+            }
 
             if (isset($_POST['ContactPracticeAssociate'])) {
                 $index = 0;
@@ -350,6 +447,32 @@ class GpController extends BaseController
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
+        }
+    }
+
+    /**
+     * Finds an existing GP given their name and contact label id
+     * This is for finding duplicate GPs per CERA requirements
+     * (Listed briefly in CERA-512)
+     *
+     * @param string $first_name The first name of the GP contact
+     * @param string $last_name The last name of the GP contact
+     * @param int $contact_label_id The id of the contact label for the GP contact
+     */
+    protected function findExistingGpWithNameAndLabel($first_name, $last_name, $contact_label_id)
+    {
+        $criteria = new CDbCriteria();
+
+        $criteria->addSearchCondition('LOWER(last_name)', strtolower($last_name), true, 'AND');
+        $criteria->addSearchCondition('LOWER(first_name)', strtolower($first_name), true, 'AND');
+        $criteria->addSearchCondition('contact_label_id', $contact_label_id, true, 'AND');
+
+        $contact = Contact::model()->find($criteria);
+
+        if ($contact && $contact->getType() === 'Gp') {
+            return $contact;
+        } else {
+            return null;
         }
     }
 }

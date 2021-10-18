@@ -262,7 +262,10 @@ class ProtectedFile extends BaseActiveRecordVersioned
         $this->source_path = $path;
 
         $this->name = basename($path);
-
+        if(!$this->title){
+            // if title has no value, initial with empty string to pass validation
+            $this->title = '';
+        }
         // Set MIME type
         $path_parts = pathinfo($this->name);
         $this->mimetype = $this->lookupMimetype($path);

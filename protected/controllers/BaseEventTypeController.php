@@ -1135,7 +1135,7 @@ class BaseEventTypeController extends BaseModuleController
             'enableAjaxValidation' => false,
             'htmlOptions' => array('class' => 'sliding'),
         ));
-        if(isset($this->set) && !$this->set){
+        if(property_exists($this, 'set') && !$this->set){
             $this->set = $this->getSetFromEpisode($this->episode);
         }
         $this->renderElement($element, 'create', $form, null, array(

@@ -649,6 +649,9 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
         if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
             if (isset($_POST['saveprint'])) {
+                Yii::app()->request->cookies['savePrint'] = new CHttpCookie('savePrint', $this->event_id, [
+                    'expire' => strtotime('+30 seconds')
+                ]);
                 $this->print = 1;
                 $this->print_all = 1;
             }
@@ -1074,6 +1077,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     {
         $ccString = '';
 
+        $Australia = Yii::app()->params['default_country'] === 'Australia';
+
         if ($this->document_instance && $this->document_instance[0]->document_target) {
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
@@ -1083,7 +1088,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                         } else {
                             $contact_type = $target->contact_type != \SettingMetadata::model()->getSetting('gp_label') ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                         }
-                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
+                        $ccString .= "CC: " . ($Australia ? "" : ($contact_type != "Other" ? $contact_type . ": " : "")) . $target->contact_name . ", " . $this->renderSourceAddress($target->address) . "<br/>";
                     }
                 }
             }
@@ -1156,7 +1161,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         $print_output = $this->getOutputByType();
         $additional_print_info = (count($print_output) > 1 ? '&all=1' : '');
         if ($cookies->contains('savePrint')) {
-            if (!$this->draft && $print_output) {
+            if (!(bool)$this->draft && $print_output) {
                 return '1' . $additional_print_info;
             }
         }
@@ -1209,18 +1214,23 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
                     $eventAssociatedContent->is_print_appended = $attachments_print_appended[$key] ?? 0;
 
-                    if (isset($attachments_short_code[$key])) {
+                    if (isset($attachments_short_code[$key]) && !empty($attachments_short_code[$key])) {
                         $eventAssociatedContent->short_code  = $attachments_short_code[$key];
                     } else {
                         $eventAssociatedContent->short_code = $this->generateShortcodeByEventId($attachments_last_event_id[$key]);
                     }
 
                     $eventAssociatedContent->display_title = $attachments_display_title[$key] ?? null;
+                    $eventAssociatedContent->associated_protected_file_id = $attachments_protected_file_id[$key] ?? null;
                     $eventAssociatedContent->association_storage  = 'EVENT';
                     $eventAssociatedContent->associated_event_id  = $last_event;
                     $eventAssociatedContent->display_order   = $order;
 
-                    $eventAssociatedContent->save();
+                    //These errors are not communicated on the front end, and cannot be influenced by user error, so are logged instead
+                    if (!$eventAssociatedContent->save()) {
+                        OELog::log("Event associated content failed validations");
+                        OELog::log(print_r($eventAssociatedContent->getErrors(), true));
+                    }
 
                     $order++;
                 }

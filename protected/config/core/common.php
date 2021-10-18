@@ -731,7 +731,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '4.1',
+        'oe_version' => '4.1.1-nightly',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -916,14 +916,40 @@ $modules = array(
         'OphDrPGDPSD',
 );
 
-// deal with any custom modulesadded for the local deployment - which are set in /config/modules.conf (added via docker)
+// deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
 // Gracefully ignores file if it is missing
-$custom_modules = trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf")));
+$custom_modules = explode(" ", trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf"))));
 if (!empty($custom_modules)) {
-    $modules = array_unique(array_merge($modules, explode(" ", $custom_modules)), SORT_REGULAR);
+    $final_custom_modules = array();
+    foreach ($custom_modules as $module) {
+        if (!empty($module)) {
+            $mod_split = explode("=", $module);
+            if (sizeof($mod_split) > 1) {
+                $final_custom_modules[$mod_split[0]] = array('class' => $mod_split[1]);
+            } else {
+                $final_custom_modules[] = (string)$mod_split[0];
+            }
+        }
+    }
+    $modules = array_unique(array_merge($modules, $final_custom_modules), SORT_REGULAR);
 }
 
 $config["modules"] = $modules;
 
+/**
+ * Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
+ * else, default to the standard array
+ * The OE_LOCAL_USERS environment variable should be a comma separated string
+ */
+$local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
+$config["params"]["local_users"] = explode(',', $local_users);
+
+/**
+ * Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
+ * else, default to the standard array
+ * The OE_SPECIAL_USERS environment variable should be a comma separated string
+ */
+$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
+$config["params"]["special_users"] = explode(',', $special_users);
 
 return $config;

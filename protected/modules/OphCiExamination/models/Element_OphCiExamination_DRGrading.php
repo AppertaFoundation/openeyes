@@ -60,7 +60,6 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
     public $service;
-    public $secondarydiagnosis_disorder_required = false;
 
     /**
      * Returns the static model of the specified AR class.
@@ -94,7 +93,7 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
 						left_nscmaculopathy_photocoagulation, right_nscretinopathy_id, right_nscmaculopathy_id,
 						right_nscretinopathy_photocoagulation, right_nscmaculopathy_photocoagulation, left_clinicalret_id,
 						right_clinicalret_id, left_clinicalmac_id, right_clinicalmac_id, eye_id', 'safe'),
-                array('secondarydiagnosis_disorder_id', 'flagRequired', 'flag' => 'secondarydiagnosis_disorder_required'),
+                array('secondarydiagnosis_disorder_id', 'requiredIfPatientHasNoDiabetes'),
                 array('left_nscretinopathy_id, left_nscmaculopathy_id, left_nscretinopathy_photocoagulation,
 						left_nscmaculopathy_photocoagulation, left_clinicalmac_id', 'requiredIfSide', 'side' => 'left'),
                 array('right_nscretinopathy_id, right_nscmaculopathy_id, right_nscretinopathy_photocoagulation,
@@ -261,8 +260,6 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
                 } else {
                     // clear out the secondarydiagnosis_disorder_id
                     $this->secondarydiagnosis_disorder_id = null;
-                    // reset required flag as patient now has a diabetes type
-                    $this->secondarydiagnosis_disorder_required = false;
                 }
             } elseif (!$patient->hasDisorderTypeByIds(\Disorder::$SNOMED_DIABETES_SET)) {
                 // Set the patient to have diabetes
@@ -328,10 +325,10 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
      * @param $attribute
      * @param $params
      */
-    public function flagRequired($attribute, $params)
+    public function requiredIfPatientHasNoDiabetes($attribute, $params)
     {
-        $flag = $params['flag'];
-        if ($this->$flag && empty($this->$attribute)) {
+        $patient = $this->event->episode->patient;
+        if(is_null($patient->getDiabetesType()) && !$this->$attribute){
             $this->addError($attribute, $this->getAttributeLabel($attribute).' is required');
         }
     }

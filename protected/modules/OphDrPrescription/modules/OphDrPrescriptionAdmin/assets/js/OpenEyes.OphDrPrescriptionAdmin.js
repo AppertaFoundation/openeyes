@@ -191,11 +191,12 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
                 let rows = [];
 
                 if (data.items && data.items.length) {
-                    rows = $.map(data.items, function(item) {
+                    rows = $.map(data.items, function(item, index) {
                         let data = {};
                         Object.keys(item).forEach(function(key) {
                             data[key] = item[key];
                         });
+                        data.key = index;
 
                         return Mustache.render($(controller.options.templateSelector).html(), data);
                     });

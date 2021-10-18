@@ -239,7 +239,7 @@ fi
 echo ""
 echo "Checking out branch $branch..."
 echo "for modules:"
-printf '%s\n' "${modules[@]}"
+printf '%s\n' "${modules[@]%=*}"
 echo ""
 
 if [ -n "$cloneparams" ]; then
@@ -311,7 +311,8 @@ git config --global core.fileMode false 2>/dev/null
 ######################################################
 if [ ! "$usessh" == "$previousssh" ]; then
 
-    for module in "${modules[@]}"; do
+    # Note that the "%=*" removes any namespace definitions (i.e, given OphInTesme=\OEModule\OphInTestme\OphInTestme::class, it would only return OphInTestme)
+    for module in "${modules[@]%=*}"; do
         # only run if module exists
         if [ ! -d "$MODULEROOT/$module" ]; then
             if [ ! "$module" = "openeyes" ]; then
@@ -342,7 +343,8 @@ if [ ! "$force" = "1" ]; then
     changes=0
     modulelist=""
 
-    for module in "${modules[@]}"; do
+    # Note that the "%=*" removes any namespace definitions (i.e, given OphInTesme=\OEModule\OphInTestme\OphInTestme::class, it would only return OphInTestme)
+    for module in "${modules[@]%=*}"; do
         if [ ! -d "$MODULEROOT/$module" ]; then
             if [ ! "$module" = "openeyes" ]; then
                 printf "\e[31mModule %s not found\e[0m\n" "$module"
@@ -379,7 +381,8 @@ fi
 # make sure modules directory exists
 mkdir -p "$MODULEROOT"
 
-for module in "${modules[@]}"; do
+# Note that the "%=*" removes any namespace definitions (i.e, given OphInTesme=\OEModule\OphInTestme\OphInTestme::class, it would only return OphInTestme)
+for module in "${modules[@]%=*}"; do
     [ -z $module ] && continue || : # ignore any empty modules is the array
 
     printf "\e[32m$module: \e[0m"
@@ -403,27 +406,26 @@ for module in "${modules[@]}"; do
     ############################################
     echo "testing for existence of remote tag/branch..."
     remoteexists=0
-    remoteref=$(git ls-remote --exit-code ${basestring}/${module}.git refs/**/$branch)
     nofetch=0
     trackbranch=$branch
-    if [[ $remoteref == *"/tags/"* ]]; then
+    if git ls-remote --exit-code ${basestring}/${module}.git refs/tags/"$branch"; then
         echo "Found a tag named $branch."
         remoteexists=1
         trackbranch="tags/$branch"
         nomodulepull=1 # we don't need to do a pull if we're fetching a tag
-    elif [[ $remoteref == *"/heads/"* ]]; then
+    elif git ls-remote --exit-code ${basestring}/${module}.git refs/heads/"$branch"; then
         echo "Found a remote branch named $branch."
         remoteexists=1
         trackbranch="$branch"
         # check if branch exists locally - if so then we should not attempt to fetch it
-        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/$branch; then
+        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$branch"; then
             nofetch=1
         fi
 
     else
         nomodulepull=1 # No point pulling if there is no remote to pull from
         # check if branch exists locally - if not, fallback to defaultbranch
-        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/$branch; then
+        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$branch"; then
             trackbranch="$branch"
         else
             trackbranch="$defaultbranch"
@@ -521,7 +523,7 @@ for module in "${modules[@]}"; do
                 echo "Attempting shallow pull to depth: $moduledepth"
             fi
             git -C $MODGITROOT pull $pullparams
-            git -C $MODGITROOT submodule update --init --force
+            git -C $MODGITROOT submodule update --init --force --depth 1
         fi
 
         ## Attempt to merge in an upstream branch (except for sample db)
