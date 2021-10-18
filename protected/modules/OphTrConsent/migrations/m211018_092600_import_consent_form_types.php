@@ -7,11 +7,6 @@ class m211018_092600_import_consent_form_types extends OEMigration
 
     public function safeUp()
     {
-        if (!$this->dbConnection->schema->getTable(self::ARCHIVE_TYPES_TABLE, true)) {
-            $this->execute("CREATE TABLE " . self::ARCHIVE_TYPES_TABLE . " AS SELECT * FROM ophtrconsent_type_type");
-        }
-        $this->execute("DELETE FROM ophtrconsent_type_type WHERE ID > 4;");
-
         if ($this->dbConnection->schema->getTable('ophtrconsent_extra_procedure_procedure_type_assignment', true)) {
             if (!$this->dbConnection->schema->getTable(self::ARCHIVE_EXTRA_PROCEDURE_ASSESSMENT, true)) {
                 $this->execute("CREATE TABLE " . self::ARCHIVE_EXTRA_PROCEDURE_ASSESSMENT . " AS SELECT * FROM ophtrconsent_extra_procedure_procedure_type_assignment");
@@ -31,6 +26,11 @@ class m211018_092600_import_consent_form_types extends OEMigration
                 WHERE type_id  in (5,6,7,8,9,10)
 		    ");
         }
+
+        if (!$this->dbConnection->schema->getTable(self::ARCHIVE_TYPES_TABLE, true)) {
+            $this->execute("CREATE TABLE " . self::ARCHIVE_TYPES_TABLE . " AS SELECT * FROM ophtrconsent_type_type");
+        }
+        $this->execute("DELETE FROM ophtrconsent_type_type WHERE ID > 4;");
     }
 
     public function safeDown()
