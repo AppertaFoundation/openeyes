@@ -19,7 +19,6 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     {
         parent::__construct($scenario);
         $this->name = 'patient_number';
-        $this->operation = '='; // Remove if more operations are added.
         $this->label_ = Yii::app()->params['hos_num_label'];
     }
 
@@ -54,7 +53,11 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function query()
     {
-        $op = '=';
+        if ($this->operation !== '=' && $this->operation !== '!=') {
+            throw new CHttpException(400, "Invalid value specified: $this->operation");
+        }
+
+        $op = $this->operation;
 
         return "SELECT DISTINCT p.id 
 FROM patient p
