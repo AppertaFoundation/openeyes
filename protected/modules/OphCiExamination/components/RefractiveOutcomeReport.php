@@ -272,12 +272,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         if ($data) {
             foreach ($data as $dataRow) {
                 $totalEyes += (int) $dataRow['rowTotal'];
-                $tickText = $dataRow['reading'];
-                if ($tickText < -0.5 || $tickText > 0.5) {
+                $tickText = (float) $dataRow['reading'];
+
+                if ($tickText >= -0.5 && $tickText <= 0.5) {
                     $plusOrMinusHalf += (int) $dataRow['rowTotal'];
                 }
 
-                if ($tickText < -1 || $tickText > 1) {
+                if ($tickText >= -1 && $tickText <= 1) {
                     $plusOrMinusOne += (int) $dataRow['rowTotal'];
                 }
             }
@@ -291,9 +292,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         }
 
         $this->plotlyConfig['title'] = 'Refractive Outcome: mean sphere (D)<br>'
-        . '<sub>Total eyes: ' . $totalEyes
-        . ', ±0.5D: ' .$plusOrMinusHalfPercent
-        . '%, ±1D: '.$plusOrMinusOnePercent.'%</sub>';
+            . '<sub>Total eyes: ' . $totalEyes
+            . ', within ± 0.5D: ' .$plusOrMinusHalfPercent
+            . '%, within ± 1D: '.$plusOrMinusOnePercent.'%</sub>';
     }
     /**
      * set plot xaxis range,  tick
