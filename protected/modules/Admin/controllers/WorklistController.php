@@ -326,7 +326,15 @@ class WorklistController extends BaseAdminController
             $preset_model->custom_pathway_step_type_id = $id;
             $preset_model->standard_pathway_step_type_id = $pathwayStepTypePreset['standard_pathway_step_type_id'];
             $preset_model->preset_short_name = $preset_model->standard_pathway_step_type->short_name;
-            $preset_model->preset_id = $pathwayStepTypePreset['preset_id'];
+            if ($preset_model->preset_short_name === 'Book Apt.') {
+                $preset_model->preset_id = $pathwayStepTypePreset['duration_period']*100 + $pathwayStepTypePreset['duration_value'];
+            } else {
+                $preset_model->preset_id = $pathwayStepTypePreset['preset_id'];
+            }
+            $model->widget_view = $preset_model->standard_pathway_step_type->widget_view;
+            if (array_key_exists('site_id', $pathwayStepTypePreset)) {
+                $preset_model->site_id = $pathwayStepTypePreset['site_id'];
+            }
             if (array_key_exists('subspecialty_id', $pathwayStepTypePreset)) {
                 $preset_model->subspecialty_id = $pathwayStepTypePreset['subspecialty_id'];
             }

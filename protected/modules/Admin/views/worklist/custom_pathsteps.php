@@ -42,7 +42,7 @@ $default_states = [
             data-uri="Admin/worklist/editCustomPathStep/<?=$pathstep->id ?>">
             <td><?= $pathstep->long_name ?></td>
             <td><?= $pathstep->short_name ?></td>
-            <td><?= $pathstep->default_state ? $default_states[$pathstep->default_state] : 'N/A' ?></td>
+            <td><?= $pathstep->default_state !== null ? $default_states[$pathstep->default_state] : 'N/A' ?></td>
             <td><i class="oe-i  small <?= $pathstep->active ? 'tick' : 'remove' ?>"></i></td>
         </tr>
         <?php } ?>

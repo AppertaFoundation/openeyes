@@ -85,7 +85,7 @@
     </tr>
     <tr>
         <td>
-            <?= $model->getAttributeLabel('standard_pathway_step_type') ?>
+            <?= $preset_model->getAttributeLabel('standard_pathway_step_type_id') ?>
         </td>
         <td>
             <?= \CHtml::activeDropDownList($preset_model, 'standard_pathway_step_type_id',
@@ -94,31 +94,42 @@
             ) ?>
         </td>
     </tr>
-    <tr style="<?= !$preset_model->subspecialty_id ? 'display: none;' : '' ?>">
+    <tr style="display: none;">
         <td>
-            <?= $model->getAttributeLabel('subspecialty_id') ?>
+            <?= $preset_model->getAttributeLabel('site_id') ?>
+        </td>
+        <td>
+            <?= CHtml::activeDropDownList($preset_model, 'site_id',
+                Site::model()->getListForCurrentInstitution('name'),
+                ['class' => 'cols-6 js-pathstep-site', 'empty' => 'None']
+            ) ?>
+        </td>
+    </tr>
+    <tr style="display: none;">
+        <td>
+            <?= $preset_model->getAttributeLabel('subspecialty_id') ?>
         </td>
         <td>
             <?= \CHtml::activeDropDownList($preset_model, 'subspecialty_id',
                 Subspecialty::model()->getList(),
-                ['class' => 'cols-6 js-examination-subspecialty', 'empty' => 'None']
+                ['class' => 'cols-6 js-pathstep-subspecialty', 'empty' => 'None']
             ) ?>
         </td>
     </tr>
-    <tr style="<?= !$preset_model->firm_id ? 'display: none;' : '' ?>">
+    <tr style="display: none;">
         <td>
-            <?= $model->getAttributeLabel('firm_id') ?>
+            <?= $preset_model->getAttributeLabel('firm_id') ?>
         </td>
         <td>
             <?= \CHtml::activeDropDownList($preset_model, 'firm_id',
-                [],
-                ['class' => 'cols-6 js-examination-firm', 'empty' => 'None']
+                Firm::model()->getList(Yii::app()->session['selected_institution_id'], $preset_model->subspecialty_id),
+                ['class' => 'cols-6 js-pathstep-firm', 'empty' => 'None']
             ) ?>
         </td>
     </tr>
-    <tr style="<?= !$preset_model->standard_pathway_step_type_id ? 'display: none;' : '' ?>">
+    <tr style="display: none;">
         <td>
-            <?= $model->getAttributeLabel('preset_model_name') ?>
+            <?= $preset_model->getAttributeLabel('preset_model_name') ?>
         </td>
         <td>
             <?= CHtml::dropDownList(
@@ -126,6 +137,25 @@
                 $preset_model->preset_id,
                 [],
                 ['class' => 'cols-6 js-preset-id', 'empty' => 'Select']
+            ) ?>
+        </td>
+    </tr>
+    <tr style="display: none;">
+        <td>
+            <?= $preset_model->getAttributeLabel('booking_period') ?>
+        </td>
+        <td>
+            <?= CHtml::dropDownList(
+                'PathwayStepTypePresetAssignment[duration_value]',
+                $preset_model->preset_id%100,
+                array_combine(range(1, 18), range(1, 18)),
+                ['class' => 'cols-2 js-booking-value', 'empty' => 'Time']
+            ) ?>
+            <?= CHtml::dropDownList(
+                'PathwayStepTypePresetAssignment[duration_period]',
+                intdiv($preset_model->preset_id,100),
+                [1 => 'days', 2 => 'weeks', 3 => 'months', 4 => 'years'],
+                ['class' => 'cols-4 js-booking-period', 'empty' => 'Period']
             ) ?>
         </td>
     </tr>
@@ -144,27 +174,10 @@
 </table>
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.js-standard-pathway-step').on('change', function () {
-            let standardPathway = $('.js-standard-pathway-step :selected').text();
-            switch (standardPathway) {
-                case 'Examination':
-                    setPresetDropdownOptions([], 'Examination Workstep');
-                    $('.js-examination-firm').closest('tr').show();
-                    $('.js-examination-subspecialty').closest('tr').show();
-                    break;
-                case 'Letter':
-                    setPresetDropdownOptions(<?= $letter_macros ?>, 'Letter Macros');
-                    break;
-                case 'Drug Administration Preset Order':
-                    setPresetDropdownOptions(<?= $pgd_sets ?>, 'PGD Preset Order');
-                    break;
-                default:
-                    $('.js-preset-id').closest('tr').hide();
-            }
-        });
-        $('.js-examination-subspecialty').on('change', function () {
+        setPresetOptions();     // Update dropdown list based on standard pathway type selected
+        $('.js-pathstep-subspecialty').on('change', function () {
             let subspecialty_id = $(this).val();
-            let $firm = $('.js-examination-firm');
+            let $firm = $('.js-pathstep-firm');
             $('.js-preset-id').empty();
             $firm.empty();
             $.ajax({
@@ -184,18 +197,21 @@
                             }));
                         }
                     }
-                    $firm.addClass('js-examination-firm cols-6');
+                    $firm.addClass('js-pathstep-firm cols-6');
                 }
             });
         });
-        $('.js-examination-firm').on('change', function () {
+        $('.js-pathstep-firm').on('change', function () {
             setExaminationWorkflow();
+        });
+        $('.js-standard-pathway-step').on('change', function () {
+            setPresetOptions();
         });
     });
 
     function setExaminationWorkflow() {
         let workFlowStepsList = <?= $examination_workflow_steps ?>;
-        let selectedFirm = $('.js-examination-firm').val();
+        let selectedFirm = $('.js-pathstep-firm').val();
         let modelNameSelector = $('.js-preset-id');
         modelNameSelector.empty();
         $.each(workFlowStepsList[selectedFirm], function(key, step) {
@@ -210,8 +226,45 @@
             modelNameSelector.append($('<option></option>').attr('value', value).text(key));
         });
         modelNameSelector.parent().prev().text(label);
-        $('.js-preset-id').closest('tr').show();
-        $('.js-examination-firm').closest('tr').hide();
-        $('.js-examination-subspecialty').closest('tr').hide();
+        modelNameSelector.closest('tr').show();
+        $('.js-booking-value').closest('tr').hide();
+        $('.js-pathstep-site').closest('tr').hide();
+        $('.js-pathstep-firm').closest('tr').hide();
+        $('.js-pathstep-subspecialty').closest('tr').hide();
+    }
+
+    function setBookingDropdownOptions() {
+        $('.js-pathstep-site').closest('tr').show();
+        $('.js-pathstep-firm').closest('tr').show();
+        $('.js-pathstep-subspecialty').closest('tr').show();
+        $('.js-booking-value').closest('tr').show();
+        $('.js-preset-id').closest('tr').hide();
+    }
+
+    function setPresetOptions()
+    {
+        let standardPathway = $('.js-standard-pathway-step :selected').text();
+        switch (standardPathway) {
+            case 'Examination':
+                setPresetDropdownOptions([], 'Examination Workstep');
+                $('.js-pathstep-firm').closest('tr').show();
+                $('.js-pathstep-subspecialty').closest('tr').show();
+                if ($('.js-pathstep-firm :selected').val() !== '') {
+                    setExaminationWorkflow();
+                }
+                break;
+            case 'Letter':
+                setPresetDropdownOptions(<?= $letter_macros ?>, 'Letter Macros');
+                break;
+            case 'Drug Administration Preset Order':
+                setPresetDropdownOptions(<?= $pgd_sets ?>, 'PGD Preset Order');
+                break;
+            case 'Book Follow-up Appointment':
+                setBookingDropdownOptions();
+                break;
+            default:
+                setPresetDropdownOptions([], 'Default');
+                $('.js-preset-id').closest('tr').hide();
+        }
     }
 </script>
