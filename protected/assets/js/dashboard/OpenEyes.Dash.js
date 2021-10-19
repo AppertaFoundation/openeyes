@@ -280,16 +280,16 @@
             if(data){
                 for(var i = 0; i < data.length; i++){
                     rowTotal = data[i]['rowTotal'];
-                    total += parseInt(rowTotal, 10);                              
-                    reading = data[i]['reading'];
+                    total += parseInt(rowTotal, 10);
+                    reading = parseFloat(data[i]['reading']);
 
-                    if(reading < -1 || reading > 1){
+                    if(reading >= -1 && reading <= 1){
                         plusOrMinusOne += parseFloat(rowTotal, 10);
-                    }                    
-                    if(reading < -0.5 || reading > 0.5){
+                    }
+                    if(reading >= -0.5 && reading <= 0.5){
                         plusOrMinusHalf += parseFloat(rowTotal, 10);
                     }
-                }                
+                }
                 plusOrMinusHalfPercent = plusOrMinusOne > 0 ? ( (plusOrMinusOne / total) * 100 ) : 0;
                 plusOrMinusOnePercent = plusOrMinusHalf > 0 ? ( (plusOrMinusHalf / total) * 100 ) : 0;
 
@@ -316,8 +316,9 @@
             chart.layout['xaxis']['range'] = [-xaxis_max_val - step, xaxis_max_val + step];
             chart.layout['xaxis']['dtick'] = step;
             chart.layout['title'] = 'Refractive Outcome: mean sphere (D)<br>' +
-            '<sub>Total eyes: ' + total +
-            ', ±0.5D: ' + plusOrMinusOnePercent.toFixed(1) + '%, ±1D: '+ plusOrMinusHalfPercent.toFixed(1)+'%</sub>';
+                '<sub>Total eyes: ' + total +
+                ', within ± 0.5D: ' + plusOrMinusOnePercent.toFixed(1) +
+                '%, within ± 1D: '+ plusOrMinusHalfPercent.toFixed(1)+'%</sub>';
             Plotly.redraw(chart);
         },
         'CataractComplicationsReport': function(data){
@@ -340,7 +341,7 @@
                     chart.layout['yaxis']['ticktext'][index] +
                     '<br><i>Percentage:</i> '+ item['y'].toFixed(2) +
                     '%<br>Total Operations: '+ item['total'];
-                } 
+                }
                 else {
                     return '';
                 }
@@ -375,10 +376,10 @@
             var months = $('#visual-acuity-months').val();
             var type = $('input[name="type"]:checked').val();
             var type_text = type.charAt(0).toUpperCase() + type.slice(1);
-             
+
             var length = data.length;
             var total = 0;
-             
+
             if( length ){
                 for(var i = 0; i < length; i++){
                     total += data[i][2];
@@ -461,14 +462,14 @@
             chart.data[1]['hovertemplate'] = hovertemplate;
             Plotly.redraw(chart);
         },
-        
+
         'OEModule_OphOuCatprom5_components_Catprom5Report': function(data){
             var chart = $('#OEModule_OphOuCatprom5_components_Catprom5Report')[0];
             var newTitle = '';
 
             switch($('#catprom5-mode').val()){
                 case '0':
-                    newTitle = 'Cat-PROM5: Pre-op vs Post-op difference';                
+                    newTitle = 'Cat-PROM5: Pre-op vs Post-op difference';
                     chart.layout['xaxis']['autorange'] = true;
                     break;
                 case '1':
@@ -521,7 +522,7 @@
             chart.data[0]['customdata'] = vals.map(function (item) {
                     return item['ids'];
             });
-            chart.data[0]['hovertext'] = keys.map(function(item) { 
+            chart.data[0]['hovertext'] = keys.map(function(item) {
                 return '<b>Catprom5</b><br><i>Diff Post: </i>' + item +'<br><i>Num results:</i> ' + data[item].count;
             });
             Plotly.redraw(chart);
