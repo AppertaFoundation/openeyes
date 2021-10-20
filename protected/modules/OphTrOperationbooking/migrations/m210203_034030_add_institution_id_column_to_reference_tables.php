@@ -58,10 +58,12 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
                     $raw_data[$i]['last_modified_date'] = date('Y-m-d h:i:s');
                     $raw_data[$i]['last_modified_user_id'] = 1;
                 }
-                $this->insertMultiple(
-                    'ophtroperationbooking_whiteboard_settings_data',
-                    $raw_data
-                );
+                if(!empty($raw_data)){
+                    $this->insertMultiple(
+                        'ophtroperationbooking_whiteboard_settings_data',
+                        $raw_data
+                    );
+                }
             }
         }
 
@@ -103,10 +105,12 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
             ->crossJoin('institution i')
             ->queryAll();
 
-        $this->insertMultiple(
-            'ophtroperationbooking_patientunavailreason_institution',
-            $mappings
-        );
+        if(!empty($mappings)){
+            $this->insertMultiple(
+                'ophtroperationbooking_patientunavailreason_institution',
+                $mappings
+            );
+        }
 
         $this->dropOEColumn(
             'ophtroperationbooking_operation_session_unavailreason',

@@ -87,28 +87,36 @@ class m210412_233652_create_mapping_tables_for_letter_macros extends OEMigration
         }
 
         $institution_mappings = array_unique(array_merge($site_institutions, $firm_institutions), SORT_REGULAR);
-        $this->insertMultiple(
-            'ophcocorrespondence_letter_macro_institution',
-            $institution_mappings,
-        );
-        $this->insertMultiple('ophcocorrespondence_letter_macro_site', array_map(function ($macros) {
-            return [
-                'letter_macro_id' => $macros['id'],
-                'site_id' => $macros['site_id']
-            ];
-        }, $site_macros));
-        $this->insertMultiple('ophcocorrespondence_letter_macro_firm', array_map(function ($macros) {
-            return [
-                'letter_macro_id' => $macros['id'],
-                'firm_id' => $macros['firm_id']
-            ];
-        }, $firm_macros));
-        $this->insertMultiple('ophcocorrespondence_letter_macro_subspecialty', array_map(function ($macros) {
-            return [
-                'letter_macro_id' => $macros['id'],
-                'subspecialty_id' => $macros['subspecialty_id']
-            ];
-        }, $subspecialty_macros));
+        if(!empty($institution_mappings)){
+            $this->insertMultiple(
+                'ophcocorrespondence_letter_macro_institution',
+                $institution_mappings,
+            );
+        }
+        if(!empty($site_macros)){
+            $this->insertMultiple('ophcocorrespondence_letter_macro_site', array_map(function ($macros) {
+                return [
+                    'letter_macro_id' => $macros['id'],
+                    'site_id' => $macros['site_id']
+                ];
+            }, $site_macros));
+        }
+        if(!empty($firm_macros)){
+            $this->insertMultiple('ophcocorrespondence_letter_macro_firm', array_map(function ($macros) {
+                return [
+                    'letter_macro_id' => $macros['id'],
+                    'firm_id' => $macros['firm_id']
+                ];
+            }, $firm_macros));
+        }
+        if(!empty($subspecialty_macros)){
+            $this->insertMultiple('ophcocorrespondence_letter_macro_subspecialty', array_map(function ($macros) {
+                return [
+                    'letter_macro_id' => $macros['id'],
+                    'subspecialty_id' => $macros['subspecialty_id']
+                ];
+            }, $subspecialty_macros));
+        }
 
         $this->dropForeignKey('ophcocorrespondence_lm_site_id_fk', 'ophcocorrespondence_letter_macro');
         $this->dropOEColumn('ophcocorrespondence_letter_macro', 'site_id', true);

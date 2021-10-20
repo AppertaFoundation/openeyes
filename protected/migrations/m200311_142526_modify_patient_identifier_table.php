@@ -155,7 +155,9 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                     }
                 }
             }
-            $this->insertMultiple('patient_identifier', $rows);
+            if(!empty($rows)){
+                $this->insertMultiple('patient_identifier', $rows);
+            }
             $current_page++;
         }
     }

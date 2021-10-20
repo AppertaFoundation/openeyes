@@ -54,10 +54,12 @@ class m210413_234446_create_institution_mapping_tables_for_ticketing_reference_d
                 ->crossJoin('institution i')
                 ->queryAll();
 
-            $this->insertMultiple(
-                $mapping_table,
-                $mapping_data
-            );
+            if(!empty($mapping_data)){
+                $this->insertMultiple(
+                    $mapping_table,
+                    $mapping_data
+                );
+            }
         }
         $this->dropOEColumn('patientticketing_queueset', 'active', true);
         $this->dropOEColumn('patientticketing_queuesetcategory', 'active', true);
