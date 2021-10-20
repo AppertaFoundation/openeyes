@@ -126,7 +126,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         $global_type_id = $this->getDbConnection()->createCommand("SELECT id FROM patient_identifier_type WHERE usage_type = 'global'")->queryScalar();
 
         $patients_count = $this->getDbConnection()->createCommand('SELECT COUNT(*) FROM patient')->queryScalar();
-        $patients_sql = 'SELECT id, hos_num, nhs_num FROM patient';
+        $patients_sql = 'SELECT id, hos_num, nhs_num, deleted FROM patient';
         $pagination = new CPagination($patients_count);
         $pagination->pageSize = 1000;
         $dataProvider = new CSqlDataProvider($patients_sql, [
@@ -151,6 +151,8 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                             'patient_id' => $patient['id'],
                             'patient_identifier_type_id' => ${$type . '_type_id'},
                             'value' => $patient[$short_name],
+                            'source_info' => (int)$patient['deleted'] === 0 ? 'ACTIVE' : 'INACTIVE',
+                            'deleted' => $patient['deleted'],
                         ];
                     }
                 }
