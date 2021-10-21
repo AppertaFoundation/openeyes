@@ -29,7 +29,7 @@ This command is able to import OpenEyes configuration from an XLSX files
 The file should be named the name of the institution as it appears in the database
 
 The file should have the following tabs (remove any tabs if you do not want them to be imported):
-|Context|Workflows|Workflow Rules|
+|Context|Workflows|Workflow Rules|Allergy Reaction|
 
 The context tab should have the following headers:
 |PAS Code|Context Name|Subspecialty|Consultant|Cost Code|Service Enabled|Context Enabled|Active|
@@ -40,8 +40,12 @@ The workflow tab should have the following headers:
 |String       |String|Number|String |Yes/No   |
 
 The workflow rules tab should have the following headers:
-|Subspecialty|Context|Episode|Workflow|
-|String      |String |String |String  |
+|Subspecialty|Context|Episode    |Workflow|
+|String      |String |String/All |String  |
+
+The allergy reaction tab should have the following headers:
+|Name  |
+|String|
 
 If you want a value to be Null please include 'Blank' in the cell
 If you want all values then please include 'All' in the cell
@@ -77,6 +81,8 @@ EOH;
         $this->workflowImport();
 
         $this->workflowRulesImport();
+
+        $this->allergyReactionImport();
 
         echo "\n[" . (date("Y-m-d H:i:s")) . "] Import Configuration finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
@@ -286,5 +292,31 @@ EOH;
             $workflow_rule->insert();
         }
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Workflow Rules Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
+    }
+
+    public function allergyReactionImport()
+    {
+        if ($this->spreadsheet->getSheetByName('Allergy Reaction') == null) {
+            echo "\n\t Skipping Allergy Reaction Import ... \n";
+            return;
+        }
+        $t = microtime(true);
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Allergy Reaction Import started ... \n";
+
+        foreach ($this->spreadsheet->getSheetByName('Allergy Reaction')->toArray() as $index => $row) {
+            // Skipping header
+            if ($index == 0) {
+                continue;
+            }
+
+            $name = $row[0];
+
+            if (OphCiExaminationAllergyReaction::model()->findByAttributes(array('name'=>$name)) == null) {
+                $allergy_reaction = new OphCiExaminationAllergyReaction;
+                $allergy_reaction->name = $name;
+                $allergy_reaction->insert();
+            }
+        }
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Allergy Reaction Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
 }
