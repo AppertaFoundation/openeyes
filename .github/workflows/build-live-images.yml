@@ -290,7 +290,8 @@ jobs:
 
 
   update-readmes:
-    if: ${{ success() }}
+    # Only update if the previous job succeeded AND we're on the master branch for the root fork
+    if: ${{ success() && ( github.repository == 'openeyes/OpenEyes' || github.repository == 'biskyt/test-action' ) && contains(github.ref,'refs/heads/master') }}
     needs: build_and_push_to_registry
     name: Update Docker Hub Description for images
     runs-on: ubuntu-latest
