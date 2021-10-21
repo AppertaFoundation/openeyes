@@ -1251,8 +1251,8 @@ class AdminController extends BaseAdminController
                 }
                 if (isset($_FILES['SiteLogo'])) {
                     if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
-                        $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
-                        $pl_file = file_get_contents($primary_logo->getTempName());
+                        $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
+                        $pl_file = file_get_contents($primary_logo);
                         if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                             try {
                                 $file_clean = VirusScanController::stringIsClean($pl_file);
@@ -1269,8 +1269,8 @@ class AdminController extends BaseAdminController
                         }
                     }
                     if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
-                        $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
-                        $sl_file=file_get_contents($secondary_logo->getTempName());
+                        $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
+                        $sl_file=file_get_contents($secondary_logo);
                         if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                             try {
                                 $file_clean = VirusScanController::stringIsClean($sl_file);
@@ -1284,7 +1284,7 @@ class AdminController extends BaseAdminController
                         // if no error uploading use uploaded image
 
                         if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                            $sl_file = file_get_contents($secondary_logo->getTempName());
+                            $sl_file = file_get_contents($secondary_logo);
                             $logo->secondary_logo = $sl_file;
                         }
                     }
@@ -1679,7 +1679,7 @@ class AdminController extends BaseAdminController
             if (isset($_FILES['SiteLogo'])) {
                 if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
                     $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
-                    $pl_file = file_get_contents($primary_logo->getTempName());
+                    $pl_file = file_get_contents($primary_logo);
                     if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                         try {
                             $file_clean = VirusScanController::stringIsClean($pl_file);
@@ -1697,7 +1697,7 @@ class AdminController extends BaseAdminController
                 }
                 if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                     $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-                    $sl_file=file_get_contents($secondary_logo->getTempName());
+                    $sl_file=file_get_contents($secondary_logo);
                     if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                         try {
                             $file_clean = VirusScanController::stringIsClean($sl_file);
@@ -1711,7 +1711,7 @@ class AdminController extends BaseAdminController
                     // if no error uploading use uploaded image
 
                     if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                        $sl_file = file_get_contents($secondary_logo->getTempName());
+                        $sl_file = file_get_contents($secondary_logo);
                         $logo->secondary_logo = $sl_file;
                     }
                 }
@@ -1797,8 +1797,9 @@ class AdminController extends BaseAdminController
 
         if (isset($_FILES['SiteLogo'])) {
             if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
-                $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
-                $pl_file = file_get_contents($primary_logo->getTempName());
+                $primary_logo = $_FILES['SiteLogo']['tmp_name']['primary_logo'];
+                ;
+                $pl_file = file_get_contents($primary_logo);
                 if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                     try {
                         $file_clean = VirusScanController::stringIsClean($pl_file);
@@ -1815,8 +1816,8 @@ class AdminController extends BaseAdminController
                 }
             }
             if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
-                $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
-                $sl_file=file_get_contents($secondary_logo->getTempName());
+                $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
+                $sl_file=file_get_contents($secondary_logo);
                 if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                     try {
                         $file_clean = VirusScanController::stringIsClean($sl_file);
@@ -1829,7 +1830,7 @@ class AdminController extends BaseAdminController
                 }
                 // if no error uploading use uploaded image
                 if (($_FILES['SiteLogo']['error']['secondary_logo']) == 0) {
-                    $sl_file = file_get_contents($secondary_logo->getTempName());
+                    $sl_file = file_get_contents($secondary_logo);
                     $logo->secondary_logo = $sl_file;
                 }
             }
