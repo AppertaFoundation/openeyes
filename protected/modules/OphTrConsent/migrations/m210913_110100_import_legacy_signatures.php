@@ -32,86 +32,53 @@ class m210913_110100_import_legacy_signatures extends OEMigration
             ->createCommand("SELECT `id` FROM `event_type` WHERE `class_name` = 'OphTrConsent';")
             ->queryScalar();
 
-        if ($this->dbConnection->schema->getTable(self::LEGACY_6_ET)) {
-            $constultant_signatures = $this->dbConnection
-                ->createCommand("
-				SELECT * FROM " . self::LEGACY_6_ET . " WHERE protected_file_id IS NOT NULL
-				")->queryAll();
+        if (
+            $this->dbConnection->schema->getTable(self::LEGACY_6_ET) && $this->dbConnection->schema->getTable(self::NEW_2ND_ET) &&
+            $this->dbConnection->schema->getTable(self::NEW_ITEM)
+        ) {
+            $this->execute("INSERT INTO ".self::NEW_2ND_ET."
+                    (event_id, last_modified_user_id, last_modified_date, created_user_id, created_date)
+                    SELECT
+                    a.event_id, a.last_modified_user_id, a.last_modified_date, a.created_user_id, a.created_date
+                    FROM ".self::LEGACY_6_ET." AS a
+                    LEFT JOIN event ON event.id = a.event_id
+                    WHERE event.event_type_id = ".$evt_type_id."
+                    AND a.protected_file_id IS NOT NULL
+                    AND a.event_id NOT IN (SELECT x.event_id FROM ".self::NEW_2ND_ET." AS x)
+                ");
 
-            foreach ($constultant_signatures as $signature) {
-                $isset_signature = $this->dbConnection
-                    ->createCommand("SELECT id FROM " . self::NEW_2ND_ET . " WHERE event_id = ".$signature['event_id']." ORDER BY id DESC LIMIT 1;")
-                    ->queryScalar();
+            $this->execute("INSERT INTO ".self::NEW_ITEM."
+                    (element_id, type, signature_file_id, signatory_role, signatory_name, `timestamp`,
+                    last_modified_user_id, last_modified_date, created_user_id, created_date)
+                    SELECT
+                    e.id, " . \BaseSignature::TYPE_OTHER_USER . ", le.protected_file_id, 'Health professional',
+                    CONCAT(user.first_name, ' ', user.last_name),
+                    UNIX_TIMESTAMP(le.signature_date),
+                    le.last_modified_user_id, le.last_modified_date, le.created_user_id, le.created_date
+                    FROM ".self::LEGACY_6_ET." AS le
+                    LEFT JOIN ".self::NEW_2ND_ET." AS e ON e.event_id = le.event_id
+                    LEFT JOIN `event` ON `event`.id = le.event_id
+                    LEFT JOIN `user` ON `user`.id = le.signed_by_user_id
+                    WHERE event.event_type_id = ".$evt_type_id."
+                    AND le.protected_file_id IS NOT NULL
+                    AND user.id IS NOT NULL
+                    ;"
+            );
 
-                if (!$isset_signature) {
-                    $this->execute("
-                        INSERT INTO " . self::NEW_2ND_ET . " (event_id, last_modified_user_id, last_modified_date, created_user_id, created_date)
-                        VALUES (
-                    " . $signature['event_id'] . ",
-                    " . $signature['last_modified_user_id'] . ",
-                    '" . $signature['last_modified_date'] . "',
-                    " . $signature['created_user_id'] . ",
-                    '" . $signature['created_date'] . "'
-                    )
-                    ");
-                }
-
-                $esign_id = $this->dbConnection
-                    ->createCommand("SELECT `id` FROM " . self::NEW_2ND_ET . " WHERE event_id = ".$signature['event_id'].";")
-                    ->queryScalar();
-
-                $signatory_name = "N/A";
-                if (!empty($signature['signed_by_user_id'])) {
-                    $user = $this->dbConnection
-                        ->createCommand("SELECT * FROM user WHERE id = " . $signature['signed_by_user_id'] . ";")
-                        ->queryRow();
-                    $signatory_name  = $user['first_name'] . " " . $user['last_name'];
-                    $signatory_name = str_replace("'", "\'", $signatory_name);
-                }
-
-                $this->execute("
-                INSERT INTO " . self::NEW_ITEM . " (
-                element_id,
-                `type`,
-                signature_file_id,
-                signed_user_id,
-                signatory_role,
-                signatory_name,
-                `timestamp`,
-                last_modified_user_id,
-                last_modified_date,
-                created_user_id,
-                created_date
-                ) VALUES (
-								" . $esign_id . ",
-								2,
-								" . $signature['protected_file_id'] . ",
-								" . $signature['signed_by_user_id'] . ",
-								'Health professional',
-								'" . $signatory_name ."',
-								" . strtotime($signature['signature_date']) . ",
-								" . $signature['last_modified_user_id'] . ",
-								'" . $signature['last_modified_date'] . "',
-								" . $signature['created_user_id'] . ",
-								'" . $signature['created_date'] . "'
-            		)
-        ");
-
-                $healthprof_signature_id = $this->dbConnection
-                    ->createCommand("SELECT `id` FROM " . self::NEW_ITEM . " WHERE element_id = ".$esign_id.";")
-                    ->queryScalar();
-
-                $this->execute("
-					UPDATE " . self::NEW_2ND_ET . " SET healthprof_signature_id = " . $healthprof_signature_id . " WHERE event_id = " . $signature['event_id'] . "
-					");
-            }
+            $this->execute("UPDATE " . self::NEW_2ND_ET . "
+                            LEFT JOIN ".self::NEW_ITEM." ON ".self::NEW_2ND_ET.".id = ".self::NEW_ITEM.".element_id
+                            SET ".self::NEW_2ND_ET.".healthprof_signature_id = ".self::NEW_ITEM.".id;"
+            );
         }
     }
 
     public function upgradeAdditionalSignatures()
     {
-
-        if ($this->dbConnection->schema->getTable(self::LEGACY_ET) && $this->dbConnection->schema->getTable(self::LEGACY_2ND_ET) && $this->dbConnection->schema->getTable(self::LEGACY_4_ET) && $this->dbConnection->schema->getTable(self::LEGACY_5_ET)) {
+        if (
+            $this->dbConnection->schema->getTable(self::LEGACY_ET) && $this->dbConnection->schema->getTable(self::LEGACY_2ND_ET) &&
+            $this->dbConnection->schema->getTable(self::LEGACY_4_ET) && $this->dbConnection->schema->getTable(self::LEGACY_5_ET) &&
+            $this->dbConnection->schema->getTable(self::NEW_ET) && $this->dbConnection->schema->getTable(self::NEW_2ND_ET)
+        ) {
             foreach ([self::LEGACY_ET, self::LEGACY_2ND_ET, self::LEGACY_3_ET, self::LEGACY_4_ET, self::LEGACY_5_ET] as $item) {
                 $this->execute("
                 UPDATE " . $item . " cs
@@ -126,21 +93,28 @@ class m210913_110100_import_legacy_signatures extends OEMigration
             $evt_type_id = $this->dbConnection
                 ->createCommand("SELECT `id` FROM `event_type` WHERE `class_name` = 'OphTrConsent';")
                 ->queryScalar();
-            // Copy elements
+
             $this->execute("
                 INSERT INTO " . self::NEW_ET . " (
                 event_id, interpreter_required, interpreter_name, witness_required, witness_name, guardian_required, guardian_name, guardian_relationship, child_agreement, last_modified_user_id, last_modified_date, created_user_id, created_date)
                 SELECT
-                a.event_id, a.signatory_required, a.signatory_name, b.signatory_required, b.signatory_name, c.signatory_required, c.signatory_name, c.relationship_status, d.signatory_required, a.last_modified_user_id, a.last_modified_date, a.created_user_id, a.created_date
-                FROM " . self::LEGACY_ET . " as a
-                LEFT JOIN " . self::LEGACY_2ND_ET . " as b ON a.event_id = b.event_id
-                LEFT JOIN " . self::LEGACY_4_ET . " as c ON b.event_id = c.event_id
-                LEFT JOIN " . self::LEGACY_5_ET . " as d ON c.event_id = d.event_id
-                LEFT JOIN `event` ON `event`.id = a.event_id OR `event`.id = b.event_id OR `event`.id = c.event_id
-                WHERE `event`.event_type_id = " . $evt_type_id . "
-                 AND (a.protected_file_id IS NOT NULL
-                OR b.protected_file_id IS NOT NULL
-                OR c.protected_file_id IS NOT NULL)
+                a.id, e.signatory_required, e.signatory_name,
+                b.signatory_required, b.signatory_name,
+                c.signatory_required, c.signatory_name, c.relationship_status,
+                d.signatory_required, a.last_modified_user_id,
+                a.last_modified_date, a.created_user_id, a.created_date
+                FROM event as a
+                LEFT JOIN " . self::LEGACY_2ND_ET . " as b ON a.id = b.event_id
+                LEFT JOIN " . self::LEGACY_4_ET . " as c ON a.id = c.event_id
+                LEFT JOIN " . self::LEGACY_5_ET . " as d ON a.id = d.event_id
+                LEFT JOIN " . self::LEGACY_ET . " as e ON a.id = e.event_id
+                WHERE a.event_type_id = " . $evt_type_id . "
+                AND (
+				b.protected_file_id IS NOT NULL
+                OR c.protected_file_id IS NOT NULL
+                OR d.protected_file_id IS NOT NULL
+                OR e.protected_file_id IS NOT NULL
+                )
                 ");
 
             $this->execute("
@@ -159,6 +133,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
 				SELECT * FROM " . self::NEW_ET . "
 				")->queryAll();
 
+            $this->setVerbose(false);
             foreach ($additionals as $additional) {
                 $this->addSignature($additional, self::LEGACY_ET, 'Interpreter', 'interpreter_signature_id');
                 $this->addSignature($additional, self::LEGACY_2ND_ET, 'Witness', 'witness_signature_id');
@@ -166,6 +141,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
                 $this->addSignature($additional, self::LEGACY_4_ET, 'Parent/Guardian', 'guardian_signature_id');
                 $this->addSignature($additional, self::LEGACY_5_ET, 'Child', 'child_signature_id');
             }
+            $this->setVerbose(true);
         }
     }
 
