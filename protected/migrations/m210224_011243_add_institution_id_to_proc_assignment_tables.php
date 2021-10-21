@@ -64,7 +64,9 @@ class m210224_011243_add_institution_id_to_proc_assignment_tables extends OEMigr
                 },
                 $existing_subspecialty_subsections
             );
-            $this->insertMultiple('proc_subspecialty_subsection_assignment', $cloned_rows);
+            if(!empty($cloned_rows)){
+                $this->insertMultiple('proc_subspecialty_subsection_assignment', $cloned_rows);
+            }
             $cloned_rows = array_map(
                 static function ($item) use ($institution_id) {
                     return array(
@@ -77,7 +79,9 @@ class m210224_011243_add_institution_id_to_proc_assignment_tables extends OEMigr
                 },
                 $existing_subspecialties
             );
-            $this->insertMultiple('proc_subspecialty_assignment', $cloned_rows);
+            if(!empty($cloned_rows)){
+                $this->insertMultiple('proc_subspecialty_assignment', $cloned_rows);
+            }
         }
     }
 

@@ -32,16 +32,18 @@ class m200722_103910_migrate_archive_patient_identifiers_to_new_structure extend
                 'necessity' => 'optional'
             ));
 
-            $this->insertMultiple('patient_identifier', array_map(
-                static function ($record) use ($local_type_id) {
-                    return array(
-                        'patient_id' => $record['patient_id'],
-                        'patient_identifier_type_id' => $local_type_id,
-                        'value' => $record['value']
-                    );
-                },
-                $archive_patient_identifiers
-            ));
+            if(!empty($archive_patient_identifiers)){
+                $this->insertMultiple('patient_identifier', array_map(
+                    static function ($record) use ($local_type_id) {
+                        return array(
+                            'patient_id' => $record['patient_id'],
+                            'patient_identifier_type_id' => $local_type_id,
+                            'value' => $record['value']
+                        );
+                    },
+                    $archive_patient_identifiers
+                ));
+            }
         }
     }
 

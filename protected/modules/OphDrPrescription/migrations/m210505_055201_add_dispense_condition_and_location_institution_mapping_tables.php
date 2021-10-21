@@ -71,15 +71,19 @@ class m210505_055201_add_dispense_condition_and_location_institution_mapping_tab
             ->where('d.active = 1')
             ->queryAll();
 
-        $this->insertMultiple(
-            'ophdrprescription_dispense_condition_institution',
-            $all_dc_mappings
-        );
+        if(!empty($all_dc_mappings)){
+            $this->insertMultiple(
+                'ophdrprescription_dispense_condition_institution',
+                $all_dc_mappings
+            );
+        }
 
-        $this->insertMultiple(
-            'ophdrprescription_dispense_location_institution',
-            $all_dl_mappings
-        );
+        if(!empty($all_dl_mappings)){
+            $this->insertMultiple(
+                'ophdrprescription_dispense_location_institution',
+                $all_dl_mappings
+            );
+        }
 
         $all_dc_assignment_mappings = $this->dbConnection->createCommand()
             ->select('di.id AS dispense_condition_institution_id, li.id AS dispense_location_institution_id')
@@ -143,10 +147,12 @@ class m210505_055201_add_dispense_condition_and_location_institution_mapping_tab
             'id'
         );
 
-        $this->insertMultiple(
-            'ophdrprescription_dispense_condition_assignment',
-            $all_dc_assignment_mappings
-        );
+        if(!empty($all_dc_assignment_mappings)){
+            $this->insertMultiple(
+                'ophdrprescription_dispense_condition_assignment',
+                $all_dc_assignment_mappings
+            );
+        }
     }
 
     public function safeDown()
@@ -204,11 +210,13 @@ class m210505_055201_add_dispense_condition_and_location_institution_mapping_tab
             'id'
         );
 
-        // Re-insert the flattened mappings.
-        $this->insertMultiple(
-            'ophdrprescription_dispense_condition_assignment',
-            $all_dc_assignment_mappings
-        );
+        if(!empty($all_dc_assignment_mappings)){
+            // Re-insert the flattened mappings.
+            $this->insertMultiple(
+                'ophdrprescription_dispense_condition_assignment',
+                $all_dc_assignment_mappings
+            );
+        }
 
         $active_dc_ids = $this->dbConnection->createCommand()
             ->select('DISTINCT dispense_condition_id')
