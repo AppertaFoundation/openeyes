@@ -16,31 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<div class="cols-5">
-    <?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'OphCiExamination_adminform',
-            'enableAjaxValidation' => false,
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 5,
-            ),
-        ));
-
-        $this->renderPartial('form_'.Helper::getNSShortname($model), array(
-            'model' => $model,
-            'form' => $form,
-            'title' => $title,
-        ));
-
-        echo $form->formActions(array(
-            'submit' => $model->isNewRecord ? 'Create' : 'Save',
-            'cancel' => isset($cancel_uri) ? 'Cancel' : false,
-            'delete' => false,
-            'cancel-uri' => @$cancel_uri,
-        ));
-
-        $this->endWidget();
-        ?>
-</div>
+<?php
+/** @var $advice \OEModule\OphCiExamination\widgets\AdviceGiven */
+$advice = $this->createWidget(
+    'application.modules.OphCiExamination.widgets.AdviceGiven',
+    array(
+        'element' => $this->element,
+        'mode' => BaseEventElementWidget::$EVENT_EDIT_MODE
+    )
+);
+$advice->render('AdviceGiven');

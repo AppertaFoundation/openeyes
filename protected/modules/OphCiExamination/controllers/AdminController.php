@@ -22,6 +22,7 @@ use Audit;
 use CDbCriteria;
 use OELog;
 use OEModule\OphCiExamination\components\ExaminationHelper;
+use OEModule\OphCiExamination\controllers\traits\AdminForAdviceGiven;
 use OEModule\OphCiExamination\controllers\traits\AdminForColourVision;
 use OEModule\OphCiExamination\controllers\traits\AdminForContrastSensitivity;
 use OEModule\OphCiExamination\controllers\traits\AdminForElementAttribute;
@@ -53,6 +54,7 @@ class AdminController extends \ModuleAdminController
     use AdminForContrastSensitivity;
     use AdminForNinePositions;
     use AdminForStrabismusManagement;
+    use AdminForAdviceGiven;
 
     public $group = 'Examination';
 

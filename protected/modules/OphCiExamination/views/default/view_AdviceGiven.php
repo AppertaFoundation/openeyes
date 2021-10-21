@@ -14,33 +14,32 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var $element \OEModule\OphCiExamination\models\AdviceGiven
  */
 ?>
-
-<div class="cols-5">
-    <?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'OphCiExamination_adminform',
-            'enableAjaxValidation' => false,
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 5,
-            ),
-        ));
-
-        $this->renderPartial('form_'.Helper::getNSShortname($model), array(
-            'model' => $model,
-            'form' => $form,
-            'title' => $title,
-        ));
-
-        echo $form->formActions(array(
-            'submit' => $model->isNewRecord ? 'Create' : 'Save',
-            'cancel' => isset($cancel_uri) ? 'Cancel' : false,
-            'delete' => false,
-            'cancel-uri' => @$cancel_uri,
-        ));
-
-        $this->endWidget();
-        ?>
+<div class="element-data full-width">
+    <div class="cols-11">
+        <table class="cols-full last-left">
+            <colgroup>
+                <col class="cols-2">
+            </colgroup>
+            <tbody>
+            <tr>
+                <th>Advice</th>
+                <td><?= Yii::app()->format->Ntext($element->comments) ?></td>
+            </tr>
+            <?php if (count($element->leaflets) > 0) { ?>
+            <tr>
+                <th>Leaflets given</th>
+                <td>
+                    <?php foreach ($element->leaflets as $i => $leaflet) {
+                        echo ($i !== 0 ? ', ' : '') . $leaflet->name;
+                    } ?>
+                </td>
+            </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </div>
 </div>
