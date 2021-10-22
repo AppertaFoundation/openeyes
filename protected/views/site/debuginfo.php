@@ -39,26 +39,36 @@ if (is_object($user_auth)) {
     $firm = 'Not logged in';
 }
 
-$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath . '/../.git/FETCH_HEAD'));
+$thisEnv = Yii::app()->params['environment'];
 
-$thisEnv = 'LIVE';
-if (file_exists('/etc/openeyes/env.conf')) {
-    $envvars = parse_ini_file('/etc/openeyes/env.conf');
-    if ($envvars['env'] == 'DEV') {
-        $thisEnv = 'DEV';
-    }
-}
+$buildinfo = "";
 
-if ($thisEnv == 'DEV') {
-    $branch = "<br/><div style='height:150px; overflow-y:scroll;border:1px solid #000; margin-bottom:10px'>";
-    $result = exec('oe-which', $lines);
-    foreach ($lines as $line) {
-        $branch .= trim(strtr($line, array('[32m' => '', '[39m' => '', '--' => ':'))) . '<br/>';
+
+if (file_exists('buildinfo.txt')) {
+    $buildinfo = '<pre>' . htmlspecialchars(@file_get_contents('buildinfo.txt')) . '</pre>';
+} elseif (file_exists('.git/HEAD')) {
+    $commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath . '/../.git/FETCH_HEAD'));
+    $buildinfo .= "Commit: " . htmlspecialchars($commit) . '</br>';
+    $buildinfo .= "Commit Date: " . htmlspecialchars(exec(" git log -1 --format=%cd " . $commit)) . ' <br/> ';
+
+    if (strtolower($thisEnv == 'dev')) {
+        $branch = "<br/><div style='height:150px;
+    overflow - y:scroll;border:1px solid #000; margin-bottom:10px'>";
+        exec(Yii::app()->basePath . '/scripts/oe-which.sh', $lines);
+        foreach ($lines as $line) {
+            $branch .= htmlspecialchars(trim(strtr($line, array('[32m' => '', '[39m' => '', '--' => ':')))) . '<br/>';
+        }
+        $branch .= '</div>';
+    } else {
+        if (file_exists('.git/HEAD')) {
+            $ex = explode('/', file_get_contents('.git/HEAD'));
+            $branch = htmlspecialchars(array_pop($ex));
+        }
     }
-    $branch .= '</div>';
+
+    $buildinfo .= "Branch: " . $branch . "<br/>";
 } else {
-    $ex = explode('/', file_get_contents('.git/HEAD'));
-    $branch = array_pop($ex);
+    echo "nothing";
 }
 
 ?>
@@ -67,9 +77,9 @@ if ($thisEnv == 'DEV') {
     <code class="js-to-copy-to-clipboard">
         Served by: <?php echo $hostname?><br />
         Date: <?php echo date('d.m.Y H:i:s')?><br />
-        Commit: <?php echo $commit?><br />
-        Commit Date: <?php echo htmlspecialchars(exec(" git log -1 --format=%cd " . $commit)) ?><br/>
-        Branch: <?php echo htmlspecialchars($branch)?><br/>
+        <?= $buildinfo ?>
+        
+
         OpenEyes Version: <?= Yii::App()->params['oe_version'] ?><br />
         User agent: <?php echo htmlspecialchars(@$_SERVER['HTTP_USER_AGENT']) . "<br/>";?>
         Client IP: <?php echo htmlspecialchars(@$_SERVER['REMOTE_ADDR'])?><br />
