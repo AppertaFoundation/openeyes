@@ -29,7 +29,7 @@ This command is able to import OpenEyes configuration from an XLSX files
 The file should be named the name of the institution as it appears in the database
 
 The file should have the following tabs (remove any tabs if you do not want them to be imported):
-|Context|Workflows|Workflow Rules|Allergy Reaction|
+|Context|Workflows|Workflow Rules|Allergy Reaction|History Macros|
 
 The context tab should have the following headers:
 |PAS Code|Context Name|Subspecialty|Consultant|Cost Code|Service Enabled|Context Enabled|Active|
@@ -46,6 +46,10 @@ The workflow rules tab should have the following headers:
 The allergy reaction tab should have the following headers:
 |Name  |
 |String|
+
+The history macros tab should have the following headers:
+|Subspecialty|Name  |Body  |
+|String      |String|String|
 
 If you want a value to be Null please include 'Blank' in the cell
 If you want all values then please include 'All' in the cell
@@ -83,6 +87,8 @@ EOH;
         $this->workflowRulesImport();
 
         $this->allergyReactionImport();
+
+        $this->historyMacrosImport();
 
         echo "\n[" . (date("Y-m-d H:i:s")) . "] Import Configuration finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
@@ -300,6 +306,7 @@ EOH;
             echo "\n\t Skipping Allergy Reaction Import ... \n";
             return;
         }
+
         $t = microtime(true);
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Allergy Reaction Import started ... \n";
 
@@ -318,5 +325,53 @@ EOH;
             }
         }
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Allergy Reaction Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
+    }
+
+    public function historyMacrosImport()
+    {
+        if ($this->spreadsheet->getSheetByName('History Macros') == null) {
+            echo "\n\t Skipping History Macros Import ... \n";
+            return;
+        }
+
+        $t = microtime(true);
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] History Macros Import started ... \n";
+
+        foreach ($this->spreadsheet->getSheetByName('History Macros')->toArray() as $index => $row) {
+            // Skipping header
+            if ($index == 0) {
+                continue;
+            }
+
+            $subspecialty = $row[0];
+            $name = $row[1];
+            $body = $row[2];
+
+            if (\Subspecialty::model()->findByAttributes(array('name' => $subspecialty)) == null) {
+                echo "\033[0;31mError: \033[0m".$subspecialty." is not a valid subspecialty\n";
+                exit(8);
+            }
+            $subspecialty_id = \Subspecialty::model()->findByAttributes(array('name' => $subspecialty))->id;
+
+            $history_macro = null;
+
+            (OEModule\OphCiExamination\models\HistoryMacro::model()->findByAttributes(array('name'=>$name)) == null) ? $history_macro = new OEModule\OphCiExamination\models\HistoryMacro : $history_macro = OEModule\OphCiExamination\models\HistoryMacro::model()->findByAttributes(array('name'=>$name));
+
+            $history_macro->name = $name;
+            $history_macro->body = $body;
+            $history_macro->active = 1;
+
+            (OEModule\OphCiExamination\models\HistoryMacro::model()->findByAttributes(array('name'=>$name)) == null) ? $history_macro->insert() : $history_macro->save(false);
+
+            $history_macro_id = $history_macro->id;
+
+            if (OEModule\OphCiExamination\models\HistoryMacro_Subspecialty::model()->findByAttributes(array('history_macro_id' => $history_macro_id, 'subspecialty_id' => $subspecialty_id)) == null) {
+                $history_macro_subspecialty = new OEModule\OphCiExamination\models\HistoryMacro_Subspecialty;
+                $history_macro_subspecialty->history_macro_id = $history_macro_id;
+                $history_macro_subspecialty->subspecialty_id = $subspecialty_id;
+                $history_macro_subspecialty->insert();
+            }
+        }
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] History Macros Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
 }
