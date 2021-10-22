@@ -15,6 +15,25 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
         </div>
     </div>
     <div class="oe-full-content oe-new-patient">
+        <div class="cols-3">
+            <h2>
+                Practices: viewing <?php echo $from ?> - <?php echo $to ?>
+                of <?php echo $dataProvider->totalItemCount ?>
+            </h2>
+            <div>
+                <?php $form = $this->beginWidget('CActiveForm', array(
+                    'id' => 'practice-search-form',
+                    'method' => 'get',
+                    'action' => Yii::app()->createUrl('/practice/index'),
+                )); ?>
+                <?php echo CHtml::textField(
+                    'search_term',
+                    $search_term,
+                    array('placeholder' => 'Enter search query...')
+                ); ?>
+                <?php $this->endWidget(); ?>
+            </div>
+        </div>
         <div>
             <table id="practice-grid" class="standard">
                 <thead>
