@@ -503,7 +503,7 @@ class PracticeController extends BaseController
     {
         $criteria = new CDbCriteria();
         $criteria->together = true;
-        $criteria->with = array('contact');
+        $criteria->join = "LEFT JOIN contact ON contact.id = t.contact_id LEFT JOIN address ON address.contact_id = contact.id";
         $criteria->order = 'first_name';
 
         if ($search_term !== null) {
