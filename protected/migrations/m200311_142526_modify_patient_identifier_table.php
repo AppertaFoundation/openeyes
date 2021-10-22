@@ -144,7 +144,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         if ($genetics_installed) {
             // If genetics module is enabled we filter out those patients who are genetics AND
             // no hos_num AND no nhs_num
-            $patients_sql = 'SELECT p.id, hos_num, nhs_num
+            $patients_sql = 'SELECT p.id, hos_num, nhs_num, deleted
                              FROM patient p
                              WHERE p.id NOT IN (
                                     SELECT patient_id
