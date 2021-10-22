@@ -780,7 +780,7 @@ class DefaultController extends BaseEventTypeController
 
     protected function saveComplexAttributes_Element_OphTrConsent_SupplementaryConsent($element, $data, $index)
     {
-        $ele_qs = $data['Element_OphTrConsent_SupplementaryConsent']['element_question'];
+        $ele_qs = $data['Element_OphTrConsent_SupplementaryConsent']['element_question']??[];
 
         //for each element question id posted
         foreach ($ele_qs as $ele_q_id => $ele_q_data) {

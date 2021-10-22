@@ -103,7 +103,7 @@ class Element_OphTrConsent_SupplementaryConsent extends BaseEventTypeElement
 
     public function eventScopeValidation(array $elements)
     {
-        $ele_qs = $_POST['Element_OphTrConsent_SupplementaryConsent']['element_question'];
+        $ele_qs = $_POST['Element_OphTrConsent_SupplementaryConsent']['element_question']??[];
 
         $form_id = $_POST['Element_OphTrConsent_Type']['type_id'] ?? ($this->form_id??null);
         $institution_id = $this->event->episode->firm->institution_id ?? null;
