@@ -514,7 +514,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
     });
 
     function onChangeFirstLastRoleGpFields() {
-        gp.id = undefined;
+        gp.id = '-1'; // Setting the gpId to -1 as there is no elegant way in php to handle undefined values.
         $("#extra-gp-form #Contact_title").prop("readonly", false);
         $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
         $('#extra-gp-message').hide();
