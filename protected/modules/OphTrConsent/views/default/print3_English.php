@@ -119,6 +119,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         <?php endif; ?>
         </tbody>
     </table>
+    <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider">
     <div class="group"><h4>Proposed procedure(s) or course of treatment:</h4>
         <div class="indent">

@@ -131,6 +131,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
             </tr>
         </tbody>
     </table>
+    <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider">
     <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
     <div class="group"><h4>Proposed procedure(s) or course of treatment:</h4>

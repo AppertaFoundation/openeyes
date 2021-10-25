@@ -92,6 +92,7 @@ $type_assessment = new OphTrConsent_Type_Assessment();
         <?php endif; ?>
         </tbody>
     </table>
+    <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider">
     <h2>All sections to be completed by health professional proposing the procedure.</h2>
     <div class="group"><h4>Proposed procedure(s) or course of treatment:</h4>
