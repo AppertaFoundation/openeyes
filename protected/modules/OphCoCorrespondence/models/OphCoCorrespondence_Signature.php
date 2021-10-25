@@ -191,7 +191,7 @@ class OphCoCorrespondence_Signature extends BaseSignature
             $data = file_get_contents($thumb["path"]);
             if ($data !== false) {
                 $img = base64_encode($data);
-                return "<img alt=\"Signature\" src=\"data:{$this->signatureFile->mimetype};base64,$img\"/>";
+                return "<img alt=\"Signature\" src=\"data:{$this->signatureFile->mimetype};base64,$img\"/>"."<div>Signed on ".CHtml::encode(date("j M Y, H:i", strtotime($this->last_modified_date)))."</div>";
             }
         }
         // Display nothing in case of failure
