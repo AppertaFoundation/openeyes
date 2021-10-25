@@ -1045,6 +1045,26 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @param $patient
+     * @param false $use_context
+     * @return string|null
+     */
+    public function getLetterAdviceGiven($patient, $use_context = false): ?string
+    {
+        $adg = $this->getElementFromLatestVisibleEvent(
+            'models\AdviceGiven',
+            $patient,
+            $use_context
+        );
+
+        if ($adg) {
+            return $adg->getLetter_string();
+        }
+        return null;
+    }
+
+
+    /**
      * Get comments from Laser Management if the latest examination event contains
      * laser management. Will concatenate the parent management comments as well.
      *

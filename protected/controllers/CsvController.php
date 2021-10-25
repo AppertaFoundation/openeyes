@@ -24,6 +24,21 @@ class CsvController extends BaseController
         ),
     );
 
+    
+    static $csvMimes = array(
+        'text/x-comma-separated-values',
+        'text/comma-separated-values',
+        'application/octet-stream',
+        'application/vnd.ms-excel',
+        'application/x-csv',
+        'text/x-csv',
+        'text/csv',
+        'application/csv',
+        'application/excel',
+        'application/vnd.msexcel',
+        'text/plain'
+    );
+
     public static function uploadAccess()
     {
         return Yii::app()->user->checkAccess('admin')
@@ -65,197 +80,217 @@ class CsvController extends BaseController
         $table = array();
         $headers = array();
         if (isset($_FILES['Csv']['tmp_name']['csvFile']) && $_FILES['Csv']['tmp_name']['csvFile'] !== "") {
-            if (($handle = fopen($_FILES['Csv']['tmp_name']['csvFile'], "r")) !== false) {
-                if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-                    foreach ($line as $header) {
-                        // basic sanitization, remove non printable chars - This is required if the CSV file is
-                        // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
-                        $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
-                        $headers[] = $header;
+            //check to see if the uploaded file is a csv file
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $_FILES['Csv']['tmp_name']['csvFile']);
+            $is_csv = in_array($mime, self::$csvMimes);
+            finfo_close($finfo);
+            
+            //if the file is a csv, we can open it in read mode otherwise ignore
+
+            if($is_csv){
+                if (($handle = fopen($_FILES['Csv']['tmp_name']['csvFile'], "r")) !== false) {
+                    if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+                        foreach ($line as $header) {
+                            // basic sanitization, remove non printable chars - This is required if the CSV file is
+                            // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+                            $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
+                            $headers[] = $header;
+                        }
                     }
-                }
 
-                while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-                    $row = array();
-                    $header_count = 0;
-                    foreach ($line as $cel) {
-                        $row[$headers[$header_count++]] = $cel;
+                    while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+                        $row = array();
+                        $header_count = 0;
+                        foreach ($line as $cel) {
+                            $row[$headers[$header_count++]] = $cel;
+                        }
+                        $table[] = $row;
                     }
-                    $table[] = $row;
+                    fclose($handle);
                 }
-                fclose($handle);
+            
+                //We use an md5 hash of the csv file to obscure any sensitive data
+                $csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
+
+                if(!file_exists(self::$file_path)) {
+                    mkdir(self::$file_path);
+                }
+                copy($_FILES['Csv']['tmp_name']['csvFile'], self::$file_path . $csv_id . ".csv");
             }
-
-          //We use an md5 hash of the csv file to obscure any sensitive data
-					$csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
-
-            if(!file_exists(self::$file_path)) {
-                mkdir(self::$file_path);
-            }
-
-            copy($_FILES['Csv']['tmp_name']['csvFile'], self::$file_path . $csv_id . ".csv");
         }
-
         $this->render('preview', array('table' => $table, 'csv_id' => $csv_id, 'context' => $context));
     }
 
     public function actionImport($context, $csv)
     {
-			$errors = null;
+        $errors = null;
 
-			$import_log = new ImportLog();
-			$import_log->import_user_id = Yii::app()->user->id;
-			$import_log->startdatetime = date('Y-m-d H:i:s');
-			$import_log->status = "Failure";
-			if(!$import_log->save()) {
-				\OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
-			}
+        $import_log = new ImportLog();
+        $import_log->import_user_id = Yii::app()->user->id;
+        $import_log->startdatetime = date('Y-m-d H:i:s');
+        $import_log->status = "Failure";
+        if(!$import_log->save()) {
+            \OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
+        }
 
     	$csv_file_path = self::$file_path . $csv . ".csv";
 
-			if(file_exists($csv_file_path)) {
-				$table = array();
-				$headers = array();
-				if (($handle = fopen($csv_file_path, "r")) !== false) {
-					if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-						foreach ($line as $header) {
-							// basic sanitization, remove non printable chars - This is required if the CSV file is
-							// exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
-							$header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
-							$headers[] = $header;
-						}
-					}
+        if(file_exists($csv_file_path)) {
+            //check to see if the file is a csv file
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $csv_file_path);
+            $is_csv = in_array($mime, self::$csvMimes);
+            finfo_close($finfo);
 
-					while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-						$row = array();
-						$header_count = 0;
-						foreach ($line as $cel) {
-							$row[$headers[$header_count++]] = $cel;
-						}
-						$table[] = $row;
-					}
-					fclose($handle);
-				}
-
-				$row_num = 0;
-				$createAction = self::$contexts[$context]['createAction'];
-
-				foreach ($table as $row) {
-					$transaction = Yii::app()->db->beginTransaction();
-					$import = new Import();
-					$import->parent_log_id = $import_log->id;
-					$row_num++;
-					$errors = $this->$createAction($row, $import);
-					if (!empty($errors)) {
-						$transaction->rollback();
-						$import->import_status_id = 2;
-						$import->message = "Import failed on line " . $row_num . ": ";
-
-						$flattened_errors = array();
-						array_walk_recursive($errors, function ($item) use (&$flattened_errors) {
-							$flattened_errors[] = $item;
-						});
-
-						foreach ($flattened_errors as $error) {
-							$import->message .= "<br>" . $error;
-						}
-					} else {
-						switch ($context) {
-							case 'trials':
-								$import->import_status_id = 12;
-								break;
-							case 'trialPatients':
-								$import->import_status_id = 13;
-								break;
-							case 'patients':
-								$import->import_status_id = 8;
-								break;
-							default:
-								break;
-						}
-
-						$transaction->commit();
-					}
-
-					if (!$import->save()) {
-						\OELog::log("Failed to save import status: " . var_export( $import->getErrors(), true));
-					}
-				}
-
-				$summary_table = array();
-
-				foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
-					$summary = array();
-
-					$status = $summary_import->import_status->status_value;
-
-					switch ($context) {
-						case 'trials':
-							//If status is "Import Trial Success"
-							$import_log->status = ($status == 12) ? "Success" : "Failure";
-							break;
-						case 'trialPatients':
-							//If status is "Import Trial Patient Success"
-							$import_log->status = ($status == 13) ? "Success" : "Failure";
-							break;
-						case 'patients':
-							//If status is "Import Patient Success"
-							$import_log->status = ($status == 8) ? "Success" : "Failure";
-							break;
-						default:
-							$import_log->status = "Unknown upload context";
-							break;
-					}
-
-					$summary['Status'] = $status;
-					$summary['Details'] = $summary_import->message;
-
-					$summary_table[] = $summary;
-				}
-			}else {
-				$summary_table[] = ['Status' => "Failure", 'Details' => "File has expired"];
-			}
-
-			if(!$import_log->save()) {
-				\OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
-			}
-
-			//Remove uploaded files
-			if(file_exists(self::$file_path)) {
-				$file_list = glob(self::$file_path . "*");
-				foreach ($file_list as $file) {
-					unlink($file);
-				}
-				rmdir(self::$file_path);
-			}
-
-			switch ($context) {
-				case 'trials':
-				case 'trialPatients':
-				    if(!empty($errors)) {
-                        array_unshift($errors, self::$contexts[$context]['errorMsg'].$row_num);
-                        $this->render(
-                            'upload',
-                            array(
-                                'errors' => $errors,
-                                'context' => $context,
-                            )
-                        );
-                    } else {
-                        $this->redirect( "/" . self::$contexts[$context]['successAction']);
+            //if the file is a csv, we can open it otherwise ignore
+            if ($is_csv) {
+                $table = array();
+                $headers = array();
+                if (($handle = fopen($csv_file_path, "r")) !== false) {
+                    if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+                        foreach ($line as $header) {
+                            // basic sanitization, remove non printable chars - This is required if the CSV file is
+                            // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+                            $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
+                            $headers[] = $header;
+                        }
                     }
-					break;
-				case 'patients':
-					$this->render(
-						'summary',
-						array(
-							'errors' => $errors,
-							'context' => $context,
-							'table' => $summary_table,
-						)
-					);
-					break;
-			}
+
+                    while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+                        $row = array();
+                        $header_count = 0;
+                        foreach ($line as $cel) {
+                            $row[$headers[$header_count++]] = $cel;
+                        }
+                        $table[] = $row;
+                    }
+                    fclose($handle);
+                }
+
+                $row_num = 0;
+                $createAction = self::$contexts[$context]['createAction'];
+
+                foreach ($table as $row) {
+                    $transaction = Yii::app()->db->beginTransaction();
+                    $import = new Import();
+                    $import->parent_log_id = $import_log->id;
+                    $row_num++;
+                    $errors = $this->{$createAction}($row, $import);
+                    if (!empty($errors)) {
+                        $transaction->rollback();
+                        $import->import_status_id = 2;
+                        $import->message = "Import failed on line " . $row_num . ": ";
+
+                        $flattened_errors = array();
+                        array_walk_recursive($errors, function ($item) use (&$flattened_errors) {
+                            $flattened_errors[] = $item;
+                        });
+
+                        foreach ($flattened_errors as $error) {
+                            $import->message .= "<br>" . $error;
+                        }
+                    } else {
+                        switch ($context) {
+                            case 'trials':
+                                $import->import_status_id = 12;
+                                break;
+                            case 'trialPatients':
+                                $import->import_status_id = 13;
+                                break;
+                            case 'patients':
+                                $import->import_status_id = 8;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        $transaction->commit();
+                    }
+
+                    if (!$import->save()) {
+                        \OELog::log("Failed to save import status: " . var_export( $import->getErrors(), true));
+                    }
+                }
+
+                $summary_table = array();
+
+                foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
+                    $summary = array();
+
+                    $status = $summary_import->import_status->status_value;
+
+                    switch ($context) {
+                        case 'trials':
+                            //If status is "Import Trial Success"
+                            $import_log->status = ($status == 12) ? "Success" : "Failure";
+                            break;
+                        case 'trialPatients':
+                            //If status is "Import Trial Patient Success"
+                            $import_log->status = ($status == 13) ? "Success" : "Failure";
+                            break;
+                        case 'patients':
+                            //If status is "Import Patient Success"
+                            $import_log->status = ($status == 8) ? "Success" : "Failure";
+                            break;
+                        default:
+                            $import_log->status = "Unknown upload context";
+                            break;
+                    }
+
+                    $summary['Status'] = $status;
+                    $summary['Details'] = $summary_import->message;
+
+                    $summary_table[] = $summary;
+                }
+            }
+            else{
+                $summary_table[] = ['Status' => "Failure", 'Details' => "File is not a CSV"];
+            }
+        }else {
+            $summary_table[] = ['Status' => "Failure", 'Details' => "File has expired"];
+        }
+
+        if(!$import_log->save()) {
+            \OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
+        }
+
+        //Remove uploaded files
+        if(file_exists(self::$file_path)) {
+            $file_list = glob(self::$file_path . "*");
+            foreach ($file_list as $file) {
+                unlink($file);
+            }
+            rmdir(self::$file_path);
+        }
+
+        switch ($context) {
+            case 'trials':
+            case 'trialPatients':
+                if(!empty($errors)) {
+                    array_unshift($errors, self::$contexts[$context]['errorMsg'].$row_num);
+                    $this->render(
+                        'upload',
+                        array(
+                            'errors' => $errors,
+                            'context' => $context,
+                        )
+                    );
+                } else {
+                    $this->redirect( "/" . self::$contexts[$context]['successAction']);
+                }
+                break;
+            case 'patients':
+                $this->render(
+                    'summary',
+                    array(
+                        'errors' => $errors,
+                        'context' => $context,
+                        'table' => $summary_table,
+                    )
+                );
+                break;
+        }
     }
 
     private function createNewTrial($trial_raw_data, $import)
@@ -468,12 +503,15 @@ class CsvController extends BaseController
             array('var_name' => 'last_name', 'default' => null,),
             array('var_name' => 'maiden_name', 'default' => null,),
             array('var_name' => 'qualifications', 'default' => null,),
+            array('var_name' => 'email', 'default' => null,),
             array('var_name' => 'contact_label_id', 'default' => null,),
-            array('var_name' => 'created_institution_id', 'default' => Yii::app()->session['selected_institution_id'])
+            array('var_name' => 'created_institution_id', 'default' => Yii::app()->session['selected_institution_id']),
+            array('var_name' => 'national_code', 'default' => null,),
+            array('var_name' => 'fax', 'default' => null,),
         );
 
         foreach ($contact_cols as $col) {
-            $contact->$col['var_name'] = !empty($patient_raw_data[$col['var_name']]) ? $patient_raw_data[$col['var_name']] : $col['default'];
+            $contact->{$col['var_name']} = !empty($patient_raw_data[$col['var_name']]) ? $patient_raw_data[$col['var_name']] : $col['default'];
         }
 
         if (!$contact->save()) {
@@ -488,14 +526,13 @@ class CsvController extends BaseController
             array('var_name' => 'postcode', 'default' => null,),
             array('var_name' => 'county', 'default' => null,),
             array('var_name' => 'country_id', 'default' => 15,),
-            array('var_name' => 'email', 'default' => null,),
             array('var_name' => 'date_start', 'default' => null,),
             array('var_name' => 'date_end', 'default' => null,),
             array('var_name' => 'address_type_id', 'default' => null,),
         );
 
         foreach ($address_cols as $col) {
-            $address->$col['var_name'] = !empty($patient_raw_data[$col['var_name']]) ? $patient_raw_data[$col['var_name']] : $col['default'];
+            $address->{$col['var_name']} = !empty($patient_raw_data[$col['var_name']]) ? $patient_raw_data[$col['var_name']] : $col['default'];
         }
 
         //Added separately because these fields are parsed from text instead of ids
@@ -517,6 +554,7 @@ class CsvController extends BaseController
         $patient_cols = array(
             array('var_name' => 'dob', 'default' => null,),
             array('var_name' => 'gender', 'default' => 'U',),
+            array('var_name' => 'hos_num', 'default' => null,),
             array('var_name' => 'nhs_num', 'default' => null,),
             array('var_name' => 'practice_id', 'default' => null,),
             array('var_name' => 'ethnic_group_id', 'default' => null,),
@@ -525,12 +563,13 @@ class CsvController extends BaseController
             array('var_name' => 'archive_no_risks_date', 'default' => null,),
             array('var_name' => 'deleted', 'default' => null,),
             array('var_name' => 'nhs_num_status_id', 'default' => null,),
+            array('var_name' => 'is_deceased', 'default' => 0,),
             array('var_name' => 'is_local', 'default' => 1,),
             array('var_name' => 'patient_source', 'default' => 0,),
         );
 
         foreach ($patient_cols as $col) {
-            $new_patient->$col['var_name'] = isset($patient_raw_data[$col['var_name']]) && $patient_raw_data[$col['var_name']] !== ''
+            $new_patient->{$col['var_name']} = isset($patient_raw_data[$col['var_name']]) && $patient_raw_data[$col['var_name']] !== ''
                 ? $patient_raw_data[$col['var_name']] : $col['default'];
         }
 
@@ -766,7 +805,7 @@ class CsvController extends BaseController
         );
 
         foreach ($trial_pat_cols as $col){
-            $new_trial_pat->$col['var_name'] =
+            $new_trial_pat->{$col['var_name']} =
                 !empty($new_trial_pat[$col['var_name']]) ? $new_trial_pat[$col['var_name']] : $col['default'];
         }
 

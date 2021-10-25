@@ -22,6 +22,7 @@ namespace OEModule\OphCiExamination\controllers;
 use Eye;
 use OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\models\AdviceLeafletEntry;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
 use OEModule\PASAPI\resources\HL7_A08;
@@ -102,7 +103,7 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * @param null $event
-     * @return null|OphCiExamination_ElementSet
+     * @return null|models\OphCiExamination_ElementSet
      */
     protected function getCurrentStep($event = null)
     {
@@ -140,7 +141,7 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Get the first workflow step using rules.
      *
-     * @return OphCiExamination_ElementSet
+     * @return models\OphCiExamination_ElementSet
      */
     protected function getFirstStep()
     {
@@ -271,9 +272,9 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Get the next workflow step.
      *
-     * @param Event $event
+     * @param \Event $event
      *
-     * @return OphCiExamination_ElementSet
+     * @return models\OphCiExamination_ElementSet
      */
     protected function getNextStep($event = null)
     {
@@ -489,7 +490,7 @@ class DefaultController extends \BaseEventTypeController
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
      *
-     * @param BaseEventTypeElement $element
+     * @param \BaseEventTypeElement $element
      *
      * @return bool
      */
@@ -852,7 +853,7 @@ class DefaultController extends \BaseEventTypeController
      * Set the allergies against the Element_OphCiExamination_Allergy element
      * It's a child element of History.
      *
-     * @param Element_OphCiExamination_History $element
+     * @param models\Element_OphCiExamination_History $element
      * @param $data
      * @param $index
      */
@@ -903,7 +904,7 @@ class DefaultController extends \BaseEventTypeController
      *
      * @param \BaseEventTypeElement $element
      * @param string $action
-     * @param \BaseCActiveBaseEventTypeCActiveForm $form
+     * @param \BaseEventTypeCActiveForm $form
      * @param array $data
      * @param array $view_data
      * @param bool $return
@@ -995,7 +996,7 @@ class DefaultController extends \BaseEventTypeController
 
     /***
      * Construct a PAS message for the specified trigger event here and send it to the PAS.
-     * @param Event $event
+     * @param \Event $event
      * @param string $hl7_trigger_event "A03|A08|A11"
      */
     protected function pasCallout($event, $hl7_trigger_event)
@@ -1102,8 +1103,8 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Get the array of elements for the current site, subspecialty, episode status and workflow position
      *
-     * @param OphCiExamination_ElementSet $set
-     * @param Episode $episode
+     * @param models\OphCiExamination_ElementSet $set
+     * @param \Episode $episode
      * @return \BaseEventTypeElement[]
      * @throws \CException
      */
@@ -1132,7 +1133,7 @@ class DefaultController extends \BaseEventTypeController
      *
      * Used when eyedraw elements have doodles that are associated with disorders
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function actionGetDisorder()
     {
@@ -1151,10 +1152,10 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Get all the attributes for an element.
      *
-     * @param BaseEventTypeElement $element
+     * @param \BaseEventTypeElement $element
      * @param int $subspecialty_id
      *
-     * @return OphCiExamination_Attribute[]
+     * @return models\OphCiExamination_Attribute[]
      */
     public function getAttributes($element, $subspecialty_id = null)
     {
@@ -1163,11 +1164,26 @@ class DefaultController extends \BaseEventTypeController
         return $attributes;
     }
 
+    protected function saveComplexAttributes_AdviceGiven($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $entries = @$data[$model_name]['leaflet_entries'];
+        AdviceLeafletEntry::model()->deleteAll('element_id=?', array($element->id));
+
+        foreach ($entries as $i => $entry) {
+            $leaflet_entry = new AdviceLeafletEntry();
+            $leaflet_entry->element_id = $element->id;
+            $leaflet_entry->leaflet_id = $entry;
+            $leaflet_entry->display_order = $i + 1;
+            $leaflet_entry->save(true);
+        }
+    }
+
     /**
      * associate the answers and risks from the data with the Element_OphCiExamination_InjectionManagementComplex element for
      * validation.
      *
-     * @param Element_OphCiExamination_InjectionManagementComplex $element
+     * @param models\Element_OphCiExamination_InjectionManagementComplex $element
      * @param array $data
      * @param $index
      */
@@ -1213,7 +1229,7 @@ class DefaultController extends \BaseEventTypeController
      * If the Patient does not currently have a diabetic diagnosis, specify that it's required
      * so the validation rules can check for it being set in the given element (currently only DR Grading).
      *
-     * @param BaseEventTypeElement $element
+     * @param \BaseEventTypeElement $element
      * @param array $data
      */
     private function _set_DiabeticDiagnosis($element, $data)
@@ -1232,7 +1248,7 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Set the diagnoses against the Element_OphCiExamination_Diagnoses element.
      *
-     * @param Element_OphCiExamination_Diagnoses $element
+     * @param models\Element_OphCiExamination_Diagnoses $element
      * @param $data
      * @param $index
      */

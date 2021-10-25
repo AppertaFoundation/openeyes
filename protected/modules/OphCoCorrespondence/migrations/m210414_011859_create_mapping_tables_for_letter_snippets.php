@@ -46,7 +46,10 @@ class m210414_011859_create_mapping_tables_for_letter_snippets extends OEMigrati
             $institutions[] = ['letter_string_id' => $snippet['id'], 'institution_id' => $institution_id];
         }
 
-        $this->insertMultiple('ophcocorrespondence_letter_string_institution', $institutions);
+        if(!empty($institutions)){
+            $this->insertMultiple('ophcocorrespondence_letter_string_institution', $institutions);
+        }
+        if(!empty($snippets))
         $this->insertMultiple('ophcocorrespondence_letter_string_site', array_map(function ($snippet) {
             return [
                 'letter_string_id' => $snippet['id'],

@@ -4,7 +4,7 @@
     $outcome_actionable =
         Yii::app()->user->checkAccess('Safeguarding') &&
         (!isset($element->outcome_id) ||
-        $element->outcome_id === Element_OphCiExamination_Safeguarding::FOLLOWUP_REQUIRED);
+        (int)$element->outcome_id === Element_OphCiExamination_Safeguarding::FOLLOWUP_REQUIRED);
     $patient_is_minor = $element->event->getPatient()->isChild();
     ?>
 <div class="cols-11">

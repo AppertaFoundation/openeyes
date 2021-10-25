@@ -3,6 +3,7 @@
 
 class PathwayStepTypePresetAssignment extends BaseActiveRecordVersioned
 {
+    public static array $duration_period = [1 => 'days', 2 => 'weeks', 3 => 'months', 4 => 'years'];
     /**
      * @return string the associated database table name
      */
@@ -18,7 +19,7 @@ class PathwayStepTypePresetAssignment extends BaseActiveRecordVersioned
     {
         return [
             [
-                'id, custom_pathway_step_id, standard_pathway_step_id, preset_short_name, preset_id, subspecialty_id, firm_id',
+                'id, custom_pathway_step_id, standard_pathway_step_id, preset_short_name, preset_id, site_id, subspecialty_id, firm_id',
                 'safe',
             ],
         ];
@@ -32,6 +33,7 @@ class PathwayStepTypePresetAssignment extends BaseActiveRecordVersioned
         return [
             'custom_pathway_step_type' => [self::BELONGS_TO, 'PathwayStepType', 'custom_pathway_step_type_id'],
             'standard_pathway_step_type' => [self::BELONGS_TO, 'PathwayStepType', 'standard_pathway_step_type_id'],
+            'site' => [self::BELONGS_TO, 'Site', 'site_id'],
             'subspecialty' => [self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'],
             'firm' => [self::BELONGS_TO, 'Firm', 'firm_id'],
         ];
@@ -46,8 +48,21 @@ class PathwayStepTypePresetAssignment extends BaseActiveRecordVersioned
         $criteria->compare('standard_pathway_step_type_id', $this->standard_pathway_step_type_id);
         $criteria->compare('preset_short_name', $this->preset_short_name);
         $criteria->compare('preset_id', $this->preset_id);
+        $criteria->compare('site_id', $this->site_id);
         $criteria->compare('subspecialty_id', $this->subspecialty_id);
         $criteria->compare('firm_id', $this->firm_id);
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'preset_id' => 'Preset',
+            'standard_pathway_step_type_id' => 'Standard Pathway step type',
+            'site_id' => 'Site',
+            'subspecialty_id' => 'Subspecialty',
+            'firm_id' => 'Context',
+        ];
     }
 
     public function getStateDataTemplate()
@@ -68,6 +83,16 @@ class PathwayStepTypePresetAssignment extends BaseActiveRecordVersioned
                     $preset_state_template['preset_id'] = $this->preset_id;
                     break;
             }
+            return json_encode($preset_state_template, JSON_THROW_ON_ERROR);
+        }
+
+        if ($this->preset_short_name === 'Book Apt.') {
+            $preset_state_template = [];
+            $preset_state_template['site_id'] = $this->site_id;
+            $preset_state_template['service_id'] = $this->subspecialty_id;
+            $preset_state_template['firm_id'] = $this->firm_id;
+            $preset_state_template['duration_value'] = ($this->preset_id)%100;
+            $preset_state_template['duration_period'] = self::$duration_period[$this->preset_id/100];
             return json_encode($preset_state_template, JSON_THROW_ON_ERROR);
         }
 

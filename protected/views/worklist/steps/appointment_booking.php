@@ -33,7 +33,7 @@ $duration_period = [
             <?= strtoupper($patient->last_name) . ', ' . $patient->first_name . ' (' . $patient->title . ')' ?>
         </div>
     <?php } ?>
-    <h3 class="title">Book Follow-up Appointment</h3>
+    <h3 class="title"><?= $step->long_name ?></h3>
     <div class="step-content">
         <p>added by <b><?= $step->created_user->getFullName() ?></b></p>
         <form id="appointment-booking-form">

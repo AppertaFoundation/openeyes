@@ -163,10 +163,10 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        if ($macro->recipient
-            && ($contact = $patient->gp ?: $patient->practice)
-            && $macro->recipient->name === Yii::app()->params['gp_label']) {
-            $data['sel_address_target'] = get_class($contact) . $contact->id;
+        if ($macro->recipient && ($macro->recipient->name === Yii::app()->params['gp_label'] || $macro->recipient->name === 'GP')) {
+            if ($contact = $patient->gp ?: $patient->practice) {
+                $data['sel_address_target'] = get_class($contact) . $contact->id;
+            }
         }
 
         if ($macro->recipient && $macro->recipient->name === 'Optometrist') {
@@ -280,7 +280,7 @@ class DefaultController extends BaseEventTypeController
 
         if ($macroInitAssocContent !== null) {
             $data['associated_content'] = $this->renderPartial('event_associated_content', array(
-                'associated_content' => $macroInitAssocContent,
+                'init_associated_content' => $macroInitAssocContent,
                 'patient' => $patient,
                 'api' => Yii::app()->moduleAPI->get('OphCoCorrespondence'),
             ), true);
@@ -1288,10 +1288,6 @@ class DefaultController extends BaseEventTypeController
 
     private function generatePDF($event, $savefile = false)
     {
-        $cookies = Yii::app()->request->cookies;
-        $cookies['savePrint'] = new CHttpCookie('savePrint', $event->id, [
-            'expire' => strtotime('+20 seconds')
-        ]);
         $letter = ElementLetter::model()->find('event_id=?', array($event->id));
 
         $recipient = Yii::app()->request->getParam('recipient');

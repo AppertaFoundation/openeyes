@@ -217,20 +217,34 @@ $patient_is_minor = $patient->isChild();
             let child_safeguarding_json = $('input#child_safeguarding_data').val();
             if (child_safeguarding_json !== undefined) {
                 let child_safeguarding_data = JSON.parse(child_safeguarding_json);
-                let $protection_radio_button = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_under_protection_plan[value=1]');
-                let $social_worker_radio_button = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_has_social_worker[value=1]');
+                let $protection_radio_button_yes = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_under_protection_plan[value="1"]');
+                let $protection_radio_button_no = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_under_protection_plan[value="0"]');
+                let $social_worker_radio_button_yes = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_has_social_worker[value="1"]');
+                let $social_worker_radio_button_no = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_has_social_worker[value="0"]');
 
-                $protection_radio_button.change(function() {
-                    if($protection_radio_button.prop("checked") && $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).length === 0) {
+                $protection_radio_button_yes.change(function() {
+                    if($protection_radio_button_yes.prop("checked") && $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).length === 0) {
                         $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns').prop("checked", false);
                         addSafeguardingRow(child_safeguarding_data.protection_plan);
                     }
                 });
+                $protection_radio_button_no.change(function() {
+                    if($protection_radio_button_no.prop("checked") && $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).length !== 0) {
+                        $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).parent().remove();
+                        refreshNoConcernsVisibility();
+                    }
+                });
 
-                $social_worker_radio_button.change(function() {
-                    if($social_worker_radio_button.prop("checked") && $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).length === 0) {
+                $social_worker_radio_button_yes.change(function() {
+                    if($social_worker_radio_button_yes.prop("checked") && $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).length === 0) {
                         $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns').prop("checked", false);
                         addSafeguardingRow(child_safeguarding_data.social_worker);
+                    }
+                });
+                $social_worker_radio_button_no.change(function() {
+                    if($social_worker_radio_button_no.prop("checked") && $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).length !== 0) {
+                        $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).parent().remove();
+                        refreshNoConcernsVisibility();
                     }
                 });
             }

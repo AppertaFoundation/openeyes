@@ -39,7 +39,7 @@ function updateCorrespondence(macro_id) {
             'type': 'GET',
             'dataType': 'json',
             'url': baseUrl + '/OphCoCorrespondence/Default/getMacroData?patient_id=' + OE_patient_id + '&macro_id=' + macro_id + '&nickname=' + nickname,
-            'success': function (data) {
+            'success': function(data) {
                 if (data['error'] == 'DECEASED') {
                     new OpenEyes.UI.Dialog.Alert({
                         content: "The patient is deceased so this macro cannot be used."
@@ -70,7 +70,7 @@ function OphCoCorrespondence_attachmentStatusRequestError(row) {
     const tooltip_content = 'Temporary error, please try again. If the error still occurs, please contact support.';
 
     status.innerHTML = '<i class="oe-i cross-red small pad-right"></i>Unable to attach' +
-        '<i class="oe-i oe-i info small pad js-has-tooltip" data-tooltip-content="'+ tooltip_content +'"></i>';
+        '<i class="oe-i oe-i info small pad js-has-tooltip" data-tooltip-content="' + tooltip_content + '"></i>';
     row.querySelector('.reprocess_btn').style.display = '';
 }
 
@@ -79,17 +79,17 @@ function OphCoCorrespondence_getAttachmentStatus(module_name, row, data_id) {
     let title = row.querySelector('.attachments_display_title').value;
 
     const request = new XMLHttpRequest();
-    request.open('GET', baseUrl + '/' + module_name + '/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0&pdf_documents=1&attachment_print_title='+title, true);
+    request.open('GET', baseUrl + '/' + module_name + '/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0&pdf_documents=1&attachment_print_title=' + title, true);
     request.setRequestHeader('X-Requested-With', 'pdfprint');
 
     request.onload = function() {
         if (this.status >= 200 && this.status < 400) {
             const response = JSON.parse(this.response);
 
-            if(response.success == 1) {
+            if (response.success == 1) {
                 const status = row.querySelector('.attachment_status');
                 status.innerHTML = '<i class="oe-i tick-green small pad-right"></i>Attached';
-                const hidden = OpenEyes.Util.htmlToElement('<input type="hidden" name="file_id[' + data_id+ ']" value="'+response.file_id+'" />');
+                const hidden = OpenEyes.Util.htmlToElement('<input type="hidden" name="file_id[' + data_id + ']" value="' + response.file_id + '" />');
 
                 row.appendChild(hidden);
                 row.querySelector('.reprocess_btn').style.display = 'none';
@@ -148,7 +148,7 @@ function resetInternalReferralFields() {
 
     $('.internal-referral-section').find(':input').not(':button, :submit, :reset, :hidden').removeAttr('checked').removeAttr('selected').not(':checkbox, :radio, select').val('');
 
-    $.each($('.internal-referral-section select'), function (i, input) {
+    $.each($('.internal-referral-section select'), function(i, input) {
         $(input).val('');
     });
 
@@ -162,12 +162,12 @@ function setRecipientToInternalReferral() {
     $('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Internal Referral');
     $('#Document_Target_Address_0').prop('readonly', true).val(internal_referral_booking_address);
 
-    var $option = $('<option>', {value: 'INTERNALREFERRAL', text: 'Booking'});
+    var $option = $('<option>', { value: 'INTERNALREFERRAL', text: 'Booking' });
     $('#DocumentTarget_0_attributes_contact_type').append($option);
 
     $('#DocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
 
-    $('#dm_table tr:first-child td:last-child').html('Change the letter type <br> to amend this recipient').css({'font-size': '11px'});
+    $('#dm_table tr:first-child td:last-child').html('Change the letter type <br> to amend this recipient').css({ 'font-size': '11px' });
 
     if (!$('#yDocumentTarget_0_attributes_contact_type').length) {
         var $input = $('<input>', {
@@ -189,7 +189,7 @@ function setRecipientToInternalReferral() {
 }
 
 function resetRecipientFromInternalReferral() {
-    $('#docman_recipient_0').attr('disabled', false).css({'background-color': 'white'});
+    $('#docman_recipient_0').attr('disabled', false).css({ 'background-color': 'white' });
     $('#DocumentTarget_0_attributes_contact_name').prop('readonly', false).val('');
     $('#Document_Target_Address_0').prop('readonly', false).val('');
 
@@ -199,7 +199,7 @@ function resetRecipientFromInternalReferral() {
     $('#dm_table tr:first-child td:last-child').html('');
 
     //find the GP row and remove then select GP as TO recipient
-    $('.docman_contact_type').each(function (i, $element) {
+    $('.docman_contact_type').each(function(i, $element) {
         if ($($element).val() === "GP") {
             $element.closest('tr').remove();
         }
@@ -212,13 +212,13 @@ function resetRecipientFromInternalReferral() {
 function updateConsultantDropdown(subspecialty_id) {
     $.ajax({
         url: baseUrl + "/" + moduleName + "/Default/getConsultantsBySubspecialty",
-        data: {"subspecialty_id": subspecialty_id},
+        data: { "subspecialty_id": subspecialty_id },
         dataType: "json",
-        beforeSend: function () {
+        beforeSend: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
             $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
         },
-        success: function (data) {
+        success: function(data) {
             var options = [];
 
             //remove old options
@@ -229,7 +229,7 @@ function updateConsultantDropdown(subspecialty_id) {
                 options.push([item, data[item]]);
             }
 
-            options.sort(function (a, b) {
+            options.sort(function(a, b) {
                 if (a[1] > b[1]) return -1;
                 else if (a[1] < b[1]) return 1;
                 else return 0;
@@ -237,12 +237,12 @@ function updateConsultantDropdown(subspecialty_id) {
             options.reverse();
 
             //append new option to the dropdown
-            $.each(options, function (key, value) {
+            $.each(options, function(key, value) {
                 $('#ElementLetter_to_firm_id').append($("<option></option>")
                     .attr("value", value[0]).text(value[1]));
             });
         },
-        complete: function () {
+        complete: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
             $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
         }
@@ -295,11 +295,11 @@ function getInternalReferralOutputType() {
             firm_id: $('#ElementLetter_to_firm_id').val()
         },
         dataType: "json",
-        beforeSend: function () {
+        beforeSend: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
             $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
         },
-        success: function (data) {
+        success: function(data) {
             if (data != null) {
                 updateEmailAndDeliveryMethod(data.output_type);
             } else {
@@ -308,11 +308,11 @@ function getInternalReferralOutputType() {
                 }).open();
             }
         },
-        complete: function () {
+        complete: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
             $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
         },
-        error: function () {
+        error: function() {
             new OpenEyes.UI.Dialog.Alert({
                 content: "Sorry, an internal error occurred and we were unable to fetch the email address for the internal referral letter type.\n\nPlease contact support for assistance."
             }).open();
@@ -320,8 +320,8 @@ function getInternalReferralOutputType() {
     });
 }
 
-$(document).ready(function () {
-    $('#ElementLetter_to_subspecialty_id').on('change', function () {
+$(document).ready(function() {
+    $('#ElementLetter_to_subspecialty_id').on('change', function() {
         updateConsultantDropdown($(this).val());
         updateSalutation("Dear " + $(this).find('option:selected').text() + ' service,');
         // Setting the firm_id to '' as on changing the subspecialty the first option i.e. None gets selected.
@@ -330,7 +330,7 @@ $(document).ready(function () {
         getInternalReferralOutputType();
     });
 
-    $('#ElementLetter_to_firm_id').on('change', function () {
+    $('#ElementLetter_to_firm_id').on('change', function() {
         var reg_exp = /\(([^)]+)\)/;
         var subspecialty_name = reg_exp.exec($(this).find('option:selected').text());
         if (subspecialty_name) {
@@ -342,13 +342,13 @@ $(document).ready(function () {
 
         $.ajax({
             url: baseUrl + "/" + moduleName + "/Default/getSalutationByFirm",
-            data: {firm_id: $('#ElementLetter_to_firm_id').val(),},
+            data: { firm_id: $('#ElementLetter_to_firm_id').val(), },
             dataType: "json",
-            beforeSend: function () {
+            beforeSend: function() {
                 $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
                 $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
             },
-            success: function (data) {
+            success: function(data) {
                 if (data != null) {
                     updateSalutation(data);
                 } else {
@@ -357,11 +357,11 @@ $(document).ready(function () {
                     }).open();
                 }
             },
-            complete: function () {
+            complete: function() {
                 $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
                 $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
             },
-            error: function () {
+            error: function() {
                 new OpenEyes.UI.Dialog.Alert({
                     content: "Sorry, an internal error occurred and we were unable to get the salutation.\n\nPlease contact support for assistance."
                 }).open();
@@ -371,23 +371,23 @@ $(document).ready(function () {
         getInternalReferralOutputType();
     });
 
-    $('#ElementLetter_to_location_id').on('change', function () {
+    $('#ElementLetter_to_location_id').on('change', function() {
 
         $.ajax({
             url: baseUrl + "/" + moduleName + "/Default/getSiteInfo",
-            data: {to_location_id: $('#ElementLetter_to_location_id').val()},
+            data: { to_location_id: $('#ElementLetter_to_location_id').val() },
             dataType: "json",
-            beforeSend: function () {
+            beforeSend: function() {
 
                 // empty the value of the address textarea because if the ajax slow the user may save a wrong address
                 $('#Document_Target_Address_0').val('');
                 $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
                 $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
             },
-            success: function (data) {
+            success: function(data) {
                 $('#Document_Target_Address_0').val(data.correspondence_name);
             },
-            complete: function () {
+            complete: function() {
                 $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
                 $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
             }
@@ -401,15 +401,15 @@ $(document).ready(function () {
 /** End of Internal Referral **/
 
 
-$(document).ready(function () {
+$(document).ready(function() {
     var $letterIsSignedOff = $('#ElementLetter_is_signed_off');
-// leave this for a while until the requirements gets clear
-// 	togglePrintDisabled($letterIsSignedOff.is(':checked'));
-//     $letterIsSignedOff.change(function() {
-//         togglePrintDisabled(this.checked);
-//     });
+    // leave this for a while until the requirements gets clear
+    // 	togglePrintDisabled($letterIsSignedOff.is(':checked'));
+    //     $letterIsSignedOff.change(function() {
+    //         togglePrintDisabled(this.checked);
+    //     });
 
-    $(this).delegate('#ElementLetter_site_id', 'change', function () {
+    $(this).delegate('#ElementLetter_site_id', 'change', function() {
         if (correspondence_directlines) {
             $('#ElementLetter_direct_line').val(correspondence_directlines[$('#ElementLetter_site_id').val()]);
         }
@@ -419,22 +419,22 @@ $(document).ready(function () {
         }
     });
 
-    $('#et_save, #et_save_footer').click(function (e) {
+    $('#et_save, #et_save_footer').click(function(e) {
         $('#' + event_form).submit();
     });
 
-    $('#et_saveprint, #et_saveprint_footer').click(function (e) {
+    $('#et_saveprint, #et_saveprint_footer').click(function(e) {
         e.preventDefault();
 
         var event_button = $(this);
         var event_form = event_button.attr('form');
         $('#ElementLetter_draft').val(0);
-        $('#' + event_form).append($('<input>', {type: 'hidden', name: 'saveprint', value: '1'}));
+        $('#' + event_form).append($('<input>', { type: 'hidden', name: 'saveprint', value: '1' }));
         disableButtons();
         $('#' + event_form).submit();
     });
 
-    $('#et_savedraft, #et_savedraft_footer').click(function (e) {
+    $('#et_savedraft, #et_savedraft_footer').click(function(e) {
         e.preventDefault();
 
         var event_button = $(this);
@@ -444,13 +444,13 @@ $(document).ready(function () {
         $('#' + event_form).submit();
     });
 
-    $(this).on('click', '#et_cancel', function () {
+    $(this).on('click', '#et_cancel', function() {
         $('#dialog-confirm-cancel').dialog({
             resizable: false,
             //height: 140,
             modal: true,
             buttons: {
-                "Yes, cancel": function () {
+                "Yes, cancel": function() {
                     $(this).dialog('close');
 
                     disableButtons();
@@ -461,7 +461,7 @@ $(document).ready(function () {
                         window.location.href = baseUrl + '/patient/summary/' + OE_patient_id;
                     }
                 },
-                "No, go back": function () {
+                "No, go back": function() {
                     $(this).dialog('close');
                     return false;
                 }
@@ -469,11 +469,11 @@ $(document).ready(function () {
         });
     });
 
-    $('input[id="ElementLetter_use_nickname"][type="checkbox"]').click(function () {
+    $('input[id="ElementLetter_use_nickname"][type="checkbox"]').click(function() {
         $('#address_target').change();
     });
 
-    $('select.stringgroup').change(function () {
+    $('select.stringgroup').change(function() {
         var obj = $(this);
         var selected_val = $(this).children('option:selected').val();
 
@@ -483,7 +483,7 @@ $(document).ready(function () {
             $.ajax({
                 'type': 'GET',
                 'url': baseUrl + '/OphCoCorrespondence/Default/getString?patient_id=' + OE_patient_id + '&string_type=' + m[1] + '&string_id=' + m[2],
-                'success': function (text) {
+                'success': function(text) {
                     element_letter_controller.addAtCursor(text.replace(/\n(?!<)/g, '<br>'));
                     obj.val('');
                 }
@@ -491,14 +491,14 @@ $(document).ready(function () {
         }
     });
 
-    $('#cc').change(function () {
+    $('#cc').change(function() {
         var contact_id = $(this).children('option:selected').val();
         var obj = $(this);
 
         if (contact_id != '') {
             var ok = true;
 
-            $('#cc_targets').children('input').map(function () {
+            $('#cc_targets').children('input').map(function() {
                 if ($(this).val() == contact_id) {
                     ok = false;
                 }
@@ -507,7 +507,7 @@ $(document).ready(function () {
             if (!ok) {
                 if (obj.val().match(/^Patient/)) {
                     var found = false;
-                    $.each($('#ElementLetter_cc').val().split("\n"), function (key, value) {
+                    $.each($('#ElementLetter_cc').val().split("\n"), function(key, value) {
                         if (value.match(/^Patient: /)) {
                             found = true;
                         }
@@ -518,7 +518,7 @@ $(document).ready(function () {
                     }
                 } else if (obj.val().match(/^Gp/)) {
                     var found = false;
-                    $.each($('#ElementLetter_cc').val().split("\n"), function (key, value) {
+                    $.each($('#ElementLetter_cc').val().split("\n"), function(key, value) {
                         if (value.match(/^GP: /)) {
                             found = true;
                         }
@@ -536,7 +536,7 @@ $(document).ready(function () {
             $.ajax({
                 'type': 'GET',
                 'url': baseUrl + '/OphCoCorrespondence/Default/getCc?patient_id=' + OE_patient_id + '&contact=' + contact_id,
-                'success': function (text) {
+                'success': function(text) {
                     if (text.match(/DECEASED/)) {
                         new OpenEyes.UI.Dialog.Alert({
                             content: "The patient is deceased so cannot be cc'd."
@@ -569,7 +569,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#ElementLetter_body').unbind('keyup').bind('keyup', function () {
+    $('#ElementLetter_body').unbind('keyup').bind('keyup', function() {
         if (m = $(this).val().match(/\[([a-z]{3})\]/i)) {
 
             var text = $(this).val();
@@ -578,7 +578,7 @@ $(document).ready(function () {
                 'type': 'POST',
                 'url': baseUrl + '/OphCoCorrespondence/Default/expandStrings',
                 'data': 'patient_id=' + OE_patient_id + '&text=' + text + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-                'success': function (resp) {
+                'success': function(resp) {
                     if (resp) {
                         element_letter_controller.setContent(resp);
                     }
@@ -595,7 +595,7 @@ $(document).ready(function () {
         }
     }
 
-    this.addEventListener('click', function (e) {
+    this.addEventListener('click', function(e) {
         for (var target = e.target; target && target != this; target = target.parentNode) {
             if (target.matches('.reprocess_btn')) {
                 const row = target.closest('tr');
@@ -609,12 +609,12 @@ $(document).ready(function () {
         }
     }, false);
 
-    $(this).on('click', '#et_print', function (e) {
+    $(this).on('click', '#et_print', function(e) {
         if ($('#correspondence_out').hasClass('draft')) {
             $.ajax({
                 'type': 'GET',
                 'url': baseUrl + '/OphCoCorrespondence/default/doPrint/' + OE_event_id,
-                'success': function (html) {
+                'success': function(html) {
                     if (html == "1") {
                         window.location.reload();
                     } else {
@@ -630,12 +630,12 @@ $(document).ready(function () {
         }
     });
 
-    $(this).on('click', '#et_print_all', function (e) {
+    $(this).on('click', '#et_print_all', function(e) {
         if ($('#correspondence_out').hasClass('draft')) {
             $.ajax({
                 'type': 'GET',
                 'url': baseUrl + '/OphCoCorrespondence/default/doPrint/' + OE_event_id + '?all=1',
-                'success': function (html) {
+                'success': function(html) {
                     if (html == "1") {
                         window.location.reload();
                     } else {
@@ -651,16 +651,16 @@ $(document).ready(function () {
         }
     });
 
-    $(this).on('click', '#et_export', function (e) {
+    $(this).on('click', '#et_export', function(e) {
         e.preventDefault();
         OphCoCorrespondence_do_export();
     });
 
-    $(this).on('click', '#et_confirm_printed', function () {
+    $(this).on('click', '#et_confirm_printed', function() {
         $.ajax({
             'type': 'GET',
             'url': baseUrl + '/OphCoCorrespondence/Default/confirmPrinted/' + OE_event_id,
-            'success': function (html) {
+            'success': function(html) {
                 if (html != "1") {
                     new OpenEyes.UI.Dialog.Alert({
                         content: "Sorry, something went wrong. Please try again or contact support for assistance."
@@ -673,9 +673,9 @@ $(document).ready(function () {
         });
     });
 
-    $('button.addEnclosure').die('click').live('click', function () {
+    $('button.addEnclosure').die('click').live('click', function() {
         var id = -1;
-        $('#enclosureItems').find('.enclosureItem input').each(function () {
+        $('#enclosureItems').find('.enclosureItem input').each(function() {
             var m = $(this).attr('name').match(/[0-9]+/);
             if (parseInt(m[0]) > id) {
                 id = parseInt(m[0]);
@@ -695,7 +695,7 @@ $(document).ready(function () {
         $('input[name="EnclosureItems[enclosure' + id + ']"]').select().focus();
     });
 
-    $('i.removeEnclosure').die('click').live('click', function (e) {
+    $('i.removeEnclosure').die('click').live('click', function(e) {
         $(this).closest('.enclosureItem').remove();
         if (!$('#enclosureItems').children().length) {
             $('#enclosureItems').hide();
@@ -703,7 +703,7 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    $('div.enclosureItem input').die('keypress').live('keypress', function (e) {
+    $('div.enclosureItem input').die('keypress').live('keypress', function(e) {
         if (e.keyCode == 13) {
             $('button.addEnclosure').click();
             return false;
@@ -723,7 +723,7 @@ $(document).ready(function () {
         docman2.init();
     }
 
-    $('#ElementLetter_letter_type_id').on('change', function () {
+    $('#ElementLetter_letter_type_id').on('change', function() {
         if ($(this).find('option:selected').text() == 'Internal Referral') {
             $('.internal-referrer-wrapper').slideDown();
             setRecipientToInternalReferral();
@@ -758,7 +758,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#attachments_content_container').on('click', 'i.trash', function (e) {
+    $('#attachments_content_container').on('click', 'i.trash', function(e) {
         e.preventDefault();
         $(this).closest('tr').remove();
     });
@@ -773,16 +773,16 @@ function savePDFprint(module, event_id, $content, $data_id, title) {
     $.ajax({
         'type': 'GET',
         'url': baseUrl + '/' + module + '/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0&pdf_documents=1&attachment_print_title=' + title,
-        beforeSend: function (xhr) {
+        beforeSend: function(xhr) {
             xhr.setRequestHeader('X-Requested-With', 'pdfprint');
         },
-        'success': function (response) {
+        'success': function(response) {
             if (response.success == 1) {
                 $hidden = '<input type="hidden" name="file_id[' + $data_id + ']" value="' + response.file_id + '" />';
                 $content.prepend($hidden);
             }
         },
-        'complete': function () {
+        'complete': function() {
             enableButtons();
         }
     });
@@ -871,7 +871,7 @@ function OphCoCorrespondence_do_print(all) {
     $.ajax({
         'type': 'GET',
         'url': correspondence_markprinted_url,
-        'success': function (html) {
+        'success': function(html) {
             printEvent(data);
             enableButtons();
         }
@@ -886,7 +886,7 @@ function OphCoCorrespondence_do_export() {
             'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
             'auto_print': false
         },
-        'success': function (response) {
+        'success': function(response) {
             if (response.hasOwnProperty('DocId')) {
                 new OpenEyes.UI.Dialog.Alert({
                     content: 'Export completed successfully',
@@ -899,7 +899,7 @@ function OphCoCorrespondence_do_export() {
                 }).open();
             }
         },
-        'error': function () {
+        'error': function() {
             new OpenEyes.UI.Dialog.Alert({
                 content: 'An unknown error occurred.',
                 closeCallback: enableButtons
@@ -927,11 +927,11 @@ function isEmailPresent(rowIndex, contactType, element) {
                     contact_id: contactId,
                     contact_type: contactType,
                 },
-                beforeSend: function () {
+                beforeSend: function() {
                     $(element).prop('disabled', true);
                     $(element).prop('disabled', true);
                 },
-                success: function (data) {
+                success: function(data) {
                     if (data !== "") {
                         $(`#DocumentTarget_${rowIndex}_attributes_email`).val(data);
                         $(`#DocumentTarget_${rowIndex}_attributes_email`).prop("readonly", true);
@@ -950,7 +950,7 @@ function isEmailPresent(rowIndex, contactType, element) {
                         }
                     }
                 },
-                complete: function () {
+                complete: function() {
                     $(element).prop('disabled', false);
                     $(element).prop('disabled', false);
                 },

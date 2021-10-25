@@ -32,7 +32,9 @@ class m210401_010514_add_new_print_prescription_role extends CDbMigration
         // All users that currently have both the prescribe and print roles should be given the Print prescription role.
         $userIds = $this->dbConnection->createCommand("select userid, 'Print Prescription' AS 'itemname' from authassignment where itemname IN ('Print', 'Prescribe') group by userid having count(*) = 2;")->queryAll();
 
-        $this->insertMultiple('authassignment', $userIds);
+        if(!empty($userIds)){
+            $this->insertMultiple('authassignment', $userIds);
+        }
     }
 
     public function safeDown()

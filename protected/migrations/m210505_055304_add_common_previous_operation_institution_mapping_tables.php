@@ -66,15 +66,19 @@ class m210505_055304_add_common_previous_operation_institution_mapping_tables ex
             ->crossJoin('institution i')
             ->queryAll();
 
-        $this->insertMultiple(
-            'common_previous_operation_institution',
-            $all_op_mappings
-        );
+        if(!empty($all_op_mappings)){
+            $this->insertMultiple(
+                'common_previous_operation_institution',
+                $all_op_mappings
+            );
+        }
 
-        $this->insertMultiple(
-            'common_previous_systemic_operation_institution',
-            $all_systemic_mappings
-        );
+        if(!empty($all_systemic_mappings)){
+            $this->insertMultiple(
+                'common_previous_systemic_operation_institution',
+                $all_systemic_mappings
+            );
+        }
     }
 
     public function safeDown()

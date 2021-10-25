@@ -121,6 +121,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
         </a>
       </div>
     </div>
+  </div>
     <?php endforeach; ?>
 </div>
 

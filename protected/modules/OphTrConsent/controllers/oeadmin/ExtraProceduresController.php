@@ -38,8 +38,6 @@ class ExtraProceduresController extends BaseAdminController
         if (Yii::app()->request->isPostRequest) {
             $query = trim($search['query']);
             if ($search['query']) {
-                $criteria->params[':query'] = $query;
-
                 $criteria->together = true;
 
                 $criteria->addSearchCondition('term', $query, true, 'OR');

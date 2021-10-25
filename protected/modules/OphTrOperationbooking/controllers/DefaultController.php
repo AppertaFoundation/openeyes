@@ -799,7 +799,7 @@ class DefaultController extends OphTrOperationbookingEventController
             true
         );
 
-        return $this->actionPDFPrint($this->operation->event->id);
+        echo $this->pdf_print_html;
     }
 
     public function actionDelete($id)

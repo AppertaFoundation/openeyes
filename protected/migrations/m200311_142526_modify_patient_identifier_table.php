@@ -144,7 +144,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         if ($genetics_installed) {
             // If genetics module is enabled we filter out those patients who are genetics AND
             // no hos_num AND no nhs_num
-            $patients_sql = 'SELECT p.id, hos_num, nhs_num
+            $patients_sql = 'SELECT p.id, hos_num, nhs_num, deleted
                              FROM patient p
                              WHERE p.id NOT IN (
                                     SELECT patient_id
@@ -152,7 +152,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                                     WHERE (hos_num = "" OR hos_num IS NULL) AND (nhs_num = "" OR nhs_num IS NULL)
                                )';
         } else {
-            $patients_sql = 'SELECT id, hos_num, nhs_num FROM patient';
+            $patients_sql = 'SELECT id, hos_num, nhs_num, deleted FROM patient';
         }
 
         // at this point, the query should return only those patients who has at least one number
@@ -193,15 +193,15 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                             'patient_id' => $patient['id'],
                             'patient_identifier_type_id' => ${$type . '_type_id'},
                             'value' => $patient[$short_name],
+                            'source_info' => (int)$patient['deleted'] === 0 ? 'ACTIVE' : 'INACTIVE',
+                            'deleted' => $patient['deleted'],
                         ];
                     }
                 }
             }
-
-            if ($rows) {
+            if (!empty($rows)) {
                 $this->insertMultiple('patient_identifier', $rows);
             }
-
             $current_page++;
         }
 
