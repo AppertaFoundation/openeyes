@@ -33,9 +33,18 @@
                         'parent_id',
                         (isset($_GET['parent_id']) ? $_GET['parent_id'] : null),
                         CHtml::listData(
-                            CommonOphthalmicDisorder::model()->findAll('disorder_id IS NOT NULL'),
+                            array_filter(
+                                CommonOphthalmicDisorder::model()->findAll('disorder_id IS NOT NULL OR finding_id IS NOT NULL'),
+                                static function($item) { return $item->disorder !== null || $item->finding !== null; } // Exclude inactive entries
+                            ),
                             'id',
-                            function($item){return $item->disorder->term . ' (' . $item->subspecialty->name . ')';}//'disorder.term'
+                            static function($item) {
+                                if ($item->disorder !== null) {
+                                    return $item->disorder->term . ' (' . $item->subspecialty->name . ')';
+                                } else {
+                                    return $item->finding->name . ' (' . $item->subspecialty->name . ')';
+                                }
+                            }
                         )
                     ); ?>
                 </td>
@@ -318,7 +327,7 @@
             <input class="finding-id" type="hidden" value="" name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][finding_id]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_finding_id">
         </td>
         <td>
-            <input name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][alternate_disorder_label]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_alternate_disorder_label" type="text" value="">
+            <input name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][letter_macro_text]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_letter_macro_text" type="text" value="">
         </td>
         <td>
             <a href="javascript:void(0)" class="delete button large">delete</a>
