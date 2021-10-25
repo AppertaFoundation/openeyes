@@ -18,10 +18,8 @@ class PathwayStepTypePresetAssignment extends BaseActiveRecordVersioned
     public function rules()
     {
         return [
-            [
-                'id, custom_pathway_step_id, standard_pathway_step_id, preset_short_name, preset_id, site_id, subspecialty_id, firm_id',
-                'safe',
-            ],
+            ['id, custom_pathway_step_id, standard_pathway_step_id, preset_short_name, preset_id, site_id, subspecialty_id, firm_id', 'safe'],
+            ['preset_id, subspecialty_id, firm_id', 'requiredIfExaminationPreset'],
         ];
     }
 
@@ -65,6 +63,25 @@ class PathwayStepTypePresetAssignment extends BaseActiveRecordVersioned
         ];
     }
 
+    public function beforeSave()
+    {
+        $attributes = ['preset_id', 'site_id', 'site_id', 'subspecialty_id', 'firm_id'];
+        foreach ($attributes as $attribute) {
+            if ($this->{$attribute} === '') {
+                $this->{$attribute} = null;
+            }
+        }
+
+        return parent::beforeSave();
+    }
+
+    public function requiredIfExaminationPreset($attribute)
+    {
+        if ($this->preset_short_name === 'Exam' && ($this->{$attribute} === null || $this->{$attribute} === '')) {
+            $this->addError($attribute, $this->getAttributeLabel($attribute).' is required when Examination step type is selected');
+        }
+    }
+
     public function getStateDataTemplate()
     {
         if ($this->standard_pathway_step_type->state_data_template !== null) {
@@ -91,8 +108,8 @@ class PathwayStepTypePresetAssignment extends BaseActiveRecordVersioned
             $preset_state_template['site_id'] = $this->site_id;
             $preset_state_template['service_id'] = $this->subspecialty_id;
             $preset_state_template['firm_id'] = $this->firm_id;
-            $preset_state_template['duration_value'] = ($this->preset_id)%100;
-            $preset_state_template['duration_period'] = self::$duration_period[$this->preset_id/100];
+            $preset_state_template['duration_value'] = $this->preset_id ? ($this->preset_id)%100 : null;
+            $preset_state_template['duration_period'] = $this->preset_id ? self::$duration_period[$this->preset_id/100] : null;
             return json_encode($preset_state_template, JSON_THROW_ON_ERROR);
         }
 

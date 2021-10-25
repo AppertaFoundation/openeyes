@@ -6,6 +6,20 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             Yii::app()->session['selected_institution_id'],
             null
         );
+        $custom_booking_steps = PathwayStepTypePresetAssignment::model()->findAll('preset_short_name = "Book Apt."');
+        $custom_booking_steps = array_map(
+            static function ($item) {
+                return [
+                    'id' => $item->custom_pathway_step_type_id,
+                    'site_id' => $item->site_id,
+                    'subspecialty_id' => $item->subspecialty_id,
+                    'firm_id' => $item->firm_id,
+                    'duration_value' => $item->preset_id%100,
+                    'duration_period' => $item->preset_id ? PathwayStepTypePresetAssignment::$duration_period[$item->preset_id/100] : null,
+                ];
+            },
+            $custom_booking_steps
+        );
         $preset_criteria = new CDbCriteria();
         $preset_criteria->compare('LOWER(type)', 'psd');
         $preset_criteria->compare('active', true);
@@ -66,6 +80,7 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             // Can't use the much faster json_encode here because the workflow step list contains a list of active records,
             // which can't be serialised by json_encode.
             'workflows' => CJSON::encode($steps),
+            'custom_booking_steps' => $custom_booking_steps,
             'letter_macros' => json_encode($letter_macros, JSON_THROW_ON_ERROR),
             'vf_test_presets' => $vf_preset_json,
             'vf_test_types' => $vf_test_type_json,
