@@ -70,7 +70,7 @@ class m211013_102300_import_supplementary_consent_data extends OEMigration
                 LEFT JOIN " . self::NEW_ADMIN_ANSWER_TBL . " as d ON a.question_id = d.question_assignment_id
                 LEFT JOIN " . self::PERMISSION_IMAGES_TBL . " as e ON c.images_id = e.id
                 LEFT JOIN " . self::NEW_ADMIN_ANSWER_TBL . " as f ON e.name = f.display
-                WHERE e.name IS NOT NULL
+                WHERE e.name IS NOT NULL GROUP BY a.id
                 ");
         }
     }
