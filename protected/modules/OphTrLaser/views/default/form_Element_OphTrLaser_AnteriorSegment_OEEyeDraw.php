@@ -18,7 +18,7 @@
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        array('LaserSpot','PI' ,'PosteriorCapsule'),
+        array('LaserSpot', 'FocalLaser', 'PI' ,'PosteriorCapsule'),
     ),
     'onReadyCommandArray' => array(
         array('addDoodle', array('AntSeg')),
