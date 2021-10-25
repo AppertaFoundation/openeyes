@@ -49,7 +49,7 @@
             $clinic_procedure = $procedure->clinic_procedure;
             ?>
         <tr id="<?= $key ?>" class="clickable" data-id="<?= $procedure->id ?>"
-            data-uri="oeadmin/clinicprocedure/edit/<?= $procedure->id ?>">
+            data-uri="oeadmin/ClinicProcedure/edit/<?= $procedure->id ?>">
             <td><?= $procedure->term ?></td>
             <td><?= ($clinic_procedure && $clinic_procedure->institution) ? $clinic_procedure->institution->name : 'All' ?></td>
             <td><?= ($clinic_procedure && $clinic_procedure->firm) ? $clinic_procedure->firm->name : 'All' ?></td>
