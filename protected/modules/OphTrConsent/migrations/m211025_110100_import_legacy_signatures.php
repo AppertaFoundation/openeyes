@@ -15,6 +15,15 @@ class m211025_110100_import_legacy_signatures extends OEMigration
 
     public function up()
     {
+        if (
+            $this->dbConnection->schema->getTable(self::NEW_ET) && $this->dbConnection->schema->getTable(self::NEW_2ND_ET) &&
+            $this->dbConnection->schema->getTable(self::NEW_ITEM)
+        ) {
+            $this->execute("TRUNCATE TABLE " . self::NEW_ITEM);
+            $this->execute("TRUNCATE TABLE " . self::NEW_ET);
+            $this->execute("TRUNCATE TABLE " . self::NEW_2ND_ET);
+        }
+
         $this->upgradeHealthSignatures();
         $this->upgradeAdditionalSignatures();
     }
