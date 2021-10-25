@@ -29,7 +29,7 @@ This command is able to import OpenEyes configuration from an XLSX files
 The file should be named the name of the institution as it appears in the database
 
 The file should have the following tabs (remove any tabs if you do not want them to be imported):
-|Context|Workflows|Workflow Rules|Allergy Reaction|History Macros|
+|Context|Workflows|Workflow Rules|Allergy Reaction|History Macros|Element Attributes|Element Mapping|
 
 The context tab should have the following headers:
 |PAS Code|Context Name|Subspecialty|Consultant|Cost Code|Service Enabled|Context Enabled|Active|
@@ -50,6 +50,14 @@ The allergy reaction tab should have the following headers:
 The history macros tab should have the following headers:
 |Subspecialty|Name  |Body  |
 |String      |String|String|
+
+The element attributes tab should have the following headers:
+|Attribute Name|Attribute Label|Attribute Element|Multiselect|
+|String        |String         |String           |Yes/No     |
+
+The element mapping tab should have the following headers:
+|Attribute Label|Order |Value |Subspecialty|Exclusion    |
+|String         |Number|String|String      |CSV String   |
 
 If you want a value to be Null please include 'Blank' in the cell
 If you want all values then please include 'All' in the cell
@@ -89,6 +97,10 @@ EOH;
         $this->allergyReactionImport();
 
         $this->historyMacrosImport();
+
+        $this->elementAttributesImport();
+
+        $this->elementMappingImport();
 
         echo "\n[" . (date("Y-m-d H:i:s")) . "] Import Configuration finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
@@ -373,5 +385,121 @@ EOH;
             }
         }
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] History Macros Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
+    }
+
+    public function elementAttributesImport()
+    {
+        if ($this->spreadsheet->getSheetByName('Element Attributes') == null) {
+            echo "\n\t Skipping Element Attributes Import ... \n";
+            return;
+        }
+
+        $t = microtime(true);
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Element Attributes Import started ... \n";
+
+        foreach ($this->spreadsheet->getSheetByName('Element Attributes')->toArray() as $index => $row) {
+            // Skipping header
+            if ($index == 0) {
+                continue;
+            }
+
+            $name = $row[0];
+            $label = $row[1];
+            $element = $row[2];
+            $multiselect = $row[3];
+
+            if (\ElementType::model()->findByAttributes(array('name' => $element)) == null) {
+                echo "\033[0;31mError: \033[0m".$element." is not a valid element type\n";
+                exit(8);
+            }
+            $element_id = \ElementType::model()->findByAttributes(array('name' => $element))->id;
+
+            $attribute_id = null;
+
+            if (OEModule\OphCiExamination\models\OphCiExamination_Attribute::model()->findByAttributes(array('name'=>$name, 'label'=>$label, 'institution_id'=>$this->institution_id)) == null) {
+                $attribute = new OEModule\OphCiExamination\models\OphCiExamination_Attribute;
+                $attribute->name = $name;
+                $attribute->label = $label;
+                $attribute->is_multiselect = ($multiselect == "Yes") ? 1 : 0;
+                $attribute->institution_id = $this->institution_id;
+                $attribute->insert();
+                $attribute_id = $attribute->id;
+            } else {
+                $attribute_id = OEModule\OphCiExamination\models\OphCiExamination_Attribute::model()->findByAttributes(array('name'=>$name, 'label'=>$label, 'institution_id'=>$this->institution_id))->id;
+            }
+
+            if (OEModule\OphCiExamination\models\OphCiExamination_AttributeElement::model()->findByAttributes(array('attribute_id'=>$attribute_id, 'element_type_id'=>$element_id)) == null) {
+                $attribute_element = new OEModule\OphCiExamination\models\OphCiExamination_AttributeElement;
+                $attribute_element->attribute_id = $attribute_id;
+                $attribute_element->element_type_id = $element_id;
+                $attribute_element->insert();
+            }
+        }
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Element Attributes Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
+    }
+
+    public function elementMappingImport()
+    {
+        if ($this->spreadsheet->getSheetByName('Element Mapping') == null) {
+            echo "\n\t Skipping Element Mapping Import ... \n";
+            return;
+        }
+
+        $t = microtime(true);
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Element Mapping Import started ... \n";
+
+        foreach ($this->spreadsheet->getSheetByName('Element Mapping')->toArray() as $index => $row) {
+            // Skipping header
+            if ($index == 0) {
+                continue;
+            }
+
+            $label = $row[0];
+            $order = $row[1];
+            $value = $row[2];
+            $subspecialty = $row[3];
+            $exclusions = explode(",", $row[4]);
+
+            if (OEModule\OphCiExamination\models\OphCiExamination_Attribute::model()->findByAttributes(array('label' => $label)) == null) {
+                echo "\033[0;31mError: \033[0m".$label." is not a valid attribute label\n";
+                exit(8);
+            }
+            $attribute_element_id = OEModule\OphCiExamination\models\OphCiExamination_Attribute::model()->findByAttributes(array('label' => $label))->id;
+
+            if ($subspecialty != "All" && \Subspecialty::model()->findByAttributes(array('name' => $subspecialty)) == null) {
+                echo "\033[0;31mError: \033[0m".$subspecialty." is not a valid subspecialty\n";
+                exit(8);
+            }
+            $subspecialty_id = ($subspecialty == "All") ? null : \Subspecialty::model()->findByAttributes(array('name' => $subspecialty))->id;
+
+            $element_mapping = null;
+
+            (OEModule\OphCiExamination\models\OphCiExamination_AttributeOption::model()->findByAttributes(array('subspecialty_id'=>$subspecialty_id, 'attribute_element_id'=>$attribute_element_id, 'display_order'=>$order)) == null) ? $element_mapping = new OEModule\OphCiExamination\models\OphCiExamination_AttributeOption : $element_mapping = OEModule\OphCiExamination\models\OphCiExamination_AttributeOption::model()->findByAttributes(array('subspecialty_id'=>$subspecialty_id, 'attribute_element_id'=>$attribute_element_id, 'display_order'=>$order));
+
+            $element_mapping->value = $value;
+            $element_mapping->subspecialty_id = $subspecialty_id;
+            $element_mapping->attribute_element_id = $attribute_element_id;
+            $element_mapping->display_order = $order;
+
+            (OEModule\OphCiExamination\models\OphCiExamination_AttributeOption::model()->findByAttributes(array('subspecialty_id'=>$subspecialty_id, 'attribute_element_id'=>$attribute_element_id, 'display_order'=>$order)) == null) ? $element_mapping->insert() : $element_mapping->save(false);
+
+            $option_id = $element_mapping->id;
+
+            foreach ($exclusions as $indexx => $exclusion) {
+                if ($exclusion == "None") {
+                    break;
+                }
+                if (\Subspecialty::model()->findByAttributes(array('name' => $exclusion)) == null) {
+                    echo "\033[0;31mError: \033[0m".$exclusion." is not a valid subspecialty\n";
+                    exit(8);
+                }
+                $exclusion_id = \Subspecialty::model()->findByAttributes(array('name' => $exclusion))->id;
+
+                if (Yii::app()->db->createCommand()->select()->from('ophciexamination_attribute_option_exclude')->where('option_id=:option_id', array(':option_id'=>$option_id))->andWhere('subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$exclusion_id))->queryRow() == null) {
+                    Yii::app()->db->createCommand()->insert('ophciexamination_attribute_option_exclude', array('option_id'=>$option_id, 'subspecialty_id'=>$exclusion_id));
+                }
+            }
+        }
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Element Mapping Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
 }
