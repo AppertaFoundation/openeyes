@@ -110,7 +110,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
 
             $this->execute("
                 INSERT INTO " . self::NEW_ET . " (
-                event_id, interpreter_required, interpreter_name, witness_required, witness_name, guardian_required, guardian_name, guardian_relationship, child_agreement, last_modified_user_id, last_modified>
+                event_id, interpreter_required, interpreter_name, witness_required, witness_name, guardian_required, guardian_name, guardian_relationship, child_agreement, last_modified_user_id, last_modified_date, created_user_id, created_date)
                 SELECT
                 a.id, e.signatory_required, e.signatory_name,
                 b.signatory_required, b.signatory_name,
