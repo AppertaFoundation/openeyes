@@ -895,8 +895,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
             $criteria = new CDbCriteria();
             $criteria->addCondition('`t`.site_id = :siteId');
-            $criteria->addCondition('`t`.restriction & :r1 >0');
-            $criteria->addCondition('`t`.restriction & :r2 >0');
+            $criteria->addCondition('(`t`.restriction & :r1 >0 AND `t`.restriction & :r2 >0) OR `t`.restriction = 0');
             $criteria->params[':siteId'] = $siteId;
             $criteria->params[':r1'] = $genderRestrict;
             $criteria->params[':r2'] = $ageRestrict;
