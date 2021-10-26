@@ -280,7 +280,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
             foreach ($added_diagnoses as $diagnosis) {
                 if ($diagnosis->principal) {
-                    $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date);
+                    $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date, $diagnosis->time);
                 } else {
                     $this->event->episode->patient->addDiagnosis(
                         $diagnosis->disorder_id,

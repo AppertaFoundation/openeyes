@@ -484,14 +484,18 @@ class Episode extends BaseActiveRecordVersioned
         }
     }
 
-    public function setPrincipalDiagnosis($disorder_id, $eye_id, $disorder_date = false)
+    public function setPrincipalDiagnosis($disorder_id, $eye_id, $disorder_date = false, $disorder_time = false)
     {
         if (!$disorder_date) {
             $disorder_date = date('Y-m-d');
         }
+        if (!$disorder_time) {
+            $disorder_time = date('H:i:s');
+        }
         $this->disorder_id = $disorder_id;
         $this->eye_id = $eye_id;
         $this->disorder_date = $disorder_date;
+        $this->disorder_time = $disorder_time;
         if (!$this->save()) {
             throw new Exception('Unable to set episode principal diagnosis/eye: ' . print_r($this->getErrors(), true));
         }
@@ -505,6 +509,14 @@ class Episode extends BaseActiveRecordVersioned
             return null;
         }
         return \Helper::formatFuzzyDate($this->disorder_date);
+    }
+
+    public function getDisplayTime()
+    {
+        if (!$this->disorder_time) {
+            return null;
+        }
+        return $this->disorder_time;
     }
 
     public function audit($target, $action, $data = null, $log = false, $properties = array())
