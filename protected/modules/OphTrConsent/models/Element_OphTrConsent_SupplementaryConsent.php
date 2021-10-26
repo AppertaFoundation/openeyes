@@ -160,11 +160,14 @@ class Element_OphTrConsent_SupplementaryConsent extends BaseEventTypeElement
         }
 
         foreach ($my_questions as $question_asgn) {
-            if (!array_key_exists($question_asgn->id, $ele_qs) && $question_asgn->required === true) {
-                $this->addError(
-                    "$e_q_name",
-                    "Did not recive answer for required question '" . $question_asgn->question_text. "'"
-                );
+            if ($question_asgn->required == true) { //required is an int so === will not return correctly
+                if(!array_key_exists($question_asgn->id, $ele_qs)){
+                    $e_q_name = 'element_question[' . $question_asgn->id . ']';
+                    $this->addError(
+                        "$e_q_name",
+                        "Did not receive answer for required question '" . $question_asgn->question_text. "'"
+                    );
+                }
             }
         }
     }
