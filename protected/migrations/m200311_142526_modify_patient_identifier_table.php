@@ -36,7 +36,6 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         $this->createIndex('uk_patient_identifier_unique_row_str', 'patient_identifier', ['unique_row_str'], true);
         $this->addForeignKey('fk_patient_identifier_patient', 'patient_identifier', 'patient_id', 'patient', 'id');
         $this->createIndex('uk_patient_value_patient_type_id', 'patient_identifier', ['patient_identifier_type_id', 'value', 'source_info'], true);
-        $this->createIndex('uk_unique_row_str', 'patient_identifier', ['unique_row_str'], true);
 
         $this->createOETable(
             'patient_identifier_type',
