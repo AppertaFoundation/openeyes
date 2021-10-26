@@ -81,7 +81,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
 
             $this->execute("UPDATE " . self::NEW_2ND_ET . "
                             LEFT JOIN ".self::NEW_ITEM." ON ".self::NEW_2ND_ET.".id = ".self::NEW_ITEM.".element_id
-                            SET ".self::NEW_2ND_ET.".healthprof_signature_id = ".self::NEW_ITEM.".id;"
+                            SET ".self::NEW_2ND_ET.".healthprof_signature_id = ".self::NEW_ITEM.".id WHERE ".self::NEW_ITEM.".signatory_role = 'Health professional'"
             );
         }
     }
