@@ -183,7 +183,9 @@ class BaseController extends Controller
             }
         } else {
             $user_authentication = Yii::app()->session['user_auth'];
-            if ($user_authentication) {
+            $special_usernames = Yii::app()->params['special_usernames'] ?? [];
+
+            if ($user_authentication && !in_array($user_authentication->username, $special_usernames)) {
                 $user = $user_authentication->user;
                 // if not a active user, force log out
                 if (!$user_authentication->active || PasswordUtils::testStatus('locked', $user_authentication)) {
