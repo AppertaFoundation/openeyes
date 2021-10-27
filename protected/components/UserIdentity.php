@@ -418,25 +418,17 @@ class UserIdentity extends CUserIdentity
         $this->username = $user_authentication->username;
         $this->errorCode = self::ERROR_NONE;
 
-        if ($this->is_special) {
-            $app->session['user_auth'] = $user_authentication;
-            $app->session['user'] = $user_authentication->user;
-
-            $user->audit('login',
-                'login-successful', null,
-                'Special User '.strtoupper($this->username).' logged in.'
-            );
-
-            return [true, ""];
-        }
-
-        // Set this first as we'll need it to determine the selected firm and site.
-        $app->session['selected_institution_id'] = $this->institution_id;
-        $institution = Institution::model()->findByPk($this->institution_id);
 
         // Get all the user's firms for the current institution and put them in a session.
-
         $firms = array();
+
+        if ($this->is_special) {
+            if(isset($_COOKIE['institution_id'])){
+                $app->session['selected_institution_id'] = $_COOKIE['institution_id'];
+            }
+        } else {
+            $app->session['selected_institution_id'] = $this->institution_id;
+        }
 
         $userFirms = $user->getFirmsForCurrentInstitution();
         foreach ($userFirms as $firm) {
@@ -444,16 +436,13 @@ class UserIdentity extends CUserIdentity
         }
 
         if (!count($firms)) {
-            $user->audit(
-                'login',
-                'login-failed',
-                null,
-                "Login failed for user {$this->username}: user has no firm rights for {$institution->name} and cannot use the system."
-            );
-            throw new Exception('User has no firm rights for the selected institution and cannot use the system.');
+            $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: user has no firm rights and cannot use the system");
+            throw new Exception('User has no firm rights and cannot use the system.');
         }
 
-
+        natcasesort($firms);
+        $app->session['firms'] = $firms;
+        reset($firms);
 
         // Select firm
         if (
@@ -470,6 +459,37 @@ class UserIdentity extends CUserIdentity
             $app->session['selected_firm_id'] = key($firms);
         }
 
+        if ($this->is_special) {
+            $app->session['user_auth'] = $user_authentication;
+            $app->session['user'] = $user_authentication->user;
+
+            if(isset($_COOKIE['site_id']) && $_COOKIE['site_id'] != ""){
+                $app->session['selected_site_id'] = $_COOKIE['site_id'];
+            }
+
+            $user->audit('login',
+                'login-successful', null,
+                'Special User '.strtoupper($this->username).' logged in.'
+            );
+
+            return [true, ""];
+        }
+
+        // Set this first as we'll need it to determine the selected firm and site.
+        $app->session['selected_institution_id'] = $this->institution_id;
+        $institution = Institution::model()->findByPk($this->institution_id);
+
+
+        if (!count($firms)) {
+            $user->audit(
+                'login',
+                'login-failed',
+                null,
+                "Login failed for user {$this->username}: user has no firm rights for {$institution->name} and cannot use the system."
+            );
+            throw new Exception('User has no firm rights for the selected institution and cannot use the system.');
+        }
+
         // Select site
         if (!empty($this->site_id)) {
             $app->session['selected_site_id'] = $this->site_id;
@@ -484,13 +504,8 @@ class UserIdentity extends CUserIdentity
             throw new CException('Cannot find default site');
         }
 
-        natcasesort($firms);
-
         $app->session['user'] = $user;
         $app->session['user_auth'] = $user_authentication;
-        $app->session['firms'] = $firms;
-
-        reset($firms);
 
         $institution_name = Institution::model()->findByPk($this->institution_id)->name;
         $site = Site::model()->findByPk($this->site_id);
