@@ -16,10 +16,10 @@ $extra_procedure_itemsets = array_map(function ($proc) {
         <div class="cols-10">
             <table class="cols-full">
                 <tbody id="js-extra-proc-entries">
-                    <?php foreach ($element->extra_procedure_assignments as $i => $procedure) {?>
+                    <?php foreach ($element->extra_procedure_assignments as $i => $extra_procedure) {?>
                         <tr data-key="<?= $i ?>" class="js-proc-row">
-                            <?= CHtml::hiddenField("{$name}[extra_procedure_assignments][$i][proc_id]", $procedure->extra_proc_id); ?>
-                            <td><?= $procedure->extra_procedure->term ?></td>
+                            <?= CHtml::hiddenField("{$name}[extra_procedure_assignments][$i][proc_id]", $extra_procedure->extra_proc_id); ?>
+                            <td><?= $extra_procedure->extra_procedure->term ?></td>
                             <td><i class="oe-i trash"></i></td>
                         </tr>
                     <?php } ?>
@@ -48,7 +48,7 @@ $this->renderPartial(
     array(
         'procedure_list' => $extra_procedure_itemsets,
         'laterality' => false,
-        'search_source' => '/procedure/autocomplete',
+        'search_source' => '/OphTrConsent/ExtraProcedures/autocomplete',
         'bind_add_button' => '#js-add-extra-proc-btn',
         'entry_container' => '#js-extra-proc-entries',
         'template' => '#js-new-extra-procedure-row',
