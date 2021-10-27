@@ -36,7 +36,6 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         $this->createIndex('uk_patient_identifier_unique_row_str', 'patient_identifier', ['unique_row_str'], true);
         $this->addForeignKey('fk_patient_identifier_patient', 'patient_identifier', 'patient_id', 'patient', 'id');
         $this->createIndex('uk_patient_value_patient_type_id', 'patient_identifier', ['patient_identifier_type_id', 'value', 'source_info'], true);
-        $this->createIndex('uk_unique_row_str', 'patient_identifier', ['unique_row_str'], true);
 
         $this->createOETable(
             'patient_identifier_type',
@@ -125,8 +124,45 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         $local_type_id = $this->getDbConnection()->createCommand("SELECT id FROM patient_identifier_type WHERE usage_type = 'local'")->queryScalar();
         $global_type_id = $this->getDbConnection()->createCommand("SELECT id FROM patient_identifier_type WHERE usage_type = 'global'")->queryScalar();
 
+        $genetics_installed = !empty($this->dbConnection->schema->getTable('genetics_patient'));
+        if ($genetics_installed) {
+            $genetics_patient_identifier_type = [
+                'usage_type' => 'LOCAL',
+                'short_title' => 'Genetics Subject ID',
+                'long_title' => 'Genetics Subject ID',
+                'institution_id' => $institution_id,
+                'validate_regex' => '^\d*$',
+                'pad' => null,
+            ];
+
+            $this->insert('patient_identifier_type', $genetics_patient_identifier_type);
+        }
+
         $patients_count = $this->getDbConnection()->createCommand('SELECT COUNT(*) FROM patient')->queryScalar();
-        $patients_sql = 'SELECT id, hos_num, nhs_num, deleted FROM patient';
+
+        if ($genetics_installed) {
+            // If genetics module is enabled we filter out those patients who are genetics AND
+            // no hos_num AND no nhs_num
+            $patients_sql = 'SELECT p.id, hos_num, nhs_num, deleted
+                             FROM patient p
+                             WHERE p.id NOT IN (
+                                    SELECT patient_id
+                                    FROM genetics_patient
+                                    WHERE (hos_num = "" OR hos_num IS NULL) AND (nhs_num = "" OR nhs_num IS NULL)
+                               )';
+        } else {
+            $patients_sql = 'SELECT id, hos_num, nhs_num, deleted FROM patient';
+        }
+
+        // at this point, the query should return only those patients who has at least one number
+        // (if its not genetics and no hos_num and nhs_num than the trust should address this issue)
+        // later we grab all genetics patients and add them under a new local number
+
+        // NOTE: Genetics patients with same hos_num or nhs_num are not filtered
+        // This may help:
+        // ./yiic duplicatepatients
+
+
         $pagination = new CPagination($patients_count);
         $pagination->pageSize = 1000;
         $dataProvider = new CSqlDataProvider($patients_sql, [
@@ -139,6 +175,11 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
             'db' => $this->dbConnection,
         ]);
         $current_page = 0;
+
+        // not to flood the logs
+        echo "\n> insert into patient_identifier ... ";
+        ob_start();
+
         while ($current_page < $pagination->getPageCount()) {
             $pagination->setCurrentPage($current_page);
             $dataProvider->setPagination($pagination);
@@ -157,11 +198,36 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                     }
                 }
             }
-            if(!empty($rows)){
+            if (!empty($rows)) {
                 $this->insertMultiple('patient_identifier', $rows);
             }
             $current_page++;
         }
+
+        ob_get_clean();
+
+        if (Yii::app()->hasModule('OphGenetics')) {
+            $genetics_type_id = $this->getDbConnection()->createCommand("SELECT id FROM patient_identifier_type WHERE short_title = 'Genetics Subject ID'")->queryScalar();
+            $command = Yii::app()->db->createCommand()
+                    ->select('genetics_patient.id as genetics_patient_id, p.id as patient_id')
+                    ->from('genetics_patient')
+                    ->join('patient p', 'p.id = genetics_patient.patient_id');
+
+            $iterator = new QueryIterator($command, $by = 2000);
+            foreach ($iterator as $chunk) {
+                $rows = [];
+                foreach ($chunk as $genetics_patient) {
+                    $rows[] = [
+                        'patient_id' => $genetics_patient['patient_id'],
+                        'patient_identifier_type_id' => $genetics_type_id,
+                        'value' => $genetics_patient['genetics_patient_id'],
+                    ];
+                }
+                $this->insertMultiple('patient_identifier', $rows);
+            }
+        }
+
+        echo "done\n";
     }
 
     public function safeDown()

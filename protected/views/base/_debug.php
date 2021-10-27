@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <!---
 <?php
@@ -45,13 +47,10 @@ if (is_object($user_auth)) {
     $firm = 'Not logged in';
 }
 
-$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(@$_SERVER['DOCUMENT_ROOT'].'/.git/FETCH_HEAD'));
 ?>
 Server: <?php echo $hostname?>
 
 Date: <?php echo date('d.m.Y H:i:s')?>
-
-Commit: <?php echo $commit?>
 
 User agent: <?php echo htmlspecialchars(@$_SERVER['HTTP_USER_AGENT'])?>
 
