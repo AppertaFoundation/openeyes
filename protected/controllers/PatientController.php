@@ -728,7 +728,8 @@ class PatientController extends BaseController
                 if (@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
                     if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
                         $diagnosisDate = isset($_POST['DiagnosisSelection']['date']) ? $_POST['DiagnosisSelection']['date'] : false;
-                        $this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'], $_POST['eye_id'], $diagnosisDate);
+                        $diagnosisTime = isset($_POST['DiagnosisSelection']['time']) ? $_POST['DiagnosisSelection']['time'] : false;
+                        $this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'], $_POST['eye_id'], $diagnosisDate, $diagnosisTime);
                     }
                 }
 

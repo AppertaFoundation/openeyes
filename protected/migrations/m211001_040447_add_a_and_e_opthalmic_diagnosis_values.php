@@ -13,10 +13,11 @@ class m211001_040447_add_a_and_e_opthalmic_diagnosis_values extends OEMigration
 
 		$this->initialiseData(dirname(__FILE__));
 
-		$this->execute('UPDATE `disorder`, `temp_oe_diagnosis_extra`
+		$this->execute('UPDATE `disorder`, `temp_oe_diagnosis_extra`, `specialty`
 			SET `ecds_code` = `pas_ecds_code`,
-				`ecds_term` = `oe_diagnosis`
-			WHERE `term` = `oe_diagnosis` OR `term` = `pas_description` OR `id` = `snomed_code`');
+				`ecds_term` = `oe_diagnosis`,
+                `specialty_id` = `specialty`.`id`
+			WHERE `specialty`.`name` = "Ophthalmology" AND (`term` = `oe_diagnosis` OR `term` = `pas_description` OR `disorder`.`id` = `snomed_code`)');
 
 		$this->execute('DROP TEMPORARY TABLE `temp_oe_diagnosis_extra`');
 	}
