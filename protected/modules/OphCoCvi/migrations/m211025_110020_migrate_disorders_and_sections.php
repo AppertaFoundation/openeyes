@@ -15,55 +15,41 @@
 
 class m211025_110020_migrate_disorders_and_sections extends \OEMigration
 {
-    private array $disorder_id_cache = [];
-
-    const ASSIGNMENT_TBL = "et_ophcocvi_clinicinfo_disorder_assignment_MEH";
-    const SECTION_TBL = "ophcocvi_clinicinfo_disorder_section_MEH";
-    const DISORDER_TBL = "ophcocvi_clinicinfo_disorder_MEH";
-
     public function safeUp()
     {
+        $assignment_table = 'et_ophcocvi_clinicinfo_disorder_assignment';
+        $section_table = 'ophcocvi_clinicinfo_disorder_section';
+        $disoder_table = 'ophcocvi_clinicinfo_disorder';
 
-        // get all elements belong to event_type_version 0 sections
-        $command = \Yii::app()->db->createCommand()
-            ->select('a.id as assignment_id, s.id as section_id, s.name as section_name, d.id as disorder_id, d.name as disorder_name, d.patient_type, element_id')
-            ->from(self::ASSIGNMENT_TBL . " a")
-            ->join(self::DISORDER_TBL . ' d', 'a.ophcocvi_clinicinfo_disorder_id = d.id')
-            ->join(self::SECTION_TBL . ' s', 'd.section_id = s.id')
-            ->where('s.event_type_version = 0');
+        $query = <<<EOT
+UPDATE
+$assignment_table assignment
+	LEFT JOIN $disoder_table old_disorder ON assignment.`ophcocvi_clinicinfo_disorder_id` = old_disorder.id AND old_disorder.`event_type_version` = 0
+	LEFT JOIN $section_table old_section ON old_section.id = old_disorder.`section_id`
+	LEFT JOIN $disoder_table d2 ON d2.id = ( 
+			SELECT new_disorder.id 
+			FROM $disoder_table new_disorder 
+			LEFT JOIN $section_table new_section ON new_section.id = new_disorder.`section_id` AND new_disorder.`event_type_version` = 1 
+			WHERE new_disorder.`name` = old_disorder.`name` AND new_section.`name` = old_section.`name` AND new_disorder.`patient_type` = old_disorder.`patient_type` 	
+	)
+SET assignment.ophcocvi_clinicinfo_disorder_id = d2.id
+WHERE old_disorder.id IS NOT NULL AND d2.id IS NOT NULL;
+EOT;
+        $this->execute($query);
 
-        $iterator = new \QueryIterator($command, 2000);
+        // there are some disorders that have no v1 version
+        $query = <<<EOT
+            SELECT d.name, a.* 
+            FROM `et_ophcocvi_clinicinfo_disorder_assignment_MEH` a
+            JOIN `ophcocvi_clinicinfo_disorder_MEH` d ON d.id = a.`ophcocvi_clinicinfo_disorder_id`
+            WHERE d.`event_type_version` = 0;
+EOT;
 
-        $manual_mapping_needed = [];
+        $result = $this->dbConnection->createCommand($query)->queryAll();
 
-        foreach ($iterator as $chunk) {
-            $update = [];
-            foreach ($chunk as $entry) {
+        echo '<pre>' . print_r($result, true) . '</pre>';
 
-                $new_disorder_id = $this->getNewDisorderId($entry);
-                if (!$new_disorder_id) {
-                    if (!in_array($entry['disorder_name'], $manual_mapping_needed)) {
-                        $manual_mapping_needed[] = $entry['disorder_name'];
-                    }
-
-                    // Manual mapping
-                    $new_disorder_id = $this->getDisorderIdFromMap($entry);
-
-                    echo "Manual mapping required: {$entry['disorder_name']}\n";
-                    echo " ===> new id {$new_disorder_id}\n";
-                }
-
-                if ($new_disorder_id) {
-                    $update[$new_disorder_id][] = $entry['assignment_id'];
-                } else {
-                   //echo "Can't map '{$entry['disorder_name']}' disorder, assignment: {$entry['assignment_id']}\n";
-                }
-            }
-
-            $this->updateAssignments($update);
-        }
-
-        return true;
+        return false;
     }
 
     private function getDisorderIdFromMap(array $entry)
@@ -107,48 +93,6 @@ class m211025_110020_migrate_disorders_and_sections extends \OEMigration
 
         $entry['disorder_name'] = $name;
         return $this->getNewDisorderId($entry);
-    }
-
-    /**
-     * @param array $entry
-     */
-    private function getNewDisorderId(array $entry):? int
-    {
-        $key = str_replace(' ', '', "{$entry['section_name']}-{$entry['disorder_name']}-{$entry['patient_type']}");
-
-        if (isset($this->disorder_id_cache[$key]) && $this->disorder_id_cache[$key]) {
-            return $this->disorder_id_cache[$key];
-        }
-
-        $new_disorder_id = \Yii::app()->db->createCommand()
-            ->select('d.id')
-            ->from(self::DISORDER_TBL . ' d')
-            ->join(self::SECTION_TBL . ' s', 'd.section_id = s.id')
-            ->where('s.name = :s_name AND d.name = :d_name AND s.patient_type = :p_type AND s.event_type_version = 1')
-                ->bindParam(':s_name', $entry['section_name'])
-                ->bindParam(':d_name', $entry['disorder_name'])
-                ->bindParam(':p_type', $entry['patient_type'])
-           ->queryScalar();
-
-        $this->disorder_id_cache[$key] = $new_disorder_id;
-
-        return $new_disorder_id;
-    }
-
-    private function updateAssignments(array $data)
-    {
-        foreach ($data as $new_disorder_id => $assignment_ids) {
-            echo "\n";
-            echo "Updating " . count($assignment_ids) . " rows ... ";
-
-            //echo 'UPDATE ' . self::ASSIGNMENT_TBL . ' SET ophcocvi_clinicinfo_disorder_id = ' . $new_disorder_id . ' WHERE id IN (' . implode(', ', array_unique($assignment_ids)) . ')';
-            ob_start();
-            $this->execute('UPDATE ' . self::ASSIGNMENT_TBL . ' SET ophcocvi_clinicinfo_disorder_id = :d_id WHERE id IN (' . implode(', ', array_unique($assignment_ids)) . ')', [
-                ':d_id' => $new_disorder_id
-            ]);
-            ob_end_clean();
-            echo "done.\n";
-        }
     }
 
     public function safeDown()
