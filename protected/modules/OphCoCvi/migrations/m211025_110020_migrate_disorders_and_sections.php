@@ -21,6 +21,7 @@ class m211025_110020_migrate_disorders_and_sections extends \OEMigration
         $section_table = 'ophcocvi_clinicinfo_disorder_section';
         $disoder_table = 'ophcocvi_clinicinfo_disorder';
 
+        // replace v0 disorders to v1 disorders in the assignment table
         $query = <<<EOT
 UPDATE
 $assignment_table assignment
@@ -37,62 +38,50 @@ WHERE old_disorder.id IS NOT NULL AND d2.id IS NOT NULL;
 EOT;
         $this->execute($query);
 
-        // there are some disorders that have no v1 version
+        // some disorders have a different v1 name
         $query = <<<EOT
-            SELECT d.name, a.* 
-            FROM `et_ophcocvi_clinicinfo_disorder_assignment_MEH` a
-            JOIN `ophcocvi_clinicinfo_disorder_MEH` d ON d.id = a.`ophcocvi_clinicinfo_disorder_id`
-            WHERE d.`event_type_version` = 0;
+            UPDATE `$assignment_table` a
+            JOIN `$disoder_table` d ON d.id = a.`ophcocvi_clinicinfo_disorder_id` 
+            SET `ophcocvi_clinicinfo_disorder_id` = 
+            ( SELECT id
+              FROM $disoder_table dd
+              WHERE dd.`name` = 'age-related macular degeneration - choroidal neovascularisation (wet)'
+            ) 
+            WHERE d.name = 'age-related macular degeneration - subretinal neovascularisation';
 EOT;
 
-        $result = $this->dbConnection->createCommand($query)->queryAll();
+        $this->execute($query);
 
-        echo '<pre>' . print_r($result, true) . '</pre>';
+        $query = <<<EOT
+            UPDATE `$assignment_table` a
+            JOIN `$disoder_table` d ON d.id = a.`ophcocvi_clinicinfo_disorder_id` 
+            SET `ophcocvi_clinicinfo_disorder_id` = 
+            ( SELECT id
+              FROM $disoder_table dd
+              WHERE dd.`name` = 'age-related macular degeneration - choroidal neovascularisation (dry)'
+            ) 
+            WHERE d.name = 'age-related macular degeneration - atrophic / geographic macular atrophy';
+EOT;
+        $this->execute($query);
 
-        return false;
-    }
+        // 3 disorders have no v1 alternative:
+        // retinopathy of prematurity, congenital CNS malformations, congenital eye malformations
 
-    private function getDisorderIdFromMap(array $entry)
-    {
-        $name = '';
+        // actually "retinopathy of prematurity" has v0 and v1 but the
+        // v0 is patient_type=0 // adult
+        // v1 is  patient_type=1 // child
 
-        switch ($entry['disorder_name']) {
+        // retire v0 disorders
+        $query = <<<EOT
+        UPDATE `$disoder_table` SET `active` = 0, `deleted` = 1 WHERE event_type_version = 0;
+EOT;
+        $this->execute($query);
 
-            case 'age-related macular degeneration - atrophic / geographic macular atrophy':
-                $name = 'age-related macular degeneration - choroidal neovascularisation (dry)';
-                break;
-
-            case 'age-related macular degeneration - subretinal neovascularisation':
-                $name = 'age-related macular degeneration - choroidal neovascularisation (wet)';
-                break;
-
-            case 'retinopathy of prematurity':
-                // In DB there are 2 "retinopathy of prematurity" entries,
-                // |             name            | patient_type | event_type_version |
-                // |  retinopathy of prematurity |       0      |          0         |
-                // |  retinopathy of prematurity |       1      |          1         |
-
-                // basically for patient_type 0 we do not have v1
-                $name = ' ??? ';
-                break;
-
-            case 'congenital CNS malformations':
-                // only one entry in DB
-                // |             name             | patient_type | event_type_version |
-                // | congenital CNS malformations |       0      |          0         |
-                $name = ' ??? ';
-                break;
-
-            case 'congenital eye malformations':
-                // only one entry in DB
-                // |             name             | patient_type | event_type_version |
-                // | congenital eye malformations |       0      |          0         |
-                $name = ' ??? ';
-                break;
-        }
-
-        $entry['disorder_name'] = $name;
-        return $this->getNewDisorderId($entry);
+        // retire v0 sections
+        $query = <<<EOT
+        UPDATE `$section_table` SET `active` = 0, `deleted` = 1 WHERE event_type_version = 0;
+EOT;
+        $this->execute($query);
     }
 
     public function safeDown()

@@ -1203,39 +1203,20 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Simple wrapper to get the disorder sections that should be rendered in the event form.
      *
-     * @return mixed
+     * @return array
      */
-    public function getDisorderSections($patient_type = null)
+    public function getDisorderSections($patient_type = null): array
     {
-        if ($patient_type != '') {
-            $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAllByAttributes(
-                [
-                    'patient_type' => $patient_type,
-                   // 'event_type_version' => $this->event->eventType->version
-                ]);
-        } else {
-            $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAllByAttributes(
-                ['patient_type' =>
-                    ($this->getGetPatientAge() < 18)
-                        ? Element_OphCoCvi_ClinicalInfo::CVI_TYPE_CHILD
-                        : Element_OphCoCvi_ClinicalInfo::CVI_TYPE_ADULT,
-                    //'event_type_version' => $this->event->eventType->version
-                ]);
 
-            if (empty($listData)) {
-                $listData = OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll(
-                    array(
-                        "condition" => 'event_type_version = (SELECT MAX(version) AS maxVersion FROM ophcocvi_clinicinfo_disorder_section)
-                    AND patient_type =
-                    '.($this->getGetPatientAge() < 18)
-                            ? Element_OphCoCvi_ClinicalInfo::CVI_TYPE_CHILD
-                            : Element_OphCoCvi_ClinicalInfo::CVI_TYPE_ADULT,
-                        "order"     => "display_order"
-                    ));
-            }
-        }
+        $patient_type = !is_null($patient_type) ? $patient_type :
+            ($this->getGetPatientAge() < 18
+                ? Element_OphCoCvi_ClinicalInfo::CVI_TYPE_CHILD
+                : Element_OphCoCvi_ClinicalInfo::CVI_TYPE_ADULT);
 
-        return $listData;
+        return OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAllByAttributes([
+                'patient_type' => $patient_type,
+                'deleted' => 0
+            ]);
     }
 
     public function getGetPatientAge()
