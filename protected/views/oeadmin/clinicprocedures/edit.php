@@ -81,7 +81,7 @@
                         'Cancel',
                         [
                             'class' => 'button large',
-                            'data-uri' => '/oeadmin/clinicprocedure/list',
+                            'data-uri' => '/oeadmin/ClinicProcedure/list',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

@@ -25,6 +25,7 @@ class DefaultController extends OphTrOperationbookingEventController
         'putOnHold' => self::ACTION_TYPE_EDIT,
         'putOffHold' => self::ACTION_TYPE_EDIT,
         'getHighFlowCriteriaPopupContent' => self::ACTION_TYPE_FORM,
+        'printAdmissionFormPdf' => self::ACTION_TYPE_FORM,
     );
 
     public $eventIssueCreate = 'Operation requires scheduling';
@@ -800,6 +801,23 @@ class DefaultController extends OphTrOperationbookingEventController
         );
 
         echo $this->pdf_print_html;
+    }
+
+    public function actionPrintAdmissionFormPdf() {
+        $this->initWithEventId(@$_GET['id']);
+        $wk = Yii::app()->puppeteer;
+        $wk->setDocRef($this->event->docref);
+        $wk->setPatient($this->event->episode->patient);
+        $wk->setBarcode($this->event->barcodeSVG);
+        $wk->savePageToPDF($this->event->imageDirectory, $this->pdf_print_suffix, '', 'http://localhost/OphTrOperationbooking/default/admissionForm/'.$this->event->id);
+
+        $pdf = $this->event->imageDirectory."/$this->pdf_print_suffix.pdf";
+
+        header('Content-Type: application/pdf');
+        header('Content-Length: '.filesize($pdf));
+
+        readfile($pdf);
+        @unlink($pdf);
     }
 
     public function actionDelete($id)

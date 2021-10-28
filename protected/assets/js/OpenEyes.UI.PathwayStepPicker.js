@@ -14,6 +14,8 @@
         generic_step_type_id: null,
         vf_step_type_id: null,
         booking_step_type_id: null,
+        custom_booking_step_id: null,
+        custom_booking_step: null,
         userContext: 'undefined',
         pathway_checkboxes: '.js-check-patient',
         base_url: '/',
@@ -252,11 +254,13 @@
 
     PathwayStepPicker.prototype.getContextList = function (value) {
         const self = this;
-        let contexts = self.options.subspecialties.find(i => i.id === String(value)).contexts
         let contextList = [];
-        contexts.forEach(element => {
-            contextList.push({'id': element.id, 'name': 'context', 'label': element.name});
-        });
+        if (value !== null) {
+            let contexts = self.options.subspecialties.find(i => i.id === String(value)).contexts;
+            contexts.forEach(element => {
+                contextList.push({'id': element.id, 'name': 'context', 'label': element.name});
+            });
+        }
         return contextList;
     };
 
@@ -278,8 +282,14 @@
         const self = this;
 
         let step_type_id = $(e.target).data('id');
+        if (this.options.custom_booking_steps.find(i => i.id === String(step_type_id)) !== undefined) {
+            // The custom Pathway Step is of booking type, so add it as a default option to open Follow-up Booking Dialog Box
+            this.options.custom_booking_step = this.options.custom_booking_steps.find(i => i.id === String(step_type_id));
+            this.options.custom_booking_step_id = parseInt(this.options.custom_booking_step.id);
+        }
 
         switch (step_type_id) {
+            case this.options.custom_booking_step_id:
             case this.options.booking_step_type_id:
                 new OpenEyes.UI.Dialog.PathwayStepOptions({
                     title: 'Book Follow-up Appointment',
@@ -319,7 +329,7 @@
                             is_form: true,
                             title: 'Context',
                             id: 'context',
-                            items: this.getContextList(this.options.current_subspecialty_id),
+                            items: this.getContextList(this.options.custom_booking_step ? this.options.custom_booking_step.subspecialty_id : this.options.current_subspecialty_id),
                             onSelectValue: function (dialog, itemSet, selected_value) {
                                 self.context_id = selected_value;
                             }
@@ -361,14 +371,28 @@
                         dialog.close();
                     },
                 }).on('open', function () {
-                    // Reset selected values
-                    self.site_id = null;
-                    self.service_id = self.options.current_subspecialty_id;
-                    self.context_id = null;
-                    self.duration_digits = null;
-                    self.duration_period = null;
-                    $('.js-itemset[data-itemset-id="service"] .btn-list label input[value="'+self.options.current_subspecialty_id+'"]').prop("checked", true);
+                    if (self.options.custom_booking_step) {
+                        self.site_id = self.options.custom_booking_step.site_id;
+                        self.service_id = self.options.custom_booking_step.subspecialty_id;
+                        self.context_id = self.options.custom_booking_step.firm_id;
+                        self.duration_digits = self.options.custom_booking_step.duration_value;
+                        self.duration_period = self.options.custom_booking_step.duration_period;
+                    } else {
+                        // Reset selected values
+                        self.site_id = null;
+                        self.service_id = self.options.current_subspecialty_id;
+                        self.context_id = null;
+                        self.duration_digits = null;
+                        self.duration_period = null;
+                    }
+                    $('.js-itemset[data-itemset-id="site"] .btn-list label input[value="'+self.site_id+'"]').prop("checked", true);
+                    $('.js-itemset[data-itemset-id="service"] .btn-list label input[value="'+self.service_id+'"]').prop("checked", true);
+                    $('.js-itemset[data-itemset-id="context"] .btn-list label input[value="'+self.context_id+'"]').prop("checked", true);
+                    $('.js-itemset[data-itemset-id="duration-digits"] .btn-list label input[value="'+self.duration_digits+'"]').prop("checked", true);
+                    $('.js-itemset[data-itemset-id="duration-period"] .btn-list label input[value="'+self.duration_period+'"]').prop("checked", true);
                 }).open();
+                // Reset the booking pathway step
+                self.options.custom_booking_step = null;
                 break;
             case this.options.psd_step_type_id:
                 new OpenEyes.UI.Dialog.PathwayStepOptions({

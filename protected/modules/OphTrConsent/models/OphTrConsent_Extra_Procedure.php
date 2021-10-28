@@ -114,28 +114,20 @@ class OphTrConsent_Extra_Procedure extends BaseActiveRecordVersioned
     }
 
     /**
-     * Get a list of procedures.
+     * Get a list of extra procedures.
      *
      * @param string $term     term to search by
      * @param string $restrict Set to 'booked' or 'unbooked' to restrict results to procedures of that type
      *
      * @return array
      */
-    public static function getList($term, $restrict = null)
+    public static function getList($term)
     {
         $search = "%{$term}%";
         $where = '(term like :search or short_format like :search or snomed_term like :search or snomed_code = :term or aliases like :search)';
 
-        if ($restrict == 'unbooked') {
-            $where .= ' and unbooked = 1';
-        } elseif ($restrict == 'booked') {
-            $where .= ' and unbooked = 0';
-        }
-
-        $where .= ' and ophtrconsent_procedure_extra.active = 1';
-
         return Yii::app()->db->createCommand()
-            ->select('ophtrconsent_procedure_extra.term as label,proc.id')
+            ->select('ophtrconsent_procedure_extra.term as label,ophtrconsent_procedure_extra.id')
             ->from('ophtrconsent_procedure_extra')
             ->where($where, array(
                 ':term' => $term,

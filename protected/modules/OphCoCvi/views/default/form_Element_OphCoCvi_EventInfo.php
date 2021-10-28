@@ -14,7 +14,7 @@
  */
 $currentFirm = \Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 $current_firm_subspecialty_id = $currentFirm->serviceSubspecialtyAssignment->subspecialty_id;
-$firms = \Firm::model()->getListWithSpecialties(Institution::model()->getCurrent()->id, false, $current_firm_subspecialty_id);
+$firms = \Firm::model()->getListWithSpecialties(Institution::model()->getCurrent()->id, false, $current_firm_subspecialty_id, true);
 ?>
 
 <div class="element-fields full-width">

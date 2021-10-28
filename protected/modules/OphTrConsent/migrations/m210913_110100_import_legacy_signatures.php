@@ -15,15 +15,6 @@ class m210913_110100_import_legacy_signatures extends OEMigration
 
     public function up()
     {
-        if (
-            $this->dbConnection->schema->getTable(self::NEW_ET) && $this->dbConnection->schema->getTable(self::NEW_2ND_ET) &&
-            $this->dbConnection->schema->getTable(self::NEW_ITEM)
-        ) {
-            $this->execute("TRUNCATE TABLE " . self::NEW_ITEM);
-            $this->execute("TRUNCATE TABLE " . self::NEW_ET);
-            $this->execute("TRUNCATE TABLE " . self::NEW_2ND_ET);
-        }
-
         $this->upgradeHealthSignatures();
         $this->upgradeAdditionalSignatures();
     }
@@ -129,6 +120,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
                 OR c.protected_file_id IS NOT NULL
                 OR d.protected_file_id IS NOT NULL
                 OR e.protected_file_id IS NOT NULL
+                OR f.protected_file_id IS NOT NULL
                 )
                 ");
 
@@ -176,6 +168,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
                                 ")->queryScalar();
 
             $date = strtotime($signature_item['signature_date']);
+            $name = str_replace("'"," ",substr($signature_item['signatory_name'], 0, 60));
             $this->execute("
                 INSERT INTO " . self::NEW_ITEM . "
             (
@@ -186,7 +179,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
             " . \BaseSignature::TYPE_OTHER_USER . ",
             " . $signature_item['protected_file_id'] . ",
             '" . $role . "',
-            '" . substr($signature_item['signatory_name'], 0, 60) . "',
+            '" . $name . "',
             " . $date . ",
             " . $signature_item['last_modified_user_id'] . ",
             '" . $signature_item['last_modified_date'] . "',

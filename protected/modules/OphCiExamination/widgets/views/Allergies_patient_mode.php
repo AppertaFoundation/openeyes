@@ -41,7 +41,7 @@
                     <tr>
                         <td>
                             <i class="oe-i warning small pad-right"></i>
-                            <?= $entry->getDisplayAllergy() ?>
+                            <?= $entry->getDisplayAllergy() . ($entry->getReactionString() ? ' &emsp;' : '') ?>
                             <span class="fade"><?= ' ' . $entry->getReactionString(); ?></span>
                         </td>
                         <td>

@@ -149,7 +149,7 @@ class LetterStringGroup extends BaseEventTypeElement
         foreach ($this->letterStrings as $lm) {
             if (!in_array($lm->name, $string_names)) {
                 if ($lm->shouldShow($patient, $event_types)) {
-                    $strings[$lm->id] = $string_names[] = $lm->name;
+                    $strings['site'.$lm->id] = $string_names[] = $lm->name;
                 }
             }
         }

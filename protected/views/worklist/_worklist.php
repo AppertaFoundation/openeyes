@@ -49,18 +49,27 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
 $is_printing = isset($is_printing) && ($is_printing === true);
 if (!isset($coreapi)) {
     $coreapi = new CoreAPI();
-} ?>
+}
+
+$section_classes = $data_provider->itemCount === 0 ? 'oec-group no-patients' : 'oec-group';
+$quick_filter_name = $filter->getQuickFilterTypeName();
+?>
 <?php if ($filter->getCombineWorklistsStatus()) : ?>
-<section class="oec-group" id="js-worklist-combined" data-title="Combined Worklists">
+<section class="<?= $section_classes ?>" id="js-worklist-combined" data-title="Combined Worklists">
     <header>
         <h3><?= 'Combined worklists : ' . date('d M Y') ?></h3>
     </header>
 <?php else : ?>
-<section class="oec-group" id="js-worklist-<?= $worklist->id ?>" data-id="<?= $worklist->id ?>" data-title="<?= $worklist->name ?>">
+<section class="<?= $section_classes ?>" id="js-worklist-<?= $worklist->id ?>" data-id="<?= $worklist->id ?>" data-title="<?= $worklist->name ?>">
     <header>
         <h3><?= $worklist->name . ' : ' . date('d M Y') ?></h3>
     </header>
 <?php endif; ?>
+<?php if ($data_provider->itemCount === 0): ?>
+    <div class="result-msg">
+        <?= $filter->hasQuickFilter() ? "No matches for quick filter '" . $quick_filter_name . "'" : 'No patients found' ?>
+    </div>
+<?php else: ?>
     <table class="oec-patients">
         <thead>
         <tr>
@@ -204,6 +213,7 @@ if (!isset($coreapi)) {
         </tr>
         </tfoot>
     </table>
+    <?php endif; ?>
     <div class="oec-clock">
         <!-- Use JS to bind this element to the bottom of the entry closest to the current time. -->
         <?= date('H:i') ?>

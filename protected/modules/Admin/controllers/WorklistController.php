@@ -327,8 +327,19 @@ class WorklistController extends BaseAdminController
             $preset_model->standard_pathway_step_type_id = $pathwayStepTypePreset['standard_pathway_step_type_id'];
             $preset_model->preset_short_name = $preset_model->standard_pathway_step_type->short_name;
             if ($preset_model->preset_short_name === 'Book Apt.') {
-                $preset_model->preset_id = $pathwayStepTypePreset['duration_period']*100 + $pathwayStepTypePreset['duration_value'];
-            } else {
+                /**
+                 * The preset ID is saved as a three digit value, where
+                 * first digit is the duration period, between days, weeks, months and years
+                 * and the other two are for duration value, between 1 and 18
+                 */
+                $preset_model->preset_id = '';
+                if (array_key_exists('duration_period', $pathwayStepTypePreset) && $pathwayStepTypePreset['duration_period'] !== '') {
+                    $preset_model->preset_id = $pathwayStepTypePreset['duration_period'] * 100;
+                }
+                if (array_key_exists('duration_value', $pathwayStepTypePreset) && $pathwayStepTypePreset['duration_value'] !== '') {
+                    $preset_model->preset_id += $pathwayStepTypePreset['duration_value'];
+                }
+            } elseif (array_key_exists('preset_id', $pathwayStepTypePreset)) {
                 $preset_model->preset_id = $pathwayStepTypePreset['preset_id'];
             }
             $model->widget_view = $preset_model->standard_pathway_step_type->widget_view;
@@ -346,12 +357,12 @@ class WorklistController extends BaseAdminController
             }
 
             $model->state_data_template = $preset_model->getStateDataTemplate();
-            if ($model->save()) {
+
+            if (empty($errors) && $model->save()) {
                 $transaction->commit();
                 $this->redirect('/Admin/worklist/customPathSteps');
             } else {
                 $transaction->rollback();
-                $errors[] = $model->getErrors();
             }
         }
 
