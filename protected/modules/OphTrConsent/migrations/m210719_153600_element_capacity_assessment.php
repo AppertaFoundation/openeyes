@@ -2,6 +2,9 @@
 
 class m210719_153600_element_capacity_assessment extends OEMigration
 {
+    private const ARCHIVE_ET_CAP_ASSESSMENT = 'et_ophtrconsent_capacity_assessment_archive';
+    private const ARCHIVE_ET_CAP_ASSESSMENT_V = 'et_ophtrconsent_capacity_assessment_version_archive';
+
     public function up()
     {
         if ($this->dbConnection->schema->getTable('et_ophtrconsent_capacity_assessment', true) === null) {
@@ -22,6 +25,26 @@ class m210719_153600_element_capacity_assessment extends OEMigration
                 'required' => true,
                 'display_order' => 80
             ));
+        } else {
+            $this->execute("CREATE TABLE " . self::ARCHIVE_ET_CAP_ASSESSMENT . " AS SELECT * FROM et_ophtrconsent_capacity_assessment");
+            $this->execute("CREATE TABLE " . self::ARCHIVE_ET_CAP_ASSESSMENT_V . " AS SELECT * FROM et_ophtrconsent_capacity_assessment_version");
+
+            $this->execute("
+                UPDATE et_ophtrconsent_best_interest_decision
+                SET basis_of_decision = concat(basis_of_decision, CHAR(10), patient_impairment);
+            ");
+
+            $this->delete('et_ophtrconsent_capacity_assessment', 'patient_has_capacity = 1');    
+
+            $this->execute('ALTER TABLE et_ophtrconsent_capacity_assessment
+                            DROP COLUMN IF EXISTS patient_impairment,
+                            DROP COLUMN IF EXISTS patient_has_capacity;');
+
+            $this->execute('ALTER TABLE et_ophtrconsent_capacity_assessment_version
+                            DROP COLUMN IF EXISTS patient_impairment,
+                            DROP COLUMN IF EXISTS patient_has_capacity;');
+
+            
         }
     }
 
