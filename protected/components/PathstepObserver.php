@@ -54,14 +54,17 @@ class PathstepObserver
         /**
          * @var $worklist_patient WorklistPatient
          */
-        $criteria->compare('pathway_id', $worklist_patient->pathway->id);
-        $criteria->addCondition("status IS NULL OR status IN ($status_list)");
-        $criteria->addCondition('JSON_CONTAINS(state_data, :event_type, \'$.event_type\')');
-        $criteria->params[':event_type'] = $event_type->class_name;
-        $criteria->order = 'status DESC, `order`';
-        $criteria->limit = 1; // We only want the first result.
+        if ($worklist_patient) {
+            $criteria->compare('pathway_id', $worklist_patient->pathway->id);
+            $criteria->addCondition("status IS NULL OR status IN ($status_list)");
+            $criteria->addCondition('JSON_CONTAINS(state_data, :event_type, \'$.event_type\')');
+            $criteria->params[':event_type'] = $event_type->class_name;
+            $criteria->order = 'status DESC, `order`';
+            $criteria->limit = 1; // We only want the first result.
 
-        return PathwayStep::model()->find($criteria);
+            return PathwayStep::model()->find($criteria);
+        }
+        return null;
     }
 
     /**
@@ -78,12 +81,15 @@ class PathstepObserver
             if (!$step) {
                 // Event is not linked to a step but should still update the first relevant step.
                 $step = $this->getUnassociatedStepForEvent($params['event_type'], $params['patient_id']);
-                $params['event']->worklist_patient_id = $step->pathway->worklist_patient_id;
-                $params['event']->step_id = $step->id;
-                $params['event']->save();
+
+                if ($step) {
+                    $params['event']->worklist_patient_id = $step->pathway->worklist_patient_id;
+                    $params['event']->step_id = $step->id;
+                    $params['event']->save();
+                }
             }
 
-            if ((int)$step->status === PathwayStep::STEP_REQUESTED) {
+            if ($step && (int)$step->status === PathwayStep::STEP_REQUESTED) {
                 $module = $params['event']->eventType->class_name;
                 $step->nextStatus(['view_url' => "/$module/default/view/{$params['event']->id}"]);
             }
