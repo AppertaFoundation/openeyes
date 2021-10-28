@@ -5,10 +5,10 @@ class m211014_114600_import_health_professional extends OEMigration
     const CONSULTANT_SIGNATURE_ELEMENT_TYPE = "OEModule\\OphTrConsent\\models\\Element_OphTrConsent_ConsultantSignature";
     const CONSENT_TAKEN_BY_TABLE = "et_ophtrconsent_consenttakenby";
 
-    function up() {
+    function up()
+    {
         //check old table if exists
-        if(\Yii::app()->db->schema->getTable(self::CONSULTANT_SIGNATURE_TABLE)) {
-        
+        if (\Yii::app()->db->schema->getTable(self::CONSULTANT_SIGNATURE_TABLE)) {
             //copy data
             $this->dbConnection->createCommand(
                 "INSERT INTO ".self::CONSENT_TAKEN_BY_TABLE." "
@@ -25,7 +25,8 @@ class m211014_114600_import_health_professional extends OEMigration
         }
     }
 
-    function down() {
+    function down()
+    {
         echo "m211014_114600_import_health_professional does not support migration down.\n";
         return false;
     }
