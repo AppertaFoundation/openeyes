@@ -65,6 +65,7 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
             WHERE dds.id = " . $old_element_id . " AND protected_file_id IS NOT NULL
         ;");
         ob_clean();
+        return Yii::app()->db->getLastInsertID();
     }
 
     private function createSignatureElementIfNeeded($element)
@@ -122,6 +123,16 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
                 ;
             ");
         ob_clean();
+        return Yii::app()->db->getLastInsertID();
+    }
+
+    protected function updateContactSignatory($new_contact_id,$new_signature_id)
+    {
+        $this->update('ophtrconsent_others_involved_decision_making_process_contact',[
+                'contact_signature_id' => $new_signature_id
+            ],
+            'id = {$new_contact_id}'
+        );
     }
 
     public function safeUp()
@@ -135,10 +146,11 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
             foreach ($deputy_elements as $element) {
                 $new_element_id = $this->createNewElementIfNeeded($element);
                 $old_element_id = $element["id"];
-                $this->addContact($new_element_id, $old_element_id);
+                $new_contact_id = $this->addContact($new_element_id, $old_element_id);
                 if ((int)$element['protected_file_id'] > 0) {
                     $new_signature_element_id = $this->createSignatureElementIfNeeded($element);
-                    $this->addSignature($new_signature_element_id,$old_element_id);
+                    $new_signature_id = $this->addSignature($new_signature_element_id,$old_element_id);
+                    $this->updateContactSignatory($new_contact_id,$new_signature_id);
                 }
             }
         }
