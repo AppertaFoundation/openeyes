@@ -154,7 +154,6 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
                 }
             }
         }
-        die('ROLLBACK');
     }
 
     public function safeDown()
