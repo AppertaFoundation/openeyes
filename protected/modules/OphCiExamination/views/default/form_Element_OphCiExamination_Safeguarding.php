@@ -15,6 +15,7 @@ if (isset($element->event)) {
 $patient_is_minor = $patient->isChild();
 ?>
 <div id="<?= $model_name . '_element'?>" class="element-fields full-width">
+    <?=CHtml::hiddenField('patient_is_minor', $patient_is_minor)?>
     <div class="cols-11">
         <?php if ($editable) { ?>
             <label class="highlight inline">
@@ -30,29 +31,30 @@ $patient_is_minor = $patient->isChild();
             <colgroup><col class="cols-4"></colgroup>
             <tbody>
                 <?php
-                if ($patient_is_minor) {
-                    $protection_plan_label = 'Child is on a child protection plan';
-                    $protection_plan_id = OphCiExamination_Safeguarding_Concern::model()->findByAttributes(array('term' => $protection_plan_label))->id;
-                    $social_worker_label = 'Child has a social worker';
-                    $social_worker_id = OphCiExamination_Safeguarding_Concern::model()->findByAttributes(array('term' => $social_worker_label))->id;
+                $protection_plan_label = 'Child is on a child protection plan';
+                $protection_plan_id = OphCiExamination_Safeguarding_Concern::model()->findByAttributes(array('term' => $protection_plan_label))->id;
+                $social_worker_label = 'Child has a social worker';
+                $social_worker_id = OphCiExamination_Safeguarding_Concern::model()->findByAttributes(array('term' => $social_worker_label))->id;
 
-                    echo CHtml::hiddenField(
-                        'child_safeguarding_data',
-                        json_encode(
-                            array(
-                                'protection_plan' => array(
-                                    'id' => $protection_plan_id,
-                                    'label' => $protection_plan_label
-                                ),
-                                'social_worker' => array(
-                                    'id' => $social_worker_id,
-                                    'label' => $social_worker_label
-                                ),
-                            )
+                echo CHtml::hiddenField(
+                    'child_safeguarding_data',
+                    json_encode(
+                        array(
+                            'protection_plan' => array(
+                                'id' => $protection_plan_id,
+                                'label' => $protection_plan_label
+                            ),
+                            'social_worker' => array(
+                                'id' => $social_worker_id,
+                                'label' => $social_worker_label
+                            ),
                         )
-                    );
-                    ?>
-                <tr class="parental-responsibility-row">
+                    )
+                );
+
+                echo CHtml::hiddenField('clear_safeguarding_paediatric_fields', true);
+                ?>
+                <tr class="js-safeguarding-paediatric-row">
                     <td>Does the child have a social worker?</td>
                     <td>
                         <fieldset>
@@ -69,7 +71,7 @@ $patient_is_minor = $patient->isChild();
                     <td>
                     </td>
                 </tr>
-                <tr class="parental-responsibility-row">
+                <tr class="js-safeguarding-paediatric-row">
                     <td>Is the child under a child protection plan?</td>
                     <td>
                         <fieldset>
@@ -86,7 +88,7 @@ $patient_is_minor = $patient->isChild();
                     <td>
                     </td>
                 </tr>
-                <tr class="parental-responsibility-row">
+                <tr class="js-safeguarding-paediatric-row">
                     <td>Who is accompanying the child and their relationship?</td>
                     <td>
                         <?= \CHTML::activeTextField($element, 'accompanying_person_name', array('class' => 'cols-full', 'placeholder' => 'Full name and relationship of person accompanying the child')); ?>
@@ -94,16 +96,15 @@ $patient_is_minor = $patient->isChild();
                     <td>
                     </td>
                 </tr>
-                <tr class="parental-responsibility-row">
+                <tr class="js-safeguarding-paediatric-row">
                     <td>Who has parental responsibility for the child?</td>
                     <td>
                         <?= \CHTML::activeTextField($element, 'responsible_parent_name', array('class' => 'cols-full', 'placeholder' => 'Full name of parent responsible for child')); ?>
+                    </td>
                     <td>
                     </td>
                 </tr>
-                    <?php
-                }
-
+                <?php
                 $entries = OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
 
                 $row_count = 0;
@@ -214,40 +215,44 @@ $patient_is_minor = $patient->isChild();
         }
 
         $(document).ready(function () {
+            let treat_as_paediatric_radio = $('input[name="OEModule_OphCiExamination_models_Element_OphCiExamination_Triage[triage][treat_as_adult]"][value="0"]');
+
+            let patient_is_minor = treat_as_paediatric_radio.length === 1 && treat_as_paediatric_radio.is(':checked') ? true : $('input#patient_is_minor').val() == 1;
+
+            OphCiExamination_ToggleSafeguardingPaediatricFields(patient_is_minor);
+
             let child_safeguarding_json = $('input#child_safeguarding_data').val();
-            if (child_safeguarding_json !== undefined) {
-                let child_safeguarding_data = JSON.parse(child_safeguarding_json);
-                let $protection_radio_button_yes = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_under_protection_plan[value="1"]');
-                let $protection_radio_button_no = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_under_protection_plan[value="0"]');
-                let $social_worker_radio_button_yes = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_has_social_worker[value="1"]');
-                let $social_worker_radio_button_no = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_has_social_worker[value="0"]');
+            let child_safeguarding_data = JSON.parse(child_safeguarding_json);
+            let $protection_radio_button_yes = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_under_protection_plan[value="1"]');
+            let $protection_radio_button_no = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_under_protection_plan[value="0"]');
+            let $social_worker_radio_button_yes = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_has_social_worker[value="1"]');
+            let $social_worker_radio_button_no = $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_has_social_worker[value="0"]');
 
-                $protection_radio_button_yes.change(function() {
-                    if($protection_radio_button_yes.prop("checked") && $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).length === 0) {
-                        $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns').prop("checked", false);
-                        addSafeguardingRow(child_safeguarding_data.protection_plan);
-                    }
-                });
-                $protection_radio_button_no.change(function() {
-                    if($protection_radio_button_no.prop("checked") && $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).length !== 0) {
-                        $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).parent().remove();
-                        refreshNoConcernsVisibility();
-                    }
-                });
+            $protection_radio_button_yes.change(function() {
+                if($protection_radio_button_yes.prop("checked") && $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).length === 0) {
+                    $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns').prop("checked", false);
+                    addSafeguardingRow(child_safeguarding_data.protection_plan);
+                }
+            });
+            $protection_radio_button_no.change(function() {
+                if($protection_radio_button_no.prop("checked") && $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).length !== 0) {
+                    $(`tr > input[value=${child_safeguarding_data.protection_plan.id}]`).parent().remove();
+                    refreshNoConcernsVisibility();
+                }
+            });
 
-                $social_worker_radio_button_yes.change(function() {
-                    if($social_worker_radio_button_yes.prop("checked") && $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).length === 0) {
-                        $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns').prop("checked", false);
-                        addSafeguardingRow(child_safeguarding_data.social_worker);
-                    }
-                });
-                $social_worker_radio_button_no.change(function() {
-                    if($social_worker_radio_button_no.prop("checked") && $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).length !== 0) {
-                        $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).parent().remove();
-                        refreshNoConcernsVisibility();
-                    }
-                });
-            }
+            $social_worker_radio_button_yes.change(function() {
+                if($social_worker_radio_button_yes.prop("checked") && $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).length === 0) {
+                    $('input#OEModule_OphCiExamination_models_Element_OphCiExamination_Safeguarding_no_concerns').prop("checked", false);
+                    addSafeguardingRow(child_safeguarding_data.social_worker);
+                }
+            });
+            $social_worker_radio_button_no.change(function() {
+                if($social_worker_radio_button_no.prop("checked") && $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).length !== 0) {
+                    $(`tr > input[value=${child_safeguarding_data.social_worker.id}]`).parent().remove();
+                    refreshNoConcernsVisibility();
+                }
+            });
 
             refreshNoConcernsVisibility();
 
