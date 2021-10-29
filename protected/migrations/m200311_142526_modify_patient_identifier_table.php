@@ -2,11 +2,51 @@
 
 class m200311_142526_modify_patient_identifier_table extends OEMigration
 {
+
+    private static $PATIENT_IDENTIFIER_TYPES = ['hos_num' => 'local', 'nhs_num' => 'global'];
+    private static $MERGED_PATIENT_STATUS = PatientMergeRequest::STATUS_MERGED;
+
     public function getSettingValue($setting_name)
     {
         return $this->dbConnection->createCommand()->select('value')->from('setting_installation')
             ->where('`key` = "' . $setting_name . '"')
             ->queryScalar();
+    }
+
+    /**
+     * Recursive function that stop whenever no more merge request where the given patient_id is not a primary patienet
+     * in a merge while running it adds all patient identifiers to the patient that had never been merged in
+     * @param $patient
+     * @param $secondary_patient_id
+     * @param $local_type_id
+     * @param $global_type_id
+     * @param $rows
+     * @throws CException
+     */
+    public function insertPatientIdentifiersFromMergedPatients($patient, $secondary_patient_id, $local_type_id, $global_type_id, &$rows)
+    {
+
+        $patient_merged_in_merge_requests = $this->getDbConnection()
+            ->createCommand("SELECT id, secondary_id,secondary_hos_num as hos_num, secondary_nhsnum as nhs_num 
+                            FROM patient_merge_request 
+                            WHERE primary_id = '$secondary_patient_id'  AND status = " . $this::$MERGED_PATIENT_STATUS)
+            ->queryAll();
+
+        foreach ($patient_merged_in_merge_requests as $patient_merged_in_merge_request) {
+            foreach ($this::$PATIENT_IDENTIFIER_TYPES as $short_name => $type) {
+                if ($patient_merged_in_merge_request[$short_name] &&
+                    $patient_merged_in_merge_request[$short_name] !== $patient[$short_name]) {
+                    $rows[] = [
+                        'patient_id' => $patient['id'],
+                        'patient_identifier_type_id' => ${$type . '_type_id'},
+                        'value' => $patient_merged_in_merge_request[$short_name],
+                        'source_info' => "MERG ID =( " . $patient_merged_in_merge_request['id'] . ")",
+                        'deleted' => 1,
+                    ];
+                }
+            }
+            $this->insertPatientIdentifiersFromMergedPatients($patient, $patient_merged_in_merge_request['secondary_id'], $local_type_id, $global_type_id, $rows);
+        }
     }
 
     /**
@@ -186,13 +226,53 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
             $patients = $dataProvider->getData(true);
             $rows = [];
             foreach ($patients as $patient) {
-                foreach (['hos_num' => 'local', 'nhs_num' => 'global'] as $short_name => $type) {
+                $patient_id = $patient['id'];
+
+                $patient_merged_to_merge_request_id = $this->getDbConnection()->createCommand("SELECT id FROM patient_merge_request WHERE secondary_id = '$patient_id' AND status = " . $this::$MERGED_PATIENT_STATUS)->queryScalar();
+
+                $source_info = (int)$patient['deleted'] === 0 ? 'ACTIVE' : "INACTIVE ID $patient_id";
+                // check if patient id is secondary
+                // if secondary that mean it was merged in
+                // source_info = DELETED ID ( PATIENT MERGE ID )
+                if ($patient_merged_to_merge_request_id) {
+                    $source_info = "DEL ID =(" . $patient_merged_to_merge_request_id . ")";
+                } else {
+                    // Check if patient had other patients merged into it
+                    $patient_merged_in_merge_requests = $this->getDbConnection()
+                        ->createCommand("SELECT id, secondary_id,secondary_hos_num as hos_num, secondary_nhsnum as nhs_num FROM patient_merge_request WHERE primary_id = '$patient_id' AND status = " . $this::$MERGED_PATIENT_STATUS)
+                        ->queryAll();
+                    // Go through all the merge requests and add identifiers to the patient
+                    foreach ($patient_merged_in_merge_requests as $patient_merged_in_merge_request) {
+                        foreach ($this::$PATIENT_IDENTIFIER_TYPES as $short_name => $type) {
+                            if ($patient_merged_in_merge_request[$short_name]
+                                && $patient[$short_name] !== $patient_merged_in_merge_request[$short_name]) {
+                                $rows[] = [
+                                    'patient_id' => $patient['id'],
+                                    'patient_identifier_type_id' => ${$type . '_type_id'},
+                                    'value' => $patient_merged_in_merge_request[$short_name],
+                                    'source_info' => "MERG ID = (" . $patient_merged_in_merge_request['id'] . ")",
+                                    'deleted' => 1,
+                                ];
+                            }
+                        }
+
+                        // Recursive function that will add patient identifiers from patients that was merged into
+                        // secondary patients
+                        $this->insertPatientIdentifiersFromMergedPatients($patient,
+                            $patient_merged_in_merge_request['secondary_id'],
+                            $local_type_id,
+                            $global_type_id,
+                            $rows);
+                    }
+                }
+
+                foreach ($this::$PATIENT_IDENTIFIER_TYPES as $short_name => $type) {
                     if ($patient[$short_name]) {
                         $rows[] = [
                             'patient_id' => $patient['id'],
                             'patient_identifier_type_id' => ${$type . '_type_id'},
                             'value' => $patient[$short_name],
-                            'source_info' => (int)$patient['deleted'] === 0 ? 'ACTIVE' : 'INACTIVE',
+                            'source_info' => $source_info,
                             'deleted' => $patient['deleted'],
                         ];
                     }
@@ -209,9 +289,9 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         if (Yii::app()->hasModule('OphGenetics')) {
             $genetics_type_id = $this->getDbConnection()->createCommand("SELECT id FROM patient_identifier_type WHERE short_title = 'Genetics Subject ID'")->queryScalar();
             $command = Yii::app()->db->createCommand()
-                    ->select('genetics_patient.id as genetics_patient_id, p.id as patient_id')
-                    ->from('genetics_patient')
-                    ->join('patient p', 'p.id = genetics_patient.patient_id');
+                ->select('genetics_patient.id as genetics_patient_id, p.id as patient_id')
+                ->from('genetics_patient')
+                ->join('patient p', 'p.id = genetics_patient.patient_id');
 
             $iterator = new QueryIterator($command, $by = 2000);
             foreach ($iterator as $chunk) {
