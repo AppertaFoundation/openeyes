@@ -113,6 +113,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         <?php endif; ?>
         </tbody>
     </table>
+    <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider">
     <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
     <div class="group"><h4>Proposed procedure(s) or course of treatment:</h4>
@@ -167,10 +168,13 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
             <div class="indent"><p>No special requirements</p></div>
         <?php } ?>
     </div>
-        <p>I have also discussed what the procedure is likely to involve, the benefits and risks of any available
-            alternative treatments (including no treatment) and any particular concerns of this patient. I assess that this
-            patient has the capacity to give valid consent.</p>
     <?php endif; ?>
+
+    <p>I have also discussed what the procedure is likely to involve, the benefits and risks of any available
+        alternative treatments (including no treatment) and any particular concerns of this patient. I assess that this
+        patient has the capacity to give valid consent.</p>
+    <p>I have informed the patient of the material risk involved in the proposed treatment, and have considered and
+        discussed those risks which the patient would or would be likely to consider significant.</p>
 
     <?php if (isset($elements['Element_OphTrConsent_Leaflets']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Leaflets']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
         <?php if ($elements['Element_OphTrConsent_Leaflets']->leaflets) { ?>

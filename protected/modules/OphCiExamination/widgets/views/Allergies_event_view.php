@@ -35,8 +35,8 @@
                                         <ul class="dot-list">
                                             <?php foreach ($entries[(string)AllergyEntry::$PRESENT] as $entry) : ?>
                                                 <li>
-                                                    <?= $entry->getDisplayAllergy(); ?>
-                                                    <span class="fade"><?= ' ' . $entry->getReactionString(); ?></span>
+                                                    <?= $entry->getDisplayAllergy() . ($entry->getReactionString() ? ' &emsp;' : '') ?>
+                                                    <span class="fade"><?= ' ' . $entry->getReactionString() ?></span>
                                                     <?php if ($entry['comments'] != "") {?>
                                                         <i class="oe-i comments-added small pad js-has-tooltip" data-tooltip-content="<?= $entry['comments']; ?>" pro"="" list="" mode"=""></i>
                                                     <?php } ?>

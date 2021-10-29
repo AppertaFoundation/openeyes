@@ -68,7 +68,7 @@
 
             <thead>
                 <tr>
-                    <th>Referral Date</th><th>Safeguarding Status</th><th>MRN</th><th>Patient Name</th><th>Saved/Assigned by</th>
+                    <th>Referral Date</th><th>Safeguarding Status</th><th>MRN</th><th>Patient Name</th><th>Date of Birth</th><th>Saved/Assigned by</th>
                 </tr>
             </thead>
 
@@ -91,9 +91,10 @@
                                 $event->site_id
                             ));
                         $patient_name = $patient->getFullName();
+                        $patient_dob = Helper::convertDate2NHS($patient->dob);
                         $saved_by = $element->createdUser->getFullName();
 
-                        echo "<td>$date</td><td>$status</td><td>$MRN</td><td>$patient_name</td><td>$saved_by</td>";
+                        echo "<td>$date</td><td>$status</td><td>$MRN</td><td>$patient_name</td><td>$patient_dob</td><td>$saved_by</td>";
                         ?>
                     </tr>
                 <?php } ?>

@@ -160,6 +160,38 @@ class WorklistFilterQuery
         $this->risk_query = '(' . $risk_command->text . ') AS risk_event_dates';
     }
 
+    public function hasQuickFilter()
+    {
+        return $this->quick !== null && $this->quick->filter !== 'all';
+    }
+
+    public function getQuickFilterTypeName()
+    {
+        if ($this->quick === null) {
+            return '';
+        } elseif (getType($this->quick->filter) === 'string') {
+            switch ($this->quick->filter) {
+                case 'all':
+                    return 'All';
+                case 'clinic':
+                    return 'Arrived';
+                case 'issues':
+                    return 'Issues';
+                case 'discharged':
+                    return 'Departed';
+                case 'done':
+                    return 'Completed';
+            }
+        } else {
+            switch ($this->quick->filter->type) {
+                case 'waitingFor':
+                    return 'Waiting for ' . $this->quick->filter->value;
+                case 'assignedTo':
+                    return 'Assigned to ' . User::model()->findByPk($this->quick->filter->value)->getFullName();
+            }
+        }
+    }
+
     public function getSiteId()
     {
         return $this->site;

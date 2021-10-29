@@ -38,6 +38,7 @@ return [
 
         'reports' => [
             'Ready for second eye (unbooked)' => '/OphCiExamination/report/readyForSecondEyeUnbooked',
+            'A&E Patient List' => '/OphCiExamination/report/AE'
         ],
     ],
 

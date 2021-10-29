@@ -1010,6 +1010,15 @@ class DefaultController extends \BaseEventTypeController
         ]);
     }
 
+    /**
+     * Print e-sign form
+     *
+     * @param $id
+     * @param $elements
+     * @param string $template
+     * @param array $options
+     * @throws \Exception
+     */
     protected function printESign($id, $elements, $template = '_issue', $options = [])
     {
         $institution_id = \Institution::model()->getCurrent()->id;
@@ -1024,7 +1033,7 @@ class DefaultController extends \BaseEventTypeController
 
             'patient' => $this->patient,
             'primary_identifier' => $primary_identifier->value,
-            'secondary_identifier' => $secondary_identifier->value,
+            'secondary_identifier' => $secondary_identifier->value ?? null,
         ], $options));
     }
 

@@ -14,6 +14,7 @@
  * @copyright Copyright (c) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+    $consentFormType = Element_OphTrConsent_Type::model()->find("event_id = ?", array($element->event_id))->type_id;
 ?>
     <div class="element-data full-width">
         <div class="cols-10">
@@ -32,16 +33,18 @@
                             </span>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <?= CHtml::encode($element->getAttributeLabel('second_op')) ?>
-                        </td>
-                        <td>
-                            <span class="highlighter">
-                                <?= $element->second_op ? $element->sec_op_hp : 'None'; ?>
-                            </span>
-                        </td>
-                    </tr>
+                    <?php if ($consentFormType == Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID) { ?>
+                        <tr>
+                            <td>
+                                <?= CHtml::encode($element->getAttributeLabel('second_op')) ?>
+                            </td>
+                            <td>
+                                <span class="highlighter">
+                                    <?= $element->second_op ? $element->sec_op_hp : 'None'; ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>

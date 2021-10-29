@@ -111,7 +111,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             menu.addClass('selected');
 
-            const option = menu.find(`.js-filter-option[data-id=${id}]`);
+            const option = menu.find(`.js-filter-option[data-id="${id}"]`);
 
             option.addClass('selected');
 

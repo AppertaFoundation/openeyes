@@ -19,6 +19,9 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 
 ?>
 <?php
+/**
+ * @var $episodes Episode[]
+ */
 $episodes = $this->episode->patient->episodes
 ;?>
 <div class="element-data full-width">
@@ -74,8 +77,10 @@ $episodes = $this->episode->patient->episodes
                     <td></td>
                     <?php } ?>
                   <td>
-                      <small>at</small>
-                      <?= $episode->diagnosis->time ?>
+                    <?php if ($episode->disorder_time) { ?>
+                        <small>at</small>
+                        <?= $episode->getDisplayTime() ?>
+                    <?php } ?>
                   </td>
               </tr>
                 <?php }

@@ -21,13 +21,13 @@ if ($element->isNewRecord) {
     if (isset($_REQUEST["type_id"])) {
         $consentFormType = $_REQUEST["type_id"];
     } else {
-        $consentFormType = 1;
+        $consentFormType = Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID;
     }
 } else {
     $consentFormType = Element_OphTrConsent_Type::model()->find("event_id = ?", array($element->event_id))->type_id;
 }
 
-if ($consentFormType == 4) {
+if ($consentFormType == Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID) {
     $showOnlyForCform4 = 'js-showsecond';
     $toggle_secOp = 'js-showOnlyForCform4';
 } else {
