@@ -204,7 +204,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                             DROP COLUMN IF EXISTS decision,
                             DROP COLUMN IF EXISTS views_of_colleagues,
                             DROP COLUMN IF EXISTS no_decision_made');*/
-        }
+        //}
 
     }
 
