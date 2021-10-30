@@ -29,8 +29,8 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
 
         if ($this->dbConnection->schema->getTable('et_ophtrconsent_best_interest_decision', true) !== null && isset(Yii::app()->db->schema->getTable('et_ophtrconsent_best_interest_decision')->columns['deputy_granted'])) {
             //Map data into new best interest decision element
-            //$this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE . " AS SELECT * FROM et_ophtrconsent_best_interest_decision");
-            //$this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE_V . " AS SELECT * FROM et_ophtrconsent_best_interest_decision_version");
+            $this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE . " AS SELECT * FROM et_ophtrconsent_best_interest_decision");
+            $this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE_V . " AS SELECT * FROM et_ophtrconsent_best_interest_decision_version");
 
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision 
                             SET treatment_cannot_wait = CASE 
@@ -44,9 +44,9 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                                 ELSE 0
                             END");
 
-            //$this->execute("UPDATE et_ophtrconsent_best_interest_decision SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
 
-            //$this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
 
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), circumstances) WHERE circumstances IS NOT NULL AND reason_for_procedure IS NOT NULL;");
 
@@ -58,7 +58,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
             
 
             //Create Capacity Advocat elements
-            /*if($this->dbConnection->schema->getTable('et_ophtrconsent_medical_capacity_advocate', true) !== null) {
+            if($this->dbConnection->schema->getTable('et_ophtrconsent_medical_capacity_advocate', true) !== null) {
                 $query_advocate = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_medical_capacity_advocate')->query();
                 if($query_advocate->rowCount == 0) {
                     $capacity_advocate_instructed_yes_id = $this->dbConnection->createCommand('SELECT id FROM ophtrconsent_medical_capacity_advocate_instructed WHERE `name` = "Yes"')->queryScalar();
