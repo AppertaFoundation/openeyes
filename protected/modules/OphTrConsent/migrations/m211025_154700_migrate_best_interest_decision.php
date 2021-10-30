@@ -63,7 +63,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                 if($query_advocate->rowCount == 0) {
                     $capacity_advocate_instructed_yes_id = $this->dbConnection->createCommand('SELECT id FROM ophtrconsent_medical_capacity_advocate_instructed WHERE `name` = "Yes"')->queryScalar();
                     
-                    $capacity_advocate_yes = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision WHERE imca_view IS NOT NULL')->queryAll();
+                    $capacity_advocate_yes = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision WHERE imca_view IS NOT NULL AND imca_view != ""')->queryAll();
 
                     $this->insertMultiple('et_ophtrconsent_medical_capacity_advocate', array_map(
                         static function ($record) use ($capacity_advocate_instructed_yes_id) {
@@ -78,6 +78,25 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                             );
                         },
                         $capacity_advocate_yes
+                    ));
+
+                    $capacity_advocate_instructed_no_id = $this->dbConnection->createCommand('SELECT id FROM ophtrconsent_medical_capacity_advocate_instructed WHERE `name` = "N/A"')->queryScalar();
+                    
+                    $capacity_advocate_no = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision WHERE imca_view IS NULL OR imca_view = ""')->queryAll();
+
+                    $this->insertMultiple('et_ophtrconsent_medical_capacity_advocate', array_map(
+                        static function ($record) use ($capacity_advocate_instructed_no_id) {
+                            return array(
+                                'event_id' => $record['event_id'],
+                                'instructed_id' => $capacity_advocate_instructed_no_id,
+                                'outcome_decision' => $record['imca_view'],
+                                'last_modified_user_id' => $record['last_modified_user_id'],
+                                'last_modified_date' => $record['last_modified_date'],
+                                'created_user_id' => $record['created_user_id'],
+                                'created_date' => $record['created_date'],
+                            );
+                        },
+                        $capacity_advocate_no
                     ));
                 }
             }
