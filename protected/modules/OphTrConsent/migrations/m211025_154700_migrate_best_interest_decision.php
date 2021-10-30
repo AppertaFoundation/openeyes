@@ -27,51 +27,27 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
         */ //DELETE
 
 
-        /*if ($this->dbConnection->schema->getTable('et_ophtrconsent_best_interest_decision', true) !== null && isset(Yii::app()->db->schema->getTable('et_ophtrconsent_best_interest_decision')->columns['deputy_granted'])) {
+        if ($this->dbConnection->schema->getTable('et_ophtrconsent_best_interest_decision', true) !== null && isset(Yii::app()->db->schema->getTable('et_ophtrconsent_best_interest_decision')->columns['deputy_granted'])) {
             //Map data into new best interest decision element
-            $this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE . " AS SELECT * FROM et_ophtrconsent_best_interest_decision");
-            $this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE_V . " AS SELECT * FROM et_ophtrconsent_best_interest_decision_version");
+            //$this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE . " AS SELECT * FROM et_ophtrconsent_best_interest_decision");
+            //$this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE_V . " AS SELECT * FROM et_ophtrconsent_best_interest_decision_version");
 
-            $this->execute("
-                UPDATE et_ophtrconsent_best_interest_decision
-                SET treatment_cannot_wait = 1
-                WHERE treatment_cannot_wait_reason IS NOT NULL
-            ");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET treatment_cannot_wait = 1 WHERE treatment_cannot_wait_reason IS NOT NULL");
 
-            $this->execute("
-                UPDATE et_ophtrconsent_best_interest_decision_version
-                SET treatment_cannot_wait = 1
-                WHERE treatment_cannot_wait_reason IS NOT NULL;
-            ");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET treatment_cannot_wait = 1 WHERE treatment_cannot_wait_reason IS NOT NULL;");
 
-            $this->execute("
-                UPDATE et_ophtrconsent_best_interest_decision
-                SET wishes = concat(wishes, CHAR(10), options_less_restrictive)
-                WHERE options_less_restrictive IS NOT NULL;
-            ");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
 
-            $this->execute("
-                UPDATE et_ophtrconsent_best_interest_decision_version
-                SET wishes = concat(wishes, CHAR(10), options_less_restrictive)
-                WHERE options_less_restrictive IS NOT NULL;
-            ");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
 
-            $this->execute("
-                UPDATE et_ophtrconsent_best_interest_decision
-                SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), circumstances)
-                WHERE circumstances IS NOT NULL;
-            ");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), circumstances) WHERE circumstances IS NOT NULL;");
 
-            $this->execute("
-                UPDATE et_ophtrconsent_best_interest_decision_version
-                SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), circumstances)
-                WHERE circumstances IS NOT NULL;
-            ");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), circumstances) WHERE circumstances IS NOT NULL;");
 
             
 
             //Create Capacity Advocat elements
-            if($this->dbConnection->schema->getTable('et_ophtrconsent_medical_capacity_advocate', true) !== null) {
+            /*if($this->dbConnection->schema->getTable('et_ophtrconsent_medical_capacity_advocate', true) !== null) {
                 $query_advocate = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_medical_capacity_advocate')->query();
                 if($query_advocate->rowCount == 0) {
                     $capacity_advocate_instructed_yes_id = $this->dbConnection->createCommand('SELECT id FROM ophtrconsent_medical_capacity_advocate_instructed WHERE `name` = "Yes"')->queryScalar();
@@ -113,7 +89,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                         );
                     },
                     $query_deputy
-                ));*/
+                ));
 
                 $query_deputy_yes = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision WHERE deputy_granted = 1')->query();
                 if($query_deputy_yes->rowCount != 0) {
@@ -183,7 +159,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                     }
 
                 }
-            //}
+            }
 
 
             //Drop old columns
@@ -204,7 +180,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                             DROP COLUMN IF EXISTS decision,
                             DROP COLUMN IF EXISTS views_of_colleagues,
                             DROP COLUMN IF EXISTS no_decision_made');*/
-        //}
+        }
 
     }
 
