@@ -56,6 +56,13 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
 
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = circumstances WHERE circumstances IS NOT NULL AND reason_for_procedure IS NULL;");
             
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), decision) WHERE decision IS NOT NULL AND reason_for_procedure IS NOT NULL;");
+
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), decision) WHERE decision IS NOT NULL AND reason_for_procedure IS NOT NULL;");
+
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET reason_for_procedure = decision WHERE decision IS NOT NULL AND reason_for_procedure IS NULL;");
+
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = decision WHERE decision IS NOT NULL AND reason_for_procedure IS NULL;");
 
             //Create Capacity Advocat elements
             if($this->dbConnection->schema->getTable('et_ophtrconsent_medical_capacity_advocate', true) !== null) {
