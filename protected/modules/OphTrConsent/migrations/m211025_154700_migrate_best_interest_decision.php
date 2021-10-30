@@ -32,18 +32,31 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
             //$this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE . " AS SELECT * FROM et_ophtrconsent_best_interest_decision");
             //$this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE_V . " AS SELECT * FROM et_ophtrconsent_best_interest_decision_version");
 
-            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET treatment_cannot_wait = 1 WHERE treatment_cannot_wait_reason IS NOT NULL");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision 
+                            SET treatment_cannot_wait = CASE 
+                                WHEN treatment_cannot_wait_reason IS NOT NULL AND treatment_cannot_wait_reason != '' THEN 1 
+                                WHEN treatment_cannot_wait_reason IS NULL AND treatment_cannot_wait_reason = '' THEN 0
+                                ELSE treatment_cannot_wait_reason
+                            END");
 
-            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET treatment_cannot_wait = 1 WHERE treatment_cannot_wait_reason IS NOT NULL;");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version 
+            SET treatment_cannot_wait = CASE 
+                WHEN treatment_cannot_wait_reason IS NOT NULL AND treatment_cannot_wait_reason != '' THEN 1 
+                WHEN treatment_cannot_wait_reason IS NULL AND treatment_cannot_wait_reason = '' THEN 0
+                ELSE treatment_cannot_wait_reason
+            END");
 
-            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
+            //$this->execute("UPDATE et_ophtrconsent_best_interest_decision SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
 
-            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
+            //$this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
 
-            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), circumstances) WHERE circumstances IS NOT NULL;");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), circumstances) WHERE circumstances IS NOT NULL AND reason_for_procedure IS NOT NULL;");
 
-            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), circumstances) WHERE circumstances IS NOT NULL;");
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), circumstances) WHERE circumstances IS NOT NULL AND reason_for_procedure IS NOT NULL;");
 
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET reason_for_procedure = circumstances WHERE circumstances IS NOT NULL AND reason_for_procedure IS NULL;");
+
+            $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = circumstances WHERE circumstances IS NOT NULL AND reason_for_procedure IS NULL;");
             
 
             //Create Capacity Advocat elements
