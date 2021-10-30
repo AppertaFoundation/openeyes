@@ -27,7 +27,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
         */ //DELETE
 
 
-        if ($this->dbConnection->schema->getTable('et_ophtrconsent_best_interest_decision', true) !== null && isset(Yii::app()->db->schema->getTable('et_ophtrconsent_best_interest_decision')->columns['deputy_granted'])) {
+        /*if ($this->dbConnection->schema->getTable('et_ophtrconsent_best_interest_decision', true) !== null && isset(Yii::app()->db->schema->getTable('et_ophtrconsent_best_interest_decision')->columns['deputy_granted'])) {
             //Map data into new best interest decision element
             $this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE . " AS SELECT * FROM et_ophtrconsent_best_interest_decision");
             $this->execute("CREATE TABLE " . self::ARCHIVE_ET_BEST_INTEREST_TABLE_V . " AS SELECT * FROM et_ophtrconsent_best_interest_decision_version");
@@ -113,10 +113,10 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                         );
                     },
                     $query_deputy
-                ));
+                ));*/
 
                 $query_deputy_yes = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision WHERE deputy_granted = 1')->query();
-                if($query_deputy_yes->rowCount == 0) {
+                if($query_deputy_yes->rowCount != 0) {
                     $power_of_attorney_contact_label_id = $this->dbConnection->createCommand('SELECT id FROM contact_label WHERE `name` = "Power of Attorney"')->queryScalar();
                     
                     $deputy_signature = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision_deputy_signature')->queryAll();
@@ -183,7 +183,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                     }
 
                 }
-            }
+            //}
 
 
             //Drop old columns
