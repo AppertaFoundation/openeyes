@@ -32,9 +32,7 @@ class m210719_153600_element_capacity_assessment extends OEMigration
             $this->execute("
                 UPDATE et_ophtrconsent_best_interest_decision
                 SET basis_of_decision = concat(basis_of_decision, CHAR(10), patient_impairment);
-            ");
-
-            $this->delete('et_ophtrconsent_capacity_assessment', 'patient_has_capacity = 1');    
+            ");  
 
             $this->execute('ALTER TABLE et_ophtrconsent_capacity_assessment
                             DROP COLUMN IF EXISTS patient_impairment,
