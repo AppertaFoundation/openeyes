@@ -35,16 +35,14 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision 
                             SET treatment_cannot_wait = CASE 
                                 WHEN treatment_cannot_wait_reason IS NOT NULL AND treatment_cannot_wait_reason != '' THEN 1 
-                                WHEN treatment_cannot_wait_reason IS NULL AND treatment_cannot_wait_reason = '' THEN 0
-                                ELSE treatment_cannot_wait_reason
+                                ELSE 0
                             END");
 
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version 
-            SET treatment_cannot_wait = CASE 
-                WHEN treatment_cannot_wait_reason IS NOT NULL AND treatment_cannot_wait_reason != '' THEN 1 
-                WHEN treatment_cannot_wait_reason IS NULL AND treatment_cannot_wait_reason = '' THEN 0
-                ELSE treatment_cannot_wait_reason
-            END");
+                            SET treatment_cannot_wait = CASE 
+                                WHEN treatment_cannot_wait_reason IS NOT NULL AND treatment_cannot_wait_reason != '' THEN 1 
+                                ELSE 0
+                            END");
 
             //$this->execute("UPDATE et_ophtrconsent_best_interest_decision SET wishes = concat(wishes, CHAR(10), options_less_restrictive) WHERE options_less_restrictive IS NOT NULL;");
 
