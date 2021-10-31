@@ -893,6 +893,41 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * Clones the default pathway for the associated worklist for the specified worklist patient.
+     * @param WorklistPatient $wp
+     * @return bool
+     * @throws Exception
+     */
+    public function createPathway(WorklistPatient $wp)
+    {
+        $wp->refresh();
+
+        if (!$wp->pathway) {
+            $pathway_type_id = $wp->worklist->worklist_definition->pathway_type_id;
+            $pathway_type = PathwayType::model()->findByPk($pathway_type_id);
+
+            if ($pathway_type) {
+                if (!$pathway_type->createNewPathway($wp->id)) {
+                    throw new Exception('Unable to create pathway.');
+                }
+                $wp->refresh(); // Need to refresh first to synchronise the pathway relation to the newly created pathway.
+
+                $start_status = $this->getWorklistPatientAttribute('Status'); // Could we genericise this attribute name in future?
+                if ($wp->pathway
+                    && !$wp->pathway->start_time
+                    && $start_status
+                    && strtolower($start_status->attribute_value) === strtolower('Attended')) {
+                    // Start the pathway immediately.
+                    $wp->pathway->startPathway();
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * If the given Patient is successfully added to the given Worklist, returns true. false otherwise.
      *
      * @param Patient  $patient
@@ -930,6 +965,10 @@ class WorklistManager extends CComponent
                 if (!$this->setAttributesForWorklistPatient($wp, $attributes)) {
                     throw new Exception('Could not set attributes for patient on worklist');
                 }
+            }
+
+            if (!$this->createPathway($wp)) {
+                throw new Exception('Unable to create pathway for patient visit.');
             }
 
             $target = $worklist->worklist_definition_id ? self::$AUDIT_TARGET_AUTO : self::$AUDIT_TARGET_MANUAL;

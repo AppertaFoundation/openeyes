@@ -267,7 +267,7 @@ class Firm extends BaseActiveRecordVersioned
      *
      * @return array
      */
-    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null)
+    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null, $only_with_consultant = false)
     {
 
         $join_method = $include_non_subspecialty ? 'leftJoin' : 'join';
@@ -278,6 +278,10 @@ class Firm extends BaseActiveRecordVersioned
             ->$join_method('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
             ->$join_method('subspecialty s', 'ssa.subspecialty_id = s.id')
             ->where('f.active = 1');
+
+        if ($only_with_consultant) {
+            $command->andWhere('consultant_id IS NOT NULL');
+        }
 
         if ($subspecialty_id) {
             $command->andWhere('s.id = :id', array(':id' => $subspecialty_id));

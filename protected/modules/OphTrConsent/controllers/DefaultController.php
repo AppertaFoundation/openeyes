@@ -352,7 +352,8 @@ class DefaultController extends BaseEventTypeController
             } elseif (preg_match('/^booking([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
                 $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&booking_event_id=' . $m[1]));
             } elseif (preg_match('/^template([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
-                $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1]));
+                $template = OphTrConsent_Template::model()->findByPk($m[1]);
+                $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1] . '&type_id='.$template->type_id));
             }
             $errors = array('Consent form' => array('Please select a booking or Unbooked procedures'));
         }

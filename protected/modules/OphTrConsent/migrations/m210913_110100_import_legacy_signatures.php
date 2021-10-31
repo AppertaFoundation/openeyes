@@ -15,15 +15,20 @@ class m210913_110100_import_legacy_signatures extends OEMigration
 
     public function up()
     {
-        $this->upgradeAdditionalSignatures();
         $this->upgradeHealthSignatures();
+        $this->upgradeAdditionalSignatures();
     }
 
     public function safeDown()
     {
-        $this->execute("TRUNCATE TABLE " . self::NEW_ITEM);
-        $this->execute("TRUNCATE TABLE " . self::NEW_ET);
-        $this->execute("TRUNCATE TABLE " . self::NEW_2ND_ET);
+        if (
+            $this->dbConnection->schema->getTable(self::NEW_ET) && $this->dbConnection->schema->getTable(self::NEW_2ND_ET) &&
+            $this->dbConnection->schema->getTable(self::NEW_ITEM)
+        ) {
+            $this->execute("TRUNCATE TABLE " . self::NEW_ITEM);
+            $this->execute("TRUNCATE TABLE " . self::NEW_ET);
+            $this->execute("TRUNCATE TABLE " . self::NEW_2ND_ET);
+        }
     }
 
     public function upgradeHealthSignatures()
@@ -67,7 +72,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
 
             $this->execute("UPDATE " . self::NEW_2ND_ET . "
                             LEFT JOIN ".self::NEW_ITEM." ON ".self::NEW_2ND_ET.".id = ".self::NEW_ITEM.".element_id
-                            SET ".self::NEW_2ND_ET.".healthprof_signature_id = ".self::NEW_ITEM.".id;"
+                            SET ".self::NEW_2ND_ET.".healthprof_signature_id = ".self::NEW_ITEM.".id WHERE ".self::NEW_ITEM.".signatory_role = 'Health professional'"
             );
         }
     }
@@ -108,30 +113,33 @@ class m210913_110100_import_legacy_signatures extends OEMigration
                 LEFT JOIN " . self::LEGACY_4_ET . " as c ON a.id = c.event_id
                 LEFT JOIN " . self::LEGACY_5_ET . " as d ON a.id = d.event_id
                 LEFT JOIN " . self::LEGACY_ET . " as e ON a.id = e.event_id
+                LEFT JOIN " . self::LEGACY_3_ET . " as f ON a.id = f.event_id
                 WHERE a.event_type_id = " . $evt_type_id . "
                 AND (
-				b.protected_file_id IS NOT NULL
+                b.protected_file_id IS NOT NULL
                 OR c.protected_file_id IS NOT NULL
                 OR d.protected_file_id IS NOT NULL
                 OR e.protected_file_id IS NOT NULL
+                OR f.protected_file_id IS NOT NULL
                 )
                 ");
 
             $this->execute("
                 INSERT INTO " . self::NEW_2ND_ET . "
             (
-            				event_id, last_modified_user_id, last_modified_date, created_user_id, created_date
+                                        event_id, last_modified_user_id, last_modified_date, created_user_id, created_date
             )
             SELECT
                 a.event_id, a.last_modified_user_id, a.last_modified_date, a.created_user_id, a.created_date
                 FROM " . self::NEW_ET . " as a
+                WHERE NOT EXISTS (SELECT *from " . self::NEW_2ND_ET . " WHERE event_id = a.event_id)
                 "
             );
 
             $additionals = $this->dbConnection
                 ->createCommand("
-				SELECT * FROM " . self::NEW_ET . "
-				")->queryAll();
+                                SELECT * FROM " . self::NEW_ET . "
+                                ")->queryAll();
 
             $this->setVerbose(false);
             foreach ($additionals as $additional) {
@@ -148,29 +156,31 @@ class m210913_110100_import_legacy_signatures extends OEMigration
     public function addSignature($additional, $table, $role, $attribute)
     {
 
-        $signature_items = $this->dbConnection
+        $signature_item = $this->dbConnection
             ->createCommand("
-				SELECT * FROM " . $table . " WHERE event_id = ".$additional['event_id']." AND protected_file_id IS NOT NULL
-				")->queryAll();
+                                SELECT * FROM " . $table . " WHERE event_id = ".$additional['event_id']." AND protected_file_id IS NOT NULL
+                                ")->queryRow();
 
-        foreach ($signature_items as $signature_item) {
+        if ($signature_item) {
             $element_id = $this->dbConnection
                 ->createCommand("
-				SELECT id FROM " . self::NEW_2ND_ET . " WHERE event_id = ".$signature_item['event_id']."
-				")->queryScalar();
+                                SELECT id FROM " . self::NEW_2ND_ET . " WHERE event_id = " . $signature_item['event_id'] . "
+                                ")->queryScalar();
+
             $date = strtotime($signature_item['signature_date']);
+            $name = str_replace("'"," ",substr($signature_item['signatory_name'], 0, 60));
             $this->execute("
                 INSERT INTO " . self::NEW_ITEM . "
             (
-            				element_id, `type`, signature_file_id, signatory_role, signatory_name,
-            				`timestamp`, last_modified_user_id, last_modified_date, created_user_id, created_date
+                                        element_id, `type`, signature_file_id, signatory_role, signatory_name,
+                                        `timestamp`, last_modified_user_id, last_modified_date, created_user_id, created_date
             ) VALUES (
             " . $element_id . ",
             " . \BaseSignature::TYPE_OTHER_USER . ",
             " . $signature_item['protected_file_id'] . ",
-            '".$role."',
-            '" . substr($signature_item['signatory_name'], 0, 60) . "',
-            ".$date.",
+            '" . $role . "',
+            '" . $name . "',
+            " . $date . ",
             " . $signature_item['last_modified_user_id'] . ",
             '" . $signature_item['last_modified_date'] . "',
             " . $signature_item['created_user_id'] . ",
@@ -183,9 +193,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
                 ->createCommand("SELECT id FROM " . self::NEW_ITEM . " ORDER BY id DESC LIMIT 1;")
                 ->queryScalar();
 
-            $this->execute("
-					UPDATE " . self::NEW_ET . " SET ".$attribute." = " . $signature_id . " WHERE event_id = " . $additional['event_id'] . "
-					");
+            $this->execute("UPDATE " . self::NEW_ET . " SET " . $attribute . " = " . $signature_id . " WHERE id = " . $additional['id'] . "");
         }
     }
 }
