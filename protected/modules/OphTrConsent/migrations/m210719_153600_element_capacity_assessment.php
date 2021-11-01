@@ -31,12 +31,12 @@ class m210719_153600_element_capacity_assessment extends OEMigration
             $this->execute("CREATE TABLE " . self::ARCHIVE_ET_CAP_ASSESSMENT_V . " AS SELECT * FROM et_ophtrconsent_capacity_assessment_version");
 
             $this->execute("
-                UPDATE et_ophtrconsent_best_interest_decision
+                UPDATE et_ophtrconsent_capacity_assessment
                 SET basis_of_decision = concat(basis_of_decision, CHAR(10), patient_impairment);
             ");  
 
             $this->execute("
-                UPDATE et_ophtrconsent_best_interest_decision_version
+                UPDATE et_ophtrconsent_capacity_assessment_version
                 SET basis_of_decision = concat(basis_of_decision, CHAR(10), patient_impairment);
             ");  
 
