@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "425513e577d4ed5e601756a9e36095cd",
+    "content-hash": "010dcf6abb2db78dd78a615c953c1454",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2630,16 +2630,16 @@
         },
         {
             "name": "yiisoft/yii",
-            "version": "1.1.23",
+            "version": "1.1.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii.git",
-                "reference": "445827fe625a392451e9839787bd513112b23b1b"
+                "reference": "a5ab20cfd655d77800c74e3a26a0db9535d8da8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii/zipball/445827fe625a392451e9839787bd513112b23b1b",
-                "reference": "445827fe625a392451e9839787bd513112b23b1b",
+                "url": "https://api.github.com/repos/yiisoft/yii/zipball/a5ab20cfd655d77800c74e3a26a0db9535d8da8a",
+                "reference": "a5ab20cfd655d77800c74e3a26a0db9535d8da8a",
                 "shasum": ""
             },
             "require": {
@@ -2651,7 +2651,7 @@
                 "phing/phing": "2.*",
                 "phpseclib/mcrypt_compat": "^1.0",
                 "phpunit/phpunit": "4.8.34",
-                "phpunit/phpunit-selenium": "~2.0.0"
+                "phpunit/phpunit-selenium": "~1.4.0"
             },
             "suggest": {
                 "ext-mcrypt": "Required by encrypt and decrypt methods of CSecurityManager",
@@ -2764,7 +2764,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-02T16:53:51+00:00"
+            "time": "2021-06-07T13:16:45+00:00"
         }
     ],
     "packages-dev": [
