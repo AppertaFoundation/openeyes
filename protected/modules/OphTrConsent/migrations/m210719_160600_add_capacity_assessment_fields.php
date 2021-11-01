@@ -34,12 +34,12 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
                 ]
             );
 
-            $old_unable_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_tabl . ' WHERE `label` = "The patient is unable to use and weigh this information in the decision-making process"')->queryScalar();
-            $old_unconscious_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_tabl . ' WHERE `label` = "The patient is unable to communicate their decision"')->queryScalar();
+            $old_unable_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "The patient is unable to use and weigh this information in the decision-making process"')->queryScalar();
+            $old_unconscious_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "The patient is unable to communicate their decision"')->queryScalar();
 
 
-            $unable_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_tabl . ' WHERE `label` = "They are unable to use and or weigh this information in the decision-making process"')->queryScalar();
-            $unconscious_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_tabl . ' WHERE `label` = "They are unconscious"')->queryScalar();
+            $unable_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "They are unable to use and or weigh this information in the decision-making process"')->queryScalar();
+            $unconscious_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "They are unconscious"')->queryScalar();
 
             $this->execute("
                 UPDATE " . $this->clr_table . 
