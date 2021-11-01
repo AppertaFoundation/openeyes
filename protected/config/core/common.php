@@ -62,6 +62,9 @@ $db_test = array(
     $authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');    // OIDC, SAML, BASIC or LDAP;
 /** END SINGLE SIGN-ON SETTINGS */
 
+$breakGlassEnabled = strtolower(getenv('BREAK_GLASS_ENABLED')) === "true";
+$breakGlassField = getenv('BREAK_GLASS_FIELD') ?: 'qualifications';
+
 $config = array(
     'name' => 'OpenEyes',
 
@@ -876,6 +879,8 @@ $config = array(
             'portal_login_url' => $ssoLoginURL,
         ),
         /** END SINGLE SIGN-ON PARAMS */
+        'breakglass_enabled' => $breakGlassEnabled,
+        'breakglass_field' => $breakGlassField,
     ),
 );
 
@@ -933,6 +938,7 @@ $modules = array(
         'OphOuCatprom5',
         'OphTrOperationchecklists',
         'OphDrPGDPSD',
+        'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
 );
 
 // deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
