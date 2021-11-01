@@ -8,6 +8,9 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
     private $clr_table = "ophtrconsent_lack_of_capacity_reason";
     private $pivot_table = "et_ophtrconsent_capacity_assessment_lack_cap_reason";
 
+    private const ARCHIVE_CALC = 'ophtrconsent_lack_of_capacity_reason_archive';
+    private const ARCHIVE_CALC_V = 'ophtrconsent_lack_of_capacity_reason_version_archive';
+
     public function up()
     {
         if ($this->dbConnection->schema->getTable($this->clr_table, true) === null) {
@@ -26,6 +29,9 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
                 ]
             );
         } else {
+            $this->execute("CREATE TABLE " . self::ARCHIVE_CALC . " AS SELECT * FROM ophtrconsent_lack_of_capacity_reason");
+            $this->execute("CREATE TABLE " . self::ARCHIVE_CALC_V . " AS SELECT * FROM ophtrconsent_lack_of_capacity_reason_version");
+
             $query_advocate = $this->dbConnection->createCommand('SELECT * FROM ophtrconsent_lack_of_capacity_reason WHERE label="They are unconscious"')->query();
             if($query_advocate->rowCount == 0) {
                 $this->insertMultiple(
@@ -53,14 +59,8 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
                 END
                 WHERE lack_of_capacity_reason_id  in (" . $old_unable_id . "," . $old_unconscious_id . ")
             ");
-            /*$this->dropForeignKey("fk_et_ophtrconsent_calcar_etid", $this->pivot_table);
-            $this->dropForeignKey("fk_et_ophtrconsent_calcar_rid", $this->pivot_table);
-            $this->truncateTable($this->clr_table);
-            if ($this->dbConnection->schema->getTable($this->pivot_table, true) !== null) {
-                $this->truncateTable($this->pivot_table);
-                $this->addForeignKey("fk_et_ophtrconsent_calcar_rid", $this->pivot_table, "lack_of_capacity_reason_id", $this->clr_table, "id");
-            }
-            $this->addForeignKey("fk_et_ophtrconsent_calcar_etid", $this->pivot_table, "element_id", $this->table, "id");*/
+
+            $this->execute("DELETE FROM ophtrconsent_lack_of_capacity_reason WHERE id = " . $old_unable_id . " OR id = " . $old_unconscious_id . ";");
         }
 
         if ($this->dbConnection->schema->getTable($this->pivot_table, true) === null) {

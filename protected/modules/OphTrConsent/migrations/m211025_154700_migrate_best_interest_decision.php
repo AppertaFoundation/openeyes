@@ -7,25 +7,6 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
 
     public function safeUp()
     {
-        //DELETE
-        /*if ($this->dbConnection->schema->getTable('et_ophtrconsent_best_interest_decision', true) !== null && !isset(Yii::app()->db->schema->getTable('et_ophtrconsent_best_interest_decision')->columns['deputy_granted'])) {
-
-            $this->addOEColumn('et_ophtrconsent_best_interest_decision','deputy_granted','BOOLEAN',true);
-            $this->addOEColumn('et_ophtrconsent_best_interest_decision','circumstances','TEXT NULL',true);
-            $this->addOEColumn('et_ophtrconsent_best_interest_decision','imca_view','TEXT NULL',true);
-            $this->addOEColumn('et_ophtrconsent_best_interest_decision','options_less_restrictive','TEXT NULL',true);
-            $this->addOEColumn('et_ophtrconsent_best_interest_decision','views_of_colleagues','TEXT NULL',true);
-            $this->addOEColumn("et_ophtrconsent_best_interest_decision", "decision", "TEXT NULL");
-            $this->addOEColumn("et_ophtrconsent_best_interest_decision", "no_decision_made", "BOOLEAN NOT NULL DEFAULT 0");
-            
-        }
-
-        $this->dropTable(self::ARCHIVE_ET_BEST_INTEREST_TABLE);
-        $this->dropTable(self::ARCHIVE_ET_BEST_INTEREST_TABLE_V);
-
-        $this->execute("INSERT INTO `openeyes`.`et_ophtrconsent_best_interest_decision` (`event_id`, `patient_has_not_refused`, `reason_for_procedure`, `treatment_cannot_wait`, `treatment_cannot_wait_reason`, `wishes`, `decision`, `deputy_granted`, `circumstances`, `imca_view`, `options_less_restrictive`, `views_of_colleagues`) VALUES ('3686620', '1', 'Reason', '1', 'Cannot wait', 'Wish', 'Decision', '0', 'Circumstances', 'IMCA', 'Less restrictive', 'View of colleagues');");
-        */ //DELETE
-
 
         if ($this->dbConnection->schema->getTable('et_ophtrconsent_best_interest_decision', true) !== null && isset(Yii::app()->db->schema->getTable('et_ophtrconsent_best_interest_decision')->columns['deputy_granted'])) {
             //Map data into new best interest decision element
@@ -200,7 +181,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
 
 
             //Drop old columns
-            /*$this->execute('ALTER TABLE et_ophtrconsent_best_interest_decision
+            $this->execute('ALTER TABLE et_ophtrconsent_best_interest_decision
                             DROP COLUMN IF EXISTS deputy_granted,
                             DROP COLUMN IF EXISTS circumstances,
                             DROP COLUMN IF EXISTS imca_view,
@@ -216,7 +197,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                             DROP COLUMN IF EXISTS options_less_restrictive,
                             DROP COLUMN IF EXISTS decision,
                             DROP COLUMN IF EXISTS views_of_colleagues,
-                            DROP COLUMN IF EXISTS no_decision_made');*/
+                            DROP COLUMN IF EXISTS no_decision_made');
         }
 
     }
