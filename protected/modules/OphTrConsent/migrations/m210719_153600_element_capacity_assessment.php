@@ -7,6 +7,7 @@ class m210719_153600_element_capacity_assessment extends OEMigration
 
     public function up()
     {
+        
         if ($this->dbConnection->schema->getTable('et_ophtrconsent_capacity_assessment', true) === null) {
             $this->createOETable("et_ophtrconsent_capacity_assessment", array(
                 'id' => 'pk',
@@ -31,6 +32,11 @@ class m210719_153600_element_capacity_assessment extends OEMigration
 
             $this->execute("
                 UPDATE et_ophtrconsent_best_interest_decision
+                SET basis_of_decision = concat(basis_of_decision, CHAR(10), patient_impairment);
+            ");  
+
+            $this->execute("
+                UPDATE et_ophtrconsent_best_interest_decision_version
                 SET basis_of_decision = concat(basis_of_decision, CHAR(10), patient_impairment);
             ");  
 
