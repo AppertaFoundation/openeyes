@@ -26,13 +26,16 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
                 ]
             );
         } else {
-            $this->insertMultiple(
-                $this->clr_table,
-                [
-                    ['label' => 'They are unable to use and or weigh this information in the decision-making process'],
-                    ['label' => 'They are unconscious'],
-                ]
-            );
+            $query_advocate = $this->dbConnection->createCommand('SELECT * FROM ophtrconsent_lack_of_capacity_reason WHERE label="They are unconscious"')->query();
+            if($query_advocate->rowCount == 0) {
+                $this->insertMultiple(
+                    $this->clr_table,
+                    [
+                        ['label' => 'They are unable to use and or weigh this information in the decision-making process'],
+                        ['label' => 'They are unconscious'],
+                    ]
+                );
+            }
 
             $old_unable_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "The patient is unable to use and weigh this information in the decision-making process"')->queryScalar();
             $old_unconscious_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "The patient is unable to communicate their decision"')->queryScalar();
