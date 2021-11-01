@@ -45,7 +45,7 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
             $unconscious_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "They are unconscious"')->queryScalar();
 
             $this->execute("
-                UPDATE " . $this->clr_table . 
+                UPDATE " . $this->pivot_table . 
                 " SET lack_of_capacity_reason_id = CASE
                     WHEN lack_of_capacity_reason_id = " . $old_unable_id . " THEN " . $unable_id . "
                     WHEN lack_of_capacity_reason_id = " . $old_unconscious_id . " THEN " . $unconscious_id . "
