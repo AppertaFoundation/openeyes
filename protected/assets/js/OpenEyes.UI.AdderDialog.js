@@ -64,7 +64,8 @@
         listForFilterId: "",
         booleanSearchFilterEnabled: false,
         booleanSearchFilterLabel: '',
-        booleanSearchFilterURLparam: ''
+        booleanSearchFilterURLparam: '',
+        showEmptyItemSets: false,
     };
 
     /**
@@ -212,7 +213,7 @@
                 if (itemSet.options.supportSigns) {
                     dialog.generateSigns(itemSet).appendTo($listContainer);
                 }
-                if (itemSet.items && itemSet.items.length) {
+                if (dialog.options.showEmptyItemSets || (itemSet.items && itemSet.items.length)) {
                     let $list = dialog.generateItemList(itemSet);
                     let $listDiv = $('<div />').appendTo($listContainer);
                     $list.appendTo($listDiv);
