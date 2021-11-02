@@ -82,6 +82,9 @@ EOT;
         UPDATE `$section_table` SET `active` = 0, `deleted` = 1 WHERE event_type_version = 0;
 EOT;
         $this->execute($query);
+
+        $this->dropOEColumn($section_table, 'event_type_version');
+        $this->dropOEColumn($disoder_table, 'event_type_version');
     }
 
     public function safeDown()

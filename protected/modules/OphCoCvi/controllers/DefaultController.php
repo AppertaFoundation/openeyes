@@ -1208,10 +1208,11 @@ class DefaultController extends \BaseEventTypeController
         $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
     }
 
-
     /**
      * Simple wrapper to get the disorder sections that should be rendered in the event form.
-     *
+     * If element provided than we fetch sections
+     * @param null $patient_type
+     * @param null $element
      * @return array
      */
     public function getDisorderSections($patient_type = null): array
