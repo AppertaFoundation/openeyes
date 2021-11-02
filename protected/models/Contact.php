@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -81,7 +82,7 @@ class Contact extends BaseActiveRecordVersioned
             array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
             array('first_name, last_name', 'parenthesisValidator'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
-            array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message'=>'Please select a Role.'),
+            array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message' => 'Please select a Role.'),
             array('primary_phone', 'requiredValidator'),
             array('id, nick_name, primary_phone, title, first_name, last_name, qualifications, email', 'safe', 'on' => 'search'),
             array('first_name', 'required', 'on' => array('manage_practice')),
@@ -89,7 +90,11 @@ class Contact extends BaseActiveRecordVersioned
             array('primary_phone','OEPhoneNumberValidator'),
             array('email', 'length', 'max' => 255),
             array('email','email'),
-            array('email', 'required', 'on'=>array('self_register')),
+            array('email', 'required', 'on' => array('self_register')),
+            array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name, 
+                    national_code, fax, email', 'filter', 'filter' => function ($value) {
+                return strip_tags($value);
+            }),
         );
     }
 
@@ -124,7 +129,7 @@ class Contact extends BaseActiveRecordVersioned
         $scenario = $this->getScenario();
         if ($scenario === 'manualAddPatient' || $scenario === 'referral' || $scenario === 'self_register' || $scenario === 'other_register') {
             // add error based on the admin param and the attribute value.
-            if ( (Yii::app()->params['patient_phone_number_mandatory'] === '1') && !$this->primary_phone ) {
+            if ((Yii::app()->params['patient_phone_number_mandatory'] === '1') && !$this->primary_phone) {
                 $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be blank.');
             }
         }
