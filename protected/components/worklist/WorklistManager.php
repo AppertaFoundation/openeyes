@@ -912,7 +912,7 @@ class WorklistManager extends CComponent
                 }
                 $wp->refresh(); // Need to refresh first to synchronise the pathway relation to the newly created pathway.
 
-                $start_status = $this->getWorklistPatientAttribute('Status'); // Could we genericise this attribute name in future?
+                $start_status = $wp->getWorklistPatientAttribute('Status'); // Could we genericise this attribute name in future?
                 if ($wp->pathway
                     && !$wp->pathway->start_time
                     && $start_status
