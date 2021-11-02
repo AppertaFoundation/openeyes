@@ -41,7 +41,7 @@ class PrescriptionFormPrinter extends CWidget
         $settings = new SettingMetadata();
         $this->total_items = count($this->items);
         $this->print_mode = $settings->getSetting('prescription_form_format');
-        $this->default_cost_code = $settings->getSetting('default_prescription_code_code');
+        $this->default_cost_code = (empty($this->site->fp_10_code)? $settings->getSetting('default_prescription_code_code') : $this->site->fp_10_code);
         $this->department_name = $settings->getSetting('fp10_department_name');
         $this->institution_name = $settings->getSetting('fp10_institution_name');
 
