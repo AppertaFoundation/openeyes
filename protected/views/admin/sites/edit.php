@@ -106,7 +106,7 @@ $default_urls = $logo_helper->getLogoURLs();
                 ); ?>
             </td>
         </tr>
-        <?php foreach (['name', 'short_name', 'remote_id'] as $field) : ?>
+        <?php foreach (['name', 'short_name', 'remote_id', 'fp_10_code'] as $field) : ?>
             <tr>
                 <td><?= $site->getAttributeLabel($field); ?></td>
                 <td>
