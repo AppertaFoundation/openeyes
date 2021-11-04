@@ -119,6 +119,11 @@ class SiteController extends BaseController
         $this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $return_url), false, true);
     }
 
+    public function authSourceIsSSO()
+    {
+        return Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC';
+    }
+
     /**
      * Displays the login page.
      */
@@ -149,12 +154,11 @@ class SiteController extends BaseController
         }
 
         $model = new LoginForm();
-        $authSourceSAMLOrOIDC = Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC';
 
         // collect user input data
         if (isset($_POST['LoginForm'])) {
             $model->attributes = $_POST['LoginForm'];
-            if (!$authSourceSAMLOrOIDC || in_array($model->username, Yii::app()->params['local_users'])) {
+            if (!$this->authSourceIsSSO() || in_array($model->username, Yii::app()->params['local_users'])) {
                 // validate user input and redirect to the previous page if valid
                 if ($model->validate() && $model->login()) {
                     // Flag site for confirmation
@@ -169,16 +173,10 @@ class SiteController extends BaseController
                 }
             }
         }
-        if ($authSourceSAMLOrOIDC) {
+        if ($this->authSourceIsSSO()) {
             // User signing-in through portal should not be shown default OE login screen
-            return $this->render('/sso/sso_login', array());
+            return $this->render('/sso/sso_login', array('sso_login_url' => Yii::app()->createUrl('sso/login')));
         }
-
-        $institution = Institution::model()->getCurrent();
-
-        $criteria = new CDbCriteria();
-        $criteria->compare('institution_id', $institution->id);
-        $criteria->order = 'short_name asc';
 
         // display the login form
         $this->render(
