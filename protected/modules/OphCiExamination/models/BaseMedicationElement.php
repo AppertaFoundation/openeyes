@@ -183,7 +183,7 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
     public function getRouteOptions()
     {
         return MedicationRoute::model()->findAll([
-            'condition' => 'source_type =:source_type',
+            'condition' => 'source_type =:source_type AND is_active=1',
             'params' => [':source_type' => 'DM+D'],
             'order' => "term ASC"]);
     }
