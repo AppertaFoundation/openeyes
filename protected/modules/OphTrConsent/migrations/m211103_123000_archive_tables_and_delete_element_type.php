@@ -23,7 +23,7 @@ class m211103_123000_archive_tables_and_delete_element_type extends OEMigration
         foreach (self::OLD_TABLES as $table) {
             if ($this->dbConnection->schema->getTable($table)) {
                 $version_table = $table.'_version';
-                $version_table = strlen($version_table) > 63 ? $version_table : substr($version_table, 0, 63);
+                $version_table = strlen($version_table) <= 63 ? $version_table : substr($version_table, 0, 63);
                 $this->renameTable($table, 'archive_'.$table);
                 $this->renameTable($version_table, 'archive_'.$version_table);
             }
@@ -35,7 +35,7 @@ class m211103_123000_archive_tables_and_delete_element_type extends OEMigration
         foreach (self::OLD_TABLES as $table) {
             if ($this->dbConnection->schema->getTable($table)) {
                 $version_table = $table.'_version';
-                $version_table = strlen($version_table) > 63 ? $version_table : substr($version_table, 0, 63);
+                $version_table = strlen($version_table) <= 63 ? $version_table : substr($version_table, 0, 63);
                 $this->renameTable('archive_'.$table, $table);
                 $this->renameTable('archive_'.$version_table, $version_table);
             }
