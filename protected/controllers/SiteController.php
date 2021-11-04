@@ -129,7 +129,7 @@ class SiteController extends BaseController
 
         if (Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC') {
             // User signing-in through portal should not be shown default OE login screen
-            return $this->render('/sso/sso_login', array());
+            return $this->render('/sso/sso_login', array('sso_login_url' => Yii::app()->createUrl('sso/login')));
         }
 
         if (!Yii::app()->user->isGuest) {
