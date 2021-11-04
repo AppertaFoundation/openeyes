@@ -138,7 +138,7 @@ DONT_CALCULATE_LIST=""
 EXCLUDED_TABLES_STRING=''
 for TABLE in "${EXCLUDED_TABLES[@]}"; do
   :
-  if [ "${TABLE}" != "ignore_none" ]; then
+  if [ "${TABLE}" != "ignore_none" ] && [ -n "$TABLE" ]; then
     echo "Excluding data for: ${DATABASE}.${TABLE}"
     EXCLUDED_TABLES_STRING+=" --ignore-table=${DATABASE}.${TABLE}"
     DONT_CALCULATE_LIST+="'${TABLE}', "
@@ -149,7 +149,7 @@ done
 IGNORED_TABLES_STRING=''
 for TABLE in "${IGNORED_TABLES[@]}"; do
   :
-  if [ "${TABLE}" != "ignore_none" ]; then
+  if [ "${TABLE}" != "ignore_none" ] && [ -n "$TABLE" ]; then
     echo "Ignoring: ${DATABASE}.${TABLE}"
     IGNORED_TABLES_STRING+=" --ignore-table=${DATABASE}.${TABLE}"
     DONT_CALCULATE_LIST+="'${TABLE}', "
