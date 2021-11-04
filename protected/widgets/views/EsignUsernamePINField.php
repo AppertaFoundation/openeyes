@@ -37,7 +37,7 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
             else {
                 echo CHtml::hiddenField(
                     'signatory_id_'.$uid,
-                    '',
+                    $this->signature->signed_user_id ?? "",
                     array('class' => "user-user_id-entry js-user_id-input")
                 );
                 $this->widget('application.widgets.AutoCompleteSearch',array(
@@ -46,6 +46,7 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
                         'class' => 'js-user-autocomplete',
                         'placeholder' => 'Type a name to search',
                         'autocomplete' => 'off',
+                        'value' => $this->signature->signatory_name,
                     )
                 ));
             } ?>

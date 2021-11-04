@@ -26,7 +26,10 @@
  * @property string $last_name
  * @property string $email
  * @property int $global_firm_rights
- * @property date $correspondence_sign_off_user_id
+ * @property int $correspondence_sign_off_user_id
+ * @property string $correspondence_sign_off_text
+ *
+ * @property User $signOffUser
  */
 class User extends BaseActiveRecordVersioned
 {
@@ -66,6 +69,8 @@ class User extends BaseActiveRecordVersioned
             // Added for uniqueness of username
             array('id, first_name, last_name, email, global_firm_rights, correspondence_sign_off_user_id', 'safe', 'on' => 'search'),
             array('title, first_name, last_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
+            array('correspondence_sign_off_text', 'required'),
+            array('correspondence_sign_off_text', 'length', 'max' => 150),
             array(
                 'first_name, last_name, email, global_firm_rights, title, qualifications, role, is_consultant, is_surgeon,
                  has_selected_firms,doctor_grade_id, registration_code, signature_file_id, correspondence_sign_off_user_id',
@@ -226,6 +231,7 @@ class User extends BaseActiveRecordVersioned
             'is_surgeon' => 'Surgeon',
             'doctor_grade_id' => 'Grade',
             'role' => 'Position',
+            'correspondence_sign_off_text' => 'Correspondence sign-off text'
         );
     }
 

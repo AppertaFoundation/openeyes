@@ -26,7 +26,7 @@
  */
 class Element_OphCoCorrespondence_Esign extends BaseEsignElement
 {
-    private const PRIMARY_ROLE = "Consultant";
+    private const PRIMARY_ROLE = "From";
     private const SECONDARY_ROLE = "Secondary Consultant";
 
     /**
@@ -116,6 +116,16 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
                 $signature = new OphCoCorrespondence_Signature();
                 $signature->type = BaseSignature::TYPE_OTHER_USER;
                 $signature->signatory_role = $role;
+                if(Yii::app()->user) {
+                    $user = User::model()->findByPk(Yii::app()->user->getId());
+                    /** @var User $user */
+                    if($user) {
+                        if($user->signOffUser) {
+                            $signature->signed_user_id = $user->signOffUser->id;
+                            $signature->signatory_name = $user->signOffUser->getFullName();
+                        }
+                    }
+                }
                 $signatures[] = $signature;
             }
         }
@@ -156,7 +166,7 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
      */
     public function getUnsignedMessage(): string
     {
-        return "This correspondence must be signed by either a Consultant or a Secretary before it can be sent.";
+        return "This correspondence must be signed before it can be sent.";
     }
 
     /**
