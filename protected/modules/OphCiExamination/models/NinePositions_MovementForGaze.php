@@ -93,9 +93,10 @@ class NinePositions_MovementForGaze extends \BaseElement
 
     public function isForSide($sideString)
     {
-        return !empty($this->eye_id) && [
+        $side_id = [
             'right' => \Eye::RIGHT,
             'left' => \Eye::LEFT
-        ][$sideString] ?? null === (int) $this->eye_id;
+        ][$sideString] ?? null;
+        return $side_id  === (int) $this->eye_id;
     }
 }
