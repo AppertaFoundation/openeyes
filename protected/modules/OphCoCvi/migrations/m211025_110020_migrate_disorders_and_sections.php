@@ -38,38 +38,47 @@ WHERE old_disorder.id IS NOT NULL AND d2.id IS NOT NULL;
 EOT;
         $this->execute($query);
 
-        // some disorders have a different v1 name
-        $query = <<<EOT
-            UPDATE `$assignment_table` a
-            JOIN `$disoder_table` d ON d.id = a.`ophcocvi_clinicinfo_disorder_id` 
-            SET `ophcocvi_clinicinfo_disorder_id` = 
-            ( SELECT id
-              FROM $disoder_table dd
-              WHERE dd.`name` = 'age-related macular degeneration - choroidal neovascularisation (wet)'
-            ) 
-            WHERE d.name = 'age-related macular degeneration - subretinal neovascularisation';
+        $is_disorder_exist = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from($disoder_table)
+            ->where('name = :name',
+                [':name' => 'age-related macular degeneration - subretinal neovascularisation'])
+            ->queryScalar();
+
+        if ($is_disorder_exist) {
+            $query = <<<EOT
+                UPDATE `$assignment_table` a
+                JOIN `$disoder_table` d ON d.id = a.`ophcocvi_clinicinfo_disorder_id` 
+                SET `ophcocvi_clinicinfo_disorder_id` = 
+                ( SELECT id
+                  FROM $disoder_table dd
+                  WHERE dd.`name` = 'age-related macular degeneration - choroidal neovascularisation (wet)'
+                ) 
+                WHERE d.name = 'age-related macular degeneration - subretinal neovascularisation';
 EOT;
+            $this->execute($query);
+        }
 
-        $this->execute($query);
+        $is_disorder_exist = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from($disoder_table)
+            ->where('name = :name',
+                [':name' => 'age-related macular degeneration - atrophic / geographic macular atrophy'])
+            ->queryScalar();
 
-        $query = <<<EOT
-            UPDATE `$assignment_table` a
-            JOIN `$disoder_table` d ON d.id = a.`ophcocvi_clinicinfo_disorder_id` 
-            SET `ophcocvi_clinicinfo_disorder_id` = 
-            ( SELECT id
-              FROM $disoder_table dd
-              WHERE dd.`name` = 'age-related macular degeneration - choroidal neovascularisation (dry)'
-            ) 
-            WHERE d.name = 'age-related macular degeneration - atrophic / geographic macular atrophy';
+        if ($is_disorder_exist) {
+            $query = <<<EOT
+                UPDATE `$assignment_table` a
+                JOIN `$disoder_table` d ON d.id = a.`ophcocvi_clinicinfo_disorder_id` 
+                SET `ophcocvi_clinicinfo_disorder_id` = 
+                ( SELECT id
+                  FROM $disoder_table dd
+                  WHERE dd.`name` = 'age-related macular degeneration - choroidal neovascularisation (dry)'
+                ) 
+                WHERE d.name = 'age-related macular degeneration - atrophic / geographic macular atrophy';
 EOT;
-        $this->execute($query);
-
-        // 3 disorders have no v1 alternative:
-        // retinopathy of prematurity, congenital CNS malformations, congenital eye malformations
-
-        // actually "retinopathy of prematurity" has v0 and v1 but the
-        // v0 is patient_type=0 // adult
-        // v1 is  patient_type=1 // child
+            $this->execute($query);
+        }
 
         // retire v0 disorders
         $query = <<<EOT
