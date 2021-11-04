@@ -33,7 +33,7 @@ class m211103_123000_archive_tables_and_delete_element_type extends OEMigration
     public function safeDown()
     {
         foreach (self::OLD_TABLES as $table) {
-            if ($this->dbConnection->schema->getTable($table)) {
+            if ($this->dbConnection->schema->getTable('archive_'.$table)) {
                 $table = strlen($table) <= 55 ? $table : substr($table, 0, 55);
                 $version_table = strlen($table) <= 47 ? $table.'_version' : substr($table, 0, 47).'_version';
                 $this->renameTable('archive_'.$table, $table);
