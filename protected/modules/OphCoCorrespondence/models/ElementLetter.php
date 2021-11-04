@@ -583,6 +583,16 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $this->direct_line = $dl->direct_line;
                 $this->fax = $dl->fax;
             }
+
+            if(Yii::app()->user) {
+                $user = User::model()->findByPk(Yii::app()->user->getId());
+                /** @var User $user */
+                if($user) {
+                    if($signOffUser = $user->signOffUser) {
+                        $this->footer = $signOffUser->correspondence_sign_off_text;
+                    }
+                }
+            }
         }
     }
 
@@ -925,23 +935,20 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function renderFooter()
     {
-        if(strlen($this->footer) > 0) {
-            // This is a legacy footer without the electronic signatures
-            return str_replace("\n", '<br/>', CHtml::encode($this->footer));
-        }
-        else {
-            if($esign_element = $this->event->getElementByClass(Element_OphCoCorrespondence_Esign::class)) {
-                /** @var Element_OphCoCorrespondence_Esign $esign_element*/
-                return "<div class=\"flex\">".implode(
-                    "\n",
-                    array_map(function($signature) {
-                        return "<div>".$signature->getPrintout()."</div>";
-                    }, $esign_element->signatures)
-                )."</div>";
+        $footer = "<div class=\"flex\">";
+        if($esign_element = $this->event->getElementByClass(Element_OphCoCorrespondence_Esign::class)) {
+            /** @var Element_OphCoCorrespondence_Esign $esign_element*/
+            $signatures = $esign_element->signatures;
+            if($primary_signature = array_pop($signatures)) {
+                $footer .= "<div>" . nl2br(trim($this->footer)) . "<br/>" . $primary_signature->getPrintout() . "</div>";
+            }
+            if($secondary_signature = array_pop($signatures)) {
+                $sign_off_text = $secondary_signature->signedUser->correspondence_sign_off_text;
+                $footer .= "<div>" . nl2br(trim($sign_off_text)) . "<br/>" . $secondary_signature->getPrintout() . "</div>";
             }
         }
-
-        return "";
+        $footer .= "</div>";
+        return $footer;
     }
 
     /**

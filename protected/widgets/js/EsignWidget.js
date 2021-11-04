@@ -55,7 +55,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         if(this.options.needUserName) {
             OpenEyes.UI.AutoCompleteSearch.init({
                 input: widget.$element.find(".autocompletesearch"),
-                url: '/user/autoComplete?consultant_only=1',
+                url: '/user/autoComplete?consultant_only=0',
                 onSelect: function() {
                     let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
                     $("#signatory_name_" + widget.$element.attr("id")).val(response.label);

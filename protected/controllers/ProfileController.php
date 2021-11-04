@@ -64,7 +64,15 @@ class ProfileController extends BaseController
 
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
-                foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications', 'correspondence_sign_off_user_id') as $field) {
+                $fields = [
+                    'title',
+                    'first_name', 'last_name',
+                    'email',
+                    'qualifications',
+                    'correspondence_sign_off_user_id',
+                    'correspondence_sign_off_text',
+                ];
+                foreach ($fields as $field) {
                     if (isset($_POST['User'][$field])) {
                         $user->{$field} = $_POST['User'][$field];
                     }

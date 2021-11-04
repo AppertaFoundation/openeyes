@@ -17,8 +17,6 @@
  */
 class OphCoCorrespondence_API extends BaseAPI
 {
-    public const ESIGN_PLACEHOLDER = "{electronic_signature}";
-
     /**
      * @param int $event_id
      *
@@ -783,7 +781,7 @@ class OphCoCorrespondence_API extends BaseAPI
             }
 
             $full_name = trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications);
-            return "Yours sincerely\n" . self::ESIGN_PLACEHOLDER . "\n" . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Head of " . $service_name . ": " . $consultant_name : '');
+            return $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Head of " . $service_name . ": " . $consultant_name : '');
         }
 
         return null;
