@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -61,7 +62,7 @@ class Site extends BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.name');
+        return array('order' => $this->getTableAlias(true, false) . '.name');
     }
 
     public function behaviors()
@@ -169,13 +170,13 @@ class Site extends BaseActiveRecordVersioned
 
             if ($institution->short_name && $site->name != 'Unknown') {
                 if ($display_institution === 'On') {
-                    $site_name = $institution->short_name.' at ';
+                    $site_name = $institution->short_name . ' at ';
                 }
             }
             $site_name .= $site->name;
 
             if ($site->location) {
-                $site_name .= ', '.$site->location;
+                $site_name .= ', ' . $site->location;
             }
 
             $result[$site->id] = $site_name;
@@ -207,7 +208,7 @@ class Site extends BaseActiveRecordVersioned
                 if ($display_institution  == 'Off') {
                     return $this->name;
                 } else {
-                    return $this->institution->short_name.' at '.$this->name;
+                    return $this->institution->short_name . ' at ' . $this->name;
                 }
             }
         }
@@ -258,7 +259,7 @@ class Site extends BaseActiveRecordVersioned
 
         $site = $this->findByPk(Yii::app()->session['selected_site_id']);
         if (!$site) {
-            throw new Exception("Site with id '".Yii::app()->session['selected_site_id']."' not found");
+            throw new Exception("Site with id '" . Yii::app()->session['selected_site_id'] . "' not found");
         }
 
         return $site;
@@ -269,7 +270,7 @@ class Site extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->short_name;
     }

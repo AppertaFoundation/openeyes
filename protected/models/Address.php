@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -68,6 +69,9 @@ class Address extends BaseActiveRecordVersioned
             array('contact_id, country_id', 'required'),
             array('id, address1, address2, city, postcode, county, country_id, address_type_id, date_start, date_end', 'safe', 'on' => 'search'),
             array('city', 'cityValidator'),
+            array('address1, address2, city, county, postcode', 'filter', 'filter' => function ($value) {
+                return strip_tags($value);
+            }),
         );
     }
 
@@ -162,7 +166,7 @@ class Address extends BaseActiveRecordVersioned
                         if (!empty($this->address2)) {
                             $address[] = $this->address2;
                         }
-                        $address[] = trim($this->city.' '.$this->county).' '.$this->postcode;
+                        $address[] = trim($this->city . ' ' . $this->county) . ' ' . $this->postcode;
                         break;
                     } else {
                         $address[] = $line;
