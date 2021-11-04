@@ -86,13 +86,13 @@
 # Amount of time before account is automatically unlocked after failed PW_STAT_TRIES - 0 to disable - (0, X days, X months, X Years,  see https://www.php.net/manual/en/function.strtotime.php  for more options)
 # export PW_SOFTLOCK_TIMEOUT='10 mins'
 
-## Password status after trigger by number of tries exceeded or after password changed by admin  -  ('current', 'stale', 'expired', 'locked') 
+## Password status after trigger by number of tries exceeded or after password changed by admin  -  ('current', 'stale', 'expired', 'locked')
 # export PW_STAT_TRIES_FAILED= 'locked'
 # export PW_STAT_ADMIN_CHANGE = 'stale'
 
 ## Number of days before password stales, expires or locks - 0 to disable - (0, X days, X months, X Years,  see https://www.php.net/manual/en/function.strtotime.php  for more options)
 # export PW_STAT_DAYS_STALE= '15 days'
-# export PW_STAT_DAYS_EXPIRE = '30 days' 
+# export PW_STAT_DAYS_EXPIRE = '30 days'
 # export PW_STAT_DAYS_LOCK =  '45 days'
 
 ## Set hos num parameters
@@ -114,3 +114,8 @@
 # export OE_USER_BANNER_LONG=""
 # export OE_ADMIN_BANNER_SHORT=""
 # export OE_ADMIN_BANNER_LONG=""
+
+## Customise which user profile fields should be read-only.
+## E.g, with SSO, you may not want users to be able to edit theor own name, qualifications, etc.
+## Comma separated list
+# export PROFILE_USER_READONLY_FIELDS=''
