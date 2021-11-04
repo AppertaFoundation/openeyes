@@ -385,6 +385,7 @@ $config = array(
         'nhs_num_label_short' => !empty(trim(getenv('OE_NHS_NUM_LABEL_SHORT'))) ? getenv('OE_NHS_NUM_LABEL_SHORT') : null,
         'hos_num_label_short' => !empty(trim(getenv('OE_HOS_NUM_LABEL_SHORT'))) ? getenv('OE_HOS_NUM_LABEL_SHORT') : null,
         'profile_user_can_edit' => true,
+        'profile_user_readonly_fields' => getenv('PROFILE_USER_READONLY_FIELDS') ?: '',
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => strtolower(getenv("PW_ALLOW_CHANGE")) == "false" ? false : true,
         'tinymce_default_options' => array(
