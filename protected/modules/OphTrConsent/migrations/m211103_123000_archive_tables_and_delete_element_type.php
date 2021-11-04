@@ -21,11 +21,12 @@ class m211103_123000_archive_tables_and_delete_element_type extends OEMigration
     public function safeUp()
     {
         foreach (self::OLD_TABLES as $table) {
-            if ($this->dbConnection->schema->getTable($table)) {
-                $table = strlen($table) <= 55 ? $table : substr($table, 0, 55);
-                $version_table = strlen($table) <= 47 ? $table.'_version' : substr($table, 0, 47).'_version';
-                $this->renameTable($table, 'archive_'.$table);
-                $this->renameTable($version_table, 'archive_'.$version_table);
+            if ($this->dbConnection->schema->getTable($table, true)) {
+                $changed_table = strlen($table) <= 55 ? $table : substr($table, 0, 55);
+                $version_table = $table.'_version';
+                $changed_version_table = strlen($changed_table) <= 47 ? $changed_table.'_version' : substr($changed_table, 0, 47).'_version';
+                $this->renameTable($table, 'archive_'.$changed_table);
+                $this->renameTable($version_table, 'archive_'.$changed_version_table);
             }
         }
     }
@@ -33,11 +34,12 @@ class m211103_123000_archive_tables_and_delete_element_type extends OEMigration
     public function safeDown()
     {
         foreach (self::OLD_TABLES as $table) {
-            if ($this->dbConnection->schema->getTable('archive_'.$table)) {
-                $table = strlen($table) <= 55 ? $table : substr($table, 0, 55);
-                $version_table = strlen($table) <= 47 ? $table.'_version' : substr($table, 0, 47).'_version';
-                $this->renameTable('archive_'.$table, $table);
-                $this->renameTable('archive_'.$version_table, $version_table);
+            if ($this->dbConnection->schema->getTable('archive_'.$table, true)) {
+                $changed_table = strlen($table) <= 55 ? $table : substr($table, 0, 55);
+                $version_table = $table.'_version';
+                $changed_version_table = strlen($changed_table) <= 47 ? $changed_table.'_version' : substr($changed_table, 0, 47).'_version';
+                $this->renameTable('archive_'.$changed_table, $table);
+                $this->renameTable('archive_'.$changed_version_table, $version_table);
             }
         }
     }
