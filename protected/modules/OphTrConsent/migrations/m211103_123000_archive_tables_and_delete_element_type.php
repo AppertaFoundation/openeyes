@@ -29,6 +29,8 @@ class m211103_123000_archive_tables_and_delete_element_type extends OEMigration
                 $this->renameTable($version_table, 'archive_'.$changed_version_table);
             }
         }
+        $this->deleteElementType('OphTrConsent', 'Element_OphTrConsent_Other');
+        $this->deleteElementType('OphTrConsent', 'Element_OphTrConsent_Permissions');
     }
 
     public function safeDown()
@@ -42,5 +44,27 @@ class m211103_123000_archive_tables_and_delete_element_type extends OEMigration
                 $this->renameTable('archive_'.$changed_version_table, $version_table);
             }
         }
+
+        $this->createElementType(
+            'OphTrConsent',
+            'Other',
+            array(
+                'class_name'    => 'Element_OphTrConsent_Other',
+                'display_order' => 60,
+                'default'       => 1,
+                'required'  => 1,
+            )
+        );
+
+        $this->createElementType(
+            'OphTrConsent',
+            'Permissions for images',
+            array(
+                'class_name'    => 'Element_OphTrConsent_Permissions',
+                'display_order' => 50,
+                'default'       => 1,
+                'required'  => 1,
+            )
+        );
     }
 }

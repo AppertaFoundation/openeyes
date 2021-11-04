@@ -16,7 +16,7 @@
  */
 
 $(document).ready(function() {
-	
+
 	$(this).on('click','#et_save',function() {
 		$('#Element_OphTrConsent_Type_draft').val(0);
 	});
@@ -55,24 +55,6 @@ $(document).ready(function() {
 			} else {
 				el.text(currentText+', '+newText);
 			}
-		}
-	});
-
-	$('input[id="Element_OphTrConsent_Other_witness_required"]').unbind('click').click(function() {
-		if ($(this).attr('checked') == 'checked') {
-			$('#Element_OphTrConsent_Other_witness_name').show().closest('.data-group').show();
-			$('#Element_OphTrConsent_Other_witness_name').val('').focus();
-		} else {
-			$('#Element_OphTrConsent_Other_witness_name').hide().closest('.data-group').hide();
-		}
-	});
-
-	$('input[id="Element_OphTrConsent_Other_interpreter_required"]').unbind('click').click(function() {
-		if ($(this).attr('checked') == 'checked') {
-			$('#Element_OphTrConsent_Other_interpreter_name').show().closest('.data-group').show();
-			$('#Element_OphTrConsent_Other_interpreter_name').val('').focus();
-		} else {
-			$('#Element_OphTrConsent_Other_interpreter_name').hide().closest('.data-group').hide();
 		}
 	});
 
@@ -138,19 +120,6 @@ $(document).ready(function() {
 	// Print for visually impaired.
 	else if ($('#OphTrConsent_print').val() == 2) {
 		setTimeout(OphTrConsent_do_print.bind(null, true), 1000);
-	}
-
-	if(OpenEyes.UI.AutoCompleteSearch !== undefined){
-		OpenEyes.UI.AutoCompleteSearch.init({
-			input: $('#oe-autocompletesearch'),
-			url: 'users',
-			onSelect: function(){
-				let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-				$('#Element_OphTrConsent_Other_consultant_id').val(AutoCompleteResponse.id);
-				$('#Consultant').val(AutoCompleteResponse.fullname);
-				return false;
-			}
-		});
 	}
 
 	autosize($('.Element_OphTrConsent_BenefitsAndRisks textarea'));
@@ -304,7 +273,7 @@ $(document).ready(function() {
     signatures.changeWitness();
     signatures.changeInterpreter();
     signatures.changeGuardian();
-	
+
 	$("#clinical-create").submit(function(e) {
 		if(proceed || !savenprint_clicked) {
 			return true;
