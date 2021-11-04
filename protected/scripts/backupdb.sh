@@ -24,6 +24,14 @@ IGNORED_TABLES=(
 
 ignore_archive=0
 
+# Find which version of mysqldump is installed (it affects which switches are required)
+dumpver="$(mysqldump --version | grep -oiP 'mysqldump\s+Ver\s+\K\d+')"
+if mysqldump --version | grep -i 'MariaDB' >/dev/null; then
+  dumpflavour="maridb"
+else
+  dumpflavour="mysql"
+fi
+
 PARAMS=()
 while [[ $# -gt 0 ]]; do
   p="$1"
@@ -65,11 +73,16 @@ while [[ $# -gt 0 ]]; do
     ;;
   *)
     # Add as extra params to mysqldump
-    extraparams+="$p"
+    extraparams+=" $p"
     ;;
   esac
   shift # move to next parameter
 done
+
+## For mysqldump from mysql 8.0 onwards, a --column-statistics parameter is required (0 is standard)
+if [ "$dumpflavour" == "mysql" ] && [ $dumpver -ge 8 ] && [[ $extraparams != *"column-statistics"* ]]; then
+  extraparams+=" --column-statistics=0"
+fi
 
 tmpfile="$outfile.sql"
 outfile="$outfile.zip"
@@ -153,10 +166,10 @@ folder=$(dirname $outfile)
 SIZE_BYTES=$(mysql -h ${host} -u ${username} ${dbpassword} --port=${port} --skip-column-names <<<"SELECT ROUND(SUM(data_length) * 0.92) AS "size_bytes" FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${DATABASE}' AND TABLE_NAME NOT IN ($DONT_CALCULATE_LIST);")
 echo "Data size = approx $(expr $SIZE_BYTES / 1024 / 1024) mb"
 echo "Dumping structure..."
-eval mysqldump -h ${host} -u ${username} ${dbpassword} --port=${port} --routines --events --triggers --single-transaction ${IGNORED_TABLES_STRING} --no-data ${extraparams} ${DATABASE} | pv >${tmpfile}
+eval mysqldump -h ${host} -u ${username} ${dbpassword} --port=${port} --routines --events --triggers --single-transaction ${IGNORED_TABLES_STRING} --no-data${extraparams} ${DATABASE} | pv >${tmpfile}
 
 echo "Dumping content..."
-eval mysqldump -h ${host} -u ${username} ${dbpassword} --port=${port} --routines --events --triggers --single-transaction --no-create-info --skip-triggers "${EXCLUDED_TABLES_STRING}" "${IGNORED_TABLES_STRING}" $extraparams ${DATABASE} | pv --progress --size $SIZE_BYTES >>${tmpfile}
+eval mysqldump -h ${host} -u ${username} ${dbpassword} --port=${port} --routines --events --triggers --single-transaction --no-create-info --skip-triggers "${EXCLUDED_TABLES_STRING}" "${IGNORED_TABLES_STRING}"$extraparams ${DATABASE} | pv --progress --size $SIZE_BYTES >>${tmpfile}
 
 if [[ $nozip -eq 0 ]]; then
   echo "Zipping to ${outfile}..."
