@@ -127,11 +127,6 @@ class SiteController extends BaseController
         $this->layout = 'home';
         $this->pageTitle = 'Login';
 
-        if (Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC') {
-            // User signing-in through portal should not be shown default OE login screen
-            return $this->render('/sso/sso_login', array('sso_login_url' => Yii::app()->createUrl('sso/login')));
-        }
-
         if (!Yii::app()->user->isGuest) {
             $this->redirect('/');
             Yii::app()->end();
@@ -154,22 +149,29 @@ class SiteController extends BaseController
         }
 
         $model = new LoginForm();
+        $authSourceSAMLOrOIDC = Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC';
 
         // collect user input data
         if (isset($_POST['LoginForm'])) {
             $model->attributes = $_POST['LoginForm'];
-            // validate user input and redirect to the previous page if valid
-            if ($model->validate() && $model->login()) {
-                // Flag site for confirmation
-                Yii::app()->session['confirm_site_and_firm'] = true;
-                Yii::app()->session['shown_version_reminder'] = true;
-                // Check the user has admin role and auto version check enabled
-                $autoVersionEnabled = strpos(strtolower(SettingInstallation::model()->findByAttributes(['key' => "auto_version_check"])->value), 'enable');
-                if (Yii::app()->user->checkAccess('admin') && !($autoVersionEnabled === false)) {
-                    $this->doVersionCheck();
+            if (!$authSourceSAMLOrOIDC || in_array($model->username, Yii::app()->params['local_users'])) {
+                // validate user input and redirect to the previous page if valid
+                if ($model->validate() && $model->login()) {
+                    // Flag site for confirmation
+                    Yii::app()->session['confirm_site_and_firm'] = true;
+                    Yii::app()->session['shown_version_reminder'] = true;
+                    // Check the user has admin role and auto version check enabled
+                    $autoVersionEnabled = strpos(strtolower(SettingInstallation::model()->findByAttributes(['key' => "auto_version_check"])->value), 'enable');
+                    if (Yii::app()->user->checkAccess('admin') && !($autoVersionEnabled === false)) {
+                        $this->doVersionCheck();
+                    }
+                    $this->redirect(Yii::app()->user->returnUrl);
                 }
-                $this->redirect(Yii::app()->user->returnUrl);
             }
+        }
+        if ($authSourceSAMLOrOIDC) {
+            // User signing-in through portal should not be shown default OE login screen
+            return $this->render('/sso/sso_login', array());
         }
 
         $institution = Institution::model()->getCurrent();
