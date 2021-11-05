@@ -257,10 +257,26 @@ class DefaultPas extends BasePAS
 
         $xml = $this->curl->post($this->config['url'], $post_data);
         $ch = $this->curl->curl;
+        $response = $this->curl->post($this->config['url'], $post_data);
+        $ch = $this->curl->curl;
 
-        if (curl_errno($ch)) {
-            $error = 'PASAPI cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
-            \OELog::log($error);
+        try {
+            $responseXml = new \SimpleXMLElement($response);
+            $msg = $responseXml->ErrorMessage;
+            \Yii::log('Error node: '.var_export($msg,true));
+            \Yii::log('Error node count: '.$msg->count());
+            if ($msg != "") {
+                \Yii::app()->user->setFlash('warning.pas_error', 'Invalid Answer From PAS: '.$msg);
+                \Yii::log('Invalid answer from pas: '.$msg);
+            }
+            if (curl_errno($ch)) {
+                \Yii::app()->user->setFlash('warning.pas_error', 'No Connection To Mirth');
+                $error = 'PASAPI cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
+                \OELog::log($error);
+            }
+        } catch (\Exception $e) {
+            \Yii::log('No Response From PAS:'.$e->getMessage()." ".var_export($response, true));
+            \Yii::app()->user->setFlash('warning.pas_error','No Response From PAS');
         }
     }
 }

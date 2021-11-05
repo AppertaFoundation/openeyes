@@ -9,9 +9,9 @@
     use OEModule\PASAPI\resources\HL7_Procedure;
     use OEModule\PASAPI\resources\HL7_UK_Additional;
 
-class HL7_A03 extends BaseHl7
+class HL7_A13 extends BaseHl7
 {
-    protected const event_type = "A03";
+    protected const event_type = "A13";
 
     //Patient is inherited
 

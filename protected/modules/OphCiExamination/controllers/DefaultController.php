@@ -25,6 +25,7 @@ use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\models\AdviceLeafletEntry;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
+use OEModule\PASAPI\resources\HL7_A03;
 use OEModule\PASAPI\resources\HL7_A08;
 use services\DateTime;
 use OEModule\PatientTicketing\models\QueueOutcome;
@@ -970,7 +971,18 @@ class DefaultController extends \BaseEventTypeController
         // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
         // Change this if it is a different value.
         if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
-            $this->pasCallout($event, 'A08');
+            $clinical_outcome_entry = null;
+            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
+
+            $clinical_outcome = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->find("event_id = ?", array($event->id));
+            if ($clinical_outcome) {
+                $clinical_outcome_entry = \OEModule\OphCiExamination\models\ClinicOutcomeEntry::model()->find("element_id = ? and status_id = ? ", array($clinical_outcome->id, $discharge_status->id));
+            }
+            if ($clinical_outcome_entry) {
+                $this->pasCallout($event, 'A03');
+            } else {
+                $this->pasCallout($event, 'A08');
+            }
         }
     }
 
@@ -980,7 +992,18 @@ class DefaultController extends \BaseEventTypeController
         // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
         // Change this if it is a different value.
         if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
-            $this->pasCallout($event, 'A08');
+            $clinical_outcome_entry = null;
+            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
+
+            $clinical_outcome = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->find("event_id = ?", array($event->id));
+            if ($clinical_outcome) {
+                $clinical_outcome_entry = \OEModule\OphCiExamination\models\ClinicOutcomeEntry::model()->find("element_id = ? and status_id = ? ", array($clinical_outcome->id, $discharge_status->id));
+            }
+            if ($clinical_outcome_entry) {
+                $this->pasCallout($event, 'A03');
+            } else {
+                $this->pasCallout($event, 'A08');
+            }
         }
     }
 
@@ -1007,6 +1030,13 @@ class DefaultController extends \BaseEventTypeController
                 $hl7_a08->setDataFromEvent($event->id);
                 Yii::app()->event->dispatch('emergency_care_update',
                     $hl7_a08
+                );
+                break;
+            case 'A03':
+                $hl7_a03 = new HL7_A03();
+                $hl7_a03->setDataFromEvent($event->id);
+                Yii::app()->event->dispatch('emergency_care_update',
+                    $hl7_a03
                 );
                 break;
         }
