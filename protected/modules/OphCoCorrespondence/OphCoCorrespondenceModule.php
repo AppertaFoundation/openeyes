@@ -28,6 +28,7 @@ class OphCoCorrespondenceModule extends BaseEventTypeModule
             'OphCoCorrespondence.views.*',
             'OphCoCorrespondence.components.*',
             'OphCoCorrespondence.controllers.*',
+            'OphCoCorrespondence.widgets.*',
         ));
         parent::init();
     }

@@ -22,7 +22,7 @@ $el_class = get_class($this->element);
 $widget_class = get_class($this);
 $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
 ?>
-<tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
+<tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>" <?php if(isset($hidden) && $hidden): ?>style="display: none"<?php endif ?>>
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>

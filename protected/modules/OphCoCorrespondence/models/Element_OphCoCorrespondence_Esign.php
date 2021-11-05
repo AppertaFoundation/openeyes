@@ -26,8 +26,10 @@
  */
 class Element_OphCoCorrespondence_Esign extends BaseEsignElement
 {
-    private const PRIMARY_ROLE = "From";
-    private const SECONDARY_ROLE = "Secondary Consultant";
+    public const PRIMARY_ROLE = "From";
+    public const SECONDARY_ROLE = "Secondary Signatory";
+
+    protected $widgetClass = CorrespondenceEsignElementWidget::class;
 
     /**
      * Returns the static model of the specified AR class.
