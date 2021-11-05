@@ -114,7 +114,7 @@ $dispense_condition_options = array(
             $item->route_id,
             CHtml::listData(
                 MedicationRoute::model()->activeOrPk([$item->route_id])->findAll([
-                    'condition' => 'source_type =:source_type',
+                    'condition' => 'source_type =:source_type AND is_active=1',
                     'params' => [':source_type' => 'DM+D'],
                     'order' => "term ASC"]),
                 'id',

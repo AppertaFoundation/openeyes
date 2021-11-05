@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -57,7 +59,8 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                             [
                                 'patient' => $this->patient,
                                 'show_all' => true
-                            ]); ?>
+                            ]
+                        ); ?>
                         <?php if ($display_primary_number_usage_code === 'GLOBAL' && $primary_identifier && $primary_identifier->patientIdentifierStatus) { ?>
                             <i class="oe-i <?= isset($primary_identifier->patientIdentifierStatus->icon->class_name) ? $primary_identifier->patientIdentifierStatus->icon->class_name : 'exclamation' ?> small"></i>
                         <?php } ?>
@@ -138,7 +141,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                                     echo 'style ="top: 35px; right: 0px"';
                                 }?>
               >
-                  <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id'=>$this->patient->id, 'prevUrl'=>Yii::app()->request->url)); ?>" >
+                  <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>" >
                       <svg viewBox="0 0 30 30" class="icon">
                           <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
                       </svg>
@@ -154,10 +157,11 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                     <?php } ?>
         </div>
     </div>
-    <!-- Widgets (extra icons, links etc) -->
-    <ul class="patient-widgets">
+      <?php if (Yii::app()->getAuthManager()->checkAccess('OprnViewClinical', Yii::app()->user->id)) : ?>
+        <ul class="patient-widgets" >
             <?php foreach ($this->widgets as $widget) {
                 echo "<li>{$widget}</li>";
             } ?>
-    </ul>
+        </ul>
+      <?php endif; ?>
 </div>

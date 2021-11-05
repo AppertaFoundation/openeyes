@@ -388,7 +388,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
         $user_authentications = UserAuthentication::model()->findAllByAttributes([ 'user_id' => $user->id, 'active' => 1 ]);
         foreach ($user_authentications as $user_authentication) {
             $inst_auth = $user_authentication->institutionAuthentication;
-            if ($inst_auth->active && $inst_auth->institution_id == $institution_id && $inst_auth->site_id == $site_id) {
+            if ($inst_auth && $inst_auth->active && $inst_auth->institution_id == $institution_id && $inst_auth->site_id == $site_id) {
                 return true;
             }
         }

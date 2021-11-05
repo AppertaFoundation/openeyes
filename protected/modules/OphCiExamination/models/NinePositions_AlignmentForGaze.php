@@ -129,7 +129,7 @@ class NinePositions_AlignmentForGaze extends \BaseElement
                 'range' => self::GAZE_TYPES,
                 'message' => '{attribute} is invalid'
             ],
-            ['horizontal_angle', 'numerical', 'min' => 0, 'max' => 50],
+            ['horizontal_angle', 'numerical', 'min' => 0, 'max' => 90],
             ['horizontal_prism_position', 'type', 'type' => 'string'],
             [
                 'horizontal_prism_position',
@@ -154,7 +154,7 @@ class NinePositions_AlignmentForGaze extends \BaseElement
                 'className' => NinePositions_HorizontalXDeviation::class,
                 'message' => '{attribute} is invalid'
             ],
-            ['vertical_angle', 'numerical', 'min' => 0, 'max' => 20],
+            ['vertical_angle', 'numerical', 'min' => 0, 'max' => 50],
             ['vertical_prism_position', 'type', 'type' => 'string'],
             [
                 'vertical_prism_position',

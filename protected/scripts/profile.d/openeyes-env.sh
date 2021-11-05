@@ -140,3 +140,9 @@
 ## Users - comma separated lists
 # export OE_LOCAL_USERS='admin, api, docman_user, payload_processor'
 # export OE_SPECIAL_USERS='api'
+
+
+## Customise which user profile fields should be read-only.
+## E.g, with SSO, you may not want users to be able to edit theor own name, qualifications, etc.
+## Comma separated list
+# export PROFILE_USER_READONLY_FIELDS=''

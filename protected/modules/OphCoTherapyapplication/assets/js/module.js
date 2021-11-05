@@ -423,12 +423,15 @@ function OphCoTherapyapplication_ExceptionalCircumstances_check(side) {
         $('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('input, select, textarea').each(function() { $(this).removeAttr('disabled') });
     } else {
         hideSplitElementSide('Element_OphCoTherapyapplication_ExceptionalCircumstances', side);
-        // Disable all form elements on non visible forms
-        $('.Element_OphCoTherapyapplication_ExceptionalCircumstances')
-            .find('div.js-element-eye.' + display_side)
-            .find('.active-form:hidden')
-            .find('input, select, textarea')
-            .attr('disabled', 'disabled');
+		// check if the other side is visible
+		// if it isn't disable the form elements
+
+			if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances')
+				.find('div.js-element-eye.' + side)
+				.find('.active-form:hidden').length > 0) {
+				$('.Element_OphCoTherapyapplication_ExceptionalCircumstances')
+					.find('input, select, textarea')
+					.each(function() { $(this).attr('disabled', 'disabled') });
     }
 }
 
