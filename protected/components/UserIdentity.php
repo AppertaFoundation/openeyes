@@ -546,6 +546,7 @@ class UserIdentity extends CUserIdentity
             $app->session['selected_firm_id'] = key($firms);
         }
 
+
         if ($this->is_special) {
             $app->session['user_auth'] = $user_authentication;
             $app->session['user'] = $user_authentication->user;
@@ -559,7 +560,7 @@ class UserIdentity extends CUserIdentity
                 'Special User '.strtoupper($this->username).' logged in.'
             );
 
-            return [true, ""];
+            return;
         }
 
         // Set this first as we'll need it to determine the selected firm and site.
@@ -603,16 +604,6 @@ class UserIdentity extends CUserIdentity
             'User '.strtoupper($this->username).' logged in to Institution: ' . strtoupper($institution_name) . ', Site: ' . strtoupper($site_name)
         );
 
-        return [true, ""];
+        return;
     }
-
-    public function firmString($firm)
-    {
-        if ($firm->serviceSubspecialtyAssignment) {
-            return "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
-        }
-
-        return $firm->name;
-    }
-
 }
