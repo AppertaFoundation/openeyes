@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BaseCCodeModel class file.
  *
@@ -107,7 +108,7 @@ abstract class BaseCCodeModel extends CFormModel
         } else {
             $templatePath = $this->templatePath;
             foreach ($this->requiredTemplates() as $template) {
-                if (!is_file($templatePath.'/'.$template)) {
+                if (!is_file($templatePath . '/' . $template)) {
                     $this->addError('template', "Unable to find the required code template file '$template'.");
                 }
             }
@@ -265,16 +266,16 @@ abstract class BaseCCodeModel extends CFormModel
      */
     public function renderResults()
     {
-        $output = 'Generating code using template "'.$this->templatePath."\"...\n";
+        $output = 'Generating code using template "' . $this->templatePath . "\"...\n";
         foreach ($this->files as $file) {
             if ($file->error !== null) {
                 $output .= "<span class=\"error\">generating {$file->relativePath}<br/>           {$file->error}</span>\n";
             } elseif ($file->operation === CCodeFile::OP_NEW && $this->confirmed($file)) {
-                $output .= ' generated '.$file->relativePath."\n";
+                $output .= ' generated ' . $file->relativePath . "\n";
             } elseif ($file->operation === CCodeFile::OP_OVERWRITE && $this->confirmed($file)) {
-                $output .= ' overwrote '.$file->relativePath."\n";
+                $output .= ' overwrote ' . $file->relativePath . "\n";
             } else {
-                $output .= '   skipped '.$file->relativePath."\n";
+                $output .= '   skipped ' . $file->relativePath . "\n";
             }
         }
         $output .= "done!\n";
@@ -323,8 +324,8 @@ abstract class BaseCCodeModel extends CFormModel
     public function saveStickyAttributes()
     {
         $path = $this->getStickyFile();
-        @mkdir(dirname($path), 0755, true);
-        file_put_contents($path, "<?php\nreturn ".var_export($this->_stickyAttributes, true).";\n");
+        @mkdir(dirname($path), 0775, true);
+        file_put_contents($path, "<?php\nreturn " . var_export($this->_stickyAttributes, true) . ";\n");
     }
 
     /**
@@ -332,7 +333,7 @@ abstract class BaseCCodeModel extends CFormModel
      */
     public function getStickyFile()
     {
-        return Yii::app()->runtimePath.'/gii-'.Yii::getVersion().'/'.get_class($this).'.php';
+        return Yii::app()->runtimePath . '/gii-' . Yii::getVersion() . '/' . get_class($this) . '.php';
     }
 
     /**
@@ -360,7 +361,7 @@ abstract class BaseCCodeModel extends CFormModel
             }
         }
 
-        return $name.'s';
+        return $name . 's';
     }
 
     /**
@@ -496,7 +497,7 @@ abstract class BaseCCodeModel extends CFormModel
         );
         $value = $this->$attribute;
         if (in_array(strtolower($value), $keywords)) {
-            $this->addError($attribute, $this->getAttributeLabel($attribute).' cannot take a reserved PHP keyword.');
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot take a reserved PHP keyword.');
         }
     }
 }
