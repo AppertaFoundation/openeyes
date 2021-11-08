@@ -138,7 +138,7 @@
 
         $.ajax({
             'type': 'GET',
-            'url': baseUrl + '/oeadmin/leafletSubspecialtyFirm/delete?leaflet_id=' + leaflet_id + '&type=' + type + '&type_id=' + type_id,
+            'url': `/${OE_module_name}/oeadmin/leafletSubspecialtyFirm/delete?leaflet_id=${leaflet_id}&type=${type}&type_id=${type_id}`,
             'success': function (html) {
                 if (html === 'error')
                     showError("Leaflet could not be deleted");
@@ -152,7 +152,7 @@
     function getLeaflets(id, type, types) {
         $.ajax({
             'type': 'GET',
-            'url': baseUrl + '/oeadmin/leafletSubspecialtyFirm/getLeaflets?id=' + id + '&type=' + type + '&types=' + types,
+            'url': `/${OE_module_name}/oeadmin/leafletSubspecialtyFirm/getLeaflets?id=${id}&type=${type}&types=${types}`,
             'success': function (html) {
                 $('#leaflets').html(html);
             }
@@ -179,7 +179,7 @@
                 // load contexts (FIRMS)
                 $.ajax({
                     'type': 'GET',
-                    'url': baseUrl + '/PatientTicketing/default/getFirmsForSubspecialty?subspecialty_id=' + subspecialty_id,
+                    'url': `/PatientTicketing/default/getFirmsForSubspecialty?subspecialty_id=${subspecialty_id}`,
                     'success': function (data) {
 
                     }
@@ -202,7 +202,7 @@
 
         OpenEyes.UI.AutoCompleteSearch.init({
             input: $('#oe-autocompletesearch'),
-            url: '/oeadmin/LeafletSubspecialtyFirm/search',
+            url: `/${OE_module_name}/oeadmin/LeafletSubspecialtyFirm/search`,
             onSelect: function(){
                 let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                 const selectedLeafletId = AutoCompleteResponse.id;
@@ -219,7 +219,7 @@
                 
                 $.ajax({
                     'type': 'GET',
-                    'url': baseUrl + '/oeadmin/leafletSubspecialtyFirm/add?leaflet_id=' + selectedLeafletId + '&type=' + type + '&type_id=' + type_id,
+                    'url': `/${OE_module_name}/oeadmin/leafletSubspecialtyFirm/add?leaflet_id=${selectedLeafletId}&type=${type}&type_id=${type_id}`,
                     'success': function () {
                         reloadLeaflets();
                     }

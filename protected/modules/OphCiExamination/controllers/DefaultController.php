@@ -1197,15 +1197,37 @@ class DefaultController extends \BaseEventTypeController
     protected function saveComplexAttributes_AdviceGiven($element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
-        $entries = @$data[$model_name]['leaflet_entries'];
-        AdviceLeafletEntry::model()->deleteAll('element_id=?', array($element->id));
 
-        foreach ($entries as $i => $entry) {
-            $leaflet_entry = new AdviceLeafletEntry();
-            $leaflet_entry->element_id = $element->id;
-            $leaflet_entry->leaflet_id = $entry;
-            $leaflet_entry->display_order = $i + 1;
-            $leaflet_entry->save(true);
+        $entries_by_leaflet_id = [];
+        foreach ($element->leaflet_entries as $entry) {
+            $entries_by_leaflet_id[$entry->id] = $entry->leaflet_id;
+        }
+
+        $posted_leaflet_ids = $data[$model_name]['leaflet_entries'] ?? [];
+
+        foreach ($posted_leaflet_ids as $i => $leaflet_id) {
+            // new entry, save it
+            if (!in_array($leaflet_id, $entries_by_leaflet_id)) {
+                $leaflet_entry = new AdviceLeafletEntry();
+                $leaflet_entry->element_id = $element->id;
+                $leaflet_entry->leaflet_id = $leaflet_id;
+                $leaflet_entry->display_order = $i + 1;
+                $leaflet_entry->save();
+            }
+        }
+
+        // delete all entries not in the POST
+        $leaflets_to_delete = array_diff($entries_by_leaflet_id, $posted_leaflet_ids);
+
+        if ($leaflets_to_delete) {
+            AdviceLeafletEntry::model()->deleteAllByAttributes([
+                'leaflet_id' => $leaflets_to_delete
+            ], 'element_id =:el_id', [':el_id' => $element->id]);
+        } elseif (!$posted_leaflet_ids) {
+            // no leaflet was posted, remove everything
+            AdviceLeafletEntry::model()->deleteAllByAttributes([
+                'element_id' => $element->id
+            ]);
         }
     }
 
@@ -1823,10 +1845,10 @@ class DefaultController extends \BaseEventTypeController
             $element->accompanying_person_name = null;
             $element->responsible_parent_name = null;
         } else {
-            if(array_key_exists('accompanying_person_name', $element_data)) {
+            if (array_key_exists('accompanying_person_name', $element_data)) {
                 $element->accompanying_person_name = $element_data['accompanying_person_name'];
             }
-            if(array_key_exists('responsible_parent_name', $element_data)) {
+            if (array_key_exists('responsible_parent_name', $element_data)) {
                 $element->responsible_parent_name = $element_data['responsible_parent_name'];
             }
         }

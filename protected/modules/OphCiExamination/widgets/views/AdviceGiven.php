@@ -120,7 +120,7 @@ foreach ($this->controller->getAttributes($element, $current_firm->getSubspecial
             openButton: $('#add-leaflet-btn'),
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= json_encode($categories) ?>, {'id': 'leaflet-category', 'multiSelect': false}),
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= json_encode($leaflets[$categories[0]['id']]) ?>, {'id': 'leaflet', 'multiSelect': true})
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= json_encode( (isset($categories[0]) ? $leaflets[$categories[0]['id']] : [])) ?>, {'id': 'leaflet', 'multiSelect': true})
             ],
             onSelect: function() {
                 if ($(this).closest('td').data('adder-id') === 'leaflet-category') {
