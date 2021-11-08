@@ -28,7 +28,8 @@ class RoutesAdminController extends BaseAdminController
             'term',
             'source_type',
             'source_subtype',
-            'getHasLateralityIcon'
+            'getHasLateralityIcon',
+            'getIsActiveIcon'
         ));
 
 
@@ -49,7 +50,8 @@ class RoutesAdminController extends BaseAdminController
             'term' => 'Term',
             'source_type' => 'Source Type',
             'source_subtype' => 'Source Subtype',
-            'has_laterality' => 'checkbox'
+            'has_laterality' => 'checkbox',
+            'is_active' => 'checkbox'
         ));
 
         $admin->editModel();

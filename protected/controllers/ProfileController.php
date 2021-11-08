@@ -113,6 +113,16 @@ class ProfileController extends BaseController
         ));
     }
 
+    protected function isUserFieldReadOnly($field)
+    {
+        $readonly_fields = explode(',', Yii::app()->params['profile_user_readonly_fields']);
+        return (
+                !Yii::app()->params['profile_user_can_edit']
+            ||  !Yii::app()->params['profile_user_show_menu']
+            ||  in_array($field, $readonly_fields)
+        );
+    }
+
     public function actionPassword()
     {
         if (!Yii::app()->params['profile_user_can_change_password']) {

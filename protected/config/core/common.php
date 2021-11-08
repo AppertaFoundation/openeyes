@@ -62,6 +62,9 @@ $db_test = array(
     $authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');    // OIDC, SAML, BASIC or LDAP;
 /** END SINGLE SIGN-ON SETTINGS */
 
+$breakGlassEnabled = strtolower(getenv('BREAK_GLASS_ENABLED')) === "true";
+$breakGlassField = getenv('BREAK_GLASS_FIELD') ?: 'qualifications';
+
 $config = array(
     'name' => 'OpenEyes',
 
@@ -126,7 +129,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202104011656',
+            'time' => '202111041754',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -384,6 +387,7 @@ $config = array(
         'nhs_num_label_short' => !empty(trim(getenv('OE_NHS_NUM_LABEL_SHORT'))) ? getenv('OE_NHS_NUM_LABEL_SHORT') : null,
         'hos_num_label_short' => !empty(trim(getenv('OE_HOS_NUM_LABEL_SHORT'))) ? getenv('OE_HOS_NUM_LABEL_SHORT') : null,
         'profile_user_can_edit' => true,
+        'profile_user_readonly_fields' => getenv('PROFILE_USER_READONLY_FIELDS') ?: '',
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => strtolower(getenv("PW_ALLOW_CHANGE")) == "false" ? false : true,
         'tinymce_default_options' => array(
@@ -876,6 +880,8 @@ $config = array(
             'portal_login_url' => $ssoLoginURL,
         ),
         /** END SINGLE SIGN-ON PARAMS */
+        'breakglass_enabled' => $breakGlassEnabled,
+        'breakglass_field' => $breakGlassField,
     ),
 );
 
@@ -933,6 +939,7 @@ $modules = array(
         'OphOuCatprom5',
         'OphTrOperationchecklists',
         'OphDrPGDPSD',
+        'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
 );
 
 // deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)

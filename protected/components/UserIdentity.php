@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -96,7 +96,7 @@ class UserIdentity extends CUserIdentity
             if ($auth_result[0]) {
                 $user_authentication->noVersion();
                 $user_authentication->last_successful_login_date = date('Y-m-d H:i:s');
-                if (!$user_authentication->saveAttributes(['last_successful_login_date'])) { 
+                if (!$user_authentication->saveAttributes(['last_successful_login_date'])) {
                     $user_authentication->user->audit('login', 'set-last-successful-login-failed', "User Auth id: $user_authentication->id, errors:" . var_export($user_authentication->getErrors(), true));
                 }
                 return [true, ""];
@@ -426,11 +426,12 @@ class UserIdentity extends CUserIdentity
             if(isset($_COOKIE['institution_id'])){
                 $app->session['selected_institution_id'] = $_COOKIE['institution_id'];
             }
+            $userFirms = $user->getAvailableFirms();
         } else {
             $app->session['selected_institution_id'] = $this->institution_id;
+            $userFirms = $user->getFirmsForCurrentInstitution();
         }
 
-        $userFirms = $user->getFirmsForCurrentInstitution();
         foreach ($userFirms as $firm) {
             $firms[$firm->id] = $this->firmString($firm);
         }

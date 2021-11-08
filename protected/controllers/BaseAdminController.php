@@ -182,7 +182,7 @@ class BaseAdminController extends BaseController
                         }
 
                         $attributes = $item->getAttributes();
-                        if (!empty($_POST[$options['label_field']][$i])) {
+                        if (!empty($_POST[$options['label_field']][$i]) || $_POST[$options['label_field']][$i] === "0") {
                             $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
                             if ($item->hasAttribute('display_order')) {
                                 $options['display_order'] = true;

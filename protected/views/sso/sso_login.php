@@ -18,4 +18,18 @@
 $this->layout = '//layouts/sso_login';
 ?>
 
-<div>Please login through the Single Sign-On portal to continue to OpenEyes.</div>
+<div>
+  <p>
+    Please login through the Single Sign-On portal to continue to OpenEyes.
+  </p>
+  <p class="user">
+    <button id="sso_login_button" class="green hint">Login to OpenEyes</button>
+  </p>
+</div>
+
+<script type="text/javascript">
+  $(function() {
+    var login_button = $('#sso_login_button');
+    login_button.click(function() {window.location.href='<?=$sso_login_url?>';});
+  });
+</script>
