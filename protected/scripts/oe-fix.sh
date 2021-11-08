@@ -14,7 +14,15 @@ done
 SCRIPTDIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 
-curuser="${LOGNAME:-root}"
+# $USER is not always populated in docker containers, so get the running user if it is empty
+function getuser() {
+    if [ -z $USER ]; then
+        USER=$(id -u -n)
+    fi
+
+    echo $USER
+}
+curuser=$(getuser)
 
 # disable log to browser during fix, otherwise it causes extraneous trace output on the CLI
 export LOG_TO_BROWSER=""
@@ -214,17 +222,69 @@ fi
 if [ $noperms = 0 ]; then
     sudo gpasswd -a "$curuser" www-data # add current user to www-data group
 
+    # This will set the correct permissions on any given folder (and all it's sub-folders) that does not meet the correct criteria
+    # Folder name should be supplied as prameter 1
+    # additional options are -uid=<user name to chown>; -gid=<group name to chown>; -octal=<octal file permissions to chmod>
+    function set_perms() {
+
+        user=$(getuser)
+        group="www-data"
+        octal=774
+
+        PARAMS=()
+        while [[ $# -gt 0 ]]; do
+            p="$1"
+
+            case $p in
+            -uid*) # Set suffix - ignore if .
+                USER=${1#*=}
+                ;;
+            -gid*)
+                group=${1#*=}
+                ;;
+            -octal*)
+                octal=${1#*=}
+                ;;
+            *) # add everything else to the params array for processing in the next section
+                PARAMS+=("$1")
+                ;;
+            esac
+            shift
+        done
+        set -- "${PARAMS[@]}" # restore positional parameters
+
+        if [ "$(stat -c '%U' $1)" != $user ] || [ "$(stat -c '%G' $1)" != "$group" ]; then
+            sudo chown -RL "$user":"$group" "$1"
+            echo "Modified ownership on $1 to; OWNER: $user, GROUP: $group"
+        fi
+        if [ "$(stat -c "%a" $1)" != "$octal" ]; then
+            [ ${#octal} -le 3 ] && choctal="00$octal" || choctal=$octal
+
+            sudo chmod -R $choctal "$1"
+            echo "Modified permissions on $1 to $choctal"
+        fi
+    }
+
+    export -f getuser
+    export -f set_perms
+
+    ## Fix permissions for protected files
+    chown -L "$curuser":www-data "$WROOT/protected/files"
+
+    find -L "$WROOT/protected/files" -maxdepth 1 -mindepth 1 -type d -exec bash -c 'set_perms "$0"' {} \;
+
     # We can ignore setting file permissions when running in a docker conatiner, as we always run as root
     if [[ "$DOCKER_CONTAINER" != "TRUE" ]] || [ $forceperms == 1 ]; then
         echo -e "\nResetting file permissions..."
         if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ] || [ $forceperms == 1 ]; then
             echo "updaing ownership on $WROOT"
-            sudo chown -R $curuser:www-data $WROOT
+            sudo chown -RL $curuser:www-data $WROOT
         else
             echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
         fi
 
-        folders774=($WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime $WROOT/protected/files)
+        # update some smaller folders
+        folders774=($WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime)
 
         for i in "${folders774[@]}"; do
             echo "updating $i to 774..."
@@ -232,19 +292,9 @@ if [ $noperms = 0 ]; then
 
         done
 
-        if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
-            echo "setting sticky bit for protected/runtime"
-            sudo chmod -R g+s $WROOT/protected/runtime
-        fi
-
-        if [ $(stat -c '%U' $WROOT/protected/files/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/files/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/files/testme") != 774 ]; then
-            echo "setting sticky bit for protected/files"
-            sudo chmod -R g+s $WROOT/protected/files
-        fi
-
         # re-own composer and npm config folders in user home directory (sorts issues caused if sudo was used to composer/npm update previously)
-        sudo chown -R $curuser ~/.config 2>/dev/null || :
-        sudo chown -R $curuser ~/.composer 2>/dev/null || :
+        sudo chown -RL $curuser ~/.config 2>/dev/null || :
+        sudo chown -RL $curuser ~/.composer 2>/dev/null || :
     fi
     #  update ImageMagick policy to allow PDFs
     sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &>/dev/null
