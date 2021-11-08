@@ -64,6 +64,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
                     LEFT JOIN `event` ON `event`.id = le.event_id
                     LEFT JOIN `user` ON `user`.id = le.signed_by_user_id
                     WHERE event.event_type_id = ".$evt_type_id."
+                    AND le.protected_file_id IS NOT NULL
                     AND user.id IS NOT NULL
                     ;"
             );
@@ -150,7 +151,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
         $signature_item = $this->dbConnection
             ->createCommand("SELECT * FROM " . $table . " WHERE event_id = ".$additional['event_id']."")->queryRow();
 
-        if ($signature_item) {
+        if ($signature_item && !is_null($signature_item['protected_file_id'])) {
             $element_id = $this->dbConnection
                 ->createCommand("
                                 SELECT id FROM " . self::NEW_2ND_ET . " WHERE event_id = " . $signature_item['event_id'] . "
