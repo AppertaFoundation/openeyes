@@ -54,13 +54,10 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
                 {$new_element_id} as element_id,
                 1 AS contact_type_id,
                 dds.signatory_name,
-                8 AS consent_patient_relationship_id, -- Other....
-                IF(dds.signatory_required,
-                    (SELECT id FROM ophtrconsent_patient_contact_method WHERE need_signature = 1),
-                    (SELECT id FROM ophtrconsent_patient_contact_method WHERE need_signature = 0)
-                ) AS consent_patient_contact_method_id,
+                (SELECT id FROM ophtrconsent_patient_relationship pr WHERE LOWER(pr.name) = 'other') AS consent_patient_relationship_id, -- Other....
+                (SELECT id FROM ophtrconsent_patient_contact_method cm WHERE LOWER(cm.name) = 'other') AS consent_patient_contact_method_id, -- Other....
                 relation_to_patient AS `other_relationship`,
-                'N/A' AS `other_contact_method`,
+                'Consultation' AS `other_contact_method`,
                 dds.signatory_required AS signature_required,  
                 dds.last_modified_user_id,
                 dds.last_modified_date, 
