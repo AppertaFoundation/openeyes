@@ -546,7 +546,6 @@ class UserIdentity extends CUserIdentity
             $app->session['selected_firm_id'] = key($firms);
         }
 
-
         if ($this->is_special) {
             $app->session['user_auth'] = $user_authentication;
             $app->session['user'] = $user_authentication->user;
