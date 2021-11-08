@@ -70,6 +70,9 @@ class m211104_102720_migrate_extra_procedures extends OEMigration
 
     public function safeUp()
     {
+        // Blocked by: https://openeyes.atlassian.net/browse/OE-11132
+        return true;
+
         $this->setVerbose(false);
         if ($this->dbConnection->schema->getTable('ophtrconsent_extra_procedure')) {
             $extra_procedure_elements = $this->dbConnection->createCommand("SELECT * FROM et_ophtrconsent_procedure")->queryAll();
@@ -83,7 +86,6 @@ class m211104_102720_migrate_extra_procedures extends OEMigration
                 $this->addExtraProcedures($new_extra_procedure_element_id,$old_extra_procedure_element_id);
             }
         }
-        die('INTERRUPT');
     }
 
     public function safeDown()
