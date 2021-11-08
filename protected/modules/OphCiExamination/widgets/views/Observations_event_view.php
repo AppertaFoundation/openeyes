@@ -84,6 +84,14 @@
                     </tr>
                     <tr>
                         <td>
+                            <span class="data-label">Resp. Rate:</span>
+                        </td>
+                        <td>
+                            <span class="data-value"><?php echo ($entry->rr !== null) ? $entry->rr . ' breaths/min' : '' ?></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             <span class="data-label"><?= $entry->getAttributeLabel('hba1c') ?>:</span>
                         </td>
                         <td>
@@ -121,6 +129,14 @@
                         </td>
                         <td>
                             <span class="data-value"><?php echo ($entry->temperature !== null) ? $entry->temperature . ' &deg;C' : ''; ?></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="data-label"><?= $entry->getAttributeLabel('other') ?>:</span>
+                        </td>
+                        <td>
+                            <span class="data-value"><?php echo $entry->other?></span>
                         </td>
                     </tr>
                     <tr>
