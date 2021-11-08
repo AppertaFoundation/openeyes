@@ -23,7 +23,6 @@ use OEModule\OphTrConsent\models\OphTrConsent_BestInterestDecision_Attachment;
 
 class DefaultController extends BaseEventTypeController
 {
-    private $elementFilterList = ['Element_OphTrConsent_Other'];
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -155,21 +154,6 @@ class DefaultController extends BaseEventTypeController
             $element->setBenefitsAndRisksFromProcedures($this->booking_operation->procedures);
         } elseif ($action == 'create' && $this->template) {
             $element->setBenefitsAndRisksFromProcedures($this->template->procedures);
-        }
-    }
-
-    /**
-     * Set the consultant id.
-     *
-     * @param $element
-     * @param $action
-     */
-    protected function setElementDefaultOptions_Element_OphTrConsent_Other($element, $action)
-    {
-        if ($action == 'create') {
-            if ($this->firm->consultant) {
-                $element->consultant_id = $this->firm->consultant->id;
-            }
         }
     }
 
