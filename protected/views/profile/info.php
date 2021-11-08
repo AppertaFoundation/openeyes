@@ -225,6 +225,11 @@
           </div>
       </td>
   </tr>
+  <tr>
+      <td>
+          <?= $form->textArea($user, "correspondence_sign_off_text", array("rows" => 4)) ?>
+      </td>
+  </tr>
   </tbody>
 </table>
 <?php if (Yii::app()->params['profile_user_can_edit']) {?>

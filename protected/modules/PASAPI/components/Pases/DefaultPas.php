@@ -1,6 +1,8 @@
 <?php
 
 namespace OEModule\PASAPI\components\Pases;
+
+use Exception;
 use OEModule\PASAPI\models\PasApiAssignment;
 
 /**
@@ -73,7 +75,6 @@ class DefaultPas extends BasePAS
         }
 
         if (!empty($params['patient_identifier_value'])) {
-
             //get the patient
             $criteria = new \CDbCriteria();
 
@@ -139,7 +140,6 @@ class DefaultPas extends BasePAS
 
 
         if (isset($data['patient_identifier_value']) && $data['patient_identifier_value']) {
-
             if ($this->type->usage_type === 'LOCAL') {
                 $query['hosnum'] = $data['patient_identifier_value'];
             } elseif ($this->type->usage_type === 'GLOBAL') {
@@ -160,7 +160,6 @@ class DefaultPas extends BasePAS
 
         $error = '';
         if (!empty($query)) {
-
             $xml = $this->curl->get($this->config['url'] . '?' . http_build_query($query));
             $ch = $this->curl->curl;
 
@@ -213,11 +212,71 @@ class DefaultPas extends BasePAS
 
                 $xml_handler->next('Patient');
             }
-
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             \OELog::log("PASAPI : " . $e->getMessage());
         }
 
         return $resources;
+    }
+
+    function buildXML(&$xml, $data, &$parent_xml = null, $parent_idx = null)
+    {
+        foreach ($data as $idx=>$record) {
+            if (is_array($record) || is_object($record)) {
+                if (is_numeric($idx)) {
+                    $child = $parent_xml->addChild($parent_idx);
+                } else {
+                    $child = $xml->addChild($idx);
+                }
+                $this->buildXML($child, $record, $xml, $idx);
+            } else {
+                try {
+                    if ($record !== "") {
+                        $xml->addChild($idx, htmlspecialchars($record));
+                    }
+                } catch (Exception $e) {
+                    \OELog::log("PASAPI buildXML: ". $e->getMessage());
+                    \OELog::log("PASAPI buildXML record: ". var_export($record, true));
+                }
+            }
+        }
+        return $xml;
+    }
+
+    /***
+     * @param HL7_A08 $data
+     */
+    public function sendUpdate($data)
+    {
+
+        $xml = new \SimpleXMLElement('<root/>');
+
+        $this->buildXML($xml, $data);
+
+        $post_data = "xmlrequest=".$xml->asXML();
+
+        $xml = $this->curl->post($this->config['url'], $post_data);
+        $ch = $this->curl->curl;
+        $response = $this->curl->post($this->config['url'], $post_data);
+        $ch = $this->curl->curl;
+
+        try {
+            $responseXml = new \SimpleXMLElement($response);
+            $msg = $responseXml->ErrorMessage;
+            \Yii::log('Error node: '.var_export($msg,true));
+            \Yii::log('Error node count: '.$msg->count());
+            if ($msg != "") {
+                \Yii::app()->user->setFlash('warning.pas_error', 'Invalid Answer From PAS: '.$msg);
+                \Yii::log('Invalid answer from pas: '.$msg);
+            }
+            if (curl_errno($ch)) {
+                \Yii::app()->user->setFlash('warning.pas_error', 'No Connection To Mirth');
+                $error = 'PASAPI cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
+                \OELog::log($error);
+            }
+        } catch (\Exception $e) {
+            \Yii::log('No Response From PAS:'.$e->getMessage()." ".var_export($response, true));
+            \Yii::app()->user->setFlash('warning.pas_error','No Response From PAS');
+        }
     }
 }

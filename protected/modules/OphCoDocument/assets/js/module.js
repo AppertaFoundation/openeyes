@@ -23,6 +23,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
     function DocumentUploadController(options) {
         this.options = $.extend(true, {}, DocumentUploadController._defaultOptions, options);
+        this.imageAnnotators = [];
         this.initialiseTriggers();
     }
 
@@ -205,8 +206,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             });
         });
 
-        Array.from(document.querySelectorAll(controller.options.annotateImageActionSelector)).forEach(function(element) {
-            element.addEventListener('click', function(event) {
+        Array.from(document.querySelectorAll(controller.options.annotateImageActionSelector)).forEach((element) => {
+            element.addEventListener('click', (event) => {
                 event.preventDefault();
 
                 const div = element.parentElement;
@@ -225,7 +226,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 // Clone the new row and insert it into the table
                 const clone = template.content.cloneNode(true);
 
-                document.querySelector('#js-annotate-image').appendChild(clone);
+                const annotateImage = document.getElementById('js-annotate-image');
+                annotateImage.appendChild(clone);
 
                 const el = document.querySelector(`${controller.options.wrapperSelector} [data-side="${side}"] .ophco-image-container`);
                 const format = el.getAttribute('data-file-format');
@@ -236,8 +238,30 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                     showElement(document.querySelector('#pdf-message'));
                 }
 
-                let data = {attribute: 'data-side', value : side};
-                OpenEyes.UI.ImageAnnotator.init(imageEl.src, imageEl.naturalWidth, imageEl.naturalHeight, document.querySelectorAll('.js-document-upload-wrapper'), format, data, side);
+                // let data = {attribute: 'data-side', value : side};
+                // OpenEyes.UI.ImageAnnotator.init(imageEl.src, imageEl.naturalWidth, imageEl.naturalHeight, document.querySelectorAll('.js-document-upload-wrapper'), format, data, side);
+                const imageAnnotator = new OpenEyes.UI.ImageAnnotator(imageEl.src, {
+                    'format': format,
+                    'side': side,
+                    'canvasModifiedCallback': () => {
+                        const $side_input = document.getElementById(`${side}_file_canvas_modified`);
+                        if ($side_input) {
+                            $side_input.value = 1;
+                        }
+                    },
+                    'afterInit': () => {
+                        const $img_wrapper = document.querySelectorAll('.js-document-upload-wrapper');
+                        // hide the image
+                        $img_wrapper.forEach(function (element) {
+                            element.style.display = 'none';
+                        });
+                    }
+                });
+
+                const index = ''+this.imageAnnotators.length;
+                this.imageAnnotators.push(imageAnnotator);
+                imageEl.dataset.imageAnnotatorId = index;
+                annotateImage.dataset.imageAnnotatorId = index;
             });
         });
 
@@ -262,8 +286,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             });
         });
 
-        Array.from(document.querySelectorAll(controller.options.saveAnnotationActionSelector)).forEach(function(element) {
-            element.addEventListener('click', function(event) {
+        Array.from(document.querySelectorAll(controller.options.saveAnnotationActionSelector)).forEach((element) => {
+            element.addEventListener('click', async (event) => {
                 event.preventDefault();
 
                 const div = element.parentElement;
@@ -272,7 +296,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 const el = document.querySelector(`${controller.options.wrapperSelector} [data-side="${side}"] .ophco-image-container`);
                 const imageEl = el.querySelector(el.getAttribute('data-image-el'));
                 const fileType = el.getAttribute('data-file-type');
-                const canvasDataUrl =  OpenEyes.UI.ImageAnnotator.getCanvasDataUrl();
+                const imageAnnotator = this.imageAnnotators[imageEl.dataset.imageAnnotatorId];
+                const canvasDataUrl =  await imageAnnotator.getCanvasDataUrl();
                 imageEl.src = canvasDataUrl;
                 if (fileType !== 'pdf') {
                     document.querySelector(`#ProtectedFile_${side}_file_content`).value = canvasDataUrl;
@@ -388,16 +413,23 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
            controller.options.action = 'cancel';
         });
 
-        $("#et_save,#et_save_footer").on('click', function (e) {
+        $("#et_save,#et_save_footer").on('click', async function (e) {
             controller.options.action = 'save';
             e.preventDefault();
+            let side, containerElem, imageElem;
+            let canvasData = false;
+            const canvasJs =  document.querySelector('#js-annotate-image .canvas-js');
 
-            let canvasData = OpenEyes.UI.ImageAnnotator.getCanvasDataUrl();
+            if (canvasJs) {
+                side = canvasJs.getAttribute('data-side');
+                containerElem = document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] .ophco-image-container`);
+                imageElem = containerElem.querySelector(containerElem.getAttribute('data-image-el'));
 
-            if ((typeof canvasData !== "boolean")){
-                const side = document.querySelector('#js-annotate-image .canvas-js').getAttribute('data-side');
-                const containerElem = document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] .ophco-image-container`);
-                const imageElem = containerElem.querySelector(containerElem.getAttribute('data-image-el'));
+                const imageAnnotator = controller.imageAnnotators[imageElem.dataset.imageAnnotatorId];
+                canvasData = await imageAnnotator.getCanvasDataUrl();
+            }
+
+            if ((typeof canvasData !== "boolean")) {
                 const fileType = containerElem.getAttribute('data-file-type');
                 imageElem.src = canvasData;
                 if (fileType === 'image') {
@@ -783,9 +815,16 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
     DocumentUploadController.prototype.clearCanvasData = function() {
         const annotateEl = document.querySelector('#js-annotate-image');
+
+        if (this.imageAnnotators && this.imageAnnotators[annotateEl.dataset.imageAnnotatorId]) {
+            const imageAnnotator = this.imageAnnotators[annotateEl.dataset.imageAnnotatorId];
+            imageAnnotator.clearCanvas();
+            this.imageAnnotators.splice(+annotateEl.dataset.imageAnnotatorId, 1);
+        }
+
         annotateEl.style.display = 'none';
         annotateEl.innerHTML = '';
-        OpenEyes.UI.ImageAnnotator.clearCanvas();
+
         hideElement(document.querySelector('#pdf-message'));
     };
 

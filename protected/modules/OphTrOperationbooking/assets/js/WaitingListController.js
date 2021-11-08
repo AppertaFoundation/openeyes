@@ -153,18 +153,6 @@ $(function () {
       });
 
   });
-
-  new OpenEyes.UI.StickyElement('.panel.actions', {
-    offset: -44,
-    enableHandler: function (instance) {
-      instance.element.width(instance.element.width());
-      instance.enable();
-    },
-    disableHandler: function (instance) {
-      instance.element.width('auto');
-      instance.disable();
-    }
-  });
 });
 
 function print_items_from_selector(sel, all) {
@@ -192,7 +180,7 @@ function print_items_from_selector(sel, all) {
     }
   } else {
     show_letter_warnings(nogp);
-    printIFrameUrl(baseUrl + '/OphTrOperationbooking/waitingList/printLetters', {'operations': operations, 'all': all});
+    printIFrameUrl(baseUrl + '/OphTrOperationbooking/waitingList/printLettersPdf', {'operations': operations, 'all': all});
   }
 }
 

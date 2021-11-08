@@ -20,7 +20,9 @@ namespace OEModule\OphCiExamination\controllers;
 
 use Audit;
 use CDbCriteria;
+use OELog;
 use OEModule\OphCiExamination\components\ExaminationHelper;
+use OEModule\OphCiExamination\controllers\traits\AdminForAdviceGiven;
 use OEModule\OphCiExamination\controllers\traits\AdminForColourVision;
 use OEModule\OphCiExamination\controllers\traits\AdminForContrastSensitivity;
 use OEModule\OphCiExamination\controllers\traits\AdminForElementAttribute;
@@ -52,6 +54,7 @@ class AdminController extends \ModuleAdminController
     use AdminForContrastSensitivity;
     use AdminForNinePositions;
     use AdminForStrabismusManagement;
+    use AdminForAdviceGiven;
 
     public $group = 'Examination';
 
@@ -771,7 +774,7 @@ class AdminController extends \ModuleAdminController
 
         $this->render('list_OphCiExamination_Workflow_Rules', array(
                 'model_class' => 'OphCiExamination_Workflow_Rule',
-                'model_list' => models\OphCiExamination_Workflow_Rule::model()->findAll(array('condition' => 'institution_id = :institution_id', 'order' => 'id asc',  'params' => [':institution_id' => Yii::app()->session['selected_institution_id']])),
+                'model_list' => models\OphCiExamination_Workflow_Rule::model()->with('firm')->findAll(array('condition' => 'institution_id = :institution_id', 'order' => 't.id asc',  'params' => [':institution_id' => Yii::app()->session['selected_institution_id']])),
                 'title' => 'Workflow rules',
         ));
     }
@@ -847,6 +850,44 @@ class AdminController extends \ModuleAdminController
             'Edit Overall Periods',
             'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod',
             ['div_wrapper_class' => 'cols-4']
+        );
+    }
+
+    public function actionManageDischargeStatuses()
+    {
+        $this->genericAdmin(
+            'Edit Discharge Statuses',
+            'OEModule\OphCiExamination\models\DischargeStatus',
+            [
+                'div_wrapper_class' => 'cols-4',
+                'extra_fields' => [
+                    'ecds_code' => [
+                        'type' => 'text',
+                        'field' => 'ecds_code'
+                    ]
+                ]
+            ]
+        );
+    }
+
+    public function actionManageDischargeDestinations()
+    {
+        $this->genericAdmin(
+            'Edit Discharge Destinations',
+            'OEModule\OphCiExamination\models\DischargeDestination',
+            [
+                'div_wrapper_class' => 'cols-4',
+                'extra_fields' => [
+                    'ecds_code' => [
+                        'type' => 'text',
+                        'field' => 'ecds_code'
+                    ],
+                    'institution_required' => [
+                        'type' => 'boolean',
+                        'field' => 'institution_required'
+                    ]
+                ]
+            ]
         );
     }
 
@@ -979,6 +1020,10 @@ class AdminController extends \ModuleAdminController
             ],
             [
                 'field' => 'followup',
+                'type' => 'boolean',
+            ],
+            [
+                'field' => 'discharge',
                 'type' => 'boolean',
             ],
         ];
@@ -1286,5 +1331,11 @@ class AdminController extends \ModuleAdminController
                 'description' => 'Correction Types are used in multiple examination elements',
             ]
         );
+    }
+    public function actionRedFlags()
+    {
+        Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_AE_RedFlags_Options'));
+
+        $this->genericAdmin('Edit Red Flags Options', 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options', ['div_wrapper_class' => 'cols-5', 'return_url' => '/OphCiExamination/admin/redFlags'], null, true);
     }
 }

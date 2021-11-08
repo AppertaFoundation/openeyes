@@ -54,13 +54,13 @@ class ColourVision extends \BaseEventElementWidget
     public function getReadingAttributeLabel($attr)
     {
         return OphCiExamination_ColourVision_Reading::model()->getAttributeLabel($attr);
-
     }
 
     public function getMethods()
     {
         if (!$this->available_methods) {
-            $this->available_methods = OphCiExamination_ColourVision_Method::model()->findAll();;
+            $this->available_methods = OphCiExamination_ColourVision_Method::model()->findAll();
+            ;
         }
         return $this->available_methods;
     }

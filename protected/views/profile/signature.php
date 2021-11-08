@@ -1,58 +1,52 @@
 <?php
-/* copy latest copyright!*/
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2021
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 ?>
-
+<?php
+/** @var User $user */
+/** @var bool $recapture */
+?>
 <h2>Stored signature</h2>
-<?php if ($user->checkSignature()) {?>
+<?php if (!$recapture && $user->checkSignature()): ?>
   <div class="standard">
-    You have a captured signature in the system, if you want to check the signature image please enter your 4 digit PIN:
-    <div id="div_signature_pin" class="data-group">
-      <div class="cols-2">
-        <label for="signature_pin">PIN:</label>
-      </div>
-      <div class="cols-2">
-        <input type="password" maxlength="4" name="signature_pin" id="signature_pin">
-      </div>
-      <div class="cols-2">
-        <button class=" primary event-action" name="show_signature" type="submit" id="et_show_signature">OK</button>
-        <input type="hidden" name="YII_CSRF_TOKEN" id="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-      </div>
+    <p>You have a captured signature in the system:</p>
+    <div id="signature_image">
+        <?= $user->getSignatureImage(["width" => 450, "height" => 150]); ?>
     </div>
-    <div id="signature_image"></div>
     <br>
-    If you want to change your current signature and PIN:
-    <ul>
-      <li>Visit <?= Yii::app()->params['signature_app_url'] ? : "the OpenEyes Phone Application" ?> on your mobile device.</li>
-      <li>Scan the QR code displayed below with the application.</li>
-      <li>Follow the prompts from there.</li>
-    </ul>
+    <a class="button primary" href="/profile/signature?recapture=1">Click here to replace it with a new signature</a>
   </div>
-<?php } else {?>
-  <table class="standard">
-    <tbody>
-    <tr>
-      <td>You have not captured any signature yet. To do so please:</td>
-    </tr>
-    <tr>
-      <td>Visit <?= Yii::app()->params['signature_app_url'] ? : "the OpenEyes Phone Application" ?> on your mobile device.</td>
-    </tr>
-    <tr>
-      <td>Scan the QR code displayed below with the application.</td>
-    </tr>
-    <tr>
-      <td>Follow the prompts from there.</td>
-    </tr>
-    <tr>
-      <td>
-        <img src="/profile/generateSignatureQR" border="0">
-      </td>
-    </tr>
-    <tr>
-      <td>
-        After you've finished scanning your signature please press this button:
-        <button class="primary button large green hint event-action" name="get_signature" type="submit" id="et_get_signature">Load my signature into the system</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-<?php } ?>
+<?php else: ?>
+    <?php if(!$recapture): ?>
+    <div class="standard">
+        <p>You have not captured any signature yet. To do so please use the form below.</p>
+    </div>
+    <?php endif; ?>
+    <?php $this->widget("application.widgets.SignatureCapture", [
+        "submit_url" => "/profile/uploadSignature",
+        "after_submit_js" => "
+            function(response, widget) {
+                if(response.success) {
+                    window.location.href = '/profile/signature';
+                }
+                else {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: response.message
+                    }).open();
+                }
+            }"
+    ]); ?>
+<?php endif; ?>

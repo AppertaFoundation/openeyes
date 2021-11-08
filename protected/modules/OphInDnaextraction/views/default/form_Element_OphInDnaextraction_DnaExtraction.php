@@ -16,52 +16,91 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element <?php echo $element->elementType->class_name?>"
+<div class="element-fields full-width flex-layout flex-top col-gap  <?php echo $element->elementType->class_name?>"
     data-element-type-id="<?php echo $element->elementType->id?>"
     data-element-type-class="<?php echo $element->elementType->class_name?>"
     data-element-type-name="<?php echo $element->elementType->name?>"
     data-element-display-order="<?php echo $element->elementType->display_order?>">
-    <fieldset class="element-fields">
-        <?php
-        $storage = new OphInDnaextraction_DnaExtraction_Storage();
-        echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList($element->storage_id), 'id', 'value'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
-        
-        <div class="data-group">
-            <div class="cols-3 column">
-                <label></label>
-            </div>
-            <div class="cols-2 column end">
+    <div class="cols-6 data-group">
+        <table class= "cols-full">
+            <tbody>
+            <tr>
+                <td>
+                    <?php
+                        $storage = new OphInDnaextraction_DnaExtraction_Storage();
+                        echo $form->dropDownList(
+                                $element,
+                                'storage_id',
+                                CHtml::listData($storage->getAvailableCombinedList($element->storage_id), 'id', 'value'),
+                                array('empty' => '- Select -'),
+                                false,
+                                array('label' => 7, 'field' => 5, 'full_dropdown' => true)
+                        )?>
                     <?=\CHtml::button(
                         'Add new storage',
                         array(
-                        'id'        => 'addNewStoragePopup',
-                        'class'     => 'button small secondary',
-                        'type'      => 'button',
+                            'id'        => 'addNewStoragePopup',
+                            'class'     => 'button small secondary',
+                            'type'      => 'button',
                         )
                     ); ?>
-            </div>
-        </div>
-        
-        <?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 2))?>
-        <?php
-            echo $form->dropDownList($element, 'extracted_by_id', CHtml::listData($element->user->findAllByRoles(['Genetics Laboratory Technician', 'Genetics Admin'], true), 'id', function($row){return $row->last_name.', '.$row->first_name;
-            }), array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true))), false, array('label' => 3, 'field' => 2 ))
-            ?>
-        <?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
-        <?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2));?>
-        <?php echo $form->textField($element, 'dna_quality', array(), array(), array('label' => 3, 'field' => 1));?>
-        <?php echo $form->textField($element, 'dna_quantity', array(), array(), array('label' => 3, 'field' => 1));
-
-        if ($this->action->id == 'update') {
-            $form->widget(
-                'Caption',
-                array(
-                    'label' => 'Volume Remaining',
-                    'value' => $this->volumeRemaining($element->event_id),
-                )
-            );
-        }
-        ?>
-        <?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5))?>
-    </fieldset>
-</section>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array('style' => 'width: 100%'), array('label' => 7, 'field' => 5))?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php
+                    echo $form->dropDownList($element, 'extracted_by_id', CHtml::listData($element->user->findAllByRoles(['Genetics Laboratory Technician', 'Genetics Admin'], true), 'id', function ($row) {
+                        return $row->last_name.', '.$row->first_name;
+                    }), array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true))), false, array('label' => 7, 'field' => 5))
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $form->textField($element, 'dna_concentration', array('style' => 'width: 100%'), array(), array('label' => 7, 'field' => 5))?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $form->textField($element, 'volume', array('style' => 'width: 100%'), array(), array('label' => 7, 'field' => 5));?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $form->textField($element, 'dna_quality', array('style' => 'width: 100%'), array(), array('label' => 7, 'field' => 5));?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $form->textField($element, 'dna_quantity', array('style' => 'width: 100%'), array(), array('label' => 7, 'field' => 5));?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php
+                    if ($this->action->id == 'update') {
+                        $form->widget(
+                            'Caption',
+                            array(
+                                'label' => 'Volume Remaining',
+                                'value' => $this->volumeRemaining($element->event_id),
+                            )
+                        );
+                    }
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 7, 'field' => 5))?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

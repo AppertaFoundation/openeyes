@@ -48,12 +48,15 @@ class Address extends BaseResource
     {
         switch ($addr_type) {
             case 'HOME':
-                return \AddressType::model()->find('name=?', array('Home'))->id;
+            case 'H':
+            case 'P':
+                return \AddressType::HOME;
             case 'CORR':
-                return \AddressType::model()->find('name=?', array('Correspondence'))->id;
+            case 'M':
+                return \AddressType::CORRESPOND;
+            default:
+                return null;
         }
-
-        return;
     }
 
     private function mapCountry(\Address $address)

@@ -17,9 +17,9 @@ class DnaExtractionBoxAdminController extends \ModuleAdminController
 
     public function actionList()
     {
-       
+
         $admin = new Admin(OphInDnaextraction_DnaExtraction_Box::model(), $this);
-      
+
         $admin->setModelDisplayName('Dna Storage Box');
         $admin->setListFields(array(
             'value',
@@ -30,9 +30,8 @@ class DnaExtractionBoxAdminController extends \ModuleAdminController
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
-
     }
-    
+
     public function actionEdit($id = false)
     {
         $admin = new Admin(OphInDnaextraction_DnaExtraction_Box::model(), $this);
@@ -47,13 +46,13 @@ class DnaExtractionBoxAdminController extends \ModuleAdminController
         ));
         $admin->editModel();
     }
-    
+
     public function actionDelete()
     {
         $admin = new Admin(OphInDnaextraction_DnaExtraction_Box::model(), $this);
         $admin->deleteModel();
     }
-    
+
     public function actionSort()
     {
         if (!empty($_POST['OphInDnaextraction_DnaExtraction_Box']['display_order'])) {

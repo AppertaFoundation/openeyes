@@ -75,7 +75,7 @@ if (isset(Yii::app()->session['print_prescription'])) { ?>
         });
     </script>
 <?php } elseif (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
-?>
+    ?>
     <script>
         $(document).ready(function() {
             do_print_fpTen('<?= isset(Yii::app()->session['print_prescription_fp10']) ? 'FP10' : 'WP10' ?>');

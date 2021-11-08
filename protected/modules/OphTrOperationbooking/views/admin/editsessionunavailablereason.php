@@ -25,11 +25,11 @@
                     'focus' => '#OphTrOperationbooking_Operation_Session_UnavailableReason_name',
                     'layoutColumns' => array(
                             'label' => 2,
-                            'field' => 5,
+                            'field' => 12,
                     ),
             ))?>
     <?php echo $form->errorSummary($reason); ?>
-    <?php echo $form->textField($reason, 'name')?>
+    <?php echo $form->textField($reason, 'name', array('class'=>'cols-4'))?>
     <?php echo $form->formActions();?>
     <?php $this->endWidget()?>
 </div>

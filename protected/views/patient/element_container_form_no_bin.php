@@ -15,4 +15,4 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $this->renderPartial('//patient/element_container_form', ['no_bin' => true , 'element' => $element , 'content' => $content]);?>
+<?php echo $this->renderPartial('//patient/element_container_form', ['no_bin' => true , 'element' => $element , 'content' => $content]);

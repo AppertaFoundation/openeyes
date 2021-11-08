@@ -31,6 +31,7 @@
         $this->renderPartial('form_'.Helper::getNSShortname($model), array(
             'model' => $model,
             'form' => $form,
+            'title' => $title,
         ));
 
         echo $form->formActions(array(

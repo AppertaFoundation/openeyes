@@ -39,6 +39,7 @@
 class Element_OphTrConsent_Other extends BaseEventTypeElement
 {
     public $service;
+    public $display_order;
 
     /**
      * Returns the static model of the specified AR class.

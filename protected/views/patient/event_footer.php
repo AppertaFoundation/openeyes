@@ -26,11 +26,11 @@ if (isset($this->event_actions)) {
                 echo $action->toHtml();
             }
         }
-        
+
         if (!empty($print_actions)) {
             echo EventAction::printDropDownButtonAsHtml($print_actions);
         }
-        
+
         if (isset($delete_action)) {
             echo $delete_action->toHtml();
         }

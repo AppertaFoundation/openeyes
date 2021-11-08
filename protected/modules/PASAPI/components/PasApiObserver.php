@@ -61,7 +61,6 @@ class PasApiObserver
 
         $pas_results = [];
         foreach ($data['params']['terms_with_types'] ?? [] as $terms_with_type) {
-
             $type = \PatientIdentifierType::model()->findByPk($terms_with_type['patient_identifier_type']['id']);
             $pas = $this->initPas($type);
 
@@ -103,26 +102,22 @@ class PasApiObserver
 
         // $pas_results is an array of protected/modules/PASAPI/resources/Patient.php by type
         if ($pas_results) {
-
             $this->extraLog($pas_results);
 
             $count = count($pas_results, COUNT_RECURSIVE) - count($pas_results);
-            if(isset($data['local_results_count'])) {
+            if (isset($data['local_results_count'])) {
                 $count += $data['local_results_count'];
             }
 
             foreach ($pas_results as $type_id => $pas_results_by_type) {
-
                 if ($this->save_patient_from_pas_type_id && $this->save_patient_from_pas_type_id != $type_id) {
                     continue;
                 }
                 foreach ($pas_results_by_type as $pas_result) {
-
                     $assignment = $pas_result->getAssignment();
                     $model = $assignment->getInternal();
                     // we do not care about Patients already in OE DB
                     if (!$model->isNewRecord) {
-
                         // check if the patient belongs to the "correct" type
                         // as different types can have the same number
                         $criteria = new \CDbCriteria();
@@ -150,7 +145,7 @@ class PasApiObserver
                     if (($this->save_patient_from_pas_type_id == $type->id && $pas_result->id == $data['params']['term']) || $count === 1) {
                         // patient selected to save this Patient from this Type, we do not care about any other result
                         // this does Patient saving or adding Patient Identifier
-                        $this->processPASResults($pas_result, $type, $data , $return_results);
+                        $this->processPASResults($pas_result, $type, $data, $return_results);
 
                         // do not return any data, OE Patient::search will find
                         return;
@@ -159,7 +154,6 @@ class PasApiObserver
                     }
                 }
             }
-
         } else {
             $this->extraLog("No PAS results.");
         }
@@ -176,17 +170,15 @@ class PasApiObserver
     {
         $patient_result = [];
 
-        $if_patient_already_added = function($identifier_value, $dob, $gender) use ($patient_result) : bool {
+        $if_patient_already_added = function ($identifier_value, $dob, $gender) use ($patient_result) : bool {
             if (isset($patient_result["{$identifier_value}{$dob}{$gender}"])) {
                 return true;
             }
             return false;
         };
 
-        foreach($patients as $patient) {
-
+        foreach ($patients as $patient) {
             if ($patient->globalIdentifier) {
-
                 // Patient resource returns Y-m-d H:i:s
                 $dob = date("Ymd", strtotime($patient->dob));
                 $key = "{$patient->globalIdentifier->value}{$dob}{$patient->gender}";
@@ -198,7 +190,6 @@ class PasApiObserver
                 } else {
                     $patient_result[$key] = $patient;
                 }
-
             } else {
                 // this should not happen actually, but just in case
                 $patient_result[] = $patient;
@@ -221,7 +212,6 @@ class PasApiObserver
         $patient = $assignment->getInternal();
 
         foreach (\PatientIdentifierType::model()->findAll() as $type) {
-
             $pas = $this->initPas($type);
 
             if (!$pas) {
@@ -280,11 +270,10 @@ class PasApiObserver
 
         $patient = \Patient::model()->find($criteria);
 
-        if($patient) {
+        if ($patient) {
             \PatientIdentifierHelper::addNumberToPatient($patient, $type, $resource->id);
             $return_results[] = $patient;
         } elseif ($resource->save()) {
-
             $assignment = $resource->getAssignment();
             $patient = $assignment->getInternal();
 
@@ -305,8 +294,7 @@ class PasApiObserver
             }
 
             $return_results[] = $patient;
-
-        } elseif($data['patient'] instanceof \Patient) {
+        } elseif ($data['patient'] instanceof \Patient) {
             $data['patient']->addPasError('Patient not updated/saved from PAS, some data may be out of date or incomplete');
             \OELog::log('PASAPI Patient resource model could not be saved. Hos num: ' . $resource->id . ' ' . print_r($resource->errors, true));
             return false;
@@ -358,7 +346,6 @@ class PasApiObserver
 
         $identifiers = [];
         foreach (['GLOBAL', 'LOCAL'] as $usage_type) {
-
             $patient_identifier = new \PatientIdentifier();
 
             if ($usage_type === 'GLOBAL') {
@@ -391,6 +378,7 @@ class PasApiObserver
         $resource->assignProperty($contact, 'first_name', 'FirstName');
         $resource->assignProperty($contact, 'last_name', 'Surname');
         $resource->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
+        $resource->assignProperty($contact, 'mobile_phone', 'MobilePhoneNumber');
         $resource->addGlobalNumberStatus($patient);
 
         return $patient;
@@ -406,5 +394,37 @@ class PasApiObserver
     {
         $enabled = (isset(\Yii::app()->params['pasapi']['enabled']) && \Yii::app()->params['pasapi']['enabled'] === true);
         return $this->available = $enabled;
+    }
+
+    /**
+     * Performs PAS searches and saves or returns Patient object
+     *
+     * @param $data
+     * @return bool
+     */
+    public function updateEmergencyCareVisit($data)
+    {
+        $this->extraLog($data);
+
+        if (!$this->isAvailable()) {
+            $this->extraLog("PAS is not available");
+            return false;
+        }
+
+        $type = \PatientIdentifierType::model()->find('usage_type="GLOBAL"'); //using NHS number to initialize pasapi, but this is not required for update
+        $pas = $this->initPas($type);
+
+        if (!$pas || !$pas->isAvailable()) {
+            $this->extraLog("PAS is not available");
+            return false;
+        }
+
+        $this->extraLog("PAS is available");
+
+        $obj = $data->getHL7attributes();
+
+        $results = $pas->sendUpdate($obj);
+
+        return true;
     }
 }

@@ -15,9 +15,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 class WaitingListController extends BaseModuleController
 {
     public $renderPatientPanel = false;
+    private $pdf_output;
 
     public function accessRules()
     {
@@ -27,7 +29,7 @@ class WaitingListController extends BaseModuleController
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
-                'actions' => array('printLetters'),
+                'actions' => array('printLetters', 'printLettersPdf'),
                 'roles' => array('OprnPrint'),
             ),
             array('allow',
@@ -47,6 +49,7 @@ class WaitingListController extends BaseModuleController
     {
         return array(
             'printLetters',
+            'printLettersPdf'
         );
     }
 
@@ -272,6 +275,10 @@ class WaitingListController extends BaseModuleController
             $criteria->params[':subspecialtyId'] = $subspecialtyId;
         }
         $criteria->addCondition('can_own_an_episode = 1');
+        if (!isset(Yii::app()->session['selected_institution_id'])) {
+            $criteria->addCondition('institution_id = :institutionId');
+            $criteria->params[':institutionId'] = Institution::model()->getCurrent()->id;
+        }
         $criteria->order = '`t`.name asc';
 
         return CHtml::listData(Firm::model()
@@ -304,6 +311,78 @@ class WaitingListController extends BaseModuleController
 
         $this->layout = '//layouts/print';
 
+        $html = '';
+
+        foreach ($operations as $operation) {
+            set_time_limit(3);
+            $html .= $this->printLetter($operation, $auto_confirm);
+        }
+
+        echo $html;
+    }
+
+        /**
+     * Merges a PDF file to the end of the output
+     *
+     * @param $pdf_path
+     * @throws Exception
+     */
+    private function addPDFToOutput($pdf_path)
+    {
+        if (file_exists($pdf_path)) {
+            $pagecount = $this->pdf_output->setSourceFile($pdf_path);
+            for ($i = 1; $i <= $pagecount; $i++) {
+                $this->pdf_output->AddPage('P');
+                $tplidx = $this->pdf_output->ImportPage($i);
+                $this->pdf_output->useTemplate($tplidx);
+            }
+        } else {
+            $this->pdf_output->AddPage('P');
+            $this->pdf_output->SetFont('Arial', 'B', 16);
+            $this->pdf_output->SetY(($this->pdf_output->GetPageHeight() / 2) - 10);
+            $this->pdf_output->Cell(0, 10, 'Attachment unavailable -', 0, 2, 'C');
+            $this->pdf_output->Cell(0, 10, 'please try re-printing the event to re-generate attachments', 0, 2, 'C');
+        }
+    }
+
+    function generatePdf($operation, $documents, $docrefs, $barcodes, $patients, $directory)
+    {
+        $url = "http://localhost/OphTrOperationbooking/waitingList/printLetters?"
+        ."operations[]=".$operation;
+
+        set_time_limit(60);
+
+        $pdf_suffix = 'waitingList_'.Yii::app()->user->id.'_'.rand();
+
+        $wk = Yii::app()->puppeteer;
+        $wk->setDocuments($documents);
+        $wk->setDocrefs($docrefs);
+        $wk->setBarcodes($barcodes);
+        $wk->setPatients($patients);
+
+        $wk->savePageToPDF($directory, $pdf_suffix."_".$operation, '', $url);
+
+        $pdf = $directory."/".$pdf_suffix."_".$operation.".pdf";
+        return $pdf;
+    }
+
+    function actionPrintLettersPdf()
+    {
+        Audit::add('waiting list', (@$_REQUEST['all'] == 'true' ? 'print all' : 'print selected'), serialize($_POST));
+        if (isset($_REQUEST['event_id'])) {
+            $operations = Element_OphTrOperationbooking_Operation::model()->findAll('event_id=?', array($_REQUEST['event_id']));
+            $auto_confirm = true;
+        } else {
+            $operation_ids = (isset($_REQUEST['operations'])) ? $_REQUEST['operations'] : null;
+            $auto_confirm = (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1);
+            if (!is_array($operation_ids)) {
+                throw new CHttpException('400', 'Invalid operation list');
+            }
+            $operations = Element_OphTrOperationbooking_Operation::model()->findAllByPk($operation_ids);
+        }
+
+        $this->layout = '//layouts/print';
+
         $cmd = Yii::app()->db->createCommand('SELECT GET_LOCK(?, 1)');
 
         while (!$cmd->queryScalar(array('waitingListPrint'))) {
@@ -313,27 +392,32 @@ class WaitingListController extends BaseModuleController
 
         Yii::app()->db->createCommand('SELECT RELEASE_LOCK(?)')->execute(array('waitingListPrint'));
 
-        $html = '';
-        $docrefs = array();
-        $barcodes = array();
-        $patients = array();
         $documents = 0;
+
+        $pdf = array();
+        $this->pdf_output = new PDF_JavaScript();
 
         // FIXME: provide a means by which progress can be reported back to the user, possibly via session and parallel polling?
         foreach ($operations as $operation) {
+            $docrefs = array();
+            $barcodes = array();
+            $patients = array();
+
             $letter_status = $operation->getDueLetter();
             if ($letter_status === null && $operation->getLastLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP) {
                 $letter_status = Element_OphTrOperationbooking_Operation::LETTER_GP;
             }
 
-            set_time_limit(3);
-            $html .= $this->printLetter($operation, $auto_confirm);
+            set_time_limit(60);
 
             $docrefs[] = "E:{$operation->event->id}/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
             $barcodes[] = $operation->event->barcodeSVG;
             $patients[] = $operation->event->episode->patient;
 
             ++$documents;
+
+            $pdf[] = $this->generatePdf($operation->id, 1, $docrefs, $barcodes, $patients, $directory);
+            $this->addPDFToOutput($pdf[$documents-1]);
 
             if ($letter_status == Element_OphTrOperationbooking_Operation::LETTER_GP) {
                 // Patient letter is another document
@@ -342,27 +426,18 @@ class WaitingListController extends BaseModuleController
                 $patients[] = $operation->event->episode->patient;
 
                 ++$documents;
+                $pdf[] = $this->generatePdf($operation->id, 1, $docrefs, $barcodes, $patients, $directory);
+                $this->addPDFToOutput($pdf[$documents-1]);
             }
         }
 
-        set_time_limit(10);
-
-        $pdf_suffix = 'waitingList_'.Yii::app()->user->id.'_'.rand();
-
-        $wk = Yii::app()->puppeteer;
-        $wk->setDocuments($documents);
-        $wk->setDocrefs($docrefs);
-        $wk->setBarcodes($barcodes);
-        $wk->setPatients($patients);
-        $wk->savePageToPDF($directory, $pdf_suffix, '', $html);
-
-        $pdf = $directory."/$pdf_suffix.pdf";
-
         header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf));
 
-        readfile($pdf);
-        @unlink($pdf);
+        $this->pdf_output->Output('I');
+
+        foreach ($pdf as $pdffile) {
+            @unlink($pdffile);
+        }
     }
 
     /**

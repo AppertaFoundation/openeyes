@@ -12,14 +12,12 @@ version: "3.4"
 
 services:
   db:
-    image: mariadb:10.4
+    image: toukanlabsdocker/oe-sample-db:latest
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-example}
+      MYSQL_ROOT_PASSWORD: openeyes
       TZ: "Europe/London"
     stdin_open: true
     tty: true
-    tmpfs:
-      - /var/lib/mysql
     ports:
       - "3333:3306"
     command:
@@ -35,14 +33,16 @@ services:
       OE_MODE: "TEST"
       TESTS_TO_RUN: "PHPUNIT"
       DATABASE_HOST: "db"
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-example}
+      MYSQL_ROOT_PASSWORD: openeyes
       ENABLE_CRON: "FALSE"
       WAIT_HOSTS_TIMEOUT: "120"
       WAIT_SLEEP_INTERVAL: "2"
       USE_DEMO_DATA: "FALSE"
-      DATABASE_NAME: "phpunitdb"
+      DATABASE_NAME: "openeyes"
+      DATABASE_USER: "openeyes"
+      DATABASE_PASS: "openeyes"
       # temporarily fallback to develop branch, as some eyedraw tests require something that is not in master yet
-      OE_DEFAULT_BRANCH: "develop"
+      # OE_DEFAULT_BRANCH: "develop"
       OE_INSTITUTION_CODE: "NEW"
     secrets:
       - source: SSH_PRIVATE_KEY

@@ -92,4 +92,4 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'element' => $element,
     ), true),
 ));
-?>
+

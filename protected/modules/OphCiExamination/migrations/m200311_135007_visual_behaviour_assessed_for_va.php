@@ -23,7 +23,6 @@ class m200311_135007_visual_behaviour_assessed_for_va extends OEMigration
             foreach (['beo', 'right', 'left'] as $side) {
                 $this->addOEColumn($table, "{$side}_behaviour_assessed", "boolean", true);
             }
-
         }
     }
 

@@ -1,24 +1,70 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::printButton();
     $this->event_actions[] = EventAction::button('Print for visually impaired', 'print_va', array(), array('class' => 'button small'));
 }
+
+$event = $this->event;
+$withdrawn = false;
+$signature = null;
+$has_opnote = null;
+$has_withdrawal = null;
+
+if ($withdrawal = $event->getElementByClass(Element_OphTrConsent_Withdrawal::class)) {
+    $withdrawn = $withdrawal->withdrawn;
+    $signature = $withdrawal->signature_id;
+}
+
+$existing_withdrawal_criteria = new CDbCriteria();
+$existing_withdrawal_criteria->with = ['event'];
+$existing_withdrawal_criteria->compare('event.deleted', 0);
+$existing_withdrawal_criteria->compare('t.event_id', $this->event->id);
+$has_withdrawal = Element_OphTrConsent_Withdrawal::model()->find($existing_withdrawal_criteria);
+
+$existing_consent_criteria = new CDbCriteria();
+$existing_consent_criteria->with = ['event'];
+$existing_consent_criteria->compare('event.deleted', 0);
+$existing_consent_criteria->compare('t.event_id', $this->event->id);
+$has_consent = Element_OphTrConsent_Procedure::model()->find($existing_consent_criteria);
+
+if ($has_consent && $has_consent->booking_event_id !== NULL) {
+    $existing_opnote_criteria = new CDbCriteria();
+    $existing_opnote_criteria->with = ['event'];
+    $existing_opnote_criteria->compare('event.deleted', 0);
+    $existing_opnote_criteria->compare('t.booking_event_id', $has_consent->booking_event_id);
+    $has_opnote = Element_OphTrOperationnote_ProcedureList::model()->find($existing_opnote_criteria);
+}
+
+if ($signature === null && $has_opnote === null && $has_withdrawal === null) {
+    $this->event_actions[] = EventAction::button(
+        'Patient withdraws consent',
+        'withdraw',
+        array(),
+        array('type' => 'button', 'class' => 'button red warning small js-add-withdrawal', 'data-type' => 'withdraw')
+    );
+}
+
+$et = ElementType::model()->find("class_name = :class_name", array(":class_name" => Element_OphTrConsent_Withdrawal::class));
+if ($et) {
+    $withdrawal_et_id = $et->id;
+    echo "<input type='hidden' id='withdraw_et_id' value='" . CHtml::encode($withdrawal_et_id) . "' />";
+}
+
 ?>
 <?php $this->beginContent('//patient/event_container', array('no_face'=>true));?>
 
@@ -32,7 +78,13 @@ if ($this->checkPrintAccess()) {
         </div>
     <?php }?>
 
-    <?php  $this->renderOpenElements($this->action->id); ?>
+    <?php if ($withdrawn) : ?>
+        <div class="alert-box alert with-icon">
+            This consent form has been withdrawn by the patient.
+        </div>
+    <?php endif; ?>
+
+    <?php $this->renderOpenElements($this->action->id); ?>
 
     <?php // The "print" value is set by the controller and comes from the user session ?>
     <input type="hidden" name="OphTrConsent_print" id="OphTrConsent_print" value="<?php echo $print;?>" />

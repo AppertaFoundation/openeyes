@@ -16,75 +16,148 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<fieldset class="element-fields">
-    <?php
-    $form->activeWidget(
-        'DropDownList',
-        $element,
-        'type_id',
-        array(
-            'data' => CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-            'htmlOptions' => array('empty' => 'Select'),
-        )
-    );
+<div class="element-fields full-width flex-layout flex-top col-gap">
+    <div class="cols-6 data-group">
+        <table class= "cols-full">
+            <tbody>
+            <tr>
+                <td>
+                    <?= $form->dropDownList(
+                        $element,
+                        'type_id',
+                        CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+                        ['empty' => '- Select -'],
+                        false,
+                        array('label' => 7, 'field' => 5, 'full_dropdown' => true, 'class' => 'oe-input-is-read-only', 'hidden' => true)
+                    );
 
-    /* now way to hide the whole row using the widget : $form->activeWidget('TextField', $element, 'other_sample_type', array('class' => 'hidden')); */
 
-    ?>
+                    /* now way to hide the whole row using the widget : $form->activeWidget('TextField', $element, 'other_sample_type', array('class' => 'hidden')); */
 
-    <?php
-        $hidden = $element->other_sample_type ? '' : 'hidden'; //hide if null
-    if ( $element->getError('other_sample_type') ) {
-        // show the field if there is an error
-        $hidden = '';
-    }
-    ?>
-    <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="data-group <?php echo $hidden; ?>">
-        <div class="cols-2 column">
-            <label for="Element_OphInDnasample_Sample_other_sample_type"><?php echo $element->getAttributeLabel('other_sample_type'); ?></label>
-        </div>
-        <div class="cols-10 column end">
-            <?=\CHtml::textField('Element_OphInDnasample_Sample[other_sample_type]', $element->other_sample_type); ?>
-        </div>
+?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php
+                    $form->datePicker(
+                        $element,
+                        'blood_date',
+                        array('options' => array('maxDate' => 'today')),
+                        array('style' => 'width: 100%'),
+                        array('label' => 7, 'field' => 5)
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?=$form->textField(
+                        $element,
+                        'volume',
+                        array(
+                            'style' => 'width: 100%',
+                        ),
+                        null,
+                        array('label' => 7, 'field' => 5)
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?=$form->textField(
+                        $element,
+                        'destination',
+                        array(
+                            'style' => 'width: 100%',
+                        ),
+                        null,
+                        array('label' => 7, 'field' => 5)
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php
+                    $users = User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'], true);
+                    $form->dropDownList(
+                        $element,
+                        'consented_by',
+                        CHtml::listData($users, 'id', function ($row) {
+                            return $row->last_name.', '.$row->first_name;
+                        }),
+                        array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array('selected' => true))),
+                        false,
+                        array('label' => 7, 'field' => 5, 'class' => 'oe-input-is-read-only cols-full', 'hidden' => true)
+                    );
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="data-group cols-full flex-layout">
+                        <div class="cols-7 column">Study(s):</div>
+                        <div class="cols-5 column">
+                            <?php
+                            $user = User::model()->findByPk(Yii::app()->user->id);
+
+                            $form->multiSelectList(
+                                $element,
+                                CHtml::modelName($element) .'[studies]',
+                                'studies',
+                                'id',
+                                CHtml::listData(GeneticsStudy::model()->findAll(), 'id', 'name'),
+                                array(),
+                                array('label' => 'Study(s)', 'empty' => '-- Add --', 'nowrapper' => true, 'full_dropdown' => true, 'class' => 'cols-full'),
+                                false,
+                                false,
+                                null,
+                                false,
+                                false
+
+                            );
+                            ?>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+
+                    <?=
+                    //$user['first_name'].' '.$user['last_name'];
+                        $form->textField(
+                            $element,
+                            'comments',
+                            array(
+                                'style' => 'width: 100%',
+                            ),
+                            null,
+                            array('label' => 7, 'field' => 5)
+                        );
+?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php
+                    $hidden = $element->other_sample_type ? '' : 'hidden'; //hide if null
+                    if ( $element->getError('other_sample_type') ) {
+                        // show the field if there is an error
+                        $hidden = '';
+                    }
+                    ?>
+                    <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="data-group <?php echo $hidden; ?>">
+                        <div class="cols-5 column">
+                            <label for="Element_OphInDnasample_Sample_other_sample_type"><?php echo $element->getAttributeLabel('other_sample_type'); ?></label>
+                        </div>
+                        <div class="cols-5 column end">
+                            <?=\CHtml::textField('Element_OphInDnasample_Sample[other_sample_type]', $element->other_sample_type); ?>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-
-    <?php
-    $form->activeWidget(
-        'DatePicker',
-        $element,
-        'blood_date',
-        array(
-            'options' => array('maxDate' => 'today'),
-        )
-    );
-
-    $form->activeWidget('TextField', $element, 'volume');
-    $form->activeWidget('TextField', $element, 'destination');
-
-    $users = User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'], true);
-
-    $form->dropDownList(
-        $element,
-        'consented_by',
-        CHtml::listData($users, 'id', function($row){return $row->last_name.', '.$row->first_name;
-        }),
-        array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true)))
-    );
-
-    $user = User::model()->findByPk(Yii::app()->user->id);
-
-    $form->multiSelectList(
-        $element,
-        CHtml::modelName($element) .'[studies]',
-        'studies',
-        'id',
-        CHtml::listData(GeneticsStudy::model()->findAll(), 'id', 'name'),
-        array(),
-        array('label' => 'Study(s)', 'empty' => '-- Add --')
-    );
-
-    //$user['first_name'].' '.$user['last_name'];
-    $form->activeWidget('TextField', $element, 'comments');
-
-    ?>
-</fieldset>
+</div>

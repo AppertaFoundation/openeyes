@@ -96,9 +96,9 @@
       itemSets:[
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-              return ['label' => $item->short_name, 'id' => $item->id];
+                return ['label' => $item->short_name, 'id' => $item->id];
             },
-            OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id)) 
+            OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id))
         ) ?>,
           {'header':'site', 'id':'site_id'})
       ],

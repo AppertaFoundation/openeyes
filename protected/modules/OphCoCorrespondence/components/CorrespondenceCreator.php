@@ -54,7 +54,7 @@ class CorrespondenceCreator extends \EventCreator
 
         if (isset($macro_target_data['cc'])) {
             foreach ($macro_target_data['cc'] as $cc) {
-                $cc_recipients[] = [
+                $this->documents['DocumentTarget'][] = [
                     'attributes' => [
                         'ToCc' => 'Cc',
                         'contact_type' => $cc['contact_type'],
@@ -73,7 +73,7 @@ class CorrespondenceCreator extends \EventCreator
         }
 
         if (isset($macro_target_data['to'])) {
-            $this->documents['DocumentTarget'] = [
+            $this->documents['DocumentTarget'][] =
                  [
                     'attributes' => [
                         'ToCc' => 'To',
@@ -85,12 +85,11 @@ class CorrespondenceCreator extends \EventCreator
 
                     'DocumentOutput' => [
                         [
-                            //this gp_label paramt thing is extrem;y dodgy, we will have problem here I guess later
+                            //this gp_label param thing is extremely dodgy, we will have problem here I guess later
                             'output_type' => strtolower($macro_target_data['to']['contact_type']) == strtolower(\SettingMetadata::model()->getSetting('gp_label')) ? 'Docman' : 'Print',
                         ]
                     ],
-                 ],
-            ];
+                 ];
         }
 
         $this->documents['macro_id'] = $macro_target_data['macro_id'];

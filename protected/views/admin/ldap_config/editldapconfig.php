@@ -92,7 +92,7 @@
         'key' => '{{key}}',
         'ldap_config' => $ldap_config,
     ]);
-  ?>
+    ?>
 </script>
 <script type="text/javascript">
     $(document).ready(function () {

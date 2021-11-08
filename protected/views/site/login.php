@@ -36,8 +36,11 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
 
 <div class="oe-login">
     <div class="login multisite">
-        <h1>OpenEyes</h1>
-
+        <?php if(isset($login_type) && $login_type === "esigndevice"):?>
+            <h1>OpenEyes e-Sign</h1>
+        <?php else: ?>
+            <h1>OpenEyes</h1>
+        <?php endif; ?>
         <div class="login-details">
             <ul class="row-list">
                 <li class="login-institution" style="display: <?= $display_institution ? '' : 'none;' ?>"></li>
@@ -89,7 +92,7 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
 
             <i class="spinner" style="display:none"></i>
 
-            <button type="submit" id="login_button" class="green hint">Login</button>
+            <button type="submit" id="login_button" class="green hint"><?= isset($login_type) && $login_type === "esigndevice" ? "Link device" : "Login" ?></button>
 
             <div class="oe-user-banner">
                 <?php $this->renderPartial('//base/_banner_watermark_full'); ?>
@@ -99,19 +102,23 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
             <!-- user -->
         </div>
         <div class="info">
-            <div class="flex-layout">
-        <span class="large-text"> Need Help?&nbsp;
-          <?php  $purifier = new CHtmlPurifier(); ?>
-          <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
-                <?= Yii::app()->params['helpdesk_phone'] ? "<strong>" . $purifier->purify(Yii::app()->params['helpdesk_phone']) . "</strong>" : null ?></strong>
-                <?= Yii::app()->params['helpdesk_email'] ? "<br/>" . $purifier->purify(Yii::app()->params['helpdesk_email']) : null ?>
-                <?= Yii::app()->params['helpdesk_hours'] ? "<br/> (" . $purifier->purify(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
-          <?php elseif ($tech_support_provider) : ?>
-              <strong><a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a></strong>
-          <?php endif; ?>
-        </span>
-                <a href="#" onclick="$('#js-openeyes-btn').click();">About</a>
-            </div>
+            <?php if(isset($login_type) && $login_type === "esigndevice"):?>
+                Please login using your OpenEyes username to link with this device
+            <?php else: ?>
+                <div class="flex-layout">
+                <span class="large-text"> Need Help?&nbsp;
+                  <?php  $purifier = new CHtmlPurifier(); ?>
+                    <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
+                        <?= Yii::app()->params['helpdesk_phone'] ? "<strong>" . $purifier->purify(Yii::app()->params['helpdesk_phone']) . "</strong>" : null ?></strong>
+                        <?= Yii::app()->params['helpdesk_email'] ? "<br/>" . $purifier->purify(Yii::app()->params['helpdesk_email']) : null ?>
+                        <?= Yii::app()->params['helpdesk_hours'] ? "<br/> (" . $purifier->purify(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
+                    <?php elseif ($tech_support_provider) : ?>
+                        <strong><a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a></strong>
+                    <?php endif; ?>
+                </span>
+                    <a href="#" onclick="$('#js-openeyes-btn').click();">About</a>
+                </div>
+            <?php endif; ?>
             <!-- info -->
         </div>
         <!-- login -->

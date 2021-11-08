@@ -1045,6 +1045,26 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @param $patient
+     * @param false $use_context
+     * @return string|null
+     */
+    public function getLetterAdviceGiven($patient, $use_context = false): ?string
+    {
+        $adg = $this->getElementFromLatestVisibleEvent(
+            'models\AdviceGiven',
+            $patient,
+            $use_context
+        );
+
+        if ($adg) {
+            return $adg->getLetter_string();
+        }
+        return null;
+    }
+
+
+    /**
      * Get comments from Laser Management if the latest examination event contains
      * laser management. Will concatenate the parent management comments as well.
      *
@@ -2146,6 +2166,21 @@ class OphCiExamination_API extends \BaseAPI
             }
         }
         return $str;
+    }
+
+    public function getLatestTriagePriority(\Patient $patient, $worklist, $use_context = false)
+    {
+        $ret = '';
+        $triage_elements = $this->getElements(
+            'models\Element_OphCiExamination_Triage',
+            $patient,
+            $use_context,
+        );
+        if (count($triage_elements) > 0) {
+            $priority = $triage_elements[0]->triage->priority;
+            $ret = "<i class=\"circle-{$priority->label_colour}\" data-tt-type=\"basic\" data-tooltip-content=\"Priority: {$priority->description}\"></i>";
+        }
+        return $ret;
     }
 
     public function getLatestOutcomeRiskStatus(\Patient $patient, $worklist, $use_context = false)

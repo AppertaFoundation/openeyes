@@ -1,0 +1,285 @@
+oe_diagnosis,snomed_code,pas_ecds_code,pas_description
+Periocular brusing,125667009,314533000,Bruise / contusion / abrasion : face
+Vasovagal syncope,398665005,398665005,Vasovagal syncope
+Hypertension,38341003,38341003,Hypertension
+Tension headache,398057008,398057008,Tension headache
+Trigeminal neuralgia,31681005,31681005,Trigeminal neuralgia
+Multiple sclerosis,24700007,24700007,Multiple sclerosis
+Intracranial space-occupying lesion,8533009,254935002,Intracranial space occupying lesion
+Pituitary mass,237715007,254935002,Intracranial space occupying lesion
+Pituitary tumour,127024001,254935002,Intracranial space occupying lesion
+Argyll robertson pupil,4129001,118940003,Other nervous system disorder (see free text)
+Atypical Argyll-Robertson pupil,21011008,118940003,Other nervous system disorder (see free text)
+Carotid cavernous fistula,302213007,118940003,Other nervous system disorder (see free text)
+Carotid artery dissection,720626009,118940003,Other nervous system disorder (see free text)
+Thrombosis of cavernous venous sinus ,89980009,118940003,Other nervous system disorder (see free text)
+Myasthenia gravis,91637004,118940003,Other nervous system disorder (see free text)
+Ocular myasthenia,230684008,118940003,Other nervous system disorder (see free text)
+Neurofibromatosis syndrome ,19133005,118940003,Other nervous system disorder (see free text)
+Capillary haemangioma,402867006,56975005,Haemangioma / lymphangioma
+Haemangioma,400210000,56975005,Haemangioma / lymphangioma
+Retinoblastoma ,370967009,372087000,Malignant tumour
+Hyperthyroidism ,34486009,90739004,Hyperthyroidism / thyrotoxicosis
+Atopic eczema,24079001,43116000,Dermatitis : atopic / eczema
+Eczema,43116000,43116000,Dermatitis : atopic / eczema
+Seborrheic dermatitis,50563003,50563003,Dermatitis : seborrhoeic
+Urticaria,64305001,126485001,Urticaria
+Drug-induced rash,28926001,89322006,Rash : drug induced
+Dermoid cyst,441459009,419603000,Sebaceous cyst
+Hayfever,367498001,367498001,Hayfever
+Varicella infection,38907003,38907003,Chickenpox / varicella
+Eczema herpeticum,186535001,186535001,Eczema herpeticum
+Sinusitis,36971009,444814009,Sinusitis
+Neurotropic corneal ulcer,231901007,91514001,Corneal ulcer : non-traumatic
+Peripheral ulcerative keratitis,416473005,91514001,Corneal ulcer : non-traumatic
+Diffuse lamellar keratitis,397518007,5888003,Keratitis
+Corneal endotheliitis,373425009,5888003,Keratitis
+Keratitis ,5888003,5888003,Keratitis
+Fungal keratitis,314558005,5888003,Keratitis
+Sjogrens syndrome,83901003,46152009,Dry eye syndrome
+Mucormycosis,76627001,194005002,Orbital cellulitis
+Penetrating wound of eye,315296002,315296002,Penetrating eye injury
+Medication side-effect,401207004,401207004,Side effect of medication
+Left care setting before initial assessment,1066301000000103,185330002,Left before clinical assessment
+Acute angle closure,1111451000000100,30041005,GLAUCOMA : Acute Angle Closure
+Anterior uveitis,410692006,410692006,MEDICAL RETINA : Acute Anterior Uveitis
+Amblyopia,387742006,118940003,NEURO STRABISMUS : Amblyopia
+Allergic conjunctivitis,473460002,473460002,External Eye Disease : Allergic Conjunctivitis
+Vernal keratoconjunctivitis,317349009,473460002,External Eye Disease : Allergic Conjunctivitis
+Chlamydial conjunctivitis ,231861005,9826008,External Eye Disease : Conjunctivitis-Chlamydial
+Adies pupil,24225004,118940003,NEURO STRABISMUS : Adies Pupil
+Holmes-Adie syndrome,24225004,118940003,NEURO STRABISMUS : Adies Pupil
+Amaurosis fugax,88032003,266257000,NEURO STRABISMUS : Amaurosis Fugax
+Arteritic ischaemic optic neuropathy,230508004,230508004,NEURO STRABISMUS : Arteritic Ischaemic Optic Neuropathy
+Age related macular degeneration,267718000,414875008,MEDICAL RETINA : Age Related Macular Degeneration Dry
+Nonexudative age-related macular degeneration,414875008,414875008,MEDICAL RETINA : Age Related Macular Degeneration Dry
+Exudative age-related macular degeneration,414173003,414173003,MEDICAL RETINA : Age Related Macular Degeneration Wet
+Arc eye,3282008,3282008,External Eye Disease : Arc Eye
+Atopic keratoconjunctivitis,403434009,43116000,External Eye Disease : Atopic Keratoconjunctivitis
+Spasm of accommodation,30069002,118940003,NEURO STRABISMUS : Accommodative Spasm
+Convergence spasm,194134005,118940003,NEURO STRABISMUS : Accommodative Spasm
+Band keratopathy,35055000,5888003,External Eye Disease : Band Keratopathy
+Basal cell carcinoma,1338007,60113004,ADNEXAL : Basal Cell Carcinoma
+Gonococcal conjunctivitis,231858009,9826008,External Eye Disease : Bacterial Conjunctivitis
+Bacterial conjunctivitis,128350005,9826008,External Eye Disease : Bacterial Conjunctivitis
+Behcet's disease,310701003,77628002,MEDICAL RETINA : Behcets Disease
+Blepharitis,41446000,41446000,External Eye Disease : Blepharitis
+Blebitis,413666003,128351009,GLAUCOMA : Blebitis
+Blepharospasm,59026006,118940003,ADNEXAL : Blepharospasm
+Branch retinal artery occlusion,50821009,50821009,MEDICAL RETINA : Branch Retinal Artery Occlusion
+Bleb associated endophthalmitis ,413665004,128351009,GLAUCOMA : Bleb Related Endophthalmitis
+Branch retinal vein occlusion,24596005,24596005,MEDICAL RETINA : Branch Retinal Vein Occlusion
+Closed eyeball trauma,721329001,75229002,External Eye Disease : Blunt Trauma or Hyphaema
+Bullous keratopathy,57207003,5888003,External Eye Disease : Bullous Keratopathy
+Corneal oedema,27194006,5888003,External Eye Disease : Bullous Keratopathy
+Corneal abrasion,85848002,85848002,External Eye Disease : Corneal Abrasion
+Canaliculitis,93129004,60113004,ADNEXAL : Canaliculitis
+Cataract,193570009,193570009,CATARACT : Cataract
+Corneal foreign body,37450000,55899000,External Eye Disease : Corneal Foreign Body
+Cngenital cataract,79410001,193570009,PAEDIATRICS : Congenital Cataract
+Congenital glaucoma,204113001,77075001,PAEDIATRICS : Congenital Glaucoma
+Loose suture of corneal graft,472696003,312087002,External Eye Disease : Corneal Graft Loose Suture
+Corneal graft disorder ,314551004,314551004,External Eye Disease : Corneal Graft rejection
+Corneal graft rejection,95742008,314551004,External Eye Disease : Corneal Graft rejection
+Chalazion,1482004,60113004,ADNEXAL : Chalazion
+Chemical burn of eyelid AND/OR periocular area,16096002,274205003,External Eye Disease : Chemical Injury
+Secondary malignant neoplasm of choroid ,94254004,372087000,MEDICAL RETINA : Choroid Mass-lesion
+Malignant melanoma of choroid,255021005,372087000,MEDICAL RETINA : Choroid Mass-lesion
+"Choroidal melanoma, diffuse",399634005,372087000,MEDICAL RETINA : Choroid Mass-lesion
+Keratitis-contact lens associated,39641000119100,5888003,External Eye Disease : Contact Lens Asssociated Keratitis
+Contact lens overwear syndrome,397561005,5888003,External Eye Disease : Contact Lens overwear
+Cystoid macular edema,193387007,193387007,MEDICAL RETINA : Cystoid Macular Oedema
+Cystoid macular edema,193387007,193387007,MEDICAL RETINA : Cystoid Macular Oedema
+On examination - cranial nerve 3 - palsy,164091005,388980004,NEURO STRABISMUS : Third Nerve Palsy
+Fourth nerve palsy,20610004,20610004,NEURO STRABISMUS : Fourth Nerve Palsy
+Superior oblique dysfunction,426301008,73013002,NEURO STRABISMUS : Fourth Nerve Palsy - decompensating
+Sixth cranial nerve palsy,398760006,73013002,NEURO STRABISMUS : Sixth Nerve Palsy
+Congenital nasolacrimal duct obstruction,193994000,109245003,PAEDIATRICS : Congenital Nasolacrimal Duct Obstruction
+Choroidal naevus,255024002,255024002,MEDICAL RETINA : Choroidal Naevus
+Conjunctival laceration,417750006,417750006,External Eye Disease : Conjunctival Laceration
+Corneal melting disorder,314764001,314764001,External Eye Disease : Corneal melt
+Conjunctivitis,9826008,9826008,External Eye Disease : Conjunctivitis
+Cyst of conjunctiva ,193901000,193901000,External Eye Disease : Conjunctival Cyst
+Conjunctival concretions,13706005,13706005,External Eye Disease : Concretions
+Contact dermatitis,40275004,40275004,External Eye Disease : Contact dermatitis 
+Conjunctival foreign body,231866000,37450000,External Eye Disease : Conjunctival foreign body
+Corneal perforation,74895004,315296002,External Eye Disease : Corneal Perforation
+Commotio retinae,80744008,80744008,VITREO RETINAL : Commotio Retinae
+Corneal burn,274204004,274204004,External Eye Disease : Corneal burn 
+Acanthamoeba keratitis ,231896005,711645008,External Eye Disease : Corneal ulcer : acanthamoeba
+Corneal dystrophy,5587004,5587004,External Eye Disease : Corneal Dystrophy
+Corneal pannus,35666006,5587004,External Eye Disease : Corneal Dystrophy
+Central retinal artery occlusion,38742007,38742007,MEDICAL RETINA : Central Retinal Artery Occlusion
+Central retinal vein occlusion,68478007,73757007,MEDICAL RETINA : Central Retinal Vein Occlusion
+Central retinal vein occlusion (ischaemic),312997008,73757007,MEDICAL RETINA : Central Retinal Vein Occlusion
+Central retinal vein occlusion (non-ischaemic),312998003,73757007,MEDICAL RETINA : Central Retinal Vein Occlusion
+Central serous retinopathy,312956001,6141006,MEDICAL RETINA : Central Serous Retinopathy
+Dacryoadenitis,86927009,109245003,ADNEXAL : Dacryoadenitis
+Disorder of lacrimal gland,95766002,109245003,ADNEXAL : Dacryoadenitis
+Drug allergy,416098002,62014003,GLAUCOMA : Drop Allergy/Intolerance
+Drug intolerance,59037007,62014003,GLAUCOMA : Drop Allergy/Intolerance
+Corneal dellen,246938006,5888003,External Eye Disease : Dellen
+Dislocated intraocular lens,312699008,312087002,CATARACT : Dislocated IOL
+Diabetic macular oedema,312912001,312912001,MEDICAL RETINA : Diabetic Macular Oedema
+Dacryocystitis,85777005,109245003,ADNEXAL : Dacryocystitis
+Non proliferative diabetic retinopathy,390834004,44054006,MEDICAL RETINA : Diabetic Retinopathy Non-proliferative
+Proliferative diabetic retinopathy,59276001,46635009,MEDICAL RETINA : Diabetic Retinopathy Proliferative
+Dry eyes,162290004,46152009,External Eye Disease : Dry Eyes
+Decompensating squint,14619009,118940003,NEURO STRABISMUS : Decompensating Squint
+Esotropia ,16596007,118940003,NEURO STRABISMUS : Decompensating Squint
+Esophoria,62176008,118940003,NEURO STRABISMUS : Decompensating Squint
+Accommodative esotropia,419494007,118940003,NEURO STRABISMUS : Decompensating Squint
+Infantile Esotropia,232093001,118940003,NEURO STRABISMUS : Decompensating Squint
+Non-accommodative esotropia,232097000,118940003,NEURO STRABISMUS : Decompensating Squint
+Exophoria,46343005,118940003,NEURO STRABISMUS : Decompensating Squint
+Exotropia,399054005,118940003,NEURO STRABISMUS : Decompensating Squint
+Stye,1489008,60113004,ADNEXAL : Eyelid abscess / cellulitis / stye
+Ectropion of eyelid,62909004,62909004,ADNEXAL : Ectropion
+Endophthalmitis,1847009,1847009,MEDICAL RETINA : Endophthalmitis
+Entropion,33168009,33168009,ADNEXAL : Entropion
+Epiblepharon,253212001,33168009,ADNEXAL : Entropion
+Episcleritis,815008,78370002,MEDICAL RETINA : Episcleritis
+Epiretinal membrane,367649002,367649002,VITREO RETINAL : Epiretinal Membrane
+Macular pseudo hole,312902008,367649002,VITREO RETINAL : Epiretinal Membrane
+Exposure keratopathy,14366000,5888003,External Eye Disease : Exposure Keratopathy
+Fuchs' endothelial dystrophy,193839007,5888003,External Eye Disease : Fuchs Endothelial Dystrophy
+Fuchs' heterochromic cyclitis,11226001,410692006,MEDICAL RETINA : Fuchs Heterochromic Cyclitis
+Vitreous floaters,15013002,53772007,VITREO RETINAL : Floaters
+Bell's palsy,193093009,193093009,NEURO STRABISMUS : Facial Palsy
+Temporal arteritis,400130008,414341000,NEURO STRABISMUS : Giant Cell Arteritis
+Ocular hypertension due to uveitis,1110111000000108,37155002,GLAUCOMA : Glaucoma : inflammatory
+Phacomorphic glaucoma,392300000,392300000,GLAUCOMA : Glaucoma : phacomorphic
+Glaucoma suspect,232079008,77075001,GLAUCOMA : Glaucoma Suspect
+Horner's syndrome,12731000,271730003,NEURO STRABISMUS : Horners Syndrome
+Herpes simplex keratitis,9389005,9389005,External Eye Disease : Herpes Simplex Keratitis
+Hypotony of eye,19721008,312087002,GLAUCOMA : Hypotony
+Hyphaema,75229002,75229002,MEDICAL RETINA : Hyphaema
+Hypertensive retinopathy,6962006,6962006,VITREO RETINAL : Hypertensive retinopathy
+Herpes zoster keratitis,397573005,397573005,External Eye Disease : Herpes Zoster Keratis
+Herpes zoster ,4740000,87513003,ADNEXAL : Herpes zoster ophthalmicus
+Intraocular foreign body,82576008,82576008,External Eye Disease : Intraocular foreign body
+Internuclear ophthalmoplegia,49823009,118940003,NEURO STRABISMUS : Internuclear Ophthalmoplegia
+Superficial retinal haemorrhage,63297008,93478000,MEDICAL RETINA : Intra-ocular haemorrhage
+Suprachoroidal haemorrhage,419596007,93478000,MEDICAL RETINA : Intra-ocular haemorrhage
+Idiopathic orbital inflammation,72789009,194005002,ADNEXAL : Idiopathic Orbital Inflammatory DIS
+Myositis,26889001,194005002,ADNEXAL : Idiopathic Orbital Inflammatory DIS
+Iodine reaction post injection,294916006,62014003,MEDICAL RETINA : Iodine Reaction Post Injection
+Iodine adverse reaction,293377007,62014003,MEDICAL RETINA : Iodine Reaction Post Injection
+ Intermediate uveitis,314429009,314429009,MEDICAL RETINA : Uveitis -Intermediate
+Corneal ectasia,14748007,65636009,External Eye Disease : Keratoconus
+Keratoconus,65636009,65636009,External Eye Disease : Keratoconus
+Adenoviral keratitis,314559002,314020001,External Eye Disease : Keratitis : viral
+Anisocoria,13045009,118940003,NEURO STRABISMUS : Anisocoria
+Leaking filtering bleb,408765004,128351009,GLAUCOMA : Leaking Bleb
+Loose conjunctival suture,417488009,312087001,POST OPERATIVE : Loose Conjunctival Suture
+Loose corneal suture ,843641000000105,312087002,POST OPERATIVE : Loose Corneal Suture
+Blepharochalasis,47704002,60113004,ADNEXAL : Eyelid Lesion
+Lesion of eyelid ,301913002,60113004,ADNEXAL : Eyelid Lesion
+Tumor of eyelid,278697001,60113004,ADNEXAL : Eyelid Lesion
+Sebaceous cyst,81061007,60113004,ADNEXAL : Eyelid Lesion
+Xanthelasma,238951005,60113004,ADNEXAL : Eyelid Lesion
+Leukocoria,1361009,193570009,PAEDIATRICS : Leukocoria
+Laceration of eyelid ,231816006,231816006,ADNEXAL : Lid Laceration
+Retinal macroaneurysm,247124009,247124009,MEDICAL RETINA : Macroaneurysm
+Marginal keratitis ,95730003,95730003,External Eye Disease : Marginal Keratitis
+Molluscum contagiosum infection,40070004,40070004,ADNEXAL : Molluscum Contagiosum
+Meibomianitis ,309779001,309779001,External Eye Disease : Meibomianitis
+Full thickness macular hole,443437004,232006002,VITREO RETINAL : Macular Hole -Full Thickness
+Macular hole-partial,312701008,53772007,VITREO RETINAL : Macular Hole -Partial
+Infectious crystalline keratopathy,231909009,91514001,External Eye Disease : Microbial Keratitis
+Bacterial keratitis,314557000,91514001,External Eye Disease : Microbial Keratitis
+Lacrimal mucocele,42758002,60113004,ADNEXAL : MUCOCOELE
+Myokymia,27678003,118940003,ADNEXAL : Myokymia
+Superior oblique myokymia,246781001,118940003,ADNEXAL : Myokymia
+Broad epicanthus,407552008,281900007,No Ophthalmic Abnormality Detected
+Medically unexplained visual symptoms,313165001,281900007,No Ophthalmic Abnormality Detected
+No diagnostic abnormality,23875004,281900007,No Ophthalmic Abnormality Detected
+Nasolacrimal duct obstruction,231841004,109245003,ADNEXAL : Nasolacrimal Duct Obstruction 
+Non-arteritic ischaemic optic neuropathy,230509007,230509007,NEURO STRABISMUS : Non-Arteritic Ischaemic Optic Neuropathy
+Optic neuropathy,77157004,230509007,NEURO STRABISMUS : Non-Arteritic Ischaemic Optic Neuropathy
+Needlestick injury,283596007,283596007,Needle Stick Injury
+Ocular cicatricial pemphigoid,314757003,46152009,External Eye Disease : Ocular Cicatricial Pemphigoid
+Ocular rosacea,200933006,60113004,External Eye Disease : Ocular Rosacea
+Drusen of optic disc,33629003,33629003,NEURO STRABISMUS : Optic Disc Drusen
+Ocular hypertension,4210003,77075001,GLAUCOMA : Ocular Hypertension
+Migraine with aura ,4473006,37796009,NEURO STRABISMUS : Ocular Migraine
+Ocular Migrain,95655001,37796009,NEURO STRABISMUS : Ocular Migraine
+Ophthalmia neonatorum,34298002,28438004,PAEDIATRICS : Ophthalmia neonatorum
+Orbital Cellulitis,194005002,194005002,ADNEXAL : Orbital Cellulitis
+Orbital floor fracture,207787008,95851007,ADNEXAL : Orbital  Fracture 
+Primary angle closure,1111561000000108,30041005,GLAUCOMA : Primary Angle Closure
+Primary angle closure glaucoma,392288006,30041005,GLAUCOMA : Primary Angle Closure
+Primary angle closure suspect,1128111000000103,30041005,GLAUCOMA : Primary Angle Closure Suspect
+Borderline angle closure glaucoma,193534006,30041005,GLAUCOMA : Primary Angle Closure Suspect
+Primary open angle glaucoma,77075001,77075001,GLAUCOMA : Primary Open Angle Glaucoma
+Panuveitis,75614007,410692006,MEDICAL RETINA : Uveitis -Panuveitis
+Papilloedema,423341008,423488006,NEURO STRABISMUS : Papilloedema
+Posterior capsule opacification,47337003,193570009,CATARACT : Posterior Capsule Opacification
+Post-enucleation socket syndrome,297937005,312087002,ADNEXAL : Post Enucleation Socket Syndrome
+Phlyctenulosis,67895005,9826008,External Eye Disease : Phlyctenulosis
+Herpes simplex eyelid dermatitis,186544000,186535001,ADNEXAL : Periocular Herpes Simplex
+Pinguecula,87614000,87614000,External Eye Disease : Pinguecula
+LASIK flap disorder,415651004,312087002,External Eye Disease : Post Laser Complication
+Corneal incision leaking,422071000,312087002,POST OPERATIVE : Post Operative Complications
+Corneal epithelial ingrowth ,133081000119107,312087002,POST OPERATIVE : Post Operative Complications
+Extrusion of scleral buckle ,390909000,312087002,POST OPERATIVE : Post Operative Complications
+Post operative eye complication,733339006,312087002,POST OPERATIVE : Post Operative Complications
+Post operative eye complication,733339006,312087002,POST OPERATIVE : Post Operative Complications
+Postoperative uveitis,314493000,43363007,POST OPERATIVE : Post operative uveitis
+Preseptal cellulitis,314516007,314516007,ADNEXAL : Pre-Septal Cellulitis
+Preseptal cellulitis,314516007,314516007,ADNEXAL : Pre-Septal Cellulitis
+Interstitial keratitis,1763009,5888003,External Eye Disease : Post Refract Interstitial Keratitis
+Post operative eye complication,733339006,77075001,POST OPERATIVE : Post-Op Raised Intraocular Pressure
+Posner-schlossman syndrome,29538005,29538005,GLAUCOMA : POSNER-SCHLOSSMAN SYNDROME
+Punctal stenosis,74783009,60113004,ADNEXAL : Punctal Stenosis
+Pterygium,77489003,77489003,External Eye Disease : Pterygium
+Corneal laceration,95725002,315296002,External Eye Disease : Penetrating Injury
+Aponeurotic Ptosis,231810000,60113004,ADNEXAL : Ptosis
+Ptosis,11934000,60113004,ADNEXAL : Ptosis
+Punctate inner choroidopathy,312950007,410692006,MEDICAL RETINA : Posterior Uveitis
+Posterior uveitis,43363007,410692006,MEDICAL RETINA : Posterior Uveitis
+Posterior vitreous detachment,247081001,53772007,VITREO RETINAL : Posterior Vitreous Detachment
+Retained contact lens,314496008,5888003,External Eye Disease : Retained Contact Lens
+Retinal detachment,42059000,42059000,VITREO RETINAL : Retinal Detachment
+Retinitis pigmentosa,28835009,28835009,MEDICAL RETINA : Retinitis Pigmentosa
+Astigmatism,82649003,39021009,CATARACT : Refractive Error
+Refractive error,39021009,39021009,CATARACT : Refractive Error
+Hyperopia,38101003,39021009,PAEDIATRICS : Refractive Error
+Myopia,57190000,39021009,PAEDIATRICS : Refractive Error
+Recurrent corneal erosion syndrome,2055003,85848002,External Eye Disease : Recurrent Erosion Syndrome
+Retinitis,399463004,399463004,MEDICAL RETINA : Retinitis
+Retinoschisis,44268007,44268007,MEDICAL RETINA : Retinoschisis
+Retinal vasculitis,77628002,77628002,MEDICAL RETINA : Retinal vasculitis
+Retinal tear,95690009,95690009,VITREO RETINAL : Retinal Tear
+Optic neuritis,66760008,66760008,NEURO STRABISMUS : Optic neuritis 
+Squamous cell carcinoma,402815007,60113004,ADNEXAL : Squamous Cell Carcinoma
+Squamous cell carcinoma of eyelid,231831002,60113004,ADNEXAL : Squamous Cell Carcinoma
+Subconjunctival haemorrhage,78768009,78768009,External Eye Disease : Sub Conjunctival Haemorrhage
+Scleritis,78370002,78370002,MEDICAL RETINA : Scleritis
+Sickle cell retinopathy,11603001,127040003,MEDICAL RETINA : Sickle Cell Retinopathy
+Sub tarsal foreign body,275476006,275476006,External Eye Disease : Sub-tarsal Foreign Body
+blepharokeratoconjunctivitis,15999111000119100,60113004,External Eye Disease : Staphylococcal Hypersensitivity
+Stevens johnson syndrome,73442001,62014003,External Eye Disease : Steven's Johnson Syndrome
+Super limbic keratitis,231903005,5888003,External Eye Disease : Super Limbic Keratitis
+Brown's syndrome,35929003,22066006,NEURO STRABISMUS : Squint
+Double elevator palsy,232109006,22066006,NEURO STRABISMUS : Squint
+Duane's syndrome,60318001,22066006,NEURO STRABISMUS : Squint
+Squint,22066006,22066006,NEURO STRABISMUS : Squint
+Stroke,230690007,230690007,NEURO STRABISMUS : Stroke
+Thyroid eye disease,276177000,362969004,ADNEXAL : Thyroid Eye Disease
+Transient ischaemic attack,266257000,266257000,NEURO STRABISMUS : Transient Ischaemic Attack
+thygesons keratitis,416069001,5888003,External Eye Disease : Thygessons Keratitis
+Mydriasis,37125009,404649002,NEURO STRABISMUS : Traumatic mydriasis
+Traumatic mydriasis,404649002,404649002,NEURO STRABISMUS : Traumatic mydriasis
+Toxoplasmosis chorioretinitis,187194004,77628002,MEDICAL RETINA : Toxoplasmosis
+Post-traumatic uveitis,314030005,314030005,MEDICAL RETINA : Traumatic uveitis
+Trichiasis,60332004,60332004,ADNEXAL : Trichiasis
+Leber hereditary optic neuropathy,58610003,423341008,NEURO STRABISMUS : Unilateral swollen optic disc 
+Optic disc swelling,248487006,423341008,NEURO STRABISMUS : Unilateral swollen optic disc 
+Optic disc edema,423341008,423341008,NEURO STRABISMUS : Unilateral swollen optic disc 
+Traumatic optic neuropathy,230515007,423341008,NEURO STRABISMUS : Unilateral swollen optic disc 
+Viral conjunctivitis,45261009,45261009,External Eye Disease : Viral Conjunctivitis
+Retinal haemorrhages,28998008,247097006,VITREO RETINAL : Vitreous Haemorrhage
+Vitreous haemorrhage,31341008,247097006,VITREO RETINAL : Vitreous Haemorrhage
+Vogt-Koyanagi-Harada Syndrome,193497004,77628002,MEDICAL RETINA : Vogt-Koyanagi-Harada Syndrome
+Dehiscence of surgical wound,22247000,210339009,ADNEXAL : Wound Dehiscence

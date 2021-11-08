@@ -43,6 +43,26 @@ class EventAction
         return $action;
     }
 
+    public static function dropdownToButton( $label, $name, $selectOptions = [], $options = null, $htmlOptions = null )
+    {
+        $action = new self($label, 'dropdown', $options, $htmlOptions);
+
+        $action->selectOptions = $selectOptions;
+        $action->htmlOptions['name'] = $name;
+        if (!isset($action->htmlOptions['class'])) {
+            $action->htmlOptions['class'] = 'primary';
+        }
+        if (!isset($action->htmlOptions['id'])) {
+            $action->htmlOptions['id'] = 'et_'.strtolower($name);
+        }
+        if (!isset($action->htmlOptions['empty'])) {
+            $action->htmlOptions['empty'] = 'Please select';
+        }
+
+        return $action;
+
+    }
+
     public static function printButton($label = 'Print this event', $name = 'print', $options = array(), $htmlOptions = array())
     {
         $options = array_merge(array('level' => 'print'), $options);

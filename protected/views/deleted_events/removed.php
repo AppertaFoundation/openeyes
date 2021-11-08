@@ -4,10 +4,10 @@
     $clinical = $this->checkAccess('OprnViewClinical');
     $requested_by = 'N/A';
     $requested_date = 'N/A';
-    if($event_previous_version){
-        $requested_by = $event_previous_version->usermodified->getFullName();
-        $requested_date = Helper::convertDate2NHS($event_previous_version->last_modified_date);
-    }
+if ($event_previous_version) {
+    $requested_by = $event_previous_version->usermodified->getFullName();
+    $requested_date = Helper::convertDate2NHS($event_previous_version->last_modified_date);
+}
     $completed_by = $this->event->usermodified->getFullName();
     $completed_date = Helper::convertDate2NHS($this->event->last_modified_date);
     $reson = $this->event->delete_reason;

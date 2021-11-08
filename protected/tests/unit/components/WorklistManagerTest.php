@@ -112,7 +112,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     {
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('allowDuplicatePatients', 'getWorklistPatient', 'getInstanceForClass', 'startTransaction', 'audit'))
+            ->setMethods(array('allowDuplicatePatients', 'getWorklistPatient', 'createPathway', 'getInstanceForClass', 'startTransaction', 'audit'))
             ->getMock();
 
         $patient = new Patient();
@@ -150,6 +150,10 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue($wp));
 
         $manager->expects($this->once())
+            ->method('createPathway')
+            ->will($this->returnValue(true));
+
+        $manager->expects($this->once())
             ->method('audit');
 
         $this->assertEquals($wp, $manager->addPatientToWorklist($patient, $worklist));
@@ -171,7 +175,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getInstanceForClass', 'startTransaction', 'setAttributesForWorklistPatient', 'audit'))
+            ->setMethods(array('getInstanceForClass', 'startTransaction', 'createPathway', 'setAttributesForWorklistPatient', 'audit'))
             ->getMock();
 
         $wp = $this->getMockBuilder('WorklistPatient')
@@ -193,6 +197,10 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->method('getInstanceForClass')
             ->with('WorklistPatient')
             ->will($this->returnValue($wp));
+
+        $manager->expects($this->once())
+            ->method('createPathway')
+            ->will($this->returnValue(true));
 
         $manager->expects($this->at(2))
             ->method('setAttributesForWorklistPatient')

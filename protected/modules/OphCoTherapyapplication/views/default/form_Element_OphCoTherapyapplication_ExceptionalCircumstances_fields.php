@@ -28,7 +28,10 @@ $layoutColumns = array(
 $need_reason = false;
 $previnterventions = array();
 $relevantinterventions = array();
-if (@$_POST[get_class($element)]) {
+
+$read_post = $element->hasEye($side) && @$_POST[get_class($element)];
+
+if ($read_post) {
     $exists = $_POST[get_class($element)][$side . '_standard_intervention_exists'];
 
     // die(print_r($_POST));
@@ -332,7 +335,7 @@ if (@$_POST[get_class($element)]) {
         <?php
         $posted_sp = null;
         $urgent = false;
-        if (@$_POST[get_class($element)]) {
+        if ($read_post) {
             $posted_sp = $_POST[get_class($element)][$side . '_start_period_id'];
         } else {
             $urgent = ($element->{$side . '_start_period'} && $element->{$side . '_start_period'}->urgent);
@@ -387,6 +390,7 @@ if (@$_POST[get_class($element)]) {
               'div_class' => 'elementField',
               'label' => 'File Attachments',
               'nowrapper' => true,
+              'style' => 'width : 100%',
             );
             $collections = OphCoTherapyapplication_FileCollection::model()->activeOrPk($element->getFileCollectionValuesForSide($side))->findAll();
           //TODO: have sorting with display_order when implemented
@@ -418,6 +422,3 @@ if (@$_POST[get_class($element)]) {
   </tr>
   </tbody>
 </table>
-
-
-

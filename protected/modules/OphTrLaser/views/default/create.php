@@ -40,4 +40,4 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
 <?php $this->displayErrors($errors, true)?>
 
 <?php $this->endWidget()?>
-<?php $this->endContent();?>
+<?php $this->endContent();

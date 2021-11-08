@@ -162,9 +162,6 @@ function removeElement(e) {
         $(container).append(element);
     }
 
-    // Update sticky elements to cope with change in page size
-    OpenEyes.UI.StickyElements.refresh();
-
     // Update text macros (if defined)
     if (typeof updateTextMacros === 'function') {
         updateTextMacros();
@@ -240,7 +237,7 @@ $(document).ready(function () {
             $(element).addClass('clicked');
             $(element).find('> .element-fields').css('opacity', '0.5');
             $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
-            $('.oe-popup-wrap').remove();
+            $('.oe-popup-wrap').not('#js-overlay').remove();
             addElement(element, false, element_id);
         }.bind(undefined, dialog, element));
         e.preventDefault();

@@ -6,7 +6,8 @@ class m190301_101615_change_dr_grading_values extends CDbMigration
     public $drgrading_table = 'et_ophciexamination_drgrading';
 
 
-    function get_M1A($col){
+    function get_M1A($col)
+    {
         return $this->dbConnection->createCommand()
             ->select($col)
             ->from($this->maculopathy_table)
@@ -14,7 +15,8 @@ class m190301_101615_change_dr_grading_values extends CDbMigration
             ->queryScalar();
     }
 
-    function get_M1S($col){
+    function get_M1S($col)
+    {
         return $this->dbConnection->createCommand()
             ->select($col)
             ->from($this->maculopathy_table)
@@ -30,7 +32,7 @@ class m190301_101615_change_dr_grading_values extends CDbMigration
 
         // Rename "M1A" to "M1"
         $this->update($this->maculopathy_table, array('name' => 'M1'), 'id = :id', array(':id' => $this->get_M1A('id'))); // won't update on :name
-        
+
         // Delete the "M1S" value
         $this->delete($this->maculopathy_table, 'id=:id', array(':id' => $this->get_M1S('id')));
     }
@@ -42,7 +44,7 @@ class m190301_101615_change_dr_grading_values extends CDbMigration
             'name' => 'M1S',
             'description' => 'Stable maculopathy needs no further treatment',
             'display_order' => 2,
-            'booking_weeks' => NULL,
+            'booking_weeks' => null,
             'class' => 'moderate',
             'code' => 'MO',
             'active' => 1,

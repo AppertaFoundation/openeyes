@@ -37,9 +37,9 @@ $field_prefix .= "[movements][{$side}_{$gaze_type}]"
         'id',
         'name'
     ),
-    [
-        'name' => "{$field_prefix}[movement_id]",
-        'empty' => '-',
-        'nowrapper' => true
+                           [
+                           'name' => "{$field_prefix}[movement_id]",
+                           'empty' => '-',
+                           'nowrapper' => true
     ]
 ); ?>

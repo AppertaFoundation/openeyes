@@ -27,8 +27,8 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
     {
 
         $patient_merged_in_merge_requests = $this->getDbConnection()
-            ->createCommand("SELECT id, secondary_id,secondary_hos_num as hos_num, secondary_nhsnum as nhs_num 
-                            FROM patient_merge_request 
+            ->createCommand("SELECT id, secondary_id,secondary_hos_num as hos_num, secondary_nhsnum as nhs_num
+                            FROM patient_merge_request
                             WHERE primary_id = '$secondary_patient_id'  AND status = " . $this::$MERGED_PATIENT_STATUS)
             ->queryAll();
 

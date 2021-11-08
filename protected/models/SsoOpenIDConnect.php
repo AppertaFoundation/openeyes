@@ -66,11 +66,11 @@ class SsoOpenIDConnect extends \Jumbojett\OpenIDConnectClient
 
     protected function encryptCookie($value)
     {
-        return openssl_encrypt($value,"AES-128-ECB",$this->encryptPassword);
+        return openssl_encrypt($value, "AES-128-ECB", $this->encryptPassword);
     }
 
     protected function decryptCookie($value)
     {
-        return openssl_decrypt($value,"AES-128-ECB",$this->encryptPassword);
+        return openssl_decrypt($value, "AES-128-ECB", $this->encryptPassword);
     }
 }

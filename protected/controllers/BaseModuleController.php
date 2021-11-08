@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -36,12 +37,12 @@ class BaseModuleController extends BaseController
      */
     public function init()
     {
-        $this->modulePathAlias = 'application.modules.'.$this->getModule()->name;
-        $this->assetPathAlias = $this->modulePathAlias.'.assets';
+        $this->modulePathAlias = 'application.modules.' . $this->getModule()->name;
+        $this->assetPathAlias = $this->modulePathAlias . '.assets';
 
         // Set asset path
         if (file_exists(Yii::getPathOfAlias($this->assetPathAlias))) {
-            $this->assetPath = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.'.$this->getModule()->name.'.assets');
+            $this->assetPath = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.' . $this->getModule()->name . '.assets');
         }
 
         return parent::init();
@@ -132,15 +133,15 @@ class BaseModuleController extends BaseController
             $newblue_path = 'application.assets.newblue';
             $assetManager->registerCssFile('/dist/css/style_oe_print.3.css', $newblue_path, null, AssetManager::OUTPUT_PRINT);
             foreach ($paths as $p) {
-                $asset_path_alias = 'application.modules.'.$p.'.assets';
+                $asset_path_alias = 'application.modules.' . $p . '.assets';
                 // Register module js
-                if (file_exists(Yii::getPathOfAlias($asset_path_alias.'.js').'/module.js')) {
+                if (file_exists(Yii::getPathOfAlias($asset_path_alias . '.js') . '/module.js')) {
                     $assetManager->registerScriptFile('js/module.js', $asset_path_alias, 10, AssetManager::OUTPUT_SCREEN);
                 }
                 // Register controller specific js (note for this to work, controllers in child modules must be named the same
                 // as the corresponding controller in the parent module(s)
-                if (file_exists(Yii::getPathOfAlias($asset_path_alias.'.js').'/'.$controller_name.'.js')) {
-                    $assetManager->registerScriptFile('js/'.$controller_name.'.js', $asset_path_alias, 10, AssetManager::OUTPUT_SCREEN);
+                if (file_exists(Yii::getPathOfAlias($asset_path_alias . '.js') . '/' . $controller_name . '.js')) {
+                    $assetManager->registerScriptFile('js/' . $controller_name . '.js', $asset_path_alias, 10, AssetManager::OUTPUT_SCREEN);
                 }
             }
         }

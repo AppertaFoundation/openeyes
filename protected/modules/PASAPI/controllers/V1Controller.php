@@ -19,14 +19,16 @@ namespace OEModule\PASAPI\controllers;
  */
 
 use OEModule\PASAPI\models\PasApiAssignment;
+use OEModule\PASAPI\resources\BaseResource;
+use OEModule\PASAPI\resources\Patient;
 use OEModule\PASAPI\resources\PatientAppointment;
+use OEModule\PASAPI\resources\PatientMerge;
 use PatientIdentifier;
 use UserIdentity;
-use OEModule\PASAPI\resources\Patient;
 
 class V1Controller extends \CController
 {
-    protected static $resources = array('Patient', 'PatientAppointment');
+    protected static $resources = array('Patient', 'PatientAppointment', 'PatientMerge');
     protected static $version = 'V1';
     protected static $supported_formats = array('xml');
 
@@ -102,6 +104,7 @@ class V1Controller extends \CController
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
             $this->sendResponse(401);
         }
+
         $identity = new UserIdentity($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], null, null);
         if (!$identity->authenticate()) {
             $this->sendResponse(401);
@@ -183,7 +186,6 @@ class V1Controller extends \CController
      */
     public function actionUpdate($resource_type, $id, $identifier_type)
     {
-        $patient_identifier_type = null;
         if (!in_array($resource_type, static::$resources)) {
             $this->sendErrorResponse(404, "Unrecognised Resource type {$resource_type}");
         }
@@ -195,10 +197,13 @@ class V1Controller extends \CController
         $resource_model = $this->getResourceModel($resource_type);
 
         $body = \Yii::app()->request->rawBody;
-
         $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_str' => $identifier_type]);
+        if($patient_identifier_type) {
+            \Yii::app()->session["selected_institution_id"] = $patient_identifier_type->institution_id;
+        }
 
         try {
+            /** @var BaseResource $resource */
             $resource = $resource_model::fromXml(static::$version, $body, array(
                 'update_only' => $this->getUpdateOnly(),
                 'partial_record' => $this->getPartialRecord(),
@@ -206,12 +211,22 @@ class V1Controller extends \CController
 
             $resource->id = $id; // LOCAL number
 
-            if ($resource instanceof Patient) { // this is \PASAPI\resources\Patient
-                $this->validatePatientResource($resource, $id, $identifier_type);
-            }
+            switch ($resource_type) {
+                case "Patient":
+                    /** @var Patient $resource */
+                    $this->validatePatientResource($resource, $id, $identifier_type);
+                    break;
 
-            if ($resource instanceof PatientAppointment) {
-                $resource->setPatientIdentifierType($patient_identifier_type);
+                case "PatientAppointment":
+                    /** @var PatientAppointment $resource */
+                    $resource->setPatientIdentifierType($patient_identifier_type);
+                    break;
+
+                case "PatientMerge":
+                    /** @var PatientMerge $resource */
+                    $resource->setPatientIdentifierType($patient_identifier_type)
+                             ->setAndValidatePatients();
+                    break;
             }
 
             if ($resource->errors) {
@@ -235,6 +250,8 @@ class V1Controller extends \CController
                 }
             }
 
+            $transaction = \Yii::app()->db->beginTransaction();
+
             //@ TODO: Test for PatientAppointment
             // this is \PASAPI\resources\Patient
             if ($resource instanceof Patient) {
@@ -253,7 +270,7 @@ class V1Controller extends \CController
                 $criteria->params[':type_id'] = $patient_identifier_type->id;
                 $criteria->params[':patient_id'] = $patient->id;
 
-                $patient_has_this_number = \PatientIdentifier::model()->count($criteria);
+                $patient_has_this_number = \PatientIdentifier::model()->disableDefaultScope()->count($criteria);
 
                 if (!$patient_has_this_number) {
                     // patient/value/type combination is not in the DB, we can add it
@@ -264,55 +281,54 @@ class V1Controller extends \CController
                 }
 
                 $global_institution_id = \PatientIdentifierHelper::getGlobalInstitutionIdFromSetting();
-                $global_patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient('GLOBAL', $patient->id, $global_institution_id);
+                $global_patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient('GLOBAL', $patient->id, $global_institution_id, null, true);
+
 
                 // NHS number update
                 if ($global_patient_identifier) {
+                    // Check if the number exist
+                    $criteria = new \CDbCriteria();
+                    $criteria->addCondition('value = :value');
+                    $criteria->addCondition('patient_identifier_type_id = :type_id');
+                    $criteria->addCondition('source_info = :source_info');
+                    $criteria->addCondition('deleted = :deleted');
+                    $criteria->addCondition('patient_id != :patient_id');
+                    $criteria->params[':value'] = $resource->getAssignedProperty('NHSNumber');
+                    $criteria->params[':type_id'] = $global_patient_identifier->patient_identifier_type_id;
+                    $criteria->params[':source_info'] = \PatientIdentifierHelper::PATIENT_IDENTIFIER_ACTIVE_SOURCE_INFO;
+                    $criteria->params[':deleted'] = 0;
+                    $criteria->params[':patient_id'] = $patient->id;
+
+                    $duplicate_patient_identifier = \PatientIdentifier::model()->find($criteria);
+
+                    if ($duplicate_patient_identifier) {
+                        $duplicate_patient_identifier->deleted = 1;
+                        $duplicate_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id. '['.time().']';
+                        $duplicate_patient_identifier->save();
+                    }
+
                     if ($global_patient_identifier->value !== $resource->getAssignedProperty('NHSNumber')) {
-                        // Check if the number exist
-                        $criteria = new \CDbCriteria();
-                        $criteria->addCondition('value = :value');
-                        $criteria->addCondition('patient_identifier_type_id = :type_id');
-                        $criteria->addCondition('patient_id != :patient_id');
-                        $criteria->params[':value'] = $resource->getAssignedProperty('NHSNumber');
-                        $criteria->params[':type_id'] = $global_patient_identifier->patient_identifier_type_id;
-                        $criteria->params[':patient_id'] = $patient->id;
-
-                        $count = \PatientIdentifier::model()->count($criteria);
-
-                        if ($count) {
-                            $this->sendErrorResponse(422, ["NHS Number already exist for another patient. {$global_patient_identifier->value} != {$resource->getAssignedProperty('NHSNumber')}"]);
-                        } else {
                             // here we can update the NHS number
                             $global_patient_identifier->value = $resource->getAssignedProperty('NHSNumber');
                             $global_patient_identifier->update(['value']);
-                        }
                     } else {
                         // values are equal, nothing to do
                     }
+
+                    $global_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_ACTIVE_SOURCE_INFO;
+                    $global_patient_identifier->deleted = 0;
+                    $global_patient_identifier->update(['source_info','deleted']);
                 } else {
                     $global_number = $resource->getAssignedProperty('NHSNumber');
                     if (!empty($global_number)) {
-                        // Check if the number exist
-                        $criteria = new \CDbCriteria();
-                        $criteria->addCondition('value = :value');
-                        $criteria->addCondition('patient_identifier_type_id = :type_id');
-                        $criteria->params['value'] = $resource->getAssignedProperty('NHSNumber');
-                        $criteria->params['type_id'] = \PatientIdentifierHelper::getCurrentGlobalType()->id;
-
-                        $count = \PatientIdentifier::model()->count($criteria);
-
-                        if (!$count) {
-                            // no global number let's add
                             $global_type = \PatientIdentifierHelper::getCurrentGlobalType();
                             \PatientIdentifierHelper::addNumberToPatient($patient, $global_type, $resource->getAssignedProperty('NHSNumber'));
-                        } else {
-                            $this->sendErrorResponse(422, ["NHS Number already exist for another patient."]);
-                        }
                     }
                 }
                 $resource->addGlobalNumberStatus($patient);
             }
+
+            $transaction->commit();
 
             $response = array(
                 'Id' => $internal_id,
@@ -332,8 +348,13 @@ class V1Controller extends \CController
 
             $this->sendSuccessResponse($status_code, $response);
         } catch (\Exception $e) {
-            $errors = $resource->errors;
+            $errors = isset($resource) ? $resource->errors : [];
             $errors[] = $e->getMessage();
+            $errors[] = $e->getTraceAsString();
+
+            if (isset($transaction)) {
+                $transaction->rollback();
+            }
 
             $this->sendErrorResponse(500, $errors);
         }

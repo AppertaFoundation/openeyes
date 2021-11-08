@@ -94,8 +94,6 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
         } else {
             $this->markTestSkipped("Test requires PHP7.1 or higher");
         }
-  
-        
     }
 
     /**

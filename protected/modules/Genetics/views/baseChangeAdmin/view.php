@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,20 +16,23 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
     <div class="admin box">
     <div class="data-group">
         <div class="cols-10 column"><h2>View Base Change Type</h2></div>
         <div class="cols-2 column right">
-            <?php if ( $this->checkAccess('OprnEditGeneticPatient') ) : ?>
-                <a href="/Genetics/baseChangeAdmin/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/baseChangeAdmin/view/').$model->id; ?>" class="button small right" id="baseChangeAdmin_edit">Edit</a>
-            <?php endif; ?>
+            <?php if ($this->checkAccess('OprnEditGeneticPatient')) :
+                ?>
+                <a href="/Genetics/baseChangeAdmin/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/baseChangeAdmin/view/') . $model->id; ?>" class="button small right" id="baseChangeAdmin_edit">Edit</a>
+                <?php
+            endif; ?>
         </div>
     </div>
         <?php
             $this->widget('zii.widgets.CDetailView', array(
-                'data'=>$model,
-                'htmlOptions' => array('class'=>'detailview'),
-                'attributes'=>array('id','change')
+                'data' => $model,
+                'htmlOptions' => array('class' => 'standard'),
+                'attributes' => array('id','change')
             ));
             ?>

@@ -29,4 +29,4 @@ $this->widget(OEModule\PatientTicketing\widgets\QueueAssign::class, array(
         'data_width' => $data_width,
         'patient_id' => $patient_id,
     ));
-?>
+

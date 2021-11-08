@@ -35,6 +35,13 @@ class EventAutoGenerateCheckboxesWidget extends BaseCWidget
      */
     public ?string $suffix;
 
+    /**
+     * When set to true, override the setting metadata auto generation settings for the supplied
+     * suffix, forcing all three checkboxes to false.
+     * @var null
+     */
+    public ?array $disable_auto_generate_for;
+
     // settings
     public $drug_set_name;
     public $gp_letter_setting;
@@ -50,16 +57,19 @@ class EventAutoGenerateCheckboxesWidget extends BaseCWidget
         // Prescription checkbox settings
         $prescription_setting = \SettingMetadata::model()->getSetting('auto_generate_prescription_after_' . $this->suffix);
         $prescription_setting = $prescription_setting ? ($prescription_setting === 'on') : false;
+        $prescription_setting = in_array('prescription', $this->disable_auto_generate_for) ? false : $prescription_setting;
         $this->prescription_setting = \Yii::app()->request->getParam('auto_generate_prescription_after_' . $this->suffix, $prescription_setting);
 
         // GP letter lettings checkbox settings
         $gp_letter_setting = \SettingMetadata::model()->getSetting('auto_generate_gp_letter_after_' . $this->suffix);
         $gp_letter_setting = $gp_letter_setting ? ($gp_letter_setting === 'on') : false;
+        $gp_letter_setting = in_array('gp_letter', $this->disable_auto_generate_for) ? false : $gp_letter_setting;
         $this->gp_letter_setting = \Yii::app()->request->getParam('auto_generate_gp_letter_after_' . $this->suffix, $gp_letter_setting);
 
         // Optom letter checkbox settings
         $optom_setting = \SettingMetadata::model()->getSetting('auto_generate_optom_letter_after_' . $this->suffix);
         $optom_setting = $optom_setting ? ($optom_setting === 'on') : false;
+        $optom_setting = in_array('optom', $this->disable_auto_generate_for) ? false : $optom_setting;
         $this->optom_setting = \Yii::app()->request->getParam('auto_generate_optom_letter_after_' . $this->suffix, $optom_setting);
 
         // Values

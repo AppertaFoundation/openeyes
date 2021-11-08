@@ -1,37 +1,33 @@
-<?php foreach (OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section::model()
-             ->findAll('`active` = ?', array(1)) as $disorder_section) {
-    $comments = OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
-        ->getDisorderSectionComments($disorder_section->id, $element->id); ?>
-        <div class="element-subgroup eye-divider">
-          <header class="subgroup-header">
-            <h3><?php echo $disorder_section->name; ?></h3>
-              <div class="viewstate-icon">
-                  <i class="oe-i small js-element-subgroup-viewstate-btn expand" data-subgroup="subgroup-disorders-<?=$disorder_section->name?>"></i>
-              </div>
-          </header>
-              <div class="element-data element-eyes" id="subgroup-disorders-<?=$disorder_section->name?>">
-                    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) { ?>
-                      <div class="js-element-eye <?= $eye_side; ?>-eye column">
-                          <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
-                              'side' => $eye_side,
-                              'element' => $element,
-                              'disorder_section' => $disorder_section,
-                          )) ?>
-                      </div>
-                    <?php } ?>
+<?php
+/**
+ * (C) Copyright Apperta Foundation 2021
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2021, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
+foreach ($this->getDisorderSections($element->patient_type) as $disorder_section) {
+    ?>
+        <div class="collapse-data-header-icon collapse"><h3><?php echo \CHtml::encode($disorder_section->name); ?></h3></div>
+        <div class="row data-row">
+            <div class="large-12 column end">
+                <div class="row">
+                    <div class="element-eye column">
+                        <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
+                            'element' => $element,
+                            'disorder_section' => $disorder_section,
+                        )) ?>
+                    </div>
                 </div>
+            </div>
         </div>
         <?php
-        if ($disorder_section->comments_allowed == 1) {
-            if ($comments != '') { ?>
-                <fieldset class="data-group">
-                    <legend class="cols-4 column">
-                        <?php echo $disorder_section->comments_label; ?>
-                    </legend>
-                    <div class="cols-8 column">
-                        <?php echo $comments; ?>
-                    </div>
-                </fieldset>
-            <?php }
-        }
-} ?>
+}
+?>

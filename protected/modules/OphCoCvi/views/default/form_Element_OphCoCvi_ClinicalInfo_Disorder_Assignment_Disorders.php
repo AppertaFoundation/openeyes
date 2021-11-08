@@ -1,114 +1,96 @@
-<header class="element-header">
-    <h3 class="element-title">Disorders</h3>
-</header>
-<div class="element-fields js-collapse">
-    <?php foreach ($this->getDisorderSections() as $disorder_section) {
-        $is_open = $element->hasAffectedCviDisorderInSection($disorder_section);
-        ?>
-        <div class="collapse-group highlight" data-collapse="collapsed">
-            <div class="collapse-group-icon">
-                <i class="oe-i <?= $is_open ? 'minus' : 'plus' ?>"></i>
+<?php
+/**
+ * (C) Copyright Apperta Foundation 2021
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2021, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
+use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
+
+?>
+
+<div class="row">
+    <?php
+    if ($this->event->isNewRecord) {
+        if ($this->getGetPatientAge() == 17 && $this->getGetPatientMonthDiff() <= 2) : ?>
+            <div class="alert-box error with-icon">
+                <p>This patient is 2 months away from his/her 18th birthday. The suggested children diagnosis list might
+                    need to be changed.</p>
             </div>
-            <h3 class="collapse-group-header">
-                <?= $disorder_section->name; ?>
-            </h3>
-            <div class="collapse-group-content" style="<?= $is_open ? 'display:block' : 'display:none' ?>">
-                <?php if ($disorder_section->disorders) { ?>
-                    <div class="element-eyes">
-                        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) { ?>
-                            <div class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?>"
-                                 data-side="<?= $eye_side ?>">
-                                <div class="active-form">
-                                    <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
-                                        'side' => $eye_side,
-                                        'element' => $element,
-                                        'form' => $form,
-                                        'disorder_section' => $disorder_section,
-                                    )) ?>
-
-                                    <?php if ($disorder_section->comments_allowed == 1 && $eye_side === 'right') { ?>
-                                        <table class="standard">
-                                            <tbody>
-                                            <tr>
-                                                <td><?php echo $disorder_section->comments_label; ?></td>
-                                                <td>
-                                                    <div class="cols-full">
-                                                        <?php
-                                                        $section_comment = $element->getDisorderSectionComment($disorder_section);
-                                                        $comments = $section_comment ? $section_comment->comments : null; ?>
-                                                        <button id="disorders_comment_<?= $disorder_section->name; ?>_button"
-                                                                class="button js-add-comments"
-                                                                data-comment-container="#disorders_comment_<?= $disorder_section->name; ?>_container"
-                                                                data-hide-method="display"
-                                                                type="button"
-                                                                style="display:<?php if ($comments) echo 'none' ?>">
-                                                            <i class="oe-i comments small-icon"></i>
-                                                        </button>
-
-                                                        <div id="disorders_comment_<?= $disorder_section->name; ?>_container"
-                                                             data-comment-button="#disorders_comment_<?= $disorder_section->name; ?>_button"
-                                                             class="flex-layout flex-left js-comment-container"
-                                                             style="<?php if ($comments == null) echo 'display:none' ?>">
-                                                            <?php
-                                                            echo CHtml::textArea(
-                                                                CHtml::modelName($element) . "[cvi_disorder_section][" . $disorder_section->id . "][comments]",
-                                                                $comments,
-                                                                array('rows' => '1',
-                                                                    'class' => 'js-input-comments cols-full autosize',
-                                                                    'nowrapper' => true ,
-                                                                'placeholder' => 'Comments')
-                                                            ); ?>
-                                                            <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    <?php } ?>
-                                </div>
-                            </div>
-
-                        <?php } ?>
-                    </div>
-                <?php } ?>
+        <?php endif; ?>
+    <?php } else {
+        if ($this->getGetPatientAge() == 17 && $this->getGetPatientMonthDiff() <= 2 && $element->patient_type == Element_OphCoCvi_ClinicalInfo::CVI_TYPE_CHILD) : ?>
+            <div class="alert-box error with-icon">
+                <p>This patient is 2 months away from his/her 18th birthday. The suggested children diagnosis list might
+                    need to be changed.</p>
             </div>
-        </div>
-
+        <?php endif; ?>
     <?php } ?>
+    <hr class="divider">
+    <div class="flex-layout row">
+        <div class="priority-text">Diagnosis list</div>
+    </div>
+
+    <table class="cols-12 last-left">
+        <colgroup>
+            <col class="cols-7">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>
+                <?php echo $form->radioButtons($element, 'patient_type', $element->getPatientTypes(),
+                    $element->patient_type,
+                    false, false, false, false,
+                    array('nowrapper' => true)
+                ); ?>
+            </td>
+            <td>
+                <label class="inline highlight ">
+                    <input type="checkbox" name="show_icd10_code" id="js-show_icd10_code" checked> Show ICD 10 Code
+                </label>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
+<div id="diagnosis_list">
+<?php foreach ($this->getDisorderSections($element->patient_type) as $disorder_section) :?>
+    <?php $is_open = $element->hasAffectedCviDisorderInSection($disorder_section);?>
 
-<script>
-    $(document).ready(function () {
-        $('.js-collapse .collapse-group').each(function () {
-            new Collapser($(this).find('.collapse-group-icon .oe-i'),
-                $(this).find('.collapse-group-content'), $(this).find('.collapse-group-header'), $(this).data('collapse'));
-        });
-
-        function Collapser($icon, $content, $header, initialState) {
-            var collapsed = initialState == 'collapsed';
-
-            $icon.click(change);
-            $header.click(function (e) {
-                headerChange(e);
-            });
-
-            function change() {
-                $icon.toggleClass('minus plus');
-                collapsed = !collapsed;
-                $content.toggle(!collapsed)
-            }
-
-            function headerChange(e) {
-                if (collapsed) {
-                    e.preventDefault();
-                    $content.show();
-                    $icon.toggleClass('minus plus');
-                    collapsed = !collapsed;
-                }
-            }
-        }
-    });
-
-</script>
+    <div class="collapse-group highlight">
+        <div class="header-icon collapse" data-bjc="20"><?=\CHtml::encode($disorder_section->name); ?></div>
+        <div class="collapse-group-content " style="display: block;">
+            <!-- Unique layout: use VIEW mode layout here! -->
+            <div class="element-eyes">
+                <div>
+                    <table class="cols-full" style="width: 700px;">
+                        <colgroup>
+                            <col class="cols-7">
+                            <col class="cols-1">
+                            <col class="cols-4">
+                        </colgroup>
+                        <tbody>
+                        <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
+                            'element' => $element,
+                            'form' => $form,
+                            'disorder_section' => $disorder_section,
+                        )) ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach;?>
+</div>

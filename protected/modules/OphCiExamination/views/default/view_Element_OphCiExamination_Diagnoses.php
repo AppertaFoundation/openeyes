@@ -19,6 +19,9 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 
 ?>
 <?php
+/**
+ * @var $episodes Episode[]
+ */
 $episodes = $this->episode->patient->episodes
 ;?>
 <div class="element-data full-width">
@@ -49,6 +52,10 @@ $episodes = $this->episode->patient->episodes
                 <?php $this->widget('EyeLateralityWidget', array('eye' => $principal->eye)) ?>
             </td>
             <td><span class="oe-date"><?= $principal->getHTMLformatedDate() ?></span></td>
+              <td>
+                  <small>at</small>
+                  <?= $principal->time ?>
+              </td>
           </tr>
             <?php }
             foreach ($episodes as $episode) {
@@ -69,6 +76,12 @@ $episodes = $this->episode->patient->episodes
                     <?php } else { ?>
                     <td></td>
                     <?php } ?>
+                  <td>
+                    <?php if ($episode->disorder_time) { ?>
+                        <small>at</small>
+                        <?= $episode->getDisplayTime() ?>
+                    <?php } ?>
+                  </td>
               </tr>
                 <?php }
             }
@@ -83,6 +96,10 @@ $episodes = $this->episode->patient->episodes
                     <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
             </td>
             <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
+              <td>
+                  <small>at</small>
+                  <?= $diagnosis->time ?>
+              </td>
           </tr>
             <?php } ?>
         </tbody>

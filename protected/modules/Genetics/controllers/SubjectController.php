@@ -116,7 +116,7 @@ class SubjectController extends BaseModuleController
                     $genderValue = 4;
             }
             $admin->getModel()->is_deceased = $this->patient->is_deceased;
-            $htmlOptions = array('options' => array($genderValue => array('selected'=>true)));
+            $htmlOptions = array('options' => array($genderValue => array('selected' => true)));
         }
 
         $admin->setModelDisplayName('Genetics Subject');
@@ -158,7 +158,7 @@ class SubjectController extends BaseModuleController
             'pedigree' => array(
                 'widget' => 'CustomView',
                 'viewName' => 'application.modules.Genetics.views.subject._edit_pedigree',
-                'viewArguments'=> array(
+                'viewArguments' => array(
                     'genetics_patient' => $genetics_patient,
 
                 )
@@ -167,8 +167,8 @@ class SubjectController extends BaseModuleController
             'no_pedigree' => array(
                 'widget' => 'CustomView',
                 'viewName' => 'application.modules.Genetics.views.subject.nopedigree',
-                'viewArguments'=> array(
-                    'genetics_patient' =>  $genetics_patient,
+                'viewArguments' => array(
+                    'genetics_patient' => $genetics_patient,
                 )
             ),
             'previous_studies' => array(
@@ -202,7 +202,11 @@ class SubjectController extends BaseModuleController
             'studies' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',
-                'label' => 'Study Proposal',
+                'htmlOptions' => array(
+                    'empty' => 'Select a Study Proposal ',
+                    'searchable' => false,
+                    'label' => 'Study Proposal',
+                ),
                 'options' => CHtml::encodeArray(
                     CHtml::listData(
                         GeneticsStudy::model()->findAll(),
@@ -215,34 +219,46 @@ class SubjectController extends BaseModuleController
 
         $redirect = $id ? ('/Genetics/subject/view/' . $id) : '/patient/view/' . $_GET['patient'];
         $admin->setCustomCancelURL($redirect);
-        $valid = $admin->editModel(false);
+        try {
+            $valid = $admin->editModel(false);
 
-        if (Yii::app()->request->isPostRequest) {
-            if ($valid) {
-                $post = Yii::app()->request->getPost('GeneticsPatient', array());
-                if (isset($post['pedigrees_through'])) {
-                    foreach ($admin->getModel()->pedigrees as $pedigree) {
-                        // NOTE that patient_id below is actually the genetic subject, the FK should be renamed at some point
-                        // and this comment removed!
-                        if (array_key_exists($pedigree->id, $post['pedigrees_through'])) {
-                            $pedigreeStatus = GeneticsPatientPedigree::model()->findByAttributes(array(
-                                'patient_id' => $admin->getModel()->id,
-                                'pedigree_id' => $pedigree->id,
-                            ));
-                            if ($pedigreeStatus) {
-                                $pedigreeStatus->status_id = $post['pedigrees_through'][$pedigree->id]['status_id'];
-                                $pedigreeStatus->save();
+            if (Yii::app()->request->isPostRequest) {
+                if ($valid) {
+                    $post = Yii::app()->request->getPost('GeneticsPatient', array());
+                    if (isset($post['pedigrees_through'])) {
+                        foreach ($admin->getModel()->pedigrees as $pedigree) {
+                            // NOTE that patient_id below is actually the genetic subject, the FK should be renamed at some point
+                            // and this comment removed!
+                            if (array_key_exists($pedigree->id, $post['pedigrees_through'])) {
+                                $pedigreeStatus = GeneticsPatientPedigree::model()->findByAttributes(array(
+                                    'patient_id' => $admin->getModel()->id,
+                                    'pedigree_id' => $pedigree->id,
+                                ));
+                                if ($pedigreeStatus) {
+                                    $pedigreeStatus->status_id = $post['pedigrees_through'][$pedigree->id]['status_id'];
+                                    $pedigreeStatus->save();
+                                }
                             }
                         }
                     }
-                }
 
-                Yii::app()->user->setFlash('success', "Patient Saved");
-                $url = '/Genetics/subject/view/'.$admin->getModel()->id;
-                $this->redirect($url);
-            } else {
-                $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
+                    Yii::app()->user->setFlash('success', "Patient Saved");
+                    $url = '/Genetics/subject/view/' . $admin->getModel()->id;
+                    $this->redirect($url);
+                } else {
+                    $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
+                }
             }
+        } catch (Exception $e) {
+            $bugreport = "=== GENETICS BUG REPORT ===\n";
+            $bugreport .= "Subject id: {$genetics_patient->id}\n";
+            $bugreport .= "Subject data:\n";
+            $bugreport .= print_r($genetics_patient->getAttributes(), true) . "\n";
+            $bugreport .= "POST data:\n";
+            $bugreport .= print_r($_POST, true) . "\n";
+            $filename = "genetics_bugreport_" . date("YmdHis") . ".log";
+            file_put_contents(Yii::app()->basePath . "/runtime/logs/$filename", $bugreport);
+            throw $e;
         }
     }
 
@@ -265,16 +281,16 @@ class SubjectController extends BaseModuleController
 
         $model = new GeneticsPatient('search');
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['GeneticsPatient'])) {
+        if (isset($_POST['GeneticsPatient'])) {
             //thanks for the awesome implementation of the //disorder/disorderAutoComplete.php
             //I cannot remove the 'search' from the name attribute without refactoring several things
-            if ( isset($_GET['search']['patient_disorder_id']) ) {
-                $_GET['GeneticsPatient']['patient_disorder_id'] = $_GET['search']['patient_disorder_id'];
+            if (isset($_POST['search']['patient_disorder_id'])) {
+                $_POST['GeneticsPatient']['patient_disorder_id'] = $_POST['search']['patient_disorder_id'];
             }
 
-            $model->attributes = $_GET['GeneticsPatient'];
+            $model->attributes = $_POST['GeneticsPatient'];
 
-            YiiSession::set('genetics_patient_searchoptions', $_GET);
+            YiiSession::set('genetics_patient_searchoptions', $_POST);
         }
 
         $this->render('list', array(
@@ -358,8 +374,12 @@ class SubjectController extends BaseModuleController
                     ];
                 }
 
-                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-                    $patient->id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                    Yii::app()->params['display_primary_number_usage_code'],
+                    $patient->id,
+                    \Institution::model()->getCurrent()->id,
+                    Yii::app()->session['selected_site_id']
+                );
 
                 $result[] = array(
                     'id' => $patient->id,
@@ -371,7 +391,7 @@ class SubjectController extends BaseModuleController
                     'genderletter' => $patient->gender,
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     // in script.js we override the behaviour for showing search results and its require the label key to be present
-                    'label' => $patient->first_name.' '.$patient->last_name.' ('.PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . PatientIdentifierHelper::getIdentifierValue($primary_identifier) .')',
+                    'label' => $patient->first_name . ' ' . $patient->last_name . ' (' . PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . PatientIdentifierHelper::getIdentifierValue($primary_identifier) . ')',
                     'is_deceased' => $patient->is_deceased,
                     'patient_identifiers' => $pi,
                     'primary_patient_identifiers' => [

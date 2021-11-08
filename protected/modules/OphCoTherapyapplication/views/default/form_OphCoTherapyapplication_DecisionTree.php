@@ -34,7 +34,7 @@ if ($treatment && $treatment->decisiontree) {
         <div class="dt-node data-group" id="<?php echo $side; ?>_node_<?php echo $node->id ?>" style="display: none;"
              data-defn='<?php echo CJSON::encode($node->getDefinition()); ?>'>
             <?php if ($node->question) { ?>
-              <label
+              <label style="white-space: normal"
                   for="Element_OphCoTherapyapplication_PatientSuitability_<?php echo $side; ?>_DecisionTreeResponse_<?php echo $node->id; ?>">
                   <?php echo $node->question ?>
               </label>
