@@ -373,7 +373,7 @@ class TheatreDiaryController extends BaseModuleController
             $subspecialty_id = ServiceSubspecialtyAssignment::model()->find(
                 'service_id=?',
                 array($_POST['service_id'])
-            )->subspecialty_id;
+            )->subspecialty_id ?? null;
         }
 
         if (isset($subspecialty_id)) {
