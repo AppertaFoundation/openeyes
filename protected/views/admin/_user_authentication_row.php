@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <tr data-key="<?= $key ?>">
     <?php
@@ -56,17 +58,19 @@
             ]
         ); ?>
     </td>
-    <td>
-        <?=\CHtml::button(
+    <?php if (Yii::app()->hasModule('mehstaffdb')) {
+        echo("<td>");
+        echo(\CHtml::button(
             'Lookup User',
             [
                 'class' => 'button large',
-                'id' => $key.'lookup_user',
+                'id' => $key . 'lookup_user',
                 'href' => '#',
-                'onclick' => 'lookupUser("'.$key.'")',
+                'onclick' => 'lookupUser("' . $key . '")',
             ]
-        ); ?>
-    </td>
+        ));
+        echo("</td>");
+    } ?>
     <td>
         <?= \CHtml::activePasswordField(
             $user_authentication,
@@ -93,7 +97,7 @@
         <?= \CHtml::activeDropDownList(
             $user_authentication,
             "[{$key}]password_status",
-            [ 'current'=>"Current Password",'stale'=>"Stale Password",'expired'=>"Expire Password",'locked'=>"Lock Password" ],
+            [ 'current' => "Current Password",'stale' => "Stale Password",'expired' => "Expire Password",'locked' => "Lock Password" ],
             [
                 'class' => 'cols-full js-password-status',
                 'disabled' => $not_local
