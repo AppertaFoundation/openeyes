@@ -324,7 +324,7 @@ abstract class BaseCCodeModel extends CFormModel
     public function saveStickyAttributes()
     {
         $path = $this->getStickyFile();
-        @mkdir(dirname($path), 0775, true);
+        @mkdir(dirname($path), 0774, true);
         file_put_contents($path, "<?php\nreturn " . var_export($this->_stickyAttributes, true) . ";\n");
     }
 

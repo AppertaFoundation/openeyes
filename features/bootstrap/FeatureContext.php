@@ -183,7 +183,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 			try {
 				if(! @is_dir( dirname($screenshot['filename']))) {
 					echo "\n\nCreating dir " . dirname($screenshot['filename']). " \n";
-					@mkdir(dirname($screenshot['filename']), 0775, TRUE);
+					@mkdir(dirname($screenshot['filename']), 0774, TRUE);
 				}
 				$screenshotSaved = file_put_contents($screenshot['filename'], $screenshot['screenshotContent']);
 				if($screenshotSaved === false) {

@@ -206,7 +206,7 @@ class CorrespondenceEmailManager
     private function checkPath($path)
     {
         if (!is_dir($path)) {
-            mkdir($path, 0776, true);
+            mkdir($path, 0774, true);
             $this->trace("ALERT! Directory " . $path . " has been created!". PHP_EOL);
         }
     }

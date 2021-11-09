@@ -184,8 +184,8 @@ class BaseEventTypeController extends BaseModuleController
     {
         $action_type = ucfirst($this->getAction()->getId());
         return ((in_array($action_type, ['Update', 'Create']) && (string)SettingMetadata::model()->getSetting(
-                    'use_short_page_titles'
-                ) == "on") ?
+            'use_short_page_titles'
+        ) == "on") ?
                 'Edit' : $action_type) .
             ($this->event_type ? ' ' . $this->event_type->name : '') .
             ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ?
@@ -409,8 +409,10 @@ class BaseEventTypeController extends BaseModuleController
 
         $optional = array();
         foreach ($this->event_type->getAllElementTypes() as $element_type) {
-            if (!in_array($element_type->class_name, $open_et) &&
-                class_exists($element_type->class_name)) {
+            if (
+                !in_array($element_type->class_name, $open_et) &&
+                class_exists($element_type->class_name)
+            ) {
                 $optional[] = $element_type->getInstance();
             }
         }
@@ -2779,7 +2781,7 @@ class BaseEventTypeController extends BaseModuleController
 
         if (!file_exists(dirname($path))) {
             if (!is_dir(dirname($path)) && !file_exists(dirname($path))) {
-                mkdir(dirname($path), 0775, true);
+                mkdir(dirname($path), 0774, true);
             }
         }
 

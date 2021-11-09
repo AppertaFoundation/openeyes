@@ -41,16 +41,18 @@ class UserTest extends ActiveRecordTestCase
         parent::setUp();
         $pf = $this->protected_file('0');
         $uid = $pf->uid;
-        $path = Yii::app()->basePath."/files/".$uid[0]."/".$uid[1]."/".$uid[2];
-        if(!file_exists($path)) mkdir($path, 0777, true);
-        file_put_contents($path."/$uid", "dummy");
+        $path = Yii::app()->basePath . "/files/" . $uid[0] . "/" . $uid[1] . "/" . $uid[2];
+        if (!file_exists($path)) {
+            mkdir($path, 0774, true);
+        }
+        file_put_contents($path . "/$uid", "dummy");
     }
 
     public function tearDown()
     {
         $pf = $this->protected_file('0');
         $uid = $pf->uid;
-        unlink(Yii::app()->basePath."/files/".$uid[0]."/".$uid[1]."/".$uid[2]."/$uid");
+        unlink(Yii::app()->basePath . "/files/" . $uid[0] . "/" . $uid[1] . "/" . $uid[2] . "/$uid");
         parent::tearDown();
     }
 
