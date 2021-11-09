@@ -99,7 +99,7 @@ class m200517_044325_add_multiple_LDAP_auth_to_institutions extends OEMigration
         } else {
             $local_users = Yii::app()->params['local_users'] ?? [];
             $local_user_ids = $this->dbConnection
-                ->createCommand('SELECT id FROM user WHERE username IN (' . implode(', ', $local_users) . ')')
+                ->createCommand("SELECT id FROM user WHERE username IN ('" . implode("','", $local_users) . "')")
                 ->queryColumn();
 
             // DETERMINE LDAP CONFIGURATION
@@ -153,18 +153,25 @@ class m200517_044325_add_multiple_LDAP_auth_to_institutions extends OEMigration
 
         $special_usernames = Yii::app()->params['special_usernames'] ?? [];
         foreach ($special_usernames as $special_username) {
-            $user = $this->dbConnection->createCommand('SELECT id FROM user WHERE username = :username')
+            $user = $this->dbConnection->createCommand('SELECT id, password, salt FROM user WHERE username = :username')
                 ->bindValues(array(':username' => $special_username))
-                ->queryScalar();
+                ->queryRow();
             if (!$user) {
                 $this->execute("INSERT INTO `user`(`username`,`first_name`,`last_name`,`email`,`active`,`global_firm_rights`,`title`,`qualifications`,`role`,`has_selected_firms`) VALUES ('$special_username','$special_username','user','info@abehr.com',1,1,'','','',0)");
-                $user = $this->dbConnection->createCommand('SELECT id FROM user WHERE username = :username')
+                $user_id = $this->dbConnection->createCommand('SELECT id FROM user WHERE username = :username')
                     ->bindValues(array(':username' => $special_username))
                     ->queryScalar();
+                //default password "P@ssw0rd" - this need to be changed when configuring the server
+                $password_hash = '$2y$10$UXuBwd/CdkjES5I1xXV0D.ARQoKRVhwpaJNaNztpvvVKOLFIdOzbe';
+                $password_salt = null;
+            } else {
+                $user_id = $user['id'];
+                $password_hash = $user['password'];
+                $password_salt = $user['salt'];
             }
 
             // Need to also specify appropriate roles
-            $this->execute("INSERT INTO `user_authentication`(`institution_authentication_id`,`user_id`,`username`,`password_hash`, `password_salt`) VALUES (NULL, $user, '$special_username', '" . '$2y$10$OX35xJez9zTmiUZ5bt0gQeR4BqW/KI4Tff0uw6k4EPrF9swrZxEvm' . "', NULL);");
+            $this->execute("INSERT INTO `user_authentication`(`institution_authentication_id`,`user_id`,`username`,`password_hash`, `password_salt`) VALUES (NULL, $user_id, '$special_username', '$password_hash', '$password_salt');");
         }
 
         // REMOVE LEGACY FIELDS - Uncomment when usages have been removed.

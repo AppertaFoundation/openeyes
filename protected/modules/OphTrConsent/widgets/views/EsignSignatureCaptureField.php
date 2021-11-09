@@ -67,7 +67,8 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
     $(function(){
         new OpenEyes.UI.EsignWidget($("#<?=$uid?>"), {
             signature_type: <?= $this->signature->type ?>,
-            element_id: <?= $this->element->id ?? "null" ?>
+            element_id: <?= $this->element->id ?? "null" ?>,
+            mode: "<?= $this->mode ?>"
         });
     });
 </script>

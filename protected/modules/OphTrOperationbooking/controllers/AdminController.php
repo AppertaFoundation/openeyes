@@ -458,8 +458,6 @@ class AdminController extends ModuleAdminController
 
         $criteria = new CDbCriteria();
         $criteria->addCondition('parent_rule_id is null');
-        $criteria->addCondition('institution_id = :institution_id');
-        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
         $criteria->order = 'rule_order asc';
 
         $rule_ids = array();

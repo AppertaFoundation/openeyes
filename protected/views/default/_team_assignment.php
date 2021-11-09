@@ -21,7 +21,7 @@
                             $assigned_user_ids = array_map(function ($assigned_user) {
                                 return $assigned_user->id;
                             }, $team->getAllUsers());
-                            $user_auth_objs = $this->api->getInstitutionUserAuth(null, true, $assigned_user_ids);
+                            $user_auth_objs = $this->api->getInstitutionUserAuth(true, $assigned_user_ids);
                         foreach ($user_auth_objs as $user_auth) {
                             ?>
                             <li data-user-id="<?=$user_auth->user->id?>">

@@ -66,9 +66,17 @@ set -- "${PARAMS[@]}" # restore positional parameters
 
 ## Read in stored git config and modules config
 source "$SCRIPTDIR"/git.conf 2>/dev/null
+
 # if a custom config has been supplied (e.g, by a docker config) then use it, else use the default
 [ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
 source "$MODULES_CONF"
+
+# Ensure that openeyes and eyedraw modules are included (the easiest way to do this is delete if they already exist, then add)
+delete=(openeyes)
+modules=("${modules[@]/$delete/}") # removes openeyes from modules list
+delete=(eyedraw)
+modules=("${modules[@]/$delete/}") # removes eyedraw from modules list
+modules=(openeyes eyedraw "${modules[@]}")
 
 # Set the modules path
 MODULEROOT=$WROOT/protected/modules

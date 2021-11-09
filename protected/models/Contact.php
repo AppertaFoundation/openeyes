@@ -94,7 +94,7 @@ class Contact extends BaseActiveRecordVersioned
             array('email', 'length', 'max' => 255),
             array('email','email'),
             array('email', 'required', 'on' => array('self_register')),
-            array('title, first_name, last_name, nick_name, primary_phone, mobile_phone, qualifications, maiden_name, 
+            array('title, first_name, last_name, nick_name, primary_phone, mobile_phone, qualifications, maiden_name,
                     national_code, fax, email', 'filter', 'filter' => function ($value) {
                 return strip_tags($value);
             }),

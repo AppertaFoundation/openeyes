@@ -64,10 +64,11 @@ class HL7_A08 extends BaseHl7
                 }
             }
 
+            $counter = 1;
+
             $investigation_element = \OEModule\OphCiExamination\models\Element_OphCiExamination_Investigation::model()->find("event_id = ?", array($event_id));
             if ($investigation_element) {
                 $investigation_data = $investigation_element->entries;
-                $counter = 1;
                 foreach ($investigation_data as $invest) {
                     $hl7_procedures = new HL7_Procedure();
                     $hl7_procedures->setProceduresFromInvestigation($invest, $investigation_element->description);
@@ -146,12 +147,12 @@ class HL7_A08 extends BaseHl7
     {
         $attributes = array(
             'event_type' => $this::event_type,
-            'patient' => $this->patient,
-            'patient_visit' => $this->patient_visit,
-            'patient_visit_additional' => $this->patient_visit_additional,
-            'diagnosis' => $this->diagnosis,
-            'procedures' => $this->procedures,
-            'uk_additional' => $this->uk_additional
+            'PID' => $this->patient,
+            'PV1' => $this->patient_visit,
+            'PV2' => $this->patient_visit_additional,
+            'DG1' => $this->diagnosis,
+            'PR1' => $this->procedures,
+            'ZU1' => $this->uk_additional
         );
 
         return $attributes;

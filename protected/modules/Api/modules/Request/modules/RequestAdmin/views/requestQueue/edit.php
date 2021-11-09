@@ -36,7 +36,7 @@ unset($attributes['request_queue']);
             <tr>
                 <td><?= $model->getAttributeLabel('request_queue'); ?></td>
                 <td><?= \CHtml::activeTextField($model, 'request_queue', array_merge([
-                        'readonly' => $is_readonly
+                        'readonly' => isset($is_readonly) ? $is_readonly : false,
                     ], $htmlOptions)); ?></td>
             </tr>
 

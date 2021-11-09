@@ -262,6 +262,7 @@ EOH;
             curl_setopt($ch, CURLOPT_COOKIEJAR, '/tmp/cookie.txt');
             curl_setopt($ch, CURLOPT_COOKIEFILE, '/tmp/cookie.txt');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_COOKIE , "institution_id=$event->institution_id;site_id=$event->site_id");
 
             $response = curl_exec($ch);
             if (curl_errno($ch)) {

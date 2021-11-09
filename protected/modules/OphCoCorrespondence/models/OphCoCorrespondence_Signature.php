@@ -199,4 +199,14 @@ class OphCoCorrespondence_Signature extends BaseSignature
         $api = Yii::app()->moduleAPI->get("OphCoCorrespondence");
         return $api->getFooterText($this->signedUser);
     }
+
+    /**
+     * Whether the signature should be hidden by default
+     *
+     * @return bool
+     */
+    public function isHidden(): bool
+    {
+        return !$this->isSigned() && $this->signatory_role === Element_OphCoCorrespondence_Esign::SECONDARY_ROLE;
+    }
 }

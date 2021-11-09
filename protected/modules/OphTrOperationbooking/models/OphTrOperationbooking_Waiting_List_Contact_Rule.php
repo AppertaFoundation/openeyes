@@ -87,7 +87,6 @@ class OphTrOperationbooking_Waiting_List_Contact_Rule extends BaseTree
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 

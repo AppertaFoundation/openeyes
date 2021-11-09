@@ -150,31 +150,53 @@ class Address extends BaseActiveRecordVersioned
         $address = array();
 
         if ($name) {
-            $address[] = $name;
+            $address = array($name);
         }
 
+        $tempAddress = null;
+        $linecount = 0;
         foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
             if (!empty($this->$field) && trim($this->$field) != ',' && trim($this->$field) != "") {
                 $line = $this->$field;
-                if ($field == 'address1') {
-                    foreach (explode("\n", $line) as $part) {
-                        $address[] = $part;
-                    }
-                } else {
-                    // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
-                    if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
-                        if (!empty($this->address2)) {
-                            $address[] = $this->address2;
+                if (($newlines_setting = SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
+                    $addressParts = explode("\n", $line);
+                    foreach ($addressParts as $part) {
+                        if ($linecount == 0 && $tempAddress == null){
+                            $tempAddress = $part;
                         }
-                        $address[] = trim($this->city . ' ' . $this->county) . ' ' . $this->postcode;
-                        break;
+                        elseif ($linecount <= $newlines_setting) {
+                            $tempAddress = $tempAddress . "\n" . $part;
+                        } else {
+                            $tempAddress = $tempAddress .', ' . $part;
+                        }
+                    }
+                }
+                else{
+                    $line = trim($line);
+                    if ($field == 'address1' || $field == 'address2') {
+                        foreach (explode("\n", $line) as $part) {
+                            $part = trim($part);
+                            if ($part != null && $part != ',' && trim($part) != '') {
+                                $address[] = $part;
+                            }
+                        }
                     } else {
-                        $address[] = $line;
+                        if ($line != null && $line != ',' && $line != '') {
+                            $address[] = $line;
+                        }
                     }
                 }
             }
         }
-
+        // add the tempAddress to address[] if setting set to not -1 (if we have a value in tempAddress)
+        if ($tempAddress !== null &&(SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
+            foreach (explode("\n", $tempAddress) as $part) {
+                $part = trim($part);
+                if ($part != null &&  $part != ',' && $part != '') {
+                    $address[] = $part;
+                }
+            }
+        }
         if ($include_country) {
             if (!empty($this->country->name)) {
                 $site = null;

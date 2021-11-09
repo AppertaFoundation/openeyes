@@ -92,12 +92,8 @@ class HL7_A03 extends BaseHl7
     {
         $attributes = array(
             'event_type' => $this::event_type,
-            'patient' => $this->patient,
-            'patient_visit' => $this->patient_visit,
-            'patient_visit_additional' => $this->patient_visit_additional,
-            'diagnosis' => $this->diagnosis,
-            'procedures' => $this->procedures,
-            'uk_additional' => $this->uk_additional
+            'PID' => $this->patient,
+            'PV1' => $this->patient_visit
         );
 
         return $attributes;

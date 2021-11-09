@@ -186,7 +186,7 @@ class TeamController extends BaseAdminController
             $user_ids = array_map(function ($member) {
                 return $member->id;
             }, $member_objs);
-            $user_auth_objs = $this->api->getInstitutionUserAuth(null, true, $user_ids);
+            $user_auth_objs = $this->api->getInstitutionUserAuth(true, $user_ids);
             foreach ($user_auth_objs as $user_auth) {
                 $user_id = $user_auth->user_id;
                 $members[$user_id] = $user_auth;

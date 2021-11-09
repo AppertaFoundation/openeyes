@@ -1079,13 +1079,15 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
-                        if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
+                        if (($newlines_setting = SettingMetadata::model()->getSetting('correspondence_address_max_lines'))>=0) {
                             $addressPart = explode("\n", $target->address);
                             $address ='';
                             foreach ($addressPart as $index=>$part) {
-                                if ($index === 0) {
-                                    $address = $part."\n";
+                                if ($index == 0) {
+                                    $address = $part;
+                                }
+                                elseif ($index < $newlines_setting) {
+                                    $address = $address."\n".$part;
                                 } else {
                                     $address = $address.$part;
                                 }

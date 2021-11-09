@@ -23,7 +23,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property string $name
  */
-class NinePositions_Movement extends \BaseActiveRecordVersioned
+class NinePositions_Movement extends \BaseActiveRecord
 {
     /**
      * @return string the associated database table name

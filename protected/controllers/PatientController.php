@@ -13,7 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
+use OEModule\BreakGlass\BreakGlass;
 Yii::import('application.controllers.*');
 
 /**
@@ -263,6 +263,12 @@ class PatientController extends BaseController
             $link = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             // using redirect to correct the url and to avoid issues from creating events
             $this->redirect("$link");
+        }
+        if (Yii::app()->params['breakglass_enabled']) {
+            $breakGlass = new BreakGlass($this->patient, Yii::app()->user);
+            if ($breakGlass->breakGlassRequired()) {
+                $this->redirect($breakGlass->getPath());
+            }
         }
             $this->pageTitle = "Patient Overview";
             $this->patient->audit('patient', 'view-summary');

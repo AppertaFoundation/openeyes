@@ -273,6 +273,13 @@ class WorklistController extends BaseController
                 }
                 $step->nextStatus($extra_form_data);
             } else {
+                if ($step->short_name === "Discharge") {
+                    $hl7_a13 = new \OEModule\PASAPI\resources\HL7_A13();
+                    $hl7_a13->setDataFromEvent(\Event::model()->find("worklist_patient_id = ?", array($step->pathway->worklist_patient->id))->id);
+                    Yii::app()->event->dispatch('emergency_care_update',
+                            $hl7_a13
+                    );
+                }
                 $step->prevStatus();
             }
             $step->refresh();

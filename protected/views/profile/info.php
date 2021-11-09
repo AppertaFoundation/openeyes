@@ -43,8 +43,8 @@
             $user,
             'title',
             array('autocomplete' => Yii::app()->params['html_autocomplete'],
-                'readonly' => (!Yii::app()->params['profile_user_can_edit']
-                    || !Yii::app()->params['profile_user_show_menu'])),
+                'readonly' => $this->isUserFieldReadOnly('title'),
+                'style' => $this->isUserFieldReadOnly('title') ? 'opacity:0.5' : ''),
             null
         );?>
     </td>
@@ -55,8 +55,8 @@
             $user,
             'first_name',
             array('autocomplete' => Yii::app()->params['html_autocomplete'],
-                'readonly' => (!Yii::app()->params['profile_user_can_edit']
-                    || !Yii::app()->params['profile_user_show_menu']))
+                'readonly' => $this->isUserFieldReadOnly('first_name'),
+                'style' => $this->isUserFieldReadOnly('first_name') ? 'opacity:0.5' : '')
         );?>
     </td>
   </tr>
@@ -66,8 +66,8 @@
             $user,
             'last_name',
             array('autocomplete' => Yii::app()->params['html_autocomplete'],
-                'readonly' => (!Yii::app()->params['profile_user_can_edit']
-                    || !Yii::app()->params['profile_user_show_menu']))
+                'readonly' => $this->isUserFieldReadOnly('last_name'),
+                'style' => $this->isUserFieldReadOnly('last_name') ? 'opacity:0.5' : '')
         );?>
     </td>
   </tr>
@@ -86,8 +86,8 @@
             $user,
             'email',
             array('autocomplete' => Yii::app()->params['html_autocomplete'],
-                'readonly' => (!Yii::app()->params['profile_user_can_edit']
-                    || !Yii::app()->params['profile_user_show_menu']))
+                'readonly' => $this->isUserFieldReadOnly('email'),
+                'style' => $this->isUserFieldReadOnly('email') ? 'opacity:0.5' : '')
         );?>
     </td>
   </tr>
@@ -97,8 +97,8 @@
             $user,
             'qualifications',
             array('autocomplete' => Yii::app()->params['html_autocomplete'],
-                'readonly' => (!Yii::app()->params['profile_user_can_edit']
-                    || !Yii::app()->params['profile_user_show_menu']))
+                'readonly' => $this->isUserFieldReadOnly('qualifications'),
+                'style' => $this->isUserFieldReadOnly('qualifications') ? 'opacity:0.5' : '')
         );?>
     </td>
   </tr>

@@ -121,6 +121,16 @@ class ProfileController extends BaseController
         ));
     }
 
+    protected function isUserFieldReadOnly($field)
+    {
+        $readonly_fields = explode(',', Yii::app()->params['profile_user_readonly_fields']);
+        return (
+                !Yii::app()->params['profile_user_can_edit']
+            ||  !Yii::app()->params['profile_user_show_menu']
+            ||  in_array($field, $readonly_fields)
+        );
+    }
+
     public function actionPassword()
     {
         if (!Yii::app()->params['profile_user_can_change_password']) {
@@ -177,14 +187,100 @@ class ProfileController extends BaseController
 
     public function actionPincode()
     {
-        $user_auth = null;
-        if (Yii::app()->session['user_auth']) {
-            $user_auth = Yii::app()->session['user_auth'];
-            $user_auth->refresh();
-        }
+        $user = Yii::app()->session['user_auth']->user;
+        // when the user access pincode page, calls the generatePin function without argument
+        // it will check if the user has pincode, if no pincode, a new pincode will be generated for the user
+        $user->generatePin();
+        $pin_regen_status = $user->pincodeRegenStatus();
         $this->render('/profile/pincode', array(
-            'user_auth' => $user_auth,
+            'pin_regen_status' => $pin_regen_status
         ));
+    }
+
+    /**
+     * API entry point for viewing pincode
+     */
+    public function actionViewPincode()
+    {
+        $password = Yii::app()->request->getParam('pwd', null);
+        $user_auth = Yii::app()->session['user_auth'];
+
+        $is_verified = password_verify($password, $user_auth->password_hash);
+
+        $info_icon = null;
+        $pincode_html = null;
+        $pincode_regen_html = null;
+
+        if ($is_verified) {
+            $user = $user_auth->user;
+            $msg = '<div class="alert-box success">Your password verification was successful</div>';
+            $info_icon = '<i class="js-pwd-verification-info oe-i info small js-has-tooltip" data-tooltip-content="Your password verification will expire in 30 seconds or immediately after page refresh"></i>';
+            $pincode = $user->getPincode();
+            $pincode_html = "<span class='js-pincode'>$pincode</span><span class='js-count-down'> (30)</span>";
+
+            // getPincodeRegenUI will be extracted into $is_reach_limit, $pincode_regen_html
+            extract($this->getPincodeRegenUI($user));
+        } else {
+            $msg = '<div class="alert-box warning">Password verification failed.</div>';
+        }
+
+        $this->renderJSON(array(
+            'is_verified' => $is_verified,
+            'msg' => $msg,
+            'info_icon' => $info_icon,
+            'pincode_html' => $pincode_html,
+            'pincode_regen_html' => $pincode_regen_html
+        ));
+    }
+
+    /**
+     * API entry point for regenerating pincode
+     */
+    public function actionGeneratePincode()
+    {
+        $user = Yii::app()->session['user_auth']->user;
+
+        $msg = '';
+        // getPincodeRegenUI will be extracted into $is_reach_limit, $pincode_regen_html
+        extract($this->getPincodeRegenUI($user, false));
+        if (!$is_reach_limit) {
+            $user->generatePin(true);
+            // after regenerating, need to re-test to see if the user reaches the limit
+            extract($this->getPincodeRegenUI($user, false));
+            if ($user->getErrors()) {
+                $msg = '<div class="alert-box warning">Generating pincode fail, please try again later</div>';
+            } else {
+                $user->refresh();
+                $msg = '<div class="alert-box success">Pincode Updated</div>';
+            }
+        }
+        $pin_regen_status = $user->pincodeRegenStatus();
+
+        $this->renderJSON(array(
+            'msg' => $msg,
+            'pincode' => $user->getPincode(),
+            'pincode_regen_html' => $pincode_regen_html,
+            'pin_regen_status' => $pin_regen_status,
+        ));
+    }
+
+    /**
+     * produce pincode regenerate UI
+     *
+     * @param User $user
+     * @param boolean $render_btn indicates if a button needs to be rendered
+     * @return array returnning a flag that indicates if the user reaches the pincode regenerate limit, and corresponding html
+     */
+    private function getPincodeRegenUI(User $user, $render_btn = true)
+    {
+        $is_reach_limit = $user->isPincodeRegenReachLimit();
+        $pin_regen_btn_html = $render_btn ? '<div><button class="button large hint green" id="js-regen-pincode">Regenerate Pincode</button></div>' : null;
+        $pincode_regen_html = $is_reach_limit ? '<span class="alert-box issue">You have reached the pincode regenerate limit</span class="alert-box ">' : $pin_regen_btn_html;
+
+        return array(
+            'pincode_regen_html' => $pincode_regen_html,
+            'is_reach_limit' => $is_reach_limit,
+        );
     }
 
     public function actionSites()
@@ -331,13 +427,13 @@ class ProfileController extends BaseController
 
     public function actionUploadSignature()
     {
-        if(!$user = User::model()->findByPk(Yii::app()->user->id)) {
+        if (!$user = User::model()->findByPk(Yii::app()->user->id)) {
             $this->renderJSON([
                 "success" => false,
                 "message" => "User not found"
             ]);
         }
-        if(!$img = Yii::app()->request->getPost("image")) {
+        if (!$img = Yii::app()->request->getPost("image")) {
             $this->renderJSON([
                 "success" => false,
                 "message" => "Image not provided"
@@ -348,14 +444,13 @@ class ProfileController extends BaseController
         $file->title = "Signature";
         $file->mimetype = "image/jpeg";
         file_put_contents($file->getPath(), $img);
-        if($file->save()) {
+        if ($file->save()) {
             $user->signature_file_id = $file->id;
             $user->save(false, ["signature_file_id"]);
             $this->renderJSON([
                 "success" => true
             ]);
-        }
-        else {
+        } else {
             $this->renderJSON([
                 "success" => false,
                 "message" => "An error occurred while saving the signature."
