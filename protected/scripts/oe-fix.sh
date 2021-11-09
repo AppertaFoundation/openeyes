@@ -24,6 +24,9 @@ function getuser() {
 }
 curuser=$(getuser)
 
+# add current user to www-data group, this resolves a lot of local access issues
+gpasswd -a "$curuser" www-data
+
 # disable log to browser during fix, otherwise it causes extraneous trace output on the CLI
 export LOG_TO_BROWSER=""
 
@@ -278,7 +281,7 @@ if [ $noperms = 0 ]; then
         echo -e "\nResetting file permissions..."
         if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ] || [ $forceperms == 1 ]; then
             echo "updaing ownership on $WROOT"
-            sudo chown -RL $curuser:www-data $WROOT
+            sudo chown -RL www-data:www-data $WROOT
         else
             echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
         fi
