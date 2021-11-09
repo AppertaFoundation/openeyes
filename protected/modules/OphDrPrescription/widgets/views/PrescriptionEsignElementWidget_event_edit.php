@@ -47,6 +47,7 @@
                             "row_id" => $row++,
                             "element" => $this->element,
                             "signature" => $signature,
+                            "mode" => ($this->mode === $this::$EVENT_EDIT_MODE ? "edit" : "view"),
                         ]
                     );
                 }

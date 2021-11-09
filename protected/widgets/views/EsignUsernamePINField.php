@@ -85,7 +85,8 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
             submitAction: "<?=$this->getAction()?>",
             needUserName: true,
             signature_type: <?= $this->signature->type ?>,
-            element_id: <?= $this->element->id ?? "null" ?>
+            element_id: <?= $this->element->id ?? "null" ?>,
+            mode: "<?= $this->mode ?>"
         });
     });
 </script>

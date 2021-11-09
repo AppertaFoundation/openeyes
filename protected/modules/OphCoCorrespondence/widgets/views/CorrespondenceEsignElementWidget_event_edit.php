@@ -17,20 +17,6 @@
  */
 ?>
 <?php /** @var CorrespondenceEsignElementWidget $this */ ?>
-<?php
-if ($this->isSigningAllowed()) {
-    $signatures = [];
-    $withdrawal_signatures = [];
-    foreach ($this->element->getSignatures() as $signature) {
-        if (strcmp($signature->signatory_role, "Withdrawn by") == 0) {
-            $withdrawal_signatures[] = $signature;
-        } else {
-            $signatures[] = $signature;
-        }
-    }
-}
-?>
-
 <div class="element-fields">
     <?php if (isset($form)) {
         $form->hiddenInput($this->element, "dummy");
@@ -42,46 +28,6 @@ if ($this->isSigningAllowed()) {
         <?php if (!$this->isSigningAllowed()) : ?>
             <div class="alert-box warning">E-signing of this event will be available at a later stage.</div>
         <?php else : ?>
-            <?php if ($this->element instanceof Element_OphTrConsent_Esign) {
-                if ($this->isSigningAllowed() && count($withdrawal_signatures) != 0) { ?>
-                    <div class="alert-box warning"><strong>Patient has withdrawn their consent, a reason for the withdrawal must be recorded and the patient must sign to confirm.</strong></div>
-                    <table class="last-left">
-                        <colgroup>
-                            <col class="cols-1">
-                            <col class="cols-2">
-                            <col class="cols-3">
-                            <col class="cols-2">
-                            <col class="cols-3">
-                        </colgroup">
-                        <tbody>
-                        <?php
-                        foreach ($withdrawal_signatures as $signature) {
-                            $this->widget(
-                                $this->getWidgetClassByType($signature->type),
-                                [
-                                    "row_id" => "X",
-                                    "element" => $this->element,
-                                    "signature" => $signature,
-                                ]
-                            );
-                        }
-                        ?>
-                        </tbody>
-                    </table>
-                    <?php
-                    $withdrawal_element_criteria = new CDbCriteria();
-                    $withdrawal_element_criteria->compare('t.event_id', $this->element->event_id);
-                    $withdrawal_element = \Element_OphTrConsent_Withdrawal::model()->find($withdrawal_element_criteria);
-                    $this->render(
-                        'application.widgets.views.Withdrawal',
-                        array(
-                            'element' => $this->element,
-                            'entry' => $withdrawal_element,
-                            'form' => $form
-                        )
-                    ); ?>
-                <?php }
-            } ?>
             <?php if (!$this->element->isSigned()) : ?>
                 <div class="alert-box issue"><?= $this->element->getUnsignedMessage() ?>
                     <?php if ($this->element->usesEsignDevice()) : ?>
@@ -103,7 +49,7 @@ if ($this->isSigningAllowed()) {
                 <?php
                     $has_hidden = false;
                     $row = 0;
-                foreach ($signatures as $signature) {
+                foreach ($this->element->getSignatures() as $signature) {
                     $this->widget(
                         $this->getWidgetClassByType($signature->type),
                         [
@@ -111,6 +57,7 @@ if ($this->isSigningAllowed()) {
                             "element" => $this->element,
                             "signature" => $signature,
                             "hidden" => $signature->isHidden(),
+                            "mode" => ($this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit'),
                         ]
                     );
                     if ($signature->isHidden()) {
