@@ -172,7 +172,7 @@ $form = $this->beginWidget(
 
         <h2>Login Authentications</h2>
         <hr class="divider">
-        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'lookup_user', 'pincode', 'password', 'password_repeat', 'password_status', 'active'] ?>
+        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'lookup_user', 'password', 'password_repeat', 'password_status', 'active'] ?>
         <table class="standard" id="user-authentications">
             <thead>
             <tr>
@@ -290,7 +290,6 @@ $form = $this->beginWidget(
             $row.find('.js-password-status').val(defaultPasswordStatus);
             $row.find('.js-remove-row').hide();
             $row.find('.js-row-spinner').show();
-            $row.find('.js-pincode-section').attr('data-ins-auth-id', this.value);
             $.ajax({
                 'type': 'GET',
                 'url': baseUrl + '/admin/checkInstAuthType?id=' + $(this).val(),

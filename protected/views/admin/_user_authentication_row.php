@@ -68,19 +68,6 @@
         ); ?>
     </td>
     <td>
-        <span class="js-pincode-display" data-origin-pincode="<?=$user_authentication->pincode;?>"><?=$user_authentication->pincode ? : 'No Pincode';?></span>
-        <?=\CHtml::activeHiddenField(
-            $user_authentication,
-            "[{$key}]pincode",
-            [
-                'class' => 'js-user-pincode-val',
-            ]
-        );?>
-        <div class="js-pincode-section" data-input-name="<?=get_class($user_authentication)?>[<?=$key?>][pincode]" data-ins-auth-id="<?=$user_authentication->institution_authentication_id?>" data-user-id="<?=$user->id?>">
-            <button class="js-set-pincode-btn">Set Pincode</button>
-        </div>
-    </td>
-    <td>
         <?= \CHtml::activePasswordField(
             $user_authentication,
             "[{$key}]password",

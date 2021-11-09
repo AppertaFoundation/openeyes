@@ -33,6 +33,7 @@
  */
 class User extends BaseActiveRecordVersioned
 {
+    const PIN_REGEN_LIMIT = 5;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -139,7 +140,8 @@ class User extends BaseActiveRecordVersioned
             'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
             'signature' => array(self::BELONGS_TO, 'ProtectedFile', 'signature_file_id'),
             'signOffUser' => array(self::BELONGS_TO, 'User', 'correspondence_sign_off_user_id'),
-            'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id')
+            'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id'),
+            'pincode' => array(self::HAS_ONE, 'UserPincode', 'user_id'),
         );
 
         if ($this->getScenario() !== 'portal_command') {
@@ -961,25 +963,112 @@ class User extends BaseActiveRecordVersioned
         $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
         $user_id = $user_id ?? $this->id;
 
-        $institution_authentication = InstitutionAuthentication::model()
-            ->find(
-                "(site_id=:site_id || site_id IS NULL) AND institution_id=:institution_id",
-                [":site_id"=>$site_id, ":institution_id"=>$institution_id]
-            );
+        $criteria = new CDbCriteria();
+        $criteria->with = [
+            'user',
+            'user.pincode',
+            'institutionAuthentication',
+        ];
+        $criteria->compare('t.user_id', $user_id);
+        $criteria->compare('t.active', true);
+        $criteria->compare('pincode.pincode', $pincode);
+        $criteria->compare('institutionAuthentication.institution_id', $institution_id);
+        $criteria->addCondition('site_id=:site_id || site_id IS NULL');
+        $criteria->params[':site_id'] = $site_id;
 
-        if ($institution_authentication) {
-            $user_authentication = UserAuthentication::model()
-                ->find(
-                    'user_id=:user_id AND institution_authentication_id=:institution_authentication_id AND pincode=:pincode',
-                    [
-                        ':user_id'=>$user_id,
-                        ':institution_authentication_id'=>$institution_authentication->id,
-                        ':pincode' => $pincode
-                    ]
-                );
-            $pin_ok = !is_null($user_authentication);
-        }
+        $user_authentication = UserAuthentication::model()->find($criteria);
+
+        $pin_ok = !is_null($user_authentication);
 
         return $pin_ok;
+    }
+
+    /**
+     * @return string pincode value
+     */
+    public function getPincode()
+    {
+        return $this->pincode ? $this->pincode->value : 'No Pincode';
+    }
+
+    /**
+     * generate Pincode for users
+     *
+     * @param boolean $regenerate indicates if the process is to regenerate pin or to generate new pin
+     */
+    public function generatePin($regenerate = false)
+    {
+        $user_pin_obj = $this->pincode ?? new UserPincode();
+        if (!$regenerate && !$user_pin_obj->isNewRecord) {
+            return;
+        }
+        $audit_action = $regenerate ? 'Regenerate-pin' : 'Generate-pin';
+
+        $pincode = PincodeHelper::generatePincode();
+        $user_pin_obj->user_id = $this->id;
+        $user_pin_obj->pincode = $pincode;
+
+        if (!$flag = $user_pin_obj->save()) {
+            $this->addErrors($user_pin_obj->getErrors());
+        }
+
+        $audit_data = ($flag ? 'Success' : 'Failed') . ": update pincode to $pincode for user {$this->id}";
+
+        $this->audit('pincode', $audit_action, $audit_data);
+    }
+
+    /**
+     * query pincode history for the last 12 month
+     *
+     * @return array an array of pincode history
+     */
+    private function queryPincodeHistory()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'version_date > NOW() - INTERVAL 12 month';
+        return $this->pincode->getPreviousVersionsWithCriteria($criteria);
+    }
+
+    /**
+     * @return bool indicates if the user reaches the limit
+     */
+    public function isPincodeRegenReachLimit()
+    {
+        if (!$this->pincode) {
+            return false;
+        }
+        $results = $this->queryPincodeHistory();
+
+        return self::PIN_REGEN_LIMIT - count($results) === 0;
+    }
+
+    /**
+     * Shows how many pincode can the user regenerates, and the date resets the count
+     *
+     * @return string a message to inform user the pincode regenerate status
+     */
+    public function pincodeRegenStatus()
+    {
+
+        $results = $this->queryPincodeHistory();
+
+        $min_date_obj = array_reduce($results, function ($r1, $r2) {
+            if (!$r1) {
+                return $r2;
+            }
+            if (!$r2) {
+                return $r1;
+            }
+            return $r1->version_date < $r2->version_date ? $r1 : $r2;
+        });
+        $remaining = $results ? self::PIN_REGEN_LIMIT - count($results) : self::PIN_REGEN_LIMIT;
+
+        $datetime_format = Helper::NHS_DATE_FORMAT . ' H:i:s';
+
+        $until_date = $min_date_obj ? date($datetime_format, strtotime('+1 year', strtotime($min_date_obj->version_date))) : date($datetime_format, strtotime('+1 year'));
+
+        $msg = "You can regenerate your pincode $remaining time(s) before $until_date";
+
+        return $msg;
     }
 }
