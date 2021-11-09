@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -214,6 +215,14 @@ class User extends BaseActiveRecordVersioned
         }
         if (!$preference->save()) {
             throw new CException('Error saving user firm preference');
+        }
+    }
+
+    public function init()
+    {
+        parent::init();
+        if ($this->isNewRecord) {
+            $this->global_firm_rights = 1;
         }
     }
 
@@ -582,7 +591,7 @@ class User extends BaseActiveRecordVersioned
         $crit->join = "join institution i on i.id = t.institution_id
             join institution_authentication ia on ia.institution_id = i.id and ia.active = 1
             join user_authentication ua on ua.institution_authentication_id = ia.id  and ua.active = 1";
-        $crit->condition = 'ua.user_id = '.Yii::app()->user->id.' AND t.active = 1';
+        $crit->condition = 'ua.user_id = ' . Yii::app()->user->id . ' AND t.active = 1';
 
         return Firm::model()->findAll($crit);
     }
@@ -634,14 +643,14 @@ class User extends BaseActiveRecordVersioned
      * @param array $html_options   Additional HTML options, @see \CHtml::img()
      * @return string|null  The image or null if the user does not have a saved signature
      */
-    public function getSignatureImage(array $html_options = []) : ?string
+    public function getSignatureImage(array $html_options = []): ?string
     {
         return !is_null($this->signature_file_id) ?
             \CHtml::image(
-                "/protectedFile/view/".$this->signature_file_id."/?name=Signature",
+                "/protectedFile/view/" . $this->signature_file_id . "/?name=Signature",
                 "Signature",
                 $html_options
-                )
+            )
             :
             null;
     }
@@ -838,7 +847,7 @@ class User extends BaseActiveRecordVersioned
         if ($user === null) {
             if (!$this->save()) {
                 $this->audit('login', 'login-failed', "Cannot create user: $this->username", true);
-                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+                throw new Exception('Unable to save User: ' . print_r($this->getErrors(), true));
             }
             $this->id = self::model()->find('username = :username', array(':username' => $this->username))->id;
 
@@ -925,7 +934,7 @@ class User extends BaseActiveRecordVersioned
 
         foreach ($whitelist as $URL) {
             // check to see if the request starts with this whitelisted url
-            if (strpos($request, $URL)===0) {
+            if (strpos($request, $URL) === 0) {
                 return true;
             }
         }
@@ -955,7 +964,7 @@ class User extends BaseActiveRecordVersioned
      * @param UserAuthentication|null $user_authentication will contain a reference to the UserAuthentication if matched
      * @return boolean
      */
-    public function checkPin($pincode, $user_id = null, $institution_id = null, $site_id = null, &$user_authentication = null) : bool
+    public function checkPin($pincode, $user_id = null, $institution_id = null, $site_id = null, &$user_authentication = null): bool
     {
         $pin_ok = false;
 

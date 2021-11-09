@@ -110,9 +110,9 @@ $(document).ready(function () {
         $('.box_admin_elements').toggle();
     });
 
-    // when changing the global rights radiobutton, remove the firms
+    // when changing the global rights radiobutton, remove the firms row
     $globalFirmRights.on('change', function () {
-        $wrapper = $('#User_firms').closest('.multi-select');
+        $wrapper = $('#User_firms').closest('tr');
         if ($("input:radio[name='User[global_firm_rights]']:checked").val() === '1') {
             $wrapper.hide();
         } else {
@@ -120,9 +120,9 @@ $(document).ready(function () {
         }
     });
 
-    // when changing the global rights radiobutton in SSO Permissions, remove the firms
+    // when changing the global rights radiobutton in SSO Permissions, remove the firms row
     $ssoGlobalFirmRights.on('change', function () {
-        $wrapper = $('#SsoDefaultRights_sso_default_firms').closest('.multi-select');
+        $wrapper = $('#SsoDefaultRights_sso_default_firms').closest('tr');
         if ($("input:radio[name='SsoDefaultRights[global_firm_rights]']:checked").val() === '1') {
             $wrapper.hide();
         } else {
