@@ -212,7 +212,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
 
 
         $pagination = new CPagination($patients_count);
-        $pagination->pageSize = 1000;
+        $pagination->pageSize = 10000;
         $dataProvider = new CSqlDataProvider($patients_sql, [
             'totalItemCount' => $patients_count,
             'sort' => [
