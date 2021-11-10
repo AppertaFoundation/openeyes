@@ -36,18 +36,16 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
             foreach ($this::$PATIENT_IDENTIFIER_TYPES as $short_name => $type) {
                 if ($patient_merged_in_merge_request[$short_name] &&
                     $patient_merged_in_merge_request[$short_name] !== $patient[$short_name]) {
-
                     $duplicate_identifier_found = false;
-                    if(isset($added_identifiers[${$type . '_type_id'}])) {
-
-                        foreach($added_identifiers[${$type . '_type_id'}] as $identifier){
-                            if($identifier === $patient_merged_in_merge_request[$short_name]) {
+                    if (isset($added_identifiers[${$type . '_type_id'}])) {
+                        foreach ($added_identifiers[${$type . '_type_id'}] as $identifier) {
+                            if ($identifier === $patient_merged_in_merge_request[$short_name]) {
                                 $duplicate_identifier_found = true;
                             }
                         }
                     }
 
-                    if(!$duplicate_identifier_found) {
+                    if (!$duplicate_identifier_found) {
                         $rows[] = [
                             'patient_id' => $patient['id'],
                             'patient_identifier_type_id' => ${$type . '_type_id'},
@@ -257,10 +255,8 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                         foreach ($this::$PATIENT_IDENTIFIER_TYPES as $short_name => $type) {
                             if ($patient_merged_in_merge_request[$short_name]
                                 && $patient[$short_name] !== $patient_merged_in_merge_request[$short_name]) {
-
                                 $duplicate_identifier_found = false;
                                 if (isset($added_identifiers[${$type . '_type_id'}])) {
-
                                     foreach ($added_identifiers[${$type . '_type_id'}] as $identifier) {
                                         if ($identifier === $patient_merged_in_merge_request[$short_name]) {
                                             $duplicate_identifier_found = true;
