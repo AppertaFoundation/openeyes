@@ -1327,6 +1327,7 @@ class DefaultController extends \BaseEventTypeController
                     $diagnosis->disorder_id = $disorder['disorder_id'];
                     $diagnosis->principal = ($principal_diagnosis_row_key == $disorder['row_key']);
                     $diagnosis->date = isset($disorder['date']) ? $disorder['date'] : null;
+                    $diagnosis->time = $disorder['time'] ?? null;
                     $diagnoses[] = $diagnosis;
                 }
             }
