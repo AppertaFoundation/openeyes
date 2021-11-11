@@ -185,12 +185,18 @@ class Site extends BaseActiveRecordVersioned
         return $result;
     }
 
-    public function getDefaultSite()
+    public function getDefaultSite($institution_id = null)
     {
         $site = null;
+
+        if(isset($institution_id)){
+            $site = $this->find('institution_id = :id', [':id' => $institution_id]);
+        }
+
         if (Yii::app()->params['default_site_code']) {
             $site = $this->findByAttributes(array('remote_id' => Yii::app()->params['default_site_code']));
         }
+
         if (!$site) {
             $site = $this->find('institution_id = :id', [':id' => Yii::app()->session['selected_institution_id']]);
         }
