@@ -23,6 +23,7 @@ use Eye;
 use OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\models\AdviceLeafletEntry;
+use OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
 use OEModule\PASAPI\resources\HL7_A03;
@@ -1275,6 +1276,62 @@ class DefaultController extends \BaseEventTypeController
     protected function setComplexAttributes_Element_OphCiExamination_DRGrading($element, $data, $index)
     {
         $this->_set_DiabeticDiagnosis($element, $data);
+    }
+
+    protected function setComplexAttributes_Element_OphCiExamination_AE_RedFlags($element, $data, $index)
+    {
+
+        $model_name = \CHtml::modelName($element);
+        $_data = $data[$model_name] ?? [];
+        $flag_assignments = $_data['flag_assignment'] ?? [];
+
+        $flag_assignment_objects = [];
+        foreach ($flag_assignments as $flag_assignment) {
+            $new_assignment = new OphCiExamination_AE_RedFlags_Options_Assignment();
+            $new_assignment->red_flag_id = $flag_assignment['red_flag_id'];
+            $new_assignment->element_id = $element->id;
+
+            $flag_assignment_objects[] = $new_assignment;
+        }
+
+        $element->flag_assignment = $flag_assignment_objects;
+    }
+
+    public function saveComplexAttributes_Element_OphCiExamination_AE_RedFlags($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $_data = $data[$model_name] ?? [];
+        $posted_flag_assignment = $_data['flag_assignment'] ?? [];
+
+        $element->refresh();
+        $collection = new \ModelCollection($element->flag_assignment);
+        $existing_flag_ids = $collection->pluck('red_flag_id');
+
+        foreach ($posted_flag_assignment as $flag) {
+            // is new ?
+            $assignment = OphCiExamination_AE_RedFlags_Options_Assignment::model()->countByAttributes(['element_id' => $element->id, 'red_flag_id' => $flag['red_flag_id']]);
+            if (!$assignment) {
+                $new_assignment = new OphCiExamination_AE_RedFlags_Options_Assignment();
+                $new_assignment->red_flag_id = $flag['red_flag_id'];
+                $new_assignment->element_id = $element->id;
+                $new_assignment->save();
+            }
+        }
+
+        // delete not posted flags
+        $flag_ids_to_delete = array_diff($existing_flag_ids, array_map(function ($f) {
+            return $f['red_flag_id'];
+        }, $posted_flag_assignment));
+
+        if ($flag_ids_to_delete) {
+            OphCiExamination_AE_RedFlags_Options_Assignment::model()->deleteAllByAttributes([
+                'red_flag_id' => $flag_ids_to_delete
+            ], 'element_id =:el_id', [':el_id' => $element->id]);
+        } elseif (!$posted_flag_assignment) {
+            OphCiExamination_AE_RedFlags_Options_Assignment::model()->deleteAllByAttributes([
+                'element_id' => $element->id
+            ]);
+        }
     }
 
     /**

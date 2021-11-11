@@ -33,14 +33,12 @@ $current_flags = $element->getMyCurrentFlagOptionIDs();
                 <tr>
                     <td>
                         <ul class="dot-list" id="red-flag-assignment">
-                            <?php foreach ($element->flags as $tempFlag) {
-                                if($tempFlag->flag) {?>
+                            <?php foreach ($element->flag_assignment as $i => $flag_assignment) : ?>
                                     <li>
-                                        <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_AE_RedFlags[flags][]" value="<?= $tempFlag->flag->id ?>">
-                                        <span><?= $tempFlag->flag->name ?></span>
+                                        <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_AE_RedFlags[flag_assignment][<?=$i;?>][red_flag_id]" value="<?= $flag_assignment->red_flag_id ?>">
+                                        <span><?= $flag_assignment->flag->name ?></span>
                                     </li>
-                            <?php }
-                            } ?>
+                            <?php endforeach;?>
                         </ul>
                         <span class="data-value large-text"></span>
                     </td>
@@ -55,16 +53,18 @@ $current_flags = $element->getMyCurrentFlagOptionIDs();
     </div>
     <script type="x-tmpl-mustache" id="add-redflag-template">
         <li>
-            <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_AE_RedFlags[flags][]" value="{{redflag_id}}">
+            <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_AE_RedFlags[flag_assignment][{{row_num}}][red_flag_id]" value="{{red_flag_id}}">
             <span>{{redflag_name}}</span>
         </li>
     </script>
     <script type="text/javascript">
-        function addRedFlag(redflag_id, redflag_name) {
+        function addRedFlag(red_flag_id, redflag_name, row_num) {
             let data = {
-                'redflag_id': redflag_id,
+                'red_flag_id': red_flag_id,
                 'redflag_name': redflag_name,
+                'row_num': row_num
             };
+
             return Mustache.render($('#add-redflag-template').text(), data);
         }
 
@@ -86,7 +86,8 @@ $current_flags = $element->getMyCurrentFlagOptionIDs();
                 let $red_flag_list = $('#red-flag-assignment');
                 $red_flag_list.empty();
                 for (let i = 0; i < selectedItems.length; ++i) {
-                    $red_flag_list.append(addRedFlag(selectedItems[i].id, selectedItems[i].label));
+                    const row_count = document.querySelectorAll('#red-flag-assignment li').length;
+                    $red_flag_list.append(addRedFlag(selectedItems[i].id, selectedItems[i].label, row_count));
                 };
             },
         });
