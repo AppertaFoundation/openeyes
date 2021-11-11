@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -26,10 +27,14 @@
  * @property string $last_name
  * @property string $email
  * @property int $global_firm_rights
- * @property date $correspondence_sign_off_user_id
+ * @property int $correspondence_sign_off_user_id
+ * @property string $correspondence_sign_off_text
+ *
+ * @property User $signOffUser
  */
 class User extends BaseActiveRecordVersioned
 {
+    const PIN_REGEN_LIMIT = 5;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -66,6 +71,8 @@ class User extends BaseActiveRecordVersioned
             // Added for uniqueness of username
             array('id, first_name, last_name, email, global_firm_rights, correspondence_sign_off_user_id', 'safe', 'on' => 'search'),
             array('title, first_name, last_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
+            array('correspondence_sign_off_text', 'required'),
+            array('correspondence_sign_off_text', 'length', 'max' => 150),
             array(
                 'first_name, last_name, email, global_firm_rights, title, qualifications, role, is_consultant, is_surgeon,
                  has_selected_firms,doctor_grade_id, registration_code, signature_file_id, correspondence_sign_off_user_id',
@@ -134,7 +141,8 @@ class User extends BaseActiveRecordVersioned
             'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
             'signature' => array(self::BELONGS_TO, 'ProtectedFile', 'signature_file_id'),
             'signOffUser' => array(self::BELONGS_TO, 'User', 'correspondence_sign_off_user_id'),
-            'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id')
+            'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id'),
+            'pincode' => array(self::HAS_ONE, 'UserPincode', 'user_id'),
         );
 
         if ($this->getScenario() !== 'portal_command') {
@@ -210,6 +218,14 @@ class User extends BaseActiveRecordVersioned
         }
     }
 
+    public function init()
+    {
+        parent::init();
+        if ($this->isNewRecord) {
+            $this->global_firm_rights = 1;
+        }
+    }
+
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -226,6 +242,7 @@ class User extends BaseActiveRecordVersioned
             'is_surgeon' => 'Surgeon',
             'doctor_grade_id' => 'Grade',
             'role' => 'Position',
+            'correspondence_sign_off_text' => 'Correspondence sign-off text'
         );
     }
 
@@ -574,7 +591,7 @@ class User extends BaseActiveRecordVersioned
         $crit->join = "join institution i on i.id = t.institution_id
             join institution_authentication ia on ia.institution_id = i.id and ia.active = 1
             join user_authentication ua on ua.institution_authentication_id = ia.id  and ua.active = 1";
-        $crit->condition = 'ua.user_id = '.Yii::app()->user->id.' AND t.active = 1';
+        $crit->condition = 'ua.user_id = ' . Yii::app()->user->id . ' AND t.active = 1';
 
         return Firm::model()->findAll($crit);
     }
@@ -626,14 +643,14 @@ class User extends BaseActiveRecordVersioned
      * @param array $html_options   Additional HTML options, @see \CHtml::img()
      * @return string|null  The image or null if the user does not have a saved signature
      */
-    public function getSignatureImage(array $html_options = []) : ?string
+    public function getSignatureImage(array $html_options = []): ?string
     {
         return !is_null($this->signature_file_id) ?
             \CHtml::image(
-                "/protectedFile/view/".$this->signature_file_id."/?name=Signature",
+                "/protectedFile/view/" . $this->signature_file_id . "/?name=Signature",
                 "Signature",
                 $html_options
-                )
+            )
             :
             null;
     }
@@ -830,7 +847,7 @@ class User extends BaseActiveRecordVersioned
         if ($user === null) {
             if (!$this->save()) {
                 $this->audit('login', 'login-failed', "Cannot create user: $this->username", true);
-                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+                throw new Exception('Unable to save User: ' . print_r($this->getErrors(), true));
             }
             $this->id = self::model()->find('username = :username', array(':username' => $this->username))->id;
 
@@ -917,7 +934,7 @@ class User extends BaseActiveRecordVersioned
 
         foreach ($whitelist as $URL) {
             // check to see if the request starts with this whitelisted url
-            if (strpos($request, $URL)===0) {
+            if (strpos($request, $URL) === 0) {
                 return true;
             }
         }
@@ -947,7 +964,7 @@ class User extends BaseActiveRecordVersioned
      * @param UserAuthentication|null $user_authentication will contain a reference to the UserAuthentication if matched
      * @return boolean
      */
-    public function checkPin($pincode, $user_id = null, $institution_id = null, $site_id = null, &$user_authentication = null) : bool
+    public function checkPin($pincode, $user_id = null, $institution_id = null, $site_id = null, &$user_authentication = null): bool
     {
         $pin_ok = false;
 
@@ -955,25 +972,112 @@ class User extends BaseActiveRecordVersioned
         $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
         $user_id = $user_id ?? $this->id;
 
-        $institution_authentication = InstitutionAuthentication::model()
-            ->find(
-                "(site_id=:site_id || site_id IS NULL) AND institution_id=:institution_id",
-                [":site_id"=>$site_id, ":institution_id"=>$institution_id]
-            );
+        $criteria = new CDbCriteria();
+        $criteria->with = [
+            'user',
+            'user.pincode',
+            'institutionAuthentication',
+        ];
+        $criteria->compare('t.user_id', $user_id);
+        $criteria->compare('t.active', true);
+        $criteria->compare('pincode.pincode', $pincode);
+        $criteria->compare('institutionAuthentication.institution_id', $institution_id);
+        $criteria->addCondition('site_id=:site_id || site_id IS NULL');
+        $criteria->params[':site_id'] = $site_id;
 
-        if ($institution_authentication) {
-            $user_authentication = UserAuthentication::model()
-                ->find(
-                    'user_id=:user_id AND institution_authentication_id=:institution_authentication_id AND pincode=:pincode',
-                    [
-                        ':user_id'=>$user_id,
-                        ':institution_authentication_id'=>$institution_authentication->id,
-                        ':pincode' => $pincode
-                    ]
-                );
-            $pin_ok = !is_null($user_authentication);
-        }
+        $user_authentication = UserAuthentication::model()->find($criteria);
+
+        $pin_ok = !is_null($user_authentication);
 
         return $pin_ok;
+    }
+
+    /**
+     * @return string pincode value
+     */
+    public function getPincode()
+    {
+        return $this->pincode ? $this->pincode->value : 'No Pincode';
+    }
+
+    /**
+     * generate Pincode for users
+     *
+     * @param boolean $regenerate indicates if the process is to regenerate pin or to generate new pin
+     */
+    public function generatePin($regenerate = false)
+    {
+        $user_pin_obj = $this->pincode ?? new UserPincode();
+        if (!$regenerate && !$user_pin_obj->isNewRecord) {
+            return;
+        }
+        $audit_action = $regenerate ? 'Regenerate-pin' : 'Generate-pin';
+
+        $pincode = PincodeHelper::generatePincode();
+        $user_pin_obj->user_id = $this->id;
+        $user_pin_obj->pincode = $pincode;
+
+        if (!$flag = $user_pin_obj->save()) {
+            $this->addErrors($user_pin_obj->getErrors());
+        }
+
+        $audit_data = ($flag ? 'Success' : 'Failed') . ": update pincode to $pincode for user {$this->id}";
+
+        $this->audit('pincode', $audit_action, $audit_data);
+    }
+
+    /**
+     * query pincode history for the last 12 month
+     *
+     * @return array an array of pincode history
+     */
+    private function queryPincodeHistory()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'version_date > NOW() - INTERVAL 12 month';
+        return $this->pincode->getPreviousVersionsWithCriteria($criteria);
+    }
+
+    /**
+     * @return bool indicates if the user reaches the limit
+     */
+    public function isPincodeRegenReachLimit()
+    {
+        if (!$this->pincode) {
+            return false;
+        }
+        $results = $this->queryPincodeHistory();
+
+        return self::PIN_REGEN_LIMIT - count($results) === 0;
+    }
+
+    /**
+     * Shows how many pincode can the user regenerates, and the date resets the count
+     *
+     * @return string a message to inform user the pincode regenerate status
+     */
+    public function pincodeRegenStatus()
+    {
+
+        $results = $this->queryPincodeHistory();
+
+        $min_date_obj = array_reduce($results, function ($r1, $r2) {
+            if (!$r1) {
+                return $r2;
+            }
+            if (!$r2) {
+                return $r1;
+            }
+            return $r1->version_date < $r2->version_date ? $r1 : $r2;
+        });
+        $remaining = $results ? self::PIN_REGEN_LIMIT - count($results) : self::PIN_REGEN_LIMIT;
+
+        $datetime_format = Helper::NHS_DATE_FORMAT . ' H:i:s';
+
+        $until_date = $min_date_obj ? date($datetime_format, strtotime('+1 year', strtotime($min_date_obj->version_date))) : date($datetime_format, strtotime('+1 year'));
+
+        $msg = "You can regenerate your pincode $remaining time(s) before $until_date";
+
+        return $msg;
     }
 }

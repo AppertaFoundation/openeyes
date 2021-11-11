@@ -5,7 +5,7 @@
         Yii::app()->user->checkAccess('Safeguarding') &&
         (!isset($element->outcome_id) ||
         (int)$element->outcome_id === Element_OphCiExamination_Safeguarding::FOLLOWUP_REQUIRED);
-    $patient_is_minor = $element->event->getPatient()->isChild();
+    $display_paediatric_fields = $element->under_protection_plan || $element->has_social_worker || isset($element->responsible_parent_name) || isset($element->accompanying_person_name);
     ?>
 <div class="cols-11">
     <?php if ($element->no_concerns) { ?>
@@ -14,7 +14,7 @@
         <table class="cols-full last-left">
             <colgroup><col class="cols-4"></colgroup>
             <tbody>
-                <?php if ($patient_is_minor) { ?>
+                <?php if ($display_paediatric_fields) { ?>
                 <tr>
                     <td>Does the child have a social worker?</td>
                     <td><?= $element->has_social_worker ? 'Yes' : 'No' ?></td>
@@ -34,9 +34,8 @@
                     <?php
                 }
 
-                    $entries = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
-
-                    $row_count = 0;
+                $entries = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
+                $row_count = 0;
 
                 foreach ($entries as $entry) {
                     $this->renderPartial('form_Element_OphCiExamination_Safeguarding_Entry', array('element' => $element, 'entry' => $entry, 'row_count' => $row_count++, 'editable' => false));

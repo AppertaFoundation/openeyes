@@ -94,44 +94,49 @@ class PSDController extends DefaultController
 
         $assignment_id = Yii::app()->request->getParam('assignment_id', null);
         $assignment = \OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
+
         $ret = array(
             'success' => 0,
             'payload' => null,
         );
-        if (!$this->api) {
-            $this->api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
-        }
-        $user_auth_objs = $this->api->getInstitutionUserAuth($pincode);
-        if (!$user_auth_objs) {
-            $this->renderJSON($ret);
-            Yii::app()->end();
-        }
-        $users = array();
-        foreach ($user_auth_objs as $user_auth) {
-            $user_id = $user_auth->user_id;
-            $users[$user_id] = $user_auth->user;
-        }
-        $users = array_values($users);
 
-        if (count($users) !== 1) {
+        if (!$assignment) {
             $this->renderJSON($ret);
             Yii::app()->end();
         }
-        $user = $users[0];
-        if ($assignment && $user) {
-            $user_roles = Yii::app()->user->getRole($user->id);
-            $is_prescriber = in_array('Prescribe', array_values($user_roles));
-            $is_med_admin = in_array('Med Administer', array_values($user_roles));
-            if ($assignment->checkAuth($user) || $is_prescriber || $is_med_admin) {
-                $ret['success'] = 1;
-                $ret['payload'] = array(
-                    'id' => $user->id,
-                    'name' => $user->getFullName(),
-                );
-            }
+
+        // current institution
+        $current_institution_id = Yii::app()->session->get('selected_institution_id');
+        $criteria = new CDbCriteria();
+        $criteria->with = [
+            'pincode',
+            'authentications',
+            'authentications.institutionAuthentication',
+        ];
+        // make sure the pincode is targetting active users who are in the current institution
+        $criteria->compare('authentications.active', true);
+        $criteria->compare('institutionAuthentication.institution_id', $current_institution_id);
+        $criteria->compare('pincode.pincode', $pincode);
+        $user = User::model()->find($criteria);
+
+        if (!$user) {
+            $this->renderJSON($ret);
+            Yii::app()->end();
         }
-        $user = $ret['payload'] ? $ret['payload']['id'] : 'Not Found or Authorized';
-        Audit::add('PSD Assignment', 'check pin', "Assignment id: {$assignment_id}, Accessed User: {$user}");
+
+        $user_roles = Yii::app()->user->getRole($user->id);
+
+        $is_prescriber = in_array('Prescribe', array_values($user_roles));
+        $is_med_admin = in_array('Med Administer', array_values($user_roles));
+        if ($assignment->checkAuth($user) || $is_prescriber || $is_med_admin) {
+            $ret['success'] = 1;
+            $ret['payload'] = array(
+                'id' => $user->id,
+                'name' => $user->getFullName(),
+            );
+        }
+        $audit_flag = $ret['success'] ? 'Success' : 'Failed';
+        Audit::add('PSD Assignment', 'check pin', "{$audit_flag}: User (id: {$user->id}) attempted to unlock Assignment (id: {$assignment_id})");
         $this->renderJSON($ret);
     }
 

@@ -54,6 +54,22 @@ class HL7_Patient_Visit extends BaseHL7_Section
                         array($worklist_patient->id, \WorklistAttribute::model()->find('name = ? and worklist_id = ?', array('VisitNumber', $worklist_patient->worklist_id))->id));
                 $this->visit_number = ($wla ? $wla->attribute_value : '');
             }
+
+            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
+
+            $clinical_outcome = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->find("event_id = ?", array($event->id));
+            if ($clinical_outcome) {
+                $clinical_outcome_entry = \OEModule\OphCiExamination\models\ClinicOutcomeEntry::model()->find("element_id = ? and status_id = ? ", array($clinical_outcome->id, $discharge_status->id));
+                if ($clinical_outcome_entry) {
+                    $this->discharge_status = $clinical_outcome_entry->discharge_status->ecds_code;
+                    $this->discharge_to_location = $clinical_outcome_entry->discharge_destination->ecds_code;
+                    $transfer_institution = $clinical_outcome_entry->transfer_to;
+                    if ($transfer_institution) {
+                            $this->discharge_facility = $transfer_institution->pas_key;
+                    }
+                    $this->discharge_datetime = substr(str_replace('-', '', str_replace(':', '', str_replace(' ', '', $clinical_outcome_entry->created_date ?? ''))), 0, 14);
+                }
+            }
         }
     }
 

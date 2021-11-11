@@ -64,7 +64,7 @@ class m210929_123900_reorder_consent_form_layouts extends OEMigration
         'OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision',
         'OEModule\OphTrConsent\models\Element_OphTrConsent_PatientAttorneyDeputy',
         'OEModule\OphTrConsent\models\Element_OphTrConsent_MedicalCapacityAdvocate',
-        'OEModule\OphTrConsent\models\Element_OphTrConsent_OthersInvolvedDecisionMakingProcess',
+        'Element_OphTrConsent_OthersInvolvedDecisionMakingProcess',
         'Element_OphTrConsent_Consenttakenby',
         'Element_OphTrConsent_Copies'
     ];
@@ -126,6 +126,7 @@ class m210929_123900_reorder_consent_form_layouts extends OEMigration
     {
         if (!empty($layout_elements)) {
             foreach ($layout_elements as $key => $element) {
+                echo("\n" . $element['id'] . ", " . $type_id . ", " . $key);
                 $this->execute("
                     INSERT INTO ophtrconsent_type_assessment (element_id, type_id, display_order )
                     VALUES

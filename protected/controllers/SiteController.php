@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -36,7 +37,7 @@ class SiteController extends BaseController
     public function actionIndex()
     {
         $search_term = Yii::app()->session['search_term'];
-        Yii::app()->session['search_term']='';
+        Yii::app()->session['search_term'] = '';
         $this->pageTitle = 'Home';
         $this->fixedHotlist = false;
         $this->layout = 'home';
@@ -58,7 +59,7 @@ class SiteController extends BaseController
                     $event_id = $matches[2];
                     if ($event = Event::model()->findByPk($event_id)) {
                         $event_class_name = $event->eventType->class_name;
-                        $this->redirect(array($event_class_name.'/default/view/'.$event_id));
+                        $this->redirect(array($event_class_name . '/default/view/' . $event_id));
                     } else {
                         Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
                         $this->redirect('/');
@@ -75,7 +76,7 @@ class SiteController extends BaseController
                         $this->redirect($redirect_array);
                     } else {
                         // not a valid search
-                        Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
+                        Yii::app()->user->setFlash('warning.search_error', '<strong>"' . CHtml::encode($query) . '"</strong> is not a valid search.');
                     }
                 }
             }
@@ -100,8 +101,8 @@ class SiteController extends BaseController
                     Yii::app()->exit();
                 }
                 */
-                if (($view = $this->getViewFile('/error/error'.$error_code)) !== false) {
-                    $this->render('/error/error'.$error_code, $error);
+                if (($view = $this->getViewFile('/error/error' . $error_code)) !== false) {
+                    $this->render('/error/error' . $error_code, $error);
                 } else {
                     $this->render('/error/error', $error);
                 }
@@ -120,6 +121,11 @@ class SiteController extends BaseController
         $this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $return_url), false, true);
     }
 
+    public function authSourceIsSSO()
+    {
+        return Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC';
+    }
+
     /**
      * Displays the login page.
      */
@@ -127,11 +133,6 @@ class SiteController extends BaseController
     {
         $this->layout = 'home';
         $this->pageTitle = 'Login';
-
-        if (Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC') {
-            // User signing-in through portal should not be shown default OE login screen
-            return $this->render('/sso/sso_login', array());
-        }
 
         if (!Yii::app()->user->isGuest) {
             $this->redirect('/');
@@ -146,9 +147,11 @@ class SiteController extends BaseController
             return $this->render('login_wrong_browser');
         }
 
-        if (isset($_SERVER['HTTP_USER_AGENT']) && (
+        if (
+            isset($_SERVER['HTTP_USER_AGENT']) && (
                 strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false
-                || strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== false)) {
+                || strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== false)
+        ) {
             $this->layout = 'unsupported_browser';
 
             return $this->render('login_unsupported_browser');
@@ -181,23 +184,26 @@ class SiteController extends BaseController
         }
 
         // collect user input data
-        $key = CHtml::modelName($model);
-        if (isset($_POST[$key])) {
-            $model->attributes = $_POST[$key];
-            $model->validate();
-
-            // validate user input and redirect to the previous page if valid
-            if ($model->validate() && $model->login()) {
-                // Flag site for confirmation
-                Yii::app()->session['confirm_site_and_firm'] = true;
-                Yii::app()->session['shown_version_reminder'] = true;
-                // Check the user has admin role and auto version check enabled
-                $autoVersionEnabled = strpos(strtolower(SettingInstallation::model()->findByAttributes(['key' => "auto_version_check"])->value), 'enable');
-                if (Yii::app()->user->checkAccess('admin') && !($autoVersionEnabled === false)) {
-                    $this->doVersionCheck();
+        if (isset($_POST['LoginForm'])) {
+            $model->attributes = $_POST['LoginForm'];
+            if (!$this->authSourceIsSSO() || in_array($model->username, Yii::app()->params['local_users'])) {
+                // validate user input and redirect to the previous page if valid
+                if ($model->validate() && $model->login()) {
+                    // Flag site for confirmation
+                    Yii::app()->session['confirm_site_and_firm'] = true;
+                    Yii::app()->session['shown_version_reminder'] = true;
+                    // Check the user has admin role and auto version check enabled
+                    $autoVersionEnabled = strpos(strtolower(SettingInstallation::model()->findByAttributes(['key' => "auto_version_check"])->value), 'enable');
+                    if (Yii::app()->user->checkAccess('admin') && !($autoVersionEnabled === false)) {
+                        $this->doVersionCheck();
+                    }
+                    $this->redirect($return_url);
                 }
-                $this->redirect($return_url);
             }
+        }
+        if ($this->authSourceIsSSO()) {
+            // User signing-in through portal should not be shown default OE login screen
+            return $this->render('/sso/sso_login', array('sso_login_url' => Yii::app()->createUrl('sso/login')));
         }
 
         // display the login form
@@ -306,7 +312,7 @@ class SiteController extends BaseController
 
     private function sendVersionInfo($ammoniteURL, $uuid)
     {
-        $updateURL = $ammoniteURL."api/clients/".$uuid."/update";
+        $updateURL = $ammoniteURL . "api/clients/" . $uuid . "/update";
         if (file_exists('/etc/hostname')) {
             $hostname = trim(file_get_contents('/etc/hostname'));
         } else {
@@ -401,7 +407,7 @@ class SiteController extends BaseController
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "PUT",
-            CURLOPT_POSTFIELDS =>$payload,
+            CURLOPT_POSTFIELDS => $payload,
             CURLOPT_HTTPHEADER => array(
                 "Content-Type: application/json"
             ),
@@ -427,7 +433,7 @@ class SiteController extends BaseController
 
     private function registerAPI($ammoniteURL)
     {
-        $url = $ammoniteURL."api/register/";
+        $url = $ammoniteURL . "api/register/";
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

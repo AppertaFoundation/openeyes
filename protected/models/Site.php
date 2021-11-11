@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -24,6 +25,7 @@
  * @property int $id
  * @property string $name
  * @property string $short_name
+ * @property string $fp_10_code
  * @property string $address1
  * @property string $address2
  * @property string $address3
@@ -60,7 +62,7 @@ class Site extends BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.name');
+        return array('order' => $this->getTableAlias(true, false) . '.name');
     }
 
     public function behaviors()
@@ -83,7 +85,7 @@ class Site extends BaseActiveRecordVersioned
             array('name, short_name, remote_id, telephone', 'required'),
             array('name', 'length', 'max' => 255),
             array('remote_id', 'length', 'max' => 10),
-            array('institution_id, name, remote_id, short_name, location_code, fax, telephone, contact_id, replyto_contact_id, source_id, active, logo_id', 'safe'),
+            array('institution_id, name, remote_id, short_name, fp_10_code, location_code, fax, telephone, contact_id, replyto_contact_id, source_id, active, logo_id', 'safe'),
             array('location', 'default', 'value' => ''),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -168,13 +170,13 @@ class Site extends BaseActiveRecordVersioned
 
             if ($institution->short_name && $site->name != 'Unknown') {
                 if ($display_institution === 'On') {
-                    $site_name = $institution->short_name.' at ';
+                    $site_name = $institution->short_name . ' at ';
                 }
             }
             $site_name .= $site->name;
 
             if ($site->location) {
-                $site_name .= ', '.$site->location;
+                $site_name .= ', ' . $site->location;
             }
 
             $result[$site->id] = $site_name;
@@ -206,7 +208,7 @@ class Site extends BaseActiveRecordVersioned
                 if ($display_institution  == 'Off') {
                     return $this->name;
                 } else {
-                    return $this->institution->short_name.' at '.$this->name;
+                    return $this->institution->short_name . ' at ' . $this->name;
                 }
             }
         }
@@ -257,7 +259,7 @@ class Site extends BaseActiveRecordVersioned
 
         $site = $this->findByPk(Yii::app()->session['selected_site_id']);
         if (!$site) {
-            throw new Exception("Site with id '".Yii::app()->session['selected_site_id']."' not found");
+            throw new Exception("Site with id '" . Yii::app()->session['selected_site_id'] . "' not found");
         }
 
         return $site;
@@ -268,7 +270,7 @@ class Site extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->short_name;
     }

@@ -143,68 +143,64 @@ $(document).ready(function() {
         doPrint(e);
     });
 
-        handleButton($('#et_print_labels'),function(e) {
+    handleButton($('#et_print_labels'),function() {
 
         var table = generateTable();
-        var dialogContainer = '<div id="label-print-dialog">'
-                + generateLabelInput()
-                + table.outerHTML
-                +'</div>';
+        var dialogContainer = '<div id="label-print-dialog">' +
+                generateLabelInput() +
+                table.outerHTML +
+                '<button type="button" id="print-label">Print</button>' +
+                '</div>';
 
         var labelDialog = new OpenEyes.UI.Dialog({
             content: dialogContainer,
             title: "Print Labels",
             autoOpen: false,
-            onClose: function() { enableButtons(); },
-            buttons: {
-                "Close" : {
-                    text: "Close",
-                    id: "my-button-id",
-                    click: function(){
-                        $( this ).dialog( "close" );
-                        enableButtons();
-                    }
-                },
-                "Print":{
-                    text: "Print",
-                    id: "my-button-id",
-                    click: function(){
-                        var num = $('#firstLabel').val();
-
-                        if(num > 0){
-                            var data = {'firstLabel':num};
-                            printIFrameUrl(label_print_url, data);
-
-                            iframeId = 'print_content_iframe',
-                            $iframe = $('iframe#print_content_iframe');
-
-                            $iframe.load(function() {
-                                enableButtons();
-                                e.preventDefault();
-
-                                try{
-                                    var PDF = document.getElementById(iframeId);
-                                    PDF.focus();
-                                    PDF.contentWindow.print();
-
-                                } catch (e) {
-                                    alert("Exception thrown: " + e);
-                                }
-
-                            });
-                        } else {
-                            new OpenEyes.UI.Dialog.Alert({
-                                content: 'The value cannot be less than 1'
-                            }).open();
-                        }
-
-                    }
-                }
-
-            }
+            onClose: function() { enableButtons(); }
         });
 
         labelDialog.open();
+
+        const $label_print_btn = document.getElementById('print-label');
+        OpenEyes.UI.DOM.addEventListener($label_print_btn, 'click', null, (e) => {
+            const $label_input = document.getElementById('firstLabel');
+            const num = $label_input.value;
+
+            if (num > 0) {
+                $label_input.style.backgroundColor = "#353333";
+                const $error = document.getElementById('label-print-error');
+                if ($error) {
+                    $error.remove();
+                }
+
+                const data = { 'firstLabel': num };
+                printIFrameUrl(label_print_url, data);
+
+                const iframeId = 'print_content_iframe';
+                const $iframe = $('iframe#print_content_iframe');
+
+                $iframe.load(function() {
+                    enableButtons();
+                    e.preventDefault();
+
+                    try {
+                        const PDF = document.getElementById(iframeId);
+                        PDF.focus();
+                        PDF.contentWindow.print();
+
+                    } catch (e) {
+                        alert("Exception thrown: " + e);
+                    }
+                });
+            } else {
+                $label_input.style.backgroundColor = "#cd0000";
+                const $error = OpenEyes.UI.DOM.createElement('span', { id: 'label-print-error', style: 'color:#ff6565; font-style:italic;margin-left:10px'});
+                const $content = document.createTextNode("The value cannot be less than 1");
+                $error.appendChild($content);
+
+                $label_input.after($error);
+            }
+        });
 
         $('#printLabelPanel tr td').click(function(){
             $('#printLabelPanel tr td').removeClass('active-panel');
@@ -708,15 +704,15 @@ function generateTable(){
     tbl.setAttribute("id", "printLabelPanel");
     var tblBody = document.createElement("tbody");
     var counter = 1;
-    for (var j = 1; j <= 8; j++) {
+    for (let j = 1; j <= 8; j++) {
         // table row creation
-        var row = document.createElement("tr");
+        let row = document.createElement("tr");
 
-        for (var i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 3; i++) {
 
-            var cell = document.createElement("td");
+            let cell = document.createElement("td");
             cell.setAttribute("id", 'labelPanel_'+counter);
-            var cellText = document.createTextNode("Label");
+            let cellText = document.createTextNode("Label");
 
             cell.appendChild(cellText);
             row.appendChild(cell);

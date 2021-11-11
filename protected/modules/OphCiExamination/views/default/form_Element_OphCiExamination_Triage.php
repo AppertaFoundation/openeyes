@@ -23,6 +23,32 @@ use OEModule\OphCiExamination\models\OphCiExamination_Triage_EyeInjury;
 $triage = $element->triage ?: new OphCiExamination_Triage();
 $model_name = CHtml::modelName($element) . "[triage]";
 $priority_list = OphCiExamination_Triage_Priority::model()->findAll();
+
+$display_treat_as_adult = false;
+$display_treat_as_paediatric = false;
+$preselect_treat_as_adult = false;
+
+$age = $this->patient->getAge();
+
+if ($age < 13) {
+    $display_treat_as_paediatric = true;
+} elseif ($age < 16) {
+    $display_treat_as_adult = true;
+    $display_treat_as_paediatric = true;
+} elseif ($age < 18) {
+    $display_treat_as_adult = true;
+    $display_treat_as_paediatric = true;
+    $preselect_treat_as_adult = true;
+} else {
+    $display_treat_as_adult = true;
+    $preselect_treat_as_adult = true;
+}
+
+if (!$element->isNewRecord) {
+    $preselect_treat_as_adult = $element->triage->treat_as_adult;
+}
+
+$treat_as_input_type = $display_treat_as_paediatric && $display_treat_as_adult ? 'radio' : 'hidden';
 ?>
 
 <div class="element-fields full-width">
@@ -43,7 +69,26 @@ $priority_list = OphCiExamination_Triage_Priority::model()->findAll();
                     <th>Treat as</th>
                     <td>
                         <fieldset>
-                            <?= $this->getTriageTreatAsField($element) ?>
+                            <?php
+                            if ($display_treat_as_paediatric) {
+                                ?>
+                                <label class="highlight inline">
+                                    <input value="0" name="<?=$model_name?>[treat_as_adult]" type="<?=$treat_as_input_type?>"<?=!$preselect_treat_as_adult ? 'checked' : '' ?>>
+                                    Paediatric
+                                </label>
+                                <?php
+                            }
+                            ?>
+                            <?php
+                            if ($display_treat_as_adult) {
+                                ?>
+                                <label class="highlight inline">
+                                    <input value="1" name="<?=$model_name?>[treat_as_adult]" type="<?=$treat_as_input_type?>"<?=$preselect_treat_as_adult ? 'checked' : '' ?>>
+                                    Adult
+                                </label>
+                                <?php
+                            }
+                            ?>
                         </fieldset>
                     </td>
                 </tr>
@@ -207,6 +252,14 @@ $eyes = [
                 $('td[data-adder-id="eye_injury_id"]').hide();
             }
         });
+
+       $('input[name="OEModule_OphCiExamination_models_Element_OphCiExamination_Triage[triage][treat_as_adult]"]').change(
+           function() {
+               let treat_as_adult = $(this).val() === "1";
+
+               OphCiExamination_ToggleSafeguardingPaediatricFields(!treat_as_adult);
+           }
+       )
     });
 
     function setEyeLaterality(eye_id) {

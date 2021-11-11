@@ -25,6 +25,7 @@ use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\models\AdviceLeafletEntry;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
+use OEModule\PASAPI\resources\HL7_A03;
 use OEModule\PASAPI\resources\HL7_A08;
 use services\DateTime;
 use OEModule\PatientTicketing\models\QueueOutcome;
@@ -970,7 +971,18 @@ class DefaultController extends \BaseEventTypeController
         // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
         // Change this if it is a different value.
         if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
-            $this->pasCallout($event, 'A08');
+            $clinical_outcome_entry = null;
+            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
+
+            $clinical_outcome = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->find("event_id = ?", array($event->id));
+            if ($clinical_outcome) {
+                $clinical_outcome_entry = \OEModule\OphCiExamination\models\ClinicOutcomeEntry::model()->find("element_id = ? and status_id = ? ", array($clinical_outcome->id, $discharge_status->id));
+            }
+            if ($clinical_outcome_entry) {
+                $this->pasCallout($event, 'A03');
+            } else {
+                $this->pasCallout($event, 'A08');
+            }
         }
     }
 
@@ -980,7 +992,18 @@ class DefaultController extends \BaseEventTypeController
         // This condition is working under the assumption that the subspecialty ref_spec value for A&E is AE.
         // Change this if it is a different value.
         if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
-            $this->pasCallout($event, 'A08');
+            $clinical_outcome_entry = null;
+            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
+
+            $clinical_outcome = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->find("event_id = ?", array($event->id));
+            if ($clinical_outcome) {
+                $clinical_outcome_entry = \OEModule\OphCiExamination\models\ClinicOutcomeEntry::model()->find("element_id = ? and status_id = ? ", array($clinical_outcome->id, $discharge_status->id));
+            }
+            if ($clinical_outcome_entry) {
+                $this->pasCallout($event, 'A03');
+            } else {
+                $this->pasCallout($event, 'A08');
+            }
         }
     }
 
@@ -1007,6 +1030,13 @@ class DefaultController extends \BaseEventTypeController
                 $hl7_a08->setDataFromEvent($event->id);
                 Yii::app()->event->dispatch('emergency_care_update',
                     $hl7_a08
+                );
+                break;
+            case 'A03':
+                $hl7_a03 = new HL7_A03();
+                $hl7_a03->setDataFromEvent($event->id);
+                Yii::app()->event->dispatch('emergency_care_update',
+                    $hl7_a03
                 );
                 break;
         }
@@ -1167,15 +1197,37 @@ class DefaultController extends \BaseEventTypeController
     protected function saveComplexAttributes_AdviceGiven($element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
-        $entries = @$data[$model_name]['leaflet_entries'];
-        AdviceLeafletEntry::model()->deleteAll('element_id=?', array($element->id));
 
-        foreach ($entries as $i => $entry) {
-            $leaflet_entry = new AdviceLeafletEntry();
-            $leaflet_entry->element_id = $element->id;
-            $leaflet_entry->leaflet_id = $entry;
-            $leaflet_entry->display_order = $i + 1;
-            $leaflet_entry->save(true);
+        $entries_by_leaflet_id = [];
+        foreach ($element->leaflet_entries as $entry) {
+            $entries_by_leaflet_id[$entry->id] = $entry->leaflet_id;
+        }
+
+        $posted_leaflet_ids = $data[$model_name]['leaflet_entries'] ?? [];
+
+        foreach ($posted_leaflet_ids as $i => $leaflet_id) {
+            // new entry, save it
+            if (!in_array($leaflet_id, $entries_by_leaflet_id)) {
+                $leaflet_entry = new AdviceLeafletEntry();
+                $leaflet_entry->element_id = $element->id;
+                $leaflet_entry->leaflet_id = $leaflet_id;
+                $leaflet_entry->display_order = $i + 1;
+                $leaflet_entry->save();
+            }
+        }
+
+        // delete all entries not in the POST
+        $leaflets_to_delete = array_diff($entries_by_leaflet_id, $posted_leaflet_ids);
+
+        if ($leaflets_to_delete) {
+            AdviceLeafletEntry::model()->deleteAllByAttributes([
+                'leaflet_id' => $leaflets_to_delete
+            ], 'element_id =:el_id', [':el_id' => $element->id]);
+        } elseif (!$posted_leaflet_ids) {
+            // no leaflet was posted, remove everything
+            AdviceLeafletEntry::model()->deleteAllByAttributes([
+                'element_id' => $element->id
+            ]);
         }
     }
 
@@ -1275,6 +1327,7 @@ class DefaultController extends \BaseEventTypeController
                     $diagnosis->disorder_id = $disorder['disorder_id'];
                     $diagnosis->principal = ($principal_diagnosis_row_key == $disorder['row_key']);
                     $diagnosis->date = isset($disorder['date']) ? $disorder['date'] : null;
+                    $diagnosis->time = $disorder['time'] ?? null;
                     $diagnoses[] = $diagnosis;
                 }
             }
@@ -1787,11 +1840,18 @@ class DefaultController extends \BaseEventTypeController
     {
         $element_data = $data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())];
 
-        if(array_key_exists('accompanying_person_name', $element_data)) {
-            $element->accompanying_person_name = $element_data['accompanying_person_name'];
-        }
-        if(array_key_exists('responsible_parent_name', $element_data)) {
-            $element->responsible_parent_name = $element_data['responsible_parent_name'];
+        if ($data['clear_safeguarding_paediatric_fields']) {
+            $element->has_social_worker = 0;
+            $element->under_protection_plan = 0;
+            $element->accompanying_person_name = null;
+            $element->responsible_parent_name = null;
+        } else {
+            if (array_key_exists('accompanying_person_name', $element_data)) {
+                $element->accompanying_person_name = $element_data['accompanying_person_name'];
+            }
+            if (array_key_exists('responsible_parent_name', $element_data)) {
+                $element->responsible_parent_name = $element_data['responsible_parent_name'];
+            }
         }
 
         $element->save();

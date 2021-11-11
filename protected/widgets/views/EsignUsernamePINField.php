@@ -22,7 +22,7 @@ $el_class = get_class($this->element);
 $widget_class = get_class($this);
 $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
 ?>
-<tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
+<tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>" <?php if(isset($hidden) && $hidden): ?>style="display: none"<?php endif ?>>
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>
@@ -37,7 +37,7 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
             else {
                 echo CHtml::hiddenField(
                     'signatory_id_'.$uid,
-                    '',
+                    $this->signature->signed_user_id ?? "",
                     array('class' => "user-user_id-entry js-user_id-input")
                 );
                 $this->widget('application.widgets.AutoCompleteSearch',array(
@@ -46,6 +46,7 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
                         'class' => 'js-user-autocomplete',
                         'placeholder' => 'Type a name to search',
                         'autocomplete' => 'off',
+                        'value' => $this->signature->signatory_name,
                     )
                 ));
             } ?>
@@ -84,7 +85,8 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
             submitAction: "<?=$this->getAction()?>",
             needUserName: true,
             signature_type: <?= $this->signature->type ?>,
-            element_id: <?= $this->element->id ?? "null" ?>
+            element_id: <?= $this->element->id ?? "null" ?>,
+            mode: "<?= $this->mode ?>"
         });
     });
 </script>

@@ -70,10 +70,12 @@ $this->render(
             'blood_glucose' => '',
             'weight' => '',
             'o2_sat' => '',
+            'rr' => '',
             'hba1c' => '',
             'height' => '',
             'pulse' => '',
             'temperature' => '',
+            'other' => '',
             'taken_at' => '{{taken_at}}',
         ),
     )

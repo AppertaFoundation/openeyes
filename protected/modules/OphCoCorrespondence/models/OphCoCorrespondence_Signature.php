@@ -176,13 +176,8 @@ class OphCoCorrespondence_Signature extends BaseSignature
      */
     public function getPrintout() : string
     {
-        return nl2br(
-            str_replace(
-                OphCoCorrespondence_API::ESIGN_PLACEHOLDER,
-                $this->secretary ? self::LBL_ELECTRONIC_VERIFIED : $this->getSignatureImage(),
-                CHtml::encode($this->getSignatureText())
-            )
-        );
+        return ($this->secretary ? self::LBL_ELECTRONIC_VERIFIED : $this->getSignatureImage())
+            . nl2br(CHtml::encode($this->getSignatureText()));
     }
 
     private function getSignatureImage() : string
@@ -191,7 +186,7 @@ class OphCoCorrespondence_Signature extends BaseSignature
             $data = file_get_contents($thumb["path"]);
             if ($data !== false) {
                 $img = base64_encode($data);
-                return "<img alt=\"Signature\" src=\"data:{$this->signatureFile->mimetype};base64,$img\"/>"."<div>Signed on ".CHtml::encode(date("j M Y, H:i", strtotime($this->last_modified_date)))."</div>";
+                return "<img alt=\"Signature\" src=\"data:{$this->signatureFile->mimetype};base64,$img\"/><br/>";
             }
         }
         // Display nothing in case of failure
@@ -203,5 +198,15 @@ class OphCoCorrespondence_Signature extends BaseSignature
         /** @var OphCoCorrespondence_API $api */
         $api = Yii::app()->moduleAPI->get("OphCoCorrespondence");
         return $api->getFooterText($this->signedUser);
+    }
+
+    /**
+     * Whether the signature should be hidden by default
+     *
+     * @return bool
+     */
+    public function isHidden(): bool
+    {
+        return !$this->isSigned() && $this->signatory_role === Element_OphCoCorrespondence_Esign::SECONDARY_ROLE;
     }
 }

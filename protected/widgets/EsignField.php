@@ -20,6 +20,9 @@ abstract class EsignField extends BaseCWidget
     /** @var string An identifier that is unique within the element */
     public string $row_id;
 
+    /** @var string  */
+    public string $mode;
+
     /** @var BaseSignature The model that holds all information of the signature */
     public BaseSignature $signature;
 

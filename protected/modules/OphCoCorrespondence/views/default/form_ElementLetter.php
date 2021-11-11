@@ -436,7 +436,7 @@ $creating = $creating ?? false;
                             're',
                             array('rows' => 1, 'label' => false, 'nowrapper' => true),
                             empty($_POST) ? strlen($element->re) === 0 : strlen(@$_POST['ElementLetter']['re']) === 0,
-                            array('class' => 'autosize')
+                            array('class' => 'cols-full')
                         ) ?>
                 </td>
             </tr>
@@ -458,7 +458,6 @@ $creating = $creating ?? false;
             <col>
           </colgroup>
           <tbody>
-            <?php if (strlen($element->footer) > 0) : ?>
             <tr>
               <td>From</td>
               <td>
@@ -468,16 +467,13 @@ $creating = $creating ?? false;
                     array('label' => false, 'nowrapper' => true),
                     false,
                     array(
-                        'readonly' => true,
+                        'readonly' => false,
                         'class' => 'correspondence-letter-text autosize',
                         'style' => 'overflow: hidden; overflow-wrap: break-word; height: 54px;'
                     )
                 ) ?>
               </td>
             </tr>
-            <?php else : ?>
-                <?= $form->hiddenField($element, "footer") ?>
-            <?php endif; ?>
             <tr>
                 <td>
                     Enclosures
