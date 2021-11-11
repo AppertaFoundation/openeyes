@@ -3,9 +3,9 @@
   "license": "AGPL-3.0-only",
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
   "require": {
-    "php": "^7.4",
+    "php": "7.4 - 8.0",
     "ext-json": "^7.4",
-    "yiisoft/yii": "1.1.23",
+    "yiisoft/yii": "1.1.24",
     "rlanvin/php-rrule": "2.2.0",
     "endroid/qr-code": "^4.2",
     "setasign/fpdf": "1.8.*",

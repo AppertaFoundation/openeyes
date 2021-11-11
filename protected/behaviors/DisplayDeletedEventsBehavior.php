@@ -8,7 +8,14 @@ class DisplayDeletedEventsBehavior extends CActiveRecordBehavior
     private function canViewDeletedEvents()
     {
         $enabled = intval(SettingMetadata::model()->getSetting('show_deleted_events', null, false, ['SettingInstitution', 'SettingInstallation']));
-        $is_admin = (Yii::app() instanceof CConsoleApplication) ? true : (Yii::app()->user->checkAccess('admin') ? true : (Yii::app()->user->checkAccess('Institution Admin') ? true : false));
+
+        // Can't use CWebUser in console application
+        if(Yii::app() instanceof CConsoleApplication){
+            $is_admin = false;
+        } else {
+            $is_admin = Yii::app()->user->checkAccess('admin') ? true : (Yii::app()->user->checkAccess('Institution Admin') ? true : false);
+        }
+
         if($enabled === self::HIDDEN || (in_array($enabled, array(self::ADMIN_TIMELINE, self::ADMIN_GROUPED)) && (!$is_admin))){
             return 0;
         }

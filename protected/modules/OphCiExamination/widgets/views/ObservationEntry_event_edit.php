@@ -29,10 +29,12 @@ if (!isset($values)) {
         'blood_glucose' => $entry->blood_glucose,
         'weight' => $entry->weight,
         'o2_sat' => $entry->o2_sat,
+        'rr' => $entry->rr,
         'hba1c' => $entry->hba1c,
         'height' => $entry->height,
         'pulse' => $entry->pulse,
         'temperature' => $entry->temperature,
+        'other' => $entry->other,
         'taken_at' => $entry->taken_at,
     );
 }
@@ -144,6 +146,16 @@ if (!isset($values)) {
             </tr>
             <tr>
                 <td>
+                    <label for="<?= CHtml::modelName($entry) . '_rr' ?>">
+                        Respiratory rate (breaths/min)
+                    </label>
+                </td>
+                <td>
+                    <?= CHtml::textField($field_prefix . '[rr]', $values['rr'], ['class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete'], 'tabindex' => '3']) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <label for="<?= CHtml::modelName($entry) . '_hba1c'; ?>">
                         <?= $entry->getAttributeLabel('hba1c') ?> (mmol/mol)
                     </label>
@@ -176,9 +188,10 @@ if (!isset($values)) {
     <div class="cols-4">
         <table class="cols-full">
             <colgroup>
-                <col class="cols-8">
+                <col class="cols-4">
+                <col class="cols-6">
                 <col class="cols-2">
-                <col class="cols-2">                </colgroup>
+            </colgroup>
             <tbody>
             <tr>
                 <td colspan="2">
@@ -205,6 +218,21 @@ if (!isset($values)) {
                     <?= CHtml::textField(
                         $field_prefix . '[temperature]',
                         $values['temperature'],
+                        ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'tabindex' => '7']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="<?= CHtml::modelName($entry) . '_other'?>">
+                        <?= $entry->getAttributeLabel('other') ?>
+                    </label>
+                </td>
+                <td colspan="2">
+                    <?= CHtml::textField(
+                        $field_prefix . '[other]',
+                        $values['other'],
                         ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
                         'tabindex' => '7']
                     ); ?>

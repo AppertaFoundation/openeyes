@@ -129,7 +129,7 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
         return Yii::app()->db->getLastInsertID();
     }
 
-    protected function updateContactSignatory($new_signature_id,$new_contact_id)
+    protected function updateContactSignatory($new_signature_id, $new_contact_id)
     {
         $this->update(self::CONTACT_ASSIGN, [
             'contact_signature_id' => $new_signature_id
@@ -154,7 +154,7 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
                     $new_signature_element_id = $this->createSignatureElementIfNeeded($element);
                     $new_signature_id = $this->addSignature($new_signature_element_id, $old_element_id);
 
-                    $this->updateContactSignatory($new_signature_id,$new_contact_id);
+                    $this->updateContactSignatory($new_signature_id, $new_contact_id);
                 }
             }
         }

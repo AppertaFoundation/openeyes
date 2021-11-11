@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\models as E;
+
 /**
  * Class ImportConfigurationCommand
  */
@@ -29,7 +31,7 @@ This command is able to import OpenEyes configuration from an XLSX files
 The file should be named the name of the institution as it appears in the database
 
 The file should have the following tabs (remove any tabs if you do not want them to be imported):
-|Context|Workflows|Workflow Rules|Allergy Reaction|History Macros|Element Attributes|Element Mapping|Drug Sets|
+|Context|Workflows|Workflow Rules|Allergy Reaction|History Macros|Element Attributes|Element Mapping|Drug Sets|Pupillary Abnormalities|R Pupillary Abnormalities|
 
 The context tab should have the following headers:
 |PAS Code|Context Name|Subspecialty|Consultant|Cost Code|Service Enabled|Context Enabled|Active|
@@ -63,6 +65,14 @@ The drug sets tab should have the following headers:
 |Name  |Hidden|Site       |Usage Code|Subspecialty|Medicine Name|Default Dose|Default Route|Default Frequency|Default Duration|
 |String|Yes/No|String/None|String    |String/None |String       |Number      |String       |String           |String          |
 
+The pupillary abnormalities tab should have the following headers:
+|Name  |Active|
+|String|Yes/No|
+
+The r pupillary abnormalities tab should have the following headers:
+|Name  |Pupillary Abnormality|
+|String|String               |
+
 If you want a value to be Null please include 'Blank' in the cell
 If you want all values then please include 'All' in the cell
 
@@ -86,11 +96,11 @@ EOH;
         $this->spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
 
         $institution = basename($filename, ".xlsx");
-        if (Institution::model()->findByAttributes(array('name' => $institution)) == null) {
+        if (\Institution::model()->findByAttributes(array('name' => $institution)) == null) {
             echo "\033[0;31mError: \033[0m".$institution." is not a valid Institution\n";
             exit(8);
         }
-        $this->institution_id = Institution::model()->findByAttributes(array('name' => $institution))->id;
+        $this->institution_id = \Institution::model()->findByAttributes(array('name' => $institution))->id;
 
         $this->contextImport();
 
@@ -107,6 +117,10 @@ EOH;
         $this->elementMappingImport();
 
         $this->drugSetImport();
+
+        $this->pupillaryAbnormalitiesImport();
+
+        $this->requiredPupillaryAbnormalitiesImport();
 
         echo "\n[" . (date("Y-m-d H:i:s")) . "] Import Configuration finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
@@ -135,30 +149,27 @@ EOH;
             $context_enabled = $row[6];
             $active = $row[7];
 
-            if (Subspecialty::model()->findByAttributes(array('name' => $subspecialty)) == null) {
+            if (\Subspecialty::model()->findByAttributes(array('name' => $subspecialty)) == null) {
                 echo "\033[0;31mError: \033[0m".$subspecialty." is not a valid Subspecialty\n";
                 exit(8);
             }
-            $subspecialty_id = Subspecialty::model()->findByAttributes(array('name' => $subspecialty))->id;
+            $subspecialty_id = \Subspecialty::model()->findByAttributes(array('name' => $subspecialty))->id;
 
-            if (ServiceSubspecialtyAssignment::model()->findByAttributes(array('subspecialty_id' => $subspecialty_id)) == null) {
+            if (\ServiceSubspecialtyAssignment::model()->findByAttributes(array('subspecialty_id' => $subspecialty_id)) == null) {
                 echo "\033[0;31mError: \033[0mThere is no service assigned to ".$subspecialty."\n";
                 exit(8);
             }
-            $service_subspecialty_assignment_id = ServiceSubspecialtyAssignment::model()->findByAttributes(array('subspecialty_id' => $subspecialty_id))->id;
+            $service_subspecialty_assignment_id = \ServiceSubspecialtyAssignment::model()->findByAttributes(array('subspecialty_id' => $subspecialty_id))->id;
 
             if ($consultant != "Blank") {
-                if (User::model()->findByAttributes(array('first_name' => $consultant)) == null) {
+                if (\User::model()->findByAttributes(array('first_name' => $consultant)) == null) {
                     echo "\033[0;31mError: \033[0m".$user." is not a valid consultant\n";
                     exit(8);
                 }
-                $consultant_id = User::model()->findByAttributes(array('first_name' => $consultant))->id;
+                $consultant_id = \User::model()->findByAttributes(array('first_name' => $consultant))->id;
             }
 
-            $firm = null;
-
-            (\Firm::model()->findByAttributes(array('name'=>$context_name)) == null) ? $firm = new \Firm : $firm = \Firm::model()->findByAttributes(array('name'=>$context_name));
-
+            $firm = \Firm::model()->findByAttributes(array('name'=>$context_name)) ?? new \Firm;
             $firm->pas_code = ($pas_code == "Blank") ? null : $pas_code;
             $firm->name = ($context_name == "Blank") ? null : $context_name;
             $firm->institution_id = $this->institution_id;
@@ -188,23 +199,23 @@ EOH;
         $workflow_criteria = new CDbCriteria();
         $workflow_criteria->addInCondition('workflow_id', $old_workflows);
         $step_ids = array();
-        foreach (OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findAll($workflow_criteria) as $step) {
+        foreach (E\OphCiExamination_ElementSet::model()->findAll($workflow_criteria) as $step) {
             $step_ids[] = $step->id;
         }
         if (!empty($step_ids)) {
             $setitem_criteria = new CDbCriteria();
             $setitem_criteria->addInCondition('set_id', $step_ids);
 
-            OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem::model()->deleteAll($setitem_criteria);
+            E\OphCiExamination_ElementSetItem::model()->deleteAll($setitem_criteria);
             $event_stepitem_criteria = new CDbCriteria();
             $event_stepitem_criteria->addInCondition('step_id', $step_ids);
-            OEModule\OphCiExamination\models\OphCiExamination_Event_ElementSet_Assignment::model()->deleteAll($event_stepitem_criteria);
+            E\OphCiExamination_Event_ElementSet_Assignment::model()->deleteAll($event_stepitem_criteria);
         }
-        OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->deleteAll($workflow_criteria);
-        OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->deleteAll($workflow_criteria);
+        E\OphCiExamination_ElementSet::model()->deleteAll($workflow_criteria);
+        E\OphCiExamination_Workflow_Rule::model()->deleteAll($workflow_criteria);
         $workflow = new CDbCriteria();
         $workflow->addInCondition('id', $old_workflows);
-        OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->deleteAll($workflow);
+        E\OphCiExamination_Workflow::model()->deleteAll($workflow);
 
         foreach ($this->spreadsheet->getSheetByName('Workflows')->toArray() as $index => $row) {
             // Skipping header
@@ -220,26 +231,26 @@ EOH;
 
             // Adding workflow
             $workflow_id = null;
-            if (OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findByAttributes(array('name' => $workflow_name, 'institution_id' => $this->institution_id)) == null) {
-                $workflow = new OEModule\OphCiExamination\models\OphCiExamination_Workflow;
+            if (E\OphCiExamination_Workflow::model()->findByAttributes(array('name' => $workflow_name, 'institution_id' => $this->institution_id)) == null) {
+                $workflow = new E\OphCiExamination_Workflow;
                 $workflow->name = ($workflow_name == "Blank") ? null : $workflow_name;
                 $workflow->institution_id = $this->institution_id;
                 $workflow->save(false);
                 $workflow_id = $workflow->id;
             } else {
-                $workflow_id = OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findByAttributes(array('name' => $workflow_name, 'institution_id' => $this->institution_id))->id;
+                $workflow_id = E\OphCiExamination_Workflow::model()->findByAttributes(array('name' => $workflow_name, 'institution_id' => $this->institution_id))->id;
             }
 
             // Adding element set
             $set_id = null;
-            if (OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findByAttributes(array('name'=>$step, 'workflow_id'=>$workflow_id)) == null) {
-                $element_set = new OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
+            if (E\OphCiExamination_ElementSet::model()->findByAttributes(array('name'=>$step, 'workflow_id'=>$workflow_id)) == null) {
+                $element_set = new E\OphCiExamination_ElementSet;
                 $element_set->name = ($step == "Blank") ? null : $step;
                 $element_set->workflow_id = $workflow_id;
                 $element_set->save(false);
                 $set_id = $element_set->id;
             } else {
-                $set_id = OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findByAttributes(array('name'=>$step, 'workflow_id'=>$workflow_id))->id;
+                $set_id = E\OphCiExamination_ElementSet::model()->findByAttributes(array('name'=>$step, 'workflow_id'=>$workflow_id))->id;
             }
 
             // These worklfows should only be added to examination
@@ -252,7 +263,7 @@ EOH;
             $element_id = \ElementType::model()->findByAttributes(array('name' => $element, 'event_type_id' => $event_type_id))->id;
 
             // Adding element set item
-            $element_set_item = new OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem;
+            $element_set_item = new E\OphCiExamination_ElementSetItem;
             $element_set_item->set_id = ($set_id == "Blank") ? null : $set_id;
             $element_set_item->element_type_id = $element_id;
             $element_set_item->display_order = ($order == "Blank") ? null : $order;
@@ -289,11 +300,11 @@ EOH;
             }
             $subspecialty_id = ($subspecialty == "All") ? null : \Subspecialty::model()->findByAttributes(array('name' => $subspecialty))->id;
 
-            if (OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findByAttributes(array('name' => $workflow)) == null) {
+            if (E\OphCiExamination_Workflow::model()->findByAttributes(array('name' => $workflow)) == null) {
                 echo "\033[0;31mError: \033[0m".$workflow." is not a valid workflow\n";
                 exit(8);
             }
-            $workflow_id = OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findByAttributes(array('name' => $workflow))->id;
+            $workflow_id = E\OphCiExamination_Workflow::model()->findByAttributes(array('name' => $workflow))->id;
 
             if ($episode != "All" && \EpisodeStatus::model()->findByAttributes(array('name' => $episode)) == null) {
                 echo "\033[0;31mError: \033[0m".$episode." is not a valid episode status\n";
@@ -307,7 +318,7 @@ EOH;
             }
             $firm_id = ($context == "All") ? null : \Firm::model()->findByAttributes(array('name' => $context))->id;
 
-            $workflow_rule = new OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule;
+            $workflow_rule = new E\OphCiExamination_Workflow_Rule;
             $workflow_rule->workflow_id = $workflow_id;
             $workflow_rule->subspecialty_id = $subspecialty_id;
             $workflow_rule->firm_id = $firm_id;
@@ -335,8 +346,8 @@ EOH;
 
             $name = $row[0];
 
-            if (OphCiExaminationAllergyReaction::model()->findByAttributes(array('name'=>$name)) == null) {
-                $allergy_reaction = new OphCiExaminationAllergyReaction;
+            if (\OphCiExaminationAllergyReaction::model()->findByAttributes(array('name'=>$name)) == null) {
+                $allergy_reaction = new \OphCiExaminationAllergyReaction;
                 $allergy_reaction->name = $name;
                 $allergy_reaction->save(false);
             }
@@ -370,10 +381,7 @@ EOH;
             }
             $subspecialty_id = \Subspecialty::model()->findByAttributes(array('name' => $subspecialty))->id;
 
-            $history_macro = null;
-
-            (OEModule\OphCiExamination\models\HistoryMacro::model()->findByAttributes(array('name'=>$name)) == null) ? $history_macro = new OEModule\OphCiExamination\models\HistoryMacro : $history_macro = OEModule\OphCiExamination\models\HistoryMacro::model()->findByAttributes(array('name'=>$name));
-
+            $history_macro = E\HistoryMacro::model()->findByAttributes(array('name'=>$name)) ?? new E\HistoryMacro;
             $history_macro->name = $name;
             $history_macro->body = $body;
             $history_macro->active = 1;
@@ -381,8 +389,8 @@ EOH;
 
             $history_macro_id = $history_macro->id;
 
-            if (OEModule\OphCiExamination\models\HistoryMacro_Subspecialty::model()->findByAttributes(array('history_macro_id' => $history_macro_id, 'subspecialty_id' => $subspecialty_id)) == null) {
-                $history_macro_subspecialty = new OEModule\OphCiExamination\models\HistoryMacro_Subspecialty;
+            if (E\HistoryMacro_Subspecialty::model()->findByAttributes(array('history_macro_id' => $history_macro_id, 'subspecialty_id' => $subspecialty_id)) == null) {
+                $history_macro_subspecialty = new E\HistoryMacro_Subspecialty;
                 $history_macro_subspecialty->history_macro_id = $history_macro_id;
                 $history_macro_subspecialty->subspecialty_id = $subspecialty_id;
                 $history_macro_subspecialty->save(false);
@@ -418,22 +426,19 @@ EOH;
             }
             $element_id = \ElementType::model()->findByAttributes(array('name' => $element))->id;
 
-            $attribute_id = null;
+            $attribute = E\OphCiExamination_Attribute::model()->findByAttributes(array('name'=>$name, 'label'=>$label)) ?? new E\OphCiExamination_Attribute;
+            $attribute->name = $name;
+            $attribute->label = $label;
+            $attribute->is_multiselect = ($multiselect == "Yes") ? 1 : 0;
+            $attribute->institution_id = $this->institution_id;
+            $attribute->save(false);
+            $attribute_id = $attribute->id;
 
-            if (OEModule\OphCiExamination\models\OphCiExamination_Attribute::model()->findByAttributes(array('name'=>$name, 'label'=>$label, 'institution_id'=>$this->institution_id)) == null) {
-                $attribute = new OEModule\OphCiExamination\models\OphCiExamination_Attribute;
-                $attribute->name = $name;
-                $attribute->label = $label;
-                $attribute->is_multiselect = ($multiselect == "Yes") ? 1 : 0;
-                $attribute->institution_id = $this->institution_id;
-                $attribute->save(false);
-                $attribute_id = $attribute->id;
-            } else {
-                $attribute_id = OEModule\OphCiExamination\models\OphCiExamination_Attribute::model()->findByAttributes(array('name'=>$name, 'label'=>$label, 'institution_id'=>$this->institution_id))->id;
-            }
+            //Deleting all mappings for this attribute as they will be imported in the mappings import
+            E\OphCiExamination_AttributeOption::model()->deleteAll('attribute_element_id=:attribute_element_id', array(':attribute_element_id'=>$attribute_id));
 
-            if (OEModule\OphCiExamination\models\OphCiExamination_AttributeElement::model()->findByAttributes(array('attribute_id'=>$attribute_id, 'element_type_id'=>$element_id)) == null) {
-                $attribute_element = new OEModule\OphCiExamination\models\OphCiExamination_AttributeElement;
+            if (E\OphCiExamination_AttributeElement::model()->findByAttributes(array('attribute_id'=>$attribute_id, 'element_type_id'=>$element_id)) == null) {
+                $attribute_element = new E\OphCiExamination_AttributeElement;
                 $attribute_element->attribute_id = $attribute_id;
                 $attribute_element->element_type_id = $element_id;
                 $attribute_element->save(false);
@@ -464,11 +469,11 @@ EOH;
             $subspecialty = $row[3];
             $exclusions = explode(",", $row[4]);
 
-            if (OEModule\OphCiExamination\models\OphCiExamination_Attribute::model()->findByAttributes(array('label' => $label, 'institution_id' => $this->institution_id)) == null) {
+            if (E\OphCiExamination_Attribute::model()->findByAttributes(array('label' => $label, 'institution_id' => $this->institution_id)) == null) {
                 echo "\033[0;31mError: \033[0m".$label." is not a valid attribute label\n";
                 exit(8);
             }
-            $attribute_element_id = OEModule\OphCiExamination\models\OphCiExamination_Attribute::model()->findByAttributes(array('label' => $label, 'institution_id' => $this->institution_id))->id;
+            $attribute_element_id = E\OphCiExamination_Attribute::model()->findByAttributes(array('label' => $label, 'institution_id' => $this->institution_id))->id;
 
             if ($subspecialty != "All" && \Subspecialty::model()->findByAttributes(array('name' => $subspecialty)) == null) {
                 echo "\033[0;31mError: \033[0m".$subspecialty." is not a valid subspecialty\n";
@@ -476,10 +481,7 @@ EOH;
             }
             $subspecialty_id = ($subspecialty == "All") ? null : \Subspecialty::model()->findByAttributes(array('name' => $subspecialty))->id;
 
-            $element_mapping = null;
-
-            (OEModule\OphCiExamination\models\OphCiExamination_AttributeOption::model()->findByAttributes(array('subspecialty_id'=>$subspecialty_id, 'attribute_element_id'=>$attribute_element_id, 'display_order'=>$order)) == null) ? $element_mapping = new OEModule\OphCiExamination\models\OphCiExamination_AttributeOption : $element_mapping = OEModule\OphCiExamination\models\OphCiExamination_AttributeOption::model()->findByAttributes(array('subspecialty_id'=>$subspecialty_id, 'attribute_element_id'=>$attribute_element_id, 'display_order'=>$order));
-
+            $element_mapping = E\OphCiExamination_AttributeOption::model()->findByAttributes(array('subspecialty_id'=>$subspecialty_id, 'attribute_element_id'=>$attribute_element_id, 'display_order'=>$order)) ?? new E\OphCiExamination_AttributeOption;
             $element_mapping->value = $value;
             $element_mapping->subspecialty_id = $subspecialty_id;
             $element_mapping->attribute_element_id = $attribute_element_id;
@@ -532,10 +534,7 @@ EOH;
             $default_frequency = $row[8];
             $default_duration = $row[9];
 
-            $drug_set = null;
-
-            (\MedicationSet::model()->findByAttributes(array('name'=>$name)) == null) ? $drug_set = new \MedicationSet : $drug_set = \MedicationSet::model()->findByAttributes(array('name'=>$name));
-
+            $drug_set = \MedicationSet::model()->findByAttributes(array('name'=>$name)) ?? new \MedicationSet;
             $drug_set->name = $name;
             $drug_set->hidden = ($hidden == "Yes") ? 1 : 0;
             $drug_set->automatic = 1;
@@ -543,7 +542,7 @@ EOH;
 
             $drug_set_id = $drug_set->id;
 
-            if ($site != "None" && Site::model()->findByAttributes(array('name' => $site)) == null) {
+            if ($site != "None" && \Site::model()->findByAttributes(array('name' => $site)) == null) {
                 echo "\033[0;31mError: \033[0m".$site." is not a valid Site\n";
                 exit(8);
             }
@@ -561,10 +560,7 @@ EOH;
             }
             $usage_code_id = ($usage_code == "None") ? null : \MedicationUsageCode::model()->findByAttributes(array('name' => $usage_code))->id;
 
-            $drug_set_rule = null;
-
-            (\MedicationSetRule::model()->findByAttributes(array('medication_set_id'=>$drug_set_id, 'subspecialty_id'=>$subspecialty_id, 'site_id'=>$site_id, 'usage_code_id'=>$usage_code_id)) == null) ? $drug_set_rule = new \MedicationSetRule : $drug_set_rule = \MedicationSetRule::model()->findByAttributes(array('medication_set_id'=>$drug_set_id, 'subspecialty_id'=>$subspecialty_id, 'site_id'=>$site_id, 'usage_code_id'=>$usage_code_id));
-
+            $drug_set_rule = \MedicationSetRule::model()->findByAttributes(array('medication_set_id'=>$drug_set_id, 'subspecialty_id'=>$subspecialty_id, 'site_id'=>$site_id, 'usage_code_id'=>$usage_code_id)) ?? new \MedicationSetRule;
             $drug_set_rule->medication_set_id = $drug_set_id;
             $drug_set_rule->subspecialty_id = $subspecialty_id;
             $drug_set_rule->site_id = $site_id;
@@ -611,5 +607,78 @@ EOH;
         // Rebuilding all sets
         \MedicationSet::populateAutoSets();
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Drug Set Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
+    }
+
+    public function pupillaryAbnormalitiesImport()
+    {
+        if ($this->spreadsheet->getSheetByName('Pupillary Abnormalities') == null) {
+            echo "\n\t Skipping Pupillary Abnormalities Import ... \n";
+            return;
+        }
+
+        $t = microtime(true);
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Pupillary Abnormalities Import started ... \n";
+
+        foreach ($this->spreadsheet->getSheetByName('Pupillary Abnormalities')->toArray() as $index => $row) {
+            // Skipping header
+            if ($index == 0) {
+                continue;
+            }
+
+            $name = $row[0];
+            $active = ($row[1] == "Yes") ? 1 : 0;
+
+            $pupillary_abnormality = E\OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findByAttributes(array('name'=>$name)) ?? new E\OphCiExamination_PupillaryAbnormalities_Abnormality;
+            $pupillary_abnormality->name = $name;
+            $pupillary_abnormality->active = $active;
+            $pupillary_abnormality->save(false);
+        }
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Pupillary Abnormalities Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
+    }
+
+    public function requiredPupillaryAbnormalitiesImport()
+    {
+        if ($this->spreadsheet->getSheetByName('R Pupillary Abnormalities') == null) {
+            echo "\n\t Skipping Required Pupillary Abnormalities Import ... \n";
+            return;
+        }
+
+        $t = microtime(true);
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Required Pupillary Abnormalities Import started ... \n";
+
+        foreach ($this->spreadsheet->getSheetByName('R Pupillary Abnormalities')->toArray() as $index => $row) {
+            // Skipping header
+            if ($index == 0) {
+                continue;
+            }
+
+            $name = $row[0];
+            $pupillary_abnormality = $row[1];
+
+            $pupillary_abnormality_set_id=null;
+
+            if (E\OphCiExaminationPupillaryAbnormalitySet::model()->findByAttributes(array('name'=>$name, 'institution_id'=>$this->institution_id)) == null) {
+                $pupillary_abnormality_set = new E\OphCiExaminationPupillaryAbnormalitySet;
+                $pupillary_abnormality_set->name = $name;
+                $pupillary_abnormality_set->institution_id = $this->institution_id;
+                $pupillary_abnormality_set->save(false);
+
+                $pupillary_abnormality_set_id = $pupillary_abnormality_set->id;
+            } else {
+                $pupillary_abnormality_set_id = E\OphCiExaminationPupillaryAbnormalitySet::model()->findByAttributes(array('name'=>$name, 'institution_id'=>$this->institution_id))->id;
+            }
+
+            if (E\OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findByAttributes(array('name' => $pupillary_abnormality)) == null) {
+                echo "\033[0;31mError: \033[0m".$pupillary_abnormality." is not a valid Pupillary Abnormality\n";
+                exit(8);
+            }
+            $pupillary_abnormality_id = E\OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findByAttributes(array('name' => $pupillary_abnormality))->id;
+
+            $pupillary_abnormality_set_entry = E\OphCiExaminationPupillaryAbnormalitySetEntry::model()->findByAttributes(array('ophciexamination_abnormality_id'=>$pupillary_abnormality_id, 'set_id'=>$pupillary_abnormality_set_id)) ?? new E\OphCiExaminationPupillaryAbnormalitySetEntry;
+            $pupillary_abnormality_set_entry->ophciexamination_abnormality_id = $pupillary_abnormality_id;
+            $pupillary_abnormality_set_entry->set_id = $pupillary_abnormality_set_id;
+            $pupillary_abnormality_set_entry->save(false);
+        }
+        echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Required Pupillary Abnormalities Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
 }

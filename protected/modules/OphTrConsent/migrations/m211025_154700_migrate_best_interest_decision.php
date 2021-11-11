@@ -36,7 +36,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET reason_for_procedure = circumstances WHERE circumstances IS NOT NULL AND reason_for_procedure IS NULL;");
 
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = circumstances WHERE circumstances IS NOT NULL AND reason_for_procedure IS NULL;");
-            
+
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), decision) WHERE decision IS NOT NULL AND reason_for_procedure IS NOT NULL;");
 
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = concat(reason_for_procedure, CHAR(10), decision) WHERE decision IS NOT NULL AND reason_for_procedure IS NOT NULL;");
@@ -46,11 +46,11 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
             $this->execute("UPDATE et_ophtrconsent_best_interest_decision_version SET reason_for_procedure = decision WHERE decision IS NOT NULL AND reason_for_procedure IS NULL;");
 
             //Create Capacity Advocat elements
-            if($this->dbConnection->schema->getTable('et_ophtrconsent_medical_capacity_advocate', true) !== null) {
+            if ($this->dbConnection->schema->getTable('et_ophtrconsent_medical_capacity_advocate', true) !== null) {
                 $query_advocate = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_medical_capacity_advocate')->query();
-                if($query_advocate->rowCount == 0) {
+                if ($query_advocate->rowCount == 0) {
                     $capacity_advocate_instructed_yes_id = $this->dbConnection->createCommand('SELECT id FROM ophtrconsent_medical_capacity_advocate_instructed WHERE `name` = "Yes"')->queryScalar();
-                    
+
                     $capacity_advocate_yes = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision WHERE imca_view IS NOT NULL AND imca_view != ""')->queryAll();
 
                     $this->insertMultiple('et_ophtrconsent_medical_capacity_advocate', array_map(
@@ -69,7 +69,7 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                     ));
 
                     $capacity_advocate_instructed_no_id = $this->dbConnection->createCommand('SELECT id FROM ophtrconsent_medical_capacity_advocate_instructed WHERE `name` = "N/A"')->queryScalar();
-                    
+
                     $capacity_advocate_no = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision WHERE imca_view IS NULL OR imca_view = ""')->queryAll();
 
                     $this->insertMultiple('et_ophtrconsent_medical_capacity_advocate', array_map(
@@ -91,10 +91,10 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
 
 
             //Create Patient Deputy elements
-            if($this->dbConnection->schema->getTable('et_ophtrconsent_patient_attorney_deputy', true) !== null && $this->dbConnection->schema->getTable('ophtrconsent_patient_attorney_deputy_contact', true) !== null) {
+            if ($this->dbConnection->schema->getTable('et_ophtrconsent_patient_attorney_deputy', true) !== null && $this->dbConnection->schema->getTable('ophtrconsent_patient_attorney_deputy_contact', true) !== null) {
                 $query_deputy = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision')->queryAll();
-                    
-                // Create deputy element 
+
+                // Create deputy element
                 $this->insertMultiple('et_ophtrconsent_patient_attorney_deputy', array_map(
                     static function ($record) {
                         return array(
@@ -110,16 +110,16 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                 ));
 
                 $query_deputy_yes = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision WHERE deputy_granted = 1')->query();
-                if($query_deputy_yes->rowCount != 0) {
+                if ($query_deputy_yes->rowCount != 0) {
                     $power_of_attorney_contact_label_id = $this->dbConnection->createCommand('SELECT id FROM contact_label WHERE `name` = "Power of Attorney"')->queryScalar();
-                    
+
                     $deputy_signature = $this->dbConnection->createCommand('SELECT * FROM et_ophtrconsent_best_interest_decision_deputy_signature')->queryAll();
 
                     //Add deputy contact if there is a signature
-                    $this->insertMultiple('contact', 
+                    $this->insertMultiple('contact',
                         $new_contacts = array_map(
                             static function ($record) use ($power_of_attorney_contact_label_id) {
-                                $space_pos = strrpos($record['signatory_name']," ");
+                                $space_pos = strrpos($record['signatory_name'], " ");
 
                                 return array(
                                     'event_id' => $record['event_id'],
@@ -145,9 +145,9 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                     $first_contact_id = $this->dbConnection->getLastInsertID();
                     $row_count = 0;
 
-                    foreach($new_contacts as $key => $new_contact) {
+                    foreach ($new_contacts as $key => $new_contact) {
                         $episode_id = $this->dbConnection->createCommand('SELECT episode_id FROM `event` WHERE id = ' . $new_contact['event_id'])->queryScalar();
-                            
+
                         $patient_id = $this->dbConnection->createCommand('SELECT patient_id FROM episode WHERE id = ' . $episode_id)->queryScalar();
 
                         $new_contacts[$key]['patient_id'] = $patient_id;
@@ -157,9 +157,9 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                         $row_count++;
                     }
 
-                    if($this->dbConnection->schema->getTable('ophtrconsent_authorised_decision', true) !== null && $this->dbConnection->schema->getTable('ophtrconsent_considered_decision', true) !== null) {
+                    if ($this->dbConnection->schema->getTable('ophtrconsent_authorised_decision', true) !== null && $this->dbConnection->schema->getTable('ophtrconsent_considered_decision', true) !== null) {
                         $authorised_decision_id = $this->dbConnection->createCommand('SELECT id FROM ophtrconsent_authorised_decision WHERE name = "under a Lasting Power  of Attorney."')->queryScalar();
-                        
+
                         $considered_decision_id = $this->dbConnection->createCommand('SELECT id FROM ophtrconsent_considered_decision WHERE name = "Yes"')->queryScalar();
 
                         $this->insertMultiple('ophtrconsent_patient_attorney_deputy_contact', array_map(
@@ -175,7 +175,6 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                             $new_contacts
                         ));
                     }
-
                 }
             }
 
@@ -199,7 +198,6 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
                             DROP COLUMN IF EXISTS views_of_colleagues,
                             DROP COLUMN IF EXISTS no_decision_made');
         }
-
     }
 
     public function safeDown()
@@ -207,6 +205,4 @@ class m211025_154700_migrate_best_interest_decision extends OEMigration
         echo "m211025_154700_migrate_old_best_interest_decision_element does not support migration down.\n";
         return true;
     }
-
-
 }

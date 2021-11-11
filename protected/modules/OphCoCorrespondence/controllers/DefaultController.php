@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -219,7 +220,7 @@ class DefaultController extends BaseEventTypeController
                 $cc['targets'][] = '<input type="hidden" name="CC_Targets[]" value="Patient' . $patient->id . '" />';
             } else {
                 $data['alert'] = 'Letters to the '
-                    . \SettingMetadata::model()->getSetting('gp_label')." should be cc'd to the patient, but this patient does not have a valid address.";
+                    . \SettingMetadata::model()->getSetting('gp_label') . " should be cc'd to the patient, but this patient does not have a valid address.";
             }
         }
 
@@ -474,9 +475,11 @@ class DefaultController extends BaseEventTypeController
         $recipients = array();
 
         // after "Save and Print" button clicked we only print out what the user checked
-        if (!$is_view
+        if (
+            !$is_view
             && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== '1')
-            && Yii::app()->user->getState('correspondece_element_letter_saved', true)) {
+            && Yii::app()->user->getState('correspondece_element_letter_saved', true)
+        ) {
             if ($letter->document_instance) {
                 // check if the first recipient is GP
                 $document_instance = $letter->document_instance[0];
@@ -979,7 +982,7 @@ class DefaultController extends BaseEventTypeController
             $pdf_path = $this->getPdfPath($event, "event_{$event->id}.pdf");
             if (!file_exists($pdf_path)) {
                 if (!is_dir($event->imageDirectory)) {
-                    mkdir($event->imageDirectory, 0775, true);
+                    mkdir($event->imageDirectory, 0774, true);
                 }
                 $pdf_path = $this->generatePDF($event, true);
             }

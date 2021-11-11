@@ -22,6 +22,7 @@ function ComplianceCalculator(elem, properties) {
     this._side = properties.side;
     this._nodes = {};
     this._nodes_by_parent = {};
+    this._base_values = {};
 
     this.init()
 }
@@ -51,6 +52,10 @@ ComplianceCalculator.prototype.init = function() {
 
     self.showNode(self._root_node_id);
 };
+
+ComplianceCalculator.prototype.setVABaseValues = function(values) {
+    this._base_values = values;
+}
 
 /*
  * internal method to show the appropriate outcome and set the form value when an outcome is reached
@@ -185,18 +190,25 @@ ComplianceCalculator.prototype.checkNode = function(node_id) {
  * @returns int
  */
 ComplianceCalculator.prototype.getComparisonValue = function(node_id, value) {
-    var return_val = value;
     if (this._nodes[node_id]['data-type'] == 'va') {
-        // mock up a base value so that comparison operators can work
-        return_val = this._elem.find('#' + this._side + '_node_' + node_id).find('select option').length;
-        this._elem.find('#' + this._side + '_node_' + node_id).find('select option').each(function() {
-            if (value == $(this).val()) {
-                return false;
-            }
-            return_val--;
-        });
+        if (this._base_values) {
+            const result = this._base_values[value];
+
+            return result ? result : false;
+        } else {
+            // mock up a base value so that comparison operators can work
+            const values_list = this._elem.find(`#${this._side}_node_${node_id}`)
+                .find('select option')
+                .map(function() { return $(this).val() })
+                .get();
+
+            const result = values_list.indexOf(value);
+
+            return result !== -1 ? result : false;
+        }
+    } else {
+        return value;
     }
-    return return_val;
 }
 
 /*
@@ -256,6 +268,16 @@ function OphCoTherapyapplication_ComplianceCalculator_init(side) {
     calc_obj = new ComplianceCalculator($('#OphCoTherapyapplication_ComplianceCalculator_' + side), { 'side': side });
     $('#OphCoTherapyapplication_ComplianceCalculator_' + side).data('calc_obj', calc_obj);
     calc_obj.update();
+
+    // Populate the base values
+    $.ajax({
+        'type': 'GET',
+        'url': 'getVABaseValues',
+        'success': function(data) {
+            let values = JSON.parse(data);
+            OphCoTherapyapplication_ComplianceCalculator_set_va_base_values(side, values);
+        }
+    })
 }
 
 /*
@@ -268,6 +290,16 @@ function OphCoTherapyapplication_ComplianceCalculator_update(elem) {
     var side = node.closest('.js-element-eye').data('side');
 
     $('#OphCoTherapyapplication_ComplianceCalculator_' + side).data('calc_obj').update(id);
+}
+
+/*
+ * Should be called when the decision tree form changes. The form element that has changed
+ * is used to then tell the ComplianceCalculator for the tree what point it should update from.
+ */
+function OphCoTherapyapplication_ComplianceCalculator_set_va_base_values(side, values) {
+    let calc = $('#OphCoTherapyapplication_ComplianceCalculator_' + side).data('calc_obj');
+
+    calc.setVABaseValues(values);
 }
 
 /*
@@ -388,15 +420,23 @@ function OphCoTherapyapplication_ExceptionalCircumstances_check(side) {
     if (compliant != null && !compliant) {
         showSplitElementSide('Element_OphCoTherapyapplication_ExceptionalCircumstances', side);
         // enable form elements (in case this is the first side to be shown)
-        $('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('input, select, textarea').each(function() { $(this).removeAttr('disabled') });
-    } else {
+		$('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('input, select, textarea').each(function () {
+			$(this).removeAttr('disabled')
+		});
+	} else {
         hideSplitElementSide('Element_OphCoTherapyapplication_ExceptionalCircumstances', side);
-        // Disable all form elements on non visible forms
-        $('.Element_OphCoTherapyapplication_ExceptionalCircumstances')
-            .find('div.js-element-eye.' + display_side)
-            .find('.active-form:hidden')
-            .find('input, select, textarea')
-            .attr('disabled', 'disabled');
+		// check if the other side is visible
+		// if it isn't disable the form elements
+
+		if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances')
+			.find('div.js-element-eye.' + side)
+			.find('.active-form:hidden').length > 0) {
+			$('.Element_OphCoTherapyapplication_ExceptionalCircumstances')
+				.find('input, select, textarea')
+				.each(function () {
+					$(this).attr('disabled', 'disabled');
+				});
+		}
     }
 }
 

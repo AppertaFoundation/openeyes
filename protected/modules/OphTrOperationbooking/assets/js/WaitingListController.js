@@ -180,7 +180,7 @@ function print_items_from_selector(sel, all) {
     }
   } else {
     show_letter_warnings(nogp);
-    printIFrameUrl(baseUrl + '/OphTrOperationbooking/waitingList/printLetters', {'operations': operations, 'all': all});
+    printIFrameUrl(baseUrl + '/OphTrOperationbooking/waitingList/printLettersPdf', {'operations': operations, 'all': all});
   }
 }
 

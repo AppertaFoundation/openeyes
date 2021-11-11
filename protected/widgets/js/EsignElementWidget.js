@@ -27,6 +27,7 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     EsignElementWidget.prototype.create = function ()
     {
         this.$connectDeviceBtn = this.$element.find(".js-connect-device");
+        this.$addSecondaryBtn = this.$element.find(".js-add-secondary");
         this.bindEvents();
         this.renumber();
     };
@@ -47,6 +48,12 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
             });
             dlg.open();
         });
+        if(this.$addSecondaryBtn.length > 0) {
+            this.$addSecondaryBtn.click(function () {
+                widget.$element.find("tr:hidden").show();
+                widget.$addSecondaryBtn.hide();
+            });
+        }
     };
 
     EsignElementWidget.prototype.renumber = function ()

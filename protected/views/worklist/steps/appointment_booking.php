@@ -11,12 +11,12 @@ $is_config = (int)$step->status === PathwayStep::STEP_CONFIG;
 $selected_site = Site::model()->findByPk($step->getState('site_id'));
 $selected_service = Subspecialty::model()->findByPk($step->getState('service_id'));
 $selected_context = Firm::model()->findByPk($step->getState('firm_id'));
-$selected_duration_value = $step->getState('duration_value');
-$selected_duration_period = $step->getState('duration_period');
+$selected_duration_value = ($step->getState('duration_value') || $step->getState('duration_value') != 0) ? $step->getState('duration_value') : 'N/A';
+$selected_duration_period = ($step->getState('duration_value') !== 'N/A') ? $step->getState('duration_period') : ''; //No point in showing period if value has not been selected at all
 
 $sites_list = Site::model()->getListForCurrentInstitution('name');
 $services_list = CHtml::listData(Subspecialty::model()->with(['serviceSubspecialtyAssignment' => ['with' => 'firms']])->findAll('firms.active = 1'), 'id', 'name');
-$contexts_list = Firm::model()->getList(Yii::app()->session['selected_institution_id'], $selected_service->id);
+$contexts_list = Firm::model()->getList(Yii::app()->session['selected_institution_id'], $selected_service ?$selected_service->id : null);
 $structured_list = json_encode(NewEventDialogHelper::structureAllSubspecialties(), JSON_THROW_ON_ERROR);
 $duration_values = array_combine(range(1, 18), range(1, 18));
 $duration_period = [
@@ -47,9 +47,9 @@ $duration_period = [
                     <th>Site</th>
                     <td>
                         <?php if ($is_config) {
-                            echo CHtml::dropDownList('site_id', $selected_site->id, $sites_list, ['class' => 'cols-8']);
+                            echo CHtml::dropDownList('site_id', $selected_site->id ?? null, $sites_list, ['class' => 'cols-8', 'empty' => '- Select Site -']);
                         } else {
-                            echo $selected_site->name;
+                            echo $selected_site->name ?? 'N/A';
                         } ?>
                     </td>
                 </tr>
@@ -57,10 +57,10 @@ $duration_period = [
                     <th>Service</th>
                     <td>
                         <?php if ($is_config) {
-                            echo CHtml::dropDownList('service_id', $selected_service->id, $services_list,
-                                ['class' => 'cols-8 js-booking-service']);
+                            echo CHtml::dropDownList('service_id', $selected_service->id ?? null, $services_list,
+                                ['class' => 'cols-8 js-booking-service', 'empty' => '- Select Service -']);
                         } else {
-                            echo $selected_service->name;
+                            echo $selected_service->name ?? 'N/A';
                         } ?>
                     </td>
                 </tr>
@@ -68,10 +68,10 @@ $duration_period = [
                     <th>Context</th>
                     <td>
                         <?php if ($is_config) {
-                            echo CHtml::dropDownList('firm_id', $selected_context->id, $contexts_list,
-                                ['class' => 'cols-8 js-booking-firm']);
+                            echo CHtml::dropDownList('firm_id', $selected_context->id ?? null, $contexts_list,
+                                ['class' => 'cols-8 js-booking-firm', 'empty' => '- Select Context -']);
                         } else {
-                            echo $selected_context->name;
+                            echo $selected_context->name ?? 'N/A';
                         } ?>
                     </td>
                 </tr>
@@ -80,9 +80,9 @@ $duration_period = [
                     <td>
                         <?php if ($is_config) {
                             echo CHtml::dropDownList('duration_value', $selected_duration_value, $duration_values,
-                                ['class' => 'cols-3']);
+                                ['class' => 'cols-3', 'empty' => 'Time']);
                             echo CHtml::dropDownList('duration_period', $selected_duration_period, $duration_period,
-                                ['class' => 'cols-5']);
+                                ['class' => 'cols-5', 'empty' => 'Duration']);
                         } else {
                             echo $selected_duration_value . ' ' . $selected_duration_period;
                         } ?>

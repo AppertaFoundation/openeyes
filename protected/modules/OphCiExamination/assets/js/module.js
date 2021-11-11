@@ -1880,6 +1880,22 @@ function removeAllergyFromSelect(allergy_id, allergy_name) {
     }
 }
 
+function OphCiExamination_ToggleSafeguardingPaediatricFields(show_fields) {
+    let $fields = $('.js-safeguarding-paediatric-field');
+    let $rows = $('tr.js-safeguarding-paediatric-row');
+    let $clear_fields_input = $('input#clear_safeguarding_paediatric_fields');
+
+    if (show_fields) {
+        $rows.show();
+        $fields.prop('disabled', false);
+        $clear_fields_input.val("0");
+    } else {
+        $rows.hide();
+        $fields.prop('disabled', true);
+        $clear_fields_input.val("1");
+    }
+}
+
 var eyedraw_added_diagnoses = [];
 
 $(document).ready(function() {

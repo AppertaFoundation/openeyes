@@ -106,14 +106,11 @@ class OphDrPGDPSD_API extends \BaseAPI
         return $widget;
     }
 
-    public function getInstitutionUserAuth($pincode = null, $require_active = true, $user_ids = array())
+    public function getInstitutionUserAuth($require_active = true, $user_ids = array())
     {
         $criteria = new \CDbCriteria();
         if ($require_active) {
             $criteria->compare('t.active', 1);
-        }
-        if ($pincode) {
-            $criteria->compare('t.pincode', $pincode);
         }
         if ($user_ids) {
             $criteria->addInCondition('t.user_id', $user_ids);
@@ -122,9 +119,6 @@ class OphDrPGDPSD_API extends \BaseAPI
         if ($selected_institution_id) {
             $criteria->with = ['institutionAuthentication', 'institutionAuthentication.institution'];
             $criteria->compare('institution.id', $selected_institution_id);
-            if ($pincode) {
-                $criteria->group = 't.pincode, institution.id, t.user_id';
-            }
         }
         $user_auth_objs = \UserAuthentication::model()->findAll($criteria);
         return $user_auth_objs;

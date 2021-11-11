@@ -109,6 +109,7 @@ if ($this->isSigningAllowed()) {
                             "row_id" => $row++,
                             "element" => $this->element,
                             "signature" => $signature,
+                            "mode" => ($this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit'),
                         ]
                     );
                 }

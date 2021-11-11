@@ -33,7 +33,7 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
             $this->execute("CREATE TABLE " . self::ARCHIVE_CALC_V . " AS SELECT * FROM ophtrconsent_lack_of_capacity_reason_version");
 
             $query_advocate = $this->dbConnection->createCommand('SELECT * FROM ophtrconsent_lack_of_capacity_reason WHERE label="They are unconscious"')->query();
-            if($query_advocate->rowCount == 0) {
+            if ($query_advocate->rowCount == 0) {
                 $this->insertMultiple(
                     $this->clr_table,
                     [
@@ -51,7 +51,7 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
             $unconscious_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "They are unconscious"')->queryScalar();
 
             $this->execute("
-                UPDATE " . $this->pivot_table . 
+                UPDATE " . $this->pivot_table .
                 " SET lack_of_capacity_reason_id = CASE
                     WHEN lack_of_capacity_reason_id = " . $old_unable_id . " THEN " . $unable_id . "
                     WHEN lack_of_capacity_reason_id = " . $old_unconscious_id . " THEN " . $unconscious_id . "

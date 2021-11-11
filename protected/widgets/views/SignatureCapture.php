@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /** @var SignatureCapture $this */
@@ -23,9 +25,9 @@
     <!-- set up canvas using a 3:1 ratio, then use the JS to resize to fill area -->
     <canvas id="SignatureCapture_<?=$this->uid?>_canvas" width="1192" height="397" style="touch-action: none;"></canvas>
     <div class="js-signature-buttons-container esign-actions">
-        <button id="SignatureCapture_<?=$this->uid?>_gofull" class="button hint blue" type="button" data-toggle-text="Back to embedded view">Use signature pen tablet</button>
+        <button id="SignatureCapture_<?=$this->uid?>_gofull" class="button hint blue" type="button" data-toggle-text="Back to embedded view">Use Drawing Tablet</button>
         <button id="SignatureCapture_<?=$this->uid?>_erase" class="button hint red" type="button">Erase signature</button>
-        <button id="SignatureCapture_<?=$this->uid?>_save" class="button hint green" type="button">Capture signature</button>
+        <button id="SignatureCapture_<?=$this->uid?>_save" class="button hint green" type="button">Save signature</button>
     </div>
 </div>
 <script type="text/javascript">

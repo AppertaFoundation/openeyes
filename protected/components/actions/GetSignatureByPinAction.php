@@ -88,7 +88,7 @@ class GetSignatureByPinAction extends \CAction
         $this->date_time = new DateTime();
         $this->signature_proof = $this->getSignatureProof($this->signature_file_id);
 
-        if(strlen(Yii::app()->request->getPost('element_id')) > 0) {
+        if(Yii::app()->request->getPost('mode') !== "edit") {
             $this->updateElement(
                 (int)Yii::app()->request->getPost('element_id'),
                 (int)Yii::app()->request->getPost('element_type_id'),
