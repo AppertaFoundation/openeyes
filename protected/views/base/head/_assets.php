@@ -25,7 +25,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>
 <?php $assetManager->registerCoreScript('jquery.ui')?>
-<?php $assetManager->registerScriptFile('mustache/mustache.js', 'application.assets.components')?>
+<?php $assetManager->registerScriptFile('../../node_modules/mustache/mustache.min.js');?>
 <?php $assetManager->registerScriptFile('eventemitter2/lib/eventemitter2.js', 'application.assets.components')?>
 <?php $assetManager->registerScriptFile('js/jquery.printElement.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.hoverIntent.min.js')?>
