@@ -233,7 +233,7 @@ class PatientController extends BaseController
         if (filter_var($hie_url, FILTER_VALIDATE_URL)) {
             $iframe_policy = " frame-src {$hie_url} localhost:* blob:;";
         } else {
-            $iframe_policy = 'frame-src blob:;';
+            $iframe_policy = " frame-src 'self' localhost:* blob:;";
         }
 
         $this->iframe_policy = $iframe_policy;

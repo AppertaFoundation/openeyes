@@ -23,7 +23,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
      * @param $rows
      * @throws CException
      */
-    public function insertPatientIdentifiersFromMergedPatients($patient, $secondary_patient_id, $local_type_id, $global_type_id, &$rows)
+    public function insertPatientIdentifiersFromMergedPatients($patient, $secondary_patient_id, $local_type_id, $global_type_id, &$rows, $added_identifiers = [])
     {
 
         $patient_merged_in_merge_requests = $this->getDbConnection()
@@ -36,16 +36,28 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
             foreach ($this::$PATIENT_IDENTIFIER_TYPES as $short_name => $type) {
                 if ($patient_merged_in_merge_request[$short_name] &&
                     $patient_merged_in_merge_request[$short_name] !== $patient[$short_name]) {
-                    $rows[] = [
-                        'patient_id' => $patient['id'],
-                        'patient_identifier_type_id' => ${$type . '_type_id'},
-                        'value' => $patient_merged_in_merge_request[$short_name],
-                        'source_info' => "MERG ID =( " . $patient_merged_in_merge_request['id'] . ")",
-                        'deleted' => 1,
-                    ];
+                    $duplicate_identifier_found = false;
+                    if (isset($added_identifiers[${$type . '_type_id'}])) {
+                        foreach ($added_identifiers[${$type . '_type_id'}] as $identifier) {
+                            if ($identifier === $patient_merged_in_merge_request[$short_name]) {
+                                $duplicate_identifier_found = true;
+                            }
+                        }
+                    }
+
+                    if (!$duplicate_identifier_found) {
+                        $rows[] = [
+                            'patient_id' => $patient['id'],
+                            'patient_identifier_type_id' => ${$type . '_type_id'},
+                            'value' => $patient_merged_in_merge_request[$short_name],
+                            'source_info' => "MERG ID =( " . $patient_merged_in_merge_request['id'] . ")",
+                            'deleted' => 1,
+                        ];
+                        $added_identifiers[${$type . '_type_id'}][] = $patient_merged_in_merge_request[$short_name];
+                    }
                 }
             }
-            $this->insertPatientIdentifiersFromMergedPatients($patient, $patient_merged_in_merge_request['secondary_id'], $local_type_id, $global_type_id, $rows);
+            $this->insertPatientIdentifiersFromMergedPatients($patient, $patient_merged_in_merge_request['secondary_id'], $local_type_id, $global_type_id, $rows, $added_identifiers);
         }
     }
 
@@ -160,10 +172,8 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                 VALUES (" . implode(",", $to_insert_into_patient_identifier_type) . ");
             ");*/
         }
-
         $local_type_id = $this->getDbConnection()->createCommand("SELECT id FROM patient_identifier_type WHERE usage_type = 'local'")->queryScalar();
         $global_type_id = $this->getDbConnection()->createCommand("SELECT id FROM patient_identifier_type WHERE usage_type = 'global'")->queryScalar();
-
         $genetics_installed = !empty($this->dbConnection->schema->getTable('genetics_patient'));
         if ($genetics_installed) {
             $genetics_patient_identifier_type = [
@@ -177,9 +187,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
 
             $this->insert('patient_identifier_type', $genetics_patient_identifier_type);
         }
-
         $patients_count = $this->getDbConnection()->createCommand('SELECT COUNT(*) FROM patient')->queryScalar();
-
         if ($genetics_installed) {
             // If genetics module is enabled we filter out those patients who are genetics AND
             // no hos_num AND no nhs_num
@@ -204,7 +212,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
 
 
         $pagination = new CPagination($patients_count);
-        $pagination->pageSize = 1000;
+        $pagination->pageSize = 10000;
         $dataProvider = new CSqlDataProvider($patients_sql, [
             'totalItemCount' => $patients_count,
             'sort' => [
@@ -241,18 +249,32 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                     $patient_merged_in_merge_requests = $this->getDbConnection()
                         ->createCommand("SELECT id, secondary_id,secondary_hos_num as hos_num, secondary_nhsnum as nhs_num FROM patient_merge_request WHERE primary_id = '$patient_id' AND status = " . $this::$MERGED_PATIENT_STATUS)
                         ->queryAll();
+                    $added_identifiers = [];
                     // Go through all the merge requests and add identifiers to the patient
                     foreach ($patient_merged_in_merge_requests as $patient_merged_in_merge_request) {
                         foreach ($this::$PATIENT_IDENTIFIER_TYPES as $short_name => $type) {
                             if ($patient_merged_in_merge_request[$short_name]
                                 && $patient[$short_name] !== $patient_merged_in_merge_request[$short_name]) {
-                                $rows[] = [
-                                    'patient_id' => $patient['id'],
-                                    'patient_identifier_type_id' => ${$type . '_type_id'},
-                                    'value' => $patient_merged_in_merge_request[$short_name],
-                                    'source_info' => "MERG ID = (" . $patient_merged_in_merge_request['id'] . ")",
-                                    'deleted' => 1,
-                                ];
+                                $duplicate_identifier_found = false;
+                                if (isset($added_identifiers[${$type . '_type_id'}])) {
+                                    foreach ($added_identifiers[${$type . '_type_id'}] as $identifier) {
+                                        if ($identifier === $patient_merged_in_merge_request[$short_name]) {
+                                            $duplicate_identifier_found = true;
+                                        }
+                                    }
+                                }
+
+                                if (!$duplicate_identifier_found) {
+                                    $rows[] = [
+                                        'patient_id' => $patient['id'],
+                                        'patient_identifier_type_id' => ${$type . '_type_id'},
+                                        'value' => $patient_merged_in_merge_request[$short_name],
+                                        'source_info' => "MERG ID = (" . $patient_merged_in_merge_request['id'] . ")",
+                                        'deleted' => 1,
+                                    ];
+
+                                    $added_identifiers[${$type . '_type_id'}][] = $patient_merged_in_merge_request[$short_name];
+                                }
                             }
                         }
 
@@ -262,7 +284,8 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                             $patient_merged_in_merge_request['secondary_id'],
                             $local_type_id,
                             $global_type_id,
-                            $rows);
+                            $rows,
+                            $added_identifiers);
                     }
                 }
 

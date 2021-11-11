@@ -63,10 +63,10 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         return array(
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id, nrf_check, flags', 'safe'),
+                array('id, event_id, nrf_check, flag_assignment', 'safe'),
                 array('nrf_check', 'required'),
                 array('id, event_id, nrf_check', 'safe', 'on' => 'search'),
-                array('flags', 'RequiredIfFieldValidator', 'field' => 'nrf_check', 'value' => '0'),
+                array('flag_assignment', 'RequiredIfFieldValidator', 'field' => 'nrf_check', 'value' => '0'),
         );
     }
 
@@ -80,7 +80,7 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         return array(
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'flags' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment', 'element_id'),
+            'flag_assignment' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment', 'element_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
@@ -119,37 +119,6 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         ));
     }
 
-    public function afterSave()
-    {
-        if (!empty($this->flags)) {
-            $existingFlags = OphCiExamination_AE_RedFlags_Options_Assignment::model()->findAllByAttributes(array('element_id' => $this->id));
-
-            //map objects to [$existing_red_flag->red_flag_id => $existing_red_flag->id] format for easy lookup
-            $flags_to_delete = array_map(function ($item) {
-                return array($item->red_flag_id => $item->id);
-            }, $existingFlags);
-
-            foreach ($this->flags as $flag) {
-                if (is_object($flag)) {
-                    $flag_id = $flag->id;
-                } else {
-                    $flag_id = $flag;
-                    $newFlagObj = new OphCiExamination_AE_RedFlags_Options_Assignment();
-                    $newFlagObj->red_flag_id = $flag_id;
-                    $newFlagObj->element_id = $this->id;
-                    $newFlagObj->save();
-                }
-                unset($flags_to_delete[$flag_id]);
-            }
-
-            foreach ($flags_to_delete as $red_flag_id => $model_id) {
-                OphCiExamination_AE_RedFlags_Options_Assignment::model()->findByPk($model_id)->delete();
-            }
-        }
-
-        parent::afterSave();
-    }
-
     public function getFlagOptions()
     {
         $criteria = new \CDbCriteria();
@@ -176,12 +145,12 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
 
     public function getCurrentFlagOptionIDs()
     {
-        if (empty($this->flags)) {
+        if (empty($this->flag_assignment)) {
             return array();
         }
         return array_map(function ($flag) {
             return $flag->red_flag_id;
-        }, $this->flags);
+        }, $this->flag_assignment);
     }
 
     public function getMyCurrentFlagOptionIDs()
@@ -189,10 +158,10 @@ class Element_OphCiExamination_AE_RedFlags extends \BaseEventTypeElement
         $criteria = new \CDbCriteria();
         $criteria->condition = "active = 1";
         $options = OphCiExamination_AE_RedFlags_Options::model()->findAll($criteria);
-        if (!empty($this->flags)) {
+        if (!empty($this->flag_assignment)) {
             $currentFlags = array_map(static function ($flag) {
                 return $flag->red_flag_id ?? null; // Should never come to this, but this will ensure that the system won't crash if for some reason the array is filled with nulls.
-            }, $this->flags);
+            }, $this->flag_assignment);
         } else {
             $currentFlags = array();
         }

@@ -279,7 +279,7 @@ fi
 #     dbpassword="-p'$dbpassword'"
 # fi
 
-dbconnectionstring="MYSQL_PWD="$dbpassword" mysql -u '$username' --port=$port --host=$host"
+dbconnectionstring="MYSQL_PWD=${dbpassword} mysql -u '${username}' --port=${port} --host=${host}"
 
 if ps ax | grep -v grep | grep run-dicom-service.sh >/dev/null; then
     dwservrunning=1
