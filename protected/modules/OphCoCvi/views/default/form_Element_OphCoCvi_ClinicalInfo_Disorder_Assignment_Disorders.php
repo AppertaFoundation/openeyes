@@ -65,7 +65,7 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 </div>
 
 <div id="diagnosis_list">
-<?php foreach ($this->getDisorderSections($element->patient_type) as $disorder_section) :?>
+<?php foreach (array_merge($this->getDisorderSections($element->patient_type), $element->getInactiveSectionsToDisplay()) as $disorder_section) :?>
     <?php $is_open = $element->hasAffectedCviDisorderInSection($disorder_section);?>
 
     <div class="collapse-group highlight">
@@ -85,6 +85,9 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
                             'element' => $element,
                             'form' => $form,
                             'disorder_section' => $disorder_section,
+                            'inactive_disorders' => ($disorder_section->active == 0 || $disorder_section->deleted == 1)
+                                ? []
+                                : $element->getInactiveDisorders($disorder_section->name)
                         )) ?>
                         </tbody>
                     </table>

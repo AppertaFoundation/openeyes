@@ -82,6 +82,9 @@ class QueryIterator implements Iterator {
     private function getRowsCount()
     {
         $table = str_replace('`', '', $this->command->from);
+
+        // if table has an alias like: FROM some_table t - we only need the first part
+        $table = explode(' ', $table)[0];
         $sql = "SELECT table_rows
                 FROM information_schema.tables
                 WHERE table_type = 'BASE TABLE' AND table_name = :table";

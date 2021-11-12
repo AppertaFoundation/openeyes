@@ -55,6 +55,9 @@ namespace OEModule\OphCoCvi\models;
 
 use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
 
+/**
+ * @property array|mixed|null inactive_cvi_disorders
+ */
 class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 {
 
@@ -184,6 +187,14 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'ophcocvi_clinicinfo_disorder_id',
                 'through' => 'cvi_disorder_assignments'
             ),
+            'inactive_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+                'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'condition' => 'inactive_cvi_disorders.active = 0 OR inactive_cvi_disorders.deleted = 1'
+            ),
+
             'left_cvi_disorders' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
@@ -217,13 +228,31 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments',
                 'element_id'
             ),
-            'cvi_disorder_sections' => array(
+            'all_cvi_disorder_sections' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
                 'section_id',
                 'through' => 'cvi_disorders',
                 'select' => 'DISTINCT cvi_disorder_sections.*',
                 'order' => 'cvi_disorder_sections.display_order asc'
+            ),
+            'cvi_disorder_sections' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
+                'section_id',
+                'through' => 'cvi_disorders',
+                'select' => 'DISTINCT cvi_disorder_sections.*',
+                'order' => 'cvi_disorder_sections.display_order asc',
+                'condition' => 'cvi_disorders.active = 1 OR cvi_disorders.deleted = 0'
+            ),
+            'inactive_cvi_disorder_sections' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
+                'section_id',
+                'through' => 'cvi_disorders',
+                'select' => 'DISTINCT cvi_disorder_sections.*',
+                'order' => 'inactive_cvi_disorder_sections.display_order asc',
+                'condition' => 'cvi_disorders.active = 0 OR cvi_disorders.deleted = 1'
             ),
             'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
             'consultant_signature' => array(self::BELONGS_TO, 'ProtectedFile', 'consultant_signature_file_id'),
@@ -1566,5 +1595,49 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             ';
         }
         return $table;
+    }
+
+    /**
+     * Returns inactive disorders for the given section name
+     *
+     * @param string $section_name
+     * @return array
+     */
+    public function getInactiveDisorders(string $section_name): array
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['section'];
+        $criteria->join = "JOIN et_ophcocvi_clinicinfo_disorder_assignment a ON a.ophcocvi_clinicinfo_disorder_id = t.id";
+        $criteria->addCondition("section.name = :s_name");
+        $criteria->addCondition("t.active = 0 OR t.deleted = 1");
+        $criteria->addCondition('a.element_id = :el_id');
+        $criteria->params[':s_name'] = $section_name;
+        $criteria->params[':el_id'] = $this->id;
+
+        return OphCoCvi_ClinicalInfo_Disorder::model()->findAll($criteria);
+    }
+
+    /**
+     * Gets inactive (active=0 OR deleted=1) sections and
+     * populated 'disorder' relation to disorders only relevant to the element
+     * @return array
+     */
+    public function getInactiveSectionsToDisplay(): array
+    {
+        $not_in_active = array_filter($this->inactive_cvi_disorder_sections, function($inactive_section) {
+            return !(bool) array_filter($this->cvi_disorder_sections, function($active_section) use ($inactive_section) {
+                return $active_section->name === $inactive_section->name;
+            });
+        });
+
+        // overwrite the 'disorder' relation so the relation will only have disorders that are relevant to the element
+        foreach ($not_in_active as $section) {
+            $disorders = array_filter($this->inactive_cvi_disorders, function($inactive_disorder) use ($section) {
+                return $section->id == $inactive_disorder->section_id;
+            });
+            $section->disorders = $disorders;
+        }
+
+        return $not_in_active;
     }
 }

@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-foreach ($this->getDisorderSections($element->patient_type) as $disorder_section) {
+foreach (array_merge($this->getDisorderSections($element->patient_type),$element->getInactiveSectionsToDisplay()) as $disorder_section) {
     ?>
         <div class="collapse-data-header-icon collapse"><h3><?php echo \CHtml::encode($disorder_section->name); ?></h3></div>
         <div class="row data-row">
@@ -23,6 +23,9 @@ foreach ($this->getDisorderSections($element->patient_type) as $disorder_section
                         <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
                             'element' => $element,
                             'disorder_section' => $disorder_section,
+                            'inactive_disorders' => ($disorder_section->active == 0 || $disorder_section->deleted == 1)
+                                ? []
+                                : $element->getInactiveDisorders($disorder_section->name)
                         )) ?>
                     </div>
                 </div>
@@ -30,4 +33,3 @@ foreach ($this->getDisorderSections($element->patient_type) as $disorder_section
         </div>
         <?php
 }
-?>
