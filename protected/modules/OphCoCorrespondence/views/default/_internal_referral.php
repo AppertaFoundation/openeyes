@@ -40,6 +40,11 @@ $selected_subspecialty_id = $element->to_subspecialty_id != "" ?
                     $criteria = new CDbCriteria();
                     $criteria->join .= "JOIN service_subspecialty_assignment ssa ON t.service_subspecialty_assignment_id = ssa.id";
                     $criteria->addCondition("ssa.subspecialty_id = :subspecialty_id");
+
+                    if (SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on')) {
+                        $criteria->addCondition("t.can_own_an_episode = 1");
+                    }
+
                     $criteria->params = array(":subspecialty_id" => $selected_subspecialty_id);
 
                     $applicable_firms = Firm::model()->findAll($criteria);
