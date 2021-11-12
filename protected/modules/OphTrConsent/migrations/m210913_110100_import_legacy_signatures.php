@@ -48,7 +48,6 @@ class m210913_110100_import_legacy_signatures extends OEMigration
                     FROM ".self::LEGACY_6_ET." AS a
                     LEFT JOIN event ON event.id = a.event_id
                     WHERE event.event_type_id = ".$evt_type_id."
-                    AND a.protected_file_id IS NOT NULL
                     AND a.event_id NOT IN (SELECT x.event_id FROM ".self::NEW_2ND_ET." AS x)
                 ");
 
@@ -115,13 +114,6 @@ class m210913_110100_import_legacy_signatures extends OEMigration
                 LEFT JOIN " . self::LEGACY_ET . " as e ON a.id = e.event_id
                 LEFT JOIN " . self::LEGACY_3_ET . " as f ON a.id = f.event_id
                 WHERE a.event_type_id = " . $evt_type_id . "
-                AND (
-                b.protected_file_id IS NOT NULL
-                OR c.protected_file_id IS NOT NULL
-                OR d.protected_file_id IS NOT NULL
-                OR e.protected_file_id IS NOT NULL
-                OR f.protected_file_id IS NOT NULL
-                )
                 ");
 
             $this->execute("
@@ -157,11 +149,9 @@ class m210913_110100_import_legacy_signatures extends OEMigration
     {
 
         $signature_item = $this->dbConnection
-            ->createCommand("
-                                SELECT * FROM " . $table . " WHERE event_id = ".$additional['event_id']." AND protected_file_id IS NOT NULL
-                                ")->queryRow();
+            ->createCommand("SELECT * FROM " . $table . " WHERE event_id = ".$additional['event_id']."")->queryRow();
 
-        if ($signature_item) {
+        if ($signature_item && !is_null($signature_item['protected_file_id'])) {
             $element_id = $this->dbConnection
                 ->createCommand("
                                 SELECT id FROM " . self::NEW_2ND_ET . " WHERE event_id = " . $signature_item['event_id'] . "

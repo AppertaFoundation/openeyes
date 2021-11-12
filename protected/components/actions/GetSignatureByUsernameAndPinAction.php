@@ -30,7 +30,8 @@ class GetSignatureByUsernameAndPinAction extends GetSignatureByPinAction
 
     protected function checkPIN(): void
     {
-        if ($this->pin === Yii::app()->params["secretary_pin"]) {
+        $secretary_can_sign = $this->controller->secretary_can_sign ?? false;
+        if ($this->pin === Yii::app()->params["secretary_pin"] && $secretary_can_sign) {
             $this->is_secretary_signing = true;
             $this->checkSecretaryPIN();
         } else {

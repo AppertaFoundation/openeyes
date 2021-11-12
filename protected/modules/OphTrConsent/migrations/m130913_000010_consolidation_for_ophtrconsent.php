@@ -26,7 +26,6 @@ class m130913_000010_consolidation_for_ophtrconsent extends OEMigration
             'Element_OphTrConsent_Procedure' => array('name' => 'Procedure', 'display_order' => 30),
             'Element_OphTrConsent_BenefitsAndRisks' => array('name' => 'Benefits and risks', 'display_order' => 40),
             'Element_OphTrConsent_Permissions' => array('name' => 'Permissions for images', 'display_order' => 50),
-            'Element_OphTrConsent_Other' => array('name' => 'Other', 'display_order' => 60),
             'Element_OphTrConsent_Leaflets' => array('name' => 'Leaflets', 'display_order' => 20),
         );
     }
