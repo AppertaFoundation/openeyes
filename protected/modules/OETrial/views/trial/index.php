@@ -22,7 +22,7 @@
           <input type="text" class="cols-full search js-trial-search-input" placeholder="Search" id="trial-search-input-id">
           <button class="blue hint" id="trial-search-btn-id">Search</button>
       </div>
-    <h3>Filter by Date</h3>
+    <h3>Filter by Date <i class="oe-i info small pad js-has-tooltip" data-tooltip-content="Use 'dd Mon yyyy' format (e.g. 1 Jan 2021) for from / to dates"></i></h3>
     <div class="flex-layout">
       <input id="js-trial-search-from-date" class="cols-5 js-trial-search-input js-trial-search-date" placeholder="from" type="text">
       <input id="js-trial-search-to-date" class="cols-5 js-trial-search-input  js-trial-search-date" placeholder="to" type="text">
@@ -96,14 +96,14 @@
       });
 
       pickmeup('#js-trial-search-from-date', {
-          format: 'Y-m-d',
+          format: 'd b Y',
           hide_on_select: true,
           date: $('#js-trial-search-from-date').val().trim(),
           default_date: false,
       });
 
       pickmeup('#js-trial-search-to-date', {
-          format: 'Y-m-d',
+          format: 'd b Y',
           hide_on_select: true,
           date: $('#js-trial-search-to-date').val().trim(),
           default_date: false,
@@ -120,7 +120,7 @@
 
         if (raw) {
           try {
-            return $.datepicker.parseDate('yy-mm-dd', raw);
+            return $.datepicker.parseDate('d M yy', raw);
           } catch (e) {
             $(selector).addClass('error');
           }
