@@ -9,7 +9,6 @@ class m211103_123000_archive_tables_and_delete_element_type extends OEMigration
         "et_ophtrconsent_patient_signature",
         "et_ophtrconsent_parent_signature",
         "et_ophtrconsent_child_signature",
-        "et_consultant_signature",
         "ophtrconsent_permissions_images",
         "et_ophtrconsent_permissions",
         "et_ophtrconsent_other",
