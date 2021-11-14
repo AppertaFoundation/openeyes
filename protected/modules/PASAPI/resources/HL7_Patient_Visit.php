@@ -44,20 +44,31 @@ class HL7_Patient_Visit extends BaseHL7_Section
                     }
                 }
 
-                $wla = \WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc',
-                        array($worklist_patient->id, \WorklistAttribute::model()->find('name = ? and worklist_id = ?', array('Clinic', $worklist_patient->worklist_id))->id));
+                $clinic_attribute = \WorklistAttribute::model()->find('name = ? and worklist_id = ?', ['Clinic', $worklist_patient->worklist_id]);
+                $admin_source = \WorklistAttribute::model()->find('name = ? and worklist_id = ?', ['AdmitSource', $worklist_patient->worklist_id]);
+                $visit_number = \WorklistAttribute::model()->find('name = ? and worklist_id = ?', ['VisitNumber', $worklist_patient->worklist_id]);
+
+                $wla = $clinic_attribute
+                    ? \WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc', [$worklist_patient->id, $clinic_attribute->id])
+                    : null;
+
                 $this->point_of_care = ($wla ? $wla->attribute_value : '');
-                $wla = \WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc',
-                        array($worklist_patient->id, \WorklistAttribute::model()->find('name = ? and worklist_id = ?', array('AdmitSource', $worklist_patient->worklist_id))->id));
+
+                $wla = $admin_source
+                    ?\WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc', [$worklist_patient->id, $admin_source->id])
+                    : null;
+
                 $this->admit_source = ($wla ? $wla->attribute_value : '');
-                $wla = \WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc',
-                        array($worklist_patient->id, \WorklistAttribute::model()->find('name = ? and worklist_id = ?', array('VisitNumber', $worklist_patient->worklist_id))->id));
+
+                $wla = $visit_number
+                    ? \WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc', [$worklist_patient->id, $visit_number->id])
+                    : null;
                 $this->visit_number = ($wla ? $wla->attribute_value : '');
             }
 
             $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
-
             $clinical_outcome = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->find("event_id = ?", array($event->id));
+
             if ($clinical_outcome) {
                 $clinical_outcome_entry = \OEModule\OphCiExamination\models\ClinicOutcomeEntry::model()->find("element_id = ? and status_id = ? ", array($clinical_outcome->id, $discharge_status->id));
                 if ($clinical_outcome_entry) {
