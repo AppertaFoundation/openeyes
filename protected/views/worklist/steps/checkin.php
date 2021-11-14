@@ -11,7 +11,7 @@
     </div>
     <?php if ($pathway->start_time && !$pathway->did_not_attend) { ?>
         <h3 class="title">
-            Arrived <small>at</small> <?= DateTime::createFromFormat('Y-m-d H:i:s', $pathway->start_time)->format('h:i') ?>
+            Arrived <small>at</small> <?= DateTime::createFromFormat('Y-m-d H:i:s', $pathway->start_time)->format('H:i') ?>
         </h3>
     <?php } elseif ($pathway->did_not_attend) { ?>
         <h3 class="title">
