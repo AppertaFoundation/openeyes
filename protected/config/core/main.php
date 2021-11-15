@@ -18,6 +18,7 @@
  */
 
 $config = array(
+    'name' => 'OpenEyes Main',
     'components' => array(),
     );
 
@@ -45,22 +46,22 @@ if (!empty(getenv('LOG_TO_BROWSER'))) {
 // Can be set to comma separated lists, using the following formats: '127.0.0.1','192.168.1.*', 88.23.23.0/24 (note the '' when using full IPs)
 if (!empty(getenv('YII_DEBUG_BAR_IPS'))) {
     $yiidebugbar = array(
-    'components' => array(
-        'db' => array (
-            'enableProfiling' => true,
-            'enableParamLogging' => true
-        ),
-        'log' => array(
-            'class' => 'CLogRouter',
-            'routes' => array(
-                'debug-bar' => array(
-                    'class' => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
-                    // Access is restricted by default to the localhost
-                    'ipFilters' => array(getenv('YII_DEBUG_BAR_IPS')),
+        'components' => array(
+            'db' => array (
+                'enableProfiling' => true,
+                'enableParamLogging' => true
+            ),
+            'log' => array(
+                'class' => 'CLogRouter',
+                'routes' => array(
+                    'debug-bar' => array(
+                        'class' => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
+                        // Access is restricted by default to the localhost
+                        'ipFilters' => array(getenv('YII_DEBUG_BAR_IPS')),
+                    ),
                 ),
             ),
         ),
-    ),
     );
 
     $config = CMap::mergeArray($yiidebugbar, $config);
