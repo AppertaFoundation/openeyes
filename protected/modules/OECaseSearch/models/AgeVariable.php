@@ -16,7 +16,7 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
     public function query()
     {
         if ($this->csv_mode === 'ADVANCED') {
-            return 'SELECT p.nhs_num, TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, p.created_date, null
+            return 'SELECT p.hos_num, p.nhs_num, TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, DATE(p.created_date), TIME(p.created_date)
         FROM patient p
         JOIN contact c ON c.id = p.contact_id
         WHERE p.id IN (' . implode(', ', $this->id_list) . ')

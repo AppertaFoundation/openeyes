@@ -44,7 +44,7 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
                 break;
             case 'ADVANCED':
                 return "
-        SELECT p.nhs_num, iop.value iop, iop.side, iop.event_date, iop.reading_time
+        SELECT p.hos_num, p.nhs_num, iop.value iop, iop.side, iop.event_date, iop.reading_time
         FROM v_patient_iop iop
         JOIN patient p ON p.id = iop.patient_id
         WHERE iop.patient_id IN (" . implode(', ', $this->id_list) . ")

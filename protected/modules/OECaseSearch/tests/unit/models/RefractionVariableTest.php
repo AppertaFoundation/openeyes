@@ -67,7 +67,7 @@ class RefractionVariableTest extends CDbTestCase
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
                 'query_template' => '
-        SELECT p.nhs_num, r.value, r.side, r.event_date, null
+        SELECT p.hos_num, p.nhs_num, r.value, r.side, DATE(r.event_date), TIME(r.event_date)
         FROM v_patient_refraction r
         JOIN patient p ON p.id = r.patient_id
         WHERE patient_id IN (1, 2, 3)

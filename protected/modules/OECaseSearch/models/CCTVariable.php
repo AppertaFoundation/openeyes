@@ -33,7 +33,7 @@ class CCTVariable extends CaseSearchVariable implements DBProviderInterface
                 break;
             case 'ADVANCED':
                 return '
-        SELECT p.nhs_num, cct.value, cct.side, cct.event_date, null
+        SELECT p.hos_num, p.nhs_num, cct.value, cct.side, DATE(cct.event_date), TIME(cct.event_date)
         FROM v_patient_cct cct
         JOIN patient p ON p.id = cct.patient_id
         WHERE patient_id IN (' . implode(', ', $this->id_list) .')

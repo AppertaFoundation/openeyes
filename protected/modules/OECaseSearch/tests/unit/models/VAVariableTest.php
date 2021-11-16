@@ -70,7 +70,7 @@ class VAVariableTest extends CDbTestCase
             ),
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
-                'query_template' => "SELECT p.nhs_num, va1.LogMAR_value va, va1.side, DATE_FORMAT(MAX(va1.reading_date), '%d-%m-%Y'), DATE_FORMAT(MAX(va1.reading_date), '%H:%i:%s')
+                'query_template' => "SELECT p.hos_num, p.nhs_num, va1.LogMAR_value va, va1.side, DATE_FORMAT(MAX(va1.reading_date), '%d-%m-%Y'), DATE_FORMAT(MAX(va1.reading_date), '%H:%i:%s')
             FROM v_patient_va_converted va1
             JOIN patient p ON p.id = va1.patient_id
             WHERE va1.patient_id IN (1, 2, 3)
