@@ -926,10 +926,11 @@ $modules = array(
         'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
         'OphInLabResults',
         'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-        'Genetics',
-        'OphInDnasample',
-        'OphInDnaextraction',
-        'OphInGeneticresults',
+        /* Uncomment next section if you want to use the genetics module
+￼        'Genetics',
+￼        'OphInDnasample',
+￼        'OphInDnaextraction',
+￼        'OphInGeneticresults',*/
         'OphCoDocument',
         'OphCiDidNotAttend',
         'OphGeneric',
