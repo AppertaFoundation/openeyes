@@ -973,11 +973,10 @@ $modules = array(
         'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
         'OphInLabResults',
         'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-        /* Uncomment next section if you want to use the genetics module
-￼        'Genetics',
-￼        'OphInDnasample',
-￼        'OphInDnaextraction',
-￼        'OphInGeneticresults',*/
+        'Genetics',
+        'OphInDnasample',
+        'OphInDnaextraction',
+        'OphInGeneticresults',
         'OphCoDocument',
         'OphCiDidNotAttend',
         'OphGeneric',
@@ -1023,7 +1022,7 @@ $config["params"]["local_users"] = explode(',', $local_users);
  * else, default to the standard array
  * The OE_SPECIAL_USERS environment variable should be a comma separated string
  */
-$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
+$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api, docmanuser';
 $config["params"]["special_users"] = explode(',', $special_users);
 
 return $config;
