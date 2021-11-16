@@ -430,7 +430,7 @@ class Patient extends BaseActiveRecordVersioned
                 $type = $terms_with_type['patient_identifier_type'] ?? [];
 
                 // if the user already selected a type we do not care about the rest
-                if ($patient_identifier_type_id && $type->id !== $patient_identifier_type_id) {
+                if ($patient_identifier_type_id && (int)$type->id !== (int)$patient_identifier_type_id) {
                     continue;
                 }
 
