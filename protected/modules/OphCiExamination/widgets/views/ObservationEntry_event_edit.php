@@ -58,9 +58,9 @@ if (!isset($values)) {
                     </label>
                 </td>
                 <td>
-                     <?= CHtml::textField(
+                     <?= \CHtml::textField(
                          $field_prefix . '[taken_at]',
-                         strtotime($values['taken_at']) ? date('H:m', strtotime($values['taken_at'])) : $values['taken_at'],
+                         strtotime($values['taken_at']) ? date('H:i', strtotime($values['taken_at'])) : $values['taken_at'],
                          ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
                          'style' => 'display:inline-block; width:200%']
                      ); ?>

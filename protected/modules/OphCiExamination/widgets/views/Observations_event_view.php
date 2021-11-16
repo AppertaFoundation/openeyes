@@ -36,7 +36,7 @@
                         <span class="data-label"><?= $entry->getAttributeLabel('taken_at') ?>:</span>
                     </td>
                     <td>
-                        <span class="data-value"><?php echo ($entry->taken_at !== null) ? date('H:m', strtotime($entry->taken_at)) : '' ?><span>
+                        <span class="data-value"><?php echo ($entry->taken_at !== null) ? date('H:i', strtotime($entry->taken_at)) : '' ?><span>
                     </td>
                 </tr>
                 <tr>

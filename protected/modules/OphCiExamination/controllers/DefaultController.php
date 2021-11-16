@@ -2068,6 +2068,41 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
         }
 
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Observations'])) {
+            $errors = $this->setAndValidateObservationsFromData($data, $errors);
+        }
+
+        return $errors;
+    }
+
+    protected function setAndValidateObservationsFromData($data, $errors)
+    {
+        $et_name = 'OEModule_OphCiExamination_models_Element_OphCiExamination_Observations';
+        $observation = $this->getOpenElementByClassName($et_name);
+        $posted_entries = $data[$et_name]['entries'];
+
+        foreach ($posted_entries as $i => $posted_entry) {
+            if (isset($entry['id'])) {
+                $entry = models\ObservationEntry::model()->findByPk($entry['id']);
+            } else {
+                $entry = new models\ObservationEntry();
+            }
+
+            $entry->attributes = $posted_entry;
+
+            if (!$entry->validate()) {
+                $entry_errors = $entry->getErrors();
+
+                foreach ($entry_errors as $entry_error_attribute_name => $entry_error_messages) {
+                    foreach ($entry_error_messages as $entry_error_message) {
+                        $observation->addError("entries" . $i . '_' . $entry_error_attribute_name, $entry_error_message);
+                        $errors['Observations'][] = $i+1 . " {$entry->getAttributeLabel($entry_error_attribute_name)} {$entry_error_message}";
+                        $observation->setFrontEndError($et_name . '_entries_' . $i . '_' . $entry_error_attribute_name);
+                    }
+                }
+            }
+        }
+
         return $errors;
     }
 
