@@ -8,7 +8,7 @@ $(document).ready(function() {
     }
 
     handleButton($("#et_print_empty_consent"), function (e) {
-        $frame = $("<iframe src='/OphCoCvi/default/printEmptyConsent' style='display: none;'></iframe>");
+        $frame = $("<iframe src='/OphCoCvi/default/printEmptyConsent' style='position:fixed;left:-1000px;'></iframe>");
         $frame.appendTo("body");
         $frame.get(0).contentWindow.print();
         setTimeout(enableButtons, 2000);
