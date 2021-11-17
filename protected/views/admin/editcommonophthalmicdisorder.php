@@ -287,11 +287,14 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
 
         $('#add_new').on('click', function () {
             let $tr = $('table.generic-admin tbody tr');
+            const $last_order_input = document.querySelector('table.generic-admin tbody tr:last-child input[name^="display_order"]');
+            const order_value = $last_order_input ? +$last_order_input.value + 1 : 0;
+
             let output = Mustache.render($('#common_ophthalmic_disorder_template').text(), {
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 "group_options": common_ophthalmic_disorder_group_options,
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
-                'order_value': parseInt($('table.generic-admin tbody tr:last-child ').find('input[name^="display_order"]').val()) + 1
+                'order_value': order_value
             });
 
             $('table.generic-admin tbody').append(output);

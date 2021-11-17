@@ -15,7 +15,7 @@
 ?>
 
 <?php
-foreach ($disorder_section->disorders as $disorder) {
+foreach (array_merge($disorder_section->disorders, ($inactive_disorders ?? [])) as $disorder) {
     $right_field_base_name = CHtml::modelName($element) . "[right_disorders][{$disorder->id}]";
     $field_base_name = CHtml::modelName($element) . "[disorders][{$disorder->id}]";
     if (!empty($disorder->disorder)) {
@@ -55,11 +55,5 @@ foreach ($disorder_section->disorders as $disorder) {
                 'template' => "{Right}{Left}"
             ]);?>
             </td>
-<!--            <td>-->
-<!--                <button class="button button-icon small js-unchecked-diagnosis-element disabled" data-id=" php CHtml::encode($disorder->id) " title="Delete Diagnosis">-->
-<!--                    <span class="icon-button-small-mini-cross"></span>-->
-<!--                    <span class="hide-offscreen">Remove element</span>-->
-<!--                </button>-->
-<!--            </td>-->
         </tr>
 <?php } ?>

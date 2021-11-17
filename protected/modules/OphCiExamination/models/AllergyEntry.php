@@ -133,6 +133,12 @@ class AllergyEntry extends \BaseActiveRecordVersioned
         return parent::afterSave();
     }
 
+    protected function beforeDelete()
+    {
+        $this->refreshReactionAssignments();
+        return parent::beforeDelete();
+    }
+
     /**
      * @return string
      */

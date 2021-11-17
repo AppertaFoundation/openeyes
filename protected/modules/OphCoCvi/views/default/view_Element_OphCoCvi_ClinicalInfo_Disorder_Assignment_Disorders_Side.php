@@ -33,7 +33,8 @@
     </thead>
     <tbody>
     <?php
-    foreach ($disorder_section->disorders as $disorder) {
+
+    foreach (array_merge($disorder_section->disorders, ($inactive_disorders ?? [])) as $disorder) {
         $main_cause = $element->isCviDisorderMainCauseForSide($disorder, 'right');
         ?>
             <tr>

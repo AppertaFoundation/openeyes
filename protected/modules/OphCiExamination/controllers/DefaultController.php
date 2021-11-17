@@ -23,6 +23,7 @@ use Eye;
 use OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\models\AdviceLeafletEntry;
+use OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
 use OEModule\PASAPI\resources\HL7_A03;
@@ -1277,6 +1278,62 @@ class DefaultController extends \BaseEventTypeController
         $this->_set_DiabeticDiagnosis($element, $data);
     }
 
+    protected function setComplexAttributes_Element_OphCiExamination_AE_RedFlags($element, $data, $index)
+    {
+
+        $model_name = \CHtml::modelName($element);
+        $_data = $data[$model_name] ?? [];
+        $flag_assignments = $_data['flag_assignment'] ?? [];
+
+        $flag_assignment_objects = [];
+        foreach ($flag_assignments as $flag_assignment) {
+            $new_assignment = new OphCiExamination_AE_RedFlags_Options_Assignment();
+            $new_assignment->red_flag_id = $flag_assignment['red_flag_id'];
+            $new_assignment->element_id = $element->id;
+
+            $flag_assignment_objects[] = $new_assignment;
+        }
+
+        $element->flag_assignment = $flag_assignment_objects;
+    }
+
+    public function saveComplexAttributes_Element_OphCiExamination_AE_RedFlags($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        $_data = $data[$model_name] ?? [];
+        $posted_flag_assignment = $_data['flag_assignment'] ?? [];
+
+        $element->refresh();
+        $collection = new \ModelCollection($element->flag_assignment);
+        $existing_flag_ids = $collection->pluck('red_flag_id');
+
+        foreach ($posted_flag_assignment as $flag) {
+            // is new ?
+            $assignment = OphCiExamination_AE_RedFlags_Options_Assignment::model()->countByAttributes(['element_id' => $element->id, 'red_flag_id' => $flag['red_flag_id']]);
+            if (!$assignment) {
+                $new_assignment = new OphCiExamination_AE_RedFlags_Options_Assignment();
+                $new_assignment->red_flag_id = $flag['red_flag_id'];
+                $new_assignment->element_id = $element->id;
+                $new_assignment->save();
+            }
+        }
+
+        // delete not posted flags
+        $flag_ids_to_delete = array_diff($existing_flag_ids, array_map(function ($f) {
+            return $f['red_flag_id'];
+        }, $posted_flag_assignment));
+
+        if ($flag_ids_to_delete) {
+            OphCiExamination_AE_RedFlags_Options_Assignment::model()->deleteAllByAttributes([
+                'red_flag_id' => $flag_ids_to_delete
+            ], 'element_id =:el_id', [':el_id' => $element->id]);
+        } elseif (!$posted_flag_assignment) {
+            OphCiExamination_AE_RedFlags_Options_Assignment::model()->deleteAllByAttributes([
+                'element_id' => $element->id
+            ]);
+        }
+    }
+
     /**
      * If the Patient does not currently have a diabetic diagnosis, specify that it's required
      * so the validation rules can check for it being set in the given element (currently only DR Grading).
@@ -2009,6 +2066,41 @@ class DefaultController extends \BaseEventTypeController
 
         if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])) {
             $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
+        }
+
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Observations'])) {
+            $errors = $this->setAndValidateObservationsFromData($data, $errors);
+        }
+
+        return $errors;
+    }
+
+    protected function setAndValidateObservationsFromData($data, $errors)
+    {
+        $et_name = 'OEModule_OphCiExamination_models_Element_OphCiExamination_Observations';
+        $observation = $this->getOpenElementByClassName($et_name);
+        $posted_entries = $data[$et_name]['entries'];
+
+        foreach ($posted_entries as $i => $posted_entry) {
+            if (isset($entry['id'])) {
+                $entry = models\ObservationEntry::model()->findByPk($entry['id']);
+            } else {
+                $entry = new models\ObservationEntry();
+            }
+
+            $entry->attributes = $posted_entry;
+
+            if (!$entry->validate()) {
+                $entry_errors = $entry->getErrors();
+
+                foreach ($entry_errors as $entry_error_attribute_name => $entry_error_messages) {
+                    foreach ($entry_error_messages as $entry_error_message) {
+                        $observation->addError("entries" . $i . '_' . $entry_error_attribute_name, $entry_error_message);
+                        $errors['Observations'][] = $i+1 . " {$entry->getAttributeLabel($entry_error_attribute_name)} {$entry_error_message}";
+                        $observation->setFrontEndError($et_name . '_entries_' . $i . '_' . $entry_error_attribute_name);
+                    }
+                }
+            }
         }
 
         return $errors;

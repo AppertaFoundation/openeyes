@@ -1246,8 +1246,11 @@ class EventMedicationUse extends BaseElement
             $exclude_models = $model->with('prescription', 'prescription.event', 'prescription.event.episode')
                 ->findAll('medication_id !=? and episode.patient_id=?', [$this->medication_id, $patient->id]);
         } else {
-            $exclude_models = $model->with('event', 'event.episode')
-                ->findAll('(medication_id !=? and episode.patient_id=?) or prescribe=?', [$this->medication_id, $patient->id, 1]);
+            $exclude_models_med = $model->with('event', 'event.episode')
+                ->findAll('(medication_id !=? and episode.patient_id=?)', [$this->medication_id, $patient->id]);
+            $exclude_models_prescribe = $model->with('event', 'event.episode')
+                ->findAll('prescribe=?', [1]);
+            $exclude_models = array_merge($exclude_models_med, $exclude_models_prescribe);
         }
 
         $exclude_ids = array_map(function ($item) {

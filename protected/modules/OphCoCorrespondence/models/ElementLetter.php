@@ -589,7 +589,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 /** @var User $user */
                 if($user) {
                     if($signOffUser = $user->signOffUser) {
-                        $this->footer = $signOffUser->correspondence_sign_off_text;
+                        $consultant_text = $api->getFooterConsultantText($signOffUser, $episode->firm);
+                        $this->footer = $signOffUser->correspondence_sign_off_text . ($consultant_text ? "\n" . $consultant_text : '');
                     }
                 }
             }

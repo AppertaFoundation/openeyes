@@ -761,6 +761,29 @@ class OphCoCorrespondence_API extends BaseAPI
         $user = $user ? $user : \User::model()->findByPk(\Yii::app()->session['user']['id']);
         $firm = $firm ? $firm : \Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(\Yii::app()->session['selected_firm_id']);
 
+        if ($contact = $user->contact) {
+            $full_name = trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications);
+            $consultant_text = $this->getFooterConsultantText($user, $firm, $consultant);
+
+            return $full_name . "\n" . $user->role . "\n" . ($consultant_text ?? '');
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the consultant text for the correspondence footer
+     *
+     * @param User|null $user
+     * @param Firm|null $firm
+     * @param User|null $consultant
+     * @return string
+     */
+    public function getFooterConsultantText(\User $user = null, \Firm $firm = null, \User $consultant = null)
+    {
+        $user = $user ? $user : \User::model()->findByPk(\Yii::app()->session['user']['id']);
+        $firm = $firm ? $firm : \Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(\Yii::app()->session['selected_firm_id']);
+
         if (!$consultant) {
             // only want a consultant for medical firms or support services such as orthoptics
             if ($specialty = $firm->getSpecialty()) {
@@ -770,21 +793,15 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         }
 
-        if ($contact = $user->contact) {
-            $service_name = '';
-            $consultant_name = false;
+        // if we have a consultant for the firm, and its not the matched user, return the consultant service firm label and name
+        if ($consultant && ($user->id != $consultant->id)) {
+            $consultant_prefix = SettingMetadata::model()->getSetting('correspondence_service_firm_label');
+            $consultant_name = trim($consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name);
 
-            // if we have a consultant for the firm, and its not the matched user, attach the consultant name to the entry
-            if ($consultant && ($user->id != $consultant->id)) {
-                $service_name = $firm->getServiceText();
-                $consultant_name = trim($consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name);
-            }
-
-            $full_name = trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications);
-            return $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Head of " . $service_name . ": " . $consultant_name : '');
+            return $consultant_prefix . ": " . $consultant_name;
+        } else {
+            return null;
         }
-
-        return null;
     }
 
     /**

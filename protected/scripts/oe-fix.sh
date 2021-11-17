@@ -225,80 +225,127 @@ fi
 if [ $noperms = 0 ]; then
     sudo gpasswd -a "$curuser" www-data # add current user to www-data group
 
-    # This will set the correct permissions on any given folder (and all it's sub-folders) that does not meet the correct criteria
-    # Folder name should be supplied as prameter 1
-    # additional options are -uid=<user name to chown>; -gid=<group name to chown>; -octal=<octal file permissions to chmod>
-    function set_perms() {
+    if [ -f /init_scripts/50-create-folders.sh ]; then
+        bash /init_scripts/50-create-folders.sh
+    else
 
-        user=$(getuser)
-        group="www-data"
-        octal=774
+        declare -a folders774=(
+            "$WROOT/protected/config/local"
+        )
 
-        PARAMS=()
-        while [[ $# -gt 0 ]]; do
-            p="$1"
+        declare -a folders777=(
+            "$WROOT/cache"
+            "$WROOT/assets"
+            "$WROOT/protected/cache"
+            "$WROOT/protected/cache/events"
+            "$WROOT/protected/files"
+            "$WROOT/protected/runtime"
+            "$WROOT/protected/runtime/cache"
+        )
 
-            case $p in
-            -uid*) # Set suffix - ignore if .
-                USER=${1#*=}
-                ;;
-            -gid*)
-                group=${1#*=}
-                ;;
-            -octal*)
-                octal=${1#*=}
-                ;;
-            *) # add everything else to the params array for processing in the next section
-                PARAMS+=("$1")
-                ;;
-            esac
-            shift
-        done
-        set -- "${PARAMS[@]}" # restore positional parameters
+        declare -a folders755=(
+            "$WROOT/protected/assets/newblue/"
+        )
 
-        if [ "$(stat -c '%U' $1)" != $user ] || [ "$(stat -c '%G' $1)" != "$group" ]; then
-            sudo chown -RL "$user":"$group" "$1"
-            echo "Modified ownership on $1 to; OWNER: $user, GROUP: $group"
-        fi
-        if [ "$(stat -c "%a" $1)" != "$octal" ]; then
+        declare -a foldersExclude=(
+            "$WROOT/protected/assets/newblue/src"
+            "$WROOT/protected/assets/newblue/node_scripts"
+            "$WROOT/assets/newblue"
+        )
+
+        # This will set the correct permissions on any given folder (and all it's sub-folders) that does not meet the correct criteria
+        # Folder name should be supplied as prameter 1
+        # additional options are -uid=<user name to chown>; -gid=<group name to chown>; -octal=<octal file permissions to chmod>
+        function set_perms() (
+
+            user="www-data"
+            group="www-data"
+            octal=774
+
+            PARAMS=()
+            while [[ $# -gt 0 ]]; do
+                p="$1"
+
+                case $p in
+                -uid*) # Set suffix - ignore if .
+                    user=${1#*=}
+                    ;;
+                -gid*)
+                    group=${1#*=}
+                    ;;
+                -octal*)
+                    octal=${1#*=}
+                    ;;
+                *) # add everything else to the params array for processing in the next section
+                    PARAMS+=("$1")
+                    ;;
+                esac
+                shift
+            done
+            set -- "${PARAMS[@]}" # restore positional parameters
+
+            # If no sticky / uid / gid bits are specified, make sure we unset any existing settings by adding 00 in front
             [ ${#octal} -le 3 ] && choctal="00$octal" || choctal=$octal
 
-            sudo chmod -R $choctal "$1"
-            echo "Modified permissions on $1 to $choctal"
-        fi
-    }
+            echo "Setting up permissions for $1 (as $octal, $user:$group)"
 
-    export -f getuser
-    export -f set_perms
+            mkdir -p "$i" 2>/dev/null || :
+            ## Fix permissions for root folder
+            chown -L "$user":www-data "$1"
+            chmod "$choctal" "$1"
 
-    ## Fix permissions for protected files
-    chown -L "$curuser":www-data "$WROOT/protected/files"
+            # Exclude any specific folders from the search
+            unset exclude
+            exclude=""
+            for i in "${foldersExclude[@]}"; do
+                exclude+=" -not \( -path '$i' -prune \)"
+            done
 
-    find -L "$WROOT/protected/files" -maxdepth 1 -mindepth 1 -type d -exec bash -c 'set_perms "$0"' {} \;
+            # Loop through each sub-folder individually and recursively change permissions.
+            # We use a loop to improve performance on large folder structures (e.g, protected/files),
+            # where there are many thousands of files, but only a subset of the folders may have the wrong permissions
+            eval "find -L \"$1\" -maxdepth 1 -mindepth 1 -type d ${exclude}" | while read -r folder; do
 
-    # We can ignore setting file permissions when running in a docker conatiner, as we always run as root
-    if [[ "$DOCKER_CONTAINER" != "TRUE" ]] || [ $forceperms == 1 ]; then
-        echo -e "\nResetting file permissions..."
-        if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ] || [ $forceperms == 1 ]; then
-            echo "updaing ownership on $WROOT"
-            sudo chown -RL www-data:www-data $WROOT
-        else
-            echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
-        fi
+                if [ "$(stat -c '%U' $folder/)" != $user ] || [ "$(stat -c '%G' $folder)" != "$group" ]; then
+                    sudo chown -RL "$user":"$group" "$folder"
+                    echo "Modified ownership on $folder to; OWNER: $user, GROUP: $group"
+                fi
+                if [ "$(stat -c "%a" $folder/)" != "$octal" ]; then
+                    [ ${#octal} -le 3 ] && choctal="00$octal" || choctal=$octal
 
-        # update some smaller folders
-        folders774=($WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime)
+                    sudo chmod -R $choctal "$folder"
+                    echo "Modified permissions on $folder to $choctal"
+                fi
+            done
+        )
 
+        # loop through the list of folders to set permission to 774
         for i in "${folders774[@]}"; do
-            echo "updating $i to 774..."
-            sudo chmod -R 774 $i
-
+            set_perms "$i" -octal=774
         done
 
-        # re-own composer and npm config folders in user home directory (sorts issues caused if sudo was used to composer/npm update previously)
-        sudo chown -RL $curuser ~/.config 2>/dev/null || :
-        sudo chown -RL $curuser ~/.composer 2>/dev/null || :
+        # loop through the list of folders to set permission to 777
+        for i in "${folders777[@]}"; do
+            set_perms "$i" -octal=777
+        done
+
+        # loop through the list of folders to set permission to 777
+        for i in "${folders755[@]}"; do
+            set_perms "$i" -octal=755
+        done
+
+        # Any further arrays of folders could be added with different permission requirements...
+
+        # A hack to stop the newblue submodule as being changed...
+        # Will fail silently if git is not installed or the folder does not exist
+        git -C $WROOT/protected/assets/newblue reset --hard >/dev/null 2>&1 || :
+
     fi
+
+    # re-own composer and npm config folders in user home directory (sorts issues caused if sudo was used to composer/npm update previously)
+    sudo chown -RL $curuser ~/.config 2>/dev/null || :
+    sudo chown -RL $curuser ~/.composer 2>/dev/null || :
+
     #  update ImageMagick policy to allow PDFs
     sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &>/dev/null
     sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &>/dev/null

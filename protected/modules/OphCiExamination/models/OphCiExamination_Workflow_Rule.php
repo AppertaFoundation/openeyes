@@ -126,13 +126,14 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
     {
         $firm = \Firm::model()->findByPk($firm_id);
         $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+        $institution_id = $firm->institution_id;
 
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('firm_id = :firm_id OR firm_id IS NULL');
+        $criteria->addCondition('(firm_id = :firm_id OR firm_id IS NULL) and workflow.institution_id = :institution_id');
         $criteria->order = 'firm_id DESC, episode_status_id DESC, subspecialty_id DESC';
-        $criteria->params = [':firm_id' => $firm_id];
+        $criteria->params = [':firm_id' => $firm_id, ':institution_id' => $institution_id];
 
-        $workflows = self::model()->findAll($criteria);
+        $workflows = self::model()->with('workflow')->findAll($criteria);
 
         if (!$workflows) {
             throw new \CException('Cannot find any workflow rules');

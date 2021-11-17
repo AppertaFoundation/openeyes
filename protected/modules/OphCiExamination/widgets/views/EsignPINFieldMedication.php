@@ -125,7 +125,7 @@ if (!$element->isSigned()) {
 
             setVisibleSignatureRow();
 
-            $('body').on("click", ".js-btn-prescribe", function () {
+            $('.<?=$el_class?>').on("click", ".js-btn-prescribe", function () {
                 setTimeout(function() {
                     setVisibleSignatureRow();
                 }, 50);

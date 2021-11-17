@@ -28,7 +28,6 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 
     protected $widgetClass = ObservationsWidget::class;
     protected $auto_update_relations = true;
-    protected $auto_validate_relations = true;
 
     /**
      * @return string the associated database table name

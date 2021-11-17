@@ -8,6 +8,9 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
     private $clr_table = "ophtrconsent_lack_of_capacity_reason";
     private $pivot_table = "et_ophtrconsent_capacity_assessment_lack_cap_reason";
 
+    private const ARCHIVE_CALC = 'ophtrconsent_lack_of_capacity_reason_archive';
+    private const ARCHIVE_CALC_V = 'ophtrconsent_lack_of_capacity_reason_version_archive';
+
     public function up()
     {
         if ($this->dbConnection->schema->getTable($this->clr_table, true) === null) {
@@ -15,26 +18,50 @@ class m210719_160600_add_capacity_assessment_fields extends OEMigration
                 "id" => "pk",
                 "label" => "VARCHAR(128)"
             ), true);
-        } else {
-            $this->dropForeignKey("fk_et_ophtrconsent_calcar_etid", $this->pivot_table);
-            $this->dropForeignKey("fk_et_ophtrconsent_calcar_rid", $this->pivot_table);
-            $this->truncateTable($this->clr_table);
-            if ($this->dbConnection->schema->getTable($this->pivot_table, true) !== null) {
-                $this->truncateTable($this->pivot_table);
-                $this->addForeignKey("fk_et_ophtrconsent_calcar_rid", $this->pivot_table, "lack_of_capacity_reason_id", $this->clr_table, "id");
-            }
-            $this->addForeignKey("fk_et_ophtrconsent_calcar_etid", $this->pivot_table, "element_id", $this->table, "id");
-        }
 
-        $this->insertMultiple(
-            $this->clr_table,
-            [
-                ['label' => 'The patient is unable to understand information relevant to the decision'],
-                ['label' => 'The patient is unable to retain information material to the decision'],
-                ['label' => 'They are unable to use and or weigh this information in the decision-making process'],
-                ['label' => 'They are unconscious'],
-            ]
-        );
+            $this->insertMultiple(
+                $this->clr_table,
+                [
+                    ['label' => 'The patient is unable to understand information relevant to the decision'],
+                    ['label' => 'The patient is unable to retain information material to the decision'],
+                    ['label' => 'They are unable to use and or weigh this information in the decision-making process'],
+                    ['label' => 'They are unconscious'],
+                ]
+            );
+        } else {
+            $this->execute("CREATE TABLE " . self::ARCHIVE_CALC . " AS SELECT * FROM ophtrconsent_lack_of_capacity_reason");
+            $this->execute("CREATE TABLE " . self::ARCHIVE_CALC_V . " AS SELECT * FROM ophtrconsent_lack_of_capacity_reason_version");
+
+            $query_advocate = $this->dbConnection->createCommand('SELECT * FROM ophtrconsent_lack_of_capacity_reason WHERE label="They are unconscious"')->query();
+            if ($query_advocate->rowCount == 0) {
+                $this->insertMultiple(
+                    $this->clr_table,
+                    [
+                        ['label' => 'They are unable to use and or weigh this information in the decision-making process'],
+                        ['label' => 'They are unconscious'],
+                    ]
+                );
+            }
+
+            $old_unable_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "The patient is unable to use and weigh this information in the decision-making process"')->queryScalar();
+            $old_unconscious_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "The patient is unable to communicate their decision"')->queryScalar();
+
+
+            $unable_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "They are unable to use and or weigh this information in the decision-making process"')->queryScalar();
+            $unconscious_id = $this->dbConnection->createCommand('SELECT id FROM ' . $this->clr_table . ' WHERE `label` = "They are unconscious"')->queryScalar();
+
+            $this->execute("
+                UPDATE " . $this->pivot_table .
+                " SET lack_of_capacity_reason_id = CASE
+                    WHEN lack_of_capacity_reason_id = " . $old_unable_id . " THEN " . $unable_id . "
+                    WHEN lack_of_capacity_reason_id = " . $old_unconscious_id . " THEN " . $unconscious_id . "
+                    ELSE lack_of_capacity_reason_id
+                END
+                WHERE lack_of_capacity_reason_id  in (" . $old_unable_id . "," . $old_unconscious_id . ")
+            ");
+
+            $this->execute("DELETE FROM ophtrconsent_lack_of_capacity_reason WHERE id = " . $old_unable_id . " OR id = " . $old_unconscious_id . ";");
+        }
 
         if ($this->dbConnection->schema->getTable($this->pivot_table, true) === null) {
             $this->createOETable($this->pivot_table, array(

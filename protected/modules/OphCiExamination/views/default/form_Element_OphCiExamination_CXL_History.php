@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields flex-layout full-width">
+<div class="element-both-eyes element-fields flex-layout full-width">
   <div class="large-1 column">
     <label><?php echo $element->getAttributeLabel('asthma_id') ?>:</label>
   </div>
