@@ -204,8 +204,23 @@ class ProfileController extends BaseController
     {
         $password = Yii::app()->request->getParam('pwd', null);
         $user_auth = Yii::app()->session['user_auth'];
+        // refresh user_auth before use, in case the auth method change in admin
+        $user_auth->refresh();
 
-        $is_verified = password_verify($password, $user_auth->password_hash);
+        if ($user_auth->isLocalAuth()) {
+            // verify password for local user
+            $is_verified = $user_auth->verifyPassword($password);
+        } else {
+            // for external user, send username and password in a request for verification
+            $institution_id = Yii::app()->session['selected_institution_id'];
+            $site_id = Yii::app()->session['selected_site_id'];
+            // make a copy of current $user_auth
+            $user_auth_clone = clone $user_auth;
+            // modify the password to the user input
+            $user_auth_clone->password = $password;
+            $user_identity = new UserIdentity($user_auth->username, $password, $institution_id, $site_id);
+            $is_verified = $user_identity->verifyExternalPassword($user_auth_clone);
+        }
 
         $info_icon = null;
         $pincode_html = null;

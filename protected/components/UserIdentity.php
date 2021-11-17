@@ -605,4 +605,34 @@ class UserIdentity extends CUserIdentity
 
         return;
     }
+
+    /**
+     * extract ldap authentication logic from function authticateUser
+     * 
+     * @param UserAuthentication $user_authentication
+     * @return bool
+     */
+    public function verifyExternalPassword(UserAuthentication $user_authentication)
+    {
+        $inst_auth = $user_authentication->institutionAuthentication;
+
+        $ldap_config = $inst_auth->LDAPConfig;
+        if ($ldap_config->getLDAPParam('utf8_decode_required')) {
+            $this->password = utf8_decode($this->password);
+        }
+        $auth_result = [false, "Invalid login."];
+        switch ($ldap_config->ldap_method) {
+            case 'zend':
+                $auth_result = $this->authenticateZendLDAP($user_authentication);
+                break;
+            case 'native-search':
+                $auth_result = $this->authenticateNativeLDAP($user_authentication);
+                break;
+            default:
+                $auth_result = $this->authenticateOtherLDAP($user_authentication);
+                break;
+        }
+
+        return $auth_result[0];
+    }
 }
