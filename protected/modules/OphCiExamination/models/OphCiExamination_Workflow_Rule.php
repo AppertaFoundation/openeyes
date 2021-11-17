@@ -135,6 +135,10 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
 
         $workflows = self::model()->with('workflow')->findAll($criteria);
 
+        if (!$workflows) {
+            throw new \CException('Cannot find any workflow rules');
+        }
+
         $workflow = null;
 
         foreach ($workflows as $possibleWorkflow) {
@@ -156,6 +160,10 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
                 $workflow = $possibleWorkflow->workflow;
                 break;
             }
+        }
+
+        if (!$workflow) {
+            throw new \CException('Cannot find default workflow rule');
         }
 
         return $workflow;
