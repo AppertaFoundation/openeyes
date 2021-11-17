@@ -65,7 +65,7 @@
             } ?>
         </div>
         <?php if ($entry->comments) { ?>
-            <i class="oe-i comments-who small pad-right js-has-tooltip" data-tt-type="basic" data-tooltip-content="User comment by <br /><?= $entry->lastModifiedUser->getFullName() ?>"></i>
+            <i class="oe-i comments-who small pad-right js-has-tooltip" data-tt-type="basic" data-tooltip-content="User comment"></i>
             <span class="user-comment"><?= $entry->comments; ?></span>
         <?php } ?>
     </td>
