@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -151,7 +152,7 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
      */
     public function getUnsignedMessage(): string
     {
-        return "This prescription must be signed by a Consultant before it can be sent.";
+        return "This prescription must be signed before it can be issued.";
     }
 
     /**
