@@ -162,7 +162,8 @@ if [ "$composer" == "1" ]; then
     }
 
     echo "DEPENDENCIES BEING EVALUATED..."
-
+    # delete the lock file first as we want to be sure it gets regenerated (note the lock file is no longer comitted to version control)
+    rm "$WROOT/composer.lock" 2>/dev/null || :
     echo "Installing/updating composer dependencies"
     sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --no-interaction $composerexta
 

@@ -3,6 +3,8 @@
 .*swp
 .idea
 tags
+# rely on static build images to ensure dependency consistency
+composer.lock
 /puppet/cache/
 /.vagrant
 /.buildpath
