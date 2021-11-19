@@ -49,7 +49,7 @@ foreach ($element->entries as $entry) {
             $is_stopped = true;
         } else {
             foreach ($history_entries as $history_entry) {
-                if (!$entry->isDuplicate($history_entry) && $entry->medication_id === $history_entry->medication_id && $entry->isStopped()) {
+                if ($entry->isDuplicate($history_entry) && $entry->isStopped()) {
                     $is_stopped = true;
                     break;
                 }
