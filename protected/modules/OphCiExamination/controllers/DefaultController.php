@@ -1334,6 +1334,58 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    protected function setComplexAttributes_Element_OphCiExamination_ClinicProcedures($element, $data, $index)
+    {
+        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'] ?: [];
+        $element->refresh();
+        $entry_list = [];
+
+        foreach ($entries as $entry) {
+            $procedure_entry = new models\OphCiExamination_ClinicProcedures_Entry();
+            $procedure_entry->procedure_id = $entry['procedure_id'];
+            $procedure_entry->outcome_time = $entry['outcome_time'];
+            $date = new DateTime($entry['date']);
+            $procedure_entry->date = $date->format('Y-m-d');
+            $procedure_entry->comments = (array_key_exists('comments', $entry) && !empty($entry['comments'])) ? $entry['comments'] : null;
+            $eye_id = 0;
+            if (array_key_exists('left_eye', $entry)) {
+                $eye_id += 1;
+            }
+            if (array_key_exists('right_eye', $entry)) {
+                $eye_id += 2;
+            }
+            $procedure_entry->eye_id = $eye_id;
+            $entry_list[] = $procedure_entry;
+        }
+        $element->entries = $entry_list;
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_ClinicProcedures($element, $data, $index)
+    {
+        models\OphCiExamination_ClinicProcedures_Entry::model()->deleteAll('element_id = ?', array($element->id));
+        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'] ?: [];
+
+        foreach ($entries as $entry) {
+            $procedure_entry = new models\OphCiExamination_ClinicProcedures_Entry();
+            $procedure_entry->element_id = $element->id;
+            $procedure_entry->procedure_id = $entry['procedure_id'];
+            $procedure_entry->outcome_time = $entry['outcome_time'];
+            $date = new DateTime($entry['date']);
+            $procedure_entry->date = $date->format('Y-m-d');
+            $procedure_entry->comments = (array_key_exists('comments', $entry) && !empty($entry['comments'])) ? $entry['comments'] : null;
+            $procedure_entry->subspecialty_id = $element->event->firm->serviceSubspecialtyAssignment->subspecialty->id;
+            $eye_id = 0;
+            if (array_key_exists('left_eye', $entry)) {
+                $eye_id += 1;
+            }
+            if (array_key_exists('right_eye', $entry)) {
+                $eye_id += 2;
+            }
+            $procedure_entry->eye_id = $eye_id;
+            $procedure_entry->save();
+        }
+    }
+
     /**
      * If the Patient does not currently have a diabetic diagnosis, specify that it's required
      * so the validation rules can check for it being set in the given element (currently only DR Grading).
