@@ -27,7 +27,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
     {
 
         $patient_merged_in_merge_requests = $this->getDbConnection()
-            ->createCommand("SELECT id, secondary_id,secondary_hos_num as hos_num, secondary_nhsnum as nhs_num
+            ->createCommand("SELECT id, secondary_id,REPLACE(secondary_hos_num, ' ', '') as hos_num, REPLACE(secondary_nhsnum, ' ', '') as nhs_num
                             FROM patient_merge_request
                             WHERE primary_id = '$secondary_patient_id'  AND status = " . $this::$MERGED_PATIENT_STATUS)
             ->queryAll();
@@ -191,7 +191,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         if ($genetics_installed) {
             // If genetics module is enabled we filter out those patients who are genetics AND
             // no hos_num AND no nhs_num
-            $patients_sql = 'SELECT p.id, hos_num, nhs_num, deleted
+            $patients_sql = 'SELECT p.id, REPLACE(hos_num, " ", "") as hos_num, REPLACE(nhs_num, " ", "") as nhs_num, deleted
                              FROM patient p
                              WHERE p.id NOT IN (
                                     SELECT patient_id
@@ -247,7 +247,10 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                 } else {
                     // Check if patient had other patients merged into it
                     $patient_merged_in_merge_requests = $this->getDbConnection()
-                        ->createCommand("SELECT id, secondary_id,secondary_hos_num as hos_num, secondary_nhsnum as nhs_num FROM patient_merge_request WHERE primary_id = '$patient_id' AND status = " . $this::$MERGED_PATIENT_STATUS)
+                        ->createCommand("SELECT id, secondary_id,REPLACE(secondary_hos_num, ' ', '') as hos_num,
+                                        REPLACE(secondary_nhsnum, ' ', '') as nhs_num
+                                        FROM patient_merge_request
+                                        WHERE primary_id = '$patient_id' AND status = " . $this::$MERGED_PATIENT_STATUS)
                         ->queryAll();
                     $added_identifiers = [];
                     // Go through all the merge requests and add identifiers to the patient
