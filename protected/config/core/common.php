@@ -52,8 +52,9 @@ if (file_exists('/etc/openeyes/db.conf')) {
     $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
     $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
     $ssoImplicitFLow = strtolower(getenv('SSO_IMPLICIT_FLOW')) === 'true';
-    $ssoUserAttributes = getenv('SSO_USER_ATTRIBUTES') ?: '';
-    $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
+
+    $ssoUserFields = getenv('SSO_USER_FIELDS') ?: '';
+    $ssoOIDCFields = getenv('SSO_OIDC_FIELDS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
     $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
@@ -855,8 +856,21 @@ $config = array(
             'authParams' => array('response_mode' => 'form_post'),
             // Generates random encryption key for openssl
             'encryptionKey' => $ssoClientSecret,
-            // Configure custom claims with the user attributes that the claims are for
-            'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+            'field_mapping_allow_list_with_defaults' => array(
+                'username' => '',
+                'email' => '',
+                'first_name' => '',
+                'last_name' => '',
+                'title' => '',
+                'qualifications' => '',
+                'role' => '',
+                'doctor_grade_id' => '',
+                'registration_code' => '',
+                'is_consultant' => 0,
+                'is_surgeon' => 0
+            ),
+            // Field mapping for (user_field, oidc_field). user_field must be in field_mapping_allow_list
+            'field_mapping' => array_combine(explode(",", $ssoUserFields), explode(",", $ssoOIDCFields)),
             // URL to redirect users to SSO portal to login again after session timeout
             'portal_login_url' => $ssoLoginURL,
         ),

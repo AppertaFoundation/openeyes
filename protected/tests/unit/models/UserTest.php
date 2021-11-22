@@ -150,7 +150,7 @@ class UserTest extends ActiveRecordTestCase
         // Enable default rights to be assigned to the user
         SsoDefaultRights::model()->saveDefaultRights($attributes);
         Yii::app()->params['auth_source'] = 'OIDC';
-        $testuser = array('email' => 'user@unittest.com', 'given_name' => 'User', 'family_name' => 'SSO');
+        $testuser = array('username' => 'oidcuser', 'email' => 'user@unittest.com', 'first_name' => 'User', 'last_name' => 'SSO');
         $this->assertArrayHasKey('username', $this->users('ssouser')->setSSOUserInformation($testuser));
         $this->assertArrayHasKey('password', $this->users('ssouser')->setSSOUserInformation($testuser));
     }
