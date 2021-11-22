@@ -20,7 +20,7 @@
  * @var WaitingListController $this
  * @var Element_OphTrOperationbooking_Operation[] $operations
  */
-
+$operations = $dataProvider->getData();
 if (isset($_POST['status']) && $_POST['status'] != '') {
     $operations = array_filter($operations, function ($operation) {
         return $operation->getNextLetter() == $_POST['status'];
@@ -200,6 +200,11 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
     <?php } ?>
   </tbody>
   <tfoot>
+    <tr>
+      <td colspan="4">
+          <?php $this->widget('LinkPager', ['pages' => $dataProvider->pagination]); ?>
+      </td>
+    </tr>
   <tr>
     <td colspan="13">
       <div class="waiting-list-key">

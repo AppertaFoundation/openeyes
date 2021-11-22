@@ -84,29 +84,25 @@ class WaitingListController extends BaseModuleController
     {
         Audit::add('waiting list', 'search');
 
-        if (empty($_POST)) {
-            $operations = array();
-        } else {
-            $subspecialty_id = \Yii::app()->request->getParam('subspecialty-id');
-            $firm_id = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
-            $status = !empty($_POST['status']) ? $_POST['status'] : null;
-            $patient_identifier_value = \Yii::app()->request->getParam('patient_identifier_value');
-            $site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
-                        $booking_status =  \Yii::app()->request->getParam('booking_status', '');
+        $subspecialty_id = \Yii::app()->request->getParam('subspecialty-id');
+        $firm_id = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
+        $status = !empty($_POST['status']) ? $_POST['status'] : null;
+        $patient_identifier_value = \Yii::app()->request->getParam('patient_identifier_value');
+        $site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
+                    $booking_status =  \Yii::app()->request->getParam('booking_status', '');
 
-            YiiSession::set('waitinglist_searchoptions', array(
-                    'subspecialty-id' => $subspecialty_id,
-                    'firm-id' => $firm_id,
-                    'status' => $status,
-                    'patient_identifier_value' => $patient_identifier_value,
-                    'site_id' => $site_id,
-                    'booking_status' => $booking_status
-            ));
+        YiiSession::set('waitinglist_searchoptions', array(
+                'subspecialty-id' => $subspecialty_id,
+                'firm-id' => $firm_id,
+                'status' => $status,
+                'patient_identifier_value' => $patient_identifier_value,
+                'site_id' => $site_id,
+                'booking_status' => $booking_status
+        ));
 
-            $operations = $this->getWaitingList($firm_id, $subspecialty_id, $status, $patient_identifier_value, $site_id, $booking_status);
-        }
+        $dataProvider = $this->getWaitingList($firm_id, $subspecialty_id, $status, $patient_identifier_value, $site_id, $booking_status);
 
-        $this->renderPartial('_list', array('operations' => $operations, 'assetPath' => $this->assetPath), false, true);
+        $this->renderPartial('_list', array('dataProvider' => $dataProvider, 'assetPath' => $this->assetPath), false, true);
     }
 
     /**
@@ -123,15 +119,27 @@ class WaitingListController extends BaseModuleController
      */
     public function getWaitingList($firm_id, $subspecialty_id, $status, $patient_identifier_value = false, $site_id = false, $booking_status)
     {
-        $where_sql = '';
-        $where_params = array();
+        $criteria = new CDbCriteria();
+        // common joins
+        $criteria_with = [
+            'event.episode.patient.contact',
+            'event.episode.patient.practice',
+            'event.episode.patient.contact.correspondAddress',
+            'eye',
+            'priority',
+            'status',
+            'date_letter_sent',
+            'procedures'
+        ];
 
         if ($firm_id) {
-            $where_sql .= ' AND firm.id = :firm_id';
-            $where_params[':firm_id'] = $firm_id;
+            $criteria_with[] = 'event.episode.firm';
+            $criteria->addCondition('firm.id = :firm_id');
+            $criteria->params[':firm_id'] = $firm_id;
         } elseif (!empty($subspecialty_id)) {
-            $where_sql .= ' AND serviceSubspecialtyAssignment.subspecialty_id = :subspecialty_id';
-            $where_params[':subspecialty_id'] = $subspecialty_id;
+            $criteria_with[] = 'event.episode.firm.serviceSubspecialtyAssignment';
+            $criteria->addCondition('serviceSubspecialtyAssignment.subspecialty_id = :subspecialty_id');
+            $criteria->params[':subspecialty_id'] = $subspecialty_id;
         }
 
         $patient_search = new \PatientSearch();
@@ -144,61 +152,60 @@ class WaitingListController extends BaseModuleController
                 $type = $item['patient_identifier_type'];
                 $id_condition[] = "(value = :{$pi_key}_value AND patient_identifier_type_id = :{$pi_key}_type_id)";
 
-                $where_params[":{$pi_key}_value"] = $item['term'];
-                $where_params[":{$pi_key}_type_id"] = $type->id;
+                $criteria->params[":{$pi_key}_value"] = $item['term'];
+                $criteria->params[":{$pi_key}_type_id"] = $type->id;
             }
 
             if ($id_condition) {
-                $where_sql .= ' AND (' . implode(' OR ', $id_condition) . ')';
+                $criteria_with['event.episode.patient.identifiers'] = array('together' => true);
+                $criteria->addCondition('(' . implode(' OR ', $id_condition) . ')');
             } else {
                 // means 'terms_with_types' didn't return anything so we have no patient_identifier_type to search in
                 // if no values in $patient_search_details['patient_identifier_value'] means the input field was empty
                 // so we do not have to restrict this part
-                $where_sql .= ' AND 1=0 ';
+                $criteria->addCondition('1 = 0');
             }
         }
 
         if ($site_id && ctype_digit($site_id)) {
-            $where_sql .= ' AND t.site_id = :site_id';
-            $where_params[':site_id'] = $site_id;
+            $criteria->addCondition('t.site_id = :site_id');
+            $criteria->params[':site_id'] = $site_id;
         } else {
-            $where_sql .= ' AND site.institution_id = :institution_id';
-            $where_params[':institution_id'] = Institution::model()->getCurrent()->id;
+            $criteria_with[] = 'site';
+            $criteria->addCondition('site.institution_id = :institution_id');
+            $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
         }
 
         if ($booking_status) {
-            $where_sql .= ' AND t.status_id = :status_id';
-            $where_params[':status_id'] = $booking_status;
+            $criteria->addCondition('t.status_id = :status_id');
+            $criteria->params[':status_id'] = $booking_status;
         } else {
             $booking_status_ids = Yii::app()->db->createCommand()->select('id')->from('ophtroperationbooking_operation_status')
                 ->where(['in','name', ['On-Hold', 'Requires scheduling', 'Requires rescheduling', ]])->queryColumn();
             $booking_status_ids = "(" . implode(',', $booking_status_ids) . ")";
-            $where_sql .= ' AND t.status_id IN ' . $booking_status_ids;
+            $criteria->addCondition("t.status_id IN $booking_status_ids");
         }
 
-        Yii::app()->event->dispatch('start_batch_mode');
+        $criteria->with = $criteria_with;
+        $criteria->addCondition('event.id IS NOT NULL AND episode.end_date IS NULL');
+        $criteria->order = 'decision_date asc';
 
-        $operations = Element_OphTrOperationbooking_Operation::model()
-            ->with(array(
-                    'event.episode.firm.serviceSubspecialtyAssignment.subspecialty',
-                    'event.episode.patient.contact',
-                    'event.episode.patient.practice',
-                    'event.episode.patient.identifiers',
-                    'event.episode.patient.contact.correspondAddress',
-                    'site',
-                    'eye',
-                    'priority',
-                    'status',
-                    'date_letter_sent',
-                    'procedures',
-                ))->findAll(array(
-                    'condition' => 'event.id IS NOT NULL AND episode.end_date IS NULL'.$where_sql,
-                    'params' => $where_params,
-                    'order' => 'decision_date asc',
-                ));
+        // get total record count for pagination
+        $items_count = Element_OphTrOperationbooking_Operation::model()->count($criteria);
+
+        // instantiate pagination
+        $pagination = new CPagination($items_count);
+        $pagination->pageSize = 15;
+        $pagination->applyLimit($criteria);
+
+        Yii::app()->event->dispatch('start_batch_mode');
+        $dataProvider = new CActiveDataProvider('Element_OphTrOperationbooking_Operation', [
+            'criteria' => $criteria,
+            'pagination' => $pagination,
+        ]);
         Yii::app()->event->dispatch('end_batch_mode');
 
-        return $operations;
+        return $dataProvider;
     }
 
     /**
