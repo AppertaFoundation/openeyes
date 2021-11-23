@@ -128,11 +128,21 @@ class UserOutOfOffice extends BaseActiveRecordVersioned
     {
         $message = null;
         if ($user = self::model()->find('user_id= :user_id', ['user_id' => $userid])) {
-            $now = date('Y-m-d');
-            if ($user->enabled === '1' && $now > $user->from_date && $now < $user->to_date) {
+            $now_datetime = new DateTime(date('Y-m-d'));
+            $now_timestamp = $now_datetime->getTimestamp();
+
+            $from_datetime = new DateTime($user->from_date);
+            $from_timestamp = $from_datetime->getTimestamp();
+
+            //Add an offset to ensure the date range is inclusive
+            $to_datetime = (new DateTime($user->to_date))->add(new DateInterval("P1D"));
+            $to_timestamp = $to_datetime->getTimestamp();
+
+            if ($user->enabled === '1' && $now_timestamp >= $from_timestamp && $now_timestamp <= $to_timestamp) {
                 $message = $user->user->getFullnameAndTitle()." is currently out of office. You can instead send message to ".$user->alternate_user->getFullnameAndTitle();
             }
         }
+
         return $message;
     }
 }
