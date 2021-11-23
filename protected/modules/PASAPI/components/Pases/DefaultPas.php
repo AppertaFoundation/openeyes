@@ -255,8 +255,6 @@ class DefaultPas extends BasePAS
 
         $post_data = "xmlrequest=".$xml->asXML();
 
-        $xml = $this->curl->post($this->config['url'], $post_data);
-        $ch = $this->curl->curl;
         $response = $this->curl->post($this->config['url'], $post_data);
         $ch = $this->curl->curl;
 
