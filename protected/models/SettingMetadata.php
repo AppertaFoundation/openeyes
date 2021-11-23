@@ -38,6 +38,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
     public static array $CONTEXT_CLASSES = [
         'SettingUser' => 'user_id',
         'SettingFirm' => 'firm_id',
+        'SettingInstitutionSubspecialty' => ['institution_id', 'subspecialty_id'],
         'SettingSubspecialty' => 'subspecialty_id',
         'SettingSpecialty' => 'specialty_id',
         'SettingSite' => 'site_id',
@@ -164,6 +165,30 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return $model::model()->find($criteria);
     }
 
+    protected function getSettingValueWithConditions($model, $key, $conditions, $element_type)
+    {
+        $criteria = new CDbcriteria();
+
+        foreach ($conditions as $condition_field => $condition_value) {
+            if ($condition_field && $condition_value) {
+                $criteria->addCondition($condition_field . ' = :' . $condition_field);
+                $criteria->params[':' . $condition_field] = $condition_value;
+            }
+        }
+
+        $criteria->addCondition('`key`=:key');
+        $criteria->params[':key'] = $key;
+
+        if ($element_type) {
+            $criteria->addCondition('element_type_id=:eti');
+            $criteria->params[':eti'] = $element_type->id;
+        } else {
+            $criteria->addCondition('element_type_id is null');
+        }
+
+        return $model::model()->find($criteria);
+    }
+
     /**
      * @param string|null $key Setting key
      * @param ElementType|null $element_type Element type the setting applies to
@@ -203,7 +228,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $is_admin = false;
 
         // if yii command reference SettingsMetadata, there won't be a user
-        if(property_exists(Yii::app(), 'user') && isset(Yii::app()->user)){
+        if (property_exists(Yii::app(), 'user') && isset(Yii::app()->user)) {
             $is_admin = Yii::app()->user->checkAccess('admin');
         }
         // only on the admin system settings page and with admin role, the user can view other institution settings
@@ -213,7 +238,24 @@ class SettingMetadata extends BaseActiveRecordVersioned
                 continue;
             }
             if ($field) {
-                if (${$field} && $setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
+                if (getType($field) === 'array') {
+                    $fields = $field;
+                    $conditions = [];
+
+                    foreach ($fields as $field) {
+                        if (${$field}) {
+                            $conditions[$field] = ${$field};
+                        }
+                    }
+
+                    if (count($conditions) === count($fields) && $setting = $this->getSettingValueWithConditions($class, $key, $conditions, $element_type)) {
+                        if ($return_object) {
+                            return $setting;
+                        }
+
+                        return $this->parseSetting($setting, $metadata);
+                    }
+                } elseif (${$field} && $setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
                     if ($return_object) {
                         return $setting;
                     }
