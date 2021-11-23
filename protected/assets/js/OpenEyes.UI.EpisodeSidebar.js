@@ -223,6 +223,11 @@ OpenEyes.UI = OpenEyes.UI || {};
                     },
                     'complete': function () {
                         self.sendImageUrlAjaxRequest = true;
+                    },
+                    'error': function () {
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: "Unable to generate a view at this time, please contact your administrator."
+                        }).open();
                     }
                 });
             }
