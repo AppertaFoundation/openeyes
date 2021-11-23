@@ -481,13 +481,25 @@ class AdminController extends ModuleAdminController
         $errors = array();
 
         if (!empty($_POST)) {
+            $transaction = Yii::app()->db->beginTransaction();
             $rule->attributes = $_POST['OphTrOperationbooking_Waiting_List_Contact_Rule'];
 
             if (!$rule->save()) {
                 $errors = $rule->getErrors();
             } else {
-                Audit::add('admin', 'update', serialize($_POST), false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
-                $this->redirect(array('/OphTrOperationbooking/admin/viewWaitingListContactRules'));
+                try {
+                    $rule->createMapping(ReferenceData::LEVEL_INSTITUTION, Yii::app()->session['selected_institution_id']);
+                } catch (Exception $e) {
+                    $errors[] = $e->getMessage();
+                }
+
+                if (empty($errors)) {
+                    $transaction->commit();
+                    Audit::add('admin', 'update', serialize($_POST), false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
+                    $this->redirect(array('/OphTrOperationbooking/admin/viewWaitingListContactRules'));
+                } else {
+                    $transaction->rollback();
+                }
             }
         }
 
@@ -510,13 +522,27 @@ class AdminController extends ModuleAdminController
         $errors = array();
 
         if (!empty($_POST)) {
+            $transaction = Yii::app()->db->beginTransaction();
             $rule->attributes = $_POST['OphTrOperationbooking_Waiting_List_Contact_Rule'];
 
             if (!$rule->save()) {
                 $errors = $rule->getErrors();
             } else {
-                Audit::add('admin', 'update', $rule->id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
-                $this->redirect(array('/OphTrOperationbooking/admin/viewWaitingListContactRules'));
+                try {
+                    if (!$rule->hasMapping(ReferenceData::LEVEL_INSTITUTION, Yii::app()->session['selected_institution_id'])) {
+                        $rule->createMapping(ReferenceData::LEVEL_INSTITUTION, Yii::app()->session['selected_institution_id']);
+                    }
+                } catch (Exception $e) {
+                    $errors[] = $e->getMessage();
+                }
+
+                if (empty($errors)) {
+                    $transaction->commit();
+                    Audit::add('admin', 'update', $rule->id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
+                    $this->redirect(array('/OphTrOperationbooking/admin/viewWaitingListContactRules'));
+                } else {
+                    $transaction->rollback();
+                }
             }
         }
 
@@ -540,11 +566,21 @@ class AdminController extends ModuleAdminController
 
         if (!empty($_POST)) {
             if (@$_POST['delete']) {
+                $transaction = Yii::app()->db->beginTransaction();
+                try {
+                    $rule->deleteMapping(ReferenceData::LEVEL_INSTITUTION, Yii::app()->session['selected_institution_id']);
+                } catch (Exception $e) {
+                    $errors[] = $e->getMessage();
+                }
                 if (!$rule->delete()) {
                     $errors = $rule->getErrors();
-                } else {
+                }
+                if (empty($errors)) {
+                    $transaction->commit();
                     Audit::add('admin', 'delete', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
                     $this->redirect(array('/OphTrOperationbooking/admin/viewWaitingListContactRules'));
+                } else {
+                    $transaction->rollback();
                 }
             }
         }

@@ -50,6 +50,10 @@
             <td><?php echo $rule->parent ? $rule->parent->treeName : 'None' ?></td>
         </tr>
         <tr>
+            <td><?php echo $rule->getAttributeLabel('institution_id') ?>:</td>
+            <td><?php echo Institution::model()->getCurrent()->name ?></td>
+        </tr>
+        <tr>
             <td><?php echo $rule->getAttributeLabel('site_id') ?>:</td>
             <td><?php echo $rule->site ? $rule->site->name : 'Not set' ?></td>
         </tr>

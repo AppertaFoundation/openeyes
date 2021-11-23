@@ -1399,6 +1399,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
         $criteria = new CDbCriteria();
         $criteria->addCondition('parent_rule_id is null');
+        $criteria->with = 'institutions';
+        $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
         $criteria->order = 'rule_order asc';
 
         foreach (OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAll($criteria) as $rule) {
