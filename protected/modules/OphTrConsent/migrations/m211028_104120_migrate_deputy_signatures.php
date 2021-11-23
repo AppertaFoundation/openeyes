@@ -13,8 +13,10 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
     private function createNewElementIfNeeded($element)
     {
         $new_element_id = null;
+        $existing_element = $this->dbConnection->createCommand(
+            "SELECT id FROM " . self::ET . " WHERE event_id = :event_id LIMIT 1;"
+        )->queryScalar(array(':event_id'=>$element['event_id']));
 
-        $existing_element = $this->execute("SELECT id FROM " . self::ET . " WHERE event_id = {$element['event_id']};");
         if (!$existing_element) {
             ob_start();
             $this->insert(self::ET, [
@@ -27,7 +29,7 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
             ob_clean();
             $new_element_id = Yii::app()->db->getLastInsertID();
         } else {
-            $new_element_id = $existing_element['id'];
+            $new_element_id = $existing_element;
         }
         return $new_element_id;
     }
@@ -74,7 +76,10 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
     private function createSignatureElementIfNeeded($element)
     {
         $new_element_id = null;
-        $existing_signature_element = $this->execute("SELECT id FROM " . self::ESIGN_ET . " WHERE event_id = {$element['event_id']};");
+        $existing_signature_element = $this->dbConnection->createCommand(
+            "SELECT id FROM " . self::ESIGN_ET . " WHERE event_id = :event_id LIMIT 1;"
+        )->queryScalar(array(':event_id'=>$element['event_id']));
+
         if (!$existing_signature_element) {
             ob_start();
             $this->insert(self::ESIGN_ET, [
@@ -87,7 +92,7 @@ class m211028_104120_migrate_deputy_signatures extends OEMigration
             ob_clean();
             $new_element_id = Yii::app()->db->getLastInsertID();
         } else {
-            $new_element_id = $existing_signature_element['id'];
+            $new_element_id = $existing_signature_element;
         }
 
         return $new_element_id;

@@ -135,19 +135,21 @@ class m210913_110100_import_legacy_signatures extends OEMigration
 
             $this->setVerbose(false);
             foreach ($additionals as $additional) {
-                $this->addSignature($additional, self::LEGACY_ET, 'Interpreter', 'interpreter_signature_id');
-                $this->addSignature($additional, self::LEGACY_2ND_ET, 'Witness', 'witness_signature_id');
-                $this->addSignature($additional, self::LEGACY_3_ET, 'Patient', 'patient_signature_id');
-                $this->addSignature($additional, self::LEGACY_4_ET, 'Parent/Guardian', 'guardian_signature_id');
-                $this->addSignature($additional, self::LEGACY_5_ET, 'Child', 'child_signature_id');
+                $this->addSignature($additional, self::LEGACY_ET, 'Interpreter', 'interpreter_signature_id', 2);
+                $this->addSignature($additional, self::LEGACY_2ND_ET, 'Witness', 'witness_signature_id', 1);
+                $this->addSignature($additional, self::LEGACY_3_ET, 'Patient', 'patient_signature_id', 5);
+                $this->addSignature($additional, self::LEGACY_4_ET, 'Parent/Guardian', 'guardian_signature_id', 3);
+                $this->addSignature($additional, self::LEGACY_5_ET, 'Child', 'child_signature_id', 4);
             }
             $this->setVerbose(true);
         }
     }
 
-    public function addSignature($additional, $table, $role, $attribute)
+    public function addSignature($additional, $table, $role, $attribute, $initiator_row_id)
     {
-
+        $element_type_id = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('class_name = :class_name',
+            array(':class_name' => 'OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures'))
+            ->queryScalar();
         $signature_item = $this->dbConnection
             ->createCommand("SELECT * FROM " . $table . " WHERE event_id = ".$additional['event_id']."")->queryRow();
 
@@ -162,7 +164,7 @@ class m210913_110100_import_legacy_signatures extends OEMigration
             $this->execute("
                 INSERT INTO " . self::NEW_ITEM . "
             (
-                                        element_id, `type`, signature_file_id, signatory_role, signatory_name,
+                                        element_id, `type`, signature_file_id, signatory_role, signatory_name, initiator_element_type_id, initiator_row_id,
                                         `timestamp`, last_modified_user_id, last_modified_date, created_user_id, created_date
             ) VALUES (
             " . $element_id . ",
@@ -170,6 +172,8 @@ class m210913_110100_import_legacy_signatures extends OEMigration
             " . $signature_item['protected_file_id'] . ",
             '" . $role . "',
             '" . $name . "',
+            '" . $element_type_id . "',
+            '" . $initiator_row_id . "',
             " . $date . ",
             " . $signature_item['last_modified_user_id'] . ",
             '" . $signature_item['last_modified_date'] . "',
