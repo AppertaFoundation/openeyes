@@ -65,8 +65,8 @@
                             $aconst = 'None';
                             if ($this->is_auto && !$element->{"manually_overriden_" . $side}) {
                                 $iolrefValues = Element_OphInBiometry_IolRefValues::model()->findAllByAttributes(array('event_id' => $element->event->id));
-                                foreach ($iolrefValues as $iolrefData)
-                                    if (isset($data[0])) {{
+                                foreach ($iolrefValues as $iolrefData){
+                                    if (isset($data[0])) {
                                         if ($iolrefData->lens_id == $element->{'lens_' . $side}->id && $iolrefData->formula_id == $data[0]->id) {
                                             $aconst = $this->formatAconst($iolrefData->constant);
                                         }
