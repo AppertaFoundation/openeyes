@@ -242,6 +242,7 @@ if [ $noperms = 0 ]; then
             "$WROOT/protected/files"
             "$WROOT/protected/runtime"
             "$WROOT/protected/runtime/cache"
+            "$WROOT/protected/migrations/data/freehand_templates"
         )
 
         declare -a folders755=(
