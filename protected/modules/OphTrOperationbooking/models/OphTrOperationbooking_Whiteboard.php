@@ -454,7 +454,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 static function ($risk) use ($exam_api, $patient, $whiteboard, $other_risk) {
                     $risk_name = $risk->name;
 
-                    if ($risk->risk_id === $other_risk->id) {
+                     if (!is_null($other_risk) and $risk->risk_id === $other_risk->id) {
                         $risk_name = 'Other';
                     }
                     $exam_risk = $exam_api->getRiskByName($patient, $risk_name);
