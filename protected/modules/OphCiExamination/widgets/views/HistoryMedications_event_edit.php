@@ -409,7 +409,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             searchOptions: {
                 searchSource: medicationsController.options.searchSource,
             },
-            enableCustomSearchEntries: true,
+            enableCustomEntryWhenNoResults: true,
             searchAsTypedItemProperties: {
                 id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"
             },
