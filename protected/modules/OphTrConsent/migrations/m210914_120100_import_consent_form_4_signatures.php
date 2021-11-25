@@ -162,7 +162,7 @@ class m210914_120100_import_consent_form_4_signatures extends OEMigration
                 b.contact_details as comment
             FROM " . self::LEGACY_2ND_ET . " AS b
                 LEFT JOIN `protected_file` pf ON pf.id = b.`signature_file_id`
-            WHERE b.`element_id` = :element_id")->queryAll(array(':element_id'=>$element['id']));
+            WHERE b.`element_id` = :element_id")->queryAll(true, array(':element_id'=>$element['id']));
 
         // cc 1-3 contact
         foreach ($contacts as $contact) {
