@@ -149,7 +149,6 @@ class ContactController extends \BaseController
             $result['country_id'] = $contact->address->country_id;
             $result['postcode'] = $contact->address->postcode;
         }
-
         return $result;
     }
 
@@ -235,6 +234,7 @@ class ContactController extends \BaseController
             $criteria = new \CDbCriteria();
 
             if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
+                $term = trim($term);
                 $criteria->addSearchCondition('LOWER(contact.last_name)', $term, true, 'OR', 'LIKE');
                 $criteria->addSearchCondition('LOWER(contact.first_name)', $term, true, 'OR', 'LIKE');
             }
@@ -242,8 +242,12 @@ class ContactController extends \BaseController
 
             $return = array();
             foreach ($users as $i => $user) {
+                if($user->contact === null){
+                    $user->contact = new \Contact();
+                }
                 $return[$i] = $this->contactStructure($user->contact, $user);
                 $return[$i]['user_id'] = $user->id;
+                $return[$i]['type'] = "Contact";
             }
 
             $this->renderJSON($return);
@@ -275,6 +279,12 @@ class ContactController extends \BaseController
             foreach ($contacts as $contact) {
                 $return[] = $this->contactStructure($contact);
             }
+
+            // exception (only in parient contact mode)
+            $return[] = [
+                'type' => "custom",
+                'label' => 'Add a new contact',
+            ];
             $this->renderJSON($return);
         }
     }

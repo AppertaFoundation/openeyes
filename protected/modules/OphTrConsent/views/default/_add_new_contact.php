@@ -218,30 +218,18 @@ $form = $this->beginWidget('CActiveForm', array(
     </tr>
     <tr>
         <td>
-            Contact Type
+            Relationship
         </td>
         <td>
-            <?= \CHtml::hiddenField(
-                'new_modal_relationship_id',
-                $selected_relationship_type_id,
-                [
-                    'data-label' => 'Contact Relationship',
-                    'data-name' => 'relationship_id',
-                    'required' => 'required',
-                    'class' => 'cols-full js-contact-field',
-                ]);
-?>
-            <?= \CHtml::hiddenField(
-                'new_modal_relationship_name',
-                $selected_relationship_type,
-                [
-                    'data-label' => 'Contact Relationship Type',
-                    'data-name' => 'relationship',
-                    'required' => 'required',
-                    'class' => 'cols-full js-contact-field',
-                ]);
-?>
-            <?= $selected_relationship_type ?>
+            <?= $selected_relationship ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Contact method
+        </td>
+        <td>
+            <?= $selected_contact_method ?>
         </td>
     </tr>
     <tr>

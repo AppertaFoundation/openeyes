@@ -238,9 +238,9 @@ class Ophtrconsent_OthersInvolvedDecisionMakingProcessContact extends BaseActive
      */
     public function isOtherContactMethod()
     {
-        $contact_method = \OphTrConsent_PatientContactMethod::model()->find('LOWER(name)=LOWER(:name)', [":name"=>'Other']);
+        $contact_method = \OphTrConsent_PatientContactMethod::model()->find('LOWER(name)=LOWER(:name)', [":name"=>'other']);
         if ($contact_method) {
-            if ($contact_method->id === $this->consent_patient_contact_method_id) {
+            if ((int)$contact_method->id === (int)$this->consent_patient_contact_method_id) {
                 return true;
             }
         }

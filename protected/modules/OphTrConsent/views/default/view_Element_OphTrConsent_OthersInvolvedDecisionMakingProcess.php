@@ -39,7 +39,7 @@
                 <tbody>
                     <?php foreach( $element->consentContact as $row_id => $contact ) { ?>
                         <tr>
-                            <th><?= $contact->getRelationshipName() ?></th>
+                            <td><?= $contact->getRelationshipName() ?></td>
                             <td>
                                 <?= $contact->getFullName() ?>
                                 <i class="oe-i comments-who small pad-right js-has-tooltip"

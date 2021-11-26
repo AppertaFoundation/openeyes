@@ -1084,28 +1084,6 @@ class DefaultController extends BaseEventTypeController
         );
     }
 
-    public function actionContactPage()
-    {
-        $selected_contact_type = null;
-        $params = [];
-
-        if (isset($_GET['selected_contact_type_id'])) {
-            $selected_contact_type_id = $_GET['selected_contact_type_id'];
-            $selected_contact_type = \OphTrConsent_PatientRelationship::model()->findByPk($selected_contact_type_id);
-            $params = array(
-            'selected_relationship_type_id' => $selected_contact_type_id,
-            'selected_relationship_type' => $selected_contact_type->name,
-            );
-        }
-
-        $this->renderPartial(
-        '_add_new_contact',
-        $params,
-        false,
-        true
-        );
-    }
-
     protected function setComplexAttributes_Element_OphTrConsent_OthersInvolvedDecisionMakingProcess($element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
@@ -1278,5 +1256,21 @@ class DefaultController extends BaseEventTypeController
         foreach (array_diff($existing_ids, $ids_to_keep) as $id) {
             OphTrConsent_BestInterestDecision_Attachment::model()->deleteByPk($id);
         }
+    }
+
+    public function actionContactPage()
+    {
+        $request = \Yii::app()->getRequest();
+        $params = [];
+
+        $selected_contact_method = $request->getQuery('selected_contact_method');
+        $selected_relationship = $request->getQuery('selected_relationship');
+
+        $params = array(
+            'selected_contact_method' => $selected_contact_method,
+            'selected_relationship' => $selected_relationship,
+        );
+
+        $this->renderPartial('_add_new_contact', $params, false, true);
     }
 }

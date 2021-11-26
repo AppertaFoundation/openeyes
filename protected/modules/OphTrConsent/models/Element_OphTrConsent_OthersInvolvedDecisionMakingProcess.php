@@ -23,8 +23,8 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
 {
     public const TYPE_PATIENT_AGREEMENT_ID = 4;
 
-    private const PATIENT_CONTACTS_TYPE = 1;
-    private const OPENEYES_USERS_TYPE = 2;
+    public const PATIENT_CONTACTS_TYPE = 1;
+    public const OPENEYES_USERS_TYPE = 2;
 
     private const SIGNATURE_TYPES = [
         self::PATIENT_CONTACTS_TYPE => BaseSignature::TYPE_PATIENT,
@@ -143,7 +143,10 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
                 'item_id' => $relationship->id
             ];
             if (strtolower($relationship->name) === 'other') {
-                $relationship_items[$i]['action'] = 'setOtherRelationsip';
+                $relationship_items[$i]['js_action'] = 'setOtherRelationship';
+            }
+            if (strtolower($relationship->name) === 'health professional') {
+                $relationship_items[$i]['js_special_attr'] = 'HP';
             }
         }
         return $relationship_items;
@@ -168,7 +171,7 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
                 'signature_require_string' => $method->getDefaultSignatureRequiredString(),
             ];
             if (strtolower($method->name) === 'other') {
-                $contact_method_items[$i]['action'] = 'setOtherContactMethod';
+                $contact_method_items[$i]['js_action'] = 'setOtherContactMethod';
             }
         }
         return $contact_method_items;
@@ -184,12 +187,14 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
         $contact_type_items = [
             [
                 'search_url' => Yii::app()->createUrl('/OphTrConsent/contact') . '/AllPatientContacts',
+                'js_action' => 'patientContactSelected',
                 'label' => 'Patient contacts',
                 'contact_type_id' => self::PATIENT_CONTACTS_TYPE,
                 'id' => 'adder_dialog_patient_contact_button',
             ],
             [
                 'search_url' => Yii::app()->createUrl('/OphTrConsent/contact') . '/OpeneyesContactsWithUser',
+                'js_action' => 'openeyesUserSelected',
                 'label' => 'Openeyes users',
                 'contact_type_id' => self::OPENEYES_USERS_TYPE,
                 'id' => 'adder_dialog_openeyes_users_contact_button'
@@ -203,16 +208,19 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
         $itemSets = array(
             [
                 'items' => $contact_type_items,
+                'id' => 'contact_adder_type',
                 'header' => 'Contact type',
                 'multiSelect' => false
             ],
             [
                 'items' => $relationship_items,
+                'id' => 'contact_adder_relationship',
                 'header' => 'Relationship',
                 'multiSelect' => false
             ],
             [
                 'items' => $contact_method_items,
+                'id' => 'contact_adder_method',
                 'header' => 'Contact method',
                 'multiSelect' => false
             ]
@@ -252,7 +260,7 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
                     $model->signature_required = $post_data['signature_required'][$idx];
                 }
                 if (!$model->save()) {
-                    throw new Exception('Unable to save procedure item: ' . print_r($model->getErrors(), true));
+                    throw new Exception('Unable to save contact: ' . print_r($model->getErrors(), true));
                 } else {
                     $new_ids[] = $model->id;
                 }
@@ -278,7 +286,7 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
         foreach ($contacts as $contact) {
             $user = null;
 
-            if($contact->signature_required === '0'){
+            if ($contact->signature_required === '0') {
                 continue;
             }
 
@@ -287,7 +295,7 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
                 $result[] = OphTrConsent_Signature::model()->findByPk($signature_id);
             } else {
                 $signature_type_id = self::SIGNATURE_TYPES[$contact->contact_type_id];
-                if ( (int)$contact->contact_type_id === self::OPENEYES_USERS_TYPE ) {
+                if ((int)$contact->contact_type_id === self::OPENEYES_USERS_TYPE) {
                     $user = User::model()->findByPk($contact->contact_user_id);
                     $user_name = $user->getFullNameAndTitleAndQualifications();
                 } else {
@@ -301,7 +309,6 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
                     "signatory_name" => $user_name,
                     "initiator_row_id" => $contact->id,
                 ]);
-
                 $sig->user_id = ($user ? $user->id : null);
                 $result[] = $sig;
             }
@@ -309,7 +316,7 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
         return $result;
     }
 
-    public function afterSignedCallback(int $row_id, int $signature_id) : void
+    public function afterSignedCallback(int $row_id, int $signature_id): void
     {
         $contact = \Ophtrconsent_OthersInvolvedDecisionMakingProcessContact::model()->findByPk($row_id);
         $contact->contact_signature_id = $signature_id;

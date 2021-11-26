@@ -191,16 +191,24 @@ $type_assessment = new OphTrConsent_Type_Assessment();
                 </table>
             </div>
         </div>
-        <?php foreach ($contact_element->getRequiredSignatures() as $contact_signature) { ?>
+        <?php
+        foreach ($contacts as $contact) {
+            if ((int)$contact->signature_required === 0) {
+                continue;
+            }
+            ?>
             <?= $this->renderPartial(
-                '_print_signature',
-                array(
-                    'vi' => ($css_class == 'impaired'),
-                    'element' => $elements[Element_OphTrConsent_Esign::class],
-                    'signature' => $contact_signature,
-                    'title_label' => 'Relationship',
-                    'name_label' => 'Name',
-                )
+            '_print_signature',
+            array(
+                'vi' => ($css_class == 'impaired'),
+                'element' => $elements[Element_OphTrConsent_Esign::class],
+                'signature' => $elements[Element_OphTrConsent_Esign::class]
+                    ->getSignatureByInitiatorAttributes(
+                        (int)$contact_element->getElementType()->id,
+                        (int)$contact->id),
+                'title_label' => 'Relationship',
+                'name_label' => 'Name',
+            )
             ); ?>
         <?php } ?>
     <?php } ?>

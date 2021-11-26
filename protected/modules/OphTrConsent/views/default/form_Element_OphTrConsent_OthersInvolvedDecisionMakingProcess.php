@@ -14,7 +14,10 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$model_name = CHtml::modelName($element);
+    $model_name = CHtml::modelName($element);
+
+    $url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js'), true);
+    Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.AdderDialog.Contact.js', CClientScript::POS_END);
 ?>
 
 <div class="element-actions"><!-- note: order is important because of Flex, trash must be last element -->
@@ -120,7 +123,7 @@ $model_name = CHtml::modelName($element);
 <!-- MOUSTACHE TEMPLATE !-->
 <table class="hidden" id="js-mustache_template">
     <tr>
-        <th>{{relationship}}</th>
+        <td>{{relationship}}</td>
         <td>{{name}}</td>
         <td>{{consent_patient_contact_method}}</td>
         <td>
@@ -137,7 +140,7 @@ $model_name = CHtml::modelName($element);
                 <?php
                     echo \CHtml::radioButtonList(
                         $model_name . "[signature_required][]_{{uniqueId}}",
-                        '',
+                        1,
                         [1 => 'Signature required', 0 => 'No signature'],
                         ['class'=>'js-signature-require'],
                     );
@@ -183,337 +186,30 @@ $model_name = CHtml::modelName($element);
 
 <script>
     $(document).ready(function () {
-        let search_input;
-        let create_new_patient_contact_btn;
-        let ContactAD = OpenEyes.UI.AdderDialog.prototype;
-
-        $('#js-patient_contacts').on("click", ".remove-patient-contact", function () {
-            $(this).closest('tr').remove();
-        })
-
-        ContactAD.selectedData = {};
-
-        ContactAD.addContactDialogOptions = {
-            id: 'contact-dialog',
-            title: 'Add a new contact'
-        }
-
-        ContactAD.getDataFromAddNewContactDialog = function (contactDialog) {
-            errors = [];
-            let data = {};
-            let inputs = contactDialog.content.find('.js-contact-field');
-            let errorDiv = contactDialog.content.find('.js-contact-error-box');
-
-            inputs.each(function () {
-                validationResult = ContactAD.checkRequiredValue($(this));
-                if (validationResult !== true) {
-                    errors.push("Missing value: " + validationResult);
-                }
-                data[$(this).data('name')] = $(this).val();
-            });
-
-            ContactAD.selectedData = $.extend(data,ContactAD.selectedData);
-            ContactAD.selectedData.name = data.first_name+' '+data.last_name;
-            if (errors.length > 0) {
-                let errorList = "<li>" + (errors.join("</li><li>")) + "</li>";
-                errorDiv.find('.js-contact-errors').html(errorList);
-                errorDiv.show();
-                return false;
-            }
-
-            return ContactAD.selectedData;
-        };
-
-        ContactAD.checkRequiredValue = function (inp) {
-            let isRequired = inp.attr('required') === 'required';
-            let empty = inp.val() === '';
-            if (empty && isRequired) {
-                return inp.data('label');
-            }
-            return true;
-        }
-
-        ContactAD.initialiseDialogTriggers = function (contactDialog) {
-            contactDialog.content.on('click', '.js-add-new-contact', function (event) {
-                event.preventDefault();
-                let data = ContactAD.getDataFromAddNewContactDialog(contactDialog);
-                if (data) {
-                    ContactAD.AddContact();
-                    contactDialog.close();
-                }
-            });
-        };
-
-        ContactAD.openAddNewContactDialog = function (adderDialog) {
-            let filter = ContactAD.selectedData.consent_patient_relationship_id;
-            let contactDialog = new OpenEyes.UI.Dialog($.extend({}, this.addContactDialogOptions, {
-                url: "<?= Yii::app()->createUrl('/OphTrConsent/default'); ?>/ContactPage",
-                width: 500,
-                data: {
-                    returnUrl: "",
-                    selected_contact_type_id: filter,
-                    patient_id: window.OE_patient_id || null
-                }
-            }));
-            contactDialog.open();
-            adderDialog.initialiseDialogTriggers(contactDialog);
-        };
-
-        ContactAD.revalidateSearchForm = function (search) {
-            search_input.val(' ');
-            search_input.show();
-
-            if (search !== false) {
-                search_input.keyup();
-            }
-
-            $('#patient_contact_adder').find('.js-search-results').html('');
-        }
-
-        ContactAD.createNewPatientContact = function () {
-            this.revalidateSearchForm();
-        }
-
-        ContactAD.alert = function (msg) {
-            new OpenEyes.UI.Dialog.Alert({
-                content: msg
-            }).open();
-
-        }
-
-        ContactAD.AddContact = function () {
-            let signature_require = ContactAD.selectedData.signature_require;
-            let $table = $("#js-patient_contacts tbody");
-            let templateObj = $('#js-mustache_template tbody').clone();
-            let jsonData = JSON.stringify(ContactAD.selectedData);
-            let jsonInput = templateObj.find('.contact_json_data');
-            let signatureRequireContainer = templateObj.find('.js-signature-needed');
-            let signatureRequireRadioContainer = templateObj.find('.js-signature-needed-radio');
-
-            if(signature_require === 2){
-                signatureRequireContainer.remove();
-                signatureRequireRadioContainer.show();
-            } else {
-                signatureRequireRadioContainer.remove();
-                signatureRequireContainer.show();
-            }
-
-            jsonInput.val(jsonData);
-
-            let templateText = templateObj.html();
-            $row = Mustache.render(templateText, ContactAD.selectedData);
-            $table.append($row);
-        }
-
-        ContactAD.initMenuButton = function () {
-            let adder_dialog = this;
-            let other_patient_relationship = $("#patient_contact_adder").find("[data-action='setOtherRelationsip']");
-            let other_patient_contact_method = $("#patient_contact_adder").find("[data-action='setOtherContactMethod']");
-
-            let _inp1 = '<input type="text" style="display: none;" placeholder="Relationship description" name="other_patient_relationship" id="other_patient_relationship_input">';
-            other_patient_relationship.closest('ul').append($(_inp1));
-
-            let _inp2 = '<input type="text" style="display: none;" placeholder="Contact Method description" name="other_patient_contact_method" id="other_patient_contact_method_input">';
-            other_patient_contact_method.closest('ul').append($(_inp2));
-
-            // Global variable
-            otherRelationsipInput = $('#other_patient_relationship_input');
-            otherContactMethodInput = $('#other_patient_contact_method_input');
-
-            other_patient_relationship.on('click', function () {
-                let active = !$(this).hasClass('selected');
-                if (active) {
-                    otherRelationsipInput.show();
-                } else {
-                    otherRelationsipInput.hide();
-                }
-                otherRelationsipInput.focus();
-            });
-
-            other_patient_contact_method.on('click', function () {
-                let active = !$(this).hasClass('selected');
-                if (active) {
-                    otherContactMethodInput.show();
-                } else {
-                    otherContactMethodInput.hide();
-                }
-                otherContactMethodInput.focus();
-            });
-
-            otherRelationsipInput.on('blur', function () {
-                let other_patient_relationship = $("#patient_contact_adder").find("[data-action='setOtherRelationsip']");
-                let active = other_patient_relationship.hasClass('selected');
-                if (active) {
-                    return true;
-                }
-                if ($(this).val() === "") {
-                    $(this).hide();
-                }
-            });
-
-            otherContactMethodInput.on('blur', function () {
-                let other_patient_contact_method = $("#patient_contact_adder").find("[data-action='setOtherContactMethod']");
-                let active = other_patient_contact_method.hasClass('selected');
-                if (active) {
-                    return true;
-                }
-                if ($(this).val() === "") {
-                    $(this).hide();
-                }
-            });
-
-            $('[data-id="adder_dialog_patient_contact_button"]').on('click', function () {
-                let active = $(this).hasClass('selected');
-                adder_dialog.options.searchOptions.searchSource = $(this).data('search_url');
-                adder_dialog.revalidateSearchForm(!active); // autoSearch off
-            });
-
-            $('[data-id="adder_dialog_openeyes_users_contact_button"]').on('click', function () {
-                let active = $(this).hasClass('selected');
-                adder_dialog.options.searchOptions.searchSource = $(this).data('search_url');
-                adder_dialog.revalidateSearchForm(!active);
-            });
-
-            $('[data-id="adder_dialog_add_new_contact_button"]').on('click', function () {
-                let active = $(this).hasClass('selected');
-                adder_dialog.options.searchOptions.searchSource = $(this).data('search_url');
-                adder_dialog.createNewPatientContact(!active);
-            });
-        }
-
-        ContactAD.validateReturnData = function (selectedItems) {
-            let errors = [];
-            let hasContactType = false;
-            let hasRelationship = false;
-            let hasContact = false;
-            let hasContactMethod = false;
-            let hasOtherRelationshipDescription = true;
-
-            $.each(selectedItems, function (k, item) {
-                if (item.itemSet) {
-                    if (item.itemSet.options.header === "Contact type") {
-                        hasContactType = true;
-                    }
-                    if (item.itemSet.options.header === "Relationship") {
-                        hasRelationship = true;
-                        if (item.label.toLowerCase() === "other") {
-                            if (otherRelationsipInput.val().length === 0) {
-                                hasOtherRelationshipDescription = false;
-                            }
-                        }
-
-                    }
-                    if (item.itemSet.options.header === "Contact method") {
-                        hasContactMethod = true;
-                    }
-                } else {
-                    hasContact = true;
-                }
-            });
-
-            if (!hasContactType) {
-                errors.push("Please select a contact type.");
-            }
-            if (!hasRelationship) {
-                errors.push("Please select a relationship.");
-            }
-            if (!hasContact) {
-                errors.push("Please select a contact.");
-            }
-            if (!hasOtherRelationshipDescription) {
-                errors.push("Please add a description for the relationship.");
-            }
-            if(!hasContactMethod){
-                errors.push("Please select a contact method.");
-            }
-
-            if (errors.length > 0) {
-                ContactAD.alert(errors.join("<br> "));
-                return false;
-            }
-            return true;
-        }
-
-        new OpenEyes.UI.AdderDialog({
+        new OpenEyes.UI.AdderDialog.Contact({
             id: 'patient_contact_adder',
+            patientId: window.OE_patient_id || null,
             openButton: $('#add_patient_contact_button'),
+            width: "600px",
+            deselectOnReturn: true,
+            deselectOnClose: true,
+            newContactDialogURL: "<?= Yii::app()->createUrl('/OphTrConsent/default'); ?>/ContactPage",
             ulClass: "category-filter",
             listFilter: true,
             itemSets:
                 $.map(<?= CJSON::encode($element->getContactTypeItemSet()) ?>, function ($itemSet) {
                     return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {
                         'header': $itemSet.header,
-                        'multiSelect': $itemSet.multiSelect
+                        'multiSelect': $itemSet.multiSelect,
+                        'id' : $itemSet.id
                     });
                 }),
-            onReturn: function (adderDialog, selectedItems) {
-                let data = {};
-                if (selectedItems.length === 0) {
-                    adderDialog.alert("Please select a contact.");
-                    return false;
-                }
-                if (!adderDialog.validateReturnData(selectedItems)) {
-                    return false;
-                }
-
-                let jsonData = '';
-                let selectedContactTypeData = selectedItems[0];
-                let selectedContactData = selectedItems[2];
-                let selectedRelationshipData = selectedItems[1];
-                let selectedContactMethodData = selectedItems[3];
-                let addNewContact = selectedContactData.type === "custom";
-
-                data = selectedContactData;
-                data.relationship = selectedRelationshipData.label;
-                data.consent_patient_relationship_id = selectedRelationshipData.item_id;
-                data.consent_patient_contact_method_id = selectedContactMethodData.item_id;
-                data.consent_patient_contact_method = selectedContactMethodData.label
-                data.uniqueId = Math.random().toString(16).slice(2);
-                data.contact_type_id = selectedContactTypeData.contact_type_id;
-                data.signature_require = selectedContactMethodData.signature_require;
-                data.signature_require_string = selectedContactMethodData.signature_require_string;
-
-                data.existing_id = '';
-
-                if (data.relationship.toLowerCase() === 'other') {
-                    data.other_relationship = $('#other_patient_relationship_input').val();
-                    data.relationship = data.other_relationship;
-                }
-
-                if (data.consent_patient_contact_method.toLowerCase() === 'other') {
-                    data.other_contact_method = $('#other_patient_contact_method_input').val();
-                }
-
-                ContactAD.selectedData = data;
-
-                if (addNewContact) {
-                    adderDialog.openAddNewContactDialog(adderDialog);
-                } else {
-                    adderDialog.AddContact();
-                }
-
-                return true;
-            },
-            onClose: function () {
-                otherRelationsipInput.hide();
-            },
-            onOpen: function (adder_dialog) {
-                search_input = $('#patient_contact_adder').find('.js-search-autocomplete');
-                create_new_patient_contact_btn = $('#create_new_patient_contact_btn');
-                create_new_patient_contact_btn.hide();
-
-                adder_dialog.popup.find('li').each(function () {
-                    $(this).removeClass('selected');
-                });
-                adder_dialog.revalidateSearchForm(false);
-                adder_dialog.initMenuButton();
-            },
             searchOptions: {
                 searchSource: "",
                 code: window.OE_patient_id || null,
             },
-            enableCustomSearchEntries: true,
-            searchAsTypedPrefix: 'Add a new contact:',
+            //enableCustomSearchEntries: true,
+            //searchAsTypedPrefix: 'Add a new contact:',
         });
 
         // Change columns 2-3
@@ -523,6 +219,10 @@ $model_name = CHtml::modelName($element);
 
         jQuery.each($("#patient_contact_adder thead"), function () {
             $(this).children(":eq(3)").after($(this).children(":eq(2)"));
+        });
+
+        $('body').on('click', '.remove-patient-contact', function() {
+            $(this).closest('tr').remove();
         });
     });
 </script>
