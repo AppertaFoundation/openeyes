@@ -29,6 +29,8 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'withdraw' => self::ACTION_TYPE_FORM,
         'removeWithdraw' => self::ACTION_TYPE_FORM,
+        'confirm' => self::ACTION_TYPE_FORM,
+        'removeConfirm' => self::ACTION_TYPE_FORM,
         'benefits' => self::ACTION_TYPE_FORM,
         'complications' => self::ACTION_TYPE_FORM,
         'createEventImages' => self::ACTION_TYPE_PRINT,
@@ -631,6 +633,70 @@ class DefaultController extends BaseEventTypeController
             foreach ($withdrawals as $withdrawal) {
                 if (!$withdrawal->delete()) {
                     throw new Exception("Could not delete withdrawal {$withdrawal->id}");
+                };
+            }
+
+            if ($transaction) {
+                $transaction->commit();
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+            if ($transaction) {
+                $transaction->rollback();
+            }
+        }
+
+        $this->redirect('/OphTrConsent/default/view/'.$event_id);
+    }
+
+    public function actionConfirm()
+    {
+        $event_id = $this->request->getParam('event_id');
+        if ($event_id === null) {
+            $this->getEvent()->id;
+        }
+        $this->initWithEventId($event_id);
+
+        $trans = Yii::app()->db->beginTransaction();
+
+        $confirm_element_criteria = new CDbCriteria();
+        $confirm_element_criteria->compare('t.event_id', $event_id);
+        $confirm = Element_OphTrConsent_Confirm::model()->find($confirm_element_criteria);
+
+        if ($confirm === null) {
+            $confirm = new Element_OphTrConsent_Confirm();
+        }
+
+        $confirm->confirmed = 1;
+        $confirm->event_id = $event_id;
+
+        if ($confirm->save()) {
+            if ($type = $this->event->getElementByClass(Element_OphTrConsent_Type::class)) {
+                $type->draft = 0;
+                $type->save();
+            }
+            $trans->commit();
+        } else {
+            $trans->rollback();
+        }
+
+        $this->redirect('/OphTrConsent/default/view/'.$event_id);
+    }
+
+    public function actionRemoveConfirm()
+    {
+        $event_id = $this->request->getParam('event_id');
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        $confirm_element_criteria = new CDbCriteria();
+        $confirm_element_criteria->compare('t.event_id', $event_id);
+        $confirms = Element_OphTrConsent_Confirm::model()->findAll($confirm_element_criteria);
+
+        try {
+            foreach ($confirms as $confirm) {
+                if (!$confirm->delete()) {
+                    throw new Exception("Could not delete confirm {$confirm->id}");
                 };
             }
 

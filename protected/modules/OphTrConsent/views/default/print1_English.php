@@ -236,6 +236,26 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         </div>
     </div>
     <?php endif; ?>
+    <?php
+    if (isset($elements['Element_OphTrConsent_Esign'])) {
+        if ($type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Esign']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) {
+            echo $this->renderPartial('_print_signature',
+                array(
+                    'vi' => ($css_class == 'impaired'),
+                    'element' => $elements['Element_OphTrConsent_Esign'],
+                    'signature' => $elements['Element_OphTrConsent_Esign']
+                        ->getSignatureByInitiatorAttributes(
+                            $elements['Element_OphTrConsent_Esign']->getElementType()->id,
+                            0
+                        ),
+                    'custom_key' => 'healthprof_signature_id',
+                    'title_label' => 'Job title',
+                    'name_label' => 'Print name'
+                )
+            );
+        }
+    }
+    ?>
 
     <!-- consultant signature here -->
     <!-- doctor (second opinion) signature here -->
@@ -317,31 +337,25 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
 
     <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider">
-    <h2>Confirmation of consent</h2><h6>To be completed by a health professional when the patient is admitted, if the
-        patient has signed the form in advance.</h6>
-    <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions and
-        wishes the procedure to go ahead.</p>
-
-    <?php
-    if (isset($elements['Element_OphTrConsent_Esign'])) {
-        if ($type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Esign']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) {
-            echo $this->renderPartial('_print_signature',
-                array(
-                    'vi' => ($css_class == 'impaired'),
-                    'element' => $elements['Element_OphTrConsent_Esign'],
-                    'signature' => $elements['Element_OphTrConsent_Esign']
-                                    ->getSignatureByInitiatorAttributes(
-                                            $elements['Element_OphTrConsent_Esign']->getElementType()->id,
-                                            0
-                                    ),
-                    'custom_key' => 'healthprof_signature_id',
-                    'title_label' => 'Job title',
-                    'name_label' => 'Print name'
-                )
-            );
-        }
-    }
-    ?>
+    <?php if (isset($elements['Element_OphTrConsent_Confirm'])) { ?>
+        <h2>Confirmation of consent</h2><h6>To be completed by a health professional when the patient is admitted, if the
+            patient has signed the form in advance.</h6>
+        <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions and
+            wishes the procedure to go ahead.</p>
+        <?= $this->renderPartial('_print_signature',
+            array(
+                'vi' => ($css_class === 'impaired'),
+                'element' => $elements['Element_OphTrConsent_Esign'],
+                'signature' => $elements['Element_OphTrConsent_Esign']
+                                ->getSignatureByInitiatorAttributes(
+                                        $elements['Element_OphTrConsent_Confirm']->getElementType()->id,
+                                        6
+                                ),
+                                         'title_label' => 'Job title',
+                                         'name_label' => 'Print name'
+            )
+        );
+    } ?>
 
     <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
     <p><b>Important notes:</b> (tick if applicable)</p>

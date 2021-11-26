@@ -333,6 +333,10 @@ $(document).ready(function() {
 	$(this).on('click','.js-add-withdrawal',function(e) {
 		window.location.href = '/OphTrConsent/default/withdraw?event_id='+OE_event_id;
 	});
+
+	$(this).on('click','.js-add-confirm',function(e) {
+		window.location.href = '/OphTrConsent/default/confirm?event_id='+OE_event_id;
+	});
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

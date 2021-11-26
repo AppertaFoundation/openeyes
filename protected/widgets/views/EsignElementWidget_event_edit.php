@@ -21,9 +21,12 @@
 if ($this->isSigningAllowed()) {
     $signatures = [];
     $withdrawal_signatures = [];
+    $confirm_signatures = [];
     foreach ($this->element->getSignatures() as $signature) {
         if (strcmp($signature->signatory_role, "Withdrawn by") == 0) {
             $withdrawal_signatures[] = $signature;
+        } elseif (strcmp($signature->signatory_role, "Confirmed by") == 0) {
+            $confirm_signatures[] = $signature;
         } else {
             $signatures[] = $signature;
         }
@@ -62,6 +65,7 @@ if ($this->isSigningAllowed()) {
                                     "row_id" => "X",
                                     "element" => $this->element,
                                     "signature" => $signature,
+                                    "mode" => ($this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit'),
                                 ]
                             );
                         }
@@ -80,6 +84,34 @@ if ($this->isSigningAllowed()) {
                             'form' => $form
                         )
                     ); ?>
+                <?php }
+                if ($this->isSigningAllowed() && count($confirm_signatures) != 0) { ?>
+                    <div class="alert-box success"><strong>Consent is confirmed</strong></div>
+                    <table class="last-left">
+                        <colgroup>
+                            <col class="cols-1">
+                            <col class="cols-2">
+                            <col class="cols-3">
+                            <col class="cols-2">
+                            <col class="cols-3">
+                        </colgroup">
+                        <tbody>
+                        <?php
+                        foreach ($confirm_signatures as $signature) {
+                            $this->widget(
+                                "OEModule\OphTrConsent\widgets\EsignUsernamePINField",
+                                [
+                                    "row_id" => "C",
+                                    "element" => $this->element,
+                                    "signature" => $signature,
+                                    "mode" => ($this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit'),
+                                ]
+                            );
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                    <hr class="divider" />
                 <?php }
             } ?>
             <?php if (!$this->element->isSigned()) : ?>

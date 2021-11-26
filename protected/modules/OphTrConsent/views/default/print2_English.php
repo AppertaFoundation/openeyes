@@ -285,11 +285,25 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <?php endif; ?>
 
     <hr class="divider">
-
-    <h2>Confirmation of consent</h2><h6>To be completed by a health professional when the patient is admitted, if the
-        patient has signed the form in advance.</h6>
-    <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions and
-        wishes the procedure to go ahead.</p>
+    <?php if (isset($elements['Element_OphTrConsent_Confirm'])) { ?>
+        <h2>Confirmation of consent</h2><h6>To be completed by a health professional when the patient is admitted, if the
+            patient has signed the form in advance.</h6>
+        <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions and
+            wishes the procedure to go ahead.</p>
+        <?= $this->renderPartial('_print_signature',
+            array(
+                'vi' => ($css_class === 'impaired'),
+                'element' => $elements['Element_OphTrConsent_Esign'],
+                'signature' => $elements['Element_OphTrConsent_Esign']
+                                ->getSignatureByInitiatorAttributes(
+                                        $elements['Element_OphTrConsent_Confirm']->getElementType()->id,
+                                        6
+                                ),
+                                         'title_label' => 'Job title',
+                                         'name_label' => 'Print name'
+            )
+        );
+    } ?>
 
     <div class="group"><span class="checkbox <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? 'checked' : ''?>"></span><?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '<b class="highlighter">' : ''?> Patient has withdrawn consent <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '</b>' : ''?></div>
     <?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) { ?>
