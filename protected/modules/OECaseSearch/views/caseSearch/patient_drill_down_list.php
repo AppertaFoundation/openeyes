@@ -97,5 +97,38 @@ if ($patients->itemCount > 0) { ?>
         </tr>
         </tfoot>
     </table>
-    <?php } ?>
+<?php } ?>
 </div>
+<?php
+    $patientsID = [];
+foreach ($patients->getData() as $i => $SearchPatient) {
+    array_push($patientsID, $SearchPatient->id);
+}
+    $assetManager = Yii::app()->getAssetManager();
+    $assetPath = $assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
+    Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
+    $widgetPath = $assetManager->publish('protected/widgets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
+?>
+
+<script type="text/javascript">
+    $(document).ready(renderPopups(<?= json_encode($patientsID) ?>));
+
+    function renderPopups(ids) {
+        console.log(ids);
+        if (ids[0]) {
+            $.ajax({
+                'type': "POST",
+                'data': "patientsID=" + ids + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                'url': "/OECaseSearch/caseSearch/renderPopups",
+                success: function(resp) {
+                    $("body.open-eyes.oe-grid").append(resp);
+                }
+            });
+            $('body').on('click', '.collapse-data-header-icon', function() {
+                $(this).toggleClass('collapse expand');
+                $(this).next('div').toggle();
+            });
+        }
+    }
+</script>

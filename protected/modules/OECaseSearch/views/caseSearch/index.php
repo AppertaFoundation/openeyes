@@ -473,35 +473,3 @@ $user_searches = array_map(
         });
     </script>
 <?php } ?>
-
-<?php
-    $patientsID = [];
-foreach ($patients->getData() as $i => $SearchPatient) {
-    array_push($patientsID, $SearchPatient->id);
-}
-    $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
-    Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
-    $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js');
-    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
-?>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        let ids = <?= json_encode($patientsID)?>;
-        if (ids[0]) {
-            $.ajax({
-                'type': "POST",
-                'data': "patientsID=" + ids + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-                'url': "/OECaseSearch/caseSearch/renderPopups",
-                success: function (resp) {
-                    $("body.open-eyes.oe-grid").append(resp);
-                }
-            });
-            $('body').on('click', '.collapse-data-header-icon', function () {
-                $(this).toggleClass('collapse expand');
-                $(this).next('div').toggle();
-            });
-        }
-    });
-</script>
