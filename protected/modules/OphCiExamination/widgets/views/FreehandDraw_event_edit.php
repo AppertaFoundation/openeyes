@@ -58,8 +58,8 @@ $model_name = CHtml::modelName($element);
                 'id' => $item->id,
                 'date-template-url' => $item->protected_file->getDownloadURL(),
                 'filename' => explode('.', $item->protected_file->name)[0],
-                'full_name' => $item->protected_file->user->fullName,
-                'created_date' => Helper::convertMySQL2NHS($item->created_date),
+                'full_name' => '',
+                'created_date' => '',
             ];
         }, DrawingTemplate::model()->active()->findAll())
     ) ?>;
