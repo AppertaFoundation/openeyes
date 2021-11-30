@@ -167,7 +167,7 @@ trait MappedReferenceData
     {
         if ($this->getSupportedLevels() & $level) {
             $suffix = $this->levelRelationProperty($level);
-            foreach ($this->$suffix as $model) {
+            foreach ($this->$suffix ?? [] as $model) {
                 if ((int)$model->id === $id) {
                     if (($this->softDeleteMappings() && $model->active)
                     || !$this->softDeleteMappings()) {

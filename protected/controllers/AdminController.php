@@ -79,7 +79,12 @@ class AdminController extends BaseAdminController
         } else {
             $transaction->commit();
         }
-        $this->redirect($_POST['return_url']);
+
+        $return_url = $_POST['return_url'] ?? '';
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $return_url = $return_url ?: ($referer ?: '/admin');
+
+        $this->redirect($return_url);
     }
 
     public function actionRemoveMapping()
@@ -104,7 +109,12 @@ class AdminController extends BaseAdminController
         } else {
             $transaction->commit();
         }
-        $this->redirect($_POST['return_url']);
+
+        $return_url = $_POST['return_url'] ?? '';
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $return_url = $return_url ?: ($referer ?: '/admin');
+
+        $this->redirect($return_url);
     }
 
     /**
