@@ -31,7 +31,7 @@ class DisplayDeletedEventsBehavior extends CActiveRecordBehavior
         if(!$this->canViewDeletedEvents()){
             return;
         }
-        $this->owner->disableDefaultScope();
+        $this->owner->setDefaultScopeDisabled(true);
     }
 
     /**
