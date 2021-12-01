@@ -113,7 +113,7 @@ class MedicationManagement extends BaseMedicationElement
                 MedicationManagementEntry::class,
                 array('id' => 'event_id'),
                 'through' => 'event',
-                'on' => "hidden = 0 AND usage_type = '" . MedicationManagementEntry::getUsageType() . "' AND usage_subtype = '" . MedicationManagementEntry::getUsageSubtype() . "' ",
+                'on' => "visible_entries.hidden = 0 AND usage_type = '" . MedicationManagementEntry::getUsageType() . "' AND usage_subtype = '" . MedicationManagementEntry::getUsageSubtype() . "' ",
                 'order' => 'visible_entries.start_date DESC, visible_entries.end_date DESC, visible_entries.last_modified_date'
             ),
             'prescription' => array(self::BELONGS_TO, Element_OphDrPrescription_Details::class, 'prescription_id'),
@@ -179,6 +179,18 @@ class MedicationManagement extends BaseMedicationElement
         return array_filter($this->visible_entries, function ($e) {
             return !is_null($e->end_date) && $e->is_discontinued && $e->stopped_in_event_id === $e->event_id;
         });
+    }
+
+    /**
+     * Gets NOT stopped Medication Management entries
+     * @return MedicationManagementEntry[]
+     */
+    public function getNotStoppedEntries() : array
+    {
+        $stopped_ids = $this->getStoppedEntryIds();
+        $collection = new \ModelCollection($this->visible_entries);
+
+        return $collection->diff($stopped_ids);
     }
 
     /**

@@ -27,19 +27,54 @@ class ModelCollection
     /**
      * Retrieves all of the values for a given attribute
      *
-     * @param $attribute
+     * @param string $attribute
      * @return array
      * @throws Exception
      */
-    public function pluck($attribute): array
+    public function pluck(string $attribute): array
     {
         return array_map(function($model) use ($attribute) {
 
-            if (!$model->hasAttribute($attribute)) {
-                throw new Exception("The '$attribute' does not exist on '" . get_class($model) . "' model");
+            if (!$model->hasAttribute($attribute) && !$model->getMetaData()->hasRelation($attribute)) {
+                throw new Exception("No '$attribute' or relations does exist on '" . get_class($model) . "' model");
             }
 
             return $model->$attribute;
         }, $this->data);
+    }
+
+    /**
+     * Gets the max value of a given key.
+     *
+     * @param string $attribute
+     * @return mixed|null
+     * @throws Exception
+     */
+    public function max(string $attribute)
+    {
+        $max = null;
+        foreach ($this->data as $model) {
+            if (!$model->hasAttribute($attribute)) {
+                throw new Exception("The '$attribute' does not exist on '" . get_class($model) . "' model");
+            }
+
+            $max = ($max < $model->$attribute) ? $model->$attribute : $max;
+        }
+
+        return $max;
+    }
+
+    /**
+     * Returns an array containing all the entries from $this->data that are not present in any of the parameter arrays
+     * (compared by id)
+     *
+     * @param array $ids
+     * @return array
+     */
+    public function diff(array $ids): array
+    {
+        return array_filter($this->data, function($model) use ($ids) {
+            return !in_array($model->id, $ids);
+        });
     }
 }

@@ -128,4 +128,9 @@ class OphCiExamination_Investigation_Codes extends \BaseActiveRecordVersioned
     {
         return parent::model($className);
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

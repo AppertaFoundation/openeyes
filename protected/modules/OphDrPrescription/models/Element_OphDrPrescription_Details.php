@@ -506,4 +506,23 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             $this->comments = $api->setDefaultPrescriptionComment($patient);
         }
     }
+
+    public function getLetterTextLongFrequency()
+    {
+        $return = '';
+        foreach ($this->items as $item) {
+            if ($return) {
+                $return .= "\n";
+            }
+            $return .= $item->getDescriptionLongFrequency();
+            if ($item->tapers) {
+                foreach ($item->tapers as $taper) {
+                    $return .= $taper->getDescriptionLongFrequency();
+                }
+            }
+
+            $return .= ' - ' . $item->dispense_condition->name . "<br>";
+        }
+        return $return;
+    }
 }

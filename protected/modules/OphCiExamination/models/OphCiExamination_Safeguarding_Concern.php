@@ -109,4 +109,9 @@ class OphCiExamination_Safeguarding_Concern extends \BaseActiveRecord
     {
         return parent::model($className);
     }
+
+    public function __toString()
+    {
+        return $this->term;
+    }
 }

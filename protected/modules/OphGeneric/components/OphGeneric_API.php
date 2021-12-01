@@ -65,7 +65,7 @@ class OphGeneric_API extends BaseAPI
         return Eye::model()->findByAttributes(['name' => $eye_name]);
     }
 
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null): array
     {
         return parent::getElements($this->namespaceElementName($element), $patient, $use_context, $before, $criteria);
     }

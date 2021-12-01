@@ -29,6 +29,7 @@ class OphCiExamination_API extends \BaseAPI
 {
     use traits\VisualAcuity_API;
     use traits\Refraction_API;
+    use traits\AEShortcodes;
 
     const LEFT = 1;
     const RIGHT = 0;
@@ -183,7 +184,7 @@ class OphCiExamination_API extends \BaseAPI
     /**
      * @inheritdoc
      */
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null): array
     {
         return parent::getElements($this->namespaceElementName($element), $patient, $use_context, $before, $criteria);
     }
@@ -3423,5 +3424,50 @@ class OphCiExamination_API extends \BaseAPI
         </table>
 
         <?php return ob_get_clean();
+    }
+
+    /**
+     * Gets current (not stopped) medications
+     *
+     * Shortcode: mec
+     *
+     * @param Patient $patient
+     * @param false $use_context
+     * @return string
+     */
+    public function getCurrentMedications(\Patient $patient, $use_context = false): string
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient);
+        $entries = $element ? $element->getNotStoppedEntries() : [];
+
+        $text = '';
+        foreach ($entries as $entry) {
+            $text .= $entry->medication->preferred_term . ", started at " . \Helper::convertMySQL2NHS($entry->start_date) . "<br>";
+        }
+
+        return $text;
+    }
+
+    /**
+     * Gets all previous (stopped) medications
+     * Shortcode: mep
+     *
+     * @param Patient $patient
+     * @param false $use_context
+     * @return string
+     */
+    public function getPreviousMedications(\Patient $patient, $use_context = false): string
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient);
+        $entries = $element ? $element->getStoppedEntries() : [];
+
+        $text = '';
+        foreach ($entries as $entry) {
+            $text .= $entry->medication->preferred_term .
+                ", started at " . \Helper::convertMySQL2NHS($entry->start_date) .
+                " and ended at " .  \Helper::convertMySQL2NHS($entry->end_date) ."<br>";
+        }
+
+        return $text;
     }
 }
