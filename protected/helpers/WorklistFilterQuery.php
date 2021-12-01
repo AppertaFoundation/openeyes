@@ -322,7 +322,7 @@ class WorklistFilterQuery
         $command = Yii::app()->db->createCommand();
 
         $command->from('pathway_step ps');
-        $command->select('long_name, COUNT(earlier.first) AS count');
+        $command->select('ps.long_name, COUNT(earlier.first) AS count');
 
         $worklists = array_map(static function ($worklist) {
             return $worklist->id;
@@ -347,7 +347,7 @@ class WorklistFilterQuery
         $command->where($conditions);
         $command->params = $params;
 
-        $command->group = 'long_name';
+        $command->group = 'ps.long_name';
 
         return $command;
     }
