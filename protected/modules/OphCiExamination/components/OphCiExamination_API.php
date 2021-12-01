@@ -3178,7 +3178,7 @@ class OphCiExamination_API extends \BaseAPI
                     if ($entry->prescription_item_id) {
                         $tapers = $entry->prescriptionItem->tapers;
                         $stop_date = $entry->prescriptionItem->stopDateFromDuration(false);
-                        $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) : $entry->medicationDuration->name;
+                        $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) : $entry->prescriptionItem->medicationDuration->name;
                         $comments = $entry->prescriptionItem->comments ?: ($entry->comments ?: null);
                     }
                     ?>
@@ -3282,7 +3282,7 @@ class OphCiExamination_API extends \BaseAPI
                 if ($entry->prescription_item_id) {
                     $tapers = $entry->prescriptionItem->tapers;
                     $stop_date = $entry->prescriptionItem->stopDateFromDuration(false);
-                    $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$entry->medicationDuration->name;
+                    $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) : $entry->prescriptionItem->medicationDuration->name;
                     $comments = $entry->prescriptionItem->comments ?: ($entry->comments ?: null);
                 } ?>
                 <tr>
