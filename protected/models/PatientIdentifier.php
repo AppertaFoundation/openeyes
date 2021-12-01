@@ -219,6 +219,10 @@ class PatientIdentifier extends BaseActiveRecordVersioned
 
     public function defaultScope()
     {
+        if ($this->getDefaultScopeDisabled()) {
+            return [];
+        }
+
         return ['select' => 'patient_id, patient_identifier_type_id, value, source_info, deleted, last_modified_user_id, last_modified_date, created_user_id, created_date, patient_identifier_status_id',
             'condition' => 'patient_identifier_not_deleted.deleted = 0', 'alias' => 'patient_identifier_not_deleted'];
     }

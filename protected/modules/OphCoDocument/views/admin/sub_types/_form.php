@@ -167,20 +167,36 @@ $model_name = CHtml::modelName($model);
         let $previewContainerElement = $('#' + elementIds.previewContainer);
         let file = event.target.files[0];
         if (file) {
-            let fileReader = new FileReader();
-            $previewContainerElement.hide();
-            // Only show the previews for jpg, png and pdf's.
-            if (file.type === "application/pdf"){
-                let url = URL.createObjectURL(file);
-                document.getElementById('pdf-js-viewer').src = `${OE_core_asset_path}/components/pdfjs/web/viewer.html?file=${url}`;
-                let $pdfContainer = $('#' + elementIds.pdfContainer);
-                let $imageElement = $('#' + elementIds.image);
-                $pdfContainer.show();
-                $previewContainerElement.show();
-                $imageElement.hide();
-            }
-            if ((file.type === 'image/jpeg') || (file.type === 'image/png')) {
-                displayImage(file, fileReader);
+            let size = file.size;
+            let max_size = <?= $model->getMaxDocumentSize(false) ?>;
+            if (size > max_size) {
+                clearUploadFieldAndPreview();
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'The file you tried to upload exceeds the maximum allowed file size, which is ' + (max_size/1048576) + ' MB'
+                }).open();
+            } else {
+                let fileReader = new FileReader();
+                $previewContainerElement.hide();
+                // Only show the previews for jpg, png and pdf's.
+                if (file.type === "application/pdf") {
+                    let url = URL.createObjectURL(file);
+                    let source = `${OE_core_asset_path}/components/pdfjs/web/viewer.html?file=${url}`;
+                    // Check if pdf preview image source exists
+                    $.get(source).done(function () {
+                        document.getElementById('pdf-js-viewer').src = source;
+                        let $pdfContainer = $('#' + elementIds.pdfContainer);
+                        let $imageElement = $('#' + elementIds.image);
+                        $pdfContainer.show();
+                        $previewContainerElement.show();
+                        $imageElement.hide();
+                    }).fail(function () {
+                        clearUploadFieldAndPreview();
+                        alert('Something went wrong trying to upload file. Please try again.')
+                    });
+                }
+                if ((file.type === 'image/jpeg') || (file.type === 'image/png')) {
+                    displayImage(file, fileReader);
+                }
             }
         }
     }
@@ -199,9 +215,12 @@ $model_name = CHtml::modelName($model);
         fileReader.readAsDataURL(file); // convert to base64 string
     }
 
-    document.getElementById('file-remove').addEventListener('click', function() {
+    function clearUploadFieldAndPreview()
+    {
         document.getElementById('OphCoDocument_Sub_Types_image').value = null;
         document.getElementById('ophco-template').removeAttribute('src');
         document.getElementById('ophco-template-row').style.display = 'none';
-    });
+    }
+
+    document.getElementById('file-remove').addEventListener('click', clearUploadFieldAndPreview);
 </script>
