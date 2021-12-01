@@ -115,7 +115,6 @@ foreach ($patients->getData() as $i => $SearchPatient) {
     $(document).ready(renderPopups(<?= json_encode($patientsID) ?>));
 
     function renderPopups(ids) {
-        console.log(ids);
         if (ids[0]) {
             $.ajax({
                 'type': "POST",

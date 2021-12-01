@@ -132,6 +132,16 @@ class CaseSearchController extends BaseModuleController
                         'desc' => 'gender DESC',
                         'label' => 'Gender',
                     ),
+                    'hos_num'=> array(
+                        'asc' => 'hos_num',
+                        'desc' => 'hos_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
+                    ),
+                    'nhs_num' => array(
+                        'asc' => 'nhs_num',
+                        'desc' => 'nhs_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('nhs_num_label'),
+                    ),
                 ),
                 'defaultOrder' => array(
                     'last_name' => CSort::SORT_ASC,
@@ -459,6 +469,16 @@ class CaseSearchController extends BaseModuleController
                         'asc' => 'gender',
                         'desc' => 'gender DESC',
                         'label' => 'Gender',
+                    ),
+                    'hos_num' => array(
+                        'asc' => 'hos_num',
+                        'desc' => 'hos_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
+                    ),
+                    'nhs_num' => array(
+                        'asc' => 'nhs_num',
+                        'desc' => 'nhs_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('nhs_num_label'),
                     ),
                 ),
                 'defaultOrder' => array(
