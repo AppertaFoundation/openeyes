@@ -1172,9 +1172,7 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['internal_referral_booking_address'] = $site->getCorrespondenceName();
 
         $this->jsVars['internal_referral_method_label'] = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label');
-
-        $serviceEmail = $this->event ? $this->event->episode->firm->service_email : null;
-        $this->jsVars['internal_referral_service_email'] = $serviceEmail ?? null;
+        $this->jsVars['internal_referral_service_email'] = $this->event->episode->firm->service_email ?? null;
 
         $event_id = Yii::app()->request->getQuery('id');
         if ($event_id) {
