@@ -160,9 +160,9 @@ $treat_as_input_type = $display_treat_as_paediatric && $display_treat_as_adult ?
 $chief_complaints = OphCiExamination_Triage_ChiefComplaint::model()->findAll();
 $eye_injuries = OphCiExamination_Triage_EyeInjury::model()->findAll();
 $eyes = [
-    ['id' => 1, 'label' => 'Left Only'],
-    ['id' => 2, 'label' => 'Right Only'],
-    ['id' => 3, 'label' => 'Right & Left Eye'],
+    ['id' => \Eye::LEFT, 'label' => 'Left Only'],
+    ['id' => \Eye::RIGHT, 'label' => 'Right Only'],
+    ['id' => \Eye::BOTH, 'label' => 'Right & Left Eye'],
 ]
 ?>
 
@@ -253,13 +253,13 @@ $eyes = [
             }
         });
 
-       $('input[name="OEModule_OphCiExamination_models_Element_OphCiExamination_Triage[triage][treat_as_adult]"]').change(
-           function() {
-               let treat_as_adult = $(this).val() === "1";
+        $('input[name="OEModule_OphCiExamination_models_Element_OphCiExamination_Triage[triage][treat_as_adult]"]').change(
+            function() {
+                let treat_as_adult = $(this).val() === "1";
 
-               OphCiExamination_ToggleSafeguardingPaediatricFields(!treat_as_adult);
-           }
-       )
+                OphCiExamination_ToggleSafeguardingPaediatricFields(!treat_as_adult);
+            }
+        )
     });
 
     function setEyeLaterality(eye_id) {

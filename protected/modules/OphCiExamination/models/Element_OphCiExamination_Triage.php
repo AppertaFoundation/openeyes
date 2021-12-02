@@ -15,7 +15,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
-use OEModule\OphCiExamination\models\traits\CustomOrdering;
+use OEModule\OphCiExamination\widgets\Triage as TriageWidget;
 
 /**
  * This is the model class for table "et_ophciexamination_triage".
@@ -27,7 +27,12 @@ use OEModule\OphCiExamination\models\traits\CustomOrdering;
  */
 class Element_OphCiExamination_Triage extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
+
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+
+    protected $widgetClass = TriageWidget::class;
 
     public static function model($class_name = null)
     {
@@ -42,7 +47,7 @@ class Element_OphCiExamination_Triage extends \BaseEventTypeElement
     public function rules()
     {
         return [
-            ['event_id', 'safe']
+            ['event_id, triage', 'safe']
         ];
     }
 
@@ -52,33 +57,5 @@ class Element_OphCiExamination_Triage extends \BaseEventTypeElement
             'event' => [self::BELONGS_TO, 'Event', 'event_id'],
             'triage' => [self::HAS_ONE, 'OEModule\OphCiExamination\models\OphCiExamination_Triage', 'element_id'],
         ];
-    }
-
-    public function afterValidate()
-    {
-        $triage_data = $_POST[\CHtml::modelName($this)]['triage'];
-        $triage = new OphCiExamination_Triage();
-        $triage->attributes = $triage_data;
-        if (!$triage->validate()) {
-            foreach ($triage->getErrors() as $fld => $err) {
-                $this->addError($fld, implode(', ', $err));
-            }
-        }
-
-        parent::afterValidate();
-    }
-
-    public function afterSave()
-    {
-        $triage_data = $_POST[\CHtml::modelName($this)]['triage'];
-        if (!$this->triage) {
-            $triage = new OphCiExamination_Triage();
-            $triage->element_id = $this->id;
-            $triage->attributes = $triage_data;
-            $triage->save(false);
-        } else {
-            $this->triage->attributes = $triage_data;
-            $this->triage->save(false);
-        }
     }
 }
