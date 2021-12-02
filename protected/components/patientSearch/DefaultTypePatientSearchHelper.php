@@ -12,7 +12,7 @@
  * @copyright Copyright (C) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- 
+
 class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
 {
     /**
@@ -50,7 +50,7 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
      * @param PatientIdentifierTypeDisplayOrder $patient_identifier_display_order_entry
      * @return stdClass
      */
-    private function createSearchTypeObject(\PatientIdentifierType $type, \PatientIdentifierTypeDisplayOrder $patient_identifier_display_order_entry = null) : stdClass
+    private function createSearchTypeObject(\PatientIdentifierType $type, \PatientIdentifierTypeDisplayOrder $patient_identifier_display_order_entry = null): stdClass
     {
         $search_type_object = new \stdClass();
         foreach ($type->getAttributes() as $attribute => $value) {
@@ -72,7 +72,7 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
      * @return PatientIdentifierType[]
      * @throws Exception
      */
-    public function getTypesByUsageType(string $usage_type) : array
+    public function getTypesByUsageType(string $usage_type): array
     {
         $types = [];
 
@@ -86,7 +86,7 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
         }
 
         if ($orders) {
-            $types = array_map(function($order) {
+            $types = array_map(function ($order) {
                 return $this->createSearchTypeObject($order->patientIdentifierType, $order);
             }, $orders);
         } else {
@@ -133,7 +133,7 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
      * @return array
      * @throws Exception
      */
-    public function getSearchTermsWithTypes(array $search_terms) : array
+    public function getSearchTermsWithTypes(array $search_terms): array
     {
         $protocol = $search_terms['protocol'];
 
@@ -154,12 +154,12 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
      * @param $protocol
      * @return array
      */
-    private function searchByTypes($types, $term, $protocol) : array
+    private function searchByTypes($types, $term, $protocol): array
     {
         $valid_types = [];
 
         // $types are stdClasses created in createSearchTypeObject()
-        foreach ($types  as $type) {
+        foreach ($types as $type) {
             $is_protocol_searchable = in_array($protocol, $type->search_protocol_prefix) || !$protocol;
             $result = $this->_search($type, $term, $type->searchable, $is_protocol_searchable);
 
@@ -181,33 +181,54 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
      * @param $is_protocol_searchable
      * @return array
      */
-     private function _search($type, $term, $is_type_searchable,  $is_protocol_searchable) : array
-     {
-         $matches = [];
-         $padded_term = sprintf($type->pad ?: '%s', $term);
-         preg_match($type->validate_regex, $padded_term, $matches);
+    private function _search($type, $term, $is_type_searchable, $is_protocol_searchable): array
+    {
+        $matches = [];
+        $padded_term = sprintf($type->pad ?: '%s', $term);
+        preg_match($type->validate_regex, $padded_term, $matches);
 
-         $match = $matches[0] ?? null;
+        $match = $matches[0] ?? null;
 
-         if (($match) && (
-                 // either name or number search, searchable flag must be true (searchable=1)
-                 ($is_type_searchable)
-                 // if the type is GLOBAL we search regardless of searchable true or false
-                 // ?? do we need this here ??
-                 //($type->usage_type === 'GLOBAL')
-             ) &&
-             // $is_protocol_searchable: only in protocol space (restricts only if protocol provided by user)
-             $is_protocol_searchable
-         )
-         {
+        if ($match) {
+            if (($is_type_searchable) &&
+                // $is_protocol_searchable: only in protocol space (restricts only if protocol provided by user)
+                $is_protocol_searchable) {
+                return [
+                    'term' => $match,
+                    // $type here is an stdClass, created in function createSearchTypeObject()
+                    'patient_identifier_type' => \PatientIdentifierType::model()->findByPk($type->id),
+                ];
+            }
+        } elseif ($type->usage_type === 'LOCAL') {
+            // We need to check if it's a global number
+            $institution_global_id = null;
+            $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => Yii::app()->params['global_institution_remote_id']]);
 
-             return [
-                 'term' => $match,
-                 // $type here is an stdClass, created in function createSearchTypeObject()
-                 'patient_identifier_type' => \PatientIdentifierType::model()->findByPk($type->id),
-             ];
-         }
+            $count = count($institutions);
+            if ($count === 1) {
+                $institution_global_id = $institutions[0]->id;
+            }
 
-         return [];
-     }
- }
+            if ($institution_global_id) {
+                $global_type = \PatientIdentifierHelper::getPatientIdentifierType('GLOBAL', $institution_global_id);
+            }
+
+            if (isset($global_type)) {
+                $padded_term = sprintf($global_type->pad ?: '%s', $term);
+                preg_match($global_type->validate_regex, $padded_term, $matches);
+                $match = $matches[0] ?? null;
+
+                if ($match) {
+                    return [
+                        'term' => $match,
+                        // $type here is an stdClass, created in function createSearchTypeObject()
+                        'patient_identifier_type' => \PatientIdentifierType::model()->findByPk($type->id),
+                        'is_global_search' => true
+                    ];
+                }
+            }
+        }
+
+        return [];
+    }
+}

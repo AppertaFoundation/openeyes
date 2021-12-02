@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -81,8 +82,8 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
      */
     public function defaultScope()
     {
-        if ($this->defaultScopeDisabled) {
-            return array();
+        if ($this->getDefaultScopeDisabled()) {
+            return [];
         }
 
         return array(
@@ -200,7 +201,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
      */
     public function search()
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -256,12 +257,12 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
     {
         foreach ($this->esign_element->getSignatures() as $signature) {
             if ((int)$signature->type === \BaseSignature::TYPE_LOGGEDIN_USER) {
-                return file_get_contents ($signature->signatureFile->getPath());
+                return file_get_contents($signature->signatureFile->getPath());
             }
         }
     }
 
-    public function getSignatureByType(int $type):? \OphCoCvi_Signature
+    public function getSignatureByType(int $type): ?\OphCoCvi_Signature
     {
         foreach ($this->esign_element->getSignatures() as $signature) {
             if ((int)$signature->type === $type && $signature->signatureFile) {
@@ -283,7 +284,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
         $siteAddress2 = '';
         if ($this->site) {
             $siteAddress1 = str_replace(array("\n","\r"), ' ', $this->site->contact->address->address1);
-            $siteAddress2 = $this->site->contact->address->city.' '.$this->site->contact->address->postcode;
+            $siteAddress2 = $this->site->contact->address->city . ' ' . $this->site->contact->address->postcode;
         }
 
         $elements = [

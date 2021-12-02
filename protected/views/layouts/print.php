@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
     $print_helper_class = '';
@@ -26,12 +28,15 @@ if (!is_null($controller->module)) {
             $print_helper_styles = 'margin: 0 80px';
             break;
         case 'OphTrConsent':
-            $print_helper_class = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
+            $print_helper_class = 'OphTrConsent ' . (isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
             break;
     }
 }
 $is_visual_impairment = \Yii::app()->request->getParam('is_visual_impairment');
 $print_helper_class .= ($is_visual_impairment ? ' impaired-vision' : '');
+
+$event = $controller->event;
+$deleted_watermark = $event && (int)$event->deleted ? 'void' : null;
 ?>
 <!doctype html>
 <html lang="en">
@@ -40,7 +45,7 @@ $print_helper_class .= ($is_visual_impairment ? ' impaired-vision' : '');
 <title><?=\CHtml::encode($this->pageTitle); ?></title>
 <?php Yii::app()->clientScript->registerCoreScript('jquery')?>
 </head>
-<body class="open-eyes print <?= $print_helper_class ?>" <?= isset($print_helper_styles) ? 'style="'.$print_helper_styles.'"' : '' ?>>
+<body class="open-eyes print <?= $print_helper_class ?> <?=$deleted_watermark?>" <?= isset($print_helper_styles) ? 'style="' . $print_helper_styles . '"' : '' ?>>
     <?php echo $content; ?>
     <script type="text/javascript">
         $(document).ready(function() {

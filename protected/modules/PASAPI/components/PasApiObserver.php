@@ -80,6 +80,7 @@ class PasApiObserver
                 // at the same time
                 'last_name' => $data['params']['last_name'] ?? '',
                 'first_name' => $data['params']['first_name'] ?? '',
+                'is_global_search' => $terms_with_type['is_global_search'] ?? false,
                 'dob' => $data['dob'] ?? '',
 
                 // we return error message via patient model
@@ -285,12 +286,14 @@ class PasApiObserver
             \PatientIdentifierHelper::addNumberToPatient($patient, $global_type, $resource->getAssignedProperty('NHSNumber'));
             $resource->addGlobalNumberStatus($patient);
 
-            // Fire PAS request with GLOBAL number to save more LOCAL ids
-            $extra_identifier_ids = $this->getExtraPatientIdentifierIds($resource); // returns local nums by type
+            if ($global_type->validateTerm($resource->getAssignedProperty('NHSNumber'))) {
+                // Fire PAS request with GLOBAL number to save more LOCAL ids
+                $extra_identifier_ids = $this->getExtraPatientIdentifierIds($resource); // returns local nums by type
 
-            foreach ($extra_identifier_ids as $type_id => $extra_identifier_id) {
-                $_type = \PatientIdentifierType::model()->findByPk($type_id);
-                \PatientIdentifierHelper::addNumberToPatient($patient, $_type, $extra_identifier_id);
+                foreach ($extra_identifier_ids as $type_id => $extra_identifier_id) {
+                    $_type = \PatientIdentifierType::model()->findByPk($type_id);
+                    \PatientIdentifierHelper::addNumberToPatient($patient, $_type, $extra_identifier_id);
+                }
             }
 
             $return_results[] = $patient;

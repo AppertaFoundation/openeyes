@@ -198,7 +198,7 @@ class V1Controller extends \CController
 
         $body = \Yii::app()->request->rawBody;
         $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_str' => $identifier_type]);
-        if($patient_identifier_type) {
+        if ($patient_identifier_type) {
             \Yii::app()->session["selected_institution_id"] = $patient_identifier_type->institution_id;
         }
 
@@ -303,7 +303,7 @@ class V1Controller extends \CController
 
                     if ($duplicate_patient_identifier) {
                         $duplicate_patient_identifier->deleted = 1;
-                        $duplicate_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id. '['.time().']';
+                        $duplicate_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id . '[' . time() . ']';
                         $duplicate_patient_identifier->save();
                     }
 
