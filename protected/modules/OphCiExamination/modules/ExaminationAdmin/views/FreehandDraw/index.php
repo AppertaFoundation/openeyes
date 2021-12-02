@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,9 +15,10 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<div class="cols-5">
+<div class="cols-full">
     <form id="admin_<?= get_class(DrawingTemplate::model()); ?>s"> <!-- the appended 's' needs for the delete logic ... -->
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <table class="standard generic-admin sortable" id="et_sort" data-uri="/OphCiExamination/admin/FreehandDraw/sort">

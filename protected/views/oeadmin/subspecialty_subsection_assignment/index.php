@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -37,7 +38,7 @@ if (isset($model)) {
 }
 ?>
 <h2>Manage Subspecialty Subsection Assignments</h2>
-<div class="cols-5">
+<div class="cols-full">
     <form id="admin_subspecialty_section_assignments">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
         <input type="hidden" name="page" value="1" />
@@ -60,8 +61,8 @@ if (isset($model)) {
                             'subspecialty.name'
                         ),
                         [
-                            'id' => 'subspecialty-select',
-                            'empty' => 'Select a subspecialty'
+                                                          'id' => 'subspecialty-select',
+                                                          'empty' => 'Select a subspecialty'
                         ]
                     )?>
                     </td>
@@ -90,14 +91,14 @@ if (isset($model)) {
                     <td><h3>Institution: </h3></td>
                     <td>
                         <?= CHtml::dropDownList(
-                                'institution-filter',
-                                $institution_id,
-                                CHtml::listData(
-                                    Institution::model()->findAll(),
-                                    'id',
-                                    'name',
-                                ),
-                                [
+                            'institution-filter',
+                            $institution_id,
+                            CHtml::listData(
+                                Institution::model()->findAll(),
+                                'id',
+                                'name',
+                            ),
+                            [
                                     'id' => 'institution-select',
                                     'empty' => 'Select an institution'
                                 ]
@@ -118,9 +119,9 @@ if (isset($model)) {
             </thead>
             <tbody>
             <?php $assignments = ProcedureSubspecialtySubsectionAssignment::model()->findAll(
-                    'subspecialty_subsection_id = :subsection_id AND institution_id = :institution_id',
-                    [':subsection_id' => $subsection_id, ':institution_id' => $institution_id]
-                );
+                'subspecialty_subsection_id = :subsection_id AND institution_id = :institution_id',
+                [':subsection_id' => $subsection_id, ':institution_id' => $institution_id]
+            );
             foreach ($assignments as $model) { ?>
                 <tr>
                     <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>

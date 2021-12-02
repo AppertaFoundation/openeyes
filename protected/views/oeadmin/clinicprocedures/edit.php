@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2021
  * This file is part of OpenEyes.
@@ -12,9 +13,10 @@
  * @copyright Copyright (C) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<div class="cols-5">
+<div class="cols-full">
     <h2>Edit Procedure</h2>
 
     <?= $this->renderPartial('//admin/_form_errors', ['errors' => $errors]) ?>
@@ -23,8 +25,8 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <colgroup>
-                <col class="cols-3">
-                <col class="cols-4">
+                <col class="cols-3">    
+                <col class="cols-full">
             </colgroup>
             <tbody>
             <tr>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,12 +13,13 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('/js/oeadmin/OpenEyes.HTMLSettingEditorController.js'), \CClientScript::POS_HEAD);
 ?>
-<div class="cols-5">
+<div class="cols-full">
 
     <h2>Edit Procedure</h2>
 
@@ -28,7 +30,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
         <table class="standard cols-full">
             <colgroup>
                 <col class="cols-3">
-                <col class="cols-4">
+                <col class="cols-full">
             </colgroup>
             <tbody>
             <?php
