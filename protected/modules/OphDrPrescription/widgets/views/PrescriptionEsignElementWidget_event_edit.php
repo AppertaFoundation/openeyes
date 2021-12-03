@@ -42,7 +42,7 @@
                 $row = 0;
                 foreach ($this->element->getSignatures() as $signature) {
                     $this->widget(
-                        $this->getWidgetClassByType($signature->type),
+                        static::getWidgetClassByType($signature->type),
                         [
                             "row_id" => $row++,
                             "element" => $this->element,

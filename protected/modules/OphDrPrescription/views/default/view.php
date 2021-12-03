@@ -32,17 +32,19 @@ if (!$elementEditable) {
     });
 }
 if (($Element->draft) && (!$elementEditable) && $editAccess) {
-    $this->event_actions[] = EventAction::button(
-        'Save as final',
-        'save',
-        array('level' => 'secondary'),
-        array(
-            'id' => 'et_save_final',
-            'class' => 'button small',
-            'type' => 'button',
-            'data-element' => $Element->id
-        )
-    );
+    if (!$Element->isSignedByMedication()) {
+        $this->event_actions[] = EventAction::button(
+            'Save as final',
+            'save',
+            array('level' => 'secondary'),
+            array(
+                'id' => 'et_save_final',
+                'class' => 'button small',
+                'type' => 'button',
+                'data-element' => $Element->id
+            )
+        );
+    }
 }
 
 if ($this->checkPrintAccess()) {

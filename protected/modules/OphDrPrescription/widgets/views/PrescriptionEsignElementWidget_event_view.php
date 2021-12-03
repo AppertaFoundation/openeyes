@@ -22,13 +22,56 @@
         <?php foreach ($this->element->getInfoMessages() as $msg) { ?>
             <div class="alert-box info"><?=CHtml::encode($msg)?></div>
         <?php } ?>
-            <?php if (!$this->element->isSigned()) { ?>
-                <div class="alert-box issue"><?= $this->element->getUnsignedMessage() ?>
-                    <?php if ($this->element->usesEsignDevice()) {?>
-                        <a href="#" onclick="bluejay.demoSignatureDeviceLink();">Connect your e-Sign device</a>
-                    <?php } ?>
-                </div>
-            <?php } else { ?>
+        <?php if (!$this->element->isSigned()) { ?>
+            <div class="alert-box issue"><?= $this->element->getUnsignedMessage() ?>
+                <?php if ($this->element->usesEsignDevice()) {?>
+                    <a href="#" onclick="bluejay.demoSignatureDeviceLink();">Connect your e-Sign device</a>
+                <?php } ?>
+            </div>
+            <form class="js-view-signature-form" action="/OphDrPrescription/default/finalizeWithSignatures" method="post">
+                <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
+                <input type="hidden" name="event" value="<?= $this->element->event->id ?>" />
+                <table class="last-left">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Role</th>
+                        <th>Signatory</th>
+                        <th>Signature</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                Yii::app()->user->setFlash('info.info', 'To finalise this prescription, please sign below');
+                $row = 0;
+                foreach ($this->element->getSignatures() as $signature) {
+                    $this->widget(
+                        static::getWidgetClassByType($signature->type),
+                        [
+                            "row_id" => $row++,
+                            "element" => $this->element,
+                            "signature" => $signature,
+                            "mode" => "edit",
+                        ]
+                    );
+                }
+                ?>
+                </tbody>
+                </table>
+            </form>
+            <script>
+                $(document).ready(function() {
+                    $(document).on('signatureAdded', function() {
+                        const proofs = $('.js-proof-field');
+                        const proofsWithValues = $('.js-proof-field[value!=""]');
+
+                        if (proofs.length === proofsWithValues.length) {
+                            $('.js-view-signature-form').submit();
+                        }
+                    });
+                })
+            </script>
+        <?php } else { ?>
             <table class="last-left">
                 <thead>
                 <tr>
@@ -44,7 +87,7 @@
                     $row = 0;
                 foreach ($this->element->getViewSignatures() as $signature) {
                     $this->widget(
-                        $this->getWidgetClassByType($signature->type),
+                        static::getWidgetClassByType($signature->type),
                         [
                             "row_id" => $row++,
                             "element" => $this->element,
@@ -56,7 +99,7 @@
                 ?>
                 </tbody>
             </table>
-            <?php } ?>
+        <?php } ?>
     </div>
 </div>
 <script type="text/javascript">
@@ -64,7 +107,7 @@
         new OpenEyes.UI.EsignElementWidget(
             $(".<?= \CHtml::modelName($this->element) ?>"),
             {
-                mode : "view"
+                mode : "<?= !$this->element->isSigned() ? 'edit' : 'view' ?>"
             }
         );
     });

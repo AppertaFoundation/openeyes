@@ -53,7 +53,7 @@ class EsignElementWidget extends BaseEventElementWidget
      * @return string
      * @throws Exception In case $type is invalid
      */
-    public function getWidgetClassByType(int $type) : string
+    public static function getWidgetClassByType(int $type) : string
     {
         $field_types = static::getFieldTypes();
         if (array_key_exists($type, $field_types)) {

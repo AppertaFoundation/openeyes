@@ -60,7 +60,7 @@ if ($this->isSigningAllowed()) {
                         <?php
                         foreach ($withdrawal_signatures as $signature) {
                             $this->widget(
-                                $this->getWidgetClassByType($signature->type),
+                                static::getWidgetClassByType($signature->type),
                                 [
                                     "row_id" => "X",
                                     "element" => $this->element,
@@ -136,7 +136,7 @@ if ($this->isSigningAllowed()) {
                     $row = 0;
                 foreach ($signatures as $signature) {
                     $this->widget(
-                        $this->getWidgetClassByType($signature->type),
+                        static::getWidgetClassByType($signature->type),
                         [
                             "row_id" => $row++,
                             "element" => $this->element,

@@ -98,7 +98,7 @@ foreach ($sections as $section => $methods) :
             if (!empty($signatures = $element->getSignatures(true))) {
                 foreach ($signatures as $signature) {
                     $this->widget(
-                        $this->getWidgetClassByType($signature->type),
+                        static::getWidgetClassByType($signature->type),
                         [
                             "row_id" => $row++,
                             "element" => $element,

@@ -170,7 +170,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
             $row = 0;
         foreach ($element->getSignatures() as $signature) {
             $this->widget(
-                $this->getWidgetClassByType($signature->type),
+                static::getWidgetClassByType($signature->type),
                 [
                     "row_id" => $row++,
                     "element" => $element,
