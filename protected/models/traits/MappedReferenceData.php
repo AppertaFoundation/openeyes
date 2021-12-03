@@ -95,7 +95,6 @@ trait MappedReferenceData
     public function findAllAtLevel(int $level, $criteria = null): array
     {
         $parent_model_name = lcfirst(__CLASS__);
-        $parent_table_name = $parent_model_name::model()->tableName();
         $mapping_level_column_name = $this->levelIdColumn($level);
         $level_id = $this->getIdForLevel($level);
         $mapping_model = $this->mappingModelName($level)::model();
@@ -109,7 +108,11 @@ trait MappedReferenceData
         }, $mappings);
 
         $merged_criteria = new CDbCriteria();
-        $merged_criteria->addInCondition('t.id', $ids);
+        // if $ids is an empty array then the condition will look like
+        // [condition] => (0=1) AND .... which is always false
+        if ($ids) {
+            $merged_criteria->addInCondition('t.id', $ids);
+        }
 
         if (isset($criteria)) {
             $merged_criteria->mergeWith($criteria);

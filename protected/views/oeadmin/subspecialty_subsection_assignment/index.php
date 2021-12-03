@@ -60,7 +60,7 @@ if (isset($model)) {
                             'name',
                             'subspecialty.name'
                         ),
-                        [
+                                                          [
                                                           'id' => 'subspecialty-select',
                                                           'empty' => 'Select a subspecialty'
                         ]
