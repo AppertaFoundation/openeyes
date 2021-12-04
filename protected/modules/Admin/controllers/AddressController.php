@@ -1,4 +1,7 @@
 <?php
+
+use OEModule\PASAPI\models\PasApiAssignment;
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.

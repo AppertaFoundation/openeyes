@@ -41,12 +41,29 @@ class PatientController extends BaseApiController
     public function actionSearch()
     {
         $term = trim(\Yii::app()->request->getParam('term', ''));
+        $patient_identifier_type = \Yii::app()->request->getParam('patient_identifier_type', null);
 
         $result = [];
         $patientSearch = new PatientSearch();
-        if ($patientSearch->isValidSearchTerm($term)) {
-            $dataProvider = $patientSearch->search($term);
+
+        if ($patientSearch->getValidSearchTerm($term, $patient_identifier_type)) {
+            $dataProvider = $patientSearch->search($term, $patient_identifier_type);
             foreach ($dataProvider->getData() as $patient) {
+                $pi = [];
+                foreach ($patient->identifiers as $identifier) {
+                    $pi[] = [
+                        'title' => $identifier->patientIdentifierType->long_title ?? $identifier->patientIdentifierType->short_title,
+                        'value' => $identifier->value
+                    ];
+                }
+
+                if ($patient_identifier_type) {
+                    $primary_identifier = null;
+                } else {
+                    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
+                        $patient->id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+                }
+
                 $result[] = [
                     'id' => $patient->id,
                     'first_name' => $patient->first_name,
@@ -54,9 +71,12 @@ class PatientController extends BaseApiController
                     'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
                     'genderletter' => $patient->gender,
                     'dob' => $patient->dob,
-                    'hos_num' => $patient->hos_num,
-                    'nhsnum' => $patient->nhsnum,
                     'is_deceased' => $patient->is_deceased,
+                    'patient_identifiers' => $pi,
+                    'primary_patient_identifiers' => [
+                        'title' => PatientIdentifierHelper::getIdentifierPrompt($primary_identifier),
+                        'value' => PatientIdentifierHelper::getIdentifierValue($primary_identifier)
+                    ]
                 ];
             }
         }

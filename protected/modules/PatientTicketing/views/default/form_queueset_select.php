@@ -35,7 +35,8 @@ $form = $this->beginWidget('CActiveForm', array(
     'action' => ["/{$this->module->id}/default/", "reset_filters" => 1],
 ));
 ?>
-
+<input type="hidden" name="sort_by" id="ticket_sort_by" value="<?= Yii::app()->getRequest()->getParam('sort_by', '');?>">
+<input type="hidden" name="sort_by_order" id="ticket_sort_by_order" value="<?= Yii::app()->getRequest()->getParam('sort_by_order', '');?>">
 <div class="oe-popup-wrap js-wrap-virtual-clinic" style="display: none">
   <div class="oe-popup">
     <div class="title">Change Virtual Clinic</div>

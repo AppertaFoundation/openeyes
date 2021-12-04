@@ -24,18 +24,20 @@
  * @property int $id
  * @property int $proc_id
  * @property int $subspecialty_id
+ * @property int $institution_id
  * @property int $display_order
  *
  * The followings are the available model relations:
  * @property Subspecialty $subspecialty
  * @property Procedure $procedure
+ * @property Institution $institution
  */
 class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ProcedureSubspecialtyAssignment the static model class
+     * @return ProcedureSubspecialtyAssignment|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -70,9 +72,10 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
               'message' => 'The specified subspecialty does not exist.',
               ),
             array('proc_id, subspecialty_id', 'length', 'max' => 10),
+            array('proc_id, subspecialty_id, display_order, need_eur, institution_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, proc_id, subspecialty_id', 'safe', 'on' => 'search'),
+            array('id, proc_id, subspecialty_id, display_order, need_eur', 'safe', 'on' => 'search'),
         );
     }
 
@@ -86,10 +89,12 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
         return array(
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'procedure' => array(self::BELONGS_TO, 'Procedure', 'proc_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id')
         );
     }
 
-    public function scopes() {
+    public function scopes()
+    {
         return array(
             'byDisplayOrder' => array('order' => 'display_order'),
         );
@@ -122,7 +127,7 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
         foreach ($list as $subspecialty) {
             $result[$subspecialty->procedure->id] = $subspecialty->procedure->term;
         }
-        
+
         return $result;
     }
 
@@ -141,10 +146,10 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
         foreach ($list as $subspecialty) {
             $result[$subspecialty->proc_id] = $subspecialty->need_eur;
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *

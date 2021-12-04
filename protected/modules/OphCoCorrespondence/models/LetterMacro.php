@@ -33,13 +33,24 @@
  */
 class LetterMacro extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_SITE | ReferenceData::LEVEL_SUBSPECIALTY | ReferenceData::LEVEL_FIRM;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'letter_macro_id';
+    }
+
     public $type;
 
     /**
      * Returns the static model of the specified AR class.
      *
      * @param string $className
-     * @return LetterMacro the static model class
+     * @return LetterMacro|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -60,8 +71,7 @@ class LetterMacro extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name, recipient_id, use_nickname, body, cc_patient, cc_doctor, display_order, site_id,
-             subspecialty_id, firm_id, cc_optometrist,  cc_drss, episode_status_id, letter_type_id', 'safe'),
+            array('name, recipient_id, use_nickname, body, cc_patient, cc_doctor, display_order, cc_optometrist,  cc_drss, episode_status_id, letter_type_id', 'safe'),
             array('name, use_nickname, body, cc_patient, cc_doctor, type', 'required'),
             array('site_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'site'),
             array('subspecialty_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'subspecialty'),
@@ -78,9 +88,10 @@ class LetterMacro extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
-            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-            'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', 'ophcocorrespondence_letter_macro_institution(letter_macro_id,institution_id)'),
+            'sites' => array(self::MANY_MANY, 'Site', 'ophcocorrespondence_letter_macro_site(letter_macro_id,site_id)'),
+            'subspecialties' => array(self::MANY_MANY, 'Subspecialty', 'ophcocorrespondence_letter_macro_subspecialty(letter_macro_id,subspecialty_id)'),
+            'firms' => array(self::MANY_MANY, 'Firm', 'ophcocorrespondence_letter_macro_firm(letter_macro_id,firm_id)'),
             'episode_status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
             'recipient' => array(self::BELONGS_TO, 'LetterRecipient', 'recipient_id'),
             'letter_type' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
@@ -129,12 +140,16 @@ class LetterMacro extends BaseActiveRecordVersioned
 
     public function afterFind()
     {
-        if ($this->site_id) {
+//        echo (CVarDumper::dumpAsString($this->subspecialties[0]['name']));
+//        exit();
+        if ($this->sites) {
             $this->type = 'site';
-        } elseif ($this->subspecialty_id) {
+        } elseif ($this->subspecialties) {
             $this->type = 'subspecialty';
-        } elseif ($this->firm_id) {
+        } elseif ($this->firms) {
             $this->type = 'firm';
+        } elseif ($this->institutions) {
+            $this->type = 'institution';
         }
     }
 

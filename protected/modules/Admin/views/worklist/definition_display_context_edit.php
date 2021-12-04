@@ -29,6 +29,7 @@
             'field' => 5,
         ),
     ))?>
+    <?php echo $form->dropDownList($display_context, 'institution_id', Institution::model()->getList(false), array('empty' => '- Any -')) ?>
     <?php echo $form->dropDownList($display_context, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Any -')) ?>
     <?php echo $form->dropDownList($display_context, 'subspecialty_id', Subspecialty::model()->getList(), array('empty' => '- Any -')) ?>
     <?php echo $form->dropDownList($display_context, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => '- Any -')) ?>

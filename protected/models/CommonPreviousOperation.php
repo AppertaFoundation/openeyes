@@ -27,6 +27,18 @@
  */
 class CommonPreviousOperation extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    public function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    public function mappingColumn(int $level): string
+    {
+        return 'common_previous_operation_id';
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *

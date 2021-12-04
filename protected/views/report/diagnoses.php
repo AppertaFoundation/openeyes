@@ -27,122 +27,123 @@
         'action' => Yii::app()->createUrl('/report/downloadReport'),
     )) ?>
 
-  <input type="hidden" name="report-name" value="Diagnoses"/>
+    <input type="hidden" name="report-name" value="Diagnoses"/>
 
-  <table class="standard cols-full">
-    <colgroup>
-      <col class="cols-3">
-      <col class="cols-3">
-      <col class="cols-3">
-      <col class="cols-3">
-    </colgroup>
-    <tbody>
-    <tr class="col-gap">
-      <td>Start date:</td>
-      <td>
-        <input id="start_date"
-               class="start-date"
-               placeholder="dd-mm-yyyy"
-               name="start_date"
-               autocomplete="off"
-               value= <?= date('d-m-Y'); ?>
-        >
-      </td>
-      <td>End date:</td>
-      <td>
-        <input id="end_date"
-               class="end-date"
-               placeholder="dd-mm-yyyy"
-               name="end_date"
-               autocomplete="off"
-               value= <?= date('d-m-Y'); ?>
-        >
-      </td>
-    </tr>
-    </tbody>
-  </table>
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-3">
+            <col class="cols-3">
+            <col class="cols-3">
+        </colgroup>
+        <tbody>
+        <tr class="col-gap">
+            <td>Start date:</td>
+            <td>
+                <input id="start_date"
+                       class="start-date"
+                       placeholder="dd-mm-yyyy"
+                       name="start_date"
+                       autocomplete="off"
+                       value= <?= date('d-m-Y'); ?>
+                >
+            </td>
+            <td>End date:</td>
+            <td>
+                <input id="end_date"
+                       class="end-date"
+                       placeholder="dd-mm-yyyy"
+                       name="end_date"
+                       autocomplete="off"
+                       value= <?= date('d-m-Y'); ?>
+                >
+            </td>
+        </tr>
+        <?php $this->renderPartial('_institution_table_row', ['field_name' => "institution_id"]);?>
+        </tbody>
+    </table>
 
-  <table>
-    <tbody>
-    <tr>
-      <td>
-        <div id="selected_diagnoses">
-        </div>
-            <?php $this->widget('application.widgets.DiagnosisSelection', array(
-              'field' => 'disorder_id',
-              'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-              'layout' => 'minimal',
-              'callback' => 'Reports_AddDiagnosis',
-          )) ?>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <table class="standard cols-full">
-    <colgroup>
-      <col class="cols-4">
-      <col class="cols-4">
-      <col class="cols-4">
-    </colgroup>
-    <thead>
-    <tr>
-      <th>Diagnosis</th>
-      <th>Principal</th>
-      <th>Edit</th>
-    </tr>
-    </thead>
-    <tbody id="Reports_diagnoses">
-    </tbody>
-  </table>
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <div id="selected_diagnoses">
+                </div>
+                <?php $this->widget('application.widgets.DiagnosisSelection', array(
+                    'field' => 'disorder_id',
+                    'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                    'layout' => 'minimal',
+                    'callback' => 'Reports_AddDiagnosis',
+                )) ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-4">
+            <col class="cols-4">
+            <col class="cols-4">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>Diagnosis</th>
+            <th>Principal</th>
+            <th>Edit</th>
+        </tr>
+        </thead>
+        <tbody id="Reports_diagnoses">
+        </tbody>
+    </table>
 
-  <table class="standard cols-full">
-    <tbody>
-    <tr>
-      <td>
-        <input type="radio" name="condition_type" id="condition_or" value="or" checked="checked"/>
-      </td>
-      <td>
-        Match patients with <strong>any</strong> of these diagnoses
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <input type="radio" name="condition_type" id="condition_and" value="and"/>
-      </td>
-      <td>
-        Match patients with <strong>all</strong> of these diagnoses
-      </td>
-    </tr>
-    </tbody>
-  </table>
+    <table class="standard cols-full">
+        <tbody>
+        <tr>
+            <td>
+                <input type="radio" name="condition_type" id="condition_or" value="or" checked="checked"/>
+            </td>
+            <td>
+                Match patients with <strong>any</strong> of these diagnoses
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="radio" name="condition_type" id="condition_and" value="and"/>
+            </td>
+            <td>
+                Match patients with <strong>all</strong> of these diagnoses
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
     <?php $this->endWidget() ?>
 
-  <div class="errors alert-box alert with-icon" style="display: none">
-    <p>Please fix the following input errors:</p>
-    <ul>
-    </ul>
-  </div>
+    <div class="errors alert-box alert with-icon" style="display: none">
+        <p>Please fix the following input errors:</p>
+        <ul>
+        </ul>
+    </div>
 
-  <table class="standard cols-full">
-    <tbody>
-    <tr>
-      <td>
-        <div class="row flex-layout flex-right">
-          <button type="submit" class="button green hint display-report" name="run">
-            <span class="button-span button-span-blue">Display report</span>
-          </button>
-          &nbsp;
-          <button type="submit" class="button green hint download-report" name="run">
-            <span class="button-span button-span-blue">Download report</span>
-          </button>
-          <i class="spinner loader" style="display: none;"></i>
-        </div>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+    <table class="standard cols-full">
+        <tbody>
+        <tr>
+            <td>
+                <div class="row flex-layout flex-right">
+                    <button type="submit" class="button green hint display-report" name="run">
+                        <span class="button-span button-span-blue">Display report</span>
+                    </button>
+                    &nbsp;
+                    <button type="submit" class="button green hint download-report" name="run">
+                        <span class="button-span button-span-blue">Download report</span>
+                    </button>
+                    <i class="spinner loader" style="display: none;"></i>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-  <div class="js-report-summary report-summary" style="display: none;">
-  </div>
+    <div class="js-report-summary report-summary" style="display: none;">
+    </div>
 </div>

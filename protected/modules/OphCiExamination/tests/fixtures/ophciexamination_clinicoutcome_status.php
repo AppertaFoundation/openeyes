@@ -24,6 +24,7 @@ return array(
         'episode_status_id' => 4,
         'active' => 1,
         'patientticket' => 0,
+        'institution_id' => 1,
     ),
     'ex_clinical_status2' => array(
         'id' => 2,
@@ -33,6 +34,7 @@ return array(
         'episode_status_id' => 3,
         'active' => 1,
         'patientticket' => 0,
+        'institution_id' => 1,
     ),
     'ex_clinical_status3' => array(
         'id' => 3,
@@ -51,5 +53,6 @@ return array(
         'episode_status_id' => 1,
         'active' => 0,
         'patientticket' => 0,
+        'institution_id' => 2,
     ),
 );

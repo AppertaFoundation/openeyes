@@ -22,11 +22,11 @@
  * @var $patient Patient
  * @var $form CActiveForm
  * @var $patient_identifiers PatientIdentifier[]
+ * @var array $pid_type_necessity_values
  */
 
 CHtml::$errorContainerTag = 'small';
 
-$nhs_num_statuses = CHtml::listData(NhsNumberVerificationStatus::model()->findAll(), 'id', 'description');
 $countries = CHtml::listData(Country::model()->findAll(), 'id', 'name');
 $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name');
 $gp = new Gp();
@@ -91,7 +91,7 @@ foreach ($ethnic_list as $key => $item) {
             <?= $form->textField(
                 $contact,
                 'first_name',
-                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicatesByNameAndDOB();",
                 'placeholder' => 'First name',
                 'autocomplete' => Yii::app()->params['html_autocomplete'])
             ) ?>
@@ -107,7 +107,7 @@ foreach ($ethnic_list as $key => $item) {
             <?= $form->textField(
                 $contact,
                 'last_name',
-                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicatesByNameAndDOB();",
                 'placeholder' => 'Last name',
                 'autocomplete' => Yii::app()->params['html_autocomplete'])
             ) ?>
@@ -143,7 +143,7 @@ foreach ($ethnic_list as $key => $item) {
                 $patient->dob = str_replace('-', '/', $patient->dob);
             }
             ?>
-            <?= $form->textField($patient, 'dob', array('onblur' => "findDuplicates($patient->id);",
+            <?= $form->textField($patient, 'dob', array('onblur' => "findDuplicatesByNameAndDOB();",
               'placeholder' => 'dd/mm/yyyy', 'class' => 'date', 'autocomplete'=>'off')) ?>
             <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
@@ -241,66 +241,13 @@ foreach ($ethnic_list as $key => $item) {
     <div class="row divider">
       <table class="standard highlight-rows">
         <tbody>
-        <tr>
-          <td class=<?= Yii::app()->params['add_patient_fields']['hos_num'] === 'mandatory' ? 'required':'' ?>>
-                <?= $form->label($patient, 'hos_num') ?>
-            <br/>
-                <?= $form->error($patient, 'hos_num') ?>
-          </td>
-          <td>
-            <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId()))) {
-                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num'), 'autocomplete' => Yii::app()->params['html_autocomplete']));
-            } else {
-                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num'), 'autocomplete' => Yii::app()->params['html_autocomplete']));
-            }
-            ?>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <?= \SettingMetadata::model()->getSetting('nhs_num_label')?>
-          </td>
-          <td>
-                <?= $form->textField(
-                    $patient,
-                    'nhs_num',
-                    array(
-                      'size' => 40,
-                      'maxlength' => 40,
-                      'data-child_row' => '.nhs-num-status',
-                      'placeholder' => $patient->getAttributeLabel('nhs_num'),
-                      'autocomplete' => Yii::app()->params['html_autocomplete']
-                    )
-                ); ?>
-                <?= $form->error($patient, 'nhs_num') ?>
-          </td>
-        </tr>
-<!--        Making the NHS number status to be visible only if use case is not for CERA as they dont want this- CERA-499 -->
-        <?php
-        if (Yii::app()->params['add_patient_fields']['nhs_num_status']!=='hidden') {?>
-             <tr class="nhs-num-status" style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
-              <td>
-                  <?= $form->label($patient, 'nhs_num_status_id') ?>
-                <br/>
-                  <?= $form->error($patient, 'nhs_num_status_id') ?>
-              </td>
-              <td>
-                  <?= $form->dropDownList(
-                      $patient,
-                      'nhs_num_status_id',
-                      $nhs_num_statuses,
-                      array('empty' => '-- select --')
-                  ); ?>
-              </td>
-            </tr>
-            <?php
-        }
-        ?>
-        <?= $this->renderPartial('crud/_patient_identifiers', array(
-                'form' => $form,
-                'patient_identifiers' => $patient_identifiers,
-                'patient' => $patient,
-            )) ?>
+            <?= $this->renderPartial('crud/_patient_identifiers', [
+                    'form' => $form,
+                    'patient_identifiers' => $patient_identifiers,
+                    'pid_type_necessity_values' => $pid_type_necessity_values,
+                    'patient' => $patient,
+                ])
+?>
         </tbody>
       </table>
     </div>
@@ -755,10 +702,11 @@ if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
       }
     });
 
-    function findDuplicates(id) {
-        var first_name = $('#Contact_first_name').val();
-        var last_name = $('#Contact_last_name').val();
-        var date_of_birth = $('#Patient_dob').val();
+    function findDuplicatesByNameAndDOB() {
+        let id = <?= $patient->id ?: 'null' ?>;
+        let first_name = $('#Contact_first_name').val();
+        let last_name = $('#Contact_last_name').val();
+        let date_of_birth = $('#Patient_dob').val();
         if (first_name && last_name && date_of_birth) {
             $.ajax({
                 url: "<?php echo Yii::app()->controller->createUrl('patient/findDuplicates'); ?>",
@@ -769,6 +717,13 @@ if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
                     $('.patient-duplicate-check').after(response);
                 }
             });
+        }
+    }
+
+    function findDuplicates() {
+        findDuplicatesByNameAndDOB();
+        for(let index = 0; index < <?= count($patient_identifiers) ?>; ++index) {
+            findDuplicatesByPatientIdentifier(index);
         }
     }
 

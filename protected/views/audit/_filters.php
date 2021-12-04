@@ -26,10 +26,23 @@
             </colgroup>
             <tr>
                 <td>
+                    Institution
+                </td>
+                <td>
+                    <?= Yii::app()->user->checkAccess('Institution Audit') ?
+                        \CHtml::dropDownList('institution_id', @$_POST['institution_id'], Institution::model()->getList(false), array('class'=>'cols-full', 'empty' => 'All institutions')) :
+                        \CHtml::dropDownList('institution_id', Yii::app()->session['selected_institution_id'], Institution::model()->getList(true), array('class'=>'cols-full', 'disabled' => 'disabled')) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     Site
                 </td>
                 <td>
-                    <?=\CHtml::dropDownList('site_id', @$_POST['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites','class'=>'cols-full'))?>
+                    <?php $site_list = Site::model()->getListForAllInstitutions();
+                        echo Yii::app()->user->checkAccess('Institution Audit') ?
+                            \CHtml::dropDownList('site_id', @$_POST['site_id'], $site_list['list'], array('class'=>'cols-full', 'empty' => 'All sites', 'options' => $site_list['options'])) :
+                            \CHtml::dropDownList('site_id', @$_POST['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites','class'=>'cols-full')); ?>
                 </td>
             </tr>
             <tr>
@@ -50,8 +63,8 @@
     <?=\CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types', 'class' => 'cols-full'))?>
     <h4>User</h4>
     <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
-    <h4>Hospital Number</h4>
-    <?=\CHtml::textField('hos_num', @$_POST['hos_num'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search cols-full', 'placeholder'=>'Enter Hospital Number'))?>
+    <h4>Patient Identifier</h4>
+    <?=\CHtml::textField('patient_identifier_value', Yii::app()->request->getPost('patient_identifier_value'), array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search cols-full', 'placeholder'=>'Enter Patient Identifier'))?>
     <h3>Filter by Date</h3>
     <div class="flex-layout">
         <fieldset>

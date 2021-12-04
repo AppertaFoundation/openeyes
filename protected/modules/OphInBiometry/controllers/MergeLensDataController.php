@@ -60,6 +60,10 @@ class MergeLensDataController extends BaseAdminController
                             throw new Exception('Error saving cataract element data!');
                         }
                     }
+                    foreach (OphInBiometry_LensType_Lens_Institution::model()->findAll('lens_type_id = :id', array(':id', $existing['iol_type_id'])) as $mapping) {
+                        $mapping->lens_type_id = $new_IOL->id;
+                        $mapping->save();
+                    }
                 }
             }
             $this->dbConnection->createCommand("ALTER TABLE et_ophtroperationnote_cataract ADD CONSTRAINT et_ophtroperationnote_cataract_iol_type_id_fk FOREIGN KEY (iol_type_id) REFERENCES ophinbiometry_lenstype_lens(id)")->query();

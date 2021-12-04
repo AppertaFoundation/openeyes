@@ -56,7 +56,7 @@ class ExaminationCreatorTest extends \OEDbTestCase
     public function visual_acuity_and_refraction_are_saved()
     {
         $creator = new ExaminationCreator();
-        $patient = $this->getPatientWithEpisodes();
+        $patient = $this->getPatientWithEpisodesAndWithOperationNoteEvent();
         $user  = $this->getRandomLookup(\User::class);
         $eventType = \EventType::model()->find('name = "Examination"');
         $refractionType = $this->getRandomLookup(OphCiExamination_Refraction_Type::class);
@@ -178,7 +178,7 @@ class ExaminationCreatorTest extends \OEDbTestCase
     {
         $criteria = new \CDbCriteria();
         $criteria->addColumnCondition(['scale_id' => null]);
-        $instrument = $this->getRandomLookup(OphCiExamination_Instrument::class,1, $criteria);
+        $instrument = $this->getRandomLookup(OphCiExamination_Instrument::class, 1, $criteria);
 
         return [
             'mm_hg' => $this->getRandomLookup(OphCiExamination_IntraocularPressure_Reading::class)->value,

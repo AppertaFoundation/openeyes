@@ -62,15 +62,21 @@ class AdminController extends \ModuleAdminController
 
     public function actionSenderEmailAddresses()
     {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
         $this->render('/admin/sender_email_addresses', array(
-            'addresses' => SenderEmailAddresses::model()->findAll(),
+            'addresses' => SenderEmailAddresses::model()->findAll($criteria),
         ));
     }
 
     public function actionEmailTemplates()
     {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
         $this->render('/admin/email_templates', array(
-            'templates' => EmailTemplate::model()->findAll(),
+            'templates' => EmailTemplate::model()->findAll($criteria),
         ));
     }
 
@@ -80,6 +86,7 @@ class AdminController extends \ModuleAdminController
             $this->redirect(array('/OphCoCorrespondence/admin/letterSettings/settings'));
         }
 
+        $institution_id = Institution::model()->getCurrent()->id;
         $errors = array();
 
         if (Yii::app()->request->isPostRequest) {
@@ -105,6 +112,7 @@ class AdminController extends \ModuleAdminController
                 'metadata' => $metadata,
                 'errors' => $errors,
                 'cancel_uri' => '/OphCoCorrespondence/admin/letterSettings/settings',
+                'institution_id' => $institution_id,
             ]
         );
     }
@@ -145,52 +153,91 @@ class AdminController extends \ModuleAdminController
         $this->renderPartial('_episode_statuses', array('statuses' => $this->getUniqueEpisodeStatuses($this->getMacros(false))));
     }
 
+    /**
+     * @param bool $filter_name_and_episode_status
+     * @return BaseActiveRecord[]|CActiveRecord|LetterMacro[]|null
+     * @throws Exception
+     */
     public function getMacros($filter_name_and_episode_status = true)
     {
         $criteria = new CDbCriteria();
 
-        if (@$_GET['type'] == 'site') {
-            $criteria->addCondition('site_id is not null');
-        }
-        if (@$_GET['type'] == 'subspecialty') {
-            $criteria->addCondition('subspecialty_id is not null');
-        }
-        if (@$_GET['type'] == 'firm') {
-            $criteria->addCondition('firm_id is not null');
+        $criteria->with = ['institutions', 'sites', 'firms', 'subspecialties'];
+        if (@$_GET['institution_id']) {
+            $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
+            $criteria->params['::institution_id'] = $_GET['institution_id'];
         }
 
         if (@$_GET['site_id']) {
-            $criteria->addCondition('site_id = :site_id');
+            $criteria->addCondition('sites_sites.site_id = :site_id OR institutions_institutions.institution_id = :institution_id');
             $criteria->params[':site_id'] = $_GET['site_id'];
+            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
         }
 
         if (@$_GET['subspecialty_id']) {
-            $criteria->addCondition('subspecialty_id = :subspecialty_id');
+            $criteria->addCondition('subspecialties_subspecialties.subspecialty_id = :subspecialty_id');
             $criteria->params[':subspecialty_id'] = $_GET['subspecialty_id'];
         }
 
         if (@$_GET['firm_id']) {
-            $criteria->addCondition('firm_id = :firm_id');
+            $criteria->addCondition('firms_firms.firm_id = :firm_id OR institutions_institutions.institution_id = :institution_id');
             $criteria->params[':firm_id'] = $_GET['firm_id'];
+            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
         }
 
         if ($filter_name_and_episode_status) {
             if (@$_GET['name']) {
-                $criteria->addCondition('name = :name');
+                $criteria->addCondition('t.name = :name');
                 $criteria->params[':name'] = $_GET['name'];
             }
 
             if (@$_GET['episode_status_id']) {
-                $criteria->addCondition('episode_status_id = :esi');
+                $criteria->addCondition('t.episode_status_id = :esi');
                 $criteria->params[':esi'] = $_GET['episode_status_id'];
             }
         }
 
-        $criteria->order = 'display_order asc, site_id asc, subspecialty_id asc, firm_id asc, name asc';
+        $criteria->order = 'display_order asc, sites_sites.site_id asc, subspecialties_subspecialties.subspecialty_id asc, firms_firms.firm_id asc, t.name asc';
 
+        if ($this->checkAccess('admin')) {
+            return LetterMacro::model()->findAll($criteria);
+        }
+
+        $criteria->with = ['institutions'];
+        $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
+        $criteria->params = [':institution_id' => Yii::app()->session['selected_institution_id']];
         return LetterMacro::model()->findAll($criteria);
     }
 
+
+    /**
+     * Get the level at which the mapping needs to be stored.
+     * If the attribute has been restricted at lower level then create mapping only at that level.
+     */
+    public function getMappingLevel($attribute)
+    {
+        // Create mapping at institution level only for institution admins
+        $values[] = Yii::app()->user->checkAccess('admin') ? '' : Yii::app()->session['selected_institution_id'];
+        $referenceLevel = Yii::app()->user->checkAccess('admin') ? ReferenceData::LEVEL_ALL : ReferenceData::LEVEL_INSTITUTION;
+        if (array_key_exists('subspecialties', $attribute) && !empty($attribute['subspecialties'])) {
+            $values = $attribute['subspecialties'];
+            $referenceLevel = ReferenceData::LEVEL_SUBSPECIALTY;
+        } elseif (array_key_exists('firms', $attribute) && !empty($attribute['firms'])) {
+            $values = $attribute['firms'];
+            $referenceLevel = ReferenceData::LEVEL_FIRM;
+        } elseif (array_key_exists('sites', $attribute) && !empty($attribute['sites'])) {
+            $values = $attribute['sites'];
+            $referenceLevel = ReferenceData::LEVEL_SITE;
+        } elseif (array_key_exists('institutions', $attribute) && !empty($attribute['institutions'])) {
+            $values = $attribute['institutions'];
+            $referenceLevel = ReferenceData::LEVEL_INSTITUTION;
+        }
+        return ['values' => $values, 'referenceLevel' => $referenceLevel];
+    }
+
+    /**
+     * @throws Exception
+     */
     public function actionAddMacro()
     {
         $macro = new LetterMacro();
@@ -198,12 +245,19 @@ class AdminController extends \ModuleAdminController
         $errors = array();
 
         if (!empty($_POST)) {
-            $macro->attributes = $_POST['LetterMacro'];
+            $post = $_POST['LetterMacro'];
+            $macro->attributes = $post;
+            $mappingAttributes = $this->getMappingLevel($post);
 
             if (!$macro->validate()) {
                 $errors = $macro->errors;
             } else {
-                if (!$macro->save()) {
+                if ($macro->save()) {
+                    $saved = $macro->createMappings($mappingAttributes['referenceLevel'], $mappingAttributes['values']);
+                    if (!$saved) {
+                        throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
+                    }
+                } else {
                     throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
                 }
 
@@ -241,12 +295,20 @@ class AdminController extends \ModuleAdminController
         $errors = array();
 
         if (!empty($_POST)) {
-            $macro->attributes = $_POST['LetterMacro'];
+            $post = $_POST['LetterMacro'];
+            $macro->attributes = $post;
+            $mappingValues = $this->getMappingLevel($post);
 
             if (!$macro->validate()) {
                 $errors = $macro->errors;
             } else {
-                if (!$macro->save()) {
+                if ($macro->save()) {
+                    $macro->deleteMappings(ReferenceData::LEVEL_ALL);
+                    $saved = $macro->createMappings($mappingValues['referenceLevel'], $mappingValues['values']);
+                    if (!$saved) {
+                        throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
+                    }
+                } else {
                     throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
                 }
 
@@ -438,6 +500,7 @@ class AdminController extends \ModuleAdminController
 
         if (!empty($_POST)) {
             $senderEmailAddresses->attributes = $_POST['SenderEmailAddresses'];
+            $senderEmailAddresses->institution_id = Institution::model()->getCurrent()->id;
 
             if (!$senderEmailAddresses->validate()) {
                 $errors = $senderEmailAddresses->errors;
@@ -518,6 +581,7 @@ class AdminController extends \ModuleAdminController
 
         if (!empty($_POST)) {
             $template->attributes = $_POST['EmailTemplate'];
+            $template->institution_id = Institution::model()->getCurrent()->id;
 
             if (!$template->validate()) {
                 $errors = $template->errors;

@@ -13,10 +13,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $currentValue = $metadata->getSettingName(null, $allowed_classes);
+<?php $currentValue = $metadata->getSettingName(null, $allowed_classes, $institution_id, true);
+;
 if (!isset($currentValue) || $currentValue == null) {
     // we need this to prevent HTML value without =
       $currentValue = '';
 }
       echo CHtml::textField($metadata->key, $currentValue);
-      echo CHtml::hiddenField('hidden_'.$metadata->key, 1);  ?>
+      echo CHtml::hiddenField('hidden_'.$metadata->key, 1);

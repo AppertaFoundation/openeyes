@@ -25,21 +25,23 @@ class OphCiExamination_ReportReadyForSecondEyeUnbooked extends BaseReport
     {
         return array(
             'event_date' => 'Event date',
-            'hos_num' => 'Hospital Number',
+            'all_ids' => 'Patient IDs'
         );
     }
 
     public function rules()
     {
         return array(
-            array('event_date, hos_num', 'safe')
+            array('event_date', 'safe')
         );
     }
 
     public function run()
     {
+        $this->setInstitutionAndSite();
+
         $cmd = Yii::app()->db->createCommand()
-            ->select(array('event.event_date', 'patient.hos_num'))
+            ->select(array('event.event_date', 'patient.id'))
             ->from('et_ophciexamination_optom_comments')
             ->join('event', 'event.id = et_ophciexamination_optom_comments.event_id')
             ->join('episode', 'episode.id = event.episode_id')
@@ -52,16 +54,30 @@ class OphCiExamination_ReportReadyForSecondEyeUnbooked extends BaseReport
                       AND  e2.deleted = 0
                       AND  e2.event_type_id IN (SELECT id FROM event_type WHERE name IN ('Operation Note', 'Operation booking'))
                       AND  e2.event_date > event.event_date)")
-            ->order(array('event.event_date', 'patient.hos_num'));
+            ->order(array('event.event_date'));
 
         $this->items = $cmd->queryAll();
+        $this->setPatientIdentifiers();
+    }
+
+    public function setPatientIdentifiers()
+    {
+        $items = [];
+        foreach ($this->items as $item) {
+            $item['identifier'] = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+            $item['all_ids'] = PatientIdentifierHelper::getAllPatientIdentifiersForReports($item['id']);
+            $items[] = $item;
+        }
+
+        $this->items = $items;
     }
 
     public function toCSV()
     {
-        $output = "Event date, Hospital Number\n";
+        $output = 'Event date,' . $this->getPatientIdentifierPrompt() . ',' . $this->getAttributeLabel('all_ids') . "\n";
         foreach ($this->items as $item) {
-            $output.=date('j M Y', strtotime($item['event_date'])).', '.$item['hos_num']. "\n";
+            $event_date = date('j M Y', strtotime($item['event_date']));
+            $output .= "\"{$event_date}\",\"{$item['identifier']}\",\"{$item['all_ids']}\"\n";
         }
         return $output;
     }

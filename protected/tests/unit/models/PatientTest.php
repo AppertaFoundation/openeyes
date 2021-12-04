@@ -20,13 +20,18 @@
 /**
  * Class PatientTest
  *
- * @method patients($fixtureId)
+ * @method patient($fixtureId)
+ * @method patient_identifier($fixtureId)
  */
 class PatientTest extends ActiveRecordTestCase
 {
     public Patient $model;
     public $fixtures = array(
-        'patients' => 'Patient',
+        'institution' => Institution::class,
+        'site' => Site::class,
+        'patient_identifier_type' => PatientIdentifierType::class,
+        'patient' => Patient::class,
+        'patient_identifier' => PatientIdentifier::class,
         'addresses' => 'Address',
         'Contact',
         'Disorder',
@@ -44,20 +49,24 @@ class PatientTest extends ActiveRecordTestCase
     public function dataProvider_Search()
     {
         return array(
-            array(array('first_name' => 'Edward', 'last_name' => 'Allan', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient3')),
-            array(array('nhs_num' => 65432, 'last_name' => 'Collin', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient2')), /* case insensitivity test */
-            array(array('hos_num' => 12345, 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient1')),
-            array(array('first_name' => 'Bob', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 3, array('patient2', 'patient5', 'patient7')),
-        );
-    }
-
-    // 'first_name', 'last_name', 'dob', 'title', 'city', 'postcode', 'telephone', 'mobile', 'email', 'address1', 'address2'
-    public function dataProvider_Pseudo()
-    {
-        return array(
-            array(array('hos_num' => 5550101, 'first_name' => 'Rod', 'last_name' => 'Flange', 'dob' => '1979-09-08', 'title' => 'MR', 'primary_phone' => '0208 1111111', 'address_id' => 1)),
-            array(array('hos_num' => 5550101, 'first_name' => 'Jane', 'last_name' => 'Hinge', 'dob' => '2000-01-02', 'title' => 'Ms.', 'primary_phone' => '0207 1111111', 'address_id' => 2)),
-            array(array('hos_num' => 5550101, 'first_name' => 'Freddy', 'last_name' => 'Globular', 'dob' => '1943-04-05', 'title' => 'WC', 'primary_phone' => '0845 11111111', 'address_id' => 3)),
+            array(array('first_name' => 'Edward', 'last_name' => 'Allan', 'sortBy' => 'value*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient3')),
+            array(array('first_name' => '', 'last_name' => 'Collin', 'sortBy' => 'value*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient2')), /* case insensitivity test */
+            array([
+                'is_name_search' => false,
+                'terms_with_types' => [
+                    [
+                        'term' => '12345',
+                        'patient_identifier_type' => [
+                            'id' => 1,
+                        ],
+                    ],
+                ],
+                'sortBy' => 'value*1',
+                'sortDir' => 'asc',
+                'pageSize' => 20,
+                'currentPage' => 0
+            ], 1, array('patient1')),
+            array(array('first_name' => 'Bob', 'sortBy' => 'value*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 3, array('patient2', 'patient5', 'patient7')),
         );
     }
 
@@ -99,7 +108,7 @@ class PatientTest extends ActiveRecordTestCase
         $expectedResults = array();
         if (!empty($expectedKeys)) {
             foreach ($expectedKeys as $key) {
-                $expectedResults[] = $this->patients($key);
+                $expectedResults[] = $this->patient($key);
             }
         }
 
@@ -116,13 +125,13 @@ class PatientTest extends ActiveRecordTestCase
     {
         Yii::app()->params['pseudonymise_patient_details'] = false;
 
-        $patient = $this->patients('patient9'); //dob=1979-09-08
+        $patient = $this->patient('patient9'); //dob=1979-09-08
 
         $age = 39; // patient9 died on 2019-07-10, when they were 39
 
         $this->assertEquals($age, $patient->getAge());
 
-        $patient = $this->patients('patient8'); // dob= 1977-03-04
+        $patient = $this->patient('patient8'); // dob= 1977-03-04
 
         $age = date('Y') - 1977;
         if (date('md') < '0304') {
@@ -139,10 +148,11 @@ class PatientTest extends ActiveRecordTestCase
     {
         Yii::app()->params['pseudonymise_patient_details'] = false;
 
-        $patient = $this->patients('patient9');
-        $orig_hos_num = $this->getFixtureData('patients')['patient9']['hos_num'];
+        $patient = $this->patient('patient9');
 
-        $this->assertEquals($orig_hos_num, $patient->getAttribute('hos_num'), 'Data should not have changed.');
+        $orig_local_id = $this->patient_identifier('patient9ID')['value'];
+
+        $this->assertEquals($orig_local_id, $patient->localIdentifiers[0]->value, 'Data should not have changed.');
     }
 
     /**
@@ -152,7 +162,7 @@ class PatientTest extends ActiveRecordTestCase
     public function testEditOphInfo_Success()
     {
         $cvi_status = ComponentStubGenerator::generate('PatientOphInfoCviStatus', array('id' => 1));
-        $this->assertTrue($this->patients('patient1')->editOphInfo($cvi_status, '2000-01-01'));
+        $this->assertTrue($this->patient('patient1')->editOphInfo($cvi_status, '2000-01-01'));
     }
 
     /**
@@ -162,7 +172,7 @@ class PatientTest extends ActiveRecordTestCase
     public function testEditOphInfo_ValidationFailure()
     {
         $cvi_status = ComponentStubGenerator::generate('PatientOphInfoCviStatus', array('id' => 1));
-        $errors = $this->patients('patient1')->editOphInfo($cvi_status, '2000-42-35');
+        $errors = $this->patient('patient1')->editOphInfo($cvi_status, '2000-42-35');
         $this->assertEquals(array('cvi_status_date' => array('This is not a valid date')), $errors);
     }
 
@@ -171,7 +181,7 @@ class PatientTest extends ActiveRecordTestCase
      */
     public function testGetSdl()
     {
-        $this->assertEquals('left myopia, right retinal lattice degeneration and bilateral posterior vitreous detachment', $this->patients('patient2')->getSdl());
+        $this->assertEquals('left myopia, right retinal lattice degeneration and bilateral posterior vitreous detachment', $this->patient('patient2')->getSdl());
     }
 
     /**
@@ -179,7 +189,7 @@ class PatientTest extends ActiveRecordTestCase
      */
     public function testGetSyd()
     {
-        $this->assertEquals('diabetes mellitus type 1 and essential hypertension', $this->patients('patient2')->getSyd());
+        $this->assertEquals('diabetes mellitus type 1 and essential hypertension', $this->patient('patient2')->getSyd());
     }
 
 
@@ -188,7 +198,7 @@ class PatientTest extends ActiveRecordTestCase
      */
     public function testGetLatestEvent()
     {
-        $event = $this->patients('patient1')->getLatestEvent();
+        $event = $this->patient('patient1')->getLatestEvent();
         $this->assertEquals('someinfo3', $event->info);
     }
 
@@ -197,7 +207,7 @@ class PatientTest extends ActiveRecordTestCase
      */
     public function testGetHSCICName_NotBold()
     {
-        $this->assertEquals('AYLWARD, Jim (Mr)', $this->patients('patient1')->getHSCICName());
+        $this->assertEquals('AYLWARD, Jim (Mr)', $this->patient('patient1')->getHSCICName());
     }
 
     /**
@@ -205,6 +215,6 @@ class PatientTest extends ActiveRecordTestCase
      */
     public function testGetHSCICName_Bold()
     {
-        $this->assertEquals('<strong>AYLWARD</strong>, Jim (Mr)', $this->patients('patient1')->getHSCICName(true));
+        $this->assertEquals('<strong>AYLWARD</strong>, Jim (Mr)', $this->patient('patient1')->getHSCICName(true));
     }
 }

@@ -28,7 +28,7 @@ if (!@$options['get_row']) {
 } ?>
 
 <?php
-$this->widget('GenericAdmin', array_merge(array('model' => $model, 'items' => $items, 'errors' => $errors), $options));
+$this->widget('GenericAdmin', array_merge(array('model' => $model, 'items' => $items, 'errors' => $errors, 'is_mapping' => $is_mapping), $options));
 ?>
 
 <?php if (!@$options['get_row']) { ?>

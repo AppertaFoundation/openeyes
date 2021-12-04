@@ -18,14 +18,21 @@
 /**
  * @var UserHotlistItem $hotlistItem
  * @var CoreAPI $core_api
+ * @var int $institution_id
+ * @var int $site_id
+ * @var string $display_primary_number_usage_code
  */
 
 ?>
+<?php
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $hotlistItem->patient->id, $institution_id, $site_id);
+?>
+
 <tr class="js-hotlist-<?= $hotlistItem->is_open ? 'open' : 'closed' ?>-patient"
     data-id="<?= $hotlistItem->id ?>"
     data-patient-href="<?= $core_api->generatePatientLandingPageLink($hotlistItem->patient) ?>"
 >
-    <td><?= CHtml::encode($hotlistItem->patient->hos_num) ?></td>
+    <td><?= CHtml::encode(PatientIdentifierHelper::getIdentifierValue($primary_identifier)) ?></td>
     <td>
         <?= CHtml::encode($hotlistItem->patient->getHSCICName()) ?>
     </td>

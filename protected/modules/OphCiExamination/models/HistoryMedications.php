@@ -162,12 +162,14 @@ class HistoryMedications extends BaseMedicationElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' ? 2 : null;
+        $action_list = array('view', 'removed');
+        return in_array($action, $action_list) ? 2 : null;
     }
 
     public function isIndividual($action)
     {
-        return $action !=='view';
+        $action_list = array('view', 'removed');
+        return !in_array($action, $action_list);
     }
 
     /**

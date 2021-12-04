@@ -24,6 +24,7 @@ class DefaultController extends BaseEventTypeController
     protected $max_document_name_length = 255;
     protected $max_content_length = 8388608;
     protected $allowed_file_types = array();
+    protected bool $is_updating = false;
 
     /**
      * @var OphCoDocument_Sub_Types
@@ -34,6 +35,7 @@ class DefaultController extends BaseEventTypeController
         'fileUpload' => self::ACTION_TYPE_FORM,
         'fileRemove' => self::ACTION_TYPE_FORM,
         'removeDocuments' => self::ACTION_TYPE_FORM,
+        'getImage' => self::ACTION_TYPE_FORM,
     );
 
     protected $pdf_output;
@@ -83,6 +85,28 @@ class DefaultController extends BaseEventTypeController
         $this->title = $el->sub_type->name;
     }
 
+    public function initActionCreate()
+    {
+        parent::initActionCreate();
+        $this->initEdit();
+    }
+
+    protected function initEdit()
+    {
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath, true);
+
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true) . '/OpenEyes.UI.ImageAnnotator.js', \CClientScript::POS_END);
+    }
+
+    public function initActionUpdate()
+    {
+        $this->is_updating = true;
+        parent::initActionUpdate();
+        $this->initEdit();
+    }
+
     /**
      * @param $files
      * @param $index
@@ -98,18 +122,32 @@ class DefaultController extends BaseEventTypeController
             case UPLOAD_ERR_NO_FILE:
                 $message = 'No file was uploaded!';
                 return $message;
-            break;
+                break;
             case UPLOAD_ERR_INI_SIZE:
-                $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $this->getMaxDocumentSize() ." MB ";
+                $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $this->getMaxDocumentSize() . " MB ";
                 return $message;
-            break;
+                break;
             case UPLOAD_ERR_FORM_SIZE:
                 $message = 'The document\'s size is too large!';
                 return $message;
-            break;
+                break;
             default:
                 $message = 'Unknown error! Please try again!';
                 return $message;
+        }
+
+        $file_contents = file_get_contents($files['Document']['tmp_name'][$index]);
+
+        if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
+            try {
+                if (!VirusScanController::stringIsClean($file_contents)) {
+                    $message = 'File contains potentially malicious data and cannot be saved.';
+                    return $message;
+                }
+            } catch (\Throwable $e) {
+                $message = 'Cannot connect to virus scanner. Please contact a system administrator.';
+                return $message;
+            }
         }
 
         $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -118,7 +156,7 @@ class DefaultController extends BaseEventTypeController
         $extension = pathinfo($files['Document']['name'][$index], PATHINFO_EXTENSION);
 
         if (false === array_search($file_mime, $this->allowed_file_types, true)) {
-            $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $this->getAllowedFileTypes()) ) . '.';
+            $message = 'Only the following file types can be uploaded: ' . (implode(', ', $this->getAllowedFileTypes())) . '.';
             $message .= "\n\nFor reference, the type of the file you tried to upload is: <i>$extension</i>, which is mime type: <i>$file_mime</i>";
         }
 
@@ -146,8 +184,7 @@ class DefaultController extends BaseEventTypeController
             unlink($tmp_name);
             return $p_file->id;
         } else {
-            unlink($tmp_name);
-            return false;
+            $errors = $p_file->getErrors();
         }
     }
 
@@ -166,6 +203,39 @@ class DefaultController extends BaseEventTypeController
                 OELog::log("Failed to delete the ProtectedFile with id = " . $doc_id);
             }
         }
+    }
+
+    /**
+     *
+     */
+    public function actionGetImage()
+    {
+        $return_data = null;
+        if (isset($_POST['subTypeId'], $_POST['uploadMode'])) {
+            $subTypeId = $_POST['subTypeId'];
+            $documentId = OphCoDocument_Sub_Types::model()->findByPk($subTypeId)->document_id;
+            if ($documentId) {
+                if (!$file = ProtectedFile::model()->findByPk($documentId)) {
+                    throw new CHttpException(404, 'File not found');
+                }
+
+                if (!file_exists($file->getPath())) {
+                    throw new CException('File not found on filesystem: '.$file->getPath());
+                }
+                if ($_POST['uploadMode'] === 'single') {
+                    $return_data['document'] = ['single'];
+                } else {
+                    $return_data['document'] = ['right', 'left'];
+                }
+
+                $return_data['extension'] = strtolower(explode('.', $file->name)[1]);
+                $return_data['mime_type'] = $file->mimetype;
+                $return_data['file_id'] = $file->id;
+                $return_data['file_name'] = $file->name;
+                $return_data['file_size'] = number_format($file->size / 1048576, 2) . 'Mb';
+            }
+        }
+        $this->renderJSON($return_data);
     }
 
     /**
@@ -189,14 +259,14 @@ class DefaultController extends BaseEventTypeController
         foreach ($_FILES as $file) {
             $return_data = array();
             foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $file_key) {
-                if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key])>0) {
+                if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key]) > 0) {
                     $handler = $this->documentErrorHandler($_FILES, $file_key);
-                    if ( $handler == null) {
+                    if ($handler == null) {
                         $return_data[$file_key] = $this->uploadFile($file["tmp_name"][$file_key], $file["name"][$file_key]);
                     } else {
                         $return_data = array(
-                            's'     => 0,
-                            'msg'   => $handler,
+                            's' => 0,
+                            'msg' => $handler,
                             'index' => $file_key
                         );
                     }
@@ -216,7 +286,7 @@ class DefaultController extends BaseEventTypeController
         if (strpos($mimetype, "image/") !== false) {
             return 'image';
         } elseif (strpos($mimetype, "video/") !== false) {
-                return 'video';
+            return 'video';
         } else {
             return 'object';
         }
@@ -225,11 +295,12 @@ class DefaultController extends BaseEventTypeController
     /**
      * @param $element
      * @param $index
+     * @param $side
      */
-    public function generateFileField($element, $index)
+    public function generateFileField($element, $index, $side)
     {
         if ($element->{$index."_id"} > 0) {
-            $this->renderPartial('form_'.$this->getTemplateForMimeType($element->{$index}->mimetype), array('element'=>$element, 'index'=>$index));
+            $this->renderPartial('form_'.$this->getTemplateForMimeType($element->{$index}->mimetype), array('element'=>$element, 'index'=>$index, 'side'=>$side));
         }
     }
 
@@ -257,11 +328,11 @@ class DefaultController extends BaseEventTypeController
         $pf = ProtectedFile::createFromFile($pdfpath);
         if ($pf->save()) {
             $result = array(
-                'success'   => 1,
-                'file_id'   => $pf->id,
+                'success' => 1,
+                'file_id' => $pf->id,
             );
 
-            if ( !isset($_GET['ajax'])) {
+            if (!isset($_GET['ajax'])) {
                 $result['name'] = $pf->name;
                 $result['mime'] = $pf->mimetype;
                 $result['path'] = $pf->getPath();
@@ -270,8 +341,8 @@ class DefaultController extends BaseEventTypeController
             }
         } else {
             $result = array(
-                'success'   => 0,
-                'message'   => "couldn't save file object".print_r($pf->getErrors(), true)
+                'success' => 0,
+                'message' => "couldn't save file object" . print_r($pf->getErrors(), true)
             );
         }
 
@@ -305,11 +376,11 @@ class DefaultController extends BaseEventTypeController
                 if (isset($element->$property)) {
                     $mimetype = $element->$property->mimetype;
                     if (strpos($mimetype, "image/") === 0) {
-                        $document_types[]='image';
+                        $document_types[] = 'image';
                     } elseif ($mimetype = 'application/pdf') {
-                        $document_types[]='pdf';
+                        $document_types[] = 'pdf';
                     } else {
-                        $document_types[]='other';
+                        $document_types[] = 'other';
                     }
                 }
             }
@@ -334,9 +405,7 @@ class DefaultController extends BaseEventTypeController
         // Image(s) only
         if ($this->eventContainsImagesOnly()) {
             return parent::actionPDFPrint($id);
-        }
-
-        // Pdf(s) only - or - pdf(s) and image(s) mixed
+        } // Pdf(s) only - or - pdf(s) and image(s) mixed
         else {
             $this->pdf_output = new PDF_JavaScript();
             foreach ($this->event->getElements() as $element) {
@@ -363,7 +432,7 @@ class DefaultController extends BaseEventTypeController
             }
 
             $imgdir = $this->event->imageDirectory;
-            $pdf_path = $imgdir.'/event_print.pdf';
+            $pdf_path = $imgdir . '/event_print.pdf';
             if (!file_exists($imgdir)) {
                 mkdir($imgdir, 0775, true);
             }
@@ -374,7 +443,7 @@ class DefaultController extends BaseEventTypeController
             }
 
             header('Content-Type: application/pdf');
-            header('Content-Length: '.filesize($pdf_path));
+            header('Content-Length: ' . filesize($pdf_path));
 
             readfile($pdf_path);
             return Yii::app()->end();
@@ -422,7 +491,7 @@ class DefaultController extends BaseEventTypeController
     private function convertPDF($pdf_path, $version = '1.4')
     {
         $tmpfname = tempnam("/tmp", "OE");
-        exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel='.$version.' -dNOPAUSE -dBATCH -sOutputFile='.$tmpfname.' '.$pdf_path);
+        exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel=' . $version . ' -dNOPAUSE -dBATCH -sOutputFile=' . $tmpfname . ' ' . $pdf_path);
         return $tmpfname;
     }
 
@@ -435,7 +504,6 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionCreateImage($id)
     {
-
         try {
             $this->initActionView();
             $this->removeEventImages();
@@ -443,11 +511,13 @@ class DefaultController extends BaseEventTypeController
             /* @var Element_OphCoDocument_Document $element */
             $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $this->event->id));
             /* @var ProtectedFile $document */
-            foreach ([
-                         Eye::LEFT => $element->left_document,
-                         Eye::RIGHT => $element->right_document,
-                         null => $element->single_document,
-                     ] as $eye => $document) {
+            foreach (
+                [
+                    Eye::LEFT => $element->left_document,
+                    Eye::RIGHT => $element->right_document,
+                    null => $element->single_document,
+                ] as $eye => $document
+            ) {
                 if (!$document) {
                     continue;
                 }
@@ -524,6 +594,83 @@ class DefaultController extends BaseEventTypeController
         } catch (Exception $ex) {
             $this->saveEventImage('FAILED', ['message' => (string)$ex]);
             throw $ex;
+        }
+    }
+
+
+    /**
+     * @param $fileContent
+     * @param $name
+     * @return int | string
+     * @throws Exception
+     */
+    private function getProtectedFileId($fileContent, $name): int
+    {
+        $return = explode(';', $fileContent);
+        if (sizeof($return) > 1) {
+            $type = $return[0];
+
+            list(, $fileContent) = explode(',', $fileContent);
+            $fileContent = base64_decode($fileContent);
+
+            $fileExtension = explode("/", $type);
+            $tmp_name = '/tmp/' . $name . '.' . $fileExtension[1];
+            file_put_contents($tmp_name, $fileContent);
+
+            $p_file = ProtectedFile::createFromFile($tmp_name);
+            $p_file->name = $name;
+            $p_file->title = $name;
+
+            if ($p_file->save()) {
+                unlink($tmp_name);
+                return $p_file->id;
+            } else {
+                throw new Exception('Unable to save the document: ' . print_r($p_file->getErrors(), true));
+            }
+        } else {
+            return $fileContent;
+        }
+    }
+
+    /**
+     * @param $element
+     * @param $data
+     * @param $index
+     * @throws Exception
+     */
+    protected function setComplexAttributes_Element_OphCoDocument_Document($element, $data, $index)
+    {
+        $model_name = \CHtml::modelName($element);
+        if ($data['upload_mode'] === 'single') {
+            if (!empty($data['ProtectedFile']['single_file_content']) && $data['single_file_canvas_modified'] === '1') {
+                $name = ProtectedFile::model()->findByPk($element->single_document_id)->name;
+                $element->single_document_id = $this->getProtectedFileId($data['ProtectedFile']['single_file_content'], $name);
+                // before deleting check if it is template or not.
+                $count = OphCoDocument_Sub_Types::model()->count('document_id = :id', array(':id' => $data['Element_OphCoDocument_Document']['single_document_id']));
+                if ($count === '0') {
+                    ProtectedFile::model()->deleteAll('id = :id', array(':id' => $data['Element_OphCoDocument_Document']['single_document_id']));
+                }
+            }
+        } else {
+            if (!empty($data['ProtectedFile']['right_file_content']) && $data['right_file_canvas_modified'] === '1') {
+                $rightDocumentName = ProtectedFile::model()->findByPk($element->right_document_id)->name;
+                $element->right_document_id = $this->getProtectedFileId($data['ProtectedFile']['right_file_content'], $rightDocumentName);
+
+                $count = OphCoDocument_Sub_Types::model()->count('document_id = :id', array(':id' => $data['Element_OphCoDocument_Document']['right_document_id']));
+                if ($count === '0') {
+                    ProtectedFile::model()->deleteAll('id = :id', array(':id' => $data['Element_OphCoDocument_Document']['right_document_id']));
+                }
+            }
+
+            if (!empty($data['ProtectedFile']['left_file_content']) && $data['left_file_canvas_modified'] === '1') {
+                $leftDocumentName = ProtectedFile::model()->findByPk($element->left_document_id)->name;
+                $element->left_document_id = $this->getProtectedFileId($data['ProtectedFile']['left_file_content'], $leftDocumentName);
+
+                $count = OphCoDocument_Sub_Types::model()->count('document_id = :id', array(':id' => $data['Element_OphCoDocument_Document']['left_document_id']));
+                if ($count === '0') {
+                    ProtectedFile::model()->deleteAll('id = :id', array(':id' => $data['Element_OphCoDocument_Document']['left_document_id']));
+                }
+            }
         }
     }
 

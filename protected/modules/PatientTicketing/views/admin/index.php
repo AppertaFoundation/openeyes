@@ -25,8 +25,20 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js'
 <h2><?= $title ?></h2>
 <div class="cols-half">
 <form id="admin_patient_ticketing">
+    <?= CHtml::hiddenField('mapping_level', ReferenceData::LEVEL_INSTITUTION) ?>
+    <?= CHtml::hiddenField('model', OEModule\PatientTicketing\models\QueueSet::class) ?>
+    <?= CHtml::hiddenField('return_url', '/PatientTicketing/admin') ?>
+    <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
     <div class="row">
         <table class="standard last-right">
+            <thead>
+            <tr>
+                <th><input type="checkbox" id="selectall"/></th>
+                <th>Queue Set</th>
+                <th>Assigned to Current Institution</th>
+                <th></th>
+            </tr>
+            </thead>
             <tbody>
             <?php foreach ($queuesets as $i => $set) {
                 $this->renderPartial('queue_nav_item', array('queueset' => $set));
@@ -36,6 +48,26 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js'
     </div>
     <hr class="divider">
     <button id="add-queueset" type="button" class="hint green cols-half">Add Queue Set</button>
+    <?php
+    echo CHtml::submitButton(
+        'Add selected to current Institution',
+        [
+            'name' => 'admin-map-add',
+            'id' => 'et_admin-map-add',
+            'class' => 'generic-admin-save button large',
+            'formaction' => '/admin/addMapping',
+            'formmethod' => 'POST',
+        ]);
+    echo CHtml::submitButton(
+        'Remove selected from current Institution',
+        [
+            'name' => 'admin-map-remove',
+            'id' => 'et_admin-map-remove',
+            'class' => 'generic-admin-save button large',
+            'formaction' => '/admin/removeMapping',
+            'formmethod' => 'POST',
+        ]
+    ); ?>
     <div class="alert-box info" style="display: none;" id="message-box">
     </div>
     <hr>

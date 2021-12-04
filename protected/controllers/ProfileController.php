@@ -51,6 +51,7 @@ class ProfileController extends BaseController
         }
         $errors = array();
         $user = User::model()->findByPk(Yii::app()->user->id);
+        $user_auth = Yii::app()->session['user_auth'];
         $display_theme_setting = SettingUser::model()->find(
             'user_id = :user_id AND `key` = "display_theme"',
             array('user_id' => $user->id)
@@ -63,12 +64,11 @@ class ProfileController extends BaseController
 
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
-                foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications') as $field) {
+                foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications', 'correspondence_sign_off_user_id') as $field) {
                     if (isset($_POST['User'][$field])) {
                         $user->{$field} = $_POST['User'][$field];
                     }
                 }
-                $user->password_hashed=true;
 
                 $fields = $_POST['UserOutOfOffice'];
 
@@ -97,11 +97,16 @@ class ProfileController extends BaseController
                 }
 
                 $display_theme_setting = self::changeDisplayTheme($user->id, $_POST['display_theme']);
+
+                // make sure session has the latest data
+                $user->refresh();
+                Yii::app()->session['user'] = $user;
             }
         }
 
         $this->render('/profile/info', array(
             'user' => $user,
+            'user_auth' => $user_auth,
             'errors' => $errors,
             'display_theme' => $display_theme_setting ? $display_theme_setting->value : null,
             'user_out_of_office' => $user_out_of_office,
@@ -124,51 +129,63 @@ class ProfileController extends BaseController
             $this->redirect(array('/profile/sites'));
         }
         $errors = array();
-        $user = User::model()->findByPk(Yii::app()->user->id);
+        $user_auth = Yii::app()->session['user_auth'];
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_change_password']) {
-                if (empty($_POST['User']['password_old'])) {
+                if (empty($_POST['UserAuthentication']['password_old'])) {
                     $errors['Current password'] = array('Please enter your current password');
-                } elseif (!$user->validatePassword($_POST['User']['password_old'])) {
+                } elseif (!$user_auth->verifyPassword($_POST['UserAuthentication']['password_old'])) {
                     $errors['Current password'] = array('Password is incorrect');
                 }
 
-                if (empty($_POST['User']['password_new'])) {
+                if (empty($_POST['UserAuthentication']['password_new'])) {
                     $errors['New password'] = array('Please enter your new password');
                 }
 
-                if (empty($_POST['User']['password_confirm'])) {
+                if (empty($_POST['UserAuthentication']['password_confirm'])) {
                     $errors['Confirm password'] = array('Please confirm your new password');
                 }
 
-                if ($_POST['User']['password_new'] != $_POST['User']['password_confirm']) {
+                if ($_POST['UserAuthentication']['password_new'] != $_POST['UserAuthentication']['password_confirm']) {
                     $errors['Confirm password'] = array("Passwords don't match");
                 }
 
                 if (empty($errors)) {
-                    if (Yii::app()->params['auth_source'] === 'BASIC') {
-                        if ($user->password_status==="stale"||$user->password_status==="expired") {// this user pw is now current
-                            $user->password_status = 'current';
+                    if ($user_auth->institutionAuthentication->user_authentication_method === 'LOCAL') {
+                        if ($user_auth->password_status==="stale"||$user_auth->password_status==="expired") {// this user pw is now current
+                            $user_auth->password_status = 'current';
                         }
                         //reset pw checks
-                        $user->password_last_changed_date = date('Y-m-d H:i:s');
-                        $user->password_failed_tries = 0;
+                        $user_auth->password_last_changed_date = date('Y-m-d H:i:s');
+                        $user_auth->password_failed_tries = 0;
                     }
-                    $user->password = $user->password_repeat = $_POST['User']['password_new'];
-                    if (!$user->save()) {
-                        $errors = $user->getErrors();
+                    $user_auth->password = $user_auth->password_repeat = $_POST['UserAuthentication']['password_new'];
+                    if (!$user_auth->save()) {
+                        $errors = $user_auth->getErrors();
                     } else {
                         Yii::app()->user->setFlash('success', 'Your password has been changed.');
                     }
                 }
             }
-            unset($_POST['User']['password_old']);
-            unset($_POST['User']['password_new']);
-            unset($_POST['User']['password_confirm']);
+            unset($_POST['UserAuthentication']['password_old']);
+            unset($_POST['UserAuthentication']['password_new']);
+            unset($_POST['UserAuthentication']['password_confirm']);
         }
         $this->render('/profile/password', array(
-            'user' => $user,
+            'user_auth' => $user_auth,
             'errors' => $errors,
+        ));
+    }
+
+    public function actionPincode()
+    {
+        $user_auth = null;
+        if (Yii::app()->session['user_auth']) {
+            $user_auth = Yii::app()->session['user_auth'];
+            $user_auth->refresh();
+        }
+        $this->render('/profile/pincode', array(
+            'user_auth' => $user_auth,
         ));
     }
 
@@ -176,6 +193,14 @@ class ProfileController extends BaseController
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
         $this->render('/profile/sites', array(
+            'user' => $user,
+        ));
+    }
+
+    public function actionInstitutions()
+    {
+        $user = User::model()->findByPk(Yii::app()->user->id);
+        $this->render('/profile/institutions', array(
             'user' => $user,
         ));
     }
@@ -256,6 +281,7 @@ class ProfileController extends BaseController
                 $user = User::model()->findByPk(Yii::app()->user->id);
                 if ($user->has_selected_firms) {
                     $user->has_selected_firms = 0;
+                    $user->password_hashed = true;
                     if (!$user->save()) {
                         throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                     }
@@ -284,8 +310,6 @@ class ProfileController extends BaseController
                 if (!$us->save()) {
                     throw new Exception('Unable to save UserFirm: ' . print_r($us->getErrors(), true));
                 }
-
-                $user->password_hashed = true;
 
                 $user->has_selected_firms = 1;
                 if (!$user->save()) {
@@ -331,7 +355,6 @@ class ProfileController extends BaseController
                     );
                     if ($signature_file) {
                         $user->signature_file_id = $signature_file->id;
-                        $user->password_hashed = true;
                         if ($user->save()) {
                             echo true;
                         }
@@ -422,5 +445,88 @@ class ProfileController extends BaseController
         }
 
         return $display_theme_setting;
+    }
+    /**
+     * Changes the worklist auto synce interval of the current user
+     *
+     * @param string $sync_interval What to set the user's sync interval to
+     * @param string $key setting key
+     */
+    public function actionChangeWorklistSyncInterval($sync_interval, $key)
+    {
+        self::changeWorklistSyncInterval(Yii::app()->user->id, $sync_interval, $key);
+    }
+
+    /**
+     * Changes the display theme of the given user and returns the SettingUser object (if it exists)
+     *
+     * @param int $user_id The ID of the user to change the display theme for
+     * @param int $sync_interval What to set the user's theme to
+     * @return SettingUser The setting if the theme was set (otherwise null)
+     */
+    public static function changeWorklistSyncInterval($user_id, $sync_interval, $key)
+    {
+        $auto_sync_setting = SettingUser::model()->find(
+            "user_id = :user_id AND `key` = '$key'",
+            array('user_id' => $user_id)
+        );
+
+        if ($sync_interval) {
+            if ($auto_sync_setting === null) {
+                $auto_sync_setting = new SettingUser();
+                $auto_sync_setting->user_id = $user_id;
+                $auto_sync_setting->key = $key;
+            }
+            $auto_sync_setting->value = $sync_interval;
+            $auto_sync_setting->save();
+        } elseif ($auto_sync_setting) {
+            # If the auto sync isn't set, but the setting already exists
+            # then remove the user auto sync entirely so the global setting will take precedence
+            $auto_sync_setting->delete();
+            $auto_sync_setting = null;
+        }
+
+        return $auto_sync_setting;
+    }
+
+    public function actionUsersettings()
+    {
+        $element_type = ElementType::model()->find('class_name = :class_name', array(':class_name' => 'Element_OphTrOperationnote_Cataract'));
+        $setting_metadata = \Yii::app()->request->getPost('SettingMetadata');
+        if ($setting_metadata) {
+            SettingUser::model()->deleteAll('user_id = :user_id AND element_type_id = :element_type_id', array(':user_id' => Yii::app()->user->id, ':element_type_id' => $element_type->id));
+            foreach ($setting_metadata as $key => $value) {
+                $cataract_op_note_setting = new SettingUser();
+                $cataract_op_note_setting->user_id = Yii::app()->user->id;
+                $cataract_op_note_setting->element_type_id = $element_type->id;
+                $cataract_op_note_setting->key = $key;
+                $cataract_op_note_setting->value = $value;
+                if (!$cataract_op_note_setting->save()) {
+                    $errors = $cataract_op_note_setting->getErrors();
+                }
+                Yii::app()->cache->delete('op_note_user_settings');
+            }
+        }
+
+        $settings_user = $this->getUserSettings($element_type);
+        $settings_metadata = SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id = :element_type_id', array(':element_type_id' => $element_type->id));
+        $user_settings = CHtml::listData($settings_user, 'key', 'value');
+        if ($settings_user) {
+            foreach ($settings_metadata as $value) {
+                if (isset($user_settings[$value->key])) {
+                    $value->default_value = $user_settings[$value->key];
+                }
+            }
+        }
+        $errors = array();
+        $this->render('/profile/user_settings', array(
+            'errors' => $errors,
+            'settings' => $settings_metadata,
+        ));
+    }
+
+    public function getUserSettings($elementType)
+    {
+        return SettingUser::model()->findAll('user_id = :user_id AND element_type_id = :element_type_id', array(':user_id' => Yii::app()->user->id, ':element_type_id' => $elementType->id));
     }
 }

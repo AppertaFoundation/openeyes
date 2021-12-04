@@ -34,7 +34,8 @@ class CxlDatasetController extends BaseController
 
     private $startDate = '';
     private $endDate = '';
-    
+    private $patient_identifier_prompt;
+
     // Refactoring :
     /**
      * This number will be appended after the tmp tables so the
@@ -42,7 +43,7 @@ class CxlDatasetController extends BaseController
      * @var int
      */
     private $extractIdentifier;
-    
+
 
     public function accessRules()
     {
@@ -68,17 +69,17 @@ class CxlDatasetController extends BaseController
         if (!file_exists($this->exportPath)) {
             mkdir($this->exportPath, 0777, true);
         }
-        
+
         $startDate = Yii::app()->request->getParam("date_from", '');
-        $endDate =  Yii::app()->request->getParam("date_to", '');
-        
+        $endDate = Yii::app()->request->getParam("date_to", '');
+
         $startDateTime = null;
         $endDateTime = null;
-        
+
         if ($startDate) {
             $startDateTime = new DateTime($startDate);
         }
-        
+
         if ($endDate) {
             $endDateTime = new DateTime($endDate);
         }
@@ -90,15 +91,15 @@ class CxlDatasetController extends BaseController
             $startDateTime = $tempDate;
             $tempDate = null;
         }
-        
+
         if ($startDate) {
             $this->startDate = $startDateTime->format('Y-m-d');
         }
-        
+
         if ($endDate) {
             $this->endDate = $endDateTime->format('Y-m-d');
         }
-        
+
         // Refactoring : generate number from hour-minute-sec
         // this number will be appended to the name of tmp tables
         // tmp tables will be normal DB tables instead of real TEMPORARY tables because in some queries
@@ -108,18 +109,18 @@ class CxlDatasetController extends BaseController
 
         parent::init();
     }
-    
+
     public function actionIndex()
     {
         $this->render('//cxldataset/index');
     }
-    
-    
-     /**
+
+    /**
      * Generates CSV and zip files then sends to the browser
      */
     public function actionGenerate()
     {
+        $this->patient_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], Institution::model()->getCurrent()->id, $this->selectedSiteId);
 
         $this->generateExport();
 
@@ -147,17 +148,19 @@ class CxlDatasetController extends BaseController
         $this->getHistory();
         $this->getAssessments();
         $this->getCxlSurgery();
-        
+
         $this->clearAllTempTables();
     }
 
     /**
      * Save CSV file and returns episodeIDs if $episodeIdField isset
      *
-     * @param string $dataQuery SQL query
+     * @param string[] $dataQuery SQL query
      * @param string $filename
      * @param string $dataFormatter
      * @return null|array
+     *
+     * @throws Exception
      */
     private function saveCSVfile($dataQuery, $filename, $dataFormatter = null)
     {
@@ -170,10 +173,11 @@ class CxlDatasetController extends BaseController
         }
 
         while (true) {
-            $runQuery = $dataQuery['query']. " LIMIT ".$chunk." OFFSET ".$offset.";";
+            $runQuery = $dataQuery['query'] . " LIMIT " . $chunk . " OFFSET " . $offset . ";";
             $dataCmd = Yii::app()->db->createCommand($runQuery);
 
             $data = $dataCmd->queryAll();
+            $data = $this->setPatientIdentifiers($data);
 
             if ($offset == 0) {
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', ((implode(',', $dataQuery['header'])) . "\n"), FILE_APPEND);
@@ -184,7 +188,7 @@ class CxlDatasetController extends BaseController
 
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
 
-                $offset+=$chunk;
+                $offset += $chunk;
                 unset($data);
             } else {
                 break;
@@ -193,13 +197,11 @@ class CxlDatasetController extends BaseController
         return $resultIds;
     }
 
-
-
     private function createAllTempTables()
     {
         // DROP all tables if exist before creating them
         $this->clearAllTempTables();
-        
+
         $query = '';
 
         $query .= $this->createTmpCxlMainEventEpisodes();
@@ -210,14 +212,14 @@ class CxlDatasetController extends BaseController
 
         return $query;
     }
-    
+
     /**
      * This function will call the functions one by one to populate each tmp tables belongs to a csv file
      */
     private function populateAllTempTables()
     {
         $query = '';
-        
+
         $query .= $this->populateTmpCxlMainEventEpisodes();
         $query .= $this->populateTmpCxlPatients();
         $query .= $this->populateTmpCxlHistory();
@@ -227,7 +229,6 @@ class CxlDatasetController extends BaseController
         return $query;
     }
 
-    
     private function clearAllTempTables()
     {
         $cleanQuery = <<<EOL
@@ -240,11 +241,7 @@ EOL;
 
         Yii::app()->db->createCommand($cleanQuery)->execute();
     }
-    
-    
-    
-    
-    
+
     /********** Surgeon **********/
 // LEAVING THIS IN, IN CASE IT IS REQUIRED FOR CXL LATER
     private function createTmpRcoNodSurgeon()
@@ -270,7 +267,7 @@ EOL;
      * record if they move between centres. This was not done with the ‘legacy’ data already in
      *  NOD and therefore at present we do not have the ability to identify individual surgeons.
      */
-    
+
     private function populateTmpRcoNodSurgeon()
     {
         $query = <<<EOL
@@ -310,12 +307,12 @@ EOL;
         $this->saveCSVfile($dataQuery, 'Surgeon');
 
     }
-    
+
     /********** end of Surgeon **********/
 
-    
+
     /********** Patients **********/
-    
+
     private function createTmpCxlPatients()
     {
         $query = <<<EOL
@@ -332,7 +329,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function populateTmpCxlPatients()
     {
         $query = <<<EOL
@@ -345,7 +342,7 @@ EOL;
                     EthnicCategory
                   ) 
                   SELECT
-                          p.hos_num, 
+                          p.id, 
                           TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())),
                           (SELECT CASE WHEN gender='F' THEN 'Female' WHEN gender='M' THEN 'Male' ELSE 'Unknown' END),
                           IFNULL(LEFT(a.postcode,LOCATE(' ',a.postcode) - 1), 'Unknown'),
@@ -362,24 +359,38 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function getPatients()
     {
         $query = <<<EOL
                 SELECT * 
                 FROM tmp_cxl_patients_{$this->extractIdentifier}
 EOL;
-        
+
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'Age', 'Sex', 'Postcode', 'Consultant', 'EthnicCategory'),
+            'header' => array($this->patient_identifier_prompt, 'Age', 'Sex', 'Postcode', 'Consultant', 'EthnicCategory', 'Patient IDs'),
         );
 
         $this->saveCSVfile($dataQuery, 'Patient');
     }
-    
+
+    private function setPatientIdentifiers($data)
+    {
+        $data_with_ids = [];
+
+        foreach ($data as $patient) {
+            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient['PatientId'], Institution::model()->getCurrent()->id, $this->selectedSiteId));
+            $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($patient['PatientId']);
+            $patient['PatientId'] = $patient_identifier;
+            $patient['all_ids'] = $patient_identifiers;
+            $data_with_ids[] = $patient;
+        }
+
+        return $data_with_ids;
+    }
+
     /********** History **********/
-    
     private function createTmpCxlHistory()
     {
         $query = <<<EOL
@@ -394,7 +405,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function populateTmpCxlHistory()
     {
         $query = <<<EOL
@@ -404,7 +415,7 @@ EOL;
                         Eye,
                         CXL,
                         Atopy )
-                SELECT p.hos_num,
+                SELECT p.id,
                        c.event_date,
                        'Right',
                        CASE WHEN IFNULL(h.right_previous_cxl_value, 0) = 0 THEN 'No' ELSE 'Yes' END,
@@ -420,7 +431,7 @@ EOL;
                 LEFT JOIN et_ophciexamination_cxl_history h ON h.event_id = c.event_id
                 JOIN patient p ON p.id = c.patient_id
                 UNION ALL
-                SELECT p.hos_num,
+                SELECT p.id,
                        c.event_date,
                        'Left',
                        CASE WHEN IFNULL(h.left_previous_cxl_value, 0) = 0 THEN 'No' ELSE 'Yes' END,
@@ -439,24 +450,24 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function getHistory()
     {
         $query = <<<EOL
                 SELECT *
                 FROM tmp_cxl_history_{$this->extractIdentifier}
 EOL;
-                
+
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'Date', 'Eye', 'CXL', 'Atopy'),
+            'header' => array($this->patient_identifier_prompt, 'Date', 'Eye', 'CXL', 'Atopy', 'Patient IDs'),
         );
 
         $this->saveCSVfile($dataQuery, 'History');
     }
-    
+
     /********** Main Events Control Table **********/
-    
+
     private function createTmpCxlMainEventEpisodes()
     {
         $query = <<<EOL
@@ -474,7 +485,7 @@ CREATE TABLE tmp_cxl_main_event_episodes_{$this->extractIdentifier} (
 EOL;
         return $query;
     }
-    
+
     private function populateTmpCxlMainEventEpisodes()
     {
         $query = <<<EOL
@@ -498,11 +509,11 @@ JOIN firm f ON f.id = ep.firm_id
 WHERE ev.deleted = 0
 EOL;
 
-        if ( $this->startDate ) {
+        if ($this->startDate) {
             $query .= " AND DATE(ev.event_date) >= STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') ";
         }
 
-        if ( $this->endDate ) {
+        if ($this->endDate) {
             $query .= " AND DATE(ev.event_date) <= STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
         }
 
@@ -530,11 +541,11 @@ JOIN firm f ON f.id = ep.firm_id
 WHERE ev.deleted = 0
 EOL;
 
-        if ( $this->startDate ) {
+        if ($this->startDate) {
             $query .= " AND DATE(ev.event_date) >= STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') ";
         }
 
-        if ( $this->endDate ) {
+        if ($this->endDate) {
             $query .= " AND DATE(ev.event_date) <= STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
         }
 
@@ -542,9 +553,9 @@ EOL;
 
         return $query;
     }
-    
+
     /********** Assessments **********/
-    
+
     private function createTmpCxlAssessments()
     {
         $query = <<<EOL
@@ -578,7 +589,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function populateTmpCxlAssessments()
     {
         $query = <<<EOL
@@ -607,7 +618,7 @@ EOL;
                         Cornea,
                         Diagnosis,
                         Outcome )
-                SELECT p.hos_num,
+                SELECT p.id,
                        c.event_date,
                        'Right',
                        vau.name,
@@ -677,7 +688,7 @@ EOL;
                 LEFT JOIN ophciexamination_clinicoutcome_status os ON os.id = o.status_id
                 JOIN patient p ON p.id = c.patient_id
                 UNION ALL
-                SELECT p.hos_num,
+                SELECT p.id,
                        c.event_date,
                        'Left',
                        vau.name,
@@ -750,7 +761,7 @@ EOL;
 EOL;
         return $query;
     }
-    
+
     private function getAssessments()
     {
 
@@ -761,7 +772,7 @@ EOL;
 
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'Date', 'Eye', 'VisualAcuityChart', 'UDVA', 'CDVA', 'Sphere', 'Cylinder',
+            'header' => array($this->patient_identifier_prompt, 'Date', 'Eye', 'VisualAcuityChart', 'UDVA', 'CDVA', 'Sphere', 'Cylinder',
                 'Axis', 'Kmax', 'FrontK1', 'FrontK2', 'BackK1', 'BackK2', 'ThinnestPachymetry', 'BelinAmbrosio',
                 'QualityScoreFront', 'QualityScoreBack', 'CLRemoved', 'EndothelialCellDensity', 'CoefficientOfVariation',
                 'Cornea', 'Diagnosis', 'Outcome'),
@@ -797,7 +808,7 @@ EOL;
                     Comments VARCHAR(1024)
                 );
 EOL;
-                
+
         return $query;
     }
 
@@ -824,7 +835,7 @@ EOL;
                     UVTotalEnergy,
                     Comments
                   )
-                SELECT p.hos_num,
+                SELECT p.id,
                        c.event_date,
                        'Right',
                        dg.grade,
@@ -860,7 +871,7 @@ EOL;
                 LEFT JOIN ophtroperationnote_cxl_interpulse_duration uid ON uid.id = k.interpulse_duration_id
                 JOIN patient p ON p.id = c.patient_id
                 UNION ALL
-                SELECT p.hos_num,
+                SELECT p.id,
                        c.event_date,
                        'Left',
                        dg.grade,
@@ -897,11 +908,11 @@ EOL;
                 JOIN patient p ON p.id = c.patient_id
                 ;
 EOL;
-                
+
         return $query;
-        
+
     }
-    
+
     private function getCxlSurgery()
     {
         $query = <<<EOL
@@ -910,7 +921,7 @@ EOL;
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'Date', 'Eye', 'Operator', 'Device', 'EpithelialStatus', 'EpithelialDebridement',
+            'header' => array($this->patient_identifier_prompt, 'Date', 'Eye', 'Operator', 'Device', 'EpithelialStatus', 'EpithelialDebridement',
                 'DebridementSize', 'IontophoresisCycles', 'IontophoresisCurrent', 'IontophoresisDuration', 'RiboflavinPreparation',
                 'RiboflavinDuration', 'UVIrradiance', 'UVDuration', 'UVContinuousOrPulsed', 'UVTotalEnergy', 'Comments'),
         );

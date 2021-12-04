@@ -37,6 +37,18 @@
  */
 class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return $this->tableName().'_id';
+    }
+
     const SELECTION_LABEL_FIELD = 'disorder_id';
     const SELECTION_LABEL_RELATION = 'disorder';
     const SELECTION_ORDER = 'subspecialty.name, t.display_order';
@@ -136,6 +148,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
             'group' => array(self::BELONGS_TO, 'CommonOphthalmicDisorderGroup', 'group_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
         );
     }
 

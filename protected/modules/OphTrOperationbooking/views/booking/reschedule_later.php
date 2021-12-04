@@ -17,7 +17,13 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container', array('no_face' => true)); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face' => true));
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
+$primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
+    $patient->id, $institution->id, $selected_site_id);
+?>
 
     <div id="schedule">
         <br/>
@@ -32,7 +38,13 @@
             </div>
             <div class="cols-10">
                 <div class="field-value">
-                    <?php echo $patient->getDisplayName() . ' (' . $patient->hos_num . ')'; ?>
+                    <?php echo $patient->getDisplayName() . ' (' . PatientIdentifierHelper::getIdentifierValue($primary_identifier) . ')'; ?>
+                    <?php $this->widget(
+                        'application.widgets.PatientIdentifiers',
+                        [
+                            'patient' => $this->patient,
+                            'show_all' => true
+                        ]); ?>
                 </div>
             </div>
         </div>

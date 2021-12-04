@@ -81,7 +81,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'name' => 'group.name',
             'type' => 'raw',
             'value' => function ($data, $row) {
-                $options = CHtml::listData(CommonOphthalmicDisorderGroup::model()->findAll(), 'id', 'name');
+                $options = CHtml::listData(CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION), 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
             }
         ),
@@ -178,6 +178,14 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 }
             }
         ),
+        array(
+            'header' => 'Assigned to current institution',
+            'type' => 'raw',
+            'name' => 'assigned_insitution',
+            'value' => function($data, $row) {
+                return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
+            }
+        ),
     );
 
     $this->widget('zii.widgets.grid.CGridView', array(
@@ -206,6 +214,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         'structure': {
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][id]' : '',
             'display_order[ROW_IDENTIFIER]' : '',
+            'assigned_institution[ROW_IDENTIFIER]' : '#assigned_institution_ROW_IDENTIFIER:checked',
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][disorder_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_disorder_id_actual',
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][group_id]' : '',
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][finding_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_finding_id.finding-id',

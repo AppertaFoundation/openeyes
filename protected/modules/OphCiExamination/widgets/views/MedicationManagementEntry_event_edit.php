@@ -67,9 +67,11 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 }
 
                 $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+                echo $entry->renderPGDInfo();
             } else {
                 echo "{{& allergy_warning}}";
                 echo "{{& prepended_markup}}";
+                echo "{{& pgd_info_icon}}";
             }
             ?>
         </span>
@@ -78,6 +80,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
 
         <?php /* <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" /> */ ?>
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
+        <input type="hidden" class="pgdpsd_id" name="<?= $field_prefix ?>[pgdpsd_id]" value="<?= $is_new ? "{{pgdpsd_id}}" : $entry->pgdpsd_id ?>" />
         <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]" value="<?= $is_new ? "{{medication_id}}" : $entry->medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay(true) ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" class="js-usage-type" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
@@ -177,12 +180,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 $field_prefix . '[dispense_condition_id]',
                 $entry->dispense_condition_id,
                 CHtml::listData(
-                    OphDrPrescription_DispenseCondition::model()->findAll(array(
-                        'condition' => '(active'
-                            . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
-                            . ") or id='" . $entry->dispense_condition_id . "'",
-                        'order' => 'display_order',
-                    )),
+                    OphDrPrescription_DispenseCondition::model()->withSettings($overprint_setting, $fpten_dispense_condition->id)->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION),
                     'id',
                     'name'
                 ),
@@ -190,7 +188,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
             ); ?>
 
             <?php
-            $locations = $entry->dispense_condition ? $entry->dispense_condition->locations : array('');
+            $locations = $entry->dispense_condition ? $entry->dispense_condition->getLocationsForCurrentInstitution() : array('');
             $style = $entry->dispense_condition ? '' : 'display: none;';
             echo CHtml::dropDownList(
                 $field_prefix . '[dispense_location_id]',
@@ -262,6 +260,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
         </div>
     </td>
     <td>
+        <?php $entry->comments = $entry->isNewRecord ? "{{comments}}" : $entry->comments?>
         <div class="js-comment-container flex-layout flex-left" id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>" style="<?php if (!$entry->comments) :
             ?>display: none;<?php
                                                                     endif; ?>" data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">

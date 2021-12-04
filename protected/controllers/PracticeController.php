@@ -112,6 +112,7 @@ class PracticeController extends BaseController
         $this->performAjaxValidation(array($practice, $contact, $address, $gp));
         if (isset($_POST['Contact'])) {
             $contact->first_name = $_POST['Contact']['first_name'];
+            $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
 

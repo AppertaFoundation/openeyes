@@ -16,30 +16,31 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<form id="current_report" action="<?php echo Yii::app()->createUrl('OphTrIntravitrealinjection/report/downloadReport')?>" method="post">
-    <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+<form id="current_report" action="<?= Yii::app()->createUrl('OphTrIntravitrealinjection/report/downloadReport')?>" method="post">
+    <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken?>" />
     <input type="hidden" name="report-name" value="Injections" />
-    <input type="hidden" name="date_from" value="<?php echo $report->date_from?>" />
-    <input type="hidden" name="date_to" value="<?php echo $report->date_to?>" />
-    <input type="hidden" name="given_by_id" value="<?php echo $report->given_by_id?>" />
-    <input type="hidden" name="summary" value="<?php echo $report->summary?>" />
-    <input type="hidden" name="pre_va" value="<?php echo $report->pre_va?>" />
-    <input type="hidden" name="post_va" value="<?php echo $report->post_va?>" />
+    <input type="hidden" name="date_from" value="<?= $report->date_from?>" />
+    <input type="hidden" name="date_to" value="<?= $report->date_to?>" />
+    <input type="hidden" name="given_by_id" value="<?= $report->given_by_id?>" />
+    <input type="hidden" name="summary" value="<?= $report->summary?>" />
+    <input type="hidden" name="pre_va" value="<?= $report->pre_va?>" />
+    <input type="hidden" name="post_va" value="<?= $report->post_va?>" />
 </form>
 <table class="standard">
     <thead>
         <tr>
-            <th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
-            <th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
-            <th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
-            <th><?php echo Patient::model()->getAttributeLabel('gender')?></th>
-            <th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
+            <th><?= $report->getPatientIdentifierPrompt() ?></th>
+            <th><?= Patient::model()->getAttributeLabel('first_name')?></th>
+            <th><?= Patient::model()->getAttributeLabel('last_name')?></th>
+            <th><?= Patient::model()->getAttributeLabel('gender')?></th>
+            <th><?= Patient::model()->getAttributeLabel('dob')?></th>
             <th>Eye</th>
             <th>Drug</th>
             <th>Site</th>
             <th>First injection date</th>
             <th>Last injection date</th>
             <th>Injection no</th>
+            <th><?= $report->getAttributeLabel('all_ids') ?></th>
         </tr>
     <tbody>
         <?php if (empty($report->injections)) {?>
@@ -51,17 +52,18 @@
         <?php } else {?>
             <?php foreach ($report->injections as $ts => $injection) {?>
                 <tr>
-                    <td><?php echo $injection['patient_hosnum']?></td>
-                    <td><?php echo $injection['patient_firstname']?></td>
-                    <td><?php echo $injection['patient_surname']?></td>
-                    <td><?php echo $injection['patient_gender']?></td>
-                    <td><?php echo $injection['patient_dob']?></td>
-                    <td><?php echo ucfirst($injection['eye'])?></td>
-                    <td><?php echo $injection['drug']?></td>
-                    <td><?php echo $injection['site']?></td>
-                    <td><?php echo $injection['first_injection_date']?></td>
-                    <td><?php echo $injection['last_injection_date']?></td>
-                    <td><?php echo $injection['injection_number']?></td>
+                    <td><?= $injection['patient_identifier']?></td>
+                    <td><?= $injection['patient_firstname']?></td>
+                    <td><?= $injection['patient_surname']?></td>
+                    <td><?= $injection['patient_gender']?></td>
+                    <td><?= $injection['patient_dob']?></td>
+                    <td><?= ucfirst($injection['eye'])?></td>
+                    <td><?= $injection['drug']?></td>
+                    <td><?= $injection['site']?></td>
+                    <td><?= $injection['first_injection_date']?></td>
+                    <td><?= $injection['last_injection_date']?></td>
+                    <td><?= $injection['injection_number']?></td>
+                    <td><?= $injection['all_ids'] ?></td>
                 </tr>
             <?php }?>
         <?php }?>

@@ -157,6 +157,7 @@ class ContactBehavior extends CActiveRecordBehavior
             // create a base contact object
             if ($this->owner->hasAttribute('contact_id') && !$this->owner->contact_id) {
                 $contact = new Contact();
+                $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
                 if (!$contact->email) {
                     $contact->email = null;
                 }

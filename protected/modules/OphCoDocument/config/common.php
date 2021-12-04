@@ -33,12 +33,21 @@ return array(
                 'mov'   => 'video/quicktime'
             )
         ),
+        'OphCoDocument_Sub_Types' => array(
+            'allowed_file_types' => array(
+                'pdf'   => 'application/pdf',
+                'jpg'   => 'image/jpeg',
+                'jpeg'  => 'image/jpeg',
+                'png'   => 'image/png',
+            )
+        ),
         'admin_structure' => array(
             'Document' => array(
                 'Document sub type settings' => array(
                     'module' => 'OphCoDocument',
                     'uri' => '/OphCoDocument/oeadmin/DocumentSubTypesSettings',
-                    ),
+                    'restricted' => array('admin'),
+                ),
             ),
         )
     )

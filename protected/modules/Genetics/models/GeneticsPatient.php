@@ -40,7 +40,6 @@ class GeneticsPatient extends BaseActiveRecord
     public $patient_maidenname;
     public $patient_yob;
     public $patient_disorder_id;
-    public $patient_hos_num;
     public $patient_pedigree_id;
 
     /**
@@ -75,7 +74,7 @@ class GeneticsPatient extends BaseActiveRecord
             array('id, patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
 
             //for searching on the subject/list page
-            array('patient_dob, patient_firstname, patient_lastname,patient_maidenname, patient_hos_num, patient_pedigree_id, patient_yob, patient_disorder_id', 'safe')
+            array('patient_dob, patient_firstname, patient_lastname,patient_maidenname, patient_pedigree_id, patient_yob, patient_disorder_id', 'safe')
         );
     }
 
@@ -276,7 +275,7 @@ class GeneticsPatient extends BaseActiveRecord
             $geneticsDiagnosis->save();
         }
     }
-    
+
 
 
 
@@ -330,11 +329,6 @@ class GeneticsPatient extends BaseActiveRecord
         $criteria->compare('patient.dob', $this->patient_dob, true);
         $criteria->compare('patient.dob', $this->patient_yob, true);
 
-        $patient_search = new PatientSearch();
-        $patient_hos_num = $patient_search->getHospitalNumber($this->patient_hos_num);
-
-        $criteria->compare('patient.hos_num', $patient_hos_num, false);
-
         if ( $this->patient_pedigree_id ) {
             $criteria->with['genetics_patient_pedigree'] = array('select' => 'genetics_patient_pedigree.pedigree_id', 'together' => true);
             $criteria->compare('genetics_patient_pedigree.pedigree_id', $this->patient_pedigree_id, false);
@@ -360,7 +354,6 @@ class GeneticsPatient extends BaseActiveRecord
                         'desc'=>"CONCAT(contact.first_name, ' ', contact.last_name) DESC"
                     ),
                     'patient.dob',
-                    'patient.hos_num',
                     'patient.firstName' => array(
                         'asc' => "contact.first_name",
                         'desc' => "contact.first_name DESC"

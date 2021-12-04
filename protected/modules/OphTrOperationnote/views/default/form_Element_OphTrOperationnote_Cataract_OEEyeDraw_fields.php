@@ -111,8 +111,17 @@
                             CHtml::listData(
                                 OphInBiometry_LensType_Lens::model()->findAll(
                                     array(
-                                        'condition' => ($element->iol_type_id > 0) ? 'active=1 or id=' . $element->iol_type_id : 'active=1',
+                                        'condition' => (($element->iol_type_id > 0)
+                                            ? '(t.active=1 or t.id=:iol_type_id)'
+                                            : 't.active=1') . ' AND institutions_institutions.institution_id = :institution_id',
+                                        'with' => 'institutions',
                                         'order' => 'display_name',
+                                        'params' => ($element->iol_type_id > 0) ? array(
+                                            ':iol_type_id' => $element->iol_type_id,
+                                            ':institution_id' => Institution::model()->getCurrent()->id,
+                                        ) : array(
+                                            ':institution_id' => Institution::model()->getCurrent()->id,
+                                        ),
                                     )
                                 ),
                                 'id',
@@ -310,5 +319,13 @@
                 $(this).hide();
             }
         });
+
+        if (window.event_has_errors !== true) {
+            setTimeout(() => {
+                let $op_note_surgeon = $('#Element_OphTrOperationnote_Surgeon_surgeon_id');
+                $op_note_surgeon.trigger('input');
+            }, 500);
+
+        }
     });
 </script>

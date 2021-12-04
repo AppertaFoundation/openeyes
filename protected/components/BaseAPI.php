@@ -82,6 +82,8 @@ class BaseAPI
     {
         $event_type = $this->getEventType();
         $criteria = new CDbCriteria();
+        $criteria->compare('t.deleted', 0);
+        $criteria->compare('episode.deleted', 0);
         $criteria->compare('event_type_id', $event_type->id);
         $criteria->compare('episode.patient_id', $patient->id);
         $criteria->order = 't.event_date desc, t.created_date desc';
@@ -281,6 +283,8 @@ class BaseAPI
         if ($criteria === null) {
             $criteria = new CDbCriteria();
         }
+        $criteria->compare('event.deleted', 0);
+        $criteria->compare('episode.deleted', 0);
         $criteria->compare('episode.patient_id', $patient->id);
         $criteria->order = 'event.event_date desc, event.created_date desc';
         if ($before !== null) {

@@ -39,6 +39,17 @@
             </td>
         </tr>
         <tr>
+            <td>Institution</td>
+            <td class="cols-full">
+                <?= CHtml::activeDropDownList(
+                    $model,
+                    'institution_id',
+                    Institution::model()->getList(true),
+                    ['class' => 'cols-full', 'empty' => '- Institution -'],
+                ) ?>
+            </td>
+        </tr>
+        <tr>
             <td>Site</td>
             <td>
                 <?= CHtml::activeDropDownList(

@@ -23,6 +23,16 @@ var patientMerge = {
         Object.keys(this.patients[type]).forEach(function (key) {
             $section.find('.' + key).html(patientMerge.patients[type][key]);
             $section.find('.' + key + '-input').val(patientMerge.patients[type][key]);
+            if (key === 'patient_identifiers') {
+                let patient_identifier_type;
+                for (let i = 0; i < patientMerge.patients[type][key].length; i++) {
+                    patient_identifier_type = patientMerge.patients[type][key][i].title.toLowerCase().replaceAll(" ", "_");
+                    $section.find('.patient_identifiers_' + patient_identifier_type).html(patientMerge.patients[type][key][i].value);
+                    if(patientMerge.patients[type][key][i].save_value) {
+                        $section.find('.patient_identifiers_' + patient_identifier_type + '-input').val(patientMerge.patients[type][key][i].value);
+                    }
+                }
+            }
         });
         $section.next('section').remove();
         $section.after(this.patients[type]['all-episodes']);
@@ -333,7 +343,7 @@ $(document).ready(function(){
         });
     });
     
-    $('#patientMergeWrapper').on('keypress', '#secondary_hos_num_filter, #primary_hos_num_filter',function(e){
+    $('#patientMergeWrapper').on('keypress', '#secondary_patient_identifier, #primary_patient_identifier',function(e){
         var val = $(this).val(),
             id = $(this).attr('id');
             

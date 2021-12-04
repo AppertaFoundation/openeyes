@@ -28,6 +28,7 @@ class GenericAdmin extends BaseCWidget
     public $input_class;
     public $return_url;
     public $action_links;
+    public $is_mapping;
 
     public function init()
     {

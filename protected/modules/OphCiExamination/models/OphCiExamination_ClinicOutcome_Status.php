@@ -23,6 +23,7 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property int $id
  * @property string $name
+ * @property int $institution_id
  * @property int $display_order
  * @property EpisodeStatus $episode_status
  * @property bool $followup
@@ -73,7 +74,8 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
             ['patientticket', 'default', 'setOnEmpty' => true, 'value' => false],
             ['followup, episode_status_id, patientticket', 'lockIfInUse'],
             ['subspecialties', 'safe'],
-            ['id, name, display_order', 'safe', 'on' => 'search'],
+            ['institution_id', 'default', 'setOnEmpty' => true, 'value' => null],
+            ['id, name, institution_id, display_order', 'safe', 'on' => 'search'],
         ];
     }
 
@@ -106,6 +108,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
         return array(
             'episode_status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
             'subspecialties' => array(self::MANY_MANY, 'Subspecialty', 'ophciexamination_clinicoutcome_status_options(clinicoutcome_status_id, subspecialty_id)'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -125,6 +128,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
             'followup' => 'Show Follow Up Options',
             'patientticket' => 'Generate Patient Ticket',
             'episode_status_id' => 'Episode Status',
+            'institution_id' => 'Institution',
         );
     }
 
@@ -139,6 +143,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
         $criteria->compare('display_order', $this->display_order, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
@@ -154,6 +159,20 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
         if ($subspecialty) {
             $criteria['condition'] .= ' OR ophciexamination_clinicoutcome_status_options.subspecialty_id = :subspecialty_id';
             $criteria['params'] = array(':subspecialty_id' => $subspecialty->id);
+        }
+        $this->getDbCriteria()->mergeWith($criteria);
+
+        return $this;
+    }
+
+    public function byInstitution($institution)
+    {
+        $criteria = [
+            'condition' => 't.institution_id is null',
+        ];
+        if ($institution) {
+            $criteria['condition'] .= ' OR t.institution_id = :institution_id';
+            $criteria['params'] = [':institution_id' => $institution->id];
         }
         $this->getDbCriteria()->mergeWith($criteria);
 

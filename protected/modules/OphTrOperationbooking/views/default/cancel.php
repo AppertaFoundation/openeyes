@@ -15,7 +15,13 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
+$this->beginContent('//patient/event_container', array('no_face'=>true));
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
+$primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
+    $patient->id, $institution->id, $selected_site_id);
+?>
 <section class="element">
   <section class="element-fields full-width">
     <?php $this->title = 'Cancel operation' ?>
@@ -37,7 +43,13 @@ $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
             </div>
             <div class="cols-10">
                 <div class="field-value">
-                    <?php echo $patient->getDisplayName().' ('.$patient->hos_num.')'; ?>
+                    <?php echo $patient->getDisplayName().' ('.PatientIdentifierHelper::getIdentifierValue($primary_identifier).')'; ?>
+                    <?php $this->widget(
+                        'application.widgets.PatientIdentifiers',
+                        [
+                            'patient' => $this->patient,
+                            'show_all' => true
+                        ]); ?>
                 </div>
             </div>
         </div>

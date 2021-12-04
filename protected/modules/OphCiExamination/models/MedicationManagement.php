@@ -199,6 +199,10 @@ class MedicationManagement extends BaseMedicationElement
             $criteria->with = ['event.episode'];
             $criteria->addCondition('episode.patient_id = :patient_id');
             $criteria->addCondition('medication_id = :medication_id');
+            if ($e->pgdpsd_id) {
+                $criteria->addCondition('pgdpsd_id = :pgdpsd_id');
+                $criteria->params['pgdpsd_id'] = $e->pgdpsd_id;
+            }
             $criteria->addCondition('stop_reason_id = :stop_reason_id');
             $criteria->addCondition('latest_med_use_id = :latest_med_use_id');
             $criteria->params[':patient_id'] = $e->event->episode->patient->id;
@@ -428,6 +432,7 @@ class MedicationManagement extends BaseMedicationElement
                         'usage_type' => OphDrPrescription_Item::getUsageType(),
                         'usage_subtype' => OphDrPrescription_Item::getUsageSubtype(),
                         'medication_id' => $entry->medication_id,
+                        'pgdpsd_id' => $entry->pgdpsd_id,
                         'form_id' => $entry->form_id,
                         'laterality' => $entry->laterality,
                         'route_id' => $entry->route_id,
@@ -537,6 +542,7 @@ class MedicationManagement extends BaseMedicationElement
         $item->frequency_id = $entry->frequency_id;
         $item->route_id = $entry->route_id;
         $item->medication_id = $entry->medication_id;
+        $item->pgdpsd_id = $entry->pgdpsd_id;
         $item->duration_id = $entry->duration_id;
         $item->dispense_condition_id = $entry->dispense_condition_id;
         $item->dispense_location_id = $entry->dispense_location_id;

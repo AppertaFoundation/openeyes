@@ -63,8 +63,9 @@ class OphCiExamination_ClinicOutcome_Role extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name, display_order, requires_comment', 'required'),
-                array('id, name, display_order, requires_comment, active', 'safe', 'on' => 'search'),
-                array('active', 'safe'),
+                array('id, name, institution_id, display_order, requires_comment, active', 'safe', 'on' => 'search'),
+                array('institution_id, active', 'safe'),
+                array('institution_id', 'default', 'setOnEmpty' => true, 'value' => null),
         );
     }
 
@@ -73,8 +74,9 @@ class OphCiExamination_ClinicOutcome_Role extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array(
-        );
+        return [
+            'institution' => [self::BELONGS_TO, 'Institution', 'institution_id'],
+        ];
     }
 
     public function behaviors()
@@ -94,6 +96,7 @@ class OphCiExamination_ClinicOutcome_Role extends \BaseActiveRecordVersioned
         $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
         $criteria->compare('display_order', $this->display_order, true);
         $criteria->compare('requires_comment', $this->requires_comment, true);
 

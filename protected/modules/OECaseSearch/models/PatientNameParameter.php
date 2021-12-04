@@ -5,11 +5,15 @@
  */
 class PatientNameParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'string_search',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '='),
+            array('label' => 'IS NOT', 'id' => '!='),
+        )
     );
 
-    protected $label_ = 'Name';
+    protected string $label_ = 'Name';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -33,16 +37,22 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
         );
     }
 
-    public function getValueForAttribute($attribute)
+    /**
+     * @param string $attribute
+     * @return mixed|void
+     * @throws CException
+     */
+    public function getValueForAttribute(string $attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
-            switch ($attribute) {
-                case 'value':
-                    return Patient::model()->findByPk($this->$attribute)->getFullName();
-                    break;
-                default:
-                    return parent::getValueForAttribute($attribute);
+            if ($attribute === 'value') {
+                $patient = Patient::model()->findByPk($this->$attribute);
+                if ($patient) {
+                    return $patient->getFullName();
+                }
+                return 'Unknown';
             }
+            return parent::getValueForAttribute($attribute);
         }
         return parent::getValueForAttribute($attribute);
     }
@@ -51,7 +61,7 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @return string The constructed query string.
      */
-    public function query()
+    public function query(): string
     {
         return "SELECT DISTINCT p.id 
 FROM patient p 
@@ -59,7 +69,7 @@ WHERE p.id = :p_n_name_{$this->id}
 ";
     }
 
-    public static function getCommonItemsForTerm($term)
+    public static function getCommonItemsForTerm(string $term) : array
     {
         $patients = Patient::model()->findAllBySql(
             "SELECT p.* FROM patient p
@@ -70,18 +80,19 @@ WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) LIKE LOWER(:term)) OR (LOWE
 ORDER BY c.first_name, c.last_name LIMIT " . self::_AUTOCOMPLETE_LIMIT,
             array('term' => "%$term%")
         );
-        $values = array();
-        foreach ($patients as $patient) {
-            $values[] = array('id' => $patient->id, 'label' => $patient->getFullName());
-        }
-        return $values;
+        return array_map(
+            static function ($patient) {
+                return array('id' => $patient->id, 'label' => $patient->getFullName());
+            },
+            $patients
+        );
     }
 
     /**
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
@@ -92,9 +103,13 @@ ORDER BY c.first_name, c.last_name LIMIT " . self::_AUTOCOMPLETE_LIMIT,
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
+        /**
+         * @var $patient Patient
+         */
         $patient = Patient::model()->findByPk($this->value);
-        return "$this->name: = \"{$patient->getFullName()}\"";
+        $name = $patient ? $patient->getFullName() : 'Unknown';
+        return "$this->name: = \"{$name}\"";
     }
 }

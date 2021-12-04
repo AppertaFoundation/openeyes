@@ -84,6 +84,7 @@ class OphCoTherapyapplication_FileCollection extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
+                'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
                 'file_assignments' => array(self::HAS_MANY, 'OphCoTherapyapplication_FileCollectionAssignment', 'collection_id'),
                 'files' => array(self::HAS_MANY, 'ProtectedFile', 'file_id', 'through' => 'file_assignments'),
                 // Do NOT use this relation directly, use getZipFile instead
@@ -97,11 +98,11 @@ class OphCoTherapyapplication_FileCollection extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('name, summary', 'safe'),
-                array('name, summary', 'required'),
+                array('name, summary, institution_id', 'safe'),
+                array('name, summary, institution_id', 'required'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, summary, name', 'safe', 'on' => 'search'),
+                array('id, summary, name, institution_id', 'safe', 'on' => 'search'),
         );
     }
 

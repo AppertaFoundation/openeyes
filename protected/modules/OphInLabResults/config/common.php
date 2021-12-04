@@ -19,7 +19,7 @@
 return array(
     'params' => array(
         'admin_menu' => array(
-            'Result Types' => '/OphInLabResults/oeadmin/resultType/list',
+            'OphInLabResults' => ['Result Types' => ['uri' => '/OphInLabResults/oeadmin/resultType/list', 'restricted' => array('admin')]],
         ),
     ),
 );

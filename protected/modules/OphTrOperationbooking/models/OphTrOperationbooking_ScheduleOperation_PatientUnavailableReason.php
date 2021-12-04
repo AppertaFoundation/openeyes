@@ -23,17 +23,41 @@
  *
  * @property string $id
  * @property string $name
- * @property bool $enabled
  * @property int $display_order
  *
  * The followings are the available model relations:
  */
 class OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'patientunavailreason_id';
+    }
+
+    /*protected function softDeleteMappings(): bool
+    {
+        return true;
+    }*/
+
+    protected function mappingModelName(int $level): string
+    {
+        if ($level === ReferenceData::LEVEL_INSTITUTION) {
+            return 'PatientUnavailableReason_Institution';
+        }
+
+        return '';
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -63,8 +87,8 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason extends B
             $criteria = new CDbCriteria();
             $criteria->order = 'display_order desc';
             $criteria->limit = 1;
-            $model = get_class($this);
-            $bottom = $model::model()->find($criteria);
+            $model = get_class($this) . '::model';
+            $bottom = $model()->find($criteria);
             if ($bottom) {
                 $this->display_order = $bottom->display_order + 1;
             } else {
@@ -81,8 +105,8 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason extends B
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('name, enabled, display_order', 'safe'),
-                array('name, enabled, display_order', 'required'),
+                array('name, display_order', 'safe'),
+                array('name, display_order', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
                 array('id, name', 'safe', 'on' => 'search'),
@@ -97,8 +121,9 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason extends B
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', 'ophtroperationbooking_patientunavailreason_institution(patientunavailreason_id, institution_id)'),
         );
     }
 
@@ -108,8 +133,8 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason extends B
     public function attributeLabels()
     {
         return array(
-                'id' => 'ID',
-                'name' => 'Name',
+            'id' => 'ID',
+            'name' => 'Name',
         );
     }
 

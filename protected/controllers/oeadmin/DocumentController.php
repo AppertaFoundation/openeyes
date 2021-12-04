@@ -25,14 +25,18 @@ class DocumentController extends BaseAdminController
     public $layout = 'admin';
 
     /**
+     * @throws CHttpException
      * @var int
      */
-
     public function actionList()
     {
         $model = OphCoDocument_Sub_Types::model();
-        $document_sub_types = $model->findAll();
-        $this->render('//admin/document_sub_types', $document_sub_types);
+        if ($this->checkAccess('admin')) {
+            $document_sub_types = $model->findAll();
+            $this->render('//admin/document_sub_types', $document_sub_types);
+        } else {
+            throw new CHttpException(403, 'Only a system admin is permitted to change these settings.');
+        }
     }
 
 }

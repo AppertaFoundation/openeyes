@@ -14,9 +14,11 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var $lensType_lens OphInBiometry_LensType_lens[]
+ */
 ?>
-
-
 
 <?php if (!$lensType_lens) : ?>
     <div class="row divider">
@@ -87,10 +89,14 @@
                 <th>a0</th>
                 <th>a1</th>
                 <th>a2</th>
+                <th>Active</th>
+                <th>Assigned to current institution</th>
             </tr>
             </thead>
             <tbody>
             <?php
+            $institution_id = Institution::model()->getCurrent()->id;
+
             foreach ($lensType_lens as $key => $lens) { ?>
                 <tr id="$key" class="clickable" data-id="<?= $lens->id ?>"
                     data-uri="OphInBiometry/lensTypeAdmin/edit/<?= $lens->id ?>?returnUri=">
@@ -114,32 +120,59 @@
                             ('<i class="oe-i tick small"></i>') :
                             ('<i class="oe-i remove small"></i>'); ?>
                     </td>
+                    <td>
+                        <?= ($lens->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) ?
+                            ('<i class="oe-i tick small"></i>') :
+                            ('<i class="oe-i remove small"></i>') ?>
+                    </td>
                 </tr>
             <?php } ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="4">
-                    <?= \CHtml::submitButton(
-                        'Add',
+                    <?php if ($this->checkAccess('admin')) { ?>
+                        <?=\CHtml::submitButton(
+                            'Add',
+                            [
+                                'class' => 'button large',
+                                'data-uri' => '/OphInBiometry/lensTypeAdmin/edit',
+                                'name' => 'add',
+                                'id' => 'et_add'
+                            ]
+                        ) ?>
+                        <!-- Does not delete the lens type: sets it as INACTIVE -->
+                        <?=\CHtml::submitButton(
+                            'Deactivate Lens Type',
+                            [
+                                'class' => 'button large',
+                                'data-uri' => '/OphInBiometry/lensTypeAdmin/delete',
+                                'name' => 'delete',
+                                'data-object' => 'lensTypes',
+                                'id' => 'et_delete'
+                            ]
+                        ) ?>
+                    <?php } ?>
+                    <?=\CHtml::submitButton(
+                        'Add Selected to Current Institution',
                         [
                             'class' => 'button large',
-                            'data-uri' => '/OphInBiometry/lensTypeAdmin/edit',
-                            'name' => 'add',
-                            'id' => 'et_add'
+                            'formaction' => '/OphInBiometry/lensTypeAdmin/addInstitutionMapping',
+                            'name' => 'addmapping',
+                            'id' => 'et_add_mapping'
                         ]
-                    ); ?>
+                    ) ?>
                     <!-- Does not delete the lens type: sets it as INACTIVE -->
-                    <?= \CHtml::submitButton(
-                        'Deactivate Lens Type',
+                    <?=\CHtml::submitButton(
+                        'Remove Selected from Current Institution',
                         [
                             'class' => 'button large',
-                            'data-uri' => '/OphInBiometry/lensTypeAdmin/delete',
-                            'name' => 'delete',
+                            'formaction' => '/OphInBiometry/lensTypeAdmin/deleteInstitutionMapping',
+                            'name' => 'deletemapping',
                             'data-object' => 'lensTypes',
-                            'id' => 'et_delete'
+                            'id' => 'et_delete_mapping'
                         ]
-                    ); ?>
+                    ) ?>
                 </td>
                 <td colspan="3">
                     <?php $this->widget(

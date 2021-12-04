@@ -19,10 +19,9 @@
 
 ?>
 <?php
-if (!empty(Yii::app()->session['user'])) {
-    $user = Yii::app()->session['user'];
-} else {
-    $user = User::model()->findByPk(Yii::app()->user->id);
+$user_auth = null;
+if (!empty(Yii::app()->session['user_auth'])) {
+    $user_auth = Yii::app()->session['user_auth'];
 }
 $firm = Firm::model()->findByPk($this->selectedFirmId);
 
@@ -32,8 +31,8 @@ if (file_exists('/etc/hostname')) {
     $hostname = trim(`hostname`);
 }
 
-if (is_object($user)) {
-    $username = "$user->username ($user->id)";
+if (is_object($user_auth)) {
+    $username = "$user_auth->username ($user_auth->id)";
     $firm = "$firm->name ($firm->id)";
 } else {
     $username = 'Not logged in';

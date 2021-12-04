@@ -35,7 +35,7 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphTrOperationbooking_Operation_Theatre|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -86,6 +86,7 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'sessions' => array(self::HAS_MANY, 'OphTrOperationbooking_Operation_Session', 'theatre_id'),
             'ward' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Ward', 'ward_id'),
         );
@@ -148,11 +149,14 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
             ->where('active = 1')
             ->from($model->tableName());
 
-        $ids = array_map(function($r) { return $r['site_id'];
+        $ids = array_map(function ($r) {
+            return $r['site_id'];
         }, $cmd->queryAll());
 
         $criteria = new CDbCriteria();
         $criteria->addCondition("active = 1 and short_name != ''");
+        $criteria->addCondition("institution_id = :institution_id");
+        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
         $criteria->addInCondition('id', $ids);
         if ($current_site_id) {
             $criteria->addCondition('id = :id', 'OR');
@@ -163,4 +167,14 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
         return Site::model()->findAll($criteria);
     }
 
+    public static function getTheatresForCurrentInstitution()
+    {
+        $site_id_list = array_map(
+            static function ($site) {
+                return $site->id;
+            },
+            Institution::model()->getCurrent()->sites
+        );
+        return self::model()->active()->findAll('site_id IN (' . implode(', ', $site_id_list) . ')');
+    }
 }
