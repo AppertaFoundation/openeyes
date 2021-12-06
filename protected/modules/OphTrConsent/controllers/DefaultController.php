@@ -175,6 +175,9 @@ class DefaultController extends BaseEventTypeController
 
         if ($action == 'create' && $this->template) {
             $element->type_id = $this->template->type_id;
+            if($this->type_id) {
+                $element->type_id = $this->type_id;
+            }
         } elseif ($action == 'create') {
             $patient_age = (int)$this->patient->getAge();
             if ($patient_age <= 16) {
