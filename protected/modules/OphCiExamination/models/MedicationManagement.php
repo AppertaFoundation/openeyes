@@ -47,6 +47,7 @@ use Yii;
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property Element_OphDrPrescription_Details $prescription
+ * @property OphCiExamination_Signature $signatures
  *
  * @method auditAllergicDrugEntries($target, $action = "allergy_override")
  */
@@ -54,6 +55,7 @@ class MedicationManagement extends BaseMedicationElement
 {
     use traits\CustomOrdering;
     public $do_not_save_entries = false;
+    public bool $save_draft_prescription = false;
 
     protected $widgetClass = MedicationManagementWidget::class;
 
@@ -111,10 +113,11 @@ class MedicationManagement extends BaseMedicationElement
                 MedicationManagementEntry::class,
                 array('id' => 'event_id'),
                 'through' => 'event',
-                'on' => "hidden = 0 AND usage_type = '" . MedicationManagementEntry::getUsageType() . "' AND usage_subtype = '" . MedicationManagementEntry::getUsageSubtype() . "' ",
+                'on' => "visible_entries.hidden = 0 AND usage_type = '" . MedicationManagementEntry::getUsageType() . "' AND usage_subtype = '" . MedicationManagementEntry::getUsageSubtype() . "' ",
                 'order' => 'visible_entries.start_date DESC, visible_entries.end_date DESC, visible_entries.last_modified_date'
             ),
             'prescription' => array(self::BELONGS_TO, Element_OphDrPrescription_Details::class, 'prescription_id'),
+            'signatures' => array(self::HAS_MANY, \OphCiExamination_Signature::class, 'element_id')
         );
     }
 
@@ -176,6 +179,18 @@ class MedicationManagement extends BaseMedicationElement
         return array_filter($this->visible_entries, function ($e) {
             return !is_null($e->end_date) && $e->is_discontinued && $e->stopped_in_event_id === $e->event_id;
         });
+    }
+
+    /**
+     * Gets NOT stopped Medication Management entries
+     * @return MedicationManagementEntry[]
+     */
+    public function getNotStoppedEntries() : array
+    {
+        $stopped_ids = $this->getStoppedEntryIds();
+        $collection = new \ModelCollection($this->visible_entries);
+
+        return $collection->diff($stopped_ids);
     }
 
     /**
@@ -379,9 +394,27 @@ class MedicationManagement extends BaseMedicationElement
         return true;
     }
 
+    /**
+     * Update signature element after save
+     */
+    private function updateSignatures()
+    {
+        if ($this->signatures) {
+            foreach ($this->signatures as $signature) {
+                if ($this->save_draft_prescription === true) {
+                    $signature->deletePrevSignature($this->id);
+                } else {
+                    if (strlen($signature->proof) > 0) {
+                        $signature->element_id = $this->id;
+                        $signature->save(false);
+                    }
+                }
+            }
+        }
+    }
+
     private function createOrUpdatePrescriptionEvent()
     {
-        $prescribe_access = Yii::app()->user->checkAccess('OprnCreatePrescription');
         if (!is_null($this->prescription_id)) {
             // prescription exists
 
@@ -476,19 +509,41 @@ class MedicationManagement extends BaseMedicationElement
                     // update prescription with message
                     $edit_reason = "Updated via examination clinical management";
                     $prescription->edit_reason_other = $edit_reason;
-                    $prescription->draft = $prescribe_access ? 0 : 1;
+                    $prescription->draft = $this->getDraftStatusToPrescription();
+                    $prescription->save();
+                }
+            } else {
+                if ((bool)$prescription->draft !== $this->save_draft_prescription) {
+                    $prescription->draft = $this->getDraftStatusToPrescription();
                     $prescription->save();
                 }
             }
         } else {
             // prescription does not exist yet
             if (!empty($this->entries_to_prescribe)) {
-                $this->generatePrescriptionEvent($prescribe_access);
+                $this->generatePrescriptionEvent();
             }
         }
     }
 
-    private function generatePrescriptionEvent($prescribe_access)
+    /**
+     * Get Draft status by access and checkbox value to Prescription event
+     * @return int
+     */
+    private function getDraftStatusToPrescription()
+    {
+        $prescribe_access = Yii::app()->user->checkAccess('OprnCreatePrescription');
+        $draft = 0;
+        if ($prescribe_access) {
+            if ($this->save_draft_prescription === true) {
+                $draft = 1;
+            }
+        }
+
+        return $draft;
+    }
+
+    private function generatePrescriptionEvent()
     {
         $prescription_creator = new PrescriptionCreator($this->event->episode);
         $prescription_creator->patient = $this->event->episode->patient;
@@ -503,8 +558,7 @@ class MedicationManagement extends BaseMedicationElement
             $prescription_creator->addItem($item);
         }
 
-        $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = $prescribe_access ? 0 : 1;
-
+        $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = $this->getDraftStatusToPrescription();
         $prescription_creator->save();
 
         if (!$prescription_creator->hasErrors()) {
@@ -577,6 +631,8 @@ class MedicationManagement extends BaseMedicationElement
     protected function afterSave()
     {
         parent::afterSave();
+
+        $this->updateSignatures();
         $this->auditAllergicDrugEntries("medication_management");
     }
 
@@ -608,5 +664,89 @@ class MedicationManagement extends BaseMedicationElement
         }
 
         parent::afterDelete();
+    }
+
+    /**
+     * @return OphCoCorrespondence_Signature[]
+     */
+    public function getSignatures($readonly = false): array
+    {
+        if ($readonly && (empty($this->signatures))) {
+            return [];
+        }
+
+        $consultant = new \OphCiExamination_Signature();
+        $consultant->signatory_role = "Consultant";
+        $consultant->type = \BaseSignature::TYPE_LOGGEDIN_MED_USER;
+
+        return !empty($this->signatures) ? $this->signatures : [$consultant];
+    }
+
+    /** @return array Informational messages to display */
+    public function getInfoMessages(): array
+    {
+        return [];
+    }
+
+    /**
+     * A CVI is signed if all of the signatures
+     * (consultant and patient) is done
+     *
+     * @return bool
+     */
+    public function isSigned(): bool
+    {
+        foreach ($this->signatures as $signature) {
+            if (!$signature->isSigned()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUnsignedMessage(): string
+    {
+        if (!$this->save_draft_prescription) {
+            return "This Medication Management must be signed by a Consultant.";
+        }
+
+        return '';
+    }
+
+    /**
+     * @return bool Whether an E-sign device can be used to capture the signature
+     */
+    public function usesEsignDevice(): bool
+    {
+        return !empty(
+        array_filter ($this->signatures, function ($signature) {
+            return $signature->usesEsignDevice();
+        })
+        );
+    }
+
+    /**
+    * @param array $elements
+    */
+    public function eventScopeValidation(array $elements)
+    {
+        $elements = array_filter(
+            $elements,
+            function ($element) {
+                return $element instanceof MedicationManagement;
+            }
+        );
+
+        if (!empty($elements)) {
+            if (!$this->isSigned() && !$this->save_draft_prescription) {
+                $this->addError(
+                    "id",
+                    "Signature must be provided to finalize this Prescription."
+                );
+            }
+        }
     }
 }

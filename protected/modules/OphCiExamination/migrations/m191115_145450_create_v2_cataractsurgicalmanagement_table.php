@@ -27,7 +27,7 @@ class m191115_145450_create_v2_cataractsurgicalmanagement_table extends OEMigrat
             ],
             true
         );
-        
+
         $this->addForeignKey(
             'fk_ophciexamination_csm_eye',
             'et_ophciexamination_cataractsurgicalmanagement',

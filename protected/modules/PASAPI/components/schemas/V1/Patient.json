@@ -34,6 +34,9 @@
   "TelephoneNumber": {
     "type": "string"
   },
+ "MobilePhoneNumber": {
+    "type": "string"
+ },
   "EthnicGroup": {
     "type": "string"
   },
@@ -47,6 +50,15 @@
     "type": "string"
   },
   "GpCode": {
+    "type": "string"
+  },
+  "LanguageCode": {
+    "type": "string"
+  },
+  "InterpreterRequired": {
+    "type": "string"
+  },
+  "Email": {
     "type": "string"
   }
 }

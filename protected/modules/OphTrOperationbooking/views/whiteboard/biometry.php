@@ -22,6 +22,7 @@
     <footer class="wb3-actions down">
         <?php $this->renderPartial('footer', array(
             'biometry' => true,
+            'consent' => false,
             'booking_id' => $booking_id,
         )); ?>
     </footer>

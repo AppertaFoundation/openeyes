@@ -54,7 +54,6 @@ class CoverAndPrismCover extends \BaseEventElementWidget
     public function getReadingAttributeLabel($attr)
     {
         return CoverAndPrismCover_Entry::model()->getAttributeLabel($attr);
-
     }
 
     protected function getViewForEntry()

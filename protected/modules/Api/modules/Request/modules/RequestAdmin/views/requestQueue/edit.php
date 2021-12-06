@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2020, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="row divider">
@@ -23,20 +25,20 @@
 $attributes = $model->getAttributes();
 unset($attributes['request_queue']);
 ?>
-<div class="cols-5">
+<div class="cols-full">
     <form method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <colgroup>
                 <col class="cols-4">
-                <col class="cols-5">
+                <col class="cols-full">
             </colgroup>
             <tbody>
             <?php $htmlOptions = ['class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete']]; ?>
             <tr>
                 <td><?= $model->getAttributeLabel('request_queue'); ?></td>
                 <td><?= \CHtml::activeTextField($model, 'request_queue', array_merge([
-                        'readonly' => $is_readonly
+                        'readonly' => isset($is_readonly) ? $is_readonly : false,
                     ], $htmlOptions)); ?></td>
             </tr>
 

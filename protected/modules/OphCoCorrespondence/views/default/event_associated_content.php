@@ -1,8 +1,8 @@
-    <?php
-    if (empty($patient)) {
-        $patient = $this->patient;
-    }
-    ?>
+<?php
+if (empty($patient)) {
+    $patient = $this->patient;
+}
+?>
     
     <header class="element-header"><h3 class="element-title">Attachments</h3></header>
     <div class="element-fields full-width flex-layout">
@@ -77,8 +77,10 @@
             }
 
             if (isset($_POST['attachments_event_id'])) {
-                if (count($_POST['attachments_event_id']) != count($_POST['attachments_display_title']) ||
-                    count($_POST['attachments_event_id']) != count($_POST['file_id'])) {
+                if (
+                    count($_POST['attachments_event_id']) != count($_POST['attachments_display_title']) ||
+                    count($_POST['attachments_event_id']) != count($_POST['file_id'])
+                ) {
                     throw new Exception("Incorrectly formed attachment data in POST");
                 }
 

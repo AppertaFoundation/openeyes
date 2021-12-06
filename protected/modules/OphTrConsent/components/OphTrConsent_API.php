@@ -28,14 +28,25 @@ class OphTrConsent_API extends BaseAPI
      *
      * @return bool
      */
-    public function hasConsentForProcedure($episode, $procedure, $side)
+    public function hasConsentForProcedure($episode, $proc_ids, $side)
     {
         if ($episode) {
-            $required_eye = Eye::BOTH;
+            if (!$proc_ids) {
+                throw new Exception('unable to get procedures');
+            }
 
             if (!in_array($side, array('left', 'right', 'both'))) {
                 throw new Exception('unrecognised side value '.$side);
             }
+            $proc_ids_str = implode(',', $proc_ids);
+
+            $eye_ids = array(Eye::BOTH);
+            if ($side == 'left') {
+                $eye_ids[] = Eye::LEFT;
+            } elseif ($side == 'right') {
+                $eye_ids[] = Eye::RIGHT;
+            }
+            $eye_ids_str = implode(',', $eye_ids);
 
             $event_type = $this->getEventType();
 
@@ -43,31 +54,18 @@ class OphTrConsent_API extends BaseAPI
             $criteria->addCondition('event.event_type_id = :eventtype_id');
             $criteria->addCondition('event.episode_id = :episode_id');
             $criteria->addCondition('event.deleted = 0');
-            $criteria->addCondition('procedures.id = :proc_id OR additional_procedures.id = :proc_id');
+            $criteria->addCondition("procedure_assignments.proc_id IN ($proc_ids_str) OR additionalprocedure_assignments.proc_id IN ($proc_ids_str)");
+            $criteria->addCondition("procedure_assignments.eye_id IN ($eye_ids_str) OR additionalprocedure_assignments.eye_id IN ($eye_ids_str)");
+            $criteria->with = ['event', 'procedure_assignments', 'additionalprocedure_assignments'];
             $criteria->params = array(
                 ':eventtype_id' => $event_type->id,
                 ':episode_id' => $episode->id,
-                ':proc_id' => $procedure->id,
             );
 
             $criteria->order = 't.created_date desc';
-
-            $eye_ids = array('eye_id' => Eye::BOTH);
-
-            if ($side == 'left') {
-                $eye_ids[] = Eye::LEFT;
-                $required_eye = Eye::LEFT;
-            } elseif ($side == 'right') {
-                $eye_ids[] = Eye::RIGHT;
-                $required_eye = Eye::RIGHT;
-            }
-
-            $criteria->addInCondition('t.eye_id', $eye_ids);
-
-            foreach (Element_OphTrConsent_Procedure::model()->with('event', 'procedures', 'additional_procedures')->findAll($criteria) as $consent_proc) {
-                if ($consent_proc->eye_id == Eye::BOTH || $consent_proc->eye_id == $required_eye) {
-                    return true;
-                }
+            $matched_proc_ele = Element_OphTrConsent_Procedure::model()->findAll($criteria);
+            if ($matched_proc_ele) {
+                return true;
             }
         }
 
@@ -104,22 +102,5 @@ class OphTrConsent_API extends BaseAPI
         }
 
         return $return;
-    }
-
-    /**
-     * get laterality of event by looking at the procedure element eye side
-     *
-     * @param $event_id
-     * @return mixed
-     * @throws Exception
-     */
-    public function getLaterality($event_id)
-    {
-        $procedure = Element_OphTrConsent_Procedure::model()->find('event_id = :event_id', [':event_id' => $event_id]);
-        if (!$procedure) {
-            throw new Exception("Procedure element not found, possibly not a consent event: $event_id");
-        }
-
-        return $procedure->eye;
     }
 }

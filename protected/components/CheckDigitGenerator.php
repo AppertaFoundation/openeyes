@@ -43,9 +43,9 @@ class CheckDigitGenerator
         for ($i = 0; $i < strlen($string); ++$i) {
             $char = str_replace(range('A', 'Z'), range('1', '26'), $string[$i]);
 
-            //Prior to PHP 7.1 str_split would return false on a non-numeric value, and so hyphens in the patient's DOB would be coerced to zeros.
+            //Prior to PHP 7.1 str_split would return false on a non-numeric value, and so hyphens in the patient's DOB and lowercase characters and symbols in portal client_id would be coerced to zeros.
             //However at time of writing, this throws an error. The following reintroduces the original behaviour.
-            if($char === '-') {
+            if(!is_numeric($char)) {
                 $char = 0;
             }
 

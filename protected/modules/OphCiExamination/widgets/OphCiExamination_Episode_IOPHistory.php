@@ -288,7 +288,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                                     'raw_value' => $reading->reading->value,
                                     'comments' => $iop_element->{$side . '_comments'}
                                 );
-                                
+
                                 OELog::log("reading_time: ".$reading->reading_time);
             }
         }
@@ -318,7 +318,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         'raw_value' => $reading->value,
                         'comments' => $iop_element->{$side . '_comments'}
                 );
-                
+
                 OELog::log("measurement_timestamp: ".$reading->measurement_timestamp);
         }
 

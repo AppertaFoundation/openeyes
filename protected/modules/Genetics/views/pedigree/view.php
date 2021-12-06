@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php $this->renderPartial('//base/_messages')?>
     <div class="admin box">
@@ -22,16 +24,18 @@
         <div class="cols-8 column"><h2>View Family</h2></div>
         <div class="cols-3 column">
         </div><div class="large-1 column right">
-            <?php if ( $this->checkAccess('TaskEditPedigreeData') ) : ?>
-                <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/pedigree/view/').$model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>
-            <?php endif; ?>
+            <?php if ($this->checkAccess('TaskEditPedigreeData')) :
+                ?>
+                <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/pedigree/view/') . $model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>
+                <?php
+            endif; ?>
         </div>
     </div>
        
         <?php $this->widget('zii.widgets.CDetailView', array(
-        'data'=>$model,
-        'htmlOptions' => array('class'=>'detailview'),
-        'attributes'=>array(
+        'data' => $model,
+        'htmlOptions' => array('class' => 'standard flex-layout cols-full'),
+        'attributes' => array(
             'id',
             'inheritance.name',
             'comments',
@@ -43,7 +47,8 @@
             array(
                 'label' => $model->getAttributeLabel('gene.name'),
                 'type' => 'raw',
-                'value' => function () use ($model){
+                'value' => function () use ($model) {
+
                     if ($model->gene) {
                         return '<a href="/Genetics/gene/view/' . $model->gene->id . '" >' . $model->gene->name . '</a>';
                     }
@@ -52,17 +57,17 @@
             array(
                 'label' => $model->getAttributeLabel('base_change_type'),
                 'value' => $model->base_change_type ? $model->base_change_type->change : null,
-                'type'=>'raw',
+                'type' => 'raw',
             ),
             array(
                 'label' => $model->getAttributeLabel('base_change'),
                 'value' => $model->base_change ? $model->base_change : null,
-                'type'=>'raw',
+                'type' => 'raw',
             ),
             array(
                 'label' => $model->getAttributeLabel('amino_acid_change_type'),
                 'value' => $model->amino_acid_change_type ? $model->amino_acid_change_type->change : null,
-                'type'=>'raw',
+                'type' => 'raw',
             ),
             array(
                 'label' => $model->getAttributeLabel('amino_acid_change'),
@@ -87,7 +92,8 @@
             array(
                 'label' => $model->getAttributeLabel('created_date'),
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
+
                     $date = new DateTime($model->created_date);
                     return $date->format('d M Y');
                 }
@@ -95,7 +101,8 @@
             array(
                 'label' => 'Subjects',
                 'type' => 'raw',
-                'value' => function() use ($model){
+                'value' => function () use ($model) {
+
 
                     $html = '<ul class="subjects_list">';
                     foreach ($model->subjects as $subject) {
@@ -107,7 +114,6 @@
                     }
                     $html .= '</ul>';
                     return $html;
-
                 }
             )
     ),

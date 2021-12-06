@@ -4,7 +4,7 @@ class m200812_131808_drop_unique_key_pasapiassignmnet extends OEMigration
 {
     public function up()
     {
-      $this->dropIndex('resource_key', 'pasapi_assignment');
+        $this->dropIndex('resource_key', 'pasapi_assignment');
     }
 
     public function down()

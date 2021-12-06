@@ -38,7 +38,7 @@ use OEModule\OphCiExamination\models\PrismReflex_Entry;
                     'data-adder-header' => $entry->getAttributeLabel('prismbase_id'),
                     'data-adder-id' => "{$field_prefix}_prismbase_id",
                 ]);
-        ?>
+?>
     </td>
     <td>
         <?= \CHtml::dropDownList("{$field_prefix}[finding_id]", $entry->finding_id,
@@ -49,7 +49,7 @@ use OEModule\OphCiExamination\models\PrismReflex_Entry;
                 'data-adder-header' => $entry->getAttributeLabel('finding_id'),
                 'data-adder-id' => "{$field_prefix}_finding_id",
             ]);
-        ?>
+?>
     </td>
     <td>
         <?= \CHtml::dropDownList("{$field_prefix}[with_head_posture]", $entry->with_head_posture,

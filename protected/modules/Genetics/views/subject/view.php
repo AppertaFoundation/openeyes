@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * OpenEyes.
@@ -27,21 +28,21 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
     <div class="data-group">
         <div class="cols-10 column"><h2>View Genetics Patient</h2></div>
         <div class="cols-2 column right">
-            <?php if ( $this->checkAccess('OprnEditGeneticPatient') ) : ?>
-                <a href="/Genetics/subject/edit/<?php echo $model->id . '?patient=' . $model->patient_id; ?>&returnUri=<?php echo urlencode('/Genetics/subject/view/').$model->id; ?>" class="button small right" id="subject_edit">Edit</a>
+            <?php if ($this->checkAccess('OprnEditGeneticPatient')) : ?>
+                <a href="/Genetics/subject/edit/<?php echo $model->id . '?patient=' . $model->patient_id; ?>&returnUri=<?php echo urlencode('/Genetics/subject/view/') . $model->id; ?>" class="button small right" id="subject_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>
     <?php $this->widget('zii.widgets.CDetailView', array(
-        'data'=>$model,
-        'htmlOptions' => array('class'=>'detailview'),
-        'attributes'=>array(
+        'data' => $model,
+        'htmlOptions' => array('class' => 'standard'),
+        'attributes' => array(
             'id',
             array(
                 'label' => 'Name',
                 'type' => 'raw',
                 'value' => function () use ($model) {
-                    return CHTML::link($model->patient->getFullName(), '/patient/view/' . $model->patient->id);
+                    return CHTML::link($model->patient->getFullName(), '/patient/view/' . $model->patient->id, array('class' => 'blue hint'));
                 }
             ),
             array(
@@ -93,7 +94,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                     $html = '<ul>';
                     foreach ($model->relationships as $relationship) {
                         $html .= '<li>';
-                        $html .= '<a href="/patient/view/' . $relationship->relation->patient->id . '">'.$relationship->relation->patient->fullName.' </a>';
+                        $html .= '<a href="/patient/view/' . $relationship->relation->patient->id . '">' . $relationship->relation->patient->fullName . ' </a>';
                         $html .= ' is a ' . $relationship->relationship->relationship . ' to the patient.';
                         $html .= '</li>';
                     }
@@ -140,7 +141,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                         $html = '<ul>';
                         foreach ($model->previous_studies as $previous_study) {
                             $end_date = '-';
-                            if ( Helper::isValidDateTime($previous_study->end_date) ) {
+                            if (Helper::isValidDateTime($previous_study->end_date)) {
                                 $end_date_object = new DateTime($previous_study->end_date);
                                 $end_date = $end_date_object->format(Helper::NHS_DATE_FORMAT);
                             }

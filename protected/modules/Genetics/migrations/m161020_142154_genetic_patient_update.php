@@ -17,5 +17,4 @@ class m161020_142154_genetic_patient_update extends CDbMigration
         $this->dropForeignKey('genetics_patient_gender', 'genetics_patient');
         $this->dropColumn('genetics_patient', 'gender_id');
     }
-
 }

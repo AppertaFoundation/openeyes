@@ -11,7 +11,7 @@
                     </a>
                   <?php if (isset($pedigree_id)) : ?>
                     <span class="status"><i>(Status: <?= $subject->statusForPedigree($pedigree_id)?>)</i></span>
-                    <?php endif; ?>
+                  <?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>

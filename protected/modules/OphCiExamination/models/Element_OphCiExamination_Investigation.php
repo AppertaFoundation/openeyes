@@ -17,6 +17,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\widgets\Investigations as InvestigationsWidget;
 
 /**
  * This is the model class for table "et_ophciexamination_investigation".
@@ -26,12 +27,14 @@ namespace OEModule\OphCiExamination\models;
  * @property string $id
  * @property int $event_id
  * @property string $description
+ * @property OphCiExamination_Investigation_Entry[] $entries
  *
  * The followings are the available model relations:
  */
 class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+    protected $widgetClass = InvestigationsWidget::class;
     public $service;
     const ELEMENT_CHILDREN = [
         'Element_OphCiExamination_OCT',
@@ -64,12 +67,13 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('description', 'safe'),
+                array('event_id, description, entries','safe'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id, description, ', 'safe', 'on' => 'search'),
+                array('description, id, event_id ', 'safe', 'on' => 'search'),
         );
     }
+
 
     public function eventScopeValidation($elements)
     {
@@ -80,9 +84,26 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
             $elements
         );
 
-        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN)) && !$this->description) {
-            $this->addError('description', 'Description cannot be blank when there are no child elements');
+        foreach ($this->entries as $entry){
+            $date_validator = new \OEDateValidator();
+            if (!$this->validateTime($entry->time)){
+                $this->addError('time', 'Incorrect time format '.$entry->time.'.');
+            }
+            if (!$date_validator->validateValue($entry->date)){
+                $this->addError('date', 'Incorrect date format (Enter yyyy-mm-dd).');
+            }
         }
+
+    }
+
+    public function validateTime($time) {
+        if (!preg_match('/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]$/', $time)) {
+            if (!preg_match('/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]:[0-5][0-9]$/', $time)){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -97,6 +118,7 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
                 'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+                'entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Investigation_Entry', 'element_id'),
         );
     }
 
@@ -115,6 +137,32 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
     public function canCopy()
     {
         return true;
+    }
+
+    protected function beforeSave()
+    {
+        if($this->id !== null){
+            foreach (OphCiExamination_Investigation_Entry::model()->findAll('element_id=?', array($this->id)) as $investigation_entry){
+                $investigation_entry->delete();
+            }
+        }
+
+        return parent::beforeSave();
+    }
+
+    protected function afterSave()
+    {
+        foreach ($this->entries as $entry) {
+            $entry->element_id = $this->id;
+            $investigation_entry = new OphCiExamination_Investigation_Entry();
+            $investigation_entry->element_id = $entry->element_id;
+            $investigation_entry->comments = $entry->comments;
+            $investigation_entry->investigation_code = $entry->investigation_code;
+            $investigation_entry->date = $entry->date;
+            $investigation_entry->time = $entry->time;
+            $investigation_entry->save(true);
+        }
+        return parent::afterSave();
     }
 
     /**

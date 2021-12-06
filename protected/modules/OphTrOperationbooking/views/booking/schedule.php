@@ -13,6 +13,8 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var $firm_list Firm[]
  */
 ?>
 <?php $this->beginContent('//patient/event_container', array('no_face' => true));
@@ -113,7 +115,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
                                             <option value="">Select a different <?php echo Firm::model()->contextLabel()?></option>
                                             <option value="EMG">Emergency List</option>
                                             <?php foreach ($firm_list as $_firm) { ?>
-                                                <option value="<?=$_firm->id ?>"><?=$_firm->name ?></option>
+                                                <option value="<?=$_firm->id ?>"><?=$_firm->getNameAndSubspecialty() ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>

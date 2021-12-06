@@ -1,8 +1,0 @@
-{
-  "name": "openeyes/patient-ticketing",
-  "description": "Provides a generic ticketing system to track patients through multiple pathways",
-  "type": "openeyes-module",
-  "require": {
-    "openeyes/module-installer": "*"
-  }
-}

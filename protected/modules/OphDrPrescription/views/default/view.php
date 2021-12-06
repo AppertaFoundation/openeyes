@@ -32,17 +32,19 @@ if (!$elementEditable) {
     });
 }
 if (($Element->draft) && (!$elementEditable) && $editAccess) {
-    $this->event_actions[] = EventAction::button(
-        'Save as final',
-        'save',
-        array('level' => 'secondary'),
-        array(
-            'id' => 'et_save_final',
-            'class' => 'button small',
-            'type' => 'button',
-            'data-element' => $Element->id
-        )
-    );
+    if (!$Element->isSignedByMedication()) {
+        $this->event_actions[] = EventAction::button(
+            'Save as final',
+            'save',
+            array('level' => 'secondary'),
+            array(
+                'id' => 'et_save_final',
+                'class' => 'button small',
+                'type' => 'button',
+                'data-element' => $Element->id
+            )
+        );
+    }
 }
 
 if ($this->checkPrintAccess()) {
@@ -75,7 +77,7 @@ if (isset(Yii::app()->session['print_prescription'])) { ?>
         });
     </script>
 <?php } elseif (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
-?>
+    ?>
     <script>
         $(document).ready(function() {
             do_print_fpTen('<?= isset(Yii::app()->session['print_prescription_fp10']) ? 'FP10' : 'WP10' ?>');

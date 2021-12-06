@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,15 +15,18 @@
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        0 => array('TubeExtender', 'Patch', 'PI', 'Supramid', 'TubeLigation', 'ACMaintainer'),
+        0 => array('TubeExtender', 'Patch', 'PI', 'IntraluminalStent', 'TubeLigation', 'ACMaintainer'),
     ),
     'onReadyCommandArray' => array(
         array('addDoodle', array('AntSeg')),
         array('addDoodle', array('Tube')),
+        array('addDoodle', array('Patch')),
+        array('addDoodle', array('IntraluminalStent')),
         array('deselectDoodles', array()),
     ),
     'bindingArray' => array(
@@ -48,4 +52,3 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'scale' => 0.72,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
 ));
-?>

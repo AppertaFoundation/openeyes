@@ -29,6 +29,7 @@ class OphCiExamination_API extends \BaseAPI
 {
     use traits\VisualAcuity_API;
     use traits\Refraction_API;
+    use traits\AEShortcodes;
 
     const LEFT = 1;
     const RIGHT = 0;
@@ -183,7 +184,7 @@ class OphCiExamination_API extends \BaseAPI
     /**
      * @inheritdoc
      */
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null): array
     {
         return parent::getElements($this->namespaceElementName($element), $patient, $use_context, $before, $criteria);
     }
@@ -1043,6 +1044,26 @@ class OphCiExamination_API extends \BaseAPI
             return $va->getLetter_string();
         }
     }
+
+    /**
+     * @param $patient
+     * @param false $use_context
+     * @return string|null
+     */
+    public function getLetterAdviceGiven($patient, $use_context = false): ?string
+    {
+        $adg = $this->getElementFromLatestVisibleEvent(
+            'models\AdviceGiven',
+            $patient,
+            $use_context
+        );
+
+        if ($adg) {
+            return $adg->getLetter_string();
+        }
+        return null;
+    }
+
 
     /**
      * Get comments from Laser Management if the latest examination event contains
@@ -2146,6 +2167,21 @@ class OphCiExamination_API extends \BaseAPI
             }
         }
         return $str;
+    }
+
+    public function getLatestTriagePriority(\Patient $patient, $worklist, $use_context = false)
+    {
+        $ret = '';
+        $triage_elements = $this->getElements(
+            'models\Element_OphCiExamination_Triage',
+            $patient,
+            $use_context,
+        );
+        if (count($triage_elements) > 0) {
+            $priority = $triage_elements[0]->triage->priority;
+            $ret = "<i class=\"circle-{$priority->label_colour}\" data-tt-type=\"basic\" data-tooltip-content=\"Priority: {$priority->description}\"></i>";
+        }
+        return $ret;
     }
 
     public function getLatestOutcomeRiskStatus(\Patient $patient, $worklist, $use_context = false)
@@ -3388,5 +3424,50 @@ class OphCiExamination_API extends \BaseAPI
         </table>
 
         <?php return ob_get_clean();
+    }
+
+    /**
+     * Gets current (not stopped) medications
+     *
+     * Shortcode: mec
+     *
+     * @param Patient $patient
+     * @param false $use_context
+     * @return string
+     */
+    public function getCurrentMedications(\Patient $patient, $use_context = false): string
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient);
+        $entries = $element ? $element->getNotStoppedEntries() : [];
+
+        $text = '';
+        foreach ($entries as $entry) {
+            $text .= $entry->medication->preferred_term . ", started at " . \Helper::convertMySQL2NHS($entry->start_date) . "<br>";
+        }
+
+        return $text;
+    }
+
+    /**
+     * Gets all previous (stopped) medications
+     * Shortcode: mep
+     *
+     * @param Patient $patient
+     * @param false $use_context
+     * @return string
+     */
+    public function getPreviousMedications(\Patient $patient, $use_context = false): string
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient);
+        $entries = $element ? $element->getStoppedEntries() : [];
+
+        $text = '';
+        foreach ($entries as $entry) {
+            $text .= $entry->medication->preferred_term .
+                ", started at " . \Helper::convertMySQL2NHS($entry->start_date) .
+                " and ended at " .  \Helper::convertMySQL2NHS($entry->end_date) ."<br>";
+        }
+
+        return $text;
     }
 }

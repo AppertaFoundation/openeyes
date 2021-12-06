@@ -41,12 +41,12 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('box_id, letter, number', 'required'),
+            array('box_id, letter, number, display_order', 'required'),
             array('number', 'numerical', 'min' => 1),
             array('box_id','availabeStorage'),
             array('letter','letterValidation'),
             array('number','numberValidation'),
-            array('box_id, letter, number','safe'),
+            array('box_id, letter, number, display_order','safe'),
         );
     }
 
@@ -76,9 +76,9 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
     {
         $box = new OphInDnaextraction_DnaExtraction_Box();
         $boxRanges = $box->boxMaxValues($this->box_id);
-        
+
         $this->setNumberRange($boxRanges['maxnumber']);
-        
+
         if ( !in_array($this->number, $this->numberRange) ) {
             $this->addError($attribute, 'This number is larger than maximum value.');
         }
@@ -94,7 +94,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             ->from('ophindnaextraction_storage_address')
             ->where('box_id =:box_id and letter =:letter and number =:number', array(':box_id' => $this->box_id, ':letter' => $this->letter, ':number' => $this->number))
             ->queryScalar();
-        
+
         if ($availabeStorage) {
             $this->addError('Box', 'These parameters are already in use.');
         }
@@ -118,7 +118,20 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             'criteria' => $criteria,
         ));
     }
-    
+
+    /**
+     * calculate the appropriate default displayorder for this record.
+     *
+     * @return int
+     */
+    public function calculateDefaultDisplayOrder()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->order = 'display_order desc';
+        $criteria->limit = 1;
+        return ($order = self::model()->find($criteria)) ? $order->display_order + 1 : 1;
+    }
+
     public function relations()
     {
         return array(
@@ -129,16 +142,17 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             'extraction' => array(self::HAS_ONE, 'Element_OphInDnaextraction_DnaExtraction', 'storage_id'),
         );
     }
-    
-    
-    protected function beforeDelete(){
-       
-        if ($this->extraction != NULL) {
-            return FALSE;
+
+
+    protected function beforeDelete()
+    {
+
+        if ($this->extraction != null) {
+            return false;
         }
         return parent::beforeDelete();
     }
-    
+
     /*
      * Set letter range
      */
@@ -146,7 +160,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
     {
         $this->letterRange = range('A', $maxletter);
     }
-    
+
     /*
      * Set number range
      */
@@ -154,12 +168,12 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
     {
         $this->numberRange = range('1', $maxnumber);
     }
-    
+
     public function generateLetterArrays($box_id, $maxletter, $maxnumber)
     {
         $this->setLetterRange($maxletter);
         $this->setNumberRange($maxnumber);
-        
+
         $result = array();
         $i = 0;
         foreach ($this->letterRange as $letter) {
@@ -167,13 +181,13 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
                 $result[$i]['box_id'] = $box_id;
                 $result[$i]['letter'] = $letter;
                 $result[$i]['number'] = $number;
-                
+
                 $i++;
             }
         }
         return $result;
     }
-    
+
     public function getAllLetterNumberToBox($boxid)
     {
          $boxes = Yii::app()->db->createCommand()
@@ -182,15 +196,15 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             ->where('box_id =:box_id', array(':box_id' => $boxid))
             ->order('box_id ASC, letter ASC, number ASC')
             ->queryAll();
-        
+
         return $boxes;
     }
-    
-    
-    public function getAvailableCombinedList($id = NULL)
+
+
+    public function getAvailableCombinedList($id = null)
     {
         //if id not exits, it means event is create, so we need only available box - letter - number combinations
-        if ( $id == NULL) {
+        if ( $id == null) {
             $getAvailableBoxes = Yii::app()->db->createCommand()
                 ->select("opaddress.id, CONCAT(opbox.value,' - ',opaddress.letter,' - ',opaddress.number ) AS value")
                 ->from('ophindnaextraction_storage_address opaddress')
@@ -208,10 +222,10 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
                 ->order('opbox.value ASC, opaddress.letter ASC, opaddress.number ASC')
                 ->queryAll();
         }
-        
+
         return $getAvailableBoxes;
     }
-      
+
     public function attributeLabels()
     {
         return array(

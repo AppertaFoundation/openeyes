@@ -49,7 +49,8 @@ class HasRelationOptionsTest extends \OEDbTestCase
             ]
         ]);
 
-        HasRelationOptions_TestClass::clearCache();;
+        HasRelationOptions_TestClass::clearCache();
+        ;
     }
 
     public function createLookups($count = 1)
@@ -171,12 +172,12 @@ class HasRelationOptionsTest extends \OEDbTestCase
 
         $expected_cls = get_class($expected[0]);
 
-        $value_pks = array_map(function($instance) use ($expected_cls) {
+        $value_pks = array_map(function ($instance) use ($expected_cls) {
             $this->assertInstanceOf($expected_cls, $instance);
             return $instance->getPrimaryKey();
         }, $value);
 
-        $expected_pks = array_map(function($instance) {
+        $expected_pks = array_map(function ($instance) {
             return $instance->getPrimaryKey();
         }, $expected);
 
@@ -218,5 +219,4 @@ class HasRelationOptions_TestClass extends \BaseEventTypeElement
             'lookup' => [self::BELONGS_TO, HasRelationOptionsLookup_TestClass::class, 'lookup_id']
         ];
     }
-
 }

@@ -80,7 +80,7 @@ class OphTrOperationbookingModule extends BaseEventTypeModule
             $setting = $metadata->getSetting($metadata->key, null, true);
             $element_enabled = $setting->value;
         }
-        
+
         return isset($element_enabled) && $element_enabled == 'on';
     }
 

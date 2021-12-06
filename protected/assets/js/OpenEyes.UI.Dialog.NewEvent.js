@@ -422,8 +422,8 @@
             for (var i in self.contextsBySubspecialtyId[subspecialtyId]) {
                 var context = self.contextsBySubspecialtyId[subspecialtyId][i];
                 list += '<li class="step-2" data-context-id="' + context.id + '">' + context.name + '</li>';
-                
-                if(self.options.mode === 'ChangeContext' && parseInt(context.id) === self.options.currentFirm){
+
+                if (self.options.mode === 'ChangeContext' && parseInt(context.id) === self.options.currentFirm) {
                     contextListIdx = i;
                 } else if (contextListIdx === undefined && String(context.id) === defaultContextId) {
                     contextListIdx = i;
@@ -450,7 +450,7 @@
         var self = this;
         var selected = self.content.find('.step-2.selected');
         if (selected.length) {
-            if(self.options.mode === 'NewEvent'){
+            if (self.options.mode === 'NewEvent') {
                 let selectedSubspecialty = self.subspecialtiesById[self.content.find(selectors.subspecialtyItem + '.selected').data('subspecialtyId')];
                 if (selectedSubspecialty.supportServices) {
                     // Filter list based on whether Support Services is being chosen.
@@ -461,29 +461,36 @@
                     });
                 } else {
                     self.content.find(selectors.eventTypeItem).show();
-                }                
-            }else if(self.options.mode === 'ChangeContext' && (self.options.showSteps === false || self.options.workflowSteps[$(selected).data('context-id')] === undefined)){
+                }
+            } else if (self.options.mode === 'ChangeContext' && self.options.showSteps === false) {
                 $('.js-confirm-context-change').show();
             } else {
                 $('.js-confirm-context-change').hide();
             }
 
-            if(self.options.mode === 'ChangeContext'  && this.options.showSteps){
-                let list = '';
-                const workflowSteps = self.options.workflowSteps[selected.data('context-id')];
-                const currentWorkflowStep = self.options.currentStep;
-                let applySelectedClass = false;
-                if(workflowSteps !== undefined){
-                    for (let i = 0; i < workflowSteps.length; i++) {
-                        if((workflowSteps.length < currentWorkflowStep.position) && i === (workflowSteps.length-1)){
-                            applySelectedClass = true;
-                        } else {
-                            applySelectedClass = (workflowSteps[i].position === currentWorkflowStep.position);
+            if (self.options.mode === 'ChangeContext' && this.options.showSteps) {
+                self.content.find('#event-type-list').html('');
+                $.getJSON(
+                    '/ChangeEvent/findWorkflowSteps',
+                    {firm_id: selected.data('context-id'), event_id: OE_event_id},
+                    function (workflowSteps) {
+                        let list = '';
+                        if (workflowSteps.length > 0) {
+                            const currentWorkflowStep = self.options.currentStep;
+                            let applySelectedClass = false;
+                            for (let i = 0; i < workflowSteps.length; i++) {
+                                if ((workflowSteps.length < currentWorkflowStep.position) && i === (workflowSteps.length - 1)) {
+                                    applySelectedClass = true;
+                                } else {
+                                    applySelectedClass = (workflowSteps[i].position === currentWorkflowStep.position);
+                                }
+                                list += '<li class="oe-event-workflow-step step-3 ' + (applySelectedClass ? 'selected' : '') + '" data-workflow-id="' + workflowSteps[i].id + '">' + workflowSteps[i].name + '</li>';
+                            }
                         }
-                        list += '<li class="oe-event-workflow-step step-3 '+(applySelectedClass ? 'selected' : '')+'" data-workflow-id="' + workflowSteps[i].id + '">' + workflowSteps[i].name + '</li>';
+                        self.content.find('#event-type-list').html(list);
                     }
-                }
-                self.content.find('#event-type-list').html(list);
+                );
+
             }
             self.content.find('.step-event-types').css('visibility', 'visible');
 
@@ -536,51 +543,51 @@
         const selectedWorkflowStepItem = $(selectors.workflowStepItem).filter('.selected');
         const change_service = selectedSubspecialtyItem.find('.change-service');
 
-        if(selectedContextItem.length !== 0){
-         //   if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))) {
-                let postData = {
-                    YII_CSRF_TOKEN: YII_CSRF_TOKEN,
-                    eventId: OE_event_id,
-                    patientId: self.options.patientId,
-                    selectedContextId: selectedContextItem.data('context-id'),
-                    selected_firm_id: selectedSubspecialtyItem.data('service-id'),
-                    selectedWorkflowStepId: selectedWorkflowStepItem.data('workflow-id')
-                };
-                
-                if(newSubspecialty.length !== 0){
-                    postData.selected_firm_id = newSubspecialty.data('service-id');
-                }
+        if (selectedContextItem.length !== 0) {
+            //   if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))) {
+            let postData = {
+                YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+                eventId: OE_event_id,
+                patientId: self.options.patientId,
+                selectedContextId: selectedContextItem.data('context-id'),
+                selected_firm_id: selectedSubspecialtyItem.data('service-id'),
+                selectedWorkflowStepId: selectedWorkflowStepItem.data('workflow-id')
+            };
 
-                if (change_service.length > 0) {
-                    postData.change_service = change_service.children("option:selected"). val();
-                }
+            if (newSubspecialty.length !== 0) {
+                postData.selected_firm_id = newSubspecialty.data('service-id');
+            }
 
-                $('nav.event-header').append($('<div>', {"class": 'spinner-loader'}).append($('<i>', {"class": "spinner"})));
+            if (change_service.length > 0) {
+                postData.change_service = change_service.children("option:selected").val();
+            }
 
-                if (postData !== undefined) {
-                    $.post("/ChangeEvent/UpdateEpisode", postData, function(result) {
-                        if(result === "true"){
-                            $('.'+self.options.popupClass+' .close-icon-btn').trigger('click');
+            $('nav.event-header').append($('<div>', {"class": 'spinner-loader'}).append($('<i>', {"class": "spinner"})));
 
-                            $.post("/site/changesiteandfirm", {
-                                YII_CSRF_TOKEN: YII_CSRF_TOKEN,
-                                SiteAndFirmForm: {
-                                    'site_id': OE_site_id,
-                                    'firm_id': postData.selectedContextId
-                                },
+            if (postData !== undefined) {
+                $.post("/ChangeEvent/UpdateEpisode", postData, function (result) {
+                    if (result === "true") {
+                        $('.' + self.options.popupClass + ' .close-icon-btn').trigger('click');
 
-                            }, function() {
+                        $.post("/site/changesiteandfirm", {
+                            YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+                            SiteAndFirmForm: {
+                                'site_id': OE_site_id,
+                                'firm_id': postData.selectedContextId
+                            },
 
-                                if (typeof moduleName && moduleName === 'OphCiExamination') {
-                                    window.location.href = `/OphCiExamination/default/step/${OE_event_id}?patient_id=${OE_patient_id}&step_id=${postData.selectedWorkflowStepId}`;
-                                } else {
-                                    window.location.reload();
-                                }
-                            });
-                        }
-                    });
-                }
-           // }
+                        }, function () {
+
+                            if (typeof moduleName && moduleName === 'OphCiExamination') {
+                                window.location.href = `/OphCiExamination/default/step/${OE_event_id}?patient_id=${OE_patient_id}&step_id=${postData.selectedWorkflowStepId}`;
+                            } else {
+                                window.location.reload();
+                            }
+                        });
+                    }
+                });
+            }
+            // }
         }
     };
 

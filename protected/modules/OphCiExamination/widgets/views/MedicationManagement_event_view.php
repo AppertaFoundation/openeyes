@@ -67,7 +67,7 @@ foreach ($sections as $section => $methods) :
                             </th>
                         </tr>
                     </thead>
-                    
+
                         <tbody>
                         <?php
                         if (!empty($entries)) :
@@ -91,4 +91,57 @@ foreach ($sections as $section => $methods) :
             </div>
     <?php } ?>
 <?php endforeach; ?>
+    <div class="collapse-data">
+        <?php
+        if ($this->mode === $this::$EVENT_VIEW_MODE) {
+            $row = 0;
+            if (!empty($signatures = $element->getSignatures(true))) {
+                foreach ($signatures as $signature) {
+                    $this->widget(
+                        static::getWidgetClassByType($signature->type),
+                        [
+                            "row_id" => $row++,
+                            "element" => $element,
+                            "signature" => $signature,
+                        ]
+                    );
+                }
+            }
+        }
+
+        if ($this->mode === $this::$EVENT_PRINT_MODE) {
+            $signatures = $element->getSignatures();
+            if (count($signatures) > 0) {
+                foreach ($signatures as $signature) { ?>
+                <div class="box">
+                    <div class="flex">
+                        <div class="dotted-area">
+                            <div class="label">Signed</div>
+                            <?= $signature->getPrintout(); ?>
+                        </div>
+                        <div class="dotted-area">
+                            <div class="label">Date</div>
+                            <?= $signature->getSignedTime(); ?>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="dotted-area">
+                            <div class="label">Print name</div>
+                            <?= $signature->signatory_name ?>
+                        </div>
+                        <div class="dotted-area">
+                            <div class="label">Job title</div>
+                            <?= $signature->signatory_role ?>
+                        </div>
+                    </div>
+                </div>
+                <?php }
+            }
+        }
+        ?>
+    </div>
 </div>
+<script type="text/javascript">
+    sessionStorage.removeItem('mmesign_change');
+</script>
+

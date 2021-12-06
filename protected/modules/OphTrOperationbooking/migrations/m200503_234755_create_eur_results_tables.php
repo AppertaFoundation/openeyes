@@ -37,7 +37,6 @@ class m200503_234755_create_eur_results_tables extends OEMigration
             ),
             true
         );
-
     }
 
     public function down()
@@ -45,5 +44,4 @@ class m200503_234755_create_eur_results_tables extends OEMigration
         $this->dropOEtable('eur_answer_results', true);
         $this->dropOEtable('eur_event_results', true);
     }
-
 }

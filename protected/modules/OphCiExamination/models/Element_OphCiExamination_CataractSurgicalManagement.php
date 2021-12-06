@@ -178,13 +178,13 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
 
     public function getFormattedTargetRefraction($side)
     {
-        $raw_target_refraction = (String)$this->{$side . '_target_postop_refraction'};
+        $raw_target_refraction = (string)$this->{$side . '_target_postop_refraction'};
         $is_zero = $raw_target_refraction === '0.00';
         $index = 0;
         $output = '';
         if (!in_array($raw_target_refraction{$index}, ['-', '+']) && !$is_zero) {
             $output .= '+';
-        } else if (in_array($raw_target_refraction{$index}, ['-', '+'])) {
+        } elseif (in_array($raw_target_refraction{$index}, ['-', '+'])) {
             $output .= $raw_target_refraction{$index++};
         }
         if ($raw_target_refraction{$index + 1} === '.') {
@@ -267,8 +267,8 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
 
     public function __toString()
     {
-        $right_description = ($this->eye_id !== (String)self::LEFT) ? $this->rightEye->name . ' target post-op: ' . $this->right_target_postop_refraction . ' ' : '';
-        $left_description = ($this->eye_id !== (String)self::RIGHT) ? $this->leftEye->name . ' target post-op: ' . $this->left_target_postop_refraction : '';
+        $right_description = ($this->eye_id !== (string)self::LEFT) ? $this->rightEye->name . ' target post-op: ' . $this->right_target_postop_refraction . ' ' : '';
+        $left_description = ($this->eye_id !== (string)self::RIGHT) ? $this->leftEye->name . ' target post-op: ' . $this->left_target_postop_refraction : '';
         return $right_description . $left_description;
     }
 }

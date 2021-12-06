@@ -11,7 +11,7 @@ class m200130_044814_add_logos_to_site extends OEMigration
             'secondary_logo' => 'mediumblob',
             'parent_logo' => 'integer'
         ));
-        
+
         // Adding column to sites to save foreign key relationship
         $this->addOEColumn('site', 'logo_id', 'integer', true);
 
@@ -20,7 +20,7 @@ class m200130_044814_add_logos_to_site extends OEMigration
 
         // Adding column to institution to save foreign key relationship
         $this->addOEColumn('institution', 'logo_id', 'integer', true);
-        
+
         // Adding foreign key to institution
         $this->addForeignKey('institution_logo_id_fk', 'site', 'logo_id', 'site_logo', 'id');
 
@@ -38,7 +38,7 @@ class m200130_044814_add_logos_to_site extends OEMigration
                 $logos['secondaryLogo'] = $image_path;
             }
         }
-        
+
         $primaryLogo = null;
         $secondaryLogo =null;
         if (array_key_exists('primaryLogo', $logos)) {
@@ -67,7 +67,7 @@ class m200130_044814_add_logos_to_site extends OEMigration
 
         // Dropping column from institutions that save foreign key relationship
         $this->dropOEColumn('institution', 'logo_id', true);
-        
+
         // Dropping Table
         $this->dropOETable('site_logo');
     }

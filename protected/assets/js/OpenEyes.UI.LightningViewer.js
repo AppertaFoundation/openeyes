@@ -14,6 +14,9 @@
 
     this.optionsDisplayed = false;
     this.currentPreview = null;
+    this.sendImageUrlAjaxRequest = true;
+
+    this.previewWidth = $('.js-lightning-view-overlay').width();
 
     this.create();
   }
@@ -105,12 +108,37 @@
   };
 
   LightningViewer.prototype.changePreview = function (event_id) {
+      const self = this;
+
     if (this.currentEventId === event_id) {
       return;
     }
 
     this.currentEventId = event_id;
     this.currentPreview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
+    if (this.currentPreview.children(".no-lightning-image").length && this.sendImageUrlAjaxRequest) {
+        $.ajax({
+            type: 'GET',
+            url: '/eventImage/GetImageInfo',
+            data: {'event_id': event_id},
+            'beforeSend': function () {
+                self.sendImageUrlAjaxRequest = false;
+            },
+            'success': function (response) {
+                self.setEventImages(event_id, response);
+                $('.spinner').hide();
+            },
+            'complete': function () {
+                self.sendImageUrlAjaxRequest = true;
+                self.showPage(self.currentPreview);
+            },
+            'error': function () {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Unable to generate a view at this time, please contact your administrator."
+                }).open();
+            }
+        });
+    }
 
     $('.js-lightning-image-preview').hide();
     this.currentPreview.show();
@@ -119,17 +147,44 @@
     $meta.find('.js-lightning-preview-type').text(this.currentPreview.data('preview-type'));
     $meta.find('.js-lightning-date').html(this.currentPreview.data('date'));
 
-    if (this.currentPreview.data('paged')) {
-      this.currentPreview.find('.js-lightning-image-preview-page').hide();
-      this.showImage(this.currentPreview.find('.js-lightning-image-preview-page').first());
-    } else {
-      this.showImage(this.currentPreview.find('.js-lightning-image-preview-page'));
-    }
+    this.showPage(this.currentPreview);
   };
+
+  LightningViewer.prototype.showPage = function ($currentPreview) {
+        if ($currentPreview.data('paged')) {
+            $currentPreview.find('.js-lightning-image-preview-page').hide();
+            this.showImage($currentPreview.find('.js-lightning-image-preview-page').first());
+        } else {
+            this.showImage($currentPreview.find('.js-lightning-image-preview-page'));
+        }
+    };
 
   LightningViewer.prototype.showImage = function ($image) {
     $('.js-preview-image-loader').toggle(!$image.data('loaded'));
     $image.toggle($image.data('loaded'));
+  };
+
+  LightningViewer.prototype.setEventImages = function (event_id, response) {
+      let $currentPreview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
+      for (let i = 0; i < response.page_count; i++) {
+          let url = response.url;
+          if (response.page_count > 1) {
+              url += '&page=' + i;
+          }
+          let previewImage = '<div class="js-lightning-image-preview-page" ' +
+              'data-loaded="true" ' +
+              'data-src="' + url + '" ' +
+              'data-page-number="' + i + '" ' +
+              'style="max-width:' + this.previewWidth + 'px; display: none;">' +
+              '<img src="' + url +'" style="width:800px">' +
+              '</div>';
+          $currentPreview.append(previewImage);
+      }
+      $currentPreview.attr('data-image-count', response.page_count);
+      if (response.page_count > 1) {
+          $currentPreview.data('paged', 1);
+      }
+      $currentPreview.find('.no-lightning-image').remove();
   };
 
   LightningViewer.prototype.changePreviewPage = function (page) {

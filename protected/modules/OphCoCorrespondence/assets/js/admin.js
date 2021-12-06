@@ -4,23 +4,11 @@ $(document).ready(function() {
 		updateMacroList(0);
 	});
 
-	$('#site_id').change(function() {
+	$('#site_id, #institution_id, #subspecialty_id, #firm_id').change(function() {
 		updateMacroList(0);
 	});
 
-	$('#subspecialty_id').change(function() {
-		updateMacroList(0);
-	});
-
-	$('#firm_id').change(function() {
-		updateMacroList(0);
-	});
-
-	$('#name').change(function() {
-		updateMacroList(1);
-	});
-
-	$('#episode_status_id').change(function() {
+	$('#name, #episode_status_id').change(function() {
 		updateMacroList(1);
 	});
 
@@ -295,7 +283,16 @@ function updateMacroList(preserve)
 
 	$.ajax({
 		'type': 'GET',
-		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacros?type=' + $('#type').val() + '&site_id=' + $('#site_id').val() + '&subspecialty_id=' + $('#subspecialty_id').val() + '&firm_id=' + $('#firm_id').val() + '&name=' + name + '&episode_status_id=' + episode_status_id,
+		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacros',
+		data: {
+			type: $('#type').val(),
+			institution_id: document.getElementById('institution_id').value,
+			site_id: $('#site_id').val(),
+			subspecialty_id: $('#subspecialty_id').val(),
+			firm_id: $('#firm_id').val(),
+			name: name,
+			episode_status_id: episode_status_id
+		},
 		'success': function(html) {
 			$('#admin_letter_macros tbody').html(html);
 		}
@@ -303,7 +300,14 @@ function updateMacroList(preserve)
 
 	$.ajax({
 		'type': 'GET',
-		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacroNames?type=' + $('#type').val() + '&site_id=' + $('#site_id').val() + '&subspecialty_id=' + $('#subspecialty_id').val() + '&firm_id=' + $('#firm_id').val(),
+		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacroNames',
+		data: {
+			type: $('#type').val(),
+			institution_id: document.getElementById('institution_id').value,
+			site_id: $('#site_id').val(),
+			subspecialty_id: $('#subspecialty_id').val(),
+			firm_id: $('#firm_id').val()
+		},
 		'success': function(html) {
 			$('#name').html(html);
 
@@ -315,7 +319,14 @@ function updateMacroList(preserve)
 
 	$.ajax({
 		'type': 'GET',
-		'url': baseUrl + '/OphCoCorrespondence/admin/filterEpisodeStatuses?type=' + $('#type').val() + '&site_id=' + $('#site_id').val() + '&subspecialty_id=' + $('#subspecialty_id').val() + '&firm_id=' + $('#firm_id').val(),
+		'url': baseUrl + '/OphCoCorrespondence/admin/filterEpisodeStatuses',
+		data: {
+			type: $('#type').val(),
+			institution_id: document.getElementById('institution_id').value,
+			site_id: $('#site_id').val(),
+			subspecialty_id: $('#subspecialty_id').val(),
+			firm_id: $('#firm_id').val()
+		},
 		'success': function(html) {
 			$('#episode_status_id').html(html);
 

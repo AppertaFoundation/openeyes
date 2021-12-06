@@ -1,3 +1,10 @@
+<?php
+$selected_firm_id = Yii::app()->session['selected_firm_id'];
+$selected_subspecialty_id = $element->to_subspecialty_id != "" ?
+    $element->to_subspecialty_id :
+    \Firm::model()->findByPk($selected_firm_id)->getSubspecialtyID();
+?>
+
 <div class="required internal-referral-section">
     <hr class="divider"/>
     <h3>Internal Referral to:</h3>
@@ -12,9 +19,7 @@
                 <td>Service</td>
                 <td>
                     <?php
-                    $element->to_subspecialty_id = $element->to_subspecialty_id != "" ?
-                        $element->to_subspecialty_id :
-                        \Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->getSubspecialtyID();
+                    $element->to_subspecialty_id = $selected_subspecialty_id;
 
                     $criteria = new CDbCriteria();
                     $criteria->with = ['serviceSubspecialtyAssignment' =>
@@ -31,10 +36,31 @@
             <tr>
                 <td><?= Firm::contextLabel() ?></td>
                 <td>
+                    <?php
+                    $criteria = new CDbCriteria();
+                    $criteria->join .= "JOIN service_subspecialty_assignment ssa ON t.service_subspecialty_assignment_id = ssa.id";
+                    $criteria->addCondition("ssa.subspecialty_id = :subspecialty_id");
+
+                    if (SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on')) {
+                        $criteria->addCondition("t.can_own_an_episode = 1");
+                    }
+
+                    $criteria->params = array(":subspecialty_id" => $selected_subspecialty_id);
+
+                    $applicable_firms = Firm::model()->findAll($criteria);
+
+                    $applicable_firm_display_list = [];
+
+                    foreach ($applicable_firms as $firm) {
+                        $firm_subspecialty_name = $firm->serviceSubspecialtyAssignment->subspecialty->name;
+                        $applicable_firm_display_list[$firm->id] = $firm->name . " (${firm_subspecialty_name})";
+                    }
+                    ?>
+
                     <?=\CHtml::activeDropDownList(
                         $element,
                         "to_firm_id",
-                        Firm::model()->getListWithSpecialties(),
+                        $applicable_firm_display_list,
                         array('empty' => '- None -', 'class' => 'cols-full')
                     ) ?>
                 </td>

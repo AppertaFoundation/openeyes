@@ -1,17 +1,16 @@
 <?php
+
 /**
- * OpenEyes
- *
- * (C) OpenEyes Foundation, 2019
+ * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -28,6 +27,14 @@ namespace OEModule\OphCoCvi\models;
  * @property string last_modified_date
  * @property integer $site_id
  *
+ * @property int $gp_delivery
+ * @property int $la_delivery
+ * @property int $rco_delivery
+ *
+ * @property string $gp_delivery_status
+ * @property string $la_delivery_status
+ * @property string $rco_delivery_status
+ *
  * The followings are the available model relations:
  *
  * @property \ElementType $element_type
@@ -41,10 +48,16 @@ namespace OEModule\OphCoCvi\models;
  * @property Element_OphCoCvi_ClericalInfo $clerical_element
  * @property Element_OphCoCvi_ConsentSignature $consent_element
  * @property Element_OphCoCvi_Demographics $demographics_element
+ * @property \Firm $consultantInChargeOfThisCvi
  */
 
 class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
 {
+    const DELIVERY_STATUS_PENDING = "PENDING";
+    const DELIVERY_STATUS_SENT = "SENT";
+    const DELIVERY_STATUS_ERROR = "ERROR";
+
+    private $defaultScopeDisabled = false;
     /**
      * Returns the static model of the specified AR class.
      * @return the static model class
@@ -83,12 +96,24 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
     }
 
     /**
+     * Turn off the default scope
+     *
+     * @return $this
+     */
+    public function disableDefaultScope(): \BaseActiveRecord
+    {
+        $this->defaultScopeDisabled = true;
+
+        return $this;
+    }
+
+    /**
      * @return array validation rules for model attributes.
      */
     public function rules()
     {
         return array(
-            array('event_id, is_draft, generated_document_id, site_id', 'safe'),
+            array('event_id, is_draft, generated_document_id, site_id, consultant_in_charge_of_this_cvi_id', 'safe'),
             array('id, event_id, is_draft, generated_document_id, ', 'safe', 'on' => 'search'),
         );
     }
@@ -126,20 +151,32 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
                 array('id' => 'event_id'),
                 'through' => 'clerical_event'
             ),
-            'consent_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'consent_element' => array(
-                self::HAS_ONE,
-                'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature',
-                array('id' => 'event_id'),
-                'through' => 'consent_event'
-            ),
             'demographics_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'demographics_element' => array(
                 self::HAS_ONE,
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics',
                 array('id' => 'event_id'),
                 'through' => 'demographics_event'
-            )
+            ),
+            'consultantInChargeOfThisCvi' => array(self::BELONGS_TO, 'Firm', 'consultant_in_charge_of_this_cvi_id'),
+            'consultant_event'  => array(self::BELONGS_TO, 'Event', 'event_id'),
+
+            'esign_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'esign_element' => array(
+                self::HAS_ONE,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign',
+                array('id' => 'event_id'),
+                'through' => 'esign_event'
+            ),
+            'consent_event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'consent_element' => array(
+                self::HAS_ONE,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_Consent',
+                array('id' => 'event_id'),
+                'through' => 'consent_event'
+            ),
+
+
         );
     }
 
@@ -154,6 +191,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
             'is_draft' => 'Is draft',
             'generated_document_id' => 'Generated file',
             'site_id' => 'Site',
+            'consultant_in_charge_of_this_cvi_id' => 'Consultant in charge of this CVI',
         );
     }
 
@@ -163,7 +201,7 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
      */
     public function search()
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
@@ -173,18 +211,6 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
-    }
-
-    public function patientCviCount($patient_id)
-    {
-        $criteria = new \CDbCriteria;
-        $criteria->select = 't.id,t.event_id';
-        $criteria->join = 'join event on event.id = t.event_id ';
-        $criteria->join .= 'join episode on event.episode_id = episode.id';
-        $criteria->condition = 'episode.patient_id = :patient_id';
-        $criteria->params = array(':patient_id' => $patient_id);
-        $cvis = Element_OphCoCvi_EventInfo::model()->findAll($criteria);
-        return $cvis;
     }
 
     /**
@@ -208,6 +234,9 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
         if ($this->is_draft) {
             return $this->event->info ? $this->event->info : 'Draft';
         }
+        if ($this->event->info !== null) {
+            return $this->event->info;
+        }
         return 'Issued';
     }
 
@@ -221,5 +250,49 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
         return $result;
     }
 
-    public $useContainerView = false;
+    /**
+     * @return string
+     */
+    public function getConsultantSignature()
+    {
+        foreach ($this->esign_element->getSignatures() as $signature) {
+            if ((int)$signature->type === \BaseSignature::TYPE_LOGGEDIN_USER) {
+                return file_get_contents($signature->signatureFile->getPath());
+            }
+        }
+    }
+
+    public function getSignatureByType(int $type): ?\OphCoCvi_Signature
+    {
+        foreach ($this->esign_element->getSignatures() as $signature) {
+            if ((int)$signature->type === $type && $signature->signatureFile) {
+                return $signature;
+            }
+        }
+
+        return null;
+    }
+
+    /*
+     * Get elements for CVI PDF
+     *
+     * @return array
+     */
+    public function getElementsForCVIpdf()
+    {
+        $siteAddress1 = '';
+        $siteAddress2 = '';
+        if ($this->site) {
+            $siteAddress1 = str_replace(array("\n","\r"), ' ', $this->site->contact->address->address1);
+            $siteAddress2 = $this->site->contact->address->city . ' ' . $this->site->contact->address->postcode;
+        }
+
+        $elements = [
+            'consultantSignature' => $this->getConsultantSignature(),
+            'Hospital_address1' => $siteAddress1,
+            'Hospital_address2' => $siteAddress2,
+        ];
+
+        return $elements;
+    }
 }

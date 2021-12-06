@@ -20,7 +20,7 @@
 <div class="box admin">
     <h2>Sample Search</h2>
 
-    <div class="search-form">
+    <table class="standard">
         <?php $form=$this->beginWidget('BaseEventTypeCActiveForm', array(
             'action' => Yii::app()->createUrl('/OphInDnasample/search/DnaSample'),
             'method' => 'GET',
@@ -29,32 +29,33 @@
             'enableAjaxValidation' => false,
         )); ?>
         <input type="hidden" value="search" name="search">
-        <div>
-            <div>
+        <tr class="standard">
+            <td>
                 <?=\CHtml::textField('sample_id', @$_GET['sample_id'], array('placeholder' => 'Sample Id'))?>
-            </div>
+            </td>
 
-            <div>
+            <td>
                 <?=\CHtml::textField('genetics_patient_id', @$_GET['genetics_patient_id'], array('placeholder' => 'Subject Id'))?>
-            </div>
-            <div>
+            </td>
+            <td>
                 <?=\CHtml::textField('genetics_pedigree_id', @$_GET['genetics_pedigree_id'], array('placeholder' => 'Family Id'))?>
-            </div>
-            <div></div>
-            <div>
+            </td>
+            <td>
                 <?=\CHtml::textField('hos_num', @$_GET['hos_num'], array('placeholder' => 'Hospital Number'))?>
-            </div>
-            <div>
+            </td>
+            <td>
                 <?=\CHtml::textField('first_name', @$_GET['first_name'], array('placeholder' => 'First Name'))?>
-            </div>
-            <div>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <?=\CHtml::textField('last_name', @$_GET['last_name'], array('placeholder' => 'Last Name'))?>
-            </div>
-            <div>
+            </td>
+            <td>
                 <?=\CHtml::textField('maiden_name', @$_GET['maiden_name'], array('placeholder' => 'Maiden Name'))?>
-            </div>
+            </td>
 
-            <div>
+            <td>
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'name' => 'date-from',
                     'id' => 'date-from',
@@ -67,8 +68,8 @@
                     ),
                     'value' => @$_GET['date-from'],
                 ))?>
-            </div>
-            <div>
+            </td>
+            <td>
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'name' => 'date-to',
                     'id' => 'date-to',
@@ -82,46 +83,51 @@
                     ),
                     'value' => @$_GET['date-to'],
                 ))?>
-            </div>
-            <div>
+            </td>
+            <td>
                 <?=\CHtml::textField('comment', @$_GET['comment'], array('placeholder' => 'Comments'))?>
-            </div>
-            <div style="font-size:12px;">
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:12px;">
                 Sample Type:
                 <?=\CHtml::dropDownList(
                     'sample-type',
                     @$_GET['sample-type'],
                     CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-                    array('empty' => '- All -','style' => 'width:64%')
+                    array('empty' => '- All -')
                 )?>
-            </div>
+            </td>
 
             <?php $this->endWidget(); ?>
-        </div>
-
-        <?php  $form->widget('application.widgets.DiagnosisSelection', array(
-            'value' => @$_GET['disorder-id'],
-            'field' => 'principal_diagnosis',
-            'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-            'layoutColumns' => array(
-                'label' => $form->layoutColumns['label'],
-                'field' => 4,
-            ),
-            'default' => false,
-            'allowClear' => true,
-            'htmlOptions' => array(
-                'fieldLabel' => 'Principal diagnosis',
-            ),
-            'form' => $form
-        )); ?>
-
-        <div>
-            <div>
-                <div class="submit-row text-right" style="margin-left:auto">
-                    <?=\CHtml::submitButton('Search', ['class' => 'button small primary event-action', 'id' => 'search_dna_sample', 'form' => 'generic-search-form']); ?>
-                </div>
-            </div>
-        </div>
+        </tr>
+        <tr>
+            <td>
+                <?php  $form->widget('application.widgets.DiagnosisSelection', array(
+                    'value' => @$_GET['disorder-id'],
+                    'field' => 'principal_diagnosis',
+                    'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                    'layoutColumns' => array(
+                        'label' => $form->layoutColumns['label'],
+                        'field' => 4,
+                    ),
+                    'default' => false,
+                    'allowClear' => true,
+                    'htmlOptions' => array(
+                        'fieldLabel' => 'Principal diagnosis',
+                    ),
+                    'form' => $form
+                )); ?>
+            </td>
+                <td>
+                    <div>
+                        <div class="submit-row text-right" style="margin-left:auto">
+                            <?=\CHtml::submitButton('Search', ['class' => 'button small primary event-action blue hint', 'id' => 'search_dna_sample', 'form' => 'generic-search-form']); ?>
+                        </div>
+                    </div>
+                </td>
+        </tr>
+    </table>
 
     <h2>DNA samples</h2>
 
@@ -172,9 +178,11 @@
                             <td>
                                 <?php
                                     $pedigree_html = '';
-                                foreach ($genetics_pateint->pedigrees as $pedigree) {
-                                    $pedigree_html .= empty($pedigree_html) ? '' : ', ';
-                                    $pedigree_html .= CHtml::link($pedigree->id, '/Genetics/pedigree/view/' . $pedigree->id);
+                                if (isset($genetics_pateint)) {
+                                    foreach ($genetics_pateint->pedigrees as $pedigree) {
+                                        $pedigree_html .= empty($pedigree_html) ? '' : ', ';
+                                        $pedigree_html .= CHtml::link($pedigree->id, '/Genetics/pedigree/view/' . $pedigree->id);
+                                    }
                                 }
 
                                     echo $pedigree_html;

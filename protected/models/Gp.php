@@ -276,4 +276,28 @@ class Gp extends BaseActiveRecordVersioned
         }
         return '';
     }
+
+    /**
+     * GET GP postcode
+     * @param type $params
+     * @return type
+     * @throws Exception
+     */
+    public function getGPPostcode($params = [])
+    {
+        if (!isset($params['patient'])) {
+            throw new Exception('Patient must be passed for GP contacts.');
+        }
+
+        if ($params['patient']->practice) {
+            if (@$params['contact']) {
+                $contactRelation = $params['contact'];
+                $contact = $params['patient']->practice->$contactRelation;
+            } else {
+                $contact = $params['patient']->practice->contact;
+            }
+
+            return !is_null($contact) && isset($contact->address) ? $contact->address->postcode : '';
+        }
+    }
 }

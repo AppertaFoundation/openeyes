@@ -226,16 +226,6 @@
                         </tr>
                     <?php endif ?>
 
-                    <?php if ($element->preassessment_booking_required !== null) : ?>
-                        <tr>
-                            <td>
-                                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></div>
-                            </td>
-                            <td>
-                                <div class="data-value"><?= $element->preassessment_booking_required ? 'Yes' : 'No' ?></div>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
                     </tbody>
                 </table>
             </div>

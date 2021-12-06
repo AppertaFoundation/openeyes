@@ -89,6 +89,15 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
         );
     }
 
+    protected function beforeSave()
+    {
+        if (!$this->booking_event_id) {
+            $this->booking_event_id = null;
+        }
+
+        return parent::beforeSave();
+    }
+
     /**
      * @return array customized attribute labels (name=>label)
      */

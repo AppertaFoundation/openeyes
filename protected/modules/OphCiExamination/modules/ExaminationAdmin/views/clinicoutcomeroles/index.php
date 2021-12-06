@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -12,10 +13,11 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <h2>Clinic Outcome Roles</h2>
 <?php $this->renderPartial('//base/_messages') ?>
-<div class="cols-5">
+<div class="cols-full">
     <form id="admin_clinicoutcomeroles">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <input type="hidden" name="page" value="1">

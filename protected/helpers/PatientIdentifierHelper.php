@@ -302,4 +302,19 @@ class PatientIdentifierHelper
         $global_institution_id = \PatientIdentifierHelper::getGlobalInstitutionIdFromSetting();
         return \PatientIdentifierHelper::getPatientIdentifierType("GLOBAL", $global_institution_id);
     }
+
+    /**
+     * Retrieve an identifier for a Patient by identifier type
+     *
+     * @param int $patient_id
+     * @param PatientIdentifierType $id_type
+     * @return PatientIdentifier|null
+     */
+    public static function getPatientIdentifierByType(int $patient_id, PatientIdentifierType $patient_identifier_type): ?PatientIdentifier
+    {
+        return PatientIdentifier::model()->findByAttributes([
+            "patient_id" => $patient_id,
+            "patient_identifier_type_id" => $patient_identifier_type->id
+        ]);
+    }
 }

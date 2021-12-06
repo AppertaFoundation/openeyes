@@ -337,7 +337,7 @@ if (!empty($this->assessments)) {
                                 'id' => $assessment->id
                             ];
                     }, $this->assessments)
-                ) ?>,
+                                                               ) ?>,
                     {'multiSelect': true}
                 ),
                 ],

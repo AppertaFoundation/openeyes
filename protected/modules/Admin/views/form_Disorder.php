@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -12,9 +13,10 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<div class="cols-5">
+<div class="cols-full">
     <div class="row divider">
         <h2><?php echo $title ?></h2>
     </div>
@@ -22,7 +24,7 @@
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-3">
-            <col class="cols-5">
+            <col class="cols-full">
         </colgroup>
         <tbody>
         <tr>
@@ -87,6 +89,26 @@
                         'specialty.name'
                     ),
                     ['empty' => 'None', 'class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>ECDS Code</td>
+            <td>
+                <?= \CHtml::activeTextArea(
+                    $model,
+                    'ecds_code',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>ECDS Term</td>
+            <td>
+                <?= \CHtml::activeTextArea(
+                    $model,
+                    'ecds_term',
+                    ['class' => 'cols-full']
                 ); ?>
             </td>
         </tr>

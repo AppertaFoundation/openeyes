@@ -184,7 +184,7 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
 
         parent::afterConstruct();
     }
-    
+
     public function getPrint_view()
     {
         return 'print_'.$this->getDefaultView();

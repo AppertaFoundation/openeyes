@@ -58,7 +58,7 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('name', 'required'),
+                array('name, institution_id', 'required'),
                 array('id, name, institution_id', 'safe', 'on' => 'search'),
         );
     }

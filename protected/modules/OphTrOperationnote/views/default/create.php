@@ -51,8 +51,9 @@ $this->event_actions[] = EventAction::button(
   </div>
 <?php } ?>
 
-<?php $this->renderOpenElements($this->action->id, $form); ?>
-<?php $this->renderOptionalElements($this->action->id, $form); ?>
+<?php $outpatient_minor_op = isset($outpatient_minor_op) ? $outpatient_minor_op : false ?>
+<?php $this->renderOpenElements($this->action->id, $form, array('outpatient_minor_op' => $outpatient_minor_op)); ?>
+<?php $this->renderOptionalElements($this->action->id, $form, array('outpatient_minor_op' => $outpatient_minor_op)); ?>
 <?php $this->displayErrors($errors, true) ?>
 
 <?php $this->endWidget(); ?>

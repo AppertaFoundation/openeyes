@@ -1,17 +1,15 @@
 <?php
 /**
- * OpenEyes
- *
- * (C) OpenEyes Foundation, 2019
+ * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -25,7 +23,7 @@ namespace OEModule\OphCoCvi\models;
  * @property integer $event_id
  * @property string $examination_date
  * @property integer $is_considered_blind
- * @property integer $sight_varies_by_light_levels
+ * @property integer $information_booklet
  * @property string $unaided_right_va
  * @property string $unaided_left_va
  * @property string $best_corrected_right_va
@@ -52,13 +50,35 @@ namespace OEModule\OphCoCvi\models;
  * @property Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments[] $cvi_disorder_section_comments
  * @property \User $consultant
  * @property \ProtectedFile $consultant_signature
+ * @property  $main_cause_pdf_id ID radio button of in original cvi pdf - see more: pdtfk->getDataFields()
  */
 
+use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
+
+/**
+ * @property array|mixed|null inactive_cvi_disorders
+ */
 class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 {
+
     public static $BLIND_STATUS = 'Severely Sight Impaired';
     public static $NOT_BLIND_STATUS = 'Sight Impaired';
-    public static $NULL_BOOLEAN = '-';
+    public static $NULL_BOOLEAN = 'Not recorded';
+    const CVI_TYPE_ADULT = 0;
+    const CVI_TYPE_CHILD = 1;
+    const VISUAL_ACUITY_TYPE_SNELLEN = 1;
+    const VISUAL_ACUITY_TYPE_LOGMAR = 2;
+
+    private $mainCause = "Off";
+
+    /*
+     * This variables needs to the CVI Manager
+     */
+    public $centralVisualPathwayProblemsQuiestionID = 0;
+    public $anophtalmosMicrophthalmosQuiestionID = 0;
+    public $disorganisedGlobePhthisisQuiestionID = 0;
+    public $primaryCongenitalInfantileGlaucomaQuiestionID = 0;
+
     /**
      * Returns the static model of the specified AR class.
      * @return the static model class
@@ -82,24 +102,24 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     public function rules()
     {
         return array(
-            array(
-                'event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, consultant_signature_file_id ',
+            array(//low_vision_status_id?
+                'best_recorded_right_va,best_recorded_left_va,best_recorded_binocular_va,patient_type,field_of_vision,low_vision_service,best_corrected_left_va_list,best_corrected_right_va_list,best_corrected_binocular_va_list, event_id, examination_date, is_considered_blind, information_booklet, eclo, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va,field_of_vision_id, diagnoses_not_covered, consultant_id, consultant_signature_file_id, main_cause_pdf_id ',
                 'safe'
             ),
             array('examination_date', 'OEDateValidatorNotFuture'),
-            array('is_considered_blind', 'boolean'),
+            array('patient_type,is_considered_blind', 'boolean'),
             array(
-                'unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va',
+                'best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va',
                 'length',
                 'max' => 20
             ),
-            array(
-                'examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id',
+            array( //low_vision_status_id?
+                'patient_type,examination_date, is_considered_blind, information_booklet, eclo, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, best_corrected_right_va_list',
                 'required',
                 'on' => 'finalise'
             ),
-            array(
-                'id, event_id, examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id, diagnoses_not_covered, consultant_id, ',
+            array(//low_vision_status_id?
+                'id, patient_type,event_id, examination_date, is_considered_blind, information_booklet, eclo, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, field_of_vision_id, diagnoses_not_covered, consultant_id, ',
                 'safe',
                 'on' => 'search'
             ),
@@ -122,15 +142,15 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'low_vision_status' => array(
-                self::BELONGS_TO,
-                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus',
-                'low_vision_status_id'
-            ),
             'field_of_vision' => array(
                 self::BELONGS_TO,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision',
                 'field_of_vision_id'
+            ),
+            'diagnosis_not_covered' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered',
+                'element_id'
             ),
             'cvi_disorder_assignments' => array(
                 self::HAS_MANY,
@@ -149,12 +169,32 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'element_id',
                 'on' => 'right_cvi_disorder_assignments.eye_id = ' . \Eye::RIGHT
             ),
+            'main_cause_cvi_disorder_assignment' => array(
+                self::HAS_ONE,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
+                'element_id',
+                'on' => 'main_cause_cvi_disorder_assignment.eye_id = ' . \Eye::RIGHT . ' AND main_cause_cvi_disorder_assignment.main_cause = 1'
+            ),
+            'both_cvi_disorder_assignments' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment',
+                'element_id',
+                'on' => 'both_cvi_disorder_assignments.eye_id = ' . \Eye::BOTH
+            ),
             'cvi_disorders' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
                 'ophcocvi_clinicinfo_disorder_id',
                 'through' => 'cvi_disorder_assignments'
             ),
+            'inactive_cvi_disorders' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
+                'ophcocvi_clinicinfo_disorder_id',
+                'through' => 'cvi_disorder_assignments',
+                'condition' => 'inactive_cvi_disorders.active = 0 OR inactive_cvi_disorders.deleted = 1'
+            ),
+
             'left_cvi_disorders' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
@@ -188,13 +228,31 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments',
                 'element_id'
             ),
-            'cvi_disorder_sections' => array(
+            'all_cvi_disorder_sections' => array(
                 self::HAS_MANY,
                 'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
                 'section_id',
                 'through' => 'cvi_disorders',
                 'select' => 'DISTINCT cvi_disorder_sections.*',
                 'order' => 'cvi_disorder_sections.display_order asc'
+            ),
+            'cvi_disorder_sections' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
+                'section_id',
+                'through' => 'cvi_disorders',
+                'select' => 'DISTINCT cvi_disorder_sections.*',
+                'order' => 'cvi_disorder_sections.display_order asc',
+                'condition' => 'cvi_disorders.active = 1 OR cvi_disorders.deleted = 0'
+            ),
+            'inactive_cvi_disorder_sections' => array(
+                self::HAS_MANY,
+                'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section',
+                'section_id',
+                'through' => 'cvi_disorders',
+                'select' => 'DISTINCT cvi_disorder_sections.*',
+                'order' => 'inactive_cvi_disorder_sections.display_order asc',
+                'condition' => 'cvi_disorders.active = 0 OR cvi_disorders.deleted = 1'
             ),
             'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
             'consultant_signature' => array(self::BELONGS_TO, 'ProtectedFile', 'consultant_signature_file_id'),
@@ -211,17 +269,23 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             'event_id' => 'Event',
             'examination_date' => 'Examination date',
             'is_considered_blind' => 'I consider this person is',
-            'sight_varies_by_light_levels' => 'Sight varies by light levels',
+            'information_booklet' => 'I have made the patient aware of the information booklet, "Sight loss: What we needed to know"',
+            'eclo' => 'Has the patient seen an Eye Clinic Liaison Officer (ECLO) / Sight Loss Advisor?',
             'unaided_right_va' => 'Unaided right VA',
             'unaided_left_va' => 'Unaided left VA',
             'best_corrected_right_va' => 'Best corrected right VA',
             'best_corrected_left_va' => 'Best corrected left VA',
-            'best_corrected_binocular_va' => 'Best corrected binocular VA',
-            'low_vision_status_id' => 'Low vision status',
+            'best_corrected_binocular_va' => 'Best corrected binocular VA (Habitual)',
+            'best_recorded_right_va' => 'Best recorded right VA',
+            'best_recorded_left_va' => 'Best recorded left VA',
+            'best_recorded_binocular_va' => 'Best recorded binocular VA',
+            'low_vision_service' => 'Low vision service: <br> If appropriate, has a referal for the low vision service been made?',
+            'field_of_vision' => 'Field of vision: Extensive loss of peripheral visual field (including hemianopia)',
             'field_of_vision_id' => 'Field of vision',
             'disorders' => 'Disorders',
             'diagnoses_not_covered' => 'Diagnosis not covered in any of the above',
             'consultant_id' => 'Consultant',
+            'best_corrected_right_va_list' => 'Scale',
         );
     }
 
@@ -237,13 +301,12 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('examination_date', $this->examination_date);
         $criteria->compare('is_considered_blind', $this->is_considered_blind);
-        $criteria->compare('sight_varies_by_light_levels', $this->sight_varies_by_light_levels);
-        $criteria->compare('unaided_right_va', $this->unaided_right_va);
-        $criteria->compare('unaided_left_va', $this->unaided_left_va);
+        $criteria->compare('information_booklet', $this->eclo);
+        $criteria->compare('eclo', $this->eclo);
         $criteria->compare('best_corrected_right_va', $this->best_corrected_right_va);
         $criteria->compare('best_corrected_left_va', $this->best_corrected_left_va);
         $criteria->compare('best_corrected_binocular_va', $this->best_corrected_binocular_va);
-        $criteria->compare('low_vision_status_id', $this->low_vision_status_id);
+        $criteria->compare('patient_type', $this->patient_type);
         $criteria->compare('field_of_vision_id', $this->field_of_vision_id);
         $criteria->compare('disorders', $this->disorders);
         $criteria->compare('diagnoses_not_covered', $this->diagnoses_not_covered);
@@ -281,18 +344,15 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         }
     }
 
+
     public function afterValidate()
     {
-        foreach (array('left', 'right') as $side) {
-            foreach ($this->{$side . '_cvi_disorder_assignments'} as $ass) {
-                // would prefer this to be just on the assignment validation, but having trouble
-                // with scenario specification for different contexts (i.e. validating for errors to return
-                // to the user versus actually saving (where the element id is requred)
-                if ($ass->main_cause && !$ass->affected) {
-                    $this->addError('disorders', "{$side} disorder - '{$ass->ophcocvi_clinicinfo_disorder->name}'' cannot be main cause when eye not affected.");
-                }
+        if ($this->getScenario() == 'finalise') {
+            if (empty($this->cvi_disorder_assignments) && empty($this->diagnosis_not_covered)) {
+                $this->addError('disorders', "Please select a diagnosis or add a diagnosis to the diagnosis not covered list");
             }
         }
+
         parent::afterValidate();
     }
 
@@ -305,27 +365,36 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      */
     public function updateDisorders($side, $data)
     {
-        if (!in_array($side, array('left', 'right'))) {
+        if (!in_array($side, array('left', 'right', 'both'))) {
             throw new \Exception("invalid side specification");
         }
 
-        $eye_id = $side == 'left' ? \Eye::LEFT : \Eye::RIGHT;
+        switch ($side) {
+            case 'left':
+                $eye_id = \Eye::LEFT;
+                break;
+            case 'right':
+                $eye_id = \Eye::RIGHT;
+                break;
+            case 'both':
+                $eye_id = \Eye::BOTH;
+                break;
+        }
 
         // ensure we're manipulating what is currently in the db
         $current = $this->getRelated($side . "_cvi_disorder_assignments", true);
 
         // if the element has been saved before, then the assignment values will exist
         // and we can update, or delete those that are no longer required.
+
         while ($assignment = array_shift($current)) {
             if (array_key_exists($assignment->ophcocvi_clinicinfo_disorder_id, $data)) {
                 $this->updateDisorderAssignment($assignment, $data[$assignment->ophcocvi_clinicinfo_disorder_id]);
                 unset($data[$assignment->ophcocvi_clinicinfo_disorder_id]);
             } else {
                 if (!$assignment->delete()) {
-                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r(
-                        $assignment->getErrors(),
-                        true
-                    ));
+                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r($assignment->getErrors(),
+                            true));
                 }
             }
         }
@@ -337,6 +406,32 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $assignment->ophcocvi_clinicinfo_disorder_id = $cvi_disorder_id;
 
             $this->updateDisorderAssignment($assignment, $values);
+        }
+    }
+
+    /**
+     * Update the CVI Disorder status for this element.
+     *
+     * @param $side
+     * @param $data
+     * @throws \Exception
+     */
+    public function updateDisordersNotCovered($data)
+    {
+        foreach ($data as $key => $disorder) {
+            $diagnosis = new OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered();
+            $diagnosis->element_id = $this->id;
+            $diagnosis->disorder_id = isset($disorder['disorder_id']) ? $disorder['disorder_id'] : false;
+            $diagnosis->eye_id = isset($disorder['eyes']) ? $disorder['eyes'] : false;
+            $diagnosis->main_cause = isset($disorder['main_cause']) ? $disorder['main_cause'] : false;
+            $diagnosis->disorder_type = isset($disorder['disorder_type']) ? $disorder['disorder_type'] : false;
+            if ($diagnosis->disorder_type == OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered::TYPE_DISORDER) {
+                $diagnosis->code = isset($disorder['code']) ? $disorder['code'] : false;
+            }
+
+            if (!$diagnosis->save()) {
+                throw new \Exception('Unable to save CVI Diagnosis not covered: ' . print_r($diagnosis->getErrors(), true));
+            }
         }
     }
 
@@ -357,18 +452,14 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 $comment_data = $data[$section_comment->ophcocvi_clinicinfo_disorder_section_id];
                 $section_comment->comments = isset($comment_data['comments']) ? $comment_data['comments'] : "";
                 if (!$section_comment->save()) {
-                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r(
-                        $section_comment->getErrors(),
-                        true
-                    ));
+                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(),
+                            true));
                 }
                 unset($data[$section_comment->ophcocvi_clinicinfo_disorder_section_id]);
             } else {
                 if (!$section_comment->delete()) {
-                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r(
-                        $section_comment->getErrors(),
-                        true
-                    ));
+                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(),
+                            true));
                 }
             }
         }
@@ -379,10 +470,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $section_comment->comments = isset($values['comments']) ? $values['comments'] : "";
             $section_comment->element_id = $this->id;
             if (!$section_comment->save()) {
-                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r(
-                    $section_comment->getErrors(),
-                    true
-                ));
+                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r($section_comment->getErrors(),
+                        true));
             }
         }
     }
@@ -392,7 +481,8 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      */
     public function getDisplayStatus()
     {
-        return $this->getDisplayConsideredBlind();
+        $considered_blind = $this->getDisplayConsideredBlind();
+        return $considered_blind === static::$NULL_BOOLEAN ? $considered_blind : '';
     }
 
     /**
@@ -407,17 +497,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getDisplayLightLevels()
-    {
-        if ($this->sight_varies_by_light_levels === null) {
-            return static::$NULL_BOOLEAN;
-        } else {
-            return $this->sight_varies_by_light_levels ? 'Yes' : 'No';
-        }
-    }
+
 
     /**
      * To generate the low vision status array for the pdf
@@ -459,12 +539,10 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     /**
      * @return mixed
      */
-    private function getAllDisordersFromAssignments() {
+    private function getAllDisordersFromAssignments()
+    {
         $ids = array();
-        foreach ($this->left_cvi_disorder_assignments as $ass) {
-            $ids[] = $ass->ophcocvi_clinicinfo_disorder_id;
-        }
-        foreach ($this->right_cvi_disorder_assignments as $ass) {
+        foreach ($this->cvi_disorder_assignments as $ass) {
             $ids[] = $ass->ophcocvi_clinicinfo_disorder_id;
         }
         return OphCoCvi_ClinicalInfo_Disorder::model()->findAllByPk($ids);
@@ -503,6 +581,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         if (!array_key_exists($section->id, $this->disorders_by_section)) {
             return array();
         }
+
         return $this->disorders_by_section[$section->id];
     }
 
@@ -544,15 +623,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             );
         }
 
-        if ($disorder_section->comments_allowed) {
-            $comments_obj = $this->getDisorderSectionComment($disorder_section);
-            $text = $disorder_section->comments_label . ' : ';
-            if ($comments_obj) {
-                $text .= $comments_obj->comments;
-            }
-            $data[] = array('', $text, '', '', '');
-        }
-
         return $data;
     }
 
@@ -574,7 +644,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         return array(
             array('', '', ''),
-            array('Unaided', $this->unaided_right_va, $this->unaided_left_va),
             array('Best corrected', $this->best_corrected_right_va, $this->best_corrected_left_va),
             array('Best corrected with both eyes', $this->best_corrected_binocular_va, ''),
         );
@@ -596,10 +665,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         );
 
         for ($k = 0, $k_max = count($field_of_vision_data); $k < $k_max; $k++) {
-            $data[$k + 1] = array_merge(
-                $field_of_vision_data[$k],
-                $low_vision_data[$k]
-            );
+            $data[$k + 1] = array_merge($field_of_vision_data[$k], $low_vision_data[$k]);
         }
 
         return $data;
@@ -640,9 +706,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
 
         $result['fieldOfVisionAndLowVisionStatus'] = $this->generateStructuredVisionTable();
 
-        $result['sightVariesByLightLevelYes'] = $this->sight_varies_by_light_levels ? 'X' : '';
-        $result['sightVariesByLightLevelNo'] = $this->sight_varies_by_light_levels ? '' : 'X';
-
         $result = array_merge($result, $this->generateStructuredDisorderTable());
 
         $result['diagnosisNotCovered'] = $this->diagnoses_not_covered;
@@ -670,10 +733,51 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      */
     public function hasCviDisorderForSide(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder, $side)
     {
-        if (!in_array($side, array('left', 'right'))) {
+        if (!in_array($side, array('left', 'right', 'both'))) {
             throw new \Exception("invalid side attribute");
         }
         foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
+            if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
+                return $recorded_cvi->affected;
+            }
+        }
+    }
+
+    /**
+     * Returns the eye seide for disorder
+     *
+     * @param OphCoCvi_ClinicalInfo_Disorder $cvi_disorder
+     * @return int
+     */
+    public function getCviDisorderSide(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder): int
+    {
+        $left = false;
+        $right = false;
+
+        foreach (['left', 'right'] as $side) {
+            foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
+                if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
+                    $$side = $recorded_cvi->affected;
+                }
+            }
+        }
+
+        if ($left && $right) {
+            return \Eye::BOTH;
+        }
+
+        return $left ? \Eye::LEFT : ($right ? \Eye::RIGHT : 0);
+    }
+
+    /**
+     * @param OphCoCvi_ClinicalInfo_Disorder $cvi_disorder
+     * @param string $side left or right
+     * @return boolean
+     * @throws \Exception
+     */
+    public function hasCviDisorderForAny(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder)
+    {
+        foreach ($this->cvi_disorder_assignments as $recorded_cvi) {
             if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
                 return $recorded_cvi->affected;
             }
@@ -694,6 +798,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             if ($this->hasCviDisorderForSide($cvi_disorder, 'left')) {
                 return true;
             }
+            if ($this->hasCviDisorderForSide($cvi_disorder, 'both')) {
+                return true;
+            }
         }
         return false;
     }
@@ -706,12 +813,30 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      */
     public function isCviDisorderMainCauseForSide(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder, $side)
     {
-        if (!in_array($side, array('left', 'right'))) {
+        if (!in_array($side, array('right'))) {
             throw new \Exception("invalid side attribute");
         }
+
         foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
             if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
                 return $recorded_cvi->main_cause;
+            }
+        }
+    }
+
+    public function isCviDisorderMainCauseForAny(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder, $side)
+    {
+        if (!empty($this->main_cause_cvi_disorder_assignment)) {
+            foreach ($this->right_cvi_disorder_assignments as $recorded_cvi) {
+                if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
+                    return $recorded_cvi->main_cause;
+                }
+            }
+        } else {
+            foreach ($this->cvi_disorder_assignments as $recorded_cvi) {
+                if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
+                    return $recorded_cvi->affected;
+                }
             }
         }
     }
@@ -724,8 +849,795 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         return $this->consultant_signature_file_id ? true : false;
     }
 
-    public function getContainer_form_view()
+
+    public function getInformationBooklets()
     {
-        return '//patient/element_container_form_no_bin';
+        $information_booklets = [
+            1 => 'Yes',
+            0 => 'No',
+        ];
+
+        return $information_booklets;
+    }
+
+    public function getDisplayInformationBooklet()
+    {
+        if ($this->information_booklet === null) {
+            return '';
+        } else {
+            return $this->getInformationBooklets()[$this->information_booklet];
+        }
+    }
+
+    public function getEclo()
+    {
+        $eclo = [
+            1 => 'Yes',
+            2 => 'Referred',
+            0 => 'Not available',
+        ];
+
+        return $eclo;
+    }
+
+    public function getDisplayEclo()
+    {
+        if ($this->eclo === null) {
+            return '';
+        } else {
+            return $this->getEclo()[$this->eclo];
+        }
+    }
+
+
+    public function getBestCorrectedVAList()
+    {
+        $corrected = [
+            self::VISUAL_ACUITY_TYPE_SNELLEN => 'Snellen',
+            self::VISUAL_ACUITY_TYPE_LOGMAR => 'Logmar',
+        ];
+
+        return $corrected;
+    }
+
+
+    public function getDisplayBestCorrectedVA($side)
+    {
+        $best_corrected_va = "best_corrected_".$side."_va";
+        if ($this->{$best_corrected_va} === null || $this->{$best_corrected_va} == '') {
+            return '';
+        } else {
+            if ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_SNELLEN) {
+                return ', '.self::getSnellenDatas()[$this->{$best_corrected_va}];
+            } elseif ($this->best_corrected_right_va_list == self::VISUAL_ACUITY_TYPE_LOGMAR) {
+                return ', '.self::getLogmarDatas()[$this->{$best_corrected_va}];
+            }
+        }
+    }
+
+
+    public function getDisplayBestCorrectedVAList()
+    {
+        if ($this->best_corrected_right_va_list === null || $this->best_corrected_right_va_list == 0) {
+            return 'Not recorded';
+        } else {
+            return $this->getBestCorrectedVAList()[$this->best_corrected_right_va_list];
+        }
+    }
+
+    public function getFieldOfVision()
+    {
+        $field_of_vision = [
+            1 => 'Yes',
+            2 => 'No',
+        ];
+
+
+        return $field_of_vision;
+    }
+
+    public function getDisplayFieldOfVision()
+    {
+        if ($this->field_of_vision === null) {
+            return '';
+        } else {
+            return $this->getFieldOfVision()[$this->field_of_vision];
+        }
+    }
+
+    public function getLowVisionService()
+    {
+        $low_vision_service = [
+            1 => "Yes",
+            2 => "No",
+            3 => "Don't know",
+            4 => "Not Required"
+        ];
+
+        return $low_vision_service;
+    }
+
+    public function getDisplayLowVisionService()
+    {
+        if ($this->low_vision_service === null) {
+            return '';
+        } elseif (isset($this->getLowVisionService()[$this->low_vision_service])) {
+            return $this->getLowVisionService()[$this->low_vision_service];
+        } else {
+            return '';
+        }
+    }
+
+    public static function getLogmarDatas()
+    {
+        return [
+            'NPL',
+            'PL',
+            'HM',
+            'CF',
+            '2.0',
+            '1.8',
+            '1.6',
+            '1.4',
+            '1.2',
+            '1.0',
+            '0.9',
+            '0.8',
+            '0.7',
+            '0.6',
+            '0.5',
+            '0.4',
+            '0.3',
+            '0.2',
+            '0.1',
+            '0.0',
+            '-0.1',
+            '-0.2',
+            'FF',
+            'UA',
+            'AE'
+        ];
+    }
+
+    public static function getSnellenDatas()
+    {
+        return [
+            'NPL',
+            'PL',
+            'HM',
+            'CF',
+            '1/60',
+            '2/60',
+            '3/60',
+            '6/60',
+            '6/36',
+            '6/24',
+            '6/18',
+            '6/12',
+            '6/9',
+            '6/6',
+            '6/5',
+            '6/4',
+            'FF',
+            'UA',
+            'AE'
+        ];
+    }
+
+    public function getBestCorrectedVAForPdf($eye, $type)
+    {
+        $result = '';
+        $best_corrected_va_list = 'best_corrected_right_va_list';
+        $best_corrected_va = 'best_corrected_'.$eye.'_va';
+
+        if ($this->{$best_corrected_va_list} == $type) {
+            if (!is_null($this->{$best_corrected_va}) && $this->{$best_corrected_va} !== null) {
+                if ($type == self::VISUAL_ACUITY_TYPE_LOGMAR) {
+                    $result = self::getLogmarDatas()[$this->{$best_corrected_va}];
+                } elseif ($type == self::VISUAL_ACUITY_TYPE_SNELLEN) {
+                    $result = self::getSnellenDatas()[$this->{$best_corrected_va}];
+                }
+            }
+        } else {
+            return '';
+        }
+        return $result;
+    }
+
+    /*
+     * Get elements for CVI PDF
+     *
+     * @return array
+     */
+    public function getElementsForCVIpdf()
+    {
+
+        $elements = [
+            'Opthalm1'   => $this->is_considered_blind,
+            'I have made the patient aware of the information booklet, “Sight Loss: What we needed to know”' => ($this->information_booklet == 0) ? 1 : 0,
+            'information_booklet_string' => ($this->information_booklet == 0) ? "No" : "Yes",
+            'Has the patient seen an Eye Clinic Liaison Officer (ECLO)/Sight Loss Advisor?' => $this->getEcloForPDF(),
+            'sight_loss_advisior' => $this->getEcloForVisualyImpaired(),
+            'Examination_date' => \Helper::convertMySQL2NHS($this->examination_date),
+            'Right eye: Logmar'     => $this->getBestCorrectedVAForPdf('right', self::VISUAL_ACUITY_TYPE_LOGMAR), //Values: -0.1, -0.2, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6, 1.8., 2.0, "AE", "CF", "FF", "HM", "NPL", "PL", "UA"
+            'Left eye: Logmar'      => $this->getBestCorrectedVAForPdf('left', self::VISUAL_ACUITY_TYPE_LOGMAR), //Values: -0.1, -0.2, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6, 1.8., 2.0, "AE", "CF", "FF", "HM", "NPL", "PL", "UA"
+            'Binocular: Logmar'     => $this->getBestCorrectedVAForPdf('binocular', self::VISUAL_ACUITY_TYPE_LOGMAR), //Values: -0.1, -0.2, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6, 1.8., 2.0, "AE", "CF", "FF", "HM", "NPL", "PL", "UA"
+            'Right eye: Snellen'    => $this->getBestCorrectedVAForPdf('right', self::VISUAL_ACUITY_TYPE_SNELLEN), //Values: 1/60, 2/60,3/60, 6/12, 6/18, 6/24, 6/36, 6/4, 6/5, 6/6, 6/60, 6/9, "AE", "CF", "FF", "HM", "NPL", "PL", "UA"
+            'Left eye: Snellen'     => $this->getBestCorrectedVAForPdf('left', self::VISUAL_ACUITY_TYPE_SNELLEN), //Values: 1/60, 2/60,3/60, 6/12, 6/18, 6/24, 6/36, 6/4, 6/5, 6/6, 6/60, 6/9, "AE", "CF", "FF", "HM", "NPL", "PL", "UA"
+            'Binocular: Snellen'    => $this->getBestCorrectedVAForPdf('binocular', self::VISUAL_ACUITY_TYPE_SNELLEN), //Values: 1/60, 2/60,3/60, 6/12, 6/18, 6/24, 6/36, 6/4, 6/5, 6/6, 6/60, 6/9, "AE", "CF", "FF", "HM", "NPL", "PL", "UA"
+            'Extensive loss of peripheral visual field (including hemianopia)' => $this->getFieldOfvisionForPDF(),
+            'If appropriate, has a referral for the low vision service been made?' => $this->getLowVisionServiceForPDF(), //Values: 0,1,2,3
+            'low_vision_service' => $this->getLowVisionServiceForVisualyImpaired(),
+            'patient_type' => $this->patient_type,
+            'diagnosis_for_visualy_impaired' => $this->generateDiagnosisForVisualyImpaired(),
+        ];
+
+        $patientDiagnosis = $this->getPatientDiagnosisForPDF();
+
+        return array_merge( $elements, $patientDiagnosis);
+    }
+
+    /**
+     * Set diagnosis result by patient age
+     * @return array
+     */
+    private function getPatientDiagnosisForPDF()
+    {
+        //If patient over 18
+        if ($this->patient_type == 0) {
+            return [
+                'age-related macular degeneration – choroidal neovascularisation (wet): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 23),
+                'age-related macular degeneration – choroidal neovascularisation (wet): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 23),
+                'age-related macular degeneration – atrophic/geographic macular atrophy (dry): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 24),
+                'age-related macular degeneration – atrophic/geographic macular atrophy (dry): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 24),
+                'age-related macular degeneration unspecified (mixed): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 25),
+                'age-related macular degeneration unspecified (mixed): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 25),
+                'diabetic retinopathy: Right eye'   => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 26),
+                'diabetic retinopathy: Left eye'    => $this->getDisorderAnswerForPDF( \Eye::LEFT, 26),
+                'diabetic maculopathy: Right eye'   => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 27),
+                'diabetic maculopathy: Left eye'    => $this->getDisorderAnswerForPDF( \Eye::LEFT, 27),
+                'hereditary retinal dystrophy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 28),
+                'hereditary retinal dystrophy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 28),
+                'retinal vascular occlusions: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 29),
+                'retinal vascular occlusions: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 29),
+                'other retinal (specify): Right eye' => '',
+                'other retinal (specify): Left eye' => '',
+                'Glaucoma - primary open angle: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 30),
+                'Glaucoma - primary open angle: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 30),
+                'Glaucoma - primary angle closure: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 31),
+                'Glaucoma - primary angle closure: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 31),
+                'Glaucoma - secondary: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 32),
+                'Glaucoma - secondary: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 32),
+                'Glaucoma - other glaucoma: Right eye' => '',
+                'Glaucoma - other glaucoma: Left eye' => '',
+                'Globe - degenerative myopia: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 33),
+                'Globe - degenerative myopia: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 33),
+                'Neurological - optic atrophy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 34),
+                'Neurological - optic atrophy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 34),
+                'Neurological - visual cortex disorder: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 35),
+                'Neurological - visual cortex disorder: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 35),
+                'Neurological - cerebrovascular disease: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 36),
+                'Neurological - cerebrovascular disease: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 36),
+                'Choroid - chorioretinitis: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 37),
+                'Choroid - chorioretinitis: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 37),
+                'Choroid - choroidal degeneration: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 38),
+                'Choroid - choroidal degeneration: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 38),
+                'Lens - cataract (excludes congenital): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 39),
+                'Lens - cataract (excludes congenital): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 39),
+                'Cornea - corneal scars and opacities: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 40),
+                'Cornea - corneal scars and opacities: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 40),
+                'Cornea - keratitis: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 41),
+                'Cornea - keratitis: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 41),
+                'Neoplasia - eye: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 42),
+                'Neoplasia - eye: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 42),
+                'Neoplasia - brain & CNS: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 43),
+                'Neoplasia - brain & CNS: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 43),
+                'Neoplasia - other neoplasia: Right eye' => '',
+                'Neoplasia - other neoplasia: Left eye' => '',
+                'Page_2_Diagnosis_Text_Box' => $this->getNotCoveredDiagnosesForPDF(),
+                'Main Cause'            => $this->mainCause  //Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,"Off", "Yes"
+            ];
+        } else {
+            return [
+                //If patient under 18
+                'Central Visual Pathway Problems - cerebral/cortical pathology: Right eye' => $this->getCentralVisualPathway( \Eye::RIGHT ),
+                'Central Visual Pathway Problems - cerebral/cortical pathology: Left eye' => $this->getCentralVisualPathway( \Eye::LEFT ),
+                'SelectedVisualPathwayProblem' => $this->centralVisualPathwayProblemsQuiestionID,
+
+                'Central Visual Pathway Problems - nystagmus: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 47),
+                'Central Visual Pathway Problems - nystagmus: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 47),
+                'Central Visual Pathway Problems - other: Right eye' => '',
+                'Central Visual Pathway Problems - other: Left eye' => '',
+
+                'Whole Globe and Anterior Segment - anophthalmos/microphthalmos: Right eye' => $this->getAnophthalmosMicrophthalmos( \Eye::RIGHT ),
+                'Whole Globe and Anterior Segment - anophthalmos/microphthalmos: Left eye' => $this->getAnophthalmosMicrophthalmos( \Eye::LEFT ),
+                'SelectedAnophthalmosMicrophthalmos' => $this->anophtalmosMicrophthalmosQuiestionID,
+
+                'Whole Globe and Anterior Segment - disorganised globe/phthisis: Right eye' =>  $this->getGlobePhthisis( \Eye::RIGHT ),
+                'Whole Globe and Anterior Segment - disorganised globe/phthisis: Left eye' =>  $this->getGlobePhthisis( \Eye::LEFT ),
+                'SelectedDisorganisedglobePhthisis' => $this->disorganisedGlobePhthisisQuiestionID,
+
+                'Whole Globe and Anterior Segment - anterior segment anomaly: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 52),
+                'Whole Globe and Anterior Segment - anterior segment anomaly: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 52),
+                'Whole Globe and Anterior Segment - primary congenital/infantile glaucoma: Right eye' =>  $this->getCongenitalInfantile( \Eye::RIGHT ),
+                'Whole Globe and Anterior Segment - primary congenital/infantile glaucoma: Left eye' =>  $this->getCongenitalInfantile( \Eye::LEFT ),
+                'SelectedPrimaryCongenitalInfantileGlaucoma' => $this->primaryCongenitalInfantileGlaucomaQuiestionID,
+
+                'Whole Globe and Anterior Segment - other glaucoma: Right eye' =>  '',
+                'Whole Globe and Anterior Segment - other glaucoma: Left eye' =>  '',
+                'Amblyopia - stimulus deprivation: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 55),
+                'Amblyopia - stimulus deprivation: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 55),
+                'Amblyopia - strabismic: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 56),
+                'Amblyopia - strabismic: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 56),
+                'Amblyopia - refractive: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 57),
+                'Amblyopia - refractive: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 57),
+                'Cornea - opacity: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 58),
+                'Cornea - opacity: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 58),
+                'Cornea - dystrophy: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 59),
+                'Cornea - dystrophy: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 59),
+                'Cornea - other: Right eye' =>  '',
+                'Cornea - other: Left eye' =>  '',
+                'Cataract - congenital: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 60),
+                'Cataract - congenital: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 60),
+                'Cataract - developmental: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 61),
+                'Cataract - developmental: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 61),
+                'Cataract - secondary: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 62),
+                'Cataract - secondary: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 62),
+                'Uvea - aniridia: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 63),
+                'Uvea - aniridia: Left eye' =>   $this->getDisorderAnswerForPDF( \Eye::LEFT, 63),
+                'Uvea - coloboma: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 64),
+                'Uvea - coloboma: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 64),
+                'Uvea - uveitis: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 65),
+                'Uvea - uveitis: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 65),
+                'Uvea - other: Right eye' =>  '',
+                'Uvea - other: Left eye' =>  '',
+                'Retina - retinopathy of prematurity: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 66),
+                'Retina - retinopathy of prematurity: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 66),
+                'Retina - retinal dystrophy: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 67),
+                'Retina - retinal dystrophy: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 67),
+                'Retina - retinitis: Right eye' =>  $this->getDisorderAnswerForPDF( \Eye::RIGHT, 68),
+                'Retina - retinitis: Left eye' =>  $this->getDisorderAnswerForPDF( \Eye::LEFT, 68),
+                'Retina - other retinopathy: Right eye' =>  '',
+                'Retina - other retinopathy: Left eye' => '',
+                'Retina - retinoblastoma: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 69),
+                'Retina - retinoblastoma: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 69),
+                'Retina - albinism: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 70),
+                'Retina - albinism: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 70),
+                'Retina - retinal detachment: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 71),
+                'Retina - retinal detachment: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 71),
+                'Retina - other: Right eye' => '',
+                'Retina - other: Left eye' => '',
+                'Optic Nerve - hypoplasia: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 72),
+                'Optic Nerve - hypoplasia: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 72),
+                'Optic Nerve - other congenital anomaly: Right eye' => '',
+                'Optic Nerve - other congenital anomaly: Left eye' => '',
+                'Optic Nerve - optic atrophy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 73),
+                'Optic Nerve - optic atrophy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 73),
+                'Optic Nerve - neuropathy: Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 74),
+                'Optic Nerve - neuropathy: Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 74),
+                'Optic Nerve - other: Right eye' => '',
+                'Optic Nerve - other: Left eye' => '',
+                'Page_3_Diagnosis_Text_Box 2' => $this->getNotCoveredDiagnosesForPDF(),
+                'Main Cause Part 2b' => $this->mainCause         //Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,"Off", "Yes"
+            ];
+        }
+    }
+
+    /**
+     * Set diagnosis radio buttons by disorder id
+     * @param type $eyeID
+     * @param type $questionID
+     * @return string
+     */
+    private function getDisorderAnswerForPDF($eyeID, $questionID)
+    {
+        $result = "Off";
+
+        switch ( $eyeID ) {
+            case 1: //left
+                if ($this->left_cvi_disorder_assignments) {
+                    foreach ( $this->left_cvi_disorder_assignments as $assignment) {
+                        if ($assignment->ophcocvi_clinicinfo_disorder_id == $questionID) {
+                            if ($assignment->affected == 1) {
+                                $result = "Yes";
+                            }
+
+                            if ( $assignment->main_cause > 0) {
+                                $this->mainCause = $assignment->ophcocvi_clinicinfo_disorder->main_cause_pdf_id;
+                            }
+                        }
+                    }
+                }
+
+                if ($this->both_cvi_disorder_assignments) {
+                    foreach ( $this->both_cvi_disorder_assignments as $assignment) {
+                        if ($assignment->ophcocvi_clinicinfo_disorder_id == $questionID) {
+                            if ($assignment->main_cause > 0) {
+                                $this->mainCause = $assignment->ophcocvi_clinicinfo_disorder->main_cause_pdf_id;
+                            }
+
+                            if ($assignment->affected == 1) {
+                                $result = "Yes";
+                            }
+                        }
+                    }
+                }
+
+                break;
+            case 2:
+                if ($this->right_cvi_disorder_assignments) {
+                    foreach ( $this->right_cvi_disorder_assignments as $assignment) {
+                        if ($assignment->ophcocvi_clinicinfo_disorder_id == $questionID) {
+                            if ($assignment->affected == 1) {
+                                $result = "Yes";
+                            }
+
+                            if ( $assignment->main_cause > 0) {
+                                $this->mainCause = $assignment->ophcocvi_clinicinfo_disorder->main_cause_pdf_id;
+                            }
+                        }
+                    }
+                }
+
+                if ($this->both_cvi_disorder_assignments) {
+                    foreach ( $this->both_cvi_disorder_assignments as $assignment) {
+                        if ($assignment->ophcocvi_clinicinfo_disorder_id == $questionID) {
+                            if ($assignment->affected == 1) {
+                                $result = "Yes";
+                            }
+
+                            if ( $assignment->main_cause > 0) {
+                                $this->mainCause = $assignment->ophcocvi_clinicinfo_disorder->main_cause_pdf_id;
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Set selected Central Visual pathway problems from group
+     * @param type $eyeSide
+     * @return string
+     */
+    private function getCentralVisualPathway($eyeSide)
+    {
+        $questionIDs = [44,45,46];
+        foreach ($questionIDs as $question) {
+            if ($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes") {
+                $this->centralVisualPathwayProblemsQuiestionID = $question;
+                return "Yes";
+            }
+        }
+
+        return "Off";
+    }
+
+    /**
+     * Set selected Anophthalmos or Microphthalmos
+     * @param type $eyeSide
+     * @return string
+     */
+    private function getAnophthalmosMicrophthalmos($eyeSide)
+    {
+        $questionIDs = [48,49];
+        foreach ($questionIDs as $question) {
+            if ($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes") {
+                $this->anophtalmosMicrophthalmosQuiestionID = $question;
+                return "Yes";
+            }
+        }
+
+        return "Off";
+    }
+
+    /**
+     * Set selected Disorganised globe or Phthisis
+     * @param type $eyeSide
+     * @return string
+     */
+    private function getGlobePhthisis($eyeSide)
+    {
+        $questionIDs = [50,51];
+        foreach ($questionIDs as $question) {
+            if ($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes") {
+                $this->disorganisedGlobePhthisisQuiestionID = $question;
+                return "Yes";
+            }
+        }
+
+        return "Off";
+    }
+
+     /**
+     * Set selected Primary Congenital or Infantile Glaucoma
+     * @param type $eyeSide
+     * @return string
+     */
+    private function getCongenitalInfantile($eyeSide)
+    {
+        $questionIDs = [53,54];
+        foreach ($questionIDs as $question) {
+            if ($this->getDisorderAnswerForPDF( $eyeSide, $question) == "Yes") {
+                $this->primaryCongenitalInfantileGlaucomaQuiestionID = $question;
+                return "Yes";
+            }
+        }
+
+        return "Off";
+    }
+
+    /**
+     * Set vision id for pdf
+     * @return string
+     */
+    private function getLowVisionServiceForPDF()
+    {
+
+        if ($this->low_vision_service) {
+            switch ($this->low_vision_service) {
+                case "1":
+                    return "3";
+                    break;
+                case "2":
+                    return "0";
+                    break;
+                case "3":
+                    return "1";
+                    break;
+                case "4":
+                    return "2";
+                    break;
+            }
+        }
+
+        return "";
+    }
+
+    /**
+     *
+     * @return string
+     */
+    private function getLowVisionServiceForVisualyImpaired()
+    {
+        if ($this->low_vision_service) {
+            switch ($this->low_vision_service) {
+                case "1":
+                    return "Yes";
+                    break;
+                case "2":
+                    return "No";
+                    break;
+                case "3":
+                    return "Don't know";
+                    break;
+                case "4":
+                    return "Not Required";
+                    break;
+            }
+        }
+
+        return "";
+    }
+
+    /**
+     * Get "Diagnosis not covered text"
+     * @return string
+     */
+    private function getNotCoveredDiagnosesForPDF()
+    {
+        $result = '';
+        if ($this->diagnosis_not_covered) {
+            foreach ($this->diagnosis_not_covered as $element) {
+                $mainCause = ($element->main_cause == 1) ? '(main cause)' : '';
+                switch ($element->eye_id) {
+                    case 1:
+                        $eye = 'Left';
+                        break;
+                    case 2:
+                        $eye = 'Right';
+                        break;
+                    default:
+                        $eye = 'Both';
+                }
+                if ($element->disorder_type == OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered::TYPE_CLINICINFO_DISORDER) {
+                    $disorder_name = $element->clinicinfo_disorder->term_to_display;
+                    $disorder_code = $element->clinicinfo_disorder->code;
+                } else {
+                    $disorder_name = $element->disorder->term;
+                    $disorder_code = $element->code;
+                }
+
+                $result .= $eye.' '.$disorder_name." ".$mainCause." ".$disorder_code.", ";
+            }
+        }
+
+        return substr($result, 0, -2);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    private function getEcloForPDF()
+    {
+        if ($this->eclo !== false) {
+            switch ($this->eclo) {
+                case '1':
+                    return '0';
+                break;
+                case '2':
+                    return '1';
+                    break;
+                default:
+                    return '2';
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     *
+     * @return string
+     */
+    private function getEcloForVisualyImpaired()
+    {
+        if ($this->eclo !== false) {
+            switch ($this->eclo) {
+                case '1':
+                    return 'Yes';
+                    break;
+                case '2':
+                    return 'Referred';
+                    break;
+                default:
+                    return 'Not available';
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     *
+     * @return string
+     */
+    private function getFieldOfvisionForPDF()
+    {
+        if ($this->field_of_vision !== false) {
+            return ($this->field_of_vision == '1') ? '0' : '1';
+        }
+
+        return '';
+    }
+
+
+    public function getPatientTypes()
+    {
+        $types = [
+            Element_OphCoCvi_ClinicalInfo::CVI_TYPE_ADULT => "Diagnosis (for patients 18 years of age or over)",
+            Element_OphCoCvi_ClinicalInfo::CVI_TYPE_CHILD => "Diagnosis (for patients under the age of 18)",
+        ];
+
+        return $types;
+    }
+
+    /**
+     * Generate dynamic diagnosis table for Visauly Impaired printout
+     * @return string
+     */
+    private function generateDiagnosisForVisualyImpaired()
+    {
+        $criteria = new \CDbCriteria;
+        $criteria->condition = "active=:active";
+        $criteria->addCondition("patient_type=:patient_type");
+        $criteria->params = array(
+            ':active' => 1,
+            ':patient_type' => $this->patient_type
+        );
+
+        $disorderSections = OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll($criteria);
+
+        $table = '';
+        if ($disorderSections) {
+            foreach ($disorderSections as $section) {
+                if ($section->disorders) {
+                    $table .= '<tr><td rowspan="'.count($section->disorders).'"><strong>'.$section->name.'</strong></td>';
+
+                    foreach ($section->disorders as $key => $disorder) {
+                        if ($key !== 0) {
+                            $table .= '<tr>';
+                        }
+
+                        $rightEye = '';
+                        if ($this->hasCviDisorderForSide($disorder, 'right')) {
+                            $rightEye = '<img class="ticked_diagnosis" src="'.realpath(__DIR__ . '/..') . '/assets/img/close_icon.png' .'" />';
+                        }
+
+                        $leftEye = '';
+                        if ($this->hasCviDisorderForSide($disorder, 'left')) {
+                            $leftEye = '<img class="ticked_diagnosis" src="'.realpath(__DIR__ . '/..') . '/assets/img/close_icon.png' .'" />';
+                        }
+
+                        if ($this->hasCviDisorderForSide($disorder, 'both')) {
+                            $rightEye = '<img class="ticked_diagnosis" src="'.realpath(__DIR__ . '/..') . '/assets/img/close_icon.png' .'" />';
+                            $leftEye = '<img class="ticked_diagnosis" src="'.realpath(__DIR__ . '/..') . '/assets/img/close_icon.png' .'" />';
+                        }
+
+                        $main_cause = '';
+                        if ($this->isCviDisorderMainCauseForSide($disorder, 'right') == 1) {
+                            $main_cause = '<br><strong>Main Cause</strong>';
+                        }
+
+                        $table .= '
+                             <td>'.$disorder->name.$main_cause.'</td>
+                             <td>'.$disorder->code.'</td>
+                             <td>'.$rightEye.'</td>
+                             <td>'.$leftEye.'</td>
+                        ';
+                        if ($key === 0) {
+                            $table .= '</tr>';
+                        }
+                    }
+                    $table .= '</tr>';
+                }
+            }
+
+            $table .= '
+                <tr>
+                    <td colspan="2"><strong>Diagnosis not covered in any of the above, specify, including ICD 10 code if known</strong></td>
+                    <td colspan="3">'.$this->getNotCoveredDiagnosesForPDF().'</td>
+                </tr>
+            ';
+        }
+        return $table;
+    }
+
+    /**
+     * Returns inactive disorders for the given section name
+     *
+     * @param string $section_name
+     * @return array
+     */
+    public function getInactiveDisorders(string $section_name): array
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['section'];
+        $criteria->join = "JOIN et_ophcocvi_clinicinfo_disorder_assignment a ON a.ophcocvi_clinicinfo_disorder_id = t.id";
+        $criteria->addCondition("section.name = :s_name");
+        $criteria->addCondition("t.active = 0 OR t.deleted = 1");
+        $criteria->addCondition('a.element_id = :el_id');
+        $criteria->params[':s_name'] = $section_name;
+        $criteria->params[':el_id'] = $this->id;
+
+        return OphCoCvi_ClinicalInfo_Disorder::model()->findAll($criteria);
+    }
+
+    /**
+     * Gets inactive (active=0 OR deleted=1) sections and
+     * populated 'disorder' relation to disorders only relevant to the element
+     * @return array
+     */
+    public function getInactiveSectionsToDisplay(): array
+    {
+        $not_in_active = array_filter($this->inactive_cvi_disorder_sections, function($inactive_section) {
+            return !(bool) array_filter($this->cvi_disorder_sections, function($active_section) use ($inactive_section) {
+                return $active_section->name === $inactive_section->name;
+            });
+        });
+
+        // overwrite the 'disorder' relation so the relation will only have disorders that are relevant to the element
+        foreach ($not_in_active as $section) {
+            $disorders = array_filter($this->inactive_cvi_disorders, function($inactive_disorder) use ($section) {
+                return $section->id == $inactive_disorder->section_id;
+            });
+            $section->disorders = $disorders;
+        }
+
+        return $not_in_active;
     }
 }

@@ -30,13 +30,89 @@
 <script type="text/html" id="dialog-confirm-template">
     <p>{{{content}}}</p>
     <div class="buttons">
-        <button class="secondary small confirm ok" type="button">
+        <button class="{{okButtonClassList}}" type="button">
             {{{okButton}}}
         </button>
-        <button class="warning small confirm cancel" type="button">
+        <button class="{{cancelButtonClassList}}" type="button">
             {{{cancelButton}}}
         </button>
     </div>
+</script>
+<!-- Dialog with pathway step options template -->
+<script type="text/html" id="path-step-options-template">
+    <div class="block-layout js-step-options">
+        {{#itemSets}}
+            <div class="js-itemset block{{#display_options}} {{display_options}}{{/display_options}}" data-itemset-id="{{id}}">
+                <h3>{{title}}</h3>
+                {{#is_form}}
+                <fieldset class="btn-list">
+                    {{#items}}
+                    <label>
+                        <input type="radio" name="{{name}}" value="{{id}}"/>
+                        <div class="li">{{label}}</div>
+                    </label>
+                    {{/items}}
+                </fieldset>
+                {{/is_form}}
+                {{^is_form}}
+                <table>
+                    <tbody>
+                    {{#items}}
+                    <tr id="{{id}}">
+                        <th>{{label}}</th>
+                        <td>{{value}}</td>
+                    </tr>
+                    {{/items}}
+                    </tbody>
+                </table>
+                {{/is_form}}
+            </div>
+        {{/itemSets}}
+    </div>
+    <div class="popup-actions flex-right">
+        <button class="green hint js-add-pathway">Add to selected patients</button>
+        <button class="red hint js-cancel-popup-steps">Cancel</button>
+    </div>
+</script>
+<!-- Dialog with pathway step options template -->
+<script type="text/html" id="new-path-step-template">
+    <h4>Name</h4>
+    <input name="taskname" type="text" maxlength="64" size="66" placeholder="Task name (maximum 64 characters)"/>
+    <h4>Step pathway display name (restricted to 16 characters)</h4>
+    <input name="shortname" type="text" maxlength="16" size="18" placeholder="Display name"/>
+    {{#custom_options}}
+    <h4>{{name}}</h4>
+    <select class="js-custom-option" name="custom_option_{{id}}">
+        {{#option_values}}
+        <option value="{{id}}">{{name}}</option>
+        {{/option_values}}
+    </select>
+    {{/custom_options}}
+    <div class="popup-actions flex-right">
+        <button class="green hint js-add-pathway">Add to selected patients</button>
+        <button class="red hint js-cancel-popup-steps">Cancel</button>
+    </div>
+</script>
+<script type="text/html" id="psd-drug-list-item">
+<tr>
+    <td>
+        <div class="drug">{{drug_name}}</div>
+    </td>
+    <td>{{dose}}</td>
+    <td>
+        {{#route}}{{route}}{{/route}}
+        {{#laterality}}
+        <span class="oe-eye-lat-icons">
+            {{#right_eye}}
+            <i class="oe-i laterality R small pad"></i>
+            {{/right_eye}}
+            {{#left_eye}}
+            <i class="oe-i laterality L small pad"></i>
+            {{/left_eye}}
+        </span>
+        {{/laterality}}
+    </td>
+</tr>
 </script>
 <!-- COMPLog confirm dialog template -->
 <script type="text/html" id="dialog-complog-template">

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,13 +15,14 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
-<div class="cols-5">
+<div class="cols-full">
     <?= CHtml::activeHiddenField($model, 'id') ?>
     <table class="standard cols-full">
         <colgroup>
-            <col class="cols-1">
-            <col class="cols-4">
+            <col class="cols-2">
+            <col class="cols-full">
         </colgroup>
         <tbody>
         <tr>

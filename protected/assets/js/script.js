@@ -15,10 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 let prepopulationData;
+let loginOverlayTemplate;
 
 $(document).ready(function () {
-	if (window.location.pathname !== '/site/login') {
-		$(document.body).append(createLoginOverlay());
+  if(window.location.pathname !== '/site/login') {
+      loginOverlayTemplate = createLoginOverlay();
+    $(document.body).append(loginOverlayTemplate);
 
 		let loginOverlay = $('#js-overlay');
 		loginOverlay.hide();
@@ -371,18 +373,38 @@ $(document).ready(function () {
 function showLoginOverlay() {
 	let loginOverlay = $('#js-overlay');
 
-	if (!loginOverlay.length) {
-		$(document.body).append(createLoginOverlay());
+    if (!loginOverlay.length)
+    {
+        $(document.body).append(loginOverlayTemplate);
 
 		loginOverlay = $('#js-overlay');
 		loginOverlay.hide();
 	}
 
-	//Do not show login overlay if we are already on the login screen
-	if (window.location.pathname !== '/site/login' && !loginOverlay.is(':visible')) {
-		$('#js-login-error').hide();
-		loginOverlay.show();
-	}
+    //Do not show login overlay if we are already on the login screen
+    if(window.location.pathname !== '/site/login' && !loginOverlay.is(':visible')) {
+        $('#js-login-error').hide();
+        loginOverlay.find('#js-password').val('');
+        loginOverlay.show();
+        $('.js-sign-in-different-account').on('click' , function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            let formDialog = new OpenEyes.UI.Dialog.Confirm({
+                title: "Warning",
+                content: "Any unsaved work for the previous user login will be lost. Are you sure you want to sign-in with a different user or location",
+                okButton: 'Proceed'
+            });
+
+            formDialog.openOnTop();
+            // suppress default ok behaviour
+            formDialog.content.off('click', '.ok');
+            // manage form submission and response
+            formDialog.content.on('click', '.ok', function () {
+                window.location.href =  document.location.origin + '/site/login';
+            }.bind(this));
+        });
+    }
 }
 
 function checkLoginOverlay() {
@@ -510,8 +532,9 @@ function createLoginOverlay() {
         usernameField.id = 'js-username';
         usernameField.type = 'text';
         usernameField.placeholder = 'Username';
-        if('username' in prepopulationData) {
-            usernameField.text = prepopulationData['username'];
+        if ("username" in prepopulationData) {
+            usernameField.setAttribute('disabled', 'disabled');
+            usernameField.setAttribute("value", prepopulationData['username']);
         }
         userDiv.append(usernameField);
 
@@ -548,8 +571,8 @@ function createLoginOverlay() {
 
         let returnButton = document.createElement('a');
         returnButton.classList.add('button');
-        returnButton.innerText = 'Or exit to homepage';
-        returnButton.href = document.location.origin + '/site/login';
+        returnButton.classList.add('js-sign-in-different-account');
+        returnButton.innerText = 'Sign in with a different account or location';
 
         //Event handler fires before default behaviour of the element is triggered
         //The following causes the link change target to logout action and then fire the redirect if the user has a valid session
@@ -653,6 +676,7 @@ function loginWithOverlay() {
         success: function(resp) {
             if(resp === 'Login success'){
                 loginOverlay.hide();
+                loginOverlay.find('#js-password').val('');
                 queueLoginOverlay();
             } else if (resp === 'Username different') {
                 errorBox.text('Username is different from previous session. Please exit to homepage to start a new session');
@@ -780,6 +804,17 @@ function arrayIndex(needle, haystack) {
 		if (haystack[i] == needle) return i;
 	}
 	return false;
+}
+
+function addLineBreakToString(value) {
+	if (typeof value !== 'string') {
+		throw new TypeError('addLineBreakToString requires a string argument');
+	}
+	let outputString = value.trimEnd();
+	if (outputString) {
+		outputString += '\n';
+	}
+	return outputString;
 }
 
 function formatStringToEndWithCommaAndWhitespace(value) {

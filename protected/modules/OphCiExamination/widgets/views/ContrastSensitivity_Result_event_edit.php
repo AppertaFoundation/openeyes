@@ -19,7 +19,7 @@ use OEModule\OphCiExamination\models\ContrastSensitivity_Result;
                 'id',
                 'name'
             ),
-            [
+              [
                 'empty' => '- Select -',
                 'nowrapper' => true,
                 'id' => "{$field_prefix}_contrastsensitivity_type_id_{$row_count}",
@@ -56,14 +56,14 @@ use OEModule\OphCiExamination\models\ContrastSensitivity_Result;
                 'id',
                 'name'
             ),
-            [
-                'empty' => '- Select -',
-                'nowrapper' => true,
-                'id' => "{$field_prefix}_eye_id_{$row_count}",
-                'data-adder-header' => $entry->getAttributeLabel('eye_id'),
-                'data-adder-id' => "{$field_prefix}_eye_id",
-                'data-ec-keep-field' => true,
-                'style' => "visibility:hidden;"
+                                         [
+                                         'empty' => '- Select -',
+                                         'nowrapper' => true,
+                                         'id' => "{$field_prefix}_eye_id_{$row_count}",
+                                         'data-adder-header' => $entry->getAttributeLabel('eye_id'),
+                                         'data-adder-id' => "{$field_prefix}_eye_id",
+                                         'data-ec-keep-field' => true,
+                                         'style' => "visibility:hidden;"
             ]
         ); ?>
     </td>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $institution_id = Yii::app()->session['selected_institution_id'];
 $criteria = new CDbCriteria();
 $criteria->with = array('dispense_location_institutions', 'dispense_location_institutions.dispense_location');
@@ -26,12 +28,12 @@ if (!$dc_institution) {
     $dc_institution = OphDrPrescription_DispenseCondition_Institution::model();
 }
 ?>
-<div class="cols-5">
+<div class="cols-full">
     <?=\CHtml::activeHiddenField($model, 'id') ?>
     <table class="standard cols-full">
         <colgroup>
-            <col class="cols-1">
-            <col class="cols-4">
+            <col class="cols-2">
+            <col class="cols-full">
         </colgroup>
         <tbody>
         <tr>
@@ -49,7 +51,7 @@ if (!$dc_institution) {
             <td>
                 <?php $form->multiSelectList(
                     $dc_institution,
-                    CHtml::modelName($dc_institution).'[dispense_location_institutions]',
+                    CHtml::modelName($dc_institution) . '[dispense_location_institutions]',
                     'dispense_location_institutions',
                     'id',
                     CHtml::listData(OphDrPrescription_DispenseLocation_Institution::model()->findAll(

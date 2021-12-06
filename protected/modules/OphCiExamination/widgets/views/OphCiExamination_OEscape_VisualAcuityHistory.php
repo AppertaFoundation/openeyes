@@ -25,7 +25,7 @@
             $va_unit->id,
             CHtml::listData(
                 OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
-                model()->active()->findAllByAttributes(array('is_near'=>0)),
+                model()->active()->findAllByAttributes(array('is_va' => 1)),
                 'id',
                 'name'
             )

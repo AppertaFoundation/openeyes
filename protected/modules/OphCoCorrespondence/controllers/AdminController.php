@@ -165,13 +165,12 @@ class AdminController extends \ModuleAdminController
         $criteria->with = ['institutions', 'sites', 'firms', 'subspecialties'];
         if (@$_GET['institution_id']) {
             $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
-            $criteria->params['::institution_id'] = $_GET['institution_id'];
+            $criteria->params[':institution_id'] = $_GET['institution_id'];
         }
 
         if (@$_GET['site_id']) {
-            $criteria->addCondition('sites_sites.site_id = :site_id OR institutions_institutions.institution_id = :institution_id');
+            $criteria->addCondition('sites_sites.site_id = :site_id');
             $criteria->params[':site_id'] = $_GET['site_id'];
-            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
         }
 
         if (@$_GET['subspecialty_id']) {
@@ -203,9 +202,6 @@ class AdminController extends \ModuleAdminController
             return LetterMacro::model()->findAll($criteria);
         }
 
-        $criteria->with = ['institutions'];
-        $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
-        $criteria->params = [':institution_id' => Yii::app()->session['selected_institution_id']];
         return LetterMacro::model()->findAll($criteria);
     }
 

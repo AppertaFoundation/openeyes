@@ -2,6 +2,14 @@
 /**
  * @var SiteController $this
  */
+
+if (!isset($form_params)) {
+    $form_params = array();
+}
+
+if (!isset($as_clinic)) {
+    $as_clinic = false;
+}
 ?>
 
 <header class="oe-header">
@@ -15,5 +23,5 @@
         $this->renderPartial('//patient/_patient_id');
     } ?>
 
-    <?php $this->renderPartial('//base/_form'); ?>
+    <?php $this->renderPartial('//base/_form', ['as_clinic' => $as_clinic]); ?>
 </header>

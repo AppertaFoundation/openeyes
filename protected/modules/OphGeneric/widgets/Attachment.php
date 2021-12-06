@@ -134,18 +134,18 @@ class Attachment extends BaseModuleWidget
         foreach ($group_items->eventAttachmentItems as $event_item) {
             if ($event_item->attachmentData->body_site_snomed_type == Attachment::BOTH) {
                 return "BOTH";
-            } else if ($event_item->attachmentData->body_site_snomed_type == Attachment::LEFT) {
+            } elseif ($event_item->attachmentData->body_site_snomed_type == Attachment::LEFT) {
                 $left++;
-            } else if ($event_item->attachmentData->body_site_snomed_type == Attachment::RIGHT) {
+            } elseif ($event_item->attachmentData->body_site_snomed_type == Attachment::RIGHT) {
                 $right++;
             }
         }
 
         if ($left && $right) {
             return "BOTH";
-        } else if ($left) {
+        } elseif ($left) {
             return "LEFT";
-        } else if ($right) {
+        } elseif ($right) {
             return "RIGHT";
         } else {
             return null;

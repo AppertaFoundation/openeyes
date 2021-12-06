@@ -20,7 +20,7 @@
  * @var WaitingListController $this
  * @var Element_OphTrOperationbooking_Operation[] $operations
  */
-
+$operations = $dataProvider->getData();
 if (isset($_POST['status']) && $_POST['status'] != '') {
     $operations = array_filter($operations, function ($operation) {
         return $operation->getNextLetter() == $_POST['status'];
@@ -31,7 +31,7 @@ $selected_site_id = Yii::app()->session['selected_site_id'];
 $primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
     $primary_identifier_usage_type,
-    $institution->id ,
+    $institution->id,
     $selected_site_id);
 
 ?>
@@ -47,7 +47,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
 <table class="standard waiting-list">
   <thead>
   <tr>
-    <th>Letters sent</th>
+    <th></th>
     <th>Patient</th>
     <th><?= $primary_identifier_prompt ?></th>
     <th>Location</th>
@@ -58,6 +58,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
     <th>Priority</th>
     <th>Complexity</th>
     <th>Book status (requires...)</th>
+
     <th>
       <label>
         <input id="checkall" value="" type="checkbox">
@@ -152,8 +153,6 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
         <td><?php echo $eo->priority->name ?></td>
         <td><?php echo $eo->getComplexityCaption(); ?></td>
         <td><?php echo ucfirst(preg_replace('/^Requires /', '', $eo->status->name)) ?></td>
-
-
         <td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) {
             ?> class="admin-td"<?php
            } ?>>
@@ -201,6 +200,11 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
     <?php } ?>
   </tbody>
   <tfoot>
+    <tr>
+      <td colspan="4">
+          <?php $this->widget('LinkPager', ['pages' => $dataProvider->pagination]); ?>
+      </td>
+    </tr>
   <tr>
     <td colspan="13">
       <div class="waiting-list-key">

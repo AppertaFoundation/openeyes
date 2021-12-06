@@ -33,7 +33,7 @@ $assetManager = Yii::app()->getAssetManager();
         'focus' => '#username',
         'action' => $formAction,
         'layoutColumns' => array(
-            'label' => 2,
+            'label' => 7,
             'field' => 5,
         ),
     ));
@@ -164,8 +164,8 @@ $assetManager = Yii::app()->getAssetManager();
                                         <hr>
                                     </div>
                                 </div>
-                                <div class="data-group">
-                                    <div class="cols-2 column">
+                                <div class="data-group flex-layout cols-full">
+                                    <div class="cols-7 column">
                                         <label>Diagnosis</label>
                                     </div>
                                     <div class="cols-5 column end">

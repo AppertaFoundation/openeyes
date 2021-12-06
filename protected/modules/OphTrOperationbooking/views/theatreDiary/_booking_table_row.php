@@ -90,7 +90,6 @@
                     <?=$operation->priority->name?>
                 <?php endif; ?>
                 <li><?=implode("</li><li>", $operation->anaesthetic_type);?></li>
-                <li><?=$session->theatre->ward->name?></li>
 
                 <li>
                     <div class="theatre-procedure-icons">

@@ -28,6 +28,9 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
         'finalize' => self::ACTION_TYPE_FORM,
+        'finalizeWithSignatures' => self::ACTION_TYPE_FORM,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM
     );
 
     private function userIsAdmin()
@@ -39,6 +42,21 @@ class DefaultController extends BaseEventTypeController
         }
 
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'getSignatureByPin' => [
+                'class' => GetSignatureByPinAction::class
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => GetSignatureByUsernameAndPinAction::class
+            ]
+        ];
     }
 
     public function actionView($id)
@@ -113,6 +131,12 @@ class DefaultController extends BaseEventTypeController
             // Save and print clicked, stash print flag
             Yii::app()->session['print_prescription'] = true;
         }
+
+        if ($api = \Yii::app()->moduleAPI->get("OphInCocoa")) {
+            /** @var \OEModule\OphInCocoa\components\OphInCocoa_API $api */
+            $api->displayPrescriptionWarning(\Yii::app()->session['selected_site_id']);
+        }
+
         return true;
     }
 
@@ -940,6 +964,121 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    /*
+     * Finalize as "Save as final" prescription event, with e-signing,
+     * when a prescription event is created as the result of a medication management element from an examination event
+     * or for a regular prescription where a signature has been supplied on the view screen
+     *
+     * @param       integer     event_id
+     */
+    public function actionFinalizeWithSignatures()
+    {
+        if (Yii::app()->request->isPostRequest) {
+            $eventID = Yii::app()->request->getPost('event');
+
+            $signatures = Yii::app()->request->getPost('OEModule_OphCiExamination_models_MedicationManagement');
+            $signatures = $signatures ?? Yii::app()->request->getPost('Element_OphDrPrescription_Esign');
+
+            $signatures = $signatures['signatures'];
+
+            $model = Element_OphDrPrescription_Details::model()->findByAttributes([
+                'event_id' => $eventID
+            ]);
+
+            $prescription_items = OphDrPrescription_Item::model()->findAll(
+                "event_id=:event_id",
+                [':event_id' => $eventID]
+            );
+
+            $prescription_items_by_id = [];
+            $prescribed_medication_models = [];
+            foreach ($prescription_items as $prescription_item) {
+                $prescribed_medication_model = EventMedicationUse::model()->findByAttributes(
+                    ['prescription_item_id' => $prescription_item->id]
+                );
+
+                if ($prescribed_medication_model) {
+                    $prescription_items_by_id[$prescription_item->id] = $prescription_item;
+                    $prescribed_medication_models[] = $prescribed_medication_model;
+                }
+            }
+
+            foreach ($prescribed_medication_models as $prescribed_medication) {
+                $stop_date_from_duration = $prescription_items_by_id[$prescribed_medication->prescription_item_id]->stopDateFromDuration();
+                $prescribed_medication->end_date = !is_null($stop_date_from_duration) ? $stop_date_from_duration->format('Y-m-d') : null;
+                $prescribed_medication->update();
+            }
+
+            if ($model) {
+                $model->draft = 0;
+                $model->authorised_by_user = Yii::app()->session['user'] ? Yii::app()->session['user']->id : null;
+                $model->authorised_date = date('Y-m-d H:i:s');
+                $model->update();
+
+                if ($medication_management =$model->isSignedByMedication()) {
+                    $mm_signatures = $medication_management->getSignatures();
+                    $index = 0;
+
+                    foreach ($mm_signatures as $signature) {
+                        $signature->signatory_name = $signatures[$index]['signatory_name'];
+                        $signature->proof = $signatures[$index]['proof'];
+                        $signature->setDataFromProof();
+
+                        $index++;
+                    }
+
+                    $medication_management->signatures = $mm_signatures;
+
+                    if (!$medication_management->save()) {
+                        throw new Exception("Failed to save Medication Management prescription Electronic Signatures");
+                    }
+                } else {
+                    $prescription_esign = Element_OphDrPrescription_Esign::model()->findByAttributes([
+                        'event_id' => $eventID
+                    ]);
+
+                    $es_signatures = $prescription_esign->getSignatures();
+                    $index = 0;
+
+                    $transaction = Yii::app()->db->beginTransaction();
+                    $errors = array();
+
+                    foreach ($es_signatures as $signature) {
+                        $signature->signatory_name = $signatures[$index]['signatory_name'];
+                        $signature->proof = $signatures[$index]['proof'];
+                        $signature->setDataFromProof();
+
+                        $signature->element_id = $prescription_esign->id;
+
+                        if (!$signature->save()) {
+                            $errors[] = $signature->getErrors();
+                        }
+
+                        $index++;
+                    }
+
+                    if (count($errors) > 0) {
+                        $transaction->rollback();
+
+                        throw new Exception("Failed to save Prescription Electronic Signatures");
+                    } else {
+                        $transaction->commit();
+                    }
+                }
+
+                Audit::add(
+                    'authorise-prescription',
+                    'authorise',
+                    Yii::app()->session['user_auth']->username . ' authorises the prescription.'
+                );
+
+                return $this->redirect(array('/OphDrPrescription/default/view/' . $eventID));
+            }
+
+            throw new Exception("Prescription Details model not found for event " . $eventID);
+        }
+    }
+
     /**
      * Group the different kind of drug items for the printout
      *
@@ -971,6 +1110,49 @@ class DefaultController extends BaseEventTypeController
                 $this->patient,
                 true);
             if ($site_theatre && $site_theatre->event->NHSDate('event_date') === $prescribed_date && $site_theatre->event->episode->firm_id === $firm_id) {
+                return $site_theatre;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function afterUpdateElements($event)
+    {
+        $this->sendEmail($event);
+        parent::afterUpdateElements($event);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function afterCreateElements($event)
+    {
+        $this->sendEmail($event);
+        parent::afterCreateElements($event);
+    }
+
+    private function sendEmail(\Event $event): void
+    {
+        if (($api = \Yii::app()->moduleAPI->get("OphInCocoa")) && isset($_POST["saveandpost"])) {
+            /** @var \OEModule\OphInCocoa\components\OphInCocoa_API $api */
+            $api->sendPrescription($this->patient, $event, $this, \Yii::app()->session['selected_site_id']);
+            // PDF printing messed up the HTTP header so reset the defaults
+            header('Content-Type: text/html');
+            header_remove('Content-Length');
+        }
+    }
+
+    public function getSiteAndTheatreForLatestEvent()
+    {
+        if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+            if ($site_theatre = $api->getElementFromLatestEvent(
+                'Element_OphTrOperationnote_SiteTheatre',
+                $this->patient,
+                true
+            )) {
                 return $site_theatre;
             }
         }
