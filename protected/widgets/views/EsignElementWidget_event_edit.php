@@ -22,11 +22,15 @@ if ($this->isSigningAllowed()) {
     $signatures = [];
     $withdrawal_signatures = [];
     $confirm_signatures = [];
+    $confirm_signed = false;
     foreach ($this->element->getSignatures() as $signature) {
         if (strcmp($signature->signatory_role, "Withdrawn by") == 0) {
             $withdrawal_signatures[] = $signature;
         } elseif (strcmp($signature->signatory_role, "Confirmed by") == 0) {
             $confirm_signatures[] = $signature;
+            if($signature->isSigned()) {
+                $confirm_signed = true;
+            }
         } else {
             $signatures[] = $signature;
         }
@@ -86,7 +90,11 @@ if ($this->isSigningAllowed()) {
                     ); ?>
                 <?php }
                 if ($this->isSigningAllowed() && count($confirm_signatures) != 0) { ?>
-                    <div class="alert-box success"><strong>Consent is confirmed</strong></div>
+                    <?php if ($confirm_signed === true) : ?>
+                        <div class="alert-box success"><strong>Consent is confirmed</strong></div>
+                    <?php else : ?>
+                        <div class="alert-box issue"><strong>The user signature is still required to complete the Confirmation of consent.</strong></div>
+                    <?php endif; ?>
                     <table class="last-left">
                         <colgroup>
                             <col class="cols-1">
@@ -111,6 +119,16 @@ if ($this->isSigningAllowed()) {
                         ?>
                         </tbody>
                     </table>
+                    <?php if($confirm_signed === false) { ?>
+                        <div class="row flex">
+                            <div class="flex-l cols-6">
+                            </div>
+                            
+                            <div>
+                                <button class="button blue hint js-remove-confirm pull-right">Cancel consent confirmation</button>
+                            </div>
+                        </div>
+                    <?php } ?>
                     <hr class="divider" />
                 <?php }
             } ?>
@@ -161,4 +179,20 @@ if ($this->isSigningAllowed()) {
             }
         );
     });
+
+    $(document).ready(function() {
+        <?php
+            $confirm_element_criteria = new CDbCriteria();
+            $confirm_element_criteria->compare('t.event_id', $this->element->event_id);
+            $confirm_element = \Element_OphTrConsent_Confirm::model()->find($confirm_element_criteria);
+        ?>
+
+        $(this).on('click','.js-remove-confirm',function(e) {
+            e.preventDefault();
+            let element = document.getElementsByClassName('element ' + <?= CJavaScript::encode(CHtml::modelName($confirm_element)) ?>)[0];
+            element.dispatchEvent(new Event('element_removed'));
+            removeElement(element);
+            window.location.href = "<?= Yii::app()->createUrl('/OphTrConsent/default/removeConfirm?event_id='.$element->event_id) ?>";
+        });
+	});
 </script>

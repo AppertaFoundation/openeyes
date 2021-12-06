@@ -18,6 +18,6 @@
 ?>
 <div class="element-data">
 	<div class="row data-row">
-		Patient has confirmed their consent, the patient must sign to confirm in the E-Sign element.
+		Patient has confirmed their consent, the user must sign to confirm in the E-Sign element.
 	</div>
 </div>

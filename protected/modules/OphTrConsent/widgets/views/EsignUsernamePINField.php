@@ -25,7 +25,9 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
 <tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>" <?php if(isset($hidden) && $hidden): ?>style="display: none"<?php endif ?>>
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
-    <?php if(strcmp($row_id, "C") == 0) { ?>
+    <?php if (!$this->isSigned()) { ?>
+        <td><i class="oe-i exclamation no-click"></i></td>
+    <?php } elseif (strcmp($row_id, "C") == 0) { ?>
         <td><i class="oe-i tick-green small"></i></td>
     <?php } else { ?>
         <td><span class="highlighter js-row-num"></span></td>

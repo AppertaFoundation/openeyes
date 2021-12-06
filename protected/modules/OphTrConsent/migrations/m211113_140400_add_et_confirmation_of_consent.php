@@ -10,7 +10,7 @@ class m211113_140400_add_et_confirmation_of_consent extends OEMigration
 
     public function safeUp()
     {
-        if ($this->dbConnection->schema->getTable('et_ophtrconsent_confirmation', true) === null) {
+        if ($this->dbConnection->schema->getTable('et_ophtrconsent_confirmation', true) === NULL) {
             $event_type_id = $this->getIdOfEventTypeByClassName('OphTrConsent');
 
             $this->createOETable("et_ophtrconsent_confirmation", [
