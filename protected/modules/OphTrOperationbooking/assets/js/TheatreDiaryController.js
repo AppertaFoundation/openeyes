@@ -69,7 +69,7 @@ class DateTime {
 				break;
 			case "last-week":
 				const t = new Date().getDate() + (6 - new Date().getDay() - 1) - 7;
-                dateFrom.setDate(lastWeekDay.getDate() - (lastWeekDay.getDay() + 6) % 7);
+                dateFrom.setFullYear(lastWeekDay.getFullYear(), lastWeekDay.getMonth(), lastWeekDay.getDate() - ((lastWeekDay.getDay() + 6) % 7));
                 dateTo.setDate(t);
 				break;
 			case "this-week":
@@ -93,6 +93,15 @@ class DateTime {
 			case "next-month":
 				dateFrom = new Date(dateFrom.getFullYear(), dateFrom.getMonth() + 1, 1);
 				dateTo = new Date(dateTo.getFullYear(), dateTo.getMonth() + 2, 0);
+				break;
+			case "+4days":
+				dateTo.setDate(dateFrom.getDate() + 4);
+				break;
+			case "+7days":
+				dateTo.setDate(dateFrom.getDate() + 7);
+				break;
+			case "+12days":
+				dateTo.setDate(dateFrom.getDate() + 12);
 				break;
 
 			default:
@@ -123,7 +132,7 @@ $(document).ready(function() {
 	$ranges.addEventListener('click', function(e) {
 		// loop parent nodes from the target to the delegation node
 		for (let target = e.target; target && target !== this; target = target.parentNode) {
-			if (target.matches('.range')) {
+			if (target.matches('.btn')) {
 				const $from = document.querySelector('.js-filter-date-from');
 				const $to = document.querySelector('.js-filter-date-to');
 

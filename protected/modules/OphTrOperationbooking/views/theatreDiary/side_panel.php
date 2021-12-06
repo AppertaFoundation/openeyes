@@ -101,10 +101,11 @@ $date_filter = Yii::app()->request->getPost('date-filter', '');
 
 
     <h3>Filter by Date</h3>
-    <div class="flex">
+    <div class="set-date-range">
+    <div class="date-inputs">
         <!-- use date for test data: value="28 Jul 2015" -->
-        <input type="text" id="date-start" name="date-start"  class="date js-filter-date-from" placeholder="from">
-        <input style="margin-right:90px" type="text" id="date-end" name="date-end" class="date js-filter-date-to" placeholder="to">
+        <input type="text" size="11" id="date-start" name="date-start"  class="date js-filter-date-from" placeholder="from">
+        <input type="text" size="11" id="date-end" name="date-end" class="date js-filter-date-to" placeholder="to">
 <!--        <label class="inline highlight ">-->
 <!--            <input value="Next 12 wks" name="next-12-wks" type="checkbox"> Next 12 wks-->
 <!--        </label>-->
@@ -112,22 +113,62 @@ $date_filter = Yii::app()->request->getPost('date-filter', '');
 
     <div id="theatre-diaries-date-ranges" class="fast-date-range">
         <div class="selectors">
-            <div class="range" data-range="yesterday">Yesterday</div>
-            <div class="range" data-range="today">Today</div>
-            <div class="range" data-range="tomorrow">Tomorrow</div>
+            <label>
+                <input type="radio" value="+4days" name="quick-selector">
+                <div class="btn" data-range="+4days">+ 4 days</div>
+            </label>
+            <label>
+                <input type="radio" value="+7days" name="quick-selector">
+                <div class="btn" data-range="+7days">+ 7 days</div>
+            </label>
+            <label>
+                <input type="radio" value="+12days" name="quick-selector">
+                <div class="btn" data-range="+12days">+ 12 days</div>
+            </label>
         </div>
         <div class="selectors">
-            <div class="range" data-range="last-week">Last week</div>
-            <div class="range" data-range="this-week">This week</div>
-            <div class="range" data-range="next-week">Next week</div>
+            <label>
+                <input type="radio" value="yesterday" name="quick-selector">
+                <div class="btn" data-range="yesterday">Yesterday</div>
+            </label>
+            <label>
+                <input type="radio" value="today" name="quick-selector">
+                <div class="btn" data-range="today">Today</div>
+            </label>
+            <label><input type="radio" value="tomorrow" name="quick-selector">
+                <div class="btn" data-range="tomorrow">Tomorrow</div>
+            </label>
         </div>
         <div class="selectors">
-            <div class="range" data-range="last-month">Last month</div>
-            <div class="range" data-range="this-month">This month</div>
-            <div class="range" data-range="next-month">Next month</div>
+            <label>
+                <input type="radio" value="last-week" name="quick-selector">
+                <div class="btn" data-range="last-week">Last week</div>
+            </label>
+            <label>
+                <input type="radio" value="this-week" name="quick-selector">
+                <div class="btn" data-range="this-week">This week</div>
+            </label>
+            <label>
+                <input type="radio" value="next-week" name="quick-selector">
+                <div class="btn" data-range="next-week">Next week</div>
+            </label>
+        </div>
+        <div class="selectors">
+            <label>
+                <input type="radio" value="last-month" name="quick-selector">
+                <div class="btn" data-range="last-month">Last month</div>
+            </label>
+            <label>
+                <input type="radio" value="this-month" name="quick-selector">
+                <div class="btn" data-range="this-month">This month</div>
+            </label>
+            <label>
+                <input type="radio" value="next-month" name="quick-selector">
+                <div class="btn" data-range="next-month">Next month</div>
+            </label>
         </div>
     </div>
-
+    </div>
     <div class="row button-stack">
         <i class="spinner" style="display:none"></i>
         <button class="green hint cols-full" id="search_button" type="submit">Search</button>
