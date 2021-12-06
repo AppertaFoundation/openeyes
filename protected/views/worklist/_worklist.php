@@ -62,7 +62,7 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
 <?php else : ?>
 <section class="<?= $section_classes ?>" id="js-worklist-<?= $worklist->id ?>" data-id="<?= $worklist->id ?>" data-title="<?= $worklist->name ?>">
     <header>
-        <h3><?= $worklist->name . ' : ' . date('d M Y') ?></h3>
+        <h3><?= $worklist->name . ' : ' . $worklist->getDisplayDate() ?></h3>
     </header>
 <?php endif; ?>
 <?php if ($data_provider->itemCount === 0): ?>
