@@ -170,9 +170,9 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
                         <th>Registered <?= \SettingMetadata::model()->getSetting('gp_label') ?> Address</th>
                         <td><?= ($patient->practice &&
                                 $address = $patient->practice->getLetterAddress(array('delimiter' => ', '))) ?
-                                $address :
-                                'Unknown';
-                            ?></td>
+                                       $address :
+                                       'Unknown';
+                                        ?></td>
                     </tr>
                     <tr>
                         <td>Patient consents to share data:</td>

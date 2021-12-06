@@ -34,6 +34,6 @@ $form = new BaseEventTypeCActiveForm();
                 'labelOptions'=>array('class' => 'inline highlight'),
                 'template' => '{input} {label}',
             ));
-                            ?>
+                        ?>
     </div>
 </fieldset>

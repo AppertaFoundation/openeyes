@@ -39,7 +39,7 @@
               'class' => 'cols-full autosize'
             )
             )
-?>
+            ?>
         </td>
       </tr>
     </tbody>
