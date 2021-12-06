@@ -49,7 +49,7 @@ foreach ($element->entries as $entry) {
             $is_stopped = true;
         } else {
             foreach ($history_entries as $history_entry) {
-                if (!$entry->isDuplicate($history_entry) && $entry->medication_id === $history_entry->medication_id && $entry->isStopped()) {
+                if ($entry->isDuplicate($history_entry) && $entry->isStopped()) {
                     $is_stopped = true;
                     break;
                 }
@@ -409,7 +409,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             searchOptions: {
                 searchSource: medicationsController.options.searchSource,
             },
-            enableCustomSearchEntries: true,
+            enableCustomEntryWhenNoResults: true,
             searchAsTypedItemProperties: {
                 id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"
             },

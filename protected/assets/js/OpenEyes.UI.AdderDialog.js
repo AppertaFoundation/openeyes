@@ -55,6 +55,7 @@
         width: null,
         createBlackoutDiv: true,
         enableCustomSearchEntries: false,
+        enableCustomEntryWhenNoResults: false,
         searchAsTypedPrefix: 'As typed: ',
         searchAsTypedItemProperties: {},
         filter: false,
@@ -1023,7 +1024,13 @@
                     dialog.searchResultList.append($listItem);
                 });
 
-            if (dialog.options.enableCustomSearchEntries) {
+            if (dialog.options.enableCustomEntryWhenNoResults) {
+                if (results.length === 0) {
+                    dialog.appendCustomEntryOption(text, dialog);
+                } else {
+                    dialog.searchResultList.show();
+                }
+            } else if (dialog.options.enableCustomSearchEntries) {
                 dialog.appendCustomEntryOption(text, dialog);
                 dialog.searchResultList.show();
             } else {

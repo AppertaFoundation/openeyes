@@ -101,17 +101,18 @@ $user_searches = array_map(
     </nav>
     <main class="oe-full-main">
         <?php if ($patients->itemCount > 0) {
+            $view = SettingMetadata::model()->getSetting('oecasesearch_default_view');
             $this->widget('CaseSearchPlot', array(
                 'variable_data' => $variableData,
                 'variables' => $variables,
                 'total_patients' => $patients->totalItemCount,
                 'list_selector' => '.oe-search-results',
-                'display' => true,
+                'display' => ($view ==='plot'),
             ));
             $this->renderPartial('patient_drill_down_list', array(
                 'patients' => $patients,
                 'display_class' => 'oe-search-results',
-                'display' => false,
+                'display' => ($view ==='list'),
             ));
         } else { ?>
             <div class="alert-box info">No patients found.</div>
