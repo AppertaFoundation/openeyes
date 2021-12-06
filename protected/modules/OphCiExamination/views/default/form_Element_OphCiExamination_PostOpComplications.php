@@ -100,8 +100,8 @@ $right_other = !empty($right_other_values) ? array_values($right_other_values)[0
                         'id' => $eye_side . '-complication-select',
                         'nolabel' => true,
                     ),
-                                   false,
-                                   array()
+                                          false,
+                                          array()
                 );
                 $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;
                 $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => $eye_side . '_complication_autocomplete_id']);

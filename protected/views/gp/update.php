@@ -113,7 +113,7 @@ $this->pageTitle = 'Update Practitioner';
                                       [1 => 'Yes', 0 => 'No'],
                                       ['separator' => ' ']
                                     );
-?>
+                                    ?>
                                 </td>
                             </tr>
                             <tr>

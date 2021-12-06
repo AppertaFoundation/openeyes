@@ -123,7 +123,7 @@ $model_name = CHtml::modelName($element);
                     'select' => 't.name,t.id',
                 ]
             );
-?>
+                                ?>
 
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-investigation-btn'),

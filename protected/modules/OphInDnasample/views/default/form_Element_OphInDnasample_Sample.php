@@ -135,7 +135,7 @@
                             null,
                             array('label' => 7, 'field' => 5)
                         );
-?>
+                        ?>
                 </td>
             </tr>
             <tr>
