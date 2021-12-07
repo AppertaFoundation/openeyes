@@ -63,6 +63,8 @@ class CaseSearchController extends BaseModuleController
         $variables = array();
         $variable_data = array();
         $show_all_dates = false;
+        $auditValues = array();
+
         $ids = array();
         $from = null;
         $to = null;
@@ -101,8 +103,16 @@ class CaseSearchController extends BaseModuleController
             $searchProvider = Yii::app()->searchProvider;
             $ids = array_column($searchProvider->search($this->parameters), 'id');
 
-            // Only copy to the $_SESSION array if it isn't already there.
-            // Shallow copy is done at the start if it is already set.
+            foreach ($this->parameters as $param) {
+                $auditValues[] = $param->getAuditData();
+            }
+            if (count($ids) === 0) {
+                Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned no results', null, array('module' => 'OECaseSearch'));
+            } else {
+                Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned '. count($ids) . ' results', null, array('module' => 'OECaseSearch'));
+            }
+
+            // Only copy to the $_SESSION array if it isn't already there - Shallow copy is done at the start if it is already set.
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
                 $_SESSION['last_search'] = $ids;
             }
@@ -143,6 +153,19 @@ class CaseSearchController extends BaseModuleController
                         'desc' => 'gender DESC',
                         'label' => 'Gender',
                     ),
+                    /*
+                    // reserve for OE-12343 re-implementation
+                    'hos_num'=> array(
+                        'asc' => 'hos_num',
+                        'desc' => 'hos_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
+                    ),
+                    'nhs_num' => array(
+                        'asc' => 'nhs_num',
+                        'desc' => 'nhs_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('nhs_num_label'),
+                    ),
+                    */
                 ),
                 'defaultOrder' => array(
                     'last_name' => CSort::SORT_ASC,
@@ -509,6 +532,19 @@ class CaseSearchController extends BaseModuleController
                         'desc' => 'gender DESC',
                         'label' => 'Gender',
                     ),
+                    /*
+                    // reserve for OE-12343 re-implementation
+                    'hos_num' => array(
+                        'asc' => 'hos_num',
+                        'desc' => 'hos_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
+                    ),
+                    'nhs_num' => array(
+                        'asc' => 'nhs_num',
+                        'desc' => 'nhs_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('nhs_num_label'),
+                    ),
+                    */
                 ),
                 'defaultOrder' => array(
                     'last_name' => CSort::SORT_ASC,
@@ -623,6 +659,7 @@ class CaseSearchController extends BaseModuleController
             foreach ($patients as $patient) {
                 $this->renderPartial('application.widgets.views.PatientIcons', array('data' => $patient, 'page' => 'caseSearch'));
             }
+            Audit::add('case-search', 'rendered-summary-popups', 'Summary popups for patients ' . $_POST["patientsID"] . ' were rendered and may have been viewed', false);
         }
     }
 }

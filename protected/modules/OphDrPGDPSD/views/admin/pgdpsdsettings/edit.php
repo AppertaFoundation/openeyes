@@ -82,7 +82,7 @@
                                 'attributes[active]',
                                 array('checked' => $pgdpsd->isNewRecord ? true : $pgdpsd->active)
                             );
-?>
+                            ?>
                     </td>
                 </tr>
             </tbody>

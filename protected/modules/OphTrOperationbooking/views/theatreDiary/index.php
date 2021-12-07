@@ -54,6 +54,12 @@
 
 </div>
 
+<?php
+$assetManager = Yii::app()->getAssetManager();
+$widgetPath = $assetManager->publish('protected/widgets/js');
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
+?>
+
 <style>
     .printable {
         display: none;
