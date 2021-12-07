@@ -15,6 +15,8 @@
     this.optionsDisplayed = false;
     this.currentPreview = null;
     this.sendImageUrlAjaxRequest = true;
+    this.ajaxRequestStack = [];     //Stack the requests so that latest one gets processed first
+    this.eventInRequest =  null;
 
     this.previewWidth = $('.js-lightning-view-overlay').width();
 
@@ -108,7 +110,6 @@
   };
 
   LightningViewer.prototype.changePreview = function (event_id) {
-      const self = this;
 
     if (this.currentEventId === event_id) {
       return;
@@ -116,28 +117,18 @@
 
     this.currentEventId = event_id;
     this.currentPreview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
-    if (this.currentPreview.children(".no-lightning-image").length && this.sendImageUrlAjaxRequest) {
-        $.ajax({
-            type: 'GET',
-            url: '/eventImage/GetImageInfo',
-            data: {'event_id': event_id},
-            'beforeSend': function () {
-                self.sendImageUrlAjaxRequest = false;
-            },
-            'success': function (response) {
-                self.setEventImages(event_id, response);
-                $('.spinner').hide();
-            },
-            'complete': function () {
-                self.sendImageUrlAjaxRequest = true;
-                self.showPage(self.currentPreview);
-            },
-            'error': function () {
-                new OpenEyes.UI.Dialog.Alert({
-                    content: "Unable to generate a view at this time, please contact your administrator."
-                }).open();
-            }
-        });
+    if (this.currentPreview.children(".no-lightning-image").length && this.eventInRequest !== event_id) {
+        if (this.ajaxRequestStack.indexOf(event_id) > -1) {
+            // The request already exists in the stack, so move it to top to be processed first
+            this.ajaxRequestStack.push(this.ajaxRequestStack.splice(this.ajaxRequestStack.indexOf(event_id), 1)[0]);
+        } else {
+            // New entry - Push it to the stack
+            this.ajaxRequestStack.push(event_id);
+        }
+        // Only call the function when it is not in its recursive process
+        if (this.sendImageUrlAjaxRequest) {
+            this.generateImage();
+        }
     }
 
     $('.js-lightning-image-preview').hide();
@@ -148,6 +139,39 @@
     $meta.find('.js-lightning-date').html(this.currentPreview.data('date'));
 
     this.showPage(this.currentPreview);
+  };
+
+  LightningViewer.prototype.generateImage = function () {
+      let self = this;
+      // Pop the last inserted event from stack
+      let event_id = this.ajaxRequestStack.pop();
+      $.ajax({
+          type: 'GET',
+          url: '/eventImage/GetImageInfo',
+          data: {'event_id': event_id},
+          'beforeSend': function () {
+              self.eventInRequest = event_id;
+              self.sendImageUrlAjaxRequest = false;
+          },
+          'success': function (response) {
+              self.setEventImages(event_id, response);
+          },
+          'error': function () {
+              new OpenEyes.UI.Dialog.Alert({
+                  content: "Unable to generate a view at this time, please contact your administrator."
+              }).open();
+          },
+          'complete': function () {
+              self.showPage(self.currentPreview);
+              if (self.ajaxRequestStack.length > 0) {
+                  // Stack is not empty, call the function again for next request
+                  self.generateImage();
+              } else {
+                  // All requests have been processed, so exit from recursive condition and check for any new requests
+                  self.sendImageUrlAjaxRequest = true;
+              }
+          }
+      });
   };
 
   LightningViewer.prototype.showPage = function ($currentPreview) {
