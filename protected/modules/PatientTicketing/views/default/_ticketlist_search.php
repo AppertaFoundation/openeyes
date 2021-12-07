@@ -31,7 +31,7 @@
         'class' => 'data-group',
     ),
     'enableAjaxValidation' => false,
-)); ?>
+));?>
 
 
 <nav class="oe-virtual-clinic-search">
@@ -42,7 +42,8 @@
             <col class="cols-4">
             <col class="cols-1">
             <col class="cols-3">
-            <col class="cols-3">
+            <col class="cols-1">
+            <col class="cols-2">
         </colgroup>
 
         <tbody>
@@ -83,6 +84,8 @@
                 </td>
             <?php endif; ?>
 
+            <td class="fade">Priorities</td>
+
             <td colspan="2">
                 <?php $priorities = \Yii::app()->request->getParam('priority-ids', []); ?>
                 <?= \CHtml::hiddenField('priority-ids[]', 0); ?>
@@ -109,6 +112,8 @@
                         Completed
                     </label></small>
             </td>
+            <td></td>
+            <td></td>
         </tr>
         <tr class="col-gap">
             <td class="fade">Patients:</td>
@@ -151,11 +156,25 @@
                     ) ?>
                 <?php } ?>
             </td>
+            <td class="fade">Date Range</td>
             <td colspan="2">
+                <label class="inline highlight">
+                    <?= \CHtml::checkBox('enable-date-from', Yii::app()->request->getParam('enable-date-from'), array("id" => "js-enable-date-range-from")) ?>
+                    <input id="js-date-from-field" name="date-from" <?=Yii::app()->request->getParam('enable-date-from') ? '' : 'disabled'?> class="date readonly" value="<?= Yii::app()->request->getParam('date-from') ?>">
+                </label>
+                 to 
+                <label class="inline highlight">
+                    <?= \CHtml::checkBox('enable-date-to', Yii::app()->request->getParam('enable-date-to'), array("id" => "js-enable-date-range-to")) ?>
+                    <input id="js-date-to-field" name="date-to" <?=Yii::app()->request->getParam('enable-date-to') ? '' : 'disabled'?> class="date" value="<?= Yii::app()->request->getParam('date-to') ?>">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5"></td>
+            <td colspan="1">
                 <button class="green hint cols-11">Update Search</button>
             </td>
         </tr>
-
         </tbody>
     </table>
     <table class="standard" style="margin-top:0px">
@@ -186,8 +205,73 @@
 
 <?php $this->endWidget() ?>
 <script type="text/javascript">
+    function correctDateRanges($fromField, $toField, $enableFrom, $enableTo, favourFrom) {
+        if ($enableFrom.prop("checked") && $enableTo.prop("checked")) {
+            let fromTimestamp = Date.parse($fromField.val());
+            let toTimestamp = Date.parse($toField.val());
+
+            if (fromTimestamp > toTimestamp) {
+                if (favourFrom) {
+                    $toField.val($fromField.val());
+                } else {
+                    $fromField.val($toField.val());
+                }
+            }
+        }
+    }
 
     $(document).ready(function () {
+        let $fromField = $('#js-date-from-field');
+        let $toField = $('#js-date-to-field');
+        let $enableFrom = $('#js-enable-date-range-from');
+        let $enableTo = $('#js-enable-date-range-to');
+
+        if ($fromField.val() === "") {
+            $fromField.val("-");
+        }
+        if ($toField.val() === "") {
+            $toField.val("-");
+        }
+
+        $enableFrom.click(function () {
+            let $dateField = $fromField;
+            if(this.checked) {
+                $dateField.val($.datepicker.formatDate("dd M yy", new Date(Date.now())));
+                correctDateRanges($fromField, $toField, $enableFrom, $enableTo, false);
+                $dateField.removeAttr("disabled");
+            } else {
+                $dateField.val("-");
+                $dateField.attr("disabled", "disabled");
+            }
+        });
+        $enableTo.click(function () {
+            let $dateField = $toField;
+            if(this.checked) {
+                $dateField.val($.datepicker.formatDate("dd M yy", new Date(Date.now())));
+                correctDateRanges($fromField, $toField, $enableFrom, $enableTo, true);
+                $dateField.removeAttr("disabled");
+            } else {
+                $dateField.val("-");
+                $dateField.attr("disabled", "disabled");
+            }
+        });
+
+        $fromField.on('change pickmeup-change', function () {
+            correctDateRanges($fromField, $toField, $enableFrom, $enableTo, true);
+        });
+        $toField.on('change pickmeup-change', function () {
+            correctDateRanges($fromField, $toField, $enableFrom, $enableTo, false);
+        });
+
+        pickmeup('#js-date-from-field', {
+            format: 'd b Y',
+            default_date: false,
+        });
+        pickmeup('#js-date-to-field', {
+            format: 'd b Y',
+            default_date: false,
+        });
+
         if (OpenEyes.UI.AutoCompleteSearch !== undefined) {
             OpenEyes.UI.AutoCompleteSearch.init({
                 input: $('#oe-autocompletesearch'),
@@ -215,7 +299,6 @@
                 }
             });
         }
-
 
         $('#patient-result-wrapper').on('click', '.remove-circle', function () {
             let id = $(this).data('patient_id');
