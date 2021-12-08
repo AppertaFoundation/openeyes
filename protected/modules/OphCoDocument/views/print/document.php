@@ -36,6 +36,7 @@ if (!isset($id) && isset($this->event_type)) {
                 <div id="right-eye">
                     <h2>Right eye</h2>
                     <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->right_document->mimetype), array('element'=>$element, 'index'=>'right_document')); ?>
+                    <?php if ($element->right_comment) echo "<br/><b>Comments: </b><br>".nl2br($element->right_comment); ?>
                 </div>
             <?php } ?>
             <hr>
@@ -43,11 +44,12 @@ if (!isset($id) && isset($this->event_type)) {
                 <div id="left-eye">
                     <h2>Left eye</h2>
                     <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->left_document->mimetype), array('element'=>$element, 'index'=>'left_document')); ?>
+                    <?php if ($element->left_comment) echo "<br/><b>Comments: </b><br>".nl2br($element->left_comment); ?>
                 </div>
             <?php } ?>
         </div>
     <?php endif; ?>
-    <?php if ($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?>
+    <?php if ($element->single_comment) echo "<br/><b>Comments: </b><br>".nl2br($element->single_comment); ?>
 <?php endforeach; ?>
 
 
