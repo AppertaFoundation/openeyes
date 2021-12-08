@@ -74,4 +74,12 @@ class SensoryFunction extends \BaseEventTypeElement
                 return "$prefix $entry";
             }, $this->entries));
     }
+
+    public function beforeDelete()
+    {
+        foreach($this->entries as $entry){
+            $entry->delete();
+        }
+        return parent::beforeDelete();
+    }
 }
