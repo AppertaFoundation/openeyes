@@ -27,7 +27,7 @@ if (!isset($id) && isset($this->event_type)) {
 <?php foreach ($this->getElements() as $element) :  ?>
     <b><?php if ($element->sub_type) echo $element->sub_type->name; ?></b>
     <?php if ($element->single_document) : ?>
-        <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->single_document->mimetype), array('element'=>$element, 'index'=>'single_document')); ?>
+        <?php $this->renderPartial('view_'.$this->getTemplateForMimeType($element->single_document->mimetype), array('element'=>$element, 'index'=>'single_document')); ?>
     <?php endif; ?>
     <?php if (($element->right_document_id) || ($element->left_document_id)) : ?>
         <div>
@@ -35,7 +35,7 @@ if (!isset($id) && isset($this->event_type)) {
                 ?>
                 <div id="right-eye">
                     <h2>Right eye</h2>
-                    <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->right_document->mimetype), array('element'=>$element, 'index'=>'right_document')); ?>
+                    <?php $this->renderPartial('view_'.$this->getTemplateForMimeType($element->right_document->mimetype), array('element'=>$element, 'index'=>'right_document')); ?>
                     <?php if ($element->right_comment) echo "<br/><b>Comments: </b><br>".nl2br($element->right_comment); ?>
                 </div>
             <?php } ?>
@@ -43,7 +43,7 @@ if (!isset($id) && isset($this->event_type)) {
             <?php if ($element->left_document_id) { ?>
                 <div id="left-eye">
                     <h2>Left eye</h2>
-                    <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->left_document->mimetype), array('element'=>$element, 'index'=>'left_document')); ?>
+                    <?php $this->renderPartial('/view_'.$this->getTemplateForMimeType($element->left_document->mimetype), array('element'=>$element, 'index'=>'left_document')); ?>
                     <?php if ($element->left_comment) echo "<br/><b>Comments: </b><br>".nl2br($element->left_comment); ?>
                 </div>
             <?php } ?>
