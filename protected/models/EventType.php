@@ -184,20 +184,11 @@ class EventType extends BaseActiveRecordVersioned
      */
     public function getEventTypeInUseList()
     {
-        $criteria = new CDbCriteria();
-        $criteria->distinct = true;
+        $event_types = Yii::app()->db
+            ->createCommand('SELECT id, name FROM event_type et INNER JOIN (SELECT DISTINCT event_type_id FROM event) e on e.event_type_id = et.id')
+            ->queryAll();
 
-        $event_type_ids = array();
-        foreach (Event::model()->findAll($criteria) as $event) {
-            $event_type_ids[] = $event->event_type_id;
-        }
-
-        $criteria = new CDbCriteria();
-        $criteria->addInCondition('id', $event_type_ids);
-        $criteria->order = 'name asc';
-        $criteria->addCondition('parent_id is null');
-
-        return CHtml::listData(self::model()->findAll($criteria), 'id', 'name');
+        return CHtml::listData($event_types, 'id', 'name');
     }
 
     /**
