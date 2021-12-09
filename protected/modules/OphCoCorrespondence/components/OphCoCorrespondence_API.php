@@ -356,7 +356,7 @@ class OphCoCorrespondence_API extends BaseAPI
             $data['to']['email'] = $contact->contact->email ?? null;
         }
 
-        if ($macro->recipient && $macro->recipient->name == \SettingMetadata::model()->getSetting('gp_label') && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
+        if ($macro->recipient && $macro->recipient->name == 'GP' && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['to']['contact_type'] = get_class($contact);
             $data['to']['contact_id'] = $contact->contact->id;
             $data['to']['email'] = $contact->contact->email ?? null;
@@ -414,7 +414,7 @@ class OphCoCorrespondence_API extends BaseAPI
         }
 
         if ($macro->cc_doctor && $cc_contact = ($patient->gp) ? $patient->gp : $patient->practice) {
-            $data['cc'][$k]['contact_type'] = \SettingMetadata::model()->getSetting('gp_label');
+            $data['cc'][$k]['contact_type'] = get_class($cc_contact);
             $data['cc'][$k]['contact_name'] = $cc_contact->getCorrespondenceName();
             $data['cc'][$k]['contact_id'] = $cc_contact->contact->id;
             $data['cc'][$k]['address'] = $cc_contact->getLetterAddress(array(
