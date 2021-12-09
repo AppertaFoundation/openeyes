@@ -37,7 +37,6 @@
  */
 class Episode extends BaseActiveRecordVersioned
 {
-    private $defaultScopeDisabled = false;
 
     /**
      * Returns the static model of the specified AR class.
@@ -81,8 +80,8 @@ class Episode extends BaseActiveRecordVersioned
     public function defaultScope()
     {
         $this->displayDeletedEvents();
-        if ($this->defaultScopeDisabled) {
-            return array();
+        if ($this->getDefaultScopeDisabled()) {
+            return [];
         }
 
         $table_alias = $this->getTableAlias(false, false);
@@ -90,13 +89,6 @@ class Episode extends BaseActiveRecordVersioned
         return array(
             'condition' => $table_alias.'.deleted = 0',
         );
-    }
-
-    public function disableDefaultScope()
-    {
-        $this->defaultScopeDisabled = true;
-
-        return $this;
     }
 
     /**

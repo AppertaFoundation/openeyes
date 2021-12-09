@@ -4,6 +4,10 @@ class m210324_010944_create_institutions_reference_mapping_table extends OEMigra
 {
     public function safeUp()
     {
+        $institution_id = $this->dbConnection->createCommand(
+            "SELECT id FROM institution WHERE remote_id = :ods_code"
+        )->queryScalar(array('ods_code' => Yii::app()->params['institution_code']));
+
         // IOP Instruments reference column for institution
         $this->createOETable('ophciexamination_instrument_institution', [
             'id' => 'pk',
@@ -13,6 +17,12 @@ class m210324_010944_create_institutions_reference_mapping_table extends OEMigra
             'CONSTRAINT `ophciexamination_instrument_ref_institution_fk` FOREIGN KEY (`institution_id`) REFERENCES `institution` (`id`)',
         ], true);
 
+        // Map existing instruments to default institution
+        $this->dbConnection->createCommand("INSERT INTO ophciexamination_instrument_institution (instrument_id, institution_id)
+                                            SELECT id, :institution_id
+                                            FROM ophciexamination_instrument
+                                            WHERE active = 1")->execute(array(':institution_id' => $institution_id));
+
         //Risks reference column for institution
         $this->createOETable('ophciexamination_risk_institution', [
             'id' => 'pk',
@@ -21,6 +31,11 @@ class m210324_010944_create_institutions_reference_mapping_table extends OEMigra
             'CONSTRAINT `ophciexamination_risk_ref_risk_fk` FOREIGN KEY (`risk_id`) REFERENCES `ophciexamination_risk` (`id`)',
             'CONSTRAINT `ophciexamination_risk_ref_institution_fk` FOREIGN KEY (`institution_id`) REFERENCES `institution` (`id`)',
         ], true);
+
+        // Map existing risks to default institution
+        $this->dbConnection->createCommand("INSERT INTO ophciexamination_risk_institution (risk_id, institution_id)
+                                            SELECT id, :institution_id
+                                            FROM ophciexamination_risk")->execute(array(':institution_id' => $institution_id));
     }
 
     public function safeDown()

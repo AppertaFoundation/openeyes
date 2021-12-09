@@ -73,7 +73,6 @@ class DefaultPas extends BasePAS
         }
 
         if (!empty($params['patient_identifier_value'])) {
-
             //get the patient
             $criteria = new \CDbCriteria();
 
@@ -138,8 +137,10 @@ class DefaultPas extends BasePAS
         $query = [];
 
 
-        if (isset($data['patient_identifier_value']) && $data['patient_identifier_value']) {
-
+        // for global search, we search types with GLOBAL number
+        if (isset($data['is_global_search']) && $data['is_global_search']) {
+            $query = ['nhsnum' => $data['patient_identifier_value']];
+        } elseif (isset($data['patient_identifier_value']) && $data['patient_identifier_value']) {
             if ($this->type->usage_type === 'LOCAL') {
                 $query['hosnum'] = $data['patient_identifier_value'];
             } elseif ($this->type->usage_type === 'GLOBAL') {
@@ -153,14 +154,8 @@ class DefaultPas extends BasePAS
             }
         }
 
-        // for global search, we search types with GLOBAL number
-        if (isset($data['is_global_search'])) {
-            $query = ['nhsnum' => $data['patient_identifier_value']];
-        }
-
         $error = '';
         if (!empty($query)) {
-
             $xml = $this->curl->get($this->config['url'] . '?' . http_build_query($query));
             $ch = $this->curl->curl;
 
@@ -213,7 +208,6 @@ class DefaultPas extends BasePAS
 
                 $xml_handler->next('Patient');
             }
-
         } catch (Exception $e) {
             \OELog::log("PASAPI : " . $e->getMessage());
         }
