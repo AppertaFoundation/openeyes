@@ -21,7 +21,7 @@ use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
 class DefaultController extends BaseEventTypeController
 {
     protected $max_document_size = 10485760;
-    protected $max_document_name_length = 255;
+    protected $max_document_name_length = 64;
     protected $max_content_length = 8388608;
     protected $allowed_file_types = array();
 
