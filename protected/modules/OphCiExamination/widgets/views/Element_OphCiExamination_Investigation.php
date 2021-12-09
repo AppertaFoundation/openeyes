@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('Investigations.js') ?>"></script>
 
@@ -61,11 +63,13 @@ $model_name = CHtml::modelName($element);
         </table>
     </div>
     <div class="cols-full comment-group flex-layout flex-left"   id = 'investigation-other-comments' ">
-        <?php echo $form->textArea($element,
+        <?php echo $form->textArea(
+            $element,
             'description',
             array('nowrapper' => true),
             false,
-            array('class' => 'js-input-comments js-allow-qtags cols-10', 'rows' => 2, 'placeholder' => 'description', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;'))
+            array('class' => 'js-input-comments js-allow-qtags cols-10', 'rows' => 2, 'placeholder' => 'Comments', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;')
+        )
 ?>
         <i class="cols-2 oe-i remove-circle small-icon pad-left js-remove-add-comments" id="remove-general-investigation-comments"></i>
     </div>
@@ -119,10 +123,10 @@ $model_name = CHtml::modelName($element);
 
         });
         <?php $investigations = \OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes::model()->findAll(
-                [
+            [
                     'select' => 't.name,t.id',
                 ]
-            );
+        );
                                 ?>
 
         new OpenEyes.UI.AdderDialog({
