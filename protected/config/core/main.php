@@ -60,7 +60,7 @@ if (!empty(getenv('YII_DEBUG_BAR_IPS'))) {
                 'enableParamLogging' => true,
             ),
         ),
-);
+    );
 
     $config = CMap::mergeArray($yiidebugbar, $config);
 }

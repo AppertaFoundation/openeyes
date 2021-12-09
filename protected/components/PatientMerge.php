@@ -648,7 +648,7 @@ class PatientMerge
         $secondary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $secondary_patient->id]);
 
         $primary_identifier = $this->setPatientIdentifier($primary_patient->id);
-        $secondary_identifier = $this->setPatientIdentifier($secondary_patient->patient->id);
+        $secondary_identifier = $this->setPatientIdentifier($secondary_patient->id);
 
         //if primary is genetics patient but secondary is not
         if ($primary_genetics_patient && !$secondary_genetics_patient) {
