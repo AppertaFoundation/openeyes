@@ -70,4 +70,12 @@ class NinePositions extends \BaseEventTypeElement
     {
         return true;
     }
+
+    public function beforeDelete()
+    {
+        foreach($this->readings as $reading){
+            $reading->delete();
+        }
+        return parent::beforeDelete();
+    }
 }
