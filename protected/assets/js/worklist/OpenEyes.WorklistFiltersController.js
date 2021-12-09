@@ -248,13 +248,13 @@ var OpenEyes = OpenEyes || {};
     WorklistFiltersController.prototype.retrieveFilters = function () {
         const controller = this;
 
-        // TODO Deal with success and failure
-        $.get('/worklist/retrieveFilters',
-            {},
-            function (resp) {
-                if (!resp) {
-                    return;
-                }
+        $('.spinner').show();
+
+        $.ajax({
+            url: '/worklist/retrieveFilters',
+            type: 'GET',
+            success: function(resp) {
+                $('.spinner').hide();
 
                 controller.savedFilters = resp.saved.map(OpenEyes.WorklistFilter.fromJSON);
                 controller.recentFilters = resp.recent.map(OpenEyes.WorklistFilter.fromJSON);
@@ -265,31 +265,50 @@ var OpenEyes = OpenEyes || {};
 
                 controller.panelView.setSavedTabList(controller.mappings, controller.savedFilters);
                 controller.panelView.setRecentTabList(controller.mappings, controller.recentFilters);
-            });
+            },
+            error: function() {
+                $('.spinner').hide();
+
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Unable to retrieve the filters.\n\nPlease reload the page to try again or contact support."
+                }).open();
+            }
+        });
     }
 
-    WorklistFiltersController.prototype.storeFilter = function (isRecent) {
-        // TODO deal with success and failure
-        $.post('/worklist/storeFilter',
-            {
+    WorklistFiltersController.prototype.storeFilter = function (isRecent, onSuccess) {
+        $('.spinner').show();
+
+        $.ajax({
+            url: '/worklist/storeFilter',
+            type: 'POST',
+            data: {
                 YII_CSRF_TOKEN: YII_CSRF_TOKEN,
                 is_recent: isRecent,
                 id: this.filter.id ? this.filter.id : '',
                 name: this.filter.name ? this.filter.name : '',
                 filter: this.filter.asJSON()
             },
-            function (resp) {
-                if (!resp) {
-                    return;
+            success: function() {
+                $('.spinner').hide();
+
+                if (onSuccess) {
+                    onSuccess();
                 }
-            });
+            },
+            error: function() {
+                $('.spinner').hide();
+
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Unable to save the new filter.\n\nPlease try again or contact support."
+                }).open();
+            }
+        });
     }
 
     WorklistFiltersController.prototype.applyFilterWhenAltered = function () {
         if (this.filterIsAltered) {
-            this.pushRecentFilter();
-
-            this.applyFilter();
+            this.pushRecentFilter(this.applyFilter.bind(this));
         }
     }
 
@@ -312,7 +331,7 @@ var OpenEyes = OpenEyes || {};
         this.panelView.setSavedTabList(this.mappings, this.savedFilters);
     }
 
-    WorklistFiltersController.prototype.pushRecentFilter = function () {
+    WorklistFiltersController.prototype.pushRecentFilter = function (onSuccess) {
         if (this.recentFilters.some(this.filter.compare.bind(this.filter))) {
             return;
         }
@@ -324,7 +343,7 @@ var OpenEyes = OpenEyes || {};
         this.filterIsAltered = false;
 
         this.recentFilters.push(this.filter.clone());
-        this.storeFilter(true);
+        this.storeFilter(true, onSuccess);
 
         this.panelView.setRecentTabList(this.mappings, this.recentFilters);
     }

@@ -42,6 +42,7 @@
             <i class="oe-i direction-right medium pad selected"></i>
         </div>
     </div>
+    <i class="spinner" style="display: none;"></i>
 </main>
 
 <script type="text/javascript">
