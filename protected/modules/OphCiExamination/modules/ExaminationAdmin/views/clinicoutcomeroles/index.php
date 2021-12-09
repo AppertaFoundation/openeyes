@@ -15,7 +15,7 @@
  */
 
 ?>
-<h2>Clinic Outcome Roles</h2>
+<h2>Follow-up Roles</h2>
 <?php $this->renderPartial('//base/_messages') ?>
 <div class="cols-full">
     <form id="admin_clinicoutcomeroles">
