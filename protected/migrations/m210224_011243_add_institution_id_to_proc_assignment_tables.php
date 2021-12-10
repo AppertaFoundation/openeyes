@@ -7,6 +7,10 @@ class m210224_011243_add_institution_id_to_proc_assignment_tables extends OEMigr
      */
     public function safeUp()
     {
+        $institution_id = $this->dbConnection
+            ->createCommand("SELECT * FROM institution WHERE remote_id = '" . Yii::app()->params['institution_code'] . "'")
+            ->queryScalar();
+
         $this->addOEColumn('proc_subspecialty_assignment', 'institution_id', 'int(10) unsigned', true);
         $this->addOEColumn('proc_subspecialty_subsection_assignment', 'institution_id', 'int(10) unsigned', true);
 
@@ -39,6 +43,8 @@ class m210224_011243_add_institution_id_to_proc_assignment_tables extends OEMigr
         $institution_ids = $this->dbConnection->createCommand()
             ->select('id')
             ->from('institution')
+            ->where('id = :institution_id')
+            ->bindValues(['institution_id' => $institution_id])
             ->queryColumn();
 
         $first_id = array_shift($institution_ids);
@@ -64,7 +70,7 @@ class m210224_011243_add_institution_id_to_proc_assignment_tables extends OEMigr
                 },
                 $existing_subspecialty_subsections
             );
-            if(!empty($cloned_rows)){
+            if (!empty($cloned_rows)) {
                 $this->insertMultiple('proc_subspecialty_subsection_assignment', $cloned_rows);
             }
             $cloned_rows = array_map(
@@ -79,7 +85,7 @@ class m210224_011243_add_institution_id_to_proc_assignment_tables extends OEMigr
                 },
                 $existing_subspecialties
             );
-            if(!empty($cloned_rows)){
+            if (!empty($cloned_rows)) {
                 $this->insertMultiple('proc_subspecialty_assignment', $cloned_rows);
             }
         }

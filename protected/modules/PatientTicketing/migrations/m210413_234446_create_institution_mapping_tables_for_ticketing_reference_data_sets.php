@@ -31,6 +31,10 @@ class m210413_234446_create_institution_mapping_tables_for_ticketing_reference_d
 
     public function safeUp()
     {
+        $institution_id = $this->dbConnection
+            ->createCommand("SELECT * FROM institution WHERE remote_id = '" . Yii::app()->params['institution_code'] . "'")
+            ->queryScalar();
+
         foreach ($this->base_tables as $table_name => $columns) {
             $mapping_table = $table_name . '_institution';
             $this->createOETable(
@@ -52,9 +56,10 @@ class m210413_234446_create_institution_mapping_tables_for_ticketing_reference_d
                 ->select("t.id AS $reference_data_column, i.id AS institution_id")
                 ->from($table_name . ' t')
                 ->crossJoin('institution i')
-                ->queryAll();
+                ->where('i.id = :institution_id')
+                ->queryAll(true, array(':institution_id' => $institution_id));
 
-            if(!empty($mapping_data)){
+            if (!empty($mapping_data)) {
                 $this->insertMultiple(
                     $mapping_table,
                     $mapping_data

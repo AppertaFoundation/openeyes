@@ -8,12 +8,16 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
      */
     public function safeUp()
     {
+        $institution_id = $this->dbConnection
+            ->createCommand("SELECT * FROM institution WHERE remote_id = '" . Yii::app()->params['institution_code'] . "'")
+            ->queryScalar();
+
         $institution_list = $this->dbConnection->createCommand()
             ->select('id')
             ->from('institution')
             ->order('id')
-            ->queryColumn();
-        $first_institution = array_shift($institution_list);
+            ->where('id = :institution_id')
+            ->queryColumn(array(':institution_id' => $institution_id));
 
         $this->addOEColumn(
             'ophtroperationbooking_whiteboard_settings_data',
@@ -33,12 +37,12 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
         // Add the first institution_id to all pre-existing records, then clone these records for each different institution.
         $this->update(
             'ophtroperationbooking_whiteboard_settings_data',
-            array('institution_id' => $first_institution),
+            array('institution_id' => $institution_id),
         );
 
         $this->update(
             'ophtroperationbooking_whiteboard_settings_data_version',
-            array('institution_id' => $first_institution),
+            array('institution_id' => $institution_id),
         );
 
         $raw_data = $this->dbConnection->createCommand()
@@ -58,7 +62,7 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
                     $raw_data[$i]['last_modified_date'] = date('Y-m-d h:i:s');
                     $raw_data[$i]['last_modified_user_id'] = 1;
                 }
-                if(!empty($raw_data)){
+                if (!empty($raw_data)) {
                     $this->insertMultiple(
                         'ophtroperationbooking_whiteboard_settings_data',
                         $raw_data
@@ -78,7 +82,7 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
             array(
                 'id' => 'pk',
                 'patientunavailreason_id' => 'int(11) NOT NULL',
-                'institution_id'=> 'int(10) unsigned NOT NULL'
+                'institution_id' => 'int(10) unsigned NOT NULL'
             ),
             true
         );
@@ -103,9 +107,10 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
             ->select('r.id as patientunavailreason_id, i.id as institution_id')
             ->from('ophtroperationbooking_scheduleope_patientunavailreason r')
             ->crossJoin('institution i')
-            ->queryAll();
+            ->where('i.id = :institution_id')
+            ->queryAll(true, array(':institution_id' => $institution_id));
 
-        if(!empty($mappings)){
+        if (!empty($mappings)) {
             $this->insertMultiple(
                 'ophtroperationbooking_patientunavailreason_institution',
                 $mappings
@@ -123,7 +128,7 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
             array(
                 'id' => 'pk',
                 'unavailablereason_id' => 'int(11) NOT NULL',
-                'institution_id'=> 'int(10) unsigned NOT NULL'
+                'institution_id' => 'int(10) unsigned NOT NULL'
             ),
             true
         );
@@ -148,7 +153,8 @@ class m210203_034030_add_institution_id_column_to_reference_tables extends OEMig
             ->select('r.id as unavailablereason_id, i.id as institution_id')
             ->from('ophtroperationbooking_operation_session_unavailreason r')
             ->crossJoin('institution i')
-            ->queryAll();
+            ->where('i.id = :institution_id')
+            ->queryAll(true, array(':institution_id' => $institution_id));
 
         if (!empty($mappings)) {
             $this->insertMultiple(
