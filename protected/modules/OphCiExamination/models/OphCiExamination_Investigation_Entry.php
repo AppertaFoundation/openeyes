@@ -60,6 +60,7 @@ class OphCiExamination_Investigation_Entry extends \BaseActiveRecordVersioned
             array('investigation_code', 'numerical', 'integerOnly'=>true),
             array('comments', 'length', 'max'=>4096),
             array('last_modified_date, created_date,element_id, investigation_code, comments, time, date', 'safe'),
+            array('date', 'CDateValidator', 'format' => array('d MMM yyyy','yyyy-mm-dd')),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, element_id, investigation_code, comments, time, date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
@@ -144,4 +145,15 @@ class OphCiExamination_Investigation_Entry extends \BaseActiveRecordVersioned
     {
         return parent::model($className);
     }
+
+    public function beforeSave()
+    {
+        $validator = new \OEDateValidator();
+        if (!$validator->validateAttribute($this,'date')){
+            $this->date = \Helper::convertNHS2MySQL($this->date);
+        }
+
+        return parent::beforeValidate();
+    }
+
 }

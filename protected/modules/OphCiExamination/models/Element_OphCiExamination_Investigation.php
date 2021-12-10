@@ -17,6 +17,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+
 use OEModule\OphCiExamination\widgets\Investigations as InvestigationsWidget;
 
 /**
@@ -34,6 +35,7 @@ use OEModule\OphCiExamination\widgets\Investigations as InvestigationsWidget;
 class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+
     protected $widgetClass = InvestigationsWidget::class;
     public $service;
     const ELEMENT_CHILDREN = [
@@ -67,13 +69,12 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('event_id, description, entries','safe'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('description, id, event_id ', 'safe', 'on' => 'search'),
+            array('event_id, description, entries', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('description, id, event_id ', 'safe', 'on' => 'search'),
         );
     }
-
 
     public function eventScopeValidation($elements)
     {
@@ -84,21 +85,20 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
             $elements
         );
 
-        foreach ($this->entries as $entry){
-            $date_validator = new \OEDateValidator();
-            if (!$this->validateTime($entry->time)){
-                $this->addError('time', 'Incorrect time format '.$entry->time.'.');
+        foreach ($this->entries as $entry) {
+            if (!$this->validateTime($entry->time)) {
+                $this->addError('time', 'Incorrect time format ' . $entry->time . '.');
             }
-            if (!$date_validator->validateValue($entry->date)){
-                $this->addError('date', 'Incorrect date format (Enter yyyy-mm-dd).');
+            if (!$entry->validate(['date'])) {
+                $this->addError('date', 'Incorrect date: ' . $entry->date);
             }
         }
-
     }
 
-    public function validateTime($time) {
+    public function validateTime($time)
+    {
         if (!preg_match('/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]$/', $time)) {
-            if (!preg_match('/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]:[0-5][0-9]$/', $time)){
+            if (!preg_match('/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]:[0-5][0-9]$/', $time)) {
                 return false;
             }
         }
@@ -114,11 +114,11 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-                'entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Investigation_Entry', 'element_id'),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Investigation_Entry', 'element_id'),
         );
     }
 
@@ -128,9 +128,9 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-                'id' => 'ID',
-                'event_id' => 'Event',
-                'description' => 'Description',
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'description' => 'Description',
         );
     }
 
@@ -141,8 +141,8 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
 
     protected function beforeSave()
     {
-        if($this->id !== null){
-            foreach (OphCiExamination_Investigation_Entry::model()->findAll('element_id=?', array($this->id)) as $investigation_entry){
+        if ($this->id !== null) {
+            foreach (OphCiExamination_Investigation_Entry::model()->findAll('element_id=?', array($this->id)) as $investigation_entry) {
                 $investigation_entry->delete();
             }
         }
@@ -183,7 +183,7 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
         $criteria->compare('description', $this->description);
 
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -202,7 +202,7 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
 
         foreach ($this->getSiblings() as $el) {
             if (method_exists($el, 'getLetter_string')) {
-                $res .= $el->getLetter_string()."\n";
+                $res .= $el->getLetter_string() . "\n";
             }
         }
 

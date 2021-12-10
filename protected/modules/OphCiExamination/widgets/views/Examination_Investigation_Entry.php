@@ -46,7 +46,7 @@ if (!isset($values)) {
         <input class="date"
                id="<?= $model_name ?>_entries_<?= $row_count ?>_date"
                name="<?= $field_prefix ?>[date]"
-               value="<?= $values['date'] ?>"
+               value="<?= strtotime($values['date']) ? date(Helper::NHS_DATE_FORMAT, strtotime($values['date'])):$values['date'] ?>"
                placeholder="dd Mth YYYY" autocomplete="off">
     </td>
     <td>
