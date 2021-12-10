@@ -62,7 +62,8 @@ class StereoAcuity_Entry extends \BaseElement
                     'result', 'emptyIfValue',
                     'field' => 'inconclusive',
                     'value' => self::INCONCLUSIVE,
-                ]
+                ],
+                ['result', 'length', 'max' => 31]
             ],
             $this->rulesForCorrectionType(),
             $this->rulesForWithHeadPosture()

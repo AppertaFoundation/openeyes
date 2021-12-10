@@ -4,6 +4,10 @@ class m210505_055201_add_dispense_condition_and_location_institution_mapping_tab
 {
     public function safeUp()
     {
+        $institution_id = $this->dbConnection
+            ->createCommand("SELECT * FROM institution WHERE remote_id = '" . Yii::app()->params['institution_code'] . "'")
+            ->queryScalar();
+
         $this->createOETable(
             'ophdrprescription_dispense_condition_institution',
             array(
@@ -61,24 +65,24 @@ class m210505_055201_add_dispense_condition_and_location_institution_mapping_tab
             ->select('d.id AS dispense_condition_id, i.id AS institution_id')
             ->from('ophdrprescription_dispense_condition d')
             ->crossJoin('institution i')
-            ->where('d.active = 1')
-            ->queryAll();
+            ->where('d.active = 1 and i.id = :institution_id')
+            ->queryAll(true, array(':institution_id' => $institution_id));
 
         $all_dl_mappings = $this->dbConnection->createCommand()
             ->select('d.id AS dispense_location_id, i.id AS institution_id')
             ->from('ophdrprescription_dispense_location d')
             ->crossJoin('institution i')
-            ->where('d.active = 1')
-            ->queryAll();
+            ->where('d.active = 1 and i.id = :institution_id')
+            ->queryAll(true, array(':institution_id' => $institution_id));
 
-        if(!empty($all_dc_mappings)){
+        if (!empty($all_dc_mappings)) {
             $this->insertMultiple(
                 'ophdrprescription_dispense_condition_institution',
                 $all_dc_mappings
             );
         }
 
-        if(!empty($all_dl_mappings)){
+        if (!empty($all_dl_mappings)) {
             $this->insertMultiple(
                 'ophdrprescription_dispense_location_institution',
                 $all_dl_mappings
@@ -147,7 +151,7 @@ class m210505_055201_add_dispense_condition_and_location_institution_mapping_tab
             'id'
         );
 
-        if(!empty($all_dc_assignment_mappings)){
+        if (!empty($all_dc_assignment_mappings)) {
             $this->insertMultiple(
                 'ophdrprescription_dispense_condition_assignment',
                 $all_dc_assignment_mappings
@@ -210,7 +214,7 @@ class m210505_055201_add_dispense_condition_and_location_institution_mapping_tab
             'id'
         );
 
-        if(!empty($all_dc_assignment_mappings)){
+        if (!empty($all_dc_assignment_mappings)) {
             // Re-insert the flattened mappings.
             $this->insertMultiple(
                 'ophdrprescription_dispense_condition_assignment',

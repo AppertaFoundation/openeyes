@@ -5,6 +5,10 @@ class m210505_055304_add_common_previous_operation_institution_mapping_tables ex
     // Use safeUp/safeDown to do migration with transaction
     public function safeUp()
     {
+        $institution_id = $this->dbConnection
+            ->createCommand("SELECT * FROM institution WHERE remote_id = '" . Yii::app()->params['institution_code'] . "'")
+            ->queryScalar();
+
         $this->createOETable(
             'common_previous_operation_institution',
             array(
@@ -58,22 +62,24 @@ class m210505_055304_add_common_previous_operation_institution_mapping_tables ex
             ->select('o.id AS common_previous_operation_id, i.id AS institution_id')
             ->from('common_previous_operation o')
             ->crossJoin('institution i')
-            ->queryAll();
+            ->where('i.id = :institution_id')
+            ->queryAll(true, array(':institution_id' => $institution_id));
 
         $all_systemic_mappings = $this->dbConnection->createCommand()
             ->select('o.id AS common_previous_systemic_operation_id, i.id AS institution_id')
             ->from('common_previous_systemic_operation o')
             ->crossJoin('institution i')
-            ->queryAll();
+            ->where('i.id = :institution_id')
+            ->queryAll(true, array(':institution_id' => $institution_id));
 
-        if(!empty($all_op_mappings)){
+        if (!empty($all_op_mappings)) {
             $this->insertMultiple(
                 'common_previous_operation_institution',
                 $all_op_mappings
             );
         }
 
-        if(!empty($all_systemic_mappings)){
+        if (!empty($all_systemic_mappings)) {
             $this->insertMultiple(
                 'common_previous_systemic_operation_institution',
                 $all_systemic_mappings
