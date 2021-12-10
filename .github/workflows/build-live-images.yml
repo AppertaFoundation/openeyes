@@ -1,0 +1,38 @@
+name: Trigger Docker images Build
+
+## Triggers the build of deployable images for the OE application.
+## The actual build happens in a separate, public repository - to avoid wasting action minutes in the private repo
+
+on:
+  push:
+    branches:
+      - "master"
+      - "main"
+      - "develop"
+      - "release/*"
+      - "bugfix/*"
+    tags:
+      - "*"
+jobs:
+  trigger-build:
+    # if: ( github.repository == 'openeyes/OpenEyes' || github.repository == 'biskyt/test-action-trigger' )
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Resolve ref
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Emit repository_dispatch
+        uses: mvasigh/dispatch-action@main
+
+        with:
+          # Requires a personal access token (PAT) stored in the repository
+          token: ${{ secrets.TKLACCESS_TOKEN }}
+          repo: external-action-runner
+          owner: toukanlabs
+          event_type: "Build Image: ${{ env.GITHUB_REF_NAME }}"
+          message: | 
+            { 
+              "GITHUB_REF_NAME": "${{ env.GITHUB_REF_NAME }}",
+              "GITHUB_REF_SLUG": "${{ env.GITHUB_REF_SLUG }}"
+            }

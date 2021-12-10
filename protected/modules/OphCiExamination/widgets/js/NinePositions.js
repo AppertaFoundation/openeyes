@@ -182,7 +182,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                         generateFloatNumberColumns: {
                             decimalPlaces: 0,
                             minValue: 0,
-                            maxValue: 50
+                            maxValue: 90
                         },
                         id: "horizontal_angle"
                     }
@@ -215,7 +215,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                         generateFloatNumberColumns: {
                             decimalPlaces: 0,
                             minValue: 0,
-                            maxValue: 20
+                            maxValue: 50
                         },
                         id: "vertical_angle"
                     }

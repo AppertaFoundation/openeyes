@@ -65,7 +65,7 @@ class CRTVariableTest extends CDbTestCase
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
                 'query_template' => '
-        SELECT p.nhs_num, crt.value, crt.side, crt.event_date, null
+        SELECT p.hos_num, p.nhs_num, crt.value, crt.side, DATE(crt.event_date), TIME(crt.event_date)
         FROM v_patient_crt crt
         JOIN patient p ON p.id = crt.patient_id
         WHERE patient_id IN (1, 2, 3)

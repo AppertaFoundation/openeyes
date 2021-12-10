@@ -1173,6 +1173,7 @@ class User extends BaseActiveRecordVersioned
 
     public function setSSOUserInformation($response)
     {
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
         // Set user credentials that login through SAML authentication
         if (Yii::app()->params['auth_source'] === 'SAML') {
             $this->username = $response['username'][0];
@@ -1182,28 +1183,36 @@ class User extends BaseActiveRecordVersioned
             $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
             $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'][0] : '';
             $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
+
+            $user = self::model()->find('username = :username', array(':username' => $this->username));
         }
-        // Set the user credentials that login through OIDC suthentication
+        // Set the user credentials that login through OIDC authentication
         elseif (Yii::app()->params['auth_source'] === 'OIDC') {
-            $this->username = $response['email'];       // OIDC users set emails as their usernames
-            $this->first_name = $response['given_name'];
-            $this->last_name = $response['family_name'];
-            $this->email = $response['email'];
-            $this->title = array_key_exists('title', $response) ? $response['title'] : '';
-            $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'] : '';
-            $this->role = array_key_exists('position', $response) ? $response['position'] : '';
-            $this->doctor_grade_id = array_key_exists('doctor_grade', $response) ? DoctorGrade::model()->find("grade = :grade", [':grade' => $response['doctor_grade']])->id : '';
-            $this->registration_code = array_key_exists('registration_code', $response) ? $response['registration_code'] : '';
-            $this->is_consultant = array_key_exists('consultant', $response) && strtolower($response['consultant']) === 'yes' ? 1 : 0;
-            $this->is_surgeon = array_key_exists('surgeon', $response) && strtolower($response['surgeon']) === 'yes' ? 1 : 0;
+            if (!isset($response['username'])) {
+                throw new Exception('Source for Username is not defined: '.print_r($this->getErrors(), true));
+            }
+
+            if (!$defaultRights['default_enabled']) {
+                $this->checkRolesFromSSOToken($response);
+            }
+
+            $user = self::model()->find('username = :username', array(':username' => $response['username']));
+            $allowedKeys = Yii::app()->params['OIDC_settings']['field_mapping_allow_list_with_defaults'];
+            foreach ($allowedKeys as $allowedKey => $defaultValue) {
+                if (array_key_exists($allowedKey, $response)) {
+                    $this->$allowedKey = $response[$allowedKey];
+                } elseif ($user !== null) {
+                    $this->$allowedKey = $user->$allowedKey;
+                } else {
+                    $this->$allowedKey = $defaultValue;
+                }
+            }
         }
 
         // Set the user active regardless
         $this->active = true;
         $this->setdefaultSSORights();
 
-        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
-        $user = self::model()->find('username = :username', array(':username' => $this->username));
         //If the user is logging into the OE for the first time, assign default roles and firms
         if ($user === null) {
             if (!$this->save()) {
@@ -1225,7 +1234,8 @@ class User extends BaseActiveRecordVersioned
         // Roles from the token need to be assigned to the user after every login
         if (!$defaultRights['default_enabled']) {
             // Pass the array of roles from the token
-            $this->setRolesFromSSOToken($response['roles']);
+            $roles = isset($response['roles']) ? $response['roles'] : [];
+            $this->setRolesFromSSOToken($roles);
         }
 
         return array(
@@ -1262,22 +1272,51 @@ class User extends BaseActiveRecordVersioned
         $this->saveRoles($defaultRoles);
     }
 
+    // We check that the roles from SSO provider are valid
+    public function checkRolesFromSSOToken($response)
+    {
+        $roles = isset($response['roles']) ? $response['roles'] : [];
+        $username = isset($response['email']) ? $response['email'] : '';
+        $first_name = isset($response['first_name']) ? $response['first_name'] : '';
+        $last_name = isset($response['last_name']) ? $response['last_name'] : '';
+        $name = "$first_name $last_name";
+
+        // Deny access if user has no roles
+        if (count($roles) < 1) {
+            $this->audit('SsoRoles', 'login-failed', "User $name ($username) has no roles assigned: ", true);
+            throw new Exception('User has no roles assigned');
+        }
+
+        $ssoRoles = SsoRoles::model()->findAll();
+        $ssoRoleNames = array_map(function ($role) {
+            return $role->name;
+        }, $ssoRoles);
+
+        // Deny access if the user doesn't have any of the OpenEyes SSO Roles defined in admin settings
+        if (count(array_intersect($roles, $ssoRoleNames)) < 1) {
+            $this->audit('SsoRoles', 'login-failed', "User $name ($username) has no valid OpenEyes roles assigned", true);
+            throw new Exception('User has no valid OpenEyes roles assigned');
+        }
+
+        //Deny access if strict SSO roles check is enabled and user has a role that doesn't exist in OpenEyes SSO roles defined in admin settings
+        if (Yii::app()->params['strict_SSO_roles_check']
+            && count(array_intersect($roles, $ssoRoleNames)) !== count($roles)) {
+            $this->audit('SsoRoles', 'login-failed', "User $name ($username) has a role assigned that does not exist in OpenEyes SSO roles", true);
+            throw new Exception('User has a role assigned that does not exist in OpenEyes SSO roles');
+        }
+    }
+
     public function setRolesFromSSOToken($roles)
     {
         $assignedRoles = array();
         foreach ($roles as $role) {
-            $userRoles = SsoRoles::model()->find("name = :role", [':role' => $role]);
-            if (!$userRoles) {
-                $this->audit('SsoRoles', 'assign-role', 'SSO Role "' . $role . '" not found for user ' . $this->username);
-                if (Yii::app()->params['strict_SSO_roles_check']) {
-                    $this->audit('SsoRoles', 'login-failed', "SSO Role not found so cannot login: $this->username", true);
-                    throw new Exception('The role "' . $role . '" was not found in OpenEyes');
-                }
-            } else {
-                foreach ($userRoles->sso_roles_assignment as $userRole) {
-                    if (!in_array($userRole->authitem_role, $assignedRoles, true)) {
-                        $assignedRoles[] = $userRole->authitem_role;
-                    }
+            $ssoRole = SsoRoles::model()->find("name = :role", [':role' => $role]);
+            if (!$ssoRole) {
+                continue; // This case covers when user may have a role that doesn't map to any OE SSO roles
+            }
+            foreach ($ssoRole->sso_roles_assignment as $userRole) {
+                if (!in_array($userRole->authitem_role, $assignedRoles, true)) {
+                    $assignedRoles[] = $userRole->authitem_role;
                 }
             }
         }

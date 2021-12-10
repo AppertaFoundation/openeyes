@@ -8,12 +8,13 @@
   },
   "dependencies": {
     "@nesk/puphpeteer": "^1.6.0",
-    "puppeteer": "^2.0.0",
     "autosize": "^4.0.0",
     "jspdf": "1.5.2",
     "lodash": "^4.17.4",
+    "mustache": "^4.2.0",
     "pickmeup": "~3.2.0",
     "plotly.js-dist": "^1.53.0",
+    "puppeteer": "^2.0.0",
     "sortablejs": "~1.10.2",
     "tinymce": "^4.8.2",
     "video.js": "^7.7.5"

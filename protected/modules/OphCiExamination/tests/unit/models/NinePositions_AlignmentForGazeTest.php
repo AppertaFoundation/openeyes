@@ -223,7 +223,7 @@ class NinePositions_AlignmentForGazeTest extends \ModelTestCase
     /** @test */
     public function horizontal_angle_max_validation()
     {
-        $this->assertMaxValidation($this->element_cls, 'horizontal_angle', 50);
+        $this->assertMaxValidation($this->element_cls, 'horizontal_angle', 90);
     }
 
     /** @test */
@@ -235,7 +235,7 @@ class NinePositions_AlignmentForGazeTest extends \ModelTestCase
     /** @test */
     public function vertical_angle_max_validation()
     {
-        $this->assertMaxValidation($this->element_cls, 'vertical_angle', 20);
+        $this->assertMaxValidation($this->element_cls, 'vertical_angle', 50);
     }
 
     /** @test */

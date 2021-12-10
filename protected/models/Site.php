@@ -24,6 +24,7 @@
  * @property int $id
  * @property string $name
  * @property string $short_name
+ * @property string $fp_10_code
  * @property string $address1
  * @property string $address2
  * @property string $address3
@@ -81,7 +82,7 @@ class Site extends BaseActiveRecordVersioned
         return array(
             array('name, short_name, remote_id, telephone', 'required'),
             array('name', 'length', 'max' => 255),
-            array('institution_id, name, remote_id, short_name, location_code, fax, telephone, contact_id, replyto_contact_id, source_id, active, logo_id', 'safe'),
+            array('institution_id, name, remote_id, short_name, fp_10_code, location_code, fax, telephone, contact_id, replyto_contact_id, source_id, active, logo_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),

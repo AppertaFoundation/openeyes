@@ -25,7 +25,7 @@ class RefractionVariable extends CaseSearchVariable implements DBProviderInterfa
                 break;
             case 'ADVANCED':
                 return '
-        SELECT p.nhs_num, r.value, r.side, r.event_date, null
+        SELECT p.hos_num, p.nhs_num, r.value, r.side, DATE(r.event_date), TIME(r.event_date)
         FROM v_patient_refraction r
         JOIN patient p ON p.id = r.patient_id
         WHERE patient_id IN (' . implode(', ', $this->id_list) .')

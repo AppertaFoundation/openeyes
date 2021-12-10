@@ -176,15 +176,28 @@ class Gp extends BaseActiveRecordVersioned
         }
 
         $contact = $address = null;
+        $gp_setting = SettingMetadata::model()->getSetting('correspondence_gp_address');
 
-        if ($params['patient']->practice) {
+        if (($practice = $params['patient']->practice) && $gp_setting !== 'GP_add') {
             if (@$params['contact']) {
                 $contactRelation = $params['contact'];
-                $contact = $params['patient']->practice->$contactRelation;
+                $contact = $practice->$contactRelation;
             } else {
-                $contact = $params['patient']->practice->contact;
+                $contact = $practice->contact;
             }
 
+            // if we can get a clean copy of the address to avoid any recursion issues
+            if (isset($contact->address->id)) {
+                $address = Address::model()->findByPk($contact->address->id);
+            } else {
+                $address = $contact->address;
+            }
+
+            if ($gp_setting === 'practice_name') {
+                $address->address1 = $practice->contact->first_name . "\n" . $address->address1;
+            }
+        } else {
+            $contact = $this->contact;
             $address = $contact->address;
         }
 
@@ -221,7 +234,8 @@ class Gp extends BaseActiveRecordVersioned
         return $query->queryAll();
     }
 
-    public function getAssociatePractice(){
+    public function getAssociatePractice()
+    {
         $return_value = null;
 
         $practice_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$this->id));
@@ -233,11 +247,13 @@ class Gp extends BaseActiveRecordVersioned
         return $return_value;
     }
 
-    public function getGPROle(){
+    public function getGPROle()
+    {
         return ($this->contact->label != null?$this->contact->label->name:'');
     }
 
-    public function GetActiveStatus($id){
+    public function GetActiveStatus($id)
+    {
         if (isset($id)) {
             $gp = Gp::model()->findByPk(array('id' => $id));
             return $gp->is_active;
@@ -246,7 +262,8 @@ class Gp extends BaseActiveRecordVersioned
         }
     }
 
-    public function getAssociatedPractice($id){
+    public function getAssociatedPractice($id)
+    {
         $query = "SELECT first_name, P.id FROM contact_practice_associate CPA
                         JOIN practice P ON CPA.practice_id = P.id
                         JOIN contact C ON P.contact_id = C.id

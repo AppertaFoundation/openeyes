@@ -141,6 +141,6 @@ class BirthHistory extends \BaseEventElementWidget
         if ($matches[3] && $matches[3] > 15) {
             throw new InvalidInputException('Too many ozs');
         }
-        return $matches[1] * 16 + ($matches[3] ?? 0);
+        return $matches[1] * 16 + ($matches[3] ?: 0);
     }
 }

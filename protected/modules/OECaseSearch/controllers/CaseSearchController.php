@@ -59,6 +59,8 @@ class CaseSearchController extends BaseModuleController
         $variables = array();
         $variable_data = array();
         $show_all_dates = false;
+        $auditValues = array();
+
         $ids = array();
         $from = null;
         $to = null;
@@ -81,6 +83,15 @@ class CaseSearchController extends BaseModuleController
         if ($valid && !empty($this->parameters)) {
             $this->actionClear();
             $ids = array_column(Yii::app()->searchProvider->search($this->parameters), 'id');
+
+            foreach ($this->parameters as $param) {
+                $auditValues[] = $param->getAuditData();
+            }
+            if (count($ids) === 0) {
+                Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned no results', null, array('module' => 'OECaseSearch'));
+            } else {
+                Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned '. count($ids) . ' results', null, array('module' => 'OECaseSearch'));
+            }
 
             // Only copy to the $_SESSION array if it isn't already there - Shallow copy is done at the start if it is already set.
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
@@ -120,6 +131,16 @@ class CaseSearchController extends BaseModuleController
                         'asc' => 'gender',
                         'desc' => 'gender DESC',
                         'label' => 'Gender',
+                    ),
+                    'hos_num'=> array(
+                        'asc' => 'hos_num',
+                        'desc' => 'hos_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
+                    ),
+                    'nhs_num' => array(
+                        'asc' => 'nhs_num',
+                        'desc' => 'nhs_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('nhs_num_label'),
                     ),
                 ),
                 'defaultOrder' => array(
@@ -414,7 +435,8 @@ class CaseSearchController extends BaseModuleController
      * @param $patient_ids string List of patient IDs as a string (List is a string due to it being a parameter of a HTTP request).
      * @throws CException
      */
-    public function actionGetDrilldownList($patient_ids) {
+    public function actionGetDrilldownList($patient_ids)
+    {
         $pagination = array(
             'pageSize' => 10,
         );
@@ -447,6 +469,16 @@ class CaseSearchController extends BaseModuleController
                         'asc' => 'gender',
                         'desc' => 'gender DESC',
                         'label' => 'Gender',
+                    ),
+                    'hos_num' => array(
+                        'asc' => 'hos_num',
+                        'desc' => 'hos_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
+                    ),
+                    'nhs_num' => array(
+                        'asc' => 'nhs_num',
+                        'desc' => 'nhs_num DESC',
+                        'label' => \SettingMetadata::model()->getSetting('nhs_num_label'),
                     ),
                 ),
                 'defaultOrder' => array(
@@ -544,6 +576,7 @@ class CaseSearchController extends BaseModuleController
             foreach ($patients as $patient) {
                 $this->renderPartial('application.widgets.views.PatientIcons', array('data' => $patient, 'page' => 'caseSearch'));
             }
+            Audit::add('case-search', 'rendered-summary-popups', 'Summary popups for patients ' . $_POST["patientsID"] . ' were rendered and may have been viewed', false);
         }
     }
 }

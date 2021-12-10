@@ -111,7 +111,7 @@ class NinePositions_ReadingTest extends \ModelTestCase
         $instance = $this->getElementInstance();
         $movement = $this->generateMovementForGaze();
         $gaze_type = $movement->gaze_type;
-        $side = $this->faker->randomElement(['right', 'left']);
+        $side = strtolower(\Eye::methodPostFix($movement->eye_id));
 
         $instance->movements = [$movement];
 

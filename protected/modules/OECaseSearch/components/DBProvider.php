@@ -122,10 +122,13 @@ class DBProvider extends SearchProvider
             if ($mode === 'BASIC') {
                 $csv_columns = array($variables->label, 'bin count');
             } elseif ($mode === 'ADVANCED') {
+                $hos_label = \SettingMetadata::model()->getSetting('hos_num_label');
+                $nhs_label = \SettingMetadata::model()->getSetting('nhs_num_label');
+
                 if ($variables->eye_cardinality) {
-                    $csv_columns = array('NHS number', $variables->label, 'eye', 'date', 'time');
+                    $csv_columns = array($hos_label, $nhs_label, $variables->label, 'eye', 'date', 'time');
                 } else {
-                    $csv_columns = array('NHS number', $variables->label, 'date', 'time');
+                    $csv_columns = array($hos_label, $nhs_label, $variables->label, 'date', 'time');
                 }
             }
 

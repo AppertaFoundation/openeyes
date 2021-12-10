@@ -43,7 +43,8 @@ node_modules
 /docs/public
 /protected/assets/img/fieldImages/*
 /assets/
-/protected/files/*
+/protected/files/**
+/protected/files
 package-lock.json
 .recycle/
 /.recycle
@@ -101,3 +102,4 @@ protected/widgets/views/IndexSearch_Examination.php
 protected/scripts/sample_db.sql
 protected/scripts/sample_db.zip
 **/0-a-restore.sql
+buildinfo.txt
