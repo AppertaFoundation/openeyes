@@ -105,7 +105,7 @@ class EventImageController extends BaseController
          */
         $event_images = EventImage::model()->findAll($criteria);
         $generated_image_urls = [];
-        $remaining_event_ids = [];
+
         if ($event_images) {
             foreach ($event_images as $event_image) {
                 $generated_image_event_ids[] = array('id' => $event_image->event_id, 'modified' => $event_image->last_modified_date);
