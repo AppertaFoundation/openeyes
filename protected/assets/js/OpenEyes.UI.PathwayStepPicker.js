@@ -135,21 +135,21 @@
                         name: 'path-position',
                         label: 'End of pathway',
                     },
-                        {
-                            id: 1,
-                            name: 'path-position',
-                            label: 'Todo: Next',
-                        },
-                        {
-                            id: 2,
-                            name: 'path-position',
-                            label: 'Todo: 2nd',
-                        },
-                        {
-                            id: 3,
-                            name: 'path-position',
-                            label: 'Todo: 3rd',
-                        },
+                    {
+                        id: 1,
+                        name: 'path-position',
+                        label: 'Todo: Next',
+                    },
+                    {
+                        id: 2,
+                        name: 'path-position',
+                        label: 'Todo: 2nd',
+                    },
+                    {
+                        id: 3,
+                        name: 'path-position',
+                        label: 'Todo: 3rd',
+                    },
                     ]
                 }
             ],
@@ -169,11 +169,11 @@
                             // Add all steps for the chosen pathway to the selected pathways.
                             const pathway = $(`${self.options.pathway_checkboxes}:checked[value="${into_pathway_id}"]`).closest('tr').find('td.js-pathway-container');
 
-                            const oldSteps = pathway.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+                            const oldSteps = pathway.find('.active, .todo').map(function () { return $(this).data('long-name') }).get();
 
                             pathway.html(response.step_html);
 
-                            const newSteps = pathway.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+                            const newSteps = pathway.find('.active, .todo').map(function () { return $(this).data('long-name') }).get();
 
                             if (self.options.onChangePatientRow) {
                                 self.options.onChangePatientRow('change-waiting-for', { pathwayId: into_pathway_id, oldSteps: oldSteps, newSteps: newSteps });
@@ -200,15 +200,15 @@
             type: 'POST',
             success: function (response) {
                 let $pathway = $(`.pathway[data-visit-id="${pathway_id}"]`).closest('td.js-pathway-container');
-                if(!$pathway.length){
+                if (!$pathway.length) {
                     $pathway = $(`tr[data-pathway-type-id="${pathway_id}"]`).find('td.js-pathway-container');
                 }
 
-                const oldSteps = $pathway.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+                const oldSteps = $pathway.find('.active, .todo').map(function () { return $(this).data('long-name') }).get();
 
                 $pathway.html(response.step_html);
 
-                const newSteps = $pathway.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+                const newSteps = $pathway.find('.active, .todo').map(function () { return $(this).data('long-name') }).get();
 
                 if (
                     $pathway.find('.oe-pathstep-btn.wait, .oe-pathstep-btn.delayed-wait').length === 0 &&
@@ -258,7 +258,7 @@
         if (value !== null) {
             let contexts = self.options.subspecialties.find(i => i.id === String(value)).contexts;
             contexts.forEach(element => {
-                contextList.push({'id': element.id, 'name': 'context', 'label': element.name});
+                contextList.push({ 'id': element.id, 'name': 'context', 'label': element.name });
             });
         }
         return contextList;
@@ -267,7 +267,7 @@
     PathwayStepPicker.prototype.getDurationDigits = function () {
         let durationDigits = [];
         for (let i = 1; i <= 18; i++) {
-            durationDigits.push({id: i, name: 'duration-digits', label: i});
+            durationDigits.push({ id: i, name: 'duration-digits', label: i });
         }
         return durationDigits;
     };
@@ -320,7 +320,7 @@
                                 itemSet.items = self.getContextList(selected_value);
                                 let list = '';
                                 for (let item of itemSet.items) {
-                                    list += '<label><input type="radio" name="context" value="'+item.id+'"><div class="li">'+item.label+'</div></label>';
+                                    list += '<label><input type="radio" name="context" value="' + item.id + '"><div class="li">' + item.label + '</div></label>';
                                 }
                                 $contextSection.append(list);
                             }
@@ -348,10 +348,10 @@
                             title: 'Duration Period',
                             id: 'duration-period',
                             items: [
-                                {id: 'days', name: 'duration-period', label: 'days'},
-                                {id: 'weeks', name: 'duration-period', label: 'weeks'},
-                                {id: 'months', name: 'duration-period', label: 'months'},
-                                {id: 'years', name: 'duration-period', label: 'years'},
+                                { id: 'days', name: 'duration-period', label: 'days' },
+                                { id: 'weeks', name: 'duration-period', label: 'weeks' },
+                                { id: 'months', name: 'duration-period', label: 'months' },
+                                { id: 'years', name: 'duration-period', label: 'years' },
                             ],
                             onSelectValue: function (dialog, itemSet, selected_value, label) {
                                 self.duration_period = selected_value;
@@ -361,11 +361,11 @@
                     onReturn: function (dialog, selectedValues) {
                         for (let pathway_id of pathway_ids) {
                             self.newStep(step_type_id, pathway_id, {
-                                'site_id' : self.site_id,
-                                'service_id' : self.service_id,
-                                'firm_id' : self.context_id,
-                                'duration_value' : self.duration_digits,
-                                'duration_period' : self.duration_period,
+                                'site_id': self.site_id,
+                                'service_id': self.service_id,
+                                'firm_id': self.context_id,
+                                'duration_value': self.duration_digits,
+                                'duration_period': self.duration_period,
                             });
                         }
                         dialog.close();
@@ -385,11 +385,11 @@
                         self.duration_digits = null;
                         self.duration_period = null;
                     }
-                    $('.js-itemset[data-itemset-id="site"] .btn-list label input[value="'+self.site_id+'"]').prop("checked", true);
-                    $('.js-itemset[data-itemset-id="service"] .btn-list label input[value="'+self.service_id+'"]').prop("checked", true);
-                    $('.js-itemset[data-itemset-id="context"] .btn-list label input[value="'+self.context_id+'"]').prop("checked", true);
-                    $('.js-itemset[data-itemset-id="duration-digits"] .btn-list label input[value="'+self.duration_digits+'"]').prop("checked", true);
-                    $('.js-itemset[data-itemset-id="duration-period"] .btn-list label input[value="'+self.duration_period+'"]').prop("checked", true);
+                    $('.js-itemset[data-itemset-id="site"] .btn-list label input[value="' + self.site_id + '"]').prop("checked", true);
+                    $('.js-itemset[data-itemset-id="service"] .btn-list label input[value="' + self.service_id + '"]').prop("checked", true);
+                    $('.js-itemset[data-itemset-id="context"] .btn-list label input[value="' + self.context_id + '"]').prop("checked", true);
+                    $('.js-itemset[data-itemset-id="duration-digits"] .btn-list label input[value="' + self.duration_digits + '"]').prop("checked", true);
+                    $('.js-itemset[data-itemset-id="duration-period"] .btn-list label input[value="' + self.duration_period + '"]').prop("checked", true);
                 }).open();
                 // Reset the booking pathway step
                 self.options.custom_booking_step = null;
@@ -421,16 +421,16 @@
                                 name: 'laterality',
                                 label: 'Right & Left Eye'
                             },
-                                {
-                                    id: 2,
-                                    name: 'laterality',
-                                    label: 'Right only'
-                                },
-                                {
-                                    id: 1,
-                                    name: 'laterality',
-                                    label: 'Left only'
-                                },
+                            {
+                                id: 2,
+                                name: 'laterality',
+                                label: 'Right only'
+                            },
+                            {
+                                id: 1,
+                                name: 'laterality',
+                                label: 'Left only'
+                            },
                             ],
                             onSelectValue: function (dialog, itemSet, selected_value) {
                                 self.laterality = selected_value;
@@ -456,21 +456,21 @@
                                 name: 'path-position',
                                 label: 'End of pathway',
                             },
-                                {
-                                    id: 1,
-                                    name: 'path-position',
-                                    label: 'Todo: Next',
-                                },
-                                {
-                                    id: 2,
-                                    name: 'path-position',
-                                    label: 'Todo: 2nd',
-                                },
-                                {
-                                    id: 3,
-                                    name: 'path-position',
-                                    label: 'Todo: 3rd',
-                                },
+                            {
+                                id: 1,
+                                name: 'path-position',
+                                label: 'Todo: Next',
+                            },
+                            {
+                                id: 2,
+                                name: 'path-position',
+                                label: 'Todo: 2nd',
+                            },
+                            {
+                                id: 3,
+                                name: 'path-position',
+                                label: 'Todo: 3rd',
+                            },
                             ]
                         }
                     ],
@@ -678,7 +678,7 @@
                 new OpenEyes.UI.Dialog.NewPathwayStep({
                     custom_options: [{
                         id: 'macro',
-                        name: 'Macro',
+                        name: 'Template',
                         option_values: this.options.macros,
                     }],
                     title: 'Add letter task',
@@ -718,13 +718,13 @@
                             title: 'Timer',
                             id: 'timer',
                             items: [
-                                {id: 1, label: 'Add 1 minute timer', name: 'duration'},
-                                {id: 2, label: 'Add 2 minute timer', name: 'duration'},
-                                {id: 5, label: 'Add 5 minute timer', name: 'duration'},
-                                {id: 10, label: 'Add 10 minute timer', name: 'duration'},
-                                {id: 15, label: 'Add 15 minute timer', name: 'duration'},
-                                {id: 20, label: 'Add 20 minute timer', name: 'duration'},
-                                {id: 30, label: 'Add 30 minute timer', name: 'duration'},
+                                { id: 1, label: 'Add 1 minute timer', name: 'duration' },
+                                { id: 2, label: 'Add 2 minute timer', name: 'duration' },
+                                { id: 5, label: 'Add 5 minute timer', name: 'duration' },
+                                { id: 10, label: 'Add 10 minute timer', name: 'duration' },
+                                { id: 15, label: 'Add 15 minute timer', name: 'duration' },
+                                { id: 20, label: 'Add 20 minute timer', name: 'duration' },
+                                { id: 30, label: 'Add 30 minute timer', name: 'duration' },
                             ],
                         }
                     ],
@@ -777,7 +777,7 @@
         const selected = $(`${this.options.pathway_checkboxes}:checked`);
         const rows = selected.closest('tr');
 
-        const result = {remaining: rows.length, hadError: false};
+        const result = { remaining: rows.length, hadError: false };
         const onAjaxResult = function (isError) {
             result.remaining -= 1;
             result.hadError |= isError;
@@ -811,7 +811,7 @@
                     data: data,
                     success: function () {
                         const pathwayId = row.children('.pathway').data('visit-id') || row.data('pathway-type-id');
-                        const oldSteps = row.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
+                        const oldSteps = row.find('.active, .todo').map(function () { return $(this).data('long-name') }).get();
 
                         // This is a requested step so as long as it is deleted the order of other requested steps should be correct.
                         lastStep.remove();
