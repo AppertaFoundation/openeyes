@@ -105,7 +105,7 @@ class PrismFusionRange_EntryTest extends \ModelTestCase
      */
     public function min_horizontal_value_validation($attr)
     {
-        $this->assertMinValidation($this->getElementInstance(), $attr, 1);
+        $this->assertMinValidation($this->getElementInstance(), $attr, 0);
     }
 
     public function vertical_attributes_provider()
@@ -135,7 +135,7 @@ class PrismFusionRange_EntryTest extends \ModelTestCase
      */
     public function min_vertical_value_validation($attr)
     {
-        $this->assertMinValidation($this->getElementInstance(), $attr, 1);
+        $this->assertMinValidation($this->getElementInstance(), $attr, 0);
     }
 
     public function at_least_one_attr_provider()

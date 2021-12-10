@@ -173,7 +173,7 @@ class m210914_120100_import_consent_form_4_signatures extends OEMigration
             if ($signature_file_id > 0) {
                 $contact_id = $this->getDbConnection()->getLastInsertID();
                 $signature_element_id = $this->addSignatureElement($element);
-                $signature_item_id = $this->addSignatureElementItem($signature_element_id, $contact, $signature_file_id);
+                $signature_item_id = $this->addSignatureElementItem($signature_element_id, $contact, $signature_file_id, $contact_id);
                 $this->updateContact($contact_id, $signature_item_id);
             }
         }
@@ -204,12 +204,12 @@ class m210914_120100_import_consent_form_4_signatures extends OEMigration
         return $element_id;
     }
 
-    public function addSignatureElementItem($signature_element_id, $contact, $signature_file_id)
+    public function addSignatureElementItem($signature_element_id, $contact, $signature_file_id, $contact_id)
     {
         $signature_file_data = $this->dbConnection->createCommand("
             SELECT * FROM protected_file WHERE id = {$signature_file_id};
         ")->queryRow();
-
+        $element_type_id = $this->getIdOfElementTypeByClassName('Element_OphTrConsent_OthersInvolvedDecisionMakingProcess');
         $data = [
             "element_id" => $signature_element_id,
             "type" => 3,
@@ -217,6 +217,8 @@ class m210914_120100_import_consent_form_4_signatures extends OEMigration
             "signatory_role" => new CDbExpression("
                 (SELECT `name` FROM `ophtrconsent_patient_relationship` opr WHERE opr.id = {$contact['consent_patient_relationship_id']})
             "),
+            "initiator_row_id" => $contact_id,
+            "initiator_element_type_id" => $element_type_id,
             "signatory_name" => $contact["first_name"],
             "timestamp" => new CDbExpression("UNIX_TIMESTAMP('" . $signature_file_data["last_modified_date"] . "')"),
             "last_modified_user_id" => $signature_file_data["last_modified_user_id"],
@@ -249,7 +251,7 @@ class m210914_120100_import_consent_form_4_signatures extends OEMigration
                     ");
             $element_id = $this->getDbConnection()->getLastInsertID();
         } else {
-            $element_id = $existing_element['id'];
+            $element_id = $existing_element;
         }
 
         return $element_id;

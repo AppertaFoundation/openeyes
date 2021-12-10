@@ -141,7 +141,7 @@ var OpenEyes = OpenEyes || {};
     Contact.prototype.initialiseDialogTriggers = function (contactDialog) {
         contactDialog.content.on('click', '.js-add-new-contact', (event) => {
             event.preventDefault();
-            if(this.getDataFromAddNewContactDialog(contactDialog)){
+            if (this.getDataFromAddNewContactDialog(contactDialog)) {
                 this.AddContact();
                 contactDialog.close();
             } else {
@@ -203,7 +203,7 @@ var OpenEyes = OpenEyes || {};
 
     };
 
-    Contact.prototype.AddContact = function () {
+    Contact.prototype.render = function () {
         let signature_require = this.selectedData.signature_require;
         let $table = $("#js-patient_contacts tbody");
         let templateObj = $('#js-mustache_template tbody').clone();
@@ -225,6 +225,18 @@ var OpenEyes = OpenEyes || {};
         let templateText = templateObj.html();
         let $row = Mustache.render(templateText, this.selectedData);
         $table.append($row);
+    };
+
+    Contact.prototype.AddContact = function () {
+        if (typeof this.options.onReturnCallback === 'undefined') {
+            this.render();
+        } else {
+            if (typeof this.options.onReturnCallback === 'function') {
+                this.options.onReturnCallback.call(this, this.selectedData);
+            } else {
+                console.error('Callback function not found.');
+            }
+        }
     };
 
     Contact.prototype.initMenuButton = function () {
@@ -272,6 +284,13 @@ var OpenEyes = OpenEyes || {};
         let hasContact = false;
         let hasContactMethod = false;
         let hasOtherRelationshipDescription = true;
+        var contactMethodNeeded = true;
+        var relationshipNeeded = true;
+
+        if (this.options.notRequiredItemLabels !== 'undefined') {
+            contactMethodNeeded = jQuery.inArray('Contact method', this.options.notRequiredItemLabels) < 0;
+            relationshipNeeded = jQuery.inArray('Relationship', this.options.notRequiredItemLabels) < 0;
+        }
 
         $.each(selectedItems, function (k, item) {
             if (item.itemSet) {
@@ -312,12 +331,14 @@ var OpenEyes = OpenEyes || {};
         if (!hasContact) {
             errors.push("Please select a contact.");
         }
-        if (!hasOtherRelationshipDescription) {
+        if (!hasOtherRelationshipDescription && relationshipNeeded) {
             errors.push("Please add a description for the relationship.");
         }
-        if (!hasContactMethod) {
+
+        if (!hasContactMethod && contactMethodNeeded) {
             errors.push("Please select a contact method.");
         }
+
 
         if (errors.length > 0) {
             this.alert(errors.join("<br> "));
@@ -341,30 +362,40 @@ var OpenEyes = OpenEyes || {};
         let selectedRelationshipData = selectedItems[1];
         let selectedContactMethodData = selectedItems[3];
         let addNewContact = selectedContactData.type === "custom";
+        var contactMethodNeeded = true;
+        var relationshipNeeded = true;
 
+        if (this.options.notRequiredItemLabels !== 'undefined') {
+            contactMethodNeeded = jQuery.inArray('Contact method', this.options.notRequiredItemLabels) < 0;
+            relationshipNeeded = jQuery.inArray('Relationship', this.options.notRequiredItemLabels) < 0;
+        }
         data = selectedContactData;
-        data.relationship = selectedRelationshipData.label;
-        data.consent_patient_relationship_id = selectedRelationshipData.item_id;
-        data.consent_patient_contact_method_id = selectedContactMethodData.item_id;
-        data.consent_patient_contact_method = selectedContactMethodData.label;
+
+        if (relationshipNeeded) {
+            data.relationship = selectedRelationshipData.label;
+            data.consent_patient_relationship_id = selectedRelationshipData.item_id;
+            if (data.relationship.toLowerCase() === 'other') {
+                data.other_relationship = $('#other_patient_relationship_input').val();
+                data.relationship = data.other_relationship;
+            }
+        }
+
+        if (contactMethodNeeded) {
+            data.consent_patient_contact_method_id = selectedContactMethodData.item_id;
+            data.consent_patient_contact_method = selectedContactMethodData.label;
+            data.signature_require = selectedContactMethodData.signature_require;
+            data.signature_require_string = selectedContactMethodData.signature_require_string;
+            if (data.consent_patient_contact_method.toLowerCase() === 'other') {
+                data.consent_patient_contact_method = $('#other_patient_contact_method_input').val();
+                data.other_contact_method = data.consent_patient_contact_method;
+            }
+        }
+
         data.uniqueId = Math.random().toString(16).slice(2);
         data.contact_type_id = selectedContactTypeData.contact_type_id;
-        data.signature_require = selectedContactMethodData.signature_require;
-        data.signature_require_string = selectedContactMethodData.signature_require_string;
         data.contact_type_name = selectedContactTypeData.label;
 
         data.existing_id = '';
-
-        if (data.relationship.toLowerCase() === 'other') {
-            data.other_relationship = $('#other_patient_relationship_input').val();
-            data.relationship = data.other_relationship;
-        }
-
-        if (data.consent_patient_contact_method.toLowerCase() === 'other') {
-            data.consent_patient_contact_method = $('#other_patient_contact_method_input').val();
-            data.other_contact_method = data.consent_patient_contact_method;
-
-        }
 
         this.selectedData = data;
 

@@ -806,7 +806,7 @@ class DefaultController extends BaseEventTypeController
         $user = User::model()->findByPk($firm->consultant_id);
 
         if ($user) {
-            $salutation = $user->getSalutationName() . " ({$firm->getSubspecialtyText()}),";
+            $salutation = 'Dear ' . $user->getSalutationName() . " ({$firm->getSubspecialtyText()}),";
         } else {
             $salutation = 'Dear ' . $firm->getSubspecialtyText() . ' Service,';
         }

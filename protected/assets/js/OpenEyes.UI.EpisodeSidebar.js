@@ -507,6 +507,10 @@ OpenEyes.UI = OpenEyes.UI || {};
     EpisodeSidebar.prototype.setGroupingState = function (groupingValue, state) {
         if (this.grouping.state === undefined)
             this.grouping.state = {};
+
+        if (this.grouping.state === null)
+            this.grouping.state = {};
+
         this.grouping.state[groupingValue] = state;
     };
 
@@ -558,7 +562,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     //TODO: loading is not working, need to verify where we're at!!
     EpisodeSidebar.prototype.processGroupingState = function () {
         const self = this;
-        if (self.grouping.state === undefined) {
+        if (self.grouping.state === undefined || self.grouping.state === null) {
             self.expandAll();
         } else {
             self.element.find('.collapse-group').each(function () {

@@ -23,6 +23,10 @@ use OEModule\OphTrConsent\models\OphTrConsent_BestInterestDecision_Attachment;
 
 class DefaultController extends BaseEventTypeController
 {
+    public const PATIENT_CONTACTS_TYPE = 1;
+    public const OPENEYES_USERS_TYPE = 2;
+    public const PATIENT_TYPE = 3;
+
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -41,6 +45,7 @@ class DefaultController extends BaseEventTypeController
         'contactPage' => self::ACTION_TYPE_FORM,
         'getDeleteConsentPopupContent' => self::ACTION_TYPE_FORM,
         'uploadFile' => self::ACTION_TYPE_FORM,
+        'saveWithdrawal' => self::ACTION_TYPE_FORM,
     );
 
     protected static array $accepted_file_types = [
@@ -62,15 +67,15 @@ class DefaultController extends BaseEventTypeController
     public function actions()
     {
         return [
-        'saveCapturedSignature' => [
-            'class' => \SaveCapturedSignatureAction::class,
-        ],
-        'getSignatureByUsernameAndPin' => [
-            'class' => \GetSignatureByUsernameAndPinAction::class,
-        ],
-        'postSignRequest' => [
-            'class' => PostSignRequestAction::class,
-        ],
+            'saveCapturedSignature' => [
+                'class' => \SaveCapturedSignatureAction::class,
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => \GetSignatureByUsernameAndPinAction::class,
+            ],
+            'postSignRequest' => [
+                'class' => PostSignRequestAction::class,
+            ],
         ];
     }
 
@@ -80,9 +85,9 @@ class DefaultController extends BaseEventTypeController
         $url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js'), true);
         Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
         Yii::app()->clientScript->registerScript(
-        'AnaestheticController',
-        'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});',
-        CClientScript::POS_END
+            'AnaestheticController',
+            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});',
+            CClientScript::POS_END
         );
 
         return parent::beforeAction($action);
@@ -236,13 +241,13 @@ class DefaultController extends BaseEventTypeController
         $this->open_elements = array($element);
 
         $form = Yii::app()->getWidgetFactory()->createWidget($this, 'BaseEventTypeCActiveForm', array(
-        'id' => 'clinical-create',
-        'enableAjaxValidation' => false,
-        'htmlOptions' => array('class' => 'sliding'),
+            'id' => 'clinical-create',
+            'enableAjaxValidation' => false,
+            'htmlOptions' => array('class' => 'sliding'),
         ));
 
         $this->renderElement($element, 'create', $form, null, array(
-        'previous_parent_id' => $previous_id,
+            'previous_parent_id' => $previous_id,
         ), false, true);
     }
 
@@ -260,8 +265,10 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('invalid request for booking event');
             }
 
-            if (!($this->booking_event = Event::model()->findByPk($_GET['booking_event_id']))
-            || (!$this->booking_operation = $api->getOperationForEvent($_GET['booking_event_id']))) {
+            if (
+                !($this->booking_event = Event::model()->findByPk($_GET['booking_event_id']))
+                || (!$this->booking_operation = $api->getOperationForEvent($_GET['booking_event_id']))
+            ) {
                 throw new Exception('booking event not found');
             }
         } elseif (isset($_GET['unbooked'])) {
@@ -342,7 +349,7 @@ class DefaultController extends BaseEventTypeController
                 $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&booking_event_id=' . $m[1]));
             } elseif (preg_match('/^template([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
                 $template = OphTrConsent_Template::model()->findByPk($m[1]);
-                $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1] . '&type_id='.$template->type_id));
+                $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1] . '&type_id=' . $template->type_id));
             }
             $errors = array('Consent form' => array('Please select a booking or Unbooked procedures'));
         }
@@ -404,25 +411,25 @@ class DefaultController extends BaseEventTypeController
 
             $this->title = 'Please select booking';
             $this->event_tabs = array(
-            array(
-                'label' => 'Select a booking',
-                'active' => true,
-            ),
+                array(
+                    'label' => 'Select a booking',
+                    'active' => true,
+                ),
             );
             $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             $this->event_actions = array(
-            EventAction::link(
-                'Cancel',
-                Yii::app()->createUrl($cancel_url),
-                array('id' => 'et_cancel', 'class' => 'button small warning')
-            ),
+                EventAction::link(
+                    'Cancel',
+                    Yii::app()->createUrl($cancel_url),
+                    array('id' => 'et_cancel', 'class' => 'button small warning')
+                ),
             );
             $this->processJsVars();
             $this->render('select_event', array(
-            'errors' => $errors,
-            'bookings' => $bookings ? $bookings : [],
-            'templates' => $templates ? $templates : [],
-            'no_operation_booking' => $no_operation_booking ? $no_operation_booking : [],
+                'errors' => $errors,
+                'bookings' => $bookings ? $bookings : [],
+                'templates' => $templates ? $templates : [],
+                'no_operation_booking' => $no_operation_booking ? $no_operation_booking : [],
             ), false, true);
         }
     }
@@ -467,7 +474,7 @@ class DefaultController extends BaseEventTypeController
     {
         if (@$_GET['vi']) {
             $this->pdf_print_suffix = 'vi';
-            $this->print_args = '?vi=1' ;
+            $this->print_args = '?vi=1';
         }
 
         return parent::actionPDFPrint($id);
@@ -531,11 +538,11 @@ class DefaultController extends BaseEventTypeController
                 }
 
                 $users[] = array(
-                'id' => $user->id,
-                'value' => trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications) . ' (' . $user->role . ')',
-                'fullname' => trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications),
-                'role' => $user->role,
-                'consultant' => $consultant_name,
+                    'id' => $user->id,
+                    'value' => trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications) . ' (' . $user->role . ')',
+                    'fullname' => trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications),
+                    'role' => $user->role,
+                    'consultant' => $consultant_name,
                 );
             }
         }
@@ -603,6 +610,26 @@ class DefaultController extends BaseEventTypeController
         $withdrawal->withdrawal_reason = $withdrawal_reason;
         $withdrawal->event_id = $event_id;
 
+        if (!$withdrawal->isUnableToConsent()) {
+            $other_relationship = \OphTrConsent_PatientRelationship::model()->find("LOWER(name) = 'other'");
+            $contact_type_id = self::PATIENT_TYPE;
+
+            $withdrawal->contact_type_id = $contact_type_id;
+            $withdrawal->contact_user_id = null; // not a User
+            $withdrawal->first_name = $this->patient->first_name;
+            $withdrawal->last_name = $this->patient->last_name;
+            $withdrawal->email = $this->patient->getEmail();
+            $withdrawal->phone_number = $this->patient->primary_phone;
+            $withdrawal->mobile_number = $this->patient->contact->mobile_phone;
+            $withdrawal->address_line1 = $this->patient->contact->address->address1;
+            $withdrawal->address_line2 = $this->patient->contact->address->address2;
+            $withdrawal->city = $this->patient->contact->address->city;
+            $withdrawal->country_id = $this->patient->contact->address->country_id;
+            $withdrawal->postcode = $this->patient->contact->address->postcode;
+            $withdrawal->consent_patient_relationship_id = $other_relationship->id;
+            $withdrawal->other_relationship = 'Patient';
+        }
+
         if ($withdrawal_reason !== null) {
             $this->event->addIssue('Consent Withdrawn');
         } else {
@@ -619,7 +646,7 @@ class DefaultController extends BaseEventTypeController
             $trans->rollback();
         }
 
-        $this->redirect('/OphTrConsent/default/view/'.$event_id);
+        $this->redirect('/OphTrConsent/default/view/' . $event_id);
     }
 
     public function actionRemoveWithdraw()
@@ -643,13 +670,13 @@ class DefaultController extends BaseEventTypeController
                 $transaction->commit();
             }
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
             if ($transaction) {
                 $transaction->rollback();
             }
+            throw new Exception($e->getMessage());
         }
 
-        $this->redirect('/OphTrConsent/default/view/'.$event_id);
+        $this->redirect('/OphTrConsent/default/view/' . $event_id);
     }
 
     public function actionConfirm()
@@ -683,7 +710,7 @@ class DefaultController extends BaseEventTypeController
             $trans->rollback();
         }
 
-        $this->redirect('/OphTrConsent/default/view/'.$event_id);
+        $this->redirect('/OphTrConsent/default/view/' . $event_id);
     }
 
     public function actionRemoveConfirm()
@@ -713,7 +740,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        $this->redirect('/OphTrConsent/default/view/'.$event_id);
+        $this->redirect('/OphTrConsent/default/view/' . $event_id);
     }
 
     protected function setComplexAttributes_Element_OphTrConsent_Procedure($element, $data, $index)
@@ -758,8 +785,8 @@ class DefaultController extends BaseEventTypeController
         $patient = \Patient::model()->findByPk($this->patient->id);
 
         if (
-        isset($data['OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy']) &&
-        isset($data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['contact_id'])
+            isset($data['OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy']) &&
+            isset($data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['contact_id'])
         ) {
             $contact_ids = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['contact_id'];
             $entries = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_PatientAttorneyDeputy"]['entries'];
@@ -834,7 +861,7 @@ class DefaultController extends BaseEventTypeController
 
     protected function saveComplexAttributes_Element_OphTrConsent_SupplementaryConsent($element, $data, $index)
     {
-        $ele_qs = $data['Element_OphTrConsent_SupplementaryConsent']['element_question']??[];
+        $ele_qs = $data['Element_OphTrConsent_SupplementaryConsent']['element_question'] ?? [];
 
         //for each element question id posted
         foreach ($ele_qs as $ele_q_id => $ele_q_data) {
@@ -943,20 +970,20 @@ class DefaultController extends BaseEventTypeController
         $criteria = new \CDbCriteria();
         $criteria->addCondition('id = :old_consent_id');
         $criteria->params = [
-        ':old_consent_id' => $old_consent_id
+            ':old_consent_id' => $old_consent_id
         ];
         $old_consent_event = Event::model()->findAll($criteria);
         if (count($old_consent_event) === 0) {
             $response = null;
         } else {
             $response = [
-            'html' => $this->renderPartial(
-                'select_event_with_consent_delete',
-                array(
-                    'old_consent_event' => $old_consent_event,
+                'html' => $this->renderPartial(
+                    'select_event_with_consent_delete',
+                    array(
+                        'old_consent_event' => $old_consent_event,
+                    ),
+                    true
                 ),
-                true
-            ),
             ];
         }
 
@@ -1075,15 +1102,15 @@ class DefaultController extends BaseEventTypeController
     public function getElementsByConsentFormTypes(): array
     {
         return OphTrConsent_Type_Assessment::model()
-        ->with('element')
-        ->findAllByAttributes(
-            [
-                'type_id' => $this->type_id
-            ],
-            [
-                'order' => 't.display_order ASC'
-            ]
-        );
+            ->with('element')
+            ->findAllByAttributes(
+                [
+                    'type_id' => $this->type_id
+                ],
+                [
+                    'order' => 't.display_order ASC'
+                ]
+            );
     }
 
     private function getElementTypesForConsentFormType(): array
@@ -1143,14 +1170,13 @@ class DefaultController extends BaseEventTypeController
             throw new \CHttpException(500, "Element not found");
         }
         $this->redirect("/OphCoCvi/default/print/$id?html=1&auto_print=0&sign=1" .
-        "&element_type_id=" . \Yii::app()->request->getParam("element_type_id") .
-        "&signature_type=" . \Yii::app()->request->getParam("signature_type") .
-        "&signatory_role=" . \Yii::app()->request->getParam("signatory_role") .
-        "&signature_name=" . \Yii::app()->request->getParam("signatory_name") .
-        "&element_id=" . $element->id .
-        "&initiator_element_type_id=" . \Yii::app()->request->getParam("initiator_element_type_id") .
-        "&initiator_row_id=" . \Yii::app()->request->getParam("initiator_row_id")
-        );
+            "&element_type_id=" . \Yii::app()->request->getParam("element_type_id") .
+            "&signature_type=" . \Yii::app()->request->getParam("signature_type") .
+            "&signatory_role=" . \Yii::app()->request->getParam("signatory_role") .
+            "&signature_name=" . \Yii::app()->request->getParam("signatory_name") .
+            "&element_id=" . $element->id .
+            "&initiator_element_type_id=" . \Yii::app()->request->getParam("initiator_element_type_id") .
+            "&initiator_row_id=" . \Yii::app()->request->getParam("initiator_row_id"));
     }
 
     protected function setComplexAttributes_Element_OphTrConsent_OthersInvolvedDecisionMakingProcess($element, $data, $index)
@@ -1221,11 +1247,13 @@ class DefaultController extends BaseEventTypeController
     {
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $type = $finfo->file($file_path);
-        if (!array_search(
-        $type,
-        self::$accepted_file_types,
-        true
-        )) {
+        if (
+            !array_search(
+                $type,
+                self::$accepted_file_types,
+                true
+            )
+        ) {
             throw new Exception("File type $type not allowed.");
         }
     }
@@ -1252,8 +1280,8 @@ class DefaultController extends BaseEventTypeController
                 $this->checkMimeType($file["tmp_name"]);
             } catch (Exception $e) {
                 $this->renderJSON([
-                "success" => false,
-                "message" => $e->getMessage(),
+                    "success" => false,
+                    "message" => $e->getMessage(),
                 ]);
             }
             $file_name = $this->sanitizeFileName($file["name"]);
@@ -1261,14 +1289,14 @@ class DefaultController extends BaseEventTypeController
             $pf->title = "Best Interest Decision support document";
             if (!move_uploaded_file($file["tmp_name"], $pf->getPath())) {
                 $this->renderJSON([
-                "success" => false,
-                "message" => "Error uploading file.",
+                    "success" => false,
+                    "message" => "Error uploading file.",
                 ]);
             }
             $pf->save();
             $this->renderJSON([
-            "success" => true,
-            "protected_file_id" => $pf->id,
+                "success" => true,
+                "protected_file_id" => $pf->id,
             ]);
         } else {
             throw new CHttpException(400, "Bad request");
@@ -1277,9 +1305,10 @@ class DefaultController extends BaseEventTypeController
 
     protected function setComplexAttributes_Element_OphTrConsent_BestInterestDecision(
         Element_OphTrConsent_BestInterestDecision $element,
-        $data,
-        $index = null
-    ) {
+                                                  $data,
+                                                  $index = null
+    )
+    {
         $data = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_BestInterestDecision"];
         $items = [];
         if (isset($data["attachments"]) && is_array($data["attachments"])) {
@@ -1302,9 +1331,10 @@ class DefaultController extends BaseEventTypeController
 
     protected function saveComplexAttributes_Element_OphTrConsent_BestInterestDecision(
         Element_OphTrConsent_BestInterestDecision $element,
-        $data,
-        $index = null
-    ) {
+                                                  $data,
+                                                  $index = null
+    )
+    {
         $existing_ids = Yii::app()->db->createCommand(
             "SELECT id FROM " . OphTrConsent_BestInterestDecision_Attachment::model()->tableName()
             . " WHERE element_id = :element_id"
@@ -1341,5 +1371,33 @@ class DefaultController extends BaseEventTypeController
         );
 
         $this->renderPartial('_add_new_contact', $params, false, true);
+    }
+
+    public function actionSaveWithdrawal()
+    {
+        $code = 1;
+        $message = '';
+
+        $request = Yii::app()->request;
+        if ($request->isPostRequest) {
+            $data = $request->getRestParams();
+            try {
+                $withdrawal = \Element_OphTrConsent_Withdrawal::model()->find("event_id = ?", [$data['event_id']]);
+                if ($withdrawal) {
+                    $withdrawal->setAttributes($data);
+                    $withdrawal->withdrawn = 0;
+                    $withdrawal->withdrawal_reason = null;
+                    if (!$withdrawal->save()) {
+                        throw new Exception("Could not save withdrawal. Please contact support for assistance.");
+                    }
+                } else {
+                    throw new Exception('Something went wrong trying to add the withdrawal. Please try again or contact support for assistance');
+                }
+            } catch (Exception $e) {
+                $code = 0;
+                $message = $e->getMessage();
+            }
+        }
+        $this->renderJSON(['code' => $code, 'message' => $message]);
     }
 }

@@ -153,7 +153,7 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
     }
 
     /**
-     * Retrieves a list of Relationships.
+     * Retrieves a list of Contact methods.
      *
      * @return array
      * @throws Exception

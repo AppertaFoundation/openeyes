@@ -212,12 +212,13 @@
             //searchAsTypedPrefix: 'Add a new contact:',
         });
 
-        // Change columns 2-3
-        jQuery.each($("#patient_contact_adder tr"), function () {
-            $(this).children(":eq(3)").after($(this).children(":eq(2)"));
-        });
 
-        jQuery.each($("#patient_contact_adder thead"), function () {
+        // Change columns 2-3
+        $("#patient_contact_adder tr").each(function() {
+            $(this).children(":eq(3)").after($(this).children(":eq(2)"));
+        })
+
+        $("#patient_contact_adder thead").each(function() {
             $(this).children(":eq(3)").after($(this).children(":eq(2)"));
         });
 

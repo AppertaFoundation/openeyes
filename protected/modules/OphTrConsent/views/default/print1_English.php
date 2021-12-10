@@ -284,18 +284,19 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <?php endif; ?>
 
     <!-- patient signature -->
-
-    <?= $this->renderPartial(
-        '_print_signature',
-        array(
-            'vi' => ($css_class === 'impaired'),
-            'element' => $elements[Element_OphTrConsent_Esign::class],
-            'signature' => $elements[Element_OphTrConsent_Esign::class]
-                ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 5),
-            'title_label' => 'Role',
-            'name_label' => 'Patient name',
-        )
-    ); ?>
+    <?php if ($additional_signatures !== false) {
+        echo $this->renderPartial(
+            '_print_signature',
+            array(
+                'vi' => ($css_class === 'impaired'),
+                'element' => $elements[Element_OphTrConsent_Esign::class],
+                'signature' => $elements[Element_OphTrConsent_Esign::class]
+                    ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 5),
+                'title_label' => 'Role',
+                'name_label' => 'Patient name',
+            )
+        );
+    } ?>
 
     <!-- witness signature -->
 
@@ -373,8 +374,8 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
                 'element' => $elements['Element_OphTrConsent_Esign'],
                 'signature' => $elements['Element_OphTrConsent_Esign']
                                 ->getSignatureByInitiatorAttributes(
-                                        $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
-                                        5
+                                    $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
+                                    $elements['Element_OphTrConsent_Withdrawal']->id,
                                 ),
                                          'title_label' => 'Job title',
                                          'name_label' => 'Print name'
