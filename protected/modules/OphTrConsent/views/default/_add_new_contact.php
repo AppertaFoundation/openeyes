@@ -221,7 +221,7 @@ $form = $this->beginWidget('CActiveForm', array(
             Relationship
         </td>
         <td>
-            <?= $selected_relationship ?>
+            <?= $selected_relationship ?? '-' ?>
         </td>
     </tr>
     <tr>
@@ -229,7 +229,7 @@ $form = $this->beginWidget('CActiveForm', array(
             Contact method
         </td>
         <td>
-            <?= $selected_contact_method ?>
+            <?= $selected_contact_method ?? '-' ?>
         </td>
     </tr>
     <tr>

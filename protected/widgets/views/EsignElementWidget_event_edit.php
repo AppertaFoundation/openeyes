@@ -20,15 +20,16 @@
 <?php
 if ($this->isSigningAllowed()) {
     $signatures = [];
-    $withdrawal_signatures = [];
+    $withdrawal_signature = null;
     $confirm_signatures = [];
     $confirm_signed = false;
+
     foreach ($this->element->getSignatures() as $signature) {
         if (strcmp($signature->signatory_role, "Withdrawn by") == 0) {
-            $withdrawal_signatures[] = $signature;
+            $withdrawal_signature = $signature;
         } elseif (strcmp($signature->signatory_role, "Confirmed by") == 0) {
             $confirm_signatures[] = $signature;
-            if($signature->isSigned()) {
+            if ($signature->isSigned()) {
                 $confirm_signed = true;
             }
         } else {
@@ -44,14 +45,15 @@ if ($this->isSigningAllowed()) {
     } ?>
     <div class="element-data full-width">
         <?php foreach ($this->element->getInfoMessages() as $msg) : ?>
-            <div class="alert-box info"><?=CHtml::encode($msg)?></div>
+            <div class="alert-box info"><?= CHtml::encode($msg) ?></div>
         <?php endforeach; ?>
         <?php if (!$this->isSigningAllowed()) : ?>
             <div class="alert-box warning">E-signing of this event will be available at a later stage.</div>
         <?php else : ?>
             <?php if ($this->element instanceof Element_OphTrConsent_Esign) {
-                if ($this->isSigningAllowed() && count($withdrawal_signatures) != 0) { ?>
-                    <div class="alert-box warning"><strong>Patient has withdrawn their consent, a reason for the withdrawal must be recorded and the patient must sign to confirm.</strong></div>
+                if ($this->isSigningAllowed() && $withdrawal_signature !== null) { ?>
+                    <div class="alert-box warning"><strong>Patient has withdrawn their consent, a reason for the
+                            withdrawal must be recorded and the patient must sign to confirm.</strong></div>
                     <table class="last-left">
                         <colgroup>
                             <col class="cols-1">
@@ -60,21 +62,30 @@ if ($this->isSigningAllowed()) {
                             <col class="cols-2">
                             <col class="cols-3">
                         </colgroup">
-                        <tbody>
-                        <?php
-                        foreach ($withdrawal_signatures as $signature) {
-                            $this->widget(
-                                static::getWidgetClassByType($signature->type),
-                                [
-                                    "row_id" => "X",
-                                    "element" => $this->element,
-                                    "signature" => $signature,
-                                    "mode" => ($this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit'),
-                                ]
-                            );
-                        }
-                        ?>
-                        </tbody>
+                            <?php
+                            $withdrawal_element = $this->element->event->getElementByClass(\Element_OphTrConsent_Withdrawal::class);
+                            $unable_to_consent = $withdrawal_element->isUnableToConsent();
+                            $consent_type_id = $this->controller->type_id;
+
+                            if ($unable_to_consent && $withdrawal_element->contact_type_id === null) {
+                                $this->render(
+                                    'OEModule.OphTrConsent.views.default._add_withdrawal_contact',
+                                    ['withdrawal_element' => $withdrawal_element],
+                                );
+                            } else {
+                                echo '<tbody>';
+                                $this->widget(
+                                    $this->getWidgetClassByType($withdrawal_signature->type),
+                                    [
+                                        "row_id" => 1,
+                                        "element" => $this->element,
+                                        "signature" => $withdrawal_signature,
+                                        "mode" => ($this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit'),
+                                    ]
+                                );
+                                echo '</tbody>';
+                            }
+                            ?>
                     </table>
                     <?php
                     $withdrawal_element_criteria = new CDbCriteria();
@@ -93,7 +104,8 @@ if ($this->isSigningAllowed()) {
                     <?php if ($confirm_signed === true) : ?>
                         <div class="alert-box success"><strong>Consent is confirmed</strong></div>
                     <?php else : ?>
-                        <div class="alert-box issue"><strong>The user signature is still required to complete the Confirmation of consent.</strong></div>
+                        <div class="alert-box issue"><strong>The user signature is still required to complete the
+                                confirmation of consent.</strong></div>
                     <?php endif; ?>
                     <table class="last-left">
                         <colgroup>
@@ -119,17 +131,18 @@ if ($this->isSigningAllowed()) {
                         ?>
                         </tbody>
                     </table>
-                    <?php if($confirm_signed === false) { ?>
+                    <?php if ($confirm_signed === false) { ?>
                         <div class="row flex">
                             <div class="flex-l cols-6">
                             </div>
-                            
                             <div>
-                                <button class="button blue hint js-remove-confirm pull-right">Cancel consent confirmation</button>
+                                <button class="button blue hint js-remove-confirm pull-right">Cancel consent
+                                    confirmation
+                                </button>
                             </div>
                         </div>
                     <?php } ?>
-                    <hr class="divider" />
+                    <hr class="divider"/>
                 <?php }
             } ?>
             <?php if (!$this->element->isSigned()) : ?>
@@ -151,7 +164,7 @@ if ($this->isSigningAllowed()) {
                 </thead>
                 <tbody>
                 <?php
-                    $row = 0;
+                $row = 0;
                 foreach ($signatures as $signature) {
                     $this->widget(
                         static::getWidgetClassByType($signature->type),
@@ -170,29 +183,29 @@ if ($this->isSigningAllowed()) {
     </div>
 </div>
 <script type="text/javascript">
-    $(function(){
+    $(function () {
         new OpenEyes.UI.EsignElementWidget(
             $(".<?= \CHtml::modelName($this->element) ?>"),
             {
-                mode : "<?= $this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit' ?>",
-                element_id : <?= json_encode($this->element->id) ?>
+                mode: "<?= $this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit' ?>",
+                element_id: <?= json_encode($this->element->id) ?>
             }
         );
     });
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         <?php
-            $confirm_element_criteria = new CDbCriteria();
-            $confirm_element_criteria->compare('t.event_id', $this->element->event_id);
-            $confirm_element = \Element_OphTrConsent_Confirm::model()->find($confirm_element_criteria);
+        $confirm_element_criteria = new CDbCriteria();
+        $confirm_element_criteria->compare('t.event_id', $this->element->event_id);
+        $confirm_element = \Element_OphTrConsent_Confirm::model()->find($confirm_element_criteria);
         ?>
 
-        $(this).on('click','.js-remove-confirm',function(e) {
+        $(this).on('click', '.js-remove-confirm', function (e) {
             e.preventDefault();
             let element = document.getElementsByClassName('element ' + <?= CJavaScript::encode(CHtml::modelName($confirm_element)) ?>)[0];
             element.dispatchEvent(new Event('element_removed'));
             removeElement(element);
-            window.location.href = "<?= Yii::app()->createUrl('/OphTrConsent/default/removeConfirm?event_id='.$element->event_id) ?>";
+            window.location.href = "<?= Yii::app()->createUrl('/OphTrConsent/default/removeConfirm?event_id=' . $element->event_id) ?>";
         });
-	});
+    });
 </script>

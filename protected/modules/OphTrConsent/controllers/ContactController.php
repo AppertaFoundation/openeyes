@@ -48,8 +48,8 @@ class ContactController extends \BaseController
                 if ($contact_label_id != 'false') {
                     $contact_label = \ContactLabel::model()->findByPk($contact_label_id);
                     $criteria->addCondition(array(
-                            'cl.name = ' . '"' . $contact_label->name . '"'
-                        ));
+                        'cl.name = ' . '"' . $contact_label->name . '"'
+                    ));
                 }
             }
             $criteria->addCondition(array('cl.is_private = 0'));
@@ -132,23 +132,21 @@ class ContactController extends \BaseController
             'name' => $contact->getFullName(),
             'first_name' => $contact->first_name,
             'last_name' => $contact->last_name,
-            'email' => $contact->email,
-            'phone' => $contact->primary_phone,
-            'address' => $contact->address ? $contact->address->getLetterLine() : "",
+            'email' => $user->email ?? ($contact->email ?? ''),
+            'phone_number' => $contact->primary_phone ?? '',
+            'mobile_number' => $contact->mobile_phone ?? '',
             'contact_label' => $contact->label ? $contact->label->name : "",
+            'address_line1' => $contact->address->address1 ?? '',
+            'address_line2' => $contact->address->address2 ?? '',
+            'city' => $contact->address->city ?? '',
+            'postcode' => $contact->address->postcode ?? '',
+            'country_id' => $contact->address->country_id ?? '',
         );
 
         if ($user) {
             $result['contact_user_id'] = $user->id;
         }
 
-        if (isset($contact->address)) {
-            $result['address_line1'] = $contact->address->address1;
-            $result['address_line2'] = $contact->address->address2;
-            $result['city'] = $contact->address->city;
-            $result['country_id'] = $contact->address->country_id;
-            $result['postcode'] = $contact->address->postcode;
-        }
         return $result;
     }
 
@@ -240,25 +238,26 @@ class ContactController extends \BaseController
             }
             $users = \User::model()->with('contact')->findAll($criteria);
 
-            $return = array();
+            $data = array();
             foreach ($users as $i => $user) {
-                if($user->contact === null){
+                if ($user->contact === null) {
                     $user->contact = new \Contact();
                 }
-                $return[$i] = $this->contactStructure($user->contact, $user);
-                $return[$i]['user_id'] = $user->id;
-                $return[$i]['type'] = "Contact";
+                $data[$i] = $this->contactStructure($user->contact, $user);
+                $data[$i]['user_id'] = $user->id;
+                $data[$i]['type'] = "Contact";
             }
 
-            $this->renderJSON($return);
+            $this->renderJSON($data);
         }
     }
 
     public function actionAllPatientContacts()
     {
+        $return = array();
         $patient_id = Yii::app()->request->getQuery('code');
 
-        if (strlen($patient_id)===0) {
+        if (strlen($patient_id) === 0) {
             return [];
         }
 
@@ -267,25 +266,27 @@ class ContactController extends \BaseController
             $criteria->join = "join patient_contact_assignment pca ON pca.contact_id = t.id";
             $criteria->join .= " join contact_label cl ON cl.id = t.contact_label_id";
 
-            if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
+            if (isset($_GET['term']) && $term = trim(strtolower($_GET['term']))) {
                 $criteria->addSearchCondition('LOWER(last_name)', $term, true, 'OR');
                 $criteria->addSearchCondition('LOWER(first_name)', $term, true, 'OR');
             }
 
-            $criteria->addSearchCondition('pca.patient_id', $patient_id, true, 'OR');
+            $criteria->addSearchCondition('pca.patient_id', $patient_id, true, 'AND');
 
             $contacts = \Contact::model()->findAll($criteria);
-            $return = array();
-            foreach ($contacts as $contact) {
-                $return[] = $this->contactStructure($contact);
-            }
 
-            // exception (only in parient contact mode)
-            $return[] = [
-                'type' => "custom",
-                'label' => 'Add a new contact',
-            ];
-            $this->renderJSON($return);
+            foreach ($contacts as $i => $contact) {
+                $return[] = $this->contactStructure($contact);
+                $return[$i]['user_id'] = null;
+                $return[$i]['type'] = "Contact";
+            }
         }
+        // exception (only in parient contact mode)
+        $return[] = [
+            'type' => "custom",
+            'label' => 'Add a new contact',
+        ];
+
+        $this->renderJSON($return);
     }
 }

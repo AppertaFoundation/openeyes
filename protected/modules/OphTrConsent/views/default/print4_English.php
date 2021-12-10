@@ -249,8 +249,8 @@ $type_assessment = new OphTrConsent_Type_Assessment();
                 'element' => $elements['Element_OphTrConsent_Esign'],
                 'signature' => $elements['Element_OphTrConsent_Esign']
                                 ->getSignatureByInitiatorAttributes(
-                                        $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
-                                        5
+                                    $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
+                                    $elements['Element_OphTrConsent_Withdrawal']->id,
                                 ),
                                          'title_label' => 'Job title',
                                          'name_label' => 'Print name'
