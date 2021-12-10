@@ -138,12 +138,9 @@ class DefaultController extends BaseEventTypeController
             $tmp_name = Element_OphCoDocument_Document::model()->rotate($tmp_name);
         }
 
-
         $p_file = ProtectedFile::createFromFile($tmp_name);
         $p_file->name = $original_name;
-        $file_split = explode(".", $original_name);
-        $file_split[0] = substr($file_split[0], 0, 63 - strlen($file_split[1]));
-        $p_file->title = $file_split[0] . "." . $file_split[1];
+        $p_file->title = $original_name;
 
         if ($p_file->save()) {
             unlink($tmp_name);
