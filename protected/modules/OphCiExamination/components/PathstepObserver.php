@@ -39,6 +39,19 @@ class PathstepObserver
                 [':id' => $firm->service_subspecialty_assignment_id]
             );
             $service_id = $service->id;
+            $workflow_step_id = $step->getState('workflow_step_id');
+
+            // This is to avoid the scenario where undoing a pathway step would proceed ahead examination workflow to next step
+            if ($workflow_step_id === "" || $workflow_step_id === "undefined") {
+                // The pathway step is not part of a workflow step
+                // So either take user to update the associated event, or to event creation page
+                $workflow_step_condition[] = "e.step_id = :step_id";
+                $workflow_step_condition[] = [':step_id' => $step->id];
+                $event_status = 'update';       // Take the user to update associated event
+            } else {
+                $workflow_step_condition = '';
+                $event_status = 'step';         // It is part of a workflow step, so proceed to next step of latest available event
+            }
 
             // Determine if an examination event already exists for the patient for the episode connected to the service
             // firm. If it doesn't exist, set the URL to the event creation URL so the episode is also created.
@@ -49,6 +62,7 @@ class PathstepObserver
                 ->join('event_type et', 'et.id = e.event_type_id')
                 ->join('episode ep', 'ep.id = e.episode_id')
                 ->where('ep.patient_id = :patient_id AND ep.firm_id = :service_id AND et.class_name = \'OphCiExamination\'')
+                ->andWhere($workflow_step_condition)
                 ->andWhere('e.deleted = 0')
                 ->limit(1)
                 ->order('e.event_date DESC')
@@ -60,13 +74,13 @@ class PathstepObserver
             if ($latest_exam_event_for_episode) {
                 $params = [
                     'patient_id' => $step->pathway->worklist_patient->patient_id,
-                    'step_id' => $step->getState('workflow_step_id'),
+                    'step_id' => $workflow_step_id,
                     'worklist_patient_id' => $step->pathway->worklist_patient_id,
                     'worklist_step_id' => $step->id,
                 ];
                 $step->setState(
                     'event_create_url',
-                    '/OphCiExamination/default/step/' . $latest_exam_event_for_episode. '?' . http_build_query($params)
+                    '/OphCiExamination/default/' . $event_status . '/' . $latest_exam_event_for_episode. '?' . http_build_query($params)
                 );
             } else {
                 $params = [
