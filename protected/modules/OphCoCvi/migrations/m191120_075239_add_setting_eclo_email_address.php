@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -21,7 +22,7 @@ class m191120_075239_add_setting_eclo_email_address extends CDbMigration
             "element_type_id" => null,
             "key" => "eclo_email",
             "name" => "ECLO email address",
-            "default_value" => "moorfields.cityroadeclo@nhs.net",
+            "default_value" => "",
             "field_type_id" => 4,
         ));
     }
