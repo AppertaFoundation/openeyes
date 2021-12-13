@@ -323,6 +323,7 @@ class BaseEventTypeElement extends BaseElement
 
     public function addError($attribute, $message)
     {
+        $message = str_replace("{attribute}", $this->getAttributeLabel($attribute), $message);
         $this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)) . '_' . $attribute, $message);
         $message = '<a class="errorlink" onClick="scrollToElement($(\'.' . str_replace(
             '\\',
