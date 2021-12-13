@@ -157,15 +157,22 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                             <tbody>
                             <?php
                             $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
-                            if (count($ophthalmic_diagnoses) === 0) { ?>
+                            $no_ophthalmic_diagnoses_date = $this->patient->get_no_ophthalmic_diagnoses_date();
+                            if (count($ophthalmic_diagnoses) === 0 && !$no_ophthalmic_diagnoses_date) { ?>
                                 <tr>
                                     <td>
                                         <div class="nil-recorded">Nil recorded</div>
                                     </td>
                                 </tr>
-                            <?php } ?>
-                            <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis); ?>
+                            <?php } elseif ($no_ophthalmic_diagnoses_date) { ?>
+                                <tr>
+                                    <td>
+                                        <div class="nil-recorded">Patient has no known Ophthalmic Diagnoses</div>
+                                    </td>
+                                </tr>
+                            <?php } else {?>
+                                <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
+                                    list($side, $name, $date) = explode('~', $ophthalmic_diagnosis); ?>
                                 <tr>
                                     <td><?= $name ?></td>
                                     <td>
@@ -175,7 +182,8 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                         <span class="oe-date"><?= $date ?></span>
                                     </td>
                                 </tr>
-                            <?php } ?>
+                                <?php }
+                            }?>
                             </tbody>
                         </table>
                     </div>

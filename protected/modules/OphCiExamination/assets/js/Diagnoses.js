@@ -34,11 +34,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.subspecialtyRefSpec = this.options.subspecialtyRefSpec;
 
         this.$table = this.$element.find('#OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses_table');
+        this.$noOphthalmicDiagnosesWrapper = this.$element.find('.OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_no_ophthalmic_diagnoses_wrapper');
+        this.$noOphthalmicDiagnosesFld = this.$element.find('#OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_no_ophthalmic_diagnoses');
 
         this.loaderClass = this.options.loaderClass;
         this.$loader = this.$table.find('.' + this.loaderClass);
 
         this.templateText = this.$element.find('.entry-template').text();
+        this.$popup = $('#ophthalmic-diagnoses-popup');
         this.externalDiagnoses = {};
 
         this.searchRequest = null;
@@ -69,6 +72,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     DiagnosesController.prototype.initialiseTriggers = function () {
         var controller = this;
 
+        $(document).ready(function () {
+            if (controller.$noOphthalmicDiagnosesFld.prop('checked')) {
+                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$popupSearch.hide();
+            }
+            controller.hideNoOphthalmicDiagnoses();
+        });
+
         // removal button for table entries
         controller.$table.on('click', '.removeDiagnosis', function (e) {
             let glaucomaDiagnosisRemoved = false;
@@ -90,6 +101,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
             e.preventDefault();
             tableRow.remove();
+            controller.showNoOphthalmicDiagnoses();
 
 
             $(":input[name^='glaucoma_diagnoses']").trigger('change', [
@@ -171,9 +183,43 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $(this).closest('.condition-secondary-to-wrapper').hide();
         });
 
+        controller.$noOphthalmicDiagnosesFld.on('click', function () {
+
+            if (controller.$noOphthalmicDiagnosesFld.prop('checked')) {
+                controller.$table.hide();
+                controller.$popup.hide();
+            } else {
+                controller.$popup.show();
+            }
+        });
+
+        controller.$popup.on('click', function(e) {
+            e.preventDefault();
+            controller.hideNoOphthalmicDiagnoses();
+            if (controller.$table.hasClass('hidden')){
+                controller.$table.removeClass('hidden');
+            }
+        });
+
         eye_selector = new OpenEyes.UI.EyeSelector({
             element: controller.$element.closest('section')
         });
+
+        DiagnosesController.prototype.hideNoOphthalmicDiagnoses = function() {
+            if (this.$table.find('tbody tr').length !== 0) {
+                this.$noOphthalmicDiagnosesFld.prop('checked', false);
+                this.$noOphthalmicDiagnosesWrapper.hide();
+            }
+        };
+
+        DiagnosesController.prototype.showNoOphthalmicDiagnoses = function() {
+            if (this.$table.find('tbody tr').length === 0) {
+                this.$noOphthalmicDiagnosesWrapper.show();
+                this.$table.hide();
+            } else {
+                this.hideNoOphthalmicDiagnoses();
+            }
+        };
 
     };
 
@@ -279,6 +325,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     DiagnosesController.prototype.addEntry = function(selectedItems)
     {
         var rows = this.createRow(selectedItems);
+        this.$table.show();
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
             this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'), selectedItems[i].alternate);

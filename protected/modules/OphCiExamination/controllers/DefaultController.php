@@ -1111,6 +1111,15 @@ class DefaultController extends \BaseEventTypeController
         if (isset($data[$model_name])) {
             $diagnoses_data = $data[$model_name];
 
+
+            if (array_key_exists('no_ophthalmic_diagnoses', $diagnoses_data) && $diagnoses_data['no_ophthalmic_diagnoses'] === '1') {
+                if (!$element->no_ophthalmic_diagnoses_date) {
+                    $element->no_ophthalmic_diagnoses_date = date('Y-m-d H:i:s');
+                }
+            } else {
+                $element->no_ophthalmic_diagnoses_date = null;
+            }
+
             if (isset($diagnoses_data['entries'])) {
                 foreach ($diagnoses_data['entries'] as $i => $disorder) {
                     $diagnosis = null;

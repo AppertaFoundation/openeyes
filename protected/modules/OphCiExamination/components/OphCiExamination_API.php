@@ -2038,6 +2038,20 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return mixed|null
+     */
+    public function getNoOphthalmicDiagnosesDate(\Patient $patient, $use_context = false)
+    {
+        $element = $this->getLatestElement('models\Element_OphCiExamination_Diagnoses', $patient, $use_context);
+        if ($element) {
+            return $element->no_ophthalmic_diagnoses_date;
+        }
+        return null;
+    }
+
+    /**
      * Return list of allergies belonging to a patient.
      *
      * @param \Patient $patient
