@@ -422,12 +422,20 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->join .= ' JOIN patient_identifier pi ON t.id = patient_id AND pi.deleted = 0';
         $criteria->join .= ' JOIN patient_identifier_type pt ON pt.id = pi.patient_identifier_type_id';
 
+        // default PAS observer event
+        $pas_event = 'patient_search_criteria';
+
         // loop through all the possible types we want to search in and prepare the criteria
         if (isset($params['terms_with_types']) && $params['terms_with_types'] && !$params['is_name_search']) {
             $conditions_array = [];
             foreach ($params['terms_with_types'] as $twt_key => $terms_with_type) {
                 $term = $terms_with_type['term'] ?? '';
                 $type = $terms_with_type['patient_identifier_type'] ?? [];
+
+                // use desiganated observer event
+                if (isset($type->pas_api['observer'])) {
+                    $pas_event = $type->pas_api['observer'];
+                }
 
                 // if the user already selected a type we do not care about the rest
                 if ($patient_identifier_type_id && (int)$type->id !== (int)$patient_identifier_type_id) {
@@ -475,7 +483,7 @@ class Patient extends BaseActiveRecordVersioned
 
         $results_from_pas = array();
         if ($this->use_pas == true) {
-            Yii::app()->event->dispatch('patient_search_criteria',
+            Yii::app()->event->dispatch($pas_event,
                 [
                     'results' => &$results_from_pas, 'patient' => $this,
                     'criteria' => $criteria, 'params' => $params,

@@ -41,6 +41,12 @@ return [
                         'method' => 'search',
                     ],
                 ],
+                'patient_search_update' => [
+                    'search_pas' => [
+                        'class' => 'OEModule\PASAPI\components\PasSearchUpdateObserver',
+                        'method' => 'search',
+                    ]
+                ]
             ],
         ],
     ],
