@@ -46,7 +46,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         'patient_id' => $this->patient->id,
         'event_types' => EventType::model()->getEventTypeModules(),
     ));?>
-<?php } else if ($allow_clinical) { ?>
+<?php } elseif ($allow_clinical) { ?>
     <nav class="event-header no-face">
         <i class="oe-i-e large i-Patient"></i>
         <h2 class="event-header-title">Patient Overview</h2>
@@ -211,16 +211,22 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                             <tbody>
                             <?php
                             $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
-                            if (count($ophthalmic_diagnoses) === 0) { ?>
+                            $no_ophthalmic_diagnoses_date = $this->patient->get_no_ophthalmic_diagnoses_date();
+                            if (count($ophthalmic_diagnoses) === 0 && !$no_ophthalmic_diagnoses_date) { ?>
                                 <tr>
                                     <td>
                                         <div class="nil-recorded">Nil recorded</div>
                                     </td>
                                 </tr>
-                            <?php } ?>
-
-                            <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                                list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis, 4); ?>
+                            <?php } elseif ($no_ophthalmic_diagnoses_date) { ?>
+                                <tr>
+                                    <td>
+                                        <div class="nil-recorded">Patient has no known Ophthalmic Diagnoses</div>
+                                    </td>
+                                </tr>
+                            <?php } else {?>
+                                <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
+                                    list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis, 4); ?>
                                 <tr>
                                     <td><strong><?= $name ?></strong></td>
                                     <td class="nowrap">
@@ -233,7 +239,8 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                                         <?php } ?>
                                     </td>
                                 </tr>
-                            <?php } ?>
+                                <?php }
+                            }?>
                             </tbody>
                         </table>
                     </div>
@@ -286,7 +293,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                                             <td><i class="oe-i info small pro-left js-has-tooltip"
                                                          data-tooltip-content="<?= $summary->user ?>"></i></td>
                                         </tr>
-                                    <?php }
+                            <?php }
                         } ?>
                                 </tbody>
                             </table>

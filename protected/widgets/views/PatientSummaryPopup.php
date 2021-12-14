@@ -391,15 +391,21 @@
                         </colgroup>
                         <tbody>
                         <?php
-                            $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
-                        if (count($ophthalmic_diagnoses) === 0) { ?>
-                                <tr>
-                                    <td>
-                                        <div class="nil-recorded">Nil recorded</div>
-                                    </td>
-                                </tr>
-                        <?php } ?>
-
+                        $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
+                        $no_ophthalmic_diagnoses_date = $this->patient->get_no_ophthalmic_diagnoses_date();
+                        if (count($ophthalmic_diagnoses) === 0  && !$no_ophthalmic_diagnoses_date) { ?>
+                            <tr>
+                                <td>
+                                    <div class="nil-recorded">Nil recorded</div>
+                                </td>
+                            </tr>
+                        <?php } elseif ($no_ophthalmic_diagnoses_date) { ?>
+                            <tr>
+                                <td>
+                                    <div class="nil-recorded">Patient has no known Ophthalmic Diagnoses</div>
+                                </td>
+                            </tr>
+                        <?php } else {?>
                         <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
                             list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis); ?>
                             <tr>
@@ -416,7 +422,8 @@
                                     <?php } ?>
                                 </td>
                             </tr>
-                        <?php } ?>
+                        <?php }
+                        }?>
                         </tbody>
                     </table>
                 </div>

@@ -78,13 +78,13 @@ class PrismFusionRange_Entry extends \BaseEventTypeElement
                 [
                     'near_bi, near_bo, distance_bi, distance_bo', 'numerical',
                     'integerOnly' => true,
-                    'min' => 1,
+                    'min' => 0,
                     'max' => 45
                 ],
                 [
                     'near_bd, near_bu, distance_bd, distance_bu', 'numerical',
                     'integerOnly' => true,
-                    'min' => 1,
+                    'min' => 0,
                     'max' => 25
                 ]
             ],

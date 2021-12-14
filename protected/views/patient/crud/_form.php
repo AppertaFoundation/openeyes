@@ -303,7 +303,8 @@ foreach ($ethnic_list as $key => $item) {
                 <tbody>
 
         <tr id="js-patient-gp-row">
-            <td>
+            <?php $aus_referral = ($patient->getScenario() === 'referral') && (SettingMetadata::model()->getSetting('default_country') === 'Australia'); ?>
+            <td class="<?= $aus_referral ? 'required' : '' ?>">
                 <?php echo \SettingMetadata::model()->getSetting('gp_label'); ?>
                 <br/>
                 <?php

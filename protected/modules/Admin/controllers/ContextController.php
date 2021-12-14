@@ -8,12 +8,10 @@ class ContextController extends BaseAdminController
     public function actionIndex()
     {
         Audit::add('admin-Firm', 'list');
-
         $criteria = new \CDbCriteria();
         $search = [];
         $search['query'] = \Yii::app()->request->getQuery('query');
         $search['active'] = \Yii::app()->request->getQuery('active');
-
         if (isset($search['query'])) {
             if (is_numeric($search['query'])) {
                 $criteria->addCondition('id = :id');
@@ -24,13 +22,15 @@ class ContextController extends BaseAdminController
                 $criteria->addSearchCondition('name', $search['query'], true, 'OR');
             }
         }
-
         if (isset($search['active'])) {
             if ((int)$search['active'] === 1) {
                 $criteria->addCondition('active = 1');
             } elseif ($search['active'] !== '') {
                 $criteria->addCondition('active != 1');
             }
+        } else {
+            $search['active'] = 1;
+            $criteria->addCondition('active = 1');
         }
 
         if (!$this->checkAccess('admin')) {
@@ -91,7 +91,7 @@ class ContextController extends BaseAdminController
         $firm->subspecialty_id = $firm->getSubspecialtyID();
 
         if (!empty($_POST)) {
-			$firm->attributes = $_POST['Firm'];
+            $firm->attributes = $_POST['Firm'];
             if (!$firm->validate()) {
                 $errors = $firm->getErrors();
             } else {
