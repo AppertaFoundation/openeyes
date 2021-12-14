@@ -251,6 +251,7 @@ class BaseController extends Controller
 
     protected function beforeRender($view)
     {
+        Yii::app()->request->csrfCookie['httpOnly'] = true;
         $this->processJsVars();
 
         return parent::beforeRender($view);
