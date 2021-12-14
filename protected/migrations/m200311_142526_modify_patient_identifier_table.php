@@ -74,6 +74,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
         $this->createOETable(
             'patient_identifier',
             array(
+                'id' => 'pk',
                 'patient_id' => 'int(10) unsigned NOT NULL',
                 'patient_identifier_type_id' => 'int(11) NOT NULL',
                 'value' => 'varchar(255) NOT NULL',
