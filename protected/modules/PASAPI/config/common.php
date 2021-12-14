@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -47,6 +48,12 @@ return [
                         'method' => 'updateEmergencyCareVisit',
                     ],
                 ],
+                'patient_search_update' => [
+                    'search_pas' => [
+                        'class' => 'OEModule\PASAPI\components\PasSearchUpdateObserver',
+                        'method' => 'search',
+                    ]
+                ]
             ],
         ],
     ],

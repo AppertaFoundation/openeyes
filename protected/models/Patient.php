@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -201,7 +202,7 @@ class Patient extends BaseActiveRecordVersioned
             'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
             'globalIdentifier' => array(self::HAS_ONE, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="GLOBAL"', 'with' => 'patientIdentifierType'),
             'localIdentifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="LOCAL"', 'with' => 'patientIdentifierType'),
-            'patientContactAssociates'=>array(self::HAS_MANY,'PatientContactAssociate','patient_id'),
+            'patientContactAssociates' => array(self::HAS_MANY,'PatientContactAssociate','patient_id'),
         );
     }
 
@@ -264,7 +265,7 @@ class Patient extends BaseActiveRecordVersioned
         if ($patient_dob_date > $current_date) {
             $this->addError($attribute, 'Date of birth should be before current date.');
         } elseif ($patient_dob_date < $earliest_date) {
-            $this->addError($attribute, "Patient's Date of birth cannot be earlier than ".$earliest_date->format('d/m/Y'));
+            $this->addError($attribute, "Patient's Date of birth cannot be earlier than " . $earliest_date->format('d/m/Y'));
         }
     }
 
@@ -286,14 +287,14 @@ class Patient extends BaseActiveRecordVersioned
             }
             if (!$this->date_of_death) {
                 $this->addError($attribute, 'Date of death cannot be blank.');
-            } elseif ( !$format_check) {
+            } elseif (!$format_check) {
                 $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
             } elseif ($patient_dod_date < $patient_dob_date) {
-                $this->addError($attribute, "Patient's date of death cannot be earlier than date of birth ".$patient_dob_date->format('d/m/Y'));
+                $this->addError($attribute, "Patient's date of death cannot be earlier than date of birth " . $patient_dob_date->format('d/m/Y'));
             } elseif ($patient_dod_date > $current_date) {
                 $this->addError($attribute, 'Date of death cannot be in the future');
             } elseif ($patient_dod_date < $earliest_date) {
-                $this->addError($attribute, "Patient's date of death cannot be earlier than ".$earliest_date->format('d/m/Y'));
+                $this->addError($attribute, "Patient's date of death cannot be earlier than " . $earliest_date->format('d/m/Y'));
             }
         }
     }
@@ -433,12 +434,20 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->join .= ' JOIN patient_identifier pi ON t.id = patient_id AND pi.deleted = 0';
         $criteria->join .= ' JOIN patient_identifier_type pt ON pt.id = pi.patient_identifier_type_id';
 
+        // default PAS observer event
+        $pas_event = 'patient_search_criteria';
+
         // loop through all the possible types we want to search in and prepare the criteria
         if (isset($params['terms_with_types']) && $params['terms_with_types'] && !$params['is_name_search']) {
             $conditions_array = [];
             foreach ($params['terms_with_types'] as $twt_key => $terms_with_type) {
                 $term = $terms_with_type['term'] ?? '';
                 $type = $terms_with_type['patient_identifier_type'] ?? [];
+
+                // use desiganated observer event
+                if (isset($type->pas_api['observer'])) {
+                    $pas_event = $type->pas_api['observer'];
+                }
 
                 // if the user already selected a type we do not care about the rest
                 if ($patient_identifier_type_id && (int)$type->id !== (int)$patient_identifier_type_id) {
@@ -485,7 +494,8 @@ class Patient extends BaseActiveRecordVersioned
         $local_results_count = $data_provider->getItemCount();
         $results_from_pas = array();
         if ($this->use_pas && $local_results_count === 0) {
-            Yii::app()->event->dispatch('patient_search_criteria',
+            Yii::app()->event->dispatch(
+                $pas_event,
                 [
                     'results' => &$results_from_pas, 'patient' => $this,
                     'criteria' => $criteria, 'params' => $params,
@@ -500,8 +510,10 @@ class Patient extends BaseActiveRecordVersioned
                 $pas_result_identifier_value = (string)$pas_result->localIdentifiers[0]->value;
                 $pas_result_identifier_type_id = $pas_result->localIdentifiers[0]->patient_identifier_type_id;
                 foreach ($local_result->localIdentifiers as $localIdentifier) {
-                    if ($localIdentifier->value == $pas_result_identifier_value &&
-                        $localIdentifier->patient_identifier_type_id ==$pas_result_identifier_type_id) {
+                    if (
+                        $localIdentifier->value == $pas_result_identifier_value &&
+                        $localIdentifier->patient_identifier_type_id == $pas_result_identifier_type_id
+                    ) {
                         unset($results_from_pas[$pas_result_key]);
                     }
                 }
@@ -1639,7 +1651,7 @@ class Patient extends BaseActiveRecordVersioned
             throw new Exception('Unable to delete diagnosis: ' . print_r($sd->getErrors(), true));
         }
 
-        Yii::app()->event->dispatch('patient_remove_diagnosis', array('patient'=>$this, 'diagnosis' => $sd));
+        Yii::app()->event->dispatch('patient_remove_diagnosis', array('patient' => $this, 'diagnosis' => $sd));
 
         $this->audit('patient', "remove-$type-diagnosis");
     }
@@ -1711,9 +1723,9 @@ class Patient extends BaseActiveRecordVersioned
         $nhs_num = preg_replace('/[^0-9]/', '', $this->nhs_num);
 
         if (Yii::app()->params['default_country'] === 'Australia') {
-            $nhs_num = $nhs_num ? substr($nhs_num, 0, 4).' '.substr($nhs_num, 4, 5).' '.substr($nhs_num, 9, 1).' '.substr($nhs_num, 10, 1) : 'not known';
+            $nhs_num = $nhs_num ? substr($nhs_num, 0, 4) . ' ' . substr($nhs_num, 4, 5) . ' ' . substr($nhs_num, 9, 1) . ' ' . substr($nhs_num, 10, 1) : 'not known';
         } else {
-            $nhs_num = $nhs_num ? substr($nhs_num, 0, 3).' '.substr($nhs_num, 3, 3).' '.substr($nhs_num, 6, 4) : 'not known';
+            $nhs_num = $nhs_num ? substr($nhs_num, 0, 3) . ' ' . substr($nhs_num, 3, 3) . ' ' . substr($nhs_num, 6, 4) : 'not known';
         }
 
         return $nhs_num;
@@ -2227,7 +2239,7 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getNhs($institution_id = null, $site_id = null) : string
+    public function getNhs($institution_id = null, $site_id = null): string
     {
         $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
         $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
@@ -2244,7 +2256,7 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getHos($institution_id = null, $site_id = null) : string
+    public function getHos($institution_id = null, $site_id = null): string
     {
         $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
         $site_id = $site_id ?? Yii::app()->session['selected_site_id'];

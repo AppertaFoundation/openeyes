@@ -180,6 +180,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                         'patient' => $patient,
                         'show_all' => true
                     ]); ?>
+                <?= $patient->isNewRecord ? '| From PAS' : '| From Local DB'?>
             </td>
                   <td><?php echo $patient->title ?></td>
                   <td><?php echo $patient->first_name ?></td>
