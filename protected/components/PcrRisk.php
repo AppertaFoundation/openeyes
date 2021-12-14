@@ -51,7 +51,7 @@ class PcrRisk
      */
     protected function getAgeGroup($age)
     {
-        
+
         if ($age < 60) {
             return 1;
         } elseif ($age < 70) {

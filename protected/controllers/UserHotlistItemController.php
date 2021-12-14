@@ -116,6 +116,7 @@ class UserHotlistItemController extends BaseController
         } else {
             $new_item = new UserHotlistItem();
             $new_item->patient_id = $model->patient_id;
+            $new_item->user_comment = $model->user_comment;
             $new_item->is_open = 1;
             if (!$new_item->save()) {
                 throw new Exception('New hotlist item could not be saved ' . print_r($new_item->errors, true));

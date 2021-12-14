@@ -33,7 +33,14 @@ class SsoOpenIDConnect extends \Jumbojett\OpenIDConnectClient
     protected function setSessionKey($key, $value)
     {
         // Cookie expires in 10 minutes
-        setcookie($key, $value, time() + 600, '/');
+        // HTTPOnly flag is also set as JS access is not required
+        $options = [
+            'expires' => time() + 600,
+            'path' => '/',
+            'httponly' => true
+        ];
+
+        setcookie($key, $value, $options);
     }
 
     protected function unsetSessionKey($key)

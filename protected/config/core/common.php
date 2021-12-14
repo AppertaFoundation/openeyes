@@ -133,7 +133,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202111081330',
+            'time' => '202112141544',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -803,7 +803,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '5.1-nightly',
+        'oe_version' => '6.0-nightly',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -987,7 +987,7 @@ $modules = array(
         'OphTrOperationchecklists',
         'OphDrPGDPSD',
         'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
-);
+        );
 
 // deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
 // Gracefully ignores file if it is missing

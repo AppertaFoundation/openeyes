@@ -833,6 +833,12 @@ class Patient extends BaseActiveRecordVersioned
     {
         $principals = array();
         $api = new OphCiExamination_API();
+        $diagnoses = array();
+
+        $no_ophthalmic_diagnoses_date = $this->get_no_ophthalmic_diagnoses_date();
+        if ($no_ophthalmic_diagnoses_date) {
+            return $diagnoses;
+        }
 
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
@@ -964,6 +970,18 @@ class Patient extends BaseActiveRecordVersioned
     {
         if ($api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
             return $api->getNoSystemicDiagnosesDate($this);
+        }
+        return null;
+    }
+
+    /**
+     * Wrapper function that relies on magic method behaviour to intercept calls for the no_ophthalmic_diagnoses_date property
+     * @return null|datetime
+     */
+    public function get_no_ophthalmic_diagnoses_date()
+    {
+        if ($api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
+            return $api->getNoOphthalmicDiagnosesDate($this);
         }
         return null;
     }

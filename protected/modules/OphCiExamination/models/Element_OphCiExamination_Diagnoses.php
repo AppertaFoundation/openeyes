@@ -37,6 +37,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
     protected $default_view_order = 10;
+    public $no_ophthalmic_diagnoses = false;
 
     protected $errorExceptions = [
             'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses_table'
@@ -81,6 +82,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id', 'safe', 'on' => 'search'),
+            array('no_ophthalmic_diagnoses_date', 'safe')
         );
     }
 
@@ -546,24 +548,26 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             if (!$principal) {
                 $this->addError('diagnoses', 'Principal diagnosis required.');
             }
-        }
+        } elseif (!isset($this->no_ophthalmic_diagnoses_date) && !$this->diagnoses) {
+            $this->addError('no_ophthalmic_diagnoses_date', 'Please confirm patient has no ophthalmic diagnoses.');
+        } else {
+            // This isn't very nice but there isn't a clean alternative at the moment
+            $controller = \Yii::app()->getController();
 
-        // This isn't very nice but there isn't a clean alternative at the moment
-        $controller = \Yii::app()->getController();
+            if ($controller instanceof \BaseEventTypeController) {
+                $et_diagnoses = \ElementType::model()->find('class_name=?', array('OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses'));
 
-        if ($controller instanceof \BaseEventTypeController) {
-            $et_diagnoses = \ElementType::model()->find('class_name=?', array('OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses'));
+                $have_further_findings = false;
 
-            $have_further_findings = false;
-
-            foreach ($controller->getElements() as $element) {
-                if (\CHtml::modelName($element) == 'OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings') {
-                    $have_further_findings = true;
+                foreach ($controller->getElements() as $element) {
+                    if (\CHtml::modelName($element) == 'OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings') {
+                        $have_further_findings = true;
+                    }
                 }
-            }
 
-            if (!$have_further_findings && !$this->diagnoses) {
-                $this->addError('diagnoses', 'Please select at least one diagnosis.');
+                if (!$have_further_findings && !$this->diagnoses && !isset($this->no_ophthalmic_diagnoses_date)) {
+                    $this->addError('diagnoses', 'Please select at least one diagnosis or please confirm patient has no ophthalmic diagnoses.');
+                }
             }
         }
 
