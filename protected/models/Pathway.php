@@ -181,6 +181,7 @@ class Pathway extends BaseActiveRecordVersioned
             self::STATUS_WAITING,
             self::STATUS_DELAYED,
             self::STATUS_BREAK,
+            self::STATUS_DISCHARGED,
         );
     }
 
