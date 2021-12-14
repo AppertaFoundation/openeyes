@@ -885,19 +885,6 @@ $config = array(
         ),
         );
 
-        // Enable logging of php errors to brwser console
-        // Can be either "true", or can provide the error levels to output (e.g, one or more of trace, error, warning, info, notice)
-if (!empty(getenv('LOG_TO_BROWSER'))) {
-    $browserlog = array(
-            'browser' => array(
-                'class' => 'CWebLogRoute',
-                'levels' => strtolower(trim(getenv('LOG_TO_BROWSER'))) == "true" ? 'error, warning, notice' : trim(getenv('LOG_TO_BROWSER')),
-                'showInFireBug' => true,
-            ),
-            );
-            $config['components']['log']['routes'] = array_merge_recursive($config['components']['log']['routes'], $browserlog);
-}
-
         $modules = array(
         // Gii tool
         // 'gii' => array(
