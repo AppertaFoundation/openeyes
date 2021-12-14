@@ -108,16 +108,16 @@ if ($side === 'left') {
 
             echo CHtml::hiddenField('age', $pcr['age_group'], array('id' => 'pcrrisk_' . $side . '_age', 'class' => 'pcrrisk_age'));
             echo CHtml::hiddenField('gender', $pcr['gender'], array('id' => 'pcrrisk_' . $side . '_gender', 'class' => 'pcrrisk_gender'));
-            echo CHtml::hiddenField('glaucoma', $pcr['glaucoma'], array('id' => 'pcrrisk_' . $side . '_glaucoma', 'class' => 'pcrrisk_glaucoma'));
-            echo CHtml::hiddenField('diabetic', $pcr['diabetic'], array('id' => 'pcrrisk_' . $side . '_diabetic', 'class' => 'pcrrisk_diabetic'));
-            echo CHtml::hiddenField('no_fundal_view', $pcr['noview'], array('id' => 'pcrrisk_' . $side . '_no_fundal_view', 'class' => 'pcrrisk_no_fundal_view'));
-            echo CHtml::hiddenField('brunescent_white_cataract', $pcr['anteriorsegment']['brunescent_white_cataract'], array('id' => 'pcrrisk_' . $side . '_brunescent_white_cataract', 'class' => 'pcrrisk_brunescent_white_cataract'));
-            echo CHtml::hiddenField('doctor_grade_id', $pcr['doctor_grade_id'], array('id' => 'pcrrisk_' . $side . '_doctor_grade_id', 'data-pcr-risk' => $pcr_doctor_grade, 'class' => 'pcr_doctor_grade'));
-            echo CHtml::hiddenField('pxf_phako', $pcr['anteriorsegment']['pxf_phako'], array('id' => 'pcrrisk_' . $side . '_pxf_phako', 'class' => 'pcrrisk_pxf_phako'));
-            echo CHtml::hiddenField('pupil_size', $pcr['anteriorsegment']['pupil_size'], array('id' => 'pcrrisk_' . $side . '_pupil_size', 'class' => 'pcrrisk_pupil_size'));
-            echo CHtml::hiddenField('axial_length', $pcr['axial_length_group'], array('id' => 'pcrrisk_' . $side . '_axial_length', 'class' => 'pcrrisk_axial_length'));
-            echo CHtml::hiddenField('arb', $pcr['arb'], array('id' => 'pcrrisk_' . $side . '_arb', 'class' => 'pcrrisk_arb'));
-            echo CHtml::hiddenField('abletolieflat', $pcr['lie_flat'], array('id' => 'pcrrisk_' . $side . '_abletolieflat', 'class' => 'pcrrisk_abletolieflat'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][glaucoma]', $pcr['glaucoma'], array('id' => 'pcrrisk_' . $side . '_glaucoma', 'class' => 'pcrrisk_glaucoma'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][diabetic]', $pcr['diabetic'], array('id' => 'pcrrisk_' . $side . '_diabetic', 'class' => 'pcrrisk_diabetic'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][no_fundal_view]', $pcr['noview'], array('id' => 'pcrrisk_' . $side . '_no_fundal_view', 'class' => 'pcrrisk_no_fundal_view'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][brunescent_white_cataract]', $pcr['anteriorsegment']['brunescent_white_cataract'], array('id' => 'pcrrisk_' . $side . '_brunescent_white_cataract', 'class' => 'pcrrisk_brunescent_white_cataract'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][doctor_grade_id]', $pcr['doctor_grade_id'], array('id' => 'pcrrisk_' . $side . '_doctor_grade_id', 'data-pcr-risk' => $pcr_doctor_grade, 'class' => 'pcr_doctor_grade'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][pxf_phako]', $pcr['anteriorsegment']['pxf_phako'], array('id' => 'pcrrisk_' . $side . '_pxf_phako', 'class' => 'pcrrisk_pxf_phako'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][pupil_size]', $pcr['anteriorsegment']['pupil_size'], array('id' => 'pcrrisk_' . $side . '_pupil_size', 'class' => 'pcrrisk_pupil_size'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][axial_length]', $pcr['axial_length_group'], array('id' => 'pcrrisk_' . $side . '_axial_length', 'class' => 'pcrrisk_axial_length'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][arb]', $pcr['arb'], array('id' => 'pcrrisk_' . $side . '_arb', 'class' => 'pcrrisk_arb'));
+            echo CHtml::hiddenField('PcrRisk[' . $side . '][abletolieflat]', $pcr['lie_flat'], array('id' => 'pcrrisk_' . $side . '_abletolieflat', 'class' => 'pcrrisk_abletolieflat'));
             ?>
     <div id="<?= $side ?>_eye_pcr" class="cols-11">
       <div class="cols-full flex-layout flex-top col-gap">
