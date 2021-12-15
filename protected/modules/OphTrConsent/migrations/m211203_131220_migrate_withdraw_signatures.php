@@ -75,7 +75,7 @@ class m211203_131220_migrate_withdraw_signatures extends OEMigration
 
                 $withdraw_element = $this->dbConnection->createCommand("
                     SELECT * FROM " . self::et_withdraw_table . " WHERE event_id = :event_id LIMIT 1;
-                ")->queryScalar(array(':event_id' => $signature['event_id']));
+                ")->queryRow(true,array(':event_id' => $signature['event_id']));
 
                 $signature_element_id = $this->addSignatureElement($withdraw_element);
                 $signature_item_id = $this->addSignatureElementItem($signature_element_id, $withdraw_element, $signature_file_id);

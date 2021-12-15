@@ -2,11 +2,13 @@
 
 class m210913_150001_add_et_withdraw extends OEMigration
 {
+    private $legacy_et_class_name = 'OEModule\OphTrConsent\models\Element_OphTrConsent_Withdrawal';
+
     public function safeUp()
     {
-        if ($this->dbConnection->schema->getTable('et_ophtrconsent_withdrawal', true) === null) {
-            $event_type_id = $this->getIdOfEventTypeByClassName('OphTrConsent');
+        $event_type_id = $this->getIdOfEventTypeByClassName('OphTrConsent');
 
+        if ($this->dbConnection->schema->getTable('et_ophtrconsent_withdrawal', true) === null) {
             $this->createOETable("et_ophtrconsent_withdrawal", [
                 'id' => 'pk',
                 'event_id' => 'INT(10) UNSIGNED',
@@ -17,18 +19,22 @@ class m210913_150001_add_et_withdraw extends OEMigration
 
             $this->addForeignKey("fk_et_ophtrc_withdrawal_event", "et_ophtrconsent_withdrawal", "event_id", "event", "id");
             $this->addForeignKey('fk_et_ophtrc_withdrawal_signature', "et_ophtrconsent_withdrawal", 'signature_id', 'ophtrconsent_signature', 'id');
-
-            $this->insertOEElementType(array('Element_OphTrConsent_Withdrawal' => array(
-                'name' => 'Withdrawal of consent',
-                'required' => 0,
-                'default' => 0,
-                'display_order' => 0,
-            )), $event_type_id);
         } else {
             $this->addOEColumn('et_ophtrconsent_withdrawal', 'withdrawal_reason', 'VARCHAR(4096) DEFAULT NULL', true);
             $this->addOEColumn('et_ophtrconsent_withdrawal', 'signature_id', 'INT(11) NULL', true);
             $this->addForeignKey('fk_et_ophtrc_withdrawal_signature', "et_ophtrconsent_withdrawal", 'signature_id', 'ophtrconsent_signature', 'id');
         }
+
+        if($this->getIdOfElementTypeByClassName($this->legacy_et_class_name)) {
+            $this->deleteElementType('OphTrConsent', $this->legacy_et_class_name);
+        }
+
+        $this->insertOEElementType(array('Element_OphTrConsent_Withdrawal' => array(
+            'name' => 'Withdrawal of consent',
+            'required' => 0,
+            'default' => 0,
+            'display_order' => 0,
+        )), $event_type_id);
     }
 
     public function safeDown()
