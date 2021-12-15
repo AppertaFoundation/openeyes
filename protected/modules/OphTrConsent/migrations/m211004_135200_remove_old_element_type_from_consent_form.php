@@ -11,7 +11,6 @@ class m211004_135200_remove_old_element_type_from_consent_form extends OEMigrati
         'OEModule\OphTrConsent\models\Element_OphTrConsent_ChildSignature' => array('name' => 'Child\'s signature', 'display_order' => 180, 'default' => 1, 'required' => 1),
         'OEModule\OphTrConsent\models\Element_OphTrConsent_Confirmation_ConsultantSignature' => array('name' => 'Health professional signature', 'display_order' => 210, 'default' => 0, 'required' => 0),
         'OEModule\OphTrConsent\models\Element_OphTrConsent_Confirmation' => array('name' => 'Confirmation of consent', 'display_order' => 190, 'default' => 0, 'required' => 0),
-        'OEModule\OphTrConsent\models\Element_OphTrConsent_Withdrawal_PatientSignature' => array('name' => 'Patient signature', 'display_order' => 240, 'default' => 0, 'required' => 0),
         'OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision_DeputySignature' => array('name' => 'Power of attorney\'s or deputy\'s signature', 'display_order' => 250, 'default' => 1, 'required' => 0),
         'OEModule\OphTrConsent\models\Element_OphTrConsent_ConsultantSignatureWithSecondOpinion' => array('name' => 'Signature of Health Professional proposing treatment', 'display_order' => 260, 'default' => 1, 'required' => 1)
     );

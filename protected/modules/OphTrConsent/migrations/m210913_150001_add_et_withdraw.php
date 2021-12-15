@@ -2,7 +2,10 @@
 
 class m210913_150001_add_et_withdraw extends OEMigration
 {
-    private $legacy_et_class_name = 'OEModule\OphTrConsent\models\Element_OphTrConsent_Withdrawal';
+    private $legacy_et_class_names = [
+        'OEModule\OphTrConsent\models\Element_OphTrConsent_Withdrawal_PatientSignature',
+        'OEModule\OphTrConsent\models\Element_OphTrConsent_Withdrawal',
+    ];
 
     public function safeUp()
     {
@@ -25,8 +28,10 @@ class m210913_150001_add_et_withdraw extends OEMigration
             $this->addForeignKey('fk_et_ophtrc_withdrawal_signature', "et_ophtrconsent_withdrawal", 'signature_id', 'ophtrconsent_signature', 'id');
         }
 
-        if($this->getIdOfElementTypeByClassName($this->legacy_et_class_name)) {
-            $this->deleteElementType('OphTrConsent', $this->legacy_et_class_name);
+        foreach ($this->legacy_et_class_names as $legacy_et_class_name) {
+            if($this->getIdOfElementTypeByClassName($legacy_et_class_name)) {
+                $this->deleteElementType('OphTrConsent', $legacy_et_class_name);
+            }
         }
 
         $this->insertOEElementType(array('Element_OphTrConsent_Withdrawal' => array(
