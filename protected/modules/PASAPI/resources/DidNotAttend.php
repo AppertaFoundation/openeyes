@@ -66,7 +66,7 @@ class DidNotAttend extends BaseResource
     public function getSource()
     {
         $DNA_autogen_message = \SettingMetadata::model()->getSetting('DNA_autogen_message');
-        return $DNA_autogen_message ?? self::DEFAULT_AUTOGEN_MESSAGE;
+        return $DNA_autogen_message ?: self::DEFAULT_AUTOGEN_MESSAGE;
     }
 
     private function getPatient()
