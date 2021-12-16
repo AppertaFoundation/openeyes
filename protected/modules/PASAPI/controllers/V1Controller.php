@@ -230,7 +230,7 @@ class V1Controller extends \CController
             $response['Message'] = "Successfully created $resource_type.";
             $this->sendSuccessResponse(201, $response);
         } catch (\Exception $e) {
-            $errors = $resource->errors;
+            $errors = $resource->errors ?? [];
             $errors[] = $e->getMessage();
 
             $this->sendErrorResponse(500, $errors);

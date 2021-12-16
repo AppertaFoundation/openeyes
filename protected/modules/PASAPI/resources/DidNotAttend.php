@@ -17,6 +17,8 @@
 
 namespace OEModule\PASAPI\resources;
 
+use PatientIdentifierType;
+
 /**
  * Class DidNotAttend.
  *
@@ -103,7 +105,12 @@ class DidNotAttend extends BaseResource
                 return;
             }
 
+            $patient_identifier_type = PatientIdentifierType::model()->findByAttributes([
+                'unique_row_str' => $this->IdentifierType
+            ]);
+
             $did_not_attend_creator = new \OEModule\OphCiDidNotAttend\components\DidNotAttendCreator($this->episode, $DNA_type_id);
+            $did_not_attend_creator->event->institution_id = $patient_identifier_type->institution_id;
             $did_not_attend_creator->setSource($this->getSource());
             $did_not_attend_creator->setDate($this->Date);
             $did_not_attend_creator->setComments($this->Comments);
