@@ -17,9 +17,6 @@ class m210104_031525_set_default_institution_id_in_exam_admin extends OEMigratio
         $this->dbConnection
             ->createCommand("UPDATE ophciexamination_workflow SET institution_id = :institution_id WHERE institution_id IS NULL")
             ->execute(array(':institution_id' => $institution_id));
-        $this->dbConnection
-            ->createCommand("UPDATE ophciexamination_workflow_rule SET institution_id = :institution_id WHERE institution_id IS NULL")
-            ->execute(array(':institution_id' => $institution_id));
 
         // Required Allergy Assignment
         $this->dbConnection
