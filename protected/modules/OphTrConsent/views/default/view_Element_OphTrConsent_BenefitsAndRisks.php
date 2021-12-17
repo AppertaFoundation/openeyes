@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -19,20 +20,30 @@
     $purifier = new CHtmlPurifier();
 $purifier->setOptions(array('HTML.Trusted' => true));
 ?>
-<div class="element-data full-width flex-layout flex-top col-gap">
-  <div class="cols-6">
-    <div class="data-label large-text">
-        <?=\CHtml::encode($element->getAttributeLabel('benefits')) ?>:
+<div class="element-data full-width">
+    <div class="cols-11">
+        
+        <table class="label-value last-left">
+            <colgroup>
+                <col class="cols-3">
+            </colgroup> 
+            <tbody>
+                <tr>
+                    <th><?=\CHtml::encode($element->getAttributeLabel('benefits')) ?></th>
+                    <td>
+                        <?= $purifier->purify($element->benefits) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?=\CHtml::encode($element->getAttributeLabel('risks')) ?></th>
+                    <td>
+                        <?= $purifier->purify($element->risks) ?>
+                    </td>
+                </tr>
+        
+            </tbody>
+        </table>
+        
     </div>
-    <span class="large-text">
-        <?= $purifier->purify($element->benefits) ?>
-    </span>
-  </div>
-
-  <div class="cols-6">
-    <div class="data-label">
-        <?=\CHtml::encode($element->getAttributeLabel('risks')) ?>:
-    </div>
-        <?= $purifier->purify($element->risks) ?>
-  </div>
+            
 </div>

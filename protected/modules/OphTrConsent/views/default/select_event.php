@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $this->beginContent('//patient/event_container', array('no_face' => true));
@@ -185,81 +187,81 @@ $this->moduleNameCssClass .= ' edit';
         <?php } ?>
 
         <hr class="divider" />
-
-        <div class="row large-text">
-            Unbooked procedures
-        </div>
-
-        <table class="cols-full">
-            <colgroup>
-                <col class="cols-icon">
-                <col class="cols-2">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-3">
-                <col><!-- auto -->
-            </colgroup">
-            <thead>
-                <tr>
-                    <th><!-- blank --></th>
-                    <th>Last updated</th>
-                    <th>State</th>
-                    <th>Procedure</th>
-                    <th><!-- blank --></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if ($no_operation_booking) {
+        <?php if ($no_operation_booking) { ?>
+            <div class="row large-text">
+                Unbooked procedures with consent forms
+            </div>
+            <table class = "cols-full">
+                <colgroup>
+                    <col class="cols-icon">
+                    <col class="cols-2">
+                    <col class="cols-1">
+                    <col class="cols-3">
+                    <col class="cols-3">
+                    <col><!-- auto -->
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><!-- blank --></th>
+                        <th>Last updated</th>
+                        <th>State</th>
+                        <th>Procedure</th>
+                        <th><!-- blank --></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
                     foreach ($no_operation_booking as $consent_event) {?>
-                        <tr>
-                            <td><i class="oe-i-e i-CoPatientConsent"></i></td>
-                            <td><?= date('j M Y', strtotime($consent_event->last_modified_date)) ?></td>
-                            <td>
-                                <?php
+                            <tr>
+                                <td><i class="oe-i-e i-CoPatientConsent"></i></td>
+                                        <td><?= date('j M Y', strtotime($consent_event->last_modified_date)) ?></td>
+                                <td>
+                                    <?php
                                     $existing_cosnent_criteria = new CDbCriteria();
                                     $existing_cosnent_criteria->compare('event_id', $consent_event->id);
                                     $existing_cosnent_criteria->addCondition('healthprof_signature_id IS NOT NULL');
                                     $signature = Element_OphTrConsent_Esign::model()->find($existing_cosnent_criteria);
-                                if ($signature) {
-                                    echo 'Signed';
-                                } else {
-                                    echo 'Unsigned';
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <?php $proceduress = Element_OphTrConsent_Procedure::model()->findAll('event_id='. $consent_event->id) ?>
-                                <?php foreach ($proceduress as $i => $procedures) {
-                                    foreach ($procedures->procedure_assignments as $i => $procedure) {
-                                        if ($i > 0) {
-                                            echo '<br />';
-                                        }
-                                        echo $procedure->eye->name . ' ' . $procedure->proc->term;
+                                    if ($signature) {
+                                        echo 'Signed';
+                                    } else {
+                                        echo 'Unsigned';
                                     }
-                                } ?>
-                            </td>
-                            <td><!-- blank --></td>
-                            <td><button class="blue delete-consent-button" data-id="<?= $consent_event->id ?>">Delete &amp; replace consent</button></td>
-                        </tr>
-                    <?php }
-                } ?>
-            </tbody>
-        </table>
-
-        <hr class="divider" />
-
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php $proceduress = Element_OphTrConsent_Procedure::model()->findAll('event_id=' . $consent_event->id) ?>
+                                    <?php foreach ($proceduress as $i => $procedures) {
+                                        foreach ($procedures->procedure_assignments as $i => $procedure) {
+                                            if ($i > 0) {
+                                                echo '<br />';
+                                            }
+                                            echo $procedure->eye->name . ' ' . $procedure->proc->term;
+                                        }
+                                    } ?>
+                                </td>
+                                <td><!-- blank --></td>
+                                <td><button class="blue delete-consent-button" data-id="<?= $consent_event->id ?>">Delete &amp; replace consent</button></td>
+                            </tr>
+                    <?php } ?>                
+                </tbody>
+            </table>
+            <hr class="divider" />
+        <?php } ?>     
+        
+        <div class="row large-text">
+                Create New Consent for Unbooked Procedure(s)
+            </div>
         <table class="cols-full">
             <tbody>
                 <tr>
-                    <th>Default standard</th>
-                    <td><button href="#" class="booking-select" data-booking="unbooked">Create default consent</button></td>
+                    <th>Standard form</th>
+                    <td><button href="#" class="booking-select" data-booking="unbooked">Create consent</button></td>
                 </tr>
+                <tr></tr>
             </tbody>
         </table>
 
         <?php if ($templates) { ?>
-            <hr class="divider" />
-
             <table class="cols-full">
                 <colgroup>
                     <col class="cols-2">
@@ -269,7 +271,7 @@ $this->moduleNameCssClass .= ' edit';
                         <tr>
                             <th>Form template</th>
                             <td><?= $template->name ?></td>
-                            <td><button class="booking-select" data-booking="template<?= $template->id ?>" >Consent</button></td>
+                            <td><button class="booking-select" data-booking="template<?= $template->id ?>" >Create from template</button></td>
                         </tr>
                     <?php } ?>
                 </tbody>
