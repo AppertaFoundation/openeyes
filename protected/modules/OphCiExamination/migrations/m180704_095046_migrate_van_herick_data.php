@@ -18,11 +18,11 @@ class m180704_095046_migrate_van_herick_data extends CDbMigration
             $van_herick_element->left_van_herick_id = $gonioscopy->left_van_herick_id;
             $van_herick_element->right_van_herick_id =  $gonioscopy->right_van_herick_id;
 
-            $van_herick_element->eye_id = \EYE::BOTH;
+            $van_herick_element->eye_id = \Eye::BOTH;
             if ($van_herick_element->left_van_herick_id && !$van_herick_element->right_van_herick_id) {
-                $van_herick_element->eye_id = \EYE::LEFT;
+                $van_herick_element->eye_id = \Eye::LEFT;
             } elseif (!$van_herick_element->left_van_herick_id && $van_herick_element->right_van_herick_id) {
-                $van_herick_element->eye_id = \EYE::RIGHT;
+                $van_herick_element->eye_id = \Eye::RIGHT;
             }
 
             if ($van_herick_element->save()) {

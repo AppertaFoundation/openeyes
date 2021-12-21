@@ -119,7 +119,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->formula = 'Unknown';
         $this->axis = 0.0;
 
-        if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, EYE::BOTH])) {
+        if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, Eye::BOTH])) {
             $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
             $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
             $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];

@@ -71,7 +71,7 @@ if ($element->booking_event_id) {
                 $element,
                 'eye_id',
                 $element->eyeOptions,
-                ($element->eye() ? (intval($element->eye()->id) === Eye::BOTH ? EYE::RIGHT : $element->eye()->id) : null),
+                ($element->eye() ? (intval($element->eye()->id) === Eye::BOTH ? Eye::RIGHT : $element->eye()->id) : null),
                 null,
                 null,
                 null,

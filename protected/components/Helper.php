@@ -546,11 +546,11 @@ class Helper
         $na_eye = Helper::elementFinder('na_eye', $data);
 
         if ($left_eye && $right_eye) {
-            $eye_id = EYE::BOTH;
+            $eye_id = Eye::BOTH;
         } elseif ($left_eye) {
-            $eye_id = EYE::LEFT;
+            $eye_id = Eye::LEFT;
         } elseif ($right_eye) {
-            $eye_id = EYE::RIGHT;
+            $eye_id = Eye::RIGHT;
         } elseif ($na_eye) {
             $eye_id = -9;
         }
