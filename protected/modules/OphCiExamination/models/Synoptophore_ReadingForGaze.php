@@ -71,7 +71,7 @@ class Synoptophore_ReadingForGaze extends \BaseElement
                 ],
                 [
                     'horizontal_angle', 'numerical',
-                    'min' => 0, 'max' => '40',
+                    'min' => '-40', 'max' => '40',
                     'integerOnly' => true,
                     'message' => '{attribute} is invalid'
                 ],
@@ -83,7 +83,7 @@ class Synoptophore_ReadingForGaze extends \BaseElement
                 ],
                 [
                     'torsion', 'numerical',
-                    'min' => '-60', 'max' => '60',
+                    'min' => 0, 'max' => '60',
                     'integerOnly' => true,
                     'message' => '{attribute} is invalid'
                 ],
@@ -156,7 +156,7 @@ class Synoptophore_ReadingForGaze extends \BaseElement
     {
         $reading_string = [];
         if ($this->horizontal_angle !== null && $this->horizontal_angle !== "") {
-            $reading_string[] = "+{$this->horizontal_angle}°";
+            $reading_string[] = "{$this->horizontal_angle}°";
         }
         if ($this->vertical_power !== null && $this->vertical_power !== "") {
             $reading_string[] = "{$this->vertical_power}Δ";

@@ -42,9 +42,10 @@ OpenEyes.UI = OpenEyes.UI || {};
                 new UI.AdderDialog.ItemSet([],
                     {
                         header: this.options.headers["horizontal_angle"],
+                        supportSigns: true,
                         generateFloatNumberColumns: {
                             decimalPlaces: 0,
-                            minValue: 0,
+                            minValue: -40,
                             maxValue: 40
                         },
                         id: "horizontal_angle"
@@ -68,10 +69,9 @@ OpenEyes.UI = OpenEyes.UI || {};
                 new UI.AdderDialog.ItemSet([],
                     {
                         header: this.options.headers["torsion"],
-                        supportSigns: true,
                         generateFloatNumberColumns: {
                             decimalPlaces: 0,
-                            minValue: -60,
+                            minValue: 0,
                             maxValue: 60
                         },
                         id: "torsion"
@@ -146,7 +146,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         let displayElements = [];
         if (selectedValues['horizontal_angle'].length) {
-            displayElements.push("+" + selectedValues['horizontal_angle'] + "°");
+            displayElements.push(selectedValues['horizontal_angle'] + "°");
         }
         if (selectedValues['vertical_power'].length) {
             displayElements.push(selectedValues['vertical_power'] + "Δ");
