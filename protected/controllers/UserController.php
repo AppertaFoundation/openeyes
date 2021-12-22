@@ -51,6 +51,7 @@ class UserController extends BaseController
                 $last_criteria->compare("LOWER(last_name)", implode(" ", array_slice($words, 0, count($words) - 2)), true);
                 $first_criteria->mergeWith($last_criteria, 'OR');
                 $criteria->mergeWith($first_criteria, 'OR');
+                $criteria->order = 'first_name, last_name';
             }
 
             if ($consultant_only) {
