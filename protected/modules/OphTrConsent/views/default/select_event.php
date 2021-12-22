@@ -271,7 +271,21 @@ $this->moduleNameCssClass .= ' edit';
                         <tr>
                             <th>Form template</th>
                             <td><?= $template->name ?></td>
-                            <td><button class="booking-select" data-booking="template<?= $template->id ?>" >Create from template</button></td>
+                            <td>
+                                <?php
+                                    echo CHtml::openTag('label', ['class' => 'inline highlight']);
+                                    echo CHtml::checkBox("template" . $template->id . "[right_eye]", null, ['class' => 'js-right-eye', 'data-eye-side' => 'right']) . ' R';
+                                    echo CHtml::closeTag('label');
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                    echo CHtml::openTag('label', ['class' => 'inline highlight']);
+                                    echo CHtml::checkBox("template" . $template->id . "[left_eye]", null, ['class' => 'js-left-eye', 'data-eye-side' => 'left']) . ' L';
+                                    echo CHtml::closeTag('label');
+                                ?>
+                            </td>
+                            <td><button class="booking-select" data-booking="template<?= $template->id ?>" >Consent</button></td>
                         </tr>
                     <?php } ?>
                 </tbody>

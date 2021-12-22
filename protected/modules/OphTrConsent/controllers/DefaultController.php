@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use Eye;
 use OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures;
 use OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision;
 use OEModule\OphTrConsent\models\OphTrConsent_BestInterestDecision_Attachment;
@@ -63,6 +64,7 @@ class DefaultController extends BaseEventTypeController
     public $unbooked = false;
     public $type_id = null;
     public $template;
+    public $template_eye;
 
     public function actions()
     {
@@ -141,6 +143,25 @@ class DefaultController extends BaseEventTypeController
                         $add_proc = new OphtrconsentProcedureProceduresProcedures();
                         $add_proc->proc_id = $additional_proc->id;
                         $add_proc->eye_id = $booked_proc->eye_id ?? $eye_id;
+                        $assigned_procedures[] = $add_proc;
+                    }
+                }
+                $element->procedure_assignments = $assigned_procedures;
+            }
+        } elseif ($action == 'create' && $this->template) {
+            if ($this->template_eye) {
+                $eye_id = $this->template_eye->id;
+                $assigned_procedures = array();
+                foreach ($this->template->procedures as $booked_proc) {
+                    $assigned_proc = new OphtrconsentProcedureProceduresProcedures();
+                    $assigned_proc->proc_id = $booked_proc->id;
+                    $assigned_proc->eye_id = $eye_id;
+                    $assigned_procedures[] = $assigned_proc;
+                    // regard the additional proc as normal one
+                    foreach ($booked_proc->additional as $additional_proc) {
+                        $add_proc = new OphtrconsentProcedureProceduresProcedures();
+                        $add_proc->proc_id = $additional_proc->id;
+                        $add_proc->eye_id = $eye_id;
                         $assigned_procedures[] = $add_proc;
                     }
                 }
@@ -277,6 +298,12 @@ class DefaultController extends BaseEventTypeController
             if (!($this->template = OphTrConsent_Template::model()->findByPk($_GET['template_id']))) {
                 throw new Exception('booking event not found');
             }
+
+            if(isset($_GET['template_eye_id'])) {
+                if (!($this->template_eye = Eye::model()->findByPk($_GET['template_eye_id']))) {
+                    throw new Exception('eye not found');
+                }
+            }
         }
 
         if (is_null(Yii::app()->request->getParam("type_id"))) {
@@ -348,10 +375,17 @@ class DefaultController extends BaseEventTypeController
             } elseif (preg_match('/^booking([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
                 $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&booking_event_id=' . $m[1]));
             } elseif (preg_match('/^template([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
-                $template = OphTrConsent_Template::model()->findByPk($m[1]);
-                $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1] . '&type_id=' . $template->type_id));
+                if(!isset($_POST["template".$m[1]]["right_eye"]) && !isset($_POST["template".$m[1]]["left_eye"])) {
+                    $errors = array('Consent form' => array('Please select laterality to add procedures for the template'));
+                } else {
+                    $template_eye_id = \Helper::getEyeIdFromArray($_POST["template".$m[1]]);
+                    $template = OphTrConsent_Template::model()->findByPk($m[1]);
+                    $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1] . '&type_id='.$template->type_id . '&template_eye_id='.$template_eye_id));
+                }
             }
-            $errors = array('Consent form' => array('Please select a booking or Unbooked procedures'));
+            if(!isset($errors)) {
+                $errors = array('Consent form' => array('Please add Laterality when a template is selected'));
+            }
         }
 
         if ($this->booking_event || $this->unbooked || $this->template) {
