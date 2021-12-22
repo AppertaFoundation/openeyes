@@ -118,6 +118,13 @@ class Element_OphTrConsent_Consenttakenby extends BaseEventTypeElement
         ]);
     }
 
+    protected function afterValidate()
+    {
+        if (empty($this->name_hp)) {
+            $this->addError('name_hp', 'Please select a Health Professional');
+        }
+    }
+
     /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!

@@ -52,18 +52,21 @@ if ($consentFormType == Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID) {
                             ['field_name' => 'fao-search', 'htmlOptions' => ['placeholder' => 'Search for Health Professional']]
                         ); ?>
                         <div id="fao-field">
+                        <?php if (strcmp($element->name_hp, "") !== 0) { ?>
                             <ul class="oe-multi-select inline">
                                 <li>
-                                    <?= $element->isNewRecord ? $element->user->getFullnameAndTitle() : $element->name_hp; ?>
+                                    <?= $element->name_hp; ?>
                                     <i class="oe-i remove-circle small-icon pad-left fao"></i>
                                 </li>
                             </ul>
+                            <?php
+                                $element->consultant_id = $element->user->id;
+                        }
+                        ?>
                         </div>
                         <?php
-                        $element->name_hp = $element->user->getFullnameAndTitle();
-                        echo $form->hiddenField($element, 'name_hp');
-                        $element->consultant_id = $element->user->id;
-                        echo $form->hiddenField($element, 'consultant_id');
+                            echo $form->hiddenField($element, 'name_hp');
+                            echo $form->hiddenField($element, 'consultant_id');
                         ?>
                     </td>
                 </tr>
@@ -93,7 +96,7 @@ if ($consentFormType == Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID) {
                             ['field_name' => 'fao-search2', 'htmlOptions' => ['placeholder' => 'Search for Health Professional']]
                         ); ?>
                         <div id="fao-field2">
-                            <?php if (!$element->isNewRecord) { ?>
+                            <?php if ($element->sec_op_hp) { ?>
                                 <ul class="oe-multi-select inline">
                                     <li>
                                         <?= $element->sec_op_hp; ?>
@@ -112,13 +115,18 @@ if ($consentFormType == Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID) {
     </table>
 </div>
 <script>
-    $("#fao-search").hide();
+    <?php if (strcmp($element->name_hp, "") !== 0) { ?>
+        $("#fao-search").hide();
+    <?php } ?>
+    <?php if (strcmp($element->sec_op_hp, "") !== 0) { ?>
+        $("#fao-search2").hide();
+    <?php } ?>
     OpenEyes.UI.AutoCompleteSearch.init({
         input: $('#fao-search'),
         url: '/user/autocomplete',
         onSelect: function() {
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-            $('#fao-search').show();
+            $('#fao-search').hide();
             $('#fao-field').html('<ul class="oe-multi-select inline"><li>' + AutoCompleteResponse.label +
                 '<i class="oe-i remove-circle small-icon pad-left fao"></i></li></ul>');
             $('#fao-field').show();
@@ -128,6 +136,7 @@ if ($consentFormType == Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID) {
         e.preventDefault();
         let hiddenField = $(this).closest('td').children('input');
         let userField = $(this).closest('ul');
+        $('#Element_OphTrConsent_Consenttakenby_name_hp').val("");
         $('#fao-search').show();
         $('#fao-field').hide();
     });
@@ -135,6 +144,7 @@ if ($consentFormType == Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID) {
         e.preventDefault();
         let hiddenField = $(this).closest('td').children('input');
         let userField = $(this).closest('ul');
+        $('#Element_OphTrConsent_Consenttakenby_sec_op_hp').val("");
         $('#fao-search2').show();
         $('#fao-field2').hide();
     });
@@ -143,7 +153,7 @@ if ($consentFormType == Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID) {
         url: '/user/autocomplete',
         onSelect: function() {
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-            $('#fao-search2').show();
+            $('#fao-search2').hide();
             $('#fao-field2').html('<ul class="oe-multi-select inline"><li>' + AutoCompleteResponse.label +
                 '<i class="oe-i remove-circle small-icon pad-left fao2"></i></li></ul>');
             $('#fao-field2').show();
