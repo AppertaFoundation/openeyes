@@ -281,7 +281,6 @@ class ProfileController extends BaseController
                 $user = User::model()->findByPk(Yii::app()->user->id);
                 if ($user->has_selected_firms) {
                     $user->has_selected_firms = 0;
-                    $user->password_hashed = true;
                     if (!$user->save()) {
                         throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                     }
