@@ -65,8 +65,8 @@ class OphTrLaser_Site_Laser extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, site_id, wavelength, type_id, active', 'safe'),
-            array('name, site_id, wavelength, type_id', 'required'),
+            array('name, institution_id, site_id, wavelength, type_id, active', 'safe'),
+            array('name, institution_id, site_id, wavelength, type_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
@@ -82,6 +82,7 @@ class OphTrLaser_Site_Laser extends BaseActiveRecordVersioned
         return array(
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'type' => array(self::BELONGS_TO, 'OphTrLaser_Type', 'type_id'),
         );
@@ -96,6 +97,7 @@ class OphTrLaser_Site_Laser extends BaseActiveRecordVersioned
             'id' => 'ID',
             'name' => 'Name',
             'site_id' => 'Site',
+            'institution_id' => 'Institution',
             'type_id' => 'Type',
         );
     }

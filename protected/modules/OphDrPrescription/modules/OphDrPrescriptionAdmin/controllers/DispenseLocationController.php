@@ -67,6 +67,56 @@ class DispenseLocationController extends BaseAdminController
         ]);
     }
 
+    public function actionAddMapping()
+    {
+        $model = $_POST['model']::model();
+
+        $ids = Yii::app()->request->getPost('select');
+
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = array();
+        $records = $model->findAllByPk($ids);
+        try {
+            foreach ($records as $record) {
+                $record->createMapping(ReferenceData::LEVEL_INSTITUTION, $model->getIdForLevel(ReferenceData::LEVEL_INSTITUTION));
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if (!empty($errors)) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+        $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
+    }
+
+    public function actionRemoveMapping()
+    {
+        $model = $_POST['model']::model();
+        $level = ReferenceData::LEVEL_INSTITUTION;
+
+        $ids = Yii::app()->request->getPost('select');
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = array();
+        $records = $model->findAllByPk($ids);
+        try {
+            foreach ($records as $record) {
+                $record->deleteMapping($level, $model->getIdForLevel($level));
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if (!empty($errors)) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+        $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
+    }
+
     private function saveModel($model)
     {
         if (Yii::app()->request->isPostRequest) {
@@ -79,7 +129,8 @@ class DispenseLocationController extends BaseAdminController
         return false;
     }
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'sortLocations' => [
                 'class' => 'SaveDisplayOrderAction',
@@ -88,5 +139,4 @@ class DispenseLocationController extends BaseAdminController
             ],
         ];
     }
-
 }

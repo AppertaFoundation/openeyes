@@ -69,9 +69,11 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 }
 
                 $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+                echo $entry->renderPGDInfo();
             } else {
                 echo "{{& allergy_warning}}";
                 echo "{{& prepended_markup}}";
+                echo "{{& pgd_info_icon}}";
             }
             ?>
           </span>
@@ -82,6 +84,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 
             <?php /* <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" /> */ ?>
             <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
+            <input type="hidden" class="pgdpsd_id" name="<?= $field_prefix ?>[pgdpsd_id]" value="<?= $is_new ? "{{pgdpsd_id}}" : $entry->pgdpsd_id ?>" />
             <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]"
                    value="<?= $is_new ? "{{medication_id}}" : $entry->medication_id ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[medication_name]"

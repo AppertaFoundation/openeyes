@@ -105,7 +105,7 @@ class DicomLogViewerController extends BaseController
         if (@$_REQUEST['firm_id']) {
             $firm = Firm::model()->findByPk($_REQUEST['firm_id']);
             $firm_ids = array();
-            foreach (Firm::model()->findAll('name=?', array($firm->name)) as $firm) {
+            foreach (Firm::model()->findAll('name=? AND institution_id = ?', array($firm->name, Yii::app()->session['selected_institution_id'])) as $firm) {
                 $firm_ids[] = $firm->id;
             }
             if (!empty($firm_ids)) {
@@ -201,12 +201,11 @@ class DicomLogViewerController extends BaseController
     protected function getDicomFiles($page, $sc = 'entry_date_time', $so = 'desc')
     {
         $command = Yii::app()->db->createCommand()
-            ->select('df.id, df.filename, df.processor_id, dil.id as did, dil.import_datetime, dil.study_datetime, dil.study_instance_id, dil.station_id, dil.study_location, dil.report_type, dil.patient_number, dil.status, dil.comment,p.id as pid,
+            ->select('df.id, df.filename, df.processor_id, dil.id as did, dil.import_datetime, dil.study_datetime, dil.study_instance_id, dil.station_id, dil.study_location, dil.report_type, dil.patient_number, dil.status, dil.comment,
             dil.raw_importer_output,dil.machine_manufacturer,dil.machine_model, dil.machine_software_version
             ')
             ->from('dicom_files as df')
             ->leftJoin('dicom_import_log as dil', 'df.id = dil.dicom_file_id')
-            ->leftJoin('patient as p', 'dil.patient_number = p.hos_num')
             ->order($sc.' '.$so)
             ->limit($this->items_per_page)
             ->offset(($page - 1) * $this->items_per_page);
@@ -256,9 +255,6 @@ class DicomLogViewerController extends BaseController
         foreach ($data as $k => $y) {
             $data[$k] = $y;
             $data[$k]['watcher_log'] = $this->getFileWatcherLog($y['id']);
-          //  $patientInfo = Patient::model()->findByAttributes(array('hos_num'=> $y['patient_number']),'id');
-           // $data[$k]['patient_id'] =  $patientInfo['id'];
-            $data[$k]['patient_id'] = $y['pid'];
         }
 
         return $data;

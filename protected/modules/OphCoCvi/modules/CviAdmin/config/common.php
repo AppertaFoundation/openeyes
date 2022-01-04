@@ -16,15 +16,17 @@
 $config = [
     'params' => [
         'admin_menu' => array(
-            'Clinical Disorder Section' => '/OphCoCvi/admin/default/clinicalDisorderSection',
-            'Clinical Disorder' => '/OphCoCvi/admin/default/clinicalDisorders',
-            'Patient Factor' => '/OphCoCvi/admin/default/patientFactor',
-            'Employment Status' => '/OphCoCvi/admin/default/employmentStatus',
-            'Contact Urgency' => '/OphCoCvi/admin/default/contactUrgency',
-            'Field of Vision' => '/OphCoCvi/admin/default/fieldOfVision',
-            'Low Vision Status' => '/OphCoCvi/admin/default/lowVisionStatus',
-            'Preferred Info Format' => '/OphCoCvi/admin/default/preferredInfoFormat',
-            'Local Authorities' => '/OphCoCvi/admin/localAuthorities/list',
+            'OphCoCvi' => [
+                'Clinical Disorder Section' => ['uri' => '/OphCoCvi/admin/default/clinicalDisorderSection', 'restricted' => array('admin')],
+                'Clinical Disorder' => ['uri' => '/OphCoCvi/admin/default/clinicalDisorders', 'restricted' => array('admin')],
+                'Patient Factor' => ['uri' => '/OphCoCvi/admin/default/patientFactor', 'restricted' => array('admin')],
+                'Employment Status' => ['uri' => '/OphCoCvi/admin/default/employmentStatus', 'restricted' => array('admin')],
+                'Contact Urgency' => ['uri' => '/OphCoCvi/admin/default/contactUrgency', 'restricted' => array('admin')],
+                'Field of Vision' => ['uri' => '/OphCoCvi/admin/default/fieldOfVision', 'restricted' => array('admin')],
+                'Low Vision Status' => ['uri' => '/OphCoCvi/admin/default/lowVisionStatus', 'restricted' => array('admin')],
+                'Preferred Info Format' => ['uri' => '/OphCoCvi/admin/default/preferredInfoFormat', 'restricted' => array('admin')],
+                'Local Authorities' => ['uri' => '/OphCoCvi/admin/localAuthorities/list', 'restricted' => array('admin')],
+            ]
         ),
         'menu_bar_items' => array(
             'cvi' => array(

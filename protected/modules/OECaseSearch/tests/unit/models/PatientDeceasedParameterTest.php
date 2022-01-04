@@ -2,11 +2,13 @@
 
 /**
  * Class PatientDeceasedParameterTest
+ * @covers PatientDeceasedParameter
+ * @covers CaseSearchParameter
  * @method Patient patient($fixtureId)
  */
 class PatientDeceasedParameterTest extends CDbTestCase
 {
-    protected $parameter;
+    protected PatientDeceasedParameter $parameter;
     protected $fixtures = array(
         'patient' => 'Patient',
     );
@@ -33,7 +35,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
     /**
      * @throws CHttpException
      */
-    public function testQuery()
+    public function testQuery(): void
     {
         $correctOps = array(
             '1',
@@ -48,7 +50,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
         foreach ($correctOps as $operator) {
             $this->parameter->operation = $operator;
             $sqlValue = ($operator === '0') ? 'SELECT id FROM patient WHERE NOT(is_deceased)' : 'SELECT id FROM patient WHERE is_deceased';
-            $this->assertEquals(
+            self::assertEquals(
                 trim(preg_replace('/\s+/', ' ', $sqlValue)),
                 trim(preg_replace('/\s+/', ' ', $this->parameter->query()))
             );
@@ -62,19 +64,16 @@ class PatientDeceasedParameterTest extends CDbTestCase
         }
     }
 
-    public function testBindValues()
+    public function testBindValues(): void
     {
         $this->parameter->operation = '1';
         $expected = array();
 
         // Ensure that all bind values are returned.
-        $this->assertEquals($expected, $this->parameter->bindValues());
+        self::assertEquals($expected, $this->parameter->bindValues());
     }
 
-    /**
-     * @covers PatientDeceasedParameter
-     */
-    public function testSearch()
+    public function testSearch(): void
     {
         // Ensure only the patient with the is_deceased as 1 fixture is returned.
         $match = array();
@@ -84,7 +83,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
 
         $this->parameter->operation = '1';
 
-        $this->assertTrue($this->parameter->validate());
+        self::assertTrue($this->parameter->validate());
 
         $results = Yii::app()->searchProvider->search(array($this->parameter));
 
@@ -94,11 +93,11 @@ class PatientDeceasedParameterTest extends CDbTestCase
         }
         $patients = Patient::model()->findAllByPk($ids);
 
-        $this->assertEquals($match, $patients);
+        self::assertEquals($match, $patients);
 
         // Ensure all patient fixtures except patient9 are returned.
         $this->parameter->operation = '0';
-        $this->assertTrue($this->parameter->validate());
+        self::assertTrue($this->parameter->validate());
         $match = array();
         for ($i = 1; $i < 9; $i++) {
             $match[] = $this->patient("patient$i");
@@ -112,17 +111,17 @@ class PatientDeceasedParameterTest extends CDbTestCase
         }
         $patients = Patient::model()->findAllByPk($ids);
 
-        $this->assertEquals($match, $patients);
+        self::assertEquals($match, $patients);
     }
 
-    public function testGetAuditData()
+    public function testGetAuditData(): void
     {
         $this->parameter->operation = true;
         $expected = "patient_deceased: True";
-        $this->assertEquals($expected, $this->parameter->getAuditData());
+        self::assertEquals($expected, $this->parameter->getAuditData());
 
         $this->parameter->operation = false;
         $expected = "patient_deceased: False";
-        $this->assertEquals($expected, $this->parameter->getAuditData());
+        self::assertEquals($expected, $this->parameter->getAuditData());
     }
 }

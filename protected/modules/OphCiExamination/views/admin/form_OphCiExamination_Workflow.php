@@ -24,12 +24,22 @@
 <table class="standard cols-full">
     <tbody>
     <tr>
+        <td>
+            <?= $form->dropDownList(
+                $model,
+                'institution_id',
+                Institution::model()->getList(true),
+                ['class' => 'cols-full'],
+            ) ?>
+        </td>
+    </tr>
+    <tr>
         <td >
             <?php echo $form->hiddenField($model, 'id')?>
             <?php echo $form->textField(
                 $model,
                 'name',
-                ['autocomplete' => Yii::app()->params['html_autocomplete']]
+                ['class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete']]
             ) ?>
         </td>
     </tr>

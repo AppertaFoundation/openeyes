@@ -37,17 +37,20 @@
                             break;
                         case 'string_search':
                             // Add item set for the common searches, then show the search field.
-                            dialog.generateSearch(type, options.option_data);
+                            dialog.generateSearch(type, options);
                             break;
                         case 'multi_select':
-                            dialog.generateOptionLists(options.option_data);
+                            dialog.generateOptionLists(options);
                             break;
                         case 'boolean':// Do nothing further as we only need the operation.
                             break;
                         default:
                             // Show the search field.
-                            dialog.generateSearch(type, options.option_data);
+                            dialog.generateSearch(type, options);
                             break;
+                    }
+                    if (options.hasOwnProperty('accepted_template_strings')) {
+                        dialog.generateTemplateOptions(options.accepted_template_strings);
                     }
                 }
             );
@@ -80,9 +83,25 @@
         }
     };
 
+    QuerySearchDialog.prototype.generateTemplateOptions = function (template_string_list, target, list_container) {
+        if (template_string_list.length !== 0) {
+            template_string_list.forEach(function (template_string) {
+                if ((template_string.hasOwnProperty('target') && template_string.target === target) ||
+                    (!template_string.hasOwnProperty('target') && target === 'value')) {
+                    list_container.append($('<li />', {
+                        'data-id': '{' + template_string.id + '}',
+                        'data-type': ((target === 'value') ? 'template_string' : 'template_string_lookup'),
+                        'data-field': target
+                    }).append($('<span />', {class: 'auto-width'}).text(template_string.label)));
+                }
+            });
+            this.positionFixedPopup(this.options.openButton);
+        }
+    };
+
     QuerySearchDialog.prototype.generateOptionLists = function (options) {
         let dialog = this;
-        $.each(options, function(index, optionData) {
+        $.each(options.option_data, function(index, optionData) {
             // Add the list of operators.
             let $td = $('<td />', {style: (optionData.hidden ? 'display: none;' : 'display: table-cell;')});
             dialog.optionWrapper = $('<div />', {class: 'lists-layout'}).appendTo($td);
@@ -106,6 +125,9 @@
                     'class': option.selected ? 'selected' : null,
                 }).append($('<span />', {class: 'auto-width'}).text(option.label)));
             });
+            if (options.hasOwnProperty('accepted_template_strings')) {
+                dialog.generateTemplateOptions(options.accepted_template_strings, optionData.field, dialog.optionList);
+            }
 
             dialog.optionList.appendTo($filterDiv);
         });
@@ -177,7 +199,7 @@
         }
     };
 
-    QuerySearchDialog.prototype.generateSearch = function (type, option_data = null) {
+    QuerySearchDialog.prototype.generateSearch = function (type, options) {
         let $td = $('<td />');
         this.searchWrapper = $('<div />', {class: 'lists-layout'}).appendTo($td);
         $td.appendTo(this.$tr);
@@ -197,10 +219,13 @@
             class: 'add-options single js-search-results',
             "data-multiselect": "false"
         });
+        if (options.hasOwnProperty('accepted_template_strings')) {
+            this.generateTemplateOptions(options.accepted_template_strings, 'value', this.searchResultList);
+        }
         this.searchResultList.appendTo($filterDiv);
 
-        if (option_data) {
-            this.generateOptionLists(option_data);
+        if (options.option_data) {
+            this.generateOptionLists(options);
         }
         this.positionFixedPopup(this.options.openButton);
     };

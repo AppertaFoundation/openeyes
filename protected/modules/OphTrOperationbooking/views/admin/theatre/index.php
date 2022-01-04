@@ -37,7 +37,13 @@
             <?php
             $criteria = new CDbCriteria();
             $criteria->order = 'display_order asc';
-            $theatres = OphTrOperationbooking_Operation_Theatre::model()->active()->findAll();
+            if (!$this->checkAccess('admin')) {
+                $criteria->with = 'site';
+                $criteria->addCondition('site.institution_id = :institution_id');
+                $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
+            }
+
+            $theatres = OphTrOperationbooking_Operation_Theatre::model()->active()->findAll($criteria);
             if (isset($theatres)) {
                 foreach ($theatres as $i => $theatre) { ?>
                     <tr class="clickable sortable" data-attr-id="<?php echo $theatre->id ?>"
@@ -47,7 +53,7 @@
                         <td><?php echo $theatre->site->name ?></td>
                         <td><?php echo $theatre->name ?></td>
                         <td><?php echo $theatre->code ?></td>
-                        <td><?php echo $theatre->ward ? $theatre->ward->name : 'None' ?></td>
+                        <td><?php echo $theatre->ward->name ?? 'None' ?></td>
                     </tr>
                 <?php }
             } ?>
@@ -99,10 +105,10 @@
             'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteTheatres',
             'data': $('form#theatres').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
             'success': function(resp) {
-                if (resp == "1") {
+                if (resp === "1") {
                     enableButtons();
 
-                    if ($('input[type="checkbox"][name="theatre[]"]:checked').length == 1) {
+                    if ($('input[type="checkbox"][name="theatre[]"]:checked').length === 1) {
                         $('#confirm_delete_theatres').attr('title','Confirm delete theatre');
                         $('#delete_theatres').children('div').children('strong').html("WARNING: This will remove the theatre from the system.<br/><br/>This action cannot be undone.");
                         $('button.btn_remove_theatres').children('span').text('Remove theatre');
@@ -141,13 +147,13 @@
             'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteTheatres',
             'data': $('form#theatres').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
             'success': function(resp) {
-                if (resp == "1") {
+                if (resp === "1") {
                     $.ajax({
                         'type': 'POST',
                         'url': baseUrl+'/OphTrOperationbooking/admin/deleteTheatres',
                         'data': $('form#theatres').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
                         'success': function(resp) {
-                            if (resp == "1") {
+                            if (resp === "1") {
                                 window.location.reload();
                             } else {
                                 new OpenEyes.UI.Dialog.Alert({

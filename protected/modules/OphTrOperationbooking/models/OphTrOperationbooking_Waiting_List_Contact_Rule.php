@@ -29,6 +29,9 @@
  * @property bool $is_child
  * @property string $name
  * @property string $telephone
+ *
+ * @property OphTrOperationbooking_Waiting_List_Contact_Rule[] $children
+ * @property OphTrOperationbooking_Waiting_List_Contact_Rule $parent
  */
 class OphTrOperationbooking_Waiting_List_Contact_Rule extends BaseTree
 {
@@ -38,11 +41,12 @@ class OphTrOperationbooking_Waiting_List_Contact_Rule extends BaseTree
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @param string $class_name
+     * @return OphTrOperationbooking_Waiting_List_Contact_Rule the static model class
      */
-    public static function model($className = __CLASS__)
+    public static function model($class_name = __CLASS__)
     {
-        return parent::model($className);
+        return parent::model($class_name);
     }
 
     /**
@@ -83,6 +87,7 @@ class OphTrOperationbooking_Waiting_List_Contact_Rule extends BaseTree
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -122,7 +127,7 @@ class OphTrOperationbooking_Waiting_List_Contact_Rule extends BaseTree
     public function applies($site_id, $service_id, $firm_id, $is_child)
     {
         foreach (array('site_id', 'service_id', 'firm_id', 'is_child') as $field) {
-            if ($this->{$field} !== null && $this->{$field} != ${$field}) {
+            if ($this->{$field} !== null && $this->{$field} !== ${$field}) {
                 return false;
             }
         }

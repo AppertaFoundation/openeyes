@@ -22,7 +22,8 @@
     <br/><br/>
     Name: <?= $definition->name ?><br />
     Frequency: <i><?= $definition->rruleHumanReadable ?></i><br />
-    Time Slot: <?=$definition->start_time?> - <?=$definition->end_time?>
+    Time Slot: <?=$definition->start_time?> - <?=$definition->end_time?><br />
+    Patient Identifier Type: <?=$definition->patient_identifier_type->getTitleWithInstitution() ?>
 
     <hr style="margin: 5px;" />
     <h3>Current Maps</h3>

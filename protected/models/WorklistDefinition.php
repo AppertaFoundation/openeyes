@@ -24,6 +24,7 @@ use RRule\RRule;
  * The followings are the available columns in table:
  *
  * @property int                                $id
+ * @property int                                $patient_identifier_type_id
  * @property string                             $name
  * @property string                             $rrule
  * @property string                             $description
@@ -37,6 +38,7 @@ use RRule\RRule;
  * @property WorklistDefinitionMappingp[]       $displayed_mappings
  * @property WorklistDefinitionMappingp[]       $hidden_mappings
  * @property WorklistDefinitionDisplayContext[] $display_contexts
+ * @property PatientIdentifierType $patient_identifier_type
  */
 class WorklistDefinition extends BaseActiveRecordVersioned
 {
@@ -96,9 +98,9 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, rrule, worklist_name, start_time, end_time, description', 'safe'),
+            array('name, rrule, worklist_name, start_time, end_time, description, patient_identifier_type_id', 'safe'),
             array('rrule', 'validateRrule'),
-            array('name, rrule, start_time, end_time', 'required'),
+            array('name, rrule, start_time, end_time, patient_identifier_type_id', 'required'),
             array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss', 'except' => 'sortDisplayOrder'),
@@ -119,7 +121,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array(
-                'id, name, rrule, worklist_name, start_time, end_time, description, scheduled',
+                'id, name, rrule, worklist_name, start_time, end_time, description, scheduled, patient_identifier_type_id',
                 'safe',
                 'on' => 'search',
             ),
@@ -150,6 +152,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 'on' => 'display_order is NULL',
             ),
             'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id'),
+            'patient_identifier_type' => array(self::BELONGS_TO, 'PatientIdentifierType', 'patient_identifier_type_id'),
         );
     }
 
@@ -283,7 +286,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 $dtstart = $created_date->format('Y-m-d');
             }
 
-            $final_rrule = new RRule($rrule_str,  $dtstart);
+            $final_rrule = new RRule($rrule_str, $dtstart);
 
             return $final_rrule->humanReadable(array(
                 'date_formatter' => function ($d) {

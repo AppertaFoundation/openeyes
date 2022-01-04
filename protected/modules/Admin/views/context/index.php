@@ -27,7 +27,7 @@
                     <td><?=CHtml::textField('query', $search['query'], [
                             'placeholder' => 'Search Id, PAS Code, Cost Code, Name - (all are case sensitive)',
                             'class' => 'cols-full',
-                        ]); ?>
+                        ]) ?>
                     </td>
                     <td>
                         <?= \CHtml::dropDownList(
@@ -38,7 +38,7 @@
                                 0 => 'Exclude Active',
                             ],
                             ['empty' => 'All']
-                        ); ?>
+                        ) ?>
                     </td>
                     <td>
                         <button class="blue hint" id="search-button" type="submit">Search</button>
@@ -57,6 +57,7 @@
                 <th>Id</th>
                 <th>PAS Code</th>
                 <th>Name</th>
+                <th>Institution</th>
                 <th>Subspecialty</th>
                 <th>Consultant</th>
                 <th>Cost Code</th>
@@ -73,14 +74,15 @@
                     <td><?=$firm->id ?></td>
                     <td><?=$firm->pas_code ?></td>
                     <td><?=$firm->name ?></td>
+                    <td><?=$firm->institution->name ?></td>
                     <td><?=($firm->serviceSubspecialtyAssignment) ?
                             $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None' ?></td>
-                    <td><?=($firm->consultant) ? $firm->consultant->fullName : 'None' ?></td>
-                    <td><?=$firm->cost_code;?></td>
+                    <td><?= $firm->consultant->fullName ?? 'None' ?></td>
+                    <td><?=$firm->cost_code ?></td>
 
-                    <td><?= OEHtml::icon($firm->can_own_an_episode ? 'tick' : 'remove');?></td>
-                    <td><?= OEHtml::icon($firm->runtime_selectable ? 'tick' : 'remove');?></td>
-                    <td><?= OEHtml::icon($firm->active ? 'tick' : 'remove');?></td>
+                    <td><?= OEHtml::icon($firm->can_own_an_episode ? 'tick' : 'remove') ?></td>
+                    <td><?= OEHtml::icon($firm->runtime_selectable ? 'tick' : 'remove') ?></td>
+                    <td><?= OEHtml::icon($firm->active ? 'tick' : 'remove') ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

@@ -18,6 +18,7 @@
 
 <?php
 if (!isset($values)) {
+    $risk_status_info = $entry->getRiskStatusLabel();
     $values = array(
         'status_id' => $entry->status_id,
         'status' => $entry->getStatusLabel(),
@@ -28,6 +29,9 @@ if (!isset($values)) {
         'followup_comments_display' => $entry->getDisplayComments(),
         'role_id' => $entry->role_id,
         'role' => $entry->getRoleLabel(),
+        'risk_status_id' => $entry->risk_status_id,
+        'risk_status_class' => $risk_status_info['class'],
+        'risk_status_content' => $risk_status_info['content'],
     );
 }
 ?>
@@ -47,13 +51,20 @@ if (!isset($values)) {
             <input type="hidden" name="<?= $field_prefix ?>[followup_comments]"
                    value="<?= $values['followup_comments'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[role_id]" value="<?= $values['role_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[risk_status_id]" value="<?= $values['risk_status_id'] ?>"/>
         <?php } ?>
         <?= isset($condition_text) ? $condition_text : "{{condition_text}}"; ?>
     </td>
     <td>
-        <?php if (!$patient_ticket) {
-            echo $values['status'] . ' ' . $values['followup_quantity'] . ' ' . $values['followup_period'] . $values['role'] . $values['followup_comments_display'];
-        } elseif ($patient_ticket && $ticket_api) { ?>
+        <?php if (!$patient_ticket) { ?>
+            <?=$values['status'] . ' ' . $values['followup_quantity'] . ' ' . $values['followup_period'] . $values['role'] . $values['followup_comments_display'];?>
+            <?php if ($values['risk_status_id']) { ?>
+                <i 
+                class="<?=$values['risk_status_class']?>"
+                data-tooltip-content="<?=$values['risk_status_content']?>"
+                ></i>
+            <?php } ?>
+        <?php } elseif ($patient_ticket && $ticket_api) { ?>
             <div data-queue-assignment-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
                  id="div_<?= $model_name ?>_patientticket">
                 <!-- TODO, this should be pulled from the ticketing module somehow -->

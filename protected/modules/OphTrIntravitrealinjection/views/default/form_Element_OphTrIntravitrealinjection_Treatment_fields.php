@@ -311,7 +311,7 @@ foreach ($skin_drugs as $drug) {
                 CHtml::listData(
                     OphTrIntravitrealinjection_InjectionUser::model()->getUsers(),
                     'id',
-                    'ReversedFullNameAndUserName'
+                    'ReversedFullName'
                 ),
                 array('empty' => 'Select', 'nowrapper' => true),
                 false,

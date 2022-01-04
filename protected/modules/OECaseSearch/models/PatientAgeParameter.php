@@ -5,11 +5,17 @@
  */
 class PatientAgeParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $options = array(
+    protected array $options = array(
         'value_type' => 'number',
+        'operations' => array(
+            array('label' => 'IS', 'id' => '='),
+            array('label' => 'IS NOT', 'id' => '!='),
+            array('label' => 'IS LESS THAN', 'id' => '<'),
+            array('label' => 'IS MORE THAN', 'id' => '>')
+        )
     );
 
-    protected $label_ = 'Age';
+    protected string $label_ = 'Age';
 
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -19,9 +25,6 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     {
         parent::__construct($scenario);
         $this->name = 'age';
-
-        $this->options['operations'][] = array('label' => 'IS LESS THAN', 'id' => '<');
-        $this->options['operations'][] = array('label' => 'IS MORE THAN', 'id' => '>');
     }
 
     public function rules()
@@ -29,7 +32,7 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
         return array_merge(
             parent::rules(),
             array(
-                array('value', 'numerical', 'allowEmpty' => false, 'min' => 0, 'max' => 99),
+                array('value', 'numerical', 'allowEmpty' => false, 'min' => 0),
                 array('value', 'safe'),
             )
         );
@@ -37,9 +40,10 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
 
     /**
      * Generate the SQL query for patient age.
-     * @return null|string The query string for use by the search provider, or null if not implemented for the specified search provider.
+     * @return null|string The query string for use by the search provider,
+     * or null if not implemented for the specified search provider.
      */
-    public function query()
+    public function query(): string
     {
         $op = $this->operation;
 
@@ -51,7 +55,7 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     /**
      * @return array The list of bind values being used by the current parameter instance.
      */
-    public function bindValues()
+    public function bindValues(): array
     {
         return array(
             "p_a_value_$this->id" => (int)$this->value
@@ -61,7 +65,7 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     /**
      * @inherit
      */
-    public function getAuditData()
+    public function getAuditData() : string
     {
         return "$this->name: $this->operation $this->value";
     }

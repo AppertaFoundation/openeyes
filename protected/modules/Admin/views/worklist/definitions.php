@@ -43,6 +43,7 @@
             <tr>
                 <th>Order</th>
                 <th>Name</th>
+                <th>Patient Identifier Type</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -51,6 +52,7 @@
                 <tr>
                     <td class="reorder">&uarr;&darr;<input type="hidden" name="item_ids[]" value="<?php echo $definition->id ?>"></td>
                     <td><?=$definition->name?></td>
+                    <td><?=$definition->patient_identifier_type->getTitleWithInstitution() ?></td>
                     <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?>
                         <a class="button small" href="/Admin/worklist/definitionUpdate/<?=$definition->id?>">Edit</a><?php
                         }?>

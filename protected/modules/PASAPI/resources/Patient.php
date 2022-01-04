@@ -116,8 +116,6 @@ class Patient extends BaseResource
      */
     public function saveModel($patient)
     {
-        $this->assignProperty($patient, 'nhs_num', 'NHSNumber');
-        $this->assignProperty($patient, 'hos_num', 'HospitalNumber');
         $this->assignProperty($patient, 'dob', 'DateOfBirth');
         $this->assignProperty($patient, 'is_deceased', 'IsDeceased');
 
@@ -132,7 +130,6 @@ class Patient extends BaseResource
         $this->mapEthnicGroup($patient);
         $this->mapGp($patient);
         $this->mapPractice($patient);
-        $this->mapNhsNumberStatus($patient);
 
         if (!$patient->validate()) {
             $this->addModelErrors($patient->getErrors());
@@ -312,21 +309,32 @@ class Patient extends BaseResource
     /**
      * @param \Patient $patient
      */
-    private function mapNhsNumberStatus(\Patient $patient)
+    public function addGlobalNumberStatus(\Patient $patient)
     {
-        $status = null;
-        if (property_exists($this, 'NHSNumberStatus')) {
-            if ($code = $this->getAssignedProperty('NHSNumberStatus')) {
-                if ($status = NhsNumberVerificationStatus::model()->findByAttributes(array('code' => $code))) {
-                    $patient->nhs_num_status_id = $status->id;
+        if($patient->globalIdentifier) {
+            if (property_exists($this, 'NHSNumberStatus')) {
+                $code = $this->getAssignedProperty('NHSNumberStatus');
+                if ($code) {
+                    $status = \PatientIdentifierStatus::model()->findByAttributes([
+                        'code' => $code,
+                        'patient_identifier_type_id' => $patient->globalIdentifier->patient_identifier_type_id,
+                    ]);
+                    if ($status) {
+                        $patient->globalIdentifier->patient_identifier_status_id = $status->id;
+                    } else {
+                        $this->addWarning('Unrecognised NHSNumberStatus code '.$code);
+                    }
                 } else {
-                    $this->addWarning('Unrecognised '.\SettingMetadata::model()->getSetting('nhs_num_label').' number status code '.$code);
+                    $patient->globalIdentifier->patient_identifier_status_id = null;
                 }
             } else {
-                $patient->nhs_num_status_id = null;
+                if (!$this->partial_record) {
+                    $patient->globalIdentifier->patient_identifier_status_id = null;
+                }
             }
-        } elseif (!$this->partial_record) {
-            $patient->nhs_num_status_id = null;
+            if(!$patient->globalIdentifier->isNewRecord){
+                $patient->globalIdentifier->update(['patient_identifier_status_id']);
+            }
         }
     }
 }

@@ -26,6 +26,21 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
         $procedures);
         $this->jsVars['procedure_options'] = $procedure_options;
 
+        if ($this->checkAccess('admin')) {
+            $institutions = Institution::model()->findAll();
+            $institution_options = array_map(
+                static function ($institution) {
+                    return $institution->getAttributes(["id", "name"]);
+                },
+                $institutions
+            );
+        } else {
+            $institution = Institution::model()->getCurrent();
+            $institution_options = [$institution->getAttributes(["id", "name"])];
+        }
+
+        $this->jsVars['institution_options'] = $institution_options;
+
         $subspecialty_id = Yii::app()->getRequest()->getParam('subspecialty_id', null);
 
         if (Yii::app()->request->isPostRequest) {
@@ -38,15 +53,20 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                 foreach ($assignments as $key => $assignment) {
                     $procedureSubspecialtyAssignment = ProcedureSubspecialtyAssignment::model()->findByPk($assignment['id']);
                     if (!$procedureSubspecialtyAssignment) {
-                        $procedureSubspecialtyAssignment = new ProcedureSubspecialtyAssignment;
+                        $procedureSubspecialtyAssignment = new ProcedureSubspecialtyAssignment();
                         $procedureSubspecialtyAssignment['id'] = null;
                     }
 
                     $procedureSubspecialtyAssignment->proc_id = $assignment['procedure_id'];
                     $procedureSubspecialtyAssignment->display_order = $display_orders[$key];
                     $procedureSubspecialtyAssignment->subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
-                    $procedureSubspecialtyAssignment->need_eur = isset($assignment['need_eur']) ? $assignment['need_eur'] : 0;
+                    $procedureSubspecialtyAssignment->need_eur = $assignment['need_eur'] ?? 0;
 
+                    if ($this->checkAccess('admin')) {
+                        $procedureSubspecialtyAssignment->institution_id = $assignment['institution_id'];
+                    } else {
+                        $procedureSubspecialtyAssignment->institution_id = Institution::model()->getCurrent()->id;
+                    }
                     if (!$procedureSubspecialtyAssignment->save()) {
                         $errors[] = $procedureSubspecialtyAssignment->getErrors();
                     }
@@ -54,7 +74,7 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                     $ids[] = $procedureSubspecialtyAssignment->id;
                 }
 
-                //Delete items
+                // Delete items
                 $criteria = new CDbCriteria();
 
                 if ($ids) {
@@ -62,6 +82,10 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                 }
 
                 $criteria->compare('subspecialty_id', $subspecialty_id);
+
+                if (!$this->checkAccess('admin')) {
+                    $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
+                }
                 $to_delete = ProcedureSubspecialtyAssignment::model()->findAll($criteria);
 
                 foreach ($to_delete as $item) {
@@ -104,6 +128,15 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->order = 'display_order';
         $criteria->compare('subspecialty_id', $subspecialty_id);
+        if (!$this->checkAccess('admin')) {
+            $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
+        }
+
+        if ((int)ProcedureSubspecialtyAssignment::model()->count($criteria) === 0) {
+            $criteria->condition = '';
+            $criteria->params = array();
+            $criteria->compare('subspecialty_id', $subspecialty_id);
+        }
         $this->render('/edit_ProcedureSubspecialtyAssignment', [
         'dataProvider' => new CActiveDataProvider('ProcedureSubspecialtyAssignment', [
         'criteria' => $criteria,

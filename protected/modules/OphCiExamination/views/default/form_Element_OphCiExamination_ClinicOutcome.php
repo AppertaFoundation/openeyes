@@ -19,6 +19,7 @@
 <?php
 use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status;
+use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/ClinicOutcome.js", CClientScript::POS_HEAD);
 $model_name = CHtml::modelName($element);
@@ -153,6 +154,21 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                         </ul>
                     </td>
                     <td class="follow-up-options-follow-up-only" style="display: none">
+                        <ul class="add-options" id="follow-up-risk-status-options">
+                            <?php foreach (OphCiExamination_ClinicOutcome_Risk_Status::model()->findAll() as $risk_status_entry) : ?>
+                                <li data-risk-status-id="<?= $risk_status_entry->id ?>" data-label="<?= $risk_status_entry->name ?>" data-display="<?= $risk_status_entry->name?>. <?= $risk_status_entry->alias ?>">
+                                    <span class="fixed-width extended">
+                                        <i 
+                                        class="oe-i triangle-<?=$risk_status_entry->getIndicatorColor()?> small pad-right js-risk-status-details"
+                                        ></i><?= $risk_status_entry->alias ?> (<?= $risk_status_entry->name ?>)
+                                        <br>
+                                        <?= $risk_status_entry->description ?>
+                                    </span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </td>
+                    <td class="follow-up-options-follow-up-only" style="display: none">
                         <div class="flex-layout flex-top flex-left">
                             <input type="text" id="followup_comments" placeholder="Name (optional)">
                         </div>
@@ -185,6 +201,9 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                 'followup_comments_display' => '{{followup_comments_display}}',
                 'role_id' => '{{role_id}}',
                 'role' => '{{role}}',
+                'risk_status_id' => '{{risk_status_id}}',
+                'risk_status_class' => '{{risk_status_class}}',
+                'risk_status_content' => '{{risk_status_content}}',
             ],
         ]
     );

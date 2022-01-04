@@ -12,9 +12,21 @@ class InstitutionTest extends ActiveRecordTestCase
         return Institution::model();
     }
 
+    public static function setUpBeforeClass()
+    {
+        Yii::app()->session['selected_institution_id'] = 1;
+    }
+
+    public static function tearDownAfterClass()
+    {
+        unset(Yii::app()->session['selected_institution_id']);
+    }
+
+    /**
+     * @throws Exception
+     */
     public function testGetCurrent_Success()
     {
-        Yii::app()->params['institution_code'] = getenv('OE_INSTITUTION_CODE') ? getenv('OE_INSTITUTION_CODE') : 'NEW';
         $this->assertEquals($this->institutions('moorfields'), Institution::model()->getCurrent());
     }
 
@@ -23,9 +35,9 @@ class InstitutionTest extends ActiveRecordTestCase
      */
     public function testGetCurrent_CodeNotSet()
     {
-        $this->expectExceptionMessage("Institution code is not set");
+        $this->expectExceptionMessage("Institution id is not set");
         $this->expectException(Exception::class);
-        unset(Yii::app()->params['institution_code']);
+        unset(Yii::app()->session['selected_institution_id']);
         Institution::model()->getCurrent();
     }
 
@@ -34,9 +46,9 @@ class InstitutionTest extends ActiveRecordTestCase
      */
     public function testGetCurrent_NotFound()
     {
-        $this->expectExceptionMessage("Institution with code 'bar' not found");
+        $this->expectExceptionMessage("Institution with id '7' not found");
         $this->expectException(Exception::class);
-        Yii::app()->params['institution_code'] = 'bar';
+        Yii::app()->session['selected_institution_id'] = 7;
         Institution::model()->getCurrent();
     }
 }

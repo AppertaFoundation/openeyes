@@ -18,7 +18,7 @@
 ?>
 <?php
 $form_id = 'opnote-create';
-$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
+$this->beginContent('//patient/event_container', array('no_face' => true, 'form_id' => $form_id, 'has_errors' => (isset($errors) && $errors) ? 'true' : 'false'));
 $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
 $warnings = $this->patient->getWarnings($clinical);

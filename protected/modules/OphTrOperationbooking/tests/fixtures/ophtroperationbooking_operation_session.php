@@ -21,6 +21,7 @@ return array(
         'id' => 1,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 1,
+        'institution_id' => 1,
         'date' => date('Y-m-d', strtotime('-2 weeks')),
         'start_time' => '10:00',
         'end_time' => '12:00',
@@ -38,6 +39,7 @@ return array(
         'id' => 2,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 1,
+        'institution_id' => 1,
         'date' => '2015-06-26',
         'start_time' => '10:00',
         'end_time' => '12:00',
@@ -55,6 +57,7 @@ return array(
         'id' => 3,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 1,
+        'institution_id' => 1,
         'date' => date('Y-m-d', strtotime('+3 weeks')),
         'start_time' => '10:00',
         'end_time' => '12:00',
@@ -72,6 +75,7 @@ return array(
         'id' => 4,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 1,
+        'institution_id' => 1,
         'date' => date('Y-m-d', strtotime('+5 weeks')),
         'start_time' => '10:00',
         'end_time' => '12:00',
@@ -89,6 +93,7 @@ return array(
         'id' => 5,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 1,
+        'institution_id' => 1,
         'date' => date('Y-m-d', strtotime('+3 weeks')),
         'start_time' => '10:00',
         'end_time' => '12:00',
@@ -106,6 +111,7 @@ return array(
         'id' => 6,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 1,
+        'institution_id' => 1,
         'date' => date('Y-m-d', strtotime('+3 weeks')),
         'start_time' => '10:00',
         'end_time' => '12:00',
@@ -123,6 +129,7 @@ return array(
         'id' => 7,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 1,
+        'institution_id' => 1,
         'date' => date('Y-m-d', strtotime('+3 weeks')),
         'start_time' => '10:00',
         'end_time' => '12:00',
@@ -140,6 +147,7 @@ return array(
         'id' => 8,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 1,
+        'institution_id' => 1,
         'date' => date('Y-m-d', strtotime('+3 weeks + 2 days')),
         'start_time' => '10:00',
         'end_time' => '12:00',
@@ -157,6 +165,7 @@ return array(
         'id' => 9,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 1,
+        'institution_id' => 1,
         'date' => date('Y-m-d', strtotime('+2 weeks +6 days')),
         'start_time' => '10:00',
         'end_time' => '12:00',
@@ -174,6 +183,7 @@ return array(
         'id' => 10,
         'sequence_id' => 1, // am not worrying about consistency with sequences at this point.
         'firm_id' => 2,
+        'institution_id' => 1,
         'date' => date('Y-m-d', strtotime('+2 weeks +6 days')),
         'start_time' => '10:00',
         'end_time' => '12:00',

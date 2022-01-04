@@ -36,7 +36,7 @@ class OETrial_ReportTrialCohort extends BaseReport
             ->join('trial_patient t_p', 't.id = t_p.trial_id')
             ->join('patient p', 'p.id = t_p.patient_id')
             ->join('contact c', 'p.contact_id = c.id')
-            ->group('p.id, p.hos_num, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.treatment_type_id, t_p.status_id, t_p.comment')
+            ->group('p.id, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.treatment_type_id, t_p.status_id, t_p.comment')
             ->order('c.first_name, c.last_name');
     }
 
@@ -47,7 +47,8 @@ class OETrial_ReportTrialCohort extends BaseReport
      */
     public function run()
     {
-        $select = 'p.id, p.hos_num, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.comment, t_p.id as trial_patient_id';
+        $this->setInstitutionAndSite();
+        $select = 'p.id, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.comment, t_p.id as trial_patient_id';
 
         $query = $this->getDbCommand();
 
@@ -84,14 +85,18 @@ class OETrial_ReportTrialCohort extends BaseReport
      */
     public function addPatientResultItem($item)
     {
+        $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+        $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($item['id']);
+
         $this->patients[$item['id']] = array(
-            'hos_num' => $item['hos_num'],
+            'identifier' => $patient_identifier,
             'dob' => $item['dob'],
             'first_name' => $item['first_name'],
             'last_name' => $item['last_name'],
             'external_trial_identifier' => $item['external_trial_identifier'],
             'trial_patient_id' => $item['trial_patient_id'],
             'comment'=>$item['comment'],
+            'all_ids' => $patient_identifiers
         );
     }
 
@@ -105,7 +110,7 @@ class OETrial_ReportTrialCohort extends BaseReport
     {
         $rows = array();
         $cols = array();
-        $cols[] = Patient::model()->getAttributeLabel('hos_num');
+        $cols[] = $this->getPatientIdentifierPrompt();
         $cols[] = Patient::model()->getAttributeLabel('dob');
         $cols[] = Patient::model()->getAttributeLabel('first_name');
         $cols[] = Patient::model()->getAttributeLabel('last_name');
@@ -115,6 +120,7 @@ class OETrial_ReportTrialCohort extends BaseReport
         $cols[] = 'Diagnoses';
         $cols[] = 'Medications';
         $cols[] = TrialPatient::model()->getAttributeLabel('comment');
+        $cols[] = 'Patient IDs';
         $rows[] = $cols;
 
         foreach ($this->patients as $ts => $patient) {
@@ -122,7 +128,7 @@ class OETrial_ReportTrialCohort extends BaseReport
             $trial_patient = TrialPatient::model()->findByPk($patient['trial_patient_id']);
 
             $cols = array();
-            $cols[] = $patient['hos_num'];
+            $cols[] = $patient['identifier'];
             $cols[] = ($patient['dob'] ? date('j M Y', strtotime($patient['dob'])) : 'Unknown');
             $cols[] = $patient['first_name'];
             $cols[] = $patient['last_name'];
@@ -158,6 +164,7 @@ class OETrial_ReportTrialCohort extends BaseReport
             }
             $cols[] = implode('; ', $medications);
             $cols[] = $trial_patient->comment;
+            $cols[] = $patient['all_ids'];
             $rows[] = $cols;
         }
 

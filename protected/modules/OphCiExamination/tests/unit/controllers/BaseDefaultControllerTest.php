@@ -47,7 +47,7 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
         $episode = $patient->episodes[0];
 
         // enables controller to know what episode the event will be created in.
-        $this->setFirmIdInSession($episode->firm_id);
+        $this->setVariablesInSession($episode->firm_id);
 
         // set up the request data for submitting values
         $_REQUEST['patient_id'] = $patient->id;
@@ -65,7 +65,7 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
 
     protected function performUpdateRequestForEvent(\Event $event)
     {
-        $this->setFirmIdInSession($event->episode->firm_id);
+        $this->setVariablesInSession($event->episode->firm_id);
         $_GET['id'] = $event->id;
 
         $redirectedEventId = $this->performUpdateRequestWithController();
@@ -123,12 +123,16 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
      * Simple helper abstraction
      *
      * @param $firm_id
+     * @param $institution_id
+     * @param $site_id
      */
-    protected function setFirmIdInSession($firm_id)
+    protected function setVariablesInSession($firm_id, $institution_id = 1, $site_id = 1)
     {
         \Yii::app()->session->method('get')
             ->will($this->returnValueMap([
                 ['selected_firm_id', null, $firm_id],
+                ['selected_institution_id', null, $institution_id],
+                ['selected_site_id', null, $site_id],
             ]));
     }
 

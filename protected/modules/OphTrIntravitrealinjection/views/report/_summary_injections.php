@@ -20,11 +20,11 @@
     <thead>
         <tr>
             <th>Date</th>
-            <th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
-            <th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
-            <th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
-            <th><?php echo Patient::model()->getAttributeLabel('gender')?></th>
-            <th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
+            <th><?= $report->getPatientIdentifierPrompt() ?></th>
+            <th><?= Patient::model()->getAttributeLabel('first_name')?></th>
+            <th><?= Patient::model()->getAttributeLabel('last_name')?></th>
+            <th><?= Patient::model()->getAttributeLabel('gender')?></th>
+            <th><?= Patient::model()->getAttributeLabel('dob')?></th>
             <th>Eye</th>
             <th>Site</th>
             <th>Left drug</th>
@@ -47,6 +47,7 @@
             <th>Right Lens Status</th>
             <th>Left Diagnosis</th>
             <th>Right Diagnosis</th>
+            <th><?= $report->getAttributeLabel('all_ids') ?></th>
         </tr>
     <tbody>
         <?php if (empty($report->injections)) {?>
@@ -58,35 +59,35 @@
         <?php } else {?>
             <?php foreach ($report->injections as $ts => $injection) {?>
                 <tr>
-                    <td><?php echo $injection['injection_date']?></td>
-                    <td><?php echo $injection['patient_hosnum']?></td>
-                    <td><?php echo $injection['patient_firstname']?></td>
-                    <td><?php echo $injection['patient_surname']?></td>
-                    <td><?php echo $injection['patient_gender']?></td>
-                    <td><?php echo $injection['patient_dob']?></td>
-                    <td><?php echo $injection['eye']?></td>
-                    <td><?php echo $injection['site_name']?></td>
-                    <td><?php echo $injection['left_drug']?></td>
-                    <td><?php echo $injection['left_injection_number']?></td>
-                    <td><?php echo $injection['right_drug']?></td>
-                    <td><?php echo $injection['right_injection_number']?></td>
+                    <td><?= $injection['injection_date']?></td>
+                    <td><?= $injection['patient_identifier']?></td>
+                    <td><?= $injection['patient_firstname']?></td>
+                    <td><?= $injection['patient_surname']?></td>
+                    <td><?= $injection['patient_gender']?></td>
+                    <td><?= $injection['patient_dob']?></td>
+                    <td><?= $injection['eye']?></td>
+                    <td><?= $injection['site_name']?></td>
+                    <td><?= $injection['left_drug']?></td>
+                    <td><?= $injection['left_injection_number']?></td>
+                    <td><?= $injection['right_drug']?></td>
+                    <td><?= $injection['right_injection_number']?></td>
                     <?php if ($report->pre_va) {?>
-                        <td><?php echo $injection['left_preinjection_va']?></td>
-                        <td><?php echo $injection['right_preinjection_va']?></td>
+                        <td><?= $injection['left_preinjection_va']?></td>
+                        <td><?= $injection['right_preinjection_va']?></td>
                     <?php }?>
                     <?php if ($report->post_va) {?>
-                        <td><?php echo $injection['left_postinjection_va']?></td>
-                        <td><?php echo $injection['right_postinjection_va']?></td>
+                        <td><?= $injection['left_postinjection_va']?></td>
+                        <td><?= $injection['right_postinjection_va']?></td>
                     <?php }?>
-                    <td><?php echo $injection['pre_antisept_drug_left']?></td>
-                    <td><?php echo $injection['pre_antisept_drug_right']?></td>
-                    <td><?php echo $injection['given_by_left']?></td>
-                    <td><?php echo $injection['given_by_right']?></td>
-                    <td><?php echo $injection['lens_status_left']?></td>
-                    <td><?php echo $injection['lens_status_right']?></td>
-                    <td><?php echo $injection['diagnosis_left']?></td>
-                    <td><?php echo $injection['diagnosis_right']?></td>
-
+                    <td><?= $injection['pre_antisept_drug_left']?></td>
+                    <td><?= $injection['pre_antisept_drug_right']?></td>
+                    <td><?= $injection['given_by_left']?></td>
+                    <td><?= $injection['given_by_right']?></td>
+                    <td><?= $injection['lens_status_left']?></td>
+                    <td><?= $injection['lens_status_right']?></td>
+                    <td><?= $injection['diagnosis_left']?></td>
+                    <td><?= $injection['diagnosis_right']?></td>
+                    <td><?= $injection['all_ids'] ?></td>
                 </tr>
             <?php }?>
         <?php }?>

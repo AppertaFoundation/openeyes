@@ -582,7 +582,7 @@ class DefaultController extends BaseEventTypeController
 
         $substitutions = array_merge(
             SettingMetadata::getSessionSubstitutions(),
-            SettingMetadata::getPatientSubstitutions($parent_patient),
+            SettingMetadata::getPatientSubstitutions($parent_patient, $parent_event),
             SettingMetadata::getRecipientAddressSubstitution($recipient_address)
         );
 
@@ -654,10 +654,8 @@ class DefaultController extends BaseEventTypeController
 
         $criteria = new CDbCriteria();
 
-        $criteria->addCondition(array('active = :active'));
         $criteria->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) LIKE :term"));
 
-        $params[':active'] = 1;
         $params[':term'] = '%' . strtolower(strtr($_GET['term'], array('%' => '\%'))) . '%';
 
         $criteria->params = $params;
@@ -770,7 +768,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetConsultantsBySubspecialty($subspecialty_id = null)
     {
-        $firms = Firm::model()->getListWithSpecialties(false, $subspecialty_id);
+        $firms = Firm::model()->getListWithSpecialties(Yii::app()->session['institution_id'], false, $subspecialty_id);
         $this->renderJSON($firms);
 
         Yii::app()->end();

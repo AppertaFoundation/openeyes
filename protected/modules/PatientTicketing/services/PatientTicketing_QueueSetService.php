@@ -54,7 +54,7 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
     public function modelToResource($queueset)
     {
         $res = parent::modelToResource($queueset);
-        foreach (array('name', 'description', 'active', 'filter_priority', 'filter_subspecialty', 'filter_firm', 'filter_my_tickets', 'filter_closed_tickets') as $pass_thru) {
+        foreach (array('name', 'description', 'filter_priority', 'filter_subspecialty', 'filter_firm', 'filter_my_tickets', 'filter_closed_tickets') as $pass_thru) {
             $res->$pass_thru = $queueset->$pass_thru;
         }
 
@@ -95,7 +95,7 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
         $criteria = new \CDbCriteria();
         $criteria->addColumnCondition(array('category_id' => $qscr->getId()));
         $res = array();
-        foreach ($class::model()->active()->with('permissioned_users')->findAll($criteria) as $qs) {
+        foreach ($class::model()->with('permissioned_users')->findAll($criteria) as $qs) {
             $res[] = $this->modelToResource($qs);
         }
 
@@ -249,7 +249,7 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
     public function getQueueSetsForFirm(\Firm $firm = null)
     {
         $res = array();
-        foreach (models\QueueSet::model()->active()->findAll() as $qs) {
+        foreach (models\QueueSet::model()->findAll() as $qs) {
             $res[] = $this->modelToResource($qs);
         }
 

@@ -17,6 +17,8 @@
     "puppeteer": "^2.0.0",
     "sortablejs": "~1.10.2",
     "tinymce": "^4.8.2",
-    "video.js": "^7.7.5"
+    "video.js": "^7.7.5",
+    "fabric": "^3.6.3",
+    "pdfjs-dist": "^2.3.200"
   }
 }

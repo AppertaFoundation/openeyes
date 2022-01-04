@@ -27,9 +27,9 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
-<!-- Show full patient Worklist -->
 <div class="patient-popup-worklist oe-patient-quick-overview" style="display:none;"
      data-patient-id="<?= $this->patient->id ?>">
+    <!-- Show full patient Worklist -->
     <div class="close-icon-btn">
         <i class="oe-i remove-circle medium"></i>
     </div>
@@ -39,32 +39,8 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     ?>
     <div class="quick-overview-content">
         <!-- insert the data -->
-        <?php if ($this->patient->nhsNumberStatus) : ?>
-            <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
-                <i class="oe-i exclamation pad-right no-click medium-icon"></i>
-                <b> NHS Number: <?= $this->patient->nhsNumberStatus->description; ?></b>
-            </div>
-        <?php endif; ?>
-        <?php if (count($this->patient->identifiers) > 0) { ?>
-            <div class="patient-numbers flex-layout">
-                <div class="local-numbers">
-                    <?php foreach ($this->patient->identifiers as $identifier) { ?>
-                        <?php if ($identifier->hasValue() || $identifier->displayIfEmpty()) { ?>
-                            <div class="num">
-                                <?= $identifier->getLabel() ?>
-                                <label class="inline highlight">
-                                    <?= $identifier->value ?>
-                                </label>
-                            </div>
-                        <?php } ?>
-                    <?php } ?>
-                </div>
-                <div class="nhs-number">
-                    <?= \SettingMetadata::model()->getSetting('nhs_num_label') ?>
-                    <?= $this->patient->nhsnum ?>
-                </div>
-            </div>
-        <?php } ?>
+        <?php $this->render('application.widgets.views.PatientSummaryPopupPatientIdentifierStatuses'); ?>
+        <?php $this->render('application.widgets.views.PatientSummaryPopupPatientNumbers'); ?>
         <!-- Warnings: Allergies -->
         <div class="data-group">
             <?php $this->widget(\OEModule\OphCiExamination\widgets\Allergies::class, array(

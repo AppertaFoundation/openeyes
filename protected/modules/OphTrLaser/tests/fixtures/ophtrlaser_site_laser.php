@@ -23,6 +23,7 @@ return array(
         'type_id' => 1,
         'wavelength' => 200,
         'display_order' => 1,
+        'institution_id' => 1,
         'site_id' => 1,
         'last_modified_user_id' => 1,
         'last_modified_date' => '1901-01-01 00:00:00',

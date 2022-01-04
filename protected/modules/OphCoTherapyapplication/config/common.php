@@ -20,11 +20,13 @@ return array(
     'params' => array(
         // fixed details for admin functionality
         'admin_menu' => array(
-            'Diagnoses' => '/OphCoTherapyapplication/admin/viewDiagnoses',
-            'Treatments' => '/OphCoTherapyapplication/admin/viewTreatments',
-            'Decision Trees' => '/OphCoTherapyapplication/admin/viewDecisionTrees',
-            'File Collections' => '/OphCoTherapyapplication/admin/viewFileCollections',
-            'Email Recipients' => '/OphCoTherapyapplication/admin/viewEmailRecipients',
+            'OphCoTherapyapplication' => [
+                'Diagnoses' => ['uri' => '/OphCoTherapyapplication/admin/viewDiagnoses', 'restricted' => array('admin')],
+                'Treatments' => ['uri' => '/OphCoTherapyapplication/admin/viewTreatments', 'restricted' => array('admin')],
+                'Decision Trees' => '/OphCoTherapyapplication/admin/viewDecisionTrees',
+                'File Collections' => '/OphCoTherapyapplication/admin/viewFileCollections',
+                'Email Recipients' => '/OphCoTherapyapplication/admin/viewEmailRecipients',
+            ]
         ),
         'reports' => array(
             'Therapy applications' => '/OphCoTherapyapplication/report/applications',

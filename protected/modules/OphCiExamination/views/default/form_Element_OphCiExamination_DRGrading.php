@@ -1,5 +1,9 @@
 <?php
-/**
+
+    use OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading;
+    use OEModule\OphCiExamination\models\OphCiExamination_DRGrading_Feature;
+
+    /**
  * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -14,8 +18,16 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var $element Element_OphCiExamination_DRGrading
  */
-function getLevelColour($risk_level){
+
+/**
+ * @param $risk_level
+ * @return string
+ */
+function getLevelColour($risk_level)
+{
     switch ($risk_level) {
         case '':
         case 'none':
@@ -39,6 +51,11 @@ function getLevelColour($risk_level){
             return 'blue';
     }
 }
+
+$r1_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAllByAttributes(array('grade' => 'R1', 'active' => 1));
+$r2_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAllByAttributes(array('grade' => 'R2', 'active' => 1));
+$r3s_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAllByAttributes(array('grade' => 'R3s', 'active' => 1));
+$r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAllByAttributes(array('grade' => 'R3a', 'active' => 1));
 ?>
 
 <?php $this->beginClip('element-title-additional');?>
@@ -64,7 +81,17 @@ function getLevelColour($risk_level){
                 echo '<span class="data-value">'.$diabetes->term.'</span>';
                 echo \CHtml::hiddenField(CHtml::modelName($element).'[secondarydiagnosis_disorder_id]', $diabetes->id);
             } else {
-                $form->radioButtons($element, 'secondarydiagnosis_disorder_id', $element->getDiabetesTypes(), null, false, false, false, false, array('nowrapper' => true));
+                $form->radioButtons(
+                    $element,
+                    'secondarydiagnosis_disorder_id',
+                    $element->getDiabetesTypes(),
+                    null,
+                    false,
+                    false,
+                    false,
+                    false,
+                    array('nowrapper' => true)
+                );
             } ?>
     </fieldset>
 </div>
@@ -73,11 +100,20 @@ function getLevelColour($risk_level){
   <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if ($element->id || !empty($_POST)) {
         ?> uninitialised<?php
                              }?>" data-side="<?= $eye_side ?>">
-    <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
+    <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-        <?php $this->renderPartial($element->form_view.'_fields', array('side' =>$eye_side, 'element' => $element, 'form' => $form))?>
+        <?php
+            $this->renderPartial(
+                $element->form_view.'_fields',
+                array(
+                    'side' =>$eye_side,
+                    'element' => $element,
+                    'form' => $form,
+                )
+            )
+        ?>
     </div>
-    <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+    <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
       <div class="add-side">
         <a href="#">
           Add <?= $eye_side ?> DR Grading

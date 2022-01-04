@@ -57,6 +57,7 @@
     SaveSearchDialog.prototype.getContent = function (options) {
         // Copy the parameter and variable lists from the main search pane. This will capture the visible text as well as the hidden inputs.
         let $paramTable = $('#param-list').clone();
+        $paramTable.find('.auto-parameter').remove();
 
         // Remove the delete buttons that were cloned for each row.
         $paramTable.find('td:has(i)').remove();

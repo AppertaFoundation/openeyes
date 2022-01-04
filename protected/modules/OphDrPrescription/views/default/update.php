@@ -31,7 +31,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>true , 'form_i
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => $form_id,
     'enableAjaxValidation' => false,
-    ));
+));
 
 // Event actions
 $this->event_actions[] = EventAction::button(
@@ -46,7 +46,6 @@ $this->event_actions[] = EventAction::button(
     array('level' => 'secondary'),
     array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id)
 );
-
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button(
         'Save and print',

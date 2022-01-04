@@ -642,20 +642,24 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($manager->mapPatientToWorklistDefinition($patient, $test_date, $attributes));
     }
 
-    protected function getMockArray($class, $count = 1, $methods = array())
+    /**
+     * @param $class
+     * @param int $count
+     * @param array $attrs
+     * @return array
+     * @throws ReflectionException
+     */
+    protected function getMockArray($class, $count = 1, $attrs = array())
     {
         $res = array();
         for ($i = 0; $i < $count; ++$i) {
-            $res[] = $this->getMockBuilder($class)
-                ->disableOriginalConstructor()
-                ->setMethods($methods)
-                ->getMock();
+            $res[] = ComponentStubGenerator::generate($class, $attrs);
         }
 
         return $res;
     }
 
-    protected function getActiveDataProviderMock($class, $count, $class_methods = array())
+    protected function getActiveDataProviderMock($class, $count, $class_attrs = array())
     {
         $mock = $this->getMockBuilder('CActiveDataProvider')
             ->disableOriginalConstructor()
@@ -664,11 +668,14 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $mock->expects($this->any())
             ->method('getData')
-            ->will($this->returnValue($this->getMockArray($class, $count, $class_methods)));
+            ->will($this->returnValue($this->getMockArray($class, $count, $class_attrs)));
 
         return $mock;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function test_getWorklistForMapping()
     {
         $test_date = new DateTime();
@@ -679,6 +686,8 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->setMethods(array('getModelForClass', 'checkWorklistMappingMatch'))
             ->getMock();
 
+        $manager->patient_identifier_type = PatientIdentifierType::model()->findByPk(1);
+
         $wm = $this->getMockBuilder('Worklist')
             ->disableOriginalConstructor()
             ->setMethods(array('search'))
@@ -686,10 +695,14 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $manager->expects($this->at(0))
             ->method('getModelForClass')
-            ->with('Worklist')
+            ->with(Worklist::class)
             ->will($this->returnValue($wm));
 
-        $adp = $this->getActiveDataProviderMock('Worklist', 3);
+        $adp = $this->getActiveDataProviderMock(
+            'Worklist',
+            3,
+            array('worklist_definition' => WorklistDefinition::model()->findByPk(1))
+        );
         $wls = $adp->getData();
 
         $wm->expects($this->once())
@@ -1054,19 +1067,20 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue($wm));
 
         // verify the filter of display context
+        $institution = ComponentStubGenerator::generate('Institution');
         $site = ComponentStubGenerator::generate('Site');
         $firm = ComponentStubGenerator::generate('Firm');
 
         $manager->expects($this->at(1))
             ->method('shouldDisplayWorklistForContext')
-            ->with($wls[0], $site, $firm)
+            ->with($wls[0], $institution, $site, $firm)
             ->will($this->returnValue(true));
         $manager->expects($this->at(2))
             ->method('shouldDisplayWorklistForContext')
             ->with($wls[1])
             ->will($this->returnValue(false));
 
-        $this->assertEquals(array($wls[0]), $manager->getCurrentAutomaticWorklistsForUserContext($site, $firm, new DateTime()));
+        $this->assertEquals(array($wls[0]), $manager->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, new DateTime()));
     }
 
     public function shouldDisplayWorklistForContextProvider()
@@ -1074,25 +1088,25 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         return array(
             array(
                 array(
-                    array('checkSite' => false, 'checkFirm' => false),
+                    array('checkInstitution' => false, 'checkSite' => false, 'checkFirm' => false),
                 ),
                 false, ),
             array(
                 array(
-                    array('checkSite' => false, 'checkFirm' => false),
-                    array('checkSite' => false, 'checkFirm' => false),
+                    array('checkInstitution' => false, 'checkSite' => false, 'checkFirm' => false),
+                    array('checkInstitution' => false, 'checkSite' => false, 'checkFirm' => false),
                 ),
                 false, ),
             array(
                 array(
-                    array('checkSite' => true, 'checkFirm' => false),
-                    array('checkSite' => false, 'checkFirm' => true),
+                    array('checkInstitution' => false, 'checkSite' => true, 'checkFirm' => false),
+                    array('checkInstitution' => false, 'checkSite' => false, 'checkFirm' => true),
                 ),
                 false, ),
             array(
                 array(
-                    array('checkSite' => false, 'checkFirm' => false),
-                    array('checkSite' => true, 'checkFirm' => true),
+                    array('checkInstitution' => true, 'checkSite' => false, 'checkFirm' => false),
+                    array('checkInstitution' => true, 'checkSite' => true, 'checkFirm' => true),
                 ),
                 true, ),
             array(
@@ -1111,32 +1125,43 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
      */
     public function test_shouldDisplayWorklistForContext($context_list, $expected)
     {
+        /**
+         * @var $institution Institution
+         * @var $site Site
+         * @var $firm Firm
+         * @var $worklist Worklist
+         */
         $manager = new WorklistManager();
 
         $contexts = array();
-        $site = ComponentStubGenerator::generate('Site');
+        $institution = ComponentStubGenerator::generate('Institution');
+        $site = ComponentStubGenerator::generate('Site', array('institution_id' => 1));
         $firm = ComponentStubGenerator::generate('Firm');
 
         foreach ($context_list as $ctx) {
             $c = $this->getMockBuilder('WorklistDefinitionDisplayContext')
                 ->disableOriginalConstructor()
-                ->setMethods(array('checkSite', 'checkFirm'))
+                ->setMethods(array('checkInstitution','checkSite', 'checkFirm'))
                 ->getMock();
-            $c->expects($this->any())
-                ->method('checkSite')
+            $c->method('checkInstitution')
+                ->with($institution)
+                ->willReturn($ctx['checkInstitution']);
+            $c->method('checkSite')
                 ->with($site)
-                ->will($this->returnValue($ctx['checkSite']));
-            $c->expects($this->any())
-                ->method('checkFirm')
+                ->willReturn($ctx['checkSite']);
+            $c->method('checkFirm')
                 ->with($firm)
-                ->will($this->returnValue($ctx['checkFirm']));
+                ->willReturn($ctx['checkFirm']);
             $contexts[] = $c;
         }
 
-        $definition = ComponentStubGenerator::generate('WorklistDefinition', array('display_contexts' => $contexts));
+        $definition = ComponentStubGenerator::generate('WorklistDefinition', array(
+            'display_contexts' => $contexts,
+            'patient_identifier_type' => PatientIdentifierType::model()->findByPk(1)
+        ));
 
         $worklist = ComponentStubGenerator::generate('Worklist', array('worklist_definition' => $definition));
 
-        $this->assertEquals($expected, $manager->shouldDisplayWorklistForContext($worklist, $site, $firm));
+        self::assertEquals($expected, $manager->shouldDisplayWorklistForContext($worklist, $institution, $site, $firm));
     }
 }

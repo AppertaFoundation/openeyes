@@ -12,6 +12,18 @@
  */
 class OphDrPrescriptionEditReasons extends BaseActiveRecord
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return $this->tableName().'_id';
+    }
+
     const SELECTION_LABEL_FIELD = 'caption';
 
     /**
@@ -47,7 +59,8 @@ class OphDrPrescriptionEditReasons extends BaseActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'et_ophdrprescription_details'=>array(self::BELONGS_TO, 'Element_OphDrPrescription_Details', 'edit_reason_id')
+            'et_ophdrprescription_details'=>array(self::BELONGS_TO, 'Element_OphDrPrescription_Details', 'edit_reason_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
         );
     }
 

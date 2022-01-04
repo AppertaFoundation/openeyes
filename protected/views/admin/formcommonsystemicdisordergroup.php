@@ -33,8 +33,15 @@
                 ); ?>
             </td>
         </tr>
+        <tr>
+            <td>Assigned to current institution</td>
+            <td class="cols-full">
+                <?= CHtml::checkBox("assigned_institution", $model->hasMapping(ReferenceData::LEVEL_INSTITUTION, Institution::model()->getCurrent()->id), ['class' => 'cols-full']) ?>
+            </td>
+        </tr>
         </tbody>
     </table>
+
 
     <?= \OEHtml::submitButton() ?>
 

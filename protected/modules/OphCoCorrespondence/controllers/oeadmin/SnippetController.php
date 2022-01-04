@@ -28,7 +28,7 @@ class SnippetController extends ModuleAdminController
     {
         $this->admin = new Admin(LetterString::model(), $this);
         $this->admin->setModelDisplayName('Letter String');
-        $this->admin->div_wrapper_class = 'cols-10';
+        $this->admin->div_wrapper_class = 'cols-full';
 
         return parent::beforeAction($action);
     }
@@ -43,16 +43,15 @@ class SnippetController extends ModuleAdminController
         $this->admin->setListFields(array(
             'display_order',
             'id',
+            \Yii::app()->user->checkAccess('admin') ? 'institutions.name' : 'sites.name',
             'name',
             'body',
             'elementTypeName',
             'eventTypeName',
         ));
-        $this->admin->getSearch()->addSearchItem('site_id', array(
-            'type' => 'dropdown',
-            'options' => CHtml::listData(Institution::model()->getCurrent()->sites, 'id', 'name'),
-            'default' => Yii::app()->session['selected_site_id'],
-        ));
+        if (!\Yii::app()->user->checkAccess('admin')) {
+            $this->admin->getSearch()->setSearchItems(['institution_id' => ['default' => \Yii::app()->session['selected_institution_id']]]);
+        }
         $this->admin->listModel();
     }
 
@@ -75,19 +74,37 @@ class SnippetController extends ModuleAdminController
             $this->admin->getModel()->letter_string_group_id = $group_id;
         }
 
+        $is_admin = Yii::app()->user->checkAccess('admin');
         $this->admin->setEditFields(array(
-            'site_id' => array(
-                'widget' => 'DropDownList',
+            'institutions' => array(
+                'widget' => 'MultiSelectList',
+                'relation_field_id' => 'id',
+                'options' => \Institution::model()->getList(!$is_admin),
+                'htmlOptions' => [
+                    'label' => 'Institutions',
+                    'empty' => '-- Add --',
+                    'searchable' => false,
+                    'class' => 'cols-8',
+                ],
+            ),
+            'sites' => array(
+                'widget' => 'MultiSelectList',
+                'relation_field_id' => 'id',
                 'options' => CHtml::listData(Institution::model()->getCurrent()->sites, 'id', 'short_name'),
-                'default' => Yii::app()->request->getParam('site_id'),
-                'htmlOptions' => null,
-                'hidden' => false,
-                'layoutColumns' => null,
+                'htmlOptions' => [
+                    'label' => 'Sites',
+                    'empty' => '-- Add --',
+                    'searchable' => false,
+                    'class' => 'cols-8',
+                ],
             ),
             'letter_string_group_id' => array(
                 'widget' => 'DropDownList',
-                'options' => CHtml::listData(LetterStringGroup::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
+                'options' => CHtml::listData(LetterStringGroup::model()->findAll([
+                    'condition' => 'institution_id = :institution_id',
+                    'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
+                ]), 'id', 'name'),
+                'htmlOptions' => ['class' => 'cols-8'],
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
@@ -112,7 +129,24 @@ class SnippetController extends ModuleAdminController
                 'layoutColumns' => null,
             ),
         ));
-        $this->admin->editModel();
+        $saved = $this->admin->editModel(false);
+
+        if (Yii::app()->request->isPostRequest) {
+            if ($saved) {
+                $post = \Yii::app()->request->getPost($this->admin->getModelName());
+                $model = $this->admin->getModel();
+                LetterString_Institution::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $model->id]);
+                LetterString_Site::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $model->id]);
+                if (array_key_exists('institutions', $post)) {
+                    $model->createMappings(ReferenceData::LEVEL_INSTITUTION, $post['institutions']);
+                } elseif (array_key_exists('site', $post)) {
+                    $model->createMappings(ReferenceData::LEVEL_SITE, $post['sites']);
+                }
+                $this->redirect(['list']);
+            } else {
+                $this->admin->render($this->admin->getEditTemplate(), array('admin' => $this->admin, 'errors' => $this->admin->getModel()->getErrors()));
+            }
+        }
     }
 
     /**
@@ -120,6 +154,9 @@ class SnippetController extends ModuleAdminController
      */
     public function actionDelete()
     {
+        $model = $this->admin->getModel();
+        LetterString_Institution::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $model->id]);
+        LetterString_Site::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $model->id]);
         $this->admin->deleteModel();
     }
 

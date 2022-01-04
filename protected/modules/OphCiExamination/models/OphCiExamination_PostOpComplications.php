@@ -116,8 +116,9 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
             $criteria->addSearchCondition('t.name', $term);
         } else {
             $criteria->join = 'JOIN ophciexamination_postop_complications_subspecialty ON t.id = ophciexamination_postop_complications_subspecialty.complication_id';
-            $criteria->addCondition('subspecialty_id = :subspecialty_id');
+            $criteria->addCondition('institution_id = :institution_id AND subspecialty_id = :subspecialty_id');
             $criteria->params['subspecialty_id'] = $subspecialty_id;
+            $criteria->params['institution_id'] = \Yii::app()->session['selected_institution_id'];
             $criteria->order = 'ophciexamination_postop_complications_subspecialty.display_order ASC';
         }
 
@@ -131,15 +132,15 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
      *
      * @return EpisodeSummaryItem
      */
-    public function enabled($subspecialty_id = null)
+    public function enabled($institution_id, $subspecialty_id = null)
     {
         $criteria = array(
             'join' => 'LEFT JOIN ophciexamination_postop_complications_subspecialty AS cs ON t.id = cs.complication_id',
             'order' => 'cs.display_order',
         );
 
-        $criteria['condition'] = 'cs.subspecialty_id = :subspecialty_id';
-        $criteria['params'] = array('subspecialty_id' => $subspecialty_id);
+        $criteria['condition'] = 'cs.institution_id = :institution_id AND cs.subspecialty_id = :subspecialty_id';
+        $criteria['params'] = array('institution_id' => $institution_id, 'subspecialty_id' => $subspecialty_id);
 
         $this->getDbCriteria()->mergeWith($criteria);
 
@@ -175,14 +176,18 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
      * Assign the given items to the given episode summary.
      *
      * @param array    $item_ids
+     * @param int|null $institution_id
      * @param int|null $subspecialty_id
      */
-    public function assign($item_ids, $subspecialty_id = null)
+    public function assign($item_ids, $institution_id = null, $subspecialty_id = null)
     {
+        if (is_null($institution_id)) {
+            $institution_id = \Yii::app()->session['selected_institution_id'];
+        }
         $this->dbConnection->createCommand()->delete(
             'ophciexamination_postop_complications_subspecialty',
-            $subspecialty_id ? 'subspecialty_id = :subspecialty_id' : 'subspecialty_id is null',
-            array('subspecialty_id' => $subspecialty_id)
+            'institution_id = :institution_id AND ' . ($subspecialty_id ? 'subspecialty_id = :subspecialty_id' : 'subspecialty_id is null'),
+            array('institution_id' => $institution_id, 'subspecialty_id' => $subspecialty_id)
         );
 
         if ($item_ids) {
@@ -192,6 +197,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
             foreach ($item_ids as $display_order => $complication_id) {
                 $rows[] = array(
                     'complication_id' => $complication_id,
+                    'institution_id' => $institution_id,
                     'subspecialty_id' => $subspecialty_id,
                     'display_order' => $display_order,
                 );

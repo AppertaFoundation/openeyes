@@ -48,7 +48,7 @@ $this->renderPartial('//elements/form_errors', array('errors' => $errors, 'botto
                     <?=\CHtml::activeDropDownList(
                         $queueset,
                         'category_id',
-                        \CHtml::listData(OEModule\PatientTicketing\models\QueueSetCategory::model()->activeOrPk($queueset->category_id)->findAll(), 'id', 'name'),
+                        \CHtml::listData(OEModule\PatientTicketing\models\QueueSetCategory::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION), 'id', 'name'),
                         ['class' => 'cols-11']); ?>
                 </td>
             </tr>

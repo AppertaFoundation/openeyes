@@ -1,3 +1,15 @@
+<?php
+$institution_id = Institution::model()->getCurrent()->id;
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+    Yii::app()->params['display_primary_number_usage_code'],
+    $this->patient->id, $institution_id, Yii::app()->session['selected_site_id']
+);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+    Yii::app()->params['display_secondary_number_usage_code'],
+    $this->patient->id, $institution_id, Yii::app()->session['selected_site_id']
+);
+?>
+
 <div class="mdl-layout__header-row">
     <div class="openeyes-logo">
         <img src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/OpenEyes_logo_transparent.png')?>" alt="OpenEyes logo"/>
@@ -26,10 +38,10 @@
     </span>
     <section class="patient-details">
         <span class="nhs-number">
-            <?php echo $this->patient->getNhsnum(); ?>
+            <?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?>
         </span>
-        <span>Hospital No:
-            <b><?php echo $this->patient->hos_num; ?></b>
+        <span><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?>:
+            <b><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></b>
         </span>
         <span>
             <?php echo $this->patient->getAllergiesString(); ?>

@@ -64,6 +64,7 @@ class AuditController extends BaseController
         $criteria = new CDbCriteria();
         $request = \Yii::app()->getRequest();
         $user_name = $request->getParam('oe-autocompletesearch');
+        $institution_id = Yii::app()->user->checkAccess('Institution Audit') ? $request->getParam('institution_id') : Yii::app()->session['selected_institution_id'];
         $site_id = $request->getParam('site_id');
         $firm_id = $request->getParam('firm_id');
         $action = $request->getParam('action');
@@ -71,25 +72,30 @@ class AuditController extends BaseController
         $event_type_id = $request->getParam('event_type_id');
         $date_from = $request->getParam('date_from');
         $date_to = $request->getParam('date_to');
-        $hos_num = $request->getParam('hos_num');
+        $patient_identifier_value = $request->getParam('patient_identifier_value');
 
         if ($count) {
             $criteria->select = 'count(*) as count';
         }
 
+        if ($institution_id) {
+            $criteria->addCondition('t.institution_id = :institution_id');
+            $criteria->params[':institution_id'] = $institution_id;
+        }
+
         if ($site_id) {
-            $criteria->addCondition('site_id = :site_id');
+            $criteria->addCondition('t.site_id = :site_id');
             $criteria->params[':site_id'] = $site_id;
         }
 
         if ($firm_id) {
             $firm = Firm::model()->findByPk($firm_id);
             $firm_ids = array();
-            foreach (Firm::model()->findAll('name=?', array($firm->name)) as $firm) {
+            foreach (Firm::model()->findAll('name=? AND institution_id = ?', array($firm->name, Yii::app()->session['selected_institution_id'])) as $firm) {
                 $firm_ids[] = $firm->id;
             }
             if (!empty($firm_ids)) {
-                $criteria->addInCondition('t.firm_id', $firm_ids);
+                $criteria->addInCondition('`t`.firm_id', $firm_ids);
             }
         }
 
@@ -97,10 +103,8 @@ class AuditController extends BaseController
             $user_ids = array();
 
             $criteria2 = new CDbCriteria();
-            $criteria2->addCondition(array('active = :active'));
             $criteria2->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) = :term"));
 
-            $params[':active'] = 1;
             $params[':term'] = strtolower($user_name);
 
             $criteria2->params = $params;
@@ -139,19 +143,32 @@ class AuditController extends BaseController
             $criteria->params[':date_to'] = $date_to_SQL;
         }
 
-        if ($hos_num) {
-            if ($patient = Patient::model()->find('hos_num=?', array($hos_num))) {
-                $criteria->addCondition('patient_id='.$patient->id);
+        if ($patient_identifier_value) {
+            $patient_search = new \PatientSearch();
+            $patient_search_details = $patient_search->prepareSearch($patient_identifier_value);
+            $terms_with_types = $patient_search_details['terms_with_types'] ?? [];
+
+            if (empty($terms_with_types)) {
+                $criteria->addCondition("1 = 0");
             } else {
-                if ($patient = Patient::model()->find('hos_num=?', array(str_pad($hos_num, 7, '0', STR_PAD_LEFT)))) {
-                    $criteria->addCondition('patient_id='.$patient->id);
-                } else {
-                    $criteria->addCondition('patient_id=0');
+                $id_condition = [];
+                foreach ($terms_with_types as $pi_key => $item) {
+                    $type = $item['patient_identifier_type'];
+                    $id_condition[] = "(pi.value = :{$pi_key}_value AND pi.patient_identifier_type_id = :{$pi_key}_type_id)";
+
+                    $criteria->params[":{$pi_key}_value"] = $item['term'];
+                    $criteria->params[":{$pi_key}_type_id"] = $type->id;
+                }
+
+                if ($id_condition) {
+                    $criteria->addCondition(implode(' OR ', $id_condition));
+                    $criteria->join .= ' join patient_identifier pi ON pi.patient_id = t.patient_id ';
                 }
             }
         }
 
-        !($count) && $criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
+        !($count) && $criteria->join .= ' left join event on t.event_id = event.id 
+        left join event_type on event.event_type_id = event_type.id';
 
         return $criteria;
     }
@@ -208,10 +225,8 @@ class AuditController extends BaseController
 
         $criteria = new CDbCriteria();
 
-        $criteria->addCondition(array('active = :active'));
         $criteria->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) LIKE :term"));
 
-        $params[':active'] = 1;
         $params[':term'] = '%'.strtolower(strtr($_GET['term'], array('%' => '\%'))).'%';
 
         $criteria->params = $params;

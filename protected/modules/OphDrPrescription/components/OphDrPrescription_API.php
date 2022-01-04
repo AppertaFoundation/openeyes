@@ -19,6 +19,26 @@ class OphDrPrescription_API extends BaseAPI
 {
     public $createOprn = 'OprnCreatePrescription';
 
+    protected function isUserInPGD()
+    {
+        $pgds = OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) = 'pgd'");
+        $curr_user_id = $this->yii->user->id;
+        foreach ($pgds as $pgd) {
+            if (in_array($curr_user_id, $pgd->getAuthedUserIDs())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function __construct(CApplication $yii = null, DataContext $context = null)
+    {
+        parent::__construct($yii, $context);
+        $has_prescribe_perm = $this->yii->user->checkAccess($this->createOprn);
+        if (!$has_prescribe_perm && $this->isUserInPGD()) {
+            $this->createOprn = 'OprnCreateEvent';
+        }
+    }
     /**
      * get the prescription letter text for the latest prescription in the episode for the patient.
      *
@@ -67,9 +87,12 @@ class OphDrPrescription_API extends BaseAPI
 
     public function canUpdate($event_id)
     {
-        $details = Element_OphDrPrescription_Details::model()->find('event_id=?', array($event_id));
+        if ($event_id) {
+            $details = Element_OphDrPrescription_Details::model()->find('event_id=?', array($event_id));
 
-        return $details->isEditable();
+            return $details->isEditable();
+        }
+        return false;
     }
 
     /**
@@ -108,6 +131,7 @@ class OphDrPrescription_API extends BaseAPI
         $prescriptionCriteria = new CDbCriteria(array('order' => 'event_date DESC'));
         $prescriptionCriteria->addCondition('episode.patient_id = :id');
         $prescriptionCriteria->addCondition('prescription.draft = 0');
+        $prescriptionCriteria->compare('event.deleted', 0);
         $prescriptionCriteria->addNotInCondition('t.id', $exclude);
         $prescriptionCriteria->params = array_merge($prescriptionCriteria->params, array(':id' => $patient->id));
         $prescriptionItems = OphDrPrescription_Item::model()->with('prescription', 'medication', 'medicationDuration', 'prescription.event', 'prescription.event.episode')->findAll($prescriptionCriteria);
@@ -117,7 +141,10 @@ class OphDrPrescription_API extends BaseAPI
 
     public function validatePrescriptionItemId($id, Patient $patient = null)
     {
-        if ($item = OphDrPrescription_Item::model()->with('prescription.event.episode')->findByPk($id)) {
+        $criteria = new CDbCriteria();
+        $criteria->compare('t.id', $id);
+        $criteria->compare('event.deleted', 0);
+        if ($item = OphDrPrescription_Item::model()->with('prescription.event.episode')->find($criteria)) {
             if ($item->prescription->event) {
                 if ($patient) {
                     return $item->prescription->event->getPatientId() === $patient->id;

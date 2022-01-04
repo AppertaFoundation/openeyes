@@ -129,12 +129,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             <tr>
                 <td>Institution</td>
                 <td>
-                    <?= CHtml::activeDropDownList(
-                        $senderEmailAddresses,
-                        'institution_id',
-                        CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
-                        array('empty' => 'None', 'class' => 'cols-full')
-                    ) ?>
+                    <?= Institution::model()->getCurrent()->name ?>
                 </td>
             </tr>
             <tr>
@@ -143,7 +138,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     <?= CHtml::activeDropDownList(
                         $senderEmailAddresses,
                         'site_id',
-                        CHtml::listData(Site::model()->findAll(), 'id', 'name'),
+                        CHtml::listData(Institution::model()->getCurrent()->sites, 'id', 'name'),
                         array('empty' => 'None', 'class' => 'cols-full')
                     ) ?>
                 </td>

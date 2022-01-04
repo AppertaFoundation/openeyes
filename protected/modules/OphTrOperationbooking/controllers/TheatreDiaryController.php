@@ -152,7 +152,6 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function getDiaryTheatres($data)
     {
-        $firmId = Yii::app()->session['selected_firm_id'];
         $error = false;
         $errorMessage = '';
 
@@ -210,7 +209,7 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addCondition('`t`.site_id = :siteId');
                 $criteria->params[':siteId'] = $data['site-id'];
             }
-            if (isset($data['theatre-id']) && $data['theatre-id'] != 'All') {
+            if (isset($data['theatre-id']) && $data['theatre-id'] != 'All' && $data['theatre-id'] != '') {
                 $criteria->addCondition('`t`.id = :theatreId');
                 $criteria->params[':theatreId'] = $_POST['theatre-id'];
             }
@@ -222,15 +221,16 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addCondition('firm.id = :firmId');
                 $criteria->params[':firmId'] = $data['firm-id'];
             }
-            if (isset($data['ward-id']) && $data['ward-id'] != 'All') {
+            if (isset($data['ward-id']) && $data['ward-id'] != 'All' && $data['ward-id'] != '') {
                 $criteria->addCondition('activeBookings.ward_id = :wardId');
                 $criteria->params[':wardId'] = $_POST['ward-id'];
             }
         }
 
-        $criteria->order = 'site.short_name, `t`.display_order, `t`.code, sessions.date, sessions.start_time, sessions.end_time';
+        $criteria->addCondition('site.institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
 
-        Yii::app()->event->dispatch('start_batch_mode');
+        $criteria->order = 'site.short_name, `t`.display_order, `t`.code, sessions.date, sessions.start_time, sessions.end_time';
 
         return OphTrOperationbooking_Operation_Theatre::model()
             ->with(array(

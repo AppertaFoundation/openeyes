@@ -171,7 +171,7 @@ foreach ($this->patient->episodes as $ep) {
             }
         }
 
-        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAll();
+        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
         $filteredOphthalmicDisorderGroups = [];
 
         foreach ($commonOphthalmicDisorderGroups as $disorderGroup) {
@@ -193,7 +193,7 @@ foreach ($this->patient->episodes as $ep) {
                         ];
                     },
                     $filteredOphthalmicDisorderGroups)
-                ) ?>, {
+                                                    ) ?>, {
                     'header': 'Disorder Group',
                     'id': 'disorder-group-filter',
                     'deselectOnReturn': false,

@@ -19,6 +19,7 @@
 namespace OEModule\PatientTicketing\controllers;
 
 use OEModule\PatientTicketing\models;
+use ReferenceData;
 use Yii;
 
 class AdminController extends \ModuleAdminController
@@ -62,20 +63,29 @@ class AdminController extends \ModuleAdminController
      */
     public function actionIndex()
     {
-        $this->render('index', array('queuesets' => models\QueueSet::model()->findAll(), 'title' => 'Queue Sets'));
+        $queuesets = models\QueueSet::model()->findAll();
+
+        $this->render('index', array('queuesets' => $queuesets, 'title' => 'Queue Sets'));
     }
 
     public function actionQueueSetCategories()
     {
+        $return_url = Yii::app()->request->url ?? '/PatientTicketing/admin/queueSetCategories';
         $this->genericAdmin(
             'Edit Queue Set Categories',
             'OEModule\PatientTicketing\models\QueueSetCategory',
-            ['div_wrapper_class' => 'cols-5']
+            [
+                'div_wrapper_class' => 'cols-5',
+                'return_url' => $return_url
+            ],
+            null,
+            true
         );
     }
 
     public function actionTicketAssignOutcomes()
     {
+        $return_url = Yii::app()->request->url ?? '/PatientTicketing/admin/ticketAssignOutcomes';
         $this->genericAdmin(
             'Edit Outcome Options',
             'OEModule\PatientTicketing\models\TicketAssignOutcomeOption',
@@ -92,7 +102,10 @@ class AdminController extends \ModuleAdminController
                     ),
                 ),
                 'div_wrapper_class' => 'cols-5',
-            )
+                'return_url' => $return_url
+            ),
+            null,
+            true
         );
     }
 
@@ -487,10 +500,16 @@ class AdminController extends \ModuleAdminController
 
     public function actionClinicLocations()
     {
+        $return_url = Yii::app()->request->url ?? '/PatientTicketing/admin/clinicLocations';
         $this->genericAdmin(
             'Clinic locations',
             'OEModule\PatientTicketing\models\ClinicLocation',
-            ['div_wrapper_class' => 'cols-5']
+            [
+                'div_wrapper_class' => 'cols-5',
+                'return_url' => $return_url
+            ],
+            null,
+            true
         );
     }
 }

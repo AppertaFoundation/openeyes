@@ -161,8 +161,14 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
 
         $letter = \ElementLetter::model()->findByAttributes(array('event_id' => $event->id));
 
+        $primary_identifier_value = \PatientIdentifierHelper::getIdentifierValue(\PatientIdentifierHelper::getIdentifierForPatient(
+            \Yii::app()->params['display_primary_number_usage_code'],
+            $event->episode->patient->id,
+            $event->institution_id, $event->site_id
+        ));
+
         $indexes = array(
-            array('id' => 'hos_num', 'value' => $event->episode->patient->hos_num),
+            array('id' => 'hos_num', 'value' => $primary_identifier_value),
             array('id' => 'date_od_birth', 'value' => $event->episode->patient->dob),
             array('id' => 'event_id', 'value' => $event->id),
             array('id' => 'event_date', 'value' => $event->event_date),
@@ -241,14 +247,21 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $this->request_template = 'OphCoCorrespondence.views.windipintegration.document_list_xml';
         $user = \User::model()->findByPk(\Yii::app()->user->id);
 
+        $primary_identifier_value = \PatientIdentifierHelper::getIdentifierValue(\PatientIdentifierHelper::getIdentifierForPatient(
+            \Yii::app()->params['display_primary_number_usage_code'],
+            $patient->id,
+            \Institution::model()->getCurrent()->id,
+            \Yii::app()->session['selected_site_id']
+        ));
+
         $when = new \DateTime();
-        $data['username'] = $user->username;
+        $data['username'] = \Yii::app()->session['user_auth']->username;
         $data['user_displayname'] = $user->getReversedFullName();
         $data['timestamp'] = $when->format('Y-m-d H:i:s');
         $data['message_id'] = $this->getMessageId(new \Event());
         $data['application_id'] = $this->application_id;
         $data['event_id'] = '';
-        $data['hos_num'] = $patient->hos_num;
+        $data['hos_num'] = $primary_identifier_value;
         $data['event_date'] = $when->format('Y-m-d');
         $data['event_time'] = $when->format('H:i:s');
         $data['is_new_event'] = false;

@@ -23,7 +23,15 @@
 
                         switch ($param) {
                             case 'imagenet_url':
-                                $link = isset($this->patient) ? $base_url . 'IMAGEnet/?patientID=' . $this->patient->hos_num . '&lastName=' . $this->patient->last_name . '&firstName=' . $this->patient->first_name : $base_url;
+                                $patient_identifier = null;
+                                if (isset($this->patient)) {
+                                    $patient_identifier = PatientIdentifier::model()->find(
+                                        'patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id',
+                                        [':patient_id' => $this->patient->id,
+                                            ':patient_identifier_type_id' => Yii::app()->params['imagenet_patient_identifier_type']]
+                                    );
+                                }
+                                $link = $patient_identifier ? $base_url . 'IMAGEnet/?patientID=' . $patient_identifier->value . '&lastName=' . $this->patient->last_name . '&firstName=' . $this->patient->first_name : $base_url;
                                 break;
                         }
                     } elseif ($item['uri'] !== '#' && strpos($item['uri'], ':') === false) {

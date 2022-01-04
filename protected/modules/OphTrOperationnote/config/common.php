@@ -24,12 +24,14 @@ return array(
             'ToricPCIOL',
         ),
         'admin_menu' => array(
-            'Per Op Instructions' => '/OphTrOperationnote/admin/postOpInstructions',
-            'Default Incision Length' => '/OphTrOperationnote/admin/viewIncisionLengthDefaults',
-            'Operative Devices' => '/OphTrOperationnote/OperativeDevice/list',
-            'Operative Devices Mapping' => '/OphTrOperationnote/OperativeDeviceMapping/list',
-            'Generic Operation Default Comments' => '/OphTrOperationnote/GenericProcedureData/list',
-            'Generic Operation Quick Text' => '/OphTrOperationnote/AttributesAdmin/list',
+            'OphTrOperationnote' => [
+                'Per Op Instructions' => '/OphTrOperationnote/admin/postOpInstructions',
+                'Default Incision Length' => '/OphTrOperationnote/admin/viewIncisionLengthDefaults',
+                'Operative Devices' => ['uri' => '/OphTrOperationnote/OperativeDevice/list', 'restricted' => array('admin')],
+                'Operative Devices Mapping' => '/OphTrOperationnote/OperativeDeviceMapping/list',
+                'Generic Operation Default Comments' => ['uri' => '/OphTrOperationnote/GenericProcedureData/list', 'restricted' => array('admin')],
+                'Generic Operation Quick Text' => ['uri' => '/OphTrOperationnote/AttributesAdmin/list', 'restricted' => array('admin')],
+            ]
         ),
         'reports' => array(
             'Operations' => '/OphTrOperationnote/report/operation',

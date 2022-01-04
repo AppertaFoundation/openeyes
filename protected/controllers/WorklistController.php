@@ -25,7 +25,7 @@ class WorklistController extends BaseController
 
     public function accessRules()
     {
-        return array(array('allow', 'roles' => array('User')));
+        return array(array('allow', 'roles' => array('OprnWorklist')));
     }
 
     protected function beforeAction($action)
@@ -33,14 +33,40 @@ class WorklistController extends BaseController
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
         if ($action->getId() === "print") {
             $newblue_path = 'application.assets.newblue';
-            Yii::app()->assetManager->registerCssFile('css/style_oe3_print.min.css', $newblue_path, null);
+            Yii::app()->assetManager->registerCssFile('/dist/css/style_oe_print.3.css', $newblue_path, null);
         }
 
         $this->manager = new WorklistManager();
 
         return parent::beforeAction($action);
     }
-
+    protected function prescriberDomData()
+    {
+        $ret = array(
+            'preset_orders' => array(),
+            'is_prescriber' => false,
+            'popup' => null,
+            'assign_preset_btn' => null,
+        );
+        if ($is_prescriber = $this->checkAccess('Prescribe')) {
+            $preset_criteria = new CDbCriteria();
+            $preset_criteria->compare('LOWER(type)', 'psd');
+            $preset_criteria->compare('active', true);
+            $preset_orders = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
+            $popup = $this->renderPartial(
+                'worklist_psd_assignment_popup',
+                array(
+                    'preset_orders' => $preset_orders,
+                ),
+                true,
+            );
+            $ret['preset_orders'] = $preset_orders;
+            $ret['is_prescriber'] = $is_prescriber;
+            $ret['popup'] = $popup;
+            $ret['assign_preset_btn'] = "<div class='button-stack'><button disabled class='green hint' id='js-worklist-psd-add'>Assign Preset Order to selected patients</button></div>";
+        }
+        return $ret;
+    }
     public function actionView()
     {
         $this->layout = 'main';
@@ -69,13 +95,31 @@ class WorklistController extends BaseController
         }
 
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.InputFieldValidation.js'), ClientScript::POS_END);
-
+        $worklist_js = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js.worklist') . '/worklist.js', true);
+        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.PathStep.js'), ClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($worklist_js, ClientScript::POS_END);
         if ($redirect) {
             return $this->redirect(array('/worklist/view?date_from='.$date_from.'&date_to='.$date_to));
         }
 
         $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
-        $this->render('index', array('worklists' => $worklists));
+        $sync_interval_setting_key = 'worklist_auto_sync_interval';
+        $sync_interval_settings = \SettingMetadata::model()->find("`key` = 'worklist_auto_sync_interval'");
+        $sync_interval_options = unserialize($sync_interval_settings->data);
+        $sync_interval_value = $sync_interval_settings->getSetting();
+        $prescriber_dom_data = $this->prescriberDomData();
+        $this->render(
+            'index',
+            array(
+                'worklists' => $worklists,
+                'sync_interval_options' => $sync_interval_options,
+                'sync_interval_value' => $sync_interval_value,
+                'sync_interval_setting_key' => $sync_interval_setting_key,
+                'is_prescriber' => $prescriber_dom_data['is_prescriber'],
+                'preset_popup' => $prescriber_dom_data['popup'],
+                'assign_preset_btn' => $prescriber_dom_data['assign_preset_btn'],
+            )
+        );
     }
 
     /**
@@ -163,5 +207,24 @@ class WorklistController extends BaseController
                 $this->renderPartial('application.widgets.views.PatientIcons', array('data' => ($dataProvider->patient), 'page' => 'worklist'));
             }
         }
+    }
+
+    public function actionAutoRefresh()
+    {
+        $date_from = Yii::app()->request->getParam('date_from');
+        $date_to = Yii::app()->request->getParam('date_to');
+        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
+
+        $prescriber_dom_data = $this->prescriberDomData();
+        $dom = array();
+        $dom['main'] = null;
+        $dom['filter'] = "<li><a class='js-worklist-filter' href='#' data-worklist='all'>All</a></li>";
+        $dom['popup'] = $prescriber_dom_data['popup'];
+        foreach ($worklists as $worklist) {
+            $dom['main'] .= $this->renderPartial('_worklist', array('worklist' => $worklist, 'is_prescriber' => $prescriber_dom_data['is_prescriber']), true);
+            $dom['filter'] .= "<li><a href='#' class='js-worklist-filter' data-worklist='js-worklist-{$worklist->id}'>{$worklist->name} : {$worklist->getDisplayShortDate()}</a></li>";
+        }
+        $dom['refresh_time'] = date('H:i');
+        $this->renderJSON($dom);
     }
 }

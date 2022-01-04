@@ -19,12 +19,13 @@
 <table class="standard">
     <thead>
         <tr>
-            <th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
+            <th><?= $report->getPatientIdentifierPrompt() ?></th>
             <th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
             <th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
             <th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
             <th>Date</th>
             <th>Diagnoses</th>
+            <th>Patient IDs</th>
         </tr>
     <tbody>
         <?php if (empty($report->diagnoses)) {?>
@@ -37,13 +38,16 @@
             <?php foreach ($report->diagnoses as $ts => $diagnosis) {
                 foreach ($diagnosis['diagnoses'] as $_diagnosis) { ?>
                     <tr>
-                        <td><?= $diagnosis['hos_num'] ?></td>
+                        <td><?= $diagnosis['identifier'] ?></td>
                         <td><?= $diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown' ?></td>
                         <td><?= $diagnosis['first_name'] ?></td>
                         <td><?= $diagnosis['last_name'] ?></td>
                         <td><?= isset($_diagnosis['date']) ? date('j M Y', strtotime($_diagnosis['date'])) : date('j M Y', $ts) ?></td>
                         <td>
                             <?= $_diagnosis['eye'] . ' ' . $_diagnosis['disorder'] . ' (' . $_diagnosis['type'] . ')'; ?>
+                        </td>
+                        <td>
+                            <?= $diagnosis['all_ids'] ?>
                         </td>
                     </tr>
                 <?php } ?>

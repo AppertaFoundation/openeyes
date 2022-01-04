@@ -157,7 +157,7 @@ class ExceptionLogRoute extends CLogRoute
         @fclose($fp);
 
         if ($this->adminEmail && $log[1] == 'error' && !$this->isFiltered($log[0]) && !$this->userAgentFiltered(@$_SERVER['HTTP_USER_AGENT'])) {
-            $user = isset(Yii::app()->session['user']->username) ? Yii::app()->session['user']->username : 'Not logged in';
+            $user = isset(Yii::app()->session['user_auth']->username) ? Yii::app()->session['user_auth']->username : 'Not logged in';
             $useragent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'None';
 
             $timestamp = time();
