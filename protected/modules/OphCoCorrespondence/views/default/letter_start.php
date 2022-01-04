@@ -29,16 +29,25 @@ $logo_helper = new LogoHelper();
             <p class="nowrap" <?= (!$clinicDate || strtotime('today') === $clinicDate ? 'style="visibility: hidden;"' : '') ?>>
                 Date of visit: <b><?php echo date(Helper::NHS_DATE_FORMAT, $clinicDate) ?></b>
             </p>
+            <?php
+            $add_x_pad = SettingMetadata::model()->getSetting('correspondence_to_address_x_padding');
+            $add_y_pad = SettingMetadata::model()->getSetting('correspondence_to_address_y_padding');
+            $x_padding = '';
 
-            <div class="spacer"></div>
-            <div class="spacer"></div>
-            To:
+            for($y=0;$y< $add_x_pad;$y++){
+                $x_padding .= '&nbsp;';
+            }
+
+            for($y=0;$y< $add_y_pad;$y++){?>
+                <div class="spacer"></div>
+            <?php }
+            echo $x_padding. 'To:';?>            
             <br/>
             <div class="address-to"
                 <?= // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
                     SettingMetadata::model()->getSetting('default_country') === 'Australia' ? "style='white-space: nowrap'" : null;
                 ?>>
-                <?php echo str_replace("\n", '<br/>', CHtml::encode($toAddress)) ?>
+                <?php echo $x_padding.str_replace("\n", '<br/>'. $x_padding, CHtml::encode($toAddress)) ?>
             </div>
         </div>
 
