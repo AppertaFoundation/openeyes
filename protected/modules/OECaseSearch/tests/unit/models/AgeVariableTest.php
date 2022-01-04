@@ -79,6 +79,14 @@ class AgeVariableTest extends CDbTestCase
     {
         $variables = array($this->variable);
 
+        $expected_rows = Yii::app()->db->createCommand()
+            ->select('(10*FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)) age')
+            ->from('patient p')
+            ->where('p.id IN (1, 2, 3)')
+            ->group('FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)')
+            ->order('(1)')
+            ->queryColumn();
+
         $this->assertEquals('age', $this->variable->field_name);
         $this->assertEquals('Age', $this->variable->label);
         $this->assertEquals('Age (y)', $this->variable->x_label);
@@ -86,6 +94,6 @@ class AgeVariableTest extends CDbTestCase
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        $this->assertCount(3, $results[$this->variable->field_name]);
+        $this->assertCount(count($expected_rows), $results[$this->variable->field_name]);
     }
 }
