@@ -42,7 +42,7 @@ class SiteAndFirmWidget extends CWidget
     {
         $model = new SiteAndFirmForm();
         $user_auth = Yii::app()->session['user_auth'];
-        $user = $user_auth->user;
+        $user = User::model()->findByPk($user_auth->user_id);
 
         if (isset($_POST['SiteAndFirmForm'])) {
             $model->attributes = $_POST['SiteAndFirmForm'];
@@ -151,8 +151,7 @@ class SiteAndFirmWidget extends CWidget
         foreach ($userFirms as $firm_id => $firm_label) {
             if ((count($user_firm_ids) === 0 || (!isset($firms['Recent'][$firm_id]) && in_array(
                         $firm_id,
-                        $user_firm_ids,
-                        true
+                        $user_firm_ids
                     )))
             ) {
                 $firm = Firm::model()->findByPk($firm_id);
