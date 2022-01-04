@@ -209,7 +209,7 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addCondition('`t`.site_id = :siteId');
                 $criteria->params[':siteId'] = $data['site-id'];
             }
-            if (isset($data['theatre-id']) && $data['theatre-id'] != 'All') {
+            if (isset($data['theatre-id']) && $data['theatre-id'] != 'All' && $data['theatre-id'] != '') {
                 $criteria->addCondition('`t`.id = :theatreId');
                 $criteria->params[':theatreId'] = $_POST['theatre-id'];
             }
@@ -221,7 +221,7 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addCondition('firm.id = :firmId');
                 $criteria->params[':firmId'] = $data['firm-id'];
             }
-            if (isset($data['ward-id']) && $data['ward-id'] != 'All') {
+            if (isset($data['ward-id']) && $data['ward-id'] != 'All' && $data['ward-id'] != '') {
                 $criteria->addCondition('activeBookings.ward_id = :wardId');
                 $criteria->params[':wardId'] = $_POST['ward-id'];
             }

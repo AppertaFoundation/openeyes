@@ -162,15 +162,42 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $this->comments = '';
         }
 
+        $transaction = Yii::app()->db->beginTransaction();
+
         if ($this->save()) {
             // get the whiteboard procedure assignments
             $criteria = new CDbCriteria();
             $criteria->addCondition("whiteboard_id = " . $this->id);
             $procAssignments = OphTrOperationBooking_Whiteboard_ProcAssignment::model()->findAll($criteria);
 
-            // check if the procedure assignments exist, no need to update the procedure assignments because they
-            // cannot be updated/modified on editing the operation booking.
-            if (!$procAssignments) {
+            //If procedure assignments exist, update them, else create them from scratch
+            if ($procAssignments) {
+                $assignmentsToRetain = array();
+                $display_order = 0;
+
+                $operationIds = array_map(function($item){return $item['id'];}, $operationIds);
+
+                foreach ($procAssignments as $procAssignment) {
+                    if (in_array($procAssignment->proc_id, $operationIds)) {
+                        $assignmentsToRetain[] = $procAssignment->proc_id;
+                        $display_order = max($display_order, $procAssignment->display_order);
+                    } else {
+                        $procAssignment->delete();
+                    }
+                }
+
+                $proceduresToAdd = array_diff($operationIds, $assignmentsToRetain);
+
+                foreach ($proceduresToAdd as $proc_id) {
+                    $procedure_assignment = new OphTrOperationBooking_Whiteboard_ProcAssignment();
+                    $procedure_assignment->whiteboard_id = $this->id;
+                    $procedure_assignment->proc_id = $proc_id;
+                    $procedure_assignment->display_order = $display_order++;
+                    if (!$procedure_assignment->save()) {
+                        throw new Exception('Unable to save procedure assignment');
+                    }
+                }
+            } else {
                 $display_order = 1;
                 foreach ($operationIds as $i => $proc_id) {
                     $procedure_assignment = new OphTrOperationBooking_Whiteboard_ProcAssignment();
@@ -183,6 +210,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 }
             }
         }
+
+        $transaction->commit();
     }
 
     /**
