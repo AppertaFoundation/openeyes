@@ -57,7 +57,7 @@ if ($this->checkPrintAccess()) {
             }
         }
     }
-    if (!$Element->draft || $editAccess) {
+    if (!$Element->draft && $editAccess) {
         $this->event_actions[] = EventAction::printButton();
     }
 }
