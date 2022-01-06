@@ -16,34 +16,47 @@ class HL7_Patient_Visit extends BaseHL7_Section
     public $discharge_facility;
     public $discharge_datetime;
 
+    private $mappingSteps = array(
+        "AES" => array(
+            "Waiting for Triage" => "WFT",
+            "Waiting for Nurse" => "WFN",
+            "Waiting for Doctor" => "WFD",
+            "Waiting for ENP" => "WFENP",
+            "Waiting for Discharge" => "WFDIS",
+            "Waiting for In CDU Blood Test" => "CDU",
+            "Waiting for In CDU Orthoptics" => "CDU",
+            "Waiting for In CDU Visual Fields" => "CDU",
+            "Waiting for In CDU Imaging" => "CDU",
+            "Waiting for In CDU X-ray" => "CDU",
+            "Waiting for In CDU Dilating" => "CDU",
+            "Waiting for In CDU Refraction" => "CDU",
+            "Waiting for In Red Room Nurse" => "RR",
+            "Waiting for In Red Room Doctor" => "RR"
+        ),
+        "RDCEC" => array(
+            "Waiting for Triage" => "WFTP",
+            "Waiting for Nurse" => "WFNP",
+            "Waiting for Doctor" => "WFDP",
+            "Waiting for ENP" => "WFENPP",
+            "Waiting for Discharge" => "WFDISP",
+            "Waiting for In CDU Blood Test" => "CDUP",
+            "Waiting for In CDU Orthoptics" => "CDUP",
+            "Waiting for In CDU Visual Fields" => "CDUP",
+            "Waiting for In CDU Imaging" => "CDUP",
+            "Waiting for In CDU X-ray" => "CDUP",
+            "Waiting for In CDU Dilating" => "CDUP",
+            "Waiting for In CDU Refraction" => "CDUP",
+            "Waiting for In Red Room Nurse" => "RRP",
+            "Waiting for In Red Room Doctor" => "RRP"
+        )
+    );
+
     public function setPatientVisitFromEvent($event_id)
     {
         $event = \Event::model()->findByPk($event_id);
         if ($event) {
             $worklist_patient = $event->worklist_patient;
             if ($worklist_patient) {
-                $pathway = \Pathway::model()->find("worklist_patient_id = ?", array($worklist_patient->id));
-                if ($pathway) {
-                    $room_pathway_step = $pathway->peek(\PathwayStep::STEP_REQUESTED, array_column(\PathwayStepType::model()->findAll(), 'id'));
-                    if ($room_pathway_step) {
-                        $this->room = substr( "WF". ( $room_pathway_step->short_name ?? ''), 0, 3) ;
-                    } else {
-                        $room_pathway_step = $pathway->peek(\PathwayStep::STEP_STARTED, array_column(\PathwayStepType::model()->findAll(), 'id'));
-                        if ($room_pathway_step) {
-                            $prefix = "With ";
-                            if ($room_pathway_step->short_name == "Triage") {
-                                $prefix = "In ";
-                            }
-                            $this->room = $prefix. ( $room_pathway_step->short_name ?? '') ;
-                        } else {
-                            $room_pathway_step = $pathway->peek(\PathwayStep::STEP_COMPLETED, array_column(\PathwayStepType::model()->findAll(), 'id'));
-                            if ($room_pathway_step) {
-                                $this->room = ( $room_pathway_step->short_name ?? '') ;
-                            }
-                        }
-                    }
-                }
-
                 $clinic_attribute = \WorklistAttribute::model()->find('name = ? and worklist_id = ?', ['Clinic', $worklist_patient->worklist_id]);
                 $admin_source = \WorklistAttribute::model()->find('name = ? and worklist_id = ?', ['AdmitSource', $worklist_patient->worklist_id]);
                 $visit_number = \WorklistAttribute::model()->find('name = ? and worklist_id = ?', ['VisitNumber', $worklist_patient->worklist_id]);
@@ -64,6 +77,28 @@ class HL7_Patient_Visit extends BaseHL7_Section
                     ? \WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc', [$worklist_patient->id, $visit_number->id])
                     : null;
                 $this->visit_number = ($wla ? $wla->attribute_value : '');
+
+                $pathway = \Pathway::model()->find("worklist_patient_id = ?", array($worklist_patient->id));
+                if ($pathway) {
+                    $room_pathway_step = $pathway->peek(\PathwayStep::STEP_REQUESTED, array_column(\PathwayStepType::model()->findAll(), 'id'));
+                    if ($room_pathway_step) {
+                        $prefix = "Waiting for ";
+                    } else {
+                        $room_pathway_step = $pathway->peek(\PathwayStep::STEP_STARTED, array_column(\PathwayStepType::model()->findAll(), 'id'));
+                        if ($room_pathway_step) {
+                            $prefix = "With ";
+                            if ($room_pathway_step->short_name == "Triage") {
+                                $prefix = "In ";
+                            }
+                        } else {
+                            $room_pathway_step = $pathway->peek(\PathwayStep::STEP_COMPLETED, array_column(\PathwayStepType::model()->findAll(), 'id'));
+                            $prefix = "";
+                        }
+                        if (isset($this->mappingSteps[$this->point_of_care]) && isset($this->mappingSteps[$this->point_of_care][$prefix.( $room_pathway_step->short_name ?? '')])) {
+                            $this->room = $this->mappingSteps[$this->point_of_care][$prefix.( $room_pathway_step->short_name ?? '')];
+                        }
+                    }
+                }
             }
 
             $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
@@ -76,7 +111,7 @@ class HL7_Patient_Visit extends BaseHL7_Section
                     $this->discharge_to_location = $clinical_outcome_entry->discharge_destination->ecds_code;
                     $transfer_institution = $clinical_outcome_entry->transfer_to;
                     if ($transfer_institution) {
-                            $this->discharge_facility = $transfer_institution->pas_key;
+                            $this->discharge_facility = $transfer_institution->remote_id.'00';
                     }
                     $this->discharge_datetime = substr(str_replace('-', '', str_replace(':', '', str_replace(' ', '', $clinical_outcome_entry->created_date ?? ''))), 0, 14);
                 }
