@@ -403,7 +403,7 @@ class PuppeteerBrowser extends CApplicationComponent
             $pdf->write();
         }
 
-        if (isset(Yii::app()->modules['RTFGeneration'])) {
+        if (getenv("RTF_HOSTNAME") != null) {
             Yii::app()->db->createCommand()->update('document_instance', array('footer'=>$options['footerTemplate']), 'correspondence_event_id=:event_id', [':event_id'=>$event_id]);
         }
 
