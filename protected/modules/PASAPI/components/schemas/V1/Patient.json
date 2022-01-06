@@ -60,5 +60,8 @@
   },
   "Email": {
     "type": "string"
+  },
+  "Risks": {
+    "type": "string"
   }
 }

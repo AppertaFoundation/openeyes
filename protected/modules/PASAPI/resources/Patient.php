@@ -271,6 +271,20 @@ class Patient extends BaseResource
                     $communication_pref->interpreter_required_id = null;
                 }
             }
+
+            if (property_exists($this, 'Risks')) {
+                $code = $this->getAssignedProperty('Risks');
+                if ($code) {
+                    if (preg_match( '/AIMAI/', $code)) {
+                        $communication_pref->agrees_to_insecure_email_correspondence = 1;
+                    }
+
+                    if (preg_match( '/AILGF/', $code)) {
+                        $communication_pref->correspondence_in_large_letters = 1;
+                    }
+                }
+            }
+
             $communication_pref->save();
         }
     }
