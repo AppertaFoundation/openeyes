@@ -7,6 +7,7 @@
 			this.button = $btn;
 			this.content = $content;
 			this.useMouseEvents = this.options.useMouseEvents;
+			this.isViewed = false;
 			this.isGrouped = this.options.isGrouped; 		// e.g. patient popups
 			this.groupController = this.options.groupController;
 			this.isFixed = false;
@@ -66,7 +67,21 @@
             }
             popup.button.addClass(popup.css.active);
             if (popup.useMouseEvents) {
-                popup.show();
+                let tempId = popup.content[0].getAttribute("data-patient-id");
+                if (popup.isViewed || (!tempId)) {
+                    popup.show();
+                }
+                else if (tempId) {
+                    popup.show();
+                    $.ajax({
+                        'type': "GET",
+                        'data': "patientID=" + tempId + "&summaryId=" + popup.id + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                        'url': "/OECaseSearch/caseSearch/lookedAtPopup",
+                        success: function (resp) {
+                            popup.isViewed = true;
+                        }
+                    });
+                }
             }
         }).mouseleave(function () {
 					if (popup.isLatched) {
