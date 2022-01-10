@@ -769,7 +769,7 @@ class DefaultController extends \BaseEventTypeController
                 $d->principal = true;
                 $d->date = $principal_diagnosis ? $principal_diagnosis->date : null;
                 $d->eye_id = $this->episode->eye_id;
-                $d->time = $principal_diagnosis->time;
+                $d->time = $principal_diagnosis->time ?? date('h:i:s');
 
                 $diagnoses[] = $d;
             }
@@ -779,7 +779,7 @@ class DefaultController extends \BaseEventTypeController
                 $d->disorder_id = $sd->disorder_id;
                 $d->eye_id = $sd->eye_id;
                 $d->date = $sd->date;
-                $d->time = $sd->time;
+                $d->time = date('h:i:s');
 
                 $diagnoses[] = $d;
             }

@@ -531,17 +531,20 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     $diagnosis->addError('diagnoses', $term . ': Eye is required');
                 }
 
-                if(!$this->isValidTimeValue($diagnosis->time)){
-                    $this->addError('diagnoses', $term . ': Please provide a valid time');
-                }
+                $diagnosis->validate('time');
 
                 $validator->validateAttribute($diagnosis, 'date');
 
                 //dirty hack here to set the correct error for the date
                 $_date_error = $diagnosis->getError('date');
+                $_time_error = $diagnosis->getError('time');
                 if ($_date_error) {
                     $this->addError('diagnoses', $term . ': ' . $_date_error);
                     $diagnosis->clearErrors('date');
+                }
+                if ($_time_error) {
+                    $this->addError('diagnoses', $term . ': ' . $_time_error);
+                    $diagnosis->clearErrors('time');
                 }
             }
 
@@ -590,14 +593,4 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return in_array($action, $action_list) ? 1 : null;
     }
 
-    /**
-     * Checks $time is a valid time.
-     *
-     * @param $time
-     * @return boolean
-     */
-    public function isValidTimeValue($time)
-    {
-        return preg_match('/^(([01]?[0-9])|(2[0-3])):?[0-5][0-9]$/', $time);
-    }
 }
