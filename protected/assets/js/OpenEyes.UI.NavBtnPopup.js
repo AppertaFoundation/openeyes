@@ -1,34 +1,36 @@
 (function (exports, Util, EventEmitter) {
     function NavBtnPopup(id, $btn, $content, options) {
 
-			this.options = $.extend(true, {}, NavBtnPopup._defaultOptions, options);
-			this.id = id;
-			this.eventObj = $btn;
-			this.button = $btn;
-			this.content = $content;
-			this.useMouseEvents = this.options.useMouseEvents;
-			this.isViewed = false;
-			this.isGrouped = this.options.isGrouped; 		// e.g. patient popups
-			this.groupController = this.options.groupController;
-			this.isFixed = false;
-			this.isFixable = $btn.data('fixable');
-			this.latchable = this.options.latchable;
-			this.isLatched = false;
-			this.css = this.options.css;
-			this.init();
+        this.options = $.extend(true, {}, NavBtnPopup._defaultOptions, options);
+        this.id = id;
+        this.eventObj = $btn;
+        this.button = $btn;
+        this.content = $content;
+        this.useMouseEvents = this.options.useMouseEvents;
+        this.isViewed = false;
+        this.isGrouped = this.options.isGrouped;         // e.g. patient popups
+        this.groupController = this.options.groupController;
+        this.isFixed = false;
+        this.isFixable = $btn.data('fixable');
+        this.latchable = this.options.latchable;
+        this.isLatched = false;
+        this.closeBtn = this.options.closeBtn;
+        this.css = this.options.css;
+        this.init();
     }
 
-	NavBtnPopup._defaultOptions = {
-		autoHideWidthPixels: null,
-		useMouseEvents: false,
-		isGrouped: false,
-		groupController: null,
-		latchable: false,
-		css: {
-			active: 'active', 	// hover over button or popup
-			open: 'open'		// clicked (latched)
-		}
-	}
+    NavBtnPopup._defaultOptions = {
+        autoHideWidthPixels: null,
+        useMouseEvents: false,
+        isGrouped: false,
+        groupController: null,
+        latchable: false,
+        closeBtn: null,
+        css: {
+            active: 'active',     // hover over button or popup
+            open: 'open'        // clicked (latched)
+        }
+    }
 
 
     Util.inherits(EventEmitter, NavBtnPopup);
@@ -57,8 +59,8 @@
         }).mouseenter(function () {
 
             if (popup.groupController){
-            	  popup.groupController.closeAll();
-            	  popup.groupController.unlockAll();
+                  popup.groupController.closeAll();
+                  popup.groupController.unlockAll();
                 popup.groupController.adjustTop(popup.button, popup.content);
                 // check if it is safe to use the function
                 if (typeof popup.groupController.adjustLeft === "function") {
@@ -84,9 +86,9 @@
                 }
             }
         }).mouseleave(function () {
-					if (popup.isLatched) {
-						return;
-					}
+            if (popup.isLatched) {
+                return;
+            }
             popup.button.removeClass(popup.css.active);
             if (popup.useMouseEvents) {
                 let closeContent = true;
@@ -107,12 +109,18 @@
             }
         });
 
+        if (popup.closeBtn) {
+            popup.closeBtn.mousedown(function () {
+                popup.hide();
+            })
+        }
+
         popup.hide();
         if(popup.isFixable && popup.options.autoHideWidthPixels){
-					popup.toggleFixed($(window).width() > popup.options.autoHideWidthPixels);
-					$(window).resize(function () {
-						popup.toggleFixed($(this).width() > popup.options.autoHideWidthPixels);
-					});
+                popup.toggleFixed($(window).width() > popup.options.autoHideWidthPixels);
+                $(window).resize(function () {
+                    popup.toggleFixed($(this).width() > popup.options.autoHideWidthPixels);
+                });
         }
     };
 
@@ -123,8 +131,8 @@
     NavBtnPopup.prototype.changeContent = function (isOpen) {
         let popup = this;
         if (popup.isFixed) {
-					return;
-				} // if popup is fixed
+                return;
+            } // if popup is fixed
 
         if (popup.latchable) {
             if (popup.isLatched) {
@@ -153,12 +161,12 @@
         popup.button.addClass(popup.css.open);
         popup.content.show();
         if (popup.useMouseEvents && !popup.isFixed) {
-        	popup.addContentEvents();
-				}
+            popup.addContentEvents();
+        }
     };
 
     NavBtnPopup.prototype.hide = function () {
-		let popup = this;
+        let popup = this;
         this.button.removeClass(popup.css.open);
         this.content.css({ top: "" });
         this.content.hide();
@@ -231,18 +239,18 @@
      (but not in oescape mode)
      **/
     NavBtnPopup.prototype.toggleFixed = function(isFixed) {
-		let popup = this;
-		popup.isFixed = isFixed;
-		if (isFixed) {
-			if(popup.isLatched){
-				popup.unlatch();
-			}
-			popup.content.off('mouseenter mouseleave');
-			popup.show();
-		} else if (!popup.isLatched) {
-			popup.hide();
-		}
-	};
+        let popup = this;
+        popup.isFixed = isFixed;
+        if (isFixed) {
+            if(popup.isLatched){
+                popup.unlatch();
+            }
+            popup.content.off('mouseenter mouseleave');
+            popup.show();
+        } else if (!popup.isLatched) {
+            popup.hide();
+        }
+    };
 
     NavBtnPopup.prototype.latch = function () {
         let popup = this;

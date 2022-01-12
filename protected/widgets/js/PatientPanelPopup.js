@@ -12,19 +12,23 @@ PatientPanel.patientPopups = {
         // patient popups
         var quicklook = new OpenEyes.UI.NavBtnPopup('quicklook',
             parentElement.find('.js-quicklook-btn'),
-            parentElement.find('.patient-summary-quicklook')
+            parentElement.find('.patient-summary-quicklook'),            
+            { closeBtn: parentElement.find('.patient-summary-quicklook > .close-icon-btn') }
         );
         var demographics = new OpenEyes.UI.NavBtnPopup('demographics',
             parentElement.find('.js-demographics-btn'),
-            parentElement.find('.patient-popup-demographics')
+            parentElement.find('.patient-popup-demographics'),
+            { closeBtn: parentElement.find('.patient-popup-demographics > .close-icon-btn') }
         );
         var management = new OpenEyes.UI.NavBtnPopup('management',
             parentElement.find('.js-management-btn'),
-            parentElement.find('.patient-popup-management')
+            parentElement.find('.patient-popup-management'),
+            { closeBtn: parentElement.find('.patient-popup-management > .close-icon-btn') }
         );
         var risks = new OpenEyes.UI.NavBtnPopup('risks',
             parentElement.find('.js-allergies-risks-btn'),
-            parentElement.find('.patient-popup-allergies-risks')
+            parentElement.find('.patient-popup-allergies-risks'),
+            { closeBtn: parentElement.find('.patient-popup-allergies-risks > .close-icon-btn') }
         );
 
         var all = [quicklook, demographics, management, risks];
