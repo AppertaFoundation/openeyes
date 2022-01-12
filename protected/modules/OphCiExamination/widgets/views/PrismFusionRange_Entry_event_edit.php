@@ -20,7 +20,7 @@
  */
 ?>
 
-<tr data-key="<?= $row_count ?>">
+<tr data-key="<?= $row_count ?>" class="<?=\CHtml::modelName($entry)?>">
     <td>
         <?= \CHtml::dropDownList(
             "{$field_prefix}[prism_over_eye_id]",
@@ -29,7 +29,7 @@
             [
                 'empty' => '- Select -',
                 'nowrapper' => true,
-                'id' => "{$field_prefix}_prism_over_eye_id_{$row_count}",
+                'id' => "{$field_prefix}_prism_over_eye_id",
                 'data-adder-header' => $this->getReadingAttributeLabel('prism_over_eye_id'),
                 'data-adder-id' => "{$field_prefix}_prism_over_eye_id"
             ]
@@ -41,6 +41,7 @@
                value="<?= CHtml::encode($entry->near_bo) ?>"
                data-ec-keep-field="true"
                data-adder-ignore="true"
+               id = '<?="{$field_prefix}_near_bo"?>'
         >
     </td>
     <td>
@@ -49,6 +50,7 @@
                value="<?= CHtml::encode($entry->near_bi) ?>"
                data-ec-keep-field="true"
                data-adder-ignore="true"
+               id = '<?="{$field_prefix}_near_bi"?>'
         >
     </td>
     <td>
@@ -57,6 +59,7 @@
                value="<?= CHtml::encode($entry->near_bu) ?>"
                data-ec-keep-field="true"
                data-adder-ignore="true"
+               id = '<?="{$field_prefix}_near_bu"?>'
         >
     </td>
     <td>
@@ -65,6 +68,7 @@
                value="<?= CHtml::encode($entry->near_bd) ?>"
                data-ec-keep-field="true"
                data-adder-ignore="true"
+               id = '<?="{$field_prefix}_near_bd"?>'
         >
     </td>
     <td>
@@ -73,6 +77,7 @@
                value="<?= CHtml::encode($entry->distance_bo) ?>"
                data-ec-keep-field="true"
                data-adder-ignore="true"
+               id = '<?="{$field_prefix}_distance_bo"?>'
         >
     </td>
     <td>
@@ -81,6 +86,7 @@
                value="<?= CHtml::encode($entry->distance_bi) ?>"
                data-ec-keep-field="true"
                data-adder-ignore="true"
+               id = '<?="{$field_prefix}_distance_bi"?>'
         >
     </td>
     <td>
@@ -89,6 +95,7 @@
                value="<?= CHtml::encode($entry->distance_bu) ?>"
                data-ec-keep-field="true"
                data-adder-ignore="true"
+               id = '<?="{$field_prefix}_distance_bu"?>'
         >
     </td>
     <td>
@@ -97,6 +104,7 @@
                value="<?= CHtml::encode($entry->distance_bd) ?>"
                data-ec-keep-field="true"
                data-adder-ignore="true"
+               id = '<?="{$field_prefix}_distance_bd"?>'
         >
     </td>
     <td><?= \CHtml::dropDownList("{$field_prefix}[correctiontype_id]", $entry->correctiontype_id,
@@ -104,14 +112,14 @@
                 'empty' => '- Select -',
                 'nowrapper' => true,
                 'data-adder-header' => $entry->getAttributeLabel('correctiontype_id'),
-                'id' => "{$field_prefix}_correctiontype_id_{$row_count}"
+                'id' => "{$field_prefix}_correctiontype_id"
             ]); ?></td>
     <td><?= \CHtml::dropDownList("{$field_prefix}[with_head_posture]", $entry->with_head_posture,
             \CHtml::listData($entry->with_head_posture_options, 'id', 'name'), [
                 'empty' => '- Select -',
                 'nowrapper' => true,
                 'data-adder-header' => $entry->getAttributeLabel('with_head_posture'),
-                'id' => "{$field_prefix}_with_head_posture_{$row_count}"
+                'id' => "{$field_prefix}_with_head_posture"
             ]); ?></td>
     <td><i class="oe-i trash"></i></td>
 </tr>
