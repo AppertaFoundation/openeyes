@@ -227,6 +227,26 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         </div>
     </div>
     <?php endif; ?>
+    <?php
+    if (isset($elements['Element_OphTrConsent_Esign'])) {
+        if ($type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Esign']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) {
+            echo $this->renderPartial('_print_signature',
+                array(
+                    'vi' => ($css_class == 'impaired'),
+                    'element' => $elements['Element_OphTrConsent_Esign'],
+                    'signature' => $elements['Element_OphTrConsent_Esign']
+                        ->getSignatureByInitiatorAttributes(
+                            $elements['Element_OphTrConsent_Esign']->getElementType()->id,
+                            0
+                        ),
+                    'custom_key' => 'healthprof_signature_id',
+                    'title_label' => 'Job title',
+                    'name_label' => 'Print name'
+                )
+            );
+        }
+    }
+    ?>
 
     <h5 class="text-r">Contact details: 01234 456789</h5>
     <div class="break"><!-- **** page break ***** --></div>
