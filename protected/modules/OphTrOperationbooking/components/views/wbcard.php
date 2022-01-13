@@ -31,5 +31,10 @@ if (isset($this->data['dataAttribute'])) {
     <?php endif; ?>
     <?php if (isset($this->data['is_overflow_btn_required']) && $this->data['is_overflow_btn_required'] ) { ?>
         <div class="overflow-icon-btn"></div>
+        <script>
+            ready(() => {
+                addEventToWhiteBoardButton("<?= CHtml::encode($this->data['dataAttribute']['value']['fullName']??'') ?>");
+            });
+        </script>
     <?php } ?>
 </div>
