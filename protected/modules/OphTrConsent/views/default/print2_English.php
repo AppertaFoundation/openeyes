@@ -137,6 +137,21 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     </div>
     <?php endif; ?>
 
+    <?php
+    if (isset($elements['Element_OphTrConsent_ExtraProcedures']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_ExtraProcedures']->elementType->id, Element_OphTrConsent_Type::TYPE_PARENTAL_AGREEMENT_ID)) : ?>
+        <div class="group">
+            <h4>Any extra procedures which may become necessary during the procedure(s):</h4>
+            <?php
+            if (!empty($elements['Element_OphTrConsent_ExtraProcedures']->extra_procedure_assignments)) { ?>
+                <div class="indent">
+                    <?= $this->renderPartial('_extra_procedures', array('procedures' => $elements['Element_OphTrConsent_ExtraProcedures']->extra_procedure_assignments)) ?>
+                </div>
+            <?php } else {?>
+                <div class="indent"><p>No extra procedures</p></div>
+            <?php } ?>
+        </div>
+    <?php endif; ?>
+
     <?php if (isset($elements['Element_OphTrConsent_PatientQuestions']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_PatientQuestions']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
         <?php
         $purifier = new CHtmlPurifier();
