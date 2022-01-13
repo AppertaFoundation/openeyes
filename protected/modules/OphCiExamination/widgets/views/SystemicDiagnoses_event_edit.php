@@ -40,7 +40,7 @@ $required_diagnoses_ids = array_map(function ($r) {
             <?= \CHtml::checkBox(
                 $model_name . '[no_systemic_diagnoses]',
                 $element->no_systemic_diagnoses_date ? true : false,
-                array('class' => $model_name. '_no_systemic_diagnoses')
+                array('class' => $model_name . '_no_systemic_diagnoses')
             ); ?>
             No systemic diagnoses
         </label>
@@ -129,6 +129,82 @@ $required_diagnoses_ids = array_map(function ($r) {
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
+
+        function refreshDate(e, event_type) {
+            let inp = null;
+            let ISOdate = '';
+            let hidden_target = null;
+            let errors = [];
+            let UKdate;
+
+            if (event_type === 'pickmeup') {
+                inp = $(e.target);
+                UKdate = inp.val();
+                hidden_target = $(inp.data('hidden-input-selector'));
+                let dateObject = e.originalEvent.detail.date;
+                ISOdate = $.datepicker.formatDate('yy-mm-dd',dateObject);
+            } else {
+                inp = $(e.currentTarget);
+                let dateArray = inp.val().split(" ");
+                UKdate = inp.val();
+                if(UKdate.length === 0){
+                    $(hidden_target).val('');
+                    return false;
+                }
+                hidden_target = $(inp.data('hidden-input-selector'));
+
+                switch(dateArray.length) {
+                    case 3:
+                        try {
+                            var dateObject = new Date(UKdate);
+                            $.datepicker.parseDate( 'dd M yy', UKdate );
+                            ISOdate = $.datepicker.formatDate('yy-mm-dd',dateObject);
+                        } catch (e) {
+                            errors.push('Invalid date: '+UKdate);
+                        }
+                        break;
+                    case 2:
+                        try {
+                            createdDate = '01 '+UKdate;
+                            $.datepicker.parseDate( 'dd M yy', createdDate );
+                            ISOdate = $.datepicker.formatDate('yy-mm', new Date( createdDate ));
+                        } catch (e) {
+                            errors.push('Invalid date: '+UKdate);
+                        }
+                        break;
+                    case 1:
+                        if(dateArray[0] > 1970){
+                            ISOdate = dateArray[0];
+                        } else {
+                            errors.push('Invalid date: '+UKdate);
+                        }
+                        break;
+                    default:
+                        errors.push('Invalid date: '+UKdate);
+                        break;
+                }
+            }
+
+            if(errors.length > 0){
+                new OpenEyes.UI.Dialog.Alert({
+                    content: errors.join(', ')
+                }).open();
+                return false;
+            } else {
+                $(hidden_target).val(ISOdate);
+            }
+
+        }
+
+        function addEventListenerToPickMeUp() {
+            $('.systemic-diagnoses-date').on('pickmeup-change', function (e) {
+                refreshDate(e, 'pickmeup')
+            });
+            $('.systemic-diagnoses-date').on('change', function (e) {
+                refreshDate(e);
+            })
+        }
+
         let systemic_diagnoses_controller = new OpenEyes.OphCiExamination.SystemicDiagnosesController({
             element: $('#<?=$model_name?>_element')
         });
@@ -149,7 +225,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                             'is_filter' => true,
                         ];
                     },
-                    $valid_common_systemic_disorder_groups)
+                        $valid_common_systemic_disorder_groups)
                                                     ) ?>, {
                     'header': 'Disorder Group',
                     'id': 'disorder-group-filter',
@@ -172,6 +248,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                     if (!item.is_filter) {
                         systemic_diagnoses_controller.addEntry(item);
                         adder_dialog.popup.find('li[data-id=' + item.id + ']').addClass('js-already-used');
+                        addEventListenerToPickMeUp();
                     }
                 }
                 return true;
@@ -181,7 +258,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                 if (filters.length > 0) {
                     systemic_diagnoses_controller.$popup.find('li').each(function () {
                         let already_used = $(this).hasClass('js-already-used');
-                        if (($(this).data('filter_value') !== $(filters[0]).data('filter-value') || already_used)&&!$(this).data('filter-value')) {
+                        if (($(this).data('filter_value') !== $(filters[0]).data('filter-value') || already_used) && !$(this).data('filter-value')) {
                             $(this).hide();
                         } else {
                             $(this).show();
@@ -215,5 +292,7 @@ $required_diagnoses_ids = array_map(function ($r) {
         systemic_diagnoses_controller.$table.find("input[name$='[disorder_id]']").each(function () {
             systemic_diagnoses_controller.$popup.find('li[data-id=' + $(this).val() + ']').addClass('js-already-used');
         });
+
+        addEventListenerToPickMeUp();
     });
 </script>
