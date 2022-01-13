@@ -580,7 +580,6 @@ $config = array(
         'event_lock_days' => 0,
         'event_lock_disable' => false,
         'reports' => array(),
-        'opbooking_disable_both_eyes' => true,
         'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
         // html|pdf, pdf requires puppeteer
         'event_print_method' => 'pdf',
