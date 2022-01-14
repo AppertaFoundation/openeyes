@@ -79,7 +79,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
 
             <div class="patient-gender">
                 <!--                Displaying Gen. (instead of Gender) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-                <em><?php echo (Yii::app()->params['institution_code'] === 'CERA' ? 'Gen.' : 'Gender') ?></em>
+                <em><?php echo (Yii::app()->params['institution_code'] === 'CERA' ? 'Gen.' : 'Sex') ?></em>
                     <?php echo $this->patient->getGenderString() ?>
             </div>
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
