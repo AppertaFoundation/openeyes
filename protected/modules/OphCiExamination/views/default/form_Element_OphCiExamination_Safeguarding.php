@@ -105,7 +105,25 @@ $patient_is_minor = $patient->isChild();
                     </td>
                 </tr>
                 <?php
-                $entries = OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
+
+                $entries = array();
+
+                if (isset($_POST[$model_name])) {
+                    foreach ($_POST[$model_name]['entries'] as $post_entry) {
+                        if (!empty($post_entry['id']))
+                        {
+                            $post_concern = OphCiExamination_Safeguarding_Entry::model()->findByPk($post_entry['id']);
+                        } else {
+                            $post_concern = new OphCiExamination_Safeguarding_Entry();
+                        }
+                        $post_concern->concern_id = $post_entry['concern_id'];
+                        $post_concern->comment = $post_entry['comment'];
+
+                        $entries[] = $post_concern;
+                    }
+                } else {
+                    $entries = OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
+                }
 
                 $row_count = 0;
 
@@ -121,7 +139,6 @@ $patient_is_minor = $patient->isChild();
             <button id="safeguarding-adder-button" type="button" class="adder js-add-select-btn"></button>
         </div>
     <?php } ?>
-    <input id="safeguarding-ids-to-delete" type="hidden" name="safeguarding_ids_to_delete" value="[]">
 </div>
 
 <?php if ($editable) { ?>
@@ -168,15 +185,6 @@ $patient_is_minor = $patient->isChild();
 
     <script type="text/javascript">
         function trashSafeguardingEntryRow($row) {
-            let $to_delete_input = $('input#safeguarding-ids-to-delete');
-            let to_delete_array = JSON.parse($to_delete_input.val());
-
-            let record_id = $row.children('input.safeguarding-entry-id').val();
-            //Only add ID to remove if the record has one, otherwise don't
-            if (record_id !== undefined){
-                to_delete_array.push(record_id);
-                $to_delete_input.val(JSON.stringify(to_delete_array));
-            }
             $row.remove();
         }
 

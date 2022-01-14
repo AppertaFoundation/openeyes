@@ -1958,7 +1958,8 @@ class DefaultController extends \BaseEventTypeController
 
     protected function saveComplexAttributes_Element_OphCiExamination_Safeguarding($element, $data, $index)
     {
-        $element_data = $data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())];
+        $element_model_name = \CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model());
+        $element_data = $data[$element_model_name];
 
         if ($data['clear_safeguarding_paediatric_fields']) {
             $element->has_social_worker = 0;
@@ -1976,13 +1977,23 @@ class DefaultController extends \BaseEventTypeController
 
         $element->save();
 
-        if (isset($data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())]['entries'])) {
-            $entries = $data[\CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())]['entries'];
+        $existing_entries = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
+
+        if (isset($data[$element_model_name]['entries'])) {
+            $entries = $data[$element_model_name]['entries'];
 
             foreach ($entries as $entry) {
-                if (isset($entry['id'])) {
-                    $entry_object = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findByPk($entry['id']);
-                } else {
+                $entry_object = null;
+
+                foreach ($existing_entries as $key => $existing_entry) {
+                    if ($entry['concern_id'] == $existing_entry->concern_id) {
+                        $entry_object = $existing_entry;
+                        unset($existing_entries[$key]);
+                        break;
+                    }
+                }
+
+                if (!isset($entry_object)) {
                     $entry_object = new \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry();
                 }
 
@@ -1996,9 +2007,8 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-        $ids_to_delete = json_decode($data['safeguarding_ids_to_delete']);
-        foreach ($ids_to_delete as $id) {
-            $object_to_delete = \OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry::model()->findByPk($id);
+        //The only entries remaining in the existing_entries list are those that were not found in POST data, indicating that they were not in the front end list
+        foreach ($existing_entries as $object_to_delete) {
             if ($object_to_delete->element_id === $element->id) {
                 $object_to_delete->delete();
             } else {
