@@ -417,11 +417,7 @@ $config = array(
         'specialty_sort' => array(130, 'SUP'),
         'hos_num_regex' => !empty(trim(getenv('OE_HOS_NUM_REGEX'))) ? getenv('OE_HOS_NUM_REGEX') : '/^([0-9]{1,9})$/',
         'pad_hos_num' => !empty(trim(getenv('OE_HOS_NUM_PAD'))) ? getenv('OE_HOS_NUM_PAD') : '%07s',
-        'nhs_num_label' => !empty(trim(getenv('OE_NHS_NUM_LABEL'))) ? getenv('OE_NHS_NUM_LABEL') : null,
-        'hos_num_label' => !empty(trim(getenv('OE_HOS_NUM_LABEL'))) ? getenv('OE_HOS_NUM_LABEL') : null,
         // Parameter for short labels in patient panel, or anywhere real estate is at a premium
-        'nhs_num_label_short' => !empty(trim(getenv('OE_NHS_NUM_LABEL_SHORT'))) ? getenv('OE_NHS_NUM_LABEL_SHORT') : null,
-        'hos_num_label_short' => !empty(trim(getenv('OE_HOS_NUM_LABEL_SHORT'))) ? getenv('OE_HOS_NUM_LABEL_SHORT') : null,
         'profile_user_can_edit' => true,
         'profile_user_readonly_fields' => getenv('PROFILE_USER_READONLY_FIELDS') ?: '',
         'profile_user_show_menu' => true,

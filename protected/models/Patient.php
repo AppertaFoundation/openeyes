@@ -314,16 +314,22 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
+        $institution = Institution::model()->getCurrent();
+        $site = Site::model()->getCurrent();
+
+        $local_identifier_label = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution->id, $site->id);
+        $global_identifier_label = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $institution->id, $site->id);
+
         return array(
             'id' => 'ID',
             'dob' => 'Date of Birth',
             'date_of_death' => 'Date of Death',
             'gender' => 'Gender',
             'ethnic_group_id' => 'Ethnic Group',
-            'hos_num' => \SettingMetadata::model()->getSetting('hos_num_label'),
-            'nhs_num' => \SettingMetadata::model()->getSetting('nhs_num_label'),
+            'hos_num' => $local_identifier_label,
+            'nhs_num' => $global_identifier_label,
             'deleted' => 'Is Deleted',
-            'nhs_num_status_id' => \SettingMetadata::model()->getSetting('nhs_num_label') . ' Status',
+            'nhs_num_status_id' => $global_identifier_label . ' Status',
             'gp_id' => \SettingMetadata::model()->getSetting('general_practitioner_label'),
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',

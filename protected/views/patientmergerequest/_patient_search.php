@@ -1,4 +1,4 @@
- <?php
+<?php
 
     $this->beginWidget('CActiveForm', array(
         'id' => 'patient1-search-form',
@@ -14,9 +14,12 @@
     <div class="data-group">
         <div class="search-examples">
             Find a patient by
-            <!--            Parameterised for CERA-519-->
-            <strong><?php echo (\SettingMetadata::model()->getSetting('hos_num_label'))?></strong>,
-            <strong><?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> </strong>,
+            <?php
+                $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $this->selectedInstitutionId, $this->selectedSiteId);
+                $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $this->selectedInstitutionId, $this->selectedSiteId);
+            ?>
+            <strong><?= $primary_identifier_prompt ?></strong>,
+            <strong><?= $secondary_identifier_prompt ?> </strong>,
             <strong>Firstname Surname</strong> or
             <strong>Surname, Firstname</strong>.
         </div>
