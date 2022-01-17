@@ -133,7 +133,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202201061108',
+            'time' => '202201171232',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',

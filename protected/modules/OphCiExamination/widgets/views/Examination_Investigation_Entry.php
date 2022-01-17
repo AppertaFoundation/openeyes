@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -38,15 +39,13 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[investigation_code]" value="<?= $values['investigation_code'] ?>"/>
         <?=$values['investigation_code_name']?>
-    <td id="<?= $model_name ?>_entries_<?= $row_count ?>_last_modified_user">
-        <input type="hidden" name="<?= $field_prefix ?>[last_modified_user_id]" value="<?= $values['last_modified_user_id'] ?>"/>
-        <?=$values['last_modified_user_name']?>
-    </td>
     <td>
-        <input class="date"
-               id="<?= $model_name ?>_entries_<?= $row_count ?>_date"
+        <input class="date investigation-entry-date"
+               id="investigation-entry-datepicker-<?= $row_count ?>"
+               data-pmu-format="d b Y"
+               data-hidden-input-selector="#investigation-entry-date-<?= $row_count; ?>"
                name="<?= $field_prefix ?>[date]"
-               value="<?= strtotime($values['date']) ? date(Helper::NHS_DATE_FORMAT, strtotime($values['date'])):$values['date'] ?>"
+               value="<?= strtotime($values['date']) ? date(Helper::NHS_DATE_FORMAT, strtotime($values['date'])) : $values['date'] ?>"
                placeholder="dd Mth YYYY" autocomplete="off">
     </td>
     <td>
@@ -56,6 +55,11 @@ if (!isset($values)) {
                name="<?= $field_prefix ?>[time]"
 
                value="<?= $values['time'] ?>" autocomplete="false">
+    </td>
+    <td id="<?= $model_name ?>_entries_<?= $row_count ?>_last_modified_user">
+        <input type="hidden" name="<?= $field_prefix ?>[last_modified_user_id]" value="<?= $values['last_modified_user_id'] ?>"/>
+        <i class="oe-i info small pad-right  js-has-tooltip" data-tt-type="basic"
+                       data-tooltip-content="by <?= $values['last_modified_user_name'] ?>"></i>
     </td>
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?= $values['comments'] ?>"/>
