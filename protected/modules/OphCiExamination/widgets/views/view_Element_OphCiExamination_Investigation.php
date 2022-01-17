@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,25 +16,27 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-data full-width">
     <?php if (isset($element->entries)) {?>
         <div class = "cols-11">
             <table class = "cols-full last-left">
                 <colgroup>
-                    <col class="cols-3">
-                    <col class="cols-3">
-                    <col><!-- auto -->
-                    <col><!-- auto -->
                     <col class="cols-4">
+                    <col class="">
+                    <col class="">
+                    <col class="">
+                    <col class="cols-6">
                 </colgroup>
                 <tbody>
                     <?php foreach ($element->entries as $entry) { ?>
                         <tr>
                             <td><?=\OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes::model()->findByPk($entry->investigation_code)->name ?></td>
-                            <td><?=User::model()->findByPk($entry->last_modified_user_id)->getFullNameAndTitle() ?></td>
                             <td><span class="oe-date"><?= Helper::convertMySQL2NHS($entry->date) ?></span></td>
                             <td><small>at </small><?= $entry->time ?></td>
+                            <td><i class="oe-i info small pad-right  js-has-tooltip" data-tt-type="basic"
+                       data-tooltip-content="by <?=User::model()->findByPk($entry->last_modified_user_id)->getFullNameAndTitle() ?>"></i></td>
                             <td><span class="user-comment"><?= $entry->comments ?></span></td>
                         </tr>
                     <?php } ?>
@@ -41,7 +44,8 @@
             </table>
         </div>
     <?php } ?>
-    <div class="data-value">
-        <span class="large-text"><?= Yii::app()->format->Ntext($element->description) ?></span>
-    </div>
+    <?php if (!empty($element->description)) { ?>
+        <hr class="divider">
+        <div><span class="user-comment"><?= OELinebreakReplacer::replace(CHtml::encode($element->description)) ?></span></div>
+    <?php } ?>
 </div>

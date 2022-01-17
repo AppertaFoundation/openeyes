@@ -25,14 +25,14 @@ $model_name = CHtml::modelName($element);
 ?>
 
 <div class="element-fields full-width ">
-    <div class="cols-10">
+    <div class="cols-11">
         <table id="<?= $model_name ?>_entry_table" class="cols-full ">
             <colgroup>
-                <col class="cols-3">
-                <col class="cols-3">
-                <col><!-- auto -->
-                <col><!-- auto -->
                 <col class="cols-4">
+                <col class="">
+                <col class="">
+                <col class="">
+                <col class="cols-full">
             </colgroup>
             <tbody>
                 <?php
@@ -61,29 +61,34 @@ $model_name = CHtml::modelName($element);
                 ?>
             </tbody>
         </table>
+        <div id="investigation-other-comments" class="cols-full js-comment-container"
+         data-comment-button="#add-investigation-popup .js-add-comments"
+         style="display: <?= $element->description ? : 'none'; ?>">
+        <!-- comment-group, textarea + icon -->
+            <div class="comment-group flex-layout flex-left">
+                    <textarea id="<?= $model_name ?>description"
+                              name="<?= $model_name ?>[description]"
+                              class="js-comment-field cols-10"
+                              placeholder="Comments"
+                              autocomplete="off" rows="1"
+                              style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->description) ?></textarea>
+                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+            </div>
+        </div>
     </div>
-    <div class="cols-full comment-group flex-layout flex-left"   id = 'investigation-other-comments' ">
-        <?php echo $form->textArea(
-            $element,
-            'description',
-            array('nowrapper' => true),
-            false,
-            array('class' => 'js-input-comments js-allow-qtags cols-10', 'rows' => 2, 'placeholder' => 'Comments', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;')
-        )
-?>
-        <i class="cols-2 oe-i remove-circle small-icon pad-left js-remove-add-comments" id="remove-general-investigation-comments"></i>
-    </div>
-    <div class="add-data-actions flex-item-bottom">
-        <button id="investigation-comment-button"
-                class="button js-add-comments" data-comment-container="#investigation-comments"
-                type="button" style=" display: none;" >
-            <i class="oe-i comments small-icon"></i>
+
+    <div class="add-data-actions flex-item-bottom" id="add-investigation-popup">
+        <button id="investigation-comment-button" class="button js-add-comments"
+            type="button"
+            data-comment-container="#investigation-other-comments"
+            style="<?= $element->description ? 'display: none;' : '' ?>">
+            <i class="oe-i comments small-icon "></i>
         </button>
-        <button class="button hint green js-add-select-search"
-                id="add-investigation-btn" type="button">
+        <button class="button hint green js-add-select-search" data-adder-trigger="true" id="add-investigation-btn" type="button">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
+
 </div>
 
 <script type="text/template" id="<?= CHtml::modelName($element) . '_entry_template' ?>" style="display:none">

@@ -28,6 +28,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.registerController();
         this.initialiseTriggers();
+        this.initialiseDatepicker();
     }
     InvestigationsController._defaultOptions = {
         modelName: 'OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation',
@@ -71,6 +72,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     InvestigationsController.prototype.showTable = function () {
         this.$table.show();
+    };
+
+    InvestigationsController.prototype.initialiseDatepicker = function () {
+        var tableSelector = this.tableSelector;
+        let row_count = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key');
+        for (let i = 0; i < row_count; i++) {
+            let datepicker_name = '#investigation-entry-datepicker-' + i;
+            let datepicker = $(this.$table).find(datepicker_name);
+            if (datepicker.length != 0) {
+                pickmeup(datepicker_name, {
+                    format: 'Y-m-d',
+                    hide_on_select: true,
+                    default_date: false
+                });
+            }
+        }
     };
 
     exports.InvestigationsController = InvestigationsController;
