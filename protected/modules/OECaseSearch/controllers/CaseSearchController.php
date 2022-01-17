@@ -44,7 +44,8 @@ class CaseSearchController extends BaseModuleController
                     'searchCommonItems',
                     'getDrilldownList',
                     'downloadCSV',
-                    'renderPopups'
+                    'renderPopups',
+                    'lookedAtPopup',
                 ),
                 'users' => array('@'),
                 'roles' => array('Advanced Search'),
@@ -661,5 +662,23 @@ class CaseSearchController extends BaseModuleController
             }
             Audit::add('case-search', 'rendered-summary-popups', 'Summary popups for patients ' . $_POST["patientsID"] . ' were rendered and may have been viewed', false);
         }
+    }
+
+    public function actionLookedAtPopup()
+    {
+        $patientID = $_GET["patientID"];
+        $summaryId = $_GET["summaryId"];
+        if (isset($patientID)) {
+            $patient = Patient::model()->findByPk($patientID);
+            if (!empty($patient)) {
+                Audit::add('case-search', 'viewed-summary-popups', 'Summary popup '.  $summaryId . ' for patient ' . $patientID . ' has been viewed', false, array(
+                    'module' => 'OECaseSearch', 'patient_id' => $patientID
+                ) );
+                return true;
+            } else {
+                throw new CHttpException(404, 'Unable to find patient');
+            }
+        }
+        throw new CHttpException(404, 'Unable to find patient - no patientID');
     }
 }

@@ -43,7 +43,7 @@ class PrismFusionRange extends \BaseEventTypeElement
     {
         return [
             ['event_id, entries, comments', 'safe'],
-            ['entries', 'required']
+            ['entries', 'required'],
         ];
     }
 
@@ -67,5 +67,16 @@ class PrismFusionRange extends \BaseEventTypeElement
             ],
             true
         );
+    }
+
+    public function afterValidate()
+    {
+        parent::afterValidate();
+        foreach($this->entries as $key => $entry){
+            $field_prefix = \CHtml::modelName($this) . "[entries][{$key}]";
+            foreach($entry->getErrors() as $err_attr => $err){
+                $this->setFrontEndError("{$field_prefix}_{$err_attr}");
+            }
+        }
     }
 }

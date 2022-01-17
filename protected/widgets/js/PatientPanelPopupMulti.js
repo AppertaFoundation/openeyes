@@ -13,19 +13,23 @@ PatientPanel.patientPopups = {
         // patient popups
         var quicklook = new OpenEyes.UI.NavBtnPopup('quicklook',
             parentElement.find('[data-patient-id='+patientId+'].js-oe-patient').children('.js-quicklook-btn'),
-            parentElement.find('.patient-summary-quicklook[data-patient-id ='+patientId+']')
+            parentElement.find('.patient-summary-quicklook[data-patient-id =' + patientId + ']'),
+            { closeBtn: parentElement.find('.patient-summary-quicklook[data-patient-id ='+patientId+'] > .close-icon-btn') }
         );
         var demographics = new OpenEyes.UI.NavBtnPopup('demographics',
             parentElement.find('[data-patient-id='+patientId+'].js-oe-patient').children('.js-demographics-btn'),
-            parentElement.find('.patient-popup-demographics[data-patient-id ='+patientId+']')
+            parentElement.find('.patient-popup-demographics[data-patient-id =' + patientId + ']'),
+            { closeBtn: parentElement.find('.patient-popup-demographics[data-patient-id =' + patientId + '] > .close-icon-btn') }
         );
         var management = new OpenEyes.UI.NavBtnPopup('management',
             parentElement.find('[data-patient-id='+patientId+'].js-oe-patient').children('.js-management-btn'),
-            parentElement.find('.patient-popup-management[data-patient-id ='+patientId+']')
+            parentElement.find('.patient-popup-management[data-patient-id =' + patientId + ']'),
+            { closeBtn: parentElement.find('.patient-popup-management[data-patient-id =' + patientId + '] > .close-icon-btn') }
         );
         var risks = new OpenEyes.UI.NavBtnPopup('risks',
             parentElement.find('[data-patient-id='+patientId+'].js-oe-patient').children('.js-allergies-risks-btn'),
-            parentElement.find('.patient-popup-allergies-risks[data-patient-id ='+patientId+']')
+            parentElement.find('.patient-popup-allergies-risks[data-patient-id =' + patientId + ']'),
+            { closeBtn: parentElement.find('.patient-popup-allergies-risks[data-patient-id =' + patientId + '] > .close-icon-btn') }
         );
 
         allPopupBtns[patientId] = [quicklook, demographics, management, risks];

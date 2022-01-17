@@ -425,7 +425,7 @@ class PcrRisk
         $pcrRiskValues->axial_length_group = (isset($data['axial_length']) && $data['axial_length'] !== 'NK') ? $data['axial_length'] : null;
         $pcrRiskValues->brunescent_white_cataract = (isset($data['brunescent_white_cataract']) && $data['brunescent_white_cataract'] !== 'NK') ? $data['brunescent_white_cataract'] : null;
         $pcrRiskValues->alpha_receptor_blocker = (isset($data['arb']) && $data['arb'] !== 'NK') ? $data['arb'] : null;
-        $pcrRiskValues->doctor_grade_id = (isset($data['pcr_doctor_grade']) && $data['pcr_doctor_grade'] !== '') ? $data['pcr_doctor_grade'] : null;
+        $pcrRiskValues->doctor_grade_id = (isset($data['doctor_grade_id']) && $data['doctor_grade_id'] !== '') ? $data['doctor_grade_id'] : null;
         $pcrRiskValues->can_lie_flat = (isset($data['abletolieflat']) && $data['abletolieflat'] !== 'NK') ? $data['abletolieflat'] : null;
 
         if (!$pcrRiskValues->save()) {

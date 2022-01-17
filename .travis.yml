@@ -16,7 +16,7 @@ jobs:
   include:
     - # PR builds - phpunit
       if: type = pull_request
-      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH phpunit
+      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH -e USE_SAMPLE_DATABASE="v4.1.3" phpunit
       name: "PHPUnit"
     - # Branch builds - phpunit fixtures
       if: type = push AND (branch in (master, develop) OR branch =~ /^release\/\S*$/ OR branch =~ /^bugfix\/\S*$/)
