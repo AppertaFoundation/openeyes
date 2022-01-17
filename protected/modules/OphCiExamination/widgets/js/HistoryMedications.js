@@ -1440,7 +1440,7 @@ HistoryMedicationsController._defaultOptions = {
         if(do_callback) {
             this.options.onAddedEntry($lastRow, this);
         }
-        this.handleCommentBox();
+        this.handleCommentBox($row, medication);
         return $lastRow;
     };
 
@@ -1700,12 +1700,13 @@ HistoryMedicationsController._defaultOptions = {
         $management_row.find('input[name*="[start_date]"]').val(start_date);
     };
 
-    HistoryMedicationsController.prototype.handleCommentBox = function(){
-        $('.js-comment-field').each(function(i, field){
-            if(!field.value){
-                $(field).siblings('.js-remove-add-comments').trigger('click');
-            }
-        });
+    HistoryMedicationsController.prototype.handleCommentBox = function($row, medication){
+        if(medication.comments){
+            // if the medication has comments, trigger the add comments button to display the comments input
+            $row.find('.js-add-comments').trigger('click');
+            // then add the comments to the input
+            $row.find('.js-comment-field').text(medication.comments);
+        }
       };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;

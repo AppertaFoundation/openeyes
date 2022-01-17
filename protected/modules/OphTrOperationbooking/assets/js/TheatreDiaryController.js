@@ -263,6 +263,14 @@ $(document).ready(function() {
 		}
 	});
 
+	$('#include_no_booking_lists').click(function () {
+		if($(this).is(':checked')){
+			setDiaryFilter({'include_no_booking_lists':1});
+		} else {
+			setDiaryFilter({'include_no_booking_lists':0});
+		}
+	});
+
 	$('#date-start').on('pickmeup-change change', function() {
 		setDiaryFilter({'date-start':$(this).val()});
 		$('#date-filter_3').attr('checked','checked');

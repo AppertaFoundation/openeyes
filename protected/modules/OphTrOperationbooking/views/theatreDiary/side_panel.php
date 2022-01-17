@@ -88,6 +88,14 @@ $date_filter = Yii::app()->request->getPost('date-filter', '');
             </td>
         </tr>
         <tr>
+            <td colspan="2">
+                <label class="inline highlight ">
+                    <input value="Include lists with no bookings" name="include_no_booking_lists" type="checkbox">
+                    Include lists with no bookings
+                </label>
+            </td>
+        </tr>
+        <tr>
             <td>Emergency list</td>
             <td>
                 <label class="inline highlight ">

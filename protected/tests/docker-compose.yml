@@ -12,7 +12,7 @@ version: "3.4"
 
 services:
   db:
-    image: toukanlabsdocker/oe-sample-db:latest
+    image: toukanlabsdocker/oe-sample-db:mariadb_10.4-master
     environment:
       MYSQL_ROOT_PASSWORD: openeyes
       TZ: "Europe/London"
@@ -41,8 +41,6 @@ services:
       DATABASE_NAME: "openeyes"
       DATABASE_USER: "openeyes"
       DATABASE_PASS: "openeyes"
-      # temporarily fallback to develop branch, as some eyedraw tests require something that is not in master yet
-      # OE_DEFAULT_BRANCH: "develop"
       OE_INSTITUTION_CODE: "NEW"
     secrets:
       - source: SSH_PRIVATE_KEY
