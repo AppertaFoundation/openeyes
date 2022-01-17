@@ -14,12 +14,10 @@ services:
   db:
     image: toukanlabsdocker/oe-sample-db:mariadb_10.4-master
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-example}
+      MYSQL_ROOT_PASSWORD: openeyes
       TZ: "Europe/London"
     stdin_open: true
     tty: true
-    tmpfs:
-      - /var/lib/mysql
     ports:
       - "3333:3306"
     command:
@@ -35,11 +33,14 @@ services:
       OE_MODE: "TEST"
       TESTS_TO_RUN: "PHPUNIT"
       DATABASE_HOST: "db"
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-example}
+      MYSQL_ROOT_PASSWORD: openeyes
       ENABLE_CRON: "FALSE"
       WAIT_HOSTS_TIMEOUT: "120"
       WAIT_SLEEP_INTERVAL: "2"
       USE_DEMO_DATA: "FALSE"
+      DATABASE_NAME: "openeyes"
+      DATABASE_USER: "openeyes"
+      DATABASE_PASS: "openeyes"
       OE_INSTITUTION_CODE: "NEW"
     secrets:
       - source: SSH_PRIVATE_KEY
