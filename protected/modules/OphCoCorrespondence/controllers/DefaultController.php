@@ -783,9 +783,11 @@ class DefaultController extends BaseEventTypeController
      * Returns the consultants by subspecialty
      * @param null $subspecialty_id
      */
-    public function actionGetConsultantsBySubspecialty($subspecialty_id = null)
+    public function actionGetConsultantsBySubspecialty($subspecialty_id = null, $check_service_firms_filter_setting = false)
     {
-        $firms = Firm::model()->getListWithSpecialties(Yii::app()->session['institution_id'], false, $subspecialty_id);
+        $only_service_firms = $check_service_firms_filter_setting && SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on');
+
+        $firms = Firm::model()->getListWithSpecialties(Yii::app()->session['institution_id'], false, $subspecialty_id, false, $only_service_firms);
         $this->renderJSON($firms);
 
         Yii::app()->end();

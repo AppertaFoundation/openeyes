@@ -212,7 +212,7 @@ function resetRecipientFromInternalReferral() {
 function updateConsultantDropdown(subspecialty_id) {
     $.ajax({
         url: baseUrl + "/" + moduleName + "/Default/getConsultantsBySubspecialty",
-        data: { "subspecialty_id": subspecialty_id },
+        data: { "subspecialty_id": subspecialty_id, "check_service_firms_filter_setting": true },
         dataType: "json",
         beforeSend: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);

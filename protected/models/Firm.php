@@ -267,7 +267,7 @@ class Firm extends BaseActiveRecordVersioned
      *
      * @return array
      */
-    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null, $only_with_consultant = false)
+    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null, $only_with_consultant = false, $only_service_firms = false)
     {
 
         $join_method = $include_non_subspecialty ? 'leftJoin' : 'join';
@@ -289,6 +289,10 @@ class Firm extends BaseActiveRecordVersioned
 
         if ($institution_id) {
             $command->andWhere('f.institution_id = :institution_id', array(':institution_id' => $institution_id));
+        }
+
+        if ($only_service_firms) {
+            $command->andWhere('f.can_own_an_episode = 1');
         }
 
         $firms = $command->order('f.name, s.name')->queryAll();

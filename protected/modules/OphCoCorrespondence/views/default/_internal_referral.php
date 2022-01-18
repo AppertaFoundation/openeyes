@@ -37,32 +37,15 @@ $selected_subspecialty_id = $element->to_subspecialty_id != "" ?
                 <td><?= Firm::contextLabel() ?></td>
                 <td>
                     <?php
-                    $criteria = new CDbCriteria();
-                    $criteria->join .= "JOIN service_subspecialty_assignment ssa ON t.service_subspecialty_assignment_id = ssa.id";
-                    $criteria->addCondition("ssa.subspecialty_id = :subspecialty_id");
+                    $only_service_firms = SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on');
+                    $applicable_firms = Firm::model()->getListWithSpecialties(Yii::app()->session['institution_id'], false, $selected_subspecialty_id, false, $only_service_firms);
 
-                    if (SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on')) {
-                        $criteria->addCondition("t.can_own_an_episode = 1");
-                    }
-
-                    $criteria->params = array(":subspecialty_id" => $selected_subspecialty_id);
-
-                    $applicable_firms = Firm::model()->findAll($criteria);
-
-                    $applicable_firm_display_list = [];
-
-                    foreach ($applicable_firms as $firm) {
-                        $firm_subspecialty_name = $firm->serviceSubspecialtyAssignment->subspecialty->name;
-                        $applicable_firm_display_list[$firm->id] = $firm->name . " (${firm_subspecialty_name})";
-                    }
-                    ?>
-
-                    <?=\CHtml::activeDropDownList(
+                    echo \CHtml::activeDropDownList(
                         $element,
                         "to_firm_id",
-                        $applicable_firm_display_list,
+                        $applicable_firms,
                         array('empty' => '- None -', 'class' => 'cols-full')
-                    ) ?>
+                    ); ?>
                 </td>
             </tr>
             <tr>
