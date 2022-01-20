@@ -16,7 +16,8 @@
  */
 
 $(document).ready(function () {
-
+    // square brackets seem not allowed to be an element id
+    const invalid_selector_chr = /\[|\]/g;
     // make Selects disabled if None is selected
     var $multi_selects = $('.multi-select-list');
     $.each($multi_selects, function(index, multi_select){
@@ -65,7 +66,7 @@ $(document).ready(function () {
       var options = container.data('options');
       var throughOptions = container.data('statuses');
 
-      $('#' + fieldName.replace('[', '_').replace(']', '_') + 'empty_hidden').remove();
+      $('#' + fieldName.replace(invalid_selector_chr, '_') + 'empty_hidden').remove();
 
       var attrs = {};
       $(selected[0].attributes).each(function () {
@@ -198,7 +199,7 @@ $(document).ready(function () {
       var container = select.closest('.multi-select');
       var inputField = container.find('.multi-select-list-name');
       var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
-      var inp_str = '<input id="' + fieldName.replace('[', '_').replace(']', '_') + 'empty_hidden" type="hidden" name="' + fieldName + '"/>';
+      var inp_str = '<input id="' + fieldName.replace(invalid_selector_chr, '_') + 'empty_hidden" type="hidden" name="' + fieldName + '"/>';
       container.append(inp_str);
     }
 

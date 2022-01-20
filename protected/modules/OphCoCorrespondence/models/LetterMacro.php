@@ -44,8 +44,12 @@ class LetterMacro extends BaseActiveRecordVersioned
         return 'letter_macro_id';
     }
 
-    public $type;
+    // temp field for validation purpose
+    public $levels = array();
 
+    // turning on the options will automatically handle the relationships
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -72,10 +76,10 @@ class LetterMacro extends BaseActiveRecordVersioned
     {
         return array(
             array('name, recipient_id, use_nickname, body, cc_patient, cc_doctor, display_order, cc_optometrist,  cc_drss, episode_status_id, letter_type_id', 'safe'),
-            array('name, use_nickname, body, cc_patient, cc_doctor, type', 'required'),
-            array('site_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'site'),
-            array('subspecialty_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'subspecialty'),
-            array('firm_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'firm'),
+            // safe relationships for auto update relations
+            array('institutions, sites, subspecialties, firms', 'safe'),
+            array('name, use_nickname, body, cc_patient, cc_doctor', 'required'),
+            array('levels', 'validateLevels'),
             array('episode_status_id', 'default', 'setOnEmpty' => true, 'value' => null),
         );
     }
@@ -138,38 +142,38 @@ class LetterMacro extends BaseActiveRecordVersioned
         ));
     }
 
-    public function afterFind()
+    public function validateLevels($attr, $params)
     {
-//        echo (CVarDumper::dumpAsString($this->subspecialties[0]['name']));
-//        exit();
-        if ($this->sites) {
-            $this->type = 'site';
-        } elseif ($this->subspecialties) {
-            $this->type = 'subspecialty';
-        } elseif ($this->firms) {
-            $this->type = 'firm';
-        } elseif ($this->institutions) {
-            $this->type = 'institution';
+        foreach ($this->{$attr} as $level => $val) {
+            if ($val) {
+                return true;
+            }
         }
+
+        $this->addError($attr, 'Institution, Site, Subspecialty, Firm - At least one entry is needed');
     }
 
+    // assign values to the relationships
     public function beforeSave()
     {
-        switch ($this->type) {
-            case 'site':
-                $this->firm_id = null;
-                $this->subspecialty_id = null;
-                break;
-            case 'subspecialty':
-                $this->firm_id = null;
-                $this->site_id = null;
-                break;
-            case 'firm':
-                $this->subspecialty_id = null;
-                $this->site_id = null;
-                break;
+        foreach ($this->levels as $level => $vals) {
+            $instances = array();
+            switch ($level) {
+                case 'institutions':
+                    $instances = Institution::model()->findAllByPk($vals);
+                    break;
+                case 'sites':
+                    $instances = Site::model()->findAllByPk($vals);
+                    break;
+                case 'subspecialties':
+                    $instances = Subspecialty::model()->findAllByPk($vals);
+                    break;
+                case 'firms':
+                    $instances = Firm::model()->findAllByPk($vals);
+                    break;
+            }
+            $this->{$level} = $instances;
         }
-
         return parent::beforeSave();
     }
 
