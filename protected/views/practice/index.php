@@ -41,6 +41,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                     <th>Practice Contact</th>
                     <th>Practice Address</th>
                     <th>Code</th>
+                    <th>Practice ID</th>
                     <th>Telephone</th>
                 </tr>
                 </thead>
@@ -50,6 +51,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                         <td><?php echo CHtml::encode($practice->contact->first_name); ?></td>
                         <td><?php echo CHtml::encode($practice->getAddressLines()); ?></td>
                         <td><?php echo CHtml::encode($practice->code); ?></td>
+                        <td><?php echo CHtml::encode($practice->id); ?></td>
                         <td><?php echo CHtml::encode($practice->phone); ?></td>
                     </tr>
                 <?php endforeach; ?>

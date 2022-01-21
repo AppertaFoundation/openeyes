@@ -207,63 +207,13 @@ class AdminController extends \ModuleAdminController
 
 
     /**
-     * Get the level at which the mapping needs to be stored.
-     * If the attribute has been restricted at lower level then create mapping only at that level.
-     */
-    public function getMappingLevel($attribute)
-    {
-        // Create mapping at institution level only for institution admins
-        $values[] = Yii::app()->user->checkAccess('admin') ? '' : Yii::app()->session['selected_institution_id'];
-        $referenceLevel = Yii::app()->user->checkAccess('admin') ? ReferenceData::LEVEL_ALL : ReferenceData::LEVEL_INSTITUTION;
-        if (array_key_exists('subspecialties', $attribute) && !empty($attribute['subspecialties'])) {
-            $values = $attribute['subspecialties'];
-            $referenceLevel = ReferenceData::LEVEL_SUBSPECIALTY;
-        } elseif (array_key_exists('firms', $attribute) && !empty($attribute['firms'])) {
-            $values = $attribute['firms'];
-            $referenceLevel = ReferenceData::LEVEL_FIRM;
-        } elseif (array_key_exists('sites', $attribute) && !empty($attribute['sites'])) {
-            $values = $attribute['sites'];
-            $referenceLevel = ReferenceData::LEVEL_SITE;
-        } elseif (array_key_exists('institutions', $attribute) && !empty($attribute['institutions'])) {
-            $values = $attribute['institutions'];
-            $referenceLevel = ReferenceData::LEVEL_INSTITUTION;
-        }
-        return ['values' => $values, 'referenceLevel' => $referenceLevel];
-    }
-
-    /**
      * @throws Exception
      */
     public function actionAddMacro()
     {
         $macro = new LetterMacro();
 
-        $errors = array();
-
-        if (!empty($_POST)) {
-            $post = $_POST['LetterMacro'];
-            $macro->attributes = $post;
-            $mappingAttributes = $this->getMappingLevel($post);
-
-            if (!$macro->validate()) {
-                $errors = $macro->errors;
-            } else {
-                if ($macro->save()) {
-                    $saved = $macro->createMappings($mappingAttributes['referenceLevel'], $mappingAttributes['values']);
-                    if (!$saved) {
-                        throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
-                    }
-                } else {
-                    throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
-                }
-
-                Audit::add('admin', 'create', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
-
-                $this->redirect('/OphCoCorrespondence/admin/letterMacros');
-            }
-        } else {
-            Audit::add('admin', 'view', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
-        }
+        $errors = $this->processPOST('create', $macro);
 
         $init_method = new OphcorrespondenceInitMethod();
 
@@ -288,33 +238,7 @@ class AdminController extends \ModuleAdminController
         $criteria->order = 'display_order asc';
         $associated_content_saved = MacroInitAssociatedContent::model()->findAll($criteria);
 
-        $errors = array();
-
-        if (!empty($_POST)) {
-            $post = $_POST['LetterMacro'];
-            $macro->attributes = $post;
-            $mappingValues = $this->getMappingLevel($post);
-
-            if (!$macro->validate()) {
-                $errors = $macro->errors;
-            } else {
-                if ($macro->save()) {
-                    $macro->deleteMappings(ReferenceData::LEVEL_ALL);
-                    $saved = $macro->createMappings($mappingValues['referenceLevel'], $mappingValues['values']);
-                    if (!$saved) {
-                        throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
-                    }
-                } else {
-                    throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
-                }
-
-                Audit::add('admin', 'update', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
-
-                $this->redirect('/OphCoCorrespondence/admin/letterMacros');
-            }
-        } else {
-            Audit::add('admin', 'view', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
-        }
+        $errors = $this->processPOST('update', $macro);
 
         $this->render('_macro', array(
             'macro' => $macro,
@@ -322,6 +246,31 @@ class AdminController extends \ModuleAdminController
             'associated_content' => $associated_content_saved,
             'errors' => $errors,
         ));
+    }
+
+
+    private function processPOST($mode, LetterMacro $macro)
+    {
+        $errors = array();
+        if (!empty($_POST)) {
+            $post = $_POST['LetterMacro'];
+            $macro->attributes = $post;
+
+            if (!$macro->validate()) {
+                $errors = $macro->errors;
+            } else {
+                if (!$macro->save()) {
+                    throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
+                }
+
+                Audit::add('admin', $mode, $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
+
+                $this->redirect('/OphCoCorrespondence/admin/letterMacros');
+            }
+        } else {
+            Audit::add('admin', 'view', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
+        }
+        return $errors;
     }
 
     public function actionDeleteLetterMacros()
