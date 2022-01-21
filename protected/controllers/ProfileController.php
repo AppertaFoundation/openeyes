@@ -160,7 +160,7 @@ class ProfileController extends BaseController
 
                 if (empty($errors)) {
                     if ($user_auth->institutionAuthentication->user_authentication_method === 'LOCAL') {
-                        if ($user_auth->password_status==="stale"||$user_auth->password_status==="expired") {// this user pw is now current
+                        if ($user_auth->password_status === "stale" || $user_auth->password_status === "expired") {// this user pw is now current
                             $user_auth->password_status = 'current';
                         }
                         //reset pw checks
@@ -454,7 +454,7 @@ class ProfileController extends BaseController
             ]);
         }
         $img = base64_decode(str_replace('data:image/jpeg;base64,', '', $img));
-        $file = ProtectedFile::createForWriting("user_signature_".$user->id);
+        $file = ProtectedFile::createForWriting("user_signature_" . $user->id);
         $file->title = "Signature";
         $file->mimetype = "image/jpeg";
         file_put_contents($file->getPath(), $img);

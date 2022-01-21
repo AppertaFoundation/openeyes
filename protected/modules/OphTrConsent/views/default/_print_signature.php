@@ -32,7 +32,15 @@ if ($element->isBeingSigned($signature)) {
                 "initiator_row_id" => Yii::app()->request->getParam("initiator_row_id"),
             ]
         ),
-        "after_submit_js" => 'function(response, widget) {window.parent.formHasChanged=false;window.parent.location.reload();}'
+        "after_submit_js" =>
+            Yii::app()->request->getParam("deviceSign") > 0 ?
+                // The signature was submitted using a handheld device, go back to device ready page
+                'function(response, widget)
+                        {window.parent.formHasChanged=false;window.parent.location="/site/deviceready";}'
+                :
+                // The signature was submitted in OpenEyes event view mode, refresh the page
+                'function(response, widget)
+                        {window.parent.formHasChanged=false;window.parent.location.reload();}',
     ]);
 } elseif ($signature->isSigned()) {
     ?>

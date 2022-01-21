@@ -7,7 +7,7 @@ class m180704_095046_migrate_van_herick_data extends CDbMigration
     {
         $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy', [
             'criteria' => [
-                'condition'=>'left_van_herick_id IS NOT NULL OR right_van_herick_id IS NOT NULL'
+                'condition' => 'left_van_herick_id IS NOT NULL OR right_van_herick_id IS NOT NULL'
             ],
         ]);
         $iterator = new CDataProviderIterator($dataProvider);

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace OEModule\OphCiExamination\tests\unit\models;
 
 use OEModule\OphCiExamination\models\interfaces\SidedData;

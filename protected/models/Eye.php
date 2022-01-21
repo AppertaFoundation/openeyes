@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -31,7 +32,8 @@ class Eye extends BaseActiveRecord
     const RIGHT = 2;
     const BOTH = 3;
 
-    public static function getIdFromName($side) {
+    public static function getIdFromName($side)
+    {
         return strtolower($side) === "left" ? self::LEFT : (
                 strtolower($side) === "right" ? self::RIGHT : (
                 strtolower($side) === "both" ? self::BOTH : null
@@ -74,7 +76,7 @@ class Eye extends BaseActiveRecord
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
     }
 
     /**

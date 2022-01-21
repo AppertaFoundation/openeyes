@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -36,6 +37,7 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+
     protected $default_view_order = 10;
     public $no_ophthalmic_diagnoses = false;
 
@@ -132,7 +134,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         if ($attribute === \CHtml::modelName($this) . '_diagnoses') {
             if (preg_match('/(\d+)/', $message, $match) === 1) {
-                return $attribute . '_entries_row_' . ($match[1]+1);
+                return $attribute . '_entries_row_' . ($match[1] + 1);
             }
         }
         return parent::errorAttributeException($attribute, $message);
@@ -381,10 +383,12 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
 
         //Get further findings from examination
-        if ($et_findings = Element_OphCiExamination_FurtherFindings::model()
+        if (
+            $et_findings = Element_OphCiExamination_FurtherFindings::model()
             ->find('event_id=?', array($this->event_id))
         ) {
-            foreach (OphCiExamination_FurtherFindings_Assignment::model()
+            foreach (
+                OphCiExamination_FurtherFindings_Assignment::model()
                          ->findAll('element_id=?', array($et_findings->id)) as $finding_assignment
             ) {
                 $finding = $finding_assignment->finding;
@@ -461,12 +465,14 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         $result = array();
         foreach ($disorder_ids as $disorder_id) {
-            foreach (\SecondaryToCommonOphthalmicDisorder::model()
+            foreach (
+                \SecondaryToCommonOphthalmicDisorder::model()
                          ->with('parent')
                          ->findAll(
                              't.disorder_id=? and parent.subspecialty_id=?',
                              array($disorder_id, $subspecialty->id)
-                         ) as $secto_disorder) {
+                         ) as $secto_disorder
+            ) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
@@ -489,12 +495,14 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         $result = array();
         foreach ($finding_ids as $finding_id) {
-            foreach (\SecondaryToCommonOphthalmicDisorder::model()
+            foreach (
+                \SecondaryToCommonOphthalmicDisorder::model()
                          ->with('parent')
                          ->findAll(
                              't.finding_id=? and parent.subspecialty_id=?',
                              array($finding_id, $subspecialty->id)
-                         ) as $secto_disorder) {
+                         ) as $secto_disorder
+            ) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
@@ -579,7 +587,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
     public function getPrint_view()
     {
-        return 'print_'.$this->getDefaultView();
+        return 'print_' . $this->getDefaultView();
     }
 
     public function getViewTitle()
@@ -592,5 +600,4 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         $action_list = array('view', 'createImage', 'renderEventImage', 'removed');
         return in_array($action, $action_list) ? 1 : null;
     }
-
 }

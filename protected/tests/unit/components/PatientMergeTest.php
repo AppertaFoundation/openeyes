@@ -370,7 +370,7 @@ class PatientMergeTest extends CDbTestCase
     {
         $merge_handler = new PatientMerge();
         $merge_handler->load(new PatientMergeRequest());
-        
+
         // $primary_patient has episode7 and episode8
         $primary_patient = $this->patients('patient7');
 
@@ -522,7 +522,7 @@ class PatientMergeTest extends CDbTestCase
     {
         $merge_handler = new PatientMerge();
         $merge_handler->load(new PatientMergeRequest());
-        
+
         $primary_patient = $this->patients('patient7');
         $secondary_patient = $this->patients('patient8');
 

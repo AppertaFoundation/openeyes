@@ -8,6 +8,7 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -187,6 +188,6 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
 
     public function getPrint_view()
     {
-        return 'print_'.$this->getDefaultView();
+        return 'print_' . $this->getDefaultView();
     }
 }

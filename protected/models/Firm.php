@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -145,7 +146,8 @@ class Firm extends BaseActiveRecordVersioned
         );
     }
 
-    private static function getLabelSettings($key){
+    private static function getLabelSettings($key)
+    {
         $institution_id = \Yii::app()->session['selected_institution_id'];
         return \SettingMetadata::model()->getSetting($key, null, false, ['SettingInstitution', 'SettingInstallation'], $institution_id);
     }
@@ -449,7 +451,7 @@ class Firm extends BaseActiveRecordVersioned
 
     public function beforeValidate()
     {
-        if ( $this->can_own_an_episode && $this->service_email != '' ) {
+        if ($this->can_own_an_episode && $this->service_email != '') {
             // check if there is an email already existing for this subspeciality
             $criteria = new CDbCriteria();
             // get the service_subspeciality_assignment_id from the service_id
@@ -461,7 +463,7 @@ class Firm extends BaseActiveRecordVersioned
                 $criteria->params[':id'] = $this->id;
             }
             $firm = $this->findAll($criteria);
-            if (count($firm) >= 1  ) {
+            if (count($firm) >= 1) {
                 $this->addError('service_email', 'Email already set for another service of this specialty.');
             }
         }

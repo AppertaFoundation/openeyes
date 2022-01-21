@@ -68,7 +68,7 @@ class HL7_Patient_Visit extends BaseHL7_Section
                 $this->point_of_care = ($wla ? $wla->attribute_value : '');
 
                 $wla = $admin_source
-                    ?\WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc', [$worklist_patient->id, $admin_source->id])
+                    ? \WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc', [$worklist_patient->id, $admin_source->id])
                     : null;
 
                 $this->admit_source = ($wla ? $wla->attribute_value : '');
@@ -94,8 +94,8 @@ class HL7_Patient_Visit extends BaseHL7_Section
                             $room_pathway_step = $pathway->peek(\PathwayStep::STEP_COMPLETED, array_column(\PathwayStepType::model()->findAll(), 'id'));
                             $prefix = "";
                         }
-                        if (isset($this->mappingSteps[$this->point_of_care]) && isset($this->mappingSteps[$this->point_of_care][$prefix.( $room_pathway_step->short_name ?? '')])) {
-                            $this->room = $this->mappingSteps[$this->point_of_care][$prefix.( $room_pathway_step->short_name ?? '')];
+                        if (isset($this->mappingSteps[$this->point_of_care]) && isset($this->mappingSteps[$this->point_of_care][$prefix . ( $room_pathway_step->short_name ?? '')])) {
+                            $this->room = $this->mappingSteps[$this->point_of_care][$prefix . ( $room_pathway_step->short_name ?? '')];
                         }
                     }
                 }
@@ -111,7 +111,7 @@ class HL7_Patient_Visit extends BaseHL7_Section
                     $this->discharge_to_location = $clinical_outcome_entry->discharge_destination->ecds_code;
                     $transfer_institution = $clinical_outcome_entry->transfer_to;
                     if ($transfer_institution) {
-                            $this->discharge_facility = $transfer_institution->remote_id.'00';
+                            $this->discharge_facility = $transfer_institution->remote_id . '00';
                     }
                     $this->discharge_datetime = substr(str_replace('-', '', str_replace(':', '', str_replace(' ', '', $clinical_outcome_entry->created_date ?? ''))), 0, 14);
                 }
@@ -125,15 +125,15 @@ class HL7_Patient_Visit extends BaseHL7_Section
     function getHL7attributes()
     {
         $attributes = array(
-            $this->prefix.'.2' => $this->patient_class ?? '',
-            $this->prefix.'.3.1' => $this->point_of_care ?? '',
-            $this->prefix.'.3.2' => $this->room ?? '',
-            $this->prefix.'.14' => $this->admit_source ?? '',
-            $this->prefix.'.19' => $this->visit_number ?? '',
-            $this->prefix.'.36.1' => $this->discharge_status ?? '',
-            $this->prefix.'.37.1' => $this->discharge_to_location ?? '',
-            $this->prefix.'.42.4' => $this->discharge_facility ?? '',
-            $this->prefix.'.45' => $this->discharge_datetime ?? ''
+            $this->prefix . '.2' => $this->patient_class ?? '',
+            $this->prefix . '.3.1' => $this->point_of_care ?? '',
+            $this->prefix . '.3.2' => $this->room ?? '',
+            $this->prefix . '.14' => $this->admit_source ?? '',
+            $this->prefix . '.19' => $this->visit_number ?? '',
+            $this->prefix . '.36.1' => $this->discharge_status ?? '',
+            $this->prefix . '.37.1' => $this->discharge_to_location ?? '',
+            $this->prefix . '.42.4' => $this->discharge_facility ?? '',
+            $this->prefix . '.45' => $this->discharge_datetime ?? ''
         );
 
         return $attributes;

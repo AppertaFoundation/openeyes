@@ -201,7 +201,7 @@ class DefaultController extends BaseEventTypeController
 
         if ($action == 'create' && $this->template) {
             $element->type_id = $this->template->type_id;
-            if($this->type_id) {
+            if ($this->type_id) {
                 $element->type_id = $this->type_id;
             }
         } elseif ($action == 'create') {
@@ -299,7 +299,7 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('booking event not found');
             }
 
-            if(isset($_GET['template_eye_id'])) {
+            if (isset($_GET['template_eye_id'])) {
                 if (!($this->template_eye = Eye::model()->findByPk($_GET['template_eye_id']))) {
                     throw new Exception('eye not found');
                 }
@@ -375,15 +375,15 @@ class DefaultController extends BaseEventTypeController
             } elseif (preg_match('/^booking([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
                 $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&booking_event_id=' . $m[1]));
             } elseif (preg_match('/^template([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
-                if(!isset($_POST["template".$m[1]]["right_eye"]) && !isset($_POST["template".$m[1]]["left_eye"])) {
+                if (!isset($_POST["template" . $m[1]]["right_eye"]) && !isset($_POST["template" . $m[1]]["left_eye"])) {
                     $errors = array('Consent form' => array('Please select laterality to add procedures for the template'));
                 } else {
-                    $template_eye_id = \Helper::getEyeIdFromArray($_POST["template".$m[1]]);
+                    $template_eye_id = \Helper::getEyeIdFromArray($_POST["template" . $m[1]]);
                     $template = OphTrConsent_Template::model()->findByPk($m[1]);
-                    $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1] . '&type_id='.$template->type_id . '&template_eye_id='.$template_eye_id));
+                    $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1] . '&type_id=' . $template->type_id . '&template_eye_id=' . $template_eye_id));
                 }
             }
-            if(!isset($errors)) {
+            if (!isset($errors)) {
                 $errors = array('Consent form' => array('Please add Laterality when a template is selected'));
             }
         }
@@ -1203,14 +1203,16 @@ class DefaultController extends BaseEventTypeController
         if (!$element = $this->event->getElementByClass($element_type->class_name)) {
             throw new \CHttpException(500, "Element not found");
         }
-        $this->redirect("/OphCoCvi/default/print/$id?html=1&auto_print=0&sign=1" .
+        $this->redirect("/OphTrConsent/default/print/$id?html=1&auto_print=0&sign=1" .
             "&element_type_id=" . \Yii::app()->request->getParam("element_type_id") .
             "&signature_type=" . \Yii::app()->request->getParam("signature_type") .
             "&signatory_role=" . \Yii::app()->request->getParam("signatory_role") .
             "&signature_name=" . \Yii::app()->request->getParam("signatory_name") .
             "&element_id=" . $element->id .
             "&initiator_element_type_id=" . \Yii::app()->request->getParam("initiator_element_type_id") .
-            "&initiator_row_id=" . \Yii::app()->request->getParam("initiator_row_id"));
+            "&initiator_row_id=" . \Yii::app()->request->getParam("initiator_row_id") .
+            "&deviceSign=" . \Yii::app()->request->getParam("deviceSign")
+        );
     }
 
     protected function setComplexAttributes_Element_OphTrConsent_OthersInvolvedDecisionMakingProcess($element, $data, $index)
@@ -1339,10 +1341,9 @@ class DefaultController extends BaseEventTypeController
 
     protected function setComplexAttributes_Element_OphTrConsent_BestInterestDecision(
         Element_OphTrConsent_BestInterestDecision $element,
-                                                  $data,
-                                                  $index = null
-    )
-    {
+        $data,
+        $index = null
+    ) {
         $data = $data["OEModule_OphTrConsent_models_Element_OphTrConsent_BestInterestDecision"];
         $items = [];
         if (isset($data["attachments"]) && is_array($data["attachments"])) {
@@ -1365,10 +1366,9 @@ class DefaultController extends BaseEventTypeController
 
     protected function saveComplexAttributes_Element_OphTrConsent_BestInterestDecision(
         Element_OphTrConsent_BestInterestDecision $element,
-                                                  $data,
-                                                  $index = null
-    )
-    {
+        $data,
+        $index = null
+    ) {
         $existing_ids = Yii::app()->db->createCommand(
             "SELECT id FROM " . OphTrConsent_BestInterestDecision_Attachment::model()->tableName()
             . " WHERE element_id = :element_id"

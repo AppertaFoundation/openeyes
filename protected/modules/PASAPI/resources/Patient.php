@@ -190,7 +190,7 @@ class Patient extends BaseResource
                 if ($eg = EthnicGroup::model()->findByAttributes(array('code' => $code))) {
                     $patient->ethnic_group_id = $eg->id;
                 } else {
-                    $this->addWarning('Unrecognised ethnic group code '.$code);
+                    $this->addWarning('Unrecognised ethnic group code ' . $code);
                 }
             } else {
                 $patient->ethnic_group_id = null;
@@ -213,7 +213,7 @@ class Patient extends BaseResource
                 if ($gp = Gp::model()->findByAttributes(array('nat_id' => $code))) {
                     $patient->gp_id = $gp->id;
                 } else {
-                    $this->addWarning('Could not find '.\SettingMetadata::model()->getSetting('gp_label').' for code '.$code);
+                    $this->addWarning('Could not find ' . \SettingMetadata::model()->getSetting('gp_label') . ' for code ' . $code);
                 }
             } else {
                 $patient->gp_id = null;
@@ -244,7 +244,7 @@ class Patient extends BaseResource
                     if ($language = \Language::model()->findByAttributes(array('pas_term' => strtolower($code)))) {
                         $communication_pref->language_id = $language->id;
                     } else {
-                        $this->addWarning('Could not find Language for code '.$code);
+                        $this->addWarning('Could not find Language for code ' . $code);
                     }
                 } else {
                     $communication_pref->language_id = null;
@@ -261,7 +261,7 @@ class Patient extends BaseResource
                     if ($language = \Language::model()->findByAttributes(array('interpreter_pas_code' => strtolower($code)))) {
                         $communication_pref->interpreter_required_id = $language->id;
                     } else {
-                        $this->addWarning('Could not find Language for Interpreter Required code '.$code);
+                        $this->addWarning('Could not find Language for Interpreter Required code ' . $code);
                     }
                 } else {
                     $communication_pref->interpreter_required_id = null;
@@ -338,7 +338,7 @@ class Patient extends BaseResource
                 if ($practice = Practice::model()->findByAttributes(array('code' => $code))) {
                     $patient->practice_id = $practice->id;
                 } else {
-                    $this->addWarning('Could not find Practice for code '.$code);
+                    $this->addWarning('Could not find Practice for code ' . $code);
                 }
             } else {
                 $patient->practice_id = null;
@@ -363,9 +363,9 @@ class Patient extends BaseResource
         if (property_exists($this, 'AddressList')) {
             $matched_address_ids = array();
             foreach ($this->AddressList as $idx => $address_resource) {
-                $matched_clause = ($matched_address_ids) ? ' AND id NOT IN ('.implode(',', $matched_address_ids).')' : '';
+                $matched_clause = ($matched_address_ids) ? ' AND id NOT IN (' . implode(',', $matched_address_ids) . ')' : '';
                 $address_model = \Address::model()->find(array(
-                    'condition' => "contact_id = :contact_id AND REPLACE(postcode,' ','') = :postcode".$matched_clause,
+                    'condition' => "contact_id = :contact_id AND REPLACE(postcode,' ','') = :postcode" . $matched_clause,
                     'params' => array(':contact_id' => $contact->id, ':postcode' => str_replace(' ', '', $address_resource->Postcode)),
                 ));
 
@@ -429,7 +429,7 @@ class Patient extends BaseResource
                     if ($status) {
                         $patient->globalIdentifier->patient_identifier_status_id = $status->id;
                     } else {
-                        $this->addWarning('Unrecognised NHSNumberStatus code '.$code);
+                        $this->addWarning('Unrecognised NHSNumberStatus code ' . $code);
                     }
                 } else {
                     $patient->globalIdentifier->patient_identifier_status_id = null;

@@ -1490,12 +1490,14 @@ class DefaultController extends \BaseEventTypeController
     protected function setComplexAttributes_Element_OphCiExamination_DR_Retinopathy($element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
-        foreach (array('left' => \Eye::LEFT,
-                     'right' => \Eye::RIGHT, ) as $side => $eye_id) {
+        foreach (
+            array('left' => \Eye::LEFT,
+                     'right' => \Eye::RIGHT, ) as $side => $eye_id
+        ) {
             $features = array();
-            $checker = 'has'.ucfirst($side);
-            if ($element->$checker() && isset($data[$model_name][$side.'_retinopathy_features'])) {
-                foreach ($data[$model_name][$side.'_retinopathy_features'] as $model) {
+            $checker = 'has' . ucfirst($side);
+            if ($element->$checker() && isset($data[$model_name][$side . '_retinopathy_features'])) {
+                foreach ($data[$model_name][$side . '_retinopathy_features'] as $model) {
                     if (@$model['id']) {
                         if (!$feature = models\RetinopathyFeature::model()->findByPk($model['id'])) {
                             $feature = new models\RetinopathyFeature();
@@ -1515,12 +1517,14 @@ class DefaultController extends \BaseEventTypeController
     protected function setComplexAttributes_Element_OphCiExamination_DR_Maculopathy($element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
-        foreach (array('left' => \Eye::LEFT,
-                     'right' => \Eye::RIGHT, ) as $side => $eye_id) {
+        foreach (
+            array('left' => \Eye::LEFT,
+                     'right' => \Eye::RIGHT, ) as $side => $eye_id
+        ) {
             $features = array();
-            $checker = 'has'.ucfirst($side);
-            if ($element->$checker() && isset($data[$model_name][$side.'_maculopathy_features'])) {
-                foreach ($data[$model_name][$side.'_maculopathy_features'] as $model) {
+            $checker = 'has' . ucfirst($side);
+            if ($element->$checker() && isset($data[$model_name][$side . '_maculopathy_features'])) {
+                foreach ($data[$model_name][$side . '_maculopathy_features'] as $model) {
                     if (@$model['id']) {
                         if (!$feature = models\MaculopathyFeature::model()->findByPk($model['id'])) {
                             $feature = new models\MaculopathyFeature();
@@ -1775,7 +1779,8 @@ class DefaultController extends \BaseEventTypeController
 
     protected function setElementDefaultOptions_Element_OphCiExamination_OverallManagementPlan(models\Element_OphCiExamination_OverallManagementPlan $element, $action)
     {
-        if ($previous_om = models\Element_OphCiExamination_OverallManagementPlan::model()->with(array(
+        if (
+            $previous_om = models\Element_OphCiExamination_OverallManagementPlan::model()->with(array(
                 'event' => array(
                     'condition' => 'event.deleted = 0',
                     'with' => array(
@@ -1785,7 +1790,8 @@ class DefaultController extends \BaseEventTypeController
                     ),
                   'order' => 'event.event_date desc, event.created_date desc',
                 ),
-            ))->find()) {
+            ))->find()
+        ) {
             foreach ($previous_om->attributes as $key => $value) {
                 if (!in_array($key, array('id', 'created_date', 'created_user_id', 'last_modified_date', 'last_modified_user_id'))) {
                     $element->$key = $value;
@@ -2169,7 +2175,7 @@ class DefaultController extends \BaseEventTypeController
                 foreach ($entry_errors as $entry_error_attribute_name => $entry_error_messages) {
                     foreach ($entry_error_messages as $entry_error_message) {
                         $observation->addError("entries" . $i . '_' . $entry_error_attribute_name, $entry_error_message);
-                        $errors['Observations'][] = $i+1 . " {$entry->getAttributeLabel($entry_error_attribute_name)} {$entry_error_message}";
+                        $errors['Observations'][] = $i + 1 . " {$entry->getAttributeLabel($entry_error_attribute_name)} {$entry_error_message}";
                         $observation->setFrontEndError($et_name . '_entries_' . $i . '_' . $entry_error_attribute_name);
                     }
                 }
@@ -2501,7 +2507,7 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
             if (!$foundExistingAssignment) {
-                $patientContactAssignment = new \PatientContactAssignment;
+                $patientContactAssignment = new \PatientContactAssignment();
                 $patientContactAssignment->patient_id = $patient->id;
                 $patientContactAssignment->contact_id = $contact_id;
                 $patientContactAssignment->comment = isset($comments[$key]) ? $comments[$key] : null;
@@ -2702,8 +2708,10 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function saveContactEmailAddressForCommunicationPreferences($data)
     {
-        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']) &&
-            $data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']['agrees_to_insecure_email_correspondence'] === '1') {
+        if (
+            isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']) &&
+            $data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']['agrees_to_insecure_email_correspondence'] === '1'
+        ) {
             $contactEmail = Yii::app()->request->getPost('Contact');
             $Contact = \Contact::model()->findByPk($contactEmail['id']);
             $Contact->email = $contactEmail['email'];
@@ -2731,15 +2739,15 @@ class DefaultController extends \BaseEventTypeController
         $model_name = \CHtml::modelName($element);
         $age = $this->patient->getAge();
         if ($age < 13) {
-            return '<label class="highlight inline"><input value="0" name="'.$model_name.'[triage][treat_as_adult]" type="hidden">Paediatric</label>';
+            return '<label class="highlight inline"><input value="0" name="' . $model_name . '[triage][treat_as_adult]" type="hidden">Paediatric</label>';
         } elseif ($age < 16) {
-            return '<label class="highlight inline"><input value="0" name="'.$model_name.'[triage][treat_as_adult]" type="radio" checked>Paediatric</label>
-                    <label class="highlight inline"><input value="1" name="'.$model_name.'[triage][treat_as_adult]" type="radio">Adult</label>';
+            return '<label class="highlight inline"><input value="0" name="' . $model_name . '[triage][treat_as_adult]" type="radio" checked>Paediatric</label>
+                    <label class="highlight inline"><input value="1" name="' . $model_name . '[triage][treat_as_adult]" type="radio">Adult</label>';
         } elseif ($age < 18) {
-            return '<label class="highlight inline"><input value="0" name="'.$model_name.'[triage][treat_as_adult]" type="radio">Paediatric</label>
-                    <label class="highlight inline"><input value="1" name="'.$model_name.'[triage][treat_as_adult]" type="radio" checked>Adult</label>';
+            return '<label class="highlight inline"><input value="0" name="' . $model_name . '[triage][treat_as_adult]" type="radio">Paediatric</label>
+                    <label class="highlight inline"><input value="1" name="' . $model_name . '[triage][treat_as_adult]" type="radio" checked>Adult</label>';
         } else {
-            return '<label class="highlight inline"><input value="1" name="'.$model_name.'[triage][treat_as_adult]" type="hidden">Adult</label>';
+            return '<label class="highlight inline"><input value="1" name="' . $model_name . '[triage][treat_as_adult]" type="hidden">Adult</label>';
         }
     }
 }

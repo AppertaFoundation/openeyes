@@ -1,4 +1,5 @@
 <?php
+
 use OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Concern;
 use OEModule\OphCiExamination\models\OphCiExamination_Safeguarding_Entry;
 
@@ -59,11 +60,11 @@ $patient_is_minor = $patient->isChild();
                     <td>
                         <fieldset>
                             <label class="highlight inline">
-                                <?= \CHTML::activeRadioButton($element, 'has_social_worker', array('value'=>'1', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
+                                <?= \CHTML::activeRadioButton($element, 'has_social_worker', array('value' => '1', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
                                 Yes, (add social worker as a contact)
                             </label>
                             <label class="highlight inline">
-                                <?= \CHTML::activeRadioButton($element, 'has_social_worker', array('value'=>'0', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
+                                <?= \CHTML::activeRadioButton($element, 'has_social_worker', array('value' => '0', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
                                 No
                             </label>
                         </fieldset> 
@@ -76,11 +77,11 @@ $patient_is_minor = $patient->isChild();
                     <td>
                         <fieldset>
                             <label class="highlight inline">
-                                <?= \CHTML::activeRadioButton($element, 'under_protection_plan', array('value'=>'1', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
+                                <?= \CHTML::activeRadioButton($element, 'under_protection_plan', array('value' => '1', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
                                 Yes
                             </label>
                             <label class="highlight inline">
-                                <?= \CHTML::activeRadioButton($element, 'under_protection_plan', array('value'=>'0', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
+                                <?= \CHTML::activeRadioButton($element, 'under_protection_plan', array('value' => '0', 'nowrapper' => true, 'no-label' => true, 'uncheckValue' => null)); ?>
                                 No
                             </label>
                         </fieldset> 
@@ -110,8 +111,7 @@ $patient_is_minor = $patient->isChild();
 
                 if (isset($_POST[$model_name])) {
                     foreach ($_POST[$model_name]['entries'] as $post_entry) {
-                        if (!empty($post_entry['id']))
-                        {
+                        if (!empty($post_entry['id'])) {
                             $post_concern = OphCiExamination_Safeguarding_Entry::model()->findByPk($post_entry['id']);
                         } else {
                             $post_concern = new OphCiExamination_Safeguarding_Entry();
@@ -144,7 +144,7 @@ $patient_is_minor = $patient->isChild();
 <?php if ($editable) { ?>
     <script type="x-tmpl-mustache" id="add-new-safeguarding-row-template">
         <?php
-            $template_model_name = CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model())."[entries][{{row_count}}]";
+            $template_model_name = CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::model()) . "[entries][{{row_count}}]";
             $template_comment_field_id = "safeguarding-entry-comment-field-{{row_count}}";
             $template_comment_container_id = "safeguarding-entry-comment-container-{{row_count}}";
             $template_comment_button_id = "safeguarding-entry-comment-button-{{row_count}}";

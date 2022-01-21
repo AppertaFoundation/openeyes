@@ -110,7 +110,7 @@ class CaseSearchController extends BaseModuleController
             if (count($ids) === 0) {
                 Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned no results', null, array('module' => 'OECaseSearch'));
             } else {
-                Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned '. count($ids) . ' results', null, array('module' => 'OECaseSearch'));
+                Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned ' . count($ids) . ' results', null, array('module' => 'OECaseSearch'));
             }
 
             // Only copy to the $_SESSION array if it isn't already there - Shallow copy is done at the start if it is already set.
@@ -307,8 +307,7 @@ class CaseSearchController extends BaseModuleController
         string $operation,
         $value,
         $isSaved = true
-    ): CaseSearchParameter
-    {
+    ): CaseSearchParameter {
         /**
          * @var $parameter CaseSearchParameter
          */
@@ -626,9 +625,11 @@ class CaseSearchController extends BaseModuleController
             Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js');
         }
 
-        if (!Yii::app()->clientScript->isScriptFileRegistered(
+        if (
+            !Yii::app()->clientScript->isScriptFileRegistered(
             $assetPath . '/js/OpenEyes.UI.Dialog.LoadSavedSearch.js'
-        )) {
+            )
+        ) {
             Yii::app()->assetManager->registerScriptFile(
                 'js/OpenEyes.UI.Dialog.LoadSavedSearch.js',
                 'application.modules.OECaseSearch.assets',
@@ -636,9 +637,11 @@ class CaseSearchController extends BaseModuleController
             );
         }
 
-        if (!Yii::app()->clientScript->isScriptFileRegistered(
+        if (
+            !Yii::app()->clientScript->isScriptFileRegistered(
             $assetPath . '/js/OpenEyes.UI.Dialog.SaveSearch.js'
-        )) {
+            )
+        ) {
             Yii::app()->assetManager->registerScriptFile(
                 'js/OpenEyes.UI.Dialog.SaveSearch.js',
                 'application.modules.OECaseSearch.assets',
@@ -671,7 +674,7 @@ class CaseSearchController extends BaseModuleController
         if (isset($patientID)) {
             $patient = Patient::model()->findByPk($patientID);
             if (!empty($patient)) {
-                Audit::add('case-search', 'viewed-summary-popups', 'Summary popup '.  $summaryId . ' for patient ' . $patientID . ' has been viewed', false, array(
+                Audit::add('case-search', 'viewed-summary-popups', 'Summary popup ' .  $summaryId . ' for patient ' . $patientID . ' has been viewed', false, array(
                     'module' => 'OECaseSearch', 'patient_id' => $patientID
                 ) );
                 return true;

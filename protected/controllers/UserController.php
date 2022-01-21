@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -34,7 +35,7 @@ class UserController extends BaseController
         if (\Yii::app()->request->isAjaxRequest && !empty($term)) {
             $term = strtolower($term);
 
-            $criteria = new \CDbCriteria;
+            $criteria = new \CDbCriteria();
             $criteria->join = 'JOIN user_authentication user_auth ON t.id = user_auth.user_id';
             $criteria->compare("LOWER(user_auth.username)", $term, true, 'OR');
             $criteria->compare("LOWER(first_name)", $term, true, 'OR');
@@ -96,5 +97,4 @@ class UserController extends BaseController
 
         $this->renderJSON($seconds_to_expire);
     }
-
 }

@@ -47,7 +47,7 @@ $user = Yii::app()->session['user'];
         if (response.status && response.event_id) {
             let url = `/${response.module_id}/default/sign/${response.event_id}?`;
             delete(response["module_id"], response["event_id"]);
-            window.location.href = url + $.param(response)
+            window.location.href = url + $.param(response) + "&deviceSign=1"
         }
     }
 
