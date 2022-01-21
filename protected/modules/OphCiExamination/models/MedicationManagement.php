@@ -710,7 +710,7 @@ class MedicationManagement extends BaseMedicationElement
     public function getUnsignedMessage(): string
     {
         if (!$this->save_draft_prescription) {
-            return "This Medication Management must be signed by a Consultant.";
+            return "This Medication Management must be signed.";
         }
 
         return '';
