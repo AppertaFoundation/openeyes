@@ -64,7 +64,7 @@ $type_assessment = new OphTrConsent_Type_Assessment();
             <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
         </tr>
         <tr>
-            <th>Gender</th>
+            <th>Sex</th>
             <td><?= $this->patient->genderString ?></td>
         </tr>
         <tr>

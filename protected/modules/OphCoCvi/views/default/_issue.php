@@ -96,7 +96,7 @@ if ($demographics_element->isNewRecord) {
                 <td><?= $secondary_identifier; ?></td>
             </tr>
             <tr>
-                <th>Gender</th>
+                <th>Sex</th>
                 <td><?= $patient->genderString ?></td>
             </tr>
             </tbody>

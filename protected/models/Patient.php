@@ -324,7 +324,7 @@ class Patient extends BaseActiveRecordVersioned
             'id' => 'ID',
             'dob' => 'Date of Birth',
             'date_of_death' => 'Date of Death',
-            'gender' => 'Gender',
+            'gender' => 'Sex',
             'ethnic_group_id' => 'Ethnic Group',
             'hos_num' => $local_identifier_label,
             'nhs_num' => $global_identifier_label,

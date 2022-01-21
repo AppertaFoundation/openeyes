@@ -110,7 +110,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                              'Last name',
                              'Born',
                              'Age',
-                             'Gender'
+                             'Sex'
                          ) as $i => $field) { ?>
               <th id="patient-grid_c<?= $i ?>">
                   <?php

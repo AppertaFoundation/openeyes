@@ -317,7 +317,7 @@ $pathway_json = json_encode(
                 </div>
             {{/displaySecondaryNumberUsageCode}}
             <div class="patient-gender">
-                <em>Gender</em>
+                <em>Sex</em>
                 {{ gender }}
             </div>
             <div class="patient-{{#deceased}}died{{/deceased}}{{^deceased}}age{{/deceased}}">

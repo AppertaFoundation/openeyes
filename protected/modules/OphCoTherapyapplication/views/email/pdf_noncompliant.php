@@ -155,7 +155,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
                         <td><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></td>
                     </tr>
                     <tr>
-                        <th>Gender</th>
+                        <th>Sex</th>
                         <td><?= $patient->getGenderString() ?></td>
                     </tr>
                     <tr>

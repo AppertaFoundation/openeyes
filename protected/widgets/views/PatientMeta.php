@@ -73,7 +73,7 @@ if (!isset($this->controller) || ($this->controller->id != "patient" && $this->c
                 </div>
             <?php } ?>
             <div class="patient-gender">
-                    <em>Gender</em>
+                    <em>Sex</em>
                 <?php echo $patient->getGenderString() ?>
             </div>
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">

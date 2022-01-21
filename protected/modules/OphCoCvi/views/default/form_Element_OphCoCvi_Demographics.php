@@ -65,7 +65,7 @@ if ($element->isNewRecord) {
                     <td><?= CHtml::activeTelField($element, 'date_of_birth', ['class' => 'cols-full']); ?></td>
                 </tr>
                 <tr>
-                    <td>Gender</td>
+                    <td>Sex</td>
                     <td>
                         <?= CHtml::activeDropDownList($element, 'gender_id', CHtml::listData(Gender::model()->findAll(), 'id', 'name'), [
                             'class' => 'cols-full'

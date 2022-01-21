@@ -168,7 +168,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'postcode_2nd' => '',
             'email' => 'Email',
             'telephone' => 'Telephone',
-            'gender_id' => 'Gender',
+            'gender_id' => 'Sex',
             'ethnic_group_id' => 'Ethnic Group',
             'gp_name' => 'GP\'s Name',
             'gp_address' => 'GP\'s Address',

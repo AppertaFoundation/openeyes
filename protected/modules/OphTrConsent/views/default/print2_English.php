@@ -68,7 +68,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
             <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
         </tr>
         <tr>
-            <th>Gender</th>
+            <th>Sex</th>
             <td><?= $this->patient->genderString ?></td>
         </tr>
         <tr>
