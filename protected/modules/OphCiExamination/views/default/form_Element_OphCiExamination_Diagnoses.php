@@ -74,7 +74,7 @@ foreach ($this->patient->episodes as $ep) {
         </label>
     </div>
 
-    <table id="<?= $model_name ?>_diagnoses_table" class="cols-10" style="display: <?php echo count($element->diagnoses)===1 ? '' : 'none'; ?>">
+    <table id="<?= $model_name ?>_diagnoses_table" class="cols-10" style="display: <?php echo count($element->diagnoses) >= 1 ? '' : 'none'; ?>">
             <colgroup>
                 <col class="cols-4">
                 <col class="cols-2">
