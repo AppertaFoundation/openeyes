@@ -22,7 +22,7 @@ if ($this->checkClericalEditAccess()) {
         <table>
             <colgroup>
                 <col class="cols-7">
-                <col class="cols-4">
+                <col class="cols-5">
             </colgroup>
             <tbody>
             <?php foreach ($this->getPatientFactors() as $factor) : ?>
@@ -64,7 +64,7 @@ if ($this->checkClericalEditAccess()) {
                                     <label>  <?php echo CHtml::encode($factor->comments_label); ?> </label>
                                 </div>
                                 <div class="large-6 column end">
-                                    <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array('rows' => 2)); ?>
+                                    <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array('rows' => 1, 'class' => "cols-full")); ?>
                                 </div>
                             </fieldset>
                         <?php } ?>
