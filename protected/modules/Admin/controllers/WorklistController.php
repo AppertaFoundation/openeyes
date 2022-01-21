@@ -738,7 +738,7 @@ class WorklistController extends BaseAdminController
      */
     public function actionDeactivatePathwayPresets()
     {
-        $ids = Yii::app()->request->getPost('pathways');
+        $ids = Yii::app()->request->getPost('pathway');
 
         $pathway_types = PathwayType::model()->findAllByPk($ids);
 
