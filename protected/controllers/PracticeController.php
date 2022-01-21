@@ -308,7 +308,7 @@ class PracticeController extends BaseController
                             Audit::add(
                                 'Practice',
                                 $action . '-practice',
-                                "Practice manually [id: $practice->id] {$action}ed."
+                                "Practice manually [id: $practice->id, contact id: $contact->id] {$action}ed."
                             );
                             if (!$isAjax) {
                                 if (count($gpIdProviderNoList) === 0) {
@@ -342,7 +342,7 @@ class PracticeController extends BaseController
                         Audit::add(
                             'Practice',
                             $action . '-practice',
-                            "Practice manually [id: $practice->id] {$action}ed."
+                            "Practice manually [id: $practice->id, contact id: $contact->id] {$action}ed."
                         );
                         if (!$isAjax) {
                             $this->redirect(array('view', 'id' => $practice->id));
