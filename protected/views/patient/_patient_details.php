@@ -54,7 +54,7 @@
                 </tr>
             <?php endif; ?>
             <tr class="data-group">
-                <td class="data-label">Gender:</td>
+                <td class="data-label">Sex:</td>
                 <td class="data-value"><?= $this->patient->getGenderString() ?></td>
             </tr>
             <tr class="data-group">

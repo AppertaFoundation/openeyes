@@ -44,7 +44,7 @@ $cols = array(
     ),
     array(
         'id' => 'gender',
-        'header' => 'Gender',
+        'header' => 'Sex',
         'value' => '$data->event->episode->patient->getGenderString()',
     ),
     array(

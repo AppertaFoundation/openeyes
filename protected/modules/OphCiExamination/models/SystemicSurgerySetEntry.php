@@ -89,7 +89,7 @@ class SystemicSurgerySetEntry extends \BaseActiveRecordVersioned
             'id' => 'ID',
             'set_id' => 'Set',
             'operation' => 'Operation',
-            'gender' => 'Gender',
+            'gender' => 'Sex',
             'age_min' => 'Age Min',
             'age_max' => 'Age Max',
             'last_modified_user_id' => 'Last Modified User',

@@ -72,7 +72,7 @@ $model_name = CHtml::modelName($model);
                 </td>
             </tr>
             <tr>
-                <td> Gender:</td>
+                <td> Sex:</td>
                 <td>
                     <div class="data-value gender"></div>
                     <?= \CHtml::activeHiddenField($model, "{$type}_gender", array('class' => 'genderletter-input')); ?>

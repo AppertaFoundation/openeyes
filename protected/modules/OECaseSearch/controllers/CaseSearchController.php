@@ -152,7 +152,7 @@ class CaseSearchController extends BaseModuleController
                     'gender' => array(
                         'asc' => 'gender',
                         'desc' => 'gender DESC',
-                        'label' => 'Gender',
+                        'label' => 'Sex',
                     ),
                     /*
                     // reserve for OE-12343 re-implementation
