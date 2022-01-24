@@ -40,7 +40,11 @@ $element_errors = $element->getErrors();
     
     <!-- Power of Attorney contacts -->
     <table class="cols-full last-left">
-        <colgroup><col class="cols-3"></colgroup">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+            <col class="cols-5">
+        </colgroup>
         <tbody>
             <?php
             foreach ($this->contact_assignments as $contact_assignment) { ?>
@@ -48,17 +52,21 @@ $element_errors = $element->getErrors();
                 <?php $authorised_decision = $contact_assignment->authorisedDecision; ?>
                 <?php $considered_decision = $contact_assignment->consideredDecision; ?>
                 <tr>
+                    <th>Patient's attorney or deputy</th>
                     <td><?= $contact->getFullName() ?></td>
-                    <td>
-                        <div>I have been authorised to make decisions about the procedure in question 	
-                            <span class="highlighter"><?= $authorised_decision->name ?></span>
-                        </div>
-                        <div>I have considered the relevant circumstances relating to the decision in question and believe the procedure to be in the patient's best interests  	
-                            <span class="highlighter"><?= $considered_decision->name ?></span>
-                        </div>				
-                    </td>
+                    <td><!-- empty --></td>
+                </tr>
+                <tr>
+                    <th>Statement</th>
+                    <td>I have been authorised to make decisions about the procedure in question:</td>
+                    <td><span class="highlighter"><?= $authorised_decision->name ?></span></td>
+                </tr>
+                <tr>
+                    <th>Statement</th>
+                    <td>I have considered the relevant circumstances relating to the decision in question and believe the procedure to be in the patients best interests:</td>
+                    <td><span class="highlighter"><?= $considered_decision->name ?></span></td>
                 </tr>
             <?php } ?>
         </tbody>
-    </table>	 
+    </table>
 </div>

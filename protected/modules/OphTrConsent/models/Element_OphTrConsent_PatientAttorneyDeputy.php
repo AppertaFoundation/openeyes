@@ -34,8 +34,9 @@
 namespace OEModule\OphTrConsent\models;
 
 use OEModule\OphTrConsent\widgets\Contacts as ContactsWidget;
+use OEModule\OphTrConsent\models\RequiresSignature;
 
-class Element_OphTrConsent_PatientAttorneyDeputy extends \BaseEventTypeElement
+class Element_OphTrConsent_PatientAttorneyDeputy extends \BaseEventTypeElement implements RequiresSignature
 {
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
@@ -122,5 +123,43 @@ class Element_OphTrConsent_PatientAttorneyDeputy extends \BaseEventTypeElement
         return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
+    }
+
+    public function getRequiredSignatures(): array
+    {
+        $result = [];
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('event_id = :event_id');
+        $criteria->params = [
+            ':event_id' => $this->event_id
+        ];
+        $contacts = \PatientAttorneyDeputyContact::model()->findAll($criteria);
+
+        foreach ($contacts as $contact) {
+            if ($signature_id = $contact->signature_id) {
+                $result[] = \OphTrConsent_Signature::model()->findByPk($signature_id);
+            } else {
+                $sig = new \OphTrConsent_Signature();
+                $sig->setAttributes([
+                    "type" => \BaseSignature::TYPE_PATIENT,
+                    "signatory_role" => $contact->contact->label->name,
+                    "signatory_name" => $contact->contact->getFullName(),
+                    "initiator_row_id" => $contact->id,
+                ]);
+                $result[] = $sig;
+            }
+        }
+
+        return $result;
+    }
+
+    public function afterSignedCallback(int $row_id, int $signature_id): void
+    {
+        $contact = \PatientAttorneyDeputyContact::model()->findByPk($row_id);
+        $contact->signature_id = $signature_id;
+        if (!$contact->save(false, ["signature_id"])) {
+            throw new \Exception('Unable to save patient deputy: ' . print_r($contact->getErrors(), true));
+        };
     }
 }

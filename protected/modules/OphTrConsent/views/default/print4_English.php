@@ -145,6 +145,76 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     </div>
     <?php endif; ?>
 
+    <?php if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_PatientAttorneyDeputy'])) : ?>
+    <div class="group">
+        <h4>Patient's attorney or deputy</h4>
+        <div class="indent">
+            <p>Where the patient has authorised an attorney to make decisions about the procedure in question under 
+                a Lasting Power of Attorney or a Court Appointed Deputy has been authorised to make decisions about the 
+                procedure in question, the attorney or deputy will have the final responsibility for determining whether 
+                a procedure is in the patient's best interests
+            </p>
+
+            <?php
+            $criteria = new \CDbCriteria();
+            $gp = $this->patient->gp;
+            $criteria->addCondition('t.patient_id = ' . $this->patient->id);
+            if (isset($gp)) {
+                $criteria->addCondition('t.contact_id != ' . $gp->contact->id);
+            }
+            $criteria->addCondition('t.event_id = ' . $elements['OEModule\OphTrConsent\models\Element_OphTrConsent_PatientAttorneyDeputy']->event_id);
+            $contacts = \PatientAttorneyDeputyContact::model()->findAll($criteria);
+            foreach ($contacts as $key => $contact) {
+                if ($key !== 0) { ?>
+                    <div class="group">
+                    <div class="indent">
+                <?php } ?>
+                <table class="row-lines">
+                    <colgroup>
+                        <col class="cols-3">
+                        <col class="cols-5">
+                        <col class="cols-5">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th>Patient's attorney or deputy</th>
+                            <td><?= $contact->contact->getFullName() ?></td>
+                            <td><!-- empty --></td>
+                        </tr>
+                        <tr>
+                            <th>Statement</th>
+                            <td>I have been authorised to make decisions about the procedure in question:</td>
+                            <td><span class="highlighter"><?= $contact->authorisedDecision->name ?></span></td>
+                        </tr>
+                        <tr>
+                            <th>Statement</th>
+                            <td>I have considered the relevant circumstances relating to the decision in question and believe 
+                                the procedure to be in the patients best interests:</td>
+                            <td><span class="highlighter"><?= $contact->consideredDecision->name ?></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+                <?= $this->renderPartial(
+                '_print_signature',
+                array(
+                'vi' => ($css_class == 'impaired'),
+                'element' => $elements[Element_OphTrConsent_Esign::class],
+                'signature' => $elements[Element_OphTrConsent_Esign::class]
+                ->getSignatureByInitiatorAttributes(
+                    (int)$elements['OEModule\OphTrConsent\models\Element_OphTrConsent_PatientAttorneyDeputy']->getElementType()->id,
+                    (int)$contact->id),
+                'title_label' => 'Contact type',
+                'name_label' => 'Patient\'s attorney or deputy',
+        )
+                ); ?>
+            <?php } ?>
+        <?php if (empty($contacts)) : ?>
+        </div></div>
+        <?php endif; ?>
+    <?php endif; ?>
+
     <?php if (isset($elements['Element_OphTrConsent_CapacityAssessment']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_CapacityAssessment']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
     <div class="group"><h4>Best Interests Decision</h4>
         <div class="indent">
