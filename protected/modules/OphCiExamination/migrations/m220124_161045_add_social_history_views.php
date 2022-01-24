@@ -35,7 +35,7 @@ class m220124_161045_add_social_history_views extends OEMigration
                                                 `t2`.`patient_id` is null")->execute();
 
         $this->dbConnection->createCommand("CREATE OR REPLACE
-                                            ALGORITHM = UNDEFINED VIEW `patient_socialhistory_assignment` AS
+                                            ALGORITHM = UNDEFINED VIEW `socialhistory` AS
                                             select
                                                 `element`.`id` AS `id`,
                                                 `latest`.`patient_id` AS `patient_id`,
@@ -44,6 +44,10 @@ class m220124_161045_add_social_history_views extends OEMigration
                                                 `element`.`smoking_status_id` AS `smoking_status_id`,
                                                 `element`.`accommodation_id` AS `accommodation_id`,
                                                 `element`.`carer_id` AS `carer_id`,
+                                                `element`.`substance_misuse_id`,
+                                                `element`.`alcohol_intake`,
+                                                `element`.`comments`,
+                                                `element`.`type_of_job`,
                                                 `element`.`last_modified_user_id` AS `last_modified_user_id`,
                                                 `element`.`last_modified_date` AS `last_modified_date`,
                                                 `element`.`created_user_id` AS `created_user_id`,
