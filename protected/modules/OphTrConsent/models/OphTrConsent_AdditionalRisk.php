@@ -67,6 +67,7 @@ class OphTrConsent_AdditionalRisk extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('name, active, institution_id, display_order', 'safe'),
+            array('name', 'length', 'max' => 255),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
         );

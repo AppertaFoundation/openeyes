@@ -8,7 +8,7 @@ class m210802_155331_add_additional_risks_table extends OEMigration
             'ophtrconsent_additional_risk',
             array(
                 'id' => 'pk',
-                'name' => 'text not null',
+                'name' => 'varchar(255) not null',
                 'institution_id' => 'int(10) unsigned not null',
                 'active' => 'tinyint(1) default 1',
                 'display_order' => 'int(10) unsigned not null default 1',
