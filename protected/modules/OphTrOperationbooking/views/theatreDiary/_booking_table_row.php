@@ -87,6 +87,7 @@ $patientSummaryPopup = $this->createWidget(
                 <?php else : ?>
                     <?=$operation->priority->name?>
                 <?php endif; ?>
+                &nbsp;
                 <li><?=implode("</li><li>", $operation->anaesthetic_type);?></li>
 
                 <li>
@@ -165,4 +166,3 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMu
         PatientPanel.patientPopups.init(false,<?= $patient->id?>);
     });
 </script>
-
