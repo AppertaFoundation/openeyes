@@ -7,7 +7,7 @@ class m211102_081204_add_user_sign_off_text extends OEMigration
         $this->addOEColumn(
             "user",
             "correspondence_sign_off_text",
-            "TINYTEXT NULL DEFAULT 'Sincerely,\\n'",
+            "VARCHAR(255) NULL DEFAULT 'Sincerely,\\n'",
             true
         );
     }

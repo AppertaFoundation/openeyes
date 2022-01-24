@@ -72,7 +72,7 @@ class User extends BaseActiveRecordVersioned
             array('id, first_name, last_name, email, global_firm_rights, correspondence_sign_off_user_id', 'safe', 'on' => 'search'),
             array('title, first_name, last_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
             array('correspondence_sign_off_text', 'required'),
-            array('correspondence_sign_off_text', 'length', 'max' => 150),
+            array('correspondence_sign_off_text', 'length', 'max' => 255),
             array(
                 'first_name, last_name, email, global_firm_rights, title, qualifications, role, is_consultant, is_surgeon,
                  has_selected_firms,doctor_grade_id, registration_code, signature_file_id, correspondence_sign_off_user_id',
