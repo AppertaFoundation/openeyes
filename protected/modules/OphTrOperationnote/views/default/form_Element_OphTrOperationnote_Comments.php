@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -20,15 +21,15 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
 ?>
 
 <div class="element-fields full-width flex-layout" id="OphTrOperationnote_Comments" data-outpatient-minor-op="<?= $is_outpatient_minor_op ? 'yes' : 'no' ?>">
-  <div class="data-group cols-10">
+  <div class="data-group cols-11">
     <div>
         <?php echo $form->textArea(
             $element,
             'comments',
             array(),
             false,
-            ['cols' => 30, 'class' => 'autosize'],
-            array('label' => 2, 'field' => 10)
+            ['cols' => 30, 'class' => 'autosize cols-full'],
+            array('label' => 2, 'field' => 'full')
         ) ?>
     </div>
       <div>
@@ -37,8 +38,8 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                 'postop_instructions',
                 array(),
                 false,
-                ['cols' => 30, 'class' => 'autosize'],
-                array('label' => 2, 'field' => 10)
+                ['cols' => 30, 'class' => 'autosize cols-full'],
+                array('label' => 2, 'field' => 'full')
             ) ?>
       </div>
   </div>
