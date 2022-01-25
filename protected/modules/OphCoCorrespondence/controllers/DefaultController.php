@@ -87,15 +87,14 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionExport($id)
     {
+        $file_path = $this->generatePDFPrint($id);
         $letter = ElementLetter::model()->find('event_id=?', array($id));
         if (!$letter) {
             throw new CHttpException(404, 'Correspondence event could not be found.');
         }
         $this->event = $letter->event;
-        $url = $this->generatePDF($letter->event, true);
-        $response = $letter->export($url);
-        unlink($url);
-        $this->renderJSON($response->ReceiveFileByCrnResult);
+        $response = $letter->export($file_path);
+        $this->renderJSON($response->StoreDocumentResponse);
     }
 
     /**
@@ -626,7 +625,6 @@ class DefaultController extends BaseEventTypeController
      * @param $id
      * @param boolean $returnContent
      * @param boolean $return_recipient_html
-     * @return bool
      * @throws Exception
      */
     public function actionPDFPrint($id)
@@ -634,6 +632,86 @@ class DefaultController extends BaseEventTypeController
         $this->printInit($id);
         $this->layout = '//layouts/print';
         $this->generatePDF($this->event);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function generatePDFPrint($id)
+    {
+        $event = Event::model()->findByPk($id);
+
+        if (!$event) {
+            throw new Exception('Unable to retrieve event details.');
+        }
+        $this->printInit($id);
+        $this->layout = '//layouts/print';
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+
+        $document_target_id = Yii::app()->request->getParam('document_target_id', false);
+
+        /**
+         * In other modules pdf_print_documents used to let WKHtmlToPDF to know how many documents we have
+         * like, if we print a document that has 3 pages, 2 times (means 6 pages)
+         * we set the pdf_print_documents to 2 so the page number can be calculated correctly
+         * But here in Correspondence WKHtmlToPDF called separately for each recipients(then PDF_JavaScript merged them to one)
+         * therefore pdf_print_documents will be always 1
+         */
+        $this->pdf_print_documents = 1;
+
+        // render 1 recipient's letter + attachments at once...
+        // we need the letter as PDF
+        $attachments = $letter->getAllAttachments();
+        if ($document_target_id) {
+            $recipients = $this->getRecipients($id, true, $document_target_id);
+        } else {
+            $recipients = $this->getRecipients($id, true);
+        }
+
+        // check if printing is necessary
+
+        $this->pdf_output = new PDF_JavaScript();
+        foreach ($recipients as $target_id => $recipient) {
+            $recipient_query = rawurlencode($recipient);
+
+            // We use localhost without any port info because Puppeteer is running locally.
+            $html_letter = "http://localhost/OphCoCorrespondence/{$this->id}/printForRecipient/{$event->id}?recipient_address={$recipient_query}&target_id={$target_id}&is_view=true";
+
+            $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, false);
+
+            $recipient_pdf_path = $event->imageDirectory . '/event_' . $pdf_letter . '.pdf';
+            $this->addPDFToOutput($recipient_pdf_path);
+
+            // add attachments for each
+            if (count($attachments) > 0) {
+                foreach ($attachments as $attachment) {
+                    $this->pdf_print_suffix = '';
+                    if ($attached_event = Event::model()->findByPk($attachment['associated_event_id'])) {
+                        $attachment_route = $this->setPDFprintData($attached_event->id, false, true, $attached_event->eventType->class_name);
+
+                        $attachment_path = $attached_event->imageDirectory . '/event_' . $attachment_route . '.pdf';
+
+                        $this->addPDFToOutput($attachment_path);
+                        @unlink($attachment_path);
+                        @rmdir($attached_event->imageDirectory);
+                    }
+                }
+            }
+
+            // because the setPDFprintData() in attachment part will modify $this->event
+            // if there are multiple recipients, the second recipient will not be printed
+            $this->event = $event;
+            @unlink($recipient_pdf_path);
+        }
+
+        $pdf_path = $event->imageDirectory . '/event_' . $event->id . '.pdf';
+
+        $this->pdf_output->Output('F', $pdf_path);
+
+        return $pdf_path;
     }
 
     public function getPdfPath($event, $file_name = null)

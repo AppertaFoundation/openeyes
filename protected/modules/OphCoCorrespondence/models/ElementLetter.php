@@ -45,6 +45,7 @@
  * @property bool $is_urgent
  * @property bool $is_same_condition
  * @property int $to_location_id
+ * @property int $supersession_id
  *
  * The followings are the available model relations:
  * @property Event $event
@@ -55,6 +56,7 @@
  */
 class ElementLetter extends BaseEventTypeElement implements Exportable
 {
+    private const NDR_URI = 'http://www.wales.nhs.uk/ndr';
     public $cc_targets = array();
     public $address_target = null;
     // track the original source address so when overridden for copies to cc addresses, we can still keep
@@ -274,7 +276,6 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     }
 
     /**
-     * @param string $pdf_path Path to the PDF file to export for the event.
      * @param string $ws_type Web service type. Currently handled value is SOAP, though this can be extended in future to include RPC and REST.
      * @param mixed $client_obj The web service client object (if one has already been instantiated). If null, a client object will be created.
      * @return object The response object from the web service.
@@ -282,7 +283,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
      * @throws CHttpException
      * @throws Exception
      */
-    public function export($pdf_path, $ws_type = 'SOAP', $client_obj = null)
+    public function export($file_path, $ws_type = 'SOAP', $client_obj = null)
     {
         if ($ws_type === 'SOAP') {
             $wsdl = $this->getExportUrl();
@@ -296,32 +297,138 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 if (Yii::app()->params['correspondence_export_location_url']) {
                     $ws_params['location'] = Yii::app()->params['correspondence_export_location_url'];
                 }
-                $source = $this->letterType ? (': ' . $this->letterType->name) : null;
-                $file_content = file_get_contents($pdf_path);
+
+                /** @var $user User */
+                $user = User::model()->findByPk(Yii::app()->user->id);
 
                 $wrapper = new stdClass();
-                $wrapper->crn = new SoapVar(
-                    'U' . str_pad(
-                        preg_replace(
-                            '/(H|Hosnum)\s*[:;]\s*/',
-                            '',
-                            $this->event->episode->patient->getHos()
-                        ),
-                        6,
-                        '0',
-                        STR_PAD_LEFT
-                    ),
-                    XSD_STRING
+                $credentials = new stdClass();
+
+                $appid = new stdClass();
+                $appid->Domain = new SoapVar('SystemId', XSD_STRING);
+                $appid->Value = new SoapVar('313', XSD_STRING);
+                $credentials->ApplicationId = new SoapVar($appid, SOAP_ENC_OBJECT);
+
+                $user_credentials = $user->getAuthenticationForCurrentInstitution();
+
+                // For now assuming the username in OE is the same as NADEX.
+                $userid = new stdClass();
+                $userid->Domain = new SoapVar('CYMRU', XSD_STRING);
+                $userid->Value = new SoapVar($user_credentials->username, XSD_STRING);
+                $credentials->UserId = new SoapVar($userid, SOAP_ENC_OBJECT);
+
+                $wrapper->Credentials = new SoapVar($credentials, SOAP_ENC_OBJECT);
+
+                $doc = new stdClass();
+                $header = new stdClass();
+
+                if ($this->supersession_id) {
+                    $header->DocumentSupersessionSetId = new SoapVar($this->supersession_id, XSD_STRING);
+                }
+
+                $header->DocumentDateTime = new SoapVar(date('Y-m-dTH:i:s'), XSD_DATETIME);
+                $header->EventDateTime = new SoapVar($this->event->event_date, XSD_DATETIME);
+                $header->MIMEtype = new SoapVar('application/pdf', XSD_STRING);
+                $header->VersionNumber = new SoapVar('1', XSD_STRING);
+                $header->VersionDescription = new SoapVar('OpenEyes ' . $this->letterType->name, XSD_STRING);
+                $header->SensitivityTypeCode = new SoapVar('00', XSD_STRING);
+                $header->LocationCode = new SoapVar('NDR', XSD_STRING);
+
+                $institution = Institution::model()->getCurrent();
+                $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+
+                if (!$site) {
+                    throw new Exception('Unable to retrieve site details.');
+                }
+
+                $attributes = array();
+
+                $attr_list = array(
+                    'Author' => $user->getReversedNameAndInstitutionUsername($institution->id),
+                    'DocumentTypeCode' => $this->letterType->export_label, // New field.
+                    'DocumentCategoryCode' => 'AS',
+                    'DocumentSubCategoryCode' => 'AS12',
+                    'ExternalSupersessionId' => "313|182|CCNS|000123|001|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
+                    'Consultant' => $user->getReversedNameAndInstitutionUsername($institution->id),
+                    'ConsultantCode' => $user->registration_code,
+                    'Organisation' => $institution->name,
+                    'OrganisationCode' => $institution->remote_id,
+                    'Site' => $site->name,
+                    'SiteCode' => $site->remote_id,
+                    'Specialty' => 'Ophthalmology',
+                    'SpecialtyCode' => 130,
+                    'SourceApplication' => 313,
                 );
-                $wrapper->bfsId = new SoapVar($this->event_id, XSD_STRING);
-                $wrapper->key = new SoapVar('GENERAL LETTER', XSD_STRING);
-                $wrapper->source = new SoapVar("OpenEyes Correspondence$source", XSD_STRING);
-                $wrapper->fileContent = new SoapVar(base64_encode($file_content), XSD_BASE64BINARY);
-                $wrapper->fileType = new SoapVar('.pdf', XSD_STRING);
-                $request = new SoapParam($wrapper, 'ReceiveFileByCrn');
+
+                foreach ($attr_list as $key => $value) {
+                    $attribute = new stdClass();
+                    $attribute->Attribute = new SoapVar($key, XSD_STRING);
+                    $attribute->Namespace = new SoapVar(self::NDR_URI, XSD_ANYURI);
+                    $attribute->Value = new SoapVar($value, XSD_STRING);
+                    $attributes[] = new SoapVar($attribute, SOAP_ENC_OBJECT);
+                }
+
+                $header->DocumentAttribute = new SoapVar($attributes, SOAP_ENC_ARRAY);
+
+                $demographics = new stdClass();
+
+                $identifiers = array();
+
+                $patient_identifiers = PatientIdentifier::model()->findAll('patient_id = :id', [':id' => $this->event->episode->patient_id]);
+                foreach ($patient_identifiers as $identifier_instance) {
+                    $identifier = new stdClass();
+                    if ($identifier_instance->patientIdentifierType->usage_type === 'GLOBAL') {
+                        $identifier->Domain = new SoapVar('NHS', XSD_STRING);
+                    } else {
+                        $identifier->Domain = new SoapVar($identifier_instance->patientIdentifierType->institution->pas_key, XSD_STRING);
+                    }
+
+                    $identifier->Value = new SoapVar($identifier_instance->value, XSD_STRING);
+                    $identifiers[] = new SoapVar($identifier, SOAP_ENC_OBJECT);
+                }
+
+                $demographics->SubjectIdentifier = new SoapVar($identifiers, SOAP_ENC_ARRAY);
+                $demographics->FamilyName = new SoapVar($this->event->episode->patient->last_name, XSD_STRING);
+                $demographics->GivenName = new SoapVar($this->event->episode->patient->first_name, XSD_STRING);
+                $demographics->DateOfBirth = new SoapVar($this->event->episode->patient->dob, XSD_DATE);
+                $demographics->SexCode = new SoapVar($this->event->episode->patient->gender, XSD_STRING);
+                $demographics->AddressLine1 = new SoapVar($this->event->episode->patient->contact->address->address1, XSD_STRING);
+                $demographics->AddressLine2 = new SoapVar($this->event->episode->patient->contact->address->address2, XSD_STRING);
+                $demographics->AddressLine3 = new SoapVar($this->event->episode->patient->contact->address->city, XSD_STRING);
+                $demographics->AddressLine4 = new SoapVar($this->event->episode->patient->contact->address->county, XSD_STRING);
+                $demographics->PostCode = new SoapVar($this->event->episode->patient->contact->address->postcode, XSD_STRING);
+
+                $header->SubjectDemographicsAsRecorded = new SoapVar($demographics, SOAP_ENC_OBJECT);
+
+                $document_data = new stdClass();
+                $document_category = new stdClass();
+                $document_category->DocumentType = new SoapVar($this->letterType->name, XSD_STRING);
+                $document_category->DocumentSubType = new SoapVar('OpenEyes ' . $this->letterType->name, XSD_STRING);
+                $document_category->DocumentSubTypeCode = new SoapVar($this->letterType->export_label, XSD_STRING);
+                $document_data->DocumentCategory = new SoapVar($document_category, SOAP_ENC_OBJECT);
+                $document_data->Sensitivity = new SoapVar(false, XSD_BOOLEAN);
+                $header->DocumentData = new SoapVar($document_data, SOAP_ENC_OBJECT);
+
+                $doc->Header = new SoapVar($header, SOAP_ENC_OBJECT);
+                $body = new stdClass();
+
+                $body->DocumentBase64 = new SoapVar(base64_encode(file_get_contents($file_path)), XSD_BASE64BINARY);
+                $doc->Body = new SoapVar($body, SOAP_ENC_OBJECT);
+
+                $wrapper->DocumentVersion = new SoapVar($doc, SOAP_ENC_OBJECT);
+
+                $request = new SoapParam($wrapper, 'StoreDocumentRequest');
 
                 $client = $client_obj ?: new SoapClient($wsdl, $ws_params);
-                return $client->ReceiveFileByCrn($request);
+                $response = $client->StoreDocumentRequest($request);
+
+                if (!$this->supersession_id && $response->StoreDocumentResponse->Success) {
+                    // Capture the supersession ID and store it to allow document versioning.
+                    $this->supersession_id = $response->StoreDocumentResponse->DocumentSupersessionSetId;
+                    $this->save();
+                }
+
+                return $response;
             }
             throw new CHttpException(404, 'WSDL URL has not been specified.');
         }

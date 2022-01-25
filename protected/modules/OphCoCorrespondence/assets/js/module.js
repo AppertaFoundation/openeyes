@@ -884,17 +884,16 @@ function OphCoCorrespondence_do_export() {
         'url': '/OphCoCorrespondence/default/export/' + OE_event_id,
         'data': {
             'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
-            'auto_print': false
         },
-        'success': function(response) {
-            if (response.hasOwnProperty('DocId')) {
+        'success': function (response) {
+            if (response.Success) {
                 new OpenEyes.UI.Dialog.Alert({
-                    content: 'Export completed successfully',
+                    content: 'Export to external document store completed successfully.',
                     closeCallback: enableButtons
                 }).open();
             } else {
                 new OpenEyes.UI.Dialog.Alert({
-                    content: 'Export unable to be performed: ' + response.ErrorMessage,
+                    content: 'Export unable to be performed: Unknown error occurred.',
                     closeCallback: enableButtons
                 }).open();
             }

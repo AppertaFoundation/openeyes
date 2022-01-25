@@ -26,6 +26,7 @@
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property PatientIdentifierType $patientIdentifierType
  *
  * The followings are the available model relations:
  * @property User $lastModifiedUser

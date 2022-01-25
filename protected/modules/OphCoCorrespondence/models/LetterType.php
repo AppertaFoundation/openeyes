@@ -21,6 +21,7 @@
  *
  * @property string $id
  * @property int $event_id
+ * @property string $export_label
  *
  * The followings are the available model relations:
  * @property Event $event
