@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -234,7 +235,7 @@ class AdminController extends \ModuleAdminController
         $init_method = new OphcorrespondenceInitMethod();
 
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('macro_id = '.$id);
+        $criteria->addCondition('macro_id = ' . $id);
         $criteria->order = 'display_order asc';
         $associated_content_saved = MacroInitAssociatedContent::model()->findAll($criteria);
 
@@ -260,7 +261,7 @@ class AdminController extends \ModuleAdminController
                 $errors = $macro->errors;
             } else {
                 if (!$macro->save()) {
-                    throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
+                    throw new Exception('Unable to save macro: ' . print_r($macro->errors, true));
                 }
 
                 Audit::add('admin', $mode, $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
@@ -357,7 +358,7 @@ class AdminController extends \ModuleAdminController
                     $errorList[] = $siteSecretary->getErrors();
                 } else {
                     if (!$siteSecretary->save()) {
-                        throw new CHttpException(500, 'Unable to save Site Secretary: '.$siteSecretary->site->name);
+                        throw new CHttpException(500, 'Unable to save Site Secretary: ' . $siteSecretary->site->name);
                     }
                 }
                 //Add to array so updated version can be rendered
@@ -407,7 +408,7 @@ class AdminController extends \ModuleAdminController
             }
             $firmId = $siteSecretary->firm_id;
             $siteSecretary->delete();
-            $this->redirect('/OphCoCorrespondence/admin/addSiteSecretary/'.$firmId);
+            $this->redirect('/OphCoCorrespondence/admin/addSiteSecretary/' . $firmId);
         }
         throw new CHttpException(400, 'Invalid method for delete');
     }
@@ -418,12 +419,12 @@ class AdminController extends \ModuleAdminController
     public function actionGetInitMethodDataById()
     {
 
-        if (Yii::app()->request->isAjaxRequest ) {
+        if (Yii::app()->request->isAjaxRequest) {
             if (!isset($_POST['id'])) {
                 throw new CHttpException(400, 'No ID provided');
             }
             if (!$method = OphcorrespondenceInitMethod::model()->findByPk($_POST['id'])) {
-                throw new Exception("Method not found: ".$_POST['id']);
+                throw new Exception("Method not found: " . $_POST['id']);
             }
 
             $result = array(
@@ -460,7 +461,7 @@ class AdminController extends \ModuleAdminController
                 }
 
                 if (!$senderEmailAddresses->save()) {
-                    throw new Exception('Unable to save Sender Email Address: '.print_r($senderEmailAddresses->errors, true));
+                    throw new Exception('Unable to save Sender Email Address: ' . print_r($senderEmailAddresses->errors, true));
                 }
 
                 Audit::add('admin', 'create', $senderEmailAddresses->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'SenderEmailAddresses'));
@@ -500,7 +501,7 @@ class AdminController extends \ModuleAdminController
                 }
 
                 if (!$senderEmailAddresses->save()) {
-                    throw new Exception('Unable to save Sender Email Address: '.print_r($senderEmailAddresses->errors, true));
+                    throw new Exception('Unable to save Sender Email Address: ' . print_r($senderEmailAddresses->errors, true));
                 }
 
                 Audit::add('admin', 'create', $senderEmailAddresses->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'SenderEmailAddresses'));
@@ -532,7 +533,7 @@ class AdminController extends \ModuleAdminController
                 $errors = $template->errors;
             } else {
                 if (!$template->save()) {
-                    throw new Exception('Unable to save Email template: '.print_r($template->errors, true));
+                    throw new Exception('Unable to save Email template: ' . print_r($template->errors, true));
                 }
 
                 Audit::add('admin', 'create', $template->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'EmailTemplate'));
@@ -563,7 +564,7 @@ class AdminController extends \ModuleAdminController
                 $errors = $template->errors;
             } else {
                 if (!$template->save()) {
-                    throw new Exception('Unable to save Email template: '.print_r($template->errors, true));
+                    throw new Exception('Unable to save Email template: ' . print_r($template->errors, true));
                 }
 
                 Audit::add('admin', 'create', $template->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'EmailTemplate'));
