@@ -420,7 +420,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $request = new SoapParam($wrapper, 'StoreDocumentRequest');
 
                 $client = $client_obj ?: new SoapClient($wsdl, $ws_params);
-                $response = $client->StoreDocumentRequest($request);
+                $response = $client->StoreDocument($request);
 
                 if (!$this->supersession_id && $response->StoreDocumentResponse->Success) {
                     // Capture the supersession ID and store it to allow document versioning.

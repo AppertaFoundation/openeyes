@@ -84,15 +84,15 @@ class ElementLetterTest extends ActiveRecordTestCase
         $path = Yii::app()->getRuntimePath() . '/test.pdf';
         $client = $this->getMockBuilder('SoapClient')
             ->disableOriginalConstructor()
-            ->setMethods(array('StoreDocumentRequest'))
+            ->setMethods(array('StoreDocument'))
             ->getMock();
 
         $client->expects(self::at(0))
-            ->method('StoreDocumentRequest')
+            ->method('StoreDocument')
             ->willReturn(new ExportResult(true, 1, 1));
 
         $client->expects(self::at(1))
-            ->method('StoreDocumentRequest')
+            ->method('StoreDocument')
             ->willReturn(new ExportResult(false, null, null));
 
         // Simulate a successful upload.
