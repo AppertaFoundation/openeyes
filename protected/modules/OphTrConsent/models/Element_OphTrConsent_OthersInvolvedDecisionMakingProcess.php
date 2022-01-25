@@ -246,6 +246,7 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
                 $data_all[] = $data;
                 $existing_id = isset($data['existing_id']) ? (int)$data['existing_id'] : null;
 
+                //Ophtrconsent_OthersInvolvedDecisionMakingProcessContact Contact
                 if ($existing_id && $model = Ophtrconsent_OthersInvolvedDecisionMakingProcessContact::model()->find(
                         'element_id=? AND id=?',
                         array($this->id, $data['existing_id'])
@@ -259,8 +260,67 @@ class Element_OphTrConsent_OthersInvolvedDecisionMakingProcess extends BaseEvent
                     $model->element_id = $this->id;
                     $model->signature_required = $post_data['signature_required'][$idx];
                 }
+
+                //OE Contact
+                $contact_id = isset($data['contact_id']) ? (int)$data['contact_id'] : null;
+                //if we have a contact id use that otherwise keep looking
+                if (!($contact_id && $cont = Contact::model()->find(
+                        'id=?',
+                        array($contact_id)
+                    ))){
+                    // try finding a matching contact from the info we have otherwise make a new one
+                    if (!($cont = Contact::model()->find(
+                        'primary_phone=? AND mobile_phone=? AND first_name=? AND last_name=?',
+                        array($data['phone_number'], $data['mobile_number'], $data['first_name'], $data['last_name'])
+                    ))) {
+                        // fallback make a new contact
+                        $cont = new Contact();
+                    }
+                }
+                $cont->primary_phone = $data['phone_number'];
+                $cont->mobile_phone = $data['mobile_number'];
+                $cont->first_name = $data['first_name'];
+                $cont->last_name = $data['last_name'];
+
+                // if we do not have an address object make one.
+                if(!$cont->address){
+                    $cont->address = new Address();
+                }
+                $cont->address->address1 = $data['address_line1'];
+                $cont->address->address2 = $data['address_line2'];
+                $cont->address->city = $data['city'];
+                $cont->address->country_id = $data['country_id'];
+                $cont->address->postcode = $data['postcode'];
+
+                if (!$cont->save()) {
+                    throw new Exception('Unable to save contact: ' . print_r($cont->getErrors(), true));
+                } else{
+                    //now we have the saved contact ID now use that incase there is a next time
+                    $model->contact_id = $cont->id;
+                    $data['contact_id'] = $cont->id;
+
+                    $cont->address->contact_id = $cont->id;
+                    if (!$cont->address->save()) {
+                        throw new Exception('Unable to save contact address: ' . print_r($cont->address->getErrors(), true));
+                    }
+
+                    //if there is no association to this saved contact, make one.
+                    if (!$PatientContactAssignment = PatientContactAssignment::model()->find(
+                        'patient_id=? AND contact_id=?',
+                        array($this->event->episode->patient_id, $cont->id)
+                    )) {
+                        $PatientContactAssignment = new PatientContactAssignment();
+                        $PatientContactAssignment->patient_id = $this->event->episode->patient_id;
+                        $PatientContactAssignment->contact_id = $cont->id;
+
+                        if (!$PatientContactAssignment->save()) {
+                            throw new Exception('Unable to save PatientContactAssignment: ' . print_r($PatientContactAssignment->getErrors(), true));
+                        }
+                    }
+                }
+
                 if (!$model->save()) {
-                    throw new Exception('Unable to save contact: ' . print_r($model->getErrors(), true));
+                    throw new Exception('Unable to save OthersInvolvedDecisionMakingProcessContact: ' . print_r($model->getErrors(), true));
                 } else {
                     $new_ids[] = $model->id;
                 }

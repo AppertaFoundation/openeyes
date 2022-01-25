@@ -6,8 +6,9 @@
  * The followings are the available columns in table 'ophtrconsent_others_involved_decision_making_process_contact':
  * @property integer $id
  * @property string $element_id
- * @property integer contact_user_id
- * @property integer contact_type_id
+ * @property integer $contact_id
+ * @property integer $contact_user_id
+ * @property integer $contact_type_id
  * @property string $first_name
  * @property string $last_name
  * @property string $email
@@ -36,6 +37,7 @@
  * @property OphtrconsentPatientRelationship $consentPatientRelationship
  * @property User $createdUser
  * @property User $lastModifiedUser
+ * @property Contact $contact
  */
 
 class Ophtrconsent_OthersInvolvedDecisionMakingProcessContact extends BaseActiveRecord
@@ -85,6 +87,7 @@ class Ophtrconsent_OthersInvolvedDecisionMakingProcessContact extends BaseActive
             'consentPatientRelationship' => array(self::BELONGS_TO, 'OphTrConsent_PatientRelationship', 'consent_patient_relationship_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'signature' => array(self::BELONGS_TO, 'OphTrConsent_Signature', 'contact_signature_id'),
         );
     }
