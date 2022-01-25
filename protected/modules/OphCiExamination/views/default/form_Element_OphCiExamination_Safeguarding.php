@@ -105,6 +105,7 @@ $patient_is_minor = $patient->isChild();
                     <td>
                     </td>
                 </tr>
+                <tr class="js-safeguarding-paediatric-row"><td colspan="3"><hr class="divider"></td></tr>
                 <?php
 
                 $entries = array();

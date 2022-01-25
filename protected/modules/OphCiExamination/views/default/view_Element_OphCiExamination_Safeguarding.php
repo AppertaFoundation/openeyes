@@ -1,5 +1,6 @@
 <?php
-    use \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding;
+
+    use OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding;
 
     $outcome_actionable =
         Yii::app()->user->checkAccess('Safeguarding') &&
@@ -31,6 +32,7 @@
                     <td>Who has parental responsibility for the child?</td>
                     <td><?= $element->responsible_parent_name ?></td>
                 </tr>
+                <tr><td colspan="3"><hr class="divider"></tr>
                     <?php
                 }
 
