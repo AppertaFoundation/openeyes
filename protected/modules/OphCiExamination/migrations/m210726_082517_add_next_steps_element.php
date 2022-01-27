@@ -17,7 +17,7 @@ class m210726_082517_add_next_steps_element extends OEMigration
             array(
                 'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_NextSteps',
                 'display_order' => 541,
-                'group_name' => 'Next Steps',
+                'group_name' => 'Follow-up',
                 'default' => 0,
                 'required' => 0,
             )
