@@ -63,18 +63,7 @@ foreach ($this->patient->episodes as $ep) {
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
-    <div class="cols-1 align-left <?= $model_name ?>_no_ophthalmic_diagnoses_wrapper" style="display: <?php echo count($element->diagnoses)===0 ? '' : 'none'; ?>">
-        <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_diagnoses">
-            <?= \CHtml::checkBox(
-                $model_name . '[no_ophthalmic_diagnoses]',
-                $element->no_ophthalmic_diagnoses_date ? true : false,
-                array('class' => $model_name. '_no_ophthalmic_diagnoses')
-            ); ?>
-            No ophthalmic diagnoses
-        </label>
-    </div>
-
-    <table id="<?= $model_name ?>_diagnoses_table" class="cols-10" style="display: <?php echo count($element->diagnoses) >= 1 ? '' : 'none'; ?>">
+    <table id="<?= $model_name ?>_diagnoses_table" class="cols-10">
             <colgroup>
                 <col class="cols-4">
                 <col class="cols-2">
@@ -115,6 +104,19 @@ foreach ($this->patient->episodes as $ep) {
             );
         }
         ?>
+
+        <tr>
+            <td class="cols-1 align-left <?= $model_name ?>_no_ophthalmic_diagnoses_wrapper" style="display: <?php echo $element->no_ophthalmic_diagnoses_date ? '' : 'none'; ?>">
+                <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_diagnoses">
+                    <?= \CHtml::checkBox(
+                        $model_name . '[no_ophthalmic_diagnoses]',
+                        $element->no_ophthalmic_diagnoses_date ? true : false,
+                        array('class' => $model_name. '_no_ophthalmic_diagnoses')
+                    ); ?>
+                    No ophthalmic diagnoses for this Subspecialty.
+                </label>
+            </td>
+        </tr>
         </tbody>
     </table>
 

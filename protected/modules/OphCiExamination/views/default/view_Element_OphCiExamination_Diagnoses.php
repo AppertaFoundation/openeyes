@@ -27,10 +27,6 @@ $episodes = $this->episode->patient->episodes
         <div class="data-value not-recorded">
             Nil recorded this examination
         </div>
-    <?php } elseif (isset($element->no_ophthalmic_diagnoses_date)){ ?>
-        <div class="data-value">
-            Patient has no known Ophthalmic Diagnoses
-        </div>
     <?php } else { ?>
   <div class="data-value">
     <div class="tile-data-overflow">
@@ -81,21 +77,29 @@ $episodes = $this->episode->patient->episodes
             }
             $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
             ->findAll(["condition" => "element_diagnoses_id=:id and principal=0", "order" => "date desc", "params" => [":id"=>$element->id] ]);
-            foreach ($diagnoses as $diagnosis) { ?>
-          <tr>
-            <td>
-                    <?php echo $diagnosis->disorder->term ?>
-            </td>
-            <td>
-                    <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
-            </td>
-            <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
-          </tr>
-            <?php } ?>
+            if (isset($element->no_ophthalmic_diagnoses_date)){ ?>
+                <tr>
+                    <td class="data-value">
+                    Patient has no known Ophthalmic Diagnoses for <?=$episode->getSubspecialtyText()?>(Subspecialty).
+                    </td>
+                </tr>
+            <?php } else {
+                foreach ($diagnoses as $diagnosis) { ?>
+                  <tr>
+                    <td>
+                        <?php echo $diagnosis->disorder->term ?>
+                    </td>
+                    <td>
+                        <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
+                    </td>
+                    <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
+                  </tr>
+                <?php }
+            }?>
         </tbody>
       </table>
     </div>
   </div>
-        <?php } ?>
+<?php } ?>
 </div>
 
