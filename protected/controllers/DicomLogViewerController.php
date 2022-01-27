@@ -100,11 +100,15 @@ class DicomLogViewerController extends BaseController
         $file = SignatureImportLog::model()->findByPk($id);
         $path = $file->filename;
         $filetype = pathinfo($path, PATHINFO_EXTENSION);
-        $data = file_get_contents($path);
-        $base64 = 'data:image/' . $filetype . ';base64,' . base64_encode($data);
-        $elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_ConsentSignature'))->id;
+        $data = @file_get_contents($path);
+        if (!$data) {
+            $img = false;
+        } else {
+            $img = 'data:image/' . $filetype . ';base64,' . base64_encode($data);
+        }
+        $elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign'))->id;
 
-        $this->render('/dicomlogviewer/signature_import_log_crop', array('img' => $base64, 'log_id' => $id, 'type' => $type, 'elementy_type_id' => $elementy_type_id, 'page' => $page));
+        $this->render('/dicomlogviewer/signature_import_log_crop', array('img' => $img, 'log_id' => $id, 'type' => $type, 'elementy_type_id' => $elementy_type_id, 'page' => $page));
     }
 
     /**

@@ -116,20 +116,18 @@ class SignController extends \BaseController
             }
 
             // isset $data['extra_info'] and its content are validated in the validateRequest() method
-            if (isset($data['extra_info']) && $event) {
-                $extra_info = json_decode($data['extra_info'], true);
-
-                $element_type = \ElementType::model()->findByPk($extra_info['e_t_id']);
-                $element_instance = $element_type->getInstance();
-                $element = $element_instance->findByAttributes(['id' => $extra_info['e_id'], 'event_id' => $event->id]);
-                $element->signature_date = date('Y-m-d H:i');
-                $element->save(false);
-            } else {
+            if (!isset($data['extra_info']) && !$event) {
                 $return_message = "No signature data found";
             }
 
             if ($event) {
-                $sign_importer = new SignImporter($event, $element, $element_type);
+                $extra_info = json_decode($data['extra_info'], true);
+
+                $element_type = \ElementType::model()->findByPk($extra_info['e_t_id']);
+                $element_instance = $element_type->getInstance();
+                $esign_element = $element_instance->findByAttributes(['event_id' => $event->id]);
+
+                $sign_importer = new SignImporter($event, $esign_element, $element_type, $extra_info);
                 $sign_importer->setSignBase64($data['image']);
                 $sign_importer->save();
 

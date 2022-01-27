@@ -50,12 +50,12 @@ class SignImporter
 
     public function getFilePath()
     {
-        return $this->element->signature_file->getFilePath();
+        return $this->element->signatureFile->getFilePath();
     }
 
     public function save()
     {
-        $protected_file = \ProtectedFile::createForWriting("sign_{$this->event->id}_{$this->element->id}.png");
+        $protected_file = \ProtectedFile::createForWriting("sign_{$this->event->id}_".strtotime(date('Y-m-d H:i')).".png");
         file_put_contents($protected_file->getPath(), $this->sign_img_string);
         $protected_file->validate();
         $protected_file->title = "";
@@ -63,7 +63,15 @@ class SignImporter
         $protected_file->validate();
         $protected_file->save(false);
 
-        $this->element->signature_file_id = $protected_file->id;
-        return $this->element->update('protected_file_id');
+        $signature = new OphCoCvi_Signature();
+        $signature->element_id = $this->element->id;
+        $signature->type = \BaseSignature::TYPE_PATIENT;
+        $signature->signatory_role = 'Patient';
+        $signature->signatory_name = $this->event->episode->patient->contact->first_name." ".$this->event->episode->patient->contact->last_name;
+        $signature->timestamp = strtotime(date('Y-m-d H:i'));
+        $signature->signature_file_id = $protected_file->id;
+        $signature->save(false);
+
+        return $this;
     }
 }

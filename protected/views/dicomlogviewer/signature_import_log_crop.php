@@ -22,6 +22,9 @@ Yii::app()->clientScript->registerScriptFile('../../node_modules/cropper/dist/cr
 Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropper.min.css', null, 10);
 ?>
 <div class="box admin">
+    <?php if (!$img) { ?>
+    <div class="alert-box alert column error">Cannot load signature image</div>
+    <?php } else { ?>
     <div id="signature-crop">
         <img id="canvas_img" src="<?=$img?>" style="display: none;">
         <canvas id="canvas" class="signature_import_log_canvas"></canvas>
@@ -82,7 +85,10 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
         <input type="hidden" id="event_id" name="signature_import_log_form[event_id]">
         <input type="hidden" id="log_id" name="signature_import_log_form[log_id]" value="<?=$log_id?>">
     </div>
+    <?php } ?>
 </div>
+
+<?php if ($img) { ?>
 <script type="text/javascript">
     var canvas  = $("#canvas"),
         context = canvas.get(0).getContext("2d"),
@@ -164,3 +170,4 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
         });
     });
 </script>
+<?php } ?>
