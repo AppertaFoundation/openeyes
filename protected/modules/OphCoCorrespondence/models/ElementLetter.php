@@ -305,34 +305,34 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $credentials = new stdClass();
 
                 $appid = new stdClass();
-                $appid->Domain = new SoapVar('SystemId', XSD_STRING);
-                $appid->Value = new SoapVar('313', XSD_STRING);
-                $credentials->ApplicationId = new SoapVar($appid, SOAP_ENC_OBJECT);
+                $appid->Domain = 'SystemId';
+                $appid->Value = '313';
+                $credentials->ApplicationId = $appid;
 
                 $user_credentials = $user->getAuthenticationForCurrentInstitution();
 
                 // For now assuming the username in OE is the same as NADEX.
                 $userid = new stdClass();
-                $userid->Domain = new SoapVar('CYMRU', XSD_STRING);
-                $userid->Value = new SoapVar($user_credentials->username, XSD_STRING);
-                $credentials->UserId = new SoapVar($userid, SOAP_ENC_OBJECT);
+                $userid->Domain = 'CYMRU';
+                $userid->Value = $user_credentials->username;
+                $credentials->UserId = $userid;
 
-                $wrapper->Credentials = new SoapVar($credentials, SOAP_ENC_OBJECT);
+                $wrapper->Credentials = $credentials;
 
                 $doc = new stdClass();
                 $header = new stdClass();
 
                 if ($this->supersession_id) {
-                    $header->DocumentSupersessionSetId = new SoapVar($this->supersession_id, XSD_STRING);
+                    $header->DocumentSupersessionSetId = $this->supersession_id;
                 }
 
-                $header->DocumentDateTime = new SoapVar(date('Y-m-dTH:i:s'), XSD_DATETIME);
-                $header->EventDateTime = new SoapVar($this->event->event_date, XSD_DATETIME);
-                $header->MIMEtype = new SoapVar('application/pdf', XSD_STRING);
-                $header->VersionNumber = new SoapVar('1', XSD_STRING);
-                $header->VersionDescription = new SoapVar('OpenEyes ' . $this->letterType->name, XSD_STRING);
-                $header->SensitivityTypeCode = new SoapVar('00', XSD_STRING);
-                $header->LocationCode = new SoapVar('NDR', XSD_STRING);
+                $header->DocumentDateTime = date('Y-m-d\TH:i:s');
+                $header->EventDateTime = $this->event->event_date;
+                $header->MIMEtype = 'application/pdf';
+                $header->VersionNumber = '1';
+                $header->VersionDescription = 'OpenEyes ' . $this->letterType->name;
+                $header->SensitivityTypeCode = '00';
+                $header->LocationCode = 'NDR';
 
                 $institution = Institution::model()->getCurrent();
                 $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
@@ -340,8 +340,6 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 if (!$site) {
                     throw new Exception('Unable to retrieve site details.');
                 }
-
-                $attributes = array();
 
                 $attr_list = array(
                     'Author' => $user->getReversedNameAndInstitutionUsername($institution->id),
@@ -360,15 +358,16 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     'SourceApplication' => 313,
                 );
 
+                $header->DocumentAttribute = array();
+                $index = 0;
+
                 foreach ($attr_list as $key => $value) {
                     $attribute = new stdClass();
-                    $attribute->Attribute = new SoapVar($key, XSD_STRING);
-                    $attribute->Namespace = new SoapVar(self::NDR_URI, XSD_ANYURI);
-                    $attribute->Value = new SoapVar($value, XSD_STRING);
-                    $attributes[] = new SoapVar($attribute, SOAP_ENC_OBJECT);
+                    $attribute->Attribute = $key;
+                    $attribute->Namespace = self::NDR_URI;
+                    $attribute->Value = $value;
+                    $header->DocumentAttribute[$index++] = $attribute;
                 }
-
-                $header->DocumentAttribute = new SoapVar($attributes, SOAP_ENC_ARRAY);
 
                 $demographics = new stdClass();
 
@@ -378,53 +377,53 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 foreach ($patient_identifiers as $identifier_instance) {
                     $identifier = new stdClass();
                     if ($identifier_instance->patientIdentifierType->usage_type === 'GLOBAL') {
-                        $identifier->Domain = new SoapVar('NHS', XSD_STRING);
+                        $identifier->Domain = 'NHS';
                     } else {
-                        $identifier->Domain = new SoapVar($identifier_instance->patientIdentifierType->institution->pas_key, XSD_STRING);
+                        $identifier->Domain = $identifier_instance->patientIdentifierType->institution->pas_key;
                     }
 
-                    $identifier->Value = new SoapVar($identifier_instance->value, XSD_STRING);
-                    $identifiers[] = new SoapVar($identifier, SOAP_ENC_OBJECT);
+                    $identifier->Value = $identifier_instance->value;
+                    $identifiers[] = $identifier;
                 }
 
-                $demographics->SubjectIdentifier = new SoapVar($identifiers, SOAP_ENC_ARRAY);
-                $demographics->FamilyName = new SoapVar($this->event->episode->patient->last_name, XSD_STRING);
-                $demographics->GivenName = new SoapVar($this->event->episode->patient->first_name, XSD_STRING);
-                $demographics->DateOfBirth = new SoapVar($this->event->episode->patient->dob, XSD_DATE);
-                $demographics->SexCode = new SoapVar($this->event->episode->patient->gender, XSD_STRING);
-                $demographics->AddressLine1 = new SoapVar($this->event->episode->patient->contact->address->address1, XSD_STRING);
-                $demographics->AddressLine2 = new SoapVar($this->event->episode->patient->contact->address->address2, XSD_STRING);
-                $demographics->AddressLine3 = new SoapVar($this->event->episode->patient->contact->address->city, XSD_STRING);
-                $demographics->AddressLine4 = new SoapVar($this->event->episode->patient->contact->address->county, XSD_STRING);
-                $demographics->PostCode = new SoapVar($this->event->episode->patient->contact->address->postcode, XSD_STRING);
+                $demographics->SubjectIdentifier = $identifiers;
+                $demographics->FamilyName = $this->event->episode->patient->last_name;
+                $demographics->GivenName = $this->event->episode->patient->first_name;
+                $demographics->DateOfBirth = $this->event->episode->patient->dob;
+                $demographics->SexCode = $this->event->episode->patient->gender;
+                $demographics->AddressLine1 = $this->event->episode->patient->contact->address->address1;
+                $demographics->AddressLine2 = $this->event->episode->patient->contact->address->address2;
+                $demographics->AddressLine3 = $this->event->episode->patient->contact->address->city;
+                $demographics->AddressLine4 = $this->event->episode->patient->contact->address->county;
+                $demographics->PostCode = $this->event->episode->patient->contact->address->postcode;
 
-                $header->SubjectDemographicsAsRecorded = new SoapVar($demographics, SOAP_ENC_OBJECT);
+                $header->SubjectDemographicsAsRecorded = $demographics;
 
                 $document_data = new stdClass();
                 $document_category = new stdClass();
-                $document_category->DocumentType = new SoapVar($this->letterType->name, XSD_STRING);
-                $document_category->DocumentSubType = new SoapVar('OpenEyes ' . $this->letterType->name, XSD_STRING);
-                $document_category->DocumentSubTypeCode = new SoapVar($this->letterType->export_label, XSD_STRING);
-                $document_data->DocumentCategory = new SoapVar($document_category, SOAP_ENC_OBJECT);
-                $document_data->Sensitivity = new SoapVar(false, XSD_BOOLEAN);
-                $header->DocumentData = new SoapVar($document_data, SOAP_ENC_OBJECT);
+                $document_category->DocumentType = $this->letterType->name;
+                $document_category->DocumentSubType = 'OpenEyes ' . $this->letterType->name;
+                $document_category->DocumentSubTypeCode = $this->letterType->export_label;
+                $document_data->DocumentCategory = $document_category;
+                $document_data->Sensitivity = false;
+                $header->DocumentData = $document_data;
 
-                $doc->Header = new SoapVar($header, SOAP_ENC_OBJECT);
+                $doc->Header = $header;
                 $body = new stdClass();
 
-                $body->DocumentBase64 = new SoapVar(base64_encode(file_get_contents($file_path)), XSD_BASE64BINARY);
-                $doc->Body = new SoapVar($body, SOAP_ENC_OBJECT);
+                $body->DocumentBase64 = base64_encode(file_get_contents($file_path));
+                $doc->Body = $body;
 
-                $wrapper->DocumentVersion = new SoapVar($doc, SOAP_ENC_OBJECT);
+                $wrapper->DocumentVersion = $doc;
 
                 $request = new SoapParam($wrapper, 'StoreDocumentRequest');
 
                 $client = $client_obj ?: new SoapClient($wsdl, $ws_params);
                 $response = $client->StoreDocument($request);
 
-                if (!$this->supersession_id && $response->StoreDocumentResponse->Success) {
+                if (!$this->supersession_id && $response->Success) {
                     // Capture the supersession ID and store it to allow document versioning.
-                    $this->supersession_id = $response->StoreDocumentResponse->DocumentSupersessionSetId;
+                    $this->supersession_id = $response->DocumentSupersessionSetId;
                     $this->save();
                 }
 
