@@ -621,10 +621,7 @@ class User extends BaseActiveRecordVersioned
      */
     public function portalUser()
     {
-        $username = (array_key_exists(
-            'portal_user',
-            Yii::app()->params
-        )) ? Yii::app()->params['portal_user'] : 'portal_user';
+        $username = \Yii::app()->params["portal_user"] ?? "portal_user";
         $criteria = new CDbCriteria();
         $criteria->compare('username', $username);
         $userAuthentication = UserAuthentication::model()->find($criteria);

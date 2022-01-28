@@ -94,9 +94,9 @@ class MessageCreator
      * @param \User                              $recipient
      * @param OphCoMessaging_Message_MessageType $type
      * @param int                                $institution_id
-     * @param int                                $site_id
+     * @param ?int                                $site_id
      */
-    public function __construct(\Episode $episode, \User $sender, \User $recipient, OphCoMessaging_Message_MessageType $type, int $institution_id, int $site_id)
+    public function __construct(\Episode $episode, \User $sender, \User $recipient, OphCoMessaging_Message_MessageType $type, int $institution_id, ?int $site_id)
     {
         $this->episode = $episode;
         $this->sender = $sender;
