@@ -61,7 +61,7 @@ class FreehandDraw extends \BaseEventElementWidget
                     $entry = $entries_by_id[$id];
                 }
                 $entry->comments = $drawing_entry['comments'];
-
+                $entry->protected_file_id = $drawing_entry['protected_file_id'];
                 $file_content = $image_data[$i]['data'];
                 $name = $image_data[$i]['name'];
                 $is_edited = $image_data[$i]['is_edited'] ?? 0;
