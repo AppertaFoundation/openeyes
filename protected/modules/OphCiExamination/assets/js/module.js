@@ -1084,7 +1084,7 @@ function medicationManagementValidationFunction() {
         }
     });
 
-    let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+    let todayDate = date.getDate() + " " + date.toLocaleString('en-GB', { month: 'short' }) + " " + date.getFullYear();
     let todayDateWithLeadingZero = "0" + todayDate;
     let event_date = document.getElementsByClassName('js-event-date-input')[0].value;
 
