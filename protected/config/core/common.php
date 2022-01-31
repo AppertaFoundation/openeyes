@@ -372,6 +372,10 @@ $config = array(
         'ab_testing' => false,
         'auth_source' => $authSource,
         // This is used in contact page
+        /***
+         * Commented out LDAP settings as these should now be handled by Admin->Core->LDAP configurations
+         * Once we're sure we've removed all references then this section can be deleted
+         ***
         'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
         'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
         'ldap_admin_dn' => getenv('OE_LDAP_ADMIN_DN') ?: 'CN=openeyes,CN=Users,dc=example,dc=com',
@@ -387,6 +391,7 @@ $config = array(
         'ldap_info_retry_delay' => 1,
         'ldap_update_name' => strtolower(getenv("OE_LDAP_UPDATE_NAME")) == "true" ? true : false,
         'ldap_update_email' => strtolower(getenv("OE_LDAP_UPDATE_EMAIL")) == "false" ? false : true,
+        */
         // This is used in HIEIntegration component
         'hie_remote_url' => trim(@file_get_contents("/run/secrets/HIE_REMOTE_URL")) ?: (trim(getenv('HIE_REMOTE_URL')) ?: null),
         'hie_usr_org' => trim(getenv('HIE_USR_ORG')) ?: null,
