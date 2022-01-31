@@ -63,7 +63,7 @@ if ($element->isBeingSigned($signature)) {
             </div>
             <div class="dotted-area">
                 <div class="label"><?= $title_label ?></div>
-                <?= $signature->signatory_role ?>
+                <?= $job_title ?? $signature->signatory_role ?>
             </div>
         </div>
     </div>

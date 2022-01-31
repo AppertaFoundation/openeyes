@@ -29,7 +29,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     $additional_signatures = $elements['OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures'];
 }
 ?>
-<body class="open-eyes print<?= isset($elements['Element_OphTrConsent_Withdrawal']) ? ' void' : ''?>">
+<body class="open-eyes print<?= isset($elements['Element_OphTrConsent_Withdrawal']) ? ' void' : '' ?>">
 <?php $this->renderPartial('_consent_header') ?>
 <div class="print-title text-c">
     <h1><b>Consent form 1</b></h1>
@@ -49,65 +49,65 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
             <col class="cols-7">
         </colgroup>
         <tbody>
-            <tr>
-                <th>Patient's surname/family name</th>
-                <td><?= $this->patient->last_name ?></td>
-            </tr>
-            <tr>
-                <th>Patient's first names</th>
-                <td><?= $this->patient->first_name ?></td>
-            </tr>
-            <tr>
-                <th>Date of birth</th>
-                <td><?= $this->patient->NHSDate('dob') ?></td>
-            </tr>
-            <tr>
-                <th><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?></th>
-                <td><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></td>
-            </tr>
-            <tr>
-                <th><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?></th>
-                <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
-            </tr>
-            <tr>
-                <th>Sex</th>
-                <td><?= $this->patient->genderString ?></td>
-            </tr>
-            <tr>
-                <th>Witness required</th>
-                <td>
-                    <?php if ($additional_signatures !== false && $additional_signatures->witness_required === "1") {
-                        echo 'Yes';
-                    } else {
-                        echo 'No';
-                    }?>
-                </td>
-            </tr>
-            <?php if ($additional_signatures !== false && $additional_signatures->witness_required === "1") { ?>
+        <tr>
+            <th>Patient's surname/family name</th>
+            <td><?= $this->patient->last_name ?></td>
+        </tr>
+        <tr>
+            <th>Patient's first names</th>
+            <td><?= $this->patient->first_name ?></td>
+        </tr>
+        <tr>
+            <th>Date of birth</th>
+            <td><?= $this->patient->NHSDate('dob') ?></td>
+        </tr>
+        <tr>
+            <th><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?></th>
+            <td><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></td>
+        </tr>
+        <tr>
+            <th><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?></th>
+            <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
+        </tr>
+        <tr>
+            <th>Sex</th>
+            <td><?= $this->patient->genderString ?></td>
+        </tr>
+        <tr>
+            <th>Witness required</th>
+            <td>
+                <?php if ($additional_signatures !== false && $additional_signatures->witness_required === "1") {
+                    echo 'Yes';
+                } else {
+                    echo 'No';
+                } ?>
+            </td>
+        </tr>
+        <?php if ($additional_signatures !== false && $additional_signatures->witness_required === "1") { ?>
             <tr>
                 <th>Witness name</th>
                 <td><?= \CHtml::encode($additional_signatures->witness_name) ?></td>
             </tr>
-            <?php } ?>
+        <?php } ?>
+        <tr>
+            <th>Interpreter required</th>
+            <td>
+                <?php if ($additional_signatures !== false && $additional_signatures->interpreter_required === "1") {
+                    echo 'Yes';
+                } else {
+                    echo 'No';
+                } ?>
+            </td>
+        </tr>
+
+        <?php if ($additional_signatures !== false && $additional_signatures->interpreter_required === "1") { ?>
             <tr>
-                <th>Interpreter required</th>
-                <td>
-                    <?php if ($additional_signatures !== false && $additional_signatures->interpreter_required === "1") {
-                        echo 'Yes';
-                    } else {
-                        echo 'No';
-                    }?>
-                </td>
+                <th>Interpreter name</th>
+                <td><?= \CHtml::encode($additional_signatures->interpreter_name) ?></td>
             </tr>
+        <?php } ?>
 
-            <?php if ($additional_signatures !== false && $additional_signatures->interpreter_required === "1") { ?>
-                <tr>
-                    <th>Interpreter name</th>
-                    <td><?= \CHtml::encode($additional_signatures->interpreter_name) ?></td>
-                </tr>
-            <?php } ?>
-
-            <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+        <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
             <tr>
                 <th>Procedure(s)</th>
                 <td>
@@ -119,43 +119,43 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
                     } ?>
                 </td>
             </tr>
-            <?php endif; ?>
-            <?php if ($elements['Element_OphTrConsent_AdvancedDecision']->description) { ?>
-                <tr>
-                    <th>Advanced Decision</th>
-                    <td><?= $elements['Element_OphTrConsent_AdvancedDecision']->description ?></td>
-                </tr>
-            <?php } ?>
+        <?php endif; ?>
+        <?php if ($elements['Element_OphTrConsent_AdvancedDecision']->description) { ?>
             <tr>
-                <th>&nbsp;<br />Consent date</th>
-                <td>&nbsp;<div class="dotted-write"></div>
-                </td>
+                <th>Advanced Decision</th>
+                <td><?= $elements['Element_OphTrConsent_AdvancedDecision']->description ?></td>
             </tr>
+        <?php } ?>
+        <tr>
+            <th>&nbsp;<br/>Consent date</th>
+            <td>&nbsp;<div class="dotted-write"></div>
+            </td>
+        </tr>
         </tbody>
     </table>
     <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider">
     <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
-    <div class="group"><h4>Proposed procedure(s) or course of treatment:</h4>
-        <div class="indent">
-            <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedure_assignments)) ?>
+        <div class="group"><h4>Proposed procedure(s) or course of treatment:</h4>
+            <div class="indent">
+                <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedure_assignments)) ?>
+            </div>
         </div>
-    </div>
     <?php endif; ?>
 
     <?php if (isset($elements['Element_OphTrConsent_BenefitsAndRisks']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_BenefitsAndRisks']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
-    <div class="group">
-        <h4>Statement of health professional (to be filled in by a health professional with appropriate
-            knowledge of the proposed procedure(s), as specified in the consent policy)</h4>
-        <div class="indent"><p>I have explained the procedure to the patient. In particular, I have explained:</p>
-            <p></p><h5>The intended benefits:</h5>
-            <?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->benefits) ?>
-            <p></p>
-            <p></p><h5>Serious, frequently occurring or unavoidable risks:</h5>
-            <?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->risks) ?>
-            <p></p>
+        <div class="group">
+            <h4>Statement of health professional (to be filled in by a health professional with appropriate
+                knowledge of the proposed procedure(s), as specified in the consent policy)</h4>
+            <div class="indent"><p>I have explained the procedure to the patient. In particular, I have explained:</p>
+                <p></p><h5>The intended benefits:</h5>
+                <?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->benefits) ?>
+                <p></p>
+                <p></p><h5>Serious, frequently occurring or unavoidable risks:</h5>
+                <?= nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->risks) ?>
+                <p></p>
+            </div>
         </div>
-    </div>
     <?php endif; ?>
 
     <?php
@@ -167,7 +167,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
                 <div class="indent">
                     <?= $this->renderPartial('_extra_procedures', array('procedures' => $elements['Element_OphTrConsent_ExtraProcedures']->extra_procedure_assignments)) ?>
                 </div>
-            <?php } else {?>
+            <?php } else { ?>
                 <div class="indent"><p>No extra procedures</p></div>
             <?php } ?>
         </div>
@@ -178,32 +178,32 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         $purifier = new CHtmlPurifier();
         $purifier->setOptions(array('HTML.Trusted' => true));
         ?>
-    <div class="group">
-        <h4>Any questions asked by the patient:</h4>
-        <div class="indent">
-            <?= $purifier->purify((trim($elements['Element_OphTrConsent_PatientQuestions']->questions) === "" ? "None" : $elements['Element_OphTrConsent_PatientQuestions']->questions)) ?>
+        <div class="group">
+            <h4>Any questions asked by the patient:</h4>
+            <div class="indent">
+                <?= $purifier->purify((trim($elements['Element_OphTrConsent_PatientQuestions']->questions) === "" ? "None" : $elements['Element_OphTrConsent_PatientQuestions']->questions)) ?>
+            </div>
         </div>
-    </div>
 
-    <div class="group">
-        <h4>Patient refuses the following procedures:</h4>
-        <div class="indent">
-            <?= $purifier->purify((trim($elements['Element_OphTrConsent_PatientQuestions']->refused_procedures) === "" ? "None" : $elements['Element_OphTrConsent_PatientQuestions']->refused_procedures)) ?>
+        <div class="group">
+            <h4>Patient refuses the following procedures:</h4>
+            <div class="indent">
+                <?= $purifier->purify((trim($elements['Element_OphTrConsent_PatientQuestions']->refused_procedures) === "" ? "None" : $elements['Element_OphTrConsent_PatientQuestions']->refused_procedures)) ?>
+            </div>
         </div>
-    </div>
     <?php endif; ?>
 
     <?php if (isset($elements['Element_OphTrConsent_Specialrequirements']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Specialrequirements']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
-    <div class="group">
-        <h4>Any special requirements:</h4>
-        <?php if (!empty($elements['Element_OphTrConsent_Specialrequirements']->specialreq)) { ?>
-            <div class="indent">
-                <?=nl2br(\CHtml::encode($elements['Element_OphTrConsent_Specialrequirements']->specialreq)) ?>
-            </div>
-        <?php } else {?>
-            <div class="indent"><p>No special requirements</p></div>
-        <?php } ?>
-    </div>
+        <div class="group">
+            <h4>Any special requirements:</h4>
+            <?php if (!empty($elements['Element_OphTrConsent_Specialrequirements']->specialreq)) { ?>
+                <div class="indent">
+                    <?= nl2br(\CHtml::encode($elements['Element_OphTrConsent_Specialrequirements']->specialreq)) ?>
+                </div>
+            <?php } else { ?>
+                <div class="indent"><p>No special requirements</p></div>
+            <?php } ?>
+        </div>
     <?php endif; ?>
     <p>I have also discussed what the procedure is likely to involve, the benefits and risks of any available
         alternative treatments (including no treatment) and any particular concerns of this patient. I assess that this
@@ -214,31 +214,34 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
 
     <?php if (isset($elements['Element_OphTrConsent_Leaflets']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Leaflets']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
         <?php if ($elements['Element_OphTrConsent_Leaflets']->leaflets) { ?>
-        <div class="group">
-            <h4>The following informational leaflets have been provided:</h4>
-            <div class="indent">
-                <?php if (empty($elements['Element_OphTrConsent_Leaflets']->leaflets)) { ?>
-                    None
-                <?php } else { ?>
-                    <?php foreach ($elements['Element_OphTrConsent_Leaflets']->leaflets as $leaflet) { ?>
-                        <span class="checkbox <?= $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>
-                        <?php echo $leaflet->leaflet->name ?>
+            <div class="group">
+                <h4>The following informational leaflets have been provided:</h4>
+                <div class="indent">
+                    <?php if (empty($elements['Element_OphTrConsent_Leaflets']->leaflets)) { ?>
+                        None
+                    <?php } else { ?>
+                        <?php foreach ($elements['Element_OphTrConsent_Leaflets']->leaflets as $leaflet) { ?>
+                            <span class="checkbox <?= $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>
+                            <?php echo $leaflet->leaflet->name ?>
+                        <?php } ?>
                     <?php } ?>
-                <?php } ?>
+                </div>
             </div>
-        </div>
         <?php } ?>
     <?php endif; ?>
 
     <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
-    <div class="group">
-        <h4>This procedure will involve:</h4>
-        <div class="indent">
-            <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA') ? 'checked' : '' ?>"></span> General and/or regional anaesthesia
-            <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode(array('Topical', 'LAC', 'LA', 'LAS')) ? 'checked' : '' ?>"></span> Local anaesthesia
-            <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('Sedation') ? 'checked' : '' ?>"></span> Sedation
+        <div class="group">
+            <h4>This procedure will involve:</h4>
+            <div class="indent">
+                <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA') ? 'checked' : '' ?>"></span>
+                General and/or regional anaesthesia
+                <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode(array('Topical', 'LAC', 'LA', 'LAS')) ? 'checked' : '' ?>"></span>
+                Local anaesthesia
+                <span class="checkbox <?= $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('Sedation') ? 'checked' : '' ?>"></span>
+                Sedation
+            </div>
         </div>
-    </div>
     <?php endif; ?>
     <?php
     if (isset($elements['Element_OphTrConsent_Esign'])) {
@@ -278,13 +281,16 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
 
     <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
         <?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA')) { ?>
-        <strong>I understand</strong> that I will have the opportunity to discuss the details of anaesthesia before the procedure, unless the urgency of my situation prevents this.<br/>
+            <strong>I
+                understand</strong> that I will have the opportunity to discuss the details of anaesthesia before the procedure, unless the urgency of my situation prevents this.
+            <br/>
         <?php } ?>
-    <p><b>I understand</b> that any procedure in addition to those described on this form will only be carried out if it
-        is necessary to save my life or to prevent serious harm to my health.</p>
-    <p>I have been told <b>about additional procedures which may become necessary during my treatment. I have listed
-            below any procedures</b> which I do not wish to be carried out <b>without further discussion.</b></p>
-    <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
+        <p><b>I understand</b> that any procedure in addition to those described on this form will only be carried out
+            if it
+            is necessary to save my life or to prevent serious harm to my health.</p>
+        <p>I have been told <b>about additional procedures which may become necessary during my treatment. I have listed
+                below any procedures</b> which I do not wish to be carried out <b>without further discussion.</b></p>
+        <div class="dotted-write"><!-- Provide a dotted line area to write in --></div>
     <?php endif; ?>
 
     <!-- patient signature -->
@@ -305,19 +311,20 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <!-- witness signature -->
 
     <?php if ($additional_signatures && $additional_signatures->witness_required) { ?>
-    <p>A <b>witness</b> should sign below <b>if the patient is unable to sign but has indicated their consent.</b></p>
+        <p>A <b>witness</b> should sign below <b>if the patient is unable to sign but has indicated their consent.</b>
+        </p>
         <?php
-            echo $this->renderPartial(
-                '_print_signature',
-                array(
-                    'vi' => ($css_class == 'impaired'),
-                    'element' => $elements[Element_OphTrConsent_Esign::class],
-                    'signature' => $elements[Element_OphTrConsent_Esign::class]
-                        ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 1),
-                    'title_label' => 'Role',
-                    'name_label' => 'Witness name',
-                )
-            );
+        echo $this->renderPartial(
+            '_print_signature',
+            array(
+                'vi' => ($css_class == 'impaired'),
+                'element' => $elements[Element_OphTrConsent_Esign::class],
+                'signature' => $elements[Element_OphTrConsent_Esign::class]
+                    ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 1),
+                'title_label' => 'Role',
+                'name_label' => 'Witness name',
+            )
+        );
     }
     ?>
 
@@ -325,7 +332,8 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
 
     <?php if ($additional_signatures && $additional_signatures->interpreter_required) : ?>
         <h2>Statement of interpreter</h2>
-        <p>I have interpreted the information above to the patient to the best of my ability and in a way in which I believe s/he can understand.</p>
+        <p>I have interpreted the information above to the patient to the best of my ability and in a way in which I
+            believe s/he can understand.</p>
         <?= $this->renderPartial(
             '_print_signature',
             array(
@@ -343,21 +351,24 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider">
     <?php if (isset($elements['Element_OphTrConsent_Confirm'])) { ?>
-        <h2>Confirmation of consent</h2><h6>To be completed by a health professional when the patient is admitted, if the
+        <h2>Confirmation of consent</h2><h6>To be completed by a health professional when the patient is admitted, if
+            the
             patient has signed the form in advance.</h6>
-        <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions and
+        <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions
+            and
             wishes the procedure to go ahead.</p>
         <?= $this->renderPartial('_print_signature',
             array(
                 'vi' => ($css_class === 'impaired'),
                 'element' => $elements['Element_OphTrConsent_Esign'],
                 'signature' => $elements['Element_OphTrConsent_Esign']
-                                ->getSignatureByInitiatorAttributes(
-                                        $elements['Element_OphTrConsent_Confirm']->getElementType()->id,
-                                        6
-                                ),
-                                         'title_label' => 'Job title',
-                                         'name_label' => 'Print name'
+                    ->getSignatureByInitiatorAttributes(
+                        $elements['Element_OphTrConsent_Confirm']->getElementType()->id,
+                        6
+                    ),
+                'title_label' => 'Job title',
+                'name_label' => 'Print name',
+                'job_title' => $elements['Element_OphTrConsent_Esign']->user->role
             )
         );
     } ?>
@@ -366,43 +377,54 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <p><b>Important notes:</b> (tick if applicable)</p>
     <p></p>
     <?php if (isset($elements['Element_OphTrConsent_AdvancedDecision']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_AdvancedDecision']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
-    <div class="group"><span class="checkbox <?= strlen($elements['Element_OphTrConsent_AdvancedDecision']->description) > 0 ? 'checked' : ''?>"></span> See also advance decision refusing treatment (including a Jehovah’s Witness form)
-    </div>
+        <div class="group"><span
+                    class="checkbox <?= strlen($elements['Element_OphTrConsent_AdvancedDecision']->description) > 0 ? 'checked' : '' ?>"></span>
+            See also advance decision refusing treatment (including a Jehovah’s Witness form)
+        </div>
     <?php endif; ?>
-    <div class="group"><span class="checkbox <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? 'checked' : ''?>"></span><?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '<b class="highlighter">' : ''?> Patient has withdrawn consent <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '</b>' : ''?></div>
+    <div class="group"><span
+                class="checkbox <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? 'checked' : '' ?>"></span><?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '<b class="highlighter">' : '' ?>
+        Patient has withdrawn consent <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '</b>' : '' ?></div>
     <?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) { ?>
-        <p><b>Reason for withdrawal:</b> <?= isset($elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason) ? $elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason : '-'?></p>
+        <p><b>Reason for
+                withdrawal:</b> <?= isset($elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason) ? $elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason : '-' ?>
+        </p>
         <?= $this->renderPartial('_print_signature',
             array(
                 'vi' => ($css_class === 'impaired'),
                 'element' => $elements['Element_OphTrConsent_Esign'],
                 'signature' => $elements['Element_OphTrConsent_Esign']
-                                ->getSignatureByInitiatorAttributes(
-                                    $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
-                                    $elements['Element_OphTrConsent_Withdrawal']->id,
-                                ),
-                                         'title_label' => 'Job title',
-                                         'name_label' => 'Print name'
+                    ->getSignatureByInitiatorAttributes(
+                        $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
+                        $elements['Element_OphTrConsent_Withdrawal']->id,
+                    ),
+                'title_label' => 'Job title',
+                'name_label' => 'Print name'
             )
         );
     } ?>
     <hr class="divider">
     <?php if (isset($elements['Element_OphTrConsent_Permissions']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Permissions']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
         <?php if (isset($elements['Element_OphTrConsent_Permissions'])) : ?>
-    <h2>Form 1: Supplementary consent</h2>
-    <h3>Images</h3>
-    <p>Photographs, x-rays or other images may be taken as part of your treatment and will form part of your medical
-        record. It is very unlikely that you would be recognised from these images. If however you could be recognised
-        we would seek your specific consent before any particular publication.</p>
-    <div class="group"><h4>I agree to use in audit, education and publication:</h4>
-        <div class="indent">
-            <span class="checkbox <?=$elements['Element_OphTrConsent_Permissions']->images->name == 'Yes' ? 'checked' : ''?>"></span> Yes&nbsp;&nbsp;&nbsp;
-            <span class="checkbox <?=$elements['Element_OphTrConsent_Permissions']->images->name == 'No' ? 'checked' : ''?>"></span> No
-            <span class="checkbox <?=$elements['Element_OphTrConsent_Permissions']->images->name == 'Not applicable' ? 'checked' : ''?>"></span> Not applicable
-        </div>
-    </div>
-    <p>If you do not wish to take part in the above, your care will not be compromised in any way.</p>
-    <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
+            <h2>Form 1: Supplementary consent</h2>
+            <h3>Images</h3>
+            <p>Photographs, x-rays or other images may be taken as part of your treatment and will form part of your
+                medical
+                record. It is very unlikely that you would be recognised from these images. If however you could be
+                recognised
+                we would seek your specific consent before any particular publication.</p>
+            <div class="group"><h4>I agree to use in audit, education and publication:</h4>
+                <div class="indent">
+                    <span class="checkbox <?= $elements['Element_OphTrConsent_Permissions']->images->name == 'Yes' ? 'checked' : '' ?>"></span>
+                    Yes&nbsp;&nbsp;&nbsp;
+                    <span class="checkbox <?= $elements['Element_OphTrConsent_Permissions']->images->name == 'No' ? 'checked' : '' ?>"></span>
+                    No
+                    <span class="checkbox <?= $elements['Element_OphTrConsent_Permissions']->images->name == 'Not applicable' ? 'checked' : '' ?>"></span>
+                    Not applicable
+                </div>
+            </div>
+            <p>If you do not wish to take part in the above, your care will not be compromised in any way.</p>
+            <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
         <?php endif; ?>
     <?php endif; ?>
     <div class="highlighter"><h3>COVID-19</h3>
