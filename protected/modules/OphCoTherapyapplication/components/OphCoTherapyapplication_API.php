@@ -30,6 +30,62 @@ class OphCoTherapyapplication_API extends BaseAPI
     }
 
     /**
+     * Get the right side therapy application treatment date if there is one.
+     *
+     * @param $patient
+     * @param $episode
+     * @return string date of the treatment or "nil"
+     * @throws Exception
+     */
+    public function getLetterApplicationTreatmentDateRight($patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            return $this->getLetterApplicationTreatmentDateSide($patient, $episode, 'right');
+        }
+
+        return "nil";
+    }
+
+    /**
+     * Get the left side therapy application treatment date if there is one.
+     *
+     * @param $patient
+     * @param $episode
+     * @return string date of the treatment or "nil"
+     * @throws Exception
+     */
+    public function getLetterApplicationTreatmentDateLeft($patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            return $this->getLetterApplicationTreatmentDateSide($patient, $episode, 'left');
+        }
+
+        return "nil";
+    }
+
+    /**
+     * Get the side therapy application treatment date if there is one.
+     *
+     * @param $patient
+     * @param $episode
+     * @param $side
+     * @return string date of the treatment or "nil"
+     * @throws Exception
+     */
+    public function getLetterApplicationTreatmentDateSide($patient, $episode, $side)
+    {
+        if ($el = $this->getElementFromLatestEvent('Element_OphCoTherapyapplication_PatientSuitability', $patient)) {
+            if ($el->{$side.'_treatment'}) {
+                $event = $el->event;
+                $date_time = new \DateTime($event->event_date);
+                $date_time->format(\Helper::NHS_DATE_FORMAT);
+                return $date_time->format(\Helper::NHS_DATE_FORMAT);
+            }
+        }
+        return "nil";
+    }
+
+    /**
      * Gets the last drug that was applied for for the given patient, episode and side.
      *
      * @param Patient $patient

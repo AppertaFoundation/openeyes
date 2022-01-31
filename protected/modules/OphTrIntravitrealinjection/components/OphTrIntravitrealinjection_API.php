@@ -35,6 +35,30 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         return $this->legacy_api;
     }
 
+    public function getLetterIntravitrealInjectionsRight(\Patient $patient)
+    {
+        return $this->getLetterIntravitrealInjectionsSide($patient, "right");
+    }
+
+    public function getLetterIntravitrealInjectionsSide(\Patient $patient, $side)
+    {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if ($injection = $this->getPreviousTreatmentForSide($patient, $episode, $side)) {
+            $date_time = new \DateTime($injection->event->event_date);
+            $date_time->format(\Helper::NHS_DATE_FORMAT);
+            $num = $this->getLetterTreatmentNumberLeft($patient);
+            $drug = $this->getLetterTreatmentDrugLeft($patient);
+            return "$num injections, last $drug " . $date_time->format(\Helper::NHS_DATE_FORMAT);
+        }
+
+        return "No";
+    }
+
+    public function getLetterIntravitrealInjectionsLeft(\Patient $patient)
+    {
+        return $this->getLetterIntravitrealInjectionsSide($patient, "left");
+    }
+
     /**
      * return only previous injections given a starting event id.
      */

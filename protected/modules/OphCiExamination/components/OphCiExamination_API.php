@@ -37,6 +37,62 @@ class OphCiExamination_API extends \BaseAPI
     public static $AIDED_VA_TYPE = 'aided';
     protected $widget_cache = array();
 
+
+    /**
+     * Gets the Retinopathy Photocoagulation right side
+     *
+     * @param \Patient $patient
+     * @return string
+     */
+    public function getLetterRetinopathyPhotocoagulationRight(\Patient $patient)
+    {
+        return $this->getLetterRetinopathyPhotocoagulationSide($patient, "right");
+    }
+
+    /**
+     * Gets the Retinopathy Photocoagulation
+     *
+     * @param \Patient $patient
+     * @param $side
+     * @return string
+     */
+    public function getLetterRetinopathyPhotocoagulationSide(\Patient $patient, $side)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($dr = $this->getElementFromLatestEvent('models\Element_OphCiExamination_DRGrading', $patient)) {
+                $rp = $dr->{"{$side}_nscretinopathy_photocoagulation"};
+                $mp = $dr->{"{$side}_nscmaculopathy_photocoagulation"};
+
+                if ($rp && $mp) {
+                    return "peripherial and macular";
+                }
+
+                if ($rp) {
+                    return "peripherial";
+                }
+
+                if ($mp) {
+                    return "macular";
+                }
+            }
+        }
+
+        return "no";
+    }
+
+    /**
+     * Gets the Retinopathy Photocoagulation left side
+     *
+     * @param \Patient $patient
+     * @return string
+     */
+    public function getLetterRetinopathyPhotocoagulationLeft(\Patient $patient)
+    {
+        return $this->getLetterRetinopathyPhotocoagulationSide($patient, "left");
+    }
+
+
+/************************************************************************************** */
     /**
      * @inheritdoc
      */
