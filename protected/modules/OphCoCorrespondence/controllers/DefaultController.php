@@ -109,7 +109,7 @@ class DefaultController extends BaseEventTypeController
         }
         $this->event = $letter->event;
         $response = $letter->export($file_path);
-        $this->renderJSON($response->StoreDocumentResponse);
+        $this->renderJSON($response);
     }
 
     /**
