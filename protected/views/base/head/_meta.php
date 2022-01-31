@@ -22,7 +22,7 @@ $ua = $_SERVER['HTTP_USER_AGENT'];
 $initial_scale = '0.5';
 
 if (str_contains($ua, 'iPad')) {
-    $initial_scale = '0.75';
+    $initial_scale = '0.675';
 } elseif (str_contains($ua, 'iPhone')) {
     $initial_scale = '0.325';
 } else {
