@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to send correspondence for electronic delivery.
+# Script to send CVI applications by electronic delivery.
 
 ## NOTE: This script assumes it is in protected/scripts. If you move it then relative paths will not work!
 
