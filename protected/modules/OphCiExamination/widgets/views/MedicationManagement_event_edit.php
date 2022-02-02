@@ -59,7 +59,10 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                 return true;
             } else {
                 $latest = EventMedicationUse::model()->findByPk($e->latest_med_use_id);
-                return $latest->usage_subtype === 'Management' && !$latest->prescribe;
+                if ($latest) {
+                    return $latest->usage_subtype === 'Management' && !$latest->prescribe;
+                }
+                return true;
             }
         }
     });
