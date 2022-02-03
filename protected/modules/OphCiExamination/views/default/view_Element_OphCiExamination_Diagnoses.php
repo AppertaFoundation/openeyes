@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 use OEModule\OphCiExamination\components\ExaminationHelper;
 
 ?>
@@ -29,10 +31,6 @@ $episodes = $this->episode->patient->episodes
     if (!$element->id && !$element->no_ophthalmic_diagnoses_date) { ?>
         <div class="data-value not-recorded">
             Nil recorded this examination
-        </div>
-    <?php } elseif (isset($element->no_ophthalmic_diagnoses_date)){ ?>
-        <div class="data-value">
-            Patient has no known Ophthalmic Diagnoses
         </div>
     <?php } else { ?>
   <div class="data-value">
@@ -66,7 +64,7 @@ $episodes = $this->episode->patient->episodes
           </tr>
             <?php }
             foreach ($episodes as $episode) {
-                if ($episode->id != $this->episode->id && $episode->diagnosis ) {
+                if ($episode->id != $this->episode->id && $episode->diagnosis) {
                     ?>
               <tr>
                 <td>
@@ -93,26 +91,29 @@ $episodes = $this->episode->patient->episodes
                 <?php }
             }
             $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
-            ->findAll(["condition" => "element_diagnoses_id=:id and principal=0", "order" => "date desc", "params" => [":id"=>$element->id] ]);
-            foreach ($diagnoses as $diagnosis) { ?>
-          <tr>
-            <td>
-                    <?php echo $diagnosis->disorder->term ?>
-            </td>
-            <td>
-                    <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
-            </td>
-            <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
-              <td>
-                  <small>at</small>
-                  <?= $diagnosis->time ?>
-              </td>
-          </tr>
-            <?php } ?>
+            ->findAll(["condition" => "element_diagnoses_id=:id and principal=0", "order" => "date desc", "params" => [":id" => $element->id] ]);
+            if (isset($element->no_ophthalmic_diagnoses_date)) { ?>
+                <tr>
+                    <td class="data-value">
+                    Patient has no known Ophthalmic Diagnoses for <?=$episode->getSubspecialtyText()?>(Subspecialty).
+                    </td>
+                </tr>
+            <?php } else {
+                foreach ($diagnoses as $diagnosis) { ?>
+                  <tr>
+                    <td>
+                        <?php echo $diagnosis->disorder->term ?>
+                    </td>
+                    <td>
+                        <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
+                    </td>
+                    <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
+                  </tr>
+                <?php }
+            }?>
         </tbody>
       </table>
     </div>
   </div>
-        <?php } ?>
+    <?php } ?>
 </div>
-

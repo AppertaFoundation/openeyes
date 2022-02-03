@@ -148,7 +148,8 @@ class ContactController extends \BaseController
 
                 $data = json_decode($_POST['data']);
                 $contact = new \Contact();
-                $contact->scenario = 'self_register';
+
+                $contact->scenario = $data->scenario ?? 'self_register';
                 $contact->first_name = $data->first_name;
                 $contact->last_name = $data->last_name;
                 $contact->primary_phone = $data->primary_phone;

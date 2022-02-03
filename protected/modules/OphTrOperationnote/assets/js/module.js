@@ -538,16 +538,20 @@ function showHideIOLFields(_drawing, resetPosition) {
     }
 
     let posteriorChamberIOLPresent = false;
+    let anteriorChamberIOLPresent = false;
     const eyedrawPosteriorChamberIOLClass = 'PCIOL';
+    const eyedrawAnteriorChamberIOLClass = 'ACIOL';
 
     for (let doodleArrayIndex in _drawing.doodleArray) {
         if (_drawing.doodleArray[doodleArrayIndex].className === eyedrawPosteriorChamberIOLClass) {
             posteriorChamberIOLPresent = true;
-            break;
+        }
+        if (_drawing.doodleArray[doodleArrayIndex].className === eyedrawAnteriorChamberIOLClass) {
+            anteriorChamberIOLPresent = true;
         }
     }
 
-    if (posteriorChamberIOLPresent) {
+    if (posteriorChamberIOLPresent || anteriorChamberIOLPresent) {
         $('#tr_Element_OphTrOperationnote_Cataract_iol_type').show();
         if ($("#Element_OphTrOperationnote_Cataract_iol_type_id option:selected").text() === '-') {
             $('#Element_OphTrOperationnote_Cataract_iol_type_id').val('');
