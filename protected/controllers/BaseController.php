@@ -162,7 +162,7 @@ class BaseController extends Controller
         $app = Yii::app();
         if(!in_array($action->id, array('settings'))){
             foreach (SettingMetadata::model()->findAll() as $metadata) {
-                if (!$metadata->element_type) {
+                if (!$metadata->element_type_id) {
                     if (!isset(Yii::app()->params[$metadata->key])) {
                         Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
                     }
