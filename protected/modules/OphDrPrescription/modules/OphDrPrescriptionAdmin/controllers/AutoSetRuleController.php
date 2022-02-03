@@ -210,22 +210,28 @@ class AutoSetRuleController extends BaseAdminController
             'criteria' => $criteria,
         ]);
 
-        $pagination = new \CPagination($data_provider->totalItemCount);
-        $pagination->pageSize = 20;
-        //$pagination->applyLimit($criteria);
-
-        $data_provider->pagination = $pagination;
+        $unique_med = [];
 
         foreach ($data_provider->getData() as $set_item) {
             $item = $set_item->attributes;
-            $item['default_route'] = $set_item->defaultRoute ? $set_item->defaultRoute->term : null;
-            $item['default_duration'] = $set_item->defaultDuration ? $set_item->defaultDuration->name : null;
-            $item['default_frequency'] = $set_item->defaultFrequency ? $set_item->defaultFrequency->term : null;
-            $item['preferred_term'] = $set_item->medication ? $set_item->medication->preferred_term : null;
-            $item['medication_id'] = $set_item->medication ? $set_item->medication->id : null;
+            if (!in_array($item['medication_id'],$unique_med)){
+                $item['default_route'] = $set_item->defaultRoute ? $set_item->defaultRoute->term : null;
+                $item['default_duration'] = $set_item->defaultDuration ? $set_item->defaultDuration->name : null;
+                $item['default_frequency'] = $set_item->defaultFrequency ? $set_item->defaultFrequency->term : null;
+                $item['preferred_term'] = $set_item->medication ? $set_item->medication->preferred_term : null;
+                $item['medication_id'] = $set_item->medication ? $set_item->medication->id : null;
 
-            $data['items'][] = $item;
+                $data['items'][] = $item;
+                array_push($unique_med,$item['medication_id']);
+            }
         }
+
+        $item_num = count($data['items']);
+
+        $pagination = new \CPagination($item_num ?? $data_provider->totalItemCount);
+        $pagination->pageSize = 20;
+
+        $data_provider->pagination = $pagination;
 
         ob_start();
         $this->widget('LinkPager', ['pages' => $pagination]);
@@ -294,6 +300,7 @@ class AutoSetRuleController extends BaseAdminController
         $criteria->together = true;
         $criteria->addCondition('medicationSet.id = :set_id');
         $criteria->params[':set_id'] = $set->id;
+        $criteria->order = 'id';
         $criteria->limit = 20;
 
         if (isset($filters['query']) && $filters['query']) {
@@ -305,10 +312,20 @@ class AutoSetRuleController extends BaseAdminController
         ]);
 
         if (!empty($set->medicationSetAutoRuleMedications)) {
+            $unique_med = [];
+
+            foreach($set->medicationSetAutoRuleMedications as $med) {
+                if (!array_key_exists($med->medication_id,$unique_med)){
+                    $unique_med[$med->medication_id] = $med;
+                }
+            }
+
+            $set->medicationSetAutoRuleMedications = array_values($unique_med);
+            $item_num = count($set->medicationSetAutoRuleMedications);
             $data_provider->setData($set->medicationSetAutoRuleMedications);
         }
 
-        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination = new CPagination($item_num ?? $data_provider->totalItemCount);
         $pagination->pageSize = 20;
         $pagination->applyLimit($criteria);
 
@@ -437,8 +454,8 @@ class AutoSetRuleController extends BaseAdminController
                     $set_m[$row] = MedicationSetAutoRuleAttribute::model()->findByPk($med_attr['id']) ?? new MedicationSetAutoRuleAttribute;
                     $set_m[$row]->medication_attribute_option_id = $med_attr['medication_attribute_option_id'];
                 }
-            break;
-            
+                break;
+
             case 'sets':
                 foreach ($tmp_set as $row => $med_set) {
                     $set_m[$row] = MedicationSetAutoRuleSetMembership::model()->findByPk($med_set['id']) ?? new MedicationSetAutoRuleSetMembership();
