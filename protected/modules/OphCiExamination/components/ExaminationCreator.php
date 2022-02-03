@@ -351,7 +351,7 @@ class ExaminationCreator
     protected function createExamination($episodeId, $userId, $examination, $eventType)
     {
         //Create main examination event
-        $examinationEvent = new \Event();
+        $examinationEvent = new \Event("automatic");
         $examinationEvent->institution_id = $examination['institution_id'];
         $examinationEvent->site_id = $examination['site_id'];
         $examinationEvent->episode_id = $episodeId;

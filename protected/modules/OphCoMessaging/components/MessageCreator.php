@@ -119,7 +119,7 @@ class MessageCreator
      */
     public function save($message = '', $source = '')
     {
-        $messageEvent = new \Event();
+        $messageEvent = new \Event("automatic");
         $messageEvent->institution_id = $this->institution_id;
         $messageEvent->site_id = $this->site_id;
         $messageEvent->episode_id = $this->episode->id;
