@@ -941,20 +941,23 @@ class DefaultController extends BaseEventTypeController
     public function actionGetDraftPrintRecipients($id)
     {
         $return = false;
-        $documentOutput = DocumentOutput::model()->with(
-            array(
-                'document_target' => array(
-                    'with' => array(
-                        'document_instance' => array(
-                            'condition' => 'correspondence_event_id=' . $id
+
+        if(SettingMetadata::checkSetting('disable_draft_auto_print', 'off')) {
+            $documentOutput = DocumentOutput::model()->with(
+                array(
+                    'document_target' => array(
+                        'with' => array(
+                            'document_instance' => array(
+                                'condition' => 'correspondence_event_id=' . $id
+                            )
                         )
                     )
                 )
-            )
-        )->findAll('output_type="Print" and output_status="DRAFT"');
+            )->findAll('output_type="Print" and output_status="DRAFT"');
 
-        if (count($documentOutput) >= 1) {
-            $return = true;
+            if (count($documentOutput) >= 1) {
+                $return = true;
+            }
         }
 
         $this->renderJSON($return);

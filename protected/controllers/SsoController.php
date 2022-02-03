@@ -37,6 +37,7 @@ class SsoController extends BaseAdminController
     public function actionlogin()
     {
         $userInfo = [];
+        $user = new User();
         // The user accessing through SAML Authentication
         if (Yii::app()->params['auth_source'] === 'SAML') {
             // Load the PHP-SAML settings
@@ -58,6 +59,16 @@ class SsoController extends BaseAdminController
             if ($auth->getErrors()) {
                 $error = $auth->getLastErrorReason();
                 throw new Exception("Error in SAML authentication: ".$error);
+            }
+
+            // Save the new user into the OE database
+            try {
+                $identity = $user->setSAMLSSOUserInformation($userInfo);
+            } catch (Exception $e) {
+                $this->render('/sso/invalid_role', array(
+                        'error' => $e->getMessage()
+                ));
+                Yii::app()->end();
             }
         }
         // The user accessing through OpenID-Connect Authorization
@@ -102,17 +113,24 @@ class SsoController extends BaseAdminController
                 }
                 $userInfo[$attribute] = $token[$claim];
             }
-        }
 
-        // Save the new user into the OE database
-        $user = new User();
-        try {
-            $identity = $user->setSSOUserInformation($userInfo);
-        } catch (Exception $e) {
-            $this->render('/sso/invalid_role', array(
-                    'error' => $e->getMessage()
-            ));
-            Yii::app()->end();
+            if (!isset($userInfo['username'])) {
+                throw new Exception('Source for Username is not defined: '.print_r($this->getErrors(), true));
+            }
+
+            // If user already exists based on username, then update that user, otherwise create new user.
+            $existingUser = User::model()->find('username = :username', array(':username' => $userInfo['username']));
+            if ($existingUser !== null) {
+                $user = $existingUser;
+            }
+            try {
+                $identity = $user->setOIDCSSOUserInformation($userInfo);
+            } catch (Exception $e) {
+                $this->render('/sso/invalid_role', array(
+                        'error' => $e->getMessage()
+                ));
+                Yii::app()->end();
+            }
         }
 
         // Set the user into the session then login

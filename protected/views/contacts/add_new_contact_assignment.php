@@ -28,6 +28,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <ul class="js-contact-errors">
     </ul>
 </div>
+<?= \CHtml::hiddenField('field', 'other_register', array('data-label' => 'scenario', 'class' => 'js-contact-field')); ?>
 <table>
     <colgroup>
         <col class="cols-3">

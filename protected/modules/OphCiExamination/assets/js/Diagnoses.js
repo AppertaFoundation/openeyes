@@ -73,11 +73,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var controller = this;
 
         $(document).ready(function () {
-            if (controller.$noOphthalmicDiagnosesFld.prop('checked')) {
-                controller.$table.find('tr:not(:first-child)').hide();
-                controller.$popupSearch.hide();
-            }
-            controller.hideNoOphthalmicDiagnoses();
+            controller.toggleNoOphthalmicDiagnoses();
         });
 
         // removal button for table entries
@@ -101,7 +97,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
             e.preventDefault();
             tableRow.remove();
-            controller.showNoOphthalmicDiagnoses();
+            controller.toggleNoOphthalmicDiagnoses();
 
 
             $(":input[name^='glaucoma_diagnoses']").trigger('change', [
@@ -186,7 +182,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.$noOphthalmicDiagnosesFld.on('click', function () {
 
             if (controller.$noOphthalmicDiagnosesFld.prop('checked')) {
-                controller.$table.hide();
+                controller.toggleTableHead();
                 controller.$popup.hide();
             } else {
                 controller.$popup.show();
@@ -195,32 +191,33 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         controller.$popup.on('click', function(e) {
             e.preventDefault();
-            controller.hideNoOphthalmicDiagnoses();
-            if (controller.$table.hasClass('hidden')){
-                controller.$table.removeClass('hidden');
-            }
         });
 
         eye_selector = new OpenEyes.UI.EyeSelector({
             element: controller.$element.closest('section')
         });
 
-        DiagnosesController.prototype.hideNoOphthalmicDiagnoses = function() {
-            if (this.$table.find('tbody tr').length !== 0) {
-                this.$noOphthalmicDiagnosesFld.prop('checked', false);
+        DiagnosesController.prototype.toggleNoOphthalmicDiagnoses = function(){
+            if(this.$noOphthalmicDiagnosesFld.prop('checked')){
+                this.$popup.hide();
+            } else {
+                this.$popup.show();
+            }
+
+            if (this.$table.find('.removeDiagnosis').length === 0){
+                this.$noOphthalmicDiagnosesWrapper.show();
+            } else {
                 this.$noOphthalmicDiagnosesWrapper.hide();
             }
         };
 
-        DiagnosesController.prototype.showNoOphthalmicDiagnoses = function() {
-            if (this.$table.find('tbody tr').length === 0) {
-                this.$noOphthalmicDiagnosesWrapper.show();
-                this.$table.hide();
+        DiagnosesController.prototype.toggleTableHead = function(){
+            if (this.$table.find('.removeDiagnosis').length === 0 && this.$table.find('.read-only').length === 0) {
+                this.$table.find('thead').hide();
             } else {
-                this.hideNoOphthalmicDiagnoses();
+                this.$table.find('thead').show();
             }
         };
-
     };
 
     DiagnosesController.prototype.popupSearch = function () {
@@ -295,29 +292,29 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     DiagnosesController.prototype.createRow = function(selectedItems)
     {
-      var newRows = [];
-      var template = this.templateText;
-      var element = this.$element;
-      var row;
+        var newRows = [];
+        var template = this.templateText;
+        var element = this.$element;
+        var row;
 
-      for (var i in selectedItems) {
+        for (var i in selectedItems) {
 
-        if (typeof selectedItems[i].eye_id === 'undefined') {
-            selectedItems[i].eye_id = null;
+            if (typeof selectedItems[i].eye_id === 'undefined') {
+                selectedItems[i].eye_id = null;
+            }
+            let data = {};
+            data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
+            data.date = selectedItems[i].date;
+            data.disorder_id = selectedItems[i].id;
+            data.disorder_display = selectedItems[i].label;
+            data.eye_id = selectedItems[i].eye_id;
+            data.right_eye_checked = selectedItems[i].eye_id === 2 || selectedItems[i].eye_id === 3;
+            data.left_eye_checked = selectedItems[i].eye_id === 1 || selectedItems[i].eye_id === 3;
+            data.is_principal = selectedItems[i].is_principal;
+            data.is_glaucoma = selectedItems[i].is_glaucoma;
+            row = Mustache.render(template, data);
+            newRows.push(row);
         }
-        let data = {};
-        data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
-        data.date = selectedItems[i].date;
-        data.disorder_id = selectedItems[i].id;
-        data.disorder_display = selectedItems[i].label;
-        data.eye_id = selectedItems[i].eye_id;
-        data.right_eye_checked = selectedItems[i].eye_id === 2 || selectedItems[i].eye_id === 3;
-        data.left_eye_checked = selectedItems[i].eye_id === 1 || selectedItems[i].eye_id === 3;
-        data.is_principal = selectedItems[i].is_principal;
-        data.is_glaucoma = selectedItems[i].is_glaucoma;
-        row = Mustache.render(template, data);
-        newRows.push(row);
-      }
 
         return newRows;
     };
@@ -325,7 +322,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     DiagnosesController.prototype.addEntry = function(selectedItems)
     {
         var rows = this.createRow(selectedItems);
-        this.$table.show();
+        this.toggleTableHead();
+        this.toggleNoOphthalmicDiagnoses();
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
             this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'), selectedItems[i].alternate);
