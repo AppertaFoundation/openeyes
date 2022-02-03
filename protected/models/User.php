@@ -1171,43 +1171,18 @@ class User extends BaseActiveRecordVersioned
         return $daysLeft;
     }
 
-    public function setSSOUserInformation($response)
+    public function setSAMLSSOUserInformation($response)
     {
         $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
-        // Set user credentials that login through SAML authentication
-        if (Yii::app()->params['auth_source'] === 'SAML') {
-            $this->username = $response['username'][0];
-            $this->first_name = $response['FirstName'][0];
-            $this->last_name = $response['LastName'][0];
-            $this->email = $response['username'][0];   // For SAML users, email would be their username
-            $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
-            $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'][0] : '';
-            $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
+        $this->username = $response['username'][0];
+        $this->first_name = $response['FirstName'][0];
+        $this->last_name = $response['LastName'][0];
+        $this->email = $response['username'][0];   // For SAML users, email would be their username
+        $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
+        $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'][0] : '';
+        $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
 
-            $user = self::model()->find('username = :username', array(':username' => $this->username));
-        }
-        // Set the user credentials that login through OIDC authentication
-        elseif (Yii::app()->params['auth_source'] === 'OIDC') {
-            if (!isset($response['username'])) {
-                throw new Exception('Source for Username is not defined: '.print_r($this->getErrors(), true));
-            }
-
-            if (!$defaultRights['default_enabled']) {
-                $this->checkRolesFromSSOToken($response);
-            }
-
-            $user = self::model()->find('username = :username', array(':username' => $response['username']));
-            $allowedKeys = Yii::app()->params['OIDC_settings']['field_mapping_allow_list_with_defaults'];
-            foreach ($allowedKeys as $allowedKey => $defaultValue) {
-                if (array_key_exists($allowedKey, $response)) {
-                    $this->$allowedKey = $response[$allowedKey];
-                } elseif ($user !== null) {
-                    $this->$allowedKey = $user->$allowedKey;
-                } else {
-                    $this->$allowedKey = $defaultValue;
-                }
-            }
-        }
+        $user = self::model()->find('username = :username', array(':username' => $this->username));
 
         // Set the user active regardless
         $this->active = true;
@@ -1225,11 +1200,6 @@ class User extends BaseActiveRecordVersioned
             $this->setdefaultSSORoles();
         } else {
             $this->id = $user->id;
-            // Update user information for returning users
-            if (Yii::app()->params['auth_source'] === 'OIDC') {
-                $this->setIsNewRecord(false);
-                $this->update();
-            }
         }
         // Roles from the token need to be assigned to the user after every login
         if (!$defaultRights['default_enabled']) {
@@ -1242,6 +1212,78 @@ class User extends BaseActiveRecordVersioned
             'username' => $this->username,
             'password' => $this->password
         );
+    }
+
+    public function setOIDCSSOUserInformation($response)
+    {
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
+
+        if (!$defaultRights['default_enabled']) {
+            $this->checkRolesFromSSOToken($response);
+        }
+
+        $allowedKeys = Yii::app()->params['OIDC_settings']['field_mapping_allow_list_with_defaults'];
+        foreach ($allowedKeys as $allowedKey => $defaultValue) {
+            if (array_key_exists($allowedKey, $response)) {
+                $this->$allowedKey = $response[$allowedKey];
+            } elseif (!$this->$allowedKey) {
+                $this->$allowedKey = $defaultValue;
+            }
+        }
+
+        // Set the user active regardless
+        $this->active = true;
+        $this->setdefaultSSORights();
+        $this->setSSOContact();
+
+        //If the user is logging into the OE for the first time, save user, assign default roles and firms
+        if (!$this->id) {
+            if (!$this->save()) {
+                $this->audit('login', 'login-failed', "Cannot create user: $this->username", true);
+                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+            }
+            $this->id = self::model()->find('username = :username', array(':username' => $this->username))->id;
+
+            $this->setdefaultSSOFirms();
+            $this->setdefaultSSORoles();
+        } else {
+            $this->setIsNewRecord(false);
+            if (!$this->update()) {
+                $this->audit('login', 'login-failed', "Cannot update user: $this->username", true);
+                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+            };
+        }
+
+        // Roles from the token need to be assigned to the user after every login
+        if (!$defaultRights['default_enabled']) {
+            // Pass the array of roles from the token
+            $roles = isset($response['roles']) ? $response['roles'] : [];
+            $this->setRolesFromSSOToken($roles);
+        }
+
+        return array(
+            'username' => $this->username,
+            'password' => $this->password
+        );
+    }
+
+    public function setSSOContact()
+    {
+        $contact = $this->contact;
+        if (!$contact) {
+            $contact = new Contact();
+        }
+
+        $contact->title = $this->title;
+        $contact->first_name = $this->first_name;
+        $contact->last_name = $this->last_name;
+        $contact->qualifications = $this->qualifications;
+
+        if (!$contact->save()) {
+            throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
+        }
+
+        $this->contact_id = $contact->id;
     }
 
     public function setdefaultSSORights()

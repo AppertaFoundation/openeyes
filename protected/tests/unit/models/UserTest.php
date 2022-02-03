@@ -131,8 +131,8 @@ class UserTest extends ActiveRecordTestCase
         SsoDefaultRights::model()->saveDefaultRights($attributes);
         Yii::app()->params['auth_source'] = 'SAML';
         $testuser = array('username' => array(0 => 'ssouser@unittest.com'), 'FirstName' => array(0 => 'User'), 'LastName' => array(0 => 'SSO'));
-        $this->assertArrayHasKey('username', $this->users('ssouser')->setSSOUserInformation($testuser));
-        $this->assertArrayHasKey('password', $this->users('ssouser')->setSSOUserInformation($testuser));
+        $this->assertArrayHasKey('username', $this->users('ssouser')->setSAMLSSOUserInformation($testuser));
+        $this->assertArrayHasKey('password', $this->users('ssouser')->setSAMLSSOUserInformation($testuser));
     }
 
     /**
@@ -151,7 +151,7 @@ class UserTest extends ActiveRecordTestCase
         SsoDefaultRights::model()->saveDefaultRights($attributes);
         Yii::app()->params['auth_source'] = 'OIDC';
         $testuser = array('username' => 'oidcuser', 'email' => 'user@unittest.com', 'first_name' => 'User', 'last_name' => 'SSO');
-        $this->assertArrayHasKey('username', $this->users('ssouser')->setSSOUserInformation($testuser));
-        $this->assertArrayHasKey('password', $this->users('ssouser')->setSSOUserInformation($testuser));
+        $this->assertArrayHasKey('username', $this->users('ssouser')->setOIDCSSOUserInformation($testuser));
+        $this->assertArrayHasKey('password', $this->users('ssouser')->setOIDCSSOUserInformation($testuser));
     }
 }
