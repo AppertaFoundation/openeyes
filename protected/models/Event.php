@@ -161,7 +161,7 @@ class Event extends BaseActiveRecordVersioned
 
         // set default values here so we can use site/institution right after the object is ready
         // specially useful in event create page
-        if ($this->isNewRecord) {
+        if ($this->isNewRecord && $this->scenario !== "automatic") {
             $selected_institution_id = Yii::app()->session->get('selected_institution_id');
             if (isset($selected_institution_id)) {
                 $this->institution_id = $selected_institution_id;
