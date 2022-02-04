@@ -1018,11 +1018,11 @@ $local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS')
 $config["params"]["local_users"] = array_map('trim', explode(',', $local_users));
 
 /**
- * Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
+ * Setup the special_usernames parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
  * else, default to the standard array
  * The OE_SPECIAL_USERS environment variable should be a comma separated string
  */
-$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api, docmanuser';
-$config["params"]["special_users"] = explode(',', $special_users);
+$special_usernames = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api, docmanuser';
+$config["params"]["special_usernames"] = explode(',', $special_usernames);
 
 return $config;
