@@ -20,6 +20,11 @@ class DefaultController extends BaseModuleController
 
     public function actionIndex()
     {
+        // If value doesn't exist redirect to homepage
+        if (!isset($_SESSION['breakglass_challengefor'])) {
+            $this->redirect('/');
+        }
+
         // Hide the sidebar.
         $this->fixedHotlist = false;
         $this->renderPatientPanel = false;
