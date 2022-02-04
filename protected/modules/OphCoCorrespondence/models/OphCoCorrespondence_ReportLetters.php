@@ -62,13 +62,15 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             'statuses' => 'Status',
             'recipient_type' => 'Recipient Type',
             'contact_type' => 'Contact Type',
+            'all_ids' => 'Patient IDs',
         );
     }
 
     public function rules()
     {
         return array(
-            array('match_correspondence, match_legacy_letters, phrases, condition_type, start_date, end_date, site_id, statuses, author_id, recipient_type, contact_type', 'safe'),
+            array('match_correspondence, match_legacy_letters, phrases, condition_type, start_date,
+             end_date, site_id, statuses, author_id, recipient_type, contact_type, institution_id', 'safe'),
             array('condition_type', 'required'),
         );
     }
@@ -96,12 +98,13 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
     public function run()
     {
+        $this->setInstitutionAndSite();
         $where_clauses = array();
         $where_params = array();
         $where_operator = ' ' . ($this->condition_type == 'and' ? 'and' : 'or') . ' ';
 
         $select = array(
-            'c.first_name', 'c.last_name', 'p.dob', 'p.gender', 'p.hos_num', 'cons.first_name as cons_first_name',
+            'c.first_name', 'c.last_name', 'p.dob', 'p.gender', 'cons.first_name as cons_first_name',
             'cons.last_name as cons_last_name', 'e.created_date', 'ep.patient_id',
             'IF(output_status IS NULL,IF(l.draft=0," - ","Draft"), LOWER(output_status)) as status',
             'document_output.output_type as output_type');
@@ -135,6 +138,11 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
             if ($this->site_id) {
                 $data->andWhere('site.id = :site_id', array(':site_id' => $this->site_id));
+            }
+
+            if ($this->institution_id) {
+                $data->leftJoin('institution', 'institution.id = site.institution_id');
+                $data->andWhere('institution.id = :institution_id', [':institution_id' => $this->institution_id]);
             }
         }
 
@@ -183,6 +191,9 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
                 $row['type'] = 'Legacy letter';
                 $row['link'] = Yii::app()->createURL('/OphLeEpatientletter/default/view/' . $row['l2_event_id']);
             }
+
+            $row['identifier'] = $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
+            $row['all_ids'] = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['patient_id']);
 
             $this->letters[] = $row;
         }
@@ -330,10 +341,11 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
     {
         $output = $this->description() . "\n\n";
 
-        $output .= Patient::model()->getAttributeLabel('hos_num') . ',' . Patient::model()->getAttributeLabel('dob') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ",Consultant's name,Site,Date,Type,Status,Link\n";
+        $output .= $this->getPatientIdentifierPrompt().','.Patient::model()->getAttributeLabel('dob').','.Patient::model()->getAttributeLabel('first_name').','.Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').",Consultant's name,Site,Date,Type,Status,Link," . $this->getAttributeLabel('all_ids') . "\n";
 
         foreach ($this->letters as $letter) {
-            $output .= "\"{$letter['hos_num']}\",\"" . ($letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown') . "\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"" . (isset($letter['name']) ? $letter['name'] : 'N/A') . '","' . date('j M Y', strtotime($letter['created_date'])) . '","' . $letter['type'] . '","' . ucfirst($letter['status']) . '","' . $letter['link'] . "\"\n";
+            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $letter['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
+            $output .= "\"{$patient_identifier_value}\",\"".($letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"".(isset($letter['name']) ? $letter['name'] : 'N/A').'","'.date('j M Y', strtotime($letter['created_date'])).'","'.$letter['type'].'","'.ucfirst($letter['status']).'","'.$letter['link'].'","'.$letter['all_ids']."\"\n";
         }
 
         return $output;

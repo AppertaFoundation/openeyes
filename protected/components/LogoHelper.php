@@ -11,27 +11,31 @@ class LogoHelper
     /**
      * Renders the template
      *
-     * @param $template
-     *
+     * @param string $template
+     * @param int $size
+     * @param null $site_id
+     * @param bool $get_base_64
+     * @param null $logo_id
+     * @param null $institution_id
      * @return mixed
-     * @throws CException
      */
-    public function render($template = '//base/_logo', $size = 100, $site_id = null, $get_base_64 = false, $logo_id = null)
+    public function render($template = '//base/_logo', $size = 100, $site_id = null, $get_base_64 = false, $logo_id = null, $institution_id = null)
     {
-        if(!isset($site_id)) {
+        if(!isset($site_id) && !isset($institution_id)) {
             $site_id = Yii::app()->session['selected_site_id'];
+            $institution_id = Yii::app()->session['selected_institution_id'];
         }
         return Yii::app()->controller->renderPartial(
             $template,
             array(
-                'logo' => $this->getLogoURLs($site_id, $get_base_64, $logo_id),
+                'logo' => $this->getLogoURLs($site_id, $get_base_64, $logo_id, $institution_id),
                 'size' => $size
             ),
             true
         );
     }
     
-    public function getLogoURLs($site_id = null, $get_base_64 = false, $logo_id = null)
+    public function getLogoURLs($site_id = null, $get_base_64 = false, $logo_id = null, $institution_id = null): array
     {
         // default logo
         $default_logo_id = 1;
@@ -40,6 +44,8 @@ class LogoHelper
             if($site_id) {
                 $site = Site::model()->findByPk($site_id);
                 $institution = $site->institution;
+            } else if ($institution_id) {
+                $institution = Institution::model()->findByPk($institution_id);
             }
             if (isset($site->logo_id)) {
                 // get logos for site

@@ -1,5 +1,6 @@
 <?php
 
+use OEModule\PASAPI\models\PasApiAssignment;
 class ContextController extends BaseAdminController
 {
     // public $defaultAction = 'firms';
@@ -22,7 +23,7 @@ class ContextController extends BaseAdminController
             }
         }
         if (isset($search['active'])) {
-            if ($search['active'] == 1) {
+            if ((int)$search['active'] === 1) {
                 $criteria->addCondition('active = 1');
             } elseif ($search['active'] !== '') {
                 $criteria->addCondition('active != 1');
@@ -32,6 +33,11 @@ class ContextController extends BaseAdminController
             $criteria->addCondition('active = 1');
         }
 
+        if (!$this->checkAccess('admin')) {
+            $criteria->addCondition('institution_id = :institution_id');
+            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
+        }
+
         $this->render('index', array(
             'pagination' => $this->initPagination(Firm::model(), $criteria),
             'firms' => Firm::model()->findAll($criteria),
@@ -39,12 +45,19 @@ class ContextController extends BaseAdminController
         ));
     }
 
+    /**
+     * @throws Exception
+     */
     public function actionAdd()
     {
         $firm = new Firm();
 
         if (!empty($_POST)) {
             $firm->attributes = $_POST['Firm'];
+
+            if (!$this->checkAccess('admin')) {
+                $firm->institution_id = Yii::app()->session('selected_institution_id');
+            }
 
             if (!$firm->validate()) {
                 $errors = $firm->getErrors();
@@ -65,13 +78,17 @@ class ContextController extends BaseAdminController
         ));
     }
 
+    /**
+     * @throws Exception
+     */
     public function actionEdit($id)
     {
         $firm = Firm::model()->findByPk($id);
-        $firm->subspecialty_id = $firm->getSubspecialtyID();
         if (!$firm) {
             throw new Exception("Firm not found: $id");
         }
+
+        $firm->subspecialty_id = $firm->getSubspecialtyID();
 
         if (!empty($_POST)) {
             $firm->attributes = $_POST['Firm'];

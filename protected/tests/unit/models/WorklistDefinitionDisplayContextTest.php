@@ -22,6 +22,36 @@ class WorklistDefinitionDisplayContextTest extends ActiveRecordTestCase
         return WorklistDefinitionDisplayContext::model();
     }
 
+    public function checkInstitutionProvider()
+    {
+        return array(
+            'check_for_correct_institution' => array(array('institution_id' => 5), array('id' => 5), true),
+            'check_for_no_institution' => array(array('institution_id' => null), array('id' => 5), true),
+            'check_for_wrong_institution' => array(array('institution_id' => 7), array('id' => 5), false),
+        );
+    }
+
+    /**
+     * @covers WorklistDefinitionDisplayContext
+     * @dataProvider checkInstitutionProvider
+     *
+     * @param $context_attrs
+     * @param $institution_attrs
+     * @param $expected
+     * @throws ReflectionException
+     */
+    public function test_checkInstitution($context_attrs, $institution_attrs, $expected)
+    {
+        $context = new WorklistDefinitionDisplayContext();
+        foreach ($context_attrs as $k => $v) {
+            $context->$k = $v;
+        }
+
+        $institution = ComponentStubGenerator::generate('Institution', $institution_attrs);
+
+        $this->assertEquals($expected, $context->checkInstitution($institution));
+    }
+
     public function checkSiteProvider()
     {
         return array(

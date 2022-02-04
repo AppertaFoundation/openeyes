@@ -19,25 +19,27 @@
 ?>
 <table class="standard">
     <thead>
-        <tr>
-            <th><?php echo Event::model()->getAttributeLabel('event_date'); ?></th>
-            <th><?php echo Patient::model()->getAttributeLabel('hos_num'); ?></th>
-        </tr>
+    <tr>
+        <th><?= Event::model()->getAttributeLabel('event_date'); ?></th>
+        <th><?= $report->getPatientIdentifierPrompt() ?></th>
+        <th><?= $report->getAttributeLabel('all_ids') ?></th>
+    </tr>
     </thead>
     <tbody>
-        <?php if (empty($report->items)) : ?>
+    <?php if (empty($report->items)) { ?>
         <tr>
             <td colspan="6">
                 No records were found.
             </td>
         </tr>
-        <?php else : ?>
-            <?php foreach ($report->items as $item) : ?>
+    <?php } else { ?>
+        <?php foreach ($report->items as $item) { ?>
             <tr>
-                <td><?php echo date('j M Y', strtotime($item['event_date'])); ?></td>
-                <td><?php echo htmlentities($item['hos_num']); ?></td>
+                <td><?= date('j M Y', strtotime($item['event_date'])) ?></td>
+                <td><?= $item['identifier'] ?></td>
+                <td><?= $item['all_ids'] ?></td>
             </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
+        <?php } ?>
+    <?php } ?>
     </tbody>
 </table>

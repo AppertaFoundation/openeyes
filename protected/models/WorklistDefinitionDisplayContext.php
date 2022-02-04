@@ -20,10 +20,12 @@
  * Class WorklistDefinitionDisplayContext.
  *
  * @property int $worklist_definition_id
+ * @property int $institution_id
  * @property int $site_id
  * @property int $subspecialty_id
  * @property int $firm_id
  * @property WorklistDefinition $worklist_definition
+ * @property Institution $institution
  * @property Site $site
  * @property Subspecialty $subspecialty
  * @property Firm $firm
@@ -47,10 +49,10 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array('worklist_definition_id', 'required'),
-            array('site_id, subspecialty_id, firm_id', 'safe'),
+            array('institution_id, site_id, subspecialty_id, firm_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, worklist_definition_id, site_id, subspecialty_id, firm_id', 'safe', 'on' => 'search'),
+            array('id, worklist_definition_id, institution_id, site_id, subspecialty_id, firm_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -66,12 +68,13 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
     public function afterValidate()
     {
-        $one_of = array('site_id', 'subspecialty_id', 'firm_id');
+        $one_of = array('institution_id', 'site_id', 'subspecialty_id', 'firm_id');
         $found = false;
         foreach ($one_of as $attr) {
             if ($this->$attr) {
@@ -93,6 +96,7 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
     public function attributeLabels()
     {
         return array(
+            'institution_id' => 'Institution',
             'site_id' => 'Site',
             'subspecialty_id' => 'Subspecialty',
             'firm_id' => Firm::contextLabel(),
@@ -113,6 +117,7 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('worklist_definition_id', $this->worklist_definition_id, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
         $criteria->compare('site_id', $this->site_id, true);
         $criteria->compare('subspecialty_id', $this->subspecialty_id, true);
         $criteria->compare('firm_id', $this->firm_id, true);
@@ -120,6 +125,18 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Check if the Institution is supported in this display context.
+     *
+     * @param Institution $institution
+     *
+     * @return bool
+     */
+    public function checkInstitution(Institution $institution)
+    {
+        return !$this->institution_id || ($this->institution_id === $institution->id);
     }
 
     /**
@@ -155,6 +172,11 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
 
         // no restriction on firm or subspecialty
         return true;
+    }
+
+    public function getInstitutionDisplay()
+    {
+        return $this->institution ? $this->institution->name : 'Any';
     }
 
     public function getSiteDisplay()

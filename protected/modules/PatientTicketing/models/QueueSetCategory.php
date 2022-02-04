@@ -18,12 +18,31 @@
 
 namespace OEModule\PatientTicketing\models;
 
-class QueueSetCategory extends \BaseActiveRecordVersioned
+use BaseActiveRecord;
+use BaseActiveRecordVersioned;
+use CActiveDataProvider;
+use CDbCriteria;
+use Institution;
+use MappedReferenceData;
+use ReferenceData;
+
+class QueueSetCategory extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'category_id';
+    }
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphTrOperationnote_GlaucomaTube_PlatePosition the static model class
+     * @return QueueSetCategory|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -59,9 +78,11 @@ class QueueSetCategory extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-                'queuesets' => array(self::HAS_MANY, 'OEModule\PatientTicketing\models\QueueSet', 'category_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'queuesets' => array(self::HAS_MANY, QueueSet::class, 'category_id'),
+            'institutions' => array(self::MANY_MANY, Institution::class, 'patientticketing_queuesetcategory_institution(category_id, institution_id)'),
+            'queuesetcategory_institutions' => array(self::HAS_MANY, QueueSetCategory_Institution::class, 'queueset_id'),
         );
     }
 
@@ -79,12 +100,12 @@ class QueueSetCategory extends \BaseActiveRecordVersioned
      */
     public function search()
     {
-        $criteria = new \CDbCriteria();
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
 
-        return new \CActiveDataProvider(get_class($this), array(
+        return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
     }

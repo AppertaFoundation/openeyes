@@ -54,29 +54,31 @@
                                 </td>
                             <?php } ?>
                         </tr>
-                        <?php if ($form_css_class === 'wpten') : ?>
+                        <?php
+                        $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+                        if ($form_css_class === 'wpten') { ?>
                             <tr>
-                                <td>NHS Number:</td>
-                                <td><?= $this->patient->nhs_num ?></td>
+                                <td><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?>:</td>
+                                <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
                             </tr>
-                        <?php else : ?>
+                        <?php } else { ?>
                         <tr>
                             <td></td>
-                            <td><?= $this->patient->nhs_num ?></td>
+                            <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
                         </tr>
-                        <?php endif; ?>
+                        <?php }; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <?php if ($form_css_class === 'wpten') : ?>
+        <?php if ($form_css_class === 'wpten') { ?>
             <div class="fpten-form-row">
                 <div class="fpten-form-column wpten-prescriber">
                     <!--HOSPITAL YSBYTY-->
                     <!--DOCTOR MEDDYG-->
                 </div>
             </div>
-        <?php endif; ?>
+        <?php } ?>
     </div>
 </div>

@@ -23,7 +23,6 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 // Removing the unnecessary canViewSummary parameter from the localisation, this needs to be implemented properly by creating a new role - CERA590
 $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
-
 ?>
 
 <?php if ($no_episodes && $allow_clinical) { ?>
@@ -51,6 +50,28 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
     <nav class="event-header no-face">
         <i class="oe-i-e large i-Patient"></i>
         <h2 class="event-header-title">Patient Overview</h2>
+        <?php if (!$this->patient->isDeleted() && Yii::app()->user->checkAccess('OprnDeletePatient')) { ?>
+        <div class="buttons-right">
+            <button class="js-delete-patient header-icon-btn trash"></button>
+        </div>
+        <!-- Create confirmation dialogue box only if user can delete the patient -->
+        <div id="confirm_delete_patient" title="Confirm delete patient" style="display: none;">
+            <div id="delete_patient">
+                <div class="alert-box alert with-icon">
+                    <strong>WARNING: This will remove the patient from the system.<br/>This action cannot be undone.</strong>
+                </div>
+                <p>
+                    <strong>Are you sure you want to proceed?</strong>
+                </p>
+                <div class="buttons">
+                    <input type="hidden" id="patient_id" value="" />
+                    <button type="submit" class="warning js-confirm-delete-patient">Delete patient</button>
+                    <button type="submit" class="secondary js-cancel-delete-patient">Cancel</button>
+                    <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+                </div>
+            </div>
+        </div>
+        <?php } ?>
         <?php $this->renderPartial('//patient/event_actions'); ?>
     </nav>
 
@@ -138,9 +159,12 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         </div>
 
         <div class="patient-overview">
+            <?php if(!$active_events) {?>
+                <div class="nil-recorded">No Active Event</div>
+            <?php }?>
             <table class="standard">
                 <tbody>
-                <?php foreach ($events as $event) :
+                <?php foreach ($active_events as $event) :
                     $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
                     <tr>
                         <td>
@@ -247,6 +271,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         </div>
 
         <div class="cols-half">
+            <?php $this->renderPartial('landing_page_da_assignments', array('patient' => $this->patient));?>
             <section class="element view full view-xxx" id="idg-ele-view-management-summaries">
                 <header class="element-header"><h3 class="element-title">Management Summaries</h3></header>
                 <div class="element-data full-width">
@@ -307,4 +332,23 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
     </main>
 <?php }?>
 
+<script>
+    $('.js-delete-patient').click(function (e) {
+        e.preventDefault();
+        $('#confirm_delete_patient').dialog({
+            resizable: false,
+            modal: true,
+            width: 560
+        });
+    });
 
+    $('.js-confirm-delete-patient').click(function (e) {
+        e.preventDefault();
+        window.location.href = '<?= Yii::app()->createUrl('patient/delete/'.$patient->id) ?>';
+    });
+
+    $('.js-cancel-delete-patient').click(function (e) {
+        e.preventDefault();
+        $('#confirm_delete_patient').dialog('close');
+    });
+</script>

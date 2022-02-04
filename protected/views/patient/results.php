@@ -23,33 +23,34 @@
 
 $based_on = array();
 $search_term = "";
+if ($search_terms['last_name']) {
+    $based_on[] = 'LAST NAME';
+    $search_term = $search_terms['last_name'];
+}
 if ($search_terms['first_name']) {
     $based_on[] = 'FIRST NAME';
     $search_term = $search_terms['first_name'];
 }
-if ($search_terms['last_name']) {
-    $based_on[] = 'LAST NAME';
-    if ($search_terms['first_name']) {
-        $search_term .= ' ' . $search_terms['last_name'];
-    } else {
-        $search_term = $search_terms['last_name'];
-    }
-}
-if ($search_terms['dob']) {
+if (isset($search_terms['dob']) && $search_terms['dob']) {
     $based_on[] = 'DOB';
     $search_term .= ' ' . $search_terms['dob'];
 }
-if ($search_terms['hos_num']) {
-    $based_on[] = 'HOSPITAL NUMBER';
-    $search_term = $search_terms['hos_num'];
-}
-if ($search_terms['nhs_num']) {
-    $based_on[] = Yii::app()->params['nhs_num_label'] . ' NUMBER';
-    $search_term = $search_terms['nhs_num'];
+if ($search_terms['patient_identifier_value']) {
+    $based_on[] = 'PATIENT IDENTIFIER';
+    $search_term = is_array($search_terms['patient_identifier_value']) ? implode(',', $search_terms['patient_identifier_value']) : $search_terms['patient_identifier_value'];
 }
 $core_api = new CoreAPI();
 
 $based_on = implode(', ', $based_on);
+
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
+$primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
+$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
+    $primary_identifier_usage_type,
+    $institution->id,
+    $selected_site_id);
+
 ?>
 <div class="oe-full-header flex-layout">
     <div class="title wordcaps">Patient search</div>
@@ -81,9 +82,10 @@ $based_on = implode(', ', $based_on);
           'callback' => Yii::app()->createUrl('site/search'),
           'context' => 'sidebar',
       )); ?>
-      <hr class="divider">
-      <h4>Use the <a href="<?= Yii::app()->createUrl('/OECaseSearch/caseSearch/index'); ?>" class="hint">advanced search</a></h4>
-
+      <?php if ($this->checkAccess('Advanced Search')) { ?>
+          <hr class="divider">
+          <h4>Use the <a href="<?= Yii::app()->createUrl('/OECaseSearch/caseSearch/index'); ?>" class="hint">advanced search</a></h4>
+      <?php } ?>
   </nav>
   <div class="results-all">
         <?php $this->renderPartial('//base/_messages');
@@ -102,19 +104,18 @@ $based_on = implode(', ', $based_on);
       <thead>
       <tr>
             <?php foreach (array(
-                             'No.',
+                             $primary_identifier_prompt,
                              'Title',
                              'First name',
                              'Last name',
                              'Born',
                              'Age',
-                             'Gender',
-                             \SettingMetadata::model()->getSetting('nhs_num_label'),
+                             'Sex'
                          ) as $i => $field) { ?>
-              <th id="patient-grid_c<?php echo $i; ?>">
+              <th id="patient-grid_c<?= $i ?>">
                   <?php
                     $new_sort_dir = 0;
-                    if ($i == $sort_by) {
+                    if ($i > 0 && $i == $sort_by) {
                         $new_sort_dir = 1 - $sort_dir;
                         echo CHtml::link(
                             $field,
@@ -125,7 +126,7 @@ $based_on = implode(', ', $based_on);
                             array('class' => in_array($i, array(0, 2, 4, 5)) ? (($sort_dir == 0) ? 'sortable column-sort ascend ' : 'sortable column-sort descend '. 'active') : '')
                         );
                         ?>
-                    <?php } else {
+                    <?php } elseif ($i > 0) {
                         echo CHtml::link(
                             $field,
                             Yii::app()->createUrl(
@@ -134,6 +135,8 @@ $based_on = implode(', ', $based_on);
                             ),
                             array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
                         );
+                    } else {
+                        echo $field;
                     }
                     ?>
               </th>
@@ -141,25 +144,51 @@ $based_on = implode(', ', $based_on);
       </tr>
       </thead>
       <tbody>
-        <?php foreach ($dataProvided as $i => $result) { ?>
-        <tr id="r<?php echo $result->id ?>" class="clickable found-patient"
-            data-link="<?php echo $core_api->generatePatientLandingPageLink($result); ?>"
+        <?php
+            $institution = Institution::model()->getCurrent();
+            $site_id = Yii::app()->session['selected_site_id'];
+        ?>
+        <?php foreach ($dataProvided as $i => $patient) { ?>
             <?php
-            echo "data-hos_num='{$result->hos_num}'";
-            if ($result->isNewRecord) {
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_primary_number_usage_code'],
+                    $patient->id, $institution->id, $site_id);
+
+            if (!$primary_identifier) {
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_secondary_number_usage_code'],
+                    $patient->id, $institution->id, $site_id);
+            }
+            ?>
+
+        <tr id="r<?php echo $patient->id ?>" class="clickable found-patient"
+            data-link="<?php echo $core_api->generatePatientLandingPageLink($patient); ?>"
+            <?php
+            // data-patient_identifier_value used when the object is unsaved - means it came from PAS
+            // PAS responsible for setting up this relation
+            // for already saved patient we don't care this value here, patient.id will be used to navigate the user
+            // to the patient summary page
+            echo "data-patient_identifier_value='" . ($patient->localIdentifiers[0]->value ?? $patient->globalIdentifiers[0]->value ?? '') . "'";
+            if ($patient->isNewRecord) {
                 echo " data-is_new_record='1'";
+                echo " data-patient_identifier_type_id=" . $patient->localIdentifiers[0]->patientIdentifierType->id ?? $patient->globalIdentifiers[0]->patientIdentifierType->id ?? '';
             }
             ?>
         >
-          <td><?php echo $result->hos_num ?></td>
-          <td><?php echo $result->title ?></td>
-          <td><?php echo $result->first_name ?></td>
-          <td><?php echo $result->last_name ?></td>
-          <td><?php echo $result->dob ? (date('d/m/Y', strtotime($result->dob))) : ''; ?></td>
-          <td><?php echo $result->getAge(); ?></td>
-          <td><?php echo $result->gender ?></td>
-          <td><?php echo $result->nhsnum ?></td>
-        </tr>
+            <td><?= $primary_identifier->value ?? $patient->localIdentifiers[0]->value ?? ''; ?>
+                <?php $this->widget(
+                    'application.widgets.PatientIdentifiers',
+                    [
+                        'patient' => $patient,
+                        'show_all' => true
+                    ]); ?>
+                <?= $patient->isNewRecord ? '| From PAS' : '| From Local DB'?>
+            </td>
+                  <td><?php echo $patient->title ?></td>
+                  <td><?php echo $patient->first_name ?></td>
+                  <td><?php echo $patient->last_name ?></td>
+                  <td><?php echo $patient->dob ? (date('d/m/Y', strtotime($patient->dob))) : ''; ?></td>
+                  <td><?php echo $patient->getAge(); ?></td>
+                  <td><?php echo $patient->gender ?></td>
+                </tr>
         <?php } ?>
       </tbody>
       <tfoot>
@@ -173,20 +202,32 @@ $based_on = implode(', ', $based_on);
   </div>
 </div>
 
-<script type="text/javascript">
-  $('.search-results').on('click', 'tr.clickable', function () {
-    var url;
+<script>
+    document.addEventListener('click', function(e) {
+        // loop parent nodes from the target to the delegation node
+        for (var target = e.target; target && target != this; target = target.parentNode) {
+            if (target.matches('tr.clickable')) {
+                patientSearch.call(target, e); // target will be 'this' in patientSearch() fn
+                break;
+            }
+        }
+    }, false);
 
-    if ($(this).data('is_new_record') === 1 && $(this).data('hos_num') !== undefined) {
-      url = '<?php echo Yii::app()->createUrl('patient/search')?>?term=' + $(this).data('hos_num');
-    } else {
-      url = $(this).attr('data-link');
+
+    function patientSearch() {
+        let url;
+
+        if (this.getAttribute('data-is_new_record') === '1' && this.getAttribute('data-patient_identifier_value') !== undefined) {
+            url = '<?php echo Yii::app()->createUrl('patient/search')?>?term=' + this.getAttribute('data-patient_identifier_value')
+            + '&patient_identifier_type_id=' + this.getAttribute('data-patient_identifier_type_id')
+        } else {
+            url = this.getAttribute('data-link');
+        }
+        window.location.href = url;
+        return false;
     }
-    window.location.href = url;
-    return false;
-  });
 
-  $('#js-clear-search-btn').click(function () {
-    window.location.assign('<?php echo Yii::app()->createURL('site/index') ; ?>');
-  });
+    $('#js-clear-search-btn').click(function () {
+        window.location.assign('<?php echo Yii::app()->createURL('site/index') ; ?>');
+    });
 </script>

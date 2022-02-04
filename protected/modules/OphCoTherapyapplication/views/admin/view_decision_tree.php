@@ -23,6 +23,8 @@ $this->renderPartial('_menu_main');
 <div class="row divider">
     <h2>Decision Tree: <?php echo $model->name ?></h2>
 </div>
+<h4>Institution: <?= $model->institution ? $model->institution->name : 'N/A' ?></h4>
+
 
 <div class="OphCoTherapyapplication_DecisionTree box admin">
 

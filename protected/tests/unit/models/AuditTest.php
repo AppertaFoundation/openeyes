@@ -83,6 +83,7 @@ class AuditTest extends ActiveRecordTestCase
             'server_name' => 'Server name',
             'request_uri' => 'Request URI',
             'site_id' => 'Site',
+            'institution_id' => 'Institution',
             'firm_id' => 'Firm',
             'event_type_id' => 'Event Type'
         );

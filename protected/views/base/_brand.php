@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-logo.svg';
+$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-logo.svg';
 $settings = new SettingMetadata();
 $tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']) : htmlspecialchars($settings->getSetting('tech_support_provider'));
 $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'))
@@ -76,6 +76,12 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
       </a>
     </p>
   </div>
+  <div class="group">
+    <p>
+      Execution time: <span class="js-execution-time"></span>s<br />
+      Memory usage: <span class="js-memory-usage"></span>
+    </p>
+  </div>
 </div>
 
 <script>
@@ -118,5 +124,7 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
       }).open();
     });
 
+    document.querySelector('.js-execution-time').innerHTML = execution_time;
+    document.querySelector('.js-memory-usage').innerHTML = memory_usage;
   });
 </script>

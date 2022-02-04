@@ -24,6 +24,7 @@
  * @property string $id
  * @property string $proc_id
  * @property string $subspecialty_subsection_id
+ * @property int $institution_id
  *
  * The followings are the available model relations:
  * @property SubspecialtySubsection $subspecialtySubsection
@@ -34,7 +35,7 @@ class ProcedureSubspecialtySubsectionAssignment extends BaseActiveRecordVersione
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ProcedureSubspecialtySubsectionAssignment the static model class
+     * @return ProcedureSubspecialtySubsectionAssignment|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -62,7 +63,7 @@ class ProcedureSubspecialtySubsectionAssignment extends BaseActiveRecordVersione
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, proc_id, subspecialty_subsection_id', 'safe', 'on' => 'search'),
-            array('proc_id, subspecialty_subsection_id', 'safe'),
+            array('proc_id, subspecialty_subsection_id, institution_id', 'safe'),
         );
     }
 
@@ -76,6 +77,7 @@ class ProcedureSubspecialtySubsectionAssignment extends BaseActiveRecordVersione
         return array(
             'subspecialtySubsection' => array(self::BELONGS_TO, 'SubspecialtySubsection', 'subspecialty_subsection_id'),
             'proc' => array(self::BELONGS_TO, 'Procedure', 'proc_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id')
         );
     }
 

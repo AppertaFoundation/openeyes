@@ -155,81 +155,51 @@ use OEModule\OphCiExamination\widgets\NinePositions;
                 <?php } ?>
 
                 <div class="right-eyedraw-controls">
-                    <div class="ed-widget edit">
-                        <div class="ed-editor-container">
-                            <div class="ed-toolbar">
-                                <ul class="ed-toolbar-panel">
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="addDoodle" data-arg="OrthopticShading" data-eye="right">
-                                            <span class="icon-ed-OrthopticShading"></span>
-                                            <span class="label">Orthoptic Shading</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="shootOrDrift" data-arg="UpDrift" data-eye="right">
-                                            <span class="icon-ed-UpDriftFromLeft"></span>
-                                            <span class="label">Up/Down Drift</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="shootOrDrift" data-arg="UpShoot" data-eye="right">
-                                            <span class="icon-ed-UpShootFromLeft"></span>
-                                            <span class="label">Up/Down Shoot</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="flex">
+                        <a class="ed-button" href="#" data-function="addDoodle" data-arg="OrthopticShading" data-eye="right">
+                            <i class="ed-i icon-ed-OrthopticShading"></i>
+                            <span class="label">Orthoptic Shading</span>
+                        </a>
+                        <a class="ed-button" href="#" data-function="shootOrDrift" data-arg="UpDrift" data-eye="right">
+                            <i class="ed-i icon-ed-UpDriftFromLeft"></i>
+                            <span class="label">Up/Down Drift</span>
+                        </a>
+                        <a class="ed-button" href="#" data-function="shootOrDrift" data-arg="UpShoot" data-eye="right">
+                            <i class="ed-i icon-ed-UpShootFromLeft"></i>
+                            <span class="label">Up/Down Shoot</span>
+                        </a>      
+                    </div><!-- flex -->
                 </div><!-- .right-eyedraw-controls -->
 
                 <!-- pad out the icon groups -->
                 <div class="tabspace"></div>
 
                 <div class="center-eyedraw-controls">
-                    <div class="ed-widget edit">
-                        <div class="ed-editor-container">
-                            <div class="ed-toolbar">
-                                <ul class="ed-toolbar-panel">
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="addPattern" data-arg="APattern">
-                                            <span class="icon-ed-APattern"></span>
-                                            <span class="label">'A' Pattern</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="addPattern" data-arg="VPattern">
-                                            <span class="icon-ed-VPattern"></span>
-                                            <span class="label">'V' Pattern</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="addPattern" data-arg="">
-                                            <span class="icon-ed-NoPattern"></span>
-                                            <span class="label">No Pattern</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="addPattern" data-arg="XPattern">
-                                            <span class="icon-ed-XPattern"></span>
-                                            <span class="label">'X' Pattern</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="addPattern" data-arg="YPattern">
-                                            <span class="icon-ed-YPattern"></span>
-                                            <span class="label">'Y' Pattern</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="addPattern" data-arg="InverseYPattern">
-                                            <span class="icon-ed-InverseYPattern"></span>
-                                            <span class="label">'Inverse Y' Pattern</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                    <div class="flex">
+                        <a class="ed-button" href="#" data-function="addPattern" data-arg="APattern">
+                            <span class="ed-i icon-ed-APattern"></span>
+                            <span class="label">'A' Pattern</span>
+                        </a>
+                        <a class="ed-button" href="#" data-function="addPattern" data-arg="VPattern">
+                            <span class="ed-i icon-ed-VPattern"></span>
+                            <span class="label">'V' Pattern</span>
+                        </a>
+                        <a class="ed-button" href="#" data-function="addPattern" data-arg="">
+                            <span class="ed-i icon-ed-NoPattern"></span>
+                            <span class="label">No Pattern</span>
+                        </a>
+                        <a class="ed-button" href="#" data-function="addPattern" data-arg="XPattern">
+                            <span class="ed-i icon-ed-XPattern"></span>
+                            <span class="label">'X' Pattern</span>
+                        </a>
+                        <a class="ed-button" href="#" data-function="addPattern" data-arg="YPattern">
+                            <span class="ed-i icon-ed-YPattern"></span>
+                            <span class="label">'Y' Pattern</span>
+                        </a>
+                        <a class="ed-button" href="#" data-function="addPattern" data-arg="InverseYPattern">
+                            <span class="ed-i icon-ed-InverseYPattern"></span>
+                            <span class="label">'Inverse Y' Pattern</span>
+                        </a>
                     </div>
                 </div><!-- .center-eyedraw-controls -->
 
@@ -237,32 +207,19 @@ use OEModule\OphCiExamination\widgets\NinePositions;
                 <div class="tabspace"></div>
 
                 <div class="left-eyedraw-controls">
-                    <div class="ed-widget edit">
-                        <div class="ed-editor-container">
-                            <div class="ed-toolbar">
-                                <ul class="ed-toolbar-panel">
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="addDoodle" data-arg="OrthopticShading" data-eye="left">
-                                            <span class="icon-ed-OrthopticShading"></span>
-                                            <span class="label">Orthoptic Shading</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="shootOrDrift" data-arg="UpDrift" data-eye="left">
-                                            <span class="icon-ed-UpDriftFromRight"></span>
-                                            <span class="label">Up/Down Drift</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="ed-button" href="#" data-function="shootOrDrift" data-arg="UpShoot" data-eye="left">
-                                            <span class="icon-ed-UpShootFromRight"></span>
-                                            <span class="label">Up/Down Shoot</span>
-                                        </a>
-                                    </li>
-                                </ul>
-
-                            </div>
-                        </div>
+                    <div class="flex">
+                        <a class="ed-button" href="#" data-function="addDoodle" data-arg="OrthopticShading" data-eye="left">
+                            <span class="ed-i icon-ed-OrthopticShading"></span>
+                            <span class="label">Orthoptic Shading</span>
+                        </a>
+                        <a class="ed-button" href="#" data-function="shootOrDrift" data-arg="UpDrift" data-eye="left">
+                            <span class="ed-i icon-ed-UpDriftFromRight"></span>
+                            <span class="label">Up/Down Drift</span>
+                        </a>
+                        <a class="ed-button" href="#" data-function="shootOrDrift" data-arg="UpShoot" data-eye="left">
+                            <span class="ed-i icon-ed-UpShootFromRight"></span>
+                            <span class="label">Up/Down Shoot</span>
+                        </a>
                     </div>
                 </div><!-- left-eyedraw-controls -->
 
@@ -730,4 +687,3 @@ use OEModule\OphCiExamination\widgets\NinePositions;
         </div>
     </div>
 </div>
-

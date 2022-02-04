@@ -23,6 +23,7 @@ namespace OEModule\OphCiExamination\models;
  * The followings are the available columns in table 'ophciexamination_systemic_surgery_set':
  * @property integer $id
  * @property string $name
+ * @property integer $institution_id
  * @property string $firm_id
  * @property string $subspecialty_id
  * @property string $last_modified_user_id
@@ -31,6 +32,7 @@ namespace OEModule\OphCiExamination\models;
  * @property string $created_date
  *
  * The followings are the available model relations:
+ * @property Institution $institution
  * @property \Firm $firm
  * @property \Subspecialty $subspecialty
  * @property \User $createdUser
@@ -62,8 +64,7 @@ class SystemicSurgerySet extends \BaseActiveRecordVersioned
             ['firm_id, subspecialty_id, last_modified_user_id, created_user_id', 'length', 'max'=>10],
             ['last_modified_date, created_date', 'safe'],
             // The following rule is used by search().
-            ['id, name, firm_id, subspecialty_id, last_modified_user_id, last_modified_date, 
-                created_user_id, created_date', 'safe', 'on'=>'search'],
+            ['id, name, institution_id, firm_id, subspecialty_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'],
         ];
     }
 
@@ -75,6 +76,7 @@ class SystemicSurgerySet extends \BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'firm' => [self::BELONGS_TO, 'Firm', 'firm_id'],
             'subspecialty' => [self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'],
             'created_user' => [self::BELONGS_TO, 'User', 'created_user_id'],
@@ -91,6 +93,7 @@ class SystemicSurgerySet extends \BaseActiveRecordVersioned
         return [
             'id' => 'ID',
             'name' => 'Name',
+            'institution_id' => 'Institution',
             'firm_id' => 'Firm',
             'subspecialty_id' => 'Subspecialty',
             'last_modified_user_id' => 'Last Modified User',
@@ -112,18 +115,24 @@ class SystemicSurgerySet extends \BaseActiveRecordVersioned
      * @return \CActiveDataProvider the data provider that can return the models
      * based on the search/filter conditions.
      */
-    public function search()
+    public function search($current_institution_only = false)
     {
         $criteria=new  \CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
         $criteria->compare('firm_id', $this->firm_id, true);
         $criteria->compare('subspecialty_id', $this->subspecialty_id, true);
         $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
         $criteria->compare('last_modified_date', $this->last_modified_date, true);
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
+
+        if ($current_institution_only) {
+            $criteria->addCondition('institution_id = :institution_id');
+            $criteria->params[':institution_id'] = \Yii::app()->session['selected_institution_id'];
+        }
 
         return new \CActiveDataProvider($this, [
             'criteria'=>$criteria,

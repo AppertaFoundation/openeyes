@@ -2,11 +2,13 @@
 
 /**
  * Class PreviousProceduresParameterTest
+ * @covers PreviousProceduresParameter
+ * @covers CaseSearchParameter
  * @method procedures($fixtureId)
  */
 class PreviousProceduresParameterTest extends CDbTestCase
 {
-    public $parameter;
+    public PreviousProceduresParameter $parameter;
 
     protected $fixtures = array(
         'patients' => Patient::class,
@@ -18,7 +20,7 @@ class PreviousProceduresParameterTest extends CDbTestCase
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function getArgs()
+    public function getArgs(): array
     {
         return array(
             'Equal' => array(
@@ -43,11 +45,11 @@ class PreviousProceduresParameterTest extends CDbTestCase
         unset($this->parameter);
     }
 
-    public function testGetCommonItemsForTerm()
+    public function testGetCommonItemsForTerm(): void
     {
-        $this->assertCount(1, PreviousProceduresParameter::getCommonItemsForTerm('Foobar'));
-        $this->assertCount(3, PreviousProceduresParameter::getCommonItemsForTerm('Procedure'));
-        $this->assertCount(1, PreviousProceduresParameter::getCommonItemsForTerm('test procedure 2'));
+        self::assertCount(1, PreviousProceduresParameter::getCommonItemsForTerm('Foobar'));
+        self::assertCount(3, PreviousProceduresParameter::getCommonItemsForTerm('Procedure'));
+        self::assertCount(1, PreviousProceduresParameter::getCommonItemsForTerm('test procedure 2'));
     }
 
     /**
@@ -55,40 +57,40 @@ class PreviousProceduresParameterTest extends CDbTestCase
      * @param $operation
      * @throws CException
      */
-    public function testGetValueForAttribute($operation)
+    public function testGetValueForAttribute($operation): void
     {
         $this->parameter->operation = $operation;
         $this->parameter->value = 1;
 
         $expected = $this->procedures('procedure1');
 
-        $this->assertEquals($expected->term, $this->parameter->getValueForAttribute('value'));
-        $this->assertEquals($operation, $this->parameter->getValueForAttribute('operation'));
+        self::assertEquals($expected->term, $this->parameter->getValueForAttribute('value'));
+        self::assertEquals($operation, $this->parameter->getValueForAttribute('operation'));
 
         $this->expectException('CException');
         $this->parameter->getValueForAttribute('invalid');
     }
 
-    public function testBindValues()
+    public function testBindValues(): void
     {
         $this->parameter->value = 1;
         $expected = array(
             "p_p_value_0" => 1,
         );
 
-        $this->assertEquals($expected, $this->parameter->bindValues());
+        self::assertEquals($expected, $this->parameter->bindValues());
     }
 
     /**
      * @dataProvider getArgs
      * @param $operation
      */
-    public function testQuery($operation)
+    public function testQuery($operation): void
     {
         $this->parameter->operation = $operation;
         $this->parameter->value = 1;
 
-        $this->assertTrue($this->parameter->validate());
+        self::assertTrue($this->parameter->validate());
         $query = "
             SELECT pa.id
             FROM patient pa
@@ -118,19 +120,19 @@ class PreviousProceduresParameterTest extends CDbTestCase
                 )";
         }
 
-        $this->assertEquals($query, $this->parameter->query());
+        self::assertEquals($query, $this->parameter->query());
     }
 
     /**
      * @dataProvider getArgs
      * @param $operation
      */
-    public function testGetAuditData($operation)
+    public function testGetAuditData($operation): void
     {
         $this->parameter->operation = $operation;
         $this->parameter->value = 1;
         $expected = "previous_procedures: $operation Foobar Procedure";
 
-        $this->assertEquals($expected, $this->parameter->getAuditData());
+        self::assertEquals($expected, $this->parameter->getAuditData());
     }
 }

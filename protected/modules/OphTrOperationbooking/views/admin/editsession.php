@@ -15,6 +15,17 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var $session OphTrOperationbooking_Operation_Session
+ * @var $this AdminController
+ * @var $form BaseEventTypeCActiveForm
+ */
+if ($this->checkAccess('admin')) {
+    $theatres = OphTrOperationbooking_Operation_Theatre::model()->findAll();
+} else {
+    $theatres = OphTrOperationbooking_Operation_Theatre::getTheatresForCurrentInstitution();
+}
 ?>
 <div class="box admin cols-5">
     <h2><?php echo $session->id ? 'Edit' : 'Add'?> session</h2>
@@ -34,7 +45,7 @@
             <?php if ($session->sequence_id) {?>
                 <tr>
                     <td>
-                        <?= $form->labelEx($session, 'sequence_id'); ?>
+                        <?= $form->labelEx($session, 'sequence_id') ?>
                     </td>
                     <td>
                         <?= $form->textField($session, 'sequence_id', ['readonly' => true, 'nowrapper' => true])?>
@@ -43,7 +54,7 @@
             <?php }?>
             <tr>
                 <td>
-                    <?= $form->labelEx($session, 'firm_id'); ?>
+                    <?= $form->labelEx($session, 'firm_id') ?>
                 </td>
                 <td>
                     <?= $form->dropDownList($session, 'firm_id', Firm::model()->getListWithSpecialties(), ['empty' => '- Emergency -', 'nowrapper' => true, 'class' => 'cols-12'])?>
@@ -51,10 +62,10 @@
             </tr>
             <tr>
                 <td>
-                    <?= $form->labelEx($session, 'theatre_id'); ?>
+                    <?= $form->labelEx($session, 'theatre_id') ?>
                 </td>
                 <td>
-                    <?= $form->dropDownList($session, 'theatre_id', 'OphTrOperationbooking_Operation_Theatre', ['empty' => '- None -', 'nowrapper' => true])?>
+                    <?= $form->dropDownList($session, 'theatre_id', CHtml::listData($theatres, 'id', 'name'), ['empty' => '- None -', 'nowrapper' => true])?>
                 </td>
             </tr>
             <tr>
@@ -62,31 +73,31 @@
                     <td>Date</td>
                     <td><?= $session->NHSDate('date')?></td>
                 <?php } else {?>
-                    <td><?= $form->labelEx($session, 'date'); ?></td>
+                    <td><?= $form->labelEx($session, 'date') ?></td>
                     <td><?= $form->datePicker($session, 'date', [], ['nowrapper' => true])?></td>
                 <?php }?>
             </tr>
             <tr>
-                <td><?= $form->labelEx($session, 'start_time'); ?></td>
+                <td><?= $form->labelEx($session, 'start_time') ?></td>
                 <td>
                     <?= $form->textField($session, 'start_time', ['nowrapper' => true])?>
                 </td>
             </tr>
             <tr>
-                <td><?= $form->labelEx($session, 'end_time'); ?></td>
+                <td><?= $form->labelEx($session, 'end_time') ?></td>
                 <td><?= $form->textField($session, 'end_time', ['nowrapper' => true])?></td>
             </tr>
             <tr>
-                <td><?= $form->labelEx($session, 'default_admission_time'); ?></td>
+                <td><?= $form->labelEx($session, 'default_admission_time') ?></td>
                 <td><?= $form->textField($session, 'default_admission_time', ['nowrapper' => true])?></td>
             </tr>
             <tr>
-                <td><?= $form->labelEx($session, 'max_procedures'); ?></td>
-                <td><?= $form->textField($session, 'max_procedures', ['nowrapper' => true]); ?></td>
+                <td><?= $form->labelEx($session, 'max_procedures') ?></td>
+                <td><?= $form->textField($session, 'max_procedures', ['nowrapper' => true]) ?></td>
             </tr>
             <tr>
-                <td><?= $form->labelEx($session, 'max_complex_bookings'); ?></td>
-                <td><?= $form->textField($session, 'max_complex_bookings', ['nowrapper' => true]); ?></td>
+                <td><?= $form->labelEx($session, 'max_complex_bookings') ?></td>
+                <td><?= $form->textField($session, 'max_complex_bookings', ['nowrapper' => true]) ?></td>
             </tr>
             <?php $current = $session->getBookedProcedureCount();
             if ($current) { ?>
@@ -102,7 +113,7 @@
             <?php $boolean_fields = ['consultant', 'paediatric', 'anaesthetist', 'general_anaesthetic', 'available'];
             foreach ($boolean_fields as $field) : ?>
                 <tr>
-                    <td><?= $form->labelEx($session, $field); ?></td>
+                    <td><?= $form->labelEx($session, $field) ?></td>
                     <td><?= $form->radioBoolean($session, $field, ['nowrapper' => true])?></td>
                 </tr>
             <?php endforeach; ?>
@@ -111,7 +122,7 @@
                 ?> style="display: none;"<?php
                                                   } ?> >
                 <td>
-                    <label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?= $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
+                    <label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?= $session->getAttributeLabel('unavailablereason_id') ?>:</label>
                 </td>
                 <td>
                     <?= $form->dropDownList($session, 'unavailablereason_id', CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'), array('empty' => 'Select', 'nowrapper' => true))?>
@@ -146,13 +157,15 @@
 
 <script type="text/javascript">
     $('input[name="OphTrOperationbooking_Operation_Session[available]"]').live('change', function() {
-        if ($(this).val() == '1') {
+        let $unavail_reason_id = $('#OphTrOperationbooking_Operation_Session_unavailablereason_id');
+        if ($(this).val() === '1') {
+            
             $('#unavailablereason_id_wrapper').hide();
-            $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig', $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val());
-            $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val('');
+            $unavail_reason_id.data('orig', $unavail_reason_id.val());
+            $unavail_reason_id.val('');
         }
         else {
-            $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val($('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig'));
+            $unavail_reason_id.val($unavail_reason_id.data('orig'));
             $('#unavailablereason_id_wrapper').show();
         }
     });
@@ -162,7 +175,7 @@
         window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
     });
 
-    handleButton($('#et_save'),function(e) {
+    handleButton($('#et_save'),function() {
         $('#adminform').submit();
     });
 
@@ -173,7 +186,7 @@
             'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
             'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
             'success': function(resp) {
-                if (resp == "1") {
+                if (resp === "1") {
                     enableButtons();
 
                     $('#confirm_delete_session').dialog({
@@ -199,13 +212,13 @@
             'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
             'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
             'success': function(resp) {
-                if (resp == "1") {
+                if (resp === "1") {
                     $.ajax({
                         'type': 'POST',
                         'url': baseUrl+'/OphTrOperationbooking/admin/deleteSessions',
                         'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
                         'success': function(resp) {
-                            if (resp == "1") {
+                            if (resp === "1") {
                                 window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
                             } else {
                                 new OpenEyes.UI.Dialog.Alert({

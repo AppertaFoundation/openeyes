@@ -8,6 +8,22 @@
  */
 class OphDrPrescription_DispenseLocation extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'dispense_location_id';
+    }
+
+    protected function mappingModelName(int $level): string
+    {
+        return 'OphDrPrescription_DispenseLocation_Institution';
+    }
 
     /**
      * @return string the associated database table name
@@ -30,12 +46,12 @@ class OphDrPrescription_DispenseLocation extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, display_order, active', 'required'),
+            array('name, display_order', 'required'),
             array('display_order', 'numerical', 'integerOnly'=>true),
             array('name', 'length', 'max'=>255),
             array('created_user_id', 'length', 'max'=>10),
-            array('created_date, name, display_order, active, created_user_id, last_modified_user_id, last_modified_date,', 'safe'),
-            array('id, caption, active', 'safe', 'on'=>'search'),
+            array('created_date, name, display_order, created_user_id, last_modified_user_id, last_modified_date,', 'safe'),
+            array('id, caption', 'safe', 'on'=>'search'),
         );
     }
 
@@ -44,7 +60,8 @@ class OphDrPrescription_DispenseLocation extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'conditions' => [self::MANY_MANY, 'OphDrPrescription_DispenseCondition', 'ophdrprescription_dispense_condition_assignment(dispense_location_id, dispense_condition_id)'],
+            'dispense_location_institutions' => [self::HAS_MANY, 'OphDrPrescription_DispenseLocation_Institution', 'dispense_location_id'],
+            'institutions' => [self::MANY_MANY, 'Institution', 'ophdrprescription_dispense_location_institution(dispense_location_id, institution_id)']
         ];
     }
 
@@ -59,7 +76,6 @@ class OphDrPrescription_DispenseLocation extends BaseActiveRecordVersioned
             'display_order' => 'Display Order',
             'created_date' => 'Created Date',
             'created_user_id' => 'Created By',
-            'active' => 'Active'
         );
     }
 

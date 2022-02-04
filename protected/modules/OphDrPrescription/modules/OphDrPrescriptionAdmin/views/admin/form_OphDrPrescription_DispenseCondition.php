@@ -14,9 +14,20 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$institution_id = Yii::app()->session['selected_institution_id'];
+$criteria = new CDbCriteria();
+$criteria->with = array('dispense_location_institutions', 'dispense_location_institutions.dispense_location');
+$criteria->compare('t.dispense_condition_id', $model->id);
+$criteria->compare('t.institution_id', $institution_id);
+$criteria->compare('dispense_location_institutions.institution_id', $institution_id);
+$dc_institution = OphDrPrescription_DispenseCondition_Institution::model()->find($criteria);
+
+if (!$dc_institution) {
+    $dc_institution = OphDrPrescription_DispenseCondition_Institution::model();
+}
 ?>
 <div class="cols-5">
-    <?=\CHtml::activeHiddenField($model, 'id'); ?>
+    <?=\CHtml::activeHiddenField($model, 'id') ?>
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-1">
@@ -30,24 +41,25 @@
                     $model,
                     'name',
                     ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Is Active</td>
-            <td>
-                <?=\CHtml::activeCheckBox($model, 'active') ?>
+                ) ?>
             </td>
         </tr>
         <tr>
             <td>Dispense Locations</td>
             <td>
-                <?php echo $form->multiSelectList(
-                    $model,
-                    CHtml::modelName($model).'[all_locations]',
-                    'all_locations',
+                <?php $form->multiSelectList(
+                    $dc_institution,
+                    CHtml::modelName($dc_institution).'[dispense_location_institutions]',
+                    'dispense_location_institutions',
                     'id',
-                    CHtml::listData(OphDrPrescription_DispenseLocation::model()->findAll(array('order' => 'display_order')), 'id', 'name'),
+                    CHtml::listData(OphDrPrescription_DispenseLocation_Institution::model()->findAll(
+                        array(
+                            'condition' => 't.institution_id = :id',
+                            'with' => array('dispense_location'),
+                            'params' => [':id' => Yii::app()->session['selected_institution_id']],
+                            'order' => 'dispense_location.display_order',
+                        )
+                    ), 'id', 'dispense_location.name'),
                     null,
                     array('empty' => '- Add -', 'label' => 'Locations', 'nowrapper' => true, 'class' => 'cols-full')
                 ) ?>
@@ -64,7 +76,7 @@
                         'name' => 'save',
                         'id' => 'et_save'
                     ]
-                ); ?>
+                ) ?>
                 <?=\CHtml::submitButton(
                     'Cancel',
                     [
@@ -73,7 +85,7 @@
                         'name' => 'cancel',
                         'id' => 'et_cancel',
                     ]
-                ); ?>
+                ) ?>
             </td>
         </tr>
         </tfoot>

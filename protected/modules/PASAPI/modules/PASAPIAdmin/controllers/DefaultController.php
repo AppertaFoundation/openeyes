@@ -30,7 +30,7 @@ class DefaultController extends \BaseAdminController
 
         $this->render('list_XpathRemap', array(
             'model_class' => 'XpathRemap',
-            'model_list' => XpathRemap::model()->findAll(array('order' => 'name asc')),
+            'model_list' => XpathRemap::model()->findAll(array('condition' => 'institution_id='. \Yii::app()->session['selected_institution_id'], 'order' => 'name asc')),
             'title' => 'Remaps',
         ));
     }

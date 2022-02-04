@@ -30,9 +30,9 @@ class PasswordStaleWidgetReminder extends CWidget
 
     public function run()
     {
-        if (Yii::app()->params['auth_source'] === 'BASIC') {
+        if (Yii::app()->session['user_auth']->institutionAuthentication->user_authentication_method === 'LOCAL') {
             //grab the array that may contain keys for $DaysExpire and $DaysLock
-            $daysLeft = Yii::app()->session['user']->getUserDaysLeft();
+            $daysLeft = PasswordUtils::getDaysLeft(Yii::app()->session['user_auth']);
             //pass that array so that the keys in the array become passed in parameters
             $this->render('PasswordStaleWidgetReminder', $daysLeft);
         }

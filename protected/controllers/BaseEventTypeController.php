@@ -81,6 +81,7 @@ class BaseEventTypeController extends BaseModuleController
         'createImage' => self::ACTION_TYPE_VIEW,
         'EDTagSearch' => self::ACTION_TYPE_FORM,
         'renderEventImage' => self::ACTION_TYPE_VIEW,
+        'removed' => self::ACTION_TYPE_VIEW,
     );
 
     /**
@@ -158,6 +159,18 @@ class BaseEventTypeController extends BaseModuleController
      * @var bool
      */
     protected $show_manage_elements = false;
+
+    /**
+     * Additional errors outside of the scope of the Elements
+     * An example usage of this is for CreateEventsAfterEventSavedBehavior
+     * where we need to validate inputs not belonging to any elements
+     * and there would be no point to add validation to every Controller we want to use.
+     * At the time of writing $external_errors is only used in OpNote DefaultController actionCreate
+     * and added in this controllers actionCreate
+     *
+     * @var array
+     */
+    public array $external_errors = [];
 
     public function behaviors()
     {
@@ -449,6 +462,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
+        $this->setInstitutionFromSession();
         $this->setFirmFromSession();
 
         if (!isset($this->firm)) {
@@ -471,6 +485,12 @@ class BaseEventTypeController extends BaseModuleController
         $this->initAction($action->id);
 
         $this->verifyActionAccess($action);
+
+        // prevent the user try to perform any actions to the deleted events other than removed action
+        if($this->event && $this->event->deleted && $action->id !== 'removed'){
+            $url = $this->event->getEventViewPath();
+            $this->redirect($url);
+        }
 
         return parent::beforeAction($action);
     }
@@ -846,6 +866,9 @@ class BaseEventTypeController extends BaseModuleController
 
             // set and validate
             $errors = $this->setAndValidateElementsFromData($_POST);
+            if ($this->external_errors) {
+                $errors = array_merge($errors, $this->external_errors);
+            }
 
             // creation
             if (empty($errors)) {
@@ -869,6 +892,12 @@ class BaseEventTypeController extends BaseModuleController
                         Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 
                         $transaction->commit();
+
+                        /*
+                         * After event saved and transaction is commited
+                         * here we can generate additional events with their own transactions
+                         */
+                        $this->afterCreateEvent($this->event);
 
                         if ($this->event->parent_id) {
                             $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
@@ -1941,6 +1970,10 @@ class BaseEventTypeController extends BaseModuleController
         Yii::app()->puppeteer->setDocref($this->event->docref);
         Yii::app()->puppeteer->setPatient($this->event->episode->patient);
         Yii::app()->puppeteer->setBarcode($this->event->barcodeSVG);
+        Yii::app()->puppeteer->setInstitutionAndSite(
+            isset($this->event->institution) ? $this->event->institution->id : null,
+            isset($this->event->site) ? $this->event->site->id : null
+        );
 
         foreach (array('left', 'middle', 'right') as $section) {
             if (isset(Yii::app()->params['puppeteer_footer_' . $section . '_' . $this->event_type->class_name])) {
@@ -2198,6 +2231,14 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * Called after the event is saved, transaction is commited
+     * useful for creating additional events automatically with their own transactions
+     *
+     * @param \Event $event
+     */
+    protected function afterCreateEvent($event) {}
+
+    /**
      * Called after event (and elements) has been updated.
      *
      * @param Event $event
@@ -2246,8 +2287,13 @@ class BaseEventTypeController extends BaseModuleController
     public function processJsVars()
     {
         if ($this->patient) {
+            $patient_identifier = PatientIdentifier::model()->find(
+                'patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id',
+                [':patient_id' => $this->patient->id,
+                    ':patient_identifier_type_id' => Yii::app()->params['oelauncher_patient_identifier_type']]
+            );
             $this->jsVars['OE_patient_id'] = $this->patient->id;
-            $this->jsVars['OE_patient_hosnum'] = $this->patient->hos_num;
+            $this->jsVars['OE_patient_hosnum'] = $patient_identifier->value?? null;
         }
         if ($this->event) {
             $this->jsVars['OE_event_id'] = $this->event->id;
@@ -2820,5 +2866,49 @@ class BaseEventTypeController extends BaseModuleController
 
             $user->audit('user', 'change-firm', $user->last_firm_id);
             $this->getApp()->session['selected_firm_id'] = $context->id;
+    }
+
+    /**
+     * prevent the user accessing non-deleted event with the view for removed
+     * if the user has no permission or the setting is off, the view for revmoed event is not accessible
+     * @throws CHttpException
+     */
+    protected function initActionRemoved(){
+        $this->initWithEventId(@$_GET['id']);
+        if(!$this->event->deleted){
+            $this->redirect($this->event->getEventViewPath());
+        }
+    }
+
+    /**
+     * View the removed event specified by $id.
+     * @param id event_id
+     * 
+     * @throws CHttpException
+     */
+    public function actionRemoved($id){
+        $this->setOpenElementsFromCurrentEvent('view');
+        $this->editable = false;
+        $this->event->audit('event', 'view removed');
+        $this->event_tabs = array(
+            array(
+                'label' => 'Deleted Event - do not use',
+                'class' => 'highlighter warning',
+                'active' => true,
+                'type' => 'span',
+            ),
+        );
+
+        $criteria = new CDbCriteria();
+        $criteria->compare('delete_pending', 1);
+        $event_previous_version = $this->event->getPreviousVersionWithCriteria($criteria);
+        
+        $viewData = array_merge(array(
+            'elements' => $this->open_elements,
+            'eventId' => $id,
+            'event_previous_version' => $event_previous_version
+        ), $this->extraViewProperties);
+        $this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
+        $this->render('//deleted_events/removed', $viewData);
     }
 }

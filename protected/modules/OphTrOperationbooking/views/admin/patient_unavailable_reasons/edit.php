@@ -18,7 +18,7 @@
 ?>
 <div class="cols-5">
     <div class="row divider">
-        <h2><?php echo $reason->id ? 'Edit' : 'Add' ?> Patient Unavailable Reason</h2>
+        <h2><?= $reason->id ? 'Edit ' : 'Add '?>Patient Unavailable Reason</h2>
     </div>
 
     <?php

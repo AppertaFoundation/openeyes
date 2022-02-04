@@ -12,7 +12,7 @@ class ResultTypeController extends BaseAdminController
     /**
      * Lists Result Types.
      *
-     * @throws CHttpException
+     * @throws Exception
      */
 
     public function actionList()
@@ -34,7 +34,7 @@ class ResultTypeController extends BaseAdminController
         $this->render('/admin/edit', array(
             'model' => $savedModelWithErrors['model'],
             'title' => 'Edit Results Type',
-            'errors' => isset($savedModelWithErrors['errors']) ? $savedModelWithErrors['errors'] : null,
+            'errors' => $savedModelWithErrors['errors'] ?? null,
             'cancel_uri' => '/OphInLabResults/oeadmin/resultType/list',
         ));
     }
@@ -45,10 +45,72 @@ class ResultTypeController extends BaseAdminController
         $this->render('/admin/edit', array(
             'model' => $savedModelWithErrors['model'],
             'title' => 'Add Results Type',
-            'errors' => isset($savedModelWithErrors['errors']) ? $savedModelWithErrors['errors'] : null,
+            'errors' => $savedModelWithErrors['errors'] ?? null,
             'cancel_uri' => '/OphInLabResults/oeadmin/resultType/list',
         ));
+    }
 
+    /**
+     * @throws Exception
+     */
+    public function actionAddMapping()
+    {
+        $transaction = Yii::app()->db->beginTransaction();
+        $result = [];
+        $result['status'] = 1;
+        $result['errors'] = [];
+        $typeIds = Yii::app()->request->getPost('resultTypes', []);
+        $institution_id = Institution::model()->getCurrent()->id;
+
+        $result_types = OphInLabResults_Type::model()->findAllByPk($typeIds);
+
+        foreach ($result_types as $type) {
+            try {
+                if (!$type->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                    $result['errors'][] = $type->getErrors();
+                }
+            } catch (Exception $e) {
+                $result['status'] = 0;
+                $result['errors'][] = $e->getMessage();
+            }
+        }
+
+        if (!empty($result['errors'])) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionDeleteMapping()
+    {
+        $transaction = Yii::app()->db->beginTransaction();
+        $result = [];
+        $result['status'] = 1;
+        $result['errors'] = [];
+        $typeIds = Yii::app()->request->getPost('resultTypes', []);
+        $types = OphInLabResults_Type::model()->findAllByPk($typeIds);
+        $institution_id = Institution::model()->getCurrent()->id;
+        foreach ($types as $type) {
+            try {
+                if (!$type->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                    $result['errors'][] = $type->getErrors();
+                }
+            } catch (Exception $e) {
+                $result['status'] = 0;
+                $result['errors'][] = $e->getMessage();
+            }
+        }
+
+        if (!empty($result['errors'])) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+
+        $this->renderJSON($result);
     }
 
     function save($mode)
@@ -68,7 +130,7 @@ class ResultTypeController extends BaseAdminController
             if (isset($elementType)) {
                 $model->result_element_id = $elementType->id;
             }
-            if ($model->fieldType->name != "Numeric Field") {
+            if ($model->fieldType->name !== "Numeric Field") {
                 $model->min_range = null;
                 $model->max_range = null;
                 $model->normal_min = null;
@@ -79,7 +141,7 @@ class ResultTypeController extends BaseAdminController
                 $errors = $model->getErrors();
             }
 
-            if ($model->fieldType->name == "Drop-down Field") {
+            if ($model->fieldType->name === "Drop-down Field") {
                 if (isset($_POST['type_options']['options_id'])) {
                     $optionsId = $_POST['type_options']['options_id'];
                     $values = $_POST['type_options']['value'];
@@ -96,7 +158,7 @@ class ResultTypeController extends BaseAdminController
 
                     if ($mode === 'edit') {
                         foreach ($resultOptions as $resultOption) {
-                            if ($resultOption->id == $optionId) {
+                            if ($resultOption->id === $optionId) {
                                 $resultOption->value = $values[$key];
                                 if (!$resultOption->save()) {
                                     $errors = array_merge($resultOption->getErrors(), $errors);
@@ -119,7 +181,7 @@ class ResultTypeController extends BaseAdminController
 
                 if ($mode === 'edit') {
                     $resultOptions = array_filter($resultOptions, function ($resultOption) use ($optionsId) {
-                        return !in_array($resultOption->id, $optionsId);
+                        return !in_array($resultOption->id, $optionsId, true);
                     });
 
                     foreach ($resultOptions as $resultOption) {
@@ -148,21 +210,28 @@ class ResultTypeController extends BaseAdminController
         $transaction = Yii::app()->db->beginTransaction();
         $result = [];
         $result['status'] = 1;
-        $result['errors'] = "";
+        $result['errors'] = [];
         $typeIds = Yii::app()->request->getPost('resultTypes', []);
 
-        foreach ($typeIds as $id) {
-            try {
-                $resultType = OphInLabResults_Type::model()->findByPk($id);
+        $resultTypes = OphInLabResults_Type::model()->findAllByPk($typeIds);
 
-                foreach ($resultType->resultOptions as $resultOption) {
-                    if (!$resultOption->delete()) {
-                        $result['errors'][] = $resultOption->getErrors();
+        foreach ($resultTypes as $type) {
+            try {
+                if (!$type->deleteMappings(ReferenceData::LEVEL_INSTITUTION)) {
+                    $result['errors'][] = $type->getErrors();
+
+                    // Clear the errors here as we don't want duplication when we try to delete the base model itself.
+                    $type->clearErrors();
+                }
+
+                foreach ($type->institutionAssignments as $assignment) {
+                    if (!$assignment->delete()) {
+                        $result['errors'][] = $assignment->getErrors();
                     }
                 }
-                if (!$resultType->delete()) {
+                if (!$type->delete()) {
                     $result['status'] = 0;
-                    $result['errors'][] = $resultType->getErrors();
+                    $result['errors'][] = $type->getErrors();
                 }
             } catch (Exception $e) {
                 $result['status'] = 0;
@@ -179,7 +248,8 @@ class ResultTypeController extends BaseAdminController
         $this->renderJSON($result);
     }
 
-    public function actions() {
+    public function actions()
+    {
         return [
           'sortTypes' => [
             'class' => 'SaveDisplayOrderAction',

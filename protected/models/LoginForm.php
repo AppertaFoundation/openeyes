@@ -25,6 +25,8 @@ class LoginForm extends CFormModel
 {
     public $username;
     public $password;
+    public $institution_id;
+    public $site_id;
     public $rememberMe;
 
     private $_identity;
@@ -38,7 +40,10 @@ class LoginForm extends CFormModel
     {
         return array(
             // username and password are required
-            array('username, password', 'required'),
+            array('institution_id', 'requiredIfInstitutionRequired'),
+            array('username, password, site_id', 'required'),
+            array('institution_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => Institution::class),
+            array('site_id', 'exist', 'allowEmpty' => true, 'attributeName' => 'id', 'className' => Site::class),
             // rememberMe needs to be a boolean
             array('rememberMe', 'boolean'),
             // password needs to be authenticated
@@ -56,6 +61,68 @@ class LoginForm extends CFormModel
         );
     }
 
+    private function getDefaultInstitution()
+    {
+        return \Institution::model()->findByAttributes([ 'remote_id' => Yii::app()->params['institution_code'] ]);
+    }
+
+    public function beforeValidate()
+    {
+        if (empty($this->institution_id) && SettingMetadata::model()->getSetting('institution_required') == 'off' && isset(Yii::app()->params['institution_code'])) {
+            $institution = $this->getDefaultInstitution();
+            if (isset($institution)) {
+                $this->institution_id = $institution->id;
+            }
+        }
+        if ($this->username === Yii::app()->params['docman_user']) {
+            if (empty($this->institution_id)) {
+                $default_institution = $this->getDefaultInstitution();
+                if (!$default_institution) {
+                    throw new Exception("No default institution specified");
+                }
+                $this->institution_id = $default_institution->id;
+            }
+            if (empty($this->site_id)) {
+                $institution = \Institution::model()->findByPk($this->institution_id);
+                $this->site_id = $institution->first_used_site_id ?? $institution->sites[0]->id;
+            }
+        }
+        return parent::beforeValidate();
+    }
+
+    /**
+     * Requires institution_id only if Institution is required to log in
+     */
+    public function requiredIfInstitutionRequired($attribute, $params)
+    {
+        if (empty($this->institution_id)) {
+            if (SettingMetadata::model()->getSetting('institution_required') == 'on') {
+                $this->addError($attribute, 'An institution must be selected');
+            } elseif (isset(Yii::app()->params['institution_code'])) {
+                $this->addError($attribute, 'Default institution not found');
+            } else {
+                $this->addError($attribute, 'Default institution code must be set');
+            }
+        }
+    }
+
+    /**
+     * Set Institution and site cookie/site first use.
+     */
+    private function persistInstitutionAndSite()
+    {
+        // Set institutions default site if not already set
+        $institution = \Institution::model()->findByPk($this->institution_id);
+        if (isset($institution) && !isset($institution->first_used_site_id)) {
+            $institution->first_used_site_id = $this->site_id;
+            $institution->save();
+        }
+
+        // Set institution and site cookies
+        Yii::app()->request->cookies['current_institution_id'] = new CHttpCookie('current_institution_id', $this->institution_id);
+        Yii::app()->request->cookies['current_site_id'] = new CHttpCookie('current_site_id', $this->site_id);
+    }
+
     /**
      * Authenticates the password.
      * This is the 'authenticate' validator as declared in rules().
@@ -63,15 +130,13 @@ class LoginForm extends CFormModel
     public function authenticate($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $this->_identity = new UserIdentity($this->username, $this->password);
-            if (!$this->_identity->authenticate()) {
-                $this->addError('username', 'Invalid login.');
-                $this->addError('password', 'Invalid login.');
+            $this->_identity = new UserIdentity($this->username, $this->password, $this->institution_id, $this->site_id);
+            $auth_result = $this->_identity->authenticate();
+
+            if (!$auth_result[0]) {
+                $this->addError('username', $auth_result[1]);
+                $this->addError('password', $auth_result[1]);
             }
-        } else {
-            $this->clearErrors();
-            $this->addError('username', 'Invalid login.');
-            $this->addError('password', 'Invalid login.');
         }
     }
 
@@ -89,6 +154,7 @@ class LoginForm extends CFormModel
         if ($this->_identity->isAuthenticated) {
             $duration = $this->rememberMe ? 3600 * 24 * 30 : 0; // 30 days
             Yii::app()->user->login($this->_identity, $duration);
+            $this->persistInstitutionAndSite();
             return true;
         } else {
             return false;

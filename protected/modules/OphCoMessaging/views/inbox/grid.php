@@ -23,18 +23,28 @@ if ($read_check) {
     $check_var = 1;
     $viewing_label = 'Unread Messages';
 }
-?>
-<?php
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
+
+$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution->id , $selected_site_id);
 $sortDirection = $dp->sort->getDirections();
 $cols = array(
     array(
         'id' => 'hos_num',
-        'header' => 'No.',
-        'value' => '$data->event->episode->patient->hos_num',
+        'header' => $dp->getSort()->link('hos_num', $primary_identifier_prompt, array('class' => 'sort-link')),
+        'htmlOptions' => array('class' => 'nowrap'),
+        'value' => function ($data) {
+            $institution = Institution::model()->getCurrent();
+            $selected_site_id = Yii::app()->session['selected_site_id'];
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $data->event->episode->patient->id, $institution->id, $selected_site_id);
+            $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers', ['patient' => $data->event->episode->patient, 'show_all' => true, 'tooltip_size' => 'small'], true);
+            return PatientIdentifierHelper::getIdentifierValue($primary_identifier) . $patient_identifier_widget;
+        },
+        'type' => 'raw'
     ),
     array(
         'id' => 'gender',
-        'header' => 'Gender',
+        'header' => 'Sex',
         'value' => '$data->event->episode->patient->getGenderString()',
     ),
     array(

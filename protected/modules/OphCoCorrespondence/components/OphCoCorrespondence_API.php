@@ -977,15 +977,15 @@ class OphCoCorrespondence_API extends BaseAPI
 
     public function getDefaultMacro($firm = null, $site_id = null, $macro_name = null)
     {
-        $macro = LetterMacro::model()->find('name = ? AND firm_id = ?', [$macro_name, $firm->id]);
+        $macro = LetterMacro::model()->with('firms')->find('t.name = ? AND firms_firms.firm_id = ?', [$macro_name, $firm->id]);
 
         if (!$macro) {
             if ($firm->service_subspecialty_assignment_id) {
                 $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
 
-                $macro = LetterMacro::model()->find('subspecialty_id = ? AND name = ?', [$subspecialty_id, $macro_name]);
+                $macro = LetterMacro::model()->with('subspecialties')->find('subspecialties_subspecialties.subspecialty_id = ? AND t.name = ?', [$subspecialty_id, $macro_name]);
                 if (!$macro) {
-                    $macro = LetterMacro::model()->find('site_id = ? AND name = ?', [$site_id, $macro_name]);
+                    $macro = LetterMacro::model()->with('sites', 'institutions')->find('(institutions_institutions.institution_id = ? OR sites_sites.site_id = ?) AND t.name = ?', [Yii::app()->session['selected_institution_id'], $site_id, $macro_name]);
                 }
             }
         }

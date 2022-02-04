@@ -66,6 +66,15 @@ class ExaminationCreator
      */
     public function save($episodeId, $userId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEventId = null)
     {
+        $episode = \Episode::model()->findByPk($episodeId);
+        $opNoteEvent = $opNoteEventId ? \Event::model()->findByPk($opNoteEventId) : \Yii::app()->moduleAPI->get('OphTrOperationnote')->getLatestEvent($episode->patient);
+        if (!$opNoteEvent) {
+            throw new \Exception('Examination failed: no operation note event was found to copy institution and site from.');
+        }
+
+        $examination['institution_id'] = $opNoteEvent->institution_id;
+        $examination['site_id'] = $opNoteEvent->site_id;
+
         $examinationEvent = $this->createExamination($episodeId, $userId, $examination, $eventType);
         $this->examinationEye($examination['patient']['eyes'], $eyeIds);
 
@@ -296,8 +305,8 @@ class ExaminationCreator
         if (isset(\Yii::app()->modules['OphCoMessaging'])) {
             $episode = \Episode::model()->findByPk($episodeId);
             //$recipient = \User::model()->findByPk($episode->firm->consultant_id);
-            $recipient = NULL;
-            if ($opNoteEventId !== NULL) {
+            $recipient = null;
+            if ($opNoteEventId !== null) {
                 $surgeon = \Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $opNoteEventId ));
                 $recipient = $surgeon->surgeon;
             }
@@ -313,7 +322,7 @@ class ExaminationCreator
                     $ready = 'Not Applicable';
                 }
 
-                $messageCreator = new MessageCreator($episode, $sender, $recipient, $type);
+                $messageCreator = new MessageCreator($episode, $sender, $recipient, $type, $examination['institution_id'], $examination['site_id']);
                 $messageCreator->setMessageTemplate('application.modules.OphCoMessaging.views.templates.optom');
                 $messageCreator->setMessageData(array(
                     'optom' => $examination['op_tom']['name'] . ' (' . $examination['op_tom']['goc_number'] . ')',
@@ -342,7 +351,9 @@ class ExaminationCreator
     protected function createExamination($episodeId, $userId, $examination, $eventType)
     {
         //Create main examination event
-        $examinationEvent = new \Event();
+        $examinationEvent = new \Event("automatic");
+        $examinationEvent->institution_id = $examination['institution_id'];
+        $examinationEvent->site_id = $examination['site_id'];
         $examinationEvent->episode_id = $episodeId;
         $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = $userId;
         $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $examination['examination_date'])->format('Y-m-d');

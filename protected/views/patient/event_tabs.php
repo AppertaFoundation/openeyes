@@ -22,14 +22,20 @@
 <?php if ($this->event) : ?>
     <?php echo $this->event->getEventIcon('medium'); ?>
 <?php endif; ?>
-<?php foreach ($this->event_tabs as $tab) { ?>
-    <a href="<?php echo isset($tab['href']) ? $tab['href'] : '#' ?>" class="button header-tab <?php if (isset($tab['class'])) {
-        echo $tab['class'];
-             } ?> <?php if (isset($tab['active'])) {
-    ?>selected<?php
-             } ?>">
-        <?php echo $tab['label'] ?>
+<?php foreach ($this->event_tabs as $tab) {
+    $class = $tab['class'] ?? null;
+    $label = $tab['label'] ?? null;
+    $active = isset($tab['active']) && $tab['active'] ? 'selected' : null;
+    $href = $tab['href'] ?? '#';
+    if (isset($tab['type']) && $tab['type']){ ?>
+    <div class="button header-tab <?=$active?>">
+        <<?=$tab['type']?> class="<?=$class?>"><?=$label?></<?=$tab['type']?>>
+    </div>
+    <?php } else {?>
+    <a href="<?=$href?>" class="button header-tab <?=$class?> <?=$active?>">
+        <?=$label?>
     </a>
+    <?php } ?>
 <?php } ?>
 
 <?php if (in_array($this->action->id, ['create', 'update', 'step']) && $this->show_index_search) : ?>

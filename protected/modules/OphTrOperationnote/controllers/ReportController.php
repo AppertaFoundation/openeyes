@@ -251,7 +251,7 @@ class ReportController extends BaseReportController
         }
 
         foreach (Yii::app()->$db->createCommand()
-            ->select('p.hos_num, c.first_name, c.last_name, e.created_date, s.surgeon_id, s.assistant_id, s.supervising_surgeon_id, pl.id as pl_id, e.id as event_id, cat.id as cat_id, eye.name as eye')
+            ->select('p.id as pid, c.first_name, c.last_name, e.created_date, s.surgeon_id, s.assistant_id, s.supervising_surgeon_id, pl.id as pl_id, e.id as event_id, cat.id as cat_id, eye.name as eye')
             ->from('patient p')
             ->join('contact c', "c.parent_class = 'Patient' and c.parent_id = p.id")
             ->join('episode ep', 'ep.patient_id = p.id')
@@ -263,9 +263,11 @@ class ReportController extends BaseReportController
             ->where("p.deleted = 0 and c.deleted = 0 and ep.deleted = 0 and e.deleted = 0 and pl.deleted = 0 and s.deleted = 0 and (cat.id is null or cat.deleted = 0) $where")
             ->order('e.created_date asc')
             ->queryAll() as $row) {
+            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['pid'], Institution::model()->getCurrent()->id, $this->selectedSiteId));
+
             $operations[] = array(
                 'date' => date('j M Y', strtotime($row['created_date'])),
-                'hos_num' => $row['hos_num'],
+                'identifier' => $patient_identifier,
                 'first_name' => $row['first_name'],
                 'last_name' => $row['last_name'],
                 'procedures' => array(),

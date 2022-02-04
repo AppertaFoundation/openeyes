@@ -39,15 +39,31 @@
  * The followings are the available model relations:
  * @property User $user
  * @property User $usermodified
+ * @property Institution[] $institutions
  */
 class OphInBiometry_LensType_Lens extends BaseActiveRecordVersionedSoftDelete
 {
+    use MappedReferenceData;
     public $notDeletedField = 'active';
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    /**
+     * @param int $level
+     * @return string The name of the reference data ID column in the mapping table.
+     */
+    protected function mappingColumn(int $level): string
+    {
+        return 'lenstype_lens_id';
+    }
 
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphInBiometry_LensType_Lens static model class
+     * @return OphInBiometry_LensType_Lens|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -98,6 +114,8 @@ class OphInBiometry_LensType_Lens extends BaseActiveRecordVersionedSoftDelete
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'position' => array(self::BELONGS_TO, 'OphInBiometry_Lens_Position', 'position_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', 'ophinbiometry_lenstype_lens_institution(lenstype_lens_id, institution_id)'),
+            'lens_institution' => array(self::HAS_MANY, 'OphInBiometry_LensType_lens_Institution', 'lenstype_lens_id')
         );
     }
 

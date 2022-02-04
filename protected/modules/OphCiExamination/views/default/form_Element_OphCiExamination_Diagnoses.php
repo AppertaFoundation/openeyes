@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 
@@ -63,7 +65,18 @@ foreach ($this->patient->episodes as $ep) {
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
-    <table id="<?= $model_name ?>_diagnoses_table" class="cols-10">
+    <div class="cols-1 align-left <?= $model_name ?>_no_ophthalmic_diagnoses_wrapper" style="display: <?php echo count($element->diagnoses) === 0 ? '' : 'none'; ?>">
+        <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_diagnoses">
+            <?= \CHtml::checkBox(
+                $model_name . '[no_ophthalmic_diagnoses]',
+                $element->no_ophthalmic_diagnoses_date ? true : false,
+                array('class' => $model_name . '_no_ophthalmic_diagnoses')
+            ); ?>
+            No ophthalmic diagnoses
+        </label>
+    </div>
+
+    <table id="<?= $model_name ?>_diagnoses_table" class="cols-10" style="display: <?php echo count($element->diagnoses) >= 1 ? '' : 'none'; ?>">
             <colgroup>
                 <col class="cols-4">
                 <col class="cols-2">
@@ -111,7 +124,7 @@ foreach ($this->patient->episodes as $ep) {
                     <?= \CHtml::checkBox(
                         $model_name . '[no_ophthalmic_diagnoses]',
                         $element->no_ophthalmic_diagnoses_date ? true : false,
-                        array('class' => $model_name. '_no_ophthalmic_diagnoses')
+                        array('class' => $model_name . '_no_ophthalmic_diagnoses')
                     ); ?>
                     No ophthalmic diagnoses for this Subspecialty.
                 </label>
@@ -173,7 +186,7 @@ foreach ($this->patient->episodes as $ep) {
             }
         }
 
-        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAll();
+        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
         $filteredOphthalmicDisorderGroups = [];
 
         foreach ($commonOphthalmicDisorderGroups as $disorderGroup) {
@@ -195,7 +208,7 @@ foreach ($this->patient->episodes as $ep) {
                         ];
                     },
                     $filteredOphthalmicDisorderGroups)
-                ) ?>, {
+                                                    ) ?>, {
                     'header': 'Disorder Group',
                     'id': 'disorder-group-filter',
                     'deselectOnReturn': false,

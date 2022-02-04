@@ -26,6 +26,13 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
         return $operation->getNextLetter() == $_POST['status'];
     });
 }
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
+$primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
+$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
+    $primary_identifier_usage_type,
+    $institution->id ,
+    $selected_site_id);
 
 ?>
 
@@ -42,7 +49,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
   <tr>
     <th>Letters sent</th>
     <th>Patient</th>
-    <th>Num</th>
+    <th><?= $primary_identifier_prompt ?></th>
     <th>Location</th>
     <th>Procedure</th>
     <th>Eye</th>
@@ -118,7 +125,18 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
             ) ?>
         </td>
 
-        <td><?= CHtml::encode($patient->hos_num) ?></td>
+        <td class="nowrap">
+            <?php $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
+            $patient->id, $institution->id, $selected_site_id); ?>
+            <?= CHtml::encode(PatientIdentifierHelper::getIdentifierValue($primary_identifier)) ?>
+            <?php $this->widget(
+                'application.widgets.PatientIdentifiers',
+                [
+                    'patient' => $patient,
+                    'show_all' => true,
+                    'tooltip_size' => 'small'
+                ]); ?>
+        </td>
         <td><?= CHtml::encode($eo->site->short_name) ?></td>
         <td><?= $eo->getProceduresCommaSeparated('short_format') ?></td>
         <td>

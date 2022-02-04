@@ -16,43 +16,48 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+$institution_id = Institution::model()->getCurrent()->id;
+$site_id = Yii::app()->session['selected_site_id'];
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+?>
 
 <table class="borders prescription_header">
-    <tbody><tr>
+    <tbody>
+    <tr>
         <th>Patient Name</th>
-        <td><?php echo $this->patient->contact->fullName?></td>
-        <th>Hospital Number</th>
-        <td><?php echo $this->patient->hos_num ?></td>
+        <td><?= $this->patient->contact->fullName ?></td>
+        <th><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?></th>
+        <td><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></td>
     </tr>
     <tr>
         <th>Date of Birth</th>
-        <td><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</td>
-        <th><?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> Number</th>
-        <td><?php echo $this->patient->nhsnum ?></td>
+        <td><?= Helper::convertDate2NHS($this->patient->dob) ?> (<?= $this->patient->getAge() ?>)</td>
+        <th><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?></th>
+        <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
     </tr>
     <tr>
         <th>Consultant</th>
         <td>
-            <?php if ($consultant = $this->event->episode->firm->consultant) {?>
-                <p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
-            <?php }?>
+            <?php if ($consultant = $this->event->episode->firm->consultant) { ?>
+                <p><strong><?= $consultant->contact->getFullName() ?></strong></p>
+            <?php } ?>
         </td>
         <th>Service</th>
-        <td><?php echo $this->event->episode->firm->getSubspecialtyText() ?></td>
+        <td><?= $this->event->episode->firm->getSubspecialtyText() ?></td>
     </tr>
     <tr>
         <th>Event Date</th>
         <td>
-            <?php echo Helper::convertDate2NHS($this->event->event_date) ?>
+            <?= Helper::convertDate2NHS($this->event->event_date) ?>
         </td>
         <th>Printed</th>
-        <td><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></td>
+        <td><?= Helper::convertDate2NHS(date('Y-m-d')) ?></td>
     </tr>
     <tr>
         <th>Patient's address</th>
-        <td colspan="3"><?php echo $this->patient->getLetterAddress(array(
-                'delimiter' => '<br/>',
-            ))?></td>
+        <td colspan="3"><?= $this->patient->getLetterAddress(array('delimiter' => '<br/>',)) ?></td>
     </tr>
     </tbody>
 </table>

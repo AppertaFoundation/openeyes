@@ -32,6 +32,8 @@ class PuppeteerBrowser extends CApplicationComponent
     protected $documents = 1;
     protected $docrefs = array();
     protected $patients = array();
+    protected $institution_id = null;
+    protected $site_id = null;
     public $custom_tags = array();
 
     protected $_top_margin;
@@ -68,21 +70,30 @@ class PuppeteerBrowser extends CApplicationComponent
     protected function formatFooter($footer, $left, $middle, $right)
     {
         $patient_names = array();
-        $patient_hosnums = array();
-        $patient_nhsnums = array();
+        $patient_primary_identifiers = array();
+        $patient_secondary_identifiers = array();
         $patient_dobs = array();
 
         foreach ($this->patients as $patient) {
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                Yii::app()->params['display_primary_number_usage_code'],
+                $patient->id, $this->institution_id, $this->site_id
+            );
+            $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                Yii::app()->params['display_secondary_number_usage_code'],
+                $patient->id, $this->institution_id, $this->site_id
+            );
+            $patient_primary_identifiers[] = PatientIdentifierHelper::getIdentifierValue($primary_identifier);
+            $patient_secondary_identifiers[] = PatientIdentifierHelper::getIdentifierValue($secondary_identifier);
+
             $patient_names[] = $patient->getHSCICName(true);
-            $patient_hosnums[] = $patient->hos_num;
-            $patient_nhsnums[] = $patient->nhsnum;
             $patient_dobs[] = date('d-m-Y', strtotime($patient->dob));
         }
 
         while (count($patient_names) < $this->documents) {
             $patient_names[] = $patient_names[count($patient_names) - 1];
-            $patient_hosnums[] = $patient_hosnums[count($patient_hosnums) - 1];
-            $patient_nhsnums[] = $patient_nhsnums[count($patient_nhsnums) - 1];
+            $patient_primary_identifiers[] = $patient_primary_identifiers[count($patient_primary_identifiers) - 1];
+            $patient_secondary_identifiers[] = $patient_secondary_identifiers[count($patient_secondary_identifiers) - 1];
             $patient_dobs[] = $patient_dobs[count($patient_dobs) - 1];
         }
 
@@ -100,12 +111,12 @@ class PuppeteerBrowser extends CApplicationComponent
                 '{{FOOTER_MIDDLE}}',
                 '{{FOOTER_RIGHT}}',
                 '{{PATIENT_NAMES}}',
-                '{{PATIENT_HOSNUMS}}',
-                '{{PATIENT_NHSNUMS}}',
+                '{{PATIENT_PRIMARY_IDENTIFIERS}}',
+                '{{PATIENT_SECONDARY_IDENTIFIERS}}',
                 '{{PATIENT_DOBS}}',
                 '{{PATIENT_NAME}}',
-                '{{PATIENT_HOSNUM}}',
-                '{{PATIENT_NHSNUM}}',
+                '{{PATIENT_PRIMARY_IDENTIFIER}}',
+                '{{PATIENT_SECONDARY_IDENTIFIER}}',
                 '{{PATIENT_DOB}}',
                 '{{BARCODES}}',
                 '{{BARCODE}}',
@@ -126,8 +137,8 @@ class PuppeteerBrowser extends CApplicationComponent
                 $middle,
                 $right,
                 CJavaScript::encode($patient_names),
-                CJavaScript::encode($patient_hosnums),
-                CJavaScript::encode($patient_nhsnums),
+                CJavaScript::encode($patient_primary_identifiers),
+                CJavaScript::encode($patient_secondary_identifiers),
                 CJavaScript::encode($patient_dobs),
                 '<span class="patient_name"></span>',
                 '<span class="patient_hosnum"></span>',
@@ -141,8 +152,12 @@ class PuppeteerBrowser extends CApplicationComponent
                 '<span class="pageNumber"></span>',
                 '<span class="totalPages"></span>',
                 CJavaScript::encode($this->custom_tags),
-                \SettingMetadata::model()->getSetting('nhs_num_label'),
-                \SettingMetadata::model()->getSetting('hos_num_label'),
+                PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
+                    Yii::app()->params['display_secondary_number_usage_code'], $this->institution_id, $this->site_id
+                ),
+                PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
+                    Yii::app()->params['display_primary_number_usage_code'], $this->institution_id, $this->site_id
+                ),
                 $this->_top_margin,
                 $this->_left_margin,
                 $this->_right_margin
@@ -242,6 +257,12 @@ class PuppeteerBrowser extends CApplicationComponent
     public function setPatients($patients)
     {
         $this->patients = $patients;
+    }
+
+    public function setInstitutionAndSite($institution_id = null, $site_id = null)
+    {
+        $this->institution_id = $institution_id;
+        $this->site_id = $site_id;
     }
 
     public function setLeftFooterTemplate($left)

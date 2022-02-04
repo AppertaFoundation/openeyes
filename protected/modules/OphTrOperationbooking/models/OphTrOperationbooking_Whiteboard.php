@@ -99,7 +99,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->eye = $eye;
         $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
         $this->date_of_birth = $patient['dob'];
-        $this->hos_num = $patient['hos_num'];
         $this->allergies = $allergyString;
         $this->complexity = $booking->complexity;
 
@@ -120,7 +119,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
             $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
             $this->acd = $biometry->attributes["acd_$eyeLabel"];
-            $this->predicted_refractive_outcome = $biometry->attributes["predicted_refraction_$eyeLabel"];
+            $this->predicted_refractive_outcome = !empty($biometry->attributes["predicted_refraction_$eyeLabel"]) ? $biometry->attributes["predicted_refraction_$eyeLabel"] : 0.0;
             $this->formula = $biometry->attributes["formula_$eyeLabel"];
             $this->aconst = $biometry->attributes["lens_acon_$eyeLabel"];
             $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"];
@@ -133,9 +132,26 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->alpha_blocker_name = $blockers;
         $this->anticoagulant_name = $anticoag;
 
+
+
         if (!$this->predicted_additional_equipment) {
-            $this->predicted_additional_equipment = $booking->special_equipment_details;
+            $op_note_user_settings = Yii::app()->cache->get('op_note_user_settings');
+            if ($op_note_user_settings === false) {
+                $element_type = ElementType::model()->find('class_name = :class_name', array(':class_name' => 'Element_OphTrOperationnote_Cataract'));
+                $user_settings = SettingUser::model()->find(
+                    'user_id = :user_id AND element_type_id = :element_type_id AND `key` = :key',
+                    array(
+                        ':user_id' => Yii::app()->user->id,
+                        ':element_type_id' => $element_type->id,
+                        ':key' => 'additional_equipment'
+                    )
+                );
+
+                $op_note_user_settings['additional_equipment'] = $user_settings;
+            }
+            $this->predicted_additional_equipment = $booking->special_equipment_details . ( ( !empty($op_note_user_settings['additional_equipment']->value) ) ? "\n" . $op_note_user_settings['additional_equipment']->value : "" );
         }
+
 
         if (!$this->comments) {
             $this->comments = '';
@@ -207,7 +223,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      * @param $patient
      * @return mixed
      */
-    protected function recentBiometry($patient)
+    public function recentBiometry($patient)
     {
         $biometryCriteria = new CDbCriteria();
         $biometryCriteria->addCondition('patient_id = :patient_id');

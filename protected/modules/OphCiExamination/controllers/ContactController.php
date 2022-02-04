@@ -154,6 +154,7 @@ class ContactController extends \BaseController
                 $contact->last_name = $data->last_name;
                 $contact->primary_phone = $data->primary_phone;
                 $contact->contact_label_id = $data->contact_label_id;
+                $contact->created_institution_id = \Yii::app()->session['selected_institution_id'];
                 $contact->active = 1;
                 $contact->email = $data->email;
 
@@ -175,7 +176,7 @@ class ContactController extends \BaseController
                     }
                 }
 
-                if ($data->contact_label_error) {
+                if (isset($data->contact_label_error) && $data->contact_label_error) {
                     $errors['contact_label_limit'] = $data->contact_label_error;
                 }
 

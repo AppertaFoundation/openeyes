@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * Class PatientAllergyParameterTest
+ * @covers PatientAllergyParameter
+ * @covers CaseSearchParameter
+ */
 class PatientAllergyParameterTest extends CDbTestCase
 {
-    public $parameter;
+    public PatientAllergyParameter $parameter;
 
     protected $fixtures = array(
         'patients' => Patient::class,
@@ -15,7 +20,7 @@ class PatientAllergyParameterTest extends CDbTestCase
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function getArgs()
+    public function getArgs(): array
     {
         return array(
             'Equal' => array(
@@ -44,12 +49,12 @@ class PatientAllergyParameterTest extends CDbTestCase
      * @dataProvider getArgs
      * @param $operation
      */
-    public function testQuery($operation)
+    public function testQuery($operation): void
     {
         $this->parameter->operation = $operation;
         $this->parameter->value = 1;
 
-        $this->assertTrue($this->parameter->validate());
+        self::assertTrue($this->parameter->validate());
 
         $query = "SELECT DISTINCT p.id 
 FROM patient p 
@@ -65,26 +70,26 @@ WHERE p1.id NOT IN (
 {$query}
 )";
         }
-        $this->assertEquals($query, $this->parameter->query());
+        self::assertEquals($query, $this->parameter->query());
     }
 
-    public function testGetCommonItemsForTerm()
+    public function testGetCommonItemsForTerm(): void
     {
-        $this->assertCount(3, PatientAllergyParameter::getCommonItemsForTerm('allergy'));
-        $this->assertCount(1, PatientAllergyParameter::getCommonItemsForTerm('allergy 1'));
+        self::assertCount(3, PatientAllergyParameter::getCommonItemsForTerm('allergy'));
+        self::assertCount(1, PatientAllergyParameter::getCommonItemsForTerm('allergy 1'));
     }
 
     /**
      * @throws CException
      */
-    public function testGetValueForAttribute()
+    public function testGetValueForAttribute(): void
     {
         $this->parameter->operation = '=';
         $this->parameter->value = 1;
         $expected = Allergy::model()->findByPk(1);
 
-        $this->assertEquals('=', $this->parameter->getValueForAttribute('operation'));
-        $this->assertEquals($expected->name, $this->parameter->getValueForAttribute('value'));
+        self::assertEquals('=', $this->parameter->getValueForAttribute('operation'));
+        self::assertEquals($expected->name, $this->parameter->getValueForAttribute('value'));
 
         $this->expectException('CException');
         $this->parameter->getValueForAttribute('invalid');
@@ -94,20 +99,20 @@ WHERE p1.id NOT IN (
      * @dataProvider getArgs
      * @param $operation
      */
-    public function testGetAuditData($operation)
+    public function testGetAuditData($operation): void
     {
         $this->parameter->operation =  $operation;
         $this->parameter->value = 1;
-        $this->assertEquals("allergy: {$this->parameter->operation} \"allergy 1\"", $this->parameter->getAuditData());
+        self::assertEquals("allergy: {$this->parameter->operation} \"allergy 1\"", $this->parameter->getAuditData());
     }
 
-    public function testBindValues()
+    public function testBindValues(): void
     {
         $this->parameter->value = 1;
         $expected = array(
             "p_al_textValue_0" => 1,
         );
 
-        $this->assertEquals($expected, $this->parameter->bindValues());
+        self::assertEquals($expected, $this->parameter->bindValues());
     }
 }

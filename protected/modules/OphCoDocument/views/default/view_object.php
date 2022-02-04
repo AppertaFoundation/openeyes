@@ -1,3 +1,4 @@
-<object width="100%" height="1120px" data="/file/view/<?php echo $element->{$index}->id ?>/image<?php echo strrchr($element->{$index}->name, '.') ?>" type="application/pdf">
-    <embed src="/file/view/<?php echo $element->{$index}->id ?>/image<?php echo strrchr($element->{$index}->name, '.') ?>" type="application/pdf" />
-</object>
+<?php $filePath = "/file/view/" .  $element->{$index}->id . "/image" . strrchr($element->{$index}->name, '.'); ?>
+
+<iframe class="pdf-js-viewer" src="<?= Yii::app()->assetManager->createUrl('components/pdfjs/web/viewer.html?file=' . $filePath . '#zoom=100')?>" title="webviewer" width="100%"
+        style="height:calc(100vh - 200px);"></iframe>

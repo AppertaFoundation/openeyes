@@ -50,7 +50,6 @@ if ($this->checkPrintAccess()) {
         array('level' => 'secondary'),
         array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id)
     );
-
     $this->event_actions[] = EventAction::button(
         "Save and print $form_format",
         'saveprintform',
@@ -73,4 +72,4 @@ $this->displayErrors($errors) ?>
 <?php $this->displayErrors($errors, true) ?>
 <?php $this->endWidget(); ?>
 
-<?php $this->endContent(); ?>
+<?php $this->endContent();

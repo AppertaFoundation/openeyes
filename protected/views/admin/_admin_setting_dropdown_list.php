@@ -14,7 +14,7 @@
  */
 ?>
 
-<?php $selectedKey = $metadata->getSetting($metadata->key, null, false, $allowed_classes); ?>
+<?php $selectedKey = $metadata->getSetting($metadata->key, null, false, $allowed_classes, $institution_id, true); ?>
 <select name="<?= $metadata->key ?>" id="<?= $metadata->key ?>">
     <?php foreach (unserialize($metadata->data) as $key => $value) {?>
     <option

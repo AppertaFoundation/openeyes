@@ -301,23 +301,26 @@ class TransportController extends BaseModuleController
         header('Pragma: no-cache');
         header('Expires: 0');
 
-        echo "Hospital number,First name,Last name,TCI date,Admission time,Site,Ward,Method,Firm,Specialty,DTA,Priority\n";
+        $institution_id = Institution::model()->getCurrent()->id;
+        $site_id = Yii::app()->session['selected_site_id'];
+
+        echo PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) . ",First name,Last name,TCI date,Admission time,Site,Ward,Method,Firm,Specialty,DTA,Priority\n";
 
         $operations = $this->getTransportList($_POST, true);
 
         foreach ($operations as $operation) {
-            echo '"'.$operation->event->episode->patient->hos_num.'","'.
-                    trim($operation->event->episode->patient->first_name).'","'.
-                    trim($operation->event->episode->patient->last_name).'","'.
-                    date('j-M-Y', strtotime($operation->latestBooking->session_date)).'","'.
-                    substr($operation->latestBooking->session_start_time, 0, 5).'","'.
-                    $operation->latestBooking->theatre->site->shortName.'","'.
-                    ($operation->latestBooking->ward ? $operation->latestBooking->ward->name : 'N/A').'","'.
-                    $operation->transportStatus.'","'.
-                    $operation->event->episode->firm->pas_code.'","'.
-                    $operation->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec.'","'.
-                    $operation->NHSDate('decision_date').'","'.
-                    $operation->priority->name.'"'."\n";
+            echo '"' . PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $operation->event->episode->patient->id, $institution_id, $site_id)) . '","' .
+                trim($operation->event->episode->patient->first_name) . '","' .
+                trim($operation->event->episode->patient->last_name) . '","' .
+                date('j-M-Y', strtotime($operation->latestBooking->session_date)) . '","' .
+                substr($operation->latestBooking->session_start_time, 0, 5) . '","' .
+                $operation->latestBooking->theatre->site->shortName . '","' .
+                ($operation->latestBooking->ward ? $operation->latestBooking->ward->name : 'N/A') . '","' .
+                $operation->transportStatus . '","' .
+                $operation->event->episode->firm->pas_code . '","' .
+                $operation->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec . '","' .
+                $operation->NHSDate('decision_date') . '","' .
+                $operation->priority->name . '"' . "\n";
         }
     }
 

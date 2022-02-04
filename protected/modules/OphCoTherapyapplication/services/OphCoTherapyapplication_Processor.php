@@ -78,7 +78,7 @@ class OphCoTherapyapplication_Processor
                     $this->event->episode->patient,
                     true,
                     $side,
-                    $el_diag->{$side.'_diagnosis1_id'},
+                    $el_diag->{$side . '_diagnosis1_id'},
                     $el_diag->{$side.'_diagnosis2_id'}
                 )) {
                     $missing_sides[] = $side;
@@ -86,7 +86,7 @@ class OphCoTherapyapplication_Processor
             }
 
             foreach ($missing_sides as $missing) {
-                $warnings[] = 'No Injection Management has been created for '.$missing.' diagnosis.';
+                $warnings[] = 'No Injection Management has been created for ' . $missing . ' diagnosis.';
             }
 
             // if the application doesn't have a given side, the VA value can be NR (e.g. eye missing etc)
@@ -115,7 +115,7 @@ class OphCoTherapyapplication_Processor
                     }
                 }
                 if (!$sideHasConsent) {
-                    $warnings[] = 'Consent form is required for '.$side.' eye.';
+                    $warnings[] = 'Consent form is required for ' . $side . ' eye.';
                 }
             }
         }
@@ -172,7 +172,7 @@ class OphCoTherapyapplication_Processor
 
         $template_data = $this->getTemplateData();
 
-        $html = '<link rel="stylesheet" type="text/css" href="'.$controller->assetPath.'/css/print.css" />';
+        $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />';
 
         if ($ec->hasLeft()) {
             $left_template_data = $template_data + $this->getSideSpecificTemplateData('left');
@@ -206,23 +206,23 @@ class OphCoTherapyapplication_Processor
         $pdf = $this->event->getPDF('therapy_application');
 
         header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf));
+        header('Content-Length: ' . filesize($pdf));
 
         readfile($pdf);
     }
 
     public function getPDFContentForSide($controller, $template_data, $side)
     {
-        if ($template_data['suitability']->{$side.'_nice_compliance'}) {
-            $file = $this->getViewPath().DIRECTORY_SEPARATOR.'pdf_compliant';
+        if ($template_data['suitability']->{$side . '_nice_compliance'}) {
+            $file = $this->getViewPath() . DIRECTORY_SEPARATOR . 'pdf_compliant';
         } else {
-            $file = $this->getViewPath().DIRECTORY_SEPARATOR.'pdf_noncompliant';
+            $file = $this->getViewPath() . DIRECTORY_SEPARATOR . 'pdf_noncompliant';
         }
 
         $template_code = $template_data['treatment']->template_code;
 
         if ($template_code) {
-            $specific = $file.'_'.$template_code.'.php';
+            $specific = $file . '_' . $template_code . '.php';
             if (file_exists($specific)) {
                 $file = $specific;
             } else {
@@ -244,7 +244,7 @@ class OphCoTherapyapplication_Processor
      * or not.
      *
      * @param CController $controller
-     * @param User        $notify_user
+     * @param User $notify_user
      *
      * @throws Exception
      *
@@ -294,15 +294,15 @@ class OphCoTherapyapplication_Processor
      */
     private function getViewPath()
     {
-        return Yii::app()->getModule('OphCoTherapyapplication')->getViewPath().DIRECTORY_SEPARATOR.'email';
+        return Yii::app()->getModule('OphCoTherapyapplication')->getViewPath() . DIRECTORY_SEPARATOR . 'email';
     }
 
     /**
      * create the PDF file as a ProtectedFile for the given side.
      *
      * @param CController $controller
-     * @param array       $template_data
-     * @param string      $side
+     * @param array $template_data
+     * @param string $side
      *
      * @throws Exception
      *
@@ -311,7 +311,7 @@ class OphCoTherapyapplication_Processor
     protected function createAndSavePdfForSide(CController $controller, array $template_data, $side)
     {
         if ($html = $this->getPDFContentForSide($controller, $template_data, $side)) {
-            $html = '<link rel="stylesheet" type="text/css" href="'.$controller->assetPath.'/css/print.css" />'."\n".$html;
+            $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />' . "\n" . $html;
 
             $this->event->lock();
 
@@ -332,14 +332,18 @@ class OphCoTherapyapplication_Processor
                 return Yii::app()->end();
             }
 
-            $pfile = ProtectedFile::createForWriting('ECForm - '.$side.' - '.$template_data['patient']->hos_num.'.pdf');
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient('LOCAL',
+                $this->event->episode->patient->id, $this->event->institution_id, $this->event->site_id);
+
+            $pfile = ProtectedFile::createForWriting('ECForm - ' . $side . ' - ' .
+                PatientIdentifierHelper::getIdentifierValue($primary_identifier) . '.pdf');
 
             if (!@copy($this->event->getPDF('therapy_application'), $pfile->getPath())) {
-                throw new Exception('Unable to write to file: '.$pfile->getPath());
+                throw new Exception('Unable to write to file: ' . $pfile->getPath());
             }
 
             if (!$pfile->save()) {
-                throw new Exception('Unable to save file: '.print_r($pfile->errors, true));
+                throw new Exception('Unable to save file: ' . print_r($pfile->errors, true));
             }
 
             return $pfile;
@@ -352,8 +356,8 @@ class OphCoTherapyapplication_Processor
      * generate the email text for the given side.
      *
      * @param CController $controller
-     * @param array       $template_data
-     * @param string      $side
+     * @param array $template_data
+     * @param string $side
      *
      * @return string
      */
@@ -365,7 +369,7 @@ class OphCoTherapyapplication_Processor
             $file = 'email_noncompliant.php';
         }
 
-        $view = $this->getViewPath().DIRECTORY_SEPARATOR.$file;
+        $view = $this->getViewPath() . DIRECTORY_SEPARATOR . $file;
 
         return $controller->renderInternal($view, $template_data, true);
     }
@@ -408,9 +412,9 @@ class OphCoTherapyapplication_Processor
 
     /**
      * @param CController $controller
-     * @param array       $template_data
-     * @param int         $eye_id
-     * @param User        $notify_user
+     * @param array $template_data
+     * @param int $eye_id
+     * @param User $notify_user
      *
      * @throws Exception
      *
@@ -458,7 +462,7 @@ class OphCoTherapyapplication_Processor
             $recipients = $this->getEmailRecipients($service_info, $recipient_type);
         } catch (Exception $e) {
             Yii::app()->user->setFlash('error', $e->getMessage());
-            $controller->redirect('/OphCoTherapyapplication/default/view/'.$this->event->id);
+            $controller->redirect('/OphCoTherapyapplication/default/view/' . $this->event->id);
         }
 
         $email_recipients = array();
@@ -478,7 +482,7 @@ class OphCoTherapyapplication_Processor
             if (Yii::app()->params['restrict_email_domains']) {
                 $domain = preg_replace('/^.*?@/', '', $notify_user->email);
                 if (!in_array($domain, Yii::app()->params['restrict_email_domains'])) {
-                    Yii::app()->user->setFlash('warning.warning', 'You will not receive a copy of the submission because your email address '.$notify_user->email.' is not on a secure domain');
+                    Yii::app()->user->setFlash('warning.warning', 'You will not receive a copy of the submission because your email address ' . $notify_user->email . ' is not on a secure domain');
                     $cc = false;
                 }
             }
@@ -502,7 +506,7 @@ class OphCoTherapyapplication_Processor
             $email->email_text = $email_text;
 
             if (!$email->save()) {
-                throw new Exception('Unable to save email: '.print_r($email->getErrors(), true));
+                throw new Exception('Unable to save email: ' . print_r($email->getErrors(), true));
             }
 
             $email->addAttachments($attachments);
@@ -512,7 +516,7 @@ class OphCoTherapyapplication_Processor
             $this->event->info = self::STATUS_SENT;
 
             if (!$this->event->save()) {
-                throw new Exception('Unable to save event: '.print_r($this->event->getErrors(), true));
+                throw new Exception('Unable to save event: ' . print_r($this->event->getErrors(), true));
             }
 
             return true;
@@ -563,7 +567,7 @@ class OphCoTherapyapplication_Processor
     private function getEmailRecipients($service_info, $recipient_type)
     {
         if (!$recipients = OphCoTherapyapplication_Email_Recipient::model()->with('type')->findAll('(site_id = ? or site_id is null) and (type.id is null or type.name = ?)', array($service_info->site_id, $recipient_type))) {
-            throw new Exception('No email recipient defined for site '.$service_info->site->name.", $recipient_type");
+            throw new Exception('No email recipient defined for site ' . $service_info->site->name . ", $recipient_type");
         }
 
         return $recipients;
