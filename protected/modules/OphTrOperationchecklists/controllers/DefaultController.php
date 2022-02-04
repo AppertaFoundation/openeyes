@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -148,7 +149,7 @@ class DefaultController extends BaseEventTypeController
         if ($this->booking_operation || $this->unbooked) {
             parent::actionCreate();
         } else {
-            // set up form for selecting a booking for the Op Operation Checklists
+            // set up form for selecting a booking for the Op Operation checklists
             $bookings = array();
 
             $element_enabled = Yii::app()->params['disable_theatre_diary'];
@@ -225,7 +226,7 @@ class DefaultController extends BaseEventTypeController
     public function actionView($id)
     {
         $model = OphTrOperationchecklists_Event::model()
-            ->findBySql('SELECT * FROM ophtroperationchecklists_event WHERE event_id = :id', [':id'=>$id]);
+            ->findBySql('SELECT * FROM ophtroperationchecklists_event WHERE event_id = :id', [':id' => $id]);
 
         if (isset($model) && $model->draft) {
             $this->isDraft = true;
@@ -288,7 +289,7 @@ class DefaultController extends BaseEventTypeController
             }
 
             foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
-                if ( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ) {
+                if (!array_key_exists($anaesthetic_type_id, $type_assessments_by_id)) {
                     $anaesthetic_type_assesment = new \OphTrOperationchecklists_AnaestheticAnaestheticType();
                 } else {
                     $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
@@ -737,7 +738,7 @@ class DefaultController extends BaseEventTypeController
     public function setComplexAttributes_Element_OphTrOperationchecklists_Discharge($element, $data, $index)
     {
         // get the id for the first question for this element
-        $firstQuestionIdDischargeElement = OphTrOperationchecklists_Questions::model()->find('element_type_id=:element_type_id', array(':element_type_id'=>$element->getElementType()->id))->id;
+        $firstQuestionIdDischargeElement = OphTrOperationchecklists_Questions::model()->find('element_type_id=:element_type_id', array(':element_type_id' => $element->getElementType()->id))->id;
         $model_name = \CHtml::modelName($element);
         $checklist_result_records = array();
         if (isset($data[$model_name]['dischargeChecklistResults'])) {
@@ -759,7 +760,7 @@ class DefaultController extends BaseEventTypeController
                 if ($idx == $firstQuestionIdDischargeElement) {
                     // if the response of the first question for the discharge checklist is 'Yes',
                     // then do not create anymore instances of the model.
-                    if ($checklist_results['answer_id'] == OphTrOperationchecklists_Answers::model()->find('answer=:answer', array(':answer'=>'Yes'))->id) {
+                    if ($checklist_results['answer_id'] == OphTrOperationchecklists_Answers::model()->find('answer=:answer', array(':answer' => 'Yes'))->id) {
                         break;
                     }
                 }
@@ -1164,10 +1165,10 @@ class DefaultController extends BaseEventTypeController
         }
 
         if (!$note->delete()) {
-            throw new \Exception('Unable to delete note: '.print_r($note->getErrors(), true));
+            throw new \Exception('Unable to delete note: ' . print_r($note->getErrors(), true));
         }
 
-        $msg = 'Note '. $note->primaryKey . " is deleted.";
+        $msg = 'Note ' . $note->primaryKey . " is deleted.";
         Audit::add('note', 'delete', $msg, null, array(
             'module' => (is_object($this->module)) ? $this->module->id : 'core',
             'model' => 'OphTrOperationchecklists_Notes',

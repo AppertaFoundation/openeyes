@@ -2,8 +2,8 @@
 $studies = $model->{$list};
 $name = get_class($model);
 ?>
-<div class="data-group">
-    <div class="cols-2 column">
+<div class="data-group flex-layout cols-full">
+    <div class="cols-5 column">
         <label><?= $label ?>:</label>
     </div>
     <div class="cols-5 column end">

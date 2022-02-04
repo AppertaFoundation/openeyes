@@ -20,6 +20,10 @@ if ($date_from === '' && $date_to === '') {
 
 $logo_helper = new LogoHelper();
 
+if (empty($filter)) {
+    $filter = new WorklistFilterQuery();
+}
+
 ?>
 
 <header class="print-header">
@@ -48,7 +52,13 @@ $logo_helper = new LogoHelper();
         </tbody>
     </table>
 
-    <?php foreach ($worklists as $worklist) : ?>
-        <?php echo $this->renderPartial('_worklist', array('worklist' => $worklist, 'is_printing' => true)); ?>
-    <?php endforeach; ?>
+    <?php
+    if ($filter->getCombineWorklistsStatus()) {
+        echo $this->renderPartial('_worklist', array('worklist' => $worklists, 'is_printing' => true, 'filter' => $filter));
+    } else {
+        foreach ($worklists as $worklist) {
+            echo $this->renderPartial('_worklist', array('worklist' => $worklist, 'is_printing' => true, 'filter' => $filter));
+        }
+    }
+    ?>
 </main>

@@ -96,6 +96,7 @@ class DefaultController extends \BaseModuleController
         $patient_filter = null;
         // build criteria
         $criteria = new \CDbCriteria();
+        $params = array();
         $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
 
         // TODO: we probably don't want to have such a gnarly approach to this, we might want to denormalise so that we are able to do eager loading
@@ -150,8 +151,24 @@ class DefaultController extends \BaseModuleController
         if (isset($filter_options['patient-ids'])) {
             $criteria->addInCondition('patient_id', $filter_options['patient-ids']);
         }
+        if (isset($filter_options['date-from'])) {
+            $date_from = new \DateTime($filter_options['date-from']);
+            $date_from_timestamp = $date_from->getTimestamp();
+            $criteria->addCondition('UNIX_TIMESTAMP(DATE(t.created_date)) >= :date_from_timestamp');
+            $params[':date_from_timestamp'] = $date_from_timestamp;
+        }
+        if (isset($filter_options['date-to'])) {
+            $date_to = new \DateTime($filter_options['date-to']);
+            $date_to_timestamp = $date_to->getTimestamp();
+            $criteria->addCondition('UNIX_TIMESTAMP(DATE(t.created_date)) <= :date_to_timestamp');
+            $params[':date_to_timestamp'] = $date_to_timestamp;
+        }
 
         $criteria->order = 't.created_date asc';
+
+        if (count($params)) {
+            $criteria->params = array_merge($params, $criteria->params);
+        }
 
         return $criteria;
     }
@@ -219,8 +236,11 @@ class DefaultController extends \BaseModuleController
                 ];
             }
 
-            $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-                $patient->id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+            $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
+                Yii::app()->params['display_primary_number_usage_code'],
+                $patient->id,
+                \Institution::model()->getCurrent()->id,
+                Yii::app()->session['selected_site_id']);
 
             $result[] = array(
                 'id' => $patient->id,
@@ -352,7 +372,7 @@ class DefaultController extends \BaseModuleController
 
             if ($queueset) {
                 // build the filter
-                $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets', 'patient-ids');
+                $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets', 'patient-ids', 'date-from', 'date-to');
                 $filter_options = array();
 
                 foreach ($filter_keys as $k) {

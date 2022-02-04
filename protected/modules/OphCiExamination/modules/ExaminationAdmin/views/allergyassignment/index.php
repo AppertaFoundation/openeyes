@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -17,9 +18,10 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<div class="cols-5">
+<div class="cols-full">
 
     <?php
     $columns = [

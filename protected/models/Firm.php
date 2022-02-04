@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -145,7 +146,8 @@ class Firm extends BaseActiveRecordVersioned
         );
     }
 
-    private static function getLabelSettings($key){
+    private static function getLabelSettings($key)
+    {
         $institution_id = \Yii::app()->session['selected_institution_id'];
         return \SettingMetadata::model()->getSetting($key, null, false, ['SettingInstitution', 'SettingInstallation'], $institution_id);
     }
@@ -267,7 +269,7 @@ class Firm extends BaseActiveRecordVersioned
      *
      * @return array
      */
-    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null)
+    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null, $only_with_consultant = false, $only_service_firms = false)
     {
 
         $join_method = $include_non_subspecialty ? 'leftJoin' : 'join';
@@ -279,12 +281,20 @@ class Firm extends BaseActiveRecordVersioned
             ->$join_method('subspecialty s', 'ssa.subspecialty_id = s.id')
             ->where('f.active = 1');
 
+        if ($only_with_consultant) {
+            $command->andWhere('consultant_id IS NOT NULL');
+        }
+
         if ($subspecialty_id) {
             $command->andWhere('s.id = :id', array(':id' => $subspecialty_id));
         }
 
         if ($institution_id) {
             $command->andWhere('f.institution_id = :institution_id', array(':institution_id' => $institution_id));
+        }
+
+        if ($only_service_firms) {
+            $command->andWhere('f.can_own_an_episode = 1');
         }
 
         $firms = $command->order('f.name, s.name')->queryAll();
@@ -441,7 +451,7 @@ class Firm extends BaseActiveRecordVersioned
 
     public function beforeValidate()
     {
-        if ( $this->can_own_an_episode && $this->service_email != '' ) {
+        if ($this->can_own_an_episode && $this->service_email != '') {
             // check if there is an email already existing for this subspeciality
             $criteria = new CDbCriteria();
             // get the service_subspeciality_assignment_id from the service_id
@@ -453,7 +463,7 @@ class Firm extends BaseActiveRecordVersioned
                 $criteria->params[':id'] = $this->id;
             }
             $firm = $this->findAll($criteria);
-            if (count($firm) >= 1  ) {
+            if (count($firm) >= 1) {
                 $this->addError('service_email', 'Email already set for another service of this specialty.');
             }
         }

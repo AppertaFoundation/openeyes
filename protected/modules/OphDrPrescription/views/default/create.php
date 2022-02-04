@@ -40,15 +40,19 @@ $this->event_actions[] = EventAction::button(
     'Save',
     'save',
     array('level' => 'secondary'),
-    array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id)
+    array('id' => 'et_save', 'class' => 'button small', 'style' => 'display: none;', 'form' => $form_id)
 );
-
+if ($cocoa_api = \Yii::app()->moduleAPI->get("OphInCocoa")) {
+    if ($event_button =  $cocoa_api->prescriptionEventAction($form_id)) {
+        $this->event_actions[] = $event_button;
+    }
+}
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button(
         'Save and print',
         'saveprint',
         array('level' => 'secondary'),
-        array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id)
+        array('id' => 'et_save_print', 'class' => 'button small', 'style' => 'display: none;', 'form' => $form_id)
     );
     $this->event_actions[] = EventAction::button(
         "Save and print $form_format",
@@ -64,6 +68,8 @@ if ($this->checkPrintAccess()) {
     );
 }
 
+Yii::app()->user->setFlash('info.info', 'To finalise this prescription, please sign below. You may save as a draft without a signature.');
+
 $this->displayErrors($errors) ?>
 
 <?php $this->renderOpenElements($this->action->id, $form); ?>
@@ -71,5 +77,19 @@ $this->displayErrors($errors) ?>
 
 <?php $this->displayErrors($errors, true) ?>
 <?php $this->endWidget(); ?>
+
+<script>
+    $(document).ready(function() {
+        $(document).on('signatureAdded', function() {
+            const proofs = $('.js-proof-field');
+            const proofsWithValues = $('.js-proof-field[value!=""]');
+
+            if (proofs.length === proofsWithValues.length) {
+                $('#et_save_draft, #et_save_draft_footer').hide();
+                $('#et_save, #et_save_footer, #et_save_print, #et_save_print_footer').show();
+            }
+        });
+    });
+</script>
 
 <?php $this->endContent();

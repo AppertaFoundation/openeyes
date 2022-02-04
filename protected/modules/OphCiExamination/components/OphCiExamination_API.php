@@ -29,6 +29,7 @@ class OphCiExamination_API extends \BaseAPI
 {
     use traits\VisualAcuity_API;
     use traits\Refraction_API;
+    use traits\AEShortcodes;
 
     const LEFT = 1;
     const RIGHT = 0;
@@ -36,6 +37,62 @@ class OphCiExamination_API extends \BaseAPI
     public static $AIDED_VA_TYPE = 'aided';
     protected $widget_cache = array();
 
+
+    /**
+     * Gets the Retinopathy Photocoagulation right side
+     *
+     * @param \Patient $patient
+     * @return string
+     */
+    public function getLetterRetinopathyPhotocoagulationRight(\Patient $patient)
+    {
+        return $this->getLetterRetinopathyPhotocoagulationSide($patient, "right");
+    }
+
+    /**
+     * Gets the Retinopathy Photocoagulation
+     *
+     * @param \Patient $patient
+     * @param $side
+     * @return string
+     */
+    public function getLetterRetinopathyPhotocoagulationSide(\Patient $patient, $side)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($dr = $this->getElementFromLatestEvent('models\Element_OphCiExamination_DRGrading', $patient)) {
+                $rp = $dr->{"{$side}_nscretinopathy_photocoagulation"};
+                $mp = $dr->{"{$side}_nscmaculopathy_photocoagulation"};
+
+                if ($rp && $mp) {
+                    return "peripherial and macular";
+                }
+
+                if ($rp) {
+                    return "peripherial";
+                }
+
+                if ($mp) {
+                    return "macular";
+                }
+            }
+        }
+
+        return "no";
+    }
+
+    /**
+     * Gets the Retinopathy Photocoagulation left side
+     *
+     * @param \Patient $patient
+     * @return string
+     */
+    public function getLetterRetinopathyPhotocoagulationLeft(\Patient $patient)
+    {
+        return $this->getLetterRetinopathyPhotocoagulationSide($patient, "left");
+    }
+
+
+/************************************************************************************** */
     /**
      * @inheritdoc
      */
@@ -183,7 +240,7 @@ class OphCiExamination_API extends \BaseAPI
     /**
      * @inheritdoc
      */
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null): array
     {
         return parent::getElements($this->namespaceElementName($element), $patient, $use_context, $before, $criteria);
     }
@@ -1043,6 +1100,26 @@ class OphCiExamination_API extends \BaseAPI
             return $va->getLetter_string();
         }
     }
+
+    /**
+     * @param $patient
+     * @param false $use_context
+     * @return string|null
+     */
+    public function getLetterAdviceGiven($patient, $use_context = false): ?string
+    {
+        $adg = $this->getElementFromLatestVisibleEvent(
+            'models\AdviceGiven',
+            $patient,
+            $use_context
+        );
+
+        if ($adg) {
+            return $adg->getLetter_string();
+        }
+        return null;
+    }
+
 
     /**
      * Get comments from Laser Management if the latest examination event contains
@@ -2160,6 +2237,21 @@ class OphCiExamination_API extends \BaseAPI
             }
         }
         return $str;
+    }
+
+    public function getLatestTriagePriority(\Patient $patient, $worklist, $use_context = false)
+    {
+        $ret = '';
+        $triage_elements = $this->getElements(
+            'models\Element_OphCiExamination_Triage',
+            $patient,
+            $use_context,
+        );
+        if (count($triage_elements) > 0) {
+            $priority = $triage_elements[0]->triage->priority;
+            $ret = "<i class=\"circle-{$priority->label_colour}\" data-tt-type=\"basic\" data-tooltip-content=\"Priority: {$priority->description}\"></i>";
+        }
+        return $ret;
     }
 
     public function getLatestOutcomeRiskStatus(\Patient $patient, $worklist, $use_context = false)
@@ -3402,5 +3494,50 @@ class OphCiExamination_API extends \BaseAPI
         </table>
 
         <?php return ob_get_clean();
+    }
+
+    /**
+     * Gets current (not stopped) medications
+     *
+     * Shortcode: mec
+     *
+     * @param Patient $patient
+     * @param false $use_context
+     * @return string
+     */
+    public function getCurrentMedications(\Patient $patient, $use_context = false): string
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient);
+        $entries = $element ? $element->getNotStoppedEntries() : [];
+
+        $text = '';
+        foreach ($entries as $entry) {
+            $text .= $entry->medication->preferred_term . ", started at " . \Helper::convertMySQL2NHS($entry->start_date) . "<br>";
+        }
+
+        return $text;
+    }
+
+    /**
+     * Gets all previous (stopped) medications
+     * Shortcode: mep
+     *
+     * @param Patient $patient
+     * @param false $use_context
+     * @return string
+     */
+    public function getPreviousMedications(\Patient $patient, $use_context = false): string
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient);
+        $entries = $element ? $element->getStoppedEntries() : [];
+
+        $text = '';
+        foreach ($entries as $entry) {
+            $text .= $entry->medication->preferred_term .
+                ", started at " . \Helper::convertMySQL2NHS($entry->start_date) .
+                " and ended at " .  \Helper::convertMySQL2NHS($entry->end_date) ."<br>";
+        }
+
+        return $text;
     }
 }

@@ -24,7 +24,4 @@ class Comments extends \BaseEventElementWidget
     {
         return new CommentsElement();
     }
-
-    
-
 }

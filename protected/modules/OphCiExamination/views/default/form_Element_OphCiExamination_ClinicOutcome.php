@@ -17,6 +17,8 @@
  */
 ?>
 <?php
+
+use OEModule\OphCiExamination\models\DischargeDestination;
 use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status;
 use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
@@ -106,6 +108,14 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                 <i class="oe-i plus pro-theme"></i>
             </button>
             <table class="select-options">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th style="display: none;" class="follow-up-options-discharge-only">Discharge Status</th>
+                    <th style="display: none;" class="follow-up-options-discharge-only">Discharge Destination</th>
+                    <th style="display: none;" class="follow-up-options-discharge-transfer-only">Transfer to Institution</th>
+                </tr>
+                </thead>
                 <tbody>
                 <tr>
                     <td>
@@ -118,6 +128,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                                     <li data-id="<?= $opt->id ?>" data-label="<?= $opt->name ?>"
                                         <?= $opt->patientticket && (!count($queues) || !isset($authRoles['Patient Tickets'])) ? 'disabled' : '' ?>
                                         data-followup="<?= $opt->followup ?>"
+                                        data-discharge="<?= $opt->discharge ?>"
                                         data-patient-ticket="<?= $opt->patientticket ?>">
                                         <span class="fixed-width extended"><?= $opt->name ?></span>
                                     </li>
@@ -173,6 +184,31 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                             <input type="text" id="followup_comments" placeholder="Name (optional)">
                         </div>
                     </td>
+                    <td class="follow-up-options-discharge-only" style="display: none;">
+                        <ul class="add-options" id="discharge-status-options">
+                            <?php foreach (\OEModule\OphCiExamination\models\DischargeStatus::model()->findAll() as $status_entry) : ?>
+                                <li data-discharge-status-id="<?= $status_entry->id ?>" data-label="<?= $status_entry->name ?>">
+                                    <span class="restrict-width"><?= $status_entry->name ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </td>
+                    <td class="follow-up-options-discharge-only" style="display: none;">
+                        <ul class="add-options" id="discharge-destination-options">
+                            <?php foreach (DischargeDestination::model()->findAll() as $destination_entry) : ?>
+                                <li data-discharge-destination-id="<?= $destination_entry->id ?>"
+                                    data-label="<?= $destination_entry->name ?>"
+                                    data-institution-required="<?= $destination_entry->institution_required ?>">
+                                    <span class="restrict-width"><?= $destination_entry->name ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </td>
+                    <td class="follow-up-options-discharge-transfer-only" style="display: none;">
+                        <input type="search" placeholder="Institution" class="search" id="transfer-to-search" name="search_institution"/>
+                        <ul class="add-options" id="discharge-transfer-to-options">
+                        </ul>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -194,6 +230,12 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
             'values' => [
                 'status_id' => '{{status_id}}',
                 'status' => '{{status}}',
+                'discharge_status_id' => '{{discharge_status_id}}',
+                'discharge_status' => '{{discharge_status}}',
+                'discharge_destination_id' => '{{discharge_destination_id}}',
+                'discharge_destination' => '{{discharge_destination}}',
+                'transfer_institution_id' => '{{transfer_institution_id}}',
+                'transfer_to' => '{{transfer_to}}',
                 'followup_quantity' => '{{followup_quantity}}',
                 'followup_period_id' => '{{followup_period_id}}',
                 'followup_period' => '{{followup_period}}',

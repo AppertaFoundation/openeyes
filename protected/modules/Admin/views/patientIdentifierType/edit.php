@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -12,9 +13,10 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<div class="cols-5">
+<div class="cols-full">
     <div class="row divider">
         <h2><?= $patient_identifier_type->isNewRecord ? 'Add' : 'Edit' ?> Patient Identifier Type</h2>
     </div>
@@ -37,7 +39,7 @@
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-3">
-            <col class="cols-5">
+            <col class="cols-full">
         </colgroup>
 
         <tbody>

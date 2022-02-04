@@ -203,7 +203,7 @@ abstract class BaseVisualAcuityTest extends \ModelTestCase
     public function unit_relation_works_with_non_db_attribute()
     {
         $unit_criteria = new \CDbCriteria();
-        $unit_criteria->addColumnCondition(['is_near' => false]);
+        $unit_criteria->addColumnCondition(['is_va' => true]);
         $unit = $this->getRandomLookup(OphCiExamination_VisualAcuityUnit::class, 1, $unit_criteria);
 
         $instance = $this->getElementInstance();

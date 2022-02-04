@@ -1,8 +1,0 @@
-{
-  "name" : "openeyes/oph-ci-examination",
-  "description": "Examination module for OpenEyes",
-  "type": "openeyes-module",
-  "require": {
-    "openeyes/module-installer": "*"
-  }
-}

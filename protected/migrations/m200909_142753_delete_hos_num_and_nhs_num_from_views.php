@@ -2,8 +2,8 @@
 
 class m200909_142753_delete_hos_num_and_nhs_num_from_views extends OEMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         // update v_patient_episodes to include status
         $this->execute("CREATE OR REPLACE
         ALGORITHM = UNDEFINED VIEW `v_patient_episodes` AS
@@ -174,11 +174,10 @@ class m200909_142753_delete_hos_num_and_nhs_num_from_views extends OEMigration
         JOIN `ophcomessaging_message_message_type` `t` ON ((`t`.`id` = `m`.`message_type_id`)))
     WHERE
         (`m`.`deleted` = 0);");
-
     }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         // update v_patient_episodes to include status
         $this->execute("CREATE OR REPLACE
         ALGORITHM = UNDEFINED VIEW `v_patient_episodes` AS
@@ -356,6 +355,5 @@ class m200909_142753_delete_hos_num_and_nhs_num_from_views extends OEMigration
         JOIN `ophcomessaging_message_message_type` `t` ON ((`t`.`id` = `m`.`message_type_id`)))
     WHERE
         (`m`.`deleted` = 0);");
-
     }
 }

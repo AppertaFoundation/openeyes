@@ -97,6 +97,22 @@ $form = $this->beginWidget('CActiveForm', array(
     </tr>
     <tr>
         <td>
+            <?= "Mobile Number" ?>
+        </td>
+        <td>
+            <?php echo \CHtml::textField(
+                'field',
+                "",
+                [
+                    'data-label' => 'mobile_phone',
+                    'class' => 'cols-full js-contact-field',
+                    'placeholder' => "Mobile Number"
+                ]
+            ); ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
             <?= "Address Line One" ?>
         </td>
         <td>
@@ -264,7 +280,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
                         $('#contact-assignment-table').append(row);
                         autosize($('.autosize'));
-                        $('.oe-popup-wrap').remove();
+                        $('.oe-popup-wrap').not('#js-overlay').remove();
                     }
                 }
             });

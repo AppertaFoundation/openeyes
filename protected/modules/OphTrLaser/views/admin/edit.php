@@ -41,4 +41,4 @@ $this->renderPartial('form_' . get_class($model), array(
 
 <?php echo $form->formActions(array('cancel-uri' => @$cancel_uri)) ?>
 
-<?php $this->endWidget() ?>
+<?php $this->endWidget();

@@ -94,7 +94,7 @@
                                 'data-ec-keep-field' => true
                             ]
                         );
-                    ?>
+                                                            ?>
                 </td>
                 <td>
                     <?= $form->dropDownList($element, 'birth_history_delivery_type_id',

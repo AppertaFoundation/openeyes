@@ -1,16 +1,18 @@
 <?php
 /**
  * class TeamTest
- * @covers \models\Team
+ * @covers Team
+ * @covers TeamUserAssign
+ * @covers TeamTeamAssign
  */
-class TeamTest extends \ActiveRecordTestCase
+class TeamTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'teams' => 'Team',
     );
     public function getModel()
     {
-        return \Team::model();
+        return Team::model();
     }
 
     public function getTeamDetails()
@@ -48,9 +50,6 @@ class TeamTest extends \ActiveRecordTestCase
     }
     /**
      * @dataProvider getTeamDetails
-     * @covers Team
-     * @covers TeamUserAssign
-     * @covers TeamTeamAssign
      */
     public function testTeams($team_fixture, $temp_user_ids, $temp_child_team_ids, $can_save, $active)
     {

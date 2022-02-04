@@ -18,15 +18,15 @@
 ?>
 <?php
 $form->layoutColumns = array(
-    'label' => 3,
-    'field' => 9,
+    'label' => 2,
+    'field' => 5,
 );
 ?>
 
 <p class="note">Fields with <span class="required">*</span> are required.</p>
 
 <?php echo $form->errorSummary($model); ?>
-<?php echo $form->textField($model, 'question', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'maxlength' => 256)); ?>
+<?php echo $form->textField($model, 'question', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'maxlength' => 256, 'style' => 'border: 1px solid #000;')); ?>
 <?php echo $form->dropdownlist($model, 'outcome_id', 'OphCoTherapyapplication_DecisionTreeOutcome', array('empty' => 'Select')); ?>
 
 <?php
@@ -37,7 +37,7 @@ foreach ($model->getDefaultFunctions() as $func) {
 echo $form->dropdownlist($model, 'default_function', $func_list, array('empty' => 'Select')); ?>
 
 
-<div class="data-group">
+<div class="data-group flex-layout">
     <div class="cols-<?php echo $form->layoutColumns['label'];?> column">
         <?php echo $form->labelEx($model, 'default_value'); ?>
     </div>

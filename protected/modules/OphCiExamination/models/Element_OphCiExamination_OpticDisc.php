@@ -105,6 +105,8 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
         $side = $side[0];
         if ($this->{$side.'_diameter'} && !$this->$attribute) {
             $this->addError($attribute, ucfirst($side).' vertical diameter requires lens');
+        } elseif (strcmp($this->$attribute, "") == 0) {
+            $this->$attribute = NULL;
         }
     }
 

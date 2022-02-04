@@ -40,8 +40,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 
     <table class="standard">
         <colgroup>
-            <col class="cols-1">
-            <col class="cols-9">
+            <col class="cols-2">
+            <col class="cols-8">
         </colgroup>
         <tbody>
         <tr>
@@ -58,6 +58,10 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             <td><?=$rule->getAttributeLabel('rule_order');?></td>
             <td><?=\CHtml::activeTextField($rule, 'rule_order', ['class' => 'cols-full']) ?></td>
         </tr>
+        <tr>
+            <td><?= $rule->getAttributeLabel('institution_id') ?></td>
+            <td><?= Institution::model()->getCurrent()->name ?></td>
+        </tr>
         <?php $dropdowns = [
             'site_id' => Site::model()->getListForCurrentInstitution('name'),
             'firm_id' => Firm::model()->getListWithSpecialties(),
@@ -71,7 +75,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     $attr,
                     $data,
                     ['empty' => '- Not set -', 'class' => 'cols-full']
-                ); ?>
+                    ); ?>
                 </td>
             </tr>
         <?php endforeach; ?>

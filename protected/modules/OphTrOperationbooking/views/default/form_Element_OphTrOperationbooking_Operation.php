@@ -1,4 +1,6 @@
-<?php /**
+<?php
+
+/**
  * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -14,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($this->open_elements);
 $procedure_readonly = $this->procedure_readonly;
 ?>
@@ -23,34 +26,29 @@ $procedure_readonly = $this->procedure_readonly;
             <div class="cols-3">
                 <?php
                 /**
-                 * Check the Subspecialty is 'Cataract', and check opbooking_disable_both_eyes is True.  Used to remove BOTH eyes option for Cataract operations.
+                 * Check if opbooking_disable_both_eyes is true.  Used to remove BOTH eyes option for Cataract operations. Default is true, but it can be overridden for different subspecialties.
                  */
-                if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
-                }
-                ?>
-                <?php
-                if (Yii::app()->params['opbooking_disable_both_eyes']) {
-                    ?>
-                    <?php echo $form->radioButtons(
-                        $element,
-                        'eye_id',
-                        CHtml::listData(Eye::model()->findAll(array(
-                        'condition' => 'name != "Both"',
-                        'order' => 'display_order asc',
-                        )), 'id', 'name'),
-                        $element->eye_id,
-                        '',
-                        '',
-                        '',
-                        '',
-                        array(
+                $episode = $this->patient->getEpisodeForCurrentSubspecialty();
+                $test = SettingMetadata::model()->getSetting('opbooking_disable_both_eyes');
+                if (SettingMetadata::model()->getSetting('opbooking_disable_both_eyes') == 1) {
+                     echo $form->radioButtons(
+                         $element,
+                         'eye_id',
+                         CHtml::listData(Eye::model()->findAll(array(
+                            'condition' => 'name != "Both"',
+                            'order' => 'display_order asc',
+                            )), 'id', 'name'),
+                         $element->eye_id,
+                         '',
+                         '',
+                         '',
+                         '',
+                         array(
                             'nowrapper' => true,
-                        'label-class' => $event_errors ? 'error' : '')
-                    ) ?>
-                    <?php
+                            'label-class' => $event_errors ? 'error' : '')
+                     );
                 } else {
-                    ?>
-                    <?php echo $form->radioButtons(
+                    echo $form->radioButtons(
                         $element,
                         'eye_id',
                         CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
@@ -60,8 +58,7 @@ $procedure_readonly = $this->procedure_readonly;
                         '',
                         '',
                         array('label-class' => $event_errors ? 'error' : '')
-                    ) ?>
-                    <?php
+                    );
                 }
                 ?>
             </div>
@@ -195,7 +192,7 @@ $procedure_readonly = $this->procedure_readonly;
                                 array('rows' => 1),
                                 true,
                                 array(),
-                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))
+                                array_merge($form->layoutColumns, array('label' => 6,'field' => 12))
                             ) ?>
                         </td>
                     </tr>
@@ -275,7 +272,7 @@ $procedure_readonly = $this->procedure_readonly;
                                 false,
                                 array(
                                     'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
-                                    'field'=>'AnaestheticType',
+                                    'field' => 'AnaestheticType',
                                 )
                             ); ?>
                         </td>
@@ -310,7 +307,7 @@ $procedure_readonly = $this->procedure_readonly;
                                 array('rows' => 1),
                                 true,
                                 array(),
-                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))
+                                array_merge($form->layoutColumns, array('label' => 6,'field' => 12))
                             ) ?>
                         </td>
                     </tr>
@@ -329,14 +326,6 @@ $procedure_readonly = $this->procedure_readonly;
                                     'class' => $element->getError('stop_medication_details') ? 'error' : ''
                                 )
                             ); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Pre-assessment booking required
-                        </td>
-                        <td>
-                            <?php echo $form->radioBoolean($element, 'preassessment_booking_required', array('nowrapper' => true)); ?>
                         </td>
                     </tr>
                     <tr>
@@ -373,6 +362,7 @@ $procedure_readonly = $this->procedure_readonly;
                 </table>
             </div>
         </div>
+
         <table class="cols-11">
             <tbody>
             <tr>

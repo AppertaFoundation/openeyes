@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,11 +15,12 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php $this->renderPartial('//base/_messages'); ?>
 
-<div class="cols-5">
+<div class="cols-full">
     <table class="standard">
         <thead>
         <tr>
@@ -33,13 +35,13 @@
             ?>
             <tr data-attr-id="<?php echo $model->id?>">
                 <td>
-                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/update'.Helper::getNSShortname($model)) . '/' .$model->id ?>"><?php echo $model->name?></a>
+                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/update' . Helper::getNSShortname($model)) . '/' . $model->id ?>"><?php echo $model->name?></a>
                 </td>
                 <td>
-                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/viewRemapValues') . '/' .$model->id ?>"><?= count($model->values) ?></a>
+                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/viewRemapValues') . '/' . $model->id ?>"><?= count($model->values) ?></a>
                 </td>
                 <td>
-                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/deleteXpathRemap') . '/' .$model->id; ?>">Delete</a>
+                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/deleteXpathRemap') . '/' . $model->id; ?>">Delete</a>
                 </td>
             </tr>
             <?php
@@ -48,7 +50,7 @@
         <tfoot class="pagination-container">
         <tr>
             <td colspan="3">
-                <a class="button small" href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/create'.$model_class); ?>">Add New</a>
+                <a class="button small" href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/create' . $model_class); ?>">Add New</a>
             </td>
         </tr>
         </tfoot>

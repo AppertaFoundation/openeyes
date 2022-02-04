@@ -59,7 +59,8 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
         // will receive user inputs.
         return array(
             array('event_id, site_id, theatre_id', 'safe'),
-            array('site_id, theatre_id', 'required'),
+            array('site_id', 'required'),
+            array('theatre_id', 'required', 'on' => array('insert')),
         );
     }
 

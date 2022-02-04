@@ -18,4 +18,10 @@ return array(
         'when' => date_format(new Datetime("+7 days"), 'Y-m-d 09:00:00'),
         'patient_id' => 3,
     ),
+    'worklist_patient4' => array(
+        'id' => 4,
+        'worklist_id' => 5,
+        'when' => date_format(new Datetime("+7 days"), 'Y-m-d 09:00:00'),
+        'patient_id' => 4,
+    ),
 );

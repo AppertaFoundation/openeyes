@@ -1,6 +1,8 @@
 <?php
 
 namespace OEModule\PASAPI\components\Pases;
+
+use Exception;
 use OEModule\PASAPI\models\PasApiAssignment;
 
 /**
@@ -48,7 +50,7 @@ class DefaultPas extends BasePAS
      *
      * @return bool
      */
-    public function isAvailable() : bool
+    public function isAvailable(): bool
     {
         return isset($this->config['enabled']) && $this->config['enabled'] === true ? true : false;
     }
@@ -60,7 +62,7 @@ class DefaultPas extends BasePAS
      * @return bool
      * @throws Exception
      */
-    public function isPASqueryRequired($params) : bool
+    public function isPASqueryRequired($params): bool
     {
         $pasapi_allowed_search_params = $this->getValidAllowedSearchParams();
 
@@ -102,10 +104,10 @@ class DefaultPas extends BasePAS
      * empty array if unset
      * @return array
      */
-    public function getPasApiAllowedSearchParams() : array
+    public function getPasApiAllowedSearchParams(): array
     {
         $allowed_params = [];
-        if ( array_key_exists('allowed_params', $this->config)) {
+        if (array_key_exists('allowed_params', $this->config)) {
             $allowed_params = $this->config['allowed_params'];
         }
 
@@ -117,7 +119,7 @@ class DefaultPas extends BasePAS
      *
      * @return array
      */
-    public function getValidAllowedSearchParams() : array
+    public function getValidAllowedSearchParams(): array
     {
         $allowed_search_params = $this->getPasApiAllowedSearchParams();
         $invalid = array_diff($allowed_search_params, $this->config['search_params']);
@@ -131,7 +133,7 @@ class DefaultPas extends BasePAS
      * @return Patient[] of protected/modules/PASAPI/resources/Patient.php
      * @throws Exception
      */
-    public function request($data) : array
+    public function request($data): array
     {
         $xml = false;
         $query = [];
@@ -208,10 +210,69 @@ class DefaultPas extends BasePAS
 
                 $xml_handler->next('Patient');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             \OELog::log("PASAPI : " . $e->getMessage());
         }
 
         return $resources;
+    }
+
+    function buildXML(&$xml, $data, &$parent_xml = null, $parent_idx = null)
+    {
+        foreach ($data as $idx => $record) {
+            if (is_array($record) || is_object($record)) {
+                if (is_numeric($idx)) {
+                    $child = $parent_xml->addChild($parent_idx);
+                } else {
+                    $child = $xml->addChild($idx);
+                }
+                $this->buildXML($child, $record, $xml, $idx);
+            } else {
+                try {
+                    if ($record !== "") {
+                        $xml->addChild($idx, htmlspecialchars($record));
+                    }
+                } catch (Exception $e) {
+                    \OELog::log("PASAPI buildXML: " . $e->getMessage());
+                    \OELog::log("PASAPI buildXML record: " . var_export($record, true));
+                }
+            }
+        }
+        return $xml;
+    }
+
+    /***
+     * @param HL7_A08 $data
+     */
+    public function sendUpdate($data)
+    {
+
+        $xml = new \SimpleXMLElement('<root/>');
+
+        $this->buildXML($xml, $data);
+
+        $post_data = "xmlrequest=" . $xml->asXML();
+
+        $response = $this->curl->post($this->config['url'], $post_data);
+        $ch = $this->curl->curl;
+
+        try {
+            $responseXml = new \SimpleXMLElement($response);
+            $msg = $responseXml->ErrorMessage;
+            \Yii::log('Error node: ' . var_export($msg, true));
+            \Yii::log('Error node count: ' . $msg->count());
+            if ($msg != "") {
+                \Yii::app()->user->setFlash('warning.pas_error', 'Invalid Answer From PAS: ' . $msg);
+                \Yii::log('Invalid answer from pas: ' . $msg);
+            }
+            if (curl_errno($ch)) {
+                \Yii::app()->user->setFlash('warning.pas_error', 'No Connection To Mirth');
+                $error = 'PASAPI cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
+                \OELog::log($error);
+            }
+        } catch (\Exception $e) {
+            \Yii::log('No Response From PAS:' . $e->getMessage() . " " . var_export($response, true));
+            \Yii::app()->user->setFlash('warning.pas_error', 'No Response From PAS');
+        }
     }
 }

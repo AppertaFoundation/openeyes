@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class VAVariableTest
  * @covers AgeVariable

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -29,7 +30,7 @@ class OphTrOperationchecklists_API extends BaseAPI
             array($event_id)
         );
         if (!$operationChecklistsProcedureList) {
-            throw new Exception("Operation Checklists (procedure list) event not found: $event_id");
+            throw new Exception("Operation checklists (procedure list) event not found: $event_id");
         }
 
         return $operationChecklistsProcedureList->eye;

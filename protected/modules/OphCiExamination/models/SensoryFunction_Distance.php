@@ -49,5 +49,4 @@ class SensoryFunction_Distance extends \BaseElement
             ['id, name, active, display_order', 'safe', 'on' => 'search'],
         ];
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -56,12 +58,12 @@ class GeneticsPatientPedigree extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('patient_id', 'numerical', 'integerOnly'=>true),
-            array('pedigree_id, last_modified_user_id, created_user_id, status_id', 'length', 'max'=>10),
+            array('patient_id', 'numerical', 'integerOnly' => true),
+            array('pedigree_id, last_modified_user_id, created_user_id, status_id', 'length', 'max' => 10),
             array('pedigree_id,patient_id,status_id, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, patient_id, pedigree_id, last_modified_date, last_modified_user_id, created_user_id, created_date, status_id', 'safe', 'on'=>'search'),
+            array('id, patient_id, pedigree_id, last_modified_date, last_modified_user_id, created_user_id, created_date, status_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -115,8 +117,7 @@ class GeneticsPatientPedigree extends CActiveRecord
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
-
+        $criteria = new CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('patient_id', $this->patient_id);
         $criteria->compare('pedigree_id', $this->pedigree_id, true);
@@ -125,9 +126,8 @@ class GeneticsPatientPedigree extends CActiveRecord
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
         $criteria->compare('status_id', $this->status_id, true);
-
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 

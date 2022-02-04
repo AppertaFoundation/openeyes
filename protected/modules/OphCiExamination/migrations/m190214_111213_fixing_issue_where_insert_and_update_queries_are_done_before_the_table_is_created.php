@@ -118,5 +118,4 @@ class m190214_111213_fixing_issue_where_insert_and_update_queries_are_done_befor
 
         $this->update('element_type', array('element_group_id' => null), 'id = :id', array(':id' => $this->getElementId('Element_OphCiExamination_Refraction')));
     }
-    
 }

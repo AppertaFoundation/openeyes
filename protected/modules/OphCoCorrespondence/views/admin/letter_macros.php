@@ -23,7 +23,13 @@
 
 <form id="admin_sessions_filters" class="panel">
     <div class="cols-full">
-        <table class="standard cols-full" id="add_macro_table">
+        <table class="standard" style="margin-bottom:0px">
+            <colgroup>
+                <col class="cols-1">
+                <col class="cols-3">
+                <col class="cols-1">
+                <col class="cols-2">
+            </colgroup>
             <tbody>
             <tr>
                 <td><?=\CHtml::dropDownList(
@@ -51,26 +57,36 @@
                     ['empty' => '- Subspecialty -']
                 ) ?></td>
                 <td><?=\CHtml::dropDownList(
-                    'firm_id',
-                    @$_GET['firm_id'],
-                    Firm::model()->getListWithSpecialties(Yii::app()->session['selected_institution_id'], true),
-                    ['empty' => '- ' . Firm::contextLabel() . ' -']
-                ) ?>
+                        'firm_id',
+                        @$_GET['firm_id'],
+                        Firm::model()->getListWithSpecialties(Yii::app()->session['selected_institution_id'], true),
+                        ['empty' => '- ' . Firm::contextLabel() . ' -']
+                    ) ?>
                 </td>
-                <td><?=\CHtml::dropDownList(
-                    'name',
-                    @$_GET['name'],
-                    $unique_names,
-                    ['empty' => '- Name -']
-                ) ?></td>
-                <td><?=\CHtml::dropDownList(
-                    'episode_status_id',
-                    @$_GET['episode_status_id'],
-                    $episode_statuses,
-                    ['empty' => '- Episode status -']
-                ) ?></td>
             </tr>
             </tbody>
+        </table>
+            <table class="standard cols-full" style="margin-top:0px">
+                <col class="cols-2">
+                <col class="cols-3">
+                <tbody>
+                <tr>
+                    <td><?=\CHtml::dropDownList(
+                            'name',
+                            @$_GET['name'],
+                            $unique_names,
+                            ['empty' => '- Name -']
+                        ) ?></td>
+                    <td><?=\CHtml::dropDownList(
+                            'episode_status_id',
+                            @$_GET['episode_status_id'],
+                            $episode_statuses,
+                            ['empty' => '- Episode status -']
+                        ) ?></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
 
 
         </table>

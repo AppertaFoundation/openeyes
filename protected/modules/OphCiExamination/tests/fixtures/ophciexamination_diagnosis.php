@@ -23,6 +23,7 @@ return array(
         'disorder_id' => 1,
         'eye_id' => 1,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis2' => array(
         'id' => 2,
@@ -30,6 +31,7 @@ return array(
         'disorder_id' => 1,
         'eye_id' => 2,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis3' => array(
         'id' => 3,
@@ -37,6 +39,7 @@ return array(
         'disorder_id' => 1,
         'eye_id' => 2,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis4' => array(
         'id' => 4,
@@ -44,6 +47,7 @@ return array(
         'disorder_id' => 2,
         'eye_id' => 1,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis5' => array(
         'id' => 5,
@@ -51,6 +55,7 @@ return array(
         'disorder_id' => 1,
         'eye_id' => 2,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis6' => array(
         'id' => 6,
@@ -58,6 +63,7 @@ return array(
         'disorder_id' => 2,
         'eye_id' => 1,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis7' => array(
         'id' => 7,
@@ -65,6 +71,7 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 1,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis8' => array(
         'id' => 8,
@@ -72,6 +79,7 @@ return array(
         'disorder_id' => 2,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis9' => array(
         'id' => 9,
@@ -79,6 +87,7 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis10' => array(
         'id' => 10,
@@ -86,6 +95,7 @@ return array(
         'disorder_id' => 2,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis11' => array(
         'id' => 11,
@@ -93,6 +103,7 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 2,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis12' => array(
         'id' => 12,
@@ -100,6 +111,7 @@ return array(
         'disorder_id' => 2,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis13' => array(
         'id' => 13,
@@ -107,6 +119,7 @@ return array(
         'disorder_id' => 2,
         'eye_id' => 2,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis14' => array(
         'id' => 14,
@@ -114,6 +127,7 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis15' => array(
         'id' => 15,
@@ -121,6 +135,7 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis16' => array(
         'id' => 16,
@@ -128,6 +143,7 @@ return array(
         'disorder_id' => 3,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis17' => array(
         'id' => 17,
@@ -135,6 +151,7 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis18' => array(
         'id' => 18,
@@ -142,6 +159,7 @@ return array(
         'disorder_id' => 2,
         'eye_id' => 1,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis19' => array(
         'id' => 19,
@@ -149,6 +167,7 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis20' => array(
         'id' => 20,
@@ -156,6 +175,7 @@ return array(
         'disorder_id' => 2,
         'eye_id' => 2,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis21' => array(
         'id' => 21,
@@ -163,6 +183,7 @@ return array(
         'disorder_id' => 5,
         'eye_id' => 2,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis22' => array(
         'id' => 22,
@@ -170,6 +191,7 @@ return array(
         'disorder_id' => 5,
         'eye_id' => 2,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis23' => array(
         'id' => 23,
@@ -177,6 +199,7 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 2,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis24' => array(
         'id' => 24,
@@ -184,6 +207,7 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 2,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis25' => array(
         'id' => 25,
@@ -191,6 +215,7 @@ return array(
         'disorder_id' => 1,
         'eye_id' => 2,
         'principal' => 1,
+        'time' => '00:00',
     ),
     'diagnosis26' => array(
         'id' => 26,
@@ -198,6 +223,7 @@ return array(
         'disorder_id' => 2,
         'eye_id' => 2,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis27' => array(
         'id' => 27,
@@ -205,6 +231,7 @@ return array(
         'disorder_id' => 3,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
     'diagnosis28' => array(
         'id' => 28,
@@ -212,5 +239,6 @@ return array(
         'disorder_id' => 4,
         'eye_id' => 1,
         'principal' => 0,
+        'time' => '00:00',
     ),
 );

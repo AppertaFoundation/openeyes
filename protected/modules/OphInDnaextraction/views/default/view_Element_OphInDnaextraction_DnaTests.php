@@ -23,4 +23,4 @@ $this->renderPartial(
     array('element' => $element, 'data' => array('view_mode'=>true), 'form' => @$form),
     false,
     false
-)?>
+);

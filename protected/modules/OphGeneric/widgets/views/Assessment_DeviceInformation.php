@@ -131,7 +131,7 @@ $medical_retina_entry_values = $this->entry->getAssessmentEntryRadioButtonValues
                                 ['class' => 'fixed-width-small', 'disabled' => null,
                                 'name' => "OEModule_OphGeneric_models_Assessment" . ($this->key !== null ? "[entries][$this->key][$this->side][$item]" : "[$item]"),
                                 'id' => "OEModule_OphGeneric_models_Assessment_entries_" . ($this->key !== null ? "{$this->key}_{$this->side}_$item" : "$item")]
-                            ); ?>
+                                ); ?>
                                 <?php echo strpos($item, 'cd_ratio') === false ? 'μm' : '&nbsp; &nbsp; &nbsp;&nbsp;' ?>
                             </td>
                         </tr>

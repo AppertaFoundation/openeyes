@@ -44,7 +44,7 @@ class OphCiExamination_VisualAcuitySource extends \BaseActiveRecordVersioned
         return [
             ['name, display_order', 'required'],
             ['name', 'length', 'max' => 31, 'min' => 2],
-            ['is_near, active', 'boolean'],
+            ['is_near, is_va, active', 'boolean'],
             ['display_order', 'numerical', 'integerOnly' => true],
             ['is_near', 'default', 'setOnEmpty' => true, 'value' => 0], // to pick up lack of value in admin
             ['id, name, active, display_order', 'safe', 'on' => 'search'],

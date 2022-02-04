@@ -78,9 +78,9 @@ class SnippetGroupController extends ModuleAdminController
                 ]
             ),
             'name' => 'text',
-            'siteLetterStrings' => array(
+            'letterStrings' => array(
                 'widget' => 'RelationList',
-                'relation' => 'siteLetterStrings',
+                'relation' => 'letterStrings',
                 'action' => 'OphCoCorrespondence/oeadmin/snippet',
                 'listFields' => array(
                     'display_order',

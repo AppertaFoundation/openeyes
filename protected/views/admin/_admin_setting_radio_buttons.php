@@ -16,4 +16,4 @@
 <?php foreach (unserialize($metadata->data) as $key => $value) {?>
     <?=\CHtml::radioButton($metadata->key, $metadata->getSetting($metadata->key, null, false, $allowed_classes, $institution_id, true) == $key, array('value' => $key))?>
     <?=\CHtml::encode($value)?>
-<?php }?>
+<?php }

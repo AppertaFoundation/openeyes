@@ -1,4 +1,5 @@
-<?php use OEModule\OphCiExamination\models\AllergyEntry; use OEModule\OphCiExamination\models\OphCiExaminationAllergy; ?>
+<?php use OEModule\OphCiExamination\models\AllergyEntry;
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy; ?>
 
 <div class="element-data full-width">
     <div class="flex-layout flex-top">

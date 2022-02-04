@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -27,6 +28,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $eye_id
  * @property bool $principal
  * @property string $date
+ * @property string $time
  */
 class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
 {
@@ -54,10 +56,11 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('element_diagnoses_id,disorder_id,eye_id', 'required'),
-                array('element_diagnoses_id,disorder_id,eye_id,principal,date', 'safe'),
+                array('element_diagnoses_id,disorder_id,eye_id,time', 'required'),
+                array('element_diagnoses_id,disorder_id,eye_id,principal,date,time', 'safe'),
                 array('id, name', 'safe', 'on' => 'search'),
                 array('date', 'OEFuzzyDateValidator'),
+                array('time', 'CDateValidator', 'format' => array('h:m:s', 'h:m')),
         );
     }
 
@@ -66,6 +69,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
         return array(
             'eye_id' => 'Eye',
             'date' => 'Date',
+            'time' => 'Time'
         );
     }
 
@@ -129,7 +133,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     public function __toString()
     {
 
-        if (strpos($this->disorder->term, $this->eye->adjective. ' ') === 0) {
+        if (strpos($this->disorder->term, $this->eye->adjective . ' ') === 0) {
             $term = $this->disorder->term;
         } else {
             $term = $this->eye->adjective . ' ' . $this->disorder->term;

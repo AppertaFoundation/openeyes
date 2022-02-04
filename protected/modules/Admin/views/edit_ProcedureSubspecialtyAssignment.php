@@ -28,6 +28,10 @@ $cols_size = (int)$subspecialty_id === 4 && $enable_eur === 'on' ? 'cols-9' : 'c
             </colgroup>
             <tbody>
             <tr class="col-gap">
+                <?php if ($this->checkAccess('admin')):?>
+                <td>Institution</td>
+                <td><?=\CHtml::dropDownList('institution_id', $institution_id, \CHtml::listData($institutions, 'id', 'name'));?></td>
+                <?php endif;?>
                 <td>Subspecialty</td>
                 <td>
                     <?=\CHtml::dropDownList(
@@ -44,7 +48,7 @@ $cols_size = (int)$subspecialty_id === 4 && $enable_eur === 'on' ? 'cols-9' : 'c
         </table>
     </form>
     <?php if ($subspecialty_id) { ?>
-        <form method="POST" action="/Admin/procedureSubspecialtyAssignment/edit?subspecialty_id=<?= $subspecialty_id ?>">
+        <form method="POST" action="/Admin/procedureSubspecialtyAssignment/edit?subspecialty_id=<?= $subspecialty_id ?>&institution_id=<?=$institution_id ?>">
             <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
               <?php
                 $columns = [
@@ -127,10 +131,23 @@ $cols_size = (int)$subspecialty_id === 4 && $enable_eur === 'on' ? 'cols-9' : 'c
         $row.on('click', 'a.delete', function () {
             $(this).closest('tr').remove();
         });
+
+        const $institution = $row.find("select[id$='institution_id']");
+
+        if ($institution.length) {
+            $institution.val(<?=$institution_id;?>);
+            // "selected" attribute does not set automatically
+            $institution.find('option[value="<?=$institution_id;?>"]').attr("selected","selected");
+
+            // disable all other option
+            $institution[0].querySelectorAll(':not([selected])').forEach(option => {
+                option.disabled = true;
+            });
+        }
     }
 
     $(document).ready(function () {
-        $('#subspecialty_id').on('change', function () {
+        $('#subspecialty_id, #institution_id').on('change', function () {
             $(this).closest('form').submit();
         });
 

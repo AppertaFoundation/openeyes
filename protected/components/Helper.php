@@ -546,11 +546,11 @@ class Helper
         $na_eye = Helper::elementFinder('na_eye', $data);
 
         if ($left_eye && $right_eye) {
-            $eye_id = EYE::BOTH;
+            $eye_id = Eye::BOTH;
         } elseif ($left_eye) {
-            $eye_id = EYE::LEFT;
+            $eye_id = Eye::LEFT;
         } elseif ($right_eye) {
-            $eye_id = EYE::RIGHT;
+            $eye_id = Eye::RIGHT;
         } elseif ($na_eye) {
             $eye_id = -9;
         }
@@ -593,5 +593,52 @@ class Helper
 
         return $val;
 
+    }
+
+    /**
+     * Set post code format, if it wrong
+     * @param type $postcode
+     * @return string
+     */
+    public static function setPostCodeFormat($postcode)
+    {
+        $clean_postcode = preg_replace("/[^A-Za-z0-9]/", '', $postcode);
+        $clean_postcode = strtoupper($clean_postcode);
+
+        //if 5 charcters, insert space after the 2nd character
+        if(strlen($clean_postcode) == 5)
+        {
+            $postcode = substr($clean_postcode,0,2) . " " . substr($clean_postcode,2,3);
+        }
+
+        //if 6 charcters, insert space after the 3rd character
+        elseif(strlen($clean_postcode) == 6)
+        {
+            $postcode = substr($clean_postcode,0,3) . " " . substr($clean_postcode,3,3);
+        }
+
+
+        //if 7 charcters, insert space after the 4th character
+        elseif(strlen($clean_postcode) == 7)
+        {
+            $postcode = substr($clean_postcode,0,4) . " " . substr($clean_postcode,4,3);
+        }
+
+        return $postcode;
+    }
+
+    /**
+     * Returns a file size in human-readable form
+     *
+     * @param int $bytes
+     * @return string
+     */
+    public static function fileSize(int $bytes): string
+    {
+        $units = ['B', 'kB', 'MB', 'GB', 'TB'];
+        $i = floor(log($bytes, 1024));
+        $unit = $units[$i];
+        $precision = $i <= 1 ? 0 : 2;
+        return round($bytes / pow(1024, $i), $precision) . $unit;
     }
 }

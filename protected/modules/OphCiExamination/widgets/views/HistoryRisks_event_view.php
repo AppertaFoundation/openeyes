@@ -80,7 +80,7 @@
                                                 </li>
                                             <?php } ?>
                                         </ul>
-                                    <?php } else if (isset($not_checked_required_risks)) { ?>
+                                    <?php } elseif (isset($not_checked_required_risks)) { ?>
                                         <ul class="dot-list">
                                             <?php foreach ($not_checked_required_risks as $entry) { ?>
                                                 <li>
@@ -168,7 +168,7 @@
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
-                                <?php } else if (isset($not_checked_required_risks) && is_array($not_checked_required_risks)) { ?>
+                                <?php } elseif (isset($not_checked_required_risks) && is_array($not_checked_required_risks)) { ?>
                                     <?php foreach ($not_checked_required_risks as $entry) : ?>
                                         <tr>
                                             <td><?= $entry ?></td>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -34,7 +35,7 @@ $patientSummaryPopup = $this->createWidget(
         <div class="op-duration"><?= $total_duration; ?> mins</div>
     </td>
     <td><!-- patient meta data -->
-        <?=    $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . 'WorklistSide' , []);?>
+
         <div class="oe-patient-meta">
             <div class="patient-name">
                 <a href="<?= $coreapi->generatePatientLandingPageLink($patient) ?>">
@@ -53,25 +54,9 @@ $patientSummaryPopup = $this->createWidget(
         </div><!-- .oe-patient-meta -->
         <div class="theatre-patient-icons">
 
-    <div id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $patient->id ?>">
-        <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn"></i>
-    </div>
-<!--            <i class="oe-i warning small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-<!--            <i class="oe-i info small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-<!--            <i class="oe-i patient small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-<!--            <i class="oe-i eye small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-<!--            <i class="oe-i trials small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-
+            <div id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $patient->id ?>">
+                <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn"></i>
+            </div>
             <?php
             $warnings = $booking->operation->event->episode->patient->getWarnings();
             if ($warnings) {
@@ -83,6 +68,8 @@ $patientSummaryPopup = $this->createWidget(
                    data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
             <?php } ?>
         </div>
+
+        <?= $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . 'WorklistSide', []); ?>
     </td>
     <td>
         <i class="oe-i circle-<?= $operation->getComplexityColor() ?> small pad js-has-tooltip" data-tt-type="basic"
@@ -100,8 +87,8 @@ $patientSummaryPopup = $this->createWidget(
                 <?php else : ?>
                     <?=$operation->priority->name?>
                 <?php endif; ?>
+                &nbsp;
                 <li><?=implode("</li><li>", $operation->anaesthetic_type);?></li>
-                <li><?=$session->theatre->ward->name?></li>
 
                 <li>
                     <div class="theatre-procedure-icons">
@@ -179,4 +166,3 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMu
         PatientPanel.patientPopups.init(false,<?= $patient->id?>);
     });
 </script>
-

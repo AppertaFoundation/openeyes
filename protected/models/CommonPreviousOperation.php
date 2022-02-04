@@ -81,6 +81,7 @@ class CommonPreviousOperation extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
         );
     }
 

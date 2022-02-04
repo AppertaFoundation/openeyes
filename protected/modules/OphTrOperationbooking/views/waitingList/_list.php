@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -20,7 +21,7 @@
  * @var WaitingListController $this
  * @var Element_OphTrOperationbooking_Operation[] $operations
  */
-
+$operations = $dataProvider->getData();
 if (isset($_POST['status']) && $_POST['status'] != '') {
     $operations = array_filter($operations, function ($operation) {
         return $operation->getNextLetter() == $_POST['status'];
@@ -31,8 +32,13 @@ $selected_site_id = Yii::app()->session['selected_site_id'];
 $primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
     $primary_identifier_usage_type,
-    $institution->id ,
-    $selected_site_id);
+    $institution->id,
+    $selected_site_id
+);
+
+$assetManager = Yii::app()->getAssetManager();
+$widgetPath = $assetManager->publish('protected/widgets/js');
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 
 ?>
 
@@ -47,7 +53,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
 <table class="standard waiting-list">
   <thead>
   <tr>
-    <th>Letters sent</th>
+    <th></th>
     <th>Patient</th>
     <th><?= $primary_identifier_prompt ?></th>
     <th>Location</th>
@@ -58,6 +64,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
     <th>Priority</th>
     <th>Complexity</th>
     <th>Book status (requires...)</th>
+
     <th>
       <label>
         <input id="checkall" value="" type="checkbox">
@@ -114,7 +121,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
               <i class="oe-i letter-2 small js-has-tooltip" data-tooltip-content="2nd Reminder"></i>
             <?php } ?>
             <?php if ($eo->sentGPLetter()) { ?>
-                <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= "<?=\SettingMetadata::model()->getSetting('gp_label')." Removal"?>"></i>
+                <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= "<?=\SettingMetadata::model()->getSetting('gp_label') . " Removal"?>"></i>
             <?php } ?>
         </td>
 
@@ -122,12 +129,36 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
             <?= CHtml::link(
                 '<strong>' . CHtml::encode(strtoupper(trim($contact->last_name))) . '</strong>' . CHtml::encode(" {$contact->first_name} ({$patient->age})"),
                 Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $eo->event_id)
-            ) ?>
+            );
+
+            ?>
+            <?php
+            $patientSummaryPopup = $this->createWidget(
+                'application.widgets.PatientSummaryPopup',
+                array(
+                'patient' => $patient,
+                )
+            );
+            ?>
+            <div id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $patient->id ?>">
+                <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn"></i>
+                <?php $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . 'WorklistSide', []); ?>
+            </div>
+            <script>
+              $(function () {
+                  PatientPanel.patientPopups.init(false,<?= $patient->id?>);
+                  
+              });
+            </script>
         </td>
 
         <td class="nowrap">
-            <?php $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-            $patient->id, $institution->id, $selected_site_id); ?>
+            <?php $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                Yii::app()->params['display_primary_number_usage_code'],
+                $patient->id,
+                $institution->id,
+                $selected_site_id
+            ); ?>
             <?= CHtml::encode(PatientIdentifierHelper::getIdentifierValue($primary_identifier)) ?>
             <?php $this->widget(
                 'application.widgets.PatientIdentifiers',
@@ -135,7 +166,8 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                     'patient' => $patient,
                     'show_all' => true,
                     'tooltip_size' => 'small'
-                ]); ?>
+                ]
+            ); ?>
         </td>
         <td><?= CHtml::encode($eo->site->short_name) ?></td>
         <td><?= $eo->getProceduresCommaSeparated('short_format') ?></td>
@@ -149,20 +181,37 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
             <?php echo Helper::convertDate2HTML($eo->NHSDate('decision_date')) ?>
         </td>
 
-        <td><?php echo $eo->priority->name ?></td>
+        <td><?php echo $eo->priority->name . " ";
+
+        foreach ($eo->anaesthetic_type as $index => $anaesthetic_type) {
+            if ($index > 0) {
+                echo "+"; // Add a + symbol to separate multiple entries
+            }
+            switch ($anaesthetic_type->name) {
+                case 'Sedation':
+                    echo 'S';
+                    break;
+                case 'No Anaesthetic':
+                    echo 'N/A';
+                    break;
+                default:
+                    echo $anaesthetic_type->name;
+                    break;
+            }
+        } ?></td>
         <td><?php echo $eo->getComplexityCaption(); ?></td>
         <td><?php echo ucfirst(preg_replace('/^Requires /', '', $eo->status->name)) ?></td>
-
-
         <td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) {
             ?> class="admin-td"<?php
            } ?>>
 
-            <?php if (($patient && $patient->contact->correspondAddress)
+            <?php if (
+            ($patient && $patient->contact->correspondAddress)
                 && $eo->id
                 && ($eo->getDueLetter() != Element_OphTrOperationbooking_Operation::LETTER_GP
                     || ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
-                )) { ?>
+                )
+) { ?>
               <div>
                 <input <?php if ($letterStatusClass == '' && !$this->checkAccess('OprnConfirmBookingLetterPrinted')) {
                     ?> disabled="disabled"<?php
@@ -201,6 +250,11 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
     <?php } ?>
   </tbody>
   <tfoot>
+    <tr>
+      <td colspan="4">
+          <?php $this->widget('LinkPager', ['pages' => $dataProvider->pagination]); ?>
+      </td>
+    </tr>
   <tr>
     <td colspan="13">
       <div class="waiting-list-key">

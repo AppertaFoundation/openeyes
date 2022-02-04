@@ -22,4 +22,4 @@
     'hide_created' => @$hide_created,
 ));?>
 
-<?php $this->renderPartial('_va_view', ['action' => 'view']);?>
+<?php $this->renderPartial('_va_view', ['action' => 'view']);

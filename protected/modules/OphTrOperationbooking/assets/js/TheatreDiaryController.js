@@ -632,18 +632,6 @@ $(document).ready(function() {
 		return false;
 	});
 
-	new OpenEyes.UI.StickyElement('.actions', {
-		offset: -44,
-		enableHandler: function(instance) {
-			instance.element.width(instance.element.width());
-			instance.enable();
-		},
-		disableHandler: function(instance) {
-			instance.element.width('auto');
-			instance.disable();
-		}
-	});
-
 	// 'a-A-b-B-C-d-e-H-I-j-k-l-m-M-p-P-s-S-u-w-y-Y'
 	// Thu-Thursday-Dec-December-21-12-12-00-12-346-0-12-12-00-AM-AM-1576108800-00-5-4-19-2019
 	// Mon-Monday-Dec-  December-21-02-2-00-12-336-0-12-12-00-AM-AM-1575244800-00-2-1-19-2019

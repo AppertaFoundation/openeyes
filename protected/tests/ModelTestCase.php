@@ -83,5 +83,4 @@ abstract class ModelTestCase extends ActiveRecordTestCase
 
         return $mock;
     }
-
 }
