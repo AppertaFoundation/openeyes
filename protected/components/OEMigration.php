@@ -1123,4 +1123,9 @@ class OEMigration extends CDbMigration
             ->where('name = :name', [':name' => $name])
             ->queryScalar();
     }
+
+    protected function isColumnExist(string $table, string $column): bool
+    {
+        return isset($this->dbConnection->schema->getTable($table, true)->columns[$column]);
+    }
 }

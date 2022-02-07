@@ -246,6 +246,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                 'risk_status_id' => '{{risk_status_id}}',
                 'risk_status_class' => '{{risk_status_class}}',
                 'risk_status_content' => '{{risk_status_content}}',
+                'is_template' => true
             ],
         ]
     );
@@ -271,6 +272,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                 'status_id' => '{{status_id}}',
                 'status' => '{{status}}',
             ],
+            'is_template' => true
         ]
     );
     ?>

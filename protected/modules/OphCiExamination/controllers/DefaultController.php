@@ -28,6 +28,7 @@ use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
 use OEModule\PASAPI\resources\HL7_A03;
 use OEModule\PASAPI\resources\HL7_A08;
+use OEModule\PatientTicketing\models\TicketQueueAssignment;
 use services\DateTime;
 use OEModule\PatientTicketing\models\QueueOutcome;
 use Yii;

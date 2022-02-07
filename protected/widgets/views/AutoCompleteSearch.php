@@ -11,3 +11,10 @@
         </div>
     <?php endif; ?>
 </div>
+<?php
+
+if (\Yii::app()->request->isAjaxRequest && $this->js_include) {
+    $path = \Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js';
+    echo "<script src='" . (\Yii::app()->getAssetManager()->publish($path, true, -1)) . "'></script>";
+}
+;?>

@@ -29,6 +29,7 @@ class DefaultController extends \BaseModuleController
 {
     public $layout = '//layouts/main';
     public $renderPatientPanel = false;
+    public bool $fixedHotlist = false;
     protected $page_size = 20;
     public static $QUEUESETCATEGORY_SERVICE = 'PatientTicketing_QueueSetCategory';
     public static $QUEUESET_SERVICE = 'PatientTicketing_QueueSet';
@@ -151,17 +152,24 @@ class DefaultController extends \BaseModuleController
         if (isset($filter_options['patient-ids'])) {
             $criteria->addInCondition('patient_id', $filter_options['patient-ids']);
         }
-        if (isset($filter_options['date-from'])) {
+        if (isset($filter_options['date-from']) && $filter_options['date-from']) {
             $date_from = new \DateTime($filter_options['date-from']);
             $date_from_timestamp = $date_from->getTimestamp();
             $criteria->addCondition('UNIX_TIMESTAMP(DATE(t.created_date)) >= :date_from_timestamp');
             $params[':date_from_timestamp'] = $date_from_timestamp;
         }
-        if (isset($filter_options['date-to'])) {
+        if (isset($filter_options['date-to']) && $filter_options['date-to']) {
             $date_to = new \DateTime($filter_options['date-to']);
             $date_to_timestamp = $date_to->getTimestamp();
             $criteria->addCondition('UNIX_TIMESTAMP(DATE(t.created_date)) <= :date_to_timestamp');
             $params[':date_to_timestamp'] = $date_to_timestamp;
+        }
+
+        if (isset($filter_options['site-id']) && is_numeric($filter_options['site-id'])) {
+            $criteria->with = ['event'];
+            $criteria->together = true;
+            $criteria->addCondition('event.site_id = :site_id');
+            $params[':site_id'] = $filter_options['site-id'];
         }
 
         $criteria->order = 't.created_date asc';
@@ -372,7 +380,7 @@ class DefaultController extends \BaseModuleController
 
             if ($queueset) {
                 // build the filter
-                $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets', 'patient-ids', 'date-from', 'date-to');
+                $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets', 'patient-ids', 'date-from', 'date-to', 'site-id');
                 $filter_options = array();
 
                 foreach ($filter_keys as $k) {
@@ -478,6 +486,9 @@ class DefaultController extends \BaseModuleController
             AutoSaveTicket::saveFormData($ticket->patient_id, $ticket->current_queue->id, ['to_queue_id' => $q->id]);
         }
 
+        $template_vars['episode_id'] = \Yii::app()->request->getParam('episode_id');
+
+
         $this->renderPartial('form_queueassign', $template_vars, false, false);
     }
 
@@ -526,6 +537,9 @@ class DefaultController extends \BaseModuleController
         $transaction = Yii::app()->db->beginTransaction();
 
         try {
+            if (isset($this->event)) {
+                $ticket->event = $this->event;
+            }
             if ($to_queue->addTicket($ticket, Yii::app()->user, $this->firm, $data)) {
                 if ($ticket->assignee) {
                     $ticket->assignee_user_id = null;
@@ -892,6 +906,6 @@ class DefaultController extends \BaseModuleController
             throw new \Exception('Unable to remove ticket queue assignment: ' . print_r($last_assignment->errors, true));
         }
 
-        echo '1';
+        $this->renderJSON(['success' => true]);
     }
 }

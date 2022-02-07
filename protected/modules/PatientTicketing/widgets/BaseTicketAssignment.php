@@ -26,6 +26,14 @@ class BaseTicketAssignment extends \CWidget
     public $data_width = 4;
     public $form_name;
     public $assetFolder;
+    public $jsPriority = null;
+    public $queue = null;
+    public ?string $label = null;
+    public array $assignment_field = [];
+
+    public ?int $episode_id = null;
+    public ?\Episode $episode = null;
+    public $is_template = false;
 
     public function init()
     {
@@ -36,8 +44,13 @@ class BaseTicketAssignment extends \CWidget
         if (file_exists($path.'/js/'.$this->shortName.'.js')) {
             $assetManager = \Yii::app()->getAssetManager();
             $this->assetFolder = $assetManager->publish($path . '/js/', true);
-            $assetManager->registerScriptFile('js/'.$this->shortName.'.js', 'application.modules.PatientTicketing.widgets');
+            $assetManager->registerScriptFile('js/'.$this->shortName.'.js', 'application.modules.PatientTicketing.widgets', $this->jsPriority);
         }
+
+        if ($this->episode_id) {
+            $this->episode = \Episode::model()->findByPk($this->episode_id);
+        }
+
         parent::init();
     }
 

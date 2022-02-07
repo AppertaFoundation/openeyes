@@ -14,6 +14,7 @@ $active_pathway = $this->patient->getClinicPathwayInProgress();
                 'display_wait_duration' => false,
                 'editable' => true,
                 'quick_preset_adder' => ['display' => true, 'label' => 'Next presets'],
+                'check_patient_button_type' => 'button'
             ]
         );
         ?>

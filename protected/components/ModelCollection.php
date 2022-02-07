@@ -36,7 +36,7 @@ class ModelCollection
         return array_map(function($model) use ($attribute) {
 
             if (!$model->hasAttribute($attribute) && !$model->getMetaData()->hasRelation($attribute)) {
-                throw new Exception("No '$attribute' or relations does exist on '" . get_class($model) . "' model");
+                throw new Exception("No '$attribute' attribute or relations does exist on '" . get_class($model) . "' model");
             }
 
             return $model->$attribute;
@@ -76,5 +76,14 @@ class ModelCollection
         return array_filter($this->data, function($model) use ($ids) {
             return !in_array($model->id, $ids);
         });
+    }
+
+    /**
+     * Returns the models' attributes as an array
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return array_map(fn($m) => $m->attributes, $this->data);
     }
 }

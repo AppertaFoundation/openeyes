@@ -21,7 +21,36 @@
  */
 ?>
 <?php $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id); ?>
-<main class="oe-vc-results">
+<main class="oe-full-main oe-vc-results">
+
+    <div class="table-sort-order" id="table-sort-order">
+        <div class="sort-by">Sort by:
+            <span class="sort-options">
+                <?= \CHtml::dropDownList(null, \Yii::app()->request->getParam('sort_by', 'date'), [
+                        'list' => 'Queue step',
+                        'patient' => 'Patient',
+                        'priority' => 'Priority (Highest to Lowest)',
+                        'date' => 'Date'
+                ]);?>
+                <span class="direction">
+                    <?php $dir = \Yii::app()->request->getParam('sort_by_order') !== 'DESC';?>
+                    <label class="inline highlight js-direction-up">
+                        <?=\CHtml::radioButton('sort-options', $dir, [
+                                'value' => ''
+                        ]);?>
+                        <i class="oe-i direction-up medium"></i>
+                    </label>
+                    <label class="inline highlight js-direction-down">
+                        <?=\CHtml::radioButton('sort-options', !$dir, [
+                            'value' => 'DESC'
+                        ]);?>
+                        <i class="oe-i direction-down medium"></i>
+                    </label>
+                </span>
+            </span>
+        </div>
+        <div class="pagination"><?php $this->widget('LinkPager', ['pages' => $pagination]); ?></div>
+    </div>
 
     <?php $flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId()); ?>
     <?php if ($flash_message && $queueset) : ?>
@@ -32,28 +61,20 @@
 
     <table class="standard virtual-clinic">
         <colgroup>
-            <col>
-            <col class="cols-2"> <!-- patient -->
-            <col>
-            <col class="cols-1"><!-- date -->
+            <col class="cols-icon">
             <col class="cols-1">
-            <col class="cols-3"><!-- clinical info -->
-            <col class="cols-3"><!-- notes -->
-            <col>
+            <col class="cols-3">
+            <col class="cols-2">
+            <col class="cols-6">
         </colgroup>
         <thead>
-        <tr>
-            <th><a href="#" class="column-sort  js-ticket-sort" data-sort="list">List</a></th>
-            <th><a href="#" class="column-sort  js-ticket-sort" data-sort="patient">Patient</a></th>
-            <th><a href="#" class="column-sort js-ticket-sort" data-sort="priority"><i
-                            class="oe-i circle-green small pad"></i></a></th>
-            <th><a href="#" class="column-sort active js-ticket-sort" data-sort="date">Date</a></th>
-            <th><a href="#" class="column-sort js-ticket-sort" data-sort="context">Context</a></th>
-            <th>Clinic Info</th>
-            <th>Notes</th>
-            <!--<th>Ticket Owner</th>-->
-            <th></th>
-        </tr>
+            <tr>
+                <th></th>
+                <th>Step</th>
+                <th>Patient</th>
+                <th>Clinic &amp; Site</th>
+                <th>Clinic info &amp; Notes</th>
+            </tr>
         </thead>
         <tbody id="ticket-list">
         <?php
@@ -86,19 +107,5 @@
                 selected_sort.addClass('ascend');
             }
         }
-    })
-    $('.js-ticket-sort').on('click', function () {
-        let current_sort_by_value = $('#ticket_sort_by').val();
-        if (current_sort_by_value == $(this).data('sort')) {
-            if ($('#ticket_sort_by_order').val() == "DESC") {
-                $('#ticket_sort_by_order').val("");
-            } else {
-                $('#ticket_sort_by_order').val("DESC");
-            }
-        } else {
-            $('#ticket_sort_by_order').val("");
-        }
-        $('#ticket_sort_by').val($(this).data('sort'));
-        $('#ticket-filter').submit();
     })
 </script>

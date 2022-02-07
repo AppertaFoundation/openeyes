@@ -44,7 +44,9 @@
         historyRows.remove();
       }
       $(this.getTicketRowSelector(id)).after(html);
-    }
+    };
+
+    this.initializeSortFunctions();
   }
 
   TicketController._defaultOptions = {
@@ -72,6 +74,21 @@
       id = this.currentTicketId;
     }
     return this.options.ticketRowSelectorPrefix + id + this.options.ticketRowSelectorPostfix;
+  };
+
+  TicketController.prototype.initializeSortFunctions = function () {
+    const queueset_id = document.getElementById('queueset_id').value;
+    const $wrapper = document.getElementById('table-sort-order');
+
+    OpenEyes.UI.DOM.addEventListener($wrapper, 'input', 'select, .js-direction-up, .js-direction-down', () => {
+      this.order($wrapper.querySelector('select').value, $wrapper.querySelector('input[type="radio"]:checked').value, queueset_id);
+    });
+  };
+
+  TicketController.prototype.order = function (by, direction, queueset_id) {
+    const domain = `${window.location.protocol}//${window.location.host}`;
+    let url = `${domain}/PatientTicketing/default?reset_filters=1&sort_by=${by}&sort_by_order=${direction}&cat_id=1&queueset_id=${queueset_id}`;
+    window.location.href = url;
   };
 
   /**
@@ -348,7 +365,7 @@
       ticketController.releaseTicket(ticketInfo);
     });
 
-    $(this).on('click', '.ticket-history', function () {
+    $(this).on('click', '.js-ticket-history', function () {
       if (this.innerHTML === 'History') {
         this.innerHTML = 'Hide History';
       } else {
@@ -358,20 +375,17 @@
       ticketController.toggleHistory(ticketInfo);
     });
 
-    $(this).on('click', '.undo-last-queue-step', function () {
+    $(this).on('click', '.js-undo-last-queue-step', function () {
       var ticketInfo = $(this).closest('tr').data('ticket-info');
 
-      $.ajax({
-        'type': 'GET',
-        'url': baseUrl + '/PatientTicketing/default/undoLastStep/' + ticketInfo.id,
-        'success': function (resp) {
-          if (resp != "1") {
-            alert("Something went wrong trying to undo the last step.  Please try again or contact support for assistance.");
-          }
-
-          window.location.reload();
-        }
-      });
+      fetch(`${baseUrl}/PatientTicketing/default/undoLastStep/${ticketInfo.id}`)
+          .then(response => response.json())
+          .then(data  => {
+            if (data.success !== true) {
+              alert("Something went wrong trying to undo the last step.  Please try again or contact support for assistance.");
+            }
+            window.location.reload();
+          });
     });
 
     $(this).on('change', '#subspecialty-id', function () {

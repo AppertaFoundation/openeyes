@@ -885,7 +885,11 @@ $(document).ready(function() {
         if (id) {
             $.ajax({
                 url: $('#div_' + OE_MODEL_PREFIX + 'Element_OphCiExamination_ClinicOutcome_patientticket').data('queue-assignment-form-uri') + id,
-                data: { label_width: 3, data_width: 5 },
+                data: {
+                    label_width: 3,
+                    data_width: 5,
+                    episode_id: OE_episode_id
+                },
                 success: function(response) {
                     placeholder.html(response);
                 },

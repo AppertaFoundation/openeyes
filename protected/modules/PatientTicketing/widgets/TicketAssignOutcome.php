@@ -18,20 +18,37 @@
 namespace OEModule\PatientTicketing\widgets;
 
 use OEModule\PatientTicketing\components\AutoSaveTicket;
+use OEModule\PatientTicketing\controllers\DefaultController;
 use OEModule\PatientTicketing\models;
 
 class TicketAssignOutcome extends BaseTicketAssignment
 {
     public $hideFollowUp = true;
     public $form_data;
+    public $queueset = null;
 
     public function run()
     {
+        $this->label = $this->label ?: "Outcome";
+
+        $qs_svc = \Yii::app()->service->getService(DefaultController::$QUEUESET_SERVICE);
+        $this->queueset = $qs_svc->getQueueSetForQueue($this->queue->id ?? null);
+
         if (isset($this->form_data[$this->form_name])) {
             if ($outcome_id = @$this->form_data[$this->form_name]['outcome']) {
                 $outcome = models\TicketAssignOutcomeOption::model()->findByPk((int) $outcome_id);
-                if ($outcome->followup) {
+                if ($outcome && $outcome->followup) {
                     $this->hideFollowUp = false;
+                }
+
+                if (!$outcome) {
+                    $msg = "Outcome option cannot be found in database (table: patientticketing_ticketassignoutcomeoption, id: $outcome_id)";
+                    $data = print_r($this->form_data[$this->form_name], true);
+
+                    \Audit::add('admin', 'error', $data, $msg, [
+                        'module' => 'PatientTicketing',
+                        'model' => 'TicketAssignOutcomeOption',
+                    ]);
                 }
             }
         }
@@ -42,7 +59,14 @@ class TicketAssignOutcome extends BaseTicketAssignment
     public function getOutcomeOptions()
     {
         $res = array('options' => array());
-        $models = models\TicketAssignOutcomeOption::model()->findAll();
+        $criteria = new \CDbCriteria();
+
+        if ($this->queueset) {
+            $criteria->addCondition('queueset_id =:queueset_id');
+            $criteria->params[':queueset_id'] = $this->queueset->getId();
+        }
+
+        $models = models\TicketAssignOutcomeOption::model()->findAll($criteria);
         foreach ($models as $opt) {
             $res['options'][(string) $opt->id] = array('data-followup' => $opt->followup);
         }
@@ -71,6 +95,22 @@ class TicketAssignOutcome extends BaseTicketAssignment
         }
 
         return $res;
+    }
+
+    /**
+     * Returns a list of clinic locations by queue set
+     * @return array
+     */
+    public function getClinicLocations(): array
+    {
+        $criteria = new \CDbCriteria();
+
+        if ($this->queueset) {
+            $criteria->addCondition('queueset_id =:queueset_id');
+            $criteria->params[':queueset_id'] = $this->queueset->getId();
+        }
+
+        return models\ClinicLocation::model()->findAll($criteria);
     }
 
     /**
@@ -156,13 +196,22 @@ class TicketAssignOutcome extends BaseTicketAssignment
         $res = '';
         if ($outcome_id = @$data['outcome']) {
             $outcome = models\TicketAssignOutcomeOption::model()->findByPk((int) $outcome_id);
-            $res = $outcome->name;
-            if ($outcome->followup) {
+            $res = $outcome->name ?? '';
+            if ($outcome && $outcome->followup) {
                 if (@$data['followup_quantity'] == 1 && isset($data['followup_period'])) {
                     $data['followup_period'] = rtrim($data['followup_period'], 's');
                 }
                 $res .= ' in '.@$data['followup_quantity'].' '.@$data['followup_period'];
                 $res .= ' at '.@$data['clinic_location'];
+            }
+
+            if (!$outcome) {
+                $msg = "Outcome option cannot be found in database (table: patientticketing_ticketassignoutcomeoption, id: $outcome_id)";
+                $data = print_r($data, true);
+                \Audit::add('admin', 'error', $data, $msg, [
+                    'module' => 'PatientTicketing',
+                    'model' => 'TicketAssignOutcomeOption',
+                ]);
             }
         }
 

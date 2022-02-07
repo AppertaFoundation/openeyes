@@ -130,7 +130,12 @@ if (!isset($values)) {
                         <?php if (isset($_POST['patientticket_queue']) && !empty($_POST['patientticket_queue'])) {
                             $this->widget(
                                 $ticket_api::$QUEUE_ASSIGNMENT_WIDGET,
-                                array('queue_id' => $_POST['patientticket_queue'], 'label_width' => 3, 'data_width' => 5)
+                                array(
+                                    'queue_id' => $_POST['patientticket_queue'],
+                                    'label_width' => 3,
+                                    'data_width' => 5,
+                                    'is_template' => (isset($is_template) && $is_template)
+                                )
                             );
                         } ?>
                     </div>

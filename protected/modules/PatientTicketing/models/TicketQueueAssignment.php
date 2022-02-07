@@ -17,6 +17,8 @@
 
 namespace OEModule\PatientTicketing\models;
 
+use OEModule\PatientTicketing\components\Substitution;
+
 /**
  * This is the model class for table "patientticketing_ticketqueue_assignment". THis is the link table between tickets and queues.
  *
@@ -84,7 +86,7 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
                 'assignment_user' => array(self::BELONGS_TO, 'User', 'assignment_user_id'),
                 'assignment_firm' => array(self::BELONGS_TO, 'Firm', 'assignment_firm_id'),
                 'ticket' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Ticket', 'ticket_id'),
-                'queue' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Queue', 'queue_id'),
+                'queue' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Queue', 'queue_id')
         );
     }
 
@@ -134,7 +136,11 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
                 if (@$fld['widget_name']) {
                     $cls_name = 'OEModule\\PatientTicketing\\widgets\\'.$fld['widget_name'];
                     $widget = new $cls_name();
-                    $by_id[$fld['id']] = $widget->getReportString($fld['value']);
+                    $field_id = $fld['id'];
+                    $widget->ticket = $this->ticket;
+                    $widget->queue = $this->queue;
+                    $widget->assignment_field = $fld;
+                    $by_id[$field_id] = $widget->getReportString($fld['value']);
                 } else {
                     $by_id[$fld['id']] = $fld['value'];
                 }
@@ -158,11 +164,11 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
     /* Generate the report text */
     public function generateReportText()
     {
-        $this->report = \OEModule\PatientTicketing\components\Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition), $this->ticket->patient);
+        $this->report = Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition), $this->ticket->patient);
     }
 
     public function getFormattedReport()
     {
-        return \OEModule\PatientTicketing\components\Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition, true), $this->ticket->patient);
+        return Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition, true), $this->ticket->patient);
     }
 }

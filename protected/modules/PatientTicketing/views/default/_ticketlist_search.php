@@ -19,40 +19,64 @@
  */
 ?>
 
-<?php $this->beginWidget('CActiveForm', array(
-    'id' => 'ticket-filter',
-    'method' => 'get',
-    'action' => [
-        '/PatientTicketing/default',
-        'cat_id' => $cat_id,
-        'queueset_id' => $queueset->getId(),
-    ],
-    'htmlOptions' => array(
-        'class' => 'data-group',
-    ),
-    'enableAjaxValidation' => false,
-));?>
+<nav class="oe-full-side-panel" id="vc-sidebar">
+    <h3>Subspecialty, Context & Site</h3>
+    <?php $this->beginWidget('CActiveForm', array(
+        'id' => 'ticket-filter',
+        'method' => 'get',
+        'action' => [
+            '/PatientTicketing/default',
+            'cat_id' => $cat_id,
+            'queueset_id' => $queueset->getId(),
+        ],
+        'htmlOptions' => array(
+            'class' => 'data-group',
+        ),
+        'enableAjaxValidation' => false,
+    )); ?>
 
+    <?php
+        echo CHtml::dropDownList(
+            'subspecialty-id',
+            Yii::app()->request->getParam('subspecialty-id', null),
+            Subspecialty::model()->getList(),
+            [
+                'empty' => 'All specialties',
+                'class' => 'cols-full',
+                'disabled' => (\Yii::app()->request->getParam('emergency_list') == 1 ? 'disabled' : ''),
+            ]
+        );
 
-<nav class="oe-virtual-clinic-search">
+        echo CHtml::dropDownList(
+            'firm-id',
+            Yii::app()->request->getParam('firm-id'),
+            Firm::model()->getList(Yii::app()->session['selected_institution_id'], \Yii::app()->request->getParam('subspecialty-id', null)),
+            [
+                'class' => 'cols-full',
+                'empty' => 'All ' . Firm::contextLabel() . 's',
+                'disabled' => (\Yii::app()->request->getParam('emergency_list', 0) == 1 ? 'disabled' : ''),
+            ],
+        );
 
-    <table class="standard" style="margin-bottom: 0px">
-        <colgroup>
-            <col class="cols-1">
-            <col class="cols-4">
-            <col class="cols-1">
-            <col class="cols-3">
-            <col class="cols-1">
-            <col class="cols-2">
-        </colgroup>
+        echo CHtml::dropDownList(
+            'site-id',
+            Yii::app()->request->getParam('site-id'),
+            Site::model()->getListForCurrentInstitution(),
+            [
+                'class' => 'cols-full',
+                'empty' => 'All sites',
+                'disabled' => (\Yii::app()->request->getParam('emergency_list', 0) == 1 ? 'disabled' : ''),
+            ]
+        );
+        ?>
 
-        <tbody>
-        <tr class="col-gap">
-            <?php
+    <hr class="divider">
+    <h4>Lists</h4>
+    <div class="js-multiselect-dropdown-wrapper">
+        <?php
             $data = \CHtml::listData($qs_svc->getQueueSetQueues($queueset, false), 'id', 'name');
             $this->widget('application.widgets.MultiSelectDropDownList', [
                 'options' => [
-                    'label' => 'Lists:',
                     'dropDown' => [
                         'name' => null,
                         'id' => 'virtual-clinic-search-list',
@@ -60,162 +84,103 @@
                         'htmlOptions' => ['empty' => 'All Lists',],
                         'selectedItemsInputName' => 'queue-ids[]',
                         'selectedItems' => \Yii::app()->request->getParam('queue-ids', null),
+                        'template' => "{DropDown}<div class='list-filters js-multiselect-dropdown-list-wrapper'>{List}</div>"
                     ],
                 ],
             ]);
             ?>
+    </div>
 
-            <?php
+    <h4>Patients</h4>
+    <?php $this->widget('application.widgets.AutoCompleteSearch', [
+            'htmlOptions' => [
+                    'placeholder' => 'Patient identifier, Firstname Surname or Surname, Firstname'
+            ],
+            'layoutColumns' => [
+                    'field' => '11'
+            ]
+    ]); ?>
+    <div class="list-filters">
+        <ul id="patient-result-list" class="oe-multi-select">
+            <?php foreach ($patients as $patient) : ?>
+                <li data-patient_id="<?= $patient->id ?>">
+                    <?="{$patient->first_name} {$patient->last_name}"?>
+                    <i class="oe-i remove-circle small-icon pad-left"></i>
+                    <input name="patient-ids[]" type="hidden" id="<?= "{$patient->id}"; ?>"
+                           value="<?= "{$patient->id}"; ?>">
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
 
-            if ($queueset->filter_subspecialty) : ?>
-                <td class="fade">Subspecialty:</td>
+    <hr class="divider">
+    <h4>Priority flags</h4>
+    <fieldset>
+        <?php $priorities = \Yii::app()->request->getParam('priority-ids', []); ?>
+        <?= \CHtml::hiddenField('priority-ids[]', 0); ?>
+
+        <?php foreach ([1 => 'red', 2 => 'amber', 3 => 'green'] as $num => $colour) :?>
+            <label class="highlight inline">
+                <?= \CHtml::checkBox('priority-ids[]', in_array($num, $priorities), ['value' => $num]); ?>
+                <i class="oe-i circle-<?=$colour;?> small"></i>
+            </label>
+        <?php endforeach;?>
+            <label class="inline highlight">
+                <input type="hidden" value="0" name="closed-tickets">
+                <?php $is_closed_tickets = \Yii::app()->request->getParam('closed-tickets', false);?>
+                <?= \CHtml::checkBox('closed-tickets', $is_closed_tickets, ['value' => 1]); ?> Completed
+            </label>
+    </fieldset>
+
+    <hr class="divider">
+    <h4>Date Range</h4>
+    <fieldset>
+        <table class="standard">
+            <colgroup>
+                <col class="cols-5">
+                <col class="cols-2">
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
+            <tr>
                 <td>
-                    <?= \CHtml::dropDownList(
-                        'subspecialty-id',
-                        \Yii::app()->request->getParam('subspecialty-id', null),
-                        Subspecialty::model()->getList(),
-                        [
-                            'empty' => 'All specialties',
-                            'class' => 'cols-11',
-                            'disabled' => (\Yii::app()->request->getParam('emergency_list') == 1 ? 'disabled' : ''),
-                        ]
-                    );
-                    ?>
+                    <input id="js-date-from-field"
+                           name="date-from"
+                           class="cols-full date"
+                           placeholder="From"
+                           value="<?=\Yii::app()->request->getParam('date-from');?>"
+                           autocomplete="off"></td>
+                <td style="text-align: center"> - </td>
+                <td>
+                    <input id="js-date-to-field"
+                           name="date-to"
+                           class="cols-full date"
+                           placeholder="To"
+                           value="<?=\Yii::app()->request->getParam('date-to'); ?>"
+                           autocomplete="off">
                 </td>
-            <?php endif; ?>
-
-            <td class="fade">Priorities</td>
-
-            <td colspan="2">
-                <?php $priorities = \Yii::app()->request->getParam('priority-ids', []); ?>
-                <?= \CHtml::hiddenField('priority-ids[]', 0); ?>
-                <label class="inline highlight">
-                    <?= \CHtml::checkBox('priority-ids[]', in_array(1, $priorities), ['value' => 1]); ?>
-                    <i class="oe-i circle-red small pad"></i>
-                </label>
-                <label class="inline highlight">
-                    <?= \CHtml::checkBox('priority-ids[]', in_array(2, $priorities), ['value' => 2]); ?>
-                    <i class="oe-i circle-amber small pad"></i>
-                </label>
-                <label class="inline highlight">
-                    <?= \CHtml::checkBox('priority-ids[]', in_array(3, $priorities), ['value' => 3]); ?>
-                    <i class="oe-i circle-green small pad"></i>
-                </label>
-                <small>
-                    <label class="inline highlight">
-                        <input type="hidden" value="0" name="closed-tickets">
-                        <?= \CHtml::checkBox(
-                            'closed-tickets',
-                            \Yii::app()->request->getParam('closed-tickets', false),
-                            ['value' => 1]
-                        ); ?>
-                        Completed
-                    </label></small>
-            </td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="col-gap">
-            <td class="fade">Patients:</td>
-            <td id="patient-search-wrapper">
-                <?php $this->widget('application.widgets.AutoCompleteSearch', [
-                        'htmlOptions' => [
-                                'placeholder' => 'Patient identifier, Firstname Surname or Surname, Firstname'
-                        ],
-                        'layoutColumns' => [
-                                'field' => '11'
-                        ]
-                ]); ?>
-                <div style="display:inline-block">
-                    <div class="js-spinner-as-icon loader" style="display: none;"><i class="spinner as-icon"></i></div>
-                </div>
-                <div style="display:none" class="cols-11 no-result-patients warning alert-box">
-                    <div class="cols-11 column text-center">
-                        No patients found in virtual clinic.
-                    </div>
-                </div>
-            </td>
-            <td class="fade">Context</td>
-            <td>
-                <?php if (!$subspecialty_id = \Yii::app()->request->getParam('subspecialty-id', null)) { ?>
-                    <?= \CHtml::dropDownList('firm-id', '', array(), array(
-                        'class' => 'cols-11',
-                        'empty' => 'All ' . Firm::contextLabel() . 's',
-                        'disabled' => 'disabled',
-                    )) ?>
-                <?php } else { ?>
-                    <?= \CHtml::dropDownList(
-                        'firm-id',
-                        \Yii::app()->request->getParam('firm-id'),
-                        Firm::model()->getList(Yii::app()->session['selected_institution_id'], $subspecialty_id),
-                        array(
-                            'class' => 'cols-11',
-                            'empty' => 'All ' . Firm::contextLabel() . 's',
-                            'disabled' => (\Yii::app()->request->getParam('emergency_list', 0) == 1 ? 'disabled' : ''),
-                        )
-                    ) ?>
-                <?php } ?>
-            </td>
-            <td class="fade">Date Range</td>
-            <td colspan="2">
-                <label class="inline highlight">
-                    <?= \CHtml::checkBox('enable-date-from', Yii::app()->request->getParam('enable-date-from'), array("id" => "js-enable-date-range-from")) ?>
-                    <input id="js-date-from-field" name="date-from" <?=Yii::app()->request->getParam('enable-date-from') ? '' : 'disabled'?> class="date readonly" value="<?= Yii::app()->request->getParam('date-from') ?>">
-                </label>
-                 to 
-                <label class="inline highlight">
-                    <?= \CHtml::checkBox('enable-date-to', Yii::app()->request->getParam('enable-date-to'), array("id" => "js-enable-date-range-to")) ?>
-                    <input id="js-date-to-field" name="date-to" <?=Yii::app()->request->getParam('enable-date-to') ? '' : 'disabled'?> class="date" value="<?= Yii::app()->request->getParam('date-to') ?>">
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="5"></td>
-            <td colspan="1">
-                <button class="green hint cols-11">Update Search</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <table class="standard" style="margin-top:0px">
-        <colgroup>
-            <col class="cols-1">
-            <col class="cols-4">
-            <col class="cols-7">
-        </colgroup>
-        <tr class="col-gap">
-            <td></td>
-            <td style="padding-top:0px" id="patient-result-wrapper">
-                <ul id="patient-result-list" class="oe-multi-select inline">
-                    <?php foreach ($patients as $patient) : ?>
-                        <li data-patient_id="<?= $patient->id ?>">
-                            <?="{$patient->first_name} {$patient->last_name}"?>
-                            <i class="oe-i remove-circle small-icon pad-left"></i>
-                            <input name="patient-ids[]" type="hidden" id="<?= "{$patient->id}"; ?>"
-                                   value="<?= "{$patient->id}"; ?>">
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-
-            </td>
-            <td></td>
-        </tr>
-    </table>
+            </tr>
+            </tbody>
+        </table>
+    </fieldset>
+    <hr class="divider">
+    <div class="button-stack">
+        <button class="green hint">Search</button>
+        <button id="reset-filters" >Reset all filters</button>
+    </div>
+    <?php $this->endWidget() ?>
 </nav>
 
-<?php $this->endWidget() ?>
 <script type="text/javascript">
-    function correctDateRanges($fromField, $toField, $enableFrom, $enableTo, favourFrom) {
-        if ($enableFrom.prop("checked") && $enableTo.prop("checked")) {
-            let fromTimestamp = Date.parse($fromField.val());
-            let toTimestamp = Date.parse($toField.val());
+    function correctDateRanges($fromField, $toField, favourFrom) {
+        let fromTimestamp = Date.parse($fromField.val());
+        let toTimestamp = Date.parse($toField.val());
 
-            if (fromTimestamp > toTimestamp) {
-                if (favourFrom) {
-                    $toField.val($fromField.val());
-                } else {
-                    $fromField.val($toField.val());
-                }
+        if (fromTimestamp > toTimestamp) {
+            if (favourFrom) {
+                $toField.val($fromField.val());
+            } else {
+                $fromField.val($toField.val());
             }
         }
     }
@@ -223,44 +188,11 @@
     $(document).ready(function () {
         let $fromField = $('#js-date-from-field');
         let $toField = $('#js-date-to-field');
-        let $enableFrom = $('#js-enable-date-range-from');
-        let $enableTo = $('#js-enable-date-range-to');
-
-        if ($fromField.val() === "") {
-            $fromField.val("-");
-        }
-        if ($toField.val() === "") {
-            $toField.val("-");
-        }
-
-        $enableFrom.click(function () {
-            let $dateField = $fromField;
-            if(this.checked) {
-                $dateField.val($.datepicker.formatDate("dd M yy", new Date(Date.now())));
-                correctDateRanges($fromField, $toField, $enableFrom, $enableTo, false);
-                $dateField.removeAttr("disabled");
-            } else {
-                $dateField.val("-");
-                $dateField.attr("disabled", "disabled");
-            }
-        });
-        $enableTo.click(function () {
-            let $dateField = $toField;
-            if(this.checked) {
-                $dateField.val($.datepicker.formatDate("dd M yy", new Date(Date.now())));
-                correctDateRanges($fromField, $toField, $enableFrom, $enableTo, true);
-                $dateField.removeAttr("disabled");
-            } else {
-                $dateField.val("-");
-                $dateField.attr("disabled", "disabled");
-            }
-        });
-
         $fromField.on('change pickmeup-change', function () {
-            correctDateRanges($fromField, $toField, $enableFrom, $enableTo, true);
+            correctDateRanges($fromField, $toField, true);
         });
         $toField.on('change pickmeup-change', function () {
-            correctDateRanges($fromField, $toField, $enableFrom, $enableTo, false);
+            correctDateRanges($fromField, $toField, false);
         });
 
         pickmeup('#js-date-from-field', {
@@ -272,6 +204,7 @@
             default_date: false,
         });
 
+        const $ul = document.getElementById('patient-result-list');
         if (OpenEyes.UI.AutoCompleteSearch !== undefined) {
             OpenEyes.UI.AutoCompleteSearch.init({
                 input: $('#oe-autocompletesearch'),
@@ -282,17 +215,21 @@
                     }
                 },
                 onSelect: function () {
-                    let autoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-                    let $list = $('#patient-result-list');
-                    let $item = $('<li>', {'data-patient-id': autoCompleteResponse.id}).html(autoCompleteResponse.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
-                    let $hidden = $('<input>', {
+                    let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+
+                    const $li = document.createElement('li');
+                    $li.innerHTML = `${response.last_name.toUpperCase()}, ${response.first_name}<i class="oe-i remove-circle small-icon pad-left"></i>`;
+
+                    let $hidden = OpenEyes.UI.DOM.createElement('input', {
                         type: 'hidden',
-                        id: autoCompleteResponse.id,
-                        value: autoCompleteResponse.id,
+                        id: response.id,
+                        value: response.id,
                         name: 'patient-ids[]'
                     });
-                    $list.html('');
-                    $list.append($item.append($hidden));
+                    $ul.innerHTML = '';
+
+                    $li.append($hidden);
+                    $ul.append($li);
                     // clear input field
                     $(this).val('');
                     return false;
@@ -300,10 +237,17 @@
             });
         }
 
-        $('#patient-result-wrapper').on('click', '.remove-circle', function () {
-            let id = $(this).data('patient_id');
-            $('#' + id).remove();
-            $(this).closest('li').remove();
+        OpenEyes.UI.DOM.addEventListener($ul, 'click', '.remove-circle', function(e) {
+            e.target.closest('li').remove();
+        });
+
+        const $reset_button = document.getElementById('reset-filters');
+        OpenEyes.UI.DOM.addEventListener($reset_button, 'click', null, function(e) {
+            e.preventDefault();
+            const $form = document.getElementById('ticket-filter');
+            const cat_id = document.getElementById('cat_id').value;
+            const queueset_id = document.getElementById('queueset_id').value;
+            window.location = $form.getAttribute('action') + `&cat_id=${cat_id}&queueset_id=${queueset_id}`;
         });
     });
 </script>

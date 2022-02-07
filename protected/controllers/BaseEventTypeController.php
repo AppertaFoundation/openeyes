@@ -2423,6 +2423,10 @@ class BaseEventTypeController extends BaseModuleController
                 );
             }
         }
+        if ($this->episode) {
+            $this->jsVars['OE_episode_id'] = $this->episode->id;
+        }
+
         $this->jsVars['OE_asset_path'] = $this->assetPath;
         $firm = Firm::model()->findByPk(Yii::app()->session->get('selected_firm_id'));
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
