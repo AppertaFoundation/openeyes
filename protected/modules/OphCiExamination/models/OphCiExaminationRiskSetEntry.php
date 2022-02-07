@@ -92,7 +92,7 @@ class OphCiExaminationRiskSetEntry extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'ophciexamination_risk_id' => 'OphCiExamination Risk',
-            'gender' => 'Gender',
+            'gender' => 'Sex',
             'age_min' => 'Age Min',
             'age_max' => 'Age Max',
             'last_modified_user_id' => 'Last Modified User',

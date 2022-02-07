@@ -104,7 +104,7 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
             'ophciexamination_risk_entry_id' => 'Risk',
             'firm_id' => \Firm::contextLabel(),
             'subspecialty_id' => 'Subspecialty',
-            'gender' => 'Gender',
+            'gender' => 'Sex',
             'age_min' => 'Age Min',
             'age_max' => 'Age Max',
         );

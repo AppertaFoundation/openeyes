@@ -72,4 +72,4 @@ $this->displayErrors($errors) ?>
 <?php $this->displayErrors($errors, true) ?>
 <?php $this->endWidget(); ?>
 
-<?php $this->endContent(); ?>
+<?php $this->endContent();

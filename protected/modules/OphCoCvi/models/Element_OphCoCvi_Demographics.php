@@ -130,7 +130,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'postcode' => 'Post Code (1st half)',
             'email' => 'Email',
             'telephone' => 'Telephone',
-            'gender_id' => 'Gender',
+            'gender_id' => 'Sex',
             'ethnic_group_id' => 'Ethnic Group',
             'gp_name' => \SettingMetadata::model()->getSetting('gp_label').'\'s Name',
             'gp_address' => \SettingMetadata::model()->getSetting('gp_label').'\'s Address',

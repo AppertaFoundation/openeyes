@@ -495,7 +495,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
             'patient_first_name' => array('label' => 'Patient First Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->first_name) : null),
             'patient_last_name' => array('label' => 'Patient Last Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->last_name) : null),
             'patient_date_of_birth' => array('label' => 'Patient Date Of Birth', 'value' => $patient ? self::makeSpan($patient->dob) : null),
-            'patient_gender' => array('label' => 'Patient Gender', 'value' => $patient ? self::makeSpan($patient->getGenderString()) : null),
+            'patient_gender' => array('label' => 'Patient Sex', 'value' => $patient ? self::makeSpan($patient->getGenderString()) : null),
             'patient_nhs_num' => array('label' => 'Patient NHS Number', 'value' => $patient ? self::makeSpan($patient->getNhs(
                 $event->institution_id ?? null,
                 $event->site_id ?? null

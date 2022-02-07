@@ -36,6 +36,7 @@ class LetterMacro_Subspecialty extends BaseActiveRecordVersioned
     public function rules()
     {
         return [
+            ['id, letter_macro_id, subspecialty_id', 'safe'],
             ['id, letter_macro_id, subspecialty_id', 'safe', 'on' => 'search'],
         ];
     }

@@ -80,7 +80,7 @@ class Institution extends BaseActiveRecordVersioned
             array('name, remote_id, short_name', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            ['any_number_search_allowed, first_used_site_id', 'safe'],
+            ['any_number_search_allowed, first_used_site_id, logo_id', 'safe'],
             ['id, name, any_number_search_allowed', 'safe', 'on' => 'search'],
         );
     }

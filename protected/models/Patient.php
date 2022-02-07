@@ -316,7 +316,7 @@ class Patient extends BaseActiveRecordVersioned
             'id' => 'ID',
             'dob' => 'Date of Birth',
             'date_of_death' => 'Date of Death',
-            'gender' => 'Gender',
+            'gender' => 'Sex',
             'ethnic_group_id' => 'Ethnic Group',
             'hos_num' => \SettingMetadata::model()->getSetting('hos_num_label'),
             'nhs_num' => \SettingMetadata::model()->getSetting('nhs_num_label'),

@@ -260,7 +260,6 @@ $entry_allergy_ids = isset($entry->medication_id) ?
         </div>
     </td>
     <td>
-        <?php $entry->comments = $entry->isNewRecord ? "{{comments}}" : $entry->comments?>
         <div class="js-comment-container flex-layout flex-left" id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>" style="<?php if (!$entry->comments) :
             ?>display: none;<?php
                                                                     endif; ?>" data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">

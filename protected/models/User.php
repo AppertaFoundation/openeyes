@@ -259,6 +259,34 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param $institution_id
+     * @return string
+     * @throws Exception
+     */
+    public function getReversedNameAndInstitutionUsername($institution_id): string
+    {
+        $return = implode(' ', array($this->last_name, $this->first_name));
+
+        $user_auth_id = Yii::app()->db->createCommand()
+            ->select('ua.id')
+            ->from('institution_authentication ia')
+            ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id')
+            ->where('ia.institution_id = :institution_id AND ua.user_id = :user_id')
+            ->limit(1)
+            ->bindValues([':institution_id' => $institution_id, ':user_id' => $this->id])
+            ->queryScalar();
+
+        // Assuming that, despite multiple institution authentications,
+        // a user's username is identical for all of them.
+        $user_auth = UserAuthentication::model()->findByPk($user_auth_id);
+
+        if (!$user_auth) {
+            throw new Exception('User authentication not found for institution ' . $institution_id);
+        }
+        return $return . " ($user_auth->username)";
+    }
+
+    /**
      * @return string
      */
     public function getFullNameAndTitle()
@@ -439,6 +467,22 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
+     * @return array|CActiveRecord|mixed|Tag|UserAuthentication|null
+     */
+    public function getAuthenticationForCurrentInstitution()
+    {
+        $user_auth_id = Yii::app()->db->createCommand()
+            ->select('ua.id')
+            ->from('institution_authentication ia')
+            ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id')
+            ->where('ia.institution_id = :institution_id AND ua.user_id = :user_id')
+            ->bindValues([':institution_id' => Yii::app()->session['selected_institution_id'], ':user_id' => $this->id])
+            ->limit(1)
+            ->queryScalar();
+        return UserAuthentication::model()->findByPk($user_auth_id);
+    }
+
+    /**
      * @param string[] $roles
      */
     public function saveRoles(array $roles)
@@ -577,10 +621,7 @@ class User extends BaseActiveRecordVersioned
      */
     public function portalUser()
     {
-        $username = (array_key_exists(
-            'portal_user',
-            Yii::app()->params
-        )) ? Yii::app()->params['portal_user'] : 'portal_user';
+        $username = \Yii::app()->params["portal_user"] ?? "portal_user";
         $criteria = new CDbCriteria();
         $criteria->compare('username', $username);
         $userAuthentication = UserAuthentication::model()->find($criteria);

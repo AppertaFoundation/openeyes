@@ -46,6 +46,10 @@ body {
     width: 105mm;
 }
 
+.fpten-form-row {
+    line-height: 1;
+}
+
 .fpten-form-row:before, .fpten-form-row:after {
     display: table;
     content: '';

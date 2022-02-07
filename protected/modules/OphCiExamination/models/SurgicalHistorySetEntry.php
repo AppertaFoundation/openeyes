@@ -103,7 +103,7 @@ class SurgicalHistorySetEntry extends \BaseActiveRecordVersioned
             'id' => 'ID',
             'operation' => 'Operation',
             'surgical_history_set_id', 'Surgical History Set',
-            'gender' => 'Gender',
+            'gender' => 'Sex',
             'age_min' => 'Age Min',
             'age_max' => 'Age Max',
             'last_modified_user_id' => 'Last Modified User',

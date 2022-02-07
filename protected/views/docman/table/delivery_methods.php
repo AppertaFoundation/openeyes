@@ -131,18 +131,18 @@ if ( isset($target->document_output)) {
 <div>
     <label class="inline highlight">
         <?php
-        $is_checked = ($print_output || $is_new_record) ? ($email ? '' : 'checked') : '';
+        $is_checked = ($print_output || $is_new_record) && !$email;
         $is_post_checked = isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$pre_output_key]['output_type']);
         if ( $contact_type == \SettingMetadata::model()->getSetting('gp_label') || $contact_type == 'INTERNALREFERRAL') {
-            $is_checked = $is_post_checked ? 'checked' : ($print_output ? 'checked' : '');
+            $is_checked = $is_post_checked || $print_output;
         } else {
-            $is_checked = (Yii::app()->request->isPostRequest && !$is_post_checked) ? '' : $is_checked;
+            $is_checked = !(Yii::app()->request->isPostRequest && !$is_post_checked) && $is_checked;
         }
         ?>
 
         <?php
-        if ( isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint']) && Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint'] ) : ?>
-            <input type="checkbox" value="Print" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" <?php echo $is_checked?>>  Print
+        if (isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint']) && Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint'] ) : ?>
+            <input type="checkbox" value="Print" name="DocumentTarget[<?= $row_index ?>][DocumentOutput][<?= $pre_output_key ?>][output_type]" <?= $is_checked ? 'checked' : '' ?>>  Print
         <?php endif; ?>
     </label>
 </div>

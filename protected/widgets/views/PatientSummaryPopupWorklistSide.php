@@ -133,7 +133,7 @@
                             <?php } elseif ($no_ophthalmic_diagnoses_date) { ?>
                                 <tr>
                                     <td>
-                                        <div class="nil-recorded">Patient has no known Ophthalmic Diagnoses</div>
+                                        <div class="nil-recorded">Patient has no known Ophthalmic Diagnoses for this Subspecialty</div>
                                     </td>
                                 </tr>
                             <?php } else {?>

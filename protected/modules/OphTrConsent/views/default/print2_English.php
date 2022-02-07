@@ -54,7 +54,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
             <td><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></td>
         </tr>
         <tr>
-            <th>Gender</th>
+            <th>Sex</th>
             <td><?= $this->patient->genderString ?></td>
         </tr>
         <tr>

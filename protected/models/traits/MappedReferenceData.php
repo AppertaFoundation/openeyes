@@ -302,9 +302,9 @@ trait MappedReferenceData
                         $this->addErrors($instance->getErrors());
                         return false;
                     }
-                    return true;
                 }
-                throw new RuntimeException('Unable to locate reference data mapping.');
+                // if no instance found, then there is no need to delete
+                return true;
             }
 
             if ($this->softDeleteMappings()) {
@@ -383,7 +383,8 @@ trait MappedReferenceData
             );
 
             if (empty($instances)) {
-                throw new RuntimeException('Unable to locate reference data mappings.');
+                // if no instance found, then there is no need to delete
+                return true;
             }
 
             if ($this->softDeleteMappings()) {
