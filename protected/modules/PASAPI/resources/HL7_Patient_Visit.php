@@ -9,6 +9,7 @@ class HL7_Patient_Visit extends BaseHL7_Section
     protected $patient_class = "E";
     public $point_of_care;
     public $room;
+    public $clinician;
     public $admit_source;
     public $visit_number;
     public $discharge_status;
@@ -34,10 +35,10 @@ class HL7_Patient_Visit extends BaseHL7_Section
             "Waiting for In Red Room Doctor" => "RR"
         ),
         "RDCEC" => array(
-            "Waiting for Triage" => "WFTP",
-            "Waiting for Nurse" => "WFNP",
-            "Waiting for Doctor" => "WFDP",
-            "Waiting for ENP" => "WFENPP",
+            "Waiting for RDCEC Triage" => "WFTP",
+            "Waiting for RDCEC Nurse" => "WFNP",
+            "Waiting for RDCEC Doctor" => "WFDP",
+            "Waiting for RDCEC ENP" => "WFENPP",
             "Waiting for Discharge" => "WFDISP",
             "Waiting for In CDU Blood Test" => "CDUP",
             "Waiting for In CDU Orthoptics" => "CDUP",
@@ -55,6 +56,10 @@ class HL7_Patient_Visit extends BaseHL7_Section
     {
         $event = \Event::model()->findByPk($event_id);
         if ($event) {
+            $clinician = \User::model()->findByPk($event->created_user_id);
+            if ($clinician) {
+                $this->clinician = $clinician->registration_code;
+            }
             $worklist_patient = $event->worklist_patient;
             if ($worklist_patient) {
                 $clinic_attribute = \WorklistAttribute::model()->find('name = ? and worklist_id = ?', ['Clinic', $worklist_patient->worklist_id]);
@@ -94,9 +99,9 @@ class HL7_Patient_Visit extends BaseHL7_Section
                             $room_pathway_step = $pathway->peek(\PathwayStep::STEP_COMPLETED, array_column(\PathwayStepType::model()->findAll(), 'id'));
                             $prefix = "";
                         }
-                        if (isset($this->mappingSteps[$this->point_of_care]) && isset($this->mappingSteps[$this->point_of_care][$prefix . ( $room_pathway_step->short_name ?? '')])) {
-                            $this->room = $this->mappingSteps[$this->point_of_care][$prefix . ( $room_pathway_step->short_name ?? '')];
-                        }
+                    }
+                    if (isset($this->mappingSteps[$this->point_of_care]) && isset($this->mappingSteps[$this->point_of_care][$prefix.( $room_pathway_step->short_name ?? '')])) {
+                        $this->room = $this->mappingSteps[$this->point_of_care][$prefix.( $room_pathway_step->short_name ?? '')];
                     }
                 }
             }
@@ -125,15 +130,16 @@ class HL7_Patient_Visit extends BaseHL7_Section
     function getHL7attributes()
     {
         $attributes = array(
-            $this->prefix . '.2' => $this->patient_class ?? '',
-            $this->prefix . '.3.1' => $this->point_of_care ?? '',
-            $this->prefix . '.3.2' => $this->room ?? '',
-            $this->prefix . '.14' => $this->admit_source ?? '',
-            $this->prefix . '.19' => $this->visit_number ?? '',
-            $this->prefix . '.36.1' => $this->discharge_status ?? '',
-            $this->prefix . '.37.1' => $this->discharge_to_location ?? '',
-            $this->prefix . '.42.4' => $this->discharge_facility ?? '',
-            $this->prefix . '.45' => $this->discharge_datetime ?? ''
+            $this->prefix.'.2' => $this->patient_class ?? '',
+            $this->prefix.'.3.1' => $this->point_of_care ?? '',
+            $this->prefix.'.3.2' => $this->room ?? '',
+            $this->prefix.'.7.1' => $this->clinician ?? '',
+            $this->prefix.'.14' => $this->admit_source ?? '',
+            $this->prefix.'.19' => $this->visit_number ?? '',
+            $this->prefix.'.36.1' => $this->discharge_status ?? '',
+            $this->prefix.'.37.1' => $this->discharge_to_location ?? '',
+            $this->prefix.'.42.4' => $this->discharge_facility ?? '',
+            $this->prefix.'.45' => $this->discharge_datetime ?? ''
         );
 
         return $attributes;
