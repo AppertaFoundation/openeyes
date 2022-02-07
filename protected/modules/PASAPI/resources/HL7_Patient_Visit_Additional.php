@@ -27,6 +27,10 @@ class HL7_Patient_Visit_Additional extends BaseHL7_Section
                     $this->chief_complaint_description = $chief_complaint->description;
                     $this->chief_alternative_identifier = $chief_complaint->snomed_code;
                 }
+                $priority =  \OEModule\OphCiExamination\models\OphCiExamination_Triage_Priority::model()->findByPk($triage_data->priority_id);
+                if ($priority) {
+                    $this->admission_level_alternative_identifier = $priority->snomed_code;
+                }
             }
         }
         /*
@@ -47,11 +51,6 @@ class HL7_Patient_Visit_Additional extends BaseHL7_Section
         TC - Treatment Complete"
         */
         $this->patient_status_code = ""; //Has to be clarified the source of patient_status_code
-
-        $priority =  \OEModule\OphCiExamination\models\OphCiExamination_Triage_Priority::model()->findByPk($triage_data->priority_id);
-        if ($priority) {
-            $this->admission_level_alternative_identifier = $priority->snomed_code;
-        }
     }
 
     /**
