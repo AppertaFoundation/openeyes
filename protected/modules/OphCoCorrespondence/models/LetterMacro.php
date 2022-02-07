@@ -156,23 +156,26 @@ class LetterMacro extends BaseActiveRecordVersioned
     // assign values to the relationships
     public function beforeSave()
     {
+        $this->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
+        $this->deleteMappings(ReferenceData::LEVEL_SITE);
+        $this->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
+        $this->deleteMappings(ReferenceData::LEVEL_FIRM);
         foreach ($this->levels as $level => $vals) {
             $instances = array();
             switch ($level) {
                 case 'institutions':
-                    $instances = Institution::model()->findAllByPk($vals);
+                    $this->createMappings(ReferenceData::LEVEL_INSTITUTION, $vals);
                     break;
                 case 'sites':
-                    $instances = Site::model()->findAllByPk($vals);
+                    $this->createMappings(ReferenceData::LEVEL_SITE, $vals);
                     break;
                 case 'subspecialties':
-                    $instances = Subspecialty::model()->findAllByPk($vals);
+                    $this->createMappings(ReferenceData::LEVEL_SUBSPECIALTY, $vals);
                     break;
                 case 'firms':
-                    $instances = Firm::model()->findAllByPk($vals);
+                    $this->createMappings(ReferenceData::LEVEL_FIRM, $vals);
                     break;
             }
-            $this->{$level} = $instances;
         }
         return parent::beforeSave();
     }

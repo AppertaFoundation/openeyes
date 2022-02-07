@@ -37,6 +37,7 @@ class LetterMacro_Firm extends BaseActiveRecordVersioned
     public function rules()
     {
         return [
+            ['id, letter_macro_id, firm_id', 'safe'],
             ['id, letter_macro_id, firm_id', 'safe', 'on' => 'search'],
         ];
     }

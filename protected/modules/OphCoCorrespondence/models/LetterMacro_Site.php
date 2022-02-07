@@ -37,6 +37,7 @@ class LetterMacro_Site extends BaseActiveRecordVersioned
     public function rules()
     {
         return [
+            ['id, letter_macro_id, site_id', 'safe'],
             ['id, letter_macro_id, site_id', 'safe', 'on' => 'search'],
         ];
     }
