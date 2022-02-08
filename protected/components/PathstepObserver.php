@@ -57,8 +57,7 @@ class PathstepObserver
         if ($worklist_patient) {
             $criteria->compare('pathway_id', $worklist_patient->pathway->id);
             $criteria->addCondition("status IS NULL OR status IN ($status_list)");
-            $criteria->addCondition('JSON_CONTAINS(state_data, :event_type, \'$.event_type\')');
-            $criteria->params[':event_type'] = $event_type->class_name;
+            $criteria->addCondition('JSON_CONTAINS(state_data, \'"'.$event_type->class_name.'"\', \'$.event_type\')');
             $criteria->order = 'status DESC, `order`';
             $criteria->limit = 1; // We only want the first result.
 
