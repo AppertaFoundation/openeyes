@@ -155,6 +155,9 @@ class PatientAppointment extends BaseResource
             // set the event.worklist_patient_id to null before doing the delete
             \Event::model()->updateAll(['worklist_patient_id' => null], 'worklist_patient_id = :wp', [':wp' => $model->id]);
 
+            // Delete all pathway joined to the worklist
+            \Pathway::model()->deleteAll('worklist_patient_id = ?', array($model->id));
+
             if (!$model->delete()) {
                 $this->addModelErrors($model->getErrors());
                 throw new \Exception('Could not delete internal model.');
