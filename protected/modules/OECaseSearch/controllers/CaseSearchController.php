@@ -85,8 +85,8 @@ class CaseSearchController extends BaseModuleController
         $criteria = new CDbCriteria();
         $valid = $this->populateParams(true);
 
-        // Only run this next statement if not an advanced search super user.
-        if (!$this->checkAccess('TaskCaseSearchSuperUser')) {
+        // Only run this next statement if not an advanced search super user and a POST request has been submitted.
+        if (!$this->checkAccess('TaskCaseSearchSuperUser') && Yii::app()->request->isPostRequest) {
             $this->parameters[] = $this->buildParameterInstance(
                 999,
                 InstitutionParameter::class,
@@ -119,6 +119,16 @@ class CaseSearchController extends BaseModuleController
             }
             $_SESSION['last_search_params'] = $this->parameters;
             $pagination['currentPage'] = 0;
+        }
+        // Only run this next statement if not an advanced search super user.
+        if (!$this->checkAccess('TaskCaseSearchSuperUser') && !Yii::app()->request->isPostRequest) {
+            $this->parameters[] = $this->buildParameterInstance(
+                999,
+                InstitutionParameter::class,
+                '=',
+                '{institution}',
+                false
+            );
         }
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
         $criteria->compare('t.id', empty($ids) ? -1 : $ids);
@@ -154,19 +164,6 @@ class CaseSearchController extends BaseModuleController
                         'desc' => 'gender DESC',
                         'label' => 'Sex',
                     ),
-                    /*
-                    // reserve for OE-12343 re-implementation
-                    'hos_num'=> array(
-                        'asc' => 'hos_num',
-                        'desc' => 'hos_num DESC',
-                        'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
-                    ),
-                    'nhs_num' => array(
-                        'asc' => 'nhs_num',
-                        'desc' => 'nhs_num DESC',
-                        'label' => \SettingMetadata::model()->getSetting('nhs_num_label'),
-                    ),
-                    */
                 ),
                 'defaultOrder' => array(
                     'last_name' => CSort::SORT_ASC,
