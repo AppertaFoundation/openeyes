@@ -269,6 +269,8 @@ class Queue extends \BaseActiveRecordVersioned
             throw new \Exception('Unable to save queue assignment' . print_r($assignment->getErrors(), true));
         }
 
+        \FollowupAnalysisAggregate::updateForPatientTickets($ticket->patient_id, $ticket->id);
+
         return true;
     }
 

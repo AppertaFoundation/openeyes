@@ -2325,6 +2325,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function afterCreateEvent($event)
     {
+        $this->updateFollowUpAggregate();
     }
 
     /**
@@ -2335,6 +2336,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function afterUpdateEvent($event)
     {
+        $this->updateFollowUpAggregate();
     }
 
     /**
@@ -2345,6 +2347,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function afterDeleteEvent($event)
     {
+        $this->updateFollowUpAggregate();
     }
 
     /**
@@ -3062,5 +3065,12 @@ class BaseEventTypeController extends BaseModuleController
         ), $this->extraViewProperties);
         $this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
         $this->render('//deleted_events/removed', $viewData);
+    }
+
+    private function updateFollowUpAggregate()
+    {
+        if (!empty($this->patient)) {
+            \FollowupAnalysisAggregate::updateForPatientExaminationOrDocument($this->patient->id);
+        }
     }
 }

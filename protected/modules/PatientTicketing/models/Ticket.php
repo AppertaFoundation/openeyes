@@ -434,4 +434,11 @@ class Ticket extends \BaseActiveRecordVersioned
 
         return $ticket_future_steps;
     }
+
+    public function afterDelete()
+    {
+        \FollowupAnalysisAggregate::updateForPatientTickets($this->patient_id, $this->id);
+
+        return parent::afterDelete();
+    }
 }
