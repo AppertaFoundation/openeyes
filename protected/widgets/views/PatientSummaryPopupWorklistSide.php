@@ -123,6 +123,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                             <tbody>
                             <?php
                             $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
+                            $no_ophthalmic_diagnoses_date = $this->patient->get_no_ophthalmic_diagnoses_date();
                             if (count($ophthalmic_diagnoses) === 0) { ?>
                                 <tr>
                                     <td>
@@ -148,6 +149,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                     </td>
                                 </tr>
                                 <?php } ?>
+                            } ?>
                             </tbody>
                         </table>
                     </div>
@@ -158,14 +160,14 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                     <div class="data">
                         <table>
                             <tbody>
-                            <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
+                                <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
                                 <tr>
                                     <td>
                                         <div class="nil-recorded">Nil recorded</div>
                                     </td>
                                 </tr>
-                            <?php } ?>
-                            <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) { ?>
+                                <?php } ?>
+                                <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) { ?>
                                 <tr>
                                     <td> <?= $diagnosis->disorder->term ?></td>
                                     <td>
@@ -175,22 +177,22 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                         <span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span>
                                     </td>
                                 </tr>
-                            <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                <?php }
+                                </tbody>
+                                </table>
+                                </div>
+                                </div>
 
-                <div class="group">
-                    <div class="label">Surgical History</div>
-                    <div class="data">
-                        <?php $this->widget(
-                            \OEModule\OphCiExamination\widgets\PastSurgery::class,
-                            [
-                            'patient' => $this->patient,
-                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-                            ]
-                        ); ?>
+                                <div class="group">
+                                <div class="label">Surgical History</div>
+                                <div class="data">
+                                <?php $this->widget(
+                                \OEModule\OphCiExamination\widgets\PastSurgery::class,
+                                [
+                                'patient' => $this->patient,
+                                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                                ]
+                                ); ?>
                     </div>
                 </div>
 
