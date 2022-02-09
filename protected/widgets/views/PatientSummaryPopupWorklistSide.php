@@ -148,7 +148,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                         <span class="oe-date"><?= $date ?></span>
                                     </td>
                                 </tr>
-                                <?php } ?>
+                                <?php }
                             } ?>
                             </tbody>
                         </table>
@@ -177,7 +177,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                         <span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span>
                                     </td>
                                 </tr>
-                                <?php }
+                                <?php } ?>
                                 </tbody>
                                 </table>
                                 </div>
