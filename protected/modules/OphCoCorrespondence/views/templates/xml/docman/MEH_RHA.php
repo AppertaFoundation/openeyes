@@ -49,7 +49,9 @@
     <LocationName><?=htmlspecialchars($data['site_name']);?></LocationName>
     <SubLocation></SubLocation>
     <SubLocationName></SubLocationName>
+<?php if (isset($data['letter_type']) && $data['letter_type']):?>
     <LetterType><?=htmlspecialchars($data['letter_type']);?></LetterType>
+<?php endif; ?>
 <?php if (isset($data['with_internal_referral']) && $data['with_internal_referral']):?>
     <ServiceTo><?=htmlspecialchars($data['service_to']);?></ServiceTo>
     <ConsultantTo><?=htmlspecialchars($data['consultant_to']);?></ConsultantTo>

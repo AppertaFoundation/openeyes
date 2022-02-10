@@ -13,32 +13,38 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCoCvi\components\OphCoCvi_API;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_Consent;
 
-class CviDeliveryCommand extends BaseDocmanDeliveryCommand
+class CviDeliveryCommand extends BaseDeliveryCommand
 {
-    /** @var \OEModule\OphCoCvi\components\OphCoCvi_API */
+    /** @var OphCoCvi_API */
     private $api;
-
-    protected $with_internal_referral = false;
+    public $xml_template = '';
 
     public function __construct()
     {
-        Yii::import('application.modules.OphCoCvi.components.OphCoCvi_API');
-        $this->api = new \OEModule\OphCoCvi\components\OphCoCvi_API();
+        parent::__construct();
 
-        $app = Yii::app();
+        \Yii::import('application.modules.OphCoCvi.components.OphCoCvi_API');
+        $this->api = new OphCoCvi_API();
 
         foreach (SettingMetadata::model()->findAll() as $metadata) {
             if (!$metadata->element_type) {
                 if (!isset(Yii::app()->params[$metadata->key])) {
-                    Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+                    \Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
                 }
             }
         }
+    }
 
-        parent::__construct();
+    public function getHelp()
+    {
+        return <<<EOH
+yiic cvidelivery --xml_template=<file>
+    --xml_template: full path and filename to the template : eg.: /var/tmp/test_template.php
+EOH;
     }
 
     private function formatOutput($str)
@@ -236,5 +242,25 @@ class CviDeliveryCommand extends BaseDocmanDeliveryCommand
         $message->attach(Swift_Attachment::newInstance(file_get_contents($filepath), 'CVI.pdf', 'application/pdf'));
 
         return Yii::app()->mailer->sendMessage($message);
+    }
+
+    /**
+     * Generating and XML file
+     *
+     * @param $filename
+     * @param $document_output
+     * @return bool
+     * @throws CException
+     */
+    private function generateXMLOutput($filename, \Event $event)
+    {
+        $data = $this->getGeneralDataForTemplate($filename, $event);
+        $extra_data = [
+            'site_short_name' => $event->site->name,
+            'site_name' => $event->site->short_name
+        ];
+
+        $xml = $this->renderFile($this->xml_template, ['data' => ($extra_data + $data)], true);
+        return file_put_contents($this->path . "/" . $filename . ".xml", $this->cleanXML($xml)) !== false;
     }
 }
