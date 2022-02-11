@@ -1049,6 +1049,44 @@ class OEMigration extends CDbMigration
     }
 
     /**
+     * Checks if a named column exists on a named table
+     * @param $table_name Name of he table to check for the column on
+     * @param $column_name Name of the column to check for
+     * @return bool true if the column exists
+     */
+    protected function verifyColumnExists($table_name, $column_name){
+        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" .$column_name ."'")->queryScalar([ ':table_name' => $table_name ]);
+        return !empty($cols);
+    }
+    
+    /**
+     * Checks if a named foreign keys exists on a named table
+     * @param $table_name Name of he table to check the FK on
+     * @param $key_name Name of the FK contraint to check for
+     * @return bool true if the FK exists
+     */
+    protected function verifyForeignKeyExists($table_name, $key_name){
+        $fk_exists = $this->dbConnection->createCommand('   SELECT count(*) 
+                                                            FROM information_schema.table_constraints 
+                                                            WHERE table_schema = DATABASE() 
+                                                                AND table_name = :table_name 
+                                                                AND constraint_name = :key_name 
+                                                                AND constraint_type = "FOREIGN KEY"')->queryScalar([ ':table_name' => $table_name, ':key_name' => $key_name ]);
+
+        return !empty($fk_exists);
+    }
+
+    /**
+     * Checks if a named table exisst in the schema
+     * @param $table_name Name of he table to check for
+     * @return bool true if the table exists
+     */
+    protected function verifyTableExists($table_name)
+    {
+        return $this->dbConnection->schema->getTable($table_name) !== null;
+    }
+
+    /**
      * @param $table_name
      * @param bool $warn
      * @return bool
@@ -1064,11 +1102,6 @@ class OEMigration extends CDbMigration
             );
         }
         return false;
-    }
-
-    protected function verifyTableExists($table_name)
-    {
-        return $this->dbConnection->schema->getTable($table_name) !== null;
     }
 
     /**
