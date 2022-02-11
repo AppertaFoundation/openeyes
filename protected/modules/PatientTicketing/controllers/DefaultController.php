@@ -92,13 +92,15 @@ class DefaultController extends \BaseModuleController
         );
     }
 
-    protected function buildTicketFilterCriteria($filter_options, services\PatientTicketing_QueueSet $queueset)
+    protected function buildTicketFilterCriteria($filter_options, services\PatientTicketing_QueueSet $queueset, $sort_by = null, $sort_by_order = null)
     {
         $patient_filter = null;
         // build criteria
         $criteria = new \CDbCriteria();
         $params = array();
         $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
+        $criteria->with = ['event', 'current_queue','patient.contact', 'priority'];
+        $criteria->together = true;
 
         // TODO: we probably don't want to have such a gnarly approach to this, we might want to denormalise so that we are able to do eager loading
         // That being said, we might get away with setting together false on the with to do this filtering (multiple query eager loading).
@@ -166,13 +168,26 @@ class DefaultController extends \BaseModuleController
         }
 
         if (isset($filter_options['site-id']) && is_numeric($filter_options['site-id'])) {
-            $criteria->with = ['event'];
-            $criteria->together = true;
             $criteria->addCondition('event.site_id = :site_id');
             $params[':site_id'] = $filter_options['site-id'];
         }
 
-        $criteria->order = 't.created_date asc';
+        $sort_by_order = (strtolower($sort_by_order) === 'desc') ? 'DESC' : '';
+
+        switch ($sort_by) {
+            case 'list':
+                $criteria->order = "current_queue.name {$sort_by_order}";
+                break;
+            case 'patient':
+                $criteria->order = "contact.last_name {$sort_by_order}";
+                break;
+            case 'priority':
+                $criteria->order = "priority.display_order {$sort_by_order}";
+                break;
+            case 'date':
+            default:
+                $criteria->order = "t.created_date {$sort_by_order}";
+        }
 
         if (count($params)) {
             $criteria->params = array_merge($params, $criteria->params);
@@ -272,56 +287,6 @@ class DefaultController extends \BaseModuleController
     }
 
     /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_list($a, $b): int
-    {
-        return strnatcmp($a->current_queue->name, $b->current_queue->name);
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_patient($a, $b): int
-    {
-        return strnatcmp($a->patient->last_name, $b->patient->last_name);
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_priority($a, $b): int
-    {
-        return strnatcmp($a->priority->display_order, $b->priority->display_order);
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_date($a, $b): int
-    {
-        return strnatcmp($a->created_date, $b->created_date);
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_context($a, $b): int
-    {
-        return strnatcmp($a->getTicketFirm(), $b->getTicketFirm());
-    }
-
-    /**
      * Generate a list of current tickets.
      */
     public function actionIndex()
@@ -414,7 +379,9 @@ class DefaultController extends \BaseModuleController
 
                 $filter_options['category-id'] = $category->getID();
 
-                $criteria = $this->buildTicketFilterCriteria($filter_options, $queueset);
+                $sort_by = Yii::app()->getRequest()->getParam('sort_by');
+                $sort_by_order = Yii::app()->getRequest()->getParam('sort_by_order', '');
+                $criteria = $this->buildTicketFilterCriteria($filter_options, $queueset, $sort_by, $sort_by_order);
 
                 $count = models\Ticket::model()->count($criteria);
                 $pagination = new \CPagination($count);
@@ -423,14 +390,6 @@ class DefaultController extends \BaseModuleController
 
                 // get tickets that match criteria
                 $tickets = models\Ticket::model()->findAll($criteria);
-                $sort_by = Yii::app()->getRequest()->getParam('sort_by', '');
-                $sort_by_order = Yii::app()->getRequest()->getParam('sort_by_order', '');
-                if ($sort_by != '' && method_exists($this, 'sortBy_' . $sort_by)) {
-                    uasort($tickets, [$this, 'sortBy_' . $sort_by]);
-                    if ($sort_by_order == "DESC") {
-                        $tickets = array_reverse($tickets);
-                    }
-                }
                 \Audit::add('queueset', 'view', $queueset->getId());
             }
         }
