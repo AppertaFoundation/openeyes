@@ -105,15 +105,21 @@ $episodes = $this->episode->patient->episodes
                         <?php echo $diagnosis->disorder->term ?>
                     </td>
                     <td>
-                        <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
-                    </td>
-                    <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
-                  </tr>
-                <?php }
-            }?>
-        </tbody>
-      </table>
-    </div>
-  </div>
+                                        <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
+                                    </td>
+                                    <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
+                                    <?php if ($diagnosis->time) { ?>
+                                        <td>
+                                            <small>at</small>
+                                            <?= $diagnosis->time ?>
+                                        </td>
+                                    <?php } ?>
+                                </tr>
+                        <?php }
+                        } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     <?php } ?>
 </div>
