@@ -942,6 +942,18 @@ $config = array(
         'training_hub_url' => !empty(trim(getenv('OE_TRAINING_HUB_URL'))) ? getenv('OE_TRAINING_HUB_URL') : null,
         'breakglass_enabled' => $breakGlassEnabled,
         'breakglass_field' => $breakGlassField,
+
+        /** CVI */
+
+        // enable GP letter to be sent via Docman (./yiic cvidelivery),
+        // generates pdf and XML just like docman
+        'cvi_docman_delivery_enabled' => false,
+
+        // enable mailing to RCOP (./yiic cvidelivery)
+        'cvi_rcop_delivery_enabled' => false,
+
+        // enable mailing LA (./yiic cvidelivery)
+        'cvi_la_delivery_enabled' => false,
     ),
 );
 

@@ -15,6 +15,7 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="oe-full-header">
@@ -29,16 +30,20 @@
             <i class="oe-i direction-up medium pad selected"></i>
             Use the <i class="oe-i starline small pad no-click"></i> icon to save a configuration in your favourites
         </div>
-        <div class="help-note" style="top:240px; right:42vw">
+        <div class="help-note" style="top:240px; right:34vw">
             Set list dates as relative or specific.
             <i class="oe-i direction-right medium pad selected"></i>
         </div>
-        <div class="help-note" style="top:320px; right:42vw">
+        <div class="help-note" style="top:484px; right:34vw">
             Apply any extra search filters before loading lists
             <i class="oe-i direction-right medium pad selected"></i>
         </div>
-        <div class="help-note" style="top:394px; right:42vw">
+        <div class="help-note" style="top:565px; right:34vw">
             Multiple patient lists can be displayed as a single list
+            <i class="oe-i direction-right medium pad selected"></i>
+        </div>
+        <div class="help-note" style="font-size: 120%;top:600px;right:34vw;font-weight: 500;">
+            Click the "Show patient pathaways" button to dismiss this help screen and get started
             <i class="oe-i direction-right medium pad selected"></i>
         </div>
     </div>
@@ -54,7 +59,7 @@
                           }, $worklists)) ?>;
 
         const usersList = <?= json_encode(array_map(static function ($user) {
-            return ['id' => $user->id, 'label' => $user->getFullName() . ' (' . $user->getInitials() .')'];
+            return ['id' => $user->id, 'label' => $user->getFullName() . ' (' . $user->getInitials() . ')'];
                           }, User::model()->findAll())) ?>;
 
         const stepsList = <?= json_encode(array_map(static function ($step_type) {

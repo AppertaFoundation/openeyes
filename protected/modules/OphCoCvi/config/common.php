@@ -66,5 +66,8 @@ return array(
                 'alert_base_value' => 81
             )
         ),
+        'cvi_docman_delivery_enabled' => false,
+        'cvi_rcop_delivery_enabled' => false,
+        'cvi_la_delivery_enabled' => false,
     )
 );

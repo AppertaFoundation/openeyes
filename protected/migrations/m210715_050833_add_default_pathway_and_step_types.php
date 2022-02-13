@@ -122,17 +122,22 @@ class m210715_050833_add_default_pathway_and_step_types extends OEMigration
             ->from('worklist_patient')
             ->queryAll();
 
-        foreach ($worklist_patients as $patient) {
-            $this->insert(
-                'pathway',
-                array(
-                    'worklist_patient_id' => $patient['id'],
-                    'pathway_type_id' => $pathway_type_id,
-                    'start_time' => $patient['when'],
-                    'status' => $patient['when'] ? Pathway::STATUS_STUCK : Pathway::STATUS_LATER,
-                )
-            );
-        }
+        $this->execute(
+            "INSERT INTO pathway (worklist_patient_id, pathway_type_id, start_time, `status`)
+                            SELECT wp.id,
+                            :pathway_type,
+                            wp.when,
+                            CASE 
+                                WHEN wp.when IS NOT NULL THEN :status_stuck
+                                ELSE :status_later
+                            END AS `status`
+                            FROM worklist_patient wp",
+            [
+                            ':pathway_type' => $pathway_type_id,
+                            ':status_stuck' => Pathway::STATUS_STUCK,
+                             ':status_later' => Pathway::STATUS_LATER
+            ]
+        );
     }
 
     public function safeDown()
