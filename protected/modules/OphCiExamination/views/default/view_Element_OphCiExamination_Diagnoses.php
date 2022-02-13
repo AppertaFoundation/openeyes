@@ -46,7 +46,7 @@ $episodes = $this->episode->patient->episodes
                         $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
                             ->find('element_diagnoses_id=? and principal=1', array($element->id));
                         if ($principal) {
-                        ?>
+                            ?>
                             <tr>
                                 <td>
                                     <strong>
@@ -62,10 +62,10 @@ $episodes = $this->episode->patient->episodes
                                     <?= $principal->time ?>
                                 </td>
                             </tr>
-                            <?php }
+                        <?php }
                         foreach ($episodes as $episode) {
                             if ($episode->id != $this->episode->id && $episode->diagnosis) {
-                            ?>
+                                ?>
                                 <tr>
                                     <td>
                                         <?= $episode->diagnosis->term ?>
@@ -97,7 +97,7 @@ $episodes = $this->episode->patient->episodes
                                     Patient has no known Ophthalmic Diagnoses for <?= $episode->getSubspecialtyText() ?>(Subspecialty).
                                 </td>
                             </tr>
-                            <?php } else {
+                        <?php } else {
                             foreach ($diagnoses as $diagnosis) { ?>
                                 <tr>
                                     <td>
@@ -114,7 +114,7 @@ $episodes = $this->episode->patient->episodes
                                         </td>
                                     <?php } ?>
                                 </tr>
-                        <?php }
+                            <?php }
                         } ?>
                     </tbody>
                 </table>
