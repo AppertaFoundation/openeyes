@@ -52,7 +52,7 @@
                             Any context (Show all pathways)
                         </option>
                         <?php
-                            $contexts = Firm::model()->getList($current_institution->id, null, null, true);
+                            $contexts = Firm::model()->getList($current_institution->id, null, null, true, null, true);
 
                         foreach ($contexts as $id => $name) : ?>
                             <option value="<?= $id ?>">

@@ -217,18 +217,21 @@ class Firm extends BaseActiveRecordVersioned
      * @param null $include_id
      * @param null $runtime_selectable
      * @param null $can_own_an_episode
+     * @param $include_subspecialty_name Will return name as "<context name> (<subspecialty name)"
      * @return array
      * @throws CException
      */
-    public function getList($institution_id = null, $subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null)
+    public function getList($institution_id = null, $subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null, $include_subspecialty_name = null)
     {
         $bindValues = array();
         /**
          * @var CDbCommand $cmd
          */
         $cmd = Yii::app()->db->createCommand()
-            ->select('f.id, f.name')
+            ->select('f.id, f.name, s.name as subspecialty')
             ->from('firm f')
+            ->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+            ->join('subspecialty s', 's.id = ssa.subspecialty_id')
             ->where('f.active = 1 ' .
                 ($runtime_selectable ? 'and f.runtime_selectable = 1' : '') .
                 ($can_own_an_episode ? 'and f.can_own_an_episode = 1' : '') .
@@ -240,8 +243,7 @@ class Firm extends BaseActiveRecordVersioned
         }
 
         if ($subspecialty_id) {
-            $cmd = $cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-                ->andWhere('ssa.subspecialty_id = :subspecialty_id');
+            $cmd = $cmd->andWhere('ssa.subspecialty_id = :subspecialty_id');
             $bindValues[':subspecialty_id'] = $subspecialty_id;
         }
 
@@ -255,7 +257,7 @@ class Firm extends BaseActiveRecordVersioned
 
         $result = array();
         foreach ($cmd->queryAll() as $firm) {
-            $result[$firm['id']] = $firm['name'];
+            $result[$firm['id']] = ($include_subspecialty_name ? $firm['name'] . ' (' . $firm['subspecialty'] . ')' : $firm['name']);
         }
 
         natcasesort($result);
