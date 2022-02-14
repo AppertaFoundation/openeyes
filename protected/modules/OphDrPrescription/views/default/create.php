@@ -80,15 +80,22 @@ $this->displayErrors($errors) ?>
 
 <script>
     $(document).ready(function() {
+        // excuting toggleActionBtns makes sure that the buttons are at correct state
+        // after validation error
+        toggleActionBtns();
+
         $(document).on('signatureAdded', function() {
+            toggleActionBtns();
+        });
+
+        function toggleActionBtns(){
             const proofs = $('.js-proof-field');
             const proofsWithValues = $('.js-proof-field[value!=""]');
-
             if (proofs.length === proofsWithValues.length) {
                 $('#et_save_draft, #et_save_draft_footer').hide();
                 $('#et_save, #et_save_footer, #et_save_print, #et_save_print_footer').show();
             }
-        });
+        }
     });
 </script>
 
