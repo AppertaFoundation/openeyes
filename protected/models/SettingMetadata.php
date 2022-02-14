@@ -223,21 +223,19 @@ class SettingMetadata extends BaseActiveRecordVersioned
             return Yii::app()->params[$key];
         }
 
-    	$metadata = static::cachedMetadata($key, $element_type ? $element_type->id : null);
+        $metadata = static::cachedMetadata($key, $element_type ? $element_type->id : null);
 
         if (!$metadata) {
             return false;
         }
 
         $user_id = Yii::app()->session['user']->id ?? null;
-	    $firm = static::firmForCurrentSession();
+        $firm = static::firmForCurrentSession();
         $firm_id = $firm ? $firm->id : null;
-	    $subspecialty_id = $firm && $firm->serviceSubspecialtyAssignment
-		? $firm->serviceSubspecialtyAssignment->subspecialty_id
-		: null;
+        $subspecialty_id = $firm && $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
         $specialty_id = $subspecialty_id ? $firm->serviceSubspecialtyAssignment->subspecialty->specialty_id : null;
         $site = static::siteForCurrentSession();
-	    $site_id = $site ? $site->id : null;
+        $site_id = $site ? $site->id : null;
         // initialize is_admin as false
         $is_admin = false;
 
