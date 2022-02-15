@@ -79,7 +79,7 @@ class Contact extends BaseActiveRecordVersioned
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
             array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
-            array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
+            array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z -])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
             array('first_name, last_name', 'parenthesisValidator'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message' => 'Please select a Role.'),
@@ -91,7 +91,7 @@ class Contact extends BaseActiveRecordVersioned
             array('email', 'length', 'max' => 255),
             array('email','email'),
             array('email', 'required', 'on' => array('self_register')),
-            array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name, 
+            array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name,
                     national_code, fax, email', 'filter', 'filter' => function ($value) {
                 return strip_tags($value);
             }),
@@ -119,7 +119,7 @@ class Contact extends BaseActiveRecordVersioned
             }
         } else {
             // use the conventional regex for any other scenario
-            if (!preg_match('/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', $this->$attribute)) {
+            if (!preg_match('/^[a-zA-Z]+(([\',. -][a-zA-Z -])?[a-zA-Z]*)*$/', $this->$attribute)) {
                 $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered.");
             }
         }
