@@ -111,16 +111,18 @@ $patient_is_minor = $patient->isChild();
                 $entries = array();
 
                 if (isset($_POST[$model_name])) {
-                    foreach ($_POST[$model_name]['entries'] as $post_entry) {
-                        if (!empty($post_entry['id'])) {
-                            $post_concern = OphCiExamination_Safeguarding_Entry::model()->findByPk($post_entry['id']);
-                        } else {
-                            $post_concern = new OphCiExamination_Safeguarding_Entry();
-                        }
-                        $post_concern->concern_id = $post_entry['concern_id'];
-                        $post_concern->comment = $post_entry['comment'];
+                    if(isset($_POST[$model_name]['entries'])) {
+                        foreach ($_POST[$model_name]['entries'] as $post_entry) {
+                            if (!empty($post_entry['id'])) {
+                                $post_concern = OphCiExamination_Safeguarding_Entry::model()->findByPk($post_entry['id']);
+                            } else {
+                                $post_concern = new OphCiExamination_Safeguarding_Entry();
+                            }
+                            $post_concern->concern_id = $post_entry['concern_id'];
+                            $post_concern->comment = $post_entry['comment'];
 
-                        $entries[] = $post_concern;
+                            $entries[] = $post_concern;
+                        }
                     }
                 } else {
                     $entries = OphCiExamination_Safeguarding_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
