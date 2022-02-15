@@ -200,9 +200,11 @@
                         </tbody>
                     </table>
                 <?php } ?>
-                <?php if (Yii::app()->params['demographics_content']['pas'] === true) { ?>
+                <?php if (Yii::app()->params['demographics_content']['pas'] === true ||
+                          Yii::app()->params['institution_code'] === 'CERA') { ?>
                     <table class="patient-demographics" style="position: relative; right: 0;">
                         <tbody>
+                    <?php if (Yii::app()->params['demographics_content']['pas'] === true) { ?>
                         <tr>
                             <td>
                                 <h2>PAS Contacts</h2>
@@ -252,6 +254,7 @@
                                 } ?>
                             </td>
                         </tr>
+                    <?php } ?>
                         <tr>
                             <td>
                                 <h2>Patient Contacts</h2>
