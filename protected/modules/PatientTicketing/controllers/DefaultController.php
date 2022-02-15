@@ -99,7 +99,7 @@ class DefaultController extends \BaseModuleController
         $criteria = new \CDbCriteria();
         $params = array();
         $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
-        $criteria->with = ['event', 'current_queue','patient.contact', 'priority'];
+        $criteria->with = ['event', 'patient.contact', 'priority'];
         $criteria->together = true;
 
         // TODO: we probably don't want to have such a gnarly approach to this, we might want to denormalise so that we are able to do eager loading
@@ -176,7 +176,24 @@ class DefaultController extends \BaseModuleController
 
         switch ($sort_by) {
             case 'list':
-                $criteria->order = "current_queue.name {$sort_by_order}";
+                // I wasn't able to get this done using relations and conditions...
+                // ->order = "current_queue.name ASC/DESC" does not bring the required(latest) queue_id from the assignment table
+                $join = <<<SQLJOIN
+                        JOIN patientticketing_ticketqueue_assignment ptta ON ptta.id = 
+                        (
+                            SELECT id 
+                            FROM patientticketing_ticketqueue_assignment
+                            WHERE patientticketing_ticketqueue_assignment.ticket_id = t.id
+                            ORDER BY patientticketing_ticketqueue_assignment.assignment_date DESC
+                            LIMIT 1
+                        )
+                        
+                        JOIN patientticketing_queue q ON q.id = ptta.ticket_id
+                SQLJOIN;
+
+                $criteria->join .= new \CDbExpression($join);
+                $criteria->order = "q.name $sort_by_order";
+
                 break;
             case 'patient':
                 $criteria->order = "contact.last_name {$sort_by_order}";

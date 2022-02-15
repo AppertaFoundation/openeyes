@@ -86,9 +86,14 @@
   };
 
   TicketController.prototype.order = function (by, direction, queueset_id) {
-    const domain = `${window.location.protocol}//${window.location.host}`;
-    let url = `${domain}/PatientTicketing/default?reset_filters=1&sort_by=${by}&sort_by_order=${direction}&cat_id=1&queueset_id=${queueset_id}`;
-    window.location.href = url;
+
+    let url = new URL(window.location.href);
+
+    url.searchParams.set('sort_by', by);
+    url.searchParams.set('sort_by_order', direction);
+    url.searchParams.set('queueset_id', queueset_id);
+
+    window.location.href = url.href;
   };
 
   /**
