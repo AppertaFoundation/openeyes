@@ -206,8 +206,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
             if (this.$table.find('.removeDiagnosis').length === 0) {
                 this.$noOphthalmicDiagnosesWrapper.show();
+                this.$table.hide();
             } else {
                 this.$noOphthalmicDiagnosesWrapper.hide();
+                this.$table.show();
             }
         };
 
