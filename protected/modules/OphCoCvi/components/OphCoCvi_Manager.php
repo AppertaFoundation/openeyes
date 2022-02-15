@@ -786,7 +786,7 @@ class OphCoCvi_Manager extends \CComponent
     private function handleSiteListFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (array_key_exists('site_id', $filter) && $filter['site_id'] !== '') {
-            $criteria->addCondition('site_id = :site_id');
+            $criteria->addCondition('t.site_id = :site_id');
             $criteria->params[':site_id'] = $filter['site_id'];
         }
     }
