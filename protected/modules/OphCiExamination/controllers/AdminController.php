@@ -771,9 +771,37 @@ class AdminController extends \ModuleAdminController
 
         $this->render('list_OphCiExamination_Workflow_Rules', array(
                 'model_class' => 'OphCiExamination_Workflow_Rule',
-                'model_list' => models\OphCiExamination_Workflow_Rule::model()->findAll(array('condition' => 'institution_id = :institution_id', 'order' => 'id asc',  'params' => [':institution_id' => Yii::app()->session['selected_institution_id']])),
+                'model_list' => models\OphCiExamination_Workflow_Rule::model()->findAll(
+                    array(
+                        'condition' => 'institution_id IS NULL OR institution_id = :institution_id',
+                        'order' => 't.id asc',
+                        'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
+                    )
+                ),
                 'title' => 'Workflow rules',
         ));
+    }
+
+    public function actionGetInstitutionFirms($id)
+    {
+        $firms = Yii::app()->db->createCommand()
+            ->select('id, name')
+            ->from('firm')
+            ->where('institution_id = :id', [':id' => $id])
+            ->queryAll();
+
+        $this->renderJSON($firms);
+    }
+
+    public function actionGetInstitutionWorkflows($id)
+    {
+        $workflows = Yii::app()->db->createCommand()
+            ->select('id, name')
+            ->from('ophciexamination_workflow')
+            ->where('institution_id = :id', [':id' => $id])
+            ->queryAll();
+
+        $this->renderJSON($workflows);
     }
 
     public function actionEditWorkflowRule($id)

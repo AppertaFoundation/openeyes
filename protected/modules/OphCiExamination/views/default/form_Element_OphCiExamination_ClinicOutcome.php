@@ -20,6 +20,7 @@
 use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status;
 use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
+$current_institution_id = Yii::app()->session['selected_institution_id'];
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/ClinicOutcome.js", CClientScript::POS_HEAD);
 $model_name = CHtml::modelName($element);
@@ -112,7 +113,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                         <div class="flex-layout flex-top flex-left">
                             <ul class="add-options" id="followup-outcome-options">
                                 <?php
-                                $outcomes = OphCiExamination_ClinicOutcome_Status::model()->active()->bySubspecialty($this->firm->getSubspecialty())->findAll();
+                                $outcomes = OphCiExamination_ClinicOutcome_Status::model()->active()->bySubspecialty($this->firm->getSubspecialty())->findAll('institution_id = :id', [':id' => $current_institution_id]);
                                 $authRoles = Yii::app()->authManager->getRoles(Yii::app()->user->id);
                                 foreach ($outcomes as $opt) : ?>
                                     <li data-id="<?= $opt->id ?>" data-label="<?= $opt->name ?>"
@@ -146,7 +147,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                     </td>
                     <td class="flex-layout flex-top follow-up-options-follow-up-only" style="display: none">
                         <ul class="add-options" id="follow-up-role-options">
-                            <?php foreach (OphCiExamination_ClinicOutcome_Role::model()->active()->findAll() as $role) : ?>
+                            <?php foreach (OphCiExamination_ClinicOutcome_Role::model()->active()->findAll('institution_id = :id', [':id' => $current_institution_id]) as $role) : ?>
                                 <li data-role-id="<?= $role->id ?>" data-label="<?= $role->name ?>">
                                     <span class="restrict-width"><?= $role->name ?></span>
                                 </li>
