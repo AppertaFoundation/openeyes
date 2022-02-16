@@ -81,15 +81,19 @@ $patientSummaryPopup = $this->createWidget(
             ] <?= $operation->getProceduresCommaSeparated() ?></div>
         <div class="operation-details">
             <ul class="dot-list">
-
-                <?php if ($operation->priority->name === 'Urgent') :?>
-                    <span class="highlighter red"><?=$operation->priority->name;?></span>
-                <?php else : ?>
-                    <?=$operation->priority->name?>
-                <?php endif; ?>
-                &nbsp;
-                <li><?=implode("</li><li>", $operation->anaesthetic_type);?></li>
-
+                <li>
+                    <?php if ($operation->priority->name === 'Urgent') : ?>
+                        <span class="highlighter red"><?= $operation->priority->name; ?></span>
+                    <?php else : ?>
+                        <?= $operation->priority->name ?>
+                    <?php endif; ?>
+                </li>
+                    <?php foreach ($operation->anaesthetic_type as $type) :
+                        echo '<li>' . $type->name .'</li>';
+                        if ((!$this->module->isLACDisabled())&&$type->code === 'LA' && $operation->is_lac_required == '1') :
+                            echo '<li>with Cover</li>';
+                        endif;
+                    endforeach; ?>
                 <li>
                     <div class="theatre-procedure-icons">
                         <?php if ($operation->comments_rtt) :?>

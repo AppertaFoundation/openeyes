@@ -39,6 +39,7 @@
  * @property int $overnight_stay_required_id
  * @property int $complexity
  * @property tinyint $is_golden_patient
+ * @property tinyint $is_lac_required
  *
  * The followings are the available model relations:
  * @property ElementType $element_type
@@ -141,7 +142,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, decision_date, special_equipment_details, comments,comments_rtt','safe'),
             array('site_id, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
             array('status_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
-            array('priority_id, eye_id, organising_admission_user_id, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
+            array('priority_id, eye_id, organising_admission_user_id, overnight_booking_required_id, complexity, is_golden_patient, is_lac_required',    'safe'),
             array('on_hold_reason, on_hold_comment', 'safe'),
 
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
@@ -236,6 +237,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'overnight_stay_required_id' => 'Overnight stay required',
             'complexity' => 'Complexity',
             'is_golden_patient' => 'Suitable as golden patient',
+            'is_lac_required' => 'Anaesthetist cover required',
             'cancellation_reason_id' => ($this->reschedule ? 'Reschedule Reason' : 'Cancellation Reason'),
             'on_hold_comment' => 'On Hold Comment',
             'on_hold_reason' => 'On Hold Reason',
@@ -924,11 +926,38 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     }
 
     /**
+     * @return bool
+     *
+     * Returns true if the Anaesthetic Cover Required is disabled
+     */
+
+    public function isLACDisabled()
+    {
+        $lac_enabled = Yii::app()->params['op_booking_disable_lac_required'];
+        return isset($lac_enabled) && $lac_enabled == 'on';
+    }
+
+    /**
      * @return string
      */
     public function getAnaestheticTypeDisplay()
     {
-        return implode(', ', $this->anaesthetic_type);
+        $display='';
+
+        for ($i=0; $i<(count($this->anaesthetic_type)); $i++) {
+            if ($i>0) {
+                $display .= ',';
+            }
+
+            $type = $this->anaesthetic_type[$i];
+            $display .= ' '. $type->name;
+
+            if ((!$this->isLACDisabled()) && $type->code === 'LA' && $this->is_lac_required == '1') {
+                $display .= ' with Cover';
+            }
+        }
+
+        return $display;
     }
 
     /**
