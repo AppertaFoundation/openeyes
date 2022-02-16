@@ -78,6 +78,7 @@ class CommonPreviousSystemicOperation extends BaseActiveRecordVersioned
         return [
             'created_user' => [self::BELONGS_TO, 'User', 'created_user_id'],
             'last_modified_user' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
+            'institutions' => array(self::MANY_MANY, 'Institution', 'common_previous_systemic_operation_institution(common_previous_systemic_operation_id, institution_id)')
             ];
     }
 

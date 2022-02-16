@@ -109,7 +109,6 @@ class AdminController extends \ModuleAdminController
                 $model->name = $post_attributes['name'];
                 $model->short_name = $post_attributes['short_name'];
                 $model->active = $post_attributes['active'];
-                $model->visible = $post_attributes['visible'];
                 $model->save();
 
                 if (Yii::app()->user->checkAccess('admin')) {
@@ -162,7 +161,6 @@ class AdminController extends \ModuleAdminController
                 $model->name = $post_attributes['name'];
                 $model->short_name = $post_attributes['short_name'];
                 $model->active = $post_attributes['active'];
-                $model->visible = $post_attributes['visible'];
 
                 $criteria=new CDbCriteria;
                 $criteria->select = 'max(display_order) AS display_order';

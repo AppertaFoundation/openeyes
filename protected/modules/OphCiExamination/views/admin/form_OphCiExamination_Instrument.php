@@ -84,12 +84,6 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
             <?= CHtml::activeCheckBox($model, 'active', ['disabled' => !Yii::app()->user->checkAccess('admin')]) ?>
         </td>
     </tr>
-    <tr>
-        <td>Visible</td>
-        <td>
-            <?= CHtml::activeCheckBox($model, 'visible', ['disabled' => !Yii::app()->user->checkAccess('admin')]) ?>
-        </td>
-    </tr>
     </tbody>
 </table>
 
