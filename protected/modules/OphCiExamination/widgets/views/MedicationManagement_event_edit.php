@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\controllers\DefaultController as ExamController;
 use OEModule\OphCiExamination\models\MedicationManagement;
 use OEModule\OphCiExamination\models\MedicationManagementEntry;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
@@ -48,7 +49,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
 
 $element_errors = $element->getErrors();
-$read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-d') : false;
+$read_only = $element->event && !empty(ExamController::getMedicationManagementEditable($element->event->getPatient()->id, date('d M Y', strtotime($element->event->event_date)))['errorMessages']);
 $entries_from_previous_event = array_filter($element->entries, function ($entry) {
     return is_null($entry->id);
 });

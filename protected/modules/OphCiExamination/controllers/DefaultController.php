@@ -23,6 +23,7 @@ use Eye;
 use OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\models\AdviceLeafletEntry;
+use OEModule\OphCiExamination\models\MedicationManagement;
 use OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
@@ -56,7 +57,8 @@ class DefaultController extends \BaseEventTypeController
         'resolveSafeguardingElement' => self::ACTION_TYPE_SAFEGUARDING,
         'getSignatureByPin' => self::ACTION_TYPE_FORM,
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
-        'searchInstitutions' => self::ACTION_TYPE_FORM
+        'searchInstitutions' => self::ACTION_TYPE_FORM,
+        'medicationManagementEditable' => self::ACTION_TYPE_FORM
     );
 
     private const ACTION_TYPE_SAFEGUARDING = 'Safeguarding';
@@ -2750,5 +2752,40 @@ class DefaultController extends \BaseEventTypeController
         } else {
             return '<label class="highlight inline"><input value="1" name="' . $model_name . '[triage][treat_as_adult]" type="hidden">Adult</label>';
         }
+    }
+
+    public function actionMedicationManagementEditable($patient_id, $event_date)
+    {
+        $this->renderJSON(self::getMedicationManagementEditable($patient_id, $event_date));
+    }
+
+    public static function getMedicationManagementEditable($patient_id, $event_date)
+    {
+        $patient = \Patient::model()->findByPk($patient_id);
+        $api = \Yii::app()->moduleAPI->get('OphCiExamination');
+
+        $latest_med_management_element = $api->getLatestElement('models\MedicationManagement', $patient);
+        $latest_med_history_element =  $api->getLatestElement('models\HistoryMedications', $patient);
+
+        $latest_mm_datetime = $latest_med_management_element->event->event_date ?? null;
+        $latest_mh_datetime = $latest_med_history_element->event->event_date ?? null;
+
+        $latest_med_element_datetime = max($latest_mm_datetime, $latest_mh_datetime);
+
+        $current_datetime = new DateTime();
+
+        $event_datetime = DateTime::createFromFormat('d M Y', $event_date);
+
+        $error_messages = array();
+
+        if ($latest_med_element_datetime > $event_datetime) {
+            $error_messages[] = 'Patient has a more recent event with a medication element';
+        }
+
+        if ($current_datetime->diff($event_datetime)->days > 2) {
+            $error_messages[] = 'The editable period for this element has passed';
+        }
+
+        return array('errorMessages' => $error_messages);
     }
 }

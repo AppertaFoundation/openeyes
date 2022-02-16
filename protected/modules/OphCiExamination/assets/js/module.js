@@ -1074,33 +1074,45 @@ function setPostOpComplicationTableText() {
 }
 
 function medicationManagementValidationFunction() {
-    let getTimeUrl = '/Site/getCurrentTimestamp';
+    let medicationManagementEditableUrl = 'MedicationManagementEditable';
 
-    let date = new Date();
+    let errorMessages = [];
+
+    let eventDate = document.getElementsByClassName('js-event-date-input')[0].value;
 
     $.ajax({
         'type': 'GET',
-        'url': getTimeUrl,
-        'data': {},
+        'async': false,
+        'url': medicationManagementEditableUrl,
+        'data': { patient_id: OE_patient_id, event_date: eventDate },
         'success': function(data) {
-            let milliseconds = data.timestamp * 1000;
-            date = new Date(milliseconds);
+            errorMessages.push(...JSON.parse(data).errorMessages);
+        },
+        'error': function() {
+            errorMessages.push("Unable to authorize adding or editing medication management. Please contact support for assistance");
         }
     });
 
-    let todayDate = date.getDate() + " " + date.toLocaleString('en-GB', { month: 'short' }) + " " + date.getFullYear();
-    let todayDateWithLeadingZero = "0" + todayDate;
-    let event_date = document.getElementsByClassName('js-event-date-input')[0].value;
+    if(errorMessages.length) {
+        let alertContents = "Medication Management cannot be added due to the following errors: <ul>";
 
-    if (event_date === todayDate || event_date === todayDateWithLeadingZero) {
-        return true;
-    } else {
+        errorMessages.forEach(function(errorMessage) {
+            alertContents += "<li> ";
+            alertContents += errorMessage;
+            alertContents += "</li>";
+            alertContents += "<br>";
+        });
+        alertContents += "</ul>";
+
         new OpenEyes.UI.Dialog.Alert({
-            content: "Medication Management cannot be added due to event date not being the current date"
+            content: alertContents,
         }).open();
+
         return false;
     }
-};
+
+    return true;
+}
 
 function addPostOpComplicationTr(selected_text, table_id, select_value, display_order) {
 
