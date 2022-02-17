@@ -1086,7 +1086,7 @@ function medicationManagementValidationFunction() {
         'url': medicationManagementEditableUrl,
         'data': { patient_id: OE_patient_id, event_date: eventDate },
         'success': function(data) {
-            errorMessages.push(...JSON.parse(data).errorMessages);
+            errorMessages.push(...data.errorMessages);
         },
         'error': function() {
             errorMessages.push("Unable to authorize adding or editing medication management. Please contact support for assistance");
