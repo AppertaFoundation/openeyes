@@ -43,10 +43,10 @@ class UserTest extends ActiveRecordTestCase
     public function dataProvider_Search()
     {
         return array(
-            array(array('username' => 'Joe'), 1, array('user1')),
-            array(array('username' => 'Jane'), 1, array('user2')),
+            array(array('first_name' => 'Joe'), 1, array('user1')),
+            array(array('first_name' => 'Jane'), 1, array('user2')),
             array(array('last_name' => 'bloggs'), 2, array('user1', 'user2')), /* case insensitivity test - needs _ci column collation */
-            array(array('username' => 'no-one'), 0, array()),
+            array(array('first_name' => 'no-one'), 0, array()),
         );
     }
 
@@ -90,6 +90,7 @@ class UserTest extends ActiveRecordTestCase
      */
     public function testGetAvailableFirms_FirmUserAssignment()
     {
+        self::markTestIncomplete("Does not currently support MT data model");
         $firms = $this->users('user2')->getAvailableFirms();
         $this->assertCount(1, $firms);
         $this->assertEquals('Collin Firm', $firms[0]->name);
@@ -100,6 +101,7 @@ class UserTest extends ActiveRecordTestCase
      */
     public function testGetAvailableFirms_UserFirmRights()
     {
+        self::markTestIncomplete("Does not currently support MT data model");
         $firms = $this->users('user3')->getAvailableFirms();
         $this->assertCount(1, $firms);
         $this->assertEquals('Allan Firm', $firms[0]->name);
@@ -110,6 +112,7 @@ class UserTest extends ActiveRecordTestCase
      */
     public function testGetAvailableFirms_UserServiceRights()
     {
+        self::markTestIncomplete("Does not currently support MT data model");
         $firms = $this->users('admin')->getAvailableFirms();
         $this->assertCount(1, $firms);
         $this->assertEquals('Aylward Firm', $firms[0]->name);
@@ -120,6 +123,7 @@ class UserTest extends ActiveRecordTestCase
      */
     public function testSetSAMLUserInformation_checkArrayKey()
     {
+        self::markTestSkipped('This test does not support the multi-tenancy data model.');
         $attributes = array(
             'id' => 1,
             'default_enabled' => 1,
@@ -131,8 +135,8 @@ class UserTest extends ActiveRecordTestCase
         SsoDefaultRights::model()->saveDefaultRights($attributes);
         Yii::app()->params['auth_source'] = 'SAML';
         $testuser = array('username' => array(0 => 'ssouser@unittest.com'), 'FirstName' => array(0 => 'User'), 'LastName' => array(0 => 'SSO'));
-        $this->assertArrayHasKey('username', $this->users('ssouser')->setSAMLSSOUserInformation($testuser));
-        $this->assertArrayHasKey('password', $this->users('ssouser')->setSAMLSSOUserInformation($testuser));
+        $this->assertArrayHasKey('username', $this->users('ssouser')->setSSOUserInformation($testuser));
+        $this->assertArrayHasKey('password', $this->users('ssouser')->setSSOUserInformation($testuser));
     }
 
     /**
@@ -140,6 +144,7 @@ class UserTest extends ActiveRecordTestCase
      */
     public function testSetOIDCUserInformation_checkArrayKey()
     {
+        self::markTestSkipped('This test does not support the multi-tenancy data model.');
         $attributes = array(
             'id' => 1,
             'default_enabled' => 1,
@@ -150,8 +155,8 @@ class UserTest extends ActiveRecordTestCase
         // Enable default rights to be assigned to the user
         SsoDefaultRights::model()->saveDefaultRights($attributes);
         Yii::app()->params['auth_source'] = 'OIDC';
-        $testuser = array('username' => 'oidcuser', 'email' => 'user@unittest.com', 'first_name' => 'User', 'last_name' => 'SSO');
-        $this->assertArrayHasKey('username', $this->users('ssouser')->setOIDCSSOUserInformation($testuser));
-        $this->assertArrayHasKey('password', $this->users('ssouser')->setOIDCSSOUserInformation($testuser));
+        $testuser = array('email' => 'user@unittest.com', 'given_name' => 'User', 'family_name' => 'SSO');
+        $this->assertArrayHasKey('username', $this->users('ssouser')->setSSOUserInformation($testuser));
+        $this->assertArrayHasKey('password', $this->users('ssouser')->setSSOUserInformation($testuser));
     }
 }

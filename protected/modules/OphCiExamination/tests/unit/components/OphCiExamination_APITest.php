@@ -32,6 +32,12 @@ class OphCiExamination_APITest extends CDbTestCase
     public static function setupBeforeClass()
     {
         Yii::app()->getModule('OphCiExamination');
+        Yii::app()->session['selected_institution_id'] = 1;
+    }
+
+    public static function tearDownAfterClass()
+    {
+        unset(Yii::app()->session['selected_institution_id']);
     }
 
     public function setUp()

@@ -28,47 +28,69 @@ class ModuleAdmin
 
         $module_classes = array();
 
+        $has_access = true;
+
         foreach (EventType::model()->findAll(array('order' => 'name')) as $event_type) {
-
-            foreach (Yii::app()->params['admin_menu'] as $item => $uri) {
-
-                if (is_array($uri) && !isset($uri['requires_setting'])) {
-                    foreach ($uri as $key => $value) {
-                        if ($event_type->class_name == 'OphCiExamination') {
-                            $module_admin[$event_type->name][$item] = $value;
+            if (array_key_exists($event_type->class_name, Yii::app()->params['admin_menu'])) {
+                foreach (Yii::app()->params['admin_menu'][$event_type->class_name] as $item => $uri) {
+                    if (is_array($uri)) {
+                        if (isset($uri['restricted'])) {
+                            $has_access = false;
+                            $supported_roles = $uri['restricted'];
+                            foreach ($supported_roles as $role) {
+                                // User only needs to have at least 1 of the specified roles to have access.
+                                if (Yii::app()->controller->checkAccess($role)) {
+                                    $has_access = true;
+                                    break;
+                                }
+                            }
                         }
-                    }
-                }
-                elseif (is_array($uri) && isset($uri['requires_setting'])) {
 
-                    $setting_key = $uri['requires_setting']['setting_key'];
-                    $required_value = $uri['requires_setting']['required_value'];
-                    $item_enabled = Yii::app()->params[$setting_key];
-                    
-                    if (isset($item_enabled) && $item_enabled == $required_value) {
-                        if (preg_match('/^\/' . $event_type->class_name . '\//', $uri['uri']))
-                        {
+                        if (isset($uri['requires_setting'])) {
+                            $setting_key = $uri['requires_setting']['setting_key'];
+                            $required_value = $uri['requires_setting']['required_value'];
+                            $item_enabled = Yii::app()->params[$setting_key];
+
+                            if ($has_access && isset($item_enabled) && $item_enabled === $required_value && preg_match(
+                                    '/^\/' . $event_type->class_name . '\//',
+                                    $uri['uri']
+                                )) {
+                                $module_admin[$event_type->name][$item] = $uri['uri'];
+                            }
+                        } elseif ($has_access) {
                             $module_admin[$event_type->name][$item] = $uri['uri'];
                         }
-                    }
-                }
-                else{
-                    if (preg_match('/^\/' . $event_type->class_name . '\//', $uri))
-                    {
+                    } elseif (preg_match('/^\/' . $event_type->class_name . '\//', $uri)) {
                         $module_admin[$event_type->name][$item] = $uri;
                     }
-                }
 
-                $module_classes[] = $event_type->class_name;
+                    $module_classes[] = $event_type->class_name;
+                }
             }
         }
 
         foreach (Yii::app()->modules as $module => $stuff) {
             if (!in_array($module, $module_classes)) {
-                foreach (Yii::app()->params['admin_menu'] as $item => $uri) {
-                    if (!is_array($uri)) {
-                        if (preg_match('/^\/'.$module.'\//', $uri)) {
-                            $module_admin[$module][$item] = $uri;
+                if (array_key_exists($module, Yii::app()->params['admin_menu'])) {
+                    foreach (Yii::app()->params['admin_menu'][$module] as $item => $uri) {
+                        if (!is_array($uri)) {
+                            if (preg_match('/^\/'.$module.'\//', $uri)) {
+                                $module_admin[$module][$item] = $uri;
+                            }
+                        } else {
+                            if (isset($uri['restricted'])) {
+                                $has_access = false;
+                                $supported_roles = $uri['restricted'];
+                                foreach ($supported_roles as $role) {
+                                    if (Yii::app()->controller->checkAccess($role)) {
+                                        $has_access = true;
+                                    }
+                                }
+                            }
+
+                            if ($has_access) {
+                                $module_admin[$module][$item] = $uri['uri'];
+                            }
                         }
                     }
                 }

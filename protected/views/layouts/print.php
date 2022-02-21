@@ -31,6 +31,8 @@ if (!is_null($controller->module)) {
     }
 }
 
+$event = $controller->event;
+$deleted_watermark = $event && (int)$event->deleted ? 'void' : null;
 ?>
 <!doctype html>
 <html lang="en">
@@ -39,7 +41,7 @@ if (!is_null($controller->module)) {
 <title><?=\CHtml::encode($this->pageTitle); ?></title>
 <?php Yii::app()->clientScript->registerCoreScript('jquery')?>
 </head>
-<body class="open-eyes print <?= $printHelperClass ?>" <?= isset($printHelperStyles) ? 'style="'.$printHelperStyles.'"' : '' ?>>
+<body class="open-eyes print <?= $printHelperClass ?> <?=$deleted_watermark?>" <?= isset($printHelperStyles) ? 'style="'.$printHelperStyles.'"' : '' ?>>
     <?php echo $content; ?>
     <script type="text/javascript">
         $(document).ready(function() {

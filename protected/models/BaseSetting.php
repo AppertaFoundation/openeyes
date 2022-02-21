@@ -24,8 +24,6 @@ class BaseSetting extends BaseActiveRecord
      */
     protected $setting_tables = [];
 
-
-
     public function getSettingTables()
     {
         return $this->setting_tables;
@@ -87,7 +85,7 @@ class BaseSetting extends BaseActiveRecord
 
     protected function getSettingValue($model, $key, $condition_field, $condition_value, $element_type)
     {
-        $criteria = new CDbcriteria();
+        $criteria = new CDbCriteria();
 
         if ($condition_field && $condition_value) {
             $criteria->addCondition($condition_field.' = :'.$condition_field);
@@ -112,25 +110,30 @@ class BaseSetting extends BaseActiveRecord
             return false;
         }
 
+        $user_id = Yii::app()->session['user']->id ?? null;
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $firm_id = $firm->id ?? null;
+        $subspecialty_id = $firm->subspecialtyID ?? null;
+        $specialty_id = $firm && $firm->specialty ? $firm->specialty->id : null;
+        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+        $site_id = $site->id ?? null;
+        $institution_id = \Institution::model()->getCurrent()->id;
+
         foreach ($this->getSettingTables() as $class => $field) {
             if ($field) {
-                if (${$field}) {
-                    if ($setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
-                        if ($return_object) {
-                            return $setting;
-                        }
-
-                        return $this->parseSetting($setting, $metadata);
-                    }
-                }
-            } else {
-                if ($setting = $this->getSettingValue($class, $key, null, null, $element_type)) {
+                if (${$field} && $setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
                     if ($return_object) {
                         return $setting;
                     }
 
                     return $this->parseSetting($setting, $metadata);
                 }
+            } elseif ($setting = $this->getSettingValue($class, $key, null, null, $element_type)) {
+                if ($return_object) {
+                    return $setting;
+                }
+
+                return $this->parseSetting($setting, $metadata);
             }
         }
 
@@ -141,8 +144,6 @@ class BaseSetting extends BaseActiveRecord
         return $metadata->default_value;
     }
 
-
-
     public function getSettingName($key = null)
     {
         if (!$key) {
@@ -151,7 +152,7 @@ class BaseSetting extends BaseActiveRecord
 
         $value = $this->getSetting($key);
 
-        if ($value == '') {
+        if ($value === '') {
             $value = $this->default_value;
         }
 
@@ -164,12 +165,11 @@ class BaseSetting extends BaseActiveRecord
 
     public function parseSetting($setting, $metadata)
     {
-        if (@$data = unserialize($metadata->data)) {
-            if (isset($data['model'])) {
-                $model = $data['model'];
+        $data = unserialize($metadata->data);
+        if ($data && isset($data['model'])) {
+            $model = $data['model'];
 
-                return $model::model()->findByPk($setting->value);
-            }
+            return $model::model()->findByPk($setting->value);
         }
 
         return $setting->value;

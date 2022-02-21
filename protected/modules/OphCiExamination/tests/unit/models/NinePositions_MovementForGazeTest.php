@@ -71,4 +71,20 @@ class NinePositions_MovementForGazeTest extends \ModelTestCase
         $instance->gaze_type = $this->faker->word();
         $this->assertAttributeInvalid($instance, 'gaze_type', 'invalid');
     }
+
+    /** @test */
+    public function is_for_side_left()
+    {
+        $instance = $this->getElementInstance();
+        $instance->eye_id = \Eye::LEFT;
+        $this->assertTrue(!$instance->isForSide('right'));
+    }
+
+    /** @test */
+    public function is_for_side_right()
+    {
+        $instance = $this->getElementInstance();
+        $instance->eye_id = \Eye::RIGHT;
+        $this->assertTrue(!$instance->isForSide('left'));
+    }
 }

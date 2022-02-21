@@ -65,8 +65,17 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'type' => 'raw',
             'value' => function ($data, $row) {
                 $row++;
-                $options = CHtml::listData(CommonSystemicDisorderGroup::model()->findAll(), 'id', 'name');
+                $options = CHtml::listData(CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION), 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
+            }
+        ],
+        [
+            'header' => 'Assigned to current institution',
+            'type' => 'raw',
+            'name' => 'assigned_insitution',
+            'value' => function($data, $row) {
+                $row++;
+                return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
             }
         ],
         [
@@ -104,6 +113,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
         'structure': {
             'CommonSystemicDisorder[ROW_IDENTIFIER][id]' : '',
             'display_order[ROW_IDENTIFIER]' : '',
+            'assigned_institution[ROW_IDENTIFIER]' : '#assigned_institution_ROW_IDENTIFIER:checked',
             'CommonSystemicDisorder[ROW_IDENTIFIER][disorder_id]' : '#CommonSystemicDisorder_ROW_IDENTIFIER_disorder_id_actual',
             'CommonSystemicDisorder[ROW_IDENTIFIER][display_order]' : '#CommonSystemicDisorder_ROW_IDENTIFIER_display_order',
             'CommonSystemicDisorder[ROW_IDENTIFIER][group_id]' : '',

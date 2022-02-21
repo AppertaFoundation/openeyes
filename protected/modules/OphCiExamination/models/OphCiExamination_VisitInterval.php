@@ -23,6 +23,7 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property int $id
  * @property string $name
+ * @property int $institution_id
  */
 class OphCiExamination_VisitInterval extends \BaseActiveRecordVersioned
 {
@@ -53,7 +54,7 @@ class OphCiExamination_VisitInterval extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name', 'required'),
-                array('id, name', 'safe', 'on' => 'search'),
+                array('id, name, institution_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -62,7 +63,16 @@ class OphCiExamination_VisitInterval extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
+        return [
+            'institution' => [self::BELONGS_TO, 'Institution', 'institution_id'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
         return array(
+            'name' => 'Name',
+            'institution_id' => 'Institution',
         );
     }
 
@@ -81,6 +91,7 @@ class OphCiExamination_VisitInterval extends \BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
 
         return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,

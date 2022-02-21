@@ -58,23 +58,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         $('#User_username').focus();
 
         $('#institution_id').change(function () {
-            var institution_id = $(this).val();
-
-            if (institution_id != '') {
-                $.ajax({
-                    'type': 'GET',
-                    'dataType': 'json',
-                    'url': baseUrl + '/admin/getInstitutionSites?institution_id=' + institution_id,
-                    'success': function (sites) {
-                        var options = '<option value="">- Optional -</option>';
-                        for (var i in sites) {
-                            options += '<option value="' + i + '">' + sites[i] + '</option>';
-                        }
-                        $('#site_id').html(options);
-                        sort_selectbox($('#site_id'));
-                    }
-                });
-            }
+            getInstitutionSites($(this).val(), $('#site_id'));
         });
     });
 
@@ -89,19 +73,4 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         $('#adminform').submit();
     });
 
-    function sort_selectbox(element) {
-        rootItem = element.children('option:first').text();
-        element.append(element.children('option').sort(selectSort));
-    }
-
-    function selectSort(a, b) {
-        if (a.innerHTML == rootItem) {
-            return -1;
-        } else if (b.innerHTML == rootItem) {
-            return 1;
-        }
-        return (a.innerHTML > b.innerHTML) ? 1 : -1;
-    };
-
-    var rootItem = null;
 </script>

@@ -19,16 +19,19 @@
 <div class="cols-5" id="generic-admin-list">
     <form id="admin_<?= get_class(OphDrPrescription_DispenseLocation::model()); ?>">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <input type="hidden" name="model" value="<?= OphDrPrescription_DispenseLocation::class ?>"/>
         <table class="standard" id="et_sort" data-uri="/OphDrPrescription/admin/DispenseLocation/sortLocations">
             <thead>
             <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
                 <th>Name</th>
                 <th>Dispense Location</th>
                 <th>Display Order</th>
-                <th>Active</th>
+                <th>Active for Current Institution</th>
             </tr>
             </thead>
             <colgroup>
+                <col class="cols-1">
                 <col class="cols-1">
                 <col class="cols-5">
                 <col class="cols-1">
@@ -36,27 +39,54 @@
             </colgroup>
             <tbody class="sortable">
             <?php foreach ($dispense_locations as $dispense_location) {
-                $this->renderPartial('/admin/dispense_location/_dispense_location_entry', [
-                    'model' => $dispense_location,
-                    'data_id' => $dispense_location->id,
-                    'data_uri' => 'OphDrPrescription/admin/DispenseLocation/edit/'. $dispense_location->id,
-                    'name' => $dispense_location->name,
-                    'display_order' => $dispense_location->display_order,
-                    'is_active' => $dispense_location->active
-                ]);
+                $this->renderPartial(
+                    '/admin/dispense_location/_dispense_location_entry',
+                    [
+                        'model' => $dispense_location,
+                        'data_id' => $dispense_location->id,
+                        'data_uri' => 'OphDrPrescription/admin/DispenseLocation/edit/' . $dispense_location->id,
+                        'name' => $dispense_location->name,
+                        'display_order' => $dispense_location->display_order,
+                        'is_active' => $dispense_location->hasMapping(
+                            ReferenceData::LEVEL_INSTITUTION,
+                            Yii::app()->session['selected_institution_id']
+                        )
+                    ]
+                );
             } ?>
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="4">
-                    <?=\CHtml::button(
+                <td colspan="9">
+                    <?php echo \CHtml::button(
                         'Add',
                         [
                             'data-uri' => '/OphDrPrescription/admin/DispenseLocation/create',
                             'class' => 'button large',
                             'id' => 'et_add'
                         ]
-                    ); ?>
+                    );
+                    echo CHtml::submitButton(
+                        'Add selected to current Institution',
+                        [
+                            'name' => 'admin-map-add',
+                            'id' => 'et_admin-map-add',
+                            'class' => 'generic-admin-save button large',
+                            'formaction' => '/OphDrPrescription/admin/DispenseLocation/addMapping',
+                            'formmethod' => 'POST',
+                        ]
+                    );
+                    echo CHtml::submitButton(
+                        'Remove selected from current Institution',
+                        [
+                            'name' => 'admin-map-remove',
+                            'id' => 'et_admin-map-remove',
+                            'class' => 'generic-admin-save button large',
+                            'formaction' => '/OphDrPrescription/admin/DispenseLocation/removeMapping',
+                            'formmethod' => 'POST',
+                        ]
+                    );
+                    ?>
                 </td>
             </tr>
             </tfoot>

@@ -1,14 +1,21 @@
+<?php $institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
 
+$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
+        Yii::app()->params['display_primary_number_usage_code'],
+        $institution->id ,
+        $selected_site_id);
+?>
 <table class="standard" id="patientMergeRequestList">
     <thead>
         <tr>
             <th class="checkbox"><input type="checkbox" name="selectall" id="selectall" /></th>
             <th class="secondary">
                 <!--                Parameterised secondary and primary hospital number - CERA-519-->
-                <?php echo $data_provider->getSort()->link('secondary_hos_num', 'Secondary<br><span class="hos_num">'. (Yii::app()->params["hos_num_label"]).'</span>', array('class' => 'sort-link')) ?>            </th>
+                <?php echo $data_provider->getSort()->link('secondary_local_identifier_value', 'Secondary<br><span class="hos_num">'. ($primary_identifier_prompt).'</span>', array('class' => 'sort-link')) ?>            </th>
             <th></th>
             <th class="primary">
-                <?php echo $data_provider->getSort()->link('primary_hos_num', 'Primary<br><span class="hos_num">'. (Yii::app()->params["hos_num_label"]).'</span>', array('class' => 'sort-link')) ?>            </th>
+                <?php echo $data_provider->getSort()->link('primary_local_identifier_value', 'Primary<br><span class="hos_num">'. ($primary_identifier_prompt).'</span>', array('class' => 'sort-link')) ?>            </th>
             <th class="status"><?php echo $data_provider->getSort()->link('status', 'Status', array('class' => 'sort-link')); ?></th>
             <th class="created"><?php echo $data_provider->getSort()->link('created_date', 'Created', array('class' => 'sort-link')); ?></th>
             <?php if ($filters['show_merged']) :?>
@@ -19,9 +26,9 @@
         <tr class="table-filter">
             <td> <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
                     alt="loading..." style="display: none;"/></td>
-            <td class="filter-col"><input id="secondary_hos_num_filter" name="PatientMergeRequestFilter[secondary_hos_num_filter]" type="text" value="<?php echo isset($filters['secondary_hos_num_filter']) ? $filters['secondary_hos_num_filter'] : '';?>"></td>
+            <td class="filter-col"><input id="secondary_patient_identifier" name="PatientMergeRequestFilter[secondary_patient_identifier]" type="text" value="<?php echo isset($filters['secondary_patient_identifier']) ? $filters['secondary_patient_identifier'] : '';?>"></td>
             <td></td>
-            <td class="filter-col"><input id="primary_hos_num_filter" name="PatientMergeRequestFilter[primary_hos_num_filter]" type="text" value="<?php echo isset($filters['primary_hos_num_filter']) ? $filters['primary_hos_num_filter'] : '';?>"></td>
+            <td class="filter-col"><input id="primary_patient_identifier" name="PatientMergeRequestFilter[primary_patient_identifier]" type="text" value="<?php echo isset($filters['primary_patient_identifier']) ? $filters['primary_patient_identifier'] : '';?>"></td>
             <td></td>
             <td></td>
             <?php if ($filters['show_merged']) :
@@ -55,8 +62,8 @@
                         <input type="checkbox" name="patient_merge_request_ids[]" value="<?php echo $request->id?>" <?php echo $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ? '' : 'disabled'?>>
                     </td>
                     <td class="secondary">
-                        <?php if ($request->secondary_hos_num) :?>
-                            <?php echo $request->secondary_hos_num;?>
+                        <?php if ($request->secondary_local_identifier_value) :?>
+                            <?php echo $request->secondary_local_identifier_value;?>
                         <?php else : ?>
                             <?php
                                 $patient = Patient::model()->findByPk($request->secondary_id);
@@ -66,8 +73,8 @@
                     </td>
                     <td class="into">INTO</td>
                     <td class="primary">
-                        <?php if ($request->primary_hos_num) :?>
-                            <?php echo $request->primary_hos_num;?>
+                        <?php if ($request->primary_local_identifier_value) :?>
+                            <?php echo $request->primary_local_identifier_value;?>
                         <?php else : ?>
                             <?php
                             $patient = Patient::model()->findByPk($request->primary_id);

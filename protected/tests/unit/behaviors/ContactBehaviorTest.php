@@ -493,6 +493,9 @@ class ContactBehaviorTest extends CDbTestCase
     {
         $patient = $this->patient('patient10');
         $contact_id = $patient->contact_id;
+        foreach ($patient->identifiers as $identifier) {
+            $identifier->delete();
+        }
         $patient->delete();
 
         $this->assertEquals(0, Yii::app()->db->createCommand('select count(*) from contact where id = ?')->queryScalar(array($contact_id)));

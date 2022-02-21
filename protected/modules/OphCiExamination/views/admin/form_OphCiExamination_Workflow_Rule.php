@@ -15,12 +15,23 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+use OEModule\OphCiExamination\models\OphCiExamination_Workflow;
+
+$current_institution_id = Yii::app()->session['selected_institution_id'];
+
+$restrict_to_current_institution = !$this->checkAccess('admin');
+$firms = $restrict_to_current_institution
+    ? Firm::model()->activeOrPk($model->firm_id)->findAll('institution_id = :id', [':id' => $current_institution_id])
+    : Firm::model()->activeOrPk($model->firm_id)->findAll();
+$workflows = $restrict_to_current_institution
+    ? OphCiExamination_Workflow::model()->findAll('institution_id = :id', [':id' => $current_institution_id])
+    : OphCiExamination_Workflow::model()->findAll();
 ?>
 
+<div class="row divider">
+    <h2><?php echo $title ?></h2>
+</div>
 <table class="standard cols-full">
-    <div class="row divider">
-        <h2><?php echo $title ?></h2>
-    </div>
     <colgroup>
         <col class="cols-3">
         <col class="cols-5">
@@ -36,14 +47,25 @@
     <?php endif; ?>
 
     <tr>
+        <td>Institution</td>
+        <td class="cols-full">
+            <?= CHtml::activeDropDownList(
+                $model,
+                'institution_id',
+                Institution::model()->getList($restrict_to_current_institution),
+                ['class' => 'cols-full', 'id' => 'js-institution']
+            ) ?>
+        </td>
+    </tr>
+    <tr>
         <td>Context</td>
         <td class="cols-full">
             <?= \CHtml::activeDropDownList(
                 $model,
                 'firm_id',
-                CHtml::listData(Firm::model()->activeOrPk($model->firm_id)->findAll(), 'id', 'nameAndSubspecialty'),
-                ['class' => 'cols-full', 'empty' => '- All -']
-            ); ?>
+                CHtml::listData($firms, 'id', 'nameAndSubspecialty'),
+                ['class' => 'cols-full', 'id' => 'js-firm', 'empty' => '- All -']
+            ) ?>
         </td>
     </tr>
     <tr>
@@ -54,7 +76,7 @@
                 'episode_status_id',
                 CHtml::listData(EpisodeStatus::model()->findAll(), 'id', 'name'),
                 ['class' => 'cols-full', 'empty' => '- All -']
-            ); ?>
+            ) ?>
         </td>
     </tr>
     <tr>
@@ -65,7 +87,7 @@
                 'subspecialty_id',
                 CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
                 ['class' => 'cols-full', 'empty' => '- All -']
-            ); ?>
+            ) ?>
         </td>
     </tr>
     <tr>
@@ -75,13 +97,37 @@
                 $model,
                 'workflow_id',
                 CHtml::listData(
-                    OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findAll(),
+                    $workflows,
                     'id',
                     'name'
                 ),
-                ['class' => 'cols-full']
-            ); ?>
+                ['class' => 'cols-full', 'id' => 'js-workflow']
+            ) ?>
         </td>
     </tr>
     </tbody>
 </table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#js-institution').change(function() {
+            let id = $(this).val();
+
+            $.getJSON('/admin/getInstitutionFirms/' + id, null, function (response) {
+                let options = '';
+                $.each(response, function (index, item) {
+                    options += `<option value="${item.id}">${item.name}</option>`;
+                });
+                $('#js-firm').innerHTML(options);
+            });
+
+            $.getJSON('/admin/getInstitutionWorkflows/' + id, null, function (response) {
+                let options = '';
+                $.each(response, function (index, item) {
+                    options += `<option value="${item.id}">${item.name}</option>`;
+                });
+                $('#js-workflow').innerHTML(options);
+            });
+        });
+    });
+</script>

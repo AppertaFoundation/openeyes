@@ -25,40 +25,57 @@
     <div class="oe-popup">
         <?=\CHtml::form(['Default/' . ($delete_access ? 'delete' : 'requestDeletion') . '/' . $this->event->id], 'post', ['id' => 'deleteForm']) ?>
         <div class="title">
-            <i class="oe-i trash large selected pro-theme"></i>
-            <?=(!$delete_access ? 'Request event deletion' : 'Delete Event');?>
+            <div class="flex-l">
+                <i class="oe-i trash pad-right"></i><?=(!$delete_access ? 'Request event deletion' : 'Delete Event');?>
+            </div>
         </div>
+        <div class="close-icon-btn js-close-delete-btn"><i class="oe-i remove-circle pro-theme"></i></div>
         <div class="oe-popup-content delete-event">
 
             <div class="alert-box warning">
-                <strong>WARNING: This will permanently delete the event and remove it from view.<br>THIS ACTION CANNOT BE UNDONE.</strong>
+            <strong>WARNING:</strong>
+                <ul>
+                    <li>The event will be marked as deleted</li>
+                    <li>Deleted events may still be viewed via Admin settings</li>
+                    <li>THIS ACTION CANNOT BE UNDONE.</li>
+                </ul>
                 <?php $this->displayErrors(@$errors) ?>
                 <p id="errors"></p>
             </div>
-            <table class="row">
+            <table class="large-text">
                 <tbody>
                 <tr>
-                    <td>Delete:</td>
-                    <td class="flex-layout">
+                    <th>Event type</th>
+                    <td class="large-text">
                         <i class="oe-i-e <?php echo $this->event->eventType->getEventIconCssClass()?>"></i>
-                        <h4><?php echo $this->event->eventType->name ?> <?php echo Helper::convertDate2NHS($this->event->event_date)?></h4>
+                        <?php echo $this->event->eventType->name ?> <?php echo Helper::convertDate2NHS($this->event->event_date)?>
                     </td>
                 </tr>
                 <tr>
                     <td>Reason for deletion:</td>
-                    <td><?=\CHtml::textArea('delete_reason', '', array('cols' => 40,'id' => 'js-text-area')) ?></textarea></td>
+                    <td><?=
+                        \CHtml::textArea(
+                            'delete_reason', '',
+                            array(
+                                'class' => 'cols-full',
+                                'id' => 'js-text-area',
+                                'rows' => 1,
+                                'placeholder' => 'Reason for deletion (required)'
+                            )
+                        )
+                        ?>
+                    </td>
                 </tr>
                 </tbody>
             </table>
-            <div class="flex-layout row">
-                <h4>Are you sure you want to proceed? </h4>
-                <?php
-                echo CHtml::hiddenField('event_id', $this->event->id); ?>
-                <button type="submit" class="large red hint" id="et_deleteevent" name="et_deleteevent">
-                    <?=(!$delete_access ? 'Request event deletion' : 'Delete Event');?>
+            <p>Are you sure you want to proceed?</p>
+
+            <div class="popup-actions flex-right">
+                <button type="submit" id="et_deleteevent" name="et_deleteevent" class="red hint">
+                    <?=(!$delete_access ? 'Yes - Request event deletion' : 'Yes - DELETE Event');?>
                 </button>
-                <button type="submit" class="large blue hint cancel-icon-btn" id="et_canceldelete" name="et_canceldelete">
-                    Cancel
+                <button type="submit" class="js-demo-cancel-btn" id="et_canceldelete" name="et_canceldelete">
+                    No, cancel
                 </button>
             </div>
         </div>
@@ -67,7 +84,7 @@
 </div>
 
 <script>
-    $('#et_canceldelete').click(function(event){
+    $('#et_canceldelete, .js-close-delete-btn').click(function(event){
         event.preventDefault();
         $('#errors').text("");
         $('#js-delete-event').css('display','none');

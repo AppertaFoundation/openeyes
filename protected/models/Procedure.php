@@ -66,6 +66,7 @@ class Procedure extends BaseActiveRecordVersioned
             array('term, short_format, snomed_term', 'length', 'max' => 255),
             array('operationNotes', 'validateOpNotes'),
             array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
+            array('term', 'unique'),
         );
     }
 

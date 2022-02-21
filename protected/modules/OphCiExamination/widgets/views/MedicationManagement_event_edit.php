@@ -161,6 +161,9 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
     </div>
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-management-popup">
+            <?php if (!\Yii::app()->user->checkAccess('Prescribe')) { ?>
+            <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
+            <?php } ?>
             <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
                 ?>disabled<?php
                                                                           } ?>" type="button">Add standard set</button>
@@ -582,6 +585,18 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             onReturn: function(adderDialog, selectedItems) {
                 selectedItems.forEach(function(item) {
                     window.MMController.processSetEntries(item.id);
+                });
+            }
+        });
+
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#mm-add-pgd-btn'),
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= json_encode(Element_OphDrPrescription_Details::model()->pgds())?>, {
+                'header': 'PGD name',
+            })],
+            onReturn: function(adderDialog, selectedItems) {
+                selectedItems.forEach(function(item) {
+                    window.MMController.processPGDEntries(item.id);
                 });
             }
         });

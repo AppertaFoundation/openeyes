@@ -18,7 +18,9 @@
 ?>
 <?php
 $this->widget('application.widgets.PatientPanel', array(
-    'patient' => $this->patient, 'summary'=>true
+    'patient' => $this->patient,
+    'selected_site_id' => $this->selectedSiteId,
+    'summary'=>true
 ));
 ?>
 <script type="application/javascript">

@@ -23,64 +23,77 @@
  */
 ?>
 
-<?php $t_svc = Yii::app()->service->getService($this::$TICKET_SERVICE); ?>
+<?php $t_svc = Yii::app()->service->getService($this::$TICKET_SERVICE);
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];?>
 <tr data-ticket-id="<?= $ticket->id ?>" data-ticket-info="<?= CHtml::encode($ticket->getInfoData()) ?>">
-  <td><?= $ticket->current_queue->name ?></td>
-  <td><a href="<?= $ticket->getSourceLink() ?>">
+    <td><?= $ticket->current_queue->name ?></td>
+    <td><a href="<?= $ticket->getSourceLink() ?>">
 
             <?= $ticket->patient->getHSCICName() ?>
-      <small>(<?php echo($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()); ?>)
-      </small>
-      <br/>
-      <small>
-        <span class="fade">No</span>
-            <?= $ticket->patient->hos_num ?>
-      </small>
-      <br/>
-      <small>
-        <span class="fade">NHS</span>
-            <?= $ticket->patient->nhs_num ?: '' ?>
-      </small>
-    </a>
-  </td>
-  <td>
-    <i class="oe-i circle-<?php echo $ticket->priority ? $ticket->priority->colour : '' ?> small pad selected"></i>
-  </td>
-  <td><span class="oe-date"><?= Helper::convertMySQL2HTML($ticket->created_date) ?></span></td>
-  <td>
+            <small>(<?php echo($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()); ?>)
+            </small>
+            <br/>
+            <small>
+                <?php $display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+                $display_secondary_number_usage_code = Yii::app()->params['display_secondary_number_usage_code'];
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $ticket->patient->id, $institution->id, $selected_site_id); ?>
+                <span class="fade"><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier); ?></span>
+                <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier); ?>
+                <?php $this->widget(
+                    'application.widgets.PatientIdentifiers',
+                    [
+                        'patient' => $ticket->patient,
+                        'show_all' => true,
+                        'tooltip_size' => 'small'
+                    ]); ?>
+            </small>
+            <br/>
+            <small>
+                <?php $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $ticket->patient->id, $institution->id, $selected_site_id); ?>
+                <span class="fade"><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier); ?></span>
+                <?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier); ?>
+            </small>
+        </a>
+    </td>
+    <td>
+        <i class="oe-i circle-<?php echo $ticket->priority ? $ticket->priority->colour : '' ?> small pad selected"></i>
+    </td>
+    <td><span class="oe-date"><?= Helper::convertMySQL2HTML($ticket->created_date) ?></span></td>
+    <td>
         <?php $ticket_context = $ticket->getTicketFirm(); ?>
         <?= $ticket->getTicketFirm() ?><br>
-    <small class="fade"><?= $ticket->user->getFullName() ?></small>
-  </td>
-  <td>
-    <div class="clinic-info scroll-content">
+        <small class="fade"><?= $ticket->user->getFullName() ?></small>
+    </td>
+    <td>
+        <div class="clinic-info scroll-content">
         <?= $ticket->report ? preg_replace('/^(<br \/>)/', '', $ticket->formattedReport) : '-'; ?>
-    </div>
-  </td>
-  <td>
-    <div class="scroll-content">
-        <?= nl2br($ticket->getNotes()) ?>
-    </div>
-  </td>
-  <td class="actions">
-    <ul>
-        <?php if ($can_process && !$ticket->is_complete()) : ?>
-          <li>
-            <a class="button blue hint"
-               href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', array(
-                   'ticket_id' => $ticket->id,
-               )); ?>">
-                <?= $t_svc->getTicketActionLabel($ticket) ?>
-            </a>
-          </li>
-        <?php endif; ?>
-
-        <?php if ($ticket->hasHistory()) : ?>
-          <li class="button ticket-history">History</li>
-            <?php if ($this->checkAccess('Patient Tickets admin')) : ?>
-            <li class="button undo-last-queue-step">Undo last step</li>
+        </div>
+    </td>
+    <td>
+        <div class="scroll-content">
+            <?= nl2br($ticket->getNotes()) ?>
+        </div>
+    </td>
+    <td class="actions">
+        <ul>
+            <?php if ($can_process && !$ticket->is_complete()) : ?>
+                <li>
+                    <a class="button blue hint"
+                       href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', array(
+                           'ticket_id' => $ticket->id,
+                       )); ?>">
+                        <?= $t_svc->getTicketActionLabel($ticket) ?>
+                    </a>
+                </li>
             <?php endif; ?>
-        <?php endif; ?>
-    </ul>
-  </td>
+
+            <?php if ($ticket->hasHistory()) : ?>
+                <li class="button ticket-history">History</li>
+                <?php if ($this->checkAccess('Patient Tickets admin')) : ?>
+                    <li class="button undo-last-queue-step">Undo last step</li>
+                <?php endif; ?>
+            <?php endif; ?>
+        </ul>
+    </td>
 </tr>

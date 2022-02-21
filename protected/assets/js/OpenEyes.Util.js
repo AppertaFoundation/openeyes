@@ -14,37 +14,37 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-(function(exports) {
+(function (exports) {
 
-	/**
-	 * OpenEyes Util module
-	 * @namespace OpenEyes.Util
-	 * @memberOf OpenEyes
-	 */
-	var Util = {};
+    /**
+     * OpenEyes Util module
+     * @namespace OpenEyes.Util
+     * @memberOf OpenEyes
+     */
+    var Util = {};
 
-	/**
-	 * Extend an objects' prototype with another objects' prototype.
-	 * @method
-	 * @param {Function} parent The parent constructor.
-	 * @param {Function} child  The child constructor.
-	 * @example
-	 * function Parent() {}
-	 * Parent.prototype.method = function() {};
-	 *
-	 * function Child() {}
-	 * Util.inherits(Parent, Child);
-	 *
-	 * var child = new Child();
-	 * child.method();
-	 * @returns {Function} The child constructor.
-	 */
-	Util.inherits = function(parent, child) {
-		child._super = parent;
-		child.prototype = Object.create(parent.prototype);
-		child.prototype.constructor = child;
-		return child;
-	};
+    /**
+     * Extend an objects' prototype with another objects' prototype.
+     * @method
+     * @param {Function} parent The parent constructor.
+     * @param {Function} child  The child constructor.
+     * @example
+     * function Parent() {}
+     * Parent.prototype.method = function() {};
+     *
+     * function Child() {}
+     * Util.inherits(Parent, Child);
+     *
+     * var child = new Child();
+     * child.method();
+     * @returns {Function} The child constructor.
+     */
+    Util.inherits = function (parent, child) {
+        child._super = parent;
+        child.prototype = Object.create(parent.prototype);
+        child.prototype.constructor = child;
+        return child;
+    };
 
     /**
      * Returns the next index of the data entries
@@ -53,17 +53,17 @@
      * @param dataKey
      * @returns {*}
      */
-	Util.getNextDataKey = function(selector, dataKey){
-        var keys = $(selector).map(function(i, el){
+    Util.getNextDataKey = function (selector, dataKey) {
+        var keys = $(selector).map(function (i, el) {
             return $(el).data(dataKey);
         }).get();
 
-        if(keys.length) {
+        if (keys.length) {
             return Math.max.apply(null, keys) + 1;
         } else {
             return 0;
         }
-	};
+    };
 
     /**
      * Returns the given date in the format dd Month yyyy
@@ -74,11 +74,11 @@
     Util.formatDateToDisplayString = function (date) {
         let raw_date = new Date(date);
         return raw_date.getDate() + ' ' +
-          ['Jan', 'Feb', 'Mar', 'Apr',
-           'May', 'Jun', 'Jul', 'Aug',
-           'Sep', 'Oct', 'Nov', 'Dec'
-          ][raw_date.getMonth()] + ' ' +
-          raw_date.getFullYear();
+            ['Jan', 'Feb', 'Mar', 'Apr',
+                'May', 'Jun', 'Jul', 'Aug',
+                'Sep', 'Oct', 'Nov', 'Dec'
+            ][raw_date.getMonth()] + ' ' +
+            raw_date.getFullYear();
     }
 
     Util.formatTimeToFuzzyDate = function (date) {
@@ -107,21 +107,37 @@
         return res;
     }
 
-    Util.htmlDecode = function(input) {
+    /**
+     * Get cookie by name.
+     *
+     * @param name
+     * @returns {String}
+     */
+    Util.getCookie = function (name) {
+        let cookie = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        if (cookie) {
+            return cookie[2];
+        } else {
+            return '';
+        }
+    }
+
+    Util.htmlDecode = function (input) {
         let element = document.createElement('div');
         element.innerHTML = input;
         return element.childNodes.length === 0 ? "" : element.childNodes[0].nodeValue;
     }
 
-	Util.createFormData = function(formData, key, data) {
-		if (data === Object(data) || Array.isArray(data)) {
-			for (var index in data) {
-				Util.createFormData(formData, key + '[' + index + ']', data[index]);
-			}
-		} else {
-			formData.append(key, data);
-		}
-	}
+    Util.createFormData = function (formData, key, data) {
+        if (data === Object(data) || Array.isArray(data)) {
+            for (var index in data) {
+                Util.createFormData(formData, key + '[' + index + ']', data[index]);
+            }
+        } else {
+            formData.append(key, data);
+        }
+    }
+
 
     /**
      * Equivalent of jquery's $(html), only using plain JavaScript
@@ -129,11 +145,12 @@
      @param {String} html representing a single element
      @return {Element}
      */
-    Util.htmlToElement = function(html) {
+    Util.htmlToElement = function (html) {
         const template = document.createElement('template');
         template.innerHTML = html.trim();
         return template.content.firstChild;
     }
-	exports.Util = Util;
+
+    exports.Util = Util;
 
 }(this.OpenEyes));

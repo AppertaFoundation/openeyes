@@ -94,7 +94,7 @@ class OphCiExaminationSystemicDiagnosesSetEntry extends \BaseActiveRecordVersion
         return array(
             'id' => 'ID',
             'disorder_id' => 'Disorder',
-            'gender' => 'Gender',
+            'gender' => 'Sex',
             'age_min' => 'Age Min',
             'age_max' => 'Age Max',
             'last_modified_user_id' => 'Last Modified User',

@@ -81,7 +81,7 @@ class AdminController extends ModuleAdminController
                         }
                     }
 
-                    foreach ($curr_by_firm_id as $id => $curr_item) {
+                    foreach ($curr_by_firm_id as $curr_item) {
                         if (!$curr_item->delete()) {
                             throw new Exception('Rule item delete failed: '.print_r($item->getErrors(), true));
                         }
@@ -445,7 +445,7 @@ class AdminController extends ModuleAdminController
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
 
         $this->render('/admin/waiting_list_contact_rules/index', array(
-            'data' => OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAllAsTree(),
+            'data' => OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAllAsTree(null, true, 'text', Institution::model()->getCurrent()->id),
         ));
     }
 
@@ -458,6 +458,8 @@ class AdminController extends ModuleAdminController
 
         $criteria = new CDbCriteria();
         $criteria->addCondition('parent_rule_id is null');
+        $criteria->addCondition('institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
         $criteria->order = 'rule_order asc';
 
         $rule_ids = array();
@@ -590,6 +592,64 @@ class AdminController extends ModuleAdminController
         ));
     }
 
+    public function actionAddInstitutionMapping()
+    {
+        $ids = Yii::app()->request->getPost('select');
+        $model = Yii::app()->request->getPost('model');
+        $redirect_url = Yii::app()->request->getPost('redirect-url');
+
+        $model .= '::model';
+        $instances = $model()->findAllByPk($ids);
+        $institution_id = Institution::model()->getCurrent()->id;
+        $errors = array();
+        $status = 1;
+
+        /**
+         * @var $instances MappedReferenceData[]|BaseActiveRecordVersioned[]
+         */
+        foreach ($instances as $instance) {
+            if (!$instance->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                $errors[] = $instance->getErrors();
+            }
+        }
+
+        if (!empty($errors)) {
+            $status = 0;
+        }
+        $this->redirect($redirect_url);
+    }
+
+    public function actionDeleteInstitutionMapping()
+    {
+        $ids = $_POST['select'];
+        $model = $_POST['model'];
+        $redirect_url = Yii::app()->request->getPost('redirect-url');
+
+        $model .= '::model';
+        $instances = $model()->findAllByPk($ids);
+        $institution_id = Institution::model()->getCurrent()->id;
+        $errors = array();
+        $status = 1;
+
+        /**
+         * @var $instances MappedReferenceData[]|BaseActiveRecordVersioned[]
+         */
+        foreach ($instances as $instance) {
+            if (!$instance->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                $errors[] = $instance->getErrors();
+            }
+        }
+
+        if (!empty($errors)) {
+            $status = 0;
+        }
+        $this->redirect($redirect_url);
+    }
+
+    /**
+     * @param $id
+     * @throws Exception
+     */
     public function actionEditOperationNameRule($id)
     {
         if (!$rule = OphTrOperationbooking_Operation_Name_Rule::model()->findByPk($id)) {
@@ -741,6 +801,12 @@ class AdminController extends ModuleAdminController
         $page = @$_REQUEST['page'] ? $_REQUEST['page'] : 1;
 
         if ($all) {
+            if (!$this->checkAccess('admin')) {
+                $criteria->with = 'sequence.theatre.site';
+                $criteria->addCondition('site.institution_id = :institution_id');
+                $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
+            }
+
             return OphTrOperationbooking_Operation_Sequence::model()->findAll($criteria);
         }
 
@@ -791,8 +857,14 @@ class AdminController extends ModuleAdminController
                 ),
             ),
             'theatre',
+            'theatre.site',
             'interval',
         );
+
+        if (!$this->checkAccess('admin')) {
+            $criteria->addCondition('site.institution_id = :institution_id');
+            $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
+        }
 
         $this->items_per_page = $this->sessions_items_per_page;
         $pagination = $this->initPagination(OphTrOperationbooking_Operation_Sequence::model()->with($with), $criteria);
@@ -1037,6 +1109,11 @@ class AdminController extends ModuleAdminController
         ));
     }
 
+    /**
+     * @param bool $all
+     * @return array
+     * @throws Exception
+     */
     public function getSessions($all = false)
     {
         $criteria = new CDbCriteria();
@@ -1044,7 +1121,7 @@ class AdminController extends ModuleAdminController
         if ($firm = Firm::model()->findByPk(@$_REQUEST['firm_id'])) {
             $criteria->addCondition('t.firm_id=:firm_id');
             $criteria->params[':firm_id'] = $firm->id;
-        } elseif (@$_REQUEST['firm_id'] == 'NULL') {
+        } elseif (@$_REQUEST['firm_id'] === 'NULL') {
             $criteria->addCondition('t.firm_id is null');
         }
 
@@ -1063,37 +1140,37 @@ class AdminController extends ModuleAdminController
             $criteria->params[':end_date'] = date('Y-m-d', strtotime(@$_REQUEST['date_to']));
         }
 
-        if (@$_REQUEST['weekday'] != '') {
+        if (@$_REQUEST['weekday'] !== '') {
             $criteria->addCondition('sequence.weekday = :weekday');
             $criteria->params[':weekday'] = @$_REQUEST['weekday'];
         }
 
-        if (@$_REQUEST['consultant'] != '') {
+        if (@$_REQUEST['consultant'] !== '') {
             $criteria->addCondition('t.consultant = :consultant');
             $criteria->params[':consultant'] = @$_REQUEST['consultant'];
         }
 
-        if (@$_REQUEST['paediatric'] != '') {
+        if (@$_REQUEST['paediatric'] !== '') {
             $criteria->addCondition('t.paediatric = :paediatric');
             $criteria->params[':paediatric'] = @$_REQUEST['paediatric'];
         }
 
-        if (@$_REQUEST['anaesthetist'] != '') {
+        if (@$_REQUEST['anaesthetist'] !== '') {
             $criteria->addCondition('t.anaesthetist = :anaesthetist');
             $criteria->params[':anaesthetist'] = @$_REQUEST['anaesthetist'];
         }
 
-        if (@$_REQUEST['general_anaesthetic'] != '') {
+        if (@$_REQUEST['general_anaesthetic'] !== '') {
             $criteria->addCondition('t.general_anaesthetic = :general_anaesthetic');
             $criteria->params[':general_anaesthetic'] = @$_REQUEST['general_anaesthetic'];
         }
 
-        if (@$_REQUEST['available'] != '') {
+        if (@$_REQUEST['available'] !== '') {
             $criteria->addCondition('t.available = :available');
             $criteria->params[':available'] = @$_REQUEST['available'];
         }
 
-        if (@$_REQUEST['sequence_id'] != '') {
+        if (@$_REQUEST['sequence_id'] !== '') {
             $criteria->addCondition('t.sequence_id = :sequence_id');
             $criteria->params[':sequence_id'] = @$_REQUEST['sequence_id'];
         }
@@ -1101,7 +1178,9 @@ class AdminController extends ModuleAdminController
         $page = @$_REQUEST['page'] ? $_REQUEST['page'] : 1;
 
         if ($all) {
-            return OphTrOperationbooking_Operation_Session::model()->with('sequence')->findAll($criteria);
+            $criteria->addCondition('site.institution_id = :institution_id');
+            $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
+            return OphTrOperationbooking_Operation_Session::model()->with(array('sequence', 'sequence.theatre.site'))->findAll($criteria);
         }
 
         $count = OphTrOperationbooking_Operation_Session::model()->with('sequence')->count($criteria);
@@ -1117,7 +1196,7 @@ class AdminController extends ModuleAdminController
         $criteria->limit = $this->sessions_items_per_page;
         $criteria->offset = ($page - 1) * $this->sessions_items_per_page;
 
-        $order = @$_REQUEST['order'] == 'desc' ? 'desc' : 'asc';
+        $order = @$_REQUEST['order'] === 'desc' ? 'desc' : 'asc';
 
         switch (@$_REQUEST['sortby']) {
             case 'firm':
@@ -1152,7 +1231,13 @@ class AdminController extends ModuleAdminController
                 ),
             ),
             'theatre',
+            'theatre.site'
         );
+
+        if (!$this->checkAccess('admin')) {
+            $criteria->addCondition('site.institution_id = :institution_id');
+            $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
+        }
 
         $this->items_per_page = $this->sessions_items_per_page;
         $pagination = $this->initPagination(OphTrOperationbooking_Operation_Session::model()->with($with), $criteria);
@@ -1234,6 +1319,10 @@ class AdminController extends ModuleAdminController
         );
     }
 
+    /**
+     * @param $id
+     * @throws Exception
+     */
     public function actionEditSession($id)
     {
         if (!$session = OphTrOperationbooking_Operation_Session::model()->findByPk($id)) {
@@ -1247,11 +1336,9 @@ class AdminController extends ModuleAdminController
 
             if (!$session->save()) {
                 $errors = $session->getErrors();
-            } else {
-                if (empty($errors)) {
-                    Audit::add('admin', 'update', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Session'));
-                    $this->redirect(array('/OphTrOperationbooking/admin/viewSessions'));
-                }
+            } elseif (empty($errors)) {
+                Audit::add('admin', 'update', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Session'));
+                $this->redirect(array('/OphTrOperationbooking/admin/viewSessions'));
             }
         }
 
@@ -1274,11 +1361,9 @@ class AdminController extends ModuleAdminController
 
             if (!$session->save()) {
                 $errors = $session->getErrors();
-            } else {
-                if (empty($errors)) {
-                    Audit::add('admin', 'create', $session->id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Session'));
-                    $this->redirect(array('/OphTrOperationbooking/admin/viewSessions'));
-                }
+            } elseif (empty($errors)) {
+                Audit::add('admin', 'create', $session->id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Session'));
+                $this->redirect(array('/OphTrOperationbooking/admin/viewSessions'));
             }
         } elseif (isset($_GET['sequence_id'])) {
             $session->sequence_id = $_GET['sequence_id'];
@@ -1524,22 +1609,31 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Ward'));
 
+        $criteria = new CDbCriteria();
+        if (!$this->checkAccess('admin')) {
+            $criteria->with = 'site';
+            $criteria->addCondition('site.institution_id = :institution_id');
+            $criteria->params[':institution_id'] = Institution::model()->getCurrent()->id;
+        }
+
         $this->render(
             '/admin/ward/index',
             [
-                'wards' => OphTrOperationbooking_Operation_Ward::model()->findAll(),
+                'wards' => OphTrOperationbooking_Operation_Ward::model()->findAll($criteria),
             ]
         );
     }
 
+    /**
+     * @param int|null $id
+     * @throws Exception
+     */
     public function actionEditWard($id = null)
     {
         if (is_null($id)) {
             $ward = new OphTrOperationbooking_Operation_Ward();
-        } else {
-            if (!$ward = OphTrOperationbooking_Operation_Ward::model()->findByPk($id)) {
-                throw new Exception("Ward not found: $id");
-            }
+        } elseif (!$ward = OphTrOperationbooking_Operation_Ward::model()->findByPk($id)) {
+            throw new Exception("Ward not found: $id");
         }
 
         $errors = [];
@@ -1550,21 +1644,21 @@ class AdminController extends ModuleAdminController
 
             $ward->restriction = 0;
 
-            $ward->active = isset($attributes['active']) ? $attributes['active'] : null;
+            $ward->active = $attributes['active'] ?? null;
 
-            if (isset($attributes['restriction_male']) && intval($attributes['restriction_male']) === 1) {
+            if (isset($attributes['restriction_male']) && (int)$attributes['restriction_male'] === 1) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_MALE;
             }
-            if (isset($attributes['restriction_female']) && intval($attributes['restriction_female']) === 1) {
+            if (isset($attributes['restriction_female']) && (int)$attributes['restriction_female'] === 1) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_FEMALE;
             }
-            if (isset($attributes['restriction_child']) && intval($attributes['restriction_child']) === 1) {
+            if (isset($attributes['restriction_child']) && (int)$attributes['restriction_child'] === 1) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_CHILD;
             }
-            if (isset($attributes['restriction_adult']) && intval($attributes['restriction_adult']) === 1) {
+            if (isset($attributes['restriction_adult']) && (int)$attributes['restriction_adult'] === 1) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_ADULT;
             }
-            if (isset($attributes['restriction_observation']) && intval($attributes['restriction_observation']) === 1) {
+            if (isset($attributes['restriction_observation']) && (int)$attributes['restriction_observation'] === 1) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_OBSERVATION;
             }
             $action = $ward->isNewRecord ? 'create' : 'update';
@@ -1693,7 +1787,13 @@ class AdminController extends ModuleAdminController
 
         if (!empty($_POST)) {
             $reason->attributes = $_POST['OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason'];
-            if (!$reason->save()) {
+            //$reason->institution_id = Institution::model()->getCurrent()->id;
+            if ($this->checkAccess('admin')) {
+                $saved = $reason->saveAtLevel(ReferenceData::LEVEL_INSTALLATION);
+            } else {
+                $saved = $reason->saveAtLowestLevel();
+            }
+            if (!$saved) {
                 $errors = $reason->getErrors();
             } else {
                 Audit::add('admin', 'create', serialize($_POST), false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason'));

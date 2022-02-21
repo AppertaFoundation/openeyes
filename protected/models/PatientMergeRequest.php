@@ -7,13 +7,13 @@
  *
  * @property int $id
  * @property string $primary_id
- * @property string $primary_hos_num
- * @property string $primary_nhsnum
+ * @property string $primary_local_identifier_value
+ * @property string $primary_global_identifier_value
  * @property string $primary_dob
  * @property string $primary_gender
  * @property string $secondary_id
- * @property string $secondary_hos_num
- * @property string $secondary_nhsnum
+ * @property string $secondary_local_identifier_value
+ * @property string $secondary_global_identifier_value
  * @property string $secondary_dob
  * @property string $secondary_gender
  * @property string $merge_json
@@ -25,9 +25,9 @@
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property Patient $secondary
+ * @property Patient $secondaryPatient
  * @property User $createdUser
- * @property Patient $primary
+ * @property Patient $primaryPatient
  * @property User $lastModifiedUser
  */
 class PatientMergeRequest extends BaseActiveRecordVersioned
@@ -54,12 +54,12 @@ class PatientMergeRequest extends BaseActiveRecordVersioned
                     array('primary_id, secondary_id', 'required'),
                     array('status', 'numerical', 'integerOnly' => true),
                     array('primary_id, secondary_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
-                    array('primary_hos_num, primary_nhsnum, secondary_hos_num, secondary_nhsnum', 'length', 'max' => 40),
+                    array('primary_local_identifier_value, primary_global_identifier_value, secondary_local_identifier_value, secondary_global_identifier_value', 'length', 'max' => 40),
                     array('primary_gender, secondary_gender', 'length', 'max' => 1),
                     array('primary_dob, secondary_dob, merge_json, comment, last_modified_date, created_date', 'safe'),
                     // The following rule is used by search().
                     // @todo Please remove those attributes that should not be searched.
-                    array('id, primary_id, primary_hos_num, primary_nhsnum, primary_dob, primary_gender, secondary_id, secondary_hos_num, secondary_nhsnum, secondary_dob, secondary_gender, merge_json, comment, status, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
+                    array('id, primary_id, primary_local_identifier_value, primary_global_identifier_value, primary_dob, primary_gender, secondary_id, secondary_local_identifier_value, secondary_global_identifier_value, secondary_dob, secondary_gender, merge_json, comment, status, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
             );
     }
 
@@ -85,15 +85,15 @@ class PatientMergeRequest extends BaseActiveRecordVersioned
         return array(
                     'id' => 'ID',
                     'primary_id' => 'Primary',
-                    'primary_hos_num' => 'Primary Hos Num',
-                    'primary_nhsnum' => 'Primary Nhsnum',
+                    'primary_local_identifier_value' => 'Primary Local Identifier',
+                    'primary_global_identifier_value' => 'Primary global_identifier_value',
                     'primary_dob' => 'Primary Dob',
-                    'primary_gender' => 'Primary Gender',
+                    'primary_gender' => 'Primary Sex',
                     'secondary_id' => 'Secondary',
-                    'secondary_hos_num' => 'secondary Hos Num',
-                    'secondary_nhsnum' => 'secondary Nhsnum',
+                    'secondary_local_identifier_value' => 'Secondary Local Identifier',
+                    'secondary_global_identifier_value' => 'secondary global_identifier_value',
                     'secondary_dob' => 'Secondary Dob',
-                    'secondary_gender' => 'secondary Gender',
+                    'secondary_gender' => 'secondary Sex',
                     'merge_json' => 'Merge Json',
                     'comment' => 'Comment',
                     'status' => 'Status',
@@ -141,13 +141,13 @@ class PatientMergeRequest extends BaseActiveRecordVersioned
 
         $criteria->compare('id', $this->id);
         $criteria->compare('primary_id', $this->primary_id, true);
-        $criteria->compare('primary_hos_num', $this->primary_hos_num, true);
-        $criteria->compare('primary_nhsnum', $this->primary_nhsnum, true);
+        $criteria->compare('primary_local_identifier_value', $this->primary_local_identifier_value, true);
+        $criteria->compare('primary_global_identifier_value', $this->primary_global_identifier_value, true);
         $criteria->compare('primary_dob', $this->primary_dob, true);
         $criteria->compare('primary_gender', $this->primary_gender, true);
         $criteria->compare('secondary_id', $this->secondary_id, true);
-        $criteria->compare('secondary_hos_num', $this->secondary_hos_num, true);
-        $criteria->compare('secondary_nhsnum', $this->secondary_nhsnum, true);
+        $criteria->compare('secondary_local_identifier_value', $this->secondary_local_identifier_value, true);
+        $criteria->compare('secondary_global_identifier_value', $this->secondary_global_identifier_value, true);
         $criteria->compare('secondary_dob', $this->secondary_dob, true);
         $criteria->compare('secondary_gender', $this->secondary_gender, true);
         $criteria->compare('merge_json', $this->merge_json, true);
@@ -199,6 +199,6 @@ class PatientMergeRequest extends BaseActiveRecordVersioned
 
     public function getMergedMessage()
     {
-        return "Hospital Number <strong>({$this->secondary_hos_num}) {$this->secondaryPatient->getFullName()}</strong> was merged into <strong>({$this->primary_hos_num}) {$this->primaryPatient->getFullName()}</strong> on {$this->created_date}";
+        return "Identifier <strong>({$this->secondary_local_identifier_value}) {$this->secondaryPatient->getFullName()}</strong> was merged into <strong>({$this->primary_local_identifier_value}) {$this->primaryPatient->getFullName()}</strong> on {$this->created_date}";
     }
 }

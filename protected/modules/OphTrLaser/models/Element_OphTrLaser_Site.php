@@ -148,19 +148,6 @@ class Element_OphTrLaser_Site extends BaseEventTypeElement
         }
     }
 
-    public function getSurgeons()
-    {
-        if (!$this->operatorlist) {
-            $this->operatorlist = array();
-
-            foreach (OphTrLaser_Laser_Operator::model()->with('operator')->findAll(array('order' => 'first_name asc, last_name asc')) as $laser_operator) {
-                $this->operatorlist[] = $laser_operator->operator;
-            }
-        }
-
-        return $this->operatorlist;
-    }
-
     /*
      * validation to ensure that the selected laser is on the selected site
      */
@@ -175,7 +162,7 @@ class Element_OphTrLaser_Site extends BaseEventTypeElement
     {
         return 'Laser Information';
     }
-    
+
     public function getPrint_view()
     {
         return 'print_'.$this->getDefaultView();

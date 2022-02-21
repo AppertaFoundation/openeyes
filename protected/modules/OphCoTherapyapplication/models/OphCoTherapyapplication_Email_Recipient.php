@@ -27,8 +27,8 @@ class OphCoTherapyapplication_Email_Recipient extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('site_id, recipient_name, recipient_email, type_id', 'safe'),
-            array('recipient_name, recipient_email', 'required'),
+            array('institution_id, site_id, recipient_name, recipient_email, type_id', 'safe'),
+            array('institution_id, recipient_name, recipient_email', 'required'),
             array('recipient_email', 'email'),
         );
     }
@@ -36,6 +36,7 @@ class OphCoTherapyapplication_Email_Recipient extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'type' => array(self::BELONGS_TO, 'OphCoTherapyapplication_Email_Recipient_Type', 'type_id'),
         );
@@ -45,6 +46,7 @@ class OphCoTherapyapplication_Email_Recipient extends BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
+            'institution_id' => 'Institution',
             'site_id' => 'Site',
             'type_id' => 'Letter types',
             'recipient_name' => 'Recipient name',

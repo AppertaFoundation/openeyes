@@ -5,7 +5,7 @@
             <?php foreach ($errors as $field => $errs) {?>
                 <?php foreach ($errs as $err) {?>
                     <li>
-                        <?php echo htmlspecialchars($err)?>
+                        <?= htmlspecialchars(is_array($err) ? implode(" ", $err) : $err) ?>
                     </li>
                 <?php }?>
             <?php }?>

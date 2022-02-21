@@ -28,7 +28,7 @@ class BasicAuthBehavior extends CBehavior
         $auth_user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '';
         $auth_pwd = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
 
-        $identity = new UserIdentity($auth_user, $auth_pwd);
+        $identity = new UserIdentity($auth_user, $auth_pwd, null, null);
         if (!$identity->authenticate()) {
             $this->owner->renderJSON(401, '401 Unauthorized');
         }

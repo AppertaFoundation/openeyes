@@ -55,6 +55,7 @@ class UserOutOfOffice extends BaseActiveRecordVersioned
     {
         return array(
             array('user_id, enabled', 'required'),
+            array('from_date, to_date', 'default', 'setOnEmpty' => true, 'value' => null),
             array('from_date, to_date, alternate_user_id', 'requiredIfEnabled'),
             array('from_date', 'outOfOfficeDurationValidator'),
             array('user_id, from_date, to_date, alternate_user_id, enabled', 'safe'),

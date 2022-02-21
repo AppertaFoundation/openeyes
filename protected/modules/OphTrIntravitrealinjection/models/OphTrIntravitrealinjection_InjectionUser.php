@@ -68,11 +68,6 @@ class OphTrIntravitrealinjection_InjectionUser extends BaseActiveRecordVersioned
 
     public static function getUsers()
     {
-        $criteria = new CDbCriteria();
-        $criteria->compare('is_surgeon', 1);
-        $criteria->compare('active', 1);
-        $criteria->order = 'last_name,first_name asc';
-
         $inj_users = self::model()->with('user')->findAll(array('order' => 'user.last_name, user.first_name asc'));
         $users = array();
         foreach ($inj_users as $inju) {

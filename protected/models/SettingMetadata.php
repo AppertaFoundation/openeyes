@@ -31,12 +31,14 @@
  * @property string $name
  * @property string $data
  * @property string $default_value
+ * @property string $lowest_setting_level
  */
 class SettingMetadata extends BaseActiveRecordVersioned
 {
-    public static $CONTEXT_CLASSES = [
+    public static array $CONTEXT_CLASSES = [
         'SettingUser' => 'user_id',
         'SettingFirm' => 'firm_id',
+        'SettingInstitutionSubspecialty' => ['institution_id', 'subspecialty_id'],
         'SettingSubspecialty' => 'subspecialty_id',
         'SettingSpecialty' => 'specialty_id',
         'SettingSite' => 'site_id',
@@ -70,7 +72,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_type_id, display_order, field_type_id, key, name', 'required'),
+            array('element_type_id, display_order, field_type_id, key, name, default_value', 'required'),
             array('element_type_id, display_order, field_type_id, key, name, data, default_value', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -123,6 +125,11 @@ class SettingMetadata extends BaseActiveRecordVersioned
         ));
     }
 
+    /**
+     * @param $key string Setting key
+     * @param $value mixed Expected setting value.
+     * @return bool
+     */
     public static function checkSetting($key, $value)
     {
         $setting_value = self::model()->findByAttributes(['key' => $key])->getSettingName();
@@ -158,7 +165,38 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return $model::model()->find($criteria);
     }
 
-    public function getSetting($key = null, $element_type = null, $return_object = false, $allowed_classes = null)
+    protected function getSettingValueWithConditions($model, $key, $conditions, $element_type)
+    {
+        $criteria = new CDbcriteria();
+
+        foreach ($conditions as $condition_field => $condition_value) {
+            if ($condition_field && $condition_value) {
+                $criteria->addCondition($condition_field . ' = :' . $condition_field);
+                $criteria->params[':' . $condition_field] = $condition_value;
+            }
+        }
+
+        $criteria->addCondition('`key`=:key');
+        $criteria->params[':key'] = $key;
+
+        if ($element_type) {
+            $criteria->addCondition('element_type_id=:eti');
+            $criteria->params[':eti'] = $element_type->id;
+        } else {
+            $criteria->addCondition('element_type_id is null');
+        }
+
+        return $model::model()->find($criteria);
+    }
+
+    /**
+     * @param string|null $key Setting key
+     * @param ElementType|null $element_type Element type the setting applies to
+     * @param bool|false $return_object Whether or not to return the setting value or the Setting model instance.
+     * @param string[]|null $allowed_classes The allowed setting model classes to query over.
+     * @return array|CList|false|mixed|string|null
+     */
+    public function getSetting($key = null, $element_type = null, $return_object = false, $allowed_classes = null, $institution_id = null, $is_setting_page = false)
     {
         if (!$key) {
             $key = $this->key;
@@ -179,37 +217,57 @@ class SettingMetadata extends BaseActiveRecordVersioned
             return false;
         }
 
-        $user_id = Yii::app()->session['user'] ? Yii::app()->session['user']->id : null;
+        $user_id = Yii::app()->session['user']->id ?? null;
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-        $firm_id = $firm ? $firm->id : null;
-        $subspecialty_id = $firm ? $firm->subspecialtyID : null;
+        $firm_id = $firm->id ?? null;
+        $subspecialty_id = $firm->subspecialtyID ?? null;
         $specialty_id = $firm && $firm->specialty ? $firm->specialty->id : null;
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-        $site_id = $site ? $site->id : null;
-        $institution_id = $site ? $site->institution_id : null;
+        $site_id = $site->id ?? null;
+        // initialize is_admin as false
+        $is_admin = false;
 
+        // if yii command reference SettingsMetadata, there won't be a user
+        if (property_exists(Yii::app(), 'user') && isset(Yii::app()->user)) {
+            $is_admin = Yii::app()->user->checkAccess('admin');
+        }
+        // only on the admin system settings page and with admin role, the user can view other institution settings
+        $institution_id = $is_setting_page && $is_admin ? ($institution_id ?? null) : ($site->institution_id ?? null);
         foreach (static::$CONTEXT_CLASSES as $class => $field) {
-            if ($allowed_classes && !in_array($class, $allowed_classes)) {
+            if ($allowed_classes && !in_array($class, $allowed_classes, true)) {
                 continue;
             }
             if ($field) {
-                if (${$field}) {
-                    if ($setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
+                if (getType($field) === 'array') {
+                    $fields = $field;
+                    $conditions = [];
+
+                    foreach ($fields as $field) {
+                        if (${$field}) {
+                            $conditions[$field] = ${$field};
+                        }
+                    }
+
+                    if (count($conditions) === count($fields) && $setting = $this->getSettingValueWithConditions($class, $key, $conditions, $element_type)) {
                         if ($return_object) {
                             return $setting;
                         }
 
                         return $this->parseSetting($setting, $metadata);
                     }
-                }
-            } else {
-                if ($setting = $this->getSettingValue($class, $key, null, null, $element_type)) {
+                } elseif (${$field} && $setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
                     if ($return_object) {
                         return $setting;
                     }
 
                     return $this->parseSetting($setting, $metadata);
                 }
+            } elseif ($setting = $this->getSettingValue($class, $key, null, null, $element_type)) {
+                if ($return_object) {
+                    return $setting;
+                }
+
+                return $this->parseSetting($setting, $metadata);
             }
         }
 
@@ -220,27 +278,33 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return $metadata->default_value;
     }
 
-    public function getSettingName($key = null, $allowed_classes = null)
+    /**
+     * @param string|null $key Setting key
+     * @param string[]|null $allowed_classes The allowed setting instance classes to use.
+     * @return array|CList|false|mixed|string|null
+     */
+    public function getSettingName($key = null, $allowed_classes = null, $institution_id = null, $is_setting_page = false)
     {
         if (!$key) {
             $key = $this->key;
         }
-
-        $value = $this->getSetting($key, null, false, $allowed_classes);
-
-        if ($value == '') {
+        $value = $this->getSetting($key, null, false, $allowed_classes, $institution_id, $is_setting_page);
+        if ($value === '') {
             $value = $this->default_value;
         }
 
-        if ($data = @unserialize($this->data)) {
-            if (key_exists($value, $data)) {
-                return $data[$value];
-            }
+        if (($data = @unserialize($this->data)) && array_key_exists($value, $data)) {
+            return $data[$value];
         }
 
         return $value;
     }
 
+    /**
+     * @param $setting mixed The setting instance object.
+     * @param $metadata SettingMetadata
+     * @return false|string
+     */
     public function parseSetting($setting, $metadata)
     {
         if (@$data = unserialize($metadata->data)) {
@@ -267,7 +331,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
                     if (
                         array_key_exists($key, $substitutions) &&
                         isset($substitutions[$key]['value']) &&
-                        $substitutions[$key]['value'] != ''
+                        $substitutions[$key]['value'] !== '' &&
+                        in_array($key, $data['substitutions'], true)
                     ) {
                         $sub = $substitutions[$key]['value'];
                     } else {
@@ -286,6 +351,9 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     /**
      * Sets a setting's value after performing some processing operations such as stripping values of HTML substitutions
+     * @param $setting
+     * @param $metadata
+     * @param $value
      */
     public function setSettingValue($setting, $metadata, $value)
     {
@@ -301,7 +369,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $setting->value = $value;
     }
 
-    public function stripSubstitutions($value)
+    protected function stripSubstitutions($value)
     {
         $dom = new DOMDocument();
         @$dom->loadHTML($value, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
@@ -320,6 +388,11 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return $dom->saveHTML();
     }
 
+    /**
+     * @param $html string
+     * @param array $substitutions
+     * @return false|string
+     */
     public static function performSubstitutions($html, $substitutions = array())
     {
         $dom = new DOMDocument();
@@ -396,7 +469,14 @@ class SettingMetadata extends BaseActiveRecordVersioned
         );
     }
 
-    public static function getPatientSubstitutions($patient = null)
+    /**
+     * @param Patient|null $patient
+     * @param Event|null $event
+     * @param string $exam_event_name The name of the examination event type. This is generally used for testing purposes.
+     * @return array[]
+     * @throws Exception
+     */
+    public static function getPatientSubstitutions($patient = null, $event = null, $exam_event_name = 'Examination')
     {
         $patient_contact = null;
 
@@ -407,7 +487,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $last_exam = null;
 
         if (isset($patient)) {
-            $last_exam = $patient->getLatestExaminationEvent();
+            $last_exam = $patient->getLatestExaminationEvent($exam_event_name);
         }
 
         return array(
@@ -415,13 +495,23 @@ class SettingMetadata extends BaseActiveRecordVersioned
             'patient_first_name' => array('label' => 'Patient First Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->first_name) : null),
             'patient_last_name' => array('label' => 'Patient Last Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->last_name) : null),
             'patient_date_of_birth' => array('label' => 'Patient Date Of Birth', 'value' => $patient ? self::makeSpan($patient->dob) : null),
-            'patient_gender' => array('label' => 'Patient Gender', 'value' => $patient ? self::makeSpan($patient->getGenderString()) : null),
-            'patient_nhs_num' => array('label' => 'Patient NHS Number', 'value' => $patient ? self::makeSpan($patient->nhs_num) : null),
-            'patient_hos_num' => array('label' => 'Patient Hospital Number', 'value' => $patient ? self::makeSpan($patient->hos_num) : null),
+            'patient_gender' => array('label' => 'Patient Sex', 'value' => $patient ? self::makeSpan($patient->getGenderString()) : null),
+            'patient_nhs_num' => array('label' => 'Patient NHS Number', 'value' => $patient ? self::makeSpan($patient->getNhs(
+                $event->institution_id ?? null,
+                $event->site_id ?? null
+            )) : null),
+            'patient_hos_num' => array('label' => 'Patient Hospital Number', 'value' => $patient ? self::makeSpan($patient->getHos(
+                $event->institution_id ?? null,
+                $event->site_id ?? null
+            )) : null),
             'patient_last_exam_date' => array('label' => 'Patient Last Examination Date', 'value' => $last_exam ? self::makeSpan((new DateTime($last_exam->event_date))->format('d-M-Y')) : null),
         );
     }
 
+    /**
+     * @param ElementLetter|null $element_letter
+     * @return array[]
+     */
     public static function getCorrespondenceSubstitutions($element_letter = null)
     {
         return array(
@@ -431,6 +521,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
         );
     }
 
+    /**
+     * @param DocumentTarget|null $doc_target
+     * @return array[]
+     */
     public static function getDocumentTargetSubstitutions($doc_target = null)
     {
         return array(
@@ -438,6 +532,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
         );
     }
 
+    /**
+     * @param string|null $recipient_address
+     * @return array[]
+     */
     public static function getRecipientAddressSubstitution($recipient_address = null)
     {
         return array(
@@ -455,6 +553,9 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return '<img style="width:100%; display: block;" src="' . $src . '">';
     }
 
+    /**
+     * @return string[][]
+     */
     public function scopes()
     {
         return array(

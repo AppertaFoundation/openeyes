@@ -1,17 +1,32 @@
 <?php
+/**
+ * OpenEyes.
+ *
+ * (C) OpenEyes Foundation, 2020
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2020, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 /**
  * This is the model class for table "patient_identifier".
  *
  * The followings are the available columns in table 'patient_identifier':
- * @property integer $id
  * @property string $patient_id
- * @property string code
+ * @property string $patient_identifier_type_id
  * @property string $value
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property PatientIdentifierType $patientIdentifierType
  *
  * The followings are the available model relations:
  * @property User $lastModifiedUser
@@ -19,7 +34,7 @@
  */
 class PatientIdentifier extends BaseActiveRecordVersioned
 {
-    private $_config;
+    public $status_is_mandatory = false;
 
     /**
      * @return string the associated database table name
@@ -35,29 +50,83 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     public function rules()
     {
         $rules = array(
-            array('patient_id, code', 'required'),
-            array('patient_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
-            array('code', 'length', 'max' => 50),
-            array('value', 'length', 'max' => 255),
-            array('value','numerical'),
-            array('last_modified_date, created_date', 'safe'),
+            ['patient_id, patient_identifier_type_id, value', 'required'],
+            ['patient_id, patient_identifier_type_id, value, source_info, deleted, last_modified_date, created_date', 'safe'],
+            ['value', 'valueValidator'],
+            ['patient_identifier_status_id', 'statusValidator'],
+            //    ['value', 'nhsNumValidator'],
         );
 
-        $config = $this->getConfig();
-
-        if ($config && isset($config['required']) && $config['required'] === true) {
-            $rules[] = array('value', 'required');
-        }
-
-        if ($config && isset($config['validate_pattern'])) {
-            $rule = array('value', 'match', 'pattern' => $config['validate_pattern']);
-            if (isset($config['validate_msg'])) {
-                $rule['message'] = $config['validate_msg'];
-            }
-            $rules[] = $rule;
-        }
-
         return $rules;
+    }
+
+    public function statusValidator($attribute, $params)
+    {
+        if ($this->status_is_mandatory) {
+            $validator = CValidator::createValidator('required', $this, $attribute, $params);
+            $validator->validate($this);
+        }
+    }
+
+    public function valueValidator($attribute, $params)
+    {
+        if (!$this->patientIdentifierType->validateTerm($this->value)) {
+            $this->addError($attribute, "Invalid value format. Acceptable: {$this->patientIdentifierType->validate_regex}");
+        }
+
+        $patient_id = isset($this->patient) ? $this->patient->id : null;
+        if (!empty(Patient::findDuplicatesByIdentifier($this->patient_identifier_type_id, $this->value, $patient_id))) {
+            $this->addError($attribute, $this->patientIdentifierType->short_title . ' must be unique');
+        }
+    }
+
+    public function nhsNumValidator($attribute, $params)
+    {
+        $type = PatientIdentifierType::model()->findByPk($this->patient_identifier_type_id);
+        // Validation only triggers for Australia
+        if (Yii::app()->params['default_country'] === 'Australia' && $type->short_name === 'nhs_num') {
+            // Throw validation warning message if user has entered non-numeric character
+            if (!ctype_digit($this->value) && strlen($this->value) > 0) {
+                $this->addError($attribute, 'Please enter only numbers.');
+            }
+
+            $medicareNo = preg_replace("/[^\d]/", "", $this->value);
+
+            // Check for 11 digits
+            $length = strlen($medicareNo);
+
+            if ($length == 11) {
+                // Unique check
+                $count = Yii::app()->db->createCommand()
+                    ->select('COUNT(p.id)')
+                    ->from('patient p')
+                    ->join('patient_identifier pi', 'p.id = pi.patient_id')
+                    ->join('patient_identifier_type ptt', 'pi.patient_identifier_type_id = ptt.id')
+                    ->where('LOWER(pi.value) = LOWER(:value) and p.id != COALESCE(:patient_id, "")',
+                        array(':value' => $this->value, ':patient_id' => $this->patient_id))
+                    ->queryScalar();
+
+                if (count($count) !== 0) {
+                    $this->addError($attribute, 'Duplicate Medicare Number entered.');
+                }
+
+                // Test leading digit and checksum
+                if (preg_match("/^([2-6]\d{7})(\d)/", $medicareNo, $matches)) {
+                    $base = $matches[1];
+                    $checkDigit = $matches[2];
+                    $sum = 0;
+                    $weights = array(1, 3, 7, 9, 1, 3, 7, 9);
+                    foreach ($weights as $position => $weight) {
+                        $sum += $base[$position] * $weight;
+                    }
+                    return ($sum % 10) == intval($checkDigit);
+                } else {
+                    $this->addError($attribute, 'Not a valid Medicare Number');
+                }
+            } else {
+                $this->addError($attribute, 'Not a valid Medicare Number');
+            }
+        }
     }
 
     /**
@@ -66,8 +135,11 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
+            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+            'patientIdentifierType' => array(self::BELONGS_TO, 'PatientIdentifierType', 'patient_identifier_type_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'patientIdentifierStatus' => array(self::BELONGS_TO, 'PatientIdentifierStatus', 'patient_identifier_status_id')
         );
     }
 
@@ -77,10 +149,12 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
             'patient_id' => 'Patient',
-            'code' => 'Code',
+            'patient_identifier_type_id' => 'Patient Identifier Type',
+            'patient_identifier_status_id' => 'Patient Identifier Status',
             'value' => 'Value',
+            'source_info' => 'Source Info',
+            'deleted' => 'Deleted',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',
@@ -88,103 +162,40 @@ class PatientIdentifier extends BaseActiveRecordVersioned
         );
     }
 
-    private function getConfigOption($option)
-    {
-        return isset($this->getConfig()[$option]) ? $this->getConfig()[$option] : null;
-    }
-
-    public function hasAutoIncrement()
-    {
-        return $this->getConfigOption('auto_increment') === true;
-    }
-
-    public function getStartVal()
-    {
-        return $this->getConfigOption('start_val');
-    }
-
-    public function isRequired()
-    {
-        return $this->getConfigOption('required') === true;
-    }
-//Currently used for RVEEh UR number  - to check if validation is to be performed on null or empty values from patient identifier in common.php
-    public function nullCheck()
-    {
-        return $this->getConfigOption('allow_null_check');
-    }
-
-    public function isEditable()
-    {
-        return $this->getConfigOption('editable') === true || $this->getConfigOption('editable') === null;
-    }
-
-    public function mustBeUnique()
-    {
-        return $this->getConfigOption('unique') === true;
-    }
-
-    public function getConflictMessage()
-    {
-        return $this->getConfigOption('conflict_msg') ?: $this->getLabel() . ' must be unique';
-    }
-
     public function hasValue()
     {
         return isset($this->value) && trim($this->value) !== '';
     }
 
-    public function displayIfEmpty()
+    public function getDisplayValue()
     {
-        return $this->getConfigOption('display_if_empty') === true;
-    }
+        $spacing_rule = $this->patientIdentifierType->spacing_rule;
+        $formatted_value = '';
 
-    public function getConfig()
-    {
-        if ($this->_config === null) {
-            $this->_config = isset(Yii::app()->params['patient_identifiers'][$this->code]) ? Yii::app()->params['patient_identifiers'][$this->code] : null;
-        }
-
-        return $this->_config;
-    }
-
-    public function getLabel()
-    {
-        return $this->getConfigOption('label') ?: ucwords(strtolower(str_replace('_', ' ', $this->code)));
-    }
-
-    public function getPlaceholder()
-    {
-        return $this->getConfigOption('placeholder') ?: $this->getLabel();
-    }
-
-    protected function beforeValidate()
-    {
-        if (!$this->hasValue() && $this->hasAutoIncrement()) {
-            $last_identifier = self::model()->find(array(
-                    'condition' => 'code = :code',
-                    'order' => 'CONVERT(value, INTEGER) DESC',
-                    'params' => array(':code' => $this->code),
-                ));
-
-            if ($last_identifier) {
-                $this->value = $last_identifier->value + 1;
-            } elseif ($this->getStartVal() !== null) {
-                $this->value = $this->getStartVal();
-            } elseif ($this->isRequired() && $this->isEditable()) {
-                $this->value = 1;
+        if ($spacing_rule) {
+            $index = 0;
+            $spacing_rule_array = str_split($spacing_rule);
+            foreach ($spacing_rule_array as $char) {
+                if ($index < strlen($this->value)) {
+                    if ($char !== ' ') {
+                        $formatted_value .= $this->value[$index];
+                        $index++;
+                    } else {
+                        $formatted_value .= ' ';
+                    }
+                } else {
+                    break;
+                }
             }
+
+            if ($index < strlen($this->value)) {
+                $formatted_value .= ' ' . substr($this->value, $index);
+            }
+        } else {
+            $formatted_value = $this->value;
         }
 
-        if ($this->hasValue()
-            && $this->mustBeUnique()
-            && self::model()->exists(
-                'code = :code AND value = :value AND id != :id',
-                array(':code' => $this->code, ':value' => $this->value, ':id' => $this->id ?: -1)
-            )) {
-            $this->addError('value', $this->getConflictMessage());
-        }
-
-        return parent::beforeValidate();
+        return $this->patientIdentifierType->getDisplayIdentifierPrefix() . $formatted_value . '' . $this->patientIdentifierType->getDisplayIdentifierSuffix();
     }
 
     /**
@@ -196,5 +207,30 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    /**
+     * As the table does not have a primary key, it is required that the corresponding AR class specify which column(s) should be the primary key by overriding the primaryKey() method
+     **/
+    public function primaryKey()
+    {
+        // For composite primary key, return an array
+        return array('patient_id', 'patient_identifier_type_id', 'value');
+    }
+
+    public function defaultScope()
+    {
+        if ($this->getDefaultScopeDisabled()) {
+            return [];
+        }
+
+        return ['select' => 'patient_id, patient_identifier_type_id, value, source_info, deleted, last_modified_user_id, last_modified_date, created_user_id, created_date, patient_identifier_status_id',
+            'condition' => 'patient_identifier_not_deleted.deleted = 0', 'alias' => 'patient_identifier_not_deleted'];
+    }
+
+    public function beforeValidate()
+    {
+        $this->value = str_replace(' ', '', $this->value);
+        return parent::beforeValidate();
     }
 }

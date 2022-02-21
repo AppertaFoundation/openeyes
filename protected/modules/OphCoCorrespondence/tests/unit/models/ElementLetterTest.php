@@ -3,33 +3,69 @@
 /**
  * Class ElementLetterTest
  * @covers ElementLetter
- * @covers Exportable
  * @method letters($fixtureId)
  */
-class ElementLetterTest extends CDbTestCase
+class ElementLetterTest extends ActiveRecordTestCase
 {
     protected $fixtures = array(
         'letters' => ElementLetter::class,
         'events' => Event::class,
         'episodes' => Episode::class,
         'patients' => Patient::class,
+        'users' => User::class,
     );
     private ElementLetter $letter;
+
+    protected array $columns_to_skip = ['date'];
+
+    public function getModel()
+    {
+        // TODO: Implement getModel() method.
+        return ElementLetter::model();
+    }
 
     public function setUp()
     {
         parent::setUp();
+        $path = Yii::app()->getRuntimePath() . '/test.pdf';
+
+        if (!file_exists($path)) {
+            $file = fopen($path, 'wb') or die;
+            fclose($file);
+        }
+        Yii::app()->configure(
+            array(
+                'components' => array(
+                    'user' => array(
+                        'class' => 'DummyUser',
+                    )
+                )
+            )
+        );
         Yii::app()->session['selected_firm_id'] = 2;
+        Yii::app()->session['selected_institution_id'] = 1;
         $this->letter = $this->letters('letter1');
-        file_put_contents('testfile.pdf', '');
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        if (file_exists('testfile.pdf')) {
-            unlink('testfile.pdf');
+
+        $path = Yii::app()->getRuntimePath() . '/test.pdf';
+
+        if (file_exists($path)) {
+            unlink($path);
         }
+
+        Yii::app()->configure(
+            array(
+                'components' => array(
+                    'user' => array(
+                        'class' => 'OEWebUser',
+                    )
+                )
+            )
+        );
     }
 
     public function testGetExportUrl(): void
@@ -44,40 +80,40 @@ class ElementLetterTest extends CDbTestCase
      */
     public function testExport(): void
     {
-        // Obtain the PDF path to pass to the export function.
-        $pdf_path = 'testfile.pdf';
-
         // Define the mock SOAP client and its two return values.
+        $path = Yii::app()->getRuntimePath() . '/test.pdf';
         $client = $this->getMockBuilder('SoapClient')
             ->disableOriginalConstructor()
-            ->setMethods(array('ReceiveFileByCrn'))
+            ->setMethods(array('StoreDocument'))
             ->getMock();
 
         $client->expects(self::at(0))
-            ->method('ReceiveFileByCrn')
-            ->willReturn(new ExportResult(1));
+            ->method('StoreDocument')
+            ->willReturn(new ExportResult(true, 1, 1));
 
         $client->expects(self::at(1))
-            ->method('ReceiveFileByCrn')
-            ->willReturn(new ExportResult(null, 'Error'));
+            ->method('StoreDocument')
+            ->willReturn(new ExportResult(false, null, null));
 
         // Simulate a successful upload.
-        $result = $this->letter->export($pdf_path, 'SOAP', $client);
+        $result = $this->letter->export($path, 'SOAP', $client);
         self::assertInstanceOf('ExportResult', $result);
-        self::assertEquals(1, $result->ReceiveFileByCrnResult['DocId']);
-        self::assertNull($result->ReceiveFileByCrnResult['ErrorMessage']);
+        self::assertTrue($result->StoreDocumentResponse['Success']);
+        self::assertEquals(1, $result->StoreDocumentResponse['DocumentId']);
+        self::assertEquals(1, $result->StoreDocumentResponse['DocumentSupersessionSetId']);
 
         // Simulate a failed upload.
-        $result = $this->letter->export($pdf_path, 'SOAP', $client);
+        $result = $this->letter->export($path, 'SOAP', $client);
         self::assertInstanceOf('ExportResult', $result);
-        self::assertNull($result->ReceiveFileByCrnResult['DocId']);
-        self::assertNotNull($result->ReceiveFileByCrnResult['ErrorMessage']);
+        self::assertFalse($result->StoreDocumentResponse['Success']);
+        self::assertNull($result->StoreDocumentResponse['DocumentId']);
+        self::assertNull($result->StoreDocumentResponse['DocumentSupersessionSetId']);
 
         // Expect an exception if the export URL is null.
         Yii::app()->params['correspondence_export_url'] = null;
         self::assertNull(Yii::app()->params['correspondence_export_url']);
         $this->expectException(CHttpException::class);
-        $this->letter->export($pdf_path);
+        $this->letter->export($path);
     }
 
     /**
@@ -85,24 +121,36 @@ class ElementLetterTest extends CDbTestCase
      */
     public function testInvalidWebServiceType(): void
     {
-        // Obtain the PDF path to pass to the export function.
-        $pdf_path = 'testfile.pdf';
-
         // Expect an exception if the web service type is REST
+        $path = Yii::app()->getRuntimePath() . '/test.pdf';
         $this->expectException(CHttpException::class);
-        $this->letter->export($pdf_path, 'REST');
+        $this->letter->export($path, 'REST');
     }
 }
 
 class ExportResult
 {
-    public array $ReceiveFileByCrnResult = array();
+    public array $StoreDocumentResponse = array();
 
-    public function __construct($DocId, $ErrorMessage = null)
+    public function __construct($Success, $DocumentId, $SupersessionSetId)
     {
-        $this->ReceiveFileByCrnResult = array(
-            'DocId' => $DocId,
-            'ErrorMessage' => $ErrorMessage
+        $this->StoreDocumentResponse = array(
+            'Success' => $Success,
+            'DocumentId' => $DocumentId,
+            'DocumentSupersessionSetId' => $SupersessionSetId,
         );
+    }
+}
+
+class DummyUser extends OEWebUser
+{
+    public function getId()
+    {
+        return 1;
+    }
+
+    public function getIsGuest()
+    {
+        return false;
     }
 }

@@ -17,37 +17,41 @@ $config = [
     'params' => [
         'admin_structure' => [
             'Payload Processor Api' => [
-
                 'Requests' => [
                     'module' => 'Api',
                     'uri' => '/Api/Request/admin/request/index',
+                    'restricted' => array('admin'),
                 ],
                 'Request - Manual Upload' => [
                     'module' => 'Api',
                     'uri' => '/Api/Request/admin/default/manualupload',
+                    'restricted' => array('admin'),
                 ],
                 'Request Type' => [
                     'module' => 'Api',
                     'uri' => '/Api/Request/admin/requestType/index',
+                    'restricted' => array('admin'),
                 ],
                 'Routine Library' => [
                     'module' => 'Api',
                     'uri' => '/Api/Request/admin/routineLibrary/index',
+                    'restricted' => array('admin'),
                 ],
                 'Request Queue' => [
                     'module' => 'Api',
                     'uri' => '/Api/Request/admin/requestQueue/index',
+                    'restricted' => array('admin'),
                 ],
                 'Mime Type' => [
                     'module' => 'Api',
                     'uri' => '/Api/Request/admin/mimeType/index',
+                    'restricted' => array('admin'),
                 ],
                 'Attachment Type' => [
                     'module' => 'Api',
                     'uri' => '/Api/Request/admin/attachmentType/index',
+                    'restricted' => array('admin'),
                 ],
-
-
             ],
         ],
     ],

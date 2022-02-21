@@ -31,7 +31,13 @@ class PatientTicketing_APITest extends CDbTestCase
 
     public static function setupBeforeClass()
     {
+        Yii::app()->session['selected_institution_id'] = 1;
         Yii::app()->getModule('PatientTicketing');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        unset(Yii::app()->session['selected_institution_id']);
     }
 
     public function setUp()

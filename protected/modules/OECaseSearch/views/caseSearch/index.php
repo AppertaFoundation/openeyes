@@ -47,6 +47,7 @@ $user_searches = array_map(
                     <?php $this->renderPartial('parameter_form', array(
                         'model' => $param,
                         'id' => $id,
+                        'readonly' => !$param->isSaved
                     )); ?>
                 <?php endforeach;
             endif; ?>
@@ -66,7 +67,7 @@ $user_searches = array_map(
             <?= CHtml::textField('from_date', CHtml::encode($from_date), array('placeholder' => 'from', 'disabled' => $show_all_dates, 'class' => 'date datepicker-from')) ?>
             <?= CHtml::textField('to_date', CHtml::encode($to_date), array('placeholder' => 'to', 'disabled' => $show_all_dates, 'class' => 'date datepicker-to')) ?>
             <label class="inline highlight ">
-                <?= CHtml::checkBox('show-all-dates', $show_all_dates); ?> All available dates
+                <?= CHtml::checkBox('show-all-dates', $show_all_dates) ?> All available dates
             </label>
         </div>
         <hr class="divider"/>
@@ -232,8 +233,8 @@ $user_searches = array_map(
     function getMaxId() {
         let id_max = -1;
         $('#param-list tbody tr.parameter').each(function () {
-            if ($(this)[0].id > id_max) {
-                id_max = $(this)[0].id;
+            if ($(this).data('id') > id_max) {
+                id_max = $(this).data('id');
             }
         });
         return id_max;
@@ -258,6 +259,7 @@ $user_searches = array_map(
     }
 
     $(document).ready(function () {
+        let $main = $('.oe-full-main');
         //null coalesce the id of the last parameter
         let parameter_id_counter = getMaxId();
 
@@ -302,9 +304,16 @@ $user_searches = array_map(
                                 value = parseInt(item.id)
                             }
                             break;
+                        case 'template_string_lookup':
                         case 'lookup':
                             // Selected value
                             valueList.push({id: item.id, field: item.field});
+                            break;
+                        case 'template_string':
+                            // If the value has already been set, don't bother using the template string.
+                            if (value === -1) {
+                                value = item.id;
+                            }
                             break;
                         default:
                             // Parameter type.
@@ -332,7 +341,7 @@ $user_searches = array_map(
                             $criteria_initial.hide();
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function (xhr) {
                         new OpenEyes.UI.Dialog.Alert({
                             content: '<ul>' + xhr.responseText + '</ul>',
                         }).open();
@@ -381,13 +390,13 @@ $user_searches = array_map(
             }).open();
         });
 
-        $('.oe-full-main').on('change', '#sort-field', function (e) {
+        $main.on('change', '#sort-field', function () {
             let $container = $(this).parent().parent().parent().parent();
             let value = $container.find('#sort-field').val();
             performSort(value, $container);
         });
 
-        $('.oe-full-main').on('change', "input[name='sort-options']", function (e) {
+        $main.on('change', "input[name='sort-options']", function () {
             let $container = $(this).parent().parent().parent().parent().parent().parent();
             let value = $container.find('#sort-field').val();
             performSort(value, $container);
@@ -416,7 +425,7 @@ $user_searches = array_map(
             });
         });
 
-        $('.oe-full-main').on('click', '.oe-search-drill-down-list .pagination a', function (e) {
+        $main.on('click', '.oe-search-drill-down-list .pagination a', function (e) {
             e.preventDefault();
             e.stopPropagation();
             $('#js-analytics-spinner').show();
@@ -426,7 +435,7 @@ $user_searches = array_map(
             });
         });
 
-        $('.oe-full-main').on('click', '.oe-search-results .pagination a', function (e) {
+        $main.on('click', '.oe-search-results .pagination a', function (e) {
             e.preventDefault();
             e.stopPropagation();
             $('#js-analytics-spinner').show();
@@ -474,3 +483,35 @@ $user_searches = array_map(
         });
     </script>
 <?php } ?>
+
+<?php
+    $patientsID = [];
+foreach ($patients->getData() as $i => $SearchPatient) {
+    $patientsID[] = $SearchPatient->id;
+}
+    $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
+    Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
+    $assetManager = Yii::app()->getAssetManager();
+    $widgetPath = $assetManager->publish('protected/widgets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
+?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        let ids = <?= json_encode($patientsID)?>;
+        if (ids[0]) {
+            $.ajax({
+                'type': "POST",
+                'data': "patientsID=" + ids + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                'url': "/OECaseSearch/caseSearch/renderPopups",
+                success: function (resp) {
+                    $("body.open-eyes.oe-grid").append(resp);
+                }
+            });
+            $('body').on('click', '.collapse-data-header-icon', function () {
+                $(this).toggleClass('collapse expand');
+                $(this).next('div').toggle();
+            });
+        }
+    });
+</script>

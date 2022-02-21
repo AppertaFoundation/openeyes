@@ -43,10 +43,15 @@
         <tr>
             <td><?php echo $metadata->name ?></td>
             <td>
-                <?php $this->renderPartial(
+                <?php
+                if (isset($institution_id)) {
+                    echo CHtml::hiddenField($metadata->key.'_institution_id', $institution_id);
+                }
+                $this->renderPartial(
                     '//admin/_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
-                    array('metadata' => $metadata, 'allowed_classes' => null)
-                ) ?>
+                    array('metadata' => $metadata, 'allowed_classes' => null, 'institution_id' => $institution_id)
+                )
+                ?>
             </td>
         </tr>
         </tbody>

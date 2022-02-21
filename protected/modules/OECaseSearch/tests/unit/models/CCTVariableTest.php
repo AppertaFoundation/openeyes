@@ -3,11 +3,13 @@
 use OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT;
 
 /**
-* Class CCTVariableTest
-*/
+ * Class CCTVariableTest
+ * @covers CCTVariable
+ * @covers CaseSearchVariable
+ */
 class CCTVariableTest extends CDbTestCase
 {
-    protected $variable;
+    protected CCTVariable $variable;
 
     protected $fixtures = array(
         'cct' => Element_OphCiExamination_AnteriorSegment_CCT::class,
@@ -37,7 +39,7 @@ class CCTVariableTest extends CDbTestCase
         unset($this->variable);
     }
 
-    public function getData()
+    public function getData(): array
     {
         return array(
             'Standard' => array(
@@ -65,7 +67,13 @@ class CCTVariableTest extends CDbTestCase
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
                 'query_template' => '
-        SELECT p.hos_num, p.nhs_num, cct.value, cct.side, DATE(cct.event_date), TIME(cct.event_date)
+        SELECT (
+            SELECT pi.value
+            FROM patient_identifier pi
+                JOIN patient_identifier_type pit ON pit.id = pi.patient_identifier_type_id
+            WHERE pi.patient_id = p.id
+            AND pit.usage_type = \'GLOBAL\'
+            ) nhs_num, cct.value, cct.side, cct.event_date, null
         FROM v_patient_cct cct
         JOIN patient p ON p.id = cct.patient_id
         WHERE patient_id IN (1, 2, 3)
@@ -81,22 +89,27 @@ class CCTVariableTest extends CDbTestCase
      * @param $csv_mode
      * @param $query_template
      */
-    public function testQuery($csv_mode, $query_template)
+    public function testQuery($csv_mode, $query_template): void
     {
         $this->variable->csv_mode = $csv_mode;
-        $this->assertEquals($query_template, $this->variable->query());
+        self::assertEquals($query_template, $this->variable->query());
     }
 
-    public function testGetVariableData()
+    public function testGetVariableData(): void
     {
-        $this->assertEquals('cct', $this->variable->field_name);
-        $this->assertEquals('CCT', $this->variable->label);
-        $this->assertEquals('CCT (microns)', $this->variable->x_label);
-        $this->assertNotEmpty($this->variable->id_list);
+        self::assertEquals('cct', $this->variable->field_name);
+        self::assertEquals('CCT', $this->variable->label);
+        self::assertEquals('CCT (microns)', $this->variable->x_label);
+        self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        $this->assertCount(1, $results[$this->variable->field_name]);
+        self::assertCount(1, $results[$this->variable->field_name]);
+    }
+
+    public function testGetPrimaryDataPointName(): void
+    {
+        self::assertEquals('cct', $this->variable->getPrimaryDataPointName());
     }
 }

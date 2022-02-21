@@ -11,7 +11,11 @@
         <input type="hidden" name="<?= get_class($model) ?>[patient_id]" id="patient-result-id" value="<?= $model->patient_id ?>">
   </div>
 </div>
-<?php if (isset($extras) && $extras) : ?>
+<?php if (isset($extras) && $extras) { ?>
+    <?php
+    $institution_id = Institution::model()->getCurrent()->id;
+    $site_id = Yii::app()->session['selected_site_id'];
+    ?>
 <div class="data-group">
     <div class="cols-2 column">
         <label for="patient-search">Maiden Name</label>
@@ -30,12 +34,12 @@
 </div>
 <div class="data-group">
   <div class="cols-2 column">
-    <label for="patient-search">Hospital Number</label>
+    <label for="patient-search"><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></label>
   </div>
   <div class="cols-5 column end">
-    <input type="text" id="patient-lookup-extra-hos-num" value="<?= ($model->patient) ? $model->patient->hos_num : '' ?>" readonly>
+    <input type="text" id="patient-lookup-extra-hos-num" value="<?= ($model->patient) ? PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $model->patient->id, $institution_id, $site_id)) : '' ?>" readonly>
   </div>
 </div>
-<?php endif;?>
+<?php } ?>
 <script type="text/javascript">
 </script>

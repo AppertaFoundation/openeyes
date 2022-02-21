@@ -10,6 +10,7 @@
 
 <?php $this->renderPartial(($this->getViewFile('event_content') ? '' : '//patient/') . 'event_content', [
     'content' => $content,
-    'form_id' => isset($form_id) ? $form_id : ''
+    'form_id' => isset($form_id) ? $form_id : '',
+    'has_errors' => $has_errors ?? 'false'
 ]); ?>
 

@@ -50,7 +50,8 @@ class OphCoTherapyapplication_DecisionTree extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-                'nodes' => array(self::HAS_MANY, 'OphCoTherapyapplication_DecisionTreeNode', 'decisiontree_id'),
+            'nodes' => array(self::HAS_MANY, 'OphCoTherapyapplication_DecisionTreeNode', 'decisiontree_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -60,11 +61,11 @@ class OphCoTherapyapplication_DecisionTree extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('name', 'safe'),
-                array('name', 'required'),
+                array('name, institution_id', 'safe'),
+                array('name, institution_id', 'required'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, name', 'safe', 'on' => 'search'),
+                array('id, name, institution_id', 'safe', 'on' => 'search'),
         );
     }
 

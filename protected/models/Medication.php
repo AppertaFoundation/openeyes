@@ -59,11 +59,25 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
  */
 class Medication extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return $this->tableName().'_id';
+    }
+
     const ATTR_PRESERVATIVE_FREE = "PRESERVATIVE_FREE";
 
     const SOURCE_TYPE_LEGACY = "LEGACY";
     const SOURCE_TYPE_LOCAL = "LOCAL";
     const SOURCE_TYPE_DMD = "DM+D";
+
+    const SELECTION_LABEL_FIELD = "short_term";
 
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
@@ -100,7 +114,7 @@ class Medication extends BaseActiveRecordVersioned
             ['id, deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose, default_dose_unit_term, source_old_id, is_prescribable', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            ['id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, 
+            ['id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code,
 					deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'],
         ];
     }
@@ -132,6 +146,7 @@ class Medication extends BaseActiveRecordVersioned
             "defaultRoute" => [self::BELONGS_TO, MedicationRoute::class, 'default_route_id'],
 
             'medicationSetAutoRuleMedication' => [self::HAS_MANY, MedicationSetAutoRuleMedication::class, 'medication_id'],
+            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
         ];
     }
 
@@ -256,8 +271,8 @@ class Medication extends BaseActiveRecordVersioned
     {
         $common_oph_id = Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
         $criteria = new CDbCriteria();
-        $criteria->condition = "id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN 
-                                        (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id 
+        $criteria->condition = "id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN
+                                        (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id
                                             AND site_id=:site_id AND subspecialty_id=:subspecialty_id))";
         $criteria->params = [":site_id" => $site_id, "subspecialty_id" => $subspecialty_id, ':usage_code_id' => $common_oph_id];
         $criteria->order = 'preferred_term';
@@ -273,7 +288,7 @@ class Medication extends BaseActiveRecordVersioned
     {
         $usage_code_id = Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => $usage_code])->queryScalar();
         $criteria = new CDbCriteria();
-        $criteria->condition = "id IN (SELECT medication_set_id FROM medication_set_item WHERE medication_id = :medication_id 
+        $criteria->condition = "id IN (SELECT medication_set_id FROM medication_set_item WHERE medication_id = :medication_id
                                             AND medication_set_id IN (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id))";
         $criteria->params = [":medication_id" => $this->id, ':usage_code_id' => $usage_code_id];
         $criteria->order = 'name';
@@ -371,6 +386,21 @@ class Medication extends BaseActiveRecordVersioned
                         continue;
                     }
                 }
+                $route = null;
+                $is_eye_route = false;
+                if ($item->default_route_id) {
+                    $route = "$item->defaultRoute";
+                    $is_eye_route = $item->defaultRoute->isEyeRoute();
+                } elseif ($item->medication && $item->medication->default_route_id) {
+                    $route = "{$item->medication->defaultRoute}";
+                    $is_eye_route = $item->medication->defaultRoute->isEyeRoute();
+                }
+                $duration_id = null;
+                if (isset($item->duration_id) && $item->duration_id) {
+                    $duration_id = $item->duration_id;
+                } elseif (isset($item->default_duration_id) && $item->default_duration_id) {
+                    $duration_id = $item->default_duration_id;
+                }
                 $return[] = [
                     'label' => $item->medication->getLabel(true),
                     'value' => $item->medication->getLabel(true),
@@ -381,6 +411,9 @@ class Medication extends BaseActiveRecordVersioned
                     'default_form' => $item->default_form_id ? $item->default_form_id : $item->medication->default_form_id,
                     'frequency_id' => $item->default_frequency_id,
                     'route_id' => $item->default_route_id ? $item->default_route_id : $item->medication->default_route_id,
+                    'route' => $route,
+                    'duration_id' => $duration_id,
+                    'is_eye_route' => $is_eye_route,
                     'source_subtype' => $item->medication ? $item->medication->source_subtype : "",
                     'will_copy' => $item->medication->getToBeCopiedIntoMedicationManagement(),
                     'set_ids' =>  array_map(function ($e) {
@@ -409,6 +442,14 @@ class Medication extends BaseActiveRecordVersioned
     public function listCommonSystemicMedications($raw = false, $subspecialty_id = null, $site_id = null, $prescribable_filter = false)
     {
         return $this->listByUsageCode("COMMON_SYSTEMIC", $subspecialty_id, $raw, $site_id, $prescribable_filter);
+    }
+    public function listCommonDrops($raw = false, $prescribable_filter = false)
+    {
+        return $this->listByUsageCode("COMMON_EYE_DROPS", null, $raw, null, $prescribable_filter);
+    }
+    public function listCommonOralMedications($raw = false, $prescribable_filter = false)
+    {
+        return $this->listByUsageCode("COMMON_ORAL_MEDS", null, $raw, null, $prescribable_filter);
     }
 
     public function listOphthalmicMedicationIds()

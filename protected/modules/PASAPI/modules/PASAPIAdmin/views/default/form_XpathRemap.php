@@ -16,6 +16,16 @@
  */
 ?>
 <tr>
+    <td><?=$model->getAttributeLabel('institution_id')?></td>
+    <td>
+        <?= CHtml::activeDropDownList(
+            $model,
+            'institution_id',
+            Institution::model()->getList(true),
+            ['class' => 'cols-full']) ?>
+    </td>
+</tr>
+<tr>
     <td><?=$model->getAttributeLabel('xpath');?></td>
     <td>
         <?= $form->hiddenField($model, 'id')?>

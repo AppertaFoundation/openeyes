@@ -18,25 +18,31 @@
 
 /**
  * Base tree class.
+ *
  */
 class BaseTree extends BaseActiveRecordVersioned
 {
     public $textFields = array();
     public $textFieldsDropdown = array();
 
-    public function findAllAsTree($parent = null, $first = true, $text = 'text')
+    public function findAllAsTree($parent = null, $first = true, $text = 'text', $institution_id = null)
     {
         $tree = array();
         $criteria = new CDbCriteria();
         $criteria->addCondition('parent_rule_id <=> :parent_rule_id');
-        $criteria->params[':parent_rule_id'] = $parent ? $parent->id : null;
+        $criteria->params[':parent_rule_id'] = $parent->id ?? null;
         $criteria->order = 'rule_order asc';
+        if ($institution_id) {
+            $criteria->with = 'site';
+            $criteria->addCondition('site.institution_id = :institution_id');
+            $criteria->params[':institution_id'] = $institution_id;
+        }
 
         if ($first && $parent) {
             $treeItem = array(
                 'id' => $parent->id,
                 'text' => $parent->$text,
-                'children' => $this->findAllAsTree($parent, false, $text),
+                'children' => $this->findAllAsTree($parent, false, $text, $institution_id),
             );
             $treeItem['hasChildren'] = !empty($treeItem['children']);
 
@@ -73,11 +79,11 @@ class BaseTree extends BaseActiveRecordVersioned
                 if (is_object($this->$target)) {
                     $param = method_exists($this->$target, 'getTreeName') ? 'treeName' : 'name';
                     $textItem = $this->$target->$param;
-                    strlen($textItem) > 0 && $text .= $prefix.'['.$textItem.']';
+                    $textItem !== '' && $text .= $prefix.'['.$textItem.']';
                 } else {
                     $param = method_exists($this, 'get'.ucfirst($target).'_TreeText') ? $target.'_TreeText' : $target;
                     $textItem = $this->$param;
-                    strlen($textItem) > 0 && $text .= $prefix.'['.$textItem.']';
+                    $textItem !== '' && $text .= $prefix.'['.$textItem.']';
                 }
             }
         }
@@ -110,14 +116,18 @@ class BaseTree extends BaseActiveRecordVersioned
         return $this->rule_order.': '.CHtml::openTag('a', array('href' => '#', 'id' => 'item'.$this->id, 'class' => 'treenode')).$this->textPlain.CHtml::closeTag('a')." <a href=\"#\" rel=\"$this->id\" class=\"addTreeItemHere\" ><img style=\"height:20px\" alt=\"Add tree item here\" src=\"".Yii::app()->assetManager->createUrl('img/_elements/btns/plus-sign.png')."\" /></a>\n";
     }
 
-    public function getListAsTree($parent = null)
+    public function getListAsTree($parent = null, $institution_id = null)
     {
         $list = array();
 
         $criteria = new CDbCriteria();
         $criteria->addCondition('parent_rule_id <=> :parent');
-        $criteria->params[':parent'] = $parent ? $parent->id : null;
+        $criteria->params[':parent'] = $parent->id ?? null;
         $criteria->order = 'rule_order asc';
+        if ($institution_id) {
+            $criteria->addCondition('institution_id = :institution_id');
+            $criteria->params[':institution_id'] = $institution_id;
+        }
 
         $class = get_class($this);
         foreach ($class::model()->findAll($criteria) as $rule) {

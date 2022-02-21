@@ -32,7 +32,11 @@
                     <?=\CHtml::dropDownList(
                         'parent_id',
                         (isset($_GET['parent_id']) ? $_GET['parent_id'] : null),
-                        SelectionHelper::listData('CommonOphthalmicDisorder')
+                        CHtml::listData(
+                            CommonOphthalmicDisorder::model()->findAll(),
+                            'id',
+                            function($item){return $item->disorder->term . ' (' . $item->subspecialty->name . ')';}//'disorder.term'
+                        )
                     ); ?>
                 </td>
             </tr>
@@ -141,6 +145,14 @@
                     return '<a href="javascript:void(0)" class="delete button large">delete</a>';
                 }
             ),
+            array(
+                'header' => 'Assigned to current institution',
+                'type' => 'raw',
+                'name' => 'assigned_insitution',
+                'value' => function($data, $row) {
+                    return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
+                }
+            ),
         );
 
         $this->widget('zii.widgets.grid.CGridView', array(
@@ -192,12 +204,20 @@
             initialiseRow($(this));
         });
 
+
         $('#add_new').on('click', function(){
             var $tr =  $('table.generic-admin tbody tr');
             var output = Mustache.render($('#common_ophthalmic_disorder_template').text(),{
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
-                'order_value': parseInt($('table.generic-admin tbody tr:last-child ').find('input[name^="display_order"]').val()) + 1
+                'order_value': function() {
+                    let raw_value = $('table.generic-admin tbody tr:last-child ').find('input[name^="display_order"]').val();
+                    if(raw_value === undefined) {
+                        raw_value = 0;
+                    }
+                    let parsed_value = parseInt(raw_value);
+                    return parsed_value + 1;
+                }
             });
 
             $('table.generic-admin tbody').append(output);

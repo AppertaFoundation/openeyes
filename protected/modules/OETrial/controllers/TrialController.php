@@ -406,7 +406,8 @@ class TrialController extends BaseModuleController
         $term = strtolower($term);
 
         $criteria = new CDbCriteria();
-        $criteria->compare('LOWER(username)', $term, true, 'OR');
+        $criteria->join = 'JOIN user_authentication user_auth ON t.id = user_auth.user_id';
+        $criteria->compare('LOWER(user_auth.username)', $term, true, 'OR');
         $criteria->compare('LOWER(first_name)', $term, true, 'OR');
         $criteria->compare('LOWER(last_name)', $term, true, 'OR');
         $words = explode(' ', $term);
@@ -420,17 +421,17 @@ class TrialController extends BaseModuleController
             $first_criteria->mergeWith($last_criteria, 'OR');
             $criteria->mergeWith($first_criteria, 'OR');
         }
-        $criteria->addCondition('id NOT IN (SELECT user_id FROM user_trial_assignment WHERE trial_id = ' . $model->id . ')');
+        $criteria->addCondition('t.id NOT IN (SELECT user_id FROM user_trial_assignment WHERE trial_id = ' . $model->id . ')');
         $criteria->addCondition('
             EXISTS(
                 SELECT 1
                 FROM authassignment aa
                 JOIN authitemchild aic
                 ON aic.parent = aa.itemname
-                WHERE aa.userid = id 
+                WHERE aa.userid = t.id
                 AND aic.child = \'TaskViewTrial\'
             )');
-        $criteria->compare('active', true);
+        $criteria->compare('user_auth.active', true);
 
         /* @var User $user */
         foreach (User::model()->findAll($criteria) as $user) {
@@ -438,7 +439,6 @@ class TrialController extends BaseModuleController
                 'id' => $user->id,
                 'label' => $user->getFullNameAndTitle(),
                 'value' => $user->getFullName(),
-                'username' => $user->username,
             );
         }
 

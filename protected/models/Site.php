@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -31,6 +32,7 @@
  * @property string $postcode
  * @property string $fax
  * @property string $telephone
+ * @property int $institution_id
  *
  * The followings are the available model relations:
  * @property Institution $institution
@@ -60,7 +62,7 @@ class Site extends BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.name');
+        return array('order' => $this->getTableAlias(true, false) . '.name');
     }
 
     public function behaviors()
@@ -82,7 +84,9 @@ class Site extends BaseActiveRecordVersioned
         return array(
             array('name, short_name, remote_id, telephone', 'required'),
             array('name', 'length', 'max' => 255),
+            array('remote_id', 'length', 'max' => 10),
             array('institution_id, name, remote_id, short_name, fp_10_code, location_code, fax, telephone, contact_id, replyto_contact_id, source_id, active, logo_id', 'safe'),
+            array('location', 'default', 'value' => ''),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
@@ -166,13 +170,13 @@ class Site extends BaseActiveRecordVersioned
 
             if ($institution->short_name && $site->name != 'Unknown') {
                 if ($display_institution === 'On') {
-                    $site_name = $institution->short_name.' at ';
+                    $site_name = $institution->short_name . ' at ';
                 }
             }
             $site_name .= $site->name;
 
             if ($site->location) {
-                $site_name .= ', '.$site->location;
+                $site_name .= ', ' . $site->location;
             }
 
             $result[$site->id] = $site_name;
@@ -181,14 +185,20 @@ class Site extends BaseActiveRecordVersioned
         return $result;
     }
 
-    public function getDefaultSite()
+    public function getDefaultSite($institution_id = null)
     {
         $site = null;
+
+        if(isset($institution_id)){
+            $site = $this->find('institution_id = :id', [':id' => $institution_id]);
+        }
+
         if (Yii::app()->params['default_site_code']) {
             $site = $this->findByAttributes(array('remote_id' => Yii::app()->params['default_site_code']));
         }
+
         if (!$site) {
-            $site = $this->find();
+            $site = $this->find('institution_id = :id', [':id' => Yii::app()->session['selected_institution_id']]);
         }
 
         return $site;
@@ -204,7 +214,7 @@ class Site extends BaseActiveRecordVersioned
                 if ($display_institution  == 'Off') {
                     return $this->name;
                 } else {
-                    return $this->institution->short_name.' at '.$this->name;
+                    return $this->institution->short_name . ' at ' . $this->name;
                 }
             }
         }
@@ -215,6 +225,18 @@ class Site extends BaseActiveRecordVersioned
         }
 
         return array($this->institution->name, $this->name);
+    }
+
+    public function getListForAllInstitutions()
+    {
+        $result = array();
+        $sites = $this->findAll();
+
+        foreach ($sites as $site) {
+            $result['list'][$site->id] = $site->short_name;
+            $result['options'][$site->id] = array('institution' => $site->institution_id, 'class' => 'hidden');
+        }
+        return $result;
     }
 
     public function getShortname()
@@ -229,5 +251,33 @@ class Site extends BaseActiveRecordVersioned
 
             return $this->getLetterAddress($params);
         }
+    }
+
+    /**
+     * @return Site
+     * @throws Exception
+     */
+    public function getCurrent(): Site
+    {
+        if (!isset(Yii::app()->session['selected_site_id'])) {
+            throw new Exception('Site id is not set');
+        }
+
+        $site = $this->findByPk(Yii::app()->session['selected_site_id']);
+        if (!$site) {
+            throw new Exception("Site with id '" . Yii::app()->session['selected_site_id'] . "' not found");
+        }
+
+        return $site;
+    }
+
+    /**
+     * Returns the short_name of the site
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->short_name;
     }
 }

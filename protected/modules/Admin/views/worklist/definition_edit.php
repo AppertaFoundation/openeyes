@@ -92,7 +92,8 @@
                         ]
                     ); ?>
                 </td>
-            </tr><tr>
+            </tr>
+            <tr>
                 <td>End time</td>
                 <td>
                     <?=\CHtml::activeTextField(
@@ -105,6 +106,21 @@
                             'append-text' => 6,
                         ]
                     ); ?> &nbsp; Appointments will match on any time <strong>before</strong> the end time specified here.
+                </td>
+            </tr>
+            <tr>
+                <td>Patient Identifier Type</td>
+                <td>
+                    <?=\CHtml::activeDropDownList(
+                            $definition,
+                        'patient_identifier_type_id',
+                        CHtml::listData(PatientIdentifierType::model()->findAll(), 'id', 'titleWithInstitution'),
+
+                        [
+                            'empty' => 'Select',
+                            'class' => 'cols-6',
+                        ]
+                    ); ?>
                 </td>
             </tr>
             </tbody>

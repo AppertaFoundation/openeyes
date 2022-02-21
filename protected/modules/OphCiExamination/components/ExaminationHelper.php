@@ -50,6 +50,7 @@ class ExaminationHelper
             'OEModule\OphCiExamination\models\Element_OphCiExamination_Risks',
             'OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities',
             'OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement_Archive',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Dilation',
         ));
 
     }

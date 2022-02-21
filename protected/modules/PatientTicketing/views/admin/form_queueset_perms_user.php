@@ -18,7 +18,7 @@
 ?>
 
 <li>
-    <span class="user-description"><?= $fullname.' ('.$username.')' ?></span>
+    <span class="user-description"><?= $fullname ?></span>
     <span class="actions queueset-admin">
         <span class="admin-action remove js-has-tooltip" data-tooltip="remove">x</span>
     </span>

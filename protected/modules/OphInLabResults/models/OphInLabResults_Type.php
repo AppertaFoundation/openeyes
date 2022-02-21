@@ -15,13 +15,29 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-
+/**
+ * Class OphInLabResults_Type
+ * @property Institution[] $institutions
+ * @property OphInLabResults_Type_Institution $institutionAssignments
+ */
 class OphInLabResults_Type extends BaseActiveRecordVersioned
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'labresults_type_id';
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OEModule\OphInLabResults\models static model class
+     * @return OphInLabResults_Type|BaseActiveRecord static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -64,6 +80,8 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
         return array(
             'result_element_type' => array(self::BELONGS_TO, 'ElementType', 'result_element_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', 'ophinlabresults_type_institution(labresults_type_id, institution_id)'),
+            'institutionAssignments' => array(self::HAS_MANY, 'ophinlabresults_type_institution', 'labresults_type_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'fieldType' => [self::BELONGS_TO, 'OphInLabResults_Field_Type', 'field_type_id'],
             'resultOptions' => [self::HAS_MANY, 'OphInLabResults_Type_Options', 'type']
@@ -141,6 +159,16 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
                 );
             }
         }
+    }
+
+    public function hasInstitutionMapping(int $id)
+    {
+        foreach ($this->institutions as $institution) {
+            if ((int)$institution->id === $id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function defaultScope()

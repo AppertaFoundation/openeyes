@@ -37,9 +37,9 @@
   <tr>
     <td>
         <?php echo $form->passwordChangeField(
-            $user,
+            $user_auth,
             'Current Password',
-            'User[password_old]',
+            'UserAuthentication[password_old]',
             array('readonly' => !Yii::app()->params['profile_user_can_change_password'])
         ) ?>
     </td>
@@ -47,9 +47,9 @@
   <tr>
     <td>
         <?php echo $form->passwordChangeField(
-            $user,
+            $user_auth,
             'New Password',
-            'User[password_new]',
+            'UserAuthentication[password_new]',
             array('readonly' => !Yii::app()->params['profile_user_can_change_password'])
         ) ?>
     </td>
@@ -57,9 +57,9 @@
   <tr>
     <td>
         <?php echo $form->passwordChangeField(
-            $user,
+            $user_auth,
             'Confirm',
-            'User[password_confirm]',
+            'UserAuthentication[password_confirm]',
             array('readonly' => !Yii::app()->params['profile_user_can_change_password'])
         ) ?>
     </td>

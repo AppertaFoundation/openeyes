@@ -28,7 +28,7 @@ return [
         'urlManager' => [
             'rules' => [
                 // add a rule so that letters can be used in the external id for the resource
-                ['PASAPI/V1/update', 'pattern' => 'PASAPI/<controller:\w+>/<resource_type:\w+>/<id:\w+>', 'verb' => 'PUT'],
+                ['PASAPI/V1/update', 'pattern' => 'PASAPI/<controller:\w+>/<resource_type:\w+>/<id:\w+>/identifier-type/<identifier_type>', 'verb' => 'PUT'],
                 ['PASAPI/V1/delete', 'pattern' => 'PASAPI/<controller:\w+>/<resource_type:\w+>/<id:\w+>', 'verb' => 'DELETE'],
             ],
         ],
@@ -41,6 +41,12 @@ return [
                         'method' => 'search',
                     ],
                 ],
+                'patient_search_update' => [
+                    'search_pas' => [
+                        'class' => 'OEModule\PASAPI\components\PasSearchUpdateObserver',
+                        'method' => 'search',
+                    ]
+                ]
             ],
         ],
     ],
@@ -54,10 +60,14 @@ return [
     'params' => [
 
         'pasapi' => [
-            'enabled' => trim(strtolower(getenv("OE_PASAPI_ENABLE"))) == "false" ? false : true,
-            'url' => getenv("OE_PASAPI_URL") ?: 'http://localhost:4200',
+            'enabled' => (getenv("OE_PASAPI_ENABLE") && trim(strtolower(getenv("OE_PASAPI_ENABLE")))) == "false" ? false : true,
+
+            // DEPRECATED 'url', this setting moved to the Admin section
+            //'url' => getenv("OE_PASAPI_URL") ?: 'http://localhost:4200',
+
             'curl_timeout' => 10, //sec
 
+            // DEPRECATED 'proxy', this setting moved to the Admin section
             // comment this out to use the params['curl_proxy']
             // use 'false' to bypass any proxies
             'proxy' => getenv("OE_PASAPI_PROXY") ?: false,
@@ -65,8 +75,12 @@ return [
             // set the caching time in seconds - don't query the PAS for data that had been cached within the last X minutes
             // set cache_time to null (never stale] to never update the object from PAS
             // set cache_time to 0 (always stale] to update the object from PAS every time
-            'cache_time' => getenv("OE_PASAPI_CACHE_TIME") ?: 300, //sec
-            'allowed_params' => [],
+
+            // DEPRECATED 'cache_time', this setting moved to the Admin section
+            //'cache_time' => getenv("OE_PASAPI_CACHE_TIME") ?: 300, //sec
+
+            // DEPRECATED 'allowed_params', this setting moved to the Admin section
+            //'allowed_params' => [],
         ],
     ],
 ];

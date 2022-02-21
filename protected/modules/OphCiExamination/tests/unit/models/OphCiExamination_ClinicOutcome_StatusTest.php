@@ -21,6 +21,7 @@ class OphCiExamination_ClinicOutcome_StatusTest extends ActiveRecordTestCase
         'clinicOutcomeStatus' => 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status',
         'clinicOutcomeStatusOptions' => ':ophciexamination_clinicoutcome_status_options',
         'subspecialty' => '\Subspecialty',
+        'institution' => '\Institution',
     );
 
     public function getModel()
@@ -43,6 +44,17 @@ class OphCiExamination_ClinicOutcome_StatusTest extends ActiveRecordTestCase
 
         foreach ($statusesBySubspecialty as $statusBySubspecialty) {
             $this->assertNotEquals('Not active option', $statusBySubspecialty->name);
+        }
+    }
+
+    public function testByInstitution()
+    {
+        $statusesByInstitution = $this->model->byInstitution($this->institution('moorfields'))->findAll();
+
+        $this->assertCount(3, $statusesByInstitution);
+
+        foreach ($statusesByInstitution as $status) {
+            $this->assertNotEquals('Not active option', $status->name);
         }
     }
 }

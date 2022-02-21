@@ -158,8 +158,14 @@ class OphCoMessaging_API extends \BaseAPI
                 'desc' => 'lower(message_type.name) desc'),
             'event_date' => array('asc' => 't.created_date asc',
                 'desc' => 't.created_date desc', ),
-            'user' => array('asc' => 'lower(user.last_name) asc, lower(user.first_name) asc',
-                'desc' => 'lower(user.last_name) desc, lower(user.first_name) desc', ),
+            'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
+                'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
+            'age' => array('asc' => 'patient.dob desc',
+                'desc' => 'patient.dob asc', ),
+            'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
+                'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
+            'gender' => array('asc' => 'patient.gender asc',
+                'desc' => 'patient.gender desc', ),
         );
 
         $sort->defaultOrder = 'event_date desc';
@@ -285,6 +291,12 @@ class OphCoMessaging_API extends \BaseAPI
                 'desc' => 'lower(message_type.name) desc'),
             'event_date' => array('asc' => 't.created_date asc',
                 'desc' => 't.created_date desc', ),
+            'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
+                'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
+            'hos_num' => array('asc' => 'patient.localIdentifiers asc',
+                'desc' => 'patient.localIdentifiers desc', ),
+            'age' => array('asc' => 'patient.dob desc',
+                'desc' => 'patient.dob asc', ),
             'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
                 'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
         );
