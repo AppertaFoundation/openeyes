@@ -340,6 +340,38 @@ class Firm extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param $institution_id
+     * @return string
+     */
+    public function getConsultantNameReversedAndUsername($institution_id): string
+    {
+        if ($consultant = $this->consultant) {
+            $user_auth_id = Yii::app()->db->createCommand()
+                ->select('ua.id')
+                ->from('institution_authentication ia')
+                ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id')
+                ->where('ia.institution_id = :institution_id AND ua.user_id = :user_id')
+                ->limit(1)
+                ->bindValues([':institution_id' => $institution_id, ':user_id' => $this->id])
+                ->queryScalar();
+
+            // Assuming that, despite multiple institution authentications,
+            // a user's username is identical for all of them.
+            $user_auth = UserAuthentication::model()->findByPk($user_auth_id);
+
+            if (!$user_auth) {
+                return $consultant->contact->last_name
+                    . ' ' . $consultant->contact->first_name;
+            }
+            return $consultant->contact->last_name
+                . ' ' . $consultant->contact->first_name
+                . " ({$user_auth->username})";
+        }
+
+        return 'NO CONSULTANT';
+    }
+
+    /**
      * @return string
      */
     public function getReportDisplay()

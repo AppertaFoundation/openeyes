@@ -61,6 +61,14 @@
                     'field' => 2,
                 ),
             ));
+            $this->widget('application.widgets.HiddenField', array(
+                'element' => $this->event,
+                'name' => CHtml::modelName($this->event) . "[last_modified_date]",
+                'field' => 'last_modified_date',
+                'htmlOptions' => array(
+                    'form' => $form_id,
+                ),
+            ));
             ?>
             <script>
                 $(document).ready(function() {

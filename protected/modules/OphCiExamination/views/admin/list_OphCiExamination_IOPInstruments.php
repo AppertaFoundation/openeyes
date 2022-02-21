@@ -27,7 +27,6 @@
                 <th>Short Name</th>
                 <th>Institution</th>
                 <th>Active</th>
-                <th>Visible</th>
             </tr>
             </thead>
             <colgroup>
@@ -35,7 +34,6 @@
                 <col class="cols-3">
                 <col class="cols-2">
                 <col class="cols-4">
-                <col class="cols-1">
             </colgroup>
             <tbody>
             <?php foreach ($model_list as $i => $model) { ?>
@@ -53,7 +51,6 @@
                         echo $institutions ? CHtml::encode(implode(', ', $institutions)) : 'N/A'; ?>
                     </td>
                     <td><i class="oe-i <?= ($model->active ? 'tick' : 'remove'); ?> small"></i></td>
-                    <td><i class="oe-i <?= ($model->visible ? 'tick' : 'remove'); ?> small"></i></td>
                 </tr>
             <?php } ?>
             </tbody>
