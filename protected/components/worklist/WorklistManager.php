@@ -647,21 +647,30 @@ class WorklistManager extends CComponent
         return $worklists;
     }
 
-    public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null)
+    public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null, $filter = null)
     {
         $worklists = [];
 
         if (!$user) {
             $user = $this->getCurrentUser();
         }
+
         $institution = $this->getCurrentInstitution();
-        $site = $this->getCurrentSite();
-        $firm = $this->getCurrentFirm();
+
+        if ($filter) {
+            $site = $this->getModelForClass('Site')->findByPk($filter->getSiteId());
+
+            $firm = $filter->coversAllContexts()
+                  ? $this->getCurrentFirm()
+                  : $this->getModelForClass('Firm')->findByPk($filter->getContextId());
+        } else {
+            $site = $this->getCurrentSite();
+            $firm = $this->getCurrentFirm();
+        }
 
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
+
         foreach ($days as $when) {
-
-
             foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
@@ -672,10 +681,22 @@ class WorklistManager extends CComponent
 
         $unique_ids = array();
         $unique_worklists = array();
-        foreach ($worklists as $wl) {
-            if(!in_array($wl->id, $unique_ids)) {
-                $unique_worklists[] = $wl;
-                $unique_ids[] = $wl->id;
+
+        if (!$filter || $filter->coversAllWorklists()){
+            foreach ($worklists as $wl) {
+                if(!in_array($wl->id, $unique_ids)) {
+                    $unique_worklists[] = $wl;
+                    $unique_ids[] = $wl->id;
+                }
+            }
+        } else {
+            $selected_ids = $filter->getWorklists();
+
+            foreach ($worklists as $wl) {
+                if(in_array($wl->id, $selected_ids) && !in_array($wl->id, $unique_ids)) {
+                    $unique_worklists[] = $wl;
+                    $unique_ids[] = $wl->id;
+                }
             }
         }
 
@@ -872,6 +893,41 @@ class WorklistManager extends CComponent
     }
 
     /**
+     * Clones the default pathway for the associated worklist for the specified worklist patient.
+     * @param WorklistPatient $wp
+     * @return bool
+     * @throws Exception
+     */
+    public function createPathway(WorklistPatient $wp)
+    {
+        $wp->refresh();
+
+        if (!$wp->pathway) {
+            $pathway_type_id = $wp->worklist->worklist_definition->pathway_type_id;
+            $pathway_type = PathwayType::model()->findByPk($pathway_type_id);
+
+            if ($pathway_type) {
+                if (!$pathway_type->createNewPathway($wp->id)) {
+                    throw new Exception('Unable to create pathway.');
+                }
+                $wp->refresh(); // Need to refresh first to synchronise the pathway relation to the newly created pathway.
+
+                $start_status = $wp->getWorklistPatientAttribute('Status'); // Could we genericise this attribute name in future?
+                if ($wp->pathway
+                    && !$wp->pathway->start_time
+                    && $start_status
+                    && strtolower($start_status->attribute_value) === strtolower('Attended')) {
+                    // Start the pathway immediately.
+                    $wp->pathway->startPathway();
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * If the given Patient is successfully added to the given Worklist, returns true. false otherwise.
      *
      * @param Patient  $patient
@@ -909,6 +965,10 @@ class WorklistManager extends CComponent
                 if (!$this->setAttributesForWorklistPatient($wp, $attributes)) {
                     throw new Exception('Could not set attributes for patient on worklist');
                 }
+            }
+
+            if (!$this->createPathway($wp)) {
+                throw new Exception('Unable to create pathway for patient visit.');
             }
 
             $target = $worklist->worklist_definition_id ? self::$AUDIT_TARGET_AUTO : self::$AUDIT_TARGET_MANUAL;
@@ -1041,6 +1101,18 @@ class WorklistManager extends CComponent
                 'pageSize' => $this->getWorklistPageSize(),
             ),
         ));
+    }
+
+    /**
+     * @TODO: test me
+     *
+     * @param $worklist
+     *
+     * @return CSqlDataProvider
+     */
+    public function getPatientsForWorklistSQL($worklist, $filter)
+    {
+        return $filter->getWorklistPatientsProvider($this->getWorklistPageSize(), $worklist);
     }
 
     /**

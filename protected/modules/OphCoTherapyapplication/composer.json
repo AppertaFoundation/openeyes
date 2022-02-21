@@ -1,8 +1,0 @@
-{
-  "name": "openeyes/oph-co-therapyapplication",
-  "description": "Generates applications for therapy for patients within OpenEyes",
-  "type": "openeyes-module",
-  "require": {
-    "openeyes/module-installer": "*"
-  }
-}

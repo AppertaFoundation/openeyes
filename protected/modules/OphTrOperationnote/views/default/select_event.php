@@ -58,21 +58,22 @@ $warnings = $this->patient->getWarnings($clinical);
           <div class="data-value flex-layout">
             <p>
                 <?php if (count($operations) > 0) : ?>
-                  Please indicate whether this operation note relates to a booking or an unbooked emergency:
+                  Please indicate whether this operation note relates to a booking, an unbooked emergency or an outpatient minor note:
                 <?php else : ?>
-                  There are no open bookings in the current episode so only an emergency operation note can be created.
+                  There are no open bookings in the current episode so only an emergency or outpatient minor operation note can be created.
                 <?php endif; ?>
             </p>
           </div>
           <br/>
-        <div class="cols-8">
+        <div class="cols-10">
           <div class="data-group" style="padding-left: 100px">
-            <table class="cols-10 last-left">
+            <table class="cols-10">
               <thead>
               <tr>
                 <th>Booked Date</th>
                 <th>Procedure</th>
                 <th>Comments</th>
+                <th></th>
               </tr>
               </thead>
               <tbody>
@@ -80,7 +81,7 @@ $warnings = $this->patient->getWarnings($clinical);
                 <?php foreach ($operations as $operation) : ?>
                 <tr>
                   <td>
-                    <span class="cols-3 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
+                    <span class="cols-4 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
                     <?php if (!$theatre_diary_disabled) {
                         if ($operation->booking) {
                             echo $operation->booking->session->NHSDate('date');
@@ -89,25 +90,58 @@ $warnings = $this->patient->getWarnings($clinical);
                     </span>
                   </td>
                   <td>
-                    <a href="#" class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">
-                        <?php
-                        echo implode('<br />', array_map(function ($procedure) use ($operation) {
-                            return $operation->eye->name . ' ' . $procedure->term;
-                        }, $operation->procedures));
-                        ?>
-                    </a>
+                    <?php
+                    echo implode('<br />', array_map(function ($procedure) use ($operation) {
+                        return $operation->eye->name . ' ' . $procedure->term;
+                    }, $operation->procedures));
+                    ?>
                   </td>
                   <td>
                       <?= $operation->comments; ?>
+                      <?php
+                        $existing_consent_criteria = new CDbCriteria();
+                        $existing_consent_criteria->with = ['event'];
+                        $existing_consent_criteria->compare('event.deleted', 0);
+                        $existing_consent_criteria->compare('t.booking_event_id', $operation->event_id);
+                        $has_consent = Element_OphTrConsent_Procedure::model()->find($existing_consent_criteria);
+
+                        if ($has_consent) {
+                            $withdrawal_criteria = new CDbCriteria();
+                            $withdrawal_criteria->compare('event_id', $has_consent->event_id);
+                            $withdrawal = Element_OphTrConsent_Withdrawal::model()->find($withdrawal_criteria);
+                            if ($withdrawal && $withdrawal->signature_id !== null) { ?>
+                            <div class="alert-box warning with-icon">
+                              This event has a consent which has been withdrawn.
+                            </div>
+                            <?php } ?>
+                        <?php } ?>
+                  </td>
+                  <td>
+                    <button class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">
+                      Create op note
+                    </button>
                   </td>
                 </tr>
                 <?php endforeach; ?>
               <tr>
                 <td>N/A</td>
                 <td>
-                  <a href="#" class="booking-select" data-booking="emergency">Emergency / Unbooked<a>
+                  Emergency / Unbooked
                 </td>
                 <td></td>
+                <td>
+                   <button class="booking-select" data-booking="emergency">Create default op note</button>
+                </td>
+              </tr>
+              <tr>
+                <td>N/A</td>
+                <td>
+                  Outpatient Minor Ops
+                </td>
+                <td></td>
+                <td>
+                   <button class="booking-select" data-booking="outpatient-minor-op">Create minor ops note</button>
+                </td>
               </tr>
               </tbody>
             </table>

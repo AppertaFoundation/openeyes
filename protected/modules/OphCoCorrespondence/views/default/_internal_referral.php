@@ -1,3 +1,10 @@
+<?php
+$selected_firm_id = Yii::app()->session['selected_firm_id'];
+$selected_subspecialty_id = $element->to_subspecialty_id != "" ?
+    $element->to_subspecialty_id :
+    \Firm::model()->findByPk($selected_firm_id)->getSubspecialtyID();
+?>
+
 <div class="required internal-referral-section">
     <hr class="divider"/>
     <h3>Internal Referral to:</h3>
@@ -12,9 +19,7 @@
                 <td>Service</td>
                 <td>
                     <?php
-                    $element->to_subspecialty_id = $element->to_subspecialty_id != "" ?
-                        $element->to_subspecialty_id :
-                        \Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->getSubspecialtyID();
+                    $element->to_subspecialty_id = $selected_subspecialty_id;
 
                     $criteria = new CDbCriteria();
                     $criteria->with = ['serviceSubspecialtyAssignment' =>
@@ -31,12 +36,16 @@
             <tr>
                 <td><?= Firm::contextLabel() ?></td>
                 <td>
-                    <?=\CHtml::activeDropDownList(
+                    <?php
+                    $only_service_firms = SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on');
+                    $applicable_firms = Firm::model()->getListWithSpecialties(Yii::app()->session['institution_id'], false, $selected_subspecialty_id, false, $only_service_firms);
+
+                    echo \CHtml::activeDropDownList(
                         $element,
                         "to_firm_id",
-                        Firm::model()->getListWithSpecialties(),
+                        $applicable_firms,
                         array('empty' => '- None -', 'class' => 'cols-full')
-                    ) ?>
+                    ); ?>
                 </td>
             </tr>
             <tr>

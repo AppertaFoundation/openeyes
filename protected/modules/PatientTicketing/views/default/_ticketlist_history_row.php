@@ -21,25 +21,23 @@
  */
 ?>
 
-<tr class="history" data-ticket-id="<?= $ass->ticket->id ?>">
+<tr class="history no-line" data-ticket-id="<?= $ass->ticket->id ?>">
     <td><i class="oe-i child-arrow medium no-click"></i></td>
     <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td><?= Helper::convertDate2NHS($ass->assignment_date) ?></td>
+    <td><small class="fade"><?= $ass->ticket->patient->getHSCICName() ?></small></td>
     <td>
-        <?= $ass->assignment_firm->getNameAndSubspecialty() ?>
-        <br>
-        <small class="fade"><?= $ass->assignment_user->getFullName() ?></small>
-    </td>
-    <td>
-        <div class="clinic-info scroll-content">
-            <?= $ass->formattedReport ?>
+        <div class="small-row"><?=$ass->ticket->getTicketFirm();?><br>
+            <small class="fade"><?= $ass->ticket->user->getFullName() ?></small>
         </div>
     </td>
     <td>
-        <div class="scroll-content">
-            <?= Yii::app()->format->Ntext($ass->notes) ?>
+        <div class="flex-t col-gap">
+            <div class="clinic-info scroll-content flex-fill-2">
+                <?= $ass->formattedReport ? preg_replace('/^(<br \/>)/', '', $ass->formattedReport) : '-'; ?>
+            </div>
+            <div class="scroll-content flex-fill">
+                <em><?= \Yii::app()->format->Ntext($ass->notes) ?></em>
+            </div>
         </div>
     </td>
-    <td>&nbsp;</td>
 </tr>

@@ -3,13 +3,13 @@ $answerResults = $eur->eurAnswerResults ? $eur->eurAnswerResults : $answerResult
 if ($eur->result == 0) {
     $msg = 'The patient is not suitable for Cataract Surgery.';
     $style_class = 'warning';
-} else if ($eur->result == 1) {
+} elseif ($eur->result == 1) {
     $msg = 'The patient is suitable for Cataract Surgery.';
     $style_class = 'success';
 }
 if ($eur->eye_num == 1) {
     $eye_no = '1st Eye';
-} else if ($eur->eye_num == 2) {
+} elseif ($eur->eye_num == 2) {
     $eye_no = '2nd Eye';
 }
 ?>

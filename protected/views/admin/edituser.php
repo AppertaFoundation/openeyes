@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $form = $this->beginWidget(
@@ -102,12 +104,12 @@ $form = $this->beginWidget(
                 </td>
             </tr>
             <tr>
-                <td><?=Firm::contextLabel()?></td>
+                <td><?=Firm::contextLabel()?>(s)</td>
                 <td>
                     <?php
                     $firm_label = [];
                     foreach ($user->getAllAvailableFirms() as $firm) {
-                        $firm_label[$firm->id] = "{$firm->name} ". ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "") . " [{$firm->institution->name}]";
+                        $firm_label[$firm->id] = "{$firm->name} " . ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "") . " [{$firm->institution->name}]";
                     }
                     echo $form->multiSelectList(
                         $user,
@@ -172,7 +174,7 @@ $form = $this->beginWidget(
 
         <h2>Login Authentications</h2>
         <hr class="divider">
-        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'pincode', 'password', 'password_repeat', 'password_status', 'active'] ?>
+        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'lookup_user', 'password', 'password_repeat', 'password_status', 'active'] ?>
         <table class="standard" id="user-authentications">
             <thead>
             <tr>
@@ -268,6 +270,7 @@ $form = $this->beginWidget(
     ?>
 </script>
 <script>
+    let defaultPasswordStatus = "current";
     $(document).ready(function () {
         $('#add-user-authentication-btn').on('click', function () {
             let $table = $('#user-authentications tbody');
@@ -279,9 +282,16 @@ $form = $this->beginWidget(
 
         $('#user-auth-rows').on('change', '.js-change-inst-auth', function (e) {
             let $row = $(this).closest('tr');
+
+            if ($row.find('.js-id').val() !== '') {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Warning Institution Authentication changed - password status and expiry has been reset to system defaults."
+                }).open();
+            }
+
+            $row.find('.js-password-status').val(defaultPasswordStatus);
             $row.find('.js-remove-row').hide();
             $row.find('.js-row-spinner').show();
-            $row.find('.js-pincode-section').attr('data-ins-auth-id', this.value);
             $.ajax({
                 'type': 'GET',
                 'url': baseUrl + '/admin/checkInstAuthType?id=' + $(this).val(),
@@ -301,4 +311,26 @@ $form = $this->beginWidget(
             $(this).closest('tr').remove();
         });
     });
+
+    function lookupUser(key) {
+        if($('#UserAuthentication_'+key+'_username').val()) {
+            $.ajax({
+                'type': 'GET',
+                'url': baseUrl + '/admin/lookupUser?username=' + $('#UserAuthentication_'+key+'_username').val() + '&institution_authentication_id=' + $('#UserAuthentication_'+key+'_institution_authentication_id').val(),
+                'success': function (resp) {
+                    var m = resp.match(/[0-9]+/);
+                    if (m) {
+                        window.location.href = baseUrl + '/admin/editUser/' + m[0];
+                    } else {
+                        enableButtons();
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: "User not found"
+                        }).open();
+                    }
+                }
+            });
+        }
+    };
+
+    
 </script>

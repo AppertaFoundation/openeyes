@@ -20,7 +20,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
     private $enable_version = true;
     private $fetch_from_version = false;
     public $version_id = null;
-
+    public $version_date = null;
     /* Disable archiving on save() */
 
     public function noVersion()
@@ -100,6 +100,21 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
             'params' => $params,
             'order' => 'version_id desc',
         ));
+    }
+
+    /**
+     * Return all previous versions based on criteria
+     *
+     * @param CDbCriteria $criteria custom query criteria
+     * @return array return version data
+     */
+    public function getPreviousVersionsWithCriteria(CDbCriteria $criteria)
+    {
+        $criteria->addCondition('id = :id');
+        $criteria->params[':id'] = $this->id;
+
+        $criteria->order = 'version_id desc';
+        return $this->model()->fromVersion()->findAll($criteria);
     }
 
     public function getPreviousVersionWithCriteria(CDbCriteria $criteria)

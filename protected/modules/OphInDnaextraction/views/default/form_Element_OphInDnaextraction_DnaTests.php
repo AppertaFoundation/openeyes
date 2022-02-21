@@ -69,7 +69,7 @@
                     $disabled = !$this->checkAccess('TaskEditGeneticsWithdrawals');
                     $this->renderPartial('application.modules.OphInDnaextraction.views.default._dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => ($this->action->id === 'view') ));
                 }
-            } else if ($element->transactions) {
+            } elseif ($element->transactions) {
                 foreach ($element->transactions as $i => $transaction) {
                     $disabled = !$this->checkAccess('TaskEditGeneticsWithdrawals');
                     $this->renderPartial('application.modules.OphInDnaextraction.views.default._dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => ($this->action->id === 'view') ));

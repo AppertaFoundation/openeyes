@@ -46,7 +46,6 @@ class HeadPostureTest extends \ModelTestCase
         $options = $this->getElementInstance()->turn_options;
         $this->assertCount(2, $options);
         $this->assertDropdownOptionsHasCorrectKeys($options);
-
     }
 
     /** @test */

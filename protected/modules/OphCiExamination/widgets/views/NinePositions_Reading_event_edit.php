@@ -28,7 +28,6 @@ use OEModule\OphCiExamination\widgets\NinePositions;
 ?>
 
 <div class="js-reading collapse-group highlight" data-key="<?= $row_count ?>">
-    <div class="header-icon collapse">Reading</div>
     <div class="collapse-group-content">
         <div class="cols-full">
             <!-- DOM simplified for v3 'method' -->
@@ -167,7 +166,7 @@ use OEModule\OphCiExamination\widgets\NinePositions;
                         <a class="ed-button" href="#" data-function="shootOrDrift" data-arg="UpShoot" data-eye="right">
                             <i class="ed-i icon-ed-UpShootFromLeft"></i>
                             <span class="label">Up/Down Shoot</span>
-                        </a>      
+                        </a>
                     </div><!-- flex -->
                 </div><!-- .right-eyedraw-controls -->
 

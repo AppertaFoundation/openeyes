@@ -60,7 +60,7 @@
                     <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
                         <tr>
                             <td>Mobile</td>
-                            <td>Unknown</td>
+                            <td><?= $this->patient->contact->mobile_phone ?? 'Unknown' ?></td>
                         </tr>
                     <?php endif; ?>
                     <tr>
@@ -268,6 +268,18 @@
                             <td>Email correspondence</td>
                             <td>
                                 <span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->agrees_to_insecure_email_correspondence) ? 'Yes' : 'No' ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Language</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->language_id)) ? $examination_communication_preferences->language->name : 'Unknown' ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Interpreter required</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) ? $examination_communication_preferences->interpreter_required->name : 'Unknown' ?></span>
                             </td>
                         </tr>
                         </tbody>
@@ -541,6 +553,15 @@
                 <div class="subtitle">Appointments</div>
                 <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]) ?>
             </div><!-- .popup-overflow -->
+
+            <div class="popup-overflow" ">
+                        <?php
+                            $this->widget('application.modules.Genetics.widgets.PatientGeneticSummary', array(
+                                'patient' => $this->patient,
+                            ));
+                        ?>
+            </div>
+
         </div><!-- left -->
         <div class="cols-right">
             <div class="popup-overflow">
@@ -585,3 +606,4 @@
         </div>
     </div>
 <?php } ?>
+

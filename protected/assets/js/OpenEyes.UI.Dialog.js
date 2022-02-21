@@ -334,6 +334,17 @@
     this.emit("open");
   };
 
+    /**
+     * Opens (shows) the dialog.
+     * @name OpenEyes.UI.Dialog#open
+     * @method
+     * @public
+     */
+    Dialog.prototype.openOnTop = function () {
+        $('body').append(this.content);
+        this.emit("open");
+    };
+
   /**
    * Closes (hides) the dialog.
    * @name OpenEyes.UI.Dialog#close
@@ -342,7 +353,7 @@
    */
   Dialog.prototype.close = function () {
     this.emit("close");
-    $('.oe-popup-wrap').remove();
+    $('.oe-popup-wrap').not('#js-overlay').remove();
   };
 
   /**
@@ -380,7 +391,7 @@
                 dialog.options.closeCallback();
             }
             dialog.emit("close");
-            $('.oe-popup-wrap').remove();
+            $('.oe-popup-wrap').not('#js-overlay').remove();
         });
     };
 

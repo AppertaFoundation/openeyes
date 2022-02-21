@@ -25,8 +25,9 @@ namespace OEModule\OphCiExamination\models;
  * @property string $name
  * @property int $institution_id
  * @property int $display_order
- * @property EpisodeStatus $episode_status
+ * @property \EpisodeStatus $episode_status
  * @property bool $followup
+ * @property bool $discharge
  * @property bool $patientticket
  */
 class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
@@ -60,7 +61,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
     }
 
     /**
@@ -70,9 +71,8 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
     {
         return [
             ['name, display_order, episode_status_id', 'required'],
-            ['followup', 'default', 'setOnEmpty' => true, 'value' => false],
-            ['patientticket', 'default', 'setOnEmpty' => true, 'value' => false],
-            ['followup, episode_status_id, patientticket', 'lockIfInUse'],
+            ['followup, discharge, patientticket', 'default', 'setOnEmpty' => true, 'value' => false],
+            ['followup, discharge, episode_status_id, patientticket', 'lockIfInUse'],
             ['subspecialties', 'safe'],
             ['institution_id', 'default', 'setOnEmpty' => true, 'value' => null],
             ['id, name, institution_id, display_order', 'safe', 'on' => 'search'],
@@ -83,21 +83,24 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
     {
         if (!$this->isNewRecord && $this->$attribute != (int)$this->original_attributes[$attribute]) {
             if ($this->inUse()) {
-                $this->addError($attribute, "This Clinical Outcome Status is in use and so $attribute cannot be edited");
+                $this->addError(
+                    $attribute,
+                    "This Clinical Outcome Status is in use and so $attribute cannot be edited"
+                );
             }
         }
     }
 
     public function inUse()
     {
-        $noOfStatusUsecases = ClinicOutcomeEntry::model()->count('status_id=:status_id', [ 'status_id' => $this->id ]);
+        $noOfStatusUsecases = ClinicOutcomeEntry::model()->count('status_id=:status_id', ['status_id' => $this->id]);
         return $noOfStatusUsecases > 0;
     }
 
     public function afterFind()
     {
         $this->original_attributes = $this->attributes;
-        return parent::afterFind();
+        parent::afterFind();
     }
 
     /**
@@ -107,7 +110,11 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
     {
         return array(
             'episode_status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
-            'subspecialties' => array(self::MANY_MANY, 'Subspecialty', 'ophciexamination_clinicoutcome_status_options(clinicoutcome_status_id, subspecialty_id)'),
+            'subspecialties' => array(
+                self::MANY_MANY,
+                'Subspecialty',
+                'ophciexamination_clinicoutcome_status_options(clinicoutcome_status_id, subspecialty_id)'
+            ),
             'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
@@ -126,6 +133,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
     {
         return array(
             'followup' => 'Show Follow Up Options',
+            'discharge' => 'Show Discharge Options',
             'patientticket' => 'Generate Patient Ticket',
             'episode_status_id' => 'Episode Status',
             'institution_id' => 'Institution',
@@ -135,7 +143,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -146,7 +154,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
         $criteria->compare('institution_id', $this->institution_id, true);
 
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -179,7 +187,8 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
         return $this;
     }
 
-    public function getPatientTicketIds() {
+    public function getPatientTicketIds()
+    {
         $element_ids = [];
         $elements = $this->findAll('patientticket=:patientticket', [':patientticket' => 1]);
 

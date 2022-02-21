@@ -49,7 +49,7 @@ class WhiteboardController extends BaseDashboardController
     {
         return array(
             array('allow',
-                'actions' => array('view', 'reload', 'confirm', 'saveComment', 'biometryReport'),
+                'actions' => array('view', 'reload', 'confirm', 'saveComment', 'biometryReport', 'consentForm'),
                 'roles' => array('OprnViewClinical'),
             ),
         );
@@ -86,13 +86,10 @@ class WhiteboardController extends BaseDashboardController
         //core scripts
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), true, -1);
         Yii::app()->clientScript->registerScriptFile($assetPath . '/components/dialog-polyfill/dialog-polyfill.js');
-        Yii::app()->clientScript->registerScriptFile($assetPath . '/components/mustache/mustache.js');
         Yii::app()->clientScript->registerCssFile($assetPath . '/newblue/dist/css/style_oe_light.3.css');
-
         Yii::app()->clientScript->registerScriptFile($assetPath . '/js/OpenEyes.UI.js');
         Yii::app()->clientScript->registerScriptFile($assetPath . '/components/eventemitter2/lib/eventemitter2.js');
         Yii::app()->clientScript->registerScriptFile($assetPath . '/js/OpenEyes.UI.Tooltip.js');
-
         Yii::app()->clientScript->registerScriptFile($assetPath . '/js/dashboard/OpenEyes.Dialog.js');
         Yii::app()->clientScript->registerScriptFile($assetPath . '/js/dashboard/whiteboard.js');
 
@@ -208,6 +205,23 @@ class WhiteboardController extends BaseDashboardController
         ));
     }
 
+    public function actionConsentForm($id)
+    {
+        $whiteboard = $this->getWhiteboard();
+        if (!$whiteboard) {
+            $whiteboard = new OphTrOperationbooking_Whiteboard();
+            $whiteboard->loadData($id);
+        }
+        $this->setWhiteboard($whiteboard);
+
+        $this->pageTitle = $whiteboard->patient_name;
+
+        $this->render('consent', [
+            'data' => $whiteboard,
+            'booking_id' => $id,
+        ]);
+    }
+
     /**
      * Reload the data for the whiteboard.
      *
@@ -295,5 +309,14 @@ class WhiteboardController extends BaseDashboardController
     {
         Yii::app()->runController('/eventImage/getImageUrl/return_value/1/event_id/' . $event_id);
         return EventImage::model()->findAll('event_id = ? AND document_number IS NOT NULL', [$event_id]);
+    }
+
+    public function getConsentFormImages($booking_id)
+    {
+        $procedure = Element_OphTrConsent_Procedure::model()->find('booking_event_id = ?', [$booking_id]);
+        // Create event images from action
+        Yii::app()->runController('/OphTrConsent/default/createEventImages/' . $booking_id);
+        $eventImages = EventImage::model()->findAll('event_id = ? AND page IS NOT NULL', [$procedure->event_id]);
+        return $eventImages;
     }
 }

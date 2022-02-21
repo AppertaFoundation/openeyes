@@ -20,7 +20,7 @@ class m180425_133636_set_diagnoses_date extends CDbMigration
                     $element = $diagnosis->element_diagnoses;
                     $event = $diagnosis->element_diagnoses->event;
                     $episode_id = isset($event->episode) ? $event->episode->id : null;
-                    $patient_id = isset($episode->patient_id) ? $episode->patient_id : null;
+                    $patient_id = $event->episode->patient_id ?? null;
 
                     \Audit::add(
                         'admin',

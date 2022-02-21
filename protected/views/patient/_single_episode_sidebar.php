@@ -120,6 +120,8 @@ $display_deleted_events_in_deleted_category = $display_deleted_in && $display_de
                                         $event_icon_class .= ' ready';
                                     } elseif ($eur = EUREventResults::model()->find('event_id=?', array($event->id)) && $event->hasIssue('EUR Failed')) {
                                         $event_icon_class .= ' cancelled';
+                                    } elseif($event->hasIssue('Consent Withdrawn')) {
+                                        $event_icon_class .= ' cancelled';
                                     } else {
                                         $event_icon_class .= ' alert';
                                     }
@@ -177,7 +179,6 @@ if ($this->editable) {
         'episodes' => $active_episodes,
         'context_firm' => $this->firm,
         'patient_id' => $this->patient->id,
-        'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps($this->event->institution->id, $this->event->episode->status->id),
         'currentStep' => (isset($this->event->eventType->class_name) && $this->event->eventType->class_name == 'OphCiExamination' ? $this->getCurrentStep() : ''),
         'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""'),
         // for some strange reason '' doesn't reslove to an empty str

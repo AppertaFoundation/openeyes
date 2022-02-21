@@ -70,7 +70,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
 
         $path = $file->getFilePath();
         if (!file_exists($path)) {
-            if (!@mkdir($path, 0775, true)) {
+            if (!@mkdir($path, 0774, true)) {
                 throw new Exception("$path could not be created: permission denied");
             }
         }
@@ -112,6 +112,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
+            'user' => [self::BELONGS_TO, 'User', 'created_user_id'],
         );
     }
 
@@ -160,6 +161,16 @@ class ProtectedFile extends BaseActiveRecordVersioned
     }
 
     /**
+     * Returns the file size in bytes, 0 in case the file cannot be found
+     * @return int
+     */
+    public function getSize(): int
+    {
+        $path = $this->getPath();
+        return file_exists($path) ? filesize($path) : 0;
+    }
+
+    /**
      * ensures that mimetype and size are set based on the file that's been stored (unless the file
      * is being copied from elsewhere, in which case this should have been taken care of).
      *
@@ -193,7 +204,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
     {
         if ($this->source_path) {
             if (!file_exists(dirname($this->getPath()))) {
-                mkdir(dirname($this->getPath()), 0777, true);
+                mkdir(dirname($this->getPath()), 0774, true);
             }
             copy($this->source_path, $this->getPath());
             $this->source_path = null;
@@ -262,7 +273,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
         $this->source_path = $path;
 
         $this->name = basename($path);
-        if(!$this->title){
+        if (!$this->title) {
             // if title has no value, initial with empty string to pass validation
             $this->title = '';
         }
@@ -404,7 +415,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
         imagecopyresampled($thumbnail, $src_image, 0, 0, 0, 0, $width, $height, $src_width, $src_height);
         $thumbnail_path = $this->getThumbnailPath($dimensions);
         if (!file_exists(dirname($thumbnail_path))) {
-            mkdir(dirname($thumbnail_path), 0777, true);
+            mkdir(dirname($thumbnail_path), 0774, true);
         }
         switch ($image_type) {
             case IMAGETYPE_JPEG:

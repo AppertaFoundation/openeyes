@@ -22,6 +22,7 @@ class DefaultController extends BaseEventTypeController
         'processApplication' => self::ACTION_TYPE_EDIT,
         'downloadFileCollection' => self::ACTION_TYPE_VIEW,
         'getDecisionTree' => self::ACTION_TYPE_FORM,
+        'getVABaseValues' => self::ACTION_TYPE_FORM,
     );
 
     // TODO: check this is in line with Jamie's change circa 3rd April 2013
@@ -148,6 +149,13 @@ class DefaultController extends BaseEventTypeController
             false,
             false
         );
+    }
+
+    public function actionGetVABaseValues()
+    {
+        $results = OphCoTherapyapplication_Helper::getInstance()->getVABaseValueMapping();
+
+        echo CJSON::encode($results);
     }
 
     /**

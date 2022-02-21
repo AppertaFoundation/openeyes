@@ -323,6 +323,7 @@ class BaseEventTypeElement extends BaseElement
 
     public function addError($attribute, $message)
     {
+        $message = str_replace("{attribute}", $this->getAttributeLabel($attribute), $message);
         $this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)) . '_' . $attribute, $message);
         $message = '<a class="errorlink" onClick="scrollToElement($(\'.' . str_replace(
             '\\',
@@ -442,12 +443,20 @@ class BaseEventTypeElement extends BaseElement
 
     /**
      * Return the display order of element, solve the problem elements has different order in different display mode.
-     * @param $action
      * @return mixed
      */
-    public function getDisplayOrder($action)
+    public function getDisplayOrder()
     {
         return $this->getElementType()->display_order;
+    }
+
+    /**
+     * Property getter
+     * @return mixed
+     */
+    public function getDisplay_order()
+    {
+        return $this->getDisplayOrder();
     }
 
     /**

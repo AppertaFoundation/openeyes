@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 if ($element->booking_event_id) {
     $whiteboard_display_mode = SettingMetadata::model()->getSetting('opnote_whiteboard_display_mode');
 
@@ -71,7 +73,7 @@ if ($element->booking_event_id) {
                 $element,
                 'eye_id',
                 $element->eyeOptions,
-                ($element->eye() ? (intval($element->eye()->id) === Eye::BOTH ? EYE::RIGHT : $element->eye()->id) : null),
+                ($element->eye() ? (intval($element->eye()->id) === Eye::BOTH ? Eye::RIGHT : $element->eye()->id) : null),
                 null,
                 null,
                 null,

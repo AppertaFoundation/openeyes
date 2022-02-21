@@ -33,7 +33,7 @@
             <tr>
                 <td><?= $model->getAttributeLabel("request_type"); ?></td>
                 <td><?= \CHtml::activeTextField($model, "request_type", array_merge([
-                        'readonly' => (bool)Request::model()->count('request_type = ?', [$model->request_type]),
+                        'readonly' => isset($model->request_type) && (bool)Request::model()->count('request_type = ?', [$model->request_type]),
                     ], $htmlOptions)); ?></td>
             </tr>
             <?php foreach (['title_full', 'title_short'] as $field) : ?>

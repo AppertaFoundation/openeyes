@@ -377,7 +377,7 @@ class TheatreDiaryController extends BaseModuleController
             $subspecialty_id = ServiceSubspecialtyAssignment::model()->find(
                 'service_id=?',
                 array($_POST['service_id'])
-            )->subspecialty_id;
+            )->subspecialty_id ?? null;
         }
 
         if (isset($subspecialty_id)) {
@@ -471,7 +471,7 @@ class TheatreDiaryController extends BaseModuleController
 
                     if (!$booking->validate()) {
                         $formErrors = $booking->getErrors();
-                        $errors[(integer)$m[1]] = $formErrors['admission_time'][0];
+                        $errors[(int)$m[1]] = $formErrors['admission_time'][0];
                     }
                 }
             }
@@ -529,10 +529,12 @@ class TheatreDiaryController extends BaseModuleController
                 // Check if relative position of booking has changed or if the display_order or booking id are lower
                 // than the previous booking. If so update display order. This is necessary for cases where there are duplicate
                 // display_orders and booking_id is used as a tie breaker
-                if ($booking_data['booking_id'] != $original_booking_ids[$new_position]
+                if (
+                    $booking_data['booking_id'] != $original_booking_ids[$new_position]
                     || $booking_data['booking']->display_order < $previous_booking_display_order
                     || ($booking_data['booking']->display_order == $previous_booking_display_order
-                        && $booking_data['booking_id'] < $previous_booking_booking_id)) {
+                        && $booking_data['booking_id'] < $previous_booking_booking_id)
+                ) {
                     $booking_data['booking']->display_order = $previous_booking_display_order + 1;
                     $booking_data['changed'] = true;
                     $order_is_changed = true;
@@ -708,13 +710,15 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addInCondition('anaesthetic_type.code', ['Sed', 'GA']);
                 $criteria->params[':sessionId'] = $session->id;
 
-                if (Element_OphTrOperationbooking_Operation::model()
+                if (
+                    Element_OphTrOperationbooking_Operation::model()
                     ->with(array(
                         'booking' => array(
                             'with' => 'session',
                         ),
                     ))
-                    ->find($criteria)) {
+                    ->find($criteria)
+                ) {
                     echo '1';
                 } else {
                     echo '0';
@@ -722,7 +726,6 @@ class TheatreDiaryController extends BaseModuleController
 
                 return;
             case 'general_anaesthetic':
-
                 $anaesthetic_GA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'GA'))->queryScalar();
 
                 $criteria = new CDbCriteria();
@@ -731,14 +734,16 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->params[':sessionId'] = $session->id;
                 $criteria->params[':anaestheticType'] = $anaesthetic_GA_id;
 
-                if (Element_OphTrOperationbooking_Operation::model()
+                if (
+                    Element_OphTrOperationbooking_Operation::model()
                     ->with(array(
                         'booking' => array(
                             'with' => 'session',
                         ),
                         'anaesthetic_type',
                     ))
-                    ->find($criteria)) {
+                    ->find($criteria)
+                ) {
                     echo '1';
                 } else {
                     echo '0';

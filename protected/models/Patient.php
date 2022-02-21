@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -19,6 +20,7 @@
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\OphCiExamination\models\SocialHistory;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
 
 /**
  * This is the model class for table "patient".
@@ -200,7 +202,7 @@ class Patient extends BaseActiveRecordVersioned
             'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
             'globalIdentifier' => array(self::HAS_ONE, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="GLOBAL"', 'with' => 'patientIdentifierType'),
             'localIdentifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="LOCAL"', 'with' => 'patientIdentifierType'),
-            'patientContactAssociates'=>array(self::HAS_MANY,'PatientContactAssociate','patient_id'),
+            'patientContactAssociates' => array(self::HAS_MANY,'PatientContactAssociate','patient_id'),
         );
     }
 
@@ -263,7 +265,7 @@ class Patient extends BaseActiveRecordVersioned
         if ($patient_dob_date > $current_date) {
             $this->addError($attribute, 'Date of birth should be before current date.');
         } elseif ($patient_dob_date < $earliest_date) {
-            $this->addError($attribute, "Patient's Date of birth cannot be earlier than ".$earliest_date->format('d/m/Y'));
+            $this->addError($attribute, "Patient's Date of birth cannot be earlier than " . $earliest_date->format('d/m/Y'));
         }
     }
 
@@ -285,14 +287,14 @@ class Patient extends BaseActiveRecordVersioned
             }
             if (!$this->date_of_death) {
                 $this->addError($attribute, 'Date of death cannot be blank.');
-            } elseif ( !$format_check) {
+            } elseif (!$format_check) {
                 $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
             } elseif ($patient_dod_date < $patient_dob_date) {
-                $this->addError($attribute, "Patient's date of death cannot be earlier than date of birth ".$patient_dob_date->format('d/m/Y'));
+                $this->addError($attribute, "Patient's date of death cannot be earlier than date of birth " . $patient_dob_date->format('d/m/Y'));
             } elseif ($patient_dod_date > $current_date) {
                 $this->addError($attribute, 'Date of death cannot be in the future');
             } elseif ($patient_dod_date < $earliest_date) {
-                $this->addError($attribute, "Patient's date of death cannot be earlier than ".$earliest_date->format('d/m/Y'));
+                $this->addError($attribute, "Patient's date of death cannot be earlier than " . $earliest_date->format('d/m/Y'));
             }
         }
     }
@@ -312,16 +314,22 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
+        $institution = Institution::model()->getCurrent();
+        $site = Site::model()->getCurrent();
+
+        $local_identifier_label = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution->id, $site->id);
+        $global_identifier_label = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $institution->id, $site->id);
+
         return array(
             'id' => 'ID',
             'dob' => 'Date of Birth',
             'date_of_death' => 'Date of Death',
             'gender' => 'Sex',
             'ethnic_group_id' => 'Ethnic Group',
-            'hos_num' => \SettingMetadata::model()->getSetting('hos_num_label'),
-            'nhs_num' => \SettingMetadata::model()->getSetting('nhs_num_label'),
+            'hos_num' => $local_identifier_label,
+            'nhs_num' => $global_identifier_label,
             'deleted' => 'Is Deleted',
-            'nhs_num_status_id' => \SettingMetadata::model()->getSetting('nhs_num_label') . ' Status',
+            'nhs_num_status_id' => $global_identifier_label . ' Status',
             'gp_id' => \SettingMetadata::model()->getSetting('general_practitioner_label'),
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',
@@ -384,6 +392,16 @@ class Patient extends BaseActiveRecordVersioned
         return 'None';
     }
 
+    public function getClinicPathwayInProgress()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = 'JOIN worklist_patient wp ON wp.id = t.worklist_patient_id';
+        $criteria->addCondition('wp.patient_id = :patient_id');
+        $criteria->params = [':patient_id' => $this->id];
+        $criteria->addInCondition('t.status', Pathway::inProgressStatuses());
+        return Pathway::model()->find($criteria);
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -409,7 +427,7 @@ class Patient extends BaseActiveRecordVersioned
         if ($params['first_name']) {
             $criteria->addSearchCondition('contact.first_name', $params['first_name'] . '%', false);
         }
-        if ($params['last_name']) {
+        if (isset($params['last_name']) && $params['last_name']) {
             $criteria->addSearchCondition('contact.last_name', $params['last_name'] . '%', false);
         }
         if (isset($params['maiden_name']) && $params['maiden_name']) {
@@ -480,10 +498,10 @@ class Patient extends BaseActiveRecordVersioned
         $results = $data_provider->getData();
 
         $local_results_count = $data_provider->getItemCount();
-
         $results_from_pas = array();
-        if ($this->use_pas == true) {
-            Yii::app()->event->dispatch($pas_event,
+        if ($this->use_pas && $local_results_count === 0) {
+            Yii::app()->event->dispatch(
+                $pas_event,
                 [
                     'results' => &$results_from_pas, 'patient' => $this,
                     'criteria' => $criteria, 'params' => $params,
@@ -498,8 +516,10 @@ class Patient extends BaseActiveRecordVersioned
                 $pas_result_identifier_value = (string)$pas_result->localIdentifiers[0]->value;
                 $pas_result_identifier_type_id = $pas_result->localIdentifiers[0]->patient_identifier_type_id;
                 foreach ($local_result->localIdentifiers as $localIdentifier) {
-                    if ($localIdentifier->value == $pas_result_identifier_value &&
-                        $localIdentifier->patient_identifier_type_id ==$pas_result_identifier_type_id) {
+                    if (
+                        $localIdentifier->value == $pas_result_identifier_value &&
+                        $localIdentifier->patient_identifier_type_id == $pas_result_identifier_type_id
+                    ) {
                         unset($results_from_pas[$pas_result_key]);
                     }
                 }
@@ -1655,7 +1675,7 @@ class Patient extends BaseActiveRecordVersioned
             throw new Exception('Unable to delete diagnosis: ' . print_r($sd->getErrors(), true));
         }
 
-        Yii::app()->event->dispatch('patient_remove_diagnosis', array('patient'=>$this, 'diagnosis' => $sd));
+        Yii::app()->event->dispatch('patient_remove_diagnosis', array('patient' => $this, 'diagnosis' => $sd));
 
         $this->audit('patient', "remove-$type-diagnosis");
     }
@@ -1727,9 +1747,9 @@ class Patient extends BaseActiveRecordVersioned
         $nhs_num = preg_replace('/[^0-9]/', '', $this->nhs_num);
 
         if (Yii::app()->params['default_country'] === 'Australia') {
-            $nhs_num = $nhs_num ? substr($nhs_num, 0, 4).' '.substr($nhs_num, 4, 5).' '.substr($nhs_num, 9, 1).' '.substr($nhs_num, 10, 1) : 'not known';
+            $nhs_num = $nhs_num ? substr($nhs_num, 0, 4) . ' ' . substr($nhs_num, 4, 5) . ' ' . substr($nhs_num, 9, 1) . ' ' . substr($nhs_num, 10, 1) : 'not known';
         } else {
-            $nhs_num = $nhs_num ? substr($nhs_num, 0, 3).' '.substr($nhs_num, 3, 3).' '.substr($nhs_num, 6, 4) : 'not known';
+            $nhs_num = $nhs_num ? substr($nhs_num, 0, 3) . ' ' . substr($nhs_num, 3, 3) . ' ' . substr($nhs_num, 6, 4) : 'not known';
         }
 
         return $nhs_num;
@@ -2243,7 +2263,7 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getNhs($institution_id = null, $site_id = null) : string
+    public function getNhs($institution_id = null, $site_id = null): string
     {
         $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
         $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
@@ -2260,7 +2280,7 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getHos($institution_id = null, $site_id = null) : string
+    public function getHos($institution_id = null, $site_id = null): string
     {
         $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
         $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
@@ -2512,6 +2532,50 @@ class Patient extends BaseActiveRecordVersioned
             }
         }
     }
+
+    /**
+     * Convenience method that returns the patient's language
+     * as it was set in the latest Communication Preferences element
+     *
+     * @return Language|null    Language object or null if not set
+     */
+    public function getLanguage(): ?Language
+    {
+        if ($element = $this->getLatestCommunicationPreferences()) {
+            return $element->language;
+        }
+
+        return null;
+    }
+
+    /**
+     * Convenience method that returns whether the Patient requires interpreter
+     * in any language as it was set in the latest Communication Preferences element
+     *
+     * @return Language|null    Language object or null if not set
+     */
+    public function getInterpreterRequired(): ?Language
+    {
+        if ($element = $this->getLatestCommunicationPreferences()) {
+            return $element->interpreter_required;
+        }
+
+        return null;
+    }
+
+    private function getLatestCommunicationPreferences(): ?Element_OphCiExamination_CommunicationPreferences
+    {
+        if ($api = \Yii::app()->moduleAPI->get("OphCiExamination")) {
+            /** @var OphCiExamination_API $api */
+            return $api->getLatestElement(
+                Element_OphCiExamination_CommunicationPreferences::class,
+                $this
+            );
+        }
+
+        return null;
+    }
+
     /**
      * Builds a sorted list of operations carried out on the patient either historically or across relevant events.
      *

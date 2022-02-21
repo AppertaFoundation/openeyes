@@ -69,7 +69,7 @@ class BaseChangeAdminController extends BaseAdminController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Base Change Type Saved");
-                $url = str_replace('/edit', '/view', (Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                $url = str_replace('/edit', '/view', (Yii::app()->request->requestUri)) . '/' . $admin->getModel()->id;
                 $this->redirect($url);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
@@ -85,7 +85,7 @@ class BaseChangeAdminController extends BaseAdminController
         $admin = new Admin(PedigreeBaseChangeType::model(), $this);
         $admin->deleteModel();
     }
-    
+
      /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

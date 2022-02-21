@@ -87,6 +87,7 @@ class SettingMetadataTest extends ActiveRecordTestCase
      */
     public function testGetSettingName($key, $value, $expected, $allowedClasses): void
     {
+        SettingMetadata::resetCache();
         Yii::app()->session['selected_site_id'] = 1;
         $settingMetadata = new SettingMetadata();
         $setting = $settingMetadata->getSettingName($key, $allowedClasses);

@@ -74,11 +74,11 @@ class Patient extends BaseResource
 
         $transaction = $this->startTransaction();
 
-        try {
-            if ($this->isNewResource && $this->update_only) {
-                return false;
-            }
+        if (($this->isNewResource && $this->update_only) || (!$this->isNewResource && $this->create_only)) {
+            return false;
+        }
 
+        try {
             if ($this->saveModel($model)) {
                 $assignment->internal_id = $model->id;
                 $assignment->save();
@@ -101,7 +101,7 @@ class Patient extends BaseResource
 
             throw $e;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -141,12 +141,15 @@ class Patient extends BaseResource
         // Set the contact details
         // ContactBehavior.php creates a contact automatically before save
         $contact = $patient->contact;
+        $contact->scenario = "pasapi_import";
         $contact->source = "PASAPI";
 
         $this->assignProperty($contact, 'title', 'Title');
         $this->assignProperty($contact, 'first_name', 'FirstName');
         $this->assignProperty($contact, 'last_name', 'Surname');
         $this->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
+        $this->assignProperty($contact, 'mobile_phone', 'MobilePhoneNumber');
+        $this->assignProperty($contact, 'email', 'Email');
 
         if (!$contact->validate()) {
             $this->addModelErrors($contact->getErrors());
@@ -157,6 +160,7 @@ class Patient extends BaseResource
         $contact->save();
 
         $this->mapAddresses($contact);
+        $this->mapLanguageCodeAndInterpreterRequired($patient);
 
         if (!$this->errors) {
             return true;
@@ -186,7 +190,7 @@ class Patient extends BaseResource
                 if ($eg = EthnicGroup::model()->findByAttributes(array('code' => $code))) {
                     $patient->ethnic_group_id = $eg->id;
                 } else {
-                    $this->addWarning('Unrecognised ethnic group code '.$code);
+                    $this->addWarning('Unrecognised ethnic group code ' . $code);
                 }
             } else {
                 $patient->ethnic_group_id = null;
@@ -209,7 +213,7 @@ class Patient extends BaseResource
                 if ($gp = Gp::model()->findByAttributes(array('nat_id' => $code))) {
                     $patient->gp_id = $gp->id;
                 } else {
-                    $this->addWarning('Could not find '.\SettingMetadata::model()->getSetting('gp_label').' for code '.$code);
+                    $this->addWarning('Could not find ' . \SettingMetadata::model()->getSetting('gp_label') . ' for code ' . $code);
                 }
             } else {
                 $patient->gp_id = null;
@@ -217,6 +221,109 @@ class Patient extends BaseResource
         } elseif (!$this->partial_record) {
             $patient->gp_id = null;
         }
+    }
+
+    /**
+     * Handle mapping of the Language and Interpreter Required resource code to the patient model.
+     *
+     * @param \Patient $patient
+     */
+    private function mapLanguageCodeAndInterpreterRequired(\Patient $patient)
+    {
+        if (property_exists($this, 'LanguageCode') || property_exists($this, 'InterpreterRequired')) {
+            $change_episode = \Episode::getChangeEpisode($patient);
+            $change_episode->save();
+
+            $event = $this->createExamination($change_episode);
+
+            $communication_pref = $this->createCommunicationElement($event);
+
+            if (property_exists($this, 'LanguageCode')) {
+                $code = $this->getAssignedProperty('LanguageCode');
+                if ($code) {
+                    if ($language = \Language::model()->findByAttributes(array('pas_term' => strtolower($code)))) {
+                        $communication_pref->language_id = $language->id;
+                    } else {
+                        $this->addWarning('Could not find Language for code ' . $code);
+                    }
+                } else {
+                    $communication_pref->language_id = null;
+                }
+            } else {
+                if (!$this->partial_record) {
+                    $communication_pref->language_id = null;
+                }
+            }
+
+            if (property_exists($this, 'InterpreterRequired')) {
+                $code = $this->getAssignedProperty('InterpreterRequired');
+                if ($code) {
+                    if ($language = \Language::model()->findByAttributes(array('interpreter_pas_code' => strtolower($code)))) {
+                        $communication_pref->interpreter_required_id = $language->id;
+                    } else {
+                        $this->addWarning('Could not find Language for Interpreter Required code ' . $code);
+                    }
+                } else {
+                    $communication_pref->interpreter_required_id = null;
+                }
+            } else {
+                if (!$this->partial_record) {
+                    $communication_pref->interpreter_required_id = null;
+                }
+            }
+
+            if (property_exists($this, 'Risks')) {
+                $code = $this->getAssignedProperty('Risks');
+                if ($code) {
+                    if (preg_match( '/AIMAI/', $code)) {
+                        $communication_pref->agrees_to_insecure_email_correspondence = 1;
+                    }
+
+                    if (preg_match( '/AILGF/', $code)) {
+                        $communication_pref->correspondence_in_large_letters = 1;
+                    }
+                }
+            }
+
+            $communication_pref->save();
+        }
+    }
+
+    /**
+     * Creates a new examination event
+     *
+     * @param \Episode $change_episode
+     */
+    private function createExamination(\Episode $change_episode)
+    {
+        $event = new \Event();
+        $event->episode_id = $change_episode->id;
+        $event_type = \EventType::model()->find('class_name=:class_name', array(':class_name' => 'OphCiExamination'));
+        $event->event_type_id = $event_type->id;
+        $event->last_modified_date = date('Y-m-d H:i:s');
+        $event->created_date = date('Y-m-d H:i:s');
+        $event->event_date = date('Y-m-d H:i:s');
+        $event->institution_id = 1;
+        $event->save();
+
+        return $event;
+    }
+
+    /**
+     * Creates a new examination event
+     *
+     * @param \Event $event
+     */
+    private function createCommunicationElement(\Event $event)
+    {
+        $communication_pref = new \OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences();
+        $communication_pref->event_id = $event->id;
+        $communication_pref->correspondence_in_large_letters = 0;
+        $communication_pref->last_modified_date = date('Y-m-d H:i:s');
+        $communication_pref->created_date = date('Y-m-d H:i:s');
+        $communication_pref->agrees_to_insecure_email_correspondence = 0;
+
+        return $communication_pref;
     }
 
     /**
@@ -231,7 +338,7 @@ class Patient extends BaseResource
                 if ($practice = Practice::model()->findByAttributes(array('code' => $code))) {
                     $patient->practice_id = $practice->id;
                 } else {
-                    $this->addWarning('Could not find Practice for code '.$code);
+                    $this->addWarning('Could not find Practice for code ' . $code);
                 }
             } else {
                 $patient->practice_id = null;
@@ -256,9 +363,9 @@ class Patient extends BaseResource
         if (property_exists($this, 'AddressList')) {
             $matched_address_ids = array();
             foreach ($this->AddressList as $idx => $address_resource) {
-                $matched_clause = ($matched_address_ids) ? ' AND id NOT IN ('.implode(',', $matched_address_ids).')' : '';
+                $matched_clause = ($matched_address_ids) ? ' AND id NOT IN (' . implode(',', $matched_address_ids) . ')' : '';
                 $address_model = \Address::model()->find(array(
-                    'condition' => "contact_id = :contact_id AND REPLACE(postcode,' ','') = :postcode".$matched_clause,
+                    'condition' => "contact_id = :contact_id AND REPLACE(postcode,' ','') = :postcode" . $matched_clause,
                     'params' => array(':contact_id' => $contact->id, ':postcode' => str_replace(' ', '', $address_resource->Postcode)),
                 ));
 
@@ -311,7 +418,7 @@ class Patient extends BaseResource
      */
     public function addGlobalNumberStatus(\Patient $patient)
     {
-        if($patient->globalIdentifier) {
+        if ($patient->globalIdentifier) {
             if (property_exists($this, 'NHSNumberStatus')) {
                 $code = $this->getAssignedProperty('NHSNumberStatus');
                 if ($code) {
@@ -322,7 +429,7 @@ class Patient extends BaseResource
                     if ($status) {
                         $patient->globalIdentifier->patient_identifier_status_id = $status->id;
                     } else {
-                        $this->addWarning('Unrecognised NHSNumberStatus code '.$code);
+                        $this->addWarning('Unrecognised NHSNumberStatus code ' . $code);
                     }
                 } else {
                     $patient->globalIdentifier->patient_identifier_status_id = null;
@@ -332,7 +439,7 @@ class Patient extends BaseResource
                     $patient->globalIdentifier->patient_identifier_status_id = null;
                 }
             }
-            if(!$patient->globalIdentifier->isNewRecord){
+            if (!$patient->globalIdentifier->isNewRecord) {
                 $patient->globalIdentifier->update(['patient_identifier_status_id']);
             }
         }

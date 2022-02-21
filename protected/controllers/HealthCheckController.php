@@ -32,7 +32,7 @@ class HealthCheckController extends BaseController
                 'actions' => array(
                     'index',
                 ),
-                'users' => array('?'),
+                'users' => array('*'),
             ),
         );
     }

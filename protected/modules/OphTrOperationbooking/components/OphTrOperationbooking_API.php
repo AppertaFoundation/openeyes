@@ -212,7 +212,7 @@ class OphTrOperationbooking_API extends BaseAPI
                 $operation->operation_completion_date = date('Y:m:d H:i:s');
             }
 
-            if (!$operation->save()) {
+            if (!$operation->saveAttributes(['status_id', 'operation_completion_date'])) {
                 throw new Exception('Unable to save operation: ' . print_r($operation->getErrors(), true));
             }
 

@@ -7,7 +7,7 @@ class m200223_184900_fix_missing_version_columns_before_set_default extends OEMi
         /**
          * This runs before m200223_184911_fix_columns_with_no_defaults_that_arent_set to patch some
          * customer databases that were missing correctly migrated _version tables for some tables
-         * 
+         *
          * NOTE: The migration MUST check for the existance of the table AND the column before attempting to add it
          */
 
@@ -17,18 +17,16 @@ class m200223_184900_fix_missing_version_columns_before_set_default extends OEMi
             array('event_type_version', 'display_order', 'int(8) NOT NULL'),
          );
 
-         foreach( $columns as $column ){
+         foreach ( $columns as $column ) {
              $table=$this->dbConnection->createCommand("SHOW TABLES LIKE '" . $column[0] . "';")->queryAll();
 
-             if (count($table) > 0){
+             if (count($table) > 0) {
                  $field=$this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $column[0] . "` LIKE '". $column[1] . "'")->queryAll();
-                 if (count($field) == 0){
+                 if (count($field) == 0) {
                      $this->addColumn($column[0], $column[1], $column[2]);
                  }
              }
-
          }
-
     }
 
     public function down()

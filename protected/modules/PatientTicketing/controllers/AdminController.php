@@ -83,32 +83,6 @@ class AdminController extends \ModuleAdminController
         );
     }
 
-    public function actionTicketAssignOutcomes()
-    {
-        $return_url = Yii::app()->request->url ?? '/PatientTicketing/admin/ticketAssignOutcomes';
-        $this->genericAdmin(
-            'Edit Outcome Options',
-            'OEModule\PatientTicketing\models\TicketAssignOutcomeOption',
-            array(
-                'extra_fields' => array(
-                    array(
-                        'field' => 'episode_status_id',
-                        'type' => 'lookup',
-                        'model' => 'EpisodeStatus',
-                    ),
-                    array(
-                        'field' => 'followup',
-                        'type' => 'boolean',
-                    ),
-                ),
-                'div_wrapper_class' => 'cols-5',
-                'return_url' => $return_url
-            ),
-            null,
-            true
-        );
-    }
-
     /**
      * Create a new QueueSet along with its initial queue (cannot have a queue set without an initial queue).
      *
@@ -496,20 +470,5 @@ class AdminController extends \ModuleAdminController
 
         $qs->delete($qr->getId());
         echo 1;
-    }
-
-    public function actionClinicLocations()
-    {
-        $return_url = Yii::app()->request->url ?? '/PatientTicketing/admin/clinicLocations';
-        $this->genericAdmin(
-            'Clinic locations',
-            'OEModule\PatientTicketing\models\ClinicLocation',
-            [
-                'div_wrapper_class' => 'cols-5',
-                'return_url' => $return_url
-            ],
-            null,
-            true
-        );
     }
 }

@@ -16,6 +16,16 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$formatted_subsections = array_merge(
+    [['label' => 'None', 'id' => 'none', 'source' => 'subsections']],
+    array_map(
+    function ($key, $item) {
+        return ['label' => $item, 'id' => $key, 'source' => 'subsections'];
+    },
+    array_keys($subsections),
+    $subsections
+));
 ?>
 <div class="flex-layout procedure-selection eventDetail<?= $last ? 'eventDetailLast' : '' ?>" id="typeProcedure" style="<?= $hidden ? 'display: none;' : '' ?>">
     <?php if ($label && sizeof($label)) { ?>
@@ -61,8 +71,9 @@
                         </td>
                     </tr>
 
-            <?php endforeach;
-            } ?>
+                <?php endforeach;
+            }
+            ?>
 
             <?php
             if (isset($_POST[$class]['total_duration_' . $identifier])) {
@@ -271,7 +282,7 @@
         }
 
         function updateProcedureDialog(subsection) {
-            if (subsection !== '') {
+            if (subsection !== '' && subsection !== 'none') {
                 $.ajax({
                     'url': '<?php echo Yii::app()->createUrl('procedure/list') ?>',
                     'type': 'POST',
@@ -443,23 +454,18 @@
             new OpenEyes.UI.AdderDialog({
                 id: 'procedure_popup_<?= $identifier ?: ''; ?>',
                 openButton: $('#add-procedure-list-btn-<?= $identifier ?>'),
+                showEmptyItemSets: true,
                 itemSets: [
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                                                            array_map(
-                                                                function ($key, $item) {
-                                                                    return ['label' => $item, 'id' => $key, 'source' => 'subsections'];
-                                                                },
-                                                                array_keys($subsections),
-                                                                $subsections
-                                                            )
-                                                        ) ?>, {
+                        $formatted_subsections
+                    ) ?>, {
                         'id': 'subsections'
                     }),
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                                                            array_map(function ($key, $item) {
-                                                                return ['label' => $item, 'id' => $key];
-                                                            }, array_keys($procedures), $procedures)
-                                                        ) ?>, {
+                        array_map(function ($key, $item) {
+                            return ['label' => $item, 'id' => $key];
+                        }, array_keys($procedures), $procedures)
+                    ) ?>, {
                         'id': 'select',
                         'multiSelect': true,
                         'liClass': ' restrict-width extended'

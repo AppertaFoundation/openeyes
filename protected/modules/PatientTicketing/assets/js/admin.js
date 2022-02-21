@@ -78,7 +78,7 @@
       expansionSelector: '.expansion-controls'
     });
     this.currentDisplayedQueueId = queueId;
-  }
+  };
 
   QueueAdmin.prototype.reloadQueue = function (queueId) {
     $('#chart').html('');

@@ -117,9 +117,14 @@ class ProcedureController extends BaseAdminController
             $procedure->default_duration = $user_data['default_duration'];
             $procedure->snomed_code = $user_data['snomed_code'];
             $procedure->snomed_term = $user_data['snomed_term'];
+            $procedure->ecds_code = $user_data['ecds_code'];
+            $procedure->ecds_term = $user_data['ecds_term'];
             $procedure->aliases = $user_data['aliases'];
             $procedure->unbooked = $user_data['unbooked'];
             $procedure->active = $user_data['active'];
+
+            $procedure->low_complexity_criteria = $user_data['low_complexity_criteria'];
+            $procedure->is_clinic_proc = $user_data['is_clinic_proc'];
 
             // set notes
             $notes = [];
@@ -194,8 +199,8 @@ class ProcedureController extends BaseAdminController
 
         $options = [':id' => $procedure->id];
         $check_dependencies &= !Element_OphTrOperationnote_GenericProcedure::model()->count('proc_id = :id', $options);
-        $check_dependencies &= !EtOphtrconsentProcedureProceduresProcedures::model()->count('proc_id = :id', $options);
-        $check_dependencies &= !EtOphtrconsentProcedureAddProcsAddProcs::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !OphtrconsentProcedureProceduresProcedures::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !OphtrconsentProcedureAddProcsAddProcs::model()->count('proc_id = :id', $options);
         $check_dependencies &= !OphTrOperationbooking_Operation_Procedures::model()->count('proc_id = :id', $options);
         $check_dependencies &= !OphTrLaser_LaserProcedure::model()->count('procedure_id = :id', $options);
         $check_dependencies &= !OphTrLaser_LaserProcedureAssignment::model()->count('procedure_id = :id', $options);

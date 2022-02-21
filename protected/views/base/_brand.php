@@ -20,7 +20,9 @@
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-logo.svg';
 $settings = new SettingMetadata();
 $tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']) : htmlspecialchars($settings->getSetting('tech_support_provider'));
-$tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'))
+$tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'));
+$training_hub_text = Yii::App()->params['training_hub_text'] ? htmlspecialchars(Yii::App()->params['training_hub_text']) : htmlspecialchars($settings->getSetting('training_hub_text'));
+$training_hub_url = Yii::App()->params['training_hub_url'] ? htmlspecialchars(Yii::App()->params['training_hub_url']) : htmlspecialchars($settings->getSetting('training_hub_url'));
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
   <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
@@ -44,6 +46,17 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
     <h4>Feedback</h4>
     <p>Send us <a href="<?= Yii::app()->params['feedback_link'] ?>">feedback or suggestions.</a></p>
   </div>
+
+    <?php
+    if ($training_hub_text && $training_hub_url) { ?>
+        <div class="group">
+            <h4>Training documentation</h4>
+            <p>
+                <a href="<?= $training_hub_url ?>"
+                   target=blank><?= $training_hub_text ?></a>
+            </p>
+        </div>
+    <?php } ?>
 
   <div class="group">
     <h4>Legal</h4>

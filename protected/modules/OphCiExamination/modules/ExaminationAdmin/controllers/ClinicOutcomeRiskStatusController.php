@@ -1,5 +1,7 @@
 <?php
-use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
+
+use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
+
 class ClinicOutcomeRiskStatusController extends \ModuleAdminController
 {
     public function actionEdit()
@@ -41,7 +43,7 @@ class ClinicOutcomeRiskStatusController extends \ModuleAdminController
             array(
                 'risk_status_entries' => $risk_status_entries,
                 'model_name' => $model_name,
-                'title' => 'Edit Clinical Outcome Risk Status',
+                'title' => 'Edit Follow-up Risk Status',
                 'error_msg' => $error_msg,
             )
         );

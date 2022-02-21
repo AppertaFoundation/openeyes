@@ -129,12 +129,12 @@ class MenuHelper
                 $setting_key = $menu_item['requires_setting']['setting_key'];
                 $required_value = $menu_item['requires_setting']['required_value'];
 
-                $element_enabled = Yii::app()->params[$setting_key];
+                $element_enabled = \SettingMetadata::model()->getSetting($setting_key);
                 if (isset($element_enabled) && $element_enabled != $required_value)
                 {
                     switch ($required_value) {
                         case 'not-empty':
-                            if ($element_enabled) {
+                            if (!empty($element_enabled)) {
                                 break;
                             }
                         default:

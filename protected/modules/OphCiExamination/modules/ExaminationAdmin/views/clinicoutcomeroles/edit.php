@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -12,9 +13,10 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<h2><?= $model->id ? 'Edit' : 'Add'?> Clinic Outcome Role</h2>
+<h2><?= $model->id ? 'Edit' : 'Add'?> Follow-up Role</h2>
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', [
   'id' => 'OphCiExamination_adminform',

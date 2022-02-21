@@ -214,7 +214,7 @@ $(document).ready(function() {
 
 	$(this).on('click','#btn_print-letter',function() {
 		var m = window.location.href.match(/\/view\/([0-9]+)$/);
-		printIFrameUrl(baseUrl+'/OphTrOperationbooking/waitingList/printLetters',{'event_id': m[1]});
+		printIFrameUrl(baseUrl+'/OphTrOperationbooking/waitingList/printLettersPdf',{'event_id': m[1]});
 	});
 
   $(this).on('click','#btn_print-admissionletter',function() {

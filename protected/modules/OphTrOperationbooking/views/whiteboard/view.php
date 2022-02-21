@@ -263,9 +263,14 @@ $other_card_list = array(
     <footer class="wb3-actions down" style="z-index: 9999">
         <?php $this->renderPartial('footer', array(
             'biometry' => false,
+            'consent' => false,
             'booking_id' => $booking_id,
         )); ?>
     </footer>
 </main>
 
-<script src="<?= Yii::app()->assetManager->createUrl('/newblue/dist/js/whiteboardJS/wb_procedure_name.js')?>"></script>
+<?php
+    $assetManager = Yii::app()->getAssetManager();
+    $widgetPath = $assetManager->publish('protected/modules/OphTrOperationbooking/assets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath . '/wb_procedure_name.js', \CClientScript::POS_END);
+?>

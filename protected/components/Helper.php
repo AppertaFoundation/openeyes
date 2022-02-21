@@ -546,11 +546,11 @@ class Helper
         $na_eye = Helper::elementFinder('na_eye', $data);
 
         if ($left_eye && $right_eye) {
-            $eye_id = EYE::BOTH;
+            $eye_id = Eye::BOTH;
         } elseif ($left_eye) {
-            $eye_id = EYE::LEFT;
+            $eye_id = Eye::LEFT;
         } elseif ($right_eye) {
-            $eye_id = EYE::RIGHT;
+            $eye_id = Eye::RIGHT;
         } elseif ($na_eye) {
             $eye_id = -9;
         }
@@ -593,5 +593,115 @@ class Helper
 
         return $val;
 
+    }
+
+    /**
+     * Set post code format, if it wrong
+     * @param type $postcode
+     * @return string
+     */
+    public static function setPostCodeFormat($postcode)
+    {
+        $clean_postcode = preg_replace("/[^A-Za-z0-9]/", '', $postcode);
+        $clean_postcode = strtoupper($clean_postcode);
+
+        //if 5 charcters, insert space after the 2nd character
+        if(strlen($clean_postcode) == 5)
+        {
+            $postcode = substr($clean_postcode,0,2) . " " . substr($clean_postcode,2,3);
+        }
+
+        //if 6 charcters, insert space after the 3rd character
+        elseif(strlen($clean_postcode) == 6)
+        {
+            $postcode = substr($clean_postcode,0,3) . " " . substr($clean_postcode,3,3);
+        }
+
+
+        //if 7 charcters, insert space after the 4th character
+        elseif(strlen($clean_postcode) == 7)
+        {
+            $postcode = substr($clean_postcode,0,4) . " " . substr($clean_postcode,4,3);
+        }
+
+        return $postcode;
+    }
+
+    /**
+     * Returns a file size in human-readable form
+     *
+     * @param int $bytes
+     * @return string
+     */
+    public static function fileSize(int $bytes): string
+    {
+        $units = ['B', 'kB', 'MB', 'GB', 'TB'];
+        $i = floor(log($bytes, 1024));
+        $unit = $units[$i];
+        $precision = $i <= 1 ? 0 : 2;
+        return round($bytes / pow(1024, $i), $precision) . $unit;
+    }
+
+    /**
+     * Dose and unit grammar format
+     * @param string $item_dose
+     * @return string
+     */
+    public static function formatPluralForDose(string $item_dose): string
+    {
+        if( preg_match("/[,\.-]?[0-9]+[,.]?[0-9]*([\/][0-9]+[,.]?[0-9]*)*/",  $item_dose, $dose) && (!empty($dose) && (substr($item_dose, -3) == '(s)'))){
+            preg_match_all("/[^0-9\s.,]+/",  $item_dose, $units);
+
+            $unit = '';
+            foreach($units[0] as $val){
+                $unit .= " ".$val;
+            }
+
+            if($dose[0] <= "1"){
+                $result = $dose[0].substr($unit, 0, -3);
+            } else if($dose[0] > "1"){
+                $grammarUnit = self::grammarCheckForPlural($unit);
+                $result = $dose[0].$grammarUnit;
+            } else {
+                $result = $dose[0].$unit;
+            }
+        } else {
+            $result = $item_dose;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Grammar check for plural
+     * @param string $word
+     * @return string
+     */
+    public static function grammarCheckForPlural(string $word): string
+    {
+        if(substr($word, -3) == '(s)') {
+            $word = substr($word,0, -3);
+        }
+
+        if (in_array(substr($word, -2), ["ay", "ey", "oy"])) {
+            return $word.'s';
+        }
+
+        if(substr($word, -1) == "y") {
+            return substr($word,0, -1).'ies';
+        }
+
+        if(
+            (substr($word, -1) == "s") ||
+            (substr($word, -2) == "sh") ||
+            (substr($word, -2) == "ch") ||
+            (substr($word, -1) == "x") ||
+            (substr($word, -1) == "z")
+        )
+        {
+            return $word.'es';
+        }
+
+        return $word.'s';
     }
 }

@@ -42,6 +42,7 @@ $element->letter_type_id = ($element->letter_type_id ?: $macro_letter_type_id);
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
 $creating = $creating ?? false;
+$footer_array = explode("{e-signature}", $element["footer"]);
 ?>
 <?php if ($creating === false) : ?>
     <input type="hidden" id="re_default"
@@ -384,7 +385,7 @@ $creating = $creating ?? false;
                             }
 
                             $criteria = new CDbCriteria();
-                            $criteria->addCondition('t.institution_id = :institution_id');
+                            $criteria->addCondition('t.institution_id is NULL OR t.institution_id = :institution_id');
                             $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
                             $criteria->order = 't.display_order asc';
                             foreach (LetterStringGroup::model()->with($with)->findAll($criteria) as $string_group) {
@@ -436,7 +437,7 @@ $creating = $creating ?? false;
                             're',
                             array('rows' => 1, 'label' => false, 'nowrapper' => true),
                             empty($_POST) ? strlen($element->re) === 0 : strlen(@$_POST['ElementLetter']['re']) === 0,
-                            array('class' => 'autosize')
+                            array('class' => 'cols-full')
                         ) ?>
                 </td>
             </tr>
@@ -452,28 +453,51 @@ $creating = $creating ?? false;
                 </td>
             </tr>
         </table>
+        <h3>Sign-off &amp; signature block</h3>
+        <div class="flex-t col-gap">
+            <div class="cols-7">
+                <?php if(strpos($element["footer"], "{e-signature}") !== false) { ?>
+                    <div class="correspondence-letter-text"><?php echo $footer_array[0]; ?></div>
+                    <em class="fade">(e-Sign will be added here)</em>
+                    <div class="correspondence-letter-text correspondence-letter-text-change">
+                        <?php echo $footer_array[1]; ?>
+                    </div>
+                <?php } else { ?>
+                    <div class="correspondence-letter-text"><?php echo nl2br($element["footer"]); ?></div>
+                <?php } ?>
+            </div>
+            <div class="cols-5">
+                <label class="fade">Add User's signature block:</label>
+                <div>
+                    <?php  $this->widget('application.widgets.AutoCompleteSearch', [
+                        'field_name' => 'signatory_name_label',
+                        'htmlOptions' => [
+                            'placeholder' => 'Search by User name',
+                            'class' => "search cols-full js-user-autocomplete"
+                        ],
+                    ]); ?>
+                    <?php echo $form->textArea(
+                    $element,
+                    'footer',
+                    array('label' => false, 'nowrapper' => true),
+                    false,
+                    array(
+                        'readonly' => false,
+                        'class' => 'correspondence-letter-text autosize',
+                        'style' => 'overflow: hidden; overflow-wrap: break-word; height: 54px;',
+                        'hidden' => true
+                    )
+                ) ?>
+                </div>
+            </div>
+        </div>
+        <hr class="divider">
         <table class="cols-full">
           <colgroup>
             <col class="cols-2">
             <col>
           </colgroup>
           <tbody>
-            <tr>
-              <td>From</td>
-              <td>
-                <?php $this->widget(
-                    'application.widgets.AutoCompleteSearch',
-                    ['htmlOptions' => ['placeholder' => 'Search for users full title and details']]
-                ); ?>
-                <?php echo $form->textArea(
-                    $element,
-                    'footer',
-                    array('label' => false, 'nowrapper' => true),
-                    false,
-                    array('class' => 'correspondence-letter-text autosize', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 54px;')
-                ) ?>
-              </td>
-            </tr>
             <tr>
                 <td>
                     Enclosures
@@ -584,5 +608,14 @@ $creating = $creating ?? false;
                 $('#ElementLetter_introduction').val('Dear ' + addressee + ',');
 
             });
+        });
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#signatory_name_label'),
+            url: baseUrl + '/'+moduleName+'/default/users/correspondence-footer/true',
+            onSelect: function(){
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                $('.correspondence-letter-text-change').html(AutoCompleteResponse['correspondence_footer_text'].replace(/(\r\n|\n\r|\r|\n)/g, "<br>"));
+            }
         });
     </script>

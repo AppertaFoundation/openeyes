@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 return array(
     'event_type1' => array(
         'id' => 1000,
@@ -117,7 +119,7 @@ return array(
     ),
     'event_type15' => array(
         'id' => 44,
-        'name' => 'Operation Checklists',
+        'name' => 'Operation checklists',
         'event_group_id' => 1,
         'class_name' => 'OphTrOperationchecklists',
         'support_services' => 0,

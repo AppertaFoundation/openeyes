@@ -1068,6 +1068,8 @@ CREATE TABLE tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
     nod_date date NOT NULL,
     oe_event_type_name VARCHAR(40) NOT NULL,
     nod_episode_seq int(10),
+    site_code varchar(10),
+    institution_code varchar(10),
     PRIMARY KEY (oe_event_id)
 );
 
@@ -1090,6 +1092,8 @@ INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
 , nod_date
 , oe_event_type_name
 , nod_episode_seq
+, site_code
+, institution_code
 )
 SELECT
   ev.id AS oe_event_id
@@ -1098,9 +1102,14 @@ SELECT
 , DATE(ev.event_date) AS nod_date
 , et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
+, st.remote_id AS site_code
+, it.remote_id AS institution_code
+
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id
+LEFT JOIN site st ON st.id = ev.site_id 
+JOIN institution it ON it.id = ev.institution_id
 WHERE et.class_name = 'OphTrOperationnote'
 
 EOL;
@@ -1128,6 +1137,8 @@ INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
 , nod_date
 , oe_event_type_name
 , nod_episode_seq
+, site_code
+, institution_code
 )
 SELECT
   ev.id AS oe_event_id
@@ -1136,9 +1147,13 @@ SELECT
 , DATE(ev.event_date) AS nod_date
 , et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
+, st.remote_id AS site_code
+, it.remote_id AS institution_code
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id
+LEFT JOIN site st ON st.id = ev.site_id 
+JOIN institution it ON it.id = ev.institution_id
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND ev.id NOT IN (SELECT c.oe_event_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND et.class_name = 'OphTrOperationnote'
@@ -1155,6 +1170,8 @@ INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
 , nod_date
 , oe_event_type_name
 , nod_episode_seq
+, site_code
+, institution_code
 )
 SELECT
   ev.id AS oe_event_id
@@ -1163,9 +1180,13 @@ SELECT
 , DATE(ev.event_date) AS nod_date
 , et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
+, st.remote_id AS site_code
+, it.remote_id AS institution_code
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id
+LEFT JOIN site st ON st.id = ev.site_id 
+JOIN institution it ON it.id = ev.institution_id
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND et.class_name IN ('OphCiExamination', 'OphInBiometry', 'OphDrPrescription')
 AND ev.deleted = 0
@@ -1178,12 +1199,13 @@ EOL;
     private function getEpisode()
     {
         $query = <<<EOL
-                SELECT c.patient_id as PatientId, c.oe_event_id as EpisodeId, c.nod_date as Date, c.nod_episode_seq as Seq
+                SELECT c.patient_id as PatientId, c.oe_event_id as EpisodeId, c.nod_date as Date, c.nod_episode_seq as Seq,
+                c.institution_code as Responsible_Institution_ODS_Code , c.site_code as Site_ODS_Code
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'EpisodeId', 'Date', 'Seq'),
+            'header' => array('PatientId', 'EpisodeId', 'Date', 'Seq' , 'Responsible_Institution_ODS_Code', 'Site_ODS_Code'),
         );
 
         $this->saveCSVfile($dataQuery, 'Episode');

@@ -74,6 +74,8 @@ if (!empty($subspecialty)) { ?>
     let min_value = new Date();
     let max_value = new Date();
 
+    const chartRangeChangedEvent = new Event('chartRangeChanged');
+
     $(document).ready(function () {
         $('.js-oes-eyeside[data-side="both"]').click();
 
@@ -86,6 +88,23 @@ if (!empty($subspecialty)) { ?>
                 $(charts[key][eye_side]).find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
             }
         });
+
+        function rangesAreEqual(range0, range1) {
+            if(range0.length != 2 || range1.length != 2) {
+                return false;
+            }
+            range0_min = range0[0];
+            range0_max = range0[1];
+            range1_min = range1[0];
+            range1_max = range1[1];
+            if((range0_min instanceof Date) && (range0_max instanceof Date) &&
+               (range1_min instanceof Date) && (range1_max instanceof Date) &&
+               (range0_min.getTime() == range1_min.getTime()) &&
+               (range0_max.getTime() == range1_max.getTime())) {
+                return true;
+            }
+            return false;
+        }
 
         $('.plotly-right, .plotly-left').on('mouseover', function (e) {
             if ($(this).hasClass('plotly-right') || $(this).hasClass('plotly-left')) {
@@ -112,7 +131,11 @@ if (!empty($subspecialty)) { ?>
                 let current_range = [my_min_value, my_max_value];
                 // end
                 for (let i = 0; i < chart_list.length; i++) {
-                    Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
+                    const previous_range = chart_list[i]['layout']['xaxis']['range'];
+                    if(!rangesAreEqual(current_range, previous_range)) {
+                        Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
+                        chart_list[i].dispatchEvent(chartRangeChangedEvent);
+                    }
                 }
             };
         });
@@ -125,7 +148,11 @@ if (!empty($subspecialty)) { ?>
 
             $.each(['right', 'left'], function (index, eye_side) {
                 Object.keys(chart_list).forEach(function (chart_key) {
-                    Plotly.relayout(chart_list[chart_key][eye_side], 'xaxis.range', current_range);
+                    const previous_range = chart_list[chart_key][eye_side]['layout']['xaxis']['range'];
+                    if(!rangesAreEqual(current_range, previous_range)) {
+                        Plotly.relayout(chart_list[chart_key][eye_side], 'xaxis.range', current_range);
+                        chart_list[chart_key][eye_side].dispatchEvent(chartRangeChangedEvent);
+                    }
                 })
             })
         });

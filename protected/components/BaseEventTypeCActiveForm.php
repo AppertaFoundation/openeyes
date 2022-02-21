@@ -3,7 +3,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -26,7 +26,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 
         return parent::widget($className, $properties, $captureOutput);
     }
-    
+
     public function comment($element_name, $value, $htmlOptions = array(), $hidden = false, $layoutColumns = array())
     {
         $this->widget('application.widgets.Comment', array(

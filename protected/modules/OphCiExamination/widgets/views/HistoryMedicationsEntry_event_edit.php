@@ -15,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 if (isset($entry->start_date)) {
     $start_date = $entry->start_date;
 } else {
@@ -195,7 +196,24 @@ $end_date_display = str_replace('0000', '', $end_date_display);
                     <?php } ?>
                     <fieldset style="display: <?= $is_new || !empty($entry->errors) ? 'block' : 'none' ?> " class="js-datepicker-wrapper js-start-date-wrapper">
                         <i class="oe-i start small pad-right"></i>
-                        <input <?= ($disabled || $stopped) && !$entry->isUndated() ? 'disabled="disabled"' : ''?> id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date" name="<?= $field_prefix ?>[start_date]" value="<?= $start_date_display ?>" style="width:80px;" placeholder="yyyy-mm-dd" class="js-start-date" autocomplete="off">
+                        <input
+                            <?= ($disabled || $stopped) && !$entry->isUndated() ? 'disabled="disabled"' : ''?>
+                            id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date"
+                            value="<?= $start_date_display ? Helper::convertDate2NHS($start_date_display) : '' ?>"
+                            style="width:80px;"
+                            placeholder="dd Mth yyyy"
+                            autocomplete="off"
+                            class="date medical-history-date"
+                            autocomplete="off"
+                            data-pmu-format="d b Y"
+                            data-hidden-input-selector="#medical_history-start-date-<?= $row_count; ?>"
+                        >
+                        <input type="hidden"
+                            id="medical_history-start-date-<?= $row_count; ?>"
+                            class="js-start-date"
+                            name="<?= $field_prefix ?>[start_date]"
+                            value="<?= $start_date_display ?? '' ?>"
+                        >
                     </fieldset>
                 </div>
             </span>
@@ -221,7 +239,24 @@ $end_date_display = str_replace('0000', '', $end_date_display);
                         ?> style="display: none;" <?php
                               } ?> class="js-datepicker-wrapper js-end-date-wrapper">
                         <i class="oe-i stop small pad"></i>
-                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" <?= $stopped ? 'disabled="disabled"' : ''?> name="<?= $field_prefix ?>[end_date]" value="<?= $end_date_display ?>" data-default="<?= date('Y-m-d') ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
+                        <input
+                            id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date"
+                            class="medical-history-date"
+                            <?= $stopped ? 'disabled="disabled"' : ''?>
+                            value="<?= $end_date_display ?? Helper::convertDate2NHS($end_date_display) ?>"
+                            data-default="<?= date('d M Y') ?>"
+                            style="width:80px"
+                            placeholder="dd-Mth-yyyy"
+                            autocomplete="off"
+                            data-pmu-format="d b Y"
+                            data-hidden-input-selector="#medical_history-stop-date-<?= $row_count; ?>"
+                        >
+                        <input type="hidden"
+                               id="medical_history-stop-date-<?= $row_count; ?>"
+                               class="js-end-date"
+                               name="<?= $field_prefix ?>[end_date]"
+                               value="<?= $end_date_display ?>"
+                        >
                     </fieldset>
                 </div>
             </span>

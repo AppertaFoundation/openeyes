@@ -35,7 +35,7 @@ class SocialHistoryTest extends \ModelTestCase
     use \HasRelationOptionsToTest;
 
     protected $element_cls = SocialHistory::class;
-    
+
     public function relation_options_provider()
     {
         return [

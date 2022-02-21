@@ -82,7 +82,7 @@
                   <a href="<?php echo Yii::app()->createUrl(
                       $this->module->getName() . '/admin/update' . Helper::getNSShortname($model),
                       array('id' => $model->id)
-                  ) ?>"><?php echo $model->question ?></a></td>
+                           ) ?>"><?php echo $model->question ?></a></td>
                 <td>
                   <input type="checkbox" class="model_enabled" <?php if ($model->active) {
                         echo 'checked';

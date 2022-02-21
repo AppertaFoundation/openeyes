@@ -147,7 +147,6 @@
                 subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>,
                 newSubspecialtyTemplateSelector: '#new-change-subspecialty-template',
                 showSteps: (OE_module_name === 'OphCiExamination'),
-                workflowSteps: <?= CJSON::encode($workflowSteps) ?>,
                 currentStep: <?= CJSON::encode($currentStep) ?>,
                 currentFirm: <?= $currentFirm ?>,
                 eventType: "<?= $event_types ?>",

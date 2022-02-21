@@ -25,10 +25,10 @@ class PatientTicketingModule extends \BaseModule
     public function init()
     {
         // import the module-level components
-        $this->setImport(array(
-                        'PatientTicketing.components.*',
-                ));
+        $this->setImport(['PatientTicketing.components.*']);
         \Yii::app()->authManager->registerRuleset('PatientTicketing', new components\PatientTicketing_AuthRules());
+
+        $this->setModules(['PatientTicketingAdmin']);
         parent::init();
     }
 }

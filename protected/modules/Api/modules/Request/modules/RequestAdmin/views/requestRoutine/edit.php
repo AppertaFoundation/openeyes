@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2020, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -47,7 +49,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 <?php echo $form->errorSummary($model) ?>
 
 
-    <div class="cols-5">
+    <div class="cols-full">
         <div class="row divider">
             <h2><?php echo $title ?></h2>
         </div>
@@ -55,7 +57,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <table class="standard cols-full">
             <colgroup>
                 <col class="cols-3">
-                <col class="cols-5">
+                <col class="cols-full">
             </colgroup>
             <tbody>
             <tr>

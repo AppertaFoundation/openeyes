@@ -63,9 +63,9 @@ $workflows = $restrict_to_current_institution
             <?= \CHtml::activeDropDownList(
                 $model,
                 'firm_id',
-                CHtml::listData($firms, 'id', 'nameAndSubspecialty'),
+                CHtml::listData(Firm::model()->activeOrPk($model->firm_id)->findAllByAttributes(array('institution_id' => Institution::model()->getCurrent()->id)), 'id', 'nameAndSubspecialty'),
                 ['class' => 'cols-full', 'id' => 'js-firm', 'empty' => '- All -']
-            ) ?>
+            ); ?>
         </td>
     </tr>
     <tr>
@@ -97,7 +97,7 @@ $workflows = $restrict_to_current_institution
                 $model,
                 'workflow_id',
                 CHtml::listData(
-                    $workflows,
+                    OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findAllByAttributes(array('institution_id' => Institution::model()->getCurrent()->id)),
                     'id',
                     'name'
                 ),

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,9 +13,13 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<div class="cols-5">
+<?php
+Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('/js/oeadmin/OpenEyes.HTMLSettingEditorController.js'), \CClientScript::POS_HEAD);
+?>
+<div class="cols-full">
 
     <h2>Edit Procedure</h2>
 
@@ -24,12 +29,12 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <colgroup>
-                <col class="cols-1">
-                <col class="cols-4">
+                <col class="cols-3">
+                <col class="cols-full">
             </colgroup>
             <tbody>
             <?php
-            $personal_fields = ['term', 'short_format', 'default_duration', 'snomed_code', 'snomed_term', 'aliases'];
+            $personal_fields = ['term', 'short_format', 'default_duration', 'snomed_code', 'snomed_term', 'ecds_code', 'ecds_term', 'aliases'];
             foreach ($personal_fields as $field) : ?>
                 <tr>
                     <td><?php echo $procedure->getAttributeLabel($field); ?></td>
@@ -55,6 +60,12 @@
                 <td>Active</td>
                 <td>
                     <?=\CHtml::activeCheckBox($procedure, 'active'); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Clinic / Outpatient procedure?</td>
+                <td>
+                    <?= CHtml::activeCheckBox($procedure, 'is_clinic_proc') ?>
                 </td>
             </tr>
             <tr>
@@ -85,6 +96,8 @@
                 $this->widget('application.widgets.MultiSelectDropDownList', [
                     'options' => [
                         'label' => 'benefit',
+                        'sas' => 1,
+                        'wrapperSelector' => 'teszt',
                         'dropDown' => [
                             'name' => null,
                             'id' => '$benefits',
@@ -159,7 +172,19 @@
                 ]);
                 ?>
             </tr>
-
+            <tr>
+                <td>Low Complexity Criteria</td>
+                <td>
+                    <?=\CHtml::activeTextField(
+                        $procedure,
+                        'low_complexity_criteria',
+                        [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]
+                    ); ?>
+                </td>
+            </tr>
             </tbody>
             <tfoot>
             <tr>
@@ -187,3 +212,13 @@
         </table>
     </form>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        let html_editor_controller =
+            new OpenEyes.HTMLSettingEditorController(
+                "Procedure_low_complexity_criteria",
+                <?= json_encode(\Yii::app()->params['tinymce_default_options'])?>,
+            );
+    });
+</script>

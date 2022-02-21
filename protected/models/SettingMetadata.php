@@ -47,6 +47,15 @@ class SettingMetadata extends BaseActiveRecordVersioned
     ];
 
     /**
+     * static cache properties for performance improvements
+     */
+    protected static ?bool $sessionSiteValidated = null;
+    protected static ?Site $sessionSite = null;
+    protected static ?bool $sessionFirmValidated = null;
+    protected static ?Firm $sessionFirm = null;
+    protected static array $metadataCacheStore = [];
+
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return SettingMetadata the static model class
@@ -54,6 +63,13 @@ class SettingMetadata extends BaseActiveRecordVersioned
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    public static function resetCache()
+    {
+        static::$sessionSiteValidated = null;
+        static::$sessionFirmValidated = null;
+        static::$metadataCacheStore = [];
     }
 
     /**
@@ -207,23 +223,19 @@ class SettingMetadata extends BaseActiveRecordVersioned
             return Yii::app()->params[$key];
         }
 
-        if ($element_type) {
-            $metadata = self::model()->find('element_type_id=? and `key`=?', array($element_type->id, $key));
-        } else {
-            $metadata = self::model()->find('element_type_id is null and `key`=?', array($key));
-        }
+        $metadata = static::cachedMetadata($key, $element_type ? $element_type->id : null);
 
         if (!$metadata) {
             return false;
         }
 
         $user_id = Yii::app()->session['user']->id ?? null;
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-        $firm_id = $firm->id ?? null;
-        $subspecialty_id = $firm->subspecialtyID ?? null;
-        $specialty_id = $firm && $firm->specialty ? $firm->specialty->id : null;
-        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-        $site_id = $site->id ?? null;
+        $firm = static::firmForCurrentSession();
+        $firm_id = $firm ? $firm->id : null;
+        $subspecialty_id = $firm && $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+        $specialty_id = $subspecialty_id ? $firm->serviceSubspecialtyAssignment->subspecialty->specialty_id : null;
+        $site = static::siteForCurrentSession();
+        $site_id = $site ? $site->id : null;
         // initialize is_admin as false
         $is_admin = false;
 
@@ -561,5 +573,49 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return array(
             'byDisplayOrder' => array('order' => 'display_order DESC, name DESC'),
         );
+    }
+
+    /**
+     * Retrieve the current site from cache
+     */
+    protected static function siteForCurrentSession()
+    {
+        if (is_null(static::$sessionSiteValidated)) {
+            static::$sessionSiteValidated = true;
+            static::$sessionSite = Site::model()
+                ->with('institution')
+                ->findByPk(Yii::app()->session['selected_site_id']);
+        }
+
+        return static::$sessionSite;
+    }
+
+    /**
+     * Retrieve the current firm from cache
+     */
+    protected static function firmForCurrentSession()
+    {
+        if (is_null(static::$sessionFirmValidated)) {
+            static::$sessionFirm = Firm::model()
+                ->with('serviceSubspecialtyAssignment.subspecialty.specialty')
+                ->findByPk(Yii::app()->session['selected_firm_id']);
+            static::$sessionFirmValidated = true;
+        }
+
+        return static::$sessionFirm;
+    }
+
+    /**
+     * Retrieve the SettingMetadata model from cache
+     */
+    protected static function cachedMetadata($key, $elementTypeId = null)
+    {
+        $cacheKey = "{$key}.{$elementTypeId}";
+        if (!array_key_exists($cacheKey, static::$metadataCacheStore)) {
+            static::$metadataCacheStore[$cacheKey] = $elementTypeId
+                ? self::model()->find('element_type_id=? and `key`=?', [$elementTypeId, $key])
+                : self::model()->find('element_type_id is null and `key`=?', [$key]);
+        }
+        return static::$metadataCacheStore[$cacheKey];
     }
 }

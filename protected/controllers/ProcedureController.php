@@ -67,6 +67,7 @@ class ProcedureController extends BaseController
             $criteria->select = 't.id, term, short_format';
             $criteria->join = 'LEFT JOIN proc_subspecialty_subsection_assignment pssa ON t.id = pssa.proc_id';
             $criteria->compare('pssa.subspecialty_subsection_id', $_POST['subsection']);
+            $criteria->compare('pssa.institution_id', Yii::app()->session['selected_institution_id']);
             $criteria->order = 'term asc';
 
             $procedures = Procedure::model()->active()->findAll($criteria);
@@ -74,7 +75,8 @@ class ProcedureController extends BaseController
             if (!empty($_POST['dialog'])) {
                 $view = '_procedureDialogOptions';
             }
-                $this->renderPartial($view, array('procedures' => $procedures), false, false);
+
+            $this->renderPartial($view, array('procedures' => $procedures), false, false);
         }
     }
 

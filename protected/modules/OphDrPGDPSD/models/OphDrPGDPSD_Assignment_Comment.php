@@ -13,7 +13,6 @@
  * The followings are the available model relations:
  * @property User $createdUser
  * @property User $lastModifiedUser
- * @property User $commented_by
  */
 class OphDrPGDPSD_Assignment_Comment extends \BaseActiveRecordVersioned
 {

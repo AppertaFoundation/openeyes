@@ -18,7 +18,7 @@ var OpenEyes = OpenEyes || {};
 
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
-(function(exports) {
+(function (exports) {
 
     /**
      *
@@ -167,9 +167,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     $tr = controller.$table.find('tbody tr:last');
                     controller.setDatepicker();
                 }
-            } else if(type && type === 'disorder') {
+            } else if (type && type === 'disorder') {
                 // just add the disorder as an extra row
-                row = controller.createRow([{id: $option.data('id'), label: $option.data('label')}]);
+                row = controller.createRow([{ id: $option.data('id'), label: $option.data('label') }]);
                 controller.$table.find('tbody').append(row);
             } else if (type && type === 'finding') {
                 //Add Further Findings
@@ -189,7 +189,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         });
 
-        controller.$popup.on('click', function(e) {
+        controller.$popup.on('click', function (e) {
             e.preventDefault();
         });
 
@@ -197,21 +197,23 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             element: controller.$element.closest('section')
         });
 
-        DiagnosesController.prototype.toggleNoOphthalmicDiagnoses = function(){
-            if(this.$noOphthalmicDiagnosesFld.prop('checked')){
+        DiagnosesController.prototype.toggleNoOphthalmicDiagnoses = function () {
+            if (this.$noOphthalmicDiagnosesFld.prop('checked')) {
                 this.$popup.hide();
             } else {
                 this.$popup.show();
             }
 
-            if (this.$table.find('.removeDiagnosis').length === 0){
+            if (this.$table.find('.removeDiagnosis').length === 0) {
                 this.$noOphthalmicDiagnosesWrapper.show();
+                this.$table.hide();
             } else {
                 this.$noOphthalmicDiagnosesWrapper.hide();
+                this.$table.show();
             }
         };
 
-        DiagnosesController.prototype.toggleTableHead = function(){
+        DiagnosesController.prototype.toggleTableHead = function () {
             if (this.$table.find('.removeDiagnosis').length === 0 && this.$table.find('.read-only').length === 0) {
                 this.$table.find('thead').hide();
             } else {
@@ -235,7 +237,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             var no_data = !$(data).length;
             $(controller.options.searchResult).toggle(!no_data);
             $('#ophthalmic-diagnoses-search-no-results').toggle(no_data);
-            for(let i = 0; i < data.length; i++){
+            for (let i = 0; i < data.length; i++) {
                 controller.appendToSearchResult(data[i]);
             }
         });
@@ -247,7 +249,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let $item = $("<li>")
             .attr('data-str', item.value)
             .attr('data-id', item.id);
-        if(is_selected){
+        if (is_selected) {
             $item.addClass('selected');
         }
         $item.append($span);
@@ -273,7 +275,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key') - 1;
         var datepicker_name = '#diagnoses-datepicker-' + row_count;
         var datepicker = $(this.$table).find(datepicker_name);
-        if (datepicker.length != 0) {
+        if (datepicker.length !== 0) {
             pickmeup(datepicker_name, {
                 format: 'Y-m-d',
                 hide_on_select: true,
@@ -284,14 +286,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
     };
 
-    DiagnosesController.prototype.getEyeIdFromRow = function($row) {
+    DiagnosesController.prototype.setCurrentTime = function () {
+        let date = new Date();
+        let hours = date.getHours();
+        let minutes = ('0' + date.getMinutes()).slice(-2); // This handles instances where the minute value is <10 as a leading 0 is required.
+        return hours + ':' + minutes;
+    };
+
+    DiagnosesController.prototype.getEyeIdFromRow = function ($row) {
         let eye_id = $row.find('.js-left-eye').is(':checked') ? 1 : 0;
         eye_id += $row.find('.js-right-eye').is(':checked') ? 2 : 0;
         return eye_id;
     };
 
-    DiagnosesController.prototype.createRow = function(selectedItems)
-    {
+    DiagnosesController.prototype.createRow = function (selectedItems) {
         var newRows = [];
         var template = this.templateText;
         var element = this.$element;
@@ -319,22 +327,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return newRows;
     };
 
-    DiagnosesController.prototype.addEntry = function(selectedItems)
-    {
+    DiagnosesController.prototype.addEntry = function (selectedItems) {
         var rows = this.createRow(selectedItems);
         this.toggleTableHead();
         this.toggleNoOphthalmicDiagnoses();
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
-            this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'), selectedItems[i].alternate);
+            this.appendSecondaryDiagnoses(selectedItems[i].secondary, this.$table.find('tbody tr:last'), selectedItems[i].alternate);
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
         }
         $(":input[name^='glaucoma_diagnoses']").trigger('change', ['bybys']);
     };
 
-    DiagnosesController.prototype.appendSecondaryDiagnoses = function(secondary_diagnoses , $tr, alternate_diagnoses){
-        if(this.subspecialtyRefSpec === 'GL' && secondary_diagnoses !== undefined && secondary_diagnoses.length) {
+    DiagnosesController.prototype.appendSecondaryDiagnoses = function (secondary_diagnoses, $tr, alternate_diagnoses) {
+        if (this.subspecialtyRefSpec === 'GL' && secondary_diagnoses !== undefined && secondary_diagnoses.length) {
             $tr.find('.condition-secondary-to-wrapper').show();
             let template = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{label}}  </option>';
             let template_alternate = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{selection_label}}  </option>';
@@ -362,11 +369,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
     };
 
-    DiagnosesController.prototype.selectEye = function($tr, eye_id){
-        if(eye_id & 1){
+    DiagnosesController.prototype.selectEye = function ($tr, eye_id) {
+        if (eye_id & 1) {
             $tr.find('.js-left-eye').prop('checked', true);
         }
-        if(eye_id & 2){
+        if (eye_id & 2) {
             $tr.find('.js-right-eye').prop('checked', true);
         }
     };
@@ -390,7 +397,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                             newExternalDiagnoses[diagnosis].sides.push(diagnosesBySource[source][i][1]);
                         }
                     } else {
-                        newExternalDiagnoses[diagnosis] = {sides: [diagnosesBySource[source][i][1]]};
+                        newExternalDiagnoses[diagnosis] = { sides: [diagnosesBySource[source][i][1]] };
                     }
                 }
             }
@@ -414,8 +421,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * Remove the diagnosis if it was added from an external source.
      */
-    DiagnosesController.prototype.removeExternalDiagnosis = function(code)
-    {
+    DiagnosesController.prototype.removeExternalDiagnosis = function (code) {
         this.$table.find('input[type="hidden"][value="' + code + '"]').closest('tr').remove();
     };
 
@@ -514,7 +520,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var row, $tr;
 
         // iterate over table rows.
-        $('#OphCiExamination_diagnoses').children('tr').each(function() {
+        $('#OphCiExamination_diagnoses').children('tr').each(function () {
             if ($(this).find('input[type=hidden][name*=\\[disorder_id\\]]').val() === id) {
                 alreadyInList = true;
                 // only want to alter sides for disorders that have been added from external source
@@ -534,8 +540,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if (!alreadyInList) {
             // adding this disorder to the search result as createRow will check if there is any selected items in
             // selectItems or searchResult - otherwise it won't add
-            controller.appendToSearchResult({id: id, value: name}, true);
-            controller.addEntry([{id: id, label: name, eye_id: side}]);
+            controller.appendToSearchResult({ id: id, value: name }, true);
+            controller.addEntry([{ id: id, label: name, eye_id: side }]);
             $tr = this.$table.find('tbody tr:last');
             $tr.addClass('js-external');
         }

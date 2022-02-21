@@ -381,7 +381,7 @@ class OEMigration extends CDbMigration
 
         $row = array(
             'name' => $name,
-            'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_" . str_replace(' ',
+            'class_name' => $params['class_name'] ?? "Element_{$event_type}_" . str_replace(' ',
                     '', $name),
             'event_type_id' => $event_type_id,
             'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
@@ -775,6 +775,25 @@ class OEMigration extends CDbMigration
         return -1;
     }
 
+    public function insertIfNotExist($table, $attributes = [])
+    {
+        $command = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from($table);
+
+        $command->where("1=1");
+        foreach ($attributes as $attr => $val) {
+            $command->andWhere("{$attr} = :{$attr}", [":$attr" => $val]);
+        }
+
+        $is_exist = $command->queryRow();
+        if (!$is_exist) {
+            $this->insert($table, $attributes);
+        } else {
+            echo "\n    > SKIP insert into $table ... value already exist\n";
+        }
+    }
+
     /**
      * @description - return csvFiles array of files that will be imported
      *
@@ -1030,6 +1049,44 @@ class OEMigration extends CDbMigration
     }
 
     /**
+     * Checks if a named column exists on a named table
+     * @param $table_name Name of he table to check for the column on
+     * @param $column_name Name of the column to check for
+     * @return bool true if the column exists
+     */
+    protected function verifyColumnExists($table_name, $column_name){
+        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" .$column_name ."'")->queryScalar([ ':table_name' => $table_name ]);
+        return !empty($cols);
+    }
+    
+    /**
+     * Checks if a named foreign keys exists on a named table
+     * @param $table_name Name of he table to check the FK on
+     * @param $key_name Name of the FK contraint to check for
+     * @return bool true if the FK exists
+     */
+    protected function verifyForeignKeyExists($table_name, $key_name){
+        $fk_exists = $this->dbConnection->createCommand('   SELECT count(*) 
+                                                            FROM information_schema.table_constraints 
+                                                            WHERE table_schema = DATABASE() 
+                                                                AND table_name = :table_name 
+                                                                AND constraint_name = :key_name 
+                                                                AND constraint_type = "FOREIGN KEY"')->queryScalar([ ':table_name' => $table_name, ':key_name' => $key_name ]);
+
+        return !empty($fk_exists);
+    }
+
+    /**
+     * Checks if a named table exisst in the schema
+     * @param $table_name Name of he table to check for
+     * @return bool true if the table exists
+     */
+    protected function verifyTableExists($table_name)
+    {
+        return $this->dbConnection->schema->getTable($table_name) !== null;
+    }
+
+    /**
      * @param $table_name
      * @param bool $warn
      * @return bool
@@ -1045,11 +1102,6 @@ class OEMigration extends CDbMigration
             );
         }
         return false;
-    }
-
-    protected function verifyTableExists($table_name)
-    {
-        return $this->dbConnection->schema->getTable($table_name) !== null;
     }
 
     /**
@@ -1087,5 +1139,26 @@ class OEMigration extends CDbMigration
         if ($versioned && $this->verifyTableVersioned($current_name)) {
             $this->renameTable($current_name . '_version', $new_name . '_version');
         }
+    }
+
+    /**
+     * Gets the settings field type id by name
+     *
+     * @param $field_type
+     * @return int
+     * @throws CException
+     */
+    protected function getSettingFieldIdByName(string $name)
+    {
+        return $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('setting_field_type')
+            ->where('name = :name', [':name' => $name])
+            ->queryScalar();
+    }
+
+    protected function isColumnExist(string $table, string $column): bool
+    {
+        return isset($this->dbConnection->schema->getTable($table, true)->columns[$column]);
     }
 }

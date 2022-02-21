@@ -38,6 +38,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
                 <div class="data-value">
             <?= ($disorder[0]->term) ?><sup>*</sup></span>
                 </div>
+                </div>
             </div>
             <?php
         }
@@ -79,7 +80,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
             ?>
             <div class="data-group">
                 <div class="data-value">
-                    <?php echo $diagnosis->getDisplayDate() ?>
+                    <?php echo $diagnosis->getDisplayDate() . ' ' . $diagnosis->time ?>
             <?php echo $diagnosis->eye->adjective ?>
             <?php echo $diagnosis->disorder->term ?>
                 </div>

@@ -25,6 +25,11 @@ class MedicationManagement extends BaseMedicationWidget
 {
     protected static $elementClass = MedicationManagementElement::class;
 
+    public function init()
+    {
+        parent::init();
+    }
+
     protected function isAtTip()
     {
         return true; //TODO idk
@@ -136,5 +141,35 @@ class MedicationManagement extends BaseMedicationWidget
         }
 
         return parent::getViewData();
+    }
+
+    /**
+     * Returns a field widget class by type
+     *
+     * @param int $type
+     * @return string
+     * @throws Exception In case $type is invalid
+     */
+    public static function getWidgetClassByType(int $type): string
+    {
+        $field_types = self::getFieldTypes();
+        if (array_key_exists($type, $field_types)) {
+            return $field_types[$type];
+        }
+
+        throw new Exception("Signature type " . $type . " not defined");
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function getFieldTypes(): array
+    {
+        return [
+            \BaseSignature::TYPE_LOGGEDIN_USER => \EsignPINField::class,
+            \BaseSignature::TYPE_OTHER_USER => \EsignUsernamePINField::class,
+            \BaseSignature::TYPE_PATIENT => \EsignSignatureCaptureField::class,
+            \BaseSignature::TYPE_LOGGEDIN_MED_USER => EsignPINFieldMedication::class
+        ];
     }
 }

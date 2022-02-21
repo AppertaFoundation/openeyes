@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 require_once './vendor/setasign/fpdi/src/PdfParser/PdfParser.php';
 
 use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
@@ -220,7 +222,7 @@ class DefaultController extends BaseEventTypeController
                 }
 
                 if (!file_exists($file->getPath())) {
-                    throw new CException('File not found on filesystem: '.$file->getPath());
+                    throw new CException('File not found on filesystem: ' . $file->getPath());
                 }
                 if ($_POST['uploadMode'] === 'single') {
                     $return_data['document'] = ['single'];
@@ -299,8 +301,8 @@ class DefaultController extends BaseEventTypeController
      */
     public function generateFileField($element, $index, $side)
     {
-        if ($element->{$index."_id"} > 0) {
-            $this->renderPartial('form_'.$this->getTemplateForMimeType($element->{$index}->mimetype), array('element'=>$element, 'index'=>$index, 'side'=>$side));
+        if ($element->{$index . "_id"} > 0) {
+            $this->renderPartial('form_' . $this->getTemplateForMimeType($element->{$index}->mimetype), array('element' => $element, 'index' => $index, 'side' => $side));
         }
     }
 
@@ -314,7 +316,7 @@ class DefaultController extends BaseEventTypeController
 
         $imgdir = $this->event->getImageDirectory();
         if (!file_exists($imgdir)) {
-            mkdir($imgdir, 0775, true);
+            mkdir($imgdir, 0774, true);
         }
 
         if ($this->eventContainsImagesOnly()) {
@@ -434,7 +436,7 @@ class DefaultController extends BaseEventTypeController
             $imgdir = $this->event->imageDirectory;
             $pdf_path = $imgdir . '/event_print.pdf';
             if (!file_exists($imgdir)) {
-                mkdir($imgdir, 0775, true);
+                mkdir($imgdir, 0774, true);
             }
             $this->pdf_output->Output("F", $pdf_path);
 
@@ -640,7 +642,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setComplexAttributes_Element_OphCoDocument_Document($element, $data, $index)
     {
-        $model_name = \CHtml::modelName($element);
         if ($data['upload_mode'] === 'single') {
             if (!empty($data['ProtectedFile']['single_file_content']) && $data['single_file_canvas_modified'] === '1') {
                 $name = ProtectedFile::model()->findByPk($element->single_document_id)->name;
@@ -677,8 +678,8 @@ class DefaultController extends BaseEventTypeController
     protected function saveComplexAttributes_Element_OphCoDocument_Document($element, $data, $index)
     {
         foreach (['single_document', 'left_document', 'right_document'] as $document) {
-            $document_id = $document.'_id';
-            $rotate = $document.'_rotate';
+            $document_id = $document . '_id';
+            $rotate = $document . '_rotate';
             $protected = ProtectedFile::model()->findByPk($element->{$document_id});
             $rotate_value = \Yii::app()->request->getParam($rotate);
             if ($protected && !is_null($rotate_value)) {

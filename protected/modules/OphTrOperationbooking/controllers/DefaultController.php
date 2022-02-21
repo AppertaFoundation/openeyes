@@ -23,7 +23,9 @@ class DefaultController extends OphTrOperationbookingEventController
         'admissionForm' => self::ACTION_TYPE_PRINT,
         'verifyProcedures' => self::ACTION_TYPE_CREATE,
         'putOnHold' => self::ACTION_TYPE_EDIT,
-        'putOffHold' => self::ACTION_TYPE_EDIT
+        'putOffHold' => self::ACTION_TYPE_EDIT,
+        'getHighFlowCriteriaPopupContent' => self::ACTION_TYPE_FORM,
+        'printAdmissionFormPdf' => self::ACTION_TYPE_FORM,
     );
 
     public $eventIssueCreate = 'Operation requires scheduling';
@@ -531,9 +533,9 @@ class DefaultController extends OphTrOperationbookingEventController
         foreach ($this->open_elements as $element) {
             if (get_class($element) == 'Element_OphTrOperationbooking_Operation') {
                 $operation_element = $element;
-                break;
             }
         }
+
         if ($operation_element && $operation_element->booking) {
             $anaesthetic_type_ids = isset($data['AnaestheticType']) ? $data['AnaestheticType'] : [];
             foreach ($anaesthetic_type_ids as $anaesthetic_type_id) {
@@ -798,7 +800,24 @@ class DefaultController extends OphTrOperationbookingEventController
             true
         );
 
-        return $this->actionPDFPrint($this->operation->event->id);
+        echo $this->pdf_print_html;
+    }
+
+    public function actionPrintAdmissionFormPdf() {
+        $this->initWithEventId(@$_GET['id']);
+        $wk = Yii::app()->puppeteer;
+        $wk->setDocRef($this->event->docref);
+        $wk->setPatient($this->event->episode->patient);
+        $wk->setBarcode($this->event->barcodeSVG);
+        $wk->savePageToPDF($this->event->imageDirectory, $this->pdf_print_suffix, '', 'http://localhost/OphTrOperationbooking/default/admissionForm/'.$this->event->id);
+
+        $pdf = $this->event->imageDirectory."/$this->pdf_print_suffix.pdf";
+
+        header('Content-Type: application/pdf');
+        header('Content-Length: '.filesize($pdf));
+
+        readfile($pdf);
+        @unlink($pdf);
     }
 
     public function actionDelete($id)
@@ -866,5 +885,64 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->operation->on_hold_comment = null;
         $this->operation->save();
         return $this->redirect(array('default/view/' . $this->event->id));
+    }
+
+    protected function getEventElements()
+    {
+        if ($this->action->id == 'view') {
+            return parent::getEventElements();
+        }
+
+        $elements = parent::getEventElements();
+        foreach ($elements as $key => $element) {
+            if (get_class($element) == 'Element_OphTrOperationbooking_PreAssessment') {
+                if (!$element->hasTypes()) {
+                    unset($elements[$key]);
+                }
+            }
+        }
+        return $elements;
+    }
+
+    /**
+     * Get all the available element types for the event
+     *
+     * @return array
+     */
+    public function getAllElementTypes()
+    {
+        $preassessment_element = new Element_OphTrOperationbooking_PreAssessment();
+        $remove = !$preassessment_element->hasTypes() ? ['Element_OphTrOperationbooking_PreAssessment'] : [];
+        return array_filter(
+            parent::getAllElementTypes(),
+            function ($et) use ($remove) {
+                return !in_array($et->class_name, $remove);
+            }
+        );
+    }
+
+    public function actionGetHighFlowCriteriaPopupContent()
+    {
+        $procedure_ids = array_map('intval', explode(',', Yii::app()->request->getParam('id')));
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('low_complexity_criteria IS NOT NULL');
+        $criteria->addInCondition("id", $procedure_ids);
+
+        $procedures = Procedure::model()->findAll($criteria);
+        if (count($procedures)===0) {
+            $response = null;
+        } else {
+            $response = [
+                'html' => $this->renderPartial(
+                    '_meh_high_flow',
+                    array(
+                        'procedures' => $procedures,
+                    ),
+                    true
+                ),
+            ];
+        }
+
+        $this->renderJSON($response);
     }
 }

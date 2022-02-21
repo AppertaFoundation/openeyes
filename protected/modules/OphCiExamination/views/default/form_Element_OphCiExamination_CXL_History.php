@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields flex-layout full-width">
+<div class="element-both-eyes element-fields flex-layout full-width">
   <div class="large-1 column">
     <label><?php echo $element->getAttributeLabel('asthma_id') ?>:</label>
   </div>
@@ -148,16 +148,16 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->{$eye_side . '_previous_cxl_value'} !== null) ? $element->{$eye_side . '_previous_cxl_value'} : 0,
-                      false,
-                      false,
-                      false,
-                      false,
-                      array(
+                       ($element->{$eye_side . '_previous_cxl_value'} !== null) ? $element->{$eye_side . '_previous_cxl_value'} : 0,
+                       false,
+                       false,
+                       false,
+                       false,
+                       array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                      array(
+                       array(
                           'label' => 4,
                           'field' => 8,
                       )
@@ -177,16 +177,16 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->{$eye_side . '_previous_refractive_value'} !== null) ? $element->{$eye_side . '_previous_refractive_value'} : 0,
-                      false,
-                      false,
-                      false,
-                      false,
-                      array(
+                       ($element->{$eye_side . '_previous_refractive_value'} !== null) ? $element->{$eye_side . '_previous_refractive_value'} : 0,
+                       false,
+                       false,
+                       false,
+                       false,
+                       array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                      array(
+                       array(
                           'label' => 4,
                           'field' => 8,
                       )
@@ -206,16 +206,16 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->{$eye_side . '_intacs_kera_ring_value'} !== null) ? $element->{$eye_side . '_intacs_kera_ring_value'} : 0,
-                      false,
-                      false,
-                      false,
-                      false,
-                      array(
+                       ($element->{$eye_side . '_intacs_kera_ring_value'} !== null) ? $element->{$eye_side . '_intacs_kera_ring_value'} : 0,
+                       false,
+                       false,
+                       false,
+                       false,
+                       array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                      array(
+                       array(
                           'label' => 4,
                           'field' => 8,
                       )
@@ -235,16 +235,16 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->{$eye_side . '_previous_hsk_keratitis_value'} !== null) ? $element->{$eye_side . '_previous_hsk_keratitis_value'} : 0,
-                      false,
-                      false,
-                      false,
-                      false,
-                      array(
+                       ($element->{$eye_side . '_previous_hsk_keratitis_value'} !== null) ? $element->{$eye_side . '_previous_hsk_keratitis_value'} : 0,
+                       false,
+                       false,
+                       false,
+                       false,
+                       array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                      array(
+                       array(
                           'label' => 4,
                           'field' => 8,
                       )

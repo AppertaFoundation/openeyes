@@ -101,7 +101,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
-            array('date, introduction, body, footer', 'requiredIfNotDraft'),
+            array('date, introduction, body', 'requiredIfNotDraft'),
             array('use_nickname , site_id', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
@@ -612,7 +612,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
             if (!$patient) {
                 // determine if there are any circumstances where this is necessary. Almost certainly very redundant
-                if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
+                if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))
+                    ->findByPk(@$_GET['patient_id'])) {
                     throw new Exception('Patient not found: ' . @$_GET['patient_id']);
                 }
             }
@@ -624,25 +625,46 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             $this->re = $this->calculateRe($patient);
 
             $user = Yii::app()->session['user'];
-            $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
+            $firm = Firm::model()
+                ->with('serviceSubspecialtyAssignment')
+                ->findByPk(Yii::app()->session['selected_firm_id']);
 
             $contact = $user->contact;
-            if ($contact) {
-                // if no correspondence_sign_off_user_id set in the user's profile than the sign is blank
-                $this->footer = $user->signOffUser ? $api->getFooterText($user->signOffUser) : '';
+
+            // Footer will be built after signatures are recorded
+            $this->footer = "";
+
+            // If the event is being created from a worklist step, assign the default macro if one has been specified.
+            if (isset(Yii::app()->session['active_step_state_data']['macro_id'])) {
+                $this->macro = LetterMacro::model()
+                    ->findByPk(Yii::app()->session['active_step_state_data']['macro_id']);
             }
 
             // Look for a macro based on the episode_status
             $episode = $patient->getEpisodeForCurrentSubspecialty();
-            if ($episode) {
-                $this->macro = LetterMacro::model()->with('firms')->find('firms_firms.firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
+            if ($episode && !$this->macro) {
+                $this->macro = LetterMacro::model()
+                    ->with('firms')
+                    ->find(
+                        'firms_firms.firm_id=? and episode_status_id=?',
+                        array($firm->id, $episode->episode_status_id)
+                    );
                 if (!$this->macro && $firm->service_subspecialty_assignment_id) {
                     $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-                    $this->macro = LetterMacro::model()->with('subspecialties')->find('subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
+                    $this->macro = LetterMacro::model()
+                        ->with('subspecialties')
+                        ->find(
+                            'subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?',
+                            array($subspecialty_id, $episode->episode_status_id)
+                        );
                     if (!$this->macro) {
                         $this->macro = LetterMacro::model()->with('sites', 'institutions')->find([
                             'condition' => '(institutions_institutions.institution_id=? OR sites_sites.site_id=?) AND episode_status_id=?',
-                            'params' => array(Yii::app()->session['selected_institution_id'], Yii::app()->session['selected_site_id'], $episode->episode_status_id)]);
+                            'params' => array(
+                                Yii::app()->session['selected_institution_id'],
+                                Yii::app()->session['selected_site_id'],
+                                $episode->episode_status_id
+                            )]);
                     }
                 }
             }
@@ -673,6 +695,17 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             if ($dl = FirmSiteSecretary::model()->find('firm_id=? and site_id=?', array(Yii::app()->session['selected_firm_id'], $this->site_id))) {
                 $this->direct_line = $dl->direct_line;
                 $this->fax = $dl->fax;
+            }
+
+            if(Yii::app()->user) {
+                $user = User::model()->findByPk(Yii::app()->user->getId());
+                /** @var User $user */
+                if($user) {
+                    if($signOffUser = $user->signOffUser) {
+                        $signature_text = $api->getFooterText($signOffUser, $episode->firm);
+                        $this->footer = $signOffUser->correspondence_sign_off_text . "{e-signature}" . ($signature_text ? "\n" . nl2br($signature_text) : '');
+                    }
+                }
             }
         }
     }
@@ -1016,7 +1049,28 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function renderFooter()
     {
-        return str_replace("\n", '<br/>', CHtml::encode($this->footer));
+        $footer = "<div class=\"flex\">";
+        if($esign_element = $this->event->getElementByClass(Element_OphCoCorrespondence_Esign::class)) {
+            /** @var Element_OphCoCorrespondence_Esign $esign_element*/
+            $signatures = $esign_element->signatures;
+            if($primary_signature = array_pop($signatures)) {
+                if(strpos($this->footer, "{e-signature}") !== false) {
+                    if(strpos($primary_signature->getPrintout(), "Consultant:") === false && strpos($this->footer, "Consultant:") !== false) {
+                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}",$this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "<br/>Consultant:" . nl2br(trim(explode("Consultant:",$this->footer)[1])) . "</div>";
+                    } else {
+                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}",$this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "</div>";
+                    }
+                } else {
+                    $footer .= "<div>" . nl2br(trim($this->footer)) . "<br/>" . $primary_signature->getPrintout() . "</div>";
+                }
+            }
+            if($secondary_signature = array_pop($signatures)) {
+                $sign_off_text = $secondary_signature->signedUser->correspondence_sign_off_text;
+                $footer .= "<div>" . nl2br(trim($sign_off_text)) . "<br/>" . $secondary_signature->getPrintout() . "</div>";
+            }
+        }
+        $footer .= "</div>";
+        return $footer;
     }
 
     /**

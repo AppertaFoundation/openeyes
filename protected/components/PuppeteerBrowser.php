@@ -539,7 +539,7 @@ class PuppeteerBrowser extends CApplicationComponent
     public function findOrCreateDirectory($path)
     {
         if (!file_exists($path)) {
-            if (!@mkdir($path, 0775, true) || !is_dir($path)) {
+            if (!@mkdir($path, 0774, true) || !is_dir($path)) {
                 throw new Exception("Unable to create directory: $path: check permissions.");
             }
         }

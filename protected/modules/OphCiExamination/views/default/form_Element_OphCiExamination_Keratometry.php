@@ -188,16 +188,16 @@
                             0 => 'No',
                             1 => 'Yes',
                         ),
-                        ($element->{$eye_side . '_flourescein_value'} !== null) ? $element->{$eye_side . '_flourescein_value'} : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
+                         ($element->{$eye_side . '_flourescein_value'} !== null) ? $element->{$eye_side . '_flourescein_value'} : 0,
+                         false,
+                         false,
+                         false,
+                         false,
+                         array(
                             'text-align' => $eye_side,
                             'nowrapper' => true,
                         ),
-                        array(
+                         array(
                             'label' => 4,
                             'field' => 8,
                         )

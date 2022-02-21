@@ -17,6 +17,7 @@
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js') ?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-MR.js') ?>"></script>
+
 <div id="js-hs-chart-MR" class="highchart-area" data-highcharts-chart="0" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
 <form id="mr-history-form" action="#OphCiExamination_Episode_MedicalRetinalHistory">
     <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
@@ -26,7 +27,7 @@
         $va_unit->id,
         CHtml::listData(
             OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
-            model()->active()->findAllByAttributes(array('is_near' => 0)),
+            model()->active()->findAllByAttributes(array('is_va' => 1)),
             'id',
             'name'
         )
@@ -288,22 +289,21 @@
                 }
             });
 
-
             //resize the injection bars after xaxis rangeslider changed
-            document.body.onmouseup = function (e) {
-                var chart_MR = $('.rangeslider-container').first().parents('.plotly-MR')[0];
-
-                var date_range = (new Date(chart_MR.layout.xaxis.range[1]).getTime() - new Date(chart_MR.layout.xaxis.range[0]).getTime()) / oneday_time;
-                var shapes = chart_MR.layout.shapes;
-                var new_width = oneday_time * flag_width / 600 * date_range;
-                for (var i in shapes) {
+            currentPlot.addEventListener('chartRangeChanged', function(event) {
+                const chart_MR = event.target;
+                const date_range = (new Date(chart_MR.layout.xaxis.range[1]).getTime() - new Date(chart_MR.layout.xaxis.range[0]).getTime()) / oneday_time;
+                const shapes = chart_MR.layout.shapes;
+                const new_width = oneday_time * flag_width / 600 * date_range;
+                for (let i in shapes) {
                     if (shapes[i].layer !== "below") {
                         shapes[i].x1 = new Date(shapes[i].x0).getTime() + new_width;
                     }
                 }
 
                 Plotly.redraw(chart_MR);
-            }
+            });
+            currentPlot.dispatchEvent(chartRangeChangedEvent);
         }
 
         document.body.onmousemove = function (data) {

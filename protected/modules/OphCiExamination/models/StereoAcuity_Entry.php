@@ -142,10 +142,9 @@ class StereoAcuity_Entry extends \BaseElement
                 );
             }
             $result[] = sprintf("(%s)", implode(", ", $append));
-
         }
 
-        return implode(" " , $result);
+        return implode(" ", $result);
     }
 
     protected function convertInconclusiveToDisplay($value)

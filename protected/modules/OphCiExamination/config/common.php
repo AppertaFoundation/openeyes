@@ -22,7 +22,13 @@ return [
                         'class' => 'OEModule\OphCiExamination\components\HistoryRisksManager',
                         'method' => 'addPatientMedicationRisks'
                     ]
-                ]
+                ],
+                'step_started' => [
+                    'create_or_update_event' => [
+                        'class' => 'OEModule\OphCiExamination\components\PathstepObserver',
+                        'method' => 'createOrUpdateEvent',
+                    ]
+                ],
             ]
         ]
     ],
@@ -32,6 +38,7 @@ return [
 
         'reports' => [
             'Ready for second eye (unbooked)' => '/OphCiExamination/report/readyForSecondEyeUnbooked',
+            'A&E Patient List' => '/OphCiExamination/report/AE'
         ],
     ],
 

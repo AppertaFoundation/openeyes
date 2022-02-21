@@ -56,7 +56,7 @@ class EffectAdminController extends BaseAdminController
             'referer' => 'referer',
             'name' => 'text',
         ));
-        
+
         $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
 
         $valid = $admin->editModel(false);

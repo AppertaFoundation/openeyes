@@ -1,11 +1,10 @@
 <?php
     $criteria = new CDbCriteria();
-    $criteria->compare('t.patient_id', $patient->id);
-    $criteria->addCondition('t.visit_id IS NOT NULL');
-    $criteria->compare('t.active', 1);
+    $criteria->with =['pathway', 'pathway.worklist_patient'];
+    $criteria->compare('short_name', 'drug admin');
+    $criteria->compare('worklist_patient.patient_id', $patient->id);
     $criteria->compare("DATE_FORMAT(worklist_patient.`when`, '%Y-%m-%d')", date('Y-m-d'));
-    $assignments = \OphDrPGDPSD_Assignment::model()->with('pgdpsd')->with('worklist_patient')->findAll($criteria);
-    Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.PathStep.js'), ClientScript::POS_END);
+    $steps = PathwayStep::model()->findAll($criteria);
 ?>
 <section class="element full">
     <header class="element-header">
@@ -24,8 +23,18 @@
                         <!-- loop here -->
                         <td>
                             <div>
-                                <?php foreach ($assignments as $assignment) {?>
-                                    <span data-worklist-id=<?=$assignment->visit_id?> data-patient-id=<?=$patient->id?> data-pathstep-id=<?=$assignment->id?> class="oe-pathstep-btn <?=$assignment->getStatusDetails()['css']?> process" data-pathstep-name="<?=$assignment->getAssignmentTypeAndName()['name']?>">
+                                <?php foreach ($steps as $step) {
+                                        $assignment_id = $step->getState('assignment_id');
+                                        $assignment = OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
+                                    ?>
+                                    <span 
+                                        data-worklist-id=<?=$assignment->visit_id?> 
+                                        data-patient-id=<?=$patient->id?> 
+                                        data-pathstep-id=<?=$step->id?>
+                                        data-assignment-id=<?=$step->id?>
+                                        class="oe-pathstep-btn <?=$assignment->getStatusDetails(false, $step)['css']?> process js-no-interaction" 
+                                        data-pathstep-name="<?=$assignment->getAssignmentTypeAndName()['name']?>"
+                                    >
                                         <span class="step i-drug-admin"></span>
                                     </span>
                                 <?php } ?>
@@ -37,8 +46,3 @@
         </div>
     </div>
 </section>
-<script>
-    $(function(){
-        new OpenEyes.UI.PathStep({interactive: 0});
-    })
-</script>

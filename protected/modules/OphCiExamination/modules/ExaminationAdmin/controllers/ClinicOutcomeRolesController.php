@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -13,12 +14,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
+use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
 
 class ClinicOutcomeRolesController extends \ModuleAdminController
 {
 
-    public function actions() {
+    public function actions()
+    {
         return [
         'sortClinicOutcomeRoles' => [
         'class' => 'SaveDisplayOrderAction',
@@ -62,7 +64,7 @@ class ClinicOutcomeRolesController extends \ModuleAdminController
         if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_ClinicOutcome_Role')) {
             $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_ClinicOutcome_Role');
             if ($model->save()) {
-                Yii::app()->user->setFlash('success', 'Clinic Outcome Role saved');
+                Yii::app()->user->setFlash('success', 'Follow-up Role saved');
                 $this->redirect(['index']);
             } else {
                 $errors = $model->getErrors();
@@ -94,7 +96,7 @@ class ClinicOutcomeRolesController extends \ModuleAdminController
                     false,
                     ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_ClinicOutcome_Role']
                 );
-                Yii::app()->user->setFlash('success', 'Clinic Outcome Role created');
+                Yii::app()->user->setFlash('success', 'Follow-up Role created');
                 $this->redirect(['index']);
             } else {
                 $errors = $model->getErrors();

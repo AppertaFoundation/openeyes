@@ -71,9 +71,6 @@ if (file_exists('buildinfo.txt')) {
     echo "nothing";
 }
 
-
-
-
 ?>
 <div id="debug-info-modal">
     <p><strong>This information is provided to assist the helpdesk in diagnosing any problems</strong></p>
@@ -88,7 +85,10 @@ if (file_exists('buildinfo.txt')) {
         Client IP: <?php echo htmlspecialchars(@$_SERVER['REMOTE_ADDR'])?><br />
         Username: <?php echo $username?><br />
         Firm: <?php echo $firm?><br />
-
+        Modules running: <br/>
+            <?php foreach (Yii::app()->modules as $key => $val) {
+                echo "&nbsp;&nbsp;" . $key . "<br/>";
+            } ?>
     </code>
     <br />
     <p class="js-copy-to-clipboard" data-copy-content-selector=".js-to-copy-to-clipboard" style="cursor: pointer;">

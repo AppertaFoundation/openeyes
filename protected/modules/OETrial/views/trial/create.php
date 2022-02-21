@@ -3,4 +3,4 @@
 /* @var $trial Trial */
 ?>
 
-<?php $this->renderPartial('_form', array('trial' => $trial)); ?>
+<?php $this->renderPartial('_form', array('trial' => $trial));

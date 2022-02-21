@@ -43,7 +43,7 @@ class VisualAcuity extends \BaseEventElementWidget
         foreach (
             OphCiExamination_VisualAcuityUnit::model()
                  ->with('selectableValues')
-                 ->findAllByAttributes(['is_near' => $is_near, 'active' => true]) as $unit
+                 ->findAllByAttributes([($is_near ? 'is_near' : 'is_va') => 1, 'active' => true]) as $unit
         ) {
             // logMar of 0.3 is the most likely region of VA to be recorded,
             // which equates to a base_value of 95. Set the closest to this to be

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -36,6 +37,7 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+
     protected $default_view_order = 10;
     public $no_ophthalmic_diagnoses = false;
 
@@ -132,7 +134,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         if ($attribute === \CHtml::modelName($this) . '_diagnoses') {
             if (preg_match('/(\d+)/', $message, $match) === 1) {
-                return $attribute . '_entries_row_' . ($match[1]+1);
+                return $attribute . '_entries_row_' . ($match[1] + 1);
             }
         }
         return parent::errorAttributeException($attribute, $message);
@@ -236,9 +238,10 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $cd->eye_id = $disorder_to_update[$cd->id]['eye_id'];
                 $cd->principal = $disorder_to_update[$cd->id]['principal'];
                 $cd->date = $disorder_to_update[$cd->id]['date'];
+                $cd->time = $disorder_to_update[$cd->id]['time'];
                 if (!$cd->save()) {
                     throw new \Exception('save failed' . print_r($cd->getErrors(), true));
-                };
+                }
                 $added_diagnoses[] = $cd;
             }
         }
@@ -262,6 +265,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $new_diagnosis->disorder_id = $new_disorder['disorder_id'];
                 $new_diagnosis->eye_id = $new_disorder['eye_id'];
                 $new_diagnosis->date = $new_disorder['date'];
+                $new_diagnosis->time = $new_disorder['time'];
                 $new_diagnosis->principal = $new_disorder['principal'];
                 if (!$new_diagnosis->save()) {
                     throw new \Exception('Unable to save old secondary disorder');
@@ -280,12 +284,12 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
             foreach ($added_diagnoses as $diagnosis) {
                 if ($diagnosis->principal) {
-                    $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date);
+                    $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date, $diagnosis->time);
                 } else {
                     $this->event->episode->patient->addDiagnosis(
                         $diagnosis->disorder_id,
                         $diagnosis->eye_id,
-                        $diagnosis->date
+                        $diagnosis->date,
                     );
                 }
             }
@@ -379,10 +383,12 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
 
         //Get further findings from examination
-        if ($et_findings = Element_OphCiExamination_FurtherFindings::model()
+        if (
+            $et_findings = Element_OphCiExamination_FurtherFindings::model()
             ->find('event_id=?', array($this->event_id))
         ) {
-            foreach (OphCiExamination_FurtherFindings_Assignment::model()
+            foreach (
+                OphCiExamination_FurtherFindings_Assignment::model()
                          ->findAll('element_id=?', array($et_findings->id)) as $finding_assignment
             ) {
                 $finding = $finding_assignment->finding;
@@ -459,12 +465,14 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         $result = array();
         foreach ($disorder_ids as $disorder_id) {
-            foreach (\SecondaryToCommonOphthalmicDisorder::model()
+            foreach (
+                \SecondaryToCommonOphthalmicDisorder::model()
                          ->with('parent')
                          ->findAll(
                              't.disorder_id=? and parent.subspecialty_id=?',
                              array($disorder_id, $subspecialty->id)
-                         ) as $secto_disorder) {
+                         ) as $secto_disorder
+            ) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
@@ -487,12 +495,14 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         $result = array();
         foreach ($finding_ids as $finding_id) {
-            foreach (\SecondaryToCommonOphthalmicDisorder::model()
+            foreach (
+                \SecondaryToCommonOphthalmicDisorder::model()
                          ->with('parent')
                          ->findAll(
                              't.finding_id=? and parent.subspecialty_id=?',
                              array($finding_id, $subspecialty->id)
-                         ) as $secto_disorder) {
+                         ) as $secto_disorder
+            ) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
@@ -529,13 +539,20 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     $diagnosis->addError('diagnoses', $term . ': Eye is required');
                 }
 
+                $diagnosis->validate('time');
+
                 $validator->validateAttribute($diagnosis, 'date');
 
                 //dirty hack here to set the correct error for the date
                 $_date_error = $diagnosis->getError('date');
+                $_time_error = $diagnosis->getError('time');
                 if ($_date_error) {
                     $this->addError('diagnoses', $term . ': ' . $_date_error);
                     $diagnosis->clearErrors('date');
+                }
+                if ($_time_error) {
+                    $this->addError('diagnoses', $term . ': ' . $_time_error);
+                    $diagnosis->clearErrors('time');
                 }
             }
 
@@ -570,7 +587,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
     public function getPrint_view()
     {
-        return 'print_'.$this->getDefaultView();
+        return 'print_' . $this->getDefaultView();
     }
 
     public function getViewTitle()

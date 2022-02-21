@@ -36,10 +36,10 @@
  * @property string $on_hold_comment
  * @property int $referral_id
  * @property int $rtt_id
- * @property int $preassessment_booking_required
  * @property int $overnight_stay_required_id
  * @property int $complexity
  * @property tinyint $is_golden_patient
+ * @property tinyint $is_lac_required
  *
  * The followings are the available model relations:
  * @property ElementType $element_type
@@ -142,7 +142,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, decision_date, special_equipment_details, comments,comments_rtt','safe'),
             array('site_id, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
             array('status_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
-            array('priority_id, eye_id, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
+            array('priority_id, eye_id, organising_admission_user_id, overnight_booking_required_id, complexity, is_golden_patient, is_lac_required',    'safe'),
             array('on_hold_reason, on_hold_comment', 'safe'),
 
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
@@ -151,8 +151,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('total_duration', 'validateDuration'),
             array('referral_id', 'validateReferral'),
             array('decision_date', 'OEDateValidatorNotFuture'),
-            array('eye_id, consultant_required, overnight_stay_required_id, preassessment_booking_required', 'required'),
-            array('anaesthetic_choice_id, stop_medication, complexity', 'required', 'on' => 'insert'),
+            array('eye_id, consultant_required, overnight_stay_required_id', 'required'),
+            array('anaesthetic_choice_id, stop_medication', 'required', 'on' => 'insert'),
+            array('complexity', 'required'),
             array('stop_medication_details', 'RequiredIfFieldValidator', 'field' => 'stop_medication', 'value' => true),
             array('site_id, priority_id, decision_date', 'required'),
             array('special_equipment', 'required', 'on' => 'insert'),
@@ -233,10 +234,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'senior_fellow_to_do' => 'Senior fellow to do',
             'named_consultant_id' => 'Consultant',
             'anaesthetic_type' => 'Anaesthetic Type',
-            'preassessment_booking_required' => 'Pre-assessment booking required',
             'overnight_stay_required_id' => 'Overnight stay required',
             'complexity' => 'Complexity',
             'is_golden_patient' => 'Suitable as golden patient',
+            'is_lac_required' => 'Anaesthetist cover required',
             'cancellation_reason_id' => ($this->reschedule ? 'Reschedule Reason' : 'Cancellation Reason'),
             'on_hold_comment' => 'On Hold Comment',
             'on_hold_reason' => 'On Hold Reason',
@@ -302,9 +303,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
         $this->special_equipment = false;
         $preassesment_booking_default_value = Yii::app()->params['pre_assessment_booking_default_value'];
-        $this->preassessment_booking_required = (isset($preassesment_booking_default_value) && $preassesment_booking_default_value === 2) ?
-            null :
-            $preassesment_booking_default_value;
         $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
 
         $this->organising_admission_user_id = Yii::app()->user->id;
@@ -362,6 +360,12 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
         if (!$this->special_equipment) {
             $this->special_equipment_details = null;
+        }
+        if (!$this->consultant_required) {
+            $this->named_consultant_id = null;
+        }
+        if (!$this->referral_id) {
+            $this->referral_id = null;
         }
 
         return parent::beforeSave();
@@ -893,8 +897,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
             $criteria = new CDbCriteria();
             $criteria->addCondition('`t`.site_id = :siteId');
-            $criteria->addCondition('`t`.restriction & :r1 >0');
-            $criteria->addCondition('`t`.restriction & :r2 >0');
+            $criteria->addCondition('(`t`.restriction & :r1 >0 AND `t`.restriction & :r2 >0) OR `t`.restriction = 0');
             $criteria->params[':siteId'] = $siteId;
             $criteria->params[':r1'] = $genderRestrict;
             $criteria->params[':r2'] = $ageRestrict;
@@ -923,11 +926,38 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     }
 
     /**
+     * @return bool
+     *
+     * Returns true if the Anaesthetic Cover Required is disabled
+     */
+
+    public function isLACDisabled()
+    {
+        $lac_enabled = Yii::app()->params['op_booking_disable_lac_required'];
+        return isset($lac_enabled) && $lac_enabled == 'on';
+    }
+
+    /**
      * @return string
      */
     public function getAnaestheticTypeDisplay()
     {
-        return implode(', ', $this->anaesthetic_type);
+        $display='';
+
+        for ($i=0; $i<(count($this->anaesthetic_type)); $i++) {
+            if ($i>0) {
+                $display .= ',';
+            }
+
+            $type = $this->anaesthetic_type[$i];
+            $display .= ' '. $type->name;
+
+            if ((!$this->isLACDisabled()) && $type->code === 'LA' && $this->is_lac_required == '1') {
+                $display .= ' with Cover';
+            }
+        }
+
+        return $display;
     }
 
     /**
@@ -1069,7 +1099,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         return parent::audit($target, $action, $data, $log, $properties);
     }
 
-    public function cancel($reason_id, $comment = null, $cancellation_user_id = false)
+    public function cancel($reason_id, $comment = null, $cancellation_user_id = false, $reschedule_later = false)
     {
         if (!$reason = OphTrOperationbooking_Operation_Cancellation_Reason::model()->findByPk($reason_id)) {
             return array(
@@ -1311,6 +1341,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
 
+        Yii::app()->event->dispatch("operation_booking_created", array('element' => $this));
+
         return true;
     }
 
@@ -1396,6 +1428,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
         $criteria = new CDbCriteria();
         $criteria->addCondition('parent_rule_id is null');
+        $criteria->with = 'institutions';
+        $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
         $criteria->order = 'rule_order asc';
 
         foreach (OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAll($criteria) as $rule) {
@@ -1785,5 +1820,13 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
         return $opnotes;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterSave()
+    {
+        parent::afterSave();
     }
 }

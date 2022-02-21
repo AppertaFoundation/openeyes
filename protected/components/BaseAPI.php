@@ -78,7 +78,7 @@ class BaseAPI
      * @param bool $visible
      * @return CDbCriteria
      */
-    private function constructEventCriteria(\Patient $patient, $before = null, $visible = false)
+    protected function constructEventCriteria(\Patient $patient, $before = null, $visible = false)
     {
         $event_type = $this->getEventType();
         $criteria = new CDbCriteria();
@@ -101,7 +101,7 @@ class BaseAPI
      * @param CDbCriteria $criteria
      * @return Event[]|null
      */
-    private function eventsWithCriteria(CDbCriteria $criteria)
+    protected function eventsWithCriteria(CDbCriteria $criteria)
     {
         return Event::model()->with(
             array('episode' =>
@@ -278,7 +278,7 @@ class BaseAPI
      * @param string $before - date formatted string
      * @return BaseEventTypeElement[]
      */
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null): array
     {
         if ($criteria === null) {
             $criteria = new CDbCriteria();
@@ -301,7 +301,11 @@ class BaseAPI
                         array('with' =>
                             array(
                                 'firm' => array(
-                                    'with' => 'serviceSubspecialtyAssignment'
+                                    'with' => array(
+                                        'serviceSubspecialtyAssignment' => array(
+                                            'with' => 'subspecialty'
+                                        )
+                                    )
                                 ),
                                 'patient'
                             )
@@ -510,4 +514,67 @@ class BaseAPI
         }
     }
 
+    /**
+     * Gets the latest event by subspecialty's ref_spec code
+     *
+     * @param $patient
+     * @param $subspecialty_ref_spec
+     * @return Event|mixed|null
+     */
+    public function getLatestEventBySubspecialty($patient, $subspecialty_ref_spec):? \Event
+    {
+        $subspecialty_id = \Subspecialty::model()->findByAttributes(['ref_spec' => $subspecialty_ref_spec])->id ?? null;
+
+        if (!$subspecialty_id) {
+            return null;
+        }
+
+        $criteria = $this->constructEventCriteria($patient, null, true);
+        $criteria->addCondition('subspecialty_id =:subspecialty_id');
+        $criteria->params[':subspecialty_id'] = $subspecialty_id;
+
+        $events = $this->eventsWithCriteria($criteria);
+        return $events[0] ?? null;
+    }
+
+    /**
+     * Gets the latest requested element in the requested subspecialty
+     *
+     * @param $patient
+     * @param string $element
+     * @param string $ref_spec
+     * @return \CActiveRecord|null
+     */
+    public function getAllElementsBySubspecialty($patient, string $element, string $ref_spec): array
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('ref_spec =:ref_spec');
+        $criteria->params[':ref_spec'] = $ref_spec;
+        $criteria->limit = 1;
+
+        return $this->getElements($element,
+            $patient,
+            false,
+            null,
+            $criteria
+        );
+    }
+
+    /**
+     * Gets the latest requested element in the requested subspecialty
+     *
+     * @param $patient
+     * @param string $element
+     * @param string $ref_spec
+     * @return \CActiveRecord|null
+     */
+    public function getLatestElementBySubspecialty($patient, string $element, string $ref_spec):? \CActiveRecord
+    {
+        $elements = $this->getAllElementsBySubspecialty($patient, $element, $ref_spec);
+
+        // [0] - because we applied limit=1,
+        // the returned value is an array with one element on the 0 key,
+        // or an empty array, but the ?? handles this
+        return $elements[0] ?? null;
+    }
 }
