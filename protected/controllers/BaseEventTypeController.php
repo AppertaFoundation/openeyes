@@ -1343,6 +1343,20 @@ class BaseEventTypeController extends BaseModuleController
     {
         $errors = array();
         $elements = array();
+
+        // check if the event is edited recently
+        $is_conflict = false;
+        $has_last_modified_date_value = isset($data['Event']) && isset($data['Event']['last_modified_date']);
+        if (!$this->event->isNewRecord
+        && ($has_last_modified_date_value
+            && $data['Event']['last_modified_date'] !== $this->event->last_modified_date)
+        ) {
+            $user = $this->event->usermodified->getFullName();
+            $this->setOpenElementsFromCurrentEvent('edit');
+            $errors['conflict'][] = "The event was recently modified by {$user} at {$this->event->last_modified_date}, please doulbe check the entries and save again";
+            $is_conflict = true;
+        }
+
         // only process data for elements that are part of the element type set for the controller event type
         foreach ($this->getAllElementTypes() as $element_type) {
             $from_data = $this->getElementsForElementType($element_type, $data);
@@ -1358,7 +1372,20 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         // assign
-        $this->open_elements = $elements;
+        // if there are conflicts, load the saved element data
+        // and append the newly added elements
+        if ($is_conflict) {
+            $existing_elements_names = array_map(function ($oe) {
+                return get_class($oe);
+            }, $this->open_elements);
+            foreach ($elements as $ele) {
+                if (!in_array(get_class($ele), $existing_elements_names)) {
+                    $this->open_elements[] = $ele;
+                }
+            }
+        } else {
+            $this->open_elements = $elements;
+        }
 
         // validate
         foreach ($this->open_elements as $element) {

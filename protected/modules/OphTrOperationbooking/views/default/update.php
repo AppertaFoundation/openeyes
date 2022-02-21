@@ -87,8 +87,6 @@ if (isset($_GET["waiting-list"]) && $_GET["waiting-list"]) {
 <?php }?>
 
         <?php  $this->displayErrors($errors)?>
-        <?php
-        $this->displayErrors($errors); ?>
 
         <?php if (@$eur_res && @$eur_answer_res) {?>
             <input type="hidden" name="eye" value="<?=$eur_res->eye_num;?>">
