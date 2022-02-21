@@ -42,8 +42,8 @@ The workflow tab should have the following headers:
 |String       |String|Number|String |Yes/No   |
 
 The workflow rules tab should have the following headers:
-|Subspecialty|Context|Episode    |Workflow|
-|String      |String |String/All |String  |
+|Subspecialty|Context   |Episode    |Workflow|
+|String/All  |String/All|String/All |String  |
 
 The allergy reaction tab should have the following headers:
 |Name  |
@@ -63,7 +63,7 @@ The element mapping tab should have the following headers:
 
 The drug sets tab should have the following headers:
 |Name  |Hidden|Site       |Usage Code|Subspecialty|Medicine Name|Default Dose|Default Route|Default Frequency|Default Duration|
-|String|Yes/No|String/None|String    |String/None |String       |Number      |String       |String           |String          |
+|String|Yes/No|String/None|String    |String/None |String       |Number/None |String/None  |String/None      |String/None     |
 
 The pupillary abnormalities tab should have the following headers:
 |Name  |Active|
@@ -96,11 +96,11 @@ EOH;
         $this->spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
 
         $institution = basename($filename, ".xlsx");
-        if (\Institution::model()->findByAttributes(array('name' => $institution)) == null) {
+        if (\Institution::model()->findByAttributes(array('remote_id' => $institution)) == null) {
             echo "\033[0;31mError: \033[0m".$institution." is not a valid Institution\n";
             exit(8);
         }
-        $this->institution_id = \Institution::model()->findByAttributes(array('name' => $institution))->id;
+        $this->institution_id = \Institution::model()->findByAttributes(array('remote_id' => $institution))->id;
 
         $this->contextImport();
 
@@ -179,6 +179,9 @@ EOH;
             $firm->can_own_an_episode = ($service_enabled == "No") ? 0 : 1;
             $firm->runtime_selectable = ($context_enabled == "No") ? 0 : 1;
             $firm->active = ($active == "No") ? 0 : 1;
+            if ($firm->isNewRecord)
+                $firm->created_date = date("Y-m-d H:i:s");
+            $firm->last_modified_date = date("Y-m-d H:i:s");
             $firm->save(false);
         }
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Context Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
@@ -235,6 +238,8 @@ EOH;
                 $workflow = new E\OphCiExamination_Workflow;
                 $workflow->name = ($workflow_name == "Blank") ? null : $workflow_name;
                 $workflow->institution_id = $this->institution_id;
+                $workflow->created_date = date("Y-m-d H:i:s");
+                $workflow->last_modified_date = date("Y-m-d H:i:s");
                 $workflow->save(false);
                 $workflow_id = $workflow->id;
             } else {
@@ -247,6 +252,8 @@ EOH;
                 $element_set = new E\OphCiExamination_ElementSet;
                 $element_set->name = ($step == "Blank") ? null : $step;
                 $element_set->workflow_id = $workflow_id;
+                $element_set->created_date = date("Y-m-d H:i:s");
+                $element_set->last_modified_date = date("Y-m-d H:i:s");
                 $element_set->save(false);
                 $set_id = $element_set->id;
             } else {
@@ -268,6 +275,8 @@ EOH;
             $element_set_item->element_type_id = $element_id;
             $element_set_item->display_order = ($order == "Blank") ? null : $order;
             $element_set_item->is_mandatory = ($mandatory == "Yes") ? 1 : 0;
+            $element_set_item->created_date = date("Y-m-d H:i:s");
+            $element_set_item->last_modified_date = date("Y-m-d H:i:s");
             $element_set_item->save(false);
         }
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Workflow Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
@@ -294,7 +303,7 @@ EOH;
             $episode = $row[2];
             $workflow = $row[3];
 
-            if (\Subspecialty::model()->findByAttributes(array('name' => $subspecialty)) == null) {
+            if ($subspecialty != "All" && \Subspecialty::model()->findByAttributes(array('name' => $subspecialty)) == null) {
                 echo "\033[0;31mError: \033[0m".$subspecialty." is not a valid subspecialty\n";
                 exit(8);
             }
@@ -312,7 +321,7 @@ EOH;
             }
             $episode_status_id = ($episode == "All") ? null : \EpisodeStatus::model()->findByAttributes(array('name' => $episode))->id;
 
-            if ($context != "All" &&\Firm::model()->findByAttributes(array('name' => $context)) == null) {
+            if ($context != "All" && \Firm::model()->findByAttributes(array('name' => $context)) == null) {
                 echo "\033[0;31mError: \033[0m".$context." is not a valid context\n";
                 exit(8);
             }
@@ -323,6 +332,8 @@ EOH;
             $workflow_rule->subspecialty_id = $subspecialty_id;
             $workflow_rule->firm_id = $firm_id;
             $workflow_rule->episode_status_id = $episode_status_id;
+            $workflow_rule->created_date = date("Y-m-d H:i:s");
+            $workflow_rule->last_modified_date = date("Y-m-d H:i:s");
             $workflow_rule->save(false);
         }
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Workflow Rules Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
@@ -349,6 +360,8 @@ EOH;
             if (\OphCiExaminationAllergyReaction::model()->findByAttributes(array('name'=>$name)) == null) {
                 $allergy_reaction = new \OphCiExaminationAllergyReaction;
                 $allergy_reaction->name = $name;
+                $allergy_reaction->created_date = date("Y-m-d H:i:s");
+                $allergy_reaction->last_modified_date = date("Y-m-d H:i:s");
                 $allergy_reaction->save(false);
             }
         }
@@ -385,6 +398,9 @@ EOH;
             $history_macro->name = $name;
             $history_macro->body = $body;
             $history_macro->active = 1;
+            if ($history_macro->isNewRecord)
+                $history_macro->created_date = date("Y-m-d H:i:s");
+            $history_macro->last_modified_date = date("Y-m-d H:i:s");
             $history_macro->save(false);
 
             $history_macro_id = $history_macro->id;
@@ -393,6 +409,8 @@ EOH;
                 $history_macro_subspecialty = new E\HistoryMacro_Subspecialty;
                 $history_macro_subspecialty->history_macro_id = $history_macro_id;
                 $history_macro_subspecialty->subspecialty_id = $subspecialty_id;
+                $history_macro_subspecialty->created_date = date("Y-m-d H:i:s");
+                $history_macro_subspecialty->last_modified_date = date("Y-m-d H:i:s");
                 $history_macro_subspecialty->save(false);
             }
         }
@@ -431,6 +449,9 @@ EOH;
             $attribute->label = $label;
             $attribute->is_multiselect = ($multiselect == "Yes") ? 1 : 0;
             $attribute->institution_id = $this->institution_id;
+            if ($attribute->isNewRecord)
+                $attribute->created_date = date("Y-m-d H:i:s");
+            $attribute->last_modified_date = date("Y-m-d H:i:s");
             $attribute->save(false);
             $attribute_id = $attribute->id;
 
@@ -441,6 +462,8 @@ EOH;
                 $attribute_element = new E\OphCiExamination_AttributeElement;
                 $attribute_element->attribute_id = $attribute_id;
                 $attribute_element->element_type_id = $element_id;
+                $attribute_element->created_date = date("Y-m-d H:i:s");
+                $attribute_element->last_modified_date = date("Y-m-d H:i:s");
                 $attribute_element->save(false);
             }
         }
@@ -486,6 +509,9 @@ EOH;
             $element_mapping->subspecialty_id = $subspecialty_id;
             $element_mapping->attribute_element_id = $attribute_element_id;
             $element_mapping->display_order = $order;
+            if ($element_mapping->isNewRecord)
+                $element_mapping->created_date = date("Y-m-d H:i:s");
+            $element_mapping->last_modified_date = date("Y-m-d H:i:s");
             $element_mapping->save(false);
 
             $option_id = $element_mapping->id;
@@ -501,7 +527,7 @@ EOH;
                 $exclusion_id = \Subspecialty::model()->findByAttributes(array('name' => $exclusion))->id;
 
                 if (Yii::app()->db->createCommand()->select()->from('ophciexamination_attribute_option_exclude')->where('option_id=:option_id', array(':option_id'=>$option_id))->andWhere('subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$exclusion_id))->queryRow() == null) {
-                    Yii::app()->db->createCommand()->insert('ophciexamination_attribute_option_exclude', array('option_id'=>$option_id, 'subspecialty_id'=>$exclusion_id));
+                    Yii::app()->db->createCommand()->insert('ophciexamination_attribute_option_exclude', array('option_id'=>$option_id, 'subspecialty_id'=>$exclusion_id, 'last_modified_date'=>date("Y-m-d H:i:s"), 'created_date'=>date("Y-m-d H:i:s")));
                 }
             }
         }
@@ -538,6 +564,9 @@ EOH;
             $drug_set->name = $name;
             $drug_set->hidden = ($hidden == "Yes") ? 1 : 0;
             $drug_set->automatic = 1;
+            if ($drug_set->isNewRecord)
+                $drug_set->created_date = date("Y-m-d H:i:s");
+            $drug_set->last_modified_date = date("Y-m-d H:i:s");
             $drug_set->save(false);
 
             $drug_set_id = $drug_set->id;
@@ -565,6 +594,9 @@ EOH;
             $drug_set_rule->subspecialty_id = $subspecialty_id;
             $drug_set_rule->site_id = $site_id;
             $drug_set_rule->usage_code_id = $usage_code_id;
+            if ($drug_set_rule->isNewRecord)
+                $drug_set_rule->created_date = date("Y-m-d H:i:s");
+            $drug_set_rule->last_modified_date = date("Y-m-d H:i:s");
             $drug_set_rule->save(false);
 
             if (\Medication::model()->findByAttributes(array('short_term' => $medicine_name)) == null) {
@@ -574,33 +606,35 @@ EOH;
             $medication_id = \Medication::model()->findByAttributes(array('short_term' => $medicine_name))->id;
             $default_dose_unit_term = \Medication::model()->findByAttributes(array('short_term' => $medicine_name))->default_dose_unit_term;
 
-            if (\MedicationRoute::model()->findByAttributes(array('term' => $default_route)) == null) {
+            if ($default_route != "None" && \MedicationRoute::model()->findByAttributes(array('term' => $default_route)) == null) {
                 echo "\033[0;31mError: \033[0m".$default_route." is not a valid Route\n";
                 exit(8);
             }
-            $default_route_id = \MedicationRoute::model()->findByAttributes(array('term' => $default_route))->id;
+            $default_route_id = ($default_route == "None") ? null : \MedicationRoute::model()->findByAttributes(array('term' => $default_route))->id;
 
-            if (\MedicationDuration::model()->findByAttributes(array('name' => $default_duration)) == null) {
+            if ($default_duration != "None" && \MedicationDuration::model()->findByAttributes(array('name' => $default_duration)) == null) {
                 echo "\033[0;31mError: \033[0m".$default_duration." is not a valid Duration\n";
                 exit(8);
             }
-            $default_duration_id = \MedicationDuration::model()->findByAttributes(array('name' => $default_duration))->id;
+            $default_duration_id = ($default_duration == "None") ? null : \MedicationDuration::model()->findByAttributes(array('name' => $default_duration))->id;
 
-            if (\MedicationFrequency::model()->findByAttributes(array('term' => $default_frequency)) == null) {
+            if ($default_frequency != "None" && \MedicationFrequency::model()->findByAttributes(array('term' => $default_frequency)) == null) {
                 echo "\033[0;31mError: \033[0m".$default_frequency." is not a valid Frequency\n";
                 exit(8);
             }
-            $default_frequency_id = \MedicationFrequency::model()->findByAttributes(array('term' => $default_frequency))->id;
+            $default_frequency_id = ($default_frequency == "None") ? null : \MedicationFrequency::model()->findByAttributes(array('term' => $default_frequency))->id;
 
             if (\MedicationSetAutoRuleMedication::model()->findByAttributes(array('medication_set_id'=>$drug_set_id, 'medication_id'=>$medication_id, 'default_dose'=>$default_dose, 'default_route_id'=>$default_route_id, 'default_frequency_id'=>$default_frequency_id, 'default_dose_unit_term'=>$default_dose_unit_term, 'default_duration_id'=>$default_duration_id)) == null) {
                 $medication_set_auto_rule_medication = new \MedicationSetAutoRuleMedication;
                 $medication_set_auto_rule_medication->medication_set_id = $drug_set_id;
                 $medication_set_auto_rule_medication->medication_id = $medication_id;
-                $medication_set_auto_rule_medication->default_dose = $default_dose;
+                $medication_set_auto_rule_medication->default_dose = ($default_dose == "None") ? null : $default_dose;
                 $medication_set_auto_rule_medication->default_route_id = $default_route_id;
                 $medication_set_auto_rule_medication->default_dose_unit_term = $default_dose_unit_term;
                 $medication_set_auto_rule_medication->default_duration_id = $default_duration_id;
                 $medication_set_auto_rule_medication->default_frequency_id = $default_frequency_id;
+                $medication_set_auto_rule_medication->created_date = date("Y-m-d H:i:s");
+                $medication_set_auto_rule_medication->last_modified_date = date("Y-m-d H:i:s");
                 $medication_set_auto_rule_medication->save(false);
             }
         }
@@ -631,6 +665,9 @@ EOH;
             $pupillary_abnormality = E\OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findByAttributes(array('name'=>$name)) ?? new E\OphCiExamination_PupillaryAbnormalities_Abnormality;
             $pupillary_abnormality->name = $name;
             $pupillary_abnormality->active = $active;
+            if ($pupillary_abnormality->isNewRecord)
+                $pupillary_abnormality->created_date = date("Y-m-d H:i:s");
+            $pupillary_abnormality->last_modified_date = date("Y-m-d H:i:s");
             $pupillary_abnormality->save(false);
         }
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Pupillary Abnormalities Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
@@ -661,6 +698,8 @@ EOH;
                 $pupillary_abnormality_set = new E\OphCiExaminationPupillaryAbnormalitySet;
                 $pupillary_abnormality_set->name = $name;
                 $pupillary_abnormality_set->institution_id = $this->institution_id;
+                $pupillary_abnormality_set->created_date = date("Y-m-d H:i:s");
+                $pupillary_abnormality_set->last_modified_date = date("Y-m-d H:i:s");
                 $pupillary_abnormality_set->save(false);
 
                 $pupillary_abnormality_set_id = $pupillary_abnormality_set->id;
@@ -677,6 +716,9 @@ EOH;
             $pupillary_abnormality_set_entry = E\OphCiExaminationPupillaryAbnormalitySetEntry::model()->findByAttributes(array('ophciexamination_abnormality_id'=>$pupillary_abnormality_id, 'set_id'=>$pupillary_abnormality_set_id)) ?? new E\OphCiExaminationPupillaryAbnormalitySetEntry;
             $pupillary_abnormality_set_entry->ophciexamination_abnormality_id = $pupillary_abnormality_id;
             $pupillary_abnormality_set_entry->set_id = $pupillary_abnormality_set_id;
+            if ($pupillary_abnormality_set_entry->isNewRecord)
+                $pupillary_abnormality_set_entry->created_date = date("Y-m-d H:i:s");
+            $pupillary_abnormality_set_entry->last_modified_date = date("Y-m-d H:i:s");
             $pupillary_abnormality_set_entry->save(false);
         }
         echo "\n\t[" . (date("Y-m-d H:i:s")) . "] Required Pupillary Abnormalities Import finished ... OK - took: " . (microtime(true) - $t) . "s\n";
