@@ -695,8 +695,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 /** @var User $user */
                 if($user) {
                     if($signOffUser = $user->signOffUser) {
-                        $consultant_text = $api->getFooterConsultantText($signOffUser, $episode->firm);
-                        $this->footer = $signOffUser->correspondence_sign_off_text . ($consultant_text ? "\n" . $consultant_text : '');
+                        $signature_text = $api->getFooterText($signOffUser, $episode->firm);
+                        $this->footer = $signOffUser->correspondence_sign_off_text . "{e-signature}" . ($signature_text ? "\n" . nl2br($signature_text) : '');
                     }
                 }
             }
@@ -1047,7 +1047,15 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             /** @var Element_OphCoCorrespondence_Esign $esign_element*/
             $signatures = $esign_element->signatures;
             if($primary_signature = array_pop($signatures)) {
-                $footer .= "<div>" . nl2br(trim($this->footer)) . "<br/>" . $primary_signature->getPrintout() . "</div>";
+                if(strpos($this->footer, "{e-signature}") !== false) {
+                    if(strpos($primary_signature->getPrintout(), "Consultant:") === false && strpos($this->footer, "Consultant:") !== false) {
+                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}",$this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "<br/>Consultant:" . nl2br(trim(explode("Consultant:",$this->footer)[1])) . "</div>";
+                    } else {
+                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}",$this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "</div>";
+                    }
+                } else {
+                    $footer .= "<div>" . nl2br(trim($this->footer)) . "<br/>" . $primary_signature->getPrintout() . "</div>";
+                }
             }
             if($secondary_signature = array_pop($signatures)) {
                 $sign_off_text = $secondary_signature->signedUser->correspondence_sign_off_text;
