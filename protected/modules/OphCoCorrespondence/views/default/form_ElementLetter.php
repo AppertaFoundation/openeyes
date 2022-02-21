@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -305,34 +306,22 @@ $footer_array = explode("{e-signature}", $element["footer"]);
 
 <hr class="divider">
 
-<div class="flex-layout flex-top col-gap">
+<div class="flex-t col-gap">
     <div class="cols-3">
         <div class="data-group">
-            <table class="  cols-full last-left">
-                <tbody>
-                <tr>
-                    <td>
+           
                         <h3>Letter Templates</h3>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                
                         <?= CHtml::dropDownList(
                             'macro_id',
                             $macro_id,
                             $element->letter_macros,
                             array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')
                         ) ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    <hr class="divider">
                         <h3>Insert Quick Text</h3>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="column">
+                    
+                
                             <?php
                             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
@@ -394,17 +383,14 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                                 <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
                                     'empty' => '- ' . $string_group->name . ' -',
                                     'nowrapper' => true,
-                                    'class' => 'stringgroup full-width cols-full',
+                                    'class' => 'cols-full',
                                     'disabled' => empty($strings),
                                 )) ?>
                             <?php } ?>
                         </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    
         </div>
-    </div>
+
     <div class="cols-9">
         <table class="cols-full">
             <colgroup>
@@ -420,7 +406,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         'introduction',
                         array('rows' => 1, 'label' => false, 'nowrapper' => true),
                         false,
-                        array('class' => 'address correspondence-letter-text')
+                        array('class' => 'cols-full correspondence-letter-text')
                     ) ?>
                 </td>
                 <!--Nickname-->
@@ -435,14 +421,15 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         <?php echo $form->textArea(
                             $element,
                             're',
-                            array('rows' => 1, 'label' => false, 'nowrapper' => true),
+                            array('rows' => 2, 'label' => false, 'nowrapper' => true),
                             empty($_POST) ? strlen($element->re) === 0 : strlen(@$_POST['ElementLetter']['re']) === 0,
-                            array('class' => 'cols-full')
+                            array('class' => 'cols-full correspondence-letter-text')
                         ) ?>
                 </td>
+                <td class="fade">Editor help: <i class="oe-i info small pad js-has-tooltip" data-tooltip-content="Use SHIFT+ENTER to create a new text line"></i></td>
             </tr>
-            <tr>
-                <td colspan="2">
+            </table>
+            <div class="row">
                     <?php echo $form->textArea(
                         $element,
                         'body',
@@ -450,13 +437,11 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         false,
                         array('class' => 'address')
                     ) ?>
-                </td>
-            </tr>
-        </table>
+            </div>
         <h3>Sign-off &amp; signature block</h3>
         <div class="flex-t col-gap">
             <div class="cols-7">
-                <?php if(strpos($element["footer"], "{e-signature}") !== false) { ?>
+                <?php if (strpos($element["footer"], "{e-signature}") !== false) { ?>
                     <div class="correspondence-letter-text"><?php echo $footer_array[0]; ?></div>
                     <em class="fade">(e-Sign will be added here)</em>
                     <div class="correspondence-letter-text correspondence-letter-text-change">
@@ -477,17 +462,17 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         ],
                     ]); ?>
                     <?php echo $form->textArea(
-                    $element,
-                    'footer',
-                    array('label' => false, 'nowrapper' => true),
-                    false,
-                    array(
+                        $element,
+                        'footer',
+                        array('label' => false, 'nowrapper' => true),
+                        false,
+                        array(
                         'readonly' => false,
                         'class' => 'correspondence-letter-text autosize',
                         'style' => 'overflow: hidden; overflow-wrap: break-word; height: 54px;',
                         'hidden' => true
-                    )
-                ) ?>
+                        )
+                    ) ?>
                 </div>
             </div>
         </div>
