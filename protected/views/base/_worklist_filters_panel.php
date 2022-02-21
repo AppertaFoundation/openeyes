@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -33,8 +34,8 @@
                 <td>
                     <select class="cols-full js-worklists-sites">
                         <?php
-                            $current_site = Site::model()->getCurrent();
-                            $sites = Site::model()->getListForCurrentInstitution();
+                        $current_site = Site::model()->getCurrent();
+                        $sites = Site::model()->getListForCurrentInstitution();
 
                         foreach ($sites as $id => $name) : ?>
                             <option value="<?= $id ?>" <?= $current_site->id == $id ? 'selected' : '' ?>>
@@ -52,7 +53,7 @@
                             Any context (Show all pathways)
                         </option>
                         <?php
-                            $contexts = Firm::model()->getList($current_institution->id, null, null, true, null, true);
+                        $contexts = Firm::model()->getList($current_institution->id, null, null, true, null, true);
 
                         foreach ($contexts as $id => $name) : ?>
                             <option value="<?= $id ?>">
@@ -170,47 +171,48 @@
 </div>
 
 <script type="text/javascript">
-     $(document).ready(function() {
-         const hidePanelWidth = 1890;
-         const button = $('#js-nav-worklist-btn');
+    $(document).ready(function() {
+        const hidePanelWidth = 1890;
+        const button = $('#js-nav-worklist-btn');
 
-         button.click(function() {
-             if (button.hasClass('open')) {
-                 $('#js-hotlist-panel').show();
-                 $('#js-worklists-filter-panel').hide();
+        let worklistsFilterPanelFunc = function() {
+                if (button.hasClass('open')) {
+                    $('#js-worklists-filter-panel').hide();
+                    button.removeClass('open');
+                } else {
+                    $('#js-hotlist-panel').hide();
+                    $('#js-worklists-filter-panel').show();
+                    button.addClass('open');
+                }
+            };
+        button.click(worklistsFilterPanelFunc);
+        button.hover(worklistsFilterPanelFunc);
 
-                 button.removeClass('open');
-             } else {
-                 $('#js-hotlist-panel').hide();
-                 $('#js-worklists-filter-panel').show();
+        let hotlistPanelFunc = function() {
+            if (button.hasClass('open')) {
+                $('#js-hotlist-panel').show();
+                $('#js-worklists-filter-panel').hide();
+                button.removeClass('open');
+            }
+        };
+        $('#js-nav-hotlist-btn').click(hotlistPanelFunc);
+        $('#js-nav-hotlist-btn').hover(hotlistPanelFunc);
+        
+        $(window).resize(function() {
+            if (button.hasClass('open')) {
+                if ($(this).width() > hidePanelWidth) {
+                    $('#js-worklists-filter-panel').show();
+                } else {
+                    $('#js-worklists-filter-panel').hide();
+                    button.removeClass('open');
+                }
+            }
+        });
 
-                 button.addClass('open');
-             }
-         });
-
-         $('#js-nav-hotlist-btn').click(function() {
-             if (button.hasClass('open')) {
-                 $('#js-hotlist-panel').show();
-                 $('#js-worklists-filter-panel').hide();
-
-                 button.removeClass('open');
-             }
-         });
-
-         $(window).resize(function() {
-             if (button.hasClass('open')) {
-                 if ($(this).width() > hidePanelWidth) {
-                     $('#js-worklists-filter-panel').show();
-                 } else {
-                     $('#js-worklists-filter-panel').hide();
-                 }
-             }
-         });
-
-         $('#js-hotlist-panel').hide();
-         $('#js-worklists-filter-panel').show();
-         button.addClass('open');
-     });
+        $('#js-hotlist-panel').hide();
+        $('#js-worklists-filter-panel').show();
+        button.addClass('open');
+    });
 </script>
 
 <script type="text/template" id="js-worklist-filter-panel-template-worklist-entry">
@@ -265,7 +267,7 @@
 </script>
 
 <script type="text/template" id="js-worklist-filter-panel-template-recent-filter">
-     <div class="fav" data-index="{{index}}">
+    <div class="fav" data-index="{{index}}">
         <div class="details">
             <div class="site">{{site}}</div>
             <div class="context">{{context}}</div>
