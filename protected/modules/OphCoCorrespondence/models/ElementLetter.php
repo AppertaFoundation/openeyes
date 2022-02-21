@@ -326,8 +326,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     $header->DocumentSupersessionSetId = $this->supersession_id;
                 }
 
-                $header->DocumentDateTime = date('Y-m-d\TH:i:s');
-                $header->EventDateTime = $this->event->event_date;
+                $header->DocumentDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $this->event->event_date)->format('Y-m-d\TH:i:s');
+                if ($this->event->worklist_patient_id) {
+                    $wl_patient = WorklistPatient::model()->findByPk($this->event->worklist_patient_id);
+                    $header->EventDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $wl_patient->when)->format('Y-m-d\TH:i:s');
+                }
                 $header->MIMEtype = 'application/pdf';
                 $header->VersionNumber = '1';
                 $header->VersionDescription = 'OpenEyes ' . $this->letterType->name;
@@ -336,19 +339,23 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
                 $institution = Institution::model()->getCurrent();
                 $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+                $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
-                if (!$site) {
-                    throw new Exception('Unable to retrieve site details.');
+                if (!$site || !$firm) {
+                    throw new Exception('Unable to retrieve site/firm details.');
                 }
 
                 $attr_list = array(
                     'Author' => $user->getReversedNameAndInstitutionUsername($institution->id),
-                    'DocumentTypeCode' => $this->letterType->export_label, // New field.
+                    'DocumentType' => 'Medical Assessment', // New field.
+                    'DocumentSubType' => 'OpenEyes Assessment',
+                    'DocumentTypeCode' => 'MEDICALASSESSMENT',
+                    'DocumentCategory' => 'MEDICALASSESSMENT',
                     'DocumentCategoryCode' => 'AS',
                     'DocumentSubCategoryCode' => 'AS12',
-                    'ExternalSupersessionId' => "313|182|CCNS|000123|001|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
-                    'Consultant' => $user->getReversedNameAndInstitutionUsername($institution->id),
-                    'ConsultantCode' => $user->registration_code,
+                    'ExternalSupersessionId' => "313|182|001|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
+                    'Consultant' => $firm->getConsultantNameReversedAndUsername($institution->id),
+                    'ConsultantCode' => $firm->consultant->registration_code,
                     'Organisation' => $institution->name,
                     'OrganisationCode' => $institution->remote_id,
                     'Site' => $site->name,
@@ -401,9 +408,9 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
                 $document_data = new stdClass();
                 $document_category = new stdClass();
-                $document_category->DocumentType = $this->letterType->name;
-                $document_category->DocumentSubType = 'OpenEyes ' . $this->letterType->name;
-                $document_category->DocumentSubTypeCode = $this->letterType->export_label;
+                $document_category->DocumentType = 'Medical Assessment';
+                $document_category->DocumentSubType = 'OpenEyes Assessment';
+                $document_category->DocumentSubTypeCode = 'MEDICALASSESSMENT';
                 $document_data->DocumentCategory = $document_category;
                 $document_data->Sensitivity = false;
                 $header->DocumentData = $document_data;

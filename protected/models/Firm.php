@@ -145,7 +145,8 @@ class Firm extends BaseActiveRecordVersioned
         );
     }
 
-    private static function getLabelSettings($key){
+    private static function getLabelSettings($key)
+    {
         $institution_id = \Yii::app()->session['selected_institution_id'];
         return \SettingMetadata::model()->getSetting($key, null, false, ['SettingInstitution', 'SettingInstallation'], $institution_id);
     }
@@ -322,6 +323,38 @@ class Firm extends BaseActiveRecordVersioned
     {
         if ($consultant = $this->consultant) {
             return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
+        }
+
+        return 'NO CONSULTANT';
+    }
+
+    /**
+     * @param $institution_id
+     * @return string
+     */
+    public function getConsultantNameReversedAndUsername($institution_id): string
+    {
+        if ($consultant = $this->consultant) {
+            $user_auth_id = Yii::app()->db->createCommand()
+                ->select('ua.id')
+                ->from('institution_authentication ia')
+                ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id')
+                ->where('ia.institution_id = :institution_id AND ua.user_id = :user_id')
+                ->limit(1)
+                ->bindValues([':institution_id' => $institution_id, ':user_id' => $this->id])
+                ->queryScalar();
+
+            // Assuming that, despite multiple institution authentications,
+            // a user's username is identical for all of them.
+            $user_auth = UserAuthentication::model()->findByPk($user_auth_id);
+
+            if (!$user_auth) {
+                return $consultant->contact->last_name
+                    . ' ' . $consultant->contact->first_name;
+            }
+            return $consultant->contact->last_name
+                . ' ' . $consultant->contact->first_name
+                . " ({$user_auth->username})";
         }
 
         return 'NO CONSULTANT';
