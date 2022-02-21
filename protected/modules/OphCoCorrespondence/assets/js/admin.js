@@ -256,6 +256,50 @@ $(document).ready(function() {
 		});
     });
 
+	var pathname = window.location.pathname;
+    if(pathname.indexOf('/snippet/') > -1){
+
+		$('#search_institution_relations\\.institution_id option')
+		.filter(function() {
+			return !this.value || $.trim(this.value).length == 0 || $.trim(this.text).length == 0;
+		})
+		.remove();
+
+		$("#et_add").prop('value', 'Add to ' + $('#search_institution_relations\\.institution_id option:selected').text());
+		
+		$('#search_institution_relations\\.institution_id').on('change', function () {
+			getInstitutionSites($(this).val(), $('#search_sites\\.id'));
+		});
+
+		if($('#LetterString_institutions').val() === "") {
+			$("#LetterString_sites").prop("disabled", true);
+		} else {
+			$("#LetterString_sites").prop("disabled", false);
+		}
+
+		$('#LetterString_institutions').on('change', function () {
+			getInstitutionSites($(this).val(), $('#LetterString_sites'));
+
+			$(".multi-select-remove").each(function(i) {
+				var btn = $(this);
+				setTimeout(btn.trigger.bind(btn, "click"), i * 1);
+			});
+
+			if($('#LetterString_institutions').val() === "") {
+				$("#LetterString_sites").prop("disabled", true);
+			} else {
+				$("#LetterString_sites").prop("disabled", false);
+			}
+		});
+
+		$("#et_save").click(function(event){
+			$('#LetterString_institutions').prop("disabled", false); // Element(s) are now enabled.
+		});
+
+	}
+
+
+
     /** End of EditMacro Page **/
 
 });
