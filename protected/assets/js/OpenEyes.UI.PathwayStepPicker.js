@@ -496,7 +496,6 @@
                             items: this.options.vf_test_presets,
                             onSelectValue: function (dialog, itemSet, selected_value) {
                                 self.test_preset_id = selected_value;
-
                                 if (self.test_preset_id) {
                                     $.get(
                                         '/worklist/getVfPresetData/' + self.test_preset_id,
@@ -628,11 +627,21 @@
                     ],
                     onReturn: function (dialog, selectedValues) {
                         for (let pathway_id of pathway_ids) {
-                            self.newStep(step_type_id, pathway_id, {
-                                preset_id: selectedValues[0].value,
-                                test_type_id: selectedValues[1].value,
-                                laterality: selectedValues[2].value,
-                            }, selectedValues[3].value);
+                            if (selectedValues.length > 4) {
+                                self.newStep(step_type_id, pathway_id, {
+                                    preset_id: selectedValues[0].value,
+                                    test_type_id: selectedValues[1].value,
+                                    test_option_id: selectedValues[2].value,
+                                    laterality: selectedValues[3].value,
+                                }, selectedValues[4].value);
+                            } else {
+                                self.newStep(step_type_id, pathway_id, {
+                                    preset_id: null,
+                                    test_type_id: selectedValues[0].value,
+                                    test_option_id: selectedValues[1].value,
+                                    laterality: selectedValues[2].value,
+                                }, selectedValues[3].value);
+                            }
                         }
                         dialog.close();
                     }

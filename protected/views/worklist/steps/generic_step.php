@@ -104,6 +104,47 @@ if ($is_step_instance) {
                         </button>
                     </div>
                 <?php }
+            } else {
+                $custom_step_assignment = PathwayStepTypePresetAssignment::model()->find('custom_pathway_step_type_id = :id', [':id' => $step->step_type_id]);
+                if ($custom_step_assignment) {
+                    $step_type = $custom_step_assignment->standard_pathway_step_type;
+                } else {
+                    $step_type = $step->step_type;
+                }
+                if ($step_type->short_name === 'Exam') {
+                    $subspecialty = Subspecialty::model()->findByPk($step->getState('subspecialty_id'));
+                    $firm = Firm::model()->findByPk($step->getState('firm_id'));
+                    $workflow = \OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findByPk($step->getState('workflow_id'));
+                    $elementset = \OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findByPk($step->getState('workflow_step_id'));
+                    ?>
+                    <table>
+                        <tr>
+                            <th>Context</th>
+                            <td><?= $firm->name ?? '' ?></td>
+                        </tr>
+                        <tr>
+                            <th>Subspecialty</th>
+                            <td><?= $subspecialty->name ?? '' ?></td>
+                        </tr>
+                        <tr>
+                            <th>Examination Workflow</th>
+                            <td><?= $workflow->name ?? 'None' ?></td>
+                        </tr>
+                        <tr>
+                            <th>Workflow Step</th>
+                            <td><?= $elementset->name ?? 'None' ?></td>
+                        </tr>
+                    </table>
+                <?php } elseif ($step_type->short_name === 'Letter') {
+                    $macro = LetterMacro::model()->findByPk($step->getState('macro_id'));
+                    ?>
+                    <table>
+                        <tr>
+                            <th>Macro</th>
+                            <td><?= $macro->name ?? 'None' ?></td>
+                        </tr>
+                    </table>
+                <?php }
             } ?>
         </div>
         <div class="step-comments">

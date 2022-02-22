@@ -8,7 +8,7 @@ $is_step_instance = $step instanceof PathwayStep;
 $selected_preset = VisualFieldTestPreset::model()->findByPk($step->getState('preset_id'));
 $selected_test_type = $selected_preset->testType ?? VisualFieldTestType::model()->findByPk($step->getState('test_type_id'));
 $selected_test_option = $selected_preset->option ?? VisualFieldTestOption::model()->findByPk(
-    $step->getState('test_option')
+    $step->getState('test_option_id')
 );
 
 $test_types = VisualFieldTestType::model()->activeOrPk($selected_test_type->id)->findAll();
